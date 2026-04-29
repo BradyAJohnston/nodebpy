@@ -27,7 +27,6 @@ Map values to 0 to 1 range, based on the minimum and maximum pixel values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.vector.Normalize.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.vector.Normalize.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.vector.Normalize.name) |  |
 | [`node`](#nodebpy.nodes.compositor.vector.Normalize.node) |  |
 | [`o`](#nodebpy.nodes.compositor.vector.Normalize.o) |  |

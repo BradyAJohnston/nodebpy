@@ -51,7 +51,6 @@ Smooth away jagged edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.AntiAliasing.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.AntiAliasing.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.AntiAliasing.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.AntiAliasing.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.AntiAliasing.o) |  |
@@ -96,7 +95,6 @@ Adaptively blur image, while retaining sharp edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.BilateralBlur.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.BilateralBlur.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.BilateralBlur.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.BilateralBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.BilateralBlur.o) |  |
@@ -148,7 +146,6 @@ Blur an image, using several blur modes
 | Name                                                       | Description |
 |------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.filter.Blur.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Blur.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.filter.Blur.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.filter.Blur.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.filter.Blur.o)             |             |
@@ -272,7 +269,6 @@ Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.BokehBlur.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.BokehBlur.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.BokehBlur.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.BokehBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.BokehBlur.o) |  |
@@ -325,7 +321,6 @@ Convolves an image with a kernel
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Convolve.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Convolve.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.Convolve.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.Convolve.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Convolve.o) |  |
@@ -383,7 +378,6 @@ Apply depth of field in 2D, using a Z depth map or mask
 | [`bokeh`](#nodebpy.nodes.compositor.filter.Defocus.bokeh) |  |
 | [`f_stop`](#nodebpy.nodes.compositor.filter.Defocus.f_stop) |  |
 | [`i`](#nodebpy.nodes.compositor.filter.Defocus.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Defocus.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.Defocus.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.Defocus.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Defocus.o) |  |
@@ -437,7 +431,6 @@ Denoise renders from Cycles and other ray tracing renderers
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.filter.Denoise.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Denoise.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.filter.Denoise.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.filter.Denoise.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.filter.Denoise.o)             |             |
@@ -484,7 +477,6 @@ Smooth areas of an image in which noise is noticeable, while leaving complex are
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Despeckle.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Despeckle.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.Despeckle.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.Despeckle.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Despeckle.o) |  |
@@ -530,7 +522,6 @@ Expand and shrink masks
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Dilateerode.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Dilateerode.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.Dilateerode.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.Dilateerode.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Dilateerode.o) |  |
@@ -628,7 +619,6 @@ Blur an image along a direction
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.DirectionalBlur.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.DirectionalBlur.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.DirectionalBlur.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.DirectionalBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.DirectionalBlur.o) |  |
@@ -675,7 +665,6 @@ Apply common image enhancement filters
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.filter.Filter.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Filter.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.filter.Filter.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.filter.Filter.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.filter.Filter.o)             |             |
@@ -837,7 +826,6 @@ Add lens flares, fog and glows around bright parts of the image
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.filter.Glare.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Glare.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.filter.Glare.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.filter.Glare.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.filter.Glare.o)             |             |
@@ -1055,7 +1043,6 @@ Extend borders of an image into transparent or masked regions
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.filter.Inpaint.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Inpaint.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.filter.Inpaint.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.filter.Inpaint.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.filter.Inpaint.o)             |             |
@@ -1109,7 +1096,6 @@ Apply smoothing filter that preserves edges, for stylized and painterly effects
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Kuwahara.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Kuwahara.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.Kuwahara.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.Kuwahara.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Kuwahara.o) |  |
@@ -1177,7 +1163,6 @@ Computes a signed distance field from the given mask
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.MaskToSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.MaskToSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.MaskToSDF.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.MaskToSDF.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.MaskToSDF.o) |  |
@@ -1218,7 +1203,6 @@ Reduce detail in an image by making individual pixels more prominent, for a bloc
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Pixelate.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.Pixelate.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.Pixelate.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.Pixelate.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Pixelate.o) |  |
@@ -1262,7 +1246,6 @@ Uses the vector speed render pass to blur the image pixels in 2D
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.VectorBlur.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.filter.VectorBlur.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.filter.VectorBlur.name) |  |
 | [`node`](#nodebpy.nodes.compositor.filter.VectorBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.VectorBlur.o) |  |

@@ -32,7 +32,6 @@ Control the brightness and contrast of the input color
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.color.Brightnesscontrast.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.color.Brightnesscontrast.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.color.Brightnesscontrast.name) |  |
 | [`node`](#nodebpy.nodes.shader.color.Brightnesscontrast.node) |  |
 | [`o`](#nodebpy.nodes.shader.color.Brightnesscontrast.o) |  |
@@ -77,7 +76,6 @@ Apply a color transformation in the HSV color model
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.color.Huesaturationvalue.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.color.Huesaturationvalue.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.color.Huesaturationvalue.name) |  |
 | [`node`](#nodebpy.nodes.shader.color.Huesaturationvalue.node) |  |
 | [`o`](#nodebpy.nodes.shader.color.Huesaturationvalue.o) |  |
@@ -121,7 +119,6 @@ Invert a color, producing a negative
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.color.InvertColor.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.color.InvertColor.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.color.InvertColor.name)       |             |
 | [`node`](#nodebpy.nodes.shader.color.InvertColor.node)       |             |
 | [`o`](#nodebpy.nodes.shader.color.InvertColor.o)             |             |
@@ -162,7 +159,6 @@ Manipulate how light intensity decreases over distance. Typically used for non-p
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.color.LightFalloff.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.color.LightFalloff.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.color.LightFalloff.name)       |             |
 | [`node`](#nodebpy.nodes.shader.color.LightFalloff.node)       |             |
 | [`o`](#nodebpy.nodes.shader.color.LightFalloff.o)             |             |

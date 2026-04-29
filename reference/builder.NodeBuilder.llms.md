@@ -1,3 +1,0 @@
-# builder.NodeBuilder
-
-`NodeBuilder`

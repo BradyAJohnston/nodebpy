@@ -50,7 +50,6 @@ Create rectangular mask suitable for use as a simple matte
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.matte.BoxMask.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.matte.BoxMask.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.matte.BoxMask.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.matte.BoxMask.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.matte.BoxMask.o)             |             |
@@ -120,7 +119,6 @@ Create matte based on differences in color channels
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.ChannelKey.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.ChannelKey.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.ChannelKey.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.ChannelKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.ChannelKey.o) |  |
@@ -182,7 +180,6 @@ Create matte based on chroma values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.ChromaKey.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.ChromaKey.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.ChromaKey.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.ChromaKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.ChromaKey.o) |  |
@@ -230,7 +227,6 @@ Create matte using a given color, for green or blue screen footage
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.matte.ColorKey.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.matte.ColorKey.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.matte.ColorKey.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.matte.ColorKey.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.matte.ColorKey.o)             |             |
@@ -290,7 +286,6 @@ Remove colors from a blue or green screen, by reducing one RGB channel compared 
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.ColorSpill.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.ColorSpill.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.ColorSpill.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.ColorSpill.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.ColorSpill.o) |  |
@@ -339,7 +334,6 @@ Produce a matte that isolates foreground content by comparing it with a referenc
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.DifferenceKey.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.DifferenceKey.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.DifferenceKey.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.DifferenceKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.DifferenceKey.o) |  |
@@ -392,7 +386,6 @@ Create matte based on 3D distance between colors
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.DistanceKey.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.DistanceKey.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.DistanceKey.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.DistanceKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.DistanceKey.o) |  |
@@ -444,7 +437,6 @@ Create a gradient between two masks
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.o) |  |
@@ -498,7 +490,6 @@ Create elliptical mask suitable for use as a simple matte or vignette mask
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.EllipseMask.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.EllipseMask.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.EllipseMask.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.EllipseMask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.EllipseMask.o) |  |
@@ -574,7 +565,6 @@ Perform both chroma keying (to remove the backdrop) and despill (to correct colo
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.matte.Keying.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.matte.Keying.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.matte.Keying.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.matte.Keying.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.matte.Keying.o)             |             |
@@ -630,7 +620,6 @@ Create plates for use as a color reference for keying nodes
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.KeyingScreen.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.KeyingScreen.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.KeyingScreen.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.KeyingScreen.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.KeyingScreen.o) |  |
@@ -672,7 +661,6 @@ Create a matte based on luminance (brightness) difference
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.matte.LuminanceKey.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.matte.LuminanceKey.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.matte.LuminanceKey.name) |  |
 | [`node`](#nodebpy.nodes.compositor.matte.LuminanceKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.LuminanceKey.o) |  |

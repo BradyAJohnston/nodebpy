@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Changelog – nodebpy 0.13.0</title>
+<title>Changelog – nodebpy 0.14.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 0.13.0</span>
+    <span class="navbar-title">nodebpy 0.14.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -184,67 +184,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#v0.13.0---2026-04-28" id="toc-v0.13.0---2026-04-28" class="nav-link active" data-scroll-target="#v0.13.0---2026-04-28">v0.13.0 - 2026-04-28</a>
+  <li><a href="#v0.14.0---2026-04-29" id="toc-v0.14.0---2026-04-29" class="nav-link active" data-scroll-target="#v0.14.0---2026-04-29">v0.14.0 - 2026-04-29</a>
   <ul class="collapse">
   <li><a href="#enhancements" id="toc-enhancements" class="nav-link" data-scroll-target="#enhancements">Enhancements</a></li>
   <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug Fixes</a></li>
   </ul></li>
-  <li><a href="#v0.12.0---2026-04-25" id="toc-v0.12.0---2026-04-25" class="nav-link" data-scroll-target="#v0.12.0---2026-04-25">v0.12.0 - 2026-04-25</a>
+  <li><a href="#v0.13.0---2026-04-28" id="toc-v0.13.0---2026-04-28" class="nav-link" data-scroll-target="#v0.13.0---2026-04-28">v0.13.0 - 2026-04-28</a>
   <ul class="collapse">
   <li><a href="#enhancements-1" id="toc-enhancements-1" class="nav-link" data-scroll-target="#enhancements-1">Enhancements</a></li>
+  <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug Fixes</a></li>
+  </ul></li>
+  <li><a href="#v0.12.0---2026-04-25" id="toc-v0.12.0---2026-04-25" class="nav-link" data-scroll-target="#v0.12.0---2026-04-25">v0.12.0 - 2026-04-25</a>
+  <ul class="collapse">
+  <li><a href="#enhancements-2" id="toc-enhancements-2" class="nav-link" data-scroll-target="#enhancements-2">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.11.1---2026-04-24" id="toc-v0.11.1---2026-04-24" class="nav-link" data-scroll-target="#v0.11.1---2026-04-24">v0.11.1 - 2026-04-24</a>
   <ul class="collapse">
-  <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug Fixes</a></li>
+  <li><a href="#bug-fixes-2" id="toc-bug-fixes-2" class="nav-link" data-scroll-target="#bug-fixes-2">Bug Fixes</a></li>
   </ul></li>
   <li><a href="#v0.11.0-2026-04-24" id="toc-v0.11.0-2026-04-24" class="nav-link" data-scroll-target="#v0.11.0-2026-04-24">v0.11.0 — 2026-04-24</a>
   <ul class="collapse">
-  <li><a href="#enhancements-2" id="toc-enhancements-2" class="nav-link" data-scroll-target="#enhancements-2">Enhancements</a></li>
-  <li><a href="#bug-fixes-2" id="toc-bug-fixes-2" class="nav-link" data-scroll-target="#bug-fixes-2">Bug Fixes</a></li>
+  <li><a href="#enhancements-3" id="toc-enhancements-3" class="nav-link" data-scroll-target="#enhancements-3">Enhancements</a></li>
+  <li><a href="#bug-fixes-3" id="toc-bug-fixes-3" class="nav-link" data-scroll-target="#bug-fixes-3">Bug Fixes</a></li>
   </ul></li>
   <li><a href="#v0.10.2---2026-04-21" id="toc-v0.10.2---2026-04-21" class="nav-link" data-scroll-target="#v0.10.2---2026-04-21">v0.10.2 - 2026-04-21</a>
   <ul class="collapse">
-  <li><a href="#enhancements-3" id="toc-enhancements-3" class="nav-link" data-scroll-target="#enhancements-3">Enhancements</a></li>
+  <li><a href="#enhancements-4" id="toc-enhancements-4" class="nav-link" data-scroll-target="#enhancements-4">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.10.1-2026-04-20" id="toc-v0.10.1-2026-04-20" class="nav-link" data-scroll-target="#v0.10.1-2026-04-20">v0.10.1 — 2026-04-20</a>
   <ul class="collapse">
-  <li><a href="#bug-fixes-3" id="toc-bug-fixes-3" class="nav-link" data-scroll-target="#bug-fixes-3">Bug fixes</a></li>
+  <li><a href="#bug-fixes-4" id="toc-bug-fixes-4" class="nav-link" data-scroll-target="#bug-fixes-4">Bug fixes</a></li>
   </ul></li>
   <li><a href="#v0.10.0-2026-04-19" id="toc-v0.10.0-2026-04-19" class="nav-link" data-scroll-target="#v0.10.0-2026-04-19">v0.10.0 — 2026-04-19</a>
   <ul class="collapse">
-  <li><a href="#enhancements-4" id="toc-enhancements-4" class="nav-link" data-scroll-target="#enhancements-4">Enhancements</a></li>
+  <li><a href="#enhancements-5" id="toc-enhancements-5" class="nav-link" data-scroll-target="#enhancements-5">Enhancements</a></li>
   <li><a href="#other-changes" id="toc-other-changes" class="nav-link" data-scroll-target="#other-changes">Other changes</a></li>
   </ul></li>
   <li><a href="#v0.9.1-2026-03-27" id="toc-v0.9.1-2026-03-27" class="nav-link" data-scroll-target="#v0.9.1-2026-03-27">v0.9.1 — 2026-03-27</a>
   <ul class="collapse">
-  <li><a href="#enhancements-5" id="toc-enhancements-5" class="nav-link" data-scroll-target="#enhancements-5">Enhancements</a></li>
+  <li><a href="#enhancements-6" id="toc-enhancements-6" class="nav-link" data-scroll-target="#enhancements-6">Enhancements</a></li>
   <li><a href="#other-changes-1" id="toc-other-changes-1" class="nav-link" data-scroll-target="#other-changes-1">Other changes</a></li>
   </ul></li>
   <li><a href="#v0.8.0-2026-03-16" id="toc-v0.8.0-2026-03-16" class="nav-link" data-scroll-target="#v0.8.0-2026-03-16">v0.8.0 — 2026-03-16</a>
   <ul class="collapse">
-  <li><a href="#enhancements-6" id="toc-enhancements-6" class="nav-link" data-scroll-target="#enhancements-6">Enhancements</a></li>
+  <li><a href="#enhancements-7" id="toc-enhancements-7" class="nav-link" data-scroll-target="#enhancements-7">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.7.2-2026-03-15" id="toc-v0.7.2-2026-03-15" class="nav-link" data-scroll-target="#v0.7.2-2026-03-15">v0.7.2 — 2026-03-15</a>
   <ul class="collapse">
-  <li><a href="#enhancements-7" id="toc-enhancements-7" class="nav-link" data-scroll-target="#enhancements-7">Enhancements</a></li>
-  <li><a href="#bug-fixes-4" id="toc-bug-fixes-4" class="nav-link" data-scroll-target="#bug-fixes-4">Bug fixes</a></li>
+  <li><a href="#enhancements-8" id="toc-enhancements-8" class="nav-link" data-scroll-target="#enhancements-8">Enhancements</a></li>
+  <li><a href="#bug-fixes-5" id="toc-bug-fixes-5" class="nav-link" data-scroll-target="#bug-fixes-5">Bug fixes</a></li>
   </ul></li>
   <li><a href="#v0.7.1-2026-03-14" id="toc-v0.7.1-2026-03-14" class="nav-link" data-scroll-target="#v0.7.1-2026-03-14">v0.7.1 — 2026-03-14</a>
   <ul class="collapse">
-  <li><a href="#enhancements-8" id="toc-enhancements-8" class="nav-link" data-scroll-target="#enhancements-8">Enhancements</a></li>
+  <li><a href="#enhancements-9" id="toc-enhancements-9" class="nav-link" data-scroll-target="#enhancements-9">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.7.0-2026-03-13" id="toc-v0.7.0-2026-03-13" class="nav-link" data-scroll-target="#v0.7.0-2026-03-13">v0.7.0 — 2026-03-13</a>
   <ul class="collapse">
-  <li><a href="#enhancements-9" id="toc-enhancements-9" class="nav-link" data-scroll-target="#enhancements-9">Enhancements</a></li>
+  <li><a href="#enhancements-10" id="toc-enhancements-10" class="nav-link" data-scroll-target="#enhancements-10">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.6.0-2026-03-13" id="toc-v0.6.0-2026-03-13" class="nav-link" data-scroll-target="#v0.6.0-2026-03-13">v0.6.0 — 2026-03-13</a>
   <ul class="collapse">
-  <li><a href="#bug-fixes-5" id="toc-bug-fixes-5" class="nav-link" data-scroll-target="#bug-fixes-5">Bug fixes</a></li>
+  <li><a href="#bug-fixes-6" id="toc-bug-fixes-6" class="nav-link" data-scroll-target="#bug-fixes-6">Bug fixes</a></li>
   <li><a href="#other-changes-2" id="toc-other-changes-2" class="nav-link" data-scroll-target="#other-changes-2">Other changes</a></li>
   </ul></li>
   <li><a href="#v0.5.0-2026-03-13" id="toc-v0.5.0-2026-03-13" class="nav-link" data-scroll-target="#v0.5.0-2026-03-13">v0.5.0 — 2026-03-13</a>
   <ul class="collapse">
-  <li><a href="#enhancements-10" id="toc-enhancements-10" class="nav-link" data-scroll-target="#enhancements-10">Enhancements</a></li>
+  <li><a href="#enhancements-11" id="toc-enhancements-11" class="nav-link" data-scroll-target="#enhancements-11">Enhancements</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -271,18 +276,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="v0.13.0---2026-04-28" class="level2">
-<h2 class="anchored" data-anchor-id="v0.13.0---2026-04-28">v0.13.0 - 2026-04-28</h2>
+<section id="v0.14.0---2026-04-29" class="level2">
+<h2 class="anchored" data-anchor-id="v0.14.0---2026-04-29">v0.14.0 - 2026-04-29</h2>
 <section id="enhancements" class="level3">
 <h3 class="anchored" data-anchor-id="enhancements">Enhancements</h3>
+<ul>
+<li>Nodes which previously took <code>*args</code> and <code>**kwargs</code> have been updated to use keyword-only arguments instead. This is a hard breaking change but makes the code more readable and less error-prone. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/69"><code>#69</code></a>)
+<ul>
+<li>Affected nodes: <code>FieldToGrid</code>, <code>JoinGeometry</code>, <code>MenuSwitch</code>, <code>IndexSwitch</code>, <code>CaptureAttribute</code>, <code>JoinStrings</code>, <code>FormatString</code>, <code>SDFGridBoolean</code>, <code>MeshBoolean</code>, <code>RepeatZone</code>, <code>SimulationZone</code></li>
+</ul></li>
+<li>Tree interfaces are defined with <code>tree.inputs.geometry()</code> methods rather than using the old context-based <code>s.SocketGeometry()</code>. Both systems have been living side-by-side but this completely removed old system so is a hard breaking change. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/67"><code>#67</code></a>)</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode py code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># old system</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tree.inputs:</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    s.SocketGeometry()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># new system</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>tree.inputs.geometry()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Drop the <code>.inputs</code> and <code>.outputs</code> accessors for the nodes, in favor of just using <code>.i</code> and <code>.o</code> properties directly. This will reduce confusion as <code>.inputs</code> and <code>.outputs</code> are available on the base <code>bpy</code> nodes themselves. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/65"><code>#65</code></a>)</li>
+<li>Better type hinting and stubs for the <code>MenuSwitch</code> and <code>IndexSwitch</code> nodes. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/62"><code>#62</code></a>)</li>
+</ul>
+</section>
+<section id="bug-fixes" class="level3">
+<h3 class="anchored" data-anchor-id="bug-fixes">Bug Fixes</h3>
+</section>
+</section>
+<section id="v0.13.0---2026-04-28" class="level2">
+<h2 class="anchored" data-anchor-id="v0.13.0---2026-04-28">v0.13.0 - 2026-04-28</h2>
+<section id="enhancements-1" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-1">Enhancements</h3>
 <ul>
 <li>Support adding of closure nodes (<code>EvaluateClosure</code> and the <code>ClosureInput</code> / <code>ClosureOutput</code> nodes). Convenience <code>ClosureZone</code> class is added similar to the repeat, simulation and for-each-element zones. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/60"><code>#60</code></a>)</li>
 <li>Iteration output for the <code>RepeatZone</code> has change <code>.i</code> -&gt; <code>.iteration</code> to not confuse with input / output socket access (<a href="https://github.com/BradyAJohnston/nodebpy/pull/60"><code>#60</code></a>)</li>
 <li>Add a <code>Float()</code> class which just wraps the <code>Value()</code> class / node but is better for hinting towards it’s type and more discoverage (<code>[#58](https://github.com/BradyAJohnston/nodebpy/pull/58)</code>)</li>
 </ul>
 </section>
-<section id="bug-fixes" class="level3">
-<h3 class="anchored" data-anchor-id="bug-fixes">Bug Fixes</h3>
+<section id="bug-fixes-1" class="level3">
+<h3 class="anchored" data-anchor-id="bug-fixes-1">Bug Fixes</h3>
 <ul>
 <li>Properly expose mode, domain and data_type as methods and method factories for <code>SampleIndex</code> and <code>SampleCurve</code>. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/61"><code>#61</code></a>)</li>
 <li>Math on a <code>ColorSocket</code> now uses the <code>VectorMath</code> instead of <code>Math</code> preserving the RGB channels as XYZ. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/56"><code>#56</code></a>)</li>
@@ -291,8 +322,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.12.0---2026-04-25" class="level2">
 <h2 class="anchored" data-anchor-id="v0.12.0---2026-04-25">v0.12.0 - 2026-04-25</h2>
-<section id="enhancements-1" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-1">Enhancements</h3>
+<section id="enhancements-2" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-2">Enhancements</h3>
 <ul>
 <li>Support custom node groups for each node tree via <code>CustomGeometryGroup</code>, <code>CustomShaderGroup</code>, <code>CustomCompositorGroup</code> (<a href="https://github.com/BradyAJohnston/nodebpy/pull/53"><code>#53</code></a>)</li>
 </ul>
@@ -300,8 +331,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.11.1---2026-04-24" class="level2">
 <h2 class="anchored" data-anchor-id="v0.11.1---2026-04-24">v0.11.1 - 2026-04-24</h2>
-<section id="bug-fixes-1" class="level3">
-<h3 class="anchored" data-anchor-id="bug-fixes-1">Bug Fixes</h3>
+<section id="bug-fixes-2" class="level3">
+<h3 class="anchored" data-anchor-id="bug-fixes-2">Bug Fixes</h3>
 <ul>
 <li>Fix type inference for the <code>&gt;&gt;</code> operator in chains, properly propagating the correct node’s return type.</li>
 </ul>
@@ -309,20 +340,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.11.0-2026-04-24" class="level2">
 <h2 class="anchored" data-anchor-id="v0.11.0-2026-04-24">v0.11.0 — 2026-04-24</h2>
-<section id="enhancements-2" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-2">Enhancements</h3>
+<section id="enhancements-3" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-3">Enhancements</h3>
 <ul>
 <li>Refactor the mermaid diagram generation. Change <code>screenshot.py</code> -&gt; <code>diagram.py</code> and added test coverage.</li>
 <li><strong>Socket iteration and indexing</strong> — <code>VectorSocket</code>, <code>ColorSocket</code>, and <code>MatrixSocket</code> now support <code>__getitem__</code>, <code>__iter__</code>, and <code>__len__</code> on both output and input sockets. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/48">#48</a>) Output sockets decompose via <code>SeparateXYZ</code>/<code>SeparateColor</code>/<code>SeparateMatrix</code> (node reuse on repeated access); input sockets auto-wire a <code>CombineXYZ</code>/<code>CombineColor</code>/<code>CombineMatrix</code> and return the component input socket.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, axis <span class="kw">in</span> <span class="bu">enumerate</span>(g.Position().o.position):</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    math <span class="op">=</span> axis <span class="op">*</span> <span class="bu">float</span>(i)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pipe a value into the Y component of a position input</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>g.Value(<span class="fl">5.0</span>) <span class="op">&gt;&gt;</span> g.SetPosition().i.position[<span class="dv">1</span>]</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>mat <span class="op">=</span> g.InstanceTransform().o.transform</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>vec <span class="op">=</span> g.CombineXYZ(<span class="op">*</span>mat[:<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, axis <span class="kw">in</span> <span class="bu">enumerate</span>(g.Position().o.position):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    math <span class="op">=</span> axis <span class="op">*</span> <span class="bu">float</span>(i)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pipe a value into the Y component of a position input</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>g.Value(<span class="fl">5.0</span>) <span class="op">&gt;&gt;</span> g.SetPosition().i.position[<span class="dv">1</span>]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>mat <span class="op">=</span> g.InstanceTransform().o.transform</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>vec <span class="op">=</span> g.CombineXYZ(<span class="op">*</span>mat[:<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><strong><code>RotationSocket</code>/<code>MatrixSocket</code> helpers</strong> — Added <code>.invert</code> and <code>.transpose</code> properties on <code>MatrixSocket</code>, <code>.invert</code> on <code>RotationSocket</code>, following the same node-reuse pattern as <code>.x</code>/<code>.y</code>/<code>.z</code>.</li>
 <li><strong><code>SocketAccessor</code> overloads</strong> — <code>__getitem__</code> and <code>_get</code> are overloaded so slices return <code>list[Socket]</code> and str/int keys return <code>Socket</code>, eliminating the <code>Socket | list[Socket]</code> union that was blocking <code>enumerate</code> and unpacking.</li>
@@ -331,8 +362,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Generic factory nodes</strong> — <code>AccumulateField</code>, <code>EvaluateAtIndex</code>, <code>FieldAverage</code>, <code>FieldMinAndMax</code>, <code>EvaluateOnDomain</code>, <code>FieldVariance</code>, and <code>Compare</code> are now <code>Generic[_T]</code>. Their <code>_Inputs</code>/<code>_Outputs</code> inner classes carry the type parameter so e.g.&nbsp;<code>.point.vector(...)</code> returns <code>FieldAverage[VectorSocket]</code> and <code>.o.mean</code> resolves to <code>VectorSocket</code>.</li>
 </ul>
 </section>
-<section id="bug-fixes-2" class="level3">
-<h3 class="anchored" data-anchor-id="bug-fixes-2">Bug Fixes</h3>
+<section id="bug-fixes-3" class="level3">
+<h3 class="anchored" data-anchor-id="bug-fixes-3">Bug Fixes</h3>
 <ul>
 <li>Fix doc building and will only deploy on tagged releases. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/49">#49</a>)</li>
 <li><strong>Domain factory pattern</strong> — All <code>_domain_factory</code> / local-class patterns replaced with proper <code>_DomainFactory</code> inner classes (including <code>CaptureAttribute</code>) so the type checker can resolve their return types.</li>
@@ -342,8 +373,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.10.2---2026-04-21" class="level2">
 <h2 class="anchored" data-anchor-id="v0.10.2---2026-04-21">v0.10.2 - 2026-04-21</h2>
-<section id="enhancements-3" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-3">Enhancements</h3>
+<section id="enhancements-4" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-4">Enhancements</h3>
 <ul>
 <li>Added changelog to the documentation to better track and explain changes in the project.</li>
 <li>Support <code>len(tree.inputs)</code> and <code>len(tree.outputs)</code> to get the number of inputs and outputs in the tree. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/43">#43</a>)</li>
@@ -353,8 +384,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.10.1-2026-04-20" class="level2">
 <h2 class="anchored" data-anchor-id="v0.10.1-2026-04-20">v0.10.1 — 2026-04-20</h2>
-<section id="bug-fixes-3" class="level3">
-<h3 class="anchored" data-anchor-id="bug-fixes-3">Bug fixes</h3>
+<section id="bug-fixes-4" class="level3">
+<h3 class="anchored" data-anchor-id="bug-fixes-4">Bug fixes</h3>
 <ul>
 <li>Fixed <code>CaptureAttribute.capture()</code> not correctly linking the captured input socket. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/41">#41</a>)</li>
 </ul>
@@ -363,62 +394,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="v0.10.0-2026-04-19" class="level2">
 <h2 class="anchored" data-anchor-id="v0.10.0-2026-04-19">v0.10.0 — 2026-04-19</h2>
 <p>The biggest release yet. The headline change is a new typed socket accessor API — <code>node.i.x</code> / <code>node.o.x</code> — that replaces the old <code>node.o_position</code>-style properties and brings full IDE auto-complete and type narrowing to socket access.</p>
-<section id="enhancements-4" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-4">Enhancements</h3>
+<section id="enhancements-5" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-5">Enhancements</h3>
 <section id="node.i-node.o-socket-accessors-39" class="level4">
 <h4 class="anchored" data-anchor-id="node.i-node.o-socket-accessors-39"><code>node.i</code> / <code>node.o</code> socket accessors (<a href="https://github.com/BradyAJohnston/nodebpy/pull/39">#39</a>)</h4>
 <p>Sockets are now accessed through <code>.i</code> (inputs) and <code>.o</code> (outputs) accessor objects. Attribute names are the normalised socket identifier, so spaces become underscores and the first letter is lowercased.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>node.o.position <span class="op">&gt;&gt;</span> node.i.offset   <span class="co"># pipe position into offset</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>node.o.position.y <span class="op">*</span> <span class="fl">0.2</span>            <span class="co"># operate on the y component</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>node.o.position <span class="op">&gt;&gt;</span> node.i.offset   <span class="co"># pipe position into offset</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>node.o.position.y <span class="op">*</span> <span class="fl">0.2</span>            <span class="co"># operate on the y component</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>In node definitions, <code>_Inputs</code> / <code>_Outputs</code> inner classes declare the available sockets and their types so IDEs can provide auto-complete:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SetPosition(NodeBuilder):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">class</span> _Inputs(SocketAccessor):</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        geometry: GeometrySocket</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        position: VectorSocket</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        offset:   VectorSocket</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">class</span> _Outputs(SocketAccessor):</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        geometry: GeometrySocket</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SetPosition(BaseNode):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">class</span> _Inputs(SocketAccessor):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        geometry: GeometrySocket</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        position: VectorSocket</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        offset:   VectorSocket</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">class</span> _Outputs(SocketAccessor):</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        geometry: GeometrySocket</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodegroupbuilder-custom-node-groups-as-python-classes-31" class="level4">
 <h4 class="anchored" data-anchor-id="nodegroupbuilder-custom-node-groups-as-python-classes-31"><code>NodeGroupBuilder</code> — custom node groups as Python classes (<a href="https://github.com/BradyAJohnston/nodebpy/pull/31">#31</a>)</h4>
 <p>Define reusable node groups as plain Python classes. The group tree is built once and cached; subsequent uses insert a <code>Group</code> node pointing at that tree.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Jitter(NodeGroupBuilder):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    _name <span class="op">=</span> <span class="st">"Jitter"</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    _color_tag <span class="op">=</span> <span class="st">"geometry"</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, geometry<span class="op">=</span><span class="va">None</span>, amount<span class="op">=</span><span class="fl">0.2</span>, seed<span class="op">=</span><span class="dv">0</span>):</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(Geometry<span class="op">=</span>geometry, Amount<span class="op">=</span>amount, Seed<span class="op">=</span>seed)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">@classmethod</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _build_group(cls, tree):</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        geom   <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        amount <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Amount"</span>, <span class="fl">0.2</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        seed   <span class="op">=</span> tree.inputs.integer(<span class="st">"Seed"</span>, <span class="dv">0</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        offset <span class="op">=</span> g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>, seed<span class="op">=</span>seed) <span class="op">*</span> amount</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> g.SetPosition(geom, offset<span class="op">=</span>offset) <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Composes identically with built-in nodes</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>g.IcoSphere(subdivisions<span class="op">=</span><span class="dv">4</span>) <span class="op">&gt;&gt;</span> Jitter(amount<span class="op">=</span><span class="fl">0.15</span>) <span class="op">&gt;&gt;</span> out</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Jitter(NodeGroupBuilder):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    _name <span class="op">=</span> <span class="st">"Jitter"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    _color_tag <span class="op">=</span> <span class="st">"geometry"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, geometry<span class="op">=</span><span class="va">None</span>, amount<span class="op">=</span><span class="fl">0.2</span>, seed<span class="op">=</span><span class="dv">0</span>):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(Geometry<span class="op">=</span>geometry, Amount<span class="op">=</span>amount, Seed<span class="op">=</span>seed)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">@classmethod</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _build_group(cls, tree):</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        geom   <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        amount <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Amount"</span>, <span class="fl">0.2</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        seed   <span class="op">=</span> tree.inputs.integer(<span class="st">"Seed"</span>, <span class="dv">0</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        offset <span class="op">=</span> g.RandomValue.vector(<span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>, seed<span class="op">=</span>seed) <span class="op">*</span> amount</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> g.SetPosition(geom, offset<span class="op">=</span>offset) <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Composes identically with built-in nodes</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>g.IcoSphere(subdivisions<span class="op">=</span><span class="dv">4</span>) <span class="op">&gt;&gt;</span> Jitter(amount<span class="op">=</span><span class="fl">0.15</span>) <span class="op">&gt;&gt;</span> out</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="g.tree-module-level-helper-36" class="level4">
 <h4 class="anchored" data-anchor-id="g.tree-module-level-helper-36"><code>g.tree()</code> module-level helper (<a href="https://github.com/BradyAJohnston/nodebpy/pull/36">#36</a>)</h4>
 <p>Eliminates the need to import <code>TreeBuilder</code> directly when working with a single editor type.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Before</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder.geometry(<span class="st">"My Group"</span>) <span class="im">as</span> tree: ...</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># After</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"My Group"</span>) <span class="im">as</span> tree: ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Before</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder.geometry(<span class="st">"My Group"</span>) <span class="im">as</span> tree: ...</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># After</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"My Group"</span>) <span class="im">as</span> tree: ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="simplified-interface-socket-definition-37" class="level4">
 <h4 class="anchored" data-anchor-id="simplified-interface-socket-definition-37">Simplified interface socket definition (<a href="https://github.com/BradyAJohnston/nodebpy/pull/37">#37</a>)</h4>
 <p>Interface sockets can now be defined directly on the tree object without a context manager:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Points"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    g.SetPosition(geo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Points"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    g.SetPosition(geo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The previous context-manager form still works.</p>
 </section>
 </section>
@@ -434,13 +465,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.9.1-2026-03-27" class="level2">
 <h2 class="anchored" data-anchor-id="v0.9.1-2026-03-27">v0.9.1 — 2026-03-27</h2>
-<section id="enhancements-5" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-5">Enhancements</h3>
+<section id="enhancements-6" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-6">Enhancements</h3>
 <section id="comparison-operators-28" class="level4">
 <h4 class="anchored" data-anchor-id="comparison-operators-28"><code>==</code> / <code>!=</code> comparison operators (<a href="https://github.com/BradyAJohnston/nodebpy/pull/28">#28</a>)</h4>
-<p><code>NodeBuilder</code> objects now support Python equality operators, returning a <code>Compare</code> node. Chain <code>.switch()</code> to immediately branch on the result:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creates a Compare node then routes into a Switch</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(g.Value(<span class="fl">5.0</span>) <span class="op">&gt;</span> <span class="fl">2.0</span>).switch(false<span class="op">=</span>g.Cube(), true<span class="op">=</span>g.IcoSphere())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>BaseNode</code> objects now support Python equality operators, returning a <code>Compare</code> node. Chain <code>.switch()</code> to immediately branch on the result:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creates a Compare node then routes into a Switch</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(g.Value(<span class="fl">5.0</span>) <span class="op">&gt;</span> <span class="fl">2.0</span>).switch(false<span class="op">=</span>g.Cube(), true<span class="op">=</span>g.IcoSphere())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="data-type-specific-socket-linkers-29" class="level4">
 <h4 class="anchored" data-anchor-id="data-type-specific-socket-linkers-29">Data-type-specific socket linkers (<a href="https://github.com/BradyAJohnston/nodebpy/pull/29">#29</a>)</h4>
@@ -457,8 +488,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.8.0-2026-03-16" class="level2">
 <h2 class="anchored" data-anchor-id="v0.8.0-2026-03-16">v0.8.0 — 2026-03-16</h2>
-<section id="enhancements-6" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-6">Enhancements</h3>
+<section id="enhancements-7" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-7">Enhancements</h3>
 <section id="networkx-is-now-an-optional-dependency-24" class="level4">
 <h4 class="anchored" data-anchor-id="networkx-is-now-an-optional-dependency-24"><code>networkx</code> is now an optional dependency (<a href="https://github.com/BradyAJohnston/nodebpy/pull/24">#24</a>)</h4>
 <p><code>nodebpy</code> now has no hard dependencies outside of <code>bpy</code>, making it easier to vendor into add-ons. A built-in simple arranger is used when <code>networkx</code> is absent; the Sugiyama layout remains the default when it is installed.</p>
@@ -468,15 +499,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.7.2-2026-03-15" class="level2">
 <h2 class="anchored" data-anchor-id="v0.7.2-2026-03-15">v0.7.2 — 2026-03-15</h2>
-<section id="enhancements-7" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-7">Enhancements</h3>
+<section id="enhancements-8" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-8">Enhancements</h3>
 <section id="matrix-vector-creates-a-transformpoint-node-22" class="level4">
 <h4 class="anchored" data-anchor-id="matrix-vector-creates-a-transformpoint-node-22"><code>matrix @ vector</code> creates a <code>TransformPoint</code> node (<a href="https://github.com/BradyAJohnston/nodebpy/pull/22">#22</a>)</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>matrix <span class="op">@</span> g.Position()  <span class="co"># → TransformPoint node</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>matrix <span class="op">@</span> g.Position()  <span class="co"># → TransformPoint node</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
-<section id="bug-fixes-4" class="level3">
-<h3 class="anchored" data-anchor-id="bug-fixes-4">Bug fixes</h3>
+<section id="bug-fixes-5" class="level3">
+<h3 class="anchored" data-anchor-id="bug-fixes-5">Bug fixes</h3>
 <ul>
 <li>Fixed <code>...</code> (ellipsis) handling in <code>&gt;&gt;</code> chains — type-aware output selection now works correctly when skipping intermediate nodes. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/23">#23</a>)</li>
 </ul>
@@ -485,8 +516,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.7.1-2026-03-14" class="level2">
 <h2 class="anchored" data-anchor-id="v0.7.1-2026-03-14">v0.7.1 — 2026-03-14</h2>
-<section id="enhancements-8" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-8">Enhancements</h3>
+<section id="enhancements-9" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-9">Enhancements</h3>
 <section id="color-shader-linking-21" class="level4">
 <h4 class="anchored" data-anchor-id="color-shader-linking-21"><code>Color &gt;&gt; Shader</code> linking (<a href="https://github.com/BradyAJohnston/nodebpy/pull/21">#21</a>)</h4>
 <p>Piping a color socket into a shader input is now handled automatically, matching the way Blender promotes color connections in the node editor.</p>
@@ -496,14 +527,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.7.0-2026-03-13" class="level2">
 <h2 class="anchored" data-anchor-id="v0.7.0-2026-03-13">v0.7.0 — 2026-03-13</h2>
-<section id="enhancements-9" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-9">Enhancements</h3>
+<section id="enhancements-10" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-10">Enhancements</h3>
 <section id="panels-for-tree-interfaces-20" class="level4">
 <h4 class="anchored" data-anchor-id="panels-for-tree-interfaces-20">Panels for tree interfaces (<a href="https://github.com/BradyAJohnston/nodebpy/pull/20">#20</a>)</h4>
 <p>Group interface sockets can be organised into named panels:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tree.inputs.panel(<span class="st">"Settings"</span>):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    s.SocketFloat(<span class="st">"Amount"</span>, <span class="fl">0.2</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    s.SocketInt(<span class="st">"Seed"</span>, <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tree.inputs.panel(<span class="st">"Settings"</span>):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    s.SocketFloat(<span class="st">"Amount"</span>, <span class="fl">0.2</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    s.SocketInt(<span class="st">"Seed"</span>, <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Integer math is now handled correctly in Shader and Compositor editors (mapped to float math, as Blender does not expose integer math there).</p>
 <hr>
 </section>
@@ -511,8 +542,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.6.0-2026-03-13" class="level2">
 <h2 class="anchored" data-anchor-id="v0.6.0-2026-03-13">v0.6.0 — 2026-03-13</h2>
-<section id="bug-fixes-5" class="level3">
-<h3 class="anchored" data-anchor-id="bug-fixes-5">Bug fixes</h3>
+<section id="bug-fixes-6" class="level3">
+<h3 class="anchored" data-anchor-id="bug-fixes-6">Bug fixes</h3>
 <ul>
 <li>Fixed <code>MenuSwitch</code> node creation and socket wiring. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/18">#18</a>)</li>
 </ul>
@@ -527,8 +558,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.5.0-2026-03-13" class="level2">
 <h2 class="anchored" data-anchor-id="v0.5.0-2026-03-13">v0.5.0 — 2026-03-13</h2>
-<section id="enhancements-10" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-10">Enhancements</h3>
+<section id="enhancements-11" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-11">Enhancements</h3>
 <section id="compositor-and-material-shader-node-editors-12" class="level4">
 <h4 class="anchored" data-anchor-id="compositor-and-material-shader-node-editors-12">Compositor and Material (Shader) node editors (<a href="https://github.com/BradyAJohnston/nodebpy/pull/12">#12</a>)</h4>
 <p><code>nodebpy</code> now supports building Compositor and Shader/Material node trees in addition to Geometry Nodes.</p>
@@ -620,7 +651,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

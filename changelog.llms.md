@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.14.0 - 2026-04-29
+
+### Enhancements
+
+- Nodes which previously took `*args` and `**kwargs` have been updated to use keyword-only arguments instead. This is a hard breaking change but makes the code more readable and less error-prone. ([`#69`](https://github.com/BradyAJohnston/nodebpy/pull/69))
+  - Affected nodes: `FieldToGrid`, `JoinGeometry`, `MenuSwitch`, `IndexSwitch`, `CaptureAttribute`, `JoinStrings`, `FormatString`, `SDFGridBoolean`, `MeshBoolean`, `RepeatZone`, `SimulationZone`
+- Tree interfaces are defined with `tree.inputs.geometry()` methods rather than using the old context-based `s.SocketGeometry()`. Both systems have been living side-by-side but this completely removed old system so is a hard breaking change. ([`#67`](https://github.com/BradyAJohnston/nodebpy/pull/67))
+
+``` py
+# old system
+with tree.inputs:
+    s.SocketGeometry()
+
+# new system
+tree.inputs.geometry()
+```
+
+- Drop the `.inputs` and `.outputs` accessors for the nodes, in favor of just using `.i` and `.o` properties directly. This will reduce confusion as `.inputs` and `.outputs` are available on the base `bpy` nodes themselves. ([`#65`](https://github.com/BradyAJohnston/nodebpy/pull/65))
+- Better type hinting and stubs for the `MenuSwitch` and `IndexSwitch` nodes. ([`#62`](https://github.com/BradyAJohnston/nodebpy/pull/62))
+
+### Bug Fixes
+
 ## v0.13.0 - 2026-04-28
 
 ### Enhancements
@@ -87,7 +109,7 @@ node.o.position.y * 0.2            # operate on the y component
 In node definitions, `_Inputs` / `_Outputs` inner classes declare the available sockets and their types so IDEs can provide auto-complete:
 
 ``` python
-class SetPosition(NodeBuilder):
+class SetPosition(BaseNode):
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
         position: VectorSocket
@@ -162,7 +184,7 @@ The previous context-manager form still works.
 
 #### `==` / `!=` comparison operators ([\#28](https://github.com/BradyAJohnston/nodebpy/pull/28))
 
-`NodeBuilder` objects now support Python equality operators, returning a `Compare` node. Chain `.switch()` to immediately branch on the result:
+`BaseNode` objects now support Python equality operators, returning a `Compare` node. Chain `.switch()` to immediately branch on the result:
 
 ``` python
 # Creates a Compare node then routes into a Switch

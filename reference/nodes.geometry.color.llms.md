@@ -29,7 +29,6 @@ Apply a gamma correction
 | Name                                                     | Description |
 |----------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.geometry.color.Gamma.i)             |             |
-| [`inputs`](#nodebpy.nodes.geometry.color.Gamma.inputs)   |             |
 | [`name`](#nodebpy.nodes.geometry.color.Gamma.name)       |             |
 | [`node`](#nodebpy.nodes.geometry.color.Gamma.node)       |             |
 | [`o`](#nodebpy.nodes.geometry.color.Gamma.o)             |             |
@@ -70,7 +69,6 @@ Apply color corrections for each color channel
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.geometry.color.RGBCurves.i)             |             |
-| [`inputs`](#nodebpy.nodes.geometry.color.RGBCurves.inputs)   |             |
 | [`name`](#nodebpy.nodes.geometry.color.RGBCurves.name)       |             |
 | [`node`](#nodebpy.nodes.geometry.color.RGBCurves.node)       |             |
 | [`o`](#nodebpy.nodes.geometry.color.RGBCurves.o)             |             |

@@ -34,24 +34,24 @@ Base class for directional socket contexts
 
 | Name | Description |
 |----|----|
-| [boolean](#nodebpy.builder.tree.DirectionalContext.boolean) | Add a Boolean socket to this input/output interface. |
-| [bundle](#nodebpy.builder.tree.DirectionalContext.bundle) | Add a Bundle socket to this input/output interface. |
-| [closure](#nodebpy.builder.tree.DirectionalContext.closure) | Add a Closure socket to this input/output interface. |
-| [collection](#nodebpy.builder.tree.DirectionalContext.collection) | Add a Collection socket to this input/output interface. |
-| [color](#nodebpy.builder.tree.DirectionalContext.color) | Add a Color socket to this input/output interface. |
-| [float](#nodebpy.builder.tree.DirectionalContext.float) | Add a Float socket to this input/output interface. |
-| [geometry](#nodebpy.builder.tree.DirectionalContext.geometry) | Add a Geometry socket to this input/output interface. |
-| [image](#nodebpy.builder.tree.DirectionalContext.image) | Add an Image socket to this input/output interface. |
-| [integer](#nodebpy.builder.tree.DirectionalContext.integer) | Add an Integer socket to this input/output interface. |
-| [material](#nodebpy.builder.tree.DirectionalContext.material) | Add a Material socket to this input/output interface. |
-| [matrix](#nodebpy.builder.tree.DirectionalContext.matrix) | Add a Matrix socket to this input/output interface. |
-| [menu](#nodebpy.builder.tree.DirectionalContext.menu) | Add a Menu socket to this input/output interface. |
-| [object](#nodebpy.builder.tree.DirectionalContext.object) | Add an Object socket to this input/output interface. |
+| [boolean](#nodebpy.builder.tree.DirectionalContext.boolean) |  |
+| [bundle](#nodebpy.builder.tree.DirectionalContext.bundle) |  |
+| [closure](#nodebpy.builder.tree.DirectionalContext.closure) |  |
+| [collection](#nodebpy.builder.tree.DirectionalContext.collection) |  |
+| [color](#nodebpy.builder.tree.DirectionalContext.color) |  |
+| [float](#nodebpy.builder.tree.DirectionalContext.float) |  |
+| [geometry](#nodebpy.builder.tree.DirectionalContext.geometry) |  |
+| [image](#nodebpy.builder.tree.DirectionalContext.image) |  |
+| [integer](#nodebpy.builder.tree.DirectionalContext.integer) |  |
+| [material](#nodebpy.builder.tree.DirectionalContext.material) |  |
+| [matrix](#nodebpy.builder.tree.DirectionalContext.matrix) |  |
+| [menu](#nodebpy.builder.tree.DirectionalContext.menu) |  |
+| [object](#nodebpy.builder.tree.DirectionalContext.object) |  |
 | [panel](#nodebpy.builder.tree.DirectionalContext.panel) | Create a panel context for grouping sockets. |
-| [rotation](#nodebpy.builder.tree.DirectionalContext.rotation) | Add a Rotation socket to this input/output interface. |
-| [shader](#nodebpy.builder.tree.DirectionalContext.shader) | Add a Shader socket to this input/output interface. |
-| [string](#nodebpy.builder.tree.DirectionalContext.string) | Add a String socket to this input/output interface. |
-| [vector](#nodebpy.builder.tree.DirectionalContext.vector) | Add a Vector socket to this input/output interface. |
+| [rotation](#nodebpy.builder.tree.DirectionalContext.rotation) |  |
+| [shader](#nodebpy.builder.tree.DirectionalContext.shader) |  |
+| [string](#nodebpy.builder.tree.DirectionalContext.string) |  |
+| [vector](#nodebpy.builder.tree.DirectionalContext.vector) |  |
 
 ##### boolean
 
@@ -72,8 +72,6 @@ boolean(
 )
 ```
 
-Add a Boolean socket to this input/output interface.
-
 ##### bundle
 
 ``` python
@@ -86,8 +84,6 @@ bundle(
     hide_in_modifier=False,
 )
 ```
-
-Add a Bundle socket to this input/output interface.
 
 ##### closure
 
@@ -102,8 +98,6 @@ closure(
 )
 ```
 
-Add a Closure socket to this input/output interface.
-
 ##### collection
 
 ``` python
@@ -117,8 +111,6 @@ collection(
     hide_in_modifier=False,
 )
 ```
-
-Add a Collection socket to this input/output interface.
 
 ##### color
 
@@ -136,8 +128,6 @@ color(
     default_attribute=None,
 )
 ```
-
-Add a Color socket to this input/output interface.
 
 ##### float
 
@@ -159,8 +149,6 @@ float(
 )
 ```
 
-Add a Float socket to this input/output interface.
-
 ##### geometry
 
 ``` python
@@ -173,8 +161,6 @@ geometry(
     hide_in_modifier=False,
 )
 ```
-
-Add a Geometry socket to this input/output interface.
 
 ##### image
 
@@ -189,8 +175,6 @@ image(
     hide_in_modifier=False,
 )
 ```
-
-Add an Image socket to this input/output interface.
 
 ##### integer
 
@@ -213,8 +197,6 @@ integer(
 )
 ```
 
-Add an Integer socket to this input/output interface.
-
 ##### material
 
 ``` python
@@ -228,8 +210,6 @@ material(
     hide_in_modifier=False,
 )
 ```
-
-Add a Material socket to this input/output interface.
 
 ##### matrix
 
@@ -248,8 +228,6 @@ matrix(
 )
 ```
 
-Add a Matrix socket to this input/output interface.
-
 ##### menu
 
 ``` python
@@ -266,8 +244,6 @@ menu(
 )
 ```
 
-Add a Menu socket to this input/output interface.
-
 ##### object
 
 ``` python
@@ -281,8 +257,6 @@ object(
     hide_in_modifier=False,
 )
 ```
-
-Add an Object socket to this input/output interface.
 
 ##### panel
 
@@ -309,8 +283,6 @@ rotation(
 )
 ```
 
-Add a Rotation socket to this input/output interface.
-
 ##### shader
 
 ``` python
@@ -323,8 +295,6 @@ shader(
     hide_in_modifier=False,
 )
 ```
-
-Add a Shader socket to this input/output interface.
 
 ##### string
 
@@ -340,8 +310,6 @@ string(
     subtype='NONE',
 )
 ```
-
-Add a String socket to this input/output interface.
 
 ##### vector
 
@@ -364,8 +332,6 @@ vector(
     attribute_domain='POINT',
 )
 ```
-
-Add a Vector socket to this input/output interface.
 
 ### InputInterfaceContext
 
@@ -385,24 +351,24 @@ InputInterfaceContext(tree_builder)
 
 | Name | Description |
 |----|----|
-| [boolean](#nodebpy.builder.tree.InputInterfaceContext.boolean) | Add a Boolean socket to this input/output interface. |
-| [bundle](#nodebpy.builder.tree.InputInterfaceContext.bundle) | Add a Bundle socket to this input/output interface. |
-| [closure](#nodebpy.builder.tree.InputInterfaceContext.closure) | Add a Closure socket to this input/output interface. |
-| [collection](#nodebpy.builder.tree.InputInterfaceContext.collection) | Add a Collection socket to this input/output interface. |
-| [color](#nodebpy.builder.tree.InputInterfaceContext.color) | Add a Color socket to this input/output interface. |
-| [float](#nodebpy.builder.tree.InputInterfaceContext.float) | Add a Float socket to this input/output interface. |
-| [geometry](#nodebpy.builder.tree.InputInterfaceContext.geometry) | Add a Geometry socket to this input/output interface. |
-| [image](#nodebpy.builder.tree.InputInterfaceContext.image) | Add an Image socket to this input/output interface. |
-| [integer](#nodebpy.builder.tree.InputInterfaceContext.integer) | Add an Integer socket to this input/output interface. |
-| [material](#nodebpy.builder.tree.InputInterfaceContext.material) | Add a Material socket to this input/output interface. |
-| [matrix](#nodebpy.builder.tree.InputInterfaceContext.matrix) | Add a Matrix socket to this input/output interface. |
-| [menu](#nodebpy.builder.tree.InputInterfaceContext.menu) | Add a Menu socket to this input/output interface. |
-| [object](#nodebpy.builder.tree.InputInterfaceContext.object) | Add an Object socket to this input/output interface. |
+| [boolean](#nodebpy.builder.tree.InputInterfaceContext.boolean) |  |
+| [bundle](#nodebpy.builder.tree.InputInterfaceContext.bundle) |  |
+| [closure](#nodebpy.builder.tree.InputInterfaceContext.closure) |  |
+| [collection](#nodebpy.builder.tree.InputInterfaceContext.collection) |  |
+| [color](#nodebpy.builder.tree.InputInterfaceContext.color) |  |
+| [float](#nodebpy.builder.tree.InputInterfaceContext.float) |  |
+| [geometry](#nodebpy.builder.tree.InputInterfaceContext.geometry) |  |
+| [image](#nodebpy.builder.tree.InputInterfaceContext.image) |  |
+| [integer](#nodebpy.builder.tree.InputInterfaceContext.integer) |  |
+| [material](#nodebpy.builder.tree.InputInterfaceContext.material) |  |
+| [matrix](#nodebpy.builder.tree.InputInterfaceContext.matrix) |  |
+| [menu](#nodebpy.builder.tree.InputInterfaceContext.menu) |  |
+| [object](#nodebpy.builder.tree.InputInterfaceContext.object) |  |
 | [panel](#nodebpy.builder.tree.InputInterfaceContext.panel) | Create a panel context for grouping sockets. |
-| [rotation](#nodebpy.builder.tree.InputInterfaceContext.rotation) | Add a Rotation socket to this input/output interface. |
-| [shader](#nodebpy.builder.tree.InputInterfaceContext.shader) | Add a Shader socket to this input/output interface. |
-| [string](#nodebpy.builder.tree.InputInterfaceContext.string) | Add a String socket to this input/output interface. |
-| [vector](#nodebpy.builder.tree.InputInterfaceContext.vector) | Add a Vector socket to this input/output interface. |
+| [rotation](#nodebpy.builder.tree.InputInterfaceContext.rotation) |  |
+| [shader](#nodebpy.builder.tree.InputInterfaceContext.shader) |  |
+| [string](#nodebpy.builder.tree.InputInterfaceContext.string) |  |
+| [vector](#nodebpy.builder.tree.InputInterfaceContext.vector) |  |
 
 ##### boolean
 
@@ -423,8 +389,6 @@ boolean(
 )
 ```
 
-Add a Boolean socket to this input/output interface.
-
 ##### bundle
 
 ``` python
@@ -437,8 +401,6 @@ bundle(
     hide_in_modifier=False,
 )
 ```
-
-Add a Bundle socket to this input/output interface.
 
 ##### closure
 
@@ -453,8 +415,6 @@ closure(
 )
 ```
 
-Add a Closure socket to this input/output interface.
-
 ##### collection
 
 ``` python
@@ -468,8 +428,6 @@ collection(
     hide_in_modifier=False,
 )
 ```
-
-Add a Collection socket to this input/output interface.
 
 ##### color
 
@@ -487,8 +445,6 @@ color(
     default_attribute=None,
 )
 ```
-
-Add a Color socket to this input/output interface.
 
 ##### float
 
@@ -510,8 +466,6 @@ float(
 )
 ```
 
-Add a Float socket to this input/output interface.
-
 ##### geometry
 
 ``` python
@@ -524,8 +478,6 @@ geometry(
     hide_in_modifier=False,
 )
 ```
-
-Add a Geometry socket to this input/output interface.
 
 ##### image
 
@@ -540,8 +492,6 @@ image(
     hide_in_modifier=False,
 )
 ```
-
-Add an Image socket to this input/output interface.
 
 ##### integer
 
@@ -564,8 +514,6 @@ integer(
 )
 ```
 
-Add an Integer socket to this input/output interface.
-
 ##### material
 
 ``` python
@@ -579,8 +527,6 @@ material(
     hide_in_modifier=False,
 )
 ```
-
-Add a Material socket to this input/output interface.
 
 ##### matrix
 
@@ -599,8 +545,6 @@ matrix(
 )
 ```
 
-Add a Matrix socket to this input/output interface.
-
 ##### menu
 
 ``` python
@@ -617,8 +561,6 @@ menu(
 )
 ```
 
-Add a Menu socket to this input/output interface.
-
 ##### object
 
 ``` python
@@ -632,8 +574,6 @@ object(
     hide_in_modifier=False,
 )
 ```
-
-Add an Object socket to this input/output interface.
 
 ##### panel
 
@@ -660,8 +600,6 @@ rotation(
 )
 ```
 
-Add a Rotation socket to this input/output interface.
-
 ##### shader
 
 ``` python
@@ -674,8 +612,6 @@ shader(
     hide_in_modifier=False,
 )
 ```
-
-Add a Shader socket to this input/output interface.
 
 ##### string
 
@@ -691,8 +627,6 @@ string(
     subtype='NONE',
 )
 ```
-
-Add a String socket to this input/output interface.
 
 ##### vector
 
@@ -715,8 +649,6 @@ vector(
     attribute_domain='POINT',
 )
 ```
-
-Add a Vector socket to this input/output interface.
 
 ### MaterialBuilder
 
@@ -851,24 +783,24 @@ OutputInterfaceContext(tree_builder)
 
 | Name | Description |
 |----|----|
-| [boolean](#nodebpy.builder.tree.OutputInterfaceContext.boolean) | Add a Boolean socket to this input/output interface. |
-| [bundle](#nodebpy.builder.tree.OutputInterfaceContext.bundle) | Add a Bundle socket to this input/output interface. |
-| [closure](#nodebpy.builder.tree.OutputInterfaceContext.closure) | Add a Closure socket to this input/output interface. |
-| [collection](#nodebpy.builder.tree.OutputInterfaceContext.collection) | Add a Collection socket to this input/output interface. |
-| [color](#nodebpy.builder.tree.OutputInterfaceContext.color) | Add a Color socket to this input/output interface. |
-| [float](#nodebpy.builder.tree.OutputInterfaceContext.float) | Add a Float socket to this input/output interface. |
-| [geometry](#nodebpy.builder.tree.OutputInterfaceContext.geometry) | Add a Geometry socket to this input/output interface. |
-| [image](#nodebpy.builder.tree.OutputInterfaceContext.image) | Add an Image socket to this input/output interface. |
-| [integer](#nodebpy.builder.tree.OutputInterfaceContext.integer) | Add an Integer socket to this input/output interface. |
-| [material](#nodebpy.builder.tree.OutputInterfaceContext.material) | Add a Material socket to this input/output interface. |
-| [matrix](#nodebpy.builder.tree.OutputInterfaceContext.matrix) | Add a Matrix socket to this input/output interface. |
-| [menu](#nodebpy.builder.tree.OutputInterfaceContext.menu) | Add a Menu socket to this input/output interface. |
-| [object](#nodebpy.builder.tree.OutputInterfaceContext.object) | Add an Object socket to this input/output interface. |
+| [boolean](#nodebpy.builder.tree.OutputInterfaceContext.boolean) |  |
+| [bundle](#nodebpy.builder.tree.OutputInterfaceContext.bundle) |  |
+| [closure](#nodebpy.builder.tree.OutputInterfaceContext.closure) |  |
+| [collection](#nodebpy.builder.tree.OutputInterfaceContext.collection) |  |
+| [color](#nodebpy.builder.tree.OutputInterfaceContext.color) |  |
+| [float](#nodebpy.builder.tree.OutputInterfaceContext.float) |  |
+| [geometry](#nodebpy.builder.tree.OutputInterfaceContext.geometry) |  |
+| [image](#nodebpy.builder.tree.OutputInterfaceContext.image) |  |
+| [integer](#nodebpy.builder.tree.OutputInterfaceContext.integer) |  |
+| [material](#nodebpy.builder.tree.OutputInterfaceContext.material) |  |
+| [matrix](#nodebpy.builder.tree.OutputInterfaceContext.matrix) |  |
+| [menu](#nodebpy.builder.tree.OutputInterfaceContext.menu) |  |
+| [object](#nodebpy.builder.tree.OutputInterfaceContext.object) |  |
 | [panel](#nodebpy.builder.tree.OutputInterfaceContext.panel) | Create a panel context for grouping sockets. |
-| [rotation](#nodebpy.builder.tree.OutputInterfaceContext.rotation) | Add a Rotation socket to this input/output interface. |
-| [shader](#nodebpy.builder.tree.OutputInterfaceContext.shader) | Add a Shader socket to this input/output interface. |
-| [string](#nodebpy.builder.tree.OutputInterfaceContext.string) | Add a String socket to this input/output interface. |
-| [vector](#nodebpy.builder.tree.OutputInterfaceContext.vector) | Add a Vector socket to this input/output interface. |
+| [rotation](#nodebpy.builder.tree.OutputInterfaceContext.rotation) |  |
+| [shader](#nodebpy.builder.tree.OutputInterfaceContext.shader) |  |
+| [string](#nodebpy.builder.tree.OutputInterfaceContext.string) |  |
+| [vector](#nodebpy.builder.tree.OutputInterfaceContext.vector) |  |
 
 ##### boolean
 
@@ -889,8 +821,6 @@ boolean(
 )
 ```
 
-Add a Boolean socket to this input/output interface.
-
 ##### bundle
 
 ``` python
@@ -903,8 +833,6 @@ bundle(
     hide_in_modifier=False,
 )
 ```
-
-Add a Bundle socket to this input/output interface.
 
 ##### closure
 
@@ -919,8 +847,6 @@ closure(
 )
 ```
 
-Add a Closure socket to this input/output interface.
-
 ##### collection
 
 ``` python
@@ -934,8 +860,6 @@ collection(
     hide_in_modifier=False,
 )
 ```
-
-Add a Collection socket to this input/output interface.
 
 ##### color
 
@@ -953,8 +877,6 @@ color(
     default_attribute=None,
 )
 ```
-
-Add a Color socket to this input/output interface.
 
 ##### float
 
@@ -976,8 +898,6 @@ float(
 )
 ```
 
-Add a Float socket to this input/output interface.
-
 ##### geometry
 
 ``` python
@@ -990,8 +910,6 @@ geometry(
     hide_in_modifier=False,
 )
 ```
-
-Add a Geometry socket to this input/output interface.
 
 ##### image
 
@@ -1006,8 +924,6 @@ image(
     hide_in_modifier=False,
 )
 ```
-
-Add an Image socket to this input/output interface.
 
 ##### integer
 
@@ -1030,8 +946,6 @@ integer(
 )
 ```
 
-Add an Integer socket to this input/output interface.
-
 ##### material
 
 ``` python
@@ -1045,8 +959,6 @@ material(
     hide_in_modifier=False,
 )
 ```
-
-Add a Material socket to this input/output interface.
 
 ##### matrix
 
@@ -1065,8 +977,6 @@ matrix(
 )
 ```
 
-Add a Matrix socket to this input/output interface.
-
 ##### menu
 
 ``` python
@@ -1083,8 +993,6 @@ menu(
 )
 ```
 
-Add a Menu socket to this input/output interface.
-
 ##### object
 
 ``` python
@@ -1098,8 +1006,6 @@ object(
     hide_in_modifier=False,
 )
 ```
-
-Add an Object socket to this input/output interface.
 
 ##### panel
 
@@ -1126,8 +1032,6 @@ rotation(
 )
 ```
 
-Add a Rotation socket to this input/output interface.
-
 ##### shader
 
 ``` python
@@ -1140,8 +1044,6 @@ shader(
     hide_in_modifier=False,
 )
 ```
-
-Add a Shader socket to this input/output interface.
 
 ##### string
 
@@ -1157,8 +1059,6 @@ string(
     subtype='NONE',
 )
 ```
-
-Add a String socket to this input/output interface.
 
 ##### vector
 
@@ -1181,8 +1081,6 @@ vector(
     attribute_domain='POINT',
 )
 ```
-
-Add a Vector socket to this input/output interface.
 
 ### PanelContext
 
@@ -1210,24 +1108,24 @@ SocketContext(tree_builder)
 
 | Name | Description |
 |----|----|
-| [boolean](#nodebpy.builder.tree.SocketContext.boolean) | Add a Boolean socket to this input/output interface. |
-| [bundle](#nodebpy.builder.tree.SocketContext.bundle) | Add a Bundle socket to this input/output interface. |
-| [closure](#nodebpy.builder.tree.SocketContext.closure) | Add a Closure socket to this input/output interface. |
-| [collection](#nodebpy.builder.tree.SocketContext.collection) | Add a Collection socket to this input/output interface. |
-| [color](#nodebpy.builder.tree.SocketContext.color) | Add a Color socket to this input/output interface. |
-| [float](#nodebpy.builder.tree.SocketContext.float) | Add a Float socket to this input/output interface. |
-| [geometry](#nodebpy.builder.tree.SocketContext.geometry) | Add a Geometry socket to this input/output interface. |
-| [image](#nodebpy.builder.tree.SocketContext.image) | Add an Image socket to this input/output interface. |
-| [integer](#nodebpy.builder.tree.SocketContext.integer) | Add an Integer socket to this input/output interface. |
-| [material](#nodebpy.builder.tree.SocketContext.material) | Add a Material socket to this input/output interface. |
-| [matrix](#nodebpy.builder.tree.SocketContext.matrix) | Add a Matrix socket to this input/output interface. |
-| [menu](#nodebpy.builder.tree.SocketContext.menu) | Add a Menu socket to this input/output interface. |
-| [object](#nodebpy.builder.tree.SocketContext.object) | Add an Object socket to this input/output interface. |
+| [boolean](#nodebpy.builder.tree.SocketContext.boolean) |  |
+| [bundle](#nodebpy.builder.tree.SocketContext.bundle) |  |
+| [closure](#nodebpy.builder.tree.SocketContext.closure) |  |
+| [collection](#nodebpy.builder.tree.SocketContext.collection) |  |
+| [color](#nodebpy.builder.tree.SocketContext.color) |  |
+| [float](#nodebpy.builder.tree.SocketContext.float) |  |
+| [geometry](#nodebpy.builder.tree.SocketContext.geometry) |  |
+| [image](#nodebpy.builder.tree.SocketContext.image) |  |
+| [integer](#nodebpy.builder.tree.SocketContext.integer) |  |
+| [material](#nodebpy.builder.tree.SocketContext.material) |  |
+| [matrix](#nodebpy.builder.tree.SocketContext.matrix) |  |
+| [menu](#nodebpy.builder.tree.SocketContext.menu) |  |
+| [object](#nodebpy.builder.tree.SocketContext.object) |  |
 | [panel](#nodebpy.builder.tree.SocketContext.panel) | Create a panel context for grouping sockets. |
-| [rotation](#nodebpy.builder.tree.SocketContext.rotation) | Add a Rotation socket to this input/output interface. |
-| [shader](#nodebpy.builder.tree.SocketContext.shader) | Add a Shader socket to this input/output interface. |
-| [string](#nodebpy.builder.tree.SocketContext.string) | Add a String socket to this input/output interface. |
-| [vector](#nodebpy.builder.tree.SocketContext.vector) | Add a Vector socket to this input/output interface. |
+| [rotation](#nodebpy.builder.tree.SocketContext.rotation) |  |
+| [shader](#nodebpy.builder.tree.SocketContext.shader) |  |
+| [string](#nodebpy.builder.tree.SocketContext.string) |  |
+| [vector](#nodebpy.builder.tree.SocketContext.vector) |  |
 
 ##### boolean
 
@@ -1248,8 +1146,6 @@ boolean(
 )
 ```
 
-Add a Boolean socket to this input/output interface.
-
 ##### bundle
 
 ``` python
@@ -1262,8 +1158,6 @@ bundle(
     hide_in_modifier=False,
 )
 ```
-
-Add a Bundle socket to this input/output interface.
 
 ##### closure
 
@@ -1278,8 +1172,6 @@ closure(
 )
 ```
 
-Add a Closure socket to this input/output interface.
-
 ##### collection
 
 ``` python
@@ -1293,8 +1185,6 @@ collection(
     hide_in_modifier=False,
 )
 ```
-
-Add a Collection socket to this input/output interface.
 
 ##### color
 
@@ -1312,8 +1202,6 @@ color(
     default_attribute=None,
 )
 ```
-
-Add a Color socket to this input/output interface.
 
 ##### float
 
@@ -1335,8 +1223,6 @@ float(
 )
 ```
 
-Add a Float socket to this input/output interface.
-
 ##### geometry
 
 ``` python
@@ -1349,8 +1235,6 @@ geometry(
     hide_in_modifier=False,
 )
 ```
-
-Add a Geometry socket to this input/output interface.
 
 ##### image
 
@@ -1365,8 +1249,6 @@ image(
     hide_in_modifier=False,
 )
 ```
-
-Add an Image socket to this input/output interface.
 
 ##### integer
 
@@ -1389,8 +1271,6 @@ integer(
 )
 ```
 
-Add an Integer socket to this input/output interface.
-
 ##### material
 
 ``` python
@@ -1404,8 +1284,6 @@ material(
     hide_in_modifier=False,
 )
 ```
-
-Add a Material socket to this input/output interface.
 
 ##### matrix
 
@@ -1424,8 +1302,6 @@ matrix(
 )
 ```
 
-Add a Matrix socket to this input/output interface.
-
 ##### menu
 
 ``` python
@@ -1442,8 +1318,6 @@ menu(
 )
 ```
 
-Add a Menu socket to this input/output interface.
-
 ##### object
 
 ``` python
@@ -1457,8 +1331,6 @@ object(
     hide_in_modifier=False,
 )
 ```
-
-Add an Object socket to this input/output interface.
 
 ##### panel
 
@@ -1485,8 +1357,6 @@ rotation(
 )
 ```
 
-Add a Rotation socket to this input/output interface.
-
 ##### shader
 
 ``` python
@@ -1499,8 +1369,6 @@ shader(
     hide_in_modifier=False,
 )
 ```
-
-Add a Shader socket to this input/output interface.
 
 ##### string
 
@@ -1516,8 +1384,6 @@ string(
     subtype='NONE',
 )
 ```
-
-Add a String socket to this input/output interface.
 
 ##### vector
 
@@ -1540,8 +1406,6 @@ vector(
     attribute_domain='POINT',
 )
 ```
-
-Add a Vector socket to this input/output interface.
 
 ### TreeBuilder
 

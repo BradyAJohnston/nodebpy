@@ -47,7 +47,6 @@ Add two Shaders together
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.shader.AddShader.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.shader.AddShader.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.shader.AddShader.name)       |             |
 | [`node`](#nodebpy.nodes.shader.shader.AddShader.node)       |             |
 | [`o`](#nodebpy.nodes.shader.shader.AddShader.o)             |             |
@@ -106,7 +105,6 @@ Note: This node should only be used for the world surface output
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.shader.Background.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.shader.Background.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.shader.Background.name)       |             |
 | [`node`](#nodebpy.nodes.shader.shader.Background.node)       |             |
 | [`o`](#nodebpy.nodes.shader.shader.Background.o)             |             |
@@ -136,7 +134,6 @@ Lambertian and Oren-Nayar diffuse reflection
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.shader.DiffuseBSDF.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.shader.DiffuseBSDF.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.shader.DiffuseBSDF.name)       |             |
 | [`node`](#nodebpy.nodes.shader.shader.DiffuseBSDF.node)       |             |
 | [`o`](#nodebpy.nodes.shader.shader.DiffuseBSDF.o)             |             |
@@ -180,7 +177,6 @@ Lambertian emission shader
 | Name                                                       | Description |
 |------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.shader.Emission.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.shader.Emission.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.shader.Emission.name)       |             |
 | [`node`](#nodebpy.nodes.shader.shader.Emission.node)       |             |
 | [`o`](#nodebpy.nodes.shader.shader.Emission.o)             |             |
@@ -238,7 +234,6 @@ Glass-like shader mixing refraction and reflection at grazing angles
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.GlassBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.GlassBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.GlassBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.GlassBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.GlassBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.GlassBSDF.o) |  |
@@ -300,7 +295,6 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.GlossyBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.GlossyBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.GlossyBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.GlossyBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.GlossyBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.GlossyBSDF.o) |  |
@@ -360,7 +354,6 @@ Reflection and transmission shaders optimized for hair rendering
 |----|----|
 | [`component`](#nodebpy.nodes.shader.shader.HairBSDF.component) |  |
 | [`i`](#nodebpy.nodes.shader.shader.HairBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.HairBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.HairBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.HairBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.HairBSDF.o) |  |
@@ -415,7 +408,6 @@ Note: the holdout shader can only create alpha when transparency is enabled in t
 | Name                                                      | Description |
 |-----------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.shader.Holdout.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.shader.Holdout.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.shader.Holdout.name)       |             |
 | [`node`](#nodebpy.nodes.shader.shader.Holdout.node)       |             |
 | [`o`](#nodebpy.nodes.shader.shader.Holdout.o)             |             |
@@ -471,7 +463,6 @@ Metallic reflection with microfacet distribution, and metallic fresnel
 | [`distribution`](#nodebpy.nodes.shader.shader.MetallicBSDF.distribution) |  |
 | [`fresnel_type`](#nodebpy.nodes.shader.shader.MetallicBSDF.fresnel_type) |  |
 | [`i`](#nodebpy.nodes.shader.shader.MetallicBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.MetallicBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.MetallicBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.MetallicBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.MetallicBSDF.o) |  |
@@ -566,7 +557,6 @@ Mix two shaders together. Typically used for material layering
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.shader.MixShader.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.shader.MixShader.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.shader.MixShader.name)       |             |
 | [`node`](#nodebpy.nodes.shader.shader.MixShader.node)       |             |
 | [`o`](#nodebpy.nodes.shader.shader.MixShader.o)             |             |
@@ -673,7 +663,6 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.PrincipledBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.PrincipledBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.PrincipledBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.PrincipledBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.PrincipledBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.PrincipledBSDF.o) |  |
@@ -782,7 +771,6 @@ Physically-based, easy-to-use shader for rendering hair and fur
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.inputs) |  |
 | [`model`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.model) |  |
 | [`name`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.node) |  |
@@ -843,7 +831,6 @@ Continue tracing from an arbitrary new position and in a new direction
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.RayPortalBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.RayPortalBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.RayPortalBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.RayPortalBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.RayPortalBSDF.o) |  |
@@ -898,7 +885,6 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.RefractionBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.RefractionBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.RefractionBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.RefractionBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.RefractionBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.RefractionBSDF.o) |  |
@@ -972,7 +958,6 @@ Typically mixed with other shaders (such as a Diffuse Shader) and is not particu
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.SheenBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.SheenBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.SheenBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.SheenBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.SheenBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SheenBSDF.o) |  |
@@ -1019,7 +1004,6 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.SpecularBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.SpecularBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.SpecularBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.SpecularBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SpecularBSDF.o) |  |
@@ -1118,7 +1102,6 @@ Typically used for materials such as skin, wax, marble or milk
 |----|----|
 | [`falloff`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.falloff) |  |
 | [`i`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.o) |  |
@@ -1158,7 +1141,6 @@ Diffuse and Glossy shaders with cartoon light effects
 |----|----|
 | [`component`](#nodebpy.nodes.shader.shader.ToonBSDF.component) |  |
 | [`i`](#nodebpy.nodes.shader.shader.ToonBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.ToonBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.ToonBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.ToonBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.ToonBSDF.o) |  |
@@ -1203,7 +1185,6 @@ Lambertian diffuse transmission
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.TranslucentBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.TranslucentBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.TranslucentBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.TranslucentBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.TranslucentBSDF.o) |  |
@@ -1245,7 +1226,6 @@ Transparency without refraction, passing straight through the surface as if ther
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.TransparentBSDF.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.shader.TransparentBSDF.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.shader.TransparentBSDF.name) |  |
 | [`node`](#nodebpy.nodes.shader.shader.TransparentBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.TransparentBSDF.o) |  |

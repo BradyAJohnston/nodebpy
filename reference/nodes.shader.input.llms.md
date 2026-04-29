@@ -74,7 +74,6 @@ Note: For Cycles, this may slow down renders significantly
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.AmbientOcclusion.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.input.AmbientOcclusion.inputs) |  |
 | [`inside`](#nodebpy.nodes.shader.input.AmbientOcclusion.inside) |  |
 | [`name`](#nodebpy.nodes.shader.input.AmbientOcclusion.name) |  |
 | [`node`](#nodebpy.nodes.shader.input.AmbientOcclusion.node) |  |
@@ -119,7 +118,6 @@ Note: only supported in Cycles, and may slow down renders
 | Name                                                   | Description |
 |--------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.Bevel.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.Bevel.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.Bevel.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.Bevel.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.Bevel.o)             |             |
@@ -141,7 +139,6 @@ Retrieve information about the camera and how it relates to the current shading 
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.CameraData.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.CameraData.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.CameraData.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.CameraData.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.CameraData.o)             |             |
@@ -170,7 +167,6 @@ A color picker
 | Name                                                   | Description |
 |--------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.Color.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.Color.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.Color.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.Color.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.Color.o)             |             |
@@ -197,7 +193,6 @@ Retrieve a color attribute, or the default fallback if none is specified
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.ColorAttribute.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.input.ColorAttribute.inputs) |  |
 | [`layer_name`](#nodebpy.nodes.shader.input.ColorAttribute.layer_name) |  |
 | [`name`](#nodebpy.nodes.shader.input.ColorAttribute.name) |  |
 | [`node`](#nodebpy.nodes.shader.input.ColorAttribute.node) |  |
@@ -226,7 +221,6 @@ Retrieve hair curve information
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.CurvesInfo.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.CurvesInfo.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.CurvesInfo.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.CurvesInfo.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.CurvesInfo.o)             |             |
@@ -279,7 +273,6 @@ Typically used for mixing reflections at grazing angles
 | Name                                                     | Description |
 |----------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.Fresnel.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.Fresnel.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.Fresnel.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.Fresnel.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.Fresnel.o)             |             |
@@ -300,7 +293,6 @@ Retrieve geometric information about the current shading point
 | Name                                                      | Description |
 |-----------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.Geometry.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.Geometry.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.Geometry.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.Geometry.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.Geometry.o)             |             |
@@ -358,7 +350,6 @@ Typically used for layering shaders with the Mix Shader node
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.LayerWeight.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.LayerWeight.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.LayerWeight.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.LayerWeight.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.LayerWeight.o)             |             |
@@ -414,7 +405,6 @@ Typically used for non-physically-based tricks
 | Name                                                       | Description |
 |------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.LightPath.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.LightPath.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.LightPath.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.LightPath.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.LightPath.o)             |             |
@@ -435,7 +425,6 @@ Retrieve information about the object instance
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.ObjectInfo.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.ObjectInfo.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.ObjectInfo.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.ObjectInfo.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.ObjectInfo.o)             |             |
@@ -467,7 +456,6 @@ Retrieve the data of the particle that spawned the object instance, for example 
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.ParticleInfo.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.ParticleInfo.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.ParticleInfo.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.ParticleInfo.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.ParticleInfo.o)             |             |
@@ -501,7 +489,6 @@ Retrieve information about points in a point cloud
 | Name                                                       | Description |
 |------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.input.PointInfo.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.input.PointInfo.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.input.PointInfo.name)       |             |
 | [`node`](#nodebpy.nodes.shader.input.PointInfo.node)       |             |
 | [`o`](#nodebpy.nodes.shader.input.PointInfo.o)             |             |
@@ -538,7 +525,6 @@ Cast rays and retrieve information from the hit point
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.Raycast.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.input.Raycast.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.input.Raycast.name) |  |
 | [`node`](#nodebpy.nodes.shader.input.Raycast.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Raycast.o) |  |
@@ -580,7 +566,6 @@ Generate a tangent direction for the Anisotropic BSDF
 | [`axis`](#nodebpy.nodes.shader.input.Tangent.axis) |  |
 | [`direction_type`](#nodebpy.nodes.shader.input.Tangent.direction_type) |  |
 | [`i`](#nodebpy.nodes.shader.input.Tangent.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.input.Tangent.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.input.Tangent.name) |  |
 | [`node`](#nodebpy.nodes.shader.input.Tangent.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Tangent.o) |  |
@@ -628,7 +613,6 @@ Typically used as inputs for texture nodes
 |----|----|
 | [`from_instancer`](#nodebpy.nodes.shader.input.TextureCoordinate.from_instancer) |  |
 | [`i`](#nodebpy.nodes.shader.input.TextureCoordinate.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.input.TextureCoordinate.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.input.TextureCoordinate.name) |  |
 | [`node`](#nodebpy.nodes.shader.input.TextureCoordinate.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.TextureCoordinate.o) |  |
@@ -649,7 +633,6 @@ UV coordinates that map a texture along the stroke length
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.UVAlongStroke.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.input.UVAlongStroke.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.input.UVAlongStroke.name) |  |
 | [`node`](#nodebpy.nodes.shader.input.UVAlongStroke.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.UVAlongStroke.o) |  |
@@ -678,7 +661,6 @@ Retrieve a UV map from the geometry, or the default fallback if none is specifie
 |----|----|
 | [`from_instancer`](#nodebpy.nodes.shader.input.UVMap.from_instancer) |  |
 | [`i`](#nodebpy.nodes.shader.input.UVMap.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.input.UVMap.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.input.UVMap.name) |  |
 | [`node`](#nodebpy.nodes.shader.input.UVMap.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.UVMap.o) |  |
@@ -723,7 +705,6 @@ Note: as meshes are triangulated before being processed by Cycles, topology will
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.Wireframe.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.input.Wireframe.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.input.Wireframe.name) |  |
 | [`node`](#nodebpy.nodes.shader.input.Wireframe.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Wireframe.o) |  |

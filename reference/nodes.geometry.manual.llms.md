@@ -35,14 +35,7 @@
 ### AccumulateField
 
 ``` python
-AccumulateField(
-    value=1.0,
-    group_index=0,
-    *,
-    data_type='FLOAT',
-    domain='POINT',
-    **kwargs,
-)
+AccumulateField(value=1.0, group_index=0, *, data_type='FLOAT', domain='POINT')
 ```
 
 Add the values of an evaluated field together and output the running total for each element
@@ -57,7 +50,6 @@ Add the values of an evaluated field together and output the running total for e
 | [`edge`](#nodebpy.nodes.geometry.manual.AccumulateField.edge) |  |
 | [`face`](#nodebpy.nodes.geometry.manual.AccumulateField.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.AccumulateField.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.AccumulateField.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.AccumulateField.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.AccumulateField.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.AccumulateField.name) |  |
@@ -140,7 +132,6 @@ Calculate statistics about a data set from a field evaluated on a geometry
 | [`edge`](#nodebpy.nodes.geometry.manual.AttributeStatistic.edge) |  |
 | [`face`](#nodebpy.nodes.geometry.manual.AttributeStatistic.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.AttributeStatistic.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.AttributeStatistic.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.AttributeStatistic.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.AttributeStatistic.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.AttributeStatistic.name) |  |
@@ -167,7 +158,6 @@ TODO: properly handle Animation / Still bake opations and ability to bake to a f
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Bake.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.manual.Bake.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.Bake.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.Bake.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Bake.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -178,7 +168,7 @@ TODO: properly handle Animation / Still bake opations and ability to bake to a f
 ### CaptureAttribute
 
 ``` python
-CaptureAttribute(*args, geometry=None, domain='POINT', **kwargs)
+CaptureAttribute(geometry=None, items={}, *, domain='POINT')
 ```
 
 Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation
@@ -193,7 +183,6 @@ Store the result of a field on a geometry and output the data as a node socket. 
 | [`edge`](#nodebpy.nodes.geometry.manual.CaptureAttribute.edge) |  |
 | [`face`](#nodebpy.nodes.geometry.manual.CaptureAttribute.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.CaptureAttribute.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.CaptureAttribute.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.CaptureAttribute.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.CaptureAttribute.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.CaptureAttribute.name) |  |
@@ -236,7 +225,6 @@ Perform a comparison operation on the two given inputs
 | [`data_type`](#nodebpy.nodes.geometry.manual.Compare.data_type) |  |
 | [`float`](#nodebpy.nodes.geometry.manual.Compare.float) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.Compare.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.Compare.inputs) |  |
 | [`integer`](#nodebpy.nodes.geometry.manual.Compare.integer) |  |
 | [`mode`](#nodebpy.nodes.geometry.manual.Compare.mode) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.Compare.name) |  |
@@ -279,7 +267,6 @@ Retrieve data of other elements in the context’s geometry
 | [`edge`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.edge) |  |
 | [`face`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.name) |  |
@@ -319,7 +306,6 @@ Execute a given closure
 | [`active_output_index`](#nodebpy.nodes.geometry.manual.EvaluateClosure.active_output_index) |  |
 | [`define_signature`](#nodebpy.nodes.geometry.manual.EvaluateClosure.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.EvaluateClosure.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.EvaluateClosure.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.EvaluateClosure.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.EvaluateClosure.o) |  |
@@ -363,7 +349,6 @@ Retrieve values from a field on a different domain besides the domain from the c
 | [`edge`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.edge) |  |
 | [`face`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.name) |  |
@@ -393,7 +378,6 @@ Calculate the mean and median of a given field
 | [`edge`](#nodebpy.nodes.geometry.manual.FieldAverage.edge) |  |
 | [`face`](#nodebpy.nodes.geometry.manual.FieldAverage.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.FieldAverage.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.FieldAverage.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.FieldAverage.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.FieldAverage.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.FieldAverage.name) |  |
@@ -423,7 +407,6 @@ Calculate the minimum and maximum of a given field
 | [`edge`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.edge) |  |
 | [`face`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.name) |  |
@@ -438,7 +421,7 @@ Calculate the minimum and maximum of a given field
 ### FieldToGrid
 
 ``` python
-FieldToGrid(*args, topology=None, data_type='FLOAT', **kwargs)
+FieldToGrid(topology=None, items={}, *, data_type='FLOAT')
 ```
 
 Create new grids by evaluating new values on an existing volume grid topology
@@ -457,7 +440,6 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.manual.FieldToGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.FieldToGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.FieldToGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.FieldToGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldToGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldToGrid.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -478,31 +460,31 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 ##### boolean
 
 ``` python
-boolean(*args, topology=None, **kwargs)
+boolean(topology=None, items={})
 ```
 
 ##### capture
 
 ``` python
-capture(*args, **kwargs)
+capture(items)
 ```
 
 ##### float
 
 ``` python
-float(*args, topology=None, **kwargs)
+float(topology=None, items={})
 ```
 
 ##### integer
 
 ``` python
-integer(*args, topology=None, **kwargs)
+integer(topology=None, items={})
 ```
 
 ##### vector
 
 ``` python
-vector(*args, topology=None, **kwargs)
+vector(topology=None, items={})
 ```
 
 ### FieldVariance
@@ -529,7 +511,6 @@ Calculate the standard deviation and variance of a given field
 | [`edge`](#nodebpy.nodes.geometry.manual.FieldVariance.edge) |  |
 | [`face`](#nodebpy.nodes.geometry.manual.FieldVariance.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.FieldVariance.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.FieldVariance.inputs) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.FieldVariance.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.FieldVariance.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.FieldVariance.name) |  |
@@ -554,7 +535,6 @@ Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper o
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Float.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.manual.Float.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.Float.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.Float.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Float.o) |  |
@@ -566,7 +546,7 @@ Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper o
 ### FormatString
 
 ``` python
-FormatString(*args, format='', **kwargs)
+FormatString(format='', items={})
 ```
 
 Insert values into a string using a Python and path template compatible formatting syntax
@@ -576,7 +556,6 @@ Insert values into a string using a Python and path template compatible formatti
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.FormatString.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.FormatString.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.manual.FormatString.items) | Input sockets: |
 | [`name`](#nodebpy.nodes.geometry.manual.FormatString.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.FormatString.node) |  |
@@ -596,7 +575,6 @@ Frame(label=None, shrink=True, text=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Frame.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.manual.Frame.inputs) |  |
 | [`label`](#nodebpy.nodes.geometry.manual.Frame.label) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.Frame.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.Frame.node) |  |
@@ -620,7 +598,6 @@ Convert each input geometry into an instance, which can be much faster than the 
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.GeometryToInstance.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.GeometryToInstance.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.GeometryToInstance.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.GeometryToInstance.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.GeometryToInstance.o) |  |
@@ -654,7 +631,6 @@ Provide a selection based on the handle types of Bézier control points
 |----|----|
 | [`handle_type`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.handle_type) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.inputs) |  |
 | [`left`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.left) |  |
 | [`mode`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.mode) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.name) |  |
@@ -668,7 +644,7 @@ Provide a selection based on the handle types of Bézier control points
 ### IndexSwitch
 
 ``` python
-IndexSwitch(*args, index=0, data_type='FLOAT')
+IndexSwitch(index=0, items=(), data_type='FLOAT')
 ```
 
 Node builder for the Index Switch node
@@ -677,36 +653,136 @@ Node builder for the Index Switch node
 
 | Name | Description |
 |----|----|
-| [`boolean`](#nodebpy.nodes.geometry.manual.IndexSwitch.boolean) |  |
-| [`bundle`](#nodebpy.nodes.geometry.manual.IndexSwitch.bundle) |  |
-| [`closure`](#nodebpy.nodes.geometry.manual.IndexSwitch.closure) |  |
-| [`collection`](#nodebpy.nodes.geometry.manual.IndexSwitch.collection) |  |
-| [`color`](#nodebpy.nodes.geometry.manual.IndexSwitch.color) |  |
 | [`data_type`](#nodebpy.nodes.geometry.manual.IndexSwitch.data_type) | Input socket: Data Type |
-| [`float`](#nodebpy.nodes.geometry.manual.IndexSwitch.float) |  |
-| [`geometry`](#nodebpy.nodes.geometry.manual.IndexSwitch.geometry) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.IndexSwitch.i) |  |
-| [`image`](#nodebpy.nodes.geometry.manual.IndexSwitch.image) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.IndexSwitch.inputs) |  |
-| [`integer`](#nodebpy.nodes.geometry.manual.IndexSwitch.integer) |  |
-| [`material`](#nodebpy.nodes.geometry.manual.IndexSwitch.material) |  |
-| [`matrix`](#nodebpy.nodes.geometry.manual.IndexSwitch.matrix) |  |
-| [`menu`](#nodebpy.nodes.geometry.manual.IndexSwitch.menu) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.IndexSwitch.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.IndexSwitch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.IndexSwitch.o) |  |
-| [`object`](#nodebpy.nodes.geometry.manual.IndexSwitch.object) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.IndexSwitch.outputs) |  |
-| [`rotation`](#nodebpy.nodes.geometry.manual.IndexSwitch.rotation) |  |
-| [`string`](#nodebpy.nodes.geometry.manual.IndexSwitch.string) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.IndexSwitch.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.IndexSwitch.type) |  |
-| [`vector`](#nodebpy.nodes.geometry.manual.IndexSwitch.vector) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.manual.IndexSwitch.boolean) |  |
+| [bundle](#nodebpy.nodes.geometry.manual.IndexSwitch.bundle) |  |
+| [closure](#nodebpy.nodes.geometry.manual.IndexSwitch.closure) |  |
+| [collection](#nodebpy.nodes.geometry.manual.IndexSwitch.collection) |  |
+| [color](#nodebpy.nodes.geometry.manual.IndexSwitch.color) |  |
+| [float](#nodebpy.nodes.geometry.manual.IndexSwitch.float) |  |
+| [geometry](#nodebpy.nodes.geometry.manual.IndexSwitch.geometry) |  |
+| [image](#nodebpy.nodes.geometry.manual.IndexSwitch.image) |  |
+| [integer](#nodebpy.nodes.geometry.manual.IndexSwitch.integer) |  |
+| [material](#nodebpy.nodes.geometry.manual.IndexSwitch.material) |  |
+| [matrix](#nodebpy.nodes.geometry.manual.IndexSwitch.matrix) |  |
+| [menu](#nodebpy.nodes.geometry.manual.IndexSwitch.menu) |  |
+| [object](#nodebpy.nodes.geometry.manual.IndexSwitch.object) |  |
+| [rotation](#nodebpy.nodes.geometry.manual.IndexSwitch.rotation) |  |
+| [string](#nodebpy.nodes.geometry.manual.IndexSwitch.string) |  |
+| [vector](#nodebpy.nodes.geometry.manual.IndexSwitch.vector) |  |
+
+##### boolean
+
+``` python
+boolean(index=0, items=())
+```
+
+##### bundle
+
+``` python
+bundle(index=0, items=())
+```
+
+##### closure
+
+``` python
+closure(index=0, items=())
+```
+
+##### collection
+
+``` python
+collection(index=0, items=())
+```
+
+##### color
+
+``` python
+color(index=0, items=())
+```
+
+##### float
+
+``` python
+float(index=0, items=())
+```
+
+##### geometry
+
+``` python
+geometry(index=0, items=())
+```
+
+##### image
+
+``` python
+image(index=0, items=())
+```
+
+##### integer
+
+``` python
+integer(index=0, items=())
+```
+
+##### material
+
+``` python
+material(index=0, items=())
+```
+
+##### matrix
+
+``` python
+matrix(index=0, items=())
+```
+
+##### menu
+
+``` python
+menu(index=0, items=())
+```
+
+##### object
+
+``` python
+object(index=0, items=())
+```
+
+##### rotation
+
+``` python
+rotation(index=0, items=())
+```
+
+##### string
+
+``` python
+string(index=0, items=())
+```
+
+##### vector
+
+``` python
+vector(index=0, items=())
+```
 
 ### JoinGeometry
 
 ``` python
-JoinGeometry(*args)
+JoinGeometry(geometry=())
 ```
 
 Merge separately generated geometries into a single one
@@ -716,7 +792,6 @@ Merge separately generated geometries into a single one
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.JoinGeometry.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.JoinGeometry.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.JoinGeometry.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.JoinGeometry.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.JoinGeometry.o) |  |
@@ -727,7 +802,7 @@ Merge separately generated geometries into a single one
 ### JoinStrings
 
 ``` python
-JoinStrings(*args, delimiter='')
+JoinStrings(strings=(), delimiter='')
 ```
 
 Combine any number of input strings
@@ -737,7 +812,6 @@ Combine any number of input strings
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.JoinStrings.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.JoinStrings.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.JoinStrings.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.JoinStrings.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.JoinStrings.o) |  |
@@ -748,7 +822,7 @@ Combine any number of input strings
 ### MenuSwitch
 
 ``` python
-MenuSwitch(*args, menu=None, data_type='FLOAT', **kwargs)
+MenuSwitch(menu=None, items={}, *, data_type='FLOAT')
 ```
 
 Node builder for the Menu Switch node
@@ -757,36 +831,144 @@ Node builder for the Menu Switch node
 
 | Name | Description |
 |----|----|
-| [`boolean`](#nodebpy.nodes.geometry.manual.MenuSwitch.boolean) |  |
-| [`bundle`](#nodebpy.nodes.geometry.manual.MenuSwitch.bundle) |  |
-| [`closure`](#nodebpy.nodes.geometry.manual.MenuSwitch.closure) |  |
-| [`collection`](#nodebpy.nodes.geometry.manual.MenuSwitch.collection) |  |
-| [`color`](#nodebpy.nodes.geometry.manual.MenuSwitch.color) |  |
 | [`data_type`](#nodebpy.nodes.geometry.manual.MenuSwitch.data_type) | Input socket: Data Type |
-| [`float`](#nodebpy.nodes.geometry.manual.MenuSwitch.float) |  |
-| [`geometry`](#nodebpy.nodes.geometry.manual.MenuSwitch.geometry) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.MenuSwitch.i) |  |
-| [`image`](#nodebpy.nodes.geometry.manual.MenuSwitch.image) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.MenuSwitch.inputs) |  |
-| [`integer`](#nodebpy.nodes.geometry.manual.MenuSwitch.integer) |  |
-| [`material`](#nodebpy.nodes.geometry.manual.MenuSwitch.material) |  |
-| [`matrix`](#nodebpy.nodes.geometry.manual.MenuSwitch.matrix) |  |
-| [`menu`](#nodebpy.nodes.geometry.manual.MenuSwitch.menu) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.MenuSwitch.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.MenuSwitch.o) |  |
-| [`object`](#nodebpy.nodes.geometry.manual.MenuSwitch.object) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.MenuSwitch.outputs) |  |
-| [`rotation`](#nodebpy.nodes.geometry.manual.MenuSwitch.rotation) |  |
-| [`string`](#nodebpy.nodes.geometry.manual.MenuSwitch.string) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.MenuSwitch.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.MenuSwitch.type) |  |
-| [`vector`](#nodebpy.nodes.geometry.manual.MenuSwitch.vector) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.manual.MenuSwitch.boolean) |  |
+| [bundle](#nodebpy.nodes.geometry.manual.MenuSwitch.bundle) |  |
+| [closure](#nodebpy.nodes.geometry.manual.MenuSwitch.closure) |  |
+| [collection](#nodebpy.nodes.geometry.manual.MenuSwitch.collection) |  |
+| [color](#nodebpy.nodes.geometry.manual.MenuSwitch.color) |  |
+| [float](#nodebpy.nodes.geometry.manual.MenuSwitch.float) |  |
+| [geometry](#nodebpy.nodes.geometry.manual.MenuSwitch.geometry) |  |
+| [image](#nodebpy.nodes.geometry.manual.MenuSwitch.image) |  |
+| [integer](#nodebpy.nodes.geometry.manual.MenuSwitch.integer) |  |
+| [material](#nodebpy.nodes.geometry.manual.MenuSwitch.material) |  |
+| [matrix](#nodebpy.nodes.geometry.manual.MenuSwitch.matrix) |  |
+| [menu](#nodebpy.nodes.geometry.manual.MenuSwitch.menu) |  |
+| [object](#nodebpy.nodes.geometry.manual.MenuSwitch.object) |  |
+| [rotation](#nodebpy.nodes.geometry.manual.MenuSwitch.rotation) |  |
+| [string](#nodebpy.nodes.geometry.manual.MenuSwitch.string) |  |
+| [vector](#nodebpy.nodes.geometry.manual.MenuSwitch.vector) |  |
+
+##### boolean
+
+``` python
+boolean(menu=None, items={})
+```
+
+##### bundle
+
+``` python
+bundle(menu=None, items={})
+```
+
+##### closure
+
+``` python
+closure(menu=None, items={})
+```
+
+##### collection
+
+``` python
+collection(menu=None, items={})
+```
+
+##### color
+
+``` python
+color(menu=None, items={})
+```
+
+##### float
+
+``` python
+float(menu=None, items={})
+```
+
+##### geometry
+
+``` python
+geometry(menu=None, items={})
+```
+
+##### image
+
+``` python
+image(menu=None, items={})
+```
+
+##### integer
+
+``` python
+integer(menu=None, items={})
+```
+
+##### material
+
+``` python
+material(menu=None, items={})
+```
+
+##### matrix
+
+``` python
+matrix(menu=None, items={})
+```
+
+##### menu
+
+``` python
+menu(menu=None, items={})
+```
+
+##### object
+
+``` python
+object(menu=None, items={})
+```
+
+##### rotation
+
+``` python
+rotation(menu=None, items={})
+```
+
+##### string
+
+``` python
+string(menu=None, items={})
+```
+
+##### vector
+
+``` python
+vector(menu=None, items={})
+```
 
 ### MeshBoolean
 
 ``` python
-MeshBoolean(*args, operation='DIFFERENCE', solver='FLOAT', **kwargs)
+MeshBoolean(
+    mesh_1=None,
+    mesh_2=(),
+    *,
+    self_intersection=False,
+    hole_tolerant=False,
+    operation='DIFFERENCE',
+    solver='FLOAT',
+)
 ```
 
 Cut, subtract, or join multiple mesh inputs
@@ -796,7 +978,6 @@ Cut, subtract, or join multiple mesh inputs
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.MeshBoolean.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.MeshBoolean.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.MeshBoolean.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.MeshBoolean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.MeshBoolean.o) |  |
@@ -818,10 +999,11 @@ Cut, subtract, or join multiple mesh inputs
 
 ``` python
 difference(
-    *args,
     mesh_1=None,
+    items=(),
     self_intersection=False,
     hole_tolerant=False,
+    *,
     solver='FLOAT',
 )
 ```
@@ -829,13 +1011,19 @@ difference(
 ##### intersect
 
 ``` python
-intersect(*args, self_intersection=False, hole_tolerant=False, solver='FLOAT')
+intersect(
+    items=(),
+    self_intersection=False,
+    hole_tolerant=False,
+    *,
+    solver='FLOAT',
+)
 ```
 
 ##### union
 
 ``` python
-union(*args, self_intersection=False, hole_tolerant=False, solver='FLOAT')
+union(items=(), self_intersection=False, hole_tolerant=False, *, solver='FLOAT')
 ```
 
 ### SDFGridBoolean
@@ -851,7 +1039,6 @@ Cut, subtract, or join multiple SDF volume grid inputs
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.o) |  |
@@ -871,7 +1058,7 @@ Cut, subtract, or join multiple SDF volume grid inputs
 ##### difference
 
 ``` python
-difference(*args, grid_1=None)
+difference(grid_1=None, grids=())
 ```
 
 Create SDF Grid Boolean with operation ‘Difference’.
@@ -879,13 +1066,13 @@ Create SDF Grid Boolean with operation ‘Difference’.
 ##### intersect
 
 ``` python
-intersect(*args)
+intersect(grids=())
 ```
 
 ##### union
 
 ``` python
-union(*args)
+union(grids=())
 ```
 
 ### SetHandleType
@@ -909,7 +1096,6 @@ Set the handle type for the control points of a Bézier curve
 |----|----|
 | [`handle_type`](#nodebpy.nodes.geometry.manual.SetHandleType.handle_type) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.SetHandleType.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.manual.SetHandleType.inputs) |  |
 | [`left`](#nodebpy.nodes.geometry.manual.SetHandleType.left) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.SetHandleType.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.SetHandleType.node) |  |
@@ -932,7 +1118,6 @@ Input numerical values to other nodes in the tree
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Value.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.manual.Value.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.Value.name) |  |
 | [`node`](#nodebpy.nodes.geometry.manual.Value.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Value.o) |  |

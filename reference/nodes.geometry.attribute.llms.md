@@ -33,7 +33,6 @@ Mix attribute values of neighboring elements
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.attribute.BlurAttribute.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.attribute.BlurAttribute.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.attribute.BlurAttribute.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.attribute.BlurAttribute.name) |  |
 | [`node`](#nodebpy.nodes.geometry.attribute.BlurAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.BlurAttribute.o) |  |
@@ -116,7 +115,6 @@ Retrieve the number of elements in a geometry for each attribute domain
 |----|----|
 | [`component`](#nodebpy.nodes.geometry.attribute.DomainSize.component) |  |
 | [`i`](#nodebpy.nodes.geometry.attribute.DomainSize.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.attribute.DomainSize.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.attribute.DomainSize.name) |  |
 | [`node`](#nodebpy.nodes.geometry.attribute.DomainSize.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.DomainSize.o) |  |
@@ -163,7 +161,6 @@ Delete an attribute with a specified name from a geometry. Typically used to opt
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.name) |  |
 | [`node`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.o) |  |
@@ -217,7 +214,6 @@ Store the result of a field on a geometry as an attribute with the specified nam
 | [`data_type`](#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.data_type) |  |
 | [`domain`](#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.domain) |  |
 | [`i`](#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.name) |  |
 | [`node`](#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.StoreNamedAttribute.o) |  |

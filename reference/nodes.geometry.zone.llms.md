@@ -35,7 +35,6 @@ BaseRepeatZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.items) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.node) |  |
@@ -69,7 +68,6 @@ BaseSimulationZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.items) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.node) |  |
@@ -103,7 +101,6 @@ BaseZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.zone.BaseZone.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.BaseZone.items) | Return the items collection |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZone.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZone.node) |  |
@@ -139,7 +136,6 @@ Base class for zone input nodes
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZoneInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.zone.BaseZoneInput.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.BaseZoneInput.items) | Return the items collection |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZoneInput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZoneInput.node) |  |
@@ -176,7 +172,6 @@ Base class for zone output nodes
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.items) | Return the items collection |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.node) |  |
@@ -212,7 +207,6 @@ Closure Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.ClosureInput.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.zone.ClosureInput.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.ClosureInput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.ClosureInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.ClosureInput.o) |  |
@@ -246,7 +240,6 @@ Closure Output node
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.zone.ClosureOutput.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.zone.ClosureOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.zone.ClosureOutput.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.ClosureOutput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.ClosureOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.ClosureOutput.o) |  |
@@ -305,7 +298,6 @@ For Each Geometry Element Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.items) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.node) |  |
@@ -343,7 +335,6 @@ For Each Geometry Element Output node
 |----|----|
 | [`domain`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.domain) |  |
 | [`i`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items) |  |
 | [`items_generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items_generated) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.name) |  |
@@ -401,7 +392,6 @@ Repeat Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.RepeatInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.zone.RepeatInput.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.RepeatInput.items) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.RepeatInput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.RepeatInput.node) |  |
@@ -438,7 +428,6 @@ Repeat Output node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.RepeatOutput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.zone.RepeatOutput.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.RepeatOutput.items) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.RepeatOutput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.RepeatOutput.node) |  |
@@ -464,7 +453,7 @@ Capture something as an input to the simulation
 ### RepeatZone
 
 ``` python
-RepeatZone(iterations=1, *args, **kwargs)
+RepeatZone(iterations=1, items={})
 ```
 
 Wrapper that supports both direct unpacking and iteration
@@ -490,7 +479,6 @@ Simulation Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.SimulationInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`inputs`](#nodebpy.nodes.geometry.zone.SimulationInput.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.SimulationInput.items) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.SimulationInput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.SimulationInput.node) |  |
@@ -527,7 +515,6 @@ Simulation Output node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.SimulationOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.zone.SimulationOutput.inputs) |  |
 | [`items`](#nodebpy.nodes.geometry.zone.SimulationOutput.items) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.SimulationOutput.name) |  |
 | [`node`](#nodebpy.nodes.geometry.zone.SimulationOutput.node) |  |
@@ -553,7 +540,7 @@ Capture something as an input to the simulation
 ### SimulationZone
 
 ``` python
-SimulationZone(*args, **kwargs)
+SimulationZone(items={})
 ```
 
 #### Attributes

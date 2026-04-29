@@ -93,7 +93,6 @@ Orient a rotation along the given direction
 |----|----|
 | [`axis`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.axis) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.o) |  |
@@ -142,7 +141,6 @@ Create a rotation from a primary and (ideally orthogonal) secondary axis
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.AxesToRotation.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.AxesToRotation.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.AxesToRotation.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.AxesToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AxesToRotation.o) |  |
@@ -187,7 +185,6 @@ Build a rotation from an axis and a rotation around that axis
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.o) |  |
@@ -229,7 +226,6 @@ Perform bitwise operations on 32-bit integers
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.BitMath.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.BitMath.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.BitMath.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.BitMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.BitMath.o) |  |
@@ -330,7 +326,6 @@ Convert a blackbody temperature to an RGB value
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.Blackbody.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.Blackbody.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.Blackbody.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.Blackbody.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Blackbody.o) |  |
@@ -370,7 +365,6 @@ Perform a logical operation on the given boolean inputs
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.BooleanMath.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.BooleanMath.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.BooleanMath.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.BooleanMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.BooleanMath.o) |  |
@@ -500,7 +494,6 @@ Clamp a value between a minimum and a maximum
 |----|----|
 | [`clamp_type`](#nodebpy.nodes.geometry.converter.Clamp.clamp_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.Clamp.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.Clamp.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.Clamp.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.Clamp.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Clamp.o) |  |
@@ -564,7 +557,6 @@ Map values to colors with the use of a gradient
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ColorRamp.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.ColorRamp.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.ColorRamp.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.ColorRamp.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ColorRamp.o) |  |
@@ -599,7 +591,6 @@ Combine multiple socket values into one.
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.converter.CombineBundle.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.CombineBundle.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.CombineBundle.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.CombineBundle.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineBundle.o) |  |
@@ -635,7 +626,6 @@ Combine four channels into a single color, based on a particular color model
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.CombineColor.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.CombineColor.inputs) |  |
 | [`mode`](#nodebpy.nodes.geometry.converter.CombineColor.mode) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.CombineColor.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineColor.node) |  |
@@ -742,7 +732,6 @@ Construct a 4x4 matrix from its individual values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.CombineMatrix.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.CombineMatrix.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.CombineMatrix.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineMatrix.o) |  |
@@ -798,7 +787,6 @@ Combine a translation vector, a rotation, and a scale vector into a transformati
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.CombineTransform.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.CombineTransform.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.CombineTransform.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineTransform.o) |  |
@@ -841,7 +829,6 @@ Create a vector from X, Y, and Z components
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.CombineXYZ.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.CombineXYZ.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.CombineXYZ.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineXYZ.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineXYZ.o) |  |
@@ -882,7 +869,6 @@ Build a rotation from separate angles around each axis
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.EulerToRotation.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.EulerToRotation.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.EulerToRotation.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.EulerToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.EulerToRotation.o) |  |
@@ -922,7 +908,6 @@ Find the number of times a given string occurs in another string and the positio
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.FindInString.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.FindInString.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.FindInString.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.FindInString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FindInString.o) |  |
@@ -964,7 +949,6 @@ Map an input float to a curve and outputs a float value
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.FloatCurve.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.FloatCurve.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.FloatCurve.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.FloatCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FloatCurve.o) |  |
@@ -1004,7 +988,6 @@ Convert the given floating-point number to an integer, with a choice of methods
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.FloatToInteger.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.FloatToInteger.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.FloatToInteger.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.FloatToInteger.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FloatToInteger.o) |  |
@@ -1053,7 +1036,6 @@ Retrieve a bundle item by path.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.GetBundleItem.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.GetBundleItem.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.GetBundleItem.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.GetBundleItem.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.GetBundleItem.o) |  |
@@ -1312,7 +1294,6 @@ Generate a randomized integer using the given input value as a seed
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.HashValue.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.HashValue.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.HashValue.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.HashValue.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.HashValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.HashValue.o) |  |
@@ -1421,7 +1402,6 @@ Find the nearest element in a group. Similar to the “Sample Nearest” node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.IndexOfNearest.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.IndexOfNearest.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.IndexOfNearest.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.IndexOfNearest.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.IndexOfNearest.o) |  |
@@ -1464,7 +1444,6 @@ Perform various math operations on the given integer inputs
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.IntegerMath.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.IntegerMath.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.IntegerMath.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.IntegerMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.IntegerMath.o) |  |
@@ -1673,7 +1652,6 @@ Compute the inverse of the given matrix, if one exists
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.InvertMatrix.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.InvertMatrix.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.InvertMatrix.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.InvertMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.InvertMatrix.o) |  |
@@ -1713,7 +1691,6 @@ Compute the inverse of the given rotation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.InvertRotation.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.InvertRotation.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.InvertRotation.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.InvertRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.InvertRotation.o) |  |
@@ -1752,7 +1729,6 @@ Join multiple bundles together
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.JoinBundle.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.JoinBundle.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.JoinBundle.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.JoinBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.JoinBundle.o) |  |
@@ -1821,7 +1797,6 @@ Remap a value from a range to a target range
 | [`clamp`](#nodebpy.nodes.geometry.converter.MapRange.clamp) |  |
 | [`data_type`](#nodebpy.nodes.geometry.converter.MapRange.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.MapRange.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.MapRange.inputs) |  |
 | [`interpolation_type`](#nodebpy.nodes.geometry.converter.MapRange.interpolation_type) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.MapRange.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.MapRange.node) |  |
@@ -1941,7 +1916,6 @@ Check if a given string exists within another string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.MatchString.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.MatchString.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.MatchString.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.MatchString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatchString.o) |  |
@@ -1991,7 +1965,6 @@ Perform math operations
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.Math.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.Math.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.Math.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.Math.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Math.o) |  |
@@ -2408,7 +2381,6 @@ Compute the determinant of the given matrix
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.o) |  |
@@ -2447,7 +2419,6 @@ Compute the singular value decomposition of the 3x3 part of a matrix
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.MatrixSVD.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.MatrixSVD.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.MatrixSVD.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.MatrixSVD.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatrixSVD.o) |  |
@@ -2519,7 +2490,6 @@ Mix values by a factor
 | [`data_type`](#nodebpy.nodes.geometry.converter.Mix.data_type) |  |
 | [`factor_mode`](#nodebpy.nodes.geometry.converter.Mix.factor_mode) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.Mix.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.Mix.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.Mix.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.Mix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Mix.o) |  |
@@ -2612,7 +2582,6 @@ Perform a matrix multiplication on two input matrices
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.o) |  |
@@ -2666,7 +2635,6 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.PackUVIslands.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.PackUVIslands.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.PackUVIslands.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.PackUVIslands.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.PackUVIslands.o) |  |
@@ -2712,7 +2680,6 @@ Project a point using a matrix, using location, rotation, scale, and perspective
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ProjectPoint.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.ProjectPoint.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.ProjectPoint.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.ProjectPoint.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ProjectPoint.o) |  |
@@ -2755,7 +2722,6 @@ Build a rotation from quaternion components
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.o) |  |
@@ -2818,7 +2784,6 @@ Output a randomized value
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.RandomValue.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.RandomValue.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.RandomValue.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.RandomValue.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.RandomValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RandomValue.o) |  |
@@ -2911,7 +2876,6 @@ Replace a given string segment with another
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ReplaceString.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.ReplaceString.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.ReplaceString.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.ReplaceString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ReplaceString.o) |  |
@@ -2963,7 +2927,6 @@ Apply a secondary Euler rotation to a given Euler rotation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotateEuler.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.RotateEuler.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.RotateEuler.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateEuler.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateEuler.o) |  |
@@ -3031,7 +2994,6 @@ Apply a secondary rotation to a given rotation value
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotateRotation.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.RotateRotation.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.RotateRotation.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateRotation.o) |  |
@@ -3073,7 +3035,6 @@ Apply a rotation to a given vector
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotateVector.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.RotateVector.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.RotateVector.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateVector.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateVector.o) |  |
@@ -3113,7 +3074,6 @@ Convert a rotation to axis angle components
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.o) |  |
@@ -3153,7 +3113,6 @@ Convert a standard rotation value to an Euler rotation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotationToEuler.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.RotationToEuler.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.RotationToEuler.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToEuler.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToEuler.o) |  |
@@ -3192,7 +3151,6 @@ Retrieve the quaternion components representing a rotation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.o) |  |
@@ -3235,7 +3193,6 @@ Split a bundle into multiple sockets.
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.converter.SeparateBundle.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateBundle.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.SeparateBundle.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateBundle.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateBundle.o) |  |
@@ -3268,7 +3225,6 @@ Split a color into separate channels, based on a particular color model
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateColor.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.SeparateColor.inputs) |  |
 | [`mode`](#nodebpy.nodes.geometry.converter.SeparateColor.mode) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateColor.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateColor.node) |  |
@@ -3343,7 +3299,6 @@ Split a 4x4 matrix into its individual values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateMatrix.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.SeparateMatrix.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateMatrix.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateMatrix.o) |  |
@@ -3397,7 +3352,6 @@ Split a transformation matrix into a translation vector, a rotation, and a scale
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateTransform.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.SeparateTransform.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateTransform.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateTransform.o) |  |
@@ -3438,7 +3392,6 @@ Split a vector into its X, Y, and Z components
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateXYZ.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.SeparateXYZ.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateXYZ.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateXYZ.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateXYZ.o) |  |
@@ -3481,7 +3434,6 @@ Extract a string segment from a larger string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SliceString.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.SliceString.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.SliceString.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.SliceString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SliceString.o) |  |
@@ -3531,7 +3483,6 @@ Store a bundle item by path and data type.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.StoreBundleItem.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.StoreBundleItem.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.StoreBundleItem.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.StoreBundleItem.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StoreBundleItem.o) |  |
@@ -3786,7 +3737,6 @@ Output the number of characters in the given string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.StringLength.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.StringLength.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.StringLength.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.StringLength.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StringLength.o) |  |
@@ -3826,7 +3776,6 @@ Derive a numeric value from a given string representation
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.StringToValue.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.StringToValue.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.StringToValue.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.StringToValue.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.StringToValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StringToValue.o) |  |
@@ -3892,7 +3841,6 @@ Switch between two inputs
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.Switch.i) |  |
 | [`input_type`](#nodebpy.nodes.geometry.converter.Switch.input_type) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.Switch.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.Switch.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.Switch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Switch.o) |  |
@@ -4092,7 +4040,6 @@ Apply a transformation matrix (excluding translation) to the given vector
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.TransformDirection.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.TransformDirection.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.TransformDirection.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.TransformDirection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransformDirection.o) |  |
@@ -4133,7 +4080,6 @@ Apply a transformation matrix to the given vector
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.TransformPoint.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.TransformPoint.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.TransformPoint.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.TransformPoint.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransformPoint.o) |  |
@@ -4173,7 +4119,6 @@ Flip a matrix over its diagonal, turning columns into rows and vice-versa
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.TransposeMatrix.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.TransposeMatrix.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.TransposeMatrix.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.TransposeMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransposeMatrix.o) |  |
@@ -4226,7 +4171,6 @@ Generate a UV map based on seam edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.UVUnwrap.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.UVUnwrap.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.UVUnwrap.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.UVUnwrap.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.UVUnwrap.o) |  |
@@ -4273,7 +4217,6 @@ Generate a string representation of the given input value
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.ValueToString.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.ValueToString.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.converter.ValueToString.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.converter.ValueToString.name) |  |
 | [`node`](#nodebpy.nodes.geometry.converter.ValueToString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ValueToString.o) |  |

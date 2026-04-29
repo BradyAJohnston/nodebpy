@@ -48,7 +48,6 @@ Generate image with bokeh shape for use with the Bokeh Blur filter node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.BokehImage.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.BokehImage.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.input.BokehImage.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.BokehImage.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.BokehImage.o) |  |
@@ -85,7 +84,6 @@ A color picker
 | Name                                                       | Description |
 |------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.input.Color.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.input.Color.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.input.Color.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.input.Color.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.input.Color.o)             |             |
@@ -118,7 +116,6 @@ Returns the coordinates of the pixels of an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.ImageCoordinates.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.ImageCoordinates.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.input.ImageCoordinates.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.ImageCoordinates.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.ImageCoordinates.o) |  |
@@ -159,7 +156,6 @@ Returns information about an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.ImageInfo.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.ImageInfo.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.input.ImageInfo.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.ImageInfo.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.ImageInfo.o) |  |
@@ -216,7 +212,6 @@ Input mask from a mask data-block, created in the image editor
 | Name                                                      | Description |
 |-----------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.input.Mask.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.input.Mask.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.input.Mask.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.input.Mask.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.input.Mask.o)             |             |
@@ -255,7 +250,6 @@ Input image or movie from a movie clip data-block, typically used for motion tra
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.MovieClip.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.MovieClip.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.input.MovieClip.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.MovieClip.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.MovieClip.o) |  |
@@ -287,7 +281,6 @@ Input normalized normal values to other nodes in the tree
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.input.Normal.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.input.Normal.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.input.Normal.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.input.Normal.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.input.Normal.o)             |             |
@@ -314,7 +307,6 @@ Input render passes from a scene render
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.RenderLayers.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.RenderLayers.inputs) |  |
 | [`layer`](#nodebpy.nodes.compositor.input.RenderLayers.layer) |  |
 | [`name`](#nodebpy.nodes.compositor.input.RenderLayers.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.RenderLayers.node) |  |
@@ -343,7 +335,6 @@ Input the current scene time in seconds or frames
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.SceneTime.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.SceneTime.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.input.SceneTime.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.SceneTime.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.SceneTime.o) |  |
@@ -371,7 +362,6 @@ Returns information about the active strip of the modifier
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.SequencerStripInfo.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.SequencerStripInfo.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.input.SequencerStripInfo.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.SequencerStripInfo.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.SequencerStripInfo.o) |  |
@@ -409,7 +399,6 @@ Generate a factor value (from 0.0 to 1.0) between scene start and end time, usin
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.TimeCurve.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.TimeCurve.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.input.TimeCurve.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.TimeCurve.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.TimeCurve.o) |  |
@@ -450,7 +439,6 @@ Provide information about motion tracking points, such as x and y values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.TrackPosition.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.input.TrackPosition.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.input.TrackPosition.name) |  |
 | [`node`](#nodebpy.nodes.compositor.input.TrackPosition.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.TrackPosition.o) |  |

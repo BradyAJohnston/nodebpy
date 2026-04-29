@@ -32,7 +32,6 @@ Transform Coordinate System for Radial Tiling
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.vector.RadialTiling.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.vector.RadialTiling.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.vector.RadialTiling.name) |  |
 | [`node`](#nodebpy.nodes.geometry.vector.RadialTiling.node) |  |
 | [`normalize`](#nodebpy.nodes.geometry.vector.RadialTiling.normalize) |  |
@@ -78,7 +77,6 @@ Map input vector components with curves
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.vector.VectorCurves.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.vector.VectorCurves.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.vector.VectorCurves.name) |  |
 | [`node`](#nodebpy.nodes.geometry.vector.VectorCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.VectorCurves.o) |  |
@@ -128,7 +126,6 @@ Perform vector math operation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.vector.VectorMath.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.vector.VectorMath.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.vector.VectorMath.name) |  |
 | [`node`](#nodebpy.nodes.geometry.vector.VectorMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.VectorMath.o) |  |
@@ -460,7 +457,6 @@ Rotate a vector around a pivot point (center)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.vector.VectorRotate.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.vector.VectorRotate.inputs) |  |
 | [`invert`](#nodebpy.nodes.geometry.vector.VectorRotate.invert) |  |
 | [`name`](#nodebpy.nodes.geometry.vector.VectorRotate.name) |  |
 | [`node`](#nodebpy.nodes.geometry.vector.VectorRotate.node) |  |

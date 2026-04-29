@@ -1,5 +1,16 @@
 # Function reference
 
+## Interface
+
+|  |  |
+|----|----|
+| [builder.tree](../reference/builder.tree.llms.md#nodebpy.builder.tree) |  |
+| [builder.socket](../reference/builder.socket.llms.md#nodebpy.builder.socket) |  |
+| [builder.node](../reference/builder.node.llms.md#nodebpy.builder.node) |  |
+| [builder.accessor](../reference/builder.accessor.llms.md#nodebpy.builder.accessor) |  |
+| [TreeBuilder](../reference/TreeBuilder.llms.md#nodebpy.TreeBuilder) | Builder for creating Blender node trees with a clean Python API. |
+| [builder.BaseNode](../reference/builder.BaseNode.llms.md#nodebpy.builder.BaseNode) | Base class for all node wrappers. |
+
 ## Geometry Nodes
 
 Nodes use in Geometry Nodes trees.
@@ -59,19 +70,3 @@ Nodes for use in the compositor
 | [nodes.compositor.matte](../reference/nodes.compositor.matte.llms.md#nodebpy.nodes.compositor.matte) |  |
 | [nodes.compositor.output](../reference/nodes.compositor.output.llms.md#nodebpy.nodes.compositor.output) |  |
 | [nodes.compositor.vector](../reference/nodes.compositor.vector.llms.md#nodebpy.nodes.compositor.vector) |  |
-
-## Interface
-
-|  |  |
-|----|----|
-| [builder.interface](../reference/builder.interface.llms.md#nodebpy.builder.interface) |  |
-| [builder.tree](../reference/builder.tree.llms.md#nodebpy.builder.tree) |  |
-
-## Internals
-
-Internal nodes used by nodebpy
-
-|  |  |
-|----|----|
-| [TreeBuilder](../reference/TreeBuilder.llms.md#nodebpy.TreeBuilder) | Builder for creating Blender node trees with a clean Python API. |
-| [`builder.NodeBuilder`](../reference/builder.NodeBuilder.llms.md#nodebpy.builder.NodeBuilder) |  |

@@ -35,7 +35,6 @@ Sample an image file as an environment texture. Typically used to light the scen
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.texture.EnvironmentTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.texture.EnvironmentTexture.inputs) |  |
 | [`interpolation`](#nodebpy.nodes.shader.texture.EnvironmentTexture.interpolation) |  |
 | [`name`](#nodebpy.nodes.shader.texture.EnvironmentTexture.name) |  |
 | [`node`](#nodebpy.nodes.shader.texture.EnvironmentTexture.node) |  |
@@ -78,7 +77,6 @@ Match real world lights with IES files, which store the directional intensity di
 |----|----|
 | [`filepath`](#nodebpy.nodes.shader.texture.IesTexture.filepath) |  |
 | [`i`](#nodebpy.nodes.shader.texture.IesTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.texture.IesTexture.inputs) |  |
 | [`mode`](#nodebpy.nodes.shader.texture.IesTexture.mode) |  |
 | [`name`](#nodebpy.nodes.shader.texture.IesTexture.name) |  |
 | [`node`](#nodebpy.nodes.shader.texture.IesTexture.node) |  |
@@ -150,7 +148,6 @@ Sample an image file as a texture
 |----|----|
 | [`extension`](#nodebpy.nodes.shader.texture.ImageTexture.extension) |  |
 | [`i`](#nodebpy.nodes.shader.texture.ImageTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.texture.ImageTexture.inputs) |  |
 | [`interpolation`](#nodebpy.nodes.shader.texture.ImageTexture.interpolation) |  |
 | [`name`](#nodebpy.nodes.shader.texture.ImageTexture.name) |  |
 | [`node`](#nodebpy.nodes.shader.texture.ImageTexture.node) |  |
@@ -213,7 +210,6 @@ Generate a procedural sky texture
 | [`altitude`](#nodebpy.nodes.shader.texture.SkyTexture.altitude) |  |
 | [`ground_albedo`](#nodebpy.nodes.shader.texture.SkyTexture.ground_albedo) |  |
 | [`i`](#nodebpy.nodes.shader.texture.SkyTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.texture.SkyTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.texture.SkyTexture.name) |  |
 | [`node`](#nodebpy.nodes.shader.texture.SkyTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.SkyTexture.o) |  |

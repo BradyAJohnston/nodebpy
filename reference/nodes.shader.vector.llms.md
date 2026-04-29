@@ -45,7 +45,6 @@ Generate a perturbed normal from a height texture for bump mapping. Typically us
 | Name                                                   | Description |
 |--------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.vector.Bump.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.vector.Bump.inputs)   |             |
 | [`invert`](#nodebpy.nodes.shader.vector.Bump.invert)   |             |
 | [`name`](#nodebpy.nodes.shader.vector.Bump.name)       |             |
 | [`node`](#nodebpy.nodes.shader.vector.Bump.node)       |             |
@@ -99,7 +98,6 @@ Displace the surface along the surface normal
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.vector.Displacement.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.vector.Displacement.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.vector.Displacement.name) |  |
 | [`node`](#nodebpy.nodes.shader.vector.Displacement.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.Displacement.o) |  |
@@ -152,7 +150,6 @@ Transform the input vector by applying translation, rotation, and scale
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.vector.Mapping.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.vector.Mapping.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.vector.Mapping.name) |  |
 | [`node`](#nodebpy.nodes.shader.vector.Mapping.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.Mapping.o) |  |
@@ -236,7 +233,6 @@ Generate a normal vector and a dot product
 | Name                                                     | Description |
 |----------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.vector.Normal.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.vector.Normal.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.vector.Normal.name)       |             |
 | [`node`](#nodebpy.nodes.shader.vector.Normal.node)       |             |
 | [`o`](#nodebpy.nodes.shader.vector.Normal.o)             |             |
@@ -287,7 +283,6 @@ Generate a perturbed normal from an RGB normal map image. Typically used for fak
 | [`base`](#nodebpy.nodes.shader.vector.NormalMap.base) |  |
 | [`convention`](#nodebpy.nodes.shader.vector.NormalMap.convention) |  |
 | [`i`](#nodebpy.nodes.shader.vector.NormalMap.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.vector.NormalMap.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.vector.NormalMap.name) |  |
 | [`node`](#nodebpy.nodes.shader.vector.NormalMap.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.NormalMap.o) |  |
@@ -331,7 +326,6 @@ Displace the surface along an arbitrary direction
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.vector.VectorDisplacement.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.vector.VectorDisplacement.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.vector.VectorDisplacement.name) |  |
 | [`node`](#nodebpy.nodes.shader.vector.VectorDisplacement.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.VectorDisplacement.o) |  |
@@ -381,7 +375,6 @@ Convert a vector, point, or normal between world, camera, and object coordinate 
 | [`convert_from`](#nodebpy.nodes.shader.vector.VectorTransform.convert_from) |  |
 | [`convert_to`](#nodebpy.nodes.shader.vector.VectorTransform.convert_to) |  |
 | [`i`](#nodebpy.nodes.shader.vector.VectorTransform.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.vector.VectorTransform.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.vector.VectorTransform.name) |  |
 | [`node`](#nodebpy.nodes.shader.vector.VectorTransform.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.VectorTransform.o) |  |

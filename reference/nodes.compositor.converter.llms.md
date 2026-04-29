@@ -42,7 +42,6 @@ Convert to and from premultiplied (associated) alpha
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.AlphaConvert.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.AlphaConvert.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.AlphaConvert.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.AlphaConvert.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.AlphaConvert.o) |  |
@@ -116,7 +115,6 @@ Combine an image from its composite color channels
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.CombineColor.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.CombineColor.inputs) |  |
 | [`mode`](#nodebpy.nodes.compositor.converter.CombineColor.mode) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.CombineColor.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.CombineColor.node) |  |
@@ -216,7 +214,6 @@ Convert between color spaces
 |----|----|
 | [`from_color_space`](#nodebpy.nodes.compositor.converter.ConvertColorspace.from_color_space) |  |
 | [`i`](#nodebpy.nodes.compositor.converter.ConvertColorspace.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.ConvertColorspace.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.ConvertColorspace.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.ConvertColorspace.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.ConvertColorspace.o) |  |
@@ -257,7 +254,6 @@ Convert from scene linear to display color space, with a view transform and look
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.o) |  |
@@ -299,7 +295,6 @@ Create a matte from an object or material index pass
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.IDMask.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.IDMask.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.IDMask.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.IDMask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.IDMask.o) |  |
@@ -344,7 +339,6 @@ Choose between an arbitrary number of values with an index
 |----|----|
 | [`data_type`](#nodebpy.nodes.compositor.converter.IndexSwitch.data_type) |  |
 | [`i`](#nodebpy.nodes.compositor.converter.IndexSwitch.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.IndexSwitch.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.IndexSwitch.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.IndexSwitch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.IndexSwitch.o) |  |
@@ -455,7 +449,6 @@ Compute average and standard deviation of pixel values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.Levels.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.Levels.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.Levels.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.Levels.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Levels.o) |  |
@@ -527,7 +520,6 @@ Mix values by a factor
 | [`data_type`](#nodebpy.nodes.compositor.converter.Mix.data_type) |  |
 | [`factor_mode`](#nodebpy.nodes.compositor.converter.Mix.factor_mode) |  |
 | [`i`](#nodebpy.nodes.compositor.converter.Mix.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.Mix.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.Mix.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.Mix.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Mix.o) |  |
@@ -610,7 +602,6 @@ Convert RGB input into grayscale using luminance
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.RGBToBW.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.RGBToBW.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.RGBToBW.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.RGBToBW.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.RGBToBW.o) |  |
@@ -659,7 +650,6 @@ Converts values that are relative to the image size to be in terms of pixels
 |----|----|
 | [`data_type`](#nodebpy.nodes.compositor.converter.RelativeToPixel.data_type) |  |
 | [`i`](#nodebpy.nodes.compositor.converter.RelativeToPixel.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.RelativeToPixel.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.RelativeToPixel.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.RelativeToPixel.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.RelativeToPixel.o) |  |
@@ -725,7 +715,6 @@ Split an image into its composite color channels
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.SeparateColor.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.SeparateColor.inputs) |  |
 | [`mode`](#nodebpy.nodes.compositor.converter.SeparateColor.mode) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.SeparateColor.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.SeparateColor.node) |  |
@@ -821,7 +810,6 @@ Add an alpha channel to an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.SetAlpha.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.SetAlpha.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.SetAlpha.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.SetAlpha.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.SetAlpha.o) |  |
@@ -888,7 +876,6 @@ Combine two images for side-by-side display. Typically used in combination with 
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.Split.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.Split.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.Split.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.Split.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Split.o) |  |
@@ -932,7 +919,6 @@ Switch between two images using a checkbox
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.Switch.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.Switch.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.Switch.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.Switch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Switch.o) |  |
@@ -974,7 +960,6 @@ Combine the views (left and right) into a single stereo 3D output
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.SwitchView.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.converter.SwitchView.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.converter.SwitchView.name) |  |
 | [`node`](#nodebpy.nodes.compositor.converter.SwitchView.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.SwitchView.o) |  |

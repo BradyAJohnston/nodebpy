@@ -48,7 +48,6 @@ Overlay a foreground image onto a background image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.AlphaOver.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.AlphaOver.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.AlphaOver.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.AlphaOver.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.AlphaOver.o) |  |
@@ -125,7 +124,6 @@ Adjust brightness and contrast
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.Brightnesscontrast.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.Brightnesscontrast.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.Brightnesscontrast.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.Brightnesscontrast.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Brightnesscontrast.o) |  |
@@ -208,7 +206,6 @@ Adjust color and values
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.ColorBalance.i) |  |
 | [`input_whitepoint`](#nodebpy.nodes.compositor.color.ColorBalance.input_whitepoint) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.ColorBalance.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.ColorBalance.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.ColorBalance.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.ColorBalance.o) |  |
@@ -377,7 +374,6 @@ Adjust the color of an image, separately in several tonal ranges (highlights, mi
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.ColorCorrection.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.ColorCorrection.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.ColorCorrection.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.ColorCorrection.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.ColorCorrection.o) |  |
@@ -454,7 +450,6 @@ Combine two images using depth maps
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.DepthCombine.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.DepthCombine.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.DepthCombine.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.DepthCombine.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.DepthCombine.o) |  |
@@ -500,7 +495,6 @@ Adjust brightness using a camera exposure parameter
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.color.Exposure.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.color.Exposure.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.color.Exposure.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.color.Exposure.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.color.Exposure.o)             |             |
@@ -541,7 +535,6 @@ Adjust hue, saturation, and value with a curve
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.HueCorrect.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.HueCorrect.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.HueCorrect.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.HueCorrect.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.HueCorrect.o) |  |
@@ -585,7 +578,6 @@ Apply a color transformation in the HSV color model
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.Huesaturationvalue.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.Huesaturationvalue.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.Huesaturationvalue.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.Huesaturationvalue.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Huesaturationvalue.o) |  |
@@ -631,7 +623,6 @@ Invert colors, producing a negative
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.InvertColor.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.InvertColor.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.InvertColor.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.InvertColor.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.InvertColor.o) |  |
@@ -674,7 +665,6 @@ Reduce number of colors in an image, converting smooth gradients into sharp tran
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.Posterize.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.Posterize.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.Posterize.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.Posterize.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Posterize.o) |  |
@@ -717,7 +707,6 @@ Perform level adjustments on each color channel of an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.RGBCurves.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.color.RGBCurves.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.color.RGBCurves.name) |  |
 | [`node`](#nodebpy.nodes.compositor.color.RGBCurves.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.RGBCurves.o) |  |
@@ -777,7 +766,6 @@ Map one set of colors to another in order to approximate the appearance of high 
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.color.Tonemap.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.color.Tonemap.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.color.Tonemap.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.color.Tonemap.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.color.Tonemap.o)             |             |

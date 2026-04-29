@@ -55,7 +55,6 @@ Plane warp transformation using explicit corner values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.CornerPin.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.distort.CornerPin.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.CornerPin.name) |  |
 | [`node`](#nodebpy.nodes.compositor.distort.CornerPin.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.CornerPin.o) |  |
@@ -107,7 +106,6 @@ Crops image to a smaller region, either making the cropped area transparent or r
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.distort.Crop.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.distort.Crop.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.distort.Crop.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.distort.Crop.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.distort.Crop.o)             |             |
@@ -161,7 +159,6 @@ Displace pixel position using an offset vector
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.Displace.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.distort.Displace.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.Displace.name) |  |
 | [`node`](#nodebpy.nodes.compositor.distort.Displace.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Displace.o) |  |
@@ -206,7 +203,6 @@ Flip an image along a defined axis
 | Name                                                        | Description |
 |-------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.distort.Flip.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.distort.Flip.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.distort.Flip.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.distort.Flip.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.distort.Flip.o)             |             |
@@ -259,7 +255,6 @@ Simulate distortion and dispersion from camera lenses
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.LensDistortion.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.distort.LensDistortion.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.LensDistortion.name) |  |
 | [`node`](#nodebpy.nodes.compositor.distort.LensDistortion.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.LensDistortion.o) |  |
@@ -336,7 +331,6 @@ Map a texture using UV coordinates, to apply a texture to objects in compositing
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.distort.MapUV.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.distort.MapUV.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.distort.MapUV.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.distort.MapUV.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.distort.MapUV.o)             |             |
@@ -380,7 +374,6 @@ Remove lens distortion from footage, using motion tracking camera lens settings
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.MovieDistortion.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.distort.MovieDistortion.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.MovieDistortion.name) |  |
 | [`node`](#nodebpy.nodes.compositor.distort.MovieDistortion.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.MovieDistortion.o) |  |
@@ -454,7 +447,6 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.name) |  |
 | [`node`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.o) |  |
@@ -509,7 +501,6 @@ Rotate image by specified angle
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.distort.Rotate.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.distort.Rotate.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.distort.Rotate.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.distort.Rotate.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.distort.Rotate.o)             |             |
@@ -568,7 +559,6 @@ Change the size of the image
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.distort.Scale.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.distort.Scale.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.distort.Scale.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.distort.Scale.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.distort.Scale.o)             |             |
@@ -690,7 +680,6 @@ Stabilize footage using 2D stabilization motion tracking settings
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.Stabilize2D.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.distort.Stabilize2D.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.Stabilize2D.name) |  |
 | [`node`](#nodebpy.nodes.compositor.distort.Stabilize2D.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Stabilize2D.o) |  |
@@ -749,7 +738,6 @@ Scale, translate and rotate an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.Transform.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.distort.Transform.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.Transform.name) |  |
 | [`node`](#nodebpy.nodes.compositor.distort.Transform.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Transform.o) |  |
@@ -807,7 +795,6 @@ Offset an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.Translate.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.distort.Translate.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.distort.Translate.name) |  |
 | [`node`](#nodebpy.nodes.compositor.distort.Translate.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Translate.o) |  |

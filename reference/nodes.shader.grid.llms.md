@@ -57,7 +57,6 @@ Combine all volume shading components into a single easy to use node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.grid.PrincipledVolume.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.grid.PrincipledVolume.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.grid.PrincipledVolume.name) |  |
 | [`node`](#nodebpy.nodes.shader.grid.PrincipledVolume.node) |  |
 | [`o`](#nodebpy.nodes.shader.grid.PrincipledVolume.o) |  |
@@ -110,7 +109,6 @@ Absorb light as it passes through the volume
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.grid.VolumeAbsorption.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.grid.VolumeAbsorption.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.grid.VolumeAbsorption.name) |  |
 | [`node`](#nodebpy.nodes.shader.grid.VolumeAbsorption.node) |  |
 | [`o`](#nodebpy.nodes.shader.grid.VolumeAbsorption.o) |  |
@@ -171,7 +169,6 @@ Model all three physical processes in a volume, represented by their coefficient
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.grid.VolumeCoefficients.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.grid.VolumeCoefficients.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.grid.VolumeCoefficients.name) |  |
 | [`node`](#nodebpy.nodes.shader.grid.VolumeCoefficients.node) |  |
 | [`o`](#nodebpy.nodes.shader.grid.VolumeCoefficients.o) |  |
@@ -213,7 +210,6 @@ Read volume data attributes from volume grids
 | Name                                                       | Description |
 |------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.grid.VolumeInfo.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.grid.VolumeInfo.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.grid.VolumeInfo.name)       |             |
 | [`node`](#nodebpy.nodes.shader.grid.VolumeInfo.node)       |             |
 | [`o`](#nodebpy.nodes.shader.grid.VolumeInfo.o)             |             |
@@ -267,7 +263,6 @@ Scatter light as it passes through the volume, often used to add fog to a scene
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.grid.VolumeScatter.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.grid.VolumeScatter.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.grid.VolumeScatter.name)       |             |
 | [`node`](#nodebpy.nodes.shader.grid.VolumeScatter.node)       |             |
 | [`o`](#nodebpy.nodes.shader.grid.VolumeScatter.o)             |             |

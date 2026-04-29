@@ -34,7 +34,6 @@ Create a color from individual components using multiple models
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.converter.CombineColor.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.converter.CombineColor.inputs) |  |
 | [`mode`](#nodebpy.nodes.shader.converter.CombineColor.mode) |  |
 | [`name`](#nodebpy.nodes.shader.converter.CombineColor.name) |  |
 | [`node`](#nodebpy.nodes.shader.converter.CombineColor.node) |  |
@@ -139,7 +138,6 @@ Mix values by a factor
 | [`data_type`](#nodebpy.nodes.shader.converter.Mix.data_type) |  |
 | [`factor_mode`](#nodebpy.nodes.shader.converter.Mix.factor_mode) |  |
 | [`i`](#nodebpy.nodes.shader.converter.Mix.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.converter.Mix.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.converter.Mix.name) |  |
 | [`node`](#nodebpy.nodes.shader.converter.Mix.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.Mix.o) |  |
@@ -222,7 +220,6 @@ Convert a color’s luminance to a grayscale value
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.converter.RGBToBW.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.converter.RGBToBW.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.converter.RGBToBW.name)       |             |
 | [`node`](#nodebpy.nodes.shader.converter.RGBToBW.node)       |             |
 | [`o`](#nodebpy.nodes.shader.converter.RGBToBW.o)             |             |
@@ -261,7 +258,6 @@ Split a color into its individual components using multiple models
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.converter.SeparateColor.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.converter.SeparateColor.inputs) |  |
 | [`mode`](#nodebpy.nodes.shader.converter.SeparateColor.mode) |  |
 | [`name`](#nodebpy.nodes.shader.converter.SeparateColor.name) |  |
 | [`node`](#nodebpy.nodes.shader.converter.SeparateColor.node) |  |
@@ -348,7 +344,6 @@ Note: only supported in EEVEE
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.converter.ShaderToRGB.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.converter.ShaderToRGB.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.converter.ShaderToRGB.name) |  |
 | [`node`](#nodebpy.nodes.shader.converter.ShaderToRGB.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.ShaderToRGB.o) |  |
@@ -375,7 +370,6 @@ Convert a wavelength value to an RGB value
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.converter.Wavelength.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.converter.Wavelength.inputs) |  |
 | [`name`](#nodebpy.nodes.shader.converter.Wavelength.name) |  |
 | [`node`](#nodebpy.nodes.shader.converter.Wavelength.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.Wavelength.o) |  |

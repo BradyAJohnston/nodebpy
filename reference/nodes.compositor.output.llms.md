@@ -30,7 +30,6 @@ Write image file to disk
 | [`directory`](#nodebpy.nodes.compositor.output.FileOutput.directory) |  |
 | [`file_name`](#nodebpy.nodes.compositor.output.FileOutput.file_name) |  |
 | [`i`](#nodebpy.nodes.compositor.output.FileOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.output.FileOutput.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.output.FileOutput.name) |  |
 | [`node`](#nodebpy.nodes.compositor.output.FileOutput.node) |  |
 | [`o`](#nodebpy.nodes.compositor.output.FileOutput.o) |  |
@@ -58,7 +57,6 @@ Visualize data from inside a node graph, in the image editor or as a backdrop
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.output.Viewer.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.output.Viewer.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.output.Viewer.name) |  |
 | [`node`](#nodebpy.nodes.compositor.output.Viewer.node) |  |
 | [`o`](#nodebpy.nodes.compositor.output.Viewer.o) |  |

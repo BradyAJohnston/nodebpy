@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>nodes.compositor.manual – nodebpy {{&lt; var version &gt;}}</title>
+<title>builder.basenode – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.compositor.matte.html" rel="next">
-<link href="../reference/nodes.compositor.interface.html" rel="prev">
+<link href="../reference/nodes.geometry.input.html" rel="next">
+<link href="../reference/TreeBuilder.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.compositor.color.html">Compositor Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.compositor.manual.html">nodes.compositor.manual</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.tree.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.BaseNode.html">builder.BaseNode</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -240,7 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/builder.BaseNode.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/builder.BaseNode.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">builder.BaseNode</span></a>
   </div>
 </li>
@@ -470,7 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.manual.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/nodes.compositor.manual.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.compositor.manual</span></a>
   </div>
 </li>
@@ -504,31 +504,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.nodes.compositor.manual" id="toc-nodebpy.nodes.compositor.manual" class="nav-link active" data-scroll-target="#nodebpy.nodes.compositor.manual">nodes.compositor.manual</a>
+  <li><a href="#nodebpy.builder.BaseNode" id="toc-nodebpy.builder.BaseNode" class="nav-link active" data-scroll-target="#nodebpy.builder.BaseNode">builder.BaseNode</a>
   <ul class="collapse">
-  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
-  <ul class="collapse">
-  <li><a href="#nodebpy.nodes.compositor.manual.MenuSwitch" id="toc-nodebpy.nodes.compositor.manual.MenuSwitch" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.manual.MenuSwitch">MenuSwitch</a></li>
-  </ul></li>
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
-  <ul class="collapse">
-  <li><a href="#nodebpy.nodes.compositor.manual.tree" id="toc-nodebpy.nodes.compositor.manual.tree" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.manual.tree">tree</a></li>
-  </ul></li>
+  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.compositor.color.html">Compositor Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.compositor.manual.html">nodes.compositor.manual</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.tree.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.BaseNode.html">builder.BaseNode</a></li></ol></nav></header>
 
 
 
 
-<section id="nodebpy.nodes.compositor.manual" class="level1">
-<h1>nodes.compositor.manual</h1>
-<p><code>manual</code></p>
-<section id="classes" class="level2">
-<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+<section id="nodebpy.builder.BaseNode" class="level1">
+<h1>builder.BaseNode</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>BaseNode(node<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Base class for all node wrappers.</p>
+<section id="attributes" class="level2">
+<h2 class="anchored" data-anchor-id="attributes">Attributes</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -538,159 +532,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch">MenuSwitch</a></td>
-<td>Node builder for the Menu Switch node (Compositor tree)</td>
-</tr>
-</tbody>
-</table>
-<section id="nodebpy.nodes.compositor.manual.MenuSwitch" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.MenuSwitch">MenuSwitch</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>MenuSwitch(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{}, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Node builder for the Menu Switch node (Compositor tree)</p>
-<section id="attributes" class="level4">
-<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.data_type"><code>data_type</code></a></td>
-<td>Input socket: Data Type</td>
+<td><a href="#nodebpy.builder.BaseNode.i"><code>i</code></a></td>
+<td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.i"><code>i</code></a></td>
+<td><a href="#nodebpy.builder.BaseNode.name"><code>name</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.name"><code>name</code></a></td>
+<td><a href="#nodebpy.builder.BaseNode.node"><code>node</code></a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.node"><code>node</code></a></td>
+<td><a href="#nodebpy.builder.BaseNode.o"><code>o</code></a></td>
+<td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.builder.BaseNode.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.builder.BaseNode.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.o"><code>o</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.type"><code>type</code></a></td>
+<td><a href="#nodebpy.builder.BaseNode.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="methods" class="level4">
-<h4 class="anchored" data-anchor-id="methods">Methods</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.boolean">boolean</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.color">color</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.float">float</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.integer">integer</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.menu">menu</a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.string">string</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.MenuSwitch.vector">vector</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<section id="nodebpy.nodes.compositor.manual.MenuSwitch.boolean" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.MenuSwitch.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>boolean(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.compositor.manual.MenuSwitch.color" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.MenuSwitch.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>color(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.compositor.manual.MenuSwitch.float" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.MenuSwitch.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.compositor.manual.MenuSwitch.integer" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.MenuSwitch.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>integer(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.compositor.manual.MenuSwitch.menu" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.MenuSwitch.menu">menu</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>menu(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.compositor.manual.MenuSwitch.string" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.MenuSwitch.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>string(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="nodebpy.nodes.compositor.manual.MenuSwitch.vector" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.MenuSwitch.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>vector(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-</section>
-</section>
-<section id="functions" class="level2">
-<h2 class="anchored" data-anchor-id="functions">Functions</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.manual.tree">tree</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<section id="nodebpy.nodes.compositor.manual.tree" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.manual.tree">tree</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tree(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">'Compositor Nodes'</span>,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
-</section>
 </section>
 </section>
 
@@ -1097,13 +969,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/nodes.compositor.interface.html" class="pagination-link" aria-label="nodes.compositor.interface">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.compositor.interface</span>
+      <a href="../reference/TreeBuilder.html" class="pagination-link" aria-label="TreeBuilder">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">TreeBuilder</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.compositor.matte.html" class="pagination-link" aria-label="nodes.compositor.matte">
-        <span class="nav-page-text">nodes.compositor.matte</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.geometry.input.html" class="pagination-link" aria-label="nodes.geometry.input">
+        <span class="nav-page-text">nodes.geometry.input</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

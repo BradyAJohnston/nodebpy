@@ -11,7 +11,7 @@
 ### MenuSwitch
 
 ``` python
-MenuSwitch(*args, menu=None, data_type='FLOAT', **kwargs)
+MenuSwitch(menu=None, items={}, *, data_type='FLOAT')
 ```
 
 Node builder for the Menu Switch node (Compositor tree)
@@ -20,22 +20,68 @@ Node builder for the Menu Switch node (Compositor tree)
 
 | Name | Description |
 |----|----|
-| [`boolean`](#nodebpy.nodes.compositor.manual.MenuSwitch.boolean) |  |
-| [`color`](#nodebpy.nodes.compositor.manual.MenuSwitch.color) |  |
 | [`data_type`](#nodebpy.nodes.compositor.manual.MenuSwitch.data_type) | Input socket: Data Type |
-| [`float`](#nodebpy.nodes.compositor.manual.MenuSwitch.float) |  |
 | [`i`](#nodebpy.nodes.compositor.manual.MenuSwitch.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.manual.MenuSwitch.inputs) |  |
-| [`integer`](#nodebpy.nodes.compositor.manual.MenuSwitch.integer) |  |
-| [`menu`](#nodebpy.nodes.compositor.manual.MenuSwitch.menu) |  |
 | [`name`](#nodebpy.nodes.compositor.manual.MenuSwitch.name) |  |
 | [`node`](#nodebpy.nodes.compositor.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.manual.MenuSwitch.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.manual.MenuSwitch.outputs) |  |
-| [`string`](#nodebpy.nodes.compositor.manual.MenuSwitch.string) |  |
 | [`tree`](#nodebpy.nodes.compositor.manual.MenuSwitch.tree) |  |
 | [`type`](#nodebpy.nodes.compositor.manual.MenuSwitch.type) |  |
-| [`vector`](#nodebpy.nodes.compositor.manual.MenuSwitch.vector) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.compositor.manual.MenuSwitch.boolean) |  |
+| [color](#nodebpy.nodes.compositor.manual.MenuSwitch.color) |  |
+| [float](#nodebpy.nodes.compositor.manual.MenuSwitch.float) |  |
+| [integer](#nodebpy.nodes.compositor.manual.MenuSwitch.integer) |  |
+| [menu](#nodebpy.nodes.compositor.manual.MenuSwitch.menu) |  |
+| [string](#nodebpy.nodes.compositor.manual.MenuSwitch.string) |  |
+| [vector](#nodebpy.nodes.compositor.manual.MenuSwitch.vector) |  |
+
+##### boolean
+
+``` python
+boolean(menu=None, items={})
+```
+
+##### color
+
+``` python
+color(menu=None, items={})
+```
+
+##### float
+
+``` python
+float(menu=None, items={})
+```
+
+##### integer
+
+``` python
+integer(menu=None, items={})
+```
+
+##### menu
+
+``` python
+menu(menu=None, items={})
+```
+
+##### string
+
+``` python
+string(menu=None, items={})
+```
+
+##### vector
+
+``` python
+vector(menu=None, items={})
+```
 
 ## Functions
 

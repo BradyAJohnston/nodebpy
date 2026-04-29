@@ -29,7 +29,6 @@ Either pass through the input value or output the fallback value
 |----|----|
 | [`data_type`](#nodebpy.nodes.compositor.interface.EnableOutput.data_type) |  |
 | [`i`](#nodebpy.nodes.compositor.interface.EnableOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.compositor.interface.EnableOutput.inputs) |  |
 | [`name`](#nodebpy.nodes.compositor.interface.EnableOutput.name) |  |
 | [`node`](#nodebpy.nodes.compositor.interface.EnableOutput.node) |  |
 | [`o`](#nodebpy.nodes.compositor.interface.EnableOutput.o) |  |

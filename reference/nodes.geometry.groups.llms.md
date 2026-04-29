@@ -23,7 +23,6 @@ Evaluate a given vector field at an offset to the current `Index`.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.groups.OffsetVector.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.groups.OffsetVector.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.groups.OffsetVector.name) |  |
 | [`node`](#nodebpy.nodes.geometry.groups.OffsetVector.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.OffsetVector.node_tree) |  |
@@ -45,7 +44,6 @@ Given a vertex and an edge number from that vertex, returns the other vertex of 
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.groups.OtherVertex.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.groups.OtherVertex.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.groups.OtherVertex.name) |  |
 | [`node`](#nodebpy.nodes.geometry.groups.OtherVertex.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.OtherVertex.node_tree) |  |
@@ -67,7 +65,6 @@ Compute PCA on a given vector field.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.groups.PrincipalComponents.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.groups.PrincipalComponents.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.groups.PrincipalComponents.name) |  |
 | [`node`](#nodebpy.nodes.geometry.groups.PrincipalComponents.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.PrincipalComponents.node_tree) |  |

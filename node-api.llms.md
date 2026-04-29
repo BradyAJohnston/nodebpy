@@ -13,7 +13,7 @@ from nodebpy import geometry as g
 Input sockets are exposed in two different ways, they are positional arguments in the class `__init__` signature and are available behind the `inputs / i` accessor on the nodes.
 
 ``` py
-class SetPosition(NodeBuilder):
+class SetPosition(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
@@ -89,7 +89,7 @@ You can use slicing to access individual or multiple components of input and out
 ``` python
 with g.tree() as tree:
     sep = g.SeparateXYZ(g.Position())
-    comb = g.CombineXYZ(*sep.o[:])
+    comb = g.CombineXYZ(*sep.o)
     comb2 = g.CombineXYZ()
 
     sep.o[1] >> comb2.i[2]
@@ -118,9 +118,9 @@ with g.tree() as tree:
     diff = g.FieldAverage.point.vector(pos).o.mean - pos
     matrix = g.CombineMatrix()
 
-    for i, axis1 in enumerate(diff.o.vector[:]):
+    for i, axis1 in enumerate(diff.o.vector):
         sep = g.FieldAverage.point.vector(diff * axis1)
-        for j, axis2 in enumerate(sep.o.mean[:]):
+        for j, axis2 in enumerate(sep.o.mean):
             axis2 >> matrix.i[int(i * 4 + j)]
 
 tree
@@ -259,7 +259,7 @@ graph LR
 Many options aren’t available as sockets. These are exposed on the node class itself. The non-socket options are always keyword arguments, requiring them to be explicitly stated.
 
 ``` py
-class EvaluateAtIndex(NodeBuilder):
+class EvaluateAtIndex(BaseNode):
     def __init__(
         self,
         value: InputFloat
@@ -343,7 +343,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.nodes.geometry.manual.Compare at 0x162e31010>
+>     <nodebpy.nodes.geometry.manual.Compare at 0x168d967b0>
 >
 > ### Comparing Python Objects
 >

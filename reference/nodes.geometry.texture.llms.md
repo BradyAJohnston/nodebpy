@@ -61,7 +61,6 @@ Generate a procedural texture producing bricks
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.BrickTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.BrickTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.BrickTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.BrickTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.BrickTexture.o) |  |
@@ -117,7 +116,6 @@ Generate a checkerboard texture
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.CheckerTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.CheckerTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.CheckerTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.CheckerTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.CheckerTexture.o) |  |
@@ -175,7 +173,6 @@ Generate Gabor noise
 |----|----|
 | [`gabor_type`](#nodebpy.nodes.geometry.texture.GaborTexture.gabor_type) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.GaborTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.GaborTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.GaborTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.GaborTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.GaborTexture.o) |  |
@@ -257,7 +254,6 @@ Generate interpolated color and intensity values based on the input vector
 |----|----|
 | [`gradient_type`](#nodebpy.nodes.geometry.texture.GradientTexture.gradient_type) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.GradientTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.GradientTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.GradientTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.GradientTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.GradientTexture.o) |  |
@@ -375,7 +371,6 @@ Sample values from an image texture
 |----|----|
 | [`extension`](#nodebpy.nodes.geometry.texture.ImageTexture.extension) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.ImageTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.ImageTexture.inputs) |  |
 | [`interpolation`](#nodebpy.nodes.geometry.texture.ImageTexture.interpolation) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.ImageTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.ImageTexture.node) |  |
@@ -420,7 +415,6 @@ Generate a psychedelic color texture
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.MagicTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.MagicTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.MagicTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.MagicTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.MagicTexture.o) |  |
@@ -485,7 +479,6 @@ Generate fractal Perlin noise
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.NoiseTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.NoiseTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.NoiseTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.NoiseTexture.node) |  |
 | [`noise_dimensions`](#nodebpy.nodes.geometry.texture.NoiseTexture.noise_dimensions) |  |
@@ -651,7 +644,6 @@ Generate Worley noise based on the distance to random points. Typically used to 
 | [`distance`](#nodebpy.nodes.geometry.texture.VoronoiTexture.distance) |  |
 | [`feature`](#nodebpy.nodes.geometry.texture.VoronoiTexture.feature) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.VoronoiTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.VoronoiTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.VoronoiTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.VoronoiTexture.node) |  |
 | [`normalize`](#nodebpy.nodes.geometry.texture.VoronoiTexture.normalize) |  |
@@ -724,7 +716,6 @@ Generate procedural bands or rings with noise
 |----|----|
 | [`bands_direction`](#nodebpy.nodes.geometry.texture.WaveTexture.bands_direction) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.WaveTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.WaveTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.WaveTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.WaveTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.WaveTexture.o) |  |
@@ -813,7 +804,6 @@ Calculate a random value or color based on an input seed
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.name) |  |
 | [`node`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.node) |  |
 | [`noise_dimensions`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.noise_dimensions) |  |

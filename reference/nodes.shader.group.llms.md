@@ -21,7 +21,6 @@ Group node
 | Name                                                   | Description |
 |--------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.shader.group.Group.i)             |             |
-| [`inputs`](#nodebpy.nodes.shader.group.Group.inputs)   |             |
 | [`name`](#nodebpy.nodes.shader.group.Group.name)       |             |
 | [`node`](#nodebpy.nodes.shader.group.Group.node)       |             |
 | [`o`](#nodebpy.nodes.shader.group.Group.o)             |             |

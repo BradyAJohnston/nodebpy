@@ -204,7 +204,7 @@ with g.tree("JitteredFlower") as tree:
         >> g.RotateInstances(rotation=(0, -tau / 16, 0))
     )
     center = g.IcoSphere(radius=0.4, subdivisions=3)
-    _ = g.JoinGeometry(ring, center) >> g.RealizeInstances() >> out
+    _ = g.JoinGeometry([ring, center]) >> g.RealizeInstances() >> out
 
 tree
 ```

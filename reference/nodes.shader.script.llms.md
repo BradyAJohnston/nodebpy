@@ -32,7 +32,6 @@ Note: OSL shaders are not supported on all GPU backends
 | [`bytecode_hash`](#nodebpy.nodes.shader.script.Script.bytecode_hash) |  |
 | [`filepath`](#nodebpy.nodes.shader.script.Script.filepath) |  |
 | [`i`](#nodebpy.nodes.shader.script.Script.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.script.Script.inputs) |  |
 | [`mode`](#nodebpy.nodes.shader.script.Script.mode) |  |
 | [`name`](#nodebpy.nodes.shader.script.Script.name) |  |
 | [`node`](#nodebpy.nodes.shader.script.Script.node) |  |

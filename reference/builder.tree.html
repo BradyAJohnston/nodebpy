@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/TreeBuilder.html" rel="next">
-<link href="../reference/builder.interface.html" rel="prev">
+<link href="../reference/builder.socket.html" rel="next">
+<link href="../reference/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.13.0</span>
+    <span class="navbar-title">nodebpy 0.14.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.interface.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.tree.html">builder.tree</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.tree.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.tree.html">builder.tree</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -202,12 +202,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Geometry Nodes</span></a>
+ <span class="menu-text">Interface</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/builder.tree.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">builder.tree</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/builder.socket.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">builder.socket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/builder.node.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">builder.node</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/builder.accessor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">builder.accessor</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/TreeBuilder.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TreeBuilder</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/builder.BaseNode.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">builder.BaseNode</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Geometry Nodes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.geometry.input.html" class="sidebar-item-text sidebar-link">
@@ -276,13 +323,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text">Zones in GN</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.geometry.zone.html" class="sidebar-item-text sidebar-link">
@@ -295,13 +342,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Shader Nodes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.shader.color.html" class="sidebar-item-text sidebar-link">
@@ -372,13 +419,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">Compositor Nodes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.compositor.color.html" class="sidebar-item-text sidebar-link">
@@ -447,52 +494,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Interface</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/builder.interface.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">builder.interface</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/builder.tree.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">builder.tree</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Internals</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/TreeBuilder.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">TreeBuilder</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/builder.NodeBuilder.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">builder.NodeBuilder</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
     </ul>
     </div>
 </nav>
@@ -520,7 +521,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.interface.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.tree.html">builder.tree</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.tree.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.tree.html">builder.tree</a></li></ol></nav></header>
 
 
 
@@ -609,55 +610,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.boolean">boolean</a></td>
-<td>Add a Boolean socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.bundle">bundle</a></td>
-<td>Add a Bundle socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.closure">closure</a></td>
-<td>Add a Closure socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.collection">collection</a></td>
-<td>Add a Collection socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.color">color</a></td>
-<td>Add a Color socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.float">float</a></td>
-<td>Add a Float socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.geometry">geometry</a></td>
-<td>Add a Geometry socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.image">image</a></td>
-<td>Add an Image socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.integer">integer</a></td>
-<td>Add an Integer socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.material">material</a></td>
-<td>Add a Material socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.matrix">matrix</a></td>
-<td>Add a Matrix socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.menu">menu</a></td>
-<td>Add a Menu socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.object">object</a></td>
-<td>Add an Object socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.panel">panel</a></td>
@@ -665,19 +666,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.rotation">rotation</a></td>
-<td>Add a Rotation socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.shader">shader</a></td>
-<td>Add a Shader socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.string">string</a></td>
-<td>Add a String socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.DirectionalContext.vector">vector</a></td>
-<td>Add a Vector socket to this input/output interface.</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -697,7 +698,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    is_panel_toggle<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Boolean socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.bundle" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.bundle">bundle</h5>
@@ -709,7 +709,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Bundle socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.closure" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.closure">closure</h5>
@@ -721,7 +720,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Closure socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.collection" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.collection">collection</h5>
@@ -734,7 +732,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Collection socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.color">color</h5>
@@ -750,7 +747,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Color socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.float">float</h5>
@@ -769,7 +765,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Float socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.geometry" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.geometry">geometry</h5>
@@ -781,7 +776,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Geometry socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.image" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.image">image</h5>
@@ -794,7 +788,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Image socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.integer">integer</h5>
@@ -814,7 +807,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Integer socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.material" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.material">material</h5>
@@ -827,7 +819,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Material socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.matrix">matrix</h5>
@@ -843,7 +834,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Matrix socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.menu" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.menu">menu</h5>
@@ -858,7 +848,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    structure_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Menu socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.object" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.object">object</h5>
@@ -871,7 +860,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Object socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.panel" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.panel">panel</h5>
@@ -892,7 +880,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Rotation socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.shader" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.shader">shader</h5>
@@ -904,7 +891,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Shader socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.string">string</h5>
@@ -918,7 +904,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    subtype<span class="op">=</span><span class="st">'NONE'</span>,</span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a String socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.DirectionalContext.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.DirectionalContext.vector">vector</h5>
@@ -939,7 +924,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    default_input<span class="op">=</span><span class="st">'VALUE'</span>,</span>
 <span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Vector socket to this input/output interface.</p>
 </section>
 </section>
 </section>
@@ -983,55 +967,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.boolean">boolean</a></td>
-<td>Add a Boolean socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.bundle">bundle</a></td>
-<td>Add a Bundle socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.closure">closure</a></td>
-<td>Add a Closure socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.collection">collection</a></td>
-<td>Add a Collection socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.color">color</a></td>
-<td>Add a Color socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.float">float</a></td>
-<td>Add a Float socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.geometry">geometry</a></td>
-<td>Add a Geometry socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.image">image</a></td>
-<td>Add an Image socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.integer">integer</a></td>
-<td>Add an Integer socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.material">material</a></td>
-<td>Add a Material socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.matrix">matrix</a></td>
-<td>Add a Matrix socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.menu">menu</a></td>
-<td>Add a Menu socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.object">object</a></td>
-<td>Add an Object socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.panel">panel</a></td>
@@ -1039,19 +1023,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.rotation">rotation</a></td>
-<td>Add a Rotation socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.shader">shader</a></td>
-<td>Add a Shader socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.string">string</a></td>
-<td>Add a String socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.InputInterfaceContext.vector">vector</a></td>
-<td>Add a Vector socket to this input/output interface.</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1071,7 +1055,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    is_panel_toggle<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Boolean socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.bundle" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.bundle">bundle</h5>
@@ -1083,7 +1066,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Bundle socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.closure" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.closure">closure</h5>
@@ -1095,7 +1077,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Closure socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.collection" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.collection">collection</h5>
@@ -1108,7 +1089,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Collection socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.color">color</h5>
@@ -1124,7 +1104,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Color socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.float">float</h5>
@@ -1143,7 +1122,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Float socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.geometry" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.geometry">geometry</h5>
@@ -1155,7 +1133,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Geometry socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.image" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.image">image</h5>
@@ -1168,7 +1145,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Image socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.integer">integer</h5>
@@ -1188,7 +1164,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Integer socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.material" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.material">material</h5>
@@ -1201,7 +1176,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Material socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.matrix">matrix</h5>
@@ -1217,7 +1191,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Matrix socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.menu" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.menu">menu</h5>
@@ -1232,7 +1205,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    structure_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
 <span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Menu socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.object" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.object">object</h5>
@@ -1245,7 +1217,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Object socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.panel" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.panel">panel</h5>
@@ -1266,7 +1237,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Rotation socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.shader" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.shader">shader</h5>
@@ -1278,7 +1248,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Shader socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.string">string</h5>
@@ -1292,7 +1261,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    subtype<span class="op">=</span><span class="st">'NONE'</span>,</span>
 <span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a String socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.InputInterfaceContext.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.InputInterfaceContext.vector">vector</h5>
@@ -1313,7 +1281,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    default_input<span class="op">=</span><span class="st">'VALUE'</span>,</span>
 <span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Vector socket to this input/output interface.</p>
 </section>
 </section>
 </section>
@@ -1513,55 +1480,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.boolean">boolean</a></td>
-<td>Add a Boolean socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.bundle">bundle</a></td>
-<td>Add a Bundle socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.closure">closure</a></td>
-<td>Add a Closure socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.collection">collection</a></td>
-<td>Add a Collection socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.color">color</a></td>
-<td>Add a Color socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.float">float</a></td>
-<td>Add a Float socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.geometry">geometry</a></td>
-<td>Add a Geometry socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.image">image</a></td>
-<td>Add an Image socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.integer">integer</a></td>
-<td>Add an Integer socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.material">material</a></td>
-<td>Add a Material socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.matrix">matrix</a></td>
-<td>Add a Matrix socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.menu">menu</a></td>
-<td>Add a Menu socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.object">object</a></td>
-<td>Add an Object socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.panel">panel</a></td>
@@ -1569,19 +1536,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.rotation">rotation</a></td>
-<td>Add a Rotation socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.shader">shader</a></td>
-<td>Add a Shader socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.string">string</a></td>
-<td>Add a String socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.OutputInterfaceContext.vector">vector</a></td>
-<td>Add a Vector socket to this input/output interface.</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1601,7 +1568,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    is_panel_toggle<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Boolean socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.bundle" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.bundle">bundle</h5>
@@ -1613,7 +1579,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Bundle socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.closure" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.closure">closure</h5>
@@ -1625,7 +1590,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Closure socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.collection" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.collection">collection</h5>
@@ -1638,7 +1602,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Collection socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.color">color</h5>
@@ -1654,7 +1617,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Color socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.float">float</h5>
@@ -1673,7 +1635,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Float socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.geometry" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.geometry">geometry</h5>
@@ -1685,7 +1646,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Geometry socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.image" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.image">image</h5>
@@ -1698,7 +1658,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Image socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.integer">integer</h5>
@@ -1718,7 +1677,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Integer socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.material" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.material">material</h5>
@@ -1731,7 +1689,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Material socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.matrix">matrix</h5>
@@ -1747,7 +1704,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Matrix socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.menu" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.menu">menu</h5>
@@ -1762,7 +1718,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>    structure_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
 <span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Menu socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.object" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.object">object</h5>
@@ -1775,7 +1730,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Object socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.panel" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.panel">panel</h5>
@@ -1796,7 +1750,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Rotation socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.shader" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.shader">shader</h5>
@@ -1808,7 +1761,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Shader socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.string">string</h5>
@@ -1822,7 +1774,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>    subtype<span class="op">=</span><span class="st">'NONE'</span>,</span>
 <span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a String socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.OutputInterfaceContext.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.OutputInterfaceContext.vector">vector</h5>
@@ -1843,7 +1794,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a>    default_input<span class="op">=</span><span class="st">'VALUE'</span>,</span>
 <span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Vector socket to this input/output interface.</p>
 </section>
 </section>
 </section>
@@ -1892,55 +1842,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.boolean">boolean</a></td>
-<td>Add a Boolean socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.bundle">bundle</a></td>
-<td>Add a Bundle socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.closure">closure</a></td>
-<td>Add a Closure socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.collection">collection</a></td>
-<td>Add a Collection socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.color">color</a></td>
-<td>Add a Color socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.float">float</a></td>
-<td>Add a Float socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.geometry">geometry</a></td>
-<td>Add a Geometry socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.image">image</a></td>
-<td>Add an Image socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.integer">integer</a></td>
-<td>Add an Integer socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.material">material</a></td>
-<td>Add a Material socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.matrix">matrix</a></td>
-<td>Add a Matrix socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.menu">menu</a></td>
-<td>Add a Menu socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.object">object</a></td>
-<td>Add an Object socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.panel">panel</a></td>
@@ -1948,19 +1898,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.rotation">rotation</a></td>
-<td>Add a Rotation socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.shader">shader</a></td>
-<td>Add a Shader socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.tree.SocketContext.string">string</a></td>
-<td>Add a String socket to this input/output interface.</td>
+<td></td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.tree.SocketContext.vector">vector</a></td>
-<td>Add a Vector socket to this input/output interface.</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1980,7 +1930,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>    is_panel_toggle<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Boolean socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.bundle" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.bundle">bundle</h5>
@@ -1992,7 +1941,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Bundle socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.closure" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.closure">closure</h5>
@@ -2004,7 +1952,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Closure socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.collection" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.collection">collection</h5>
@@ -2017,7 +1964,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Collection socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.color">color</h5>
@@ -2033,7 +1979,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Color socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.float">float</h5>
@@ -2052,7 +1997,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb74-14"><a href="#cb74-14" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb74-15"><a href="#cb74-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Float socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.geometry" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.geometry">geometry</h5>
@@ -2064,7 +2008,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Geometry socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.image" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.image">image</h5>
@@ -2077,7 +2020,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Image socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.integer">integer</h5>
@@ -2097,7 +2039,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb77-14"><a href="#cb77-14" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb77-15"><a href="#cb77-15" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb77-16"><a href="#cb77-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Integer socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.material" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.material">material</h5>
@@ -2110,7 +2051,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Material socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.matrix">matrix</h5>
@@ -2126,7 +2066,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb79-12"><a href="#cb79-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Matrix socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.menu" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.menu">menu</h5>
@@ -2141,7 +2080,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a>    structure_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
 <span id="cb80-11"><a href="#cb80-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Menu socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.object" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.object">object</h5>
@@ -2154,7 +2092,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb81-9"><a href="#cb81-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add an Object socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.panel" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.panel">panel</h5>
@@ -2175,7 +2112,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb83-10"><a href="#cb83-10" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb83-11"><a href="#cb83-11" aria-hidden="true" tabindex="-1"></a>    default_attribute<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb83-12"><a href="#cb83-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Rotation socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.shader" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.shader">shader</h5>
@@ -2187,7 +2123,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>    hide_value<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Shader socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.string">string</h5>
@@ -2201,7 +2136,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>    hide_in_modifier<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb85-9"><a href="#cb85-9" aria-hidden="true" tabindex="-1"></a>    subtype<span class="op">=</span><span class="st">'NONE'</span>,</span>
 <span id="cb85-10"><a href="#cb85-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a String socket to this input/output interface.</p>
 </section>
 <section id="nodebpy.builder.tree.SocketContext.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.SocketContext.vector">vector</h5>
@@ -2222,7 +2156,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb86-15"><a href="#cb86-15" aria-hidden="true" tabindex="-1"></a>    default_input<span class="op">=</span><span class="st">'VALUE'</span>,</span>
 <span id="cb86-16"><a href="#cb86-16" aria-hidden="true" tabindex="-1"></a>    attribute_domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
 <span id="cb86-17"><a href="#cb86-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add a Vector socket to this input/output interface.</p>
 </section>
 </section>
 </section>
@@ -2460,7 +2393,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -2789,13 +2722,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/builder.interface.html" class="pagination-link" aria-label="builder.interface">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">builder.interface</span>
+      <a href="../reference/index.html" class="pagination-link" aria-label="Function reference">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Function reference</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/TreeBuilder.html" class="pagination-link" aria-label="TreeBuilder">
-        <span class="nav-page-text">TreeBuilder</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/builder.socket.html" class="pagination-link" aria-label="builder.socket">
+        <span class="nav-page-text">builder.socket</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -42,7 +42,6 @@ Provide custom render passes for arbitrary shader node outputs
 |---------------------------------------------------------------|-------------|
 | [`aov_name`](#nodebpy.nodes.shader.output.AovOutput.aov_name) |             |
 | [`i`](#nodebpy.nodes.shader.output.AovOutput.i)               |             |
-| [`inputs`](#nodebpy.nodes.shader.output.AovOutput.inputs)     |             |
 | [`name`](#nodebpy.nodes.shader.output.AovOutput.name)         |             |
 | [`node`](#nodebpy.nodes.shader.output.AovOutput.node)         |             |
 | [`o`](#nodebpy.nodes.shader.output.AovOutput.o)               |             |
@@ -69,7 +68,6 @@ Output light information to a light object
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.output.LightOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.output.LightOutput.inputs) |  |
 | [`is_active_output`](#nodebpy.nodes.shader.output.LightOutput.is_active_output) |  |
 | [`name`](#nodebpy.nodes.shader.output.LightOutput.name) |  |
 | [`node`](#nodebpy.nodes.shader.output.LightOutput.node) |  |
@@ -119,7 +117,6 @@ Control the mixing of texture information into the base color of line styles
 |----|----|
 | [`blend_type`](#nodebpy.nodes.shader.output.LineStyleOutput.blend_type) |  |
 | [`i`](#nodebpy.nodes.shader.output.LineStyleOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.output.LineStyleOutput.inputs) |  |
 | [`is_active_output`](#nodebpy.nodes.shader.output.LineStyleOutput.is_active_output) |  |
 | [`name`](#nodebpy.nodes.shader.output.LineStyleOutput.name) |  |
 | [`node`](#nodebpy.nodes.shader.output.LineStyleOutput.node) |  |
@@ -170,7 +167,6 @@ Output surface material information for use in rendering
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.output.MaterialOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.output.MaterialOutput.inputs) |  |
 | [`is_active_output`](#nodebpy.nodes.shader.output.MaterialOutput.is_active_output) |  |
 | [`name`](#nodebpy.nodes.shader.output.MaterialOutput.name) |  |
 | [`node`](#nodebpy.nodes.shader.output.MaterialOutput.node) |  |
@@ -209,7 +205,6 @@ Output light color information to the scene’s World
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.output.WorldOutput.i) |  |
-| [`inputs`](#nodebpy.nodes.shader.output.WorldOutput.inputs) |  |
 | [`is_active_output`](#nodebpy.nodes.shader.output.WorldOutput.is_active_output) |  |
 | [`name`](#nodebpy.nodes.shader.output.WorldOutput.name) |  |
 | [`node`](#nodebpy.nodes.shader.output.WorldOutput.node) |  |

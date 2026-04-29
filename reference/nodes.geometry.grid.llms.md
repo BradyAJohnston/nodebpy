@@ -75,7 +75,6 @@ Move grid values through a velocity field using numerical integration. Supports 
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.AdvectGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.AdvectGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.AdvectGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.AdvectGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.AdvectGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.AdvectGrid.o) |  |
@@ -185,7 +184,6 @@ Deactivate grid voxels outside minimum and maximum coordinates, setting them to 
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.ClipGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.ClipGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.ClipGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.ClipGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.ClipGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.ClipGrid.o) |  |
@@ -287,7 +285,6 @@ Create a boolean grid topology with the given dimensions, for use with the Field
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.CubeGridTopology.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.CubeGridTopology.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.CubeGridTopology.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.CubeGridTopology.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.CubeGridTopology.o) |  |
@@ -345,7 +342,6 @@ Generate points inside a volume grid
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.inputs) |  |
 | [`mode`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.mode) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.node) |  |
@@ -424,7 +420,6 @@ Generate points inside a volume
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.o) |  |
@@ -471,7 +466,6 @@ Get volume grid from a volume geometry with the specified name
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.GetNamedGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.GetNamedGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GetNamedGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GetNamedGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GetNamedGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GetNamedGrid.o) |  |
@@ -554,7 +548,6 @@ Calculate the magnitude and direction of circulation of a directional vector gri
 | Name                                                       | Description |
 |------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.geometry.grid.GridCurl.i)             |             |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridCurl.inputs)   |             |
 | [`name`](#nodebpy.nodes.geometry.grid.GridCurl.name)       |             |
 | [`node`](#nodebpy.nodes.geometry.grid.GridCurl.node)       |             |
 | [`o`](#nodebpy.nodes.geometry.grid.GridCurl.o)             |             |
@@ -604,7 +597,6 @@ Dilate or erode the active regions of a grid. This changes which voxels are acti
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.GridDilateErode.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.GridDilateErode.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridDilateErode.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GridDilateErode.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GridDilateErode.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridDilateErode.o) |  |
@@ -687,7 +679,6 @@ Calculate the flow into and out of each point of a directional vector grid
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.GridDivergence.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridDivergence.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GridDivergence.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GridDivergence.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridDivergence.o) |  |
@@ -726,7 +717,6 @@ Calculate the direction and magnitude of the change in values of a scalar grid
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.GridGradient.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridGradient.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GridGradient.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GridGradient.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridGradient.o) |  |
@@ -766,7 +756,6 @@ Retrieve information about a volume grid
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.GridInfo.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.GridInfo.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridInfo.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GridInfo.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GridInfo.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridInfo.o) |  |
@@ -847,7 +836,6 @@ Compute the divergence of the gradient of the input grid
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.GridLaplacian.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridLaplacian.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GridLaplacian.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GridLaplacian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridLaplacian.o) |  |
@@ -889,7 +877,6 @@ Apply mean (box) filter smoothing to a voxel. The mean value from surrounding vo
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.GridMean.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.GridMean.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridMean.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GridMean.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GridMean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridMean.o) |  |
@@ -965,7 +952,6 @@ Apply median (box) filter smoothing to a voxel. The median value from surroundin
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.GridMedian.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.GridMedian.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridMedian.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GridMedian.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GridMedian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridMedian.o) |  |
@@ -1040,7 +1026,6 @@ Generate a mesh on the “surface” of a volume grid
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.geometry.grid.GridToMesh.i)             |             |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridToMesh.inputs)   |             |
 | [`name`](#nodebpy.nodes.geometry.grid.GridToMesh.name)       |             |
 | [`node`](#nodebpy.nodes.geometry.grid.GridToMesh.node)       |             |
 | [`o`](#nodebpy.nodes.geometry.grid.GridToMesh.o)             |             |
@@ -1082,7 +1067,6 @@ Generate a point cloud from a volume grid’s active voxels
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.GridToPoints.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.GridToPoints.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.GridToPoints.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.GridToPoints.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.GridToPoints.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridToPoints.o) |  |
@@ -1171,7 +1155,6 @@ Create a filled volume grid from a mesh
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.o) |  |
@@ -1215,7 +1198,6 @@ Create a signed distance volume grid from a mesh
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.o) |  |
@@ -1268,7 +1250,6 @@ Create a fog volume with the shape of the input mesh’s surface
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.MeshToVolume.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.MeshToVolume.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.MeshToVolume.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.MeshToVolume.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToVolume.o) |  |
@@ -1314,7 +1295,6 @@ Create a signed distance volume grid from points
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.o) |  |
@@ -1367,7 +1347,6 @@ Generate a fog volume sphere around every point
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.PointsToVolume.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.PointsToVolume.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.PointsToVolume.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.PointsToVolume.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.PointsToVolume.o) |  |
@@ -1414,7 +1393,6 @@ Make the storage of a volume grid more efficient by collapsing data into tiles o
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.PruneGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.PruneGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.PruneGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.PruneGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.PruneGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.PruneGrid.o) |  |
@@ -1497,7 +1475,6 @@ Round off concave internal corners in a signed distance field. Only affects area
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.SDFGridFillet.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SDFGridFillet.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridFillet.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridFillet.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridFillet.o) |  |
@@ -1538,7 +1515,6 @@ Apply Laplacian flow smoothing to a signed distance field. Computationally effic
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.o) |  |
@@ -1580,7 +1556,6 @@ Apply mean (box) filter smoothing to a signed distance field. Fast separable ave
 | Name                                                          | Description |
 |---------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.geometry.grid.SDFGridMean.i)             |             |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SDFGridMean.inputs)   |             |
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridMean.name)       |             |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridMean.node)       |             |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMean.o)             |             |
@@ -1622,7 +1597,6 @@ Apply mean curvature flow smoothing to a signed distance field. Evolves the surf
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.o) |  |
@@ -1664,7 +1638,6 @@ Apply median filter to a signed distance field. Reduces noise while preserving s
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.SDFGridMedian.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SDFGridMedian.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridMedian.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridMedian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMedian.o) |  |
@@ -1706,7 +1679,6 @@ Offset a signed distance field surface by a world-space distance. Dilates (posit
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.SDFGridOffset.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SDFGridOffset.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridOffset.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridOffset.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridOffset.o) |  |
@@ -1755,7 +1727,6 @@ Retrieve values from the specified volume grid
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.SampleGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.SampleGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SampleGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SampleGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SampleGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SampleGrid.o) |  |
@@ -1841,7 +1812,6 @@ Retrieve volume grid values at specific voxels
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.SampleGridIndex.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.SampleGridIndex.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SampleGridIndex.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SampleGridIndex.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SampleGridIndex.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SampleGridIndex.o) |  |
@@ -1933,7 +1903,6 @@ Set the background value used for inactive voxels and tiles
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.SetGridBackground.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.SetGridBackground.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SetGridBackground.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SetGridBackground.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SetGridBackground.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SetGridBackground.o) |  |
@@ -2017,7 +1986,6 @@ Set the transform for the grid from index space into object space.
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.SetGridTransform.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.SetGridTransform.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.SetGridTransform.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.SetGridTransform.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.SetGridTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SetGridTransform.o) |  |
@@ -2102,7 +2070,6 @@ Store grid data in a volume geometry with the specified name
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.o) |  |
@@ -2198,7 +2165,6 @@ Generate a dense volume with a field that controls the density at each grid voxe
 | Name                                                         | Description |
 |--------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.geometry.grid.VolumeCube.i)             |             |
-| [`inputs`](#nodebpy.nodes.geometry.grid.VolumeCube.inputs)   |             |
 | [`name`](#nodebpy.nodes.geometry.grid.VolumeCube.name)       |             |
 | [`node`](#nodebpy.nodes.geometry.grid.VolumeCube.node)       |             |
 | [`o`](#nodebpy.nodes.geometry.grid.VolumeCube.o)             |             |
@@ -2255,7 +2221,6 @@ Generate a mesh on the “surface” of a volume
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.grid.VolumeToMesh.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.VolumeToMesh.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.VolumeToMesh.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.VolumeToMesh.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.VolumeToMesh.o) |  |
@@ -2300,7 +2265,6 @@ Remove sparseness from a volume grid by making the active tiles into voxels
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.i) |  |
-| [`inputs`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.inputs) |  |
 | [`name`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.name) |  |
 | [`node`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.o) |  |

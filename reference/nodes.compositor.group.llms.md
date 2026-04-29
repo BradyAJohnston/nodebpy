@@ -21,7 +21,6 @@ Group node
 | Name                                                       | Description |
 |------------------------------------------------------------|-------------|
 | [`i`](#nodebpy.nodes.compositor.group.Group.i)             |             |
-| [`inputs`](#nodebpy.nodes.compositor.group.Group.inputs)   |             |
 | [`name`](#nodebpy.nodes.compositor.group.Group.name)       |             |
 | [`node`](#nodebpy.nodes.compositor.group.Group.node)       |             |
 | [`o`](#nodebpy.nodes.compositor.group.Group.o)             |             |
