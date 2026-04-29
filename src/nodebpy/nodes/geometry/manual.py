@@ -2,7 +2,7 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
 
 import bpy
-from bpy.types import NodeEvaluateClosure, NodeSocket, NodeSocketString
+from bpy.types import CurveMapPoints, NodeEvaluateClosure, NodeSocket, NodeSocketString
 
 from nodebpy.builder._registry import _get_socket_linker
 
@@ -123,6 +123,7 @@ __all__ = (
     "AttributeStatistic",
     "Frame",
     "Float",
+    "FloatCurve",
 )
 
 
@@ -133,6 +134,81 @@ def tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
 ) -> TreeBuilder:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
+
+
+class FloatCurve(BaseNode):
+    """
+    Map an input float to a curve and outputs a float value
+
+    Parameters
+    ----------
+    factor : InputFloat
+        Factor
+    value : InputFloat
+        Value
+
+    Inputs
+    ------
+    i.factor : FloatSocket
+        Factor
+    i.value : FloatSocket
+        Value
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    """
+
+    _bl_idname = "ShaderNodeFloatCurve"
+    node: bpy.types.ShaderNodeFloatCurve
+
+    class _Inputs(SocketAccessor):
+        factor: FloatSocket
+        """Factor"""
+        value: FloatSocket
+        """Value"""
+
+    class _Outputs(SocketAccessor):
+        value: FloatSocket
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        factor: InputFloat = 1.0,
+        value: InputFloat = 1.0,
+        *,
+        items: Iterable[
+            tuple[float, float]
+            | tuple[float, float, Literal["AUTO", "AUTO_CLAMPED", "VECTOR"]]
+        ] = (),
+    ):
+        super().__init__()
+        key_args = {"Factor": factor, "Value": value}
+
+        for i, item in enumerate(items):
+            if i < 2:
+                point = self.points[i]
+                point.location = item[:2]
+            else:
+                point = self.points.new(*item[:2])
+            if len(item) > 2:
+                point.handle_type = item[2]  # ty: ignore[index-out-of-bounds]
+
+        self._establish_links(**key_args)
+
+    @property
+    def points(self) -> CurveMapPoints:
+        mapping = self.node.mapping
+        assert mapping
+        return mapping.curves[0].points
 
 
 class EvaluateClosure(BaseNode):

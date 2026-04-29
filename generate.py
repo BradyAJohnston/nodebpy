@@ -125,6 +125,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "SampleCurve",
         "Frame",
         "Float",
+        "FloatCurve",
         "tree",
     ),
     class_name_prefix_strips=[

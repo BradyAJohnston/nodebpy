@@ -21,7 +21,6 @@ from ..geometry.converter import (
     ColorRamp,
     CombineBundle,
     CombineXYZ,
-    FloatCurve,
     JoinBundle,
     MapRange,
     Math,
@@ -36,6 +35,7 @@ from ..geometry.manual import (
     ClosureInput,
     ClosureOutput,
     EvaluateClosure,
+    FloatCurve,
     Value,
 )
 from ..geometry.texture import (
