@@ -445,7 +445,7 @@ def test_readme_tree():
 def test_auto_selection():
     with TreeBuilder(arrange=None) as tree:
         # this initializes the zone with two socket inputs for each of the values
-        zone = g.SimulationZone(g.Value(), g.Vector())
+        zone = g.SimulationZone({"Value": g.Value(), "Vector": g.Vector()})
 
         # this explicitly grabs the "Value" socket (which got it's name from the n.Value() node)
         # and adds 10 then attempts to plug it into the zone output (it will choose the float
@@ -512,7 +512,7 @@ def test_nested_trees():
                 group,
             )
 
-            _ = g.JoinGeometry(*items) >> tree2.outputs.geometry("Output")
+            _ = g.JoinGeometry(items) >> tree2.outputs.geometry("Output")
 
         group = g.Group()
         group.node.node_tree = tree2.tree
@@ -683,7 +683,7 @@ def test_add_all_nodes(module, tree_type, class_names):
 
 def test_iter_outputs():
     with TreeBuilder("IndexSwitch"):
-        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).o._values())
+        switch = g.IndexSwitch.float(items=g.SeparateXYZ(g.Position()).o._values())
 
     assert len(switch.node.outputs) == 1
     # 1 input for the index, another for the dynamic socket
@@ -694,7 +694,7 @@ def test_iter_outputs():
             _ = output >> tree.outputs.float(name)
 
     with TreeBuilder("MenuSwitch") as tree:
-        switch = g.MenuSwitch.float(**dict(g.SeparateXYZ().o._items()))
+        switch = g.MenuSwitch.float(items=dict(g.SeparateXYZ().o._items()))
 
     assert len(switch.i) == 5
 
