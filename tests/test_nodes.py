@@ -40,9 +40,11 @@ def test_capture_attribute():
         cap = g.Points(
             count=10, position=g.RandomValue.vector(), radius=g.RandomValue.float()
         ) >> g.CaptureAttribute.point(
-            g.Position(),
-            g.Radius(),
-            normal=g.Normal(),
+            items={
+                "Position": g.Position(),
+                "Radius": g.Radius(),
+                "Normal": g.Normal(),
+            }
         )
         assert len(cap.node.capture_items) == 3
         assert cap.i.normal.links[0].from_node.bl_idname == "GeometryNodeInputNormal"

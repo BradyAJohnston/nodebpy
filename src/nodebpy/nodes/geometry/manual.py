@@ -1199,14 +1199,11 @@ class CaptureAttribute(BaseNode, DynamicInputsMixin):
 
         def __call__(
             self,
-            *args: InputLinkable,
             geometry: InputGeometry = None,
-            **kwargs,
+            items: dict[str, InputLinkable] = {},
         ) -> "CaptureAttribute":
             """Create a CaptureAttribute node with a pre-set domain"""
-            return CaptureAttribute(
-                *args, geometry=geometry, domain=self._domain, **kwargs
-            )
+            return CaptureAttribute(geometry=geometry, domain=self._domain, items=items)
 
     point = _DomainFactory("POINT")
     edge = _DomainFactory("EDGE")
@@ -1234,15 +1231,15 @@ class CaptureAttribute(BaseNode, DynamicInputsMixin):
 
     def __init__(
         self,
-        *args: InputLinkable,
         geometry: InputGeometry = None,
+        items: dict[str, InputLinkable] = {},
+        *,
         domain: _AttributeDomains = "POINT",
-        **kwargs,
     ):
         super().__init__()
         key_args = {"Geometry": geometry}
         self.domain = domain
-        key_args.update(self._add_inputs(*args, **kwargs))
+        key_args.update(self._add_inputs(**items))
         self._establish_links(**key_args)
 
     def _add_socket(self, name: str, type: _AttributeDataTypes):
