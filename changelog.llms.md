@@ -1,6 +1,33 @@
 # Changelog
 
-## v0.14.0 - 2026-04-29
+## Unreleased
+
+### Enhancements
+
+- Boolean sockets have a `switch` method which creates a `Switch` node with the socket as the input. Allows for quick chaining.
+
+``` py
+b = tree.inputs.boolean()
+b.switch.float(0.1, 0.2)
+b.switch.geometry(g.Cube(), g.IcoSphere())
+```
+
+- Changes to some node methods to better align with naming inside of Geometry Nodes:
+  - `EvaluateAtIndex` & `EvaluateOnDomain`:
+    - `rotation` -\> `quaternion`
+    - `transform` -\> `matrix`
+  - `SampleIndex` & `SampelCurve`:
+    - `rotation` -\> `quaternion`
+- Handle adding items for the `ColorRamp` and `FloatCurve` nodes to create mappins of `0..1` floats to values and colors.
+
+### Bug Fixes
+
+- The `*Socket` classes have been added to the types for checking.
+- Inputs and outputs properly listed on the `ForEachGeometryElement` nodes.
+- `JoinString` links in the intended order (by first reversing the iterator before linking which is required for multi-input sockets).
+- `StoreNamedAttribute` has the `domain` and `data_type` factor methods properly exposed for `StoreNamedAttribute.face.vector()`.
+
+## v0.14.0
 
 ### Enhancements
 

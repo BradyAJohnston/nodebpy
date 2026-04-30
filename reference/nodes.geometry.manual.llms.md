@@ -10,6 +10,7 @@
 | [AttributeStatistic](#nodebpy.nodes.geometry.manual.AttributeStatistic) | Calculate statistics about a data set from a field evaluated on a geometry |
 | [Bake](#nodebpy.nodes.geometry.manual.Bake) | Cache the incoming data so that it can be used without recomputation |
 | [CaptureAttribute](#nodebpy.nodes.geometry.manual.CaptureAttribute) | Store the result of a field on a geometry and output the data as a node socket. |
+| [ColorRamp](#nodebpy.nodes.geometry.manual.ColorRamp) | Map values to colors with the use of a gradient |
 | [Compare](#nodebpy.nodes.geometry.manual.Compare) | Perform a comparison operation on the two given inputs |
 | [EvaluateAtIndex](#nodebpy.nodes.geometry.manual.EvaluateAtIndex) | Retrieve data of other elements in the context’s geometry |
 | [EvaluateClosure](#nodebpy.nodes.geometry.manual.EvaluateClosure) | Execute a given closure |
@@ -19,6 +20,7 @@
 | [FieldToGrid](#nodebpy.nodes.geometry.manual.FieldToGrid) | Create new grids by evaluating new values on an existing volume grid topology |
 | [FieldVariance](#nodebpy.nodes.geometry.manual.FieldVariance) | Calculate the standard deviation and variance of a given field |
 | [Float](#nodebpy.nodes.geometry.manual.Float) | Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper of the Value node. |
+| [FloatCurve](#nodebpy.nodes.geometry.manual.FloatCurve) | Map an input float to a curve and outputs a float value |
 | [FormatString](#nodebpy.nodes.geometry.manual.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
 | [Frame](#nodebpy.nodes.geometry.manual.Frame) |  |
 | [GeometryToInstance](#nodebpy.nodes.geometry.manual.GeometryToInstance) | Convert each input geometry into an instance, which can be much faster |
@@ -30,6 +32,8 @@
 | [MeshBoolean](#nodebpy.nodes.geometry.manual.MeshBoolean) | Cut, subtract, or join multiple mesh inputs |
 | [SDFGridBoolean](#nodebpy.nodes.geometry.manual.SDFGridBoolean) | Cut, subtract, or join multiple SDF volume grid inputs |
 | [SetHandleType](#nodebpy.nodes.geometry.manual.SetHandleType) | Set the handle type for the control points of a Bézier curve |
+| [StoreNamedAttribute](#nodebpy.nodes.geometry.manual.StoreNamedAttribute) | Store the result of a field on a geometry as an attribute with the specified name |
+| [Switch](#nodebpy.nodes.geometry.manual.Switch) | Switch between two inputs |
 | [Value](#nodebpy.nodes.geometry.manual.Value) | Input numerical values to other nodes in the tree |
 
 ### AccumulateField
@@ -208,6 +212,57 @@ capture(value)
 Capture the value to store in the attribute
 
 Return the SocketLinker for the output socket
+
+### ColorRamp
+
+``` python
+ColorRamp(
+    fac=0.5,
+    *,
+    items=(),
+    color_interpolation='EASE',
+    hue_interpolation='NEAR',
+    mode='RGB',
+)
+```
+
+Map values to colors with the use of a gradient
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| fac | InputFloat | Factor: Which is used to sample the ColorRamp for the output color. | `0.5` |
+| items | Iterable\[tuple\[float, tuple\[float, float, float float\]\]\] | Iterable of items which contain (position, color) which position being a 4-component float for values RGBA. Position is a value betwen `0..1`. | `()` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`color_interpolation`](#nodebpy.nodes.geometry.manual.ColorRamp.color_interpolation) |  |
+| [`elements`](#nodebpy.nodes.geometry.manual.ColorRamp.elements) |  |
+| [`hue_interpolation`](#nodebpy.nodes.geometry.manual.ColorRamp.hue_interpolation) |  |
+| [`i`](#nodebpy.nodes.geometry.manual.ColorRamp.i) |  |
+| [`mode`](#nodebpy.nodes.geometry.manual.ColorRamp.mode) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.ColorRamp.name) |  |
+| [`node`](#nodebpy.nodes.geometry.manual.ColorRamp.node) |  |
+| [`o`](#nodebpy.nodes.geometry.manual.ColorRamp.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.manual.ColorRamp.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.ColorRamp.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.manual.ColorRamp.type) |  |
+
+**Inputs**
+
+| Attribute | Type | Description |
+|----|----|----|
+| `i.fac` | `FloatSocket` | Factor: The input value between `0..1` which maps to the final color value. |
+
+**Outputs**
+
+| Attribute | Type | Description |
+|----|----|----|
+| `o.color` | `ColorSocket` | Color: The mapped color value based in the input `fac`. |
+| `o.alpha` | `FloatSocket` | Alpha: The mapped alpha of the color based on the input `fac`. |
 
 ### Compare
 
@@ -426,13 +481,11 @@ FieldToGrid(topology=None, items={}, *, data_type='FLOAT')
 
 Create new grids by evaluating new values on an existing volume grid topology
 
-New socket items for field evaluation are first created from \*args then \*\*kwargs to give specific names to the items.
-
 Data types are inferred automatically from the closest compatible data type.
 
 #### Inputs:
 
-topology: InputLinkable The grid which contains the topology to evaluate the different fields on. data_type: \_GridDataTypes = “FLOAT” The data type of the grid to evaluate on. Possible values are “FLOAT”, “INT”, “VECTOR”, “BOOLEAN”. \*args: InputFloat \| InputVector \| InputInteger \| InputBoolean The fields to evaluate on the grid. \*\*kwargs: dict\[str, InputFloat \| InputVector \| InputInteger \| InputGeometry\] The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.
+topology: InputLinkable The grid which contains the topology to evaluate the different fields on. items: dict\[str, InputAny\] The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket. data_type: \_GridDataTypes = “FLOAT” The data type of the grid to evaluate on. Possible values are “FLOAT”, “INT”, “VECTOR”, “BOOLEAN”.
 
 #### Attributes
 
@@ -542,6 +595,48 @@ Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper o
 | [`tree`](#nodebpy.nodes.geometry.manual.Float.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.Float.type) |  |
 | [`value`](#nodebpy.nodes.geometry.manual.Float.value) | Input socket: Value |
+
+### FloatCurve
+
+``` python
+FloatCurve(factor=1.0, value=1.0, *, items=())
+```
+
+Map an input float to a curve and outputs a float value
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| factor | InputFloat | Factor | `1.0` |
+| value | InputFloat | Value | `1.0` |
+| items | Iterable\[tuple\[float, float\] \| tuple\[float, float, Literal\['AUTO', 'AUTO_CLAMPED', 'VECTOR'\]\]\] | An iterable which contains items `(x, y, Optional[handle_type])`. The position values are between `0..1` and map the input `value` to the output `value` from the resulting curve interpolation. | `()` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.manual.FloatCurve.i) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FloatCurve.name) |  |
+| [`node`](#nodebpy.nodes.geometry.manual.FloatCurve.node) |  |
+| [`o`](#nodebpy.nodes.geometry.manual.FloatCurve.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.manual.FloatCurve.outputs) |  |
+| [`points`](#nodebpy.nodes.geometry.manual.FloatCurve.points) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.FloatCurve.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.manual.FloatCurve.type) |  |
+
+**Inputs**
+
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `i.factor` | `FloatSocket` | Factor      |
+| `i.value`  | `FloatSocket` | Value       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.value` | `FloatSocket` | Value       |
 
 ### FormatString
 
@@ -1104,6 +1199,268 @@ Set the handle type for the control points of a Bézier curve
 | [`right`](#nodebpy.nodes.geometry.manual.SetHandleType.right) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.SetHandleType.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.manual.SetHandleType.type) |  |
+
+### StoreNamedAttribute
+
+``` python
+StoreNamedAttribute(
+    geometry=None,
+    selection=True,
+    name='',
+    value=0.0,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
+```
+
+Store the result of a field on a geometry as an attribute with the specified name
+
+#### Parameters
+
+| Name      | Type          | Description | Default |
+|-----------|---------------|-------------|---------|
+| geometry  | InputGeometry | Geometry    | `None`  |
+| selection | InputBoolean  | Selection   | `True`  |
+| name      | InputString   | Name        | `''`    |
+| value     | InputFloat    | Value       | `0.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`corner`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.corner) |  |
+| [`data_type`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.data_type) |  |
+| [`domain`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.domain) |  |
+| [`edge`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.edge) |  |
+| [`face`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.face) |  |
+| [`i`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.i) |  |
+| [`instance`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.instance) |  |
+| [`layer`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.layer) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.name) |  |
+| [`node`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.node) |  |
+| [`o`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.outputs) |  |
+| [`point`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.point) |  |
+| [`spline`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.spline) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.type) |  |
+
+**Inputs**
+
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `i.geometry`  | `GeometrySocket` | Geometry    |
+| `i.selection` | `BooleanSocket`  | Selection   |
+| `i.name`      | `StringSocket`   | Name        |
+| `i.value`     | `FloatSocket`    | Value       |
+
+**Outputs**
+
+| Attribute    | Type             | Description |
+|--------------|------------------|-------------|
+| `o.geometry` | `GeometrySocket` | Geometry    |
+
+### Switch
+
+``` python
+Switch(switch=False, false=None, true=None, *, input_type='FLOAT')
+```
+
+Switch between two inputs
+
+#### Parameters
+
+| Name   | Type         | Description | Default |
+|--------|--------------|-------------|---------|
+| switch | InputBoolean | Switch      | `False` |
+| false  | InputFloat   | False       | `None`  |
+| true   | InputFloat   | True        | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.manual.Switch.i) |  |
+| [`input_type`](#nodebpy.nodes.geometry.manual.Switch.input_type) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Switch.name) |  |
+| [`node`](#nodebpy.nodes.geometry.manual.Switch.node) |  |
+| [`o`](#nodebpy.nodes.geometry.manual.Switch.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.manual.Switch.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.Switch.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.manual.Switch.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.manual.Switch.boolean) | Create Switch with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.manual.Switch.bundle) | Create Switch with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.manual.Switch.closure) | Create Switch with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.manual.Switch.collection) | Create Switch with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.manual.Switch.color) | Create Switch with operation ‘Color’. |
+| [float](#nodebpy.nodes.geometry.manual.Switch.float) | Create Switch with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.manual.Switch.font) | Create Switch with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.manual.Switch.geometry) | Create Switch with operation ‘Geometry’. |
+| [image](#nodebpy.nodes.geometry.manual.Switch.image) | Create Switch with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.manual.Switch.integer) | Create Switch with operation ‘Integer’. |
+| [material](#nodebpy.nodes.geometry.manual.Switch.material) | Create Switch with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.manual.Switch.matrix) | Create Switch with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.manual.Switch.menu) | Create Switch with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.manual.Switch.object) | Create Switch with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.manual.Switch.rotation) | Create Switch with operation ‘Rotation’. |
+| [string](#nodebpy.nodes.geometry.manual.Switch.string) | Create Switch with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.manual.Switch.vector) | Create Switch with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(switch=False, false=False, true=False)
+```
+
+Create Switch with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Collection’.
+
+##### color
+
+``` python
+color(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Color’.
+
+##### float
+
+``` python
+float(switch=False, false=0.0, true=0.0)
+```
+
+Create Switch with operation ‘Float’.
+
+##### font
+
+``` python
+font(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Geometry’.
+
+##### image
+
+``` python
+image(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(switch=False, false=0, true=0)
+```
+
+Create Switch with operation ‘Integer’.
+
+##### material
+
+``` python
+material(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Menu’.
+
+##### object
+
+``` python
+object(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Rotation’.
+
+##### string
+
+``` python
+string(switch=False, false='', true='')
+```
+
+Create Switch with operation ‘String’.
+
+##### vector
+
+``` python
+vector(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute  | Type            | Description |
+|------------|-----------------|-------------|
+| `i.switch` | `BooleanSocket` | Switch      |
+| `i.false`  | `FloatSocket`   | False       |
+| `i.true`   | `FloatSocket`   | True        |
+
+**Outputs**
+
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.output` | `FloatSocket` | Output      |
 
 ### Value
 

@@ -13,7 +13,6 @@
 | [Blackbody](#nodebpy.nodes.geometry.converter.Blackbody) | Convert a blackbody temperature to an RGB value |
 | [BooleanMath](#nodebpy.nodes.geometry.converter.BooleanMath) | Perform a logical operation on the given boolean inputs |
 | [Clamp](#nodebpy.nodes.geometry.converter.Clamp) | Clamp a value between a minimum and a maximum |
-| [ColorRamp](#nodebpy.nodes.geometry.converter.ColorRamp) | Map values to colors with the use of a gradient |
 | [CombineBundle](#nodebpy.nodes.geometry.converter.CombineBundle) | Combine multiple socket values into one. |
 | [CombineColor](#nodebpy.nodes.geometry.converter.CombineColor) | Combine four channels into a single color, based on a particular color model |
 | [CombineMatrix](#nodebpy.nodes.geometry.converter.CombineMatrix) | Construct a 4x4 matrix from its individual values |
@@ -21,7 +20,6 @@
 | [CombineXYZ](#nodebpy.nodes.geometry.converter.CombineXYZ) | Create a vector from X, Y, and Z components |
 | [EulerToRotation](#nodebpy.nodes.geometry.converter.EulerToRotation) | Build a rotation from separate angles around each axis |
 | [FindInString](#nodebpy.nodes.geometry.converter.FindInString) | Find the number of times a given string occurs in another string and the position of the first match |
-| [FloatCurve](#nodebpy.nodes.geometry.converter.FloatCurve) | Map an input float to a curve and outputs a float value |
 | [FloatToInteger](#nodebpy.nodes.geometry.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
 | [GetBundleItem](#nodebpy.nodes.geometry.converter.GetBundleItem) | Retrieve a bundle item by path. |
 | [HashValue](#nodebpy.nodes.geometry.converter.HashValue) | Generate a randomized integer using the given input value as a seed |
@@ -57,7 +55,6 @@
 | [StoreBundleItem](#nodebpy.nodes.geometry.converter.StoreBundleItem) | Store a bundle item by path and data type. |
 | [StringLength](#nodebpy.nodes.geometry.converter.StringLength) | Output the number of characters in the given string |
 | [StringToValue](#nodebpy.nodes.geometry.converter.StringToValue) | Derive a numeric value from a given string representation |
-| [Switch](#nodebpy.nodes.geometry.converter.Switch) | Switch between two inputs |
 | [TransformDirection](#nodebpy.nodes.geometry.converter.TransformDirection) | Apply a transformation matrix (excluding translation) to the given vector |
 | [TransformPoint](#nodebpy.nodes.geometry.converter.TransformPoint) | Apply a transformation matrix to the given vector |
 | [TransposeMatrix](#nodebpy.nodes.geometry.converter.TransposeMatrix) | Flip a matrix over its diagonal, turning columns into rows and vice-versa |
@@ -538,45 +535,6 @@ Create Clamp with operation ‘Range’. Constrain value between min and max, sw
 |------------|---------------|-------------|
 | `o.result` | `FloatSocket` | Result      |
 
-### ColorRamp
-
-``` python
-ColorRamp(fac=0.5)
-```
-
-Map values to colors with the use of a gradient
-
-#### Parameters
-
-| Name | Type       | Description | Default |
-|------|------------|-------------|---------|
-| fac  | InputFloat | Factor      | `0.5`   |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`i`](#nodebpy.nodes.geometry.converter.ColorRamp.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ColorRamp.name) |  |
-| [`node`](#nodebpy.nodes.geometry.converter.ColorRamp.node) |  |
-| [`o`](#nodebpy.nodes.geometry.converter.ColorRamp.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ColorRamp.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ColorRamp.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ColorRamp.type) |  |
-
-**Inputs**
-
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.fac`   | `FloatSocket` | Factor      |
-
-**Outputs**
-
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.color` | `ColorSocket` | Color       |
-| `o.alpha` | `FloatSocket` | Alpha       |
-
 ### CombineBundle
 
 ``` python
@@ -928,46 +886,6 @@ Find the number of times a given string occurs in another string and the positio
 |-----------------|-----------------|-------------|
 | `o.first_found` | `IntegerSocket` | First Found |
 | `o.count`       | `IntegerSocket` | Count       |
-
-### FloatCurve
-
-``` python
-FloatCurve(factor=1.0, value=1.0)
-```
-
-Map an input float to a curve and outputs a float value
-
-#### Parameters
-
-| Name   | Type       | Description | Default |
-|--------|------------|-------------|---------|
-| factor | InputFloat | Factor      | `1.0`   |
-| value  | InputFloat | Value       | `1.0`   |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`i`](#nodebpy.nodes.geometry.converter.FloatCurve.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.FloatCurve.name) |  |
-| [`node`](#nodebpy.nodes.geometry.converter.FloatCurve.node) |  |
-| [`o`](#nodebpy.nodes.geometry.converter.FloatCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FloatCurve.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.FloatCurve.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.FloatCurve.type) |  |
-
-**Inputs**
-
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `i.factor` | `FloatSocket` | Factor      |
-| `i.value`  | `FloatSocket` | Value       |
-
-**Outputs**
-
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.value` | `FloatSocket` | Value       |
 
 ### FloatToInteger
 
@@ -3818,207 +3736,6 @@ Create String to Value with operation ‘Integer’. 32-bit integer
 |------------|-----------------|-------------|
 | `o.value`  | `FloatSocket`   | Value       |
 | `o.length` | `IntegerSocket` | Length      |
-
-### Switch
-
-``` python
-Switch(switch=False, false=0.0, true=0.0, *, input_type='FLOAT')
-```
-
-Switch between two inputs
-
-#### Parameters
-
-| Name   | Type         | Description | Default |
-|--------|--------------|-------------|---------|
-| switch | InputBoolean | Switch      | `False` |
-| false  | InputFloat   | False       | `0.0`   |
-| true   | InputFloat   | True        | `0.0`   |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`i`](#nodebpy.nodes.geometry.converter.Switch.i) |  |
-| [`input_type`](#nodebpy.nodes.geometry.converter.Switch.input_type) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.Switch.name) |  |
-| [`node`](#nodebpy.nodes.geometry.converter.Switch.node) |  |
-| [`o`](#nodebpy.nodes.geometry.converter.Switch.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.Switch.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.Switch.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.Switch.type) |  |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [boolean](#nodebpy.nodes.geometry.converter.Switch.boolean) | Create Switch with operation ‘Boolean’. |
-| [bundle](#nodebpy.nodes.geometry.converter.Switch.bundle) | Create Switch with operation ‘Bundle’. |
-| [closure](#nodebpy.nodes.geometry.converter.Switch.closure) | Create Switch with operation ‘Closure’. |
-| [collection](#nodebpy.nodes.geometry.converter.Switch.collection) | Create Switch with operation ‘Collection’. |
-| [color](#nodebpy.nodes.geometry.converter.Switch.color) | Create Switch with operation ‘Color’. |
-| [float](#nodebpy.nodes.geometry.converter.Switch.float) | Create Switch with operation ‘Float’. |
-| [font](#nodebpy.nodes.geometry.converter.Switch.font) | Create Switch with operation ‘Font’. |
-| [geometry](#nodebpy.nodes.geometry.converter.Switch.geometry) | Create Switch with operation ‘Geometry’. |
-| [image](#nodebpy.nodes.geometry.converter.Switch.image) | Create Switch with operation ‘Image’. |
-| [integer](#nodebpy.nodes.geometry.converter.Switch.integer) | Create Switch with operation ‘Integer’. |
-| [material](#nodebpy.nodes.geometry.converter.Switch.material) | Create Switch with operation ‘Material’. |
-| [matrix](#nodebpy.nodes.geometry.converter.Switch.matrix) | Create Switch with operation ‘Matrix’. |
-| [menu](#nodebpy.nodes.geometry.converter.Switch.menu) | Create Switch with operation ‘Menu’. |
-| [object](#nodebpy.nodes.geometry.converter.Switch.object) | Create Switch with operation ‘Object’. |
-| [rotation](#nodebpy.nodes.geometry.converter.Switch.rotation) | Create Switch with operation ‘Rotation’. |
-| [string](#nodebpy.nodes.geometry.converter.Switch.string) | Create Switch with operation ‘String’. |
-| [vector](#nodebpy.nodes.geometry.converter.Switch.vector) | Create Switch with operation ‘Vector’. |
-
-##### boolean
-
-``` python
-boolean(switch=False, false=False, true=False)
-```
-
-Create Switch with operation ‘Boolean’.
-
-##### bundle
-
-``` python
-bundle(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Bundle’.
-
-##### closure
-
-``` python
-closure(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Closure’.
-
-##### collection
-
-``` python
-collection(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Collection’.
-
-##### color
-
-``` python
-color(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Color’.
-
-##### float
-
-``` python
-float(switch=False, false=0.0, true=0.0)
-```
-
-Create Switch with operation ‘Float’.
-
-##### font
-
-``` python
-font(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Font’.
-
-##### geometry
-
-``` python
-geometry(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Geometry’.
-
-##### image
-
-``` python
-image(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Image’.
-
-##### integer
-
-``` python
-integer(switch=False, false=0, true=0)
-```
-
-Create Switch with operation ‘Integer’.
-
-##### material
-
-``` python
-material(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Material’.
-
-##### matrix
-
-``` python
-matrix(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Matrix’.
-
-##### menu
-
-``` python
-menu(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Menu’.
-
-##### object
-
-``` python
-object(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Object’.
-
-##### rotation
-
-``` python
-rotation(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Rotation’.
-
-##### string
-
-``` python
-string(switch=False, false='', true='')
-```
-
-Create Switch with operation ‘String’.
-
-##### vector
-
-``` python
-vector(switch=False, false=None, true=None)
-```
-
-Create Switch with operation ‘Vector’.
-
-**Inputs**
-
-| Attribute  | Type            | Description |
-|------------|-----------------|-------------|
-| `i.switch` | `BooleanSocket` | Switch      |
-| `i.false`  | `FloatSocket`   | False       |
-| `i.true`   | `FloatSocket`   | True        |
-
-**Outputs**
-
-| Attribute  | Type          | Description |
-|------------|---------------|-------------|
-| `o.output` | `FloatSocket` | Output      |
 
 ### TransformDirection
 

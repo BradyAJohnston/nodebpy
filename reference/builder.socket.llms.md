@@ -65,6 +65,7 @@ Runtime boolean socket wrapper.
 | [`node`](#nodebpy.builder.socket.BooleanSocket.node) |  |
 | [`socket`](#nodebpy.builder.socket.BooleanSocket.socket) |  |
 | [`socket_name`](#nodebpy.builder.socket.BooleanSocket.socket_name) |  |
+| [`switch`](#nodebpy.builder.socket.BooleanSocket.switch) | Creat a Switch node with this boolean as the `switch` input. |
 | [`tree`](#nodebpy.builder.socket.BooleanSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.BooleanSocket.type) |  |
 
