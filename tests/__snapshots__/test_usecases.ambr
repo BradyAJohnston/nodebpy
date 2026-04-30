@@ -1,0 +1,49 @@
+# serializer version: 1
+# name: test_import_microscopy_meshes_node_group
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Format String"):::converter-node
+      N2("String"):::input-node
+      N3("String"):::input-node
+      N4("Join Strings"):::converter-node
+      N5("Join Strings"):::converter-node
+      N6("Import OBJ"):::input-node
+      N7("Import CSV"):::input-node
+      N8("Named Attribute"):::input-node
+      N9("For Each Geometry Element Input"):::default-node
+      N10("Sample Index"):::geometry-node
+      N11("Store Named Attribute"):::default-node
+      N12("For Each Geometry Element Output"):::default-node
+      N13("Transform Geometry"):::geometry-node
+      N14("Switch"):::converter-node
+      N15("Group Output"):::default-node
+      N0 -->|"template_str->Format"| N1
+      N0 -->|"cache_dir->cache_dir"| N1
+      N0 -->|"dataset_hash->dataset_hash"| N1
+      N0 -->|"scale->scale"| N1
+      N0 -->|"resolution->resolution"| N1
+      N0 -->|"channel_ix->channel_ix"| N1
+      N0 -->|"t->Frame"| N1
+      N3 -->|"String->Strings"| N5
+      N5 -->|"String->Path"| N7
+      N2 -->|"String->Strings"| N4
+      N1 -->|"String->Strings"| N4
+      N4 -->|"String->Path"| N6
+      N6 -->|"Instances->Geometry"| N9
+      N7 -->|"Point Cloud->Geometry"| N10
+      N8 -->|"Attribute->Value"| N10
+      N9 -->|"Index->Index"| N10
+      N10 -->|"Value->Value"| N11
+      N11 -->|"Geometry->Geometry"| N12
+      N12 -->|"Geometry->Geometry"| N13
+      N0 -->|"Include->Switch"| N14
+      N13 -->|"Geometry->True"| N14
+      N14 -->|"Output->Geometry"| N15
+      N0 -->|"Channel Affine Matrix->Transform"| N13
+      N9 -->|"Element->Geometry"| N11
+      N1 -->|"String->Strings"| N5
+  ```
+  '''
+# ---

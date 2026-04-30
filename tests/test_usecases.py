@@ -483,7 +483,7 @@ def test_import_microscopy_meshes():
         return node_group
 
 
-def test_import_microscopy_meshes_node_group():
+def test_import_microscopy_meshes_node_group(snapshot):
     with g.tree("Import Microscopy Meshes") as tree:
         include = tree.inputs.boolean("Include")
         template_str = tree.inputs.string("template_str")
@@ -525,3 +525,4 @@ def test_import_microscopy_meshes_node_group():
             >> g.Switch.geometry(include, None, ...)
             >> tree.outputs.geometry()
         )
+    assert snapshot == tree._repr_markdown_()
