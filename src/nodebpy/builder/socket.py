@@ -30,7 +30,7 @@ from bpy.types import (
 )
 from mathutils import Euler
 
-from ..types import SOCKET_TYPES, InputFloat, InputGeometry
+from ..types import SOCKET_TYPES, InputFloat, InputGeometry, InputInteger, InputVector
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
 from ._utils import _NodeLike, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
@@ -594,13 +594,29 @@ class _BooleanMixin(BaseSocket):
         def __init__(self, socket: NodeSocketBool):
             self._socket = socket
 
-        def float(self, false: InputFloat, true: InputFloat) -> "Switch[FloatSocket]":
+        def float(
+            self, false: InputFloat = None, true: InputFloat = None
+        ) -> "Switch[FloatSocket]":
             from ..nodes.geometry import Switch
 
             return Switch.float(self._socket, false, true)
 
+        def integer(
+            self, false: InputInteger = None, true: InputInteger = None
+        ) -> "Switch[IntegerSocket]":
+            from ..nodes.geometry import Switch
+
+            return Switch.integer(self._socket, false, true)
+
+        def vector(
+            self, false: InputVector = None, true: InputVector = None
+        ) -> "Switch[VectorSocket]":
+            from ..nodes.geometry import Switch
+
+            return Switch.vector(self._socket, false, true)
+
         def geometry(
-            self, false: InputGeometry, true: InputGeometry
+            self, false: InputGeometry = None, true: InputGeometry = None
         ) -> "Switch[GeometrySocket]":
             from ..nodes.geometry import Switch
 

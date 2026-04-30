@@ -571,6 +571,9 @@ def test_import_microscopy_volume_nodebpy_node_group(snapshot):
     assert snapshot == tree._repr_markdown_()
 
 
+g.Compare.float.equal().o.result.switch.vector()
+
+
 def test_import_microscopy_volume_node_group():
     GROUP_NAME = "Import Microscopy Volume"
 
