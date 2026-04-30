@@ -126,3 +126,43 @@ def test_panel_context_clears_after_exit():
         outside = next(i for i in items if getattr(i, "name", None) == "Outside")
         assert inside.parent == panel
         assert outside.parent != panel
+
+
+
+with TreeBuilder("Outline") as tree:
+    geo_in = tree.inputs.geometry()
+    geo_out = tree.outputs.geometry()
+
+    outline_near = tree.inputs.float("Outline Near", 0.005)
+    outline_far = tree.inputs.float("Outline Far", 0.02)
+    near_dist = tree.inputs.float("Near Distance", 1.0)
+    far_dist = tree.inputs.float("Far Distance", 20.0)
+
+    # ── Camera data ────────────────────────────────────────────────────────────
+    cam_obj = g.ActiveCamera().o.active_camera
+    cam_loc = g.ObjectInfo(cam_obj).o.location
+    cam_info = g.CameraInfo(cam_obj)
+
+    # column_2_row_2 = P[1][1] = cot(fov/2) — equivalent of unity_CameraProjection[1].y
+    fov_factor = g.SeparateMatrix(cam_info.o.projection_matrix).o.column_2_row_2
+
+    # ── Per-vertex distance from camera ────────────────────────────────────────
+    dist = g.VectorMath.length(g.Position() - cam_loc).o.value
+
+    # ── Smoothstep rolloff → outline size ──────────────────────────────────────
+    # MapRange SMOOTHSTEP replaces smoothstep() + lerp() in one node
+    outline_size = g.MapRange.smooth_step(
+        value=dist,
+        from_min=near_dist,
+        from_max=far_dist,
+        to_min=outline_near,
+        to_max=outline_far,
+    )
+
+    # ── Perspective compensation ────────────────────────────────────────────────
+    # HLSL extrudes in clip-space (screen units); GN extrudes in world-space.
+    # To match: world_offset = screen_size × dist / P[1][1]
+    world_offset = outline_size * dist / fov_factor
+
+    # ── Extrude geometry along surface normal ──────────────────────────────────
+    g.SetPosition(geo_in, offset=g.Normal().o.normal * world_offset) >> geo_out

@@ -1,7 +1,6 @@
-from . import diagram, nodes
-from .builder import (
-    TreeBuilder,
-)
+from . import nodes, diagram, codegen
+from .builder import TreeBuilder
+
 from .nodes import compositor, geometry, shader
 
 __all__ = [
@@ -10,5 +9,6 @@ __all__ = [
     "geometry",
     "shader",
     "diagram",
+    "codegen",
     "TreeBuilder",
 ]
