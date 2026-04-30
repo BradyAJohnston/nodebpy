@@ -2050,14 +2050,14 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
                 value, index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-        def rotation(
+        def quaternion(
             self, value: InputRotation = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[RotationSocket]":
             return EvaluateAtIndex(
                 value, index, domain=self._domain, data_type="QUATERNION"
             )
 
-        def transform(
+        def matrix(
             self, value: InputMatrix = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[MatrixSocket]":
             return EvaluateAtIndex(
@@ -2367,9 +2367,7 @@ class EvaluateOnDomain(BaseNode, Generic[_T]):
         ) -> "EvaluateOnDomain[RotationSocket]":
             return EvaluateOnDomain(value, domain=self._domain, data_type="QUATERNION")
 
-        def transform(
-            self, value: InputMatrix = None
-        ) -> "EvaluateOnDomain[MatrixSocket]":
+        def matrix(self, value: InputMatrix = None) -> "EvaluateOnDomain[MatrixSocket]":
             return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT4X4")
 
     point = _EvaluateOnDomainDomainFactory("POINT")
@@ -3257,7 +3255,7 @@ class SampleCurve(BaseNode, Generic[_T]):
                 use_all_curves=use_all_curves,
             )
 
-        def rotation(
+        def quaternion(
             self,
             curves: InputGeometry = None,
             value: InputRotation = (0.0, 0.0, 0.0),

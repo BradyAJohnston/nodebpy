@@ -467,7 +467,7 @@ def test_accumulate_field():
         cube = g.Cube()
         aatr = g.AxisAngleToRotation(angle=1.0)
         tran = g.AccumulateField.point.transform(
-            g.EvaluateAtIndex.point.rotation(aatr, g.Index() - int(1))
+            g.EvaluateAtIndex.point.quaternion(aatr, g.Index() - int(1))
         )
         _ = cube >> g.SetPosition(
             position=g.TransformPoint(g.Position(), tran.o.trailing),
@@ -852,7 +852,7 @@ def test_manual_field_factories():
         assert eai.domain == "FACE"
         assert eai.data_type == "FLOAT"
 
-        eai = g.EvaluateAtIndex.face.transform()
+        eai = g.EvaluateAtIndex.face.matrix()
         assert eai.domain == "FACE"
         assert eai.data_type == "FLOAT4X4"
 
@@ -920,7 +920,7 @@ def test_manual_field_factories():
         assert eod.domain == "EDGE"
         assert eod.data_type == "QUATERNION"
 
-        eod = g.EvaluateOnDomain.edge.transform()
+        eod = g.EvaluateOnDomain.edge.matrix()
         assert eod.domain == "EDGE"
         assert eod.data_type == "FLOAT4X4"
 
@@ -1312,7 +1312,7 @@ def test_sample_curve():
         assert sc.data_type == "FLOAT4X4"
         assert sc.mode == "FACTOR"
 
-        sc = g.SampleCurve.factor.rotation()
+        sc = g.SampleCurve.factor.quaternion()
         assert sc.data_type == "QUATERNION"
         assert sc.mode == "FACTOR"
 
