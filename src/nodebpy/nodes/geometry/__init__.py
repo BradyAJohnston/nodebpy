@@ -10,7 +10,6 @@ from .manual import (
     JoinGeometry,
     SDFGridBoolean,
     Bake,
-    JoinStrings,
     GeometryToInstance,
     RepeatInput,
     RepeatOutput,
@@ -26,6 +25,7 @@ from .manual import (
     ClosureOutput,
     ClosureZone,
     FormatString,
+    JoinStrings,
     Collection,
     Material,
     Object,
@@ -43,6 +43,9 @@ from .manual import (
     SampleCurve,
     Frame,
     Float,
+    FloatCurve,
+    ColorRamp,
+    StoreNamedAttribute,
     tree,
 )
 from .converter import (
@@ -53,7 +56,6 @@ from .converter import (
     Blackbody,
     BooleanMath,
     Clamp,
-    ColorRamp,
     CombineBundle,
     CombineColor,
     CombineMatrix,
@@ -61,7 +63,6 @@ from .converter import (
     CombineXYZ,
     EulerToRotation,
     FindInString,
-    FloatCurve,
     FloatToInteger,
     GetBundleItem,
     HashValue,
@@ -186,7 +187,6 @@ from .attribute import (
     BlurAttribute,
     DomainSize,
     RemoveNamedAttribute,
-    StoreNamedAttribute,
 )
 from .geometry import (
     Arc,
@@ -520,6 +520,7 @@ __all__ = (
     "IsViewport",
     "JoinBundle",
     "JoinGeometry",
+    "JoinStrings",
     "JoinStrings",
     "LinearGizmo",
     "MagicTexture",

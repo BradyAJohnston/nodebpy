@@ -33,6 +33,27 @@ from bpy.types import (
 from mathutils import Euler
 
 if typing.TYPE_CHECKING:
+    from nodebpy.builder import (
+        BooleanSocket,
+        BundleSocket,
+        ClosureSocket,
+        CollectionSocket,
+        ColorSocket,
+        FloatSocket,
+        FontSocket,
+        GeometrySocket,
+        ImageSocket,
+        IntegerSocket,
+        MaterialSocket,
+        MatrixSocket,
+        MenuSocket,
+        ObjectSocket,
+        RotationSocket,
+        ShaderSocket,
+        StringSocket,
+        VectorSocket,
+    )
+
     from .builder import BaseNode as BaseNode
     from .builder import Socket as SocketLinker
 
@@ -45,10 +66,16 @@ def _is_default_value(value: InputAny):
 InputLinkable = typing.Union["BaseNode", "SocketLinker", NodeSocket, None, EllipsisType]
 
 InputFloat = typing.Union[
-    float, int, NodeSocketFloat, NodeSocketInt, NodeSocketVector, InputLinkable
+    float,
+    int,
+    NodeSocketFloat,
+    NodeSocketInt,
+    NodeSocketVector,
+    InputLinkable,
+    "FloatSocket",
 ]
-InputInteger = typing.Union[int, NodeSocketInt, InputLinkable]
-InputBoolean = typing.Union[bool, NodeSocketBool, InputLinkable]
+InputInteger = typing.Union[int, NodeSocketInt, InputLinkable, "IntegerSocket"]
+InputBoolean = typing.Union[bool, NodeSocketBool, InputLinkable, "BooleanSocket"]
 InputVector = typing.Union[
     tuple[float, float, float],
     float,
@@ -59,9 +86,10 @@ InputVector = typing.Union[
     NodeSocketVector,
     NodeSocketInt,
     InputLinkable,
+    "VectorSocket",
 ]
 InputRotation = typing.Union[
-    tuple[float, float, float], float, int, Euler, InputLinkable
+    tuple[float, float, float], float, int, Euler, InputLinkable, "RotationSocket"
 ]
 InputColor = typing.Union[
     tuple[float, float, float, float],
@@ -70,25 +98,45 @@ InputColor = typing.Union[
     float,
     int,
     InputLinkable,
+    "ColorSocket",
 ]
-InputString = typing.Union[str, NodeSocketString, InputLinkable]
-InputGeometry = typing.Union[NodeSocketGeometry, InputLinkable]
-InputObject = typing.Union[NodeSocketObject, Object, InputLinkable]
-InputMaterial = typing.Union[NodeSocketMaterial, Material, InputLinkable]
-InputImage = typing.Union[NodeSocketImage, Image, InputLinkable]
-InputCollection = typing.Union[Collection, NodeSocketCollection, InputLinkable]
-InputMatrix = typing.Union[NodeSocketMatrix, NodeSocketRotation, InputLinkable]
-InputMenu = typing.Union[str, NodeSocketMenu, InputLinkable]
-InputBundle = typing.Union[NodeSocketBundle, InputLinkable]
-InputClosure = typing.Union[NodeSocketClosure, InputLinkable]
+InputString = typing.Union[str, NodeSocketString, InputLinkable, "StringSocket"]
+InputGeometry = typing.Union[NodeSocketGeometry, InputLinkable, "GeometrySocket"]
+InputObject = typing.Union[NodeSocketObject, Object, InputLinkable, "ObjectSocket"]
+InputMaterial = typing.Union[
+    NodeSocketMaterial, Material, InputLinkable, "MaterialSocket"
+]
+InputImage = typing.Union[NodeSocketImage, Image, InputLinkable, "ImageSocket"]
+InputCollection = typing.Union[
+    Collection, NodeSocketCollection, InputLinkable, "CollectionSocket"
+]
+InputMatrix = typing.Union[
+    NodeSocketMatrix, NodeSocketRotation, InputLinkable, "MatrixSocket"
+]
+InputMenu = typing.Union[str, NodeSocketMenu, InputLinkable, "MenuSocket"]
+InputBundle = typing.Union[NodeSocketBundle, InputLinkable, "BundleSocket"]
+InputClosure = typing.Union[NodeSocketClosure, InputLinkable, "ClosureSocket"]
 InputShader = typing.Union[
-    NodeSocketShader, NodeSocketColor, NodeSocketVector, NodeSocketFloat, InputLinkable
+    NodeSocketShader,
+    NodeSocketColor,
+    NodeSocketVector,
+    NodeSocketFloat,
+    InputLinkable,
+    "ShaderSocket",
 ]
-InputFont = typing.Union[NodeSocketFont, InputLinkable, VectorFont]
+InputFont = typing.Union[NodeSocketFont, InputLinkable, VectorFont, "FontSocket"]
 
 
 InputGrid = typing.Union[
-    NodeSocketFloat, NodeSocketInt, NodeSocketVector, NodeSocketBool, InputLinkable
+    NodeSocketFloat,
+    NodeSocketInt,
+    NodeSocketVector,
+    NodeSocketBool,
+    InputLinkable,
+    "FloatSocket",
+    "IntegerSocket",
+    "VectorSocket",
+    "BooleanSocket",
 ]
 
 InputAny = typing.Union[

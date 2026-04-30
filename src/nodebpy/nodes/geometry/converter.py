@@ -620,55 +620,6 @@ class Clamp(BaseNode):
         self.node.clamp_type = value
 
 
-class ColorRamp(BaseNode):
-    """
-    Map values to colors with the use of a gradient
-
-    Parameters
-    ----------
-    fac : InputFloat
-        Factor
-
-    Inputs
-    ------
-    i.fac : FloatSocket
-        Factor
-
-    Outputs
-    -------
-    o.color : ColorSocket
-        Color
-    o.alpha : FloatSocket
-        Alpha
-    """
-
-    _bl_idname = "ShaderNodeValToRGB"
-    node: bpy.types.ShaderNodeValToRGB
-
-    class _Inputs(SocketAccessor):
-        fac: FloatSocket
-        """Factor"""
-
-    class _Outputs(SocketAccessor):
-        color: ColorSocket
-        """Color"""
-        alpha: FloatSocket
-        """Alpha"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(self, fac: InputFloat = 0.5):
-        super().__init__()
-        key_args = {"Fac": fac}
-
-        self._establish_links(**key_args)
-
-
 class CombineBundle(BaseNode):
     """
     Combine multiple socket values into one.
@@ -1217,61 +1168,6 @@ class FindInString(BaseNode):
     ):
         super().__init__()
         key_args = {"String": string, "Search": search}
-
-        self._establish_links(**key_args)
-
-
-class FloatCurve(BaseNode):
-    """
-    Map an input float to a curve and outputs a float value
-
-    Parameters
-    ----------
-    factor : InputFloat
-        Factor
-    value : InputFloat
-        Value
-
-    Inputs
-    ------
-    i.factor : FloatSocket
-        Factor
-    i.value : FloatSocket
-        Value
-
-    Outputs
-    -------
-    o.value : FloatSocket
-        Value
-    """
-
-    _bl_idname = "ShaderNodeFloatCurve"
-    node: bpy.types.ShaderNodeFloatCurve
-
-    class _Inputs(SocketAccessor):
-        factor: FloatSocket
-        """Factor"""
-        value: FloatSocket
-        """Value"""
-
-    class _Outputs(SocketAccessor):
-        value: FloatSocket
-        """Value"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        factor: InputFloat = 1.0,
-        value: InputFloat = 1.0,
-    ):
-        super().__init__()
-        key_args = {"Factor": factor, "Value": value}
 
         self._establish_links(**key_args)
 

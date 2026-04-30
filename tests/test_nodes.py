@@ -2,6 +2,7 @@ import itertools
 
 import bpy
 import pytest
+from numpy import random
 
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
@@ -466,7 +467,7 @@ def test_accumulate_field():
         cube = g.Cube()
         aatr = g.AxisAngleToRotation(angle=1.0)
         tran = g.AccumulateField.point.transform(
-            g.EvaluateAtIndex.point.rotation(aatr, g.Index() - int(1))
+            g.EvaluateAtIndex.point.quaternion(aatr, g.Index() - int(1))
         )
         _ = cube >> g.SetPosition(
             position=g.TransformPoint(g.Position(), tran.o.trailing),
@@ -851,7 +852,7 @@ def test_manual_field_factories():
         assert eai.domain == "FACE"
         assert eai.data_type == "FLOAT"
 
-        eai = g.EvaluateAtIndex.face.transform()
+        eai = g.EvaluateAtIndex.face.matrix()
         assert eai.domain == "FACE"
         assert eai.data_type == "FLOAT4X4"
 
@@ -919,7 +920,7 @@ def test_manual_field_factories():
         assert eod.domain == "EDGE"
         assert eod.data_type == "QUATERNION"
 
-        eod = g.EvaluateOnDomain.edge.transform()
+        eod = g.EvaluateOnDomain.edge.matrix()
         assert eod.domain == "EDGE"
         assert eod.data_type == "FLOAT4X4"
 
@@ -1268,7 +1269,7 @@ def test_sample_index():
         assert si.data_type == "FLOAT_COLOR"
         assert si.domain == "EDGE"
 
-        si = g.SampleIndex.instance.rotation()
+        si = g.SampleIndex.instance.quaternion()
         assert si.data_type == "QUATERNION"
         assert si.domain == "INSTANCE"
 
@@ -1311,7 +1312,7 @@ def test_sample_curve():
         assert sc.data_type == "FLOAT4X4"
         assert sc.mode == "FACTOR"
 
-        sc = g.SampleCurve.factor.rotation()
+        sc = g.SampleCurve.factor.quaternion()
         assert sc.data_type == "QUATERNION"
         assert sc.mode == "FACTOR"
 
@@ -1339,6 +1340,78 @@ def test_sample_curve():
         assert sc.data_type == "FLOAT4X4"
         assert sc.mode == "LENGTH"
 
-        sc = g.SampleCurve.length.rotation()
+        sc = g.SampleCurve.length.quaternion()
         assert sc.data_type == "QUATERNION"
         assert sc.mode == "LENGTH"
+
+
+def test_float_curve():
+    with g.tree():
+        rand = random.rand(12).reshape((6, 2))
+        fc = g.FloatCurve(items=rand)
+        assert len(fc.points) == 6
+
+        values = (
+            (0.0, 0.0, "AUTO_CLAMPED"),
+            (0.0, 0.5, "VECTOR"),
+            (0.0, 1.0, "AUTO"),
+        )
+        fc = g.FloatCurve(items=values)
+        assert fc.points[1].handle_type == "VECTOR"
+
+
+def test_color_ramp():
+    with g.tree():
+        rand = random.rand(16).reshape((4, 4))
+        rand[:, 3] = 1.0
+
+        cr = g.ColorRamp(
+            items=((i / (rand.shape[0] - 1), x) for i, x in enumerate(rand))
+        )
+        assert len(cr.elements) == 4
+
+
+def test_store_named_attribute():
+    with g.tree():
+        points = g.Points()
+
+        sna = g.StoreNamedAttribute.edge.float(points)
+        assert sna.domain == "EDGE"
+        assert sna.data_type == "FLOAT"
+        sna.domain = "POINT"
+        assert sna.domain == "POINT"
+        sna.data_type = "BOOLEAN"
+        assert sna.data_type == "BOOLEAN"
+
+        sna = g.StoreNamedAttribute.corner.boolean()
+        assert sna.domain == "CORNER"
+        assert sna.data_type == "BOOLEAN"
+
+        sna = g.StoreNamedAttribute.face.vector()
+        assert sna.domain == "FACE"
+        assert sna.data_type == "FLOAT_VECTOR"
+
+        sna = g.StoreNamedAttribute.spline.quaternion()
+        assert sna.domain == "CURVE"
+        assert sna.data_type == "QUATERNION"
+
+        sna = g.StoreNamedAttribute.layer.matrix()
+        assert sna.domain == "LAYER"
+        assert sna.data_type == "FLOAT4X4"
+
+        sna = g.StoreNamedAttribute.point.integer_8bit()
+        assert sna.domain == "POINT"
+        assert sna.data_type == "INT8"
+
+        sna = g.StoreNamedAttribute.point.vector_2d()
+        assert sna.data_type == "FLOAT2"
+
+        sna = g.StoreNamedAttribute.point.byte_color()
+        assert sna.data_type == "BYTE_COLOR"
+
+        sna = g.StoreNamedAttribute.point.color()
+        assert sna.data_type == "FLOAT_COLOR"
+        cr = g.ColorRamp(hue_interpolation="CCW", mode="HSL")
+        assert cr.hue_interpolation == "CCW"
+        assert cr.mode == "HSL"
+        assert cr.color_interpolation == "EASE"
