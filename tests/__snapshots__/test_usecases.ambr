@@ -47,3 +47,54 @@
   ```
   '''
 # ---
+# name: test_import_microscopy_volume_nodebpy_node_group
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Format String"):::converter-node
+      N2("Import VDB"):::input-node
+      N3("Get Named Grid"):::geometry-node
+      N4("Frame"):::default-node
+      N5("Map Range<br/><small>(4,4,4)</small>"):::converter-node
+      N6("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N7("Switch"):::converter-node
+      N8("Set Grid Transform"):::geometry-node
+      N9("Store Named Grid"):::geometry-node
+      N10("Switch"):::converter-node
+      N11("Switch"):::converter-node
+      N12("Group Output"):::default-node
+      N0 -->|"template_str->Format"| N1
+      N0 -->|"cache_dir->cache_dir"| N1
+      N0 -->|"dataset_hash->dataset_has"| N1
+      N0 -->|"scale->scale"| N1
+      N0 -->|"x->x"| N1
+      N0 -->|"y->y"| N1
+      N0 -->|"z->z"| N1
+      N0 -->|"channel_ix->channel_ix"| N1
+      N0 -->|"Frame->t"| N1
+      N1 -->|"String->Path"| N2
+      N2 -->|"Volume->Volume"| N3
+      N3 -->|"Grid->Value"| N5
+      N5 -->|"Result->Value"| N6
+      N6 -->|"Value->False"| N7
+      N5 -->|"Result->True"| N7
+      N7 -->|"Output->Grid"| N8
+      N8 -->|"Grid->Grid"| N9
+      N9 -->|"Volume->True"| N11
+      N11 -->|"Output->Volume"| N12
+      N8 -->|"Grid->True"| N10
+      N0 -->|"Grid Name->Name"| N3
+      N0 -->|"Grid Name->Name"| N9
+      N0 -->|"Include->Switch"| N10
+      N0 -->|"Include->Switch"| N11
+      N0 -->|"Normalized->Switch"| N7
+      N0 -->|"VDB Minimum->From Min"| N5
+      N0 -->|"VDB Maximum->From Max"| N5
+      N0 -->|"Original Maximum->Value"| N6
+      N0 -->|"Channel Affine Matrix->Transform"| N8
+      N2 -->|"Volume->Volume"| N9
+      N10 -->|"Output->Grid"| N12
+  ```
+  '''
+# ---
