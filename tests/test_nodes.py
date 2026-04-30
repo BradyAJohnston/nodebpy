@@ -1363,8 +1363,14 @@ def test_float_curve():
 def test_color_ramp():
     with g.tree():
         rand = random.rand(16).reshape((4, 4))
+        rand[:, 3] = 1.0
 
         cr = g.ColorRamp(
             items=((i / (rand.shape[0] - 1), x) for i, x in enumerate(rand))
         )
         assert len(cr.elements) == 4
+
+        cr = g.ColorRamp(hue_interpolation="CCW", mode="HSL")
+        assert cr.hue_interpolation == "CCW"
+        assert cr.mode == "HSL"
+        assert cr.color_interpolation == "EASE"

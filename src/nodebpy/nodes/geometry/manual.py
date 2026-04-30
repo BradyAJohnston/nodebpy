@@ -1,3 +1,4 @@
+import bpy.types
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
 
@@ -8,6 +9,7 @@ from bpy.types import (
     NodeEvaluateClosure,
     NodeSocket,
     NodeSocketString,
+    ColorRamp
 )
 
 from nodebpy.builder._registry import _get_socket_linker
@@ -142,6 +144,9 @@ def tree(
 ) -> TreeBuilder:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
 
+_ColorRampColorInterpolations = Literal["EASE", "CARDINAL", "LINEAR", "B_SPLINE", "CONSTANT"]
+_ColorRampHueInterpolations = Literal["NEAR", "FAR", "CW", "CCW"]
+_ColorModes = Literal["RGB", "HSV", "HSL"]
 
 class ColorRamp(BaseNode):
     """
@@ -194,6 +199,9 @@ class ColorRamp(BaseNode):
         fac: InputFloat = 0.5,
         *,
         items: Iterable[tuple[float, tuple[float, float, float, float]]] = (),
+        color_interpolation: _ColorRampColorInterpolations = "EASE",
+        hue_interpolation: _ColorRampHueInterpolations = "NEAR",
+        mode: _ColorModes = "RGB"
     ):
         super().__init__()
         key_args = {"Fac": fac}
@@ -202,14 +210,47 @@ class ColorRamp(BaseNode):
                 point = self.elements[i]
             else:
                 point = self.elements.new(0.0)
-            point.color = item[1]
             point.position = item[0]
+            point.color = item[1]
 
         self._establish_links(**key_args)
+        self.color_interpolation = color_interpolation
+        self.hue_interpolation = hue_interpolation
+        self.mode = mode
+
+    @property
+    def _color_ramp(self) -> ColorRamp:
+        assert self.node.color_ramp
+        return self.node.color_ramp
 
     @property
     def elements(self) -> ColorRampElements:
-        return self.node.color_ramp.elements
+        return self._color_ramp.elements
+
+    @property
+    def color_interpolation(self) ->_ColorRampColorInterpolations:
+        return self._color_ramp.interpolation
+
+    @color_interpolation.setter
+    def color_interpolation(self, value: _ColorRampColorInterpolations) -> None:
+        self._color_ramp.interpolation = value
+
+    @property
+    def hue_interpolation(self) -> _ColorRampHueInterpolations:
+        return self._color_ramp.hue_interpolation
+
+    @hue_interpolation.setter
+    def hue_interpolation(self, value: _ColorRampHueInterpolations) -> None:
+        self._color_ramp.hue_interpolation = value
+
+    @property
+    def mode(self) -> _ColorModes:
+        return self._color_ramp.color_mode
+
+    @mode.setter
+    def mode(self, value: _ColorModes) -> None:
+        self._color_ramp.color_mode = value
+
 
 
 class FloatCurve(BaseNode):
