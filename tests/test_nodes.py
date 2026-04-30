@@ -1407,3 +1407,6 @@ def test_store_named_attribute():
 
         sna = g.StoreNamedAttribute.point.byte_color()
         assert sna.data_type == "BYTE_COLOR"
+
+        sna = g.StoreNamedAttribute.point.color()
+        assert sna.data_type == "FLOAT_COLOR"
