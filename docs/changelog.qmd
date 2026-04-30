@@ -6,6 +6,12 @@ title: Changelog
 
 ### Enhancements
 
+- Boolean sockets have a `switch` method which creates a `Switch` node with the socket as the input. Allows for quick chaining.
+```py
+b = tree.inputs.boolean()
+b.switch.float(0.1, 0.2)
+b.switch.geometry(g.Cube(), g.IcoSphere())
+```
 - Changes to some node methods to better align with naming inside of Geometry Nodes:
     - `EvaluateAtIndex` & `EvaluateOnDomain`:
         - `rotation` -> `quaternion`
