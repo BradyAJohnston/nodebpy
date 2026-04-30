@@ -30,17 +30,36 @@ from bpy.types import (
 )
 from mathutils import Euler
 
-
-from ..types import SOCKET_TYPES
+from ..types import (
+    SOCKET_TYPES,
+    InputBoolean,
+    InputBundle,
+    InputClosure,
+    InputCollection,
+    InputColor,
+    InputFloat,
+    InputFont,
+    InputGeometry,
+    InputImage,
+    InputInteger,
+    InputMaterial,
+    InputMatrix,
+    InputMenu,
+    InputObject,
+    InputRotation,
+    InputString,
+    InputVector,
+)
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
 from ._utils import _NodeLike, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
-    from ..nodes.geometry.converter import (
+    from ..nodes.geometry import (
         IntegerMath,
         Math,
         MultiplyMatrices,
+        Switch,
         TransformPoint,
     )
     from ..nodes.geometry.manual import Compare
@@ -587,6 +606,99 @@ class _IntegerMixin(BaseSocket):
 # ---------------------------------------------------------------------------
 
 
+class _BooleanSwitchSocketFactory:
+    def __init__(self, socket: NodeSocketBool):
+        self._socket = socket
+        from ..nodes.geometry import Switch
+
+        self._switch = Switch
+
+    def float(
+        self, false: InputFloat = None, true: InputFloat = None
+    ) -> "Switch[FloatSocket]":
+        return self._switch.float(self._socket, false, true)
+
+    def integer(
+        self, false: InputInteger = None, true: InputInteger = None
+    ) -> "Switch[IntegerSocket]":
+        return self._switch.integer(self._socket, false, true)
+
+    def boolean(
+        self, false: InputBoolean = None, true: InputBoolean = None
+    ) -> "Switch[BooleanSocket]":
+        return self._switch.boolean(self._socket, false, true)
+
+    def vector(
+        self, false: InputVector = None, true: InputVector = None
+    ) -> "Switch[VectorSocket]":
+        return self._switch.vector(self._socket, false, true)
+
+    def color(
+        self, false: InputColor = None, true: InputColor = None
+    ) -> "Switch[ColorSocket]":
+        return self._switch.color(self._socket, false, true)
+
+    def rotation(
+        self, false: InputRotation = None, true: InputRotation = None
+    ) -> "Switch[RotationSocket]":
+        return self._switch.rotation(self._socket, false, true)
+
+    def matrix(
+        self, false: InputMatrix = None, true: InputMatrix = None
+    ) -> "Switch[MatrixSocket]":
+        return self._switch.matrix(self._socket, false, true)
+
+    def string(
+        self, false: InputString = None, true: InputString = None
+    ) -> "Switch[StringSocket]":
+        return self._switch.string(self._socket, false, true)
+
+    def menu(
+        self, false: InputMenu = None, true: InputMenu = None
+    ) -> "Switch[MenuSocket]":
+        return self._switch.menu(self._socket, false, true)
+
+    def object(
+        self, false: InputObject = None, true: InputObject = None
+    ) -> "Switch[ObjectSocket]":
+        return self._switch.object(self._socket, false, true)
+
+    def image(
+        self, false: InputImage = None, true: InputImage = None
+    ) -> "Switch[ImageSocket]":
+        return self._switch.image(self._socket, false, true)
+
+    def geometry(
+        self, false: InputGeometry = None, true: InputGeometry = None
+    ) -> "Switch[GeometrySocket]":
+        return self._switch.geometry(self._socket, false, true)
+
+    def collection(
+        self, false: InputCollection = None, true: InputCollection = None
+    ) -> "Switch[CollectionSocket]":
+        return self._switch.collection(self._socket, false, true)
+
+    def material(
+        self, false: InputMaterial = None, true: InputMaterial = None
+    ) -> "Switch[MaterialSocket]":
+        return self._switch.material(self._socket, false, true)
+
+    def bundle(
+        self, false: InputBundle = None, true: InputBundle = None
+    ) -> "Switch[BundleSocket]":
+        return self._switch.bundle(self._socket, false, true)
+
+    def closure(
+        self, false: InputClosure = None, true: InputClosure = None
+    ) -> "Switch[ClosureSocket]":
+        return self._switch.closure(self._socket, false, true)
+
+    def font(
+        self, false: InputFont = None, true: InputFont = None
+    ) -> "Switch[FontSocket]":
+        return self._switch.font(self._socket, false, true)
+
+
 class _BooleanMixin(BaseSocket):
     """Boolean-specific operator overrides — routes directly through BooleanMath."""
 
@@ -609,6 +721,12 @@ class _BooleanMixin(BaseSocket):
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_and(self.socket, other)
+
+    @property
+    def switch(self) -> "_BooleanSwitchSocketFactory":
+        "Creat a Switch node with this boolean as the `switch` input."
+
+        return _BooleanSwitchSocketFactory(self.socket)
 
 
 class _RotationMixin(BaseSocket):

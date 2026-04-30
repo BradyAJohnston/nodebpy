@@ -154,6 +154,10 @@ InputAny = typing.Union[
     InputBoolean,
     InputMenu,
     InputRotation,
+    InputFont,
+    InputBundle,
+    InputClosure,
+    InputShader,
 ]
 
 _AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
