@@ -1364,5 +1364,7 @@ def test_color_ramp():
     with g.tree():
         rand = random.rand(16).reshape((4, 4))
 
-        cr = g.ColorRamp(items=((i / 4, x) for i, x in enumerate(rand)))
+        cr = g.ColorRamp(
+            items=((i / (rand.shape[0] - 1), x) for i, x in enumerate(rand))
+        )
         assert len(cr.elements) == 4

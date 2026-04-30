@@ -150,19 +150,23 @@ class ColorRamp(BaseNode):
     Parameters
     ----------
     fac : InputFloat
-        Factor
+        Factor: Which is used to sample the ColorRamp for the output color.
+    items : Iterable[tuple[float, tuple[float, float, float float]]]
+        Iterable of items which contain (position, color) which position being a
+        4-component float for values RGBA. Position is a value betwen `0..1`.
+
 
     Inputs
     ------
     i.fac : FloatSocket
-        Factor
+        Factor: The input value between `0..1` which maps to the final color value.
 
     Outputs
     -------
     o.color : ColorSocket
-        Color
+        Color: The mapped color value based in the input `fac`.
     o.alpha : FloatSocket
-        Alpha
+        Alpha: The mapped alpha of the color based on the input `fac`.
     """
 
     _bl_idname = "ShaderNodeValToRGB"
@@ -198,8 +202,8 @@ class ColorRamp(BaseNode):
                 point = self.elements[i]
             else:
                 point = self.elements.new(0.0)
-            point.position = item[0]
             point.color = item[1]
+            point.position = item[0]
 
         self._establish_links(**key_args)
 
@@ -218,6 +222,9 @@ class FloatCurve(BaseNode):
         Factor
     value : InputFloat
         Value
+    items : Iterable[tuple[float, float] | tuple[float, float, Literal["AUTO", "AUTO_CLAMPED", "VECTOR"]]]
+        An iterable which contains items `(x, y, Optional[handle_type])`. The position values are between
+        `0..1` and map the input `value` to the output `value` from the resulting curve interpolation.
 
     Inputs
     ------
@@ -1428,7 +1435,7 @@ class CaptureAttribute(BaseNode, DynamicInputsMixin):
 class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     """Create new grids by evaluating new values on an existing volume grid topology
 
-    New socket items for field evaluation are first created from *args then **kwargs to give specific names to the items.
+
 
     Data types are inferred automatically from the closest compatible data type.
 
@@ -1436,12 +1443,10 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     -------
     topology: InputLinkable
         The grid which contains the topology to evaluate the different fields on.
+    items: dict[str, InputAny]
+        The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.
     data_type: _GridDataTypes = "FLOAT"
         The data type of the grid to evaluate on. Possible values are "FLOAT", "INT", "VECTOR", "BOOLEAN".
-    *args: InputFloat | InputVector | InputInteger | InputBoolean
-        The fields to evaluate on the grid.
-    **kwargs: dict[str, InputFloat | InputVector | InputInteger | InputGeometry]
-        The key-value pairs of the fields to evaluate on the grid. Keys will be used as the name of the socket.
 
     """
 

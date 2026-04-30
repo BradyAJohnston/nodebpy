@@ -4,6 +4,7 @@ from itertools import combinations, product
 from operator import and_, or_
 
 import bpy
+from pycparser.plyparser import template
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
