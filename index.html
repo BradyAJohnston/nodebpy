@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>nodebpy 0.15.0</title>
+<title>nodebpy 0.15.1</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 0.15.0</span>
+    <span class="navbar-title">nodebpy 0.15.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -237,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>A text-based version of nodes should bring the convenience of writing code with IDE auto-completion, type hinting, with overall compactness and readability, while staying as close as possible to what building a node tree via the GUI feels like.</p>
 </blockquote>
-<div id="548d8d8c" class="cell" data-execution_count="1">
+<div id="4803f7d8" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"AnotherTree"</span>, collapse<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> tree:</span>
@@ -424,7 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

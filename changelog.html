@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Changelog – nodebpy 0.15.0</title>
+<title>Changelog – nodebpy 0.15.1</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 0.15.0</span>
+    <span class="navbar-title">nodebpy 0.15.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -184,12 +184,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#unreleased" id="toc-unreleased" class="nav-link active" data-scroll-target="#unreleased">Unreleased</a>
+  <li><a href="#v0.15.0---2026-04-30" id="toc-v0.15.0---2026-04-30" class="nav-link active" data-scroll-target="#v0.15.0---2026-04-30">v0.15.0 - 2026-04-30</a>
   <ul class="collapse">
   <li><a href="#enhancements" id="toc-enhancements" class="nav-link" data-scroll-target="#enhancements">Enhancements</a></li>
   <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug Fixes</a></li>
   </ul></li>
-  <li><a href="#v0.14.0" id="toc-v0.14.0" class="nav-link" data-scroll-target="#v0.14.0">v0.14.0</a>
+  <li><a href="#v0.14.0---2026-04-29" id="toc-v0.14.0---2026-04-29" class="nav-link" data-scroll-target="#v0.14.0---2026-04-29">v0.14.0 - 2026-04-29</a>
   <ul class="collapse">
   <li><a href="#enhancements-1" id="toc-enhancements-1" class="nav-link" data-scroll-target="#enhancements-1">Enhancements</a></li>
   <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug Fixes</a></li>
@@ -281,8 +281,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="unreleased" class="level2">
-<h2 class="anchored" data-anchor-id="unreleased">Unreleased</h2>
+<section id="v0.15.0---2026-04-30" class="level2">
+<h2 class="anchored" data-anchor-id="v0.15.0---2026-04-30">v0.15.0 - 2026-04-30</h2>
 <section id="enhancements" class="level3">
 <h3 class="anchored" data-anchor-id="enhancements">Enhancements</h3>
 <ul>
@@ -317,8 +317,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 </section>
-<section id="v0.14.0" class="level2">
-<h2 class="anchored" data-anchor-id="v0.14.0">v0.14.0</h2>
+<section id="v0.14.0---2026-04-29" class="level2">
+<h2 class="anchored" data-anchor-id="v0.14.0---2026-04-29">v0.14.0 - 2026-04-29</h2>
 <section id="enhancements-1" class="level3">
 <h3 class="anchored" data-anchor-id="enhancements-1">Enhancements</h3>
 <ul>
@@ -692,7 +692,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

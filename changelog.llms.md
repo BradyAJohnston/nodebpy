@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.15.0 - 2026-04-30
 
 ### Enhancements
 
@@ -27,7 +27,7 @@ b.switch.geometry(g.Cube(), g.IcoSphere())
 - `JoinString` links in the intended order (by first reversing the iterator before linking which is required for multi-input sockets).
 - `StoreNamedAttribute` has the `domain` and `data_type` factor methods properly exposed for `StoreNamedAttribute.face.vector()`.
 
-## v0.14.0
+## v0.14.0 - 2026-04-29
 
 ### Enhancements
 

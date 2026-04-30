@@ -164,8 +164,8 @@ graph LR
     N12 -->|"X->Column 3 Row 1"| N13
     N12 -->|"Y->Column 3 Row 2"| N13
     N12 -->|"Z->Column 3 Row 3"| N13
-    N2 -->|"Vector->Vector"| N6
     N2 -->|"Vector->Vector"| N5
+    N2 -->|"Vector->Vector"| N6
     N2 -->|"Vector->Vector"| N4
 ```
 
@@ -343,7 +343,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.nodes.geometry.manual.Compare at 0x12f625e80>
+>     <nodebpy.nodes.geometry.manual.Compare at 0x113021160>
 >
 > ### Comparing Python Objects
 >
