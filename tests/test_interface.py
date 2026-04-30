@@ -858,3 +858,9 @@ def test_vector_socket_methods():
         assert dot.node.bl_idname == g.VectorMath._bl_idname
         assert dot.node.operation == "DOT_PRODUCT"  # ty: ignore[unresolved-attribute]
         assert dot.socket != vec.dot(g.Vector()).socket
+
+        ln = vec.length()
+        assert isinstance(ln, FloatSocket)
+        assert ln.node.bl_idname == g.VectorMath._bl_idname
+        assert ln.node.operation == "LENGTH"  # ty: ignore[unresolved-attribute]
+        assert ln.socket == vec.length().socket
