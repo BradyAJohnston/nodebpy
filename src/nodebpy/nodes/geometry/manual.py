@@ -1,3 +1,4 @@
+import bpy.types
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
 
@@ -8,6 +9,7 @@ from bpy.types import (
     NodeEvaluateClosure,
     NodeSocket,
     NodeSocketString,
+    ColorRamp,
 )
 
 from nodebpy.builder._registry import _get_socket_linker
@@ -142,6 +144,195 @@ def tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
 ) -> TreeBuilder:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
+
+
+_ColorRampColorInterpolations = Literal[
+    "EASE", "CARDINAL", "LINEAR", "B_SPLINE", "CONSTANT"
+]
+_ColorRampHueInterpolations = Literal["NEAR", "FAR", "CW", "CCW"]
+_ColorModes = Literal["RGB", "HSV", "HSL"]
+
+
+class ColorRamp(BaseNode):
+    """
+    Map values to colors with the use of a gradient
+
+    Parameters
+    ----------
+    fac : InputFloat
+        Factor: Which is used to sample the ColorRamp for the output color.
+    items : Iterable[tuple[float, tuple[float, float, float float]]]
+        Iterable of items which contain (position, color) which position being a
+        4-component float for values RGBA. Position is a value betwen `0..1`.
+
+
+    Inputs
+    ------
+    i.fac : FloatSocket
+        Factor: The input value between `0..1` which maps to the final color value.
+
+    Outputs
+    -------
+    o.color : ColorSocket
+        Color: The mapped color value based in the input `fac`.
+    o.alpha : FloatSocket
+        Alpha: The mapped alpha of the color based on the input `fac`.
+    """
+
+    _bl_idname = "ShaderNodeValToRGB"
+    node: bpy.types.ShaderNodeValToRGB
+
+    class _Inputs(SocketAccessor):
+        fac: FloatSocket
+        """Factor"""
+
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+        alpha: FloatSocket
+        """Alpha"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        fac: InputFloat = 0.5,
+        *,
+        items: Iterable[tuple[float, tuple[float, float, float, float]]] = (),
+        color_interpolation: _ColorRampColorInterpolations = "EASE",
+        hue_interpolation: _ColorRampHueInterpolations = "NEAR",
+        mode: _ColorModes = "RGB",
+    ):
+        super().__init__()
+        key_args = {"Fac": fac}
+        for i, item in enumerate(items):
+            if i < 2:
+                point = self.elements[i]
+            else:
+                point = self.elements.new(0.0)
+            point.position = item[0]
+            point.color = item[1]
+
+        self._establish_links(**key_args)
+        self.color_interpolation = color_interpolation
+        self.hue_interpolation = hue_interpolation
+        self.mode = mode
+
+    @property
+    def _color_ramp(self) -> ColorRamp:
+        assert self.node.color_ramp
+        return self.node.color_ramp
+
+    @property
+    def elements(self) -> ColorRampElements:
+        return self._color_ramp.elements
+
+    @property
+    def color_interpolation(self) -> _ColorRampColorInterpolations:
+        return self._color_ramp.interpolation
+
+    @color_interpolation.setter
+    def color_interpolation(self, value: _ColorRampColorInterpolations) -> None:
+        self._color_ramp.interpolation = value
+
+    @property
+    def hue_interpolation(self) -> _ColorRampHueInterpolations:
+        return self._color_ramp.hue_interpolation
+
+    @hue_interpolation.setter
+    def hue_interpolation(self, value: _ColorRampHueInterpolations) -> None:
+        self._color_ramp.hue_interpolation = value
+
+    @property
+    def mode(self) -> _ColorModes:
+        return self._color_ramp.color_mode
+
+    @mode.setter
+    def mode(self, value: _ColorModes) -> None:
+        self._color_ramp.color_mode = value
+
+
+class FloatCurve(BaseNode):
+    """
+    Map an input float to a curve and outputs a float value
+
+    Parameters
+    ----------
+    factor : InputFloat
+        Factor
+    value : InputFloat
+        Value
+    items : Iterable[tuple[float, float] | tuple[float, float, Literal["AUTO", "AUTO_CLAMPED", "VECTOR"]]]
+        An iterable which contains items `(x, y, Optional[handle_type])`. The position values are between
+        `0..1` and map the input `value` to the output `value` from the resulting curve interpolation.
+
+    Inputs
+    ------
+    i.factor : FloatSocket
+        Factor
+    i.value : FloatSocket
+        Value
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    """
+
+    _bl_idname = "ShaderNodeFloatCurve"
+    node: bpy.types.ShaderNodeFloatCurve
+
+    class _Inputs(SocketAccessor):
+        factor: FloatSocket
+        """Factor"""
+        value: FloatSocket
+        """Value"""
+
+    class _Outputs(SocketAccessor):
+        value: FloatSocket
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        factor: InputFloat = 1.0,
+        value: InputFloat = 1.0,
+        *,
+        items: Iterable[
+            tuple[float, float]
+            | tuple[float, float, Literal["AUTO", "AUTO_CLAMPED", "VECTOR"]]
+        ] = (),
+    ):
+        super().__init__()
+        key_args = {"Factor": factor, "Value": value}
+
+        for i, item in enumerate(items):
+            if i < 2:
+                point = self.points[i]
+                point.location = item[:2]
+            else:
+                point = self.points.new(*item[:2])
+            if len(item) > 2:
+                point.handle_type = item[2]  # ty: ignore[index-out-of-bounds]
+
+        self._establish_links(**key_args)
+
+    @property
+    def points(self) -> CurveMapPoints:
+        mapping = self.node.mapping
+        assert mapping
+        return mapping.curves[0].points
 
 
 _NamedAttributeDataTypes = Literal[

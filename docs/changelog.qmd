@@ -12,6 +12,7 @@ title: Changelog
         - `transform` -> `matrix`
     - `SampleIndex` & `SampelCurve`:
         - `rotation` -> `quaternion`
+- Handle adding items for the `ColorRamp` and `FloatCurve` nodes to create mappins of `0..1` floats to values and colors.
 - Nodes which previously took `*args` and `**kwargs` have been updated to use keyword-only arguments instead. This is a hard breaking change but makes the code more readable and less error-prone. ([`#69`](https://github.com/BradyAJohnston/nodebpy/pull/69))
   - Affected nodes: `FieldToGrid`, `JoinGeometry`, `MenuSwitch`, `IndexSwitch`, `CaptureAttribute`, `JoinStrings`, `FormatString`, `SDFGridBoolean`, `MeshBoolean`, `RepeatZone`, `SimulationZone`
 - Tree interfaces are defined with `tree.inputs.geometry()` methods rather than using the old context-based `s.SocketGeometry()`. Both systems have been living side-by-side but this completely removed old system so is a hard breaking change. ([`#67`](https://github.com/BradyAJohnston/nodebpy/pull/67))
