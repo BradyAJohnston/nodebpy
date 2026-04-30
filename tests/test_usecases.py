@@ -1,11 +1,10 @@
-import itertools
 import math
 from functools import reduce
 from itertools import combinations, product
 from operator import and_, or_
 
 import bpy
-from bpy.types import GeometryNodeTree
+from pycparser.plyparser import template
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g

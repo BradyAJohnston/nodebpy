@@ -2,13 +2,13 @@ import itertools
 
 import bpy
 import pytest
+from numpy import random
 
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
-    ColorSocket,
     FloatSocket,
     IntegerSocket,
     MatrixSocket,
@@ -1343,3 +1343,34 @@ def test_sample_curve():
         sc = g.SampleCurve.length.rotation()
         assert sc.data_type == "QUATERNION"
         assert sc.mode == "LENGTH"
+
+
+def test_float_curve():
+    with g.tree():
+        rand = random.rand(12).reshape((6, 2))
+        fc = g.FloatCurve(items=rand)
+        assert len(fc.points) == 6
+
+        values = (
+            (0.0, 0.0, "AUTO_CLAMPED"),
+            (0.0, 0.5, "VECTOR"),
+            (0.0, 1.0, "AUTO"),
+        )
+        fc = g.FloatCurve(items=values)
+        assert fc.points[1].handle_type == "VECTOR"
+
+
+def test_color_ramp():
+    with g.tree():
+        rand = random.rand(16).reshape((4, 4))
+        rand[:, 3] = 1.0
+
+        cr = g.ColorRamp(
+            items=((i / (rand.shape[0] - 1), x) for i, x in enumerate(rand))
+        )
+        assert len(cr.elements) == 4
+
+        cr = g.ColorRamp(hue_interpolation="CCW", mode="HSL")
+        assert cr.hue_interpolation == "CCW"
+        assert cr.mode == "HSL"
+        assert cr.color_interpolation == "EASE"
