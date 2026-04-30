@@ -45,6 +45,7 @@ from .manual import (
     Float,
     FloatCurve,
     ColorRamp,
+    StoreNamedAttribute,
     tree,
 )
 from .converter import (
@@ -186,7 +187,6 @@ from .attribute import (
     BlurAttribute,
     DomainSize,
     RemoveNamedAttribute,
-    StoreNamedAttribute,
 )
 from .geometry import (
     Arc,
