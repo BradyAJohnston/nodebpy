@@ -4,7 +4,6 @@ from itertools import combinations, product
 from operator import and_, or_
 
 import bpy
-from babel.messages.extract import GROUP_NAME
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
@@ -556,14 +555,13 @@ def test_import_microscopy_volume_nodebpy_node_group(snapshot):
         with g.Frame("Normalize Grid"):
             grid = g.GetNamedGrid.float(vdb, grid_name).o.grid
             grid_normalised = g.MapRange.float(grid, min, max, 0.0, 1.0)
-            grid = g.Switch.float(
-                normalized,
+            grid = normalized.switch.float(
                 grid_normalised * original_max,
                 grid_normalised,
             )
             grid = g.SetGridTransform.float(grid, affine_mat)
         volume = g.StoreNamedGrid(vdb, grid_name, grid)
-        volume = g.Switch.geometry(include, None, volume)
+        volume = include.switch.geometry(None, volume)
         volume >> tree.outputs.geometry("Volume")
         (
             g.Switch.float(include, None, grid)

@@ -86,6 +86,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "HandleTypeSelection",
         "IndexSwitch",
         "MenuSwitch",
+        "Switch",
         "CaptureAttribute",
         "FieldToGrid",
         "JoinGeometry",

@@ -1,3 +1,5 @@
+from typing import get_args
+
 import bpy
 import pytest
 from mathutils import Euler
@@ -6,6 +8,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import Socket, VectorSocket
+from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
 # Geometry tree — existing test
@@ -825,3 +828,15 @@ def test_socket_defaults():
         assert obj.i.object.default_value is None
         obj.i.object.default_value = bpy.data.objects["Cube"]
         assert obj.i.object.default_value == bpy.data.objects["Cube"]
+
+
+def test_boolean_socket_switches():
+    with g.tree() as tree:
+        i = tree.inputs.boolean("Enabled", default_value=True)
+
+        for name in get_args(SOCKET_TYPES):
+            method = name.lower().replace("int", "integer").replace("rgba", "color")
+            if method == "shader":
+                continue
+            switch = getattr(i.switch, method)()
+            assert switch.input_type == name
