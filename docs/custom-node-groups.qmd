@@ -195,12 +195,3 @@ Each custom group appears as a single, named node in the tree -- keeping the gra
 | `_name` | `str` | *(required)* | Display name and cache key for the group |
 | `_color_tag` | `str` | `"NONE"` | Header colour in Blender (`"INPUT"`, `"CONVERTER"`, `"GEOMETRY"`, etc.) |
 | `_warning_propagation` | `str` | `"ALL"` | How warnings propagate (`"ALL"`, `"ERRORS_AND_WARNINGS"`, `"ERRORS"`, `"NONE"`) |
-
-## Summary
-
-| Step | What you write | What it does |
-|:-----|:---------------|:-------------|
-| Declare `i_*` | `i_val = InputSpec(partial(s.SocketFloat, "Value"))` | Defines group input socket + `node.i_val` property |
-| Declare `o_*` | `o_result = OutputSpec(partial(s.SocketFloat, "Result"))` | Defines group output socket + `node.o_result` property |
-| Write `__init__` | `def __init__(self, value=None): super().__init__(value=value)` | Typed constructor for IDE autocomplete |
-| Write `_build_group` | `def _build_group(cls, tree, value: s.SocketFloat): ...` | Internal graph logic with typed inputs |
