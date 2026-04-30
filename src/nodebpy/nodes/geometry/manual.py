@@ -3398,7 +3398,7 @@ class SampleCurve(BaseNode, Generic[_T]):
                 use_all_curves=use_all_curves,
             )
 
-        def rotation(
+        def quaternion(
             self,
             curves: InputGeometry = None,
             value: InputRotation = (0.0, 0.0, 0.0),
@@ -3653,7 +3653,7 @@ class SampleIndex(BaseNode, Generic[_T]):
                 clamp=clamp,
             )
 
-        def rotation(
+        def quaternion(
             self,
             geometry: InputGeometry = None,
             value: InputRotation = None,

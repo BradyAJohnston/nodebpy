@@ -1269,7 +1269,7 @@ def test_sample_index():
         assert si.data_type == "FLOAT_COLOR"
         assert si.domain == "EDGE"
 
-        si = g.SampleIndex.instance.rotation()
+        si = g.SampleIndex.instance.quaternion()
         assert si.data_type == "QUATERNION"
         assert si.domain == "INSTANCE"
 
@@ -1340,7 +1340,7 @@ def test_sample_curve():
         assert sc.data_type == "FLOAT4X4"
         assert sc.mode == "LENGTH"
 
-        sc = g.SampleCurve.length.rotation()
+        sc = g.SampleCurve.length.quaternion()
         assert sc.data_type == "QUATERNION"
         assert sc.mode == "LENGTH"
 
@@ -1368,3 +1368,42 @@ def test_color_ramp():
             items=((i / (rand.shape[0] - 1), x) for i, x in enumerate(rand))
         )
         assert len(cr.elements) == 4
+
+
+def test_store_named_attribute():
+    with g.tree():
+        points = g.Points()
+
+        sna = g.StoreNamedAttribute.edge.float(points)
+        assert sna.domain == "EDGE"
+        assert sna.data_type == "FLOAT"
+        sna.domain = "POINT"
+        assert sna.domain == "POINT"
+        sna.data_type = "BOOLEAN"
+        assert sna.data_type == "BOOLEAN"
+
+        sna = g.StoreNamedAttribute.corner.boolean()
+        assert sna.domain == "CORNER"
+        assert sna.data_type == "BOOLEAN"
+
+        sna = g.StoreNamedAttribute.face.vector()
+        assert sna.domain == "FACE"
+        assert sna.data_type == "FLOAT_VECTOR"
+
+        sna = g.StoreNamedAttribute.spline.quaternion()
+        assert sna.domain == "CURVE"
+        assert sna.data_type == "QUATERNION"
+
+        sna = g.StoreNamedAttribute.layer.matrix()
+        assert sna.domain == "LAYER"
+        assert sna.data_type == "FLOAT4X4"
+
+        sna = g.StoreNamedAttribute.point.integer_8bit()
+        assert sna.domain == "POINT"
+        assert sna.data_type == "INT8"
+
+        sna = g.StoreNamedAttribute.point.vector_2d()
+        assert sna.data_type == "FLOAT2"
+
+        sna = g.StoreNamedAttribute.point.byte_color()
+        assert sna.data_type == "BYTE_COLOR"
