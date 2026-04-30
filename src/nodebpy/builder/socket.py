@@ -98,10 +98,6 @@ class BaseSocket:
         return self.socket.type  # type: ignore
 
     @property
-    def socket_name(self) -> str:
-        return self.socket.name
-
-    @property
     def name(self) -> str:
         return str(self.socket.name)
 
@@ -243,6 +239,33 @@ class _VectorMixin(BaseSocket):
         from ..nodes.geometry import SeparateXYZ
 
         return SeparateXYZ._find_or_create_linked(self.socket).o.z
+
+    def dot(self, vector: InputVector) -> "FloatSocket":
+        """Dot product with another vector. The other vector can be a Socket, a NodeSocket, or a 3-tuple of floats.
+
+        A different VectorMath node is created each time.
+        """
+        from ..nodes.geometry import VectorMath
+
+        return VectorMath.dot_product(self.socket, vector).o.value
+
+    def length(self) -> "FloatSocket":
+        from ..nodes.geometry import VectorMath
+
+        node = VectorMath._find_or_create_linked(self.socket)
+        node.operation = "LENGTH"
+        return node.o.value
+
+    def normalize(self, new_node: bool = False) -> "VectorSocket":
+        """Normalize this vector. Only valid for output sockets, as it creates a Normalize node linked from this socket.
+
+        The same normalize node is re-used each time unless `new_node=True` where a new `VectorMath` node is created each time.
+        """
+        from ..nodes.geometry import VectorMath
+
+        node = VectorMath._find_or_create_linked(self.socket)
+        node.operation = "NORMALIZE"
+        return node.o.vector
 
     @property
     def default_value(self) -> list[float]:
@@ -766,13 +789,11 @@ class _RotationMixin(BaseSocket):
 
         return RotationToQuaternion._find_or_create_linked(self.socket).o.z
 
-    @property
     def euler(self) -> "VectorSocket":
         from ..nodes.geometry.converter import RotationToEuler
 
         return RotationToEuler._find_or_create_linked(self.socket).o.euler
 
-    @property
     def invert(self) -> "RotationSocket":
         from ..nodes.geometry import InvertRotation
 
@@ -816,19 +837,16 @@ class _MatrixMixin(BaseSocket):
 
         return SeparateTransform._find_or_create_linked(self.socket).o.scale
 
-    @property
     def determinant(self) -> "FloatSocket":
         from ..nodes.geometry import MatrixDeterminant
 
         return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
 
-    @property
     def invert(self) -> "MatrixSocket":
         from ..nodes.geometry import InvertMatrix
 
         return InvertMatrix._find_or_create_linked(self.socket).o.matrix
 
-    @property
     def transpose(self) -> "MatrixSocket":
         from ..nodes.geometry import TransposeMatrix
 

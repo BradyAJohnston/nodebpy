@@ -2,6 +2,21 @@
 title: Changelog
 ---
 
+## v0.16.0 - UNRELEASED
+
+### Enhancements
+- Remove `socket_name` property from `BaseSocket`, already accessible via `.socket.name`.
+- Added `.dot()`, `.length()` and `.normalize()` methods to `VectorSocket` which create the corresponding `DotProduct`, `VectorLength` and `Normalize` nodes.
+- Properties on sockets that aren't just accessing components of the socket are node methods. They still return sockets and not nodes.
+    - `RotationSocket.invert` -> `RotationSocket.invert()`
+    - `RotationSocket.euler` -> `Rotation.euler()`
+    - `MatrixSocket.invert` -> `MatrixSocket.invert()`
+    - `MatrixSocket.transpose` -> `MatrixSocket.transpose()`
+    - `MatrixSocket.determinant` -> `MatrixSocket.determinant()`
+
+
+### Bug Fixes
+
 ## v0.15.0 - 2026-04-30
 
 ### Enhancements
