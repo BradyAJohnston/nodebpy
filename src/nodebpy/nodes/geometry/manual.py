@@ -222,8 +222,8 @@ class Switch(BaseNode, Generic[_T]):
     def __init__(
         self,
         switch: InputBoolean = False,
-        false: _S = 0.0,
-        true: _S = 0.0,
+        false: InputAny = None,
+        true: InputAny = None,
         *,
         input_type: _SwitchDataTypes = "FLOAT",
     ):
