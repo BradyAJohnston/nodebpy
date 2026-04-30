@@ -17,10 +17,6 @@ jobs:
         uses: astral-sh/setup-uv@v4
         with:
           version: "latest"
-
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-
       - name: Build Docs
         run: |
           uv sync --all-extras --dev
@@ -34,11 +30,7 @@ jobs:
 
       # Only publish to GitHub Pages when a new version tag is pushed
       - name: Publish to GitHub Pages
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        uses: quarto-dev/quarto-actions/publish@v2
-        with:
-          target: gh-pages
-          path: docs
-          render: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd docs
+          uv run quarto publish gh-pages --no-render --no-prompt --no-browser
