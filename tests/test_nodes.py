@@ -73,7 +73,7 @@ def test_socket_selection():
         vec >> pos.i.offset
         g.Position() * 1.0 >> pos.i.position
 
-    assert pos.i.offset.socket_name == "Offset"
+    assert pos.i.offset.socket.name == "Offset"
     assert vec.o.vector.socket.links[0].to_socket.node == pos.node
     assert vec.o.vector.socket.links[0].to_socket == pos.i.offset.socket
     assert len(pos.i.offset.socket.links) == 1

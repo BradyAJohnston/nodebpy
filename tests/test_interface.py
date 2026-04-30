@@ -7,7 +7,7 @@ from mathutils import Euler
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import Socket, VectorSocket
+from nodebpy.builder import FloatSocket, Socket, VectorSocket
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -757,9 +757,9 @@ def test_accessor_rotation():
         assert quat.o.y.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
         assert quat.o.z.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
 
-        eul = rot.o.rotation.euler
+        eul = rot.o.rotation.euler()
         assert isinstance(eul, VectorSocket)
-        assert eul.node == rot.o.rotation.euler.node
+        assert eul.node == rot.o.rotation.euler().node
 
 
 def test_matrix_socket_output_len():
@@ -767,13 +767,15 @@ def test_matrix_socket_output_len():
         mat = g.InstanceTransform()
         assert len(mat.o.transform) == 16
 
-        assert mat.o.transform.invert.node.bl_idname == g.InvertMatrix._bl_idname
-        assert mat.o.transform.transpose.node.bl_idname == g.TransposeMatrix._bl_idname
+        assert mat.o.transform.invert().node.bl_idname == g.InvertMatrix._bl_idname
+        assert (
+            mat.o.transform.transpose().node.bl_idname == g.TransposeMatrix._bl_idname
+        )
 
         assert len(mat.o.transform.links) == 2
 
         rot = g.Rotation()
-        rot.o.rotation.invert.node.bl_idname == g.InvertRotation._bl_idname
+        rot.o.rotation.invert().node.bl_idname == g.InvertRotation._bl_idname
 
 
 def test_socket_defaults():
@@ -840,3 +842,19 @@ def test_boolean_socket_switches():
                 continue
             switch = getattr(i.switch, method)()
             assert switch.input_type == name
+
+
+def test_vector_socket_methods():
+    with g.tree() as tree:
+        vec = tree.inputs.vector()
+        norm = vec.normalize()
+        assert isinstance(norm, VectorSocket)
+        assert norm.node.bl_idname == g.VectorMath._bl_idname
+        assert norm.node.operation == "NORMALIZE"  # ty: ignore[unresolved-attribute]
+        assert norm.socket == vec.normalize().socket
+
+        dot = vec.dot(g.Vector())
+        assert isinstance(dot, FloatSocket)
+        assert dot.node.bl_idname == g.VectorMath._bl_idname
+        assert dot.node.operation == "DOT_PRODUCT"  # ty: ignore[unresolved-attribute]
+        assert dot.socket != vec.dot(g.Vector()).socket
