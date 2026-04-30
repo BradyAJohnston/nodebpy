@@ -30,17 +30,17 @@ from bpy.types import (
 )
 from mathutils import Euler
 
-
-from ..types import SOCKET_TYPES
+from ..types import SOCKET_TYPES, InputFloat, InputGeometry
 from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
 from ._utils import _NodeLike, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
-    from ..nodes.geometry.converter import (
+    from ..nodes.geometry import (
         IntegerMath,
         Math,
         MultiplyMatrices,
+        Switch,
         TransformPoint,
     )
     from ..nodes.geometry.manual import Compare
@@ -590,6 +590,22 @@ class _IntegerMixin(BaseSocket):
 class _BooleanMixin(BaseSocket):
     """Boolean-specific operator overrides — routes directly through BooleanMath."""
 
+    class _SwitchFactory:
+        def __init__(self, socket: NodeSocketBool):
+            self._socket = socket
+
+        def float(self, false: InputFloat, true: InputFloat) -> "Switch[FloatSocket]":
+            from ..nodes.geometry import Switch
+
+            return Switch.float(self._socket, false, true)
+
+        def geometry(
+            self, false: InputGeometry, true: InputGeometry
+        ) -> "Switch[GeometrySocket]":
+            from ..nodes.geometry import Switch
+
+            return Switch.geometry(self._socket, false, true)
+
     socket: NodeSocketBool
 
     @property
@@ -609,6 +625,11 @@ class _BooleanMixin(BaseSocket):
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_and(self.socket, other)
+
+    @property
+    def switch(self) -> "_SwitchFactory":
+
+        return self._SwitchFactory(self.socket)
 
 
 class _RotationMixin(BaseSocket):
