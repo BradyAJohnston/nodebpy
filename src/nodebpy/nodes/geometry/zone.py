@@ -18,7 +18,14 @@ if TYPE_CHECKING:
     from .manual import EvaluateClosure
 
 from nodebpy.builder import BaseNode as BaseNode
-from nodebpy.builder import ClosureSocket, DynamicInputsMixin
+from nodebpy.builder import (
+    BooleanSocket,
+    ClosureSocket,
+    DynamicInputsMixin,
+    FloatSocket,
+    GeometrySocket,
+    IntegerSocket,
+)
 from nodebpy.builder import Socket as SocketLinker
 from nodebpy.builder.accessor import SocketAccessor
 
@@ -130,7 +137,7 @@ class SimulationInput(BaseSimulationZone, BaseZoneInput):
     node: bpy.types.GeometryNodeSimulationInput
 
     class _Outputs(SocketAccessor):
-        delta_time: SocketLinker
+        delta_time: FloatSocket
         """Time elapsed since the previous simulation frame."""
 
     if TYPE_CHECKING:
@@ -146,7 +153,7 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
     node: bpy.types.GeometryNodeSimulationOutput
 
     class _Inputs(SocketAccessor):
-        skip: SocketLinker
+        skip: BooleanSocket
         """Skip the simulation for this frame."""
 
     if TYPE_CHECKING:
@@ -167,7 +174,7 @@ class SimulationZone:
             self.input._link_from(source, name)
 
     @property
-    def delta_time(self) -> SocketLinker:
+    def delta_time(self) -> FloatSocket:
         return self.input.o.delta_time
 
     def __getitem__(self, index: int):
@@ -313,6 +320,25 @@ class ForEachGeometryElementInput(BaseZoneInput):
     _bl_idname = "GeometryNodeForeachGeometryElementInput"
     node: bpy.types.GeometryNodeForeachGeometryElementInput
 
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
+        """The geometry to iterate over."""
+        selection: BooleanSocket
+        """Limits which elements are iterated over."""
+
+    class _Outputs(SocketAccessor):
+        index: IntegerSocket
+        """The index of the current element."""
+        element: GeometrySocket
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
+
     def __init__(self, geometry: InputGeometry = None, selection: InputBoolean = True):
         super().__init__()
         key_args = {"Geometry": geometry, "Selection": selection}
@@ -335,24 +361,6 @@ class ForEachGeometryElementInput(BaseZoneInput):
     def items(self) -> bpy.types.NodeGeometryForeachGeometryElementInputItems:
         return self.output.input_items
 
-    class _Inputs(SocketAccessor):
-        geometry: SocketLinker
-        """The geometry to iterate over."""
-        selection: SocketLinker
-        """Limits which elements are iterated over."""
-
-    class _Outputs(SocketAccessor):
-        index: SocketLinker
-        """The index of the current element."""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-
-        @property
-        def o(self) -> _Outputs: ...
-
 
 class ForEachGeometryElementOutput(BaseZoneOutput):
     """For Each Geometry Element Output node"""
@@ -370,6 +378,24 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
 
     _bl_idname = "GeometryNodeForeachGeometryElementOutput"
     node: bpy.types.GeometryNodeForeachGeometryElementOutput
+
+    class _Inputs(SocketAccessor):
+        generation_0: GeometrySocket
+        """The geometry to generate elements from."""
+
+    class _Outputs(SocketAccessor):
+        geometry: GeometrySocket
+        """The output geometry after processing all elements."""
+        generation_0: GeometrySocket
+        """The generated geometry output."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
 
     def __init__(
         self,
@@ -426,24 +452,6 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         """Add a socket to the zone"""
         _ = self.items_generated.new(type, name)
         return self._latest("generation", self.node.inputs)
-
-    class _Inputs(SocketAccessor):
-        generation_0: SocketLinker
-        """The geometry to generate elements from."""
-
-    class _Outputs(SocketAccessor):
-        geometry: SocketLinker
-        """The output geometry after processing all elements."""
-        generation_0: SocketLinker
-        """The generated geometry output."""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-
-        @property
-        def o(self) -> _Outputs: ...
 
     @property
     def domain(

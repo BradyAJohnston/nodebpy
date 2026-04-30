@@ -131,6 +131,7 @@ __all__ = (
     "Float",
     "FloatCurve",
     "ColorRamp",
+    "StoreNamedAttribute",
 )
 
 
@@ -141,6 +142,306 @@ def tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
 ) -> TreeBuilder:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
+
+
+_NamedAttributeDataTypes = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "FLOAT_VECTOR",
+    "FLOAT_COLOR",
+    "QUATERNION",
+    "FLOAT4X4",
+    "INT8",
+    "FLOAT2",
+    "BYTE_COLOR",
+]
+
+
+class StoreNamedAttribute(BaseNode, Generic[_T]):
+    """
+    Store the result of a field on a geometry as an attribute with the specified name
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    name : InputString
+        Name
+    value : InputFloat
+        Value
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.name : StringSocket
+        Name
+    i.value : FloatSocket
+        Value
+
+    Outputs
+    -------
+    o.geometry : GeometrySocket
+        Geometry
+    """
+
+    _bl_idname = "GeometryNodeStoreNamedAttribute"
+    node: bpy.types.GeometryNodeStoreNamedAttribute
+
+    class _StoreNamedAttributeDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputFloat = 0.0,
+        ) -> "StoreNamedAttribute[FloatSocket]":
+            """Create Store Named Attribute with operation 'Float'. Floating-point value"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="FLOAT",
+                domain=self._domain,
+            )
+
+        def integer(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputInteger = 0,
+        ) -> "StoreNamedAttribute[IntegerSocket]":
+            """Create Store Named Attribute with operation 'Integer'. 32-bit integer"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="INT",
+                domain=self._domain,
+            )
+
+        def boolean(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputBoolean = False,
+        ) -> "StoreNamedAttribute[BooleanSocket]":
+            """Create Store Named Attribute with operation 'Boolean'. True or false"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="BOOLEAN",
+                domain=self._domain,
+            )
+
+        def vector(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputVector = None,
+        ) -> "StoreNamedAttribute[VectorSocket]":
+            """Create Store Named Attribute with operation 'Vector'. 3D vector with floating-point values"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="FLOAT_VECTOR",
+                domain=self._domain,
+            )
+
+        def color(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputColor = None,
+        ) -> "StoreNamedAttribute[ColorSocket]":
+            """Create Store Named Attribute with operation 'Color'. RGBA color with 32-bit floating-point values"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="FLOAT_COLOR",
+                domain=self._domain,
+            )
+
+        def quaternion(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputRotation = None,
+        ) -> "StoreNamedAttribute[RotationSocket]":
+            """Create Store Named Attribute with operation 'Quaternion'. Floating point quaternion rotation"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="QUATERNION",
+                domain=self._domain,
+            )
+
+        def matrix(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputMatrix = None,
+        ) -> "StoreNamedAttribute[MatrixSocket]":
+            """Create Store Named Attribute with operation '4x4 Matrix'. Floating point matrix"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="FLOAT4X4",
+                domain=self._domain,
+            )
+
+        def integer_8bit(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputInteger = 0,
+        ) -> "StoreNamedAttribute[IntegerSocket]":
+            """Create Store Named Attribute with operation '8-Bit Integer'. Smaller integer with a range from -128 to 127"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="INT8",
+                domain=self._domain,
+            )
+
+        def vector_2d(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputVector = None,
+        ) -> "StoreNamedAttribute[VectorSocket]":
+            """Create Store Named Attribute with operation '2D Vector'. 2D vector with floating-point values"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="FLOAT2",
+                domain=self._domain,
+            )
+
+        def byte_color(
+            self,
+            geometry: InputGeometry = None,
+            selection: InputBoolean = True,
+            name: InputString = "",
+            value: InputColor = None,
+        ) -> "StoreNamedAttribute[ColorSocket]":
+            """Create Store Named Attribute with operation 'Byte Color'. RGBA color with 8-bit positive integer values"""
+            return StoreNamedAttribute(
+                geometry=geometry,
+                selection=selection,
+                name=name,
+                value=value,
+                data_type="BYTE_COLOR",
+                domain=self._domain,
+            )
+
+    point = _StoreNamedAttributeDomainFactory("POINT")
+    edge = _StoreNamedAttributeDomainFactory("EDGE")
+    face = _StoreNamedAttributeDomainFactory("FACE")
+    corner = _StoreNamedAttributeDomainFactory("CORNER")
+    spline = _StoreNamedAttributeDomainFactory("CURVE")
+    instance = _StoreNamedAttributeDomainFactory("INSTANCE")
+    layer = _StoreNamedAttributeDomainFactory("LAYER")
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        geometry: GeometrySocket
+        """Geometry"""
+        selection: BooleanSocket
+        """Selection"""
+        name: StringSocket
+        """Name"""
+        value: _S
+        """Value"""
+
+    class _Outputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        name: InputString = "",
+        value: InputAny = 0.0,
+        *,
+        data_type: _NamedAttributeDataTypes = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {
+            "Geometry": geometry,
+            "Selection": selection,
+            "Name": name,
+            "Value": value,
+        }
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @property
+    def data_type(
+        self,
+    ) -> _NamedAttributeDataTypes:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: _NamedAttributeDataTypes,
+    ):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> _AttributeDomains:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: _AttributeDomains,
+    ):
+        self.node.domain = value
 
 
 class ColorRamp(BaseNode):
@@ -619,7 +920,7 @@ class FormatString(BaseNode, DynamicInputsMixin):
     def __init__(
         self,
         format: InputString = "",
-        items: dict[str, InputAny] = {},
+        items: Mapping[str, InputString | InputInteger | InputFloat] = {},
     ):
         super().__init__()
         key_args = {"Format": format}
@@ -671,7 +972,7 @@ class JoinStrings(BaseNode):
         super().__init__()
 
         self._establish_links(Delimiter=delimiter)
-        for string in strings:
+        for string in reversed(strings):
             self._link_from(string, "Strings")
 
 
