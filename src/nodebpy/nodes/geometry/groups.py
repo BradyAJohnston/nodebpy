@@ -200,4 +200,4 @@ class PrincipalComponents(CustomGeometryGroup):
             long >> out_long
             short >> out_short
             AxesToRotation(long, short) >> out_rotation
-            (inter * Math.sign(svd.o.u.determinant)) >> out_inter
+            (inter * Math.sign(svd.o.u.determinant())) >> out_inter
