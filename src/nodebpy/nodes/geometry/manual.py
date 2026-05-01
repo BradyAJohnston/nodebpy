@@ -406,7 +406,7 @@ class Switch(BaseNode, Generic[_T]):
     def input_type(
         self,
     ) -> _SwitchDataTypes:
-        return self.node.input_type  # ty: ignore[invalid-return-type]
+        return self.node.input_type
 
     @input_type.setter
     def input_type(

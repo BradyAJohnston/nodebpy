@@ -52,12 +52,12 @@ def test_geometry_scalar_sockets():
     assert isinstance(f, Socket)
     assert isinstance(i, Socket)
     assert isinstance(b, Socket)
-    assert f.interface_socket.name == "Value"
-    assert i.interface_socket.name == "Count"
-    assert b.interface_socket.name == "Enabled"
-    assert f.interface_socket.default_value == pytest.approx(2.5)
-    assert i.interface_socket.default_value == 4
-    assert b.interface_socket.default_value is True
+    assert f._interface_socket.name == "Value"
+    assert i._interface_socket.name == "Count"
+    assert b._interface_socket.name == "Enabled"
+    assert f._interface_socket.default_value == pytest.approx(2.5)
+    assert i._interface_socket.default_value == 4
+    assert b._interface_socket.default_value is True
 
 
 def test_geometry_vector_sockets():
@@ -67,28 +67,28 @@ def test_geometry_vector_sockets():
         r = tree.inputs.rotation("Rotation")
         m = tree.inputs.matrix("Transform")
 
-    assert v.interface_socket.name == "Direction"
-    assert r.interface_socket.name == "Rotation"
-    assert m.interface_socket.name == "Transform"
-    assert v.interface_socket.socket_type == "NodeSocketVector"
-    assert r.interface_socket.socket_type == "NodeSocketRotation"
-    assert m.interface_socket.socket_type == "NodeSocketMatrix"
+    assert v._interface_socket.name == "Direction"
+    assert r._interface_socket.name == "Rotation"
+    assert m._interface_socket.name == "Transform"
+    assert v._interface_socket.socket_type == "NodeSocketVector"
+    assert r._interface_socket.socket_type == "NodeSocketRotation"
+    assert m._interface_socket.socket_type == "NodeSocketMatrix"
 
 
 def test_geometry_string_socket():
     with g.tree(arrange=None) as tree:
         ss = tree.inputs.string("Label", default_value="hello")
 
-    assert ss.interface_socket.name == "Label"
-    assert ss.interface_socket.default_value == "hello"
+    assert ss._interface_socket.name == "Label"
+    assert ss._interface_socket.default_value == "hello"
 
 
 def test_geometry_menu_socket():
     with g.tree(arrange=None) as tree:
         menu = tree.inputs.menu("Mode")
 
-    assert menu.interface_socket.name == "Mode"
-    assert menu.interface_socket.socket_type == "NodeSocketMenu"
+    assert menu._interface_socket.name == "Mode"
+    assert menu._interface_socket.socket_type == "NodeSocketMenu"
 
 
 def test_geometry_datablock_sockets():
@@ -99,10 +99,10 @@ def test_geometry_datablock_sockets():
         mat = tree.inputs.material("Material")
         img = tree.inputs.image("Image")
 
-    assert obj.interface_socket.socket_type == "NodeSocketObject"
-    assert col.interface_socket.socket_type == "NodeSocketCollection"
-    assert mat.interface_socket.socket_type == "NodeSocketMaterial"
-    assert img.interface_socket.socket_type == "NodeSocketImage"
+    assert obj._interface_socket.socket_type == "NodeSocketObject"
+    assert col._interface_socket.socket_type == "NodeSocketCollection"
+    assert mat._interface_socket.socket_type == "NodeSocketMaterial"
+    assert img._interface_socket.socket_type == "NodeSocketImage"
 
 
 def test_geometry_bundle_and_closure_sockets():
@@ -110,17 +110,17 @@ def test_geometry_bundle_and_closure_sockets():
         bundle = tree.inputs.bundle("Bundle")
         closure = tree.inputs.closure("Closure")
 
-    assert bundle.interface_socket.socket_type == "NodeSocketBundle"
-    assert closure.interface_socket.socket_type == "NodeSocketClosure"
+    assert bundle._interface_socket.socket_type == "NodeSocketBundle"
+    assert closure._interface_socket.socket_type == "NodeSocketClosure"
 
 
 def test_geometry_color_socket():
     with g.tree(arrange=None) as tree:
         col = tree.inputs.color("Tint", (0.5, 0.1, 0.9, 1.0))
 
-    assert col.interface_socket.name == "Tint"
-    assert col.interface_socket.default_value[0] == pytest.approx(0.5)
-    assert col.interface_socket.default_value[2] == pytest.approx(0.9)
+    assert col._interface_socket.name == "Tint"
+    assert col._interface_socket.default_value[0] == pytest.approx(0.5)
+    assert col._interface_socket.default_value[2] == pytest.approx(0.9)
 
 
 # ---------------------------------------------------------------------------
@@ -138,19 +138,19 @@ def test_float_subtype_and_limits():
             subtype="FACTOR",
         )
 
-    assert f.interface_socket.default_value == pytest.approx(0.5)
-    assert f.interface_socket.min_value == pytest.approx(0.0)
-    assert f.interface_socket.max_value == pytest.approx(1.0)
-    assert f.interface_socket.subtype == "FACTOR"
+    assert f._interface_socket.default_value == pytest.approx(0.5)
+    assert f._interface_socket.min_value == pytest.approx(0.0)
+    assert f._interface_socket.max_value == pytest.approx(1.0)
+    assert f._interface_socket.subtype == "FACTOR"
 
 
 def test_integer_limits():
     with g.tree(arrange=None) as tree:
         i = tree.inputs.integer("Count", default_value=10, min_value=1, max_value=100)
 
-    assert i.interface_socket.default_value == 10
-    assert i.interface_socket.min_value == 1
-    assert i.interface_socket.max_value == 100
+    assert i._interface_socket.default_value == 10
+    assert i._interface_socket.min_value == 1
+    assert i._interface_socket.max_value == 100
 
 
 def test_socket_description():
@@ -158,8 +158,8 @@ def test_socket_description():
         geo = tree.inputs.geometry("Geometry", description="The input mesh")
         f = tree.inputs.float("Scale", description="Uniform scale factor")
 
-    assert geo.interface_socket.description == "The input mesh"
-    assert f.interface_socket.description == "Uniform scale factor"
+    assert geo._interface_socket.description == "The input mesh"
+    assert f._interface_socket.description == "Uniform scale factor"
 
 
 def test_socket_vector_default_input():
@@ -168,8 +168,8 @@ def test_socket_vector_default_input():
         normal = tree.inputs.vector("Normal", default_input="NORMAL")
         out = tree.outputs.vector()
 
-    assert pos.interface_socket.default_input == "POSITION"
-    assert normal.interface_socket.default_input == "NORMAL"
+    assert pos._interface_socket.default_input == "POSITION"
+    assert normal._interface_socket.default_input == "NORMAL"
     assert out._default_input_socket == out.socket
 
 
@@ -178,29 +178,29 @@ def test_socket_hide_value():
         f = tree.inputs.float("Hidden", hide_value=True)
         i = tree.inputs.integer("Visible")
 
-    assert f.interface_socket.hide_value is True
-    assert i.interface_socket.hide_value is False
+    assert f._interface_socket.hide_value is True
+    assert i._interface_socket.hide_value is False
 
 
 def test_socket_menu_expanded():
     with g.tree(arrange=None) as tree:
         menu = tree.inputs.menu("Mode", expanded=True)
 
-    assert menu.interface_socket.menu_expanded is True
+    assert menu._interface_socket.menu_expanded is True
 
 
 def test_integer_percentage_subtype():
     with g.tree(arrange=None) as tree:
         pct = tree.inputs.integer("Progress", default_value=50, subtype="PERCENTAGE")
 
-    assert pct.interface_socket.subtype == "PERCENTAGE"
+    assert pct._interface_socket.subtype == "PERCENTAGE"
 
 
 def test_socket_vector_subtype():
     with g.tree(arrange=None) as tree:
         vel = tree.inputs.vector("Velocity", subtype="VELOCITY")
 
-    assert vel.interface_socket.subtype == "VELOCITY"
+    assert vel._interface_socket.subtype == "VELOCITY"
 
 
 # ---------------------------------------------------------------------------
@@ -214,10 +214,10 @@ def test_geometry_output_sockets():
         f_out = tree.outputs.float("Score")
         b_out = tree.outputs.boolean("Valid")
 
-    assert geo_out.interface_socket.in_out == "OUTPUT"
-    assert f_out.interface_socket.in_out == "OUTPUT"
-    assert b_out.interface_socket.in_out == "OUTPUT"
-    assert f_out.interface_socket.name == "Score"
+    assert geo_out._interface_socket.in_out == "OUTPUT"
+    assert f_out._interface_socket.in_out == "OUTPUT"
+    assert b_out._interface_socket.in_out == "OUTPUT"
+    assert f_out._interface_socket.name == "Score"
 
 
 def test_input_and_output_same_name_independent():
@@ -226,9 +226,9 @@ def test_input_and_output_same_name_independent():
         geo_in = tree.inputs.geometry("Geometry")
         geo_out = tree.outputs.geometry("Geometry")
 
-    assert geo_in.interface_socket.in_out == "INPUT"
-    assert geo_out.interface_socket.in_out == "OUTPUT"
-    assert geo_in.interface_socket is not geo_out.interface_socket
+    assert geo_in._interface_socket.in_out == "INPUT"
+    assert geo_out._interface_socket.in_out == "OUTPUT"
+    assert geo_in._interface_socket is not geo_out._interface_socket
 
 
 # ---------------------------------------------------------------------------
@@ -265,7 +265,7 @@ def test_geometry_float_socket_in_expression():
             >> out
         )
 
-    assert scale.interface_socket.default_value == pytest.approx(2.0)
+    assert scale._interface_socket.default_value == pytest.approx(2.0)
 
 
 def test_multiple_sockets_link_independently():
@@ -277,8 +277,8 @@ def test_multiple_sockets_link_independently():
 
         g.SetPosition(geo, offset=offset) >> out
 
-    assert geo.interface_socket.name == "Geometry"
-    assert offset.interface_socket.name == "Offset"
+    assert geo._interface_socket.name == "Geometry"
+    assert offset._interface_socket.name == "Offset"
 
 
 # ---------------------------------------------------------------------------
@@ -355,10 +355,10 @@ def test_shader_interface_basic():
         )
         prin >> shader_out
 
-    assert shader_out.interface_socket.in_out == "OUTPUT"
-    assert shader_out.interface_socket.socket_type == "NodeSocketShader"
-    assert base_color.interface_socket.default_value[0] == pytest.approx(0.8)
-    assert metallic.interface_socket.max_value == pytest.approx(1.0)
+    assert shader_out._interface_socket.in_out == "OUTPUT"
+    assert shader_out._interface_socket.socket_type == "NodeSocketShader"
+    assert base_color._interface_socket.default_value[0] == pytest.approx(0.8)
+    assert metallic._interface_socket.max_value == pytest.approx(1.0)
 
 
 def test_shader_vector_input():
@@ -369,8 +369,8 @@ def test_shader_vector_input():
 
         s.PrincipledBSDF(normal=normal) >> shader_out
 
-    assert normal.interface_socket.socket_type == "NodeSocketVector"
-    assert normal.interface_socket.name == "Normal"
+    assert normal._interface_socket.socket_type == "NodeSocketVector"
+    assert normal._interface_socket.name == "Normal"
 
 
 def test_shader_int_and_boolean_inputs():
@@ -381,9 +381,9 @@ def test_shader_int_and_boolean_inputs():
 
         s.PrincipledBSDF() >> shader_out
 
-    assert samples.interface_socket.default_value == 128
-    assert samples.interface_socket.min_value == 1
-    assert enabled.interface_socket.default_value is True
+    assert samples._interface_socket.default_value == 128
+    assert samples._interface_socket.min_value == 1
+    assert enabled._interface_socket.default_value is True
 
 
 def test_shader_float_output():
@@ -394,8 +394,8 @@ def test_shader_float_output():
         prin = s.PrincipledBSDF()
         prin >> shader_out
 
-    assert alpha_out.interface_socket.in_out == "OUTPUT"
-    assert alpha_out.interface_socket.socket_type == "NodeSocketFloat"
+    assert alpha_out._interface_socket.in_out == "OUTPUT"
+    assert alpha_out._interface_socket.socket_type == "NodeSocketFloat"
 
 
 # ---------------------------------------------------------------------------
@@ -413,9 +413,9 @@ def test_compositor_color_and_float_sockets():
 
         c.Mix.color(fac, image, c.Blur(image)) >> out
 
-    assert image.interface_socket.socket_type == "NodeSocketColor"
-    assert fac.interface_socket.default_value == pytest.approx(1.0)
-    assert out.interface_socket.in_out == "OUTPUT"
+    assert image._interface_socket.socket_type == "NodeSocketColor"
+    assert fac._interface_socket.default_value == pytest.approx(1.0)
+    assert out._interface_socket.in_out == "OUTPUT"
 
 
 def test_compositor_vector_socket():
@@ -425,7 +425,7 @@ def test_compositor_vector_socket():
 
         c.Blur(normal) >> out
 
-    assert normal.interface_socket.socket_type == "NodeSocketVector"
+    assert normal._interface_socket.socket_type == "NodeSocketVector"
 
 
 def test_compositor_menu_socket():
@@ -436,8 +436,8 @@ def test_compositor_menu_socket():
 
         c.Blur(image) >> out
 
-    assert mode.interface_socket.socket_type == "NodeSocketMenu"
-    assert mode.interface_socket.menu_expanded is True
+    assert mode._interface_socket.socket_type == "NodeSocketMenu"
+    assert mode._interface_socket.menu_expanded is True
 
 
 def test_compositor_multiple_outputs():
@@ -448,10 +448,10 @@ def test_compositor_multiple_outputs():
 
         c.Blur(image) >> image_out
 
-    assert image_out.interface_socket.in_out == "OUTPUT"
-    assert mask_out.interface_socket.in_out == "OUTPUT"
-    assert image_out.interface_socket.socket_type == "NodeSocketColor"
-    assert mask_out.interface_socket.socket_type == "NodeSocketFloat"
+    assert image_out._interface_socket.in_out == "OUTPUT"
+    assert mask_out._interface_socket.in_out == "OUTPUT"
+    assert image_out._interface_socket.socket_type == "NodeSocketColor"
+    assert mask_out._interface_socket.socket_type == "NodeSocketFloat"
 
 
 def test_compositor_int_and_boolean_sockets():
@@ -463,9 +463,9 @@ def test_compositor_int_and_boolean_sockets():
         image = tree.inputs.color("Image")
         c.Blur(image) >> out
 
-    assert size.interface_socket.default_value == 3
-    assert size.interface_socket.min_value == 1
-    assert enabled.interface_socket.socket_type == "NodeSocketBool"
+    assert size._interface_socket.default_value == 3
+    assert size._interface_socket.min_value == 1
+    assert enabled._interface_socket.socket_type == "NodeSocketBool"
 
 
 def test_compositor_panel_with_socket_methods():
@@ -603,14 +603,19 @@ def test_vector_socket_input_indexing_reuse():
 def test_vector_socket_output_iteration():
     """Iterating an output VectorSocket yields X, Y, Z via a single SeparateXYZ."""
     with g.tree():
-        vec = g.Position()
-        components = list(vec.o.position)
+        pos = g.Position().o.position
+        components = list(pos)
+        assert pos[2].name == "Z"
+        assert all(isinstance(x, FloatSocket) for x in pos)
+        assert all(isinstance(x, FloatSocket) for x in pos[:2])
 
     assert len(components) == 3
     sep_node = components[0].socket.node
     assert sep_node
     assert sep_node.bl_idname == g.SeparateXYZ._bl_idname
     assert all(c.socket.node == sep_node for c in components)
+    assert not pos._is_compositor_tree
+    assert not pos._is_shader_tree
 
 
 def test_vector_socket_output_len():
@@ -649,19 +654,32 @@ def test_color_socket_input_shader():
         for i, axis in enumerate(sep.i.color):
             s.Value(i) >> axis
 
+        with pytest.raises(TypeError):
+            sep.i.color.a
+
+        comb = s.CombineColor()
+        with pytest.raises(TypeError):
+            comb.o.color.a
+
+        assert len(comb.o.color) == 3
+        assert sep.i.color[2].name == "Blue"
+        assert sep.i.color[0].name == "Red"
+
     assert sep.i.color.links[0].from_node
     assert sep.i.color.links[0].from_node.bl_idname == s.CombineColor._bl_idname
+    assert len(sep.i.color) == 3
 
 
 def test_color_socket_input_compositor():
     with c.tree():
-        sep = c.SeparateColor()
+        image = c.SeparateColor().i.image
 
-        for i, axis in enumerate(sep.i.image):
+        for i, axis in enumerate(image):
             c.Value(i) >> axis
 
-    assert sep.i.image.links[0].from_node
-    assert sep.i.image.links[0].from_node.bl_idname == c.CombineColor._bl_idname
+    assert image.links[0].from_node
+    assert image.links[0].from_node.bl_idname == c.CombineColor._bl_idname
+    assert image._is_compositor_tree
 
 
 def test_color_socket_output_iteration():
@@ -697,8 +715,8 @@ def test_matrix_socket_input_indexing():
                 assert input.links[0].from_node == val.node
             else:
                 assert not input.links
-            input.socket.default_value = i  # ty: ignore[unresolved-attribute]
-            assert input.socket.default_value == i  # ty: ignore[unresolved-attribute]
+            input.socket.default_value = i
+            assert input.socket.default_value == i
 
     transform_input = transform.node.inputs["Transform"]
     assert transform_input.links
@@ -721,7 +739,7 @@ def test_matrix_socket_input_slice():
         components = transform.i.transform[0:3]
 
     assert len(components) == 3
-    combine_node = transform.node.inputs["Transform"].links[0].from_node  # ty: ignore[not-subscriptable]
+    combine_node = transform.node.inputs["Transform"].links[0].from_node
     assert combine_node
     assert combine_node.bl_idname == g.CombineMatrix._bl_idname
 
@@ -752,10 +770,9 @@ def test_accessor_rotation():
         quat = g.RotationToQuaternion(rot.o.rotation)
         assert quat.i[0].links
         rot_to_quat = quat.i[0].links[0].from_node
-        assert quat.o.w.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
-        assert quat.o.x.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
-        assert quat.o.y.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
-        assert quat.o.z.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
+        assert all(
+            axis.node.inputs[0].links[0].from_node == rot_to_quat for axis in quat.o
+        )
 
         eul = rot.o.rotation.euler()
         assert isinstance(eul, VectorSocket)
@@ -840,8 +857,25 @@ def test_boolean_socket_switches():
             method = name.lower().replace("int", "integer").replace("rgba", "color")
             if method == "shader":
                 continue
-            switch = getattr(i.switch, method)()
-            assert switch.input_type == name
+            sock = getattr(i.switch, method)()
+            assert sock.node.input_type == name
+
+
+def test_float_socket_methods():
+    with g.tree():
+        val = g.Float().o.value
+
+        result = val.sign()
+        assert result.node.bl_idname == g.Math._bl_idname
+        assert result.node.operation == "SIGN"
+
+        result = val.negate()
+        assert result.node.bl_idname == g.Math._bl_idname
+        assert result.node.operation == "MULTIPLY"
+        assert result.node.inputs[1].default_value == pytest.approx(-1.0)
+        assert result.node.inputs[0].links[0].from_node == val.node
+
+        assert len(val.links) == 2
 
 
 def test_vector_socket_methods():
@@ -850,17 +884,17 @@ def test_vector_socket_methods():
         norm = vec.normalize()
         assert isinstance(norm, VectorSocket)
         assert norm.node.bl_idname == g.VectorMath._bl_idname
-        assert norm.node.operation == "NORMALIZE"  # ty: ignore[unresolved-attribute]
+        assert norm.node.operation == "NORMALIZE"
         assert norm.socket == vec.normalize().socket
 
         dot = vec.dot(g.Vector())
         assert isinstance(dot, FloatSocket)
         assert dot.node.bl_idname == g.VectorMath._bl_idname
-        assert dot.node.operation == "DOT_PRODUCT"  # ty: ignore[unresolved-attribute]
+        assert dot.node.operation == "DOT_PRODUCT"
         assert dot.socket != vec.dot(g.Vector()).socket
 
         ln = vec.length()
         assert isinstance(ln, FloatSocket)
         assert ln.node.bl_idname == g.VectorMath._bl_idname
-        assert ln.node.operation == "LENGTH"  # ty: ignore[unresolved-attribute]
+        assert ln.node.operation == "LENGTH"
         assert ln.socket == vec.length().socket

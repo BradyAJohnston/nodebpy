@@ -5,6 +5,8 @@ title: Changelog
 ## v0.16.0 - UNRELEASED
 
 ### Enhancements
+- Added `svd()` method onto `MatrixSocket` which returns a `tuple[MatrixSocket, VectorSocket, MatrixSocket]` for the `[u, s, v]` outputs of the `MatrixSVD` node.
+- Add `sign()` and `negate()` methods onto the `FloatSocket` for method chaining. Both return `FloatSocket`.
 - Remove `socket_name` property from `BaseSocket`, already accessible via `.socket.name`.
 - Added `.dot()`, `.length()` and `.normalize()` methods to `VectorSocket` which create the corresponding `DotProduct`, `VectorLength` and `Normalize` nodes.
 - Properties on sockets that aren't just accessing components of the socket are node methods. They still return sockets and not nodes.
@@ -14,8 +16,10 @@ title: Changelog
     - `MatrixSocket.transpose` -> `MatrixSocket.transpose()`
     - `MatrixSocket.determinant` -> `MatrixSocket.determinant()`
 
-
 ### Bug Fixes
+- The `ColorSocket` properly only indexes to length `3` inside of the shader as `SeparateXYZ` and `CombineXYZ` don't have alpha inputs or outputs.
+- Socket return types are more explicit for slicing and math operations for better quality type hinting.
+
 
 ## v0.15.0 - 2026-04-30
 

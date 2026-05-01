@@ -19,8 +19,6 @@ from . import (
     EvaluateAtIndex,
     FieldAverage,
     Frame,
-    Math,
-    MatrixSVD,
     Switch,
 )
 
@@ -192,12 +190,10 @@ class PrincipalComponents(CustomGeometryGroup):
                     axis2 >> matrix.i[int(i * 4 + j)]
 
         with Frame("SVD"):
-            svd = MatrixSVD(matrix)
-            svd.o.s >> out_princ
-            long, inter, short = [
-                CombineXYZ(*svd.o.u[i * 4 : (i * 4) + 3]) for i in range(3)
-            ]
+            u, s, v = matrix.o.matrix.svd()
+            s >> out_princ
+            long, inter, short = [CombineXYZ(*u[i * 4 : (i * 4) + 3]) for i in range(3)]
             long >> out_long
             short >> out_short
             AxesToRotation(long, short) >> out_rotation
-            (inter * Math.sign(svd.o.u.determinant())) >> out_inter
+            inter * u.determinant().sign() >> out_inter
