@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from types import EllipsisType
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 from bpy.types import NodeLink, NodeSocket
 
@@ -14,7 +14,14 @@ if TYPE_CHECKING:
     from ..nodes.geometry import Compare, Math, MultiplyMatrices, TransformPoint
     from ..types import InputLinkable
     from .node import BaseNode
-    from .socket import MatrixSocket, Socket
+    from .socket import (
+        BooleanSocket,
+        FloatSocket,
+        IntegerSocket,
+        MatrixSocket,
+        Socket,
+        VectorSocket,
+    )
     from .tree import TreeBuilder
 
 
@@ -30,7 +37,7 @@ class OperatorMixin:
 
     def _apply_math_operation(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "Math":
+    ) -> "FloatSocket | VectorSocket | IntegerSocket":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
@@ -38,43 +45,43 @@ class OperatorMixin:
         )
         return _get_socket_linker(socket)._dispatch_math(other, operation, reverse)
 
-    def __mul__(self, other: Any) -> "Math":
+    def __mul__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "multiply")
 
-    def __rmul__(self, other: Any) -> "Math":
+    def __rmul__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "multiply", reverse=True)
 
-    def __truediv__(self, other: Any) -> "Math":
+    def __truediv__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "divide")
 
-    def __rtruediv__(self, other: Any) -> "Math":
+    def __rtruediv__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "divide", reverse=True)
 
-    def __add__(self, other: Any) -> "Math":
+    def __add__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "add")
 
-    def __radd__(self, other: Any) -> "Math":
+    def __radd__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "add", reverse=True)
 
-    def __sub__(self, other: Any) -> "Math":
+    def __sub__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "subtract")
 
-    def __rsub__(self, other: Any) -> "Math":
+    def __rsub__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "subtract", reverse=True)
 
-    def __pow__(self, other: Any) -> "Math":
+    def __pow__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "power")
 
-    def __rpow__(self, other: Any) -> "Math":
+    def __rpow__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "power", reverse=True)
 
-    def __mod__(self, other: Any) -> "Math":
+    def __mod__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "modulo")
 
-    def __rmod__(self, other: Any) -> "Math":
+    def __rmod__(self, other: Any) -> "FloatSocket":
         return self._apply_math_operation(other, "modulo", reverse=True)
 
-    def __floordiv__(self, other: Any) -> "Math":
+    def __floordiv__(self, other: Any) -> "FloatSocket":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
@@ -82,7 +89,7 @@ class OperatorMixin:
         )
         return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
 
-    def __rfloordiv__(self, other: Any) -> "Math":
+    def __rfloordiv__(self, other: Any) -> "FloatSocket":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
@@ -90,17 +97,19 @@ class OperatorMixin:
         )
         return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
 
-    def __neg__(self) -> "Math":
+    def __neg__(self) -> "FloatSocket":
         return _get_socket_linker(self._default_output_socket)._dispatch_unary(  # type: ignore[attr-defined]
             "negate"
         )
 
-    def __abs__(self) -> "Math":
+    def __abs__(self) -> "FloatSocket":
         return _get_socket_linker(self._default_output_socket)._dispatch_unary(  # type: ignore[attr-defined]
             "absolute"
         )
 
-    def _apply_compare_operation(self, other: Any, operation: str) -> "Math":
+    def _apply_compare_operation(
+        self, other: Any, operation: str
+    ) -> "FloatSocket | BooleanSocket":
         socket, other, _ = _resolve_promotion(
             self._default_output_socket,  # type: ignore[attr-defined]
             other,
@@ -108,7 +117,7 @@ class OperatorMixin:
         )
         return _get_socket_linker(socket)._dispatch_compare(other, operation)
 
-    def __lt__(self, other: Any) -> "Compare":
+    def __lt__(self, other: Any) -> "BooleanSocket":
         return self._apply_compare_operation(other, "less_than")
 
     def __gt__(self, other: Any) -> "Compare":
@@ -169,27 +178,31 @@ class OperatorMixin:
         else:
             return value
 
-    def __matmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
+    def __matmul__(self, other: Any) -> "MatrixSocket | VectorSocket":
         from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
         other = self._cast_to_matrix(other)
         socket = self._default_output_socket
 
         if socket.type == "MATRIX" and other.type == "VECTOR":
-            return TransformPoint(other, socket)
+            return TransformPoint(other, socket).o.vector
 
-        return MultiplyMatrices(socket, other)
+        return MultiplyMatrices(socket, other).o.matrix
 
-    def __rmatmul__(self, other: Any) -> "MultiplyMatrices | TransformPoint":
+    @overload
+    def __rmatmul__(self, other: MatrixSocket) -> "MatrixSocket": ...
+    @overload
+    def __rmatmul__(self, other: VectorSocket) -> "VectorSocket": ...
+    def __rmatmul__(self, other: Any) -> "MatrixSocket | VectorSocket":
         from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
         other = self._cast_to_matrix(other)
         socket = self._default_output_socket
 
         if socket.type == "VECTOR" and getattr(other, "type", None) == "MATRIX":
-            return TransformPoint(socket, other)
+            return TransformPoint(socket, other).o.vector
 
-        return MultiplyMatrices(other, socket)
+        return MultiplyMatrices(other, socket).o.matrix
 
 
 class LinkingMixin:

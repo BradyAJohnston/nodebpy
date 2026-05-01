@@ -184,7 +184,7 @@ class PrincipalComponents(CustomGeometryGroup):
             diff = position - centroid
             matrix = CombineMatrix()
 
-            for i, axis1 in enumerate(diff.o.vector):
+            for i, axis1 in enumerate(diff):
                 mean = FieldAverage.point.vector(diff * axis1, group_id)
                 for j, axis2 in enumerate(mean.o.mean):
                     axis2 >> matrix.i[int(i * 4 + j)]

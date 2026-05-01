@@ -145,40 +145,42 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "Math":
+    ) -> "FloatSocket":
         """Scalar math dispatch (float). Uses the Math node."""
         from ..nodes.geometry.converter import Math
 
         values = (self.socket, other) if not reverse else (other, self.socket)
         math_operation = "floored_modulo" if operation == "modulo" else operation
-        return getattr(Math, math_operation)(*values)
+        return getattr(Math, math_operation)(*values).o.value
 
-    def _dispatch_unary(self, operation: str) -> "Math":
+    def _dispatch_unary(self, operation: str) -> "FloatSocket":
         """Scalar unary dispatch (float). Uses the Math node."""
         from ..nodes.geometry.converter import Math
 
         if operation == "negate":
-            return Math.multiply(self.socket, -1)
+            return Math.multiply(self.socket, -1).o.value
         elif operation == "absolute":
-            return Math.absolute(self.socket)
+            return Math.absolute(self.socket).o.value
         raise ValueError(f"Unknown unary operation: {operation}")
 
-    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "Math":
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "FloatSocket":
         """Scalar floor division: divide then floor."""
         from ..nodes.geometry.converter import Math
 
         values = (self.socket, other) if not reverse else (other, self.socket)
         divided = Math.divide(*values)
-        return Math.floor(divided)
+        return Math.floor(divided).o.value
 
     def _dispatch_compare(
         self, other: Any, operation: str
-    ) -> "Compare[FloatSocket] | Math":
+    ) -> "FloatSocket | BooleanSocket":
         """Scalar comparison dispatch."""
         if isinstance(self.tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
 
-            return getattr(Compare.float, operation)(self.socket, other)
+            return cast(
+                Compare, getattr(Compare.float, operation)(self.socket, other)
+            ).o.result
         else:
             from ..nodes.geometry.converter import Math
 
@@ -190,11 +192,11 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
                 "equal": ("compare", False),
             }
             math_op, negate = _MATH_COMPARE_MAP[operation]
-            result = getattr(Math, math_op)(self.socket, other)
+            result = getattr(Math, math_op)(self.socket, other).o.value
             if operation == "equal":
                 result.i.value_002.default_value = 0.00001
             if negate:
-                result = Math.subtract(1.0, result._default_output_socket)
+                result = Math.subtract(1.0, result._default_output_socket).o.value
             return result
 
     if TYPE_CHECKING:
@@ -317,31 +319,31 @@ class _VectorMixin(BaseSocket):
     def __len__(self) -> int:
         return 3
 
-    def _dispatch_unary(self, operation: str) -> "BaseNode":
+    def _dispatch_unary(self, operation: str) -> "VectorSocket":
         from ..nodes.geometry import VectorMath
 
         if operation == "negate":
-            return VectorMath.scale(self.socket, -1)
+            return VectorMath.scale(self.socket, -1).o.vector
         elif operation == "absolute":
-            return VectorMath.absolute(self.socket)
+            return VectorMath.absolute(self.socket).o.vector
         raise ValueError(f"Unknown unary operation: {operation}")
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "VectorMath":
+    ) -> "VectorSocket":
         from ..nodes.geometry import VectorMath
 
         values = (self.socket, other) if not reverse else (other, self.socket)
 
         if operation == "multiply":
             if isinstance(other, (int, float)):
-                return VectorMath.scale(self.socket, other)
+                return VectorMath.scale(self.socket, other).o.vector
             elif isinstance(other, NodeSocket) and other.type in (
                 "VALUE",
                 "FLOAT",
                 "INT",
             ):
-                return VectorMath.scale(self.socket, other)
+                return VectorMath.scale(self.socket, other).o.vector
             elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(
                 other, "type", None
             ) in (
@@ -349,11 +351,13 @@ class _VectorMixin(BaseSocket):
                 "FLOAT",
                 "INT",
             ):
-                return VectorMath.scale(self.socket, other._default_output_socket)
+                return VectorMath.scale(
+                    self.socket, other._default_output_socket
+                ).o.vector
             elif isinstance(other, (list, tuple)) and len(other) == 3:
-                return VectorMath.multiply(*values)
+                return VectorMath.multiply(*values).o.vector
             elif isinstance(other, (_SocketLike, _NodeLike, NodeSocket)):
-                return VectorMath.multiply(*values)
+                return VectorMath.multiply(*values).o.vector
             else:
                 raise TypeError(
                     f"Unsupported type for {operation} with VECTOR socket: {type(other)}, {other=}"
@@ -370,7 +374,7 @@ class _VectorMixin(BaseSocket):
             elif (isinstance(other, (list, tuple)) and len(other) == 3) or isinstance(
                 other, (_SocketLike, _NodeLike, NodeSocket)
             ):
-                return vector_method(*values)
+                return vector_method(*values).o.vector
             else:
                 raise TypeError(
                     f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
@@ -384,28 +388,30 @@ class _VectorMixin(BaseSocket):
 
     def _dispatch_compare(
         self, other: Any, operation: str
-    ) -> "Compare[VectorSocket] | Compare[FloatSocket] | VectorMath | Math":
+    ) -> "BooleanSocket | FloatSocket":
         if self._is_geometry_tree:
             from ..nodes.geometry import Compare
 
-            return getattr(Compare.vector, operation)(self.socket, other)
+            return getattr(Compare.vector, operation)(self.socket, other).o.result
         else:
-            return Socket._dispatch_compare(cast("Socket", self), other, operation)
+            return Socket._dispatch_compare(
+                cast("Socket", self), other, operation
+            ).o.value
 
     if TYPE_CHECKING:
 
-        def __add__(self, other: Any) -> "VectorMath": ...
-        def __radd__(self, other: Any) -> "VectorMath": ...
-        def __sub__(self, other: Any) -> "VectorMath": ...
-        def __rsub__(self, other: Any) -> "VectorMath": ...
-        def __mul__(self, other: Any) -> "VectorMath": ...
-        def __rmul__(self, other: Any) -> "VectorMath": ...
-        def __truediv__(self, other: Any) -> "VectorMath": ...
-        def __rtruediv__(self, other: Any) -> "VectorMath": ...
-        def __floordiv__(self, other: Any) -> "VectorMath": ...
-        def __rfloordiv__(self, other: Any) -> "VectorMath": ...
-        def __neg__(self) -> "VectorMath": ...
-        def __abs__(self) -> "VectorMath": ...
+        def __add__(self, other: Any) -> "VectorSocket": ...
+        def __radd__(self, other: Any) -> "VectorSocket": ...
+        def __sub__(self, other: Any) -> "VectorSocket": ...
+        def __rsub__(self, other: Any) -> "VectorSocket": ...
+        def __mul__(self, other: Any) -> "VectorSocket": ...
+        def __rmul__(self, other: Any) -> "VectorSocket": ...
+        def __truediv__(self, other: Any) -> "VectorSocket": ...
+        def __rtruediv__(self, other: Any) -> "VectorSocket": ...
+        def __floordiv__(self, other: Any) -> "VectorSocket": ...
+        def __rfloordiv__(self, other: Any) -> "VectorSocket": ...
+        def __neg__(self) -> "VectorSocket": ...
+        def __abs__(self) -> "VectorSocket": ...
         def __lt__(self, other: Any) -> "Compare[NodeSocketVector]": ...
         def __gt__(self, other: Any) -> "Compare[NodeSocketVector]": ...
         def __le__(self, other: Any) -> "Compare[NodeSocketVector]": ...
@@ -541,26 +547,28 @@ class _ColorMixin(BaseSocket):
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "VectorMath":
+    ) -> "VectorSocket":
         from ..nodes.geometry import VectorMath
 
         values = (self.socket, other) if not reverse else (other, self.socket)
 
         if operation == "multiply":
             if isinstance(other, (int, float)):
-                return VectorMath.scale(self.socket, other)
+                return VectorMath.scale(self.socket, other).o.vector
             elif isinstance(other, NodeSocket) and other.type in (
                 "VALUE",
                 "FLOAT",
                 "INT",
             ):
-                return VectorMath.scale(self.socket, other)
+                return VectorMath.scale(self.socket, other).o.vector
             elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(
                 other, "type", None
             ) in ("VALUE", "FLOAT", "INT"):
-                return VectorMath.scale(self.socket, other._default_output_socket)
+                return VectorMath.scale(
+                    self.socket, other._default_output_socket
+                ).o.vector
             else:
-                return VectorMath.multiply(*values)
+                return VectorMath.multiply(*values).o.vector
         else:
             vector_method = getattr(VectorMath, operation, None)
             assert vector_method is not None
@@ -571,7 +579,7 @@ class _ColorMixin(BaseSocket):
                     if not reverse
                     else vector_method(scalar_vector, self.socket)
                 )
-            return vector_method(*values)
+            return vector_method(*values).o.vector
 
 
 class _IntegerMixin(BaseSocket):
@@ -601,7 +609,7 @@ class _IntegerMixin(BaseSocket):
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "IntegerMath | Math":
+    ) -> "IntegerSocket | FloatSocket":
         if self._is_geometry_tree and self._other_is_integer(other):
             from ..nodes.geometry.converter import IntegerMath
 
@@ -609,55 +617,58 @@ class _IntegerMixin(BaseSocket):
             return getattr(IntegerMath, operation)(*values)
         return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)
 
-    def _dispatch_unary(self, operation: str) -> "IntegerMath | Math":
+    def _dispatch_unary(self, operation: str) -> "IntegerSocket | FloatSocket":
         if self._is_geometry_tree:
             from ..nodes.geometry.converter import IntegerMath
 
             if operation == "negate":
-                return IntegerMath.negate(self.socket)
+                return IntegerMath.negate(self.socket).o.value
             elif operation == "absolute":
-                return IntegerMath.absolute(self.socket)
+                return IntegerMath.absolute(self.socket).o.value
         return Socket._dispatch_unary(cast("Socket", self), operation)
 
     def _dispatch_floordiv(
         self, other: Any, reverse: bool = False
-    ) -> "IntegerMath | Math":
+    ) -> "IntegerSocket | FloatSocket":
         if self._is_geometry_tree and self._other_is_integer(other):
             from ..nodes.geometry.converter import IntegerMath
 
             values = (self.socket, other) if not reverse else (other, self.socket)
-            return IntegerMath.divide_floor(*values)
+            return IntegerMath.divide_floor(*values).o.value
         return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
 
     def _dispatch_compare(
         self, other: Any, operation: str
-    ) -> "Compare[IntegerSocket] | Math":
+    ) -> "BooleanSocket | FloatSocket":
         if self._is_geometry_tree:
             from ..nodes.geometry.manual import Compare
 
-            return getattr(Compare.integer, operation)(self.socket, other)
+            return cast(
+                "Compare[IntegerSocket]",
+                getattr(Compare.integer, operation)(self.socket, other),
+            ).o.result
         return cast(
             "Math", Socket._dispatch_compare(cast("Socket", self), other, operation)
-        )
+        ).o.value
 
     if TYPE_CHECKING:
 
-        def __add__(self, other: Any) -> "IntegerMath": ...
-        def __radd__(self, other: Any) -> "IntegerMath": ...
-        def __sub__(self, other: Any) -> "IntegerMath": ...
-        def __rsub__(self, other: Any) -> "IntegerMath": ...
-        def __mul__(self, other: Any) -> "IntegerMath": ...
-        def __rmul__(self, other: Any) -> "IntegerMath": ...
-        def __truediv__(self, other: Any) -> "IntegerMath": ...
-        def __rtruediv__(self, other: Any) -> "IntegerMath": ...
-        def __floordiv__(self, other: Any) -> "IntegerMath": ...
-        def __rfloordiv__(self, other: Any) -> "IntegerMath": ...
-        def __neg__(self) -> "IntegerMath": ...
-        def __abs__(self) -> "IntegerMath": ...
-        def __lt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __gt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __le__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __ge__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+        def __add__(self, other: Any) -> "IntegerSocket": ...
+        def __radd__(self, other: Any) -> "IntegerSocket": ...
+        def __sub__(self, other: Any) -> "IntegerSocket": ...
+        def __rsub__(self, other: Any) -> "IntegerSocket": ...
+        def __mul__(self, other: Any) -> "IntegerSocket": ...
+        def __rmul__(self, other: Any) -> "IntegerSocket": ...
+        def __truediv__(self, other: Any) -> "IntegerSocket": ...
+        def __rtruediv__(self, other: Any) -> "IntegerSocket": ...
+        def __floordiv__(self, other: Any) -> "IntegerSocket": ...
+        def __rfloordiv__(self, other: Any) -> "IntegerSocket": ...
+        def __neg__(self) -> "IntegerSocket": ...
+        def __abs__(self) -> "IntegerSocket": ...
+        def __lt__(self, other: Any) -> "BooleanSocket": ...
+        def __gt__(self, other: Any) -> "BooleanSocket": ...
+        def __le__(self, other: Any) -> "BooleanSocket": ...
+        def __ge__(self, other: Any) -> "BooleanSocket": ...
 
 
 # ---------------------------------------------------------------------------
@@ -948,11 +959,11 @@ class _MatrixMixin(BaseSocket):
         @overload
         def __matmul__(
             self, other: "VectorSocket | NodeSocketVector"
-        ) -> "TransformPoint": ...
+        ) -> "VectorSocket": ...
         @overload
-        def __matmul__(self, other: Any) -> "MultiplyMatrices": ...
+        def __matmul__(self, other: Any) -> "MatrixSocket": ...
 
-        def __rmatmul__(self, other: Any) -> "MultiplyMatrices": ...
+        def __rmatmul__(self, other: Any) -> "MatrixSocket": ...
 
 
 # ---------------------------------------------------------------------------
