@@ -603,14 +603,19 @@ def test_vector_socket_input_indexing_reuse():
 def test_vector_socket_output_iteration():
     """Iterating an output VectorSocket yields X, Y, Z via a single SeparateXYZ."""
     with g.tree():
-        vec = g.Position()
-        components = list(vec.o.position)
+        pos = g.Position().o.position
+        components = list(pos)
+        assert pos[2].name == "Z"
+        assert all(isinstance(x, FloatSocket) for x in pos)
+        assert all(isinstance(x, FloatSocket) for x in pos[:2])
 
     assert len(components) == 3
     sep_node = components[0].socket.node
     assert sep_node
     assert sep_node.bl_idname == g.SeparateXYZ._bl_idname
     assert all(c.socket.node == sep_node for c in components)
+    assert not pos._is_compositor_tree
+    assert not pos._is_shader_tree
 
 
 def test_vector_socket_output_len():
@@ -652,19 +657,27 @@ def test_color_socket_input_shader():
         with pytest.raises(TypeError):
             sep.i.color.a
 
+        comb = s.CombineColor()
+        with pytest.raises(TypeError):
+            comb.o.color.a
+
+        assert len(comb.o.color) == 3
+
     assert sep.i.color.links[0].from_node
     assert sep.i.color.links[0].from_node.bl_idname == s.CombineColor._bl_idname
+    assert len(sep.i.color) == 3
 
 
 def test_color_socket_input_compositor():
     with c.tree():
-        sep = c.SeparateColor()
+        image = c.SeparateColor().i.image
 
-        for i, axis in enumerate(sep.i.image):
+        for i, axis in enumerate(image):
             c.Value(i) >> axis
 
-    assert sep.i.image.links[0].from_node
-    assert sep.i.image.links[0].from_node.bl_idname == c.CombineColor._bl_idname
+    assert image.links[0].from_node
+    assert image.links[0].from_node.bl_idname == c.CombineColor._bl_idname
+    assert image._is_compositor_tree
 
 
 def test_color_socket_output_iteration():
