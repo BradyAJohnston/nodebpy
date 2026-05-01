@@ -171,7 +171,9 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         divided = Math.divide(*values)
         return Math.floor(divided)
 
-    def _dispatch_compare(self, other: Any, operation: str) -> "Compare | Math":
+    def _dispatch_compare(
+        self, other: Any, operation: str
+    ) -> "Compare[FloatSocket] | Math":
         """Scalar comparison dispatch."""
         if isinstance(self.tree.tree, GeometryNodeTree):
             from ..nodes.geometry.manual import Compare
@@ -382,9 +384,9 @@ class _VectorMixin(BaseSocket):
 
     def _dispatch_compare(
         self, other: Any, operation: str
-    ) -> "Compare[VectorSocket] | VectorMath":
+    ) -> "Compare[VectorSocket] | Compare[FloatSocket] | VectorMath | Math":
         if self._is_geometry_tree:
-            from ..nodes.geometry.manual import Compare
+            from ..nodes.geometry import Compare
 
             return getattr(Compare.vector, operation)(self.socket, other)
         else:
@@ -634,7 +636,9 @@ class _IntegerMixin(BaseSocket):
             from ..nodes.geometry.manual import Compare
 
             return getattr(Compare.integer, operation)(self.socket, other)
-        return Socket._dispatch_compare(cast("Socket", self), other, operation)
+        return cast(
+            "Math", Socket._dispatch_compare(cast("Socket", self), other, operation)
+        )
 
     if TYPE_CHECKING:
 
@@ -922,7 +926,7 @@ class _MatrixMixin(BaseSocket):
                     for i in range(*key.indices(len(node.i)))
                 ]
 
-        return node.i[key]
+        return cast(FloatSocket, node.i[key])
 
     def __iter__(self) -> Iterator["FloatSocket"]:
         from ..nodes.geometry import CombineMatrix, SeparateMatrix
