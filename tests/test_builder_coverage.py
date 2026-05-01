@@ -274,7 +274,7 @@ def test_boolean_mixin_operators(op, expected_op):
         raw_sock = g.RandomValue.boolean(0.5).node.outputs[0]
         bool_sock = BooleanSocket(raw_sock)
         result = (bool_sock | True) if op == "or" else (bool_sock & True)
-    assert result.operation == expected_op
+    assert result.node.operation == expected_op
 
 
 def test_color_separate_in_compositor_tree():

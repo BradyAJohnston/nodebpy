@@ -60,7 +60,6 @@ if TYPE_CHECKING:
         IntegerMath,
         Math,
         MultiplyMatrices,
-        Switch,
         TransformPoint,
     )
     from ..nodes.geometry.manual import Compare
@@ -232,19 +231,19 @@ class _VectorMixin(BaseSocket):
     _tree: TreeBuilder
 
     @property
-    def x(self) -> Socket:
+    def x(self) -> FloatSocket:
         from ..nodes.geometry import SeparateXYZ
 
         return SeparateXYZ._find_or_create_linked(self.socket).o.x
 
     @property
-    def y(self) -> Socket:
+    def y(self) -> FloatSocket:
         from ..nodes.geometry import SeparateXYZ
 
         return SeparateXYZ._find_or_create_linked(self.socket).o.y
 
     @property
-    def z(self) -> Socket:
+    def z(self) -> FloatSocket:
         from ..nodes.geometry import SeparateXYZ
 
         return SeparateXYZ._find_or_create_linked(self.socket).o.z
@@ -285,18 +284,21 @@ class _VectorMixin(BaseSocket):
         self.socket.default_value = value
 
     @overload
-    def __getitem__(self, key: slice) -> "list[Socket]": ...
+    def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
     @overload
-    def __getitem__(self, key: int) -> "Socket": ...
-    def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+    def __getitem__(self, key: int) -> "FloatSocket": ...
+    def __getitem__(self, key: int | slice) -> "FloatSocket | list[FloatSocket]":
         from ..nodes.geometry import CombineXYZ, SeparateXYZ
 
         if self.socket.is_output:
-            return SeparateXYZ._find_or_create_linked(self.socket).o[key]
-        else:
-            return CombineXYZ._find_or_create_linked(self.socket).i[key]
+            node = SeparateXYZ._find_or_create_linked(self.socket)
+            return [node.o.x, node.o.y, node.o.z][key]
 
-    def __iter__(self) -> Iterator["Socket"]:
+        else:
+            node = CombineXYZ._find_or_create_linked(self.socket)
+            return [node.i.x, node.i.y, node.i.z][key]
+
+    def __iter__(self) -> Iterator["FloatSocket"]:
         from ..nodes.geometry import CombineXYZ, SeparateXYZ
 
         if self.socket.is_output:
@@ -324,7 +326,7 @@ class _VectorMixin(BaseSocket):
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "BaseNode":
+    ) -> "VectorMath":
         from ..nodes.geometry import VectorMath
 
         values = (self.socket, other) if not reverse else (other, self.socket)
@@ -372,13 +374,15 @@ class _VectorMixin(BaseSocket):
                     f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
                 )
 
-    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "BaseNode":
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "VectorMath":
         from ..nodes.geometry import VectorMath
 
         divided = self._dispatch_math(other, "divide", reverse=reverse)
         return VectorMath.floor(divided)
 
-    def _dispatch_compare(self, other: Any, operation: str) -> "BaseNode":
+    def _dispatch_compare(
+        self, other: Any, operation: str
+    ) -> "Compare[VectorSocket] | VectorMath":
         if self._is_geometry_tree:
             from ..nodes.geometry.manual import Compare
 
@@ -664,90 +668,80 @@ class _BooleanSwitchSocketFactory:
 
         self._switch = Switch
 
-    def float(
-        self, false: InputFloat = None, true: InputFloat = None
-    ) -> "Switch[FloatSocket]":
-        return self._switch.float(self._socket, false, true)
+    def float(self, false: InputFloat = None, true: InputFloat = None) -> "FloatSocket":
+        return self._switch.float(self._socket, false, true).o.output
 
     def integer(
         self, false: InputInteger = None, true: InputInteger = None
-    ) -> "Switch[IntegerSocket]":
-        return self._switch.integer(self._socket, false, true)
+    ) -> "IntegerSocket":
+        return self._switch.integer(self._socket, false, true).o.output
 
     def boolean(
         self, false: InputBoolean = None, true: InputBoolean = None
-    ) -> "Switch[BooleanSocket]":
-        return self._switch.boolean(self._socket, false, true)
+    ) -> "BooleanSocket":
+        return self._switch.boolean(self._socket, false, true).o.output
 
     def vector(
         self, false: InputVector = None, true: InputVector = None
-    ) -> "Switch[VectorSocket]":
-        return self._switch.vector(self._socket, false, true)
+    ) -> "VectorSocket":
+        return self._switch.vector(self._socket, false, true).o.output
 
-    def color(
-        self, false: InputColor = None, true: InputColor = None
-    ) -> "Switch[ColorSocket]":
-        return self._switch.color(self._socket, false, true)
+    def color(self, false: InputColor = None, true: InputColor = None) -> "ColorSocket":
+        return self._switch.color(self._socket, false, true).o.output
 
     def rotation(
         self, false: InputRotation = None, true: InputRotation = None
-    ) -> "Switch[RotationSocket]":
-        return self._switch.rotation(self._socket, false, true)
+    ) -> "RotationSocket":
+        return self._switch.rotation(self._socket, false, true).o.output
 
     def matrix(
         self, false: InputMatrix = None, true: InputMatrix = None
-    ) -> "Switch[MatrixSocket]":
-        return self._switch.matrix(self._socket, false, true)
+    ) -> "MatrixSocket":
+        return self._switch.matrix(self._socket, false, true).o.output
 
     def string(
         self, false: InputString = None, true: InputString = None
-    ) -> "Switch[StringSocket]":
-        return self._switch.string(self._socket, false, true)
+    ) -> "StringSocket":
+        return self._switch.string(self._socket, false, true).o.output
 
-    def menu(
-        self, false: InputMenu = None, true: InputMenu = None
-    ) -> "Switch[MenuSocket]":
-        return self._switch.menu(self._socket, false, true)
+    def menu(self, false: InputMenu = None, true: InputMenu = None) -> "MenuSocket":
+        return self._switch.menu(self._socket, false, true).o.output
 
     def object(
         self, false: InputObject = None, true: InputObject = None
-    ) -> "Switch[ObjectSocket]":
-        return self._switch.object(self._socket, false, true)
+    ) -> "ObjectSocket":
+        return self._switch.object(self._socket, false, true).o.output
 
-    def image(
-        self, false: InputImage = None, true: InputImage = None
-    ) -> "Switch[ImageSocket]":
-        return self._switch.image(self._socket, false, true)
+    def image(self, false: InputImage = None, true: InputImage = None) -> "ImageSocket":
+        return self._switch.image(self._socket, false, true).o.output
 
     def geometry(
         self, false: InputGeometry = None, true: InputGeometry = None
-    ) -> "Switch[GeometrySocket]":
-        return self._switch.geometry(self._socket, false, true)
+    ) -> "GeometrySocket":
+        return self._switch.geometry(self._socket, false, true).o.output
 
     def collection(
         self, false: InputCollection = None, true: InputCollection = None
-    ) -> "Switch[CollectionSocket]":
-        return self._switch.collection(self._socket, false, true)
+    ) -> "CollectionSocket":
+        return self._switch.collection(self._socket, false, true).o.output
 
     def material(
         self, false: InputMaterial = None, true: InputMaterial = None
-    ) -> "Switch[MaterialSocket]":
-        return self._switch.material(self._socket, false, true)
+    ) -> "MaterialSocket":
+        return self._switch.material(self._socket, false, true).o.output
 
     def bundle(
         self, false: InputBundle = None, true: InputBundle = None
-    ) -> "Switch[BundleSocket]":
-        return self._switch.bundle(self._socket, false, true)
+    ) -> "BundleSocket":
+        return self._switch.bundle(self._socket, false, true).o.output
 
     def closure(
         self, false: InputClosure = None, true: InputClosure = None
-    ) -> "Switch[ClosureSocket]":
-        return self._switch.closure(self._socket, false, true)
+    ) -> "ClosureSocket":
+        return self._switch.closure(self._socket, false, true).o.output
 
-    def font(
-        self, false: InputFont = None, true: InputFont = None
-    ) -> "Switch[FontSocket]":
-        return self._switch.font(self._socket, false, true)
+    def font(self, false: InputFont = None, true: InputFont = None) -> "FontSocket":
+        return self._switch.font(self._socket, false, true).o.output
 
 
 class _BooleanMixin(BaseSocket):
@@ -763,15 +757,15 @@ class _BooleanMixin(BaseSocket):
     def default_value(self, value: bool) -> None:
         self.socket.default_value = value
 
-    def __or__(self, other: Any) -> "BaseNode":
+    def __or__(self, other: Any) -> "BooleanSocket":
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_or(self.socket, other)
+        return BooleanMath.l_or(self.socket, other).o.boolean
 
-    def __and__(self, other: Any) -> "BaseNode":
+    def __and__(self, other: Any) -> "BooleanSocket":
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_and(self.socket, other)
+        return BooleanMath.l_and(self.socket, other).o.boolean
 
     @property
     def switch(self) -> "_BooleanSwitchSocketFactory":
@@ -795,34 +789,40 @@ class _RotationMixin(BaseSocket):
 
     @property
     def w(self) -> FloatSocket:
+        "Separate the rotation into a quaternion and return the `w` component"
         from ..nodes.geometry import RotationToQuaternion
 
         return RotationToQuaternion._find_or_create_linked(self.socket).o.w
 
     @property
     def x(self) -> FloatSocket:
+        "Separate the rotation into a quaternion and return the `x` component"
         from ..nodes.geometry import RotationToQuaternion
 
         return RotationToQuaternion._find_or_create_linked(self.socket).o.x
 
     @property
     def y(self) -> FloatSocket:
+        "Separate the rotation into a quaternion and return the `y` component"
         from ..nodes.geometry import RotationToQuaternion
 
         return RotationToQuaternion._find_or_create_linked(self.socket).o.y
 
     @property
     def z(self) -> FloatSocket:
+        "Separate the rotation into a quaternion and return the `z` component"
         from ..nodes.geometry import RotationToQuaternion
 
         return RotationToQuaternion._find_or_create_linked(self.socket).o.z
 
     def euler(self) -> "VectorSocket":
+        "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
         from ..nodes.geometry.converter import RotationToEuler
 
         return RotationToEuler._find_or_create_linked(self.socket).o.euler
 
     def invert(self) -> "RotationSocket":
+        "Invert the rotation of the socket."
         from ..nodes.geometry import InvertRotation
 
         return InvertRotation._find_or_create_linked(self.socket).o.rotation
@@ -840,6 +840,16 @@ class _FloatMixin(BaseSocket):
     @default_value.setter
     def default_value(self, value: float) -> None:
         self.socket.default_value = value
+
+    def sign(self) -> "FloatSocket":
+        "Return the sign of the FloatSocket, eithe `-1` or `1`."
+        from ..nodes.geometry import Math
+
+        return Math.sine(self.socket).o.value
+
+    def negate(self) -> "FloatSocket":
+        "Negate the `FloatSocket` by multiplying the value by `-1`."
+        return Math.multiply(self.socket, -1.0).o.value
 
 
 class _MatrixMixin(BaseSocket):
@@ -866,25 +876,34 @@ class _MatrixMixin(BaseSocket):
         return SeparateTransform._find_or_create_linked(self.socket).o.scale
 
     def determinant(self) -> "FloatSocket":
+        "Compute the determinant of a matrix input and return as a `FloatSocket`"
         from ..nodes.geometry import MatrixDeterminant
 
         return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
 
     def invert(self) -> "MatrixSocket":
+        "Invert the `MatrixSocet` and return a `MatrixSocket`"
         from ..nodes.geometry import InvertMatrix
 
         return InvertMatrix._find_or_create_linked(self.socket).o.matrix
 
     def transpose(self) -> "MatrixSocket":
+        "Transpose the `MatrixSocket` and return a `MatrixSocket`"
         from ..nodes.geometry import TransposeMatrix
 
         return TransposeMatrix._find_or_create_linked(self.socket).o.matrix
 
+    def svd(self) -> tuple[MatrixSocket, VectorSocket, MatrixSocket]:
+        "Compute the 'Single Value Decomposition' and return output sockets of the MatrixSVD node, `tuple[u, s, v]`"
+        from ..nodes.geometry import MatrixSVD
+
+        return tuple(MatrixSVD(self.socket).o)
+
     @overload
-    def __getitem__(self, key: slice) -> "list[Socket]": ...
+    def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
     @overload
-    def __getitem__(self, key: int) -> "Socket": ...
-    def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
+    def __getitem__(self, key: int) -> "FloatSocket": ...
+    def __getitem__(self, key: int | slice) -> "FloatSocket | list[FloatSocket]":
         from ..nodes.geometry import CombineMatrix, SeparateMatrix
 
         if self.socket.is_output:
@@ -892,12 +911,14 @@ class _MatrixMixin(BaseSocket):
             if isinstance(key, slice):
                 return [node.o[i] for i in range(*key.indices(len(node.o)))]
             return node.o[key]
-        node = CombineMatrix._find_or_create_linked(self.socket)
-        if isinstance(key, slice):
-            return [node.i[i] for i in range(*key.indices(len(node.i)))]
+        else:
+            node = CombineMatrix._find_or_create_linked(self.socket)
+            if isinstance(key, slice):
+                return [node.i[i] for i in range(*key.indices(len(node.i)))]
+
         return node.i[key]
 
-    def __iter__(self) -> Iterator["Socket"]:
+    def __iter__(self) -> Iterator["FloatSocket"]:
         from ..nodes.geometry import CombineMatrix, SeparateMatrix
 
         if self.socket.is_output:

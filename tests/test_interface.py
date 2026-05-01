@@ -842,8 +842,8 @@ def test_boolean_socket_switches():
             method = name.lower().replace("int", "integer").replace("rgba", "color")
             if method == "shader":
                 continue
-            switch = getattr(i.switch, method)()
-            assert switch.input_type == name
+            sock = getattr(i.switch, method)()
+            assert sock.node.input_type == name
 
 
 def test_vector_socket_methods():
@@ -852,17 +852,17 @@ def test_vector_socket_methods():
         norm = vec.normalize()
         assert isinstance(norm, VectorSocket)
         assert norm.node.bl_idname == g.VectorMath._bl_idname
-        assert norm.node.operation == "NORMALIZE"  # ty: ignore[unresolved-attribute]
+        assert norm.node.operation == "NORMALIZE"
         assert norm.socket == vec.normalize().socket
 
         dot = vec.dot(g.Vector())
         assert isinstance(dot, FloatSocket)
         assert dot.node.bl_idname == g.VectorMath._bl_idname
-        assert dot.node.operation == "DOT_PRODUCT"  # ty: ignore[unresolved-attribute]
+        assert dot.node.operation == "DOT_PRODUCT"
         assert dot.socket != vec.dot(g.Vector()).socket
 
         ln = vec.length()
         assert isinstance(ln, FloatSocket)
         assert ln.node.bl_idname == g.VectorMath._bl_idname
-        assert ln.node.operation == "LENGTH"  # ty: ignore[unresolved-attribute]
+        assert ln.node.operation == "LENGTH"
         assert ln.socket == vec.length().socket
