@@ -649,6 +649,9 @@ def test_color_socket_input_shader():
         for i, axis in enumerate(sep.i.color):
             s.Value(i) >> axis
 
+        with pytest.raises(TypeError):
+            sep.i.color.a
+
     assert sep.i.color.links[0].from_node
     assert sep.i.color.links[0].from_node.bl_idname == s.CombineColor._bl_idname
 
@@ -697,8 +700,8 @@ def test_matrix_socket_input_indexing():
                 assert input.links[0].from_node == val.node
             else:
                 assert not input.links
-            input.socket.default_value = i  # ty: ignore[unresolved-attribute]
-            assert input.socket.default_value == i  # ty: ignore[unresolved-attribute]
+            input.socket.default_value = i
+            assert input.socket.default_value == i
 
     transform_input = transform.node.inputs["Transform"]
     assert transform_input.links
@@ -721,7 +724,7 @@ def test_matrix_socket_input_slice():
         components = transform.i.transform[0:3]
 
     assert len(components) == 3
-    combine_node = transform.node.inputs["Transform"].links[0].from_node  # ty: ignore[not-subscriptable]
+    combine_node = transform.node.inputs["Transform"].links[0].from_node
     assert combine_node
     assert combine_node.bl_idname == g.CombineMatrix._bl_idname
 
@@ -752,10 +755,9 @@ def test_accessor_rotation():
         quat = g.RotationToQuaternion(rot.o.rotation)
         assert quat.i[0].links
         rot_to_quat = quat.i[0].links[0].from_node
-        assert quat.o.w.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
-        assert quat.o.x.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
-        assert quat.o.y.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
-        assert quat.o.z.node.inputs[0].links[0].from_node == rot_to_quat  # ty: ignore[not-subscriptable]
+        assert all(
+            axis.node.inputs[0].links[0].from_node == rot_to_quat for axis in quat.o
+        )
 
         eul = rot.o.rotation.euler()
         assert isinstance(eul, VectorSocket)

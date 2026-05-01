@@ -50,11 +50,12 @@ from ..types import (
     InputString,
     InputVector,
 )
-from ._registry import _SOCKET_LINKER_REGISTRY, _get_socket_linker
+from ._registry import _SOCKET_LINKER_REGISTRY
 from ._utils import _NodeLike, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
+    from ..nodes import compositor, geometry, shader
     from ..nodes.geometry import (
         IntegerMath,
         Math,
@@ -104,6 +105,14 @@ class BaseSocket:
     @property
     def _is_geometry_tree(self) -> bool:
         return self.tree.tree.bl_idname == "GeometryNodeTree"
+
+    @property
+    def _is_shader_tree(self) -> bool:
+        return self.tree.tree.bl_idname == "ShaderNodeTree"
+
+    @property
+    def _is_compositor_tree(self) -> bool:
+        return self.tree.tree.bl_idname == "CompositorNodeTree"
 
     @property
     def tree(self) -> TreeBuilder:
@@ -409,45 +418,83 @@ class _ColorMixin(BaseSocket):
 
     socket: NodeSocketColor
 
-    def _separated_channel(self, channel: str) -> Socket:
+    def _separated_channel(
+        self,
+    ) -> "geometry.SeparateColor | shader.SeparateColor | compositor.SeparateColor":
         assert self.socket.links is not None
         tree_type = self.tree.tree.bl_idname
 
-        for link in self.socket.links:
-            assert link.to_node is not None
-            if link.to_node.bl_idname in _SEPARATE_COLOR_IDNAMES:
-                return Socket(link.to_node.outputs[channel])
-
         if tree_type == "ShaderNodeTree":
-            from ..nodes.shader.converter import SeparateColor
+            from ..nodes.shader import SeparateColor
 
-            sep = SeparateColor(self.socket)
+            sep = SeparateColor._find_or_create_linked(self.socket)
         elif tree_type == "CompositorNodeTree":
-            from ..nodes.compositor.converter import SeparateColor
+            from ..nodes.compositor import SeparateColor
 
-            sep = SeparateColor(self.socket)
+            sep = SeparateColor._find_or_create_linked(self.socket)
         else:
-            from ..nodes.geometry.converter import SeparateColor
+            from ..nodes.geometry import SeparateColor
 
-            sep = SeparateColor(self.socket)
+            sep = SeparateColor._find_or_create_linked(self.socket)
 
-        return sep.o[channel.lower()]
+        return sep
+
+    def _combine_color(
+        self,
+    ) -> "shader.CombineColor | compositor.CombineColor | geometry.CombineColor":
+        if self.tree.tree.bl_idname == "CompositorNodeTree":
+            from ..nodes.compositor import CombineColor
+
+            combine = CombineColor._find_or_create_linked(self.socket)
+        elif self.tree.tree.bl_idname == "ShaderNodeTree":
+            from ..nodes.shader import CombineColor
+
+            combine = CombineColor._find_or_create_linked(self.socket)
+        else:
+            from ..nodes.geometry import CombineColor
+
+            combine = CombineColor._find_or_create_linked(self.socket)
+        self.tree.link(combine.node.outputs[0], self.socket)
+        return combine
 
     @property
-    def r(self) -> Socket:
-        return self._separated_channel("Red")
+    def r(self) -> FloatSocket:
+        if self.socket.is_output:
+            return self._separated_channel().o.red
+        else:
+            return self._combine_color().i.red
 
     @property
-    def g(self) -> Socket:
-        return self._separated_channel("Green")
+    def g(self) -> FloatSocket:
+        if self.socket.is_output:
+            return self._separated_channel().o.green
+        else:
+            return self._combine_color().i.green
 
     @property
-    def b(self) -> Socket:
-        return self._separated_channel("Blue")
+    def b(self) -> FloatSocket:
+        if self.socket.is_output:
+            return self._separated_channel().o.blue
+        else:
+            return self._combine_color().i.blue
 
     @property
-    def a(self) -> Socket:
-        return self._separated_channel("Alpha")
+    def a(self) -> FloatSocket:
+        from ..nodes import shader
+
+        if self.socket.is_output:
+            node = self._separated_channel()
+            if isinstance(node, shader.SeparateColor):
+                raise TypeError(
+                    "Shader SeparateColor node doesn't have an alpha output"
+                )
+
+            return node.o.alpha
+        else:
+            node = self._combine_color()
+            if isinstance(node, shader.CombineColor):
+                raise TypeError("Shader CombineColor node doesn't have an alpha input")
+            return node.i.alpha
 
     @property
     def default_value(self) -> list[float]:
@@ -463,55 +510,32 @@ class _ColorMixin(BaseSocket):
         "CompositorNodeCombineColor",
     )
 
-    def _get_or_create_combine_color(self) -> "Node":
-        if self.socket.links:
-            for link in self.socket.links:
-                assert link.from_node
-                if link.from_node.bl_idname in self._COMBINE_COLOR_IDNAMES:
-                    return link.from_node
-
-        if self.tree.tree.bl_idname == "CompositorNodeTree":
-            from ..nodes.compositor import CombineColor
-
-            combine = CombineColor()
-        elif self.tree.tree.bl_idname == "ShaderNodeTree":
-            from ..nodes.shader import CombineColor
-
-            combine = CombineColor()
+    @overload
+    def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
+    @overload
+    def __getitem__(self, key: int) -> "FloatSocket": ...
+    def __getitem__(self, key: int | slice) -> "FloatSocket | list[FloatSocket]":
+        if self._is_shader_tree:
+            return [self.r, self.g, self.b][key]
         else:
-            from ..nodes.geometry import CombineColor
-
-            combine = CombineColor()
-        self.tree.link(combine.node.outputs[0], self.socket)
-        return combine.node
-
-    @overload
-    def __getitem__(self, key: slice) -> "list[Socket]": ...
-    @overload
-    def __getitem__(self, key: int) -> "Socket": ...
-    def __getitem__(self, key: int | slice) -> "Socket | list[Socket]":
-        if self.socket.is_output:
             return [self.r, self.g, self.b, self.a][key]
-        node = self._get_or_create_combine_color()
-        return [_get_socket_linker(node.inputs[i]) for i in range(4)][key]
 
-    def __iter__(self) -> Iterator["Socket"]:
-        if self.socket.is_output:
-            yield self.r
-            yield self.g
-            yield self.b
+    def __iter__(self) -> Iterator["FloatSocket"]:
+        yield self.r
+        yield self.g
+        yield self.b
+        if not self._is_shader_tree:
             yield self.a
-        else:
-            node = self._get_or_create_combine_color()
-            for input in node.inputs:
-                yield _get_socket_linker(input)
 
     def __len__(self) -> int:
-        return 4
+        if self._is_shader_tree:
+            return 3
+        else:
+            return 4
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "BaseNode":
+    ) -> "VectorMath":
         from ..nodes.geometry import VectorMath
 
         values = (self.socket, other) if not reverse else (other, self.socket)
@@ -571,7 +595,7 @@ class _IntegerMixin(BaseSocket):
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "BaseNode":
+    ) -> "IntegerMath | Math":
         if self._is_geometry_tree and self._other_is_integer(other):
             from ..nodes.geometry.converter import IntegerMath
 
@@ -579,7 +603,7 @@ class _IntegerMixin(BaseSocket):
             return getattr(IntegerMath, operation)(*values)
         return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)
 
-    def _dispatch_unary(self, operation: str) -> "BaseNode":
+    def _dispatch_unary(self, operation: str) -> "IntegerMath | Math":
         if self._is_geometry_tree:
             from ..nodes.geometry.converter import IntegerMath
 
@@ -589,7 +613,9 @@ class _IntegerMixin(BaseSocket):
                 return IntegerMath.absolute(self.socket)
         return Socket._dispatch_unary(cast("Socket", self), operation)
 
-    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "BaseNode":
+    def _dispatch_floordiv(
+        self, other: Any, reverse: bool = False
+    ) -> "IntegerMath | Math":
         if self._is_geometry_tree and self._other_is_integer(other):
             from ..nodes.geometry.converter import IntegerMath
 
@@ -597,7 +623,9 @@ class _IntegerMixin(BaseSocket):
             return IntegerMath.divide_floor(*values)
         return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
 
-    def _dispatch_compare(self, other: Any, operation: str) -> "Compare | Math":
+    def _dispatch_compare(
+        self, other: Any, operation: str
+    ) -> "Compare[IntegerSocket] | Math":
         if self._is_geometry_tree:
             from ..nodes.geometry.manual import Compare
 
