@@ -909,12 +909,18 @@ class _MatrixMixin(BaseSocket):
         if self.socket.is_output:
             node = SeparateMatrix._find_or_create_linked(self.socket)
             if isinstance(key, slice):
-                return [node.o[i] for i in range(*key.indices(len(node.o)))]
-            return node.o[key]
+                return [
+                    cast(FloatSocket, node.o[i])
+                    for i in range(*key.indices(len(node.o)))
+                ]
+            return cast(FloatSocket, node.o[key])
         else:
             node = CombineMatrix._find_or_create_linked(self.socket)
             if isinstance(key, slice):
-                return [node.i[i] for i in range(*key.indices(len(node.i)))]
+                return [
+                    cast(FloatSocket, node.i[i])
+                    for i in range(*key.indices(len(node.i)))
+                ]
 
         return node.i[key]
 
