@@ -74,6 +74,7 @@ class BaseSocket:
         self._tree = None
         self.socket = socket
         self._interface_socket: bpy.types.NodeTreeInterfaceSocket | None = None
+        self._builder_node: BaseNode | None = None
 
     @property
     def node(self) -> Node:
@@ -138,6 +139,11 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         The underlying Blender NodeSocket.
 
     """
+
+    @property
+    def builder_node(self) -> "BaseNode | None":
+        """The builder node that owns this socket, if accessed via .o/.i."""
+        return self._builder_node
 
     # -- Dispatch methods: per-type math logic. --
     # Called by OperatorMixin operators via _get_socket_linker().

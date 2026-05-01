@@ -14,6 +14,7 @@ from ._utils import (
 )
 
 if TYPE_CHECKING:
+    from .node import BaseNode
     from .socket import Socket
 
 
@@ -30,9 +31,12 @@ class SocketAccessor:
         self,
         collection: bpy.types.NodeInputs | bpy.types.NodeOutputs | list[NodeSocket],
         direction: Literal["input", "output"],
+        *,
+        builder: BaseNode | None = None,
     ):
         self._direction = direction
         self._collection = collection
+        self._builder = builder
 
     def _index(self, key: str | int) -> int:
         """Find socket index by identifier, falling back to name.
@@ -74,11 +78,18 @@ class SocketAccessor:
     def _get(self, key: str | int | slice) -> "Socket | list[Socket]":
         """Get a Socket for a socket by identifier, name, or index."""
         if isinstance(key, slice):
-            return [
+            sockets = [
                 _get_socket_linker(self._collection[i])
                 for i in range(*key.indices(len(self._collection)))
             ]
-        return _get_socket_linker(self._collection[self._index(key)])
+            if self._builder is not None:
+                for s in sockets:
+                    s._builder_node = self._builder
+            return sockets
+        socket = _get_socket_linker(self._collection[self._index(key)])
+        if self._builder is not None:
+            socket._builder_node = self._builder
+        return socket
 
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
