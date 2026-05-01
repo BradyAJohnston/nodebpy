@@ -662,6 +662,8 @@ def test_color_socket_input_shader():
             comb.o.color.a
 
         assert len(comb.o.color) == 3
+        assert sep.i.color[2].name == "Blue"
+        assert sep.i.color[0].name == "Red"
 
     assert sep.i.color.links[0].from_node
     assert sep.i.color.links[0].from_node.bl_idname == s.CombineColor._bl_idname
