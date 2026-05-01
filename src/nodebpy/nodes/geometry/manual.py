@@ -7,6 +7,7 @@ from bpy.types import (
     ColorRamp,
     ColorRampElements,
     CurveMapPoints,
+    GeometryNodeTree,
     NodeEvaluateClosure,
     NodeSocket,
     NodeSocketString,
@@ -144,7 +145,7 @@ def tree(
     *,
     collapse: bool = False,
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
-) -> TreeBuilder:
+) -> TreeBuilder[GeometryNodeTree]:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
 
 

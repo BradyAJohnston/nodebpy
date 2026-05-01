@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Generic, Literal
 
-from bpy.types import ShaderNodeAttribute
+from bpy.types import ShaderNodeAttribute, ShaderNodeTree
 
 from ...builder import (
     BaseNode,
@@ -50,7 +50,7 @@ def tree(
     collapse: bool = False,
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
     fake_user: bool = False,
-) -> TreeBuilder:
+) -> TreeBuilder[ShaderNodeTree]:
     return TreeBuilder.shader(
         name, collapse=collapse, arrange=arrange, fake_user=fake_user
     )
