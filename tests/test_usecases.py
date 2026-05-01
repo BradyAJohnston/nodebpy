@@ -775,4 +775,4 @@ def test_import_microscopy_volume_node_group():
     links.new(store_transformed_grid.outputs["Volume"], group_output.inputs["Volume"])
     links.new(set_grid_transform.outputs["Grid"], group_output.inputs["Grid"])
 
-    return node_group
+    # return node_group
