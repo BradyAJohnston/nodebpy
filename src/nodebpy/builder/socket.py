@@ -849,10 +849,12 @@ class _FloatMixin(BaseSocket):
         "Return the sign of the FloatSocket, eithe `-1` or `1`."
         from ..nodes.geometry import Math
 
-        return Math.sine(self.socket).o.value
+        return Math.sign(self.socket).o.value
 
     def negate(self) -> "FloatSocket":
         "Negate the `FloatSocket` by multiplying the value by `-1`."
+        from ..nodes.geometry import Math
+
         return Math.multiply(self.socket, -1.0).o.value
 
 

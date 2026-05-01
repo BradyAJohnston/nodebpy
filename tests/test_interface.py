@@ -859,6 +859,23 @@ def test_boolean_socket_switches():
             assert sock.node.input_type == name
 
 
+def test_float_socket_methods():
+    with g.tree():
+        val = g.Float().o.value
+
+        result = val.sign()
+        assert result.node.bl_idname == g.Math._bl_idname
+        assert result.node.operation == "SIGN"
+
+        result = val.negate()
+        assert result.node.bl_idname == g.Math._bl_idname
+        assert result.node.operation == "MULTIPLY"
+        assert result.node.inputs[1].default_value == pytest.approx(-1.0)
+        assert result.node.inputs[0].links[0].from_node == val.node
+
+        assert len(val.links) == 2
+
+
 def test_vector_socket_methods():
     with g.tree() as tree:
         vec = tree.inputs.vector()

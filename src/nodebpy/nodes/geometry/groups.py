@@ -19,8 +19,6 @@ from . import (
     EvaluateAtIndex,
     FieldAverage,
     Frame,
-    Math,
-    MatrixSVD,
     Switch,
 )
 
