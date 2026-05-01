@@ -73,7 +73,7 @@ class BaseSocket:
         assert socket.node is not None
         self._tree = None
         self.socket = socket
-        self.interface_socket: bpy.types.NodeTreeInterfaceSocket | None = None
+        self._interface_socket: bpy.types.NodeTreeInterfaceSocket | None = None
 
     @property
     def node(self) -> Node:

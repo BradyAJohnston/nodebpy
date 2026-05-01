@@ -141,7 +141,7 @@ class SocketContext:
             bpy_socket = self.builder._output_node().inputs[interface_socket.identifier]
         s = socket_cls(bpy_socket)
         s._tree = self.builder
-        s.interface_socket = interface_socket
+        s._interface_socket = interface_socket
         return s
 
     def float(
