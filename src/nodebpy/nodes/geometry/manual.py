@@ -1280,13 +1280,17 @@ class JoinStrings(BaseNode):
 
     def __init__(
         self,
-        strings: Iterable[StringSocket | NodeSocketString | BaseNode] = (),
+        strings: Iterable[str | StringSocket | NodeSocketString | BaseNode] = (),
         delimiter: InputString = "",
     ):
         super().__init__()
 
         self._establish_links(Delimiter=delimiter)
         for string in reversed(strings):
+            if isinstance(string, str):
+                from . import String
+
+                string = String(string)
             self._link_from(string, "Strings")
 
 

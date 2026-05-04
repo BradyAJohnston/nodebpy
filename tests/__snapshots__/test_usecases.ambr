@@ -1,4 +1,32 @@
 # serializer version: 1
+# name: test_bundle_path_filter
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Find in String"):::converter-node
+      N2("Integer Math<br/><small>(ADD)</small>"):::converter-node
+      N3("Slice String"):::converter-node
+      N4("Compare<br/><small>(EQUAL)</small>"):::converter-node
+      N5("Match String"):::converter-node
+      N6("Boolean Math<br/><small>(OR)</small>"):::converter-node
+      N7("Switch"):::converter-node
+      N8("Group Output"):::default-node
+      N0 -->|"Self Path->String"| N1
+      N1 -->|"First Found->Value"| N2
+      N0 -->|"Self Path->String"| N3
+      N2 -->|"Value->Length"| N3
+      N3 -->|"String->Key"| N5
+      N4 -->|"Result->Boolean"| N6
+      N5 -->|"Result->Boolean"| N6
+      N6 -->|"Boolean->True"| N7
+      N7 -->|"Output->Selected"| N8
+      N0 -->|"Other Path->String"| N5
+      N0 -->|"Filter Local->Switch"| N7
+      N1 -->|"Count->A"| N4
+  ```
+  '''
+# ---
 # name: test_import_microscopy_meshes_node_group
   '''
   ```{mermaid}

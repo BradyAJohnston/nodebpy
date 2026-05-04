@@ -202,7 +202,7 @@ class LinkingMixin:
     tree: "TreeBuilder"
 
     def _source_socket(self, node: "InputLinkable | Socket | NodeSocket") -> NodeSocket:
-        assert node
+        assert node is not None
         if isinstance(node, NodeSocket):
             return node
         elif hasattr(node, "_default_output_socket"):
@@ -211,7 +211,7 @@ class LinkingMixin:
             raise TypeError(f"Unsupported type: {type(node)}")
 
     def _target_socket(self, node: "InputLinkable | Socket | NodeSocket") -> NodeSocket:
-        assert node
+        assert node is not None
         if isinstance(node, NodeSocket):
             return node
         elif hasattr(node, "_default_input_socket"):

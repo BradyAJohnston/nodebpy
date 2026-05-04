@@ -1,0 +1,102 @@
+# serializer version: 1
+# name: test_float_socket_methods
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Value"):::input-node
+      N1("Math<br/><small>(SIGN)</small>"):::converter-node
+      N2("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N3("Value to String"):::converter-node
+      N0 -->|"Value->Value"| N1
+      N0 -->|"Value->Value"| N2
+      N0 -->|"Value->Value"| N3
+  ```
+  '''
+# ---
+# name: test_socket_builder_reference
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Position"):::input-node
+      N1("Spline Parameter"):::input-node
+  ```
+  '''
+# ---
+# name: test_string_socket_methods
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Match String"):::converter-node
+      N2("Match String"):::converter-node
+      N3("Match String"):::converter-node
+      N4("Slice String"):::converter-node
+      N5("Replace String"):::converter-node
+      N6("String Length"):::converter-node
+      N7("String"):::input-node
+      N8("Join Strings"):::converter-node
+      N9("String"):::input-node
+      N10("Join Strings"):::converter-node
+      N11("String"):::input-node
+      N12("Join Strings"):::converter-node
+      N13("Replace String"):::converter-node
+      N14("Slice String"):::converter-node
+      N15("Join Strings"):::converter-node
+      N16("String"):::input-node
+      N17("Slice String"):::converter-node
+      N18("Join Strings"):::converter-node
+      N19("String"):::input-node
+      N20("String"):::input-node
+      N21("String Length"):::converter-node
+      N0 -->|"String->String"| N1
+      N0 -->|"String->String"| N2
+      N0 -->|"String->String"| N3
+      N0 -->|"String->String"| N4
+      N0 -->|"String->String"| N5
+      N0 -->|"String->String"| N6
+      N7 -->|"String->Strings"| N8
+      N0 -->|"String->Strings"| N8
+      N0 -->|"String->Strings"| N10
+      N9 -->|"String->Strings"| N10
+      N11 -->|"String->Delimiter"| N12
+      N10 -->|"String->Strings"| N12
+      N5 -->|"String->Strings"| N12
+      N4 -->|"String->Strings"| N12
+      N0 -->|"String->String"| N13
+      N13 -->|"String->String"| N14
+      N14 -->|"String->Delimiter"| N15
+      N16 -->|"String->Strings"| N15
+      N15 -->|"String->String"| N17
+      N17 -->|"String->Delimiter"| N18
+      N19 -->|"String->Strings"| N18
+      N20 -->|"String->Strings"| N18
+      N18 -->|"String->String"| N21
+  ```
+  '''
+# ---
+# name: test_vector_socket_methods
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Vector Math<br/><small>(NORMALIZE)</small>"):::vector-node
+      N2("Vector Math<br/><small>(NORMALIZE)</small>"):::vector-node
+      N3("Vector"):::input-node
+      N4("Vector Math<br/><small>(DOT_PRODUCT)</small>"):::vector-node
+      N5("Vector"):::input-node
+      N6("Vector Math<br/><small>(DOT_PRODUCT)</small>"):::vector-node
+      N7("Vector Math<br/><small>(LENGTH)</small>"):::vector-node
+      N8("Vector Math<br/><small>(LENGTH)</small>"):::vector-node
+      N9("Vector Math<br/><small>(SCALE)</small><br/><small>×2</small>"):::vector-node
+      N0 -->|"Vector->Vector"| N1
+      N0 -->|"Vector->Vector"| N2
+      N0 -->|"Vector->Vector"| N4
+      N3 -->|"Vector->Vector"| N4
+      N0 -->|"Vector->Vector"| N6
+      N5 -->|"Vector->Vector"| N6
+      N0 -->|"Vector->Vector"| N7
+      N0 -->|"Vector->Vector"| N8
+      N0 -->|"Vector->Vector"| N9
+  ```
+  '''
+# ---
