@@ -5,6 +5,43 @@ title: Changelog
 ## v0.16.0 - UNRELEASED
 
 ### Enhancements
+- Socket methods added for strings. Methods added are: `length()`, `starts_with()`, `ends_with()`, `contains()`, `slice()`, `format()`, `replace()`, `find()`, `join()`
+
+```py
+
+string = g.String("Example String").o.string
+
+string.length()      # return g.StringLength().o.length, same as len(string)
+string.starts_with() # return g.MatchString().o.result
+string.ends_with()   # return g.MatchString().o.result
+string.contains()    # return g.MatchString().o.result
+string.slice()       # return g.SliceString().o.string
+string.format()      # return g.FormatString().o.string
+string.replace()     # return g.ReplaceString().o.string
+string.find()        # return (g.FindInString().o.first_found, g.FindInString().o.count)
+string.join(x)       # return g.JoinStrings(x, delimeter=string)
+```
+
+String sockets can also be joined with `+` operator like python strings.
+
+These two are equivalent.
+
+```py
+
+string + "example"
+
+JoinStrings((string, g.String("example")), separator="").o.string
+
+```
+
+Float and integer sockets have `to_string()` methods:
+
+```py
+g.Float().o.value.to_string(3) # specify decimal places
+
+g.Integer().o.integer.to_string()
+```
+
 - Sockets have a reference to the buidler/node that they belong to via `self.builder_node` property.
 - Added `svd()` method onto `MatrixSocket` which returns a `tuple[MatrixSocket, VectorSocket, MatrixSocket]` for the `[u, s, v]` outputs of the `MatrixSVD` node.
 - Add `sign()` and `negate()` methods onto the `FloatSocket` for method chaining. Both return `FloatSocket`.
