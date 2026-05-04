@@ -913,12 +913,15 @@ class _StringMixin(BaseSocket):
         return MatchString
 
     def starts_with(self, search: InputString) -> "BooleanSocket":
+        "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
         return self._match(self.socket, "Starts With", search).o.result
 
     def ends_with(self, search: InputString) -> "BooleanSocket":
+        "Create a MatchString[Ends With], return the result as a `BooleanSocket`."
         return self._match(self.socket, "Ends With", search).o.result
 
     def contains(self, search: InputString) -> "BooleanSocket":
+        "Create a MatchString[Contains], return the result as a `BooleanSocket`."
         return self._match(self.socket, "Contains", search).o.result
 
     def slice(
