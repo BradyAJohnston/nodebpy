@@ -22,6 +22,7 @@ from ...types import (
     InputString,
     InputFloat,
     InputVector,
+    InputAny,
 )
 
 
@@ -77,7 +78,7 @@ class BlurAttribute(BaseNode):
 
     def __init__(
         self,
-        value: InputFloat = 0.0,
+        value: InputAny = 0.0,
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
         *,

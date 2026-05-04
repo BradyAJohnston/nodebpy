@@ -776,3 +776,23 @@ def test_import_microscopy_volume_node_group():
     links.new(set_grid_transform.outputs["Grid"], group_output.inputs["Grid"])
 
     # return node_group
+
+
+def test_bundle_path_filter(snapshot):
+    with g.tree() as tree:
+        path = tree.inputs.string("Self Path")
+        other = tree.inputs.string("Other Path")
+        local = tree.inputs.boolean("Filter Local")
+
+        find = g.FindInString(path, "/")
+
+        (
+            local.switch.boolean(
+                True,
+                (find.o.count == 0)
+                | (other.starts_with(path.slice(length=find.o.first_found + 1))),
+            )
+            >> tree.outputs.boolean("Selected")
+        )
+
+    assert snapshot == tree._repr_markdown_()

@@ -61,6 +61,7 @@ if TYPE_CHECKING:
         Math,
         MultiplyMatrices,
         TransformPoint,
+        StringLength,
     )
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
@@ -864,6 +865,45 @@ class _FloatMixin(BaseSocket):
         return Math.multiply(self.socket, -1.0).o.value
 
 
+class _StringMixin(BaseSocket):
+    """Float-specific properties (.x, .y, .z) and dispatch."""
+
+    socket: NodeSocketString
+
+    @property
+    def default_value(self) -> str:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: str) -> None:
+        self.socket.default_value = value
+
+    def starts_with(self, search: InputString) -> "BooleanSocket":
+        from ..nodes.geometry import MatchString
+
+        return MatchString(self.socket, "Starts With", search).o.result
+
+    def ends_with(self, search: InputString) -> "BooleanSocket":
+        from ..nodes.geometry import MatchString
+
+        return MatchString(self.socket, "Ends With", search).o.result
+
+    def contains(self, search: InputString) -> "BooleanSocket":
+        from ..nodes.geometry import MatchString
+
+        return MatchString(self.socket, "Contains", search).o.result
+
+    def slice(
+        self, position: InputInteger = 0, length: InputInteger = 0
+    ) -> StringSocket:
+        from ..nodes.geometry import SliceString
+
+        return SliceString(self.socket, position, length).o.string
+
+    def __len__(self) -> "IntegerSocket":
+        return StringLength(self.socket).o.length
+
+
 class _MatrixMixin(BaseSocket):
     """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
 
@@ -997,18 +1037,8 @@ class MatrixSocket(_MatrixMixin, Socket):
     """Runtime matrix socket wrapper."""
 
 
-class StringSocket(Socket):
+class StringSocket(_StringMixin):
     """Runtime string socket wrapper."""
-
-    socket: NodeSocketString
-
-    @property
-    def default_value(self) -> str:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: str) -> None:
-        self.socket.default_value = value
 
 
 class MenuSocket(Socket):
