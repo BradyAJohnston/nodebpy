@@ -885,7 +885,7 @@ def test_vector_socket_methods():
         assert isinstance(norm, VectorSocket)
         assert norm.node.bl_idname == g.VectorMath._bl_idname
         assert norm.node.operation == "NORMALIZE"
-        assert norm.socket == vec.normalize().socket
+        assert norm.socket != vec.normalize().socket
 
         dot = vec.dot(g.Vector())
         assert isinstance(dot, FloatSocket)
@@ -897,4 +897,4 @@ def test_vector_socket_methods():
         assert isinstance(ln, FloatSocket)
         assert ln.node.bl_idname == g.VectorMath._bl_idname
         assert ln.node.operation == "LENGTH"
-        assert ln.socket == vec.length().socket
+        assert ln.socket != vec.length().socket

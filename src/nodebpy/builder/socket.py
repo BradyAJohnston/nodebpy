@@ -248,49 +248,45 @@ class _VectorMixin(BaseSocket):
     _tree: TreeBuilder
 
     @property
-    def x(self) -> FloatSocket:
+    def _vmath(self) -> "type[VectorMath]":
+        from ..nodes.geometry import VectorMath
+
+        return VectorMath
+
+    @property
+    def _separate(self) -> "geometry.SeparateXYZ":
         from ..nodes.geometry import SeparateXYZ
 
-        return SeparateXYZ._find_or_create_linked(self.socket).o.x
+        return SeparateXYZ._find_or_create_linked(self.socket)
+
+    @property
+    def x(self) -> FloatSocket:
+        return self._separate.o.x
 
     @property
     def y(self) -> FloatSocket:
-        from ..nodes.geometry import SeparateXYZ
-
-        return SeparateXYZ._find_or_create_linked(self.socket).o.y
+        return self._separate.o.y
 
     @property
     def z(self) -> FloatSocket:
-        from ..nodes.geometry import SeparateXYZ
-
-        return SeparateXYZ._find_or_create_linked(self.socket).o.z
+        return self._separate.o.z
 
     def dot(self, vector: InputVector) -> "FloatSocket":
         """Dot product with another vector. The other vector can be a Socket, a NodeSocket, or a 3-tuple of floats.
 
         A different VectorMath node is created each time.
         """
-        from ..nodes.geometry import VectorMath
-
-        return VectorMath.dot_product(self.socket, vector).o.value
+        return self._vmath.dot_product(self.socket, vector).o.value
 
     def length(self) -> "FloatSocket":
-        from ..nodes.geometry import VectorMath
+        return self._vmath.length(self.socket).o.value
 
-        node = VectorMath._find_or_create_linked(self.socket)
-        node.operation = "LENGTH"
-        return node.o.value
-
-    def normalize(self, new_node: bool = False) -> "VectorSocket":
+    def normalize(self) -> "VectorSocket":
         """Normalize this vector. Only valid for output sockets, as it creates a Normalize node linked from this socket.
 
         The same normalize node is re-used each time unless `new_node=True` where a new `VectorMath` node is created each time.
         """
-        from ..nodes.geometry import VectorMath
-
-        node = VectorMath._find_or_create_linked(self.socket)
-        node.operation = "NORMALIZE"
-        return node.o.vector
+        return self._vmath.normalize(self.socket).o.vector
 
     @property
     def default_value(self) -> list[float]:
@@ -716,32 +712,30 @@ class _RotationMixin(BaseSocket):
         self.socket.default_value = value
 
     @property
-    def w(self) -> FloatSocket:
-        "Separate the rotation into a quaternion and return the `w` component"
+    def _quaternion(self) -> "geometry.RotationToQuaternion":
         from ..nodes.geometry import RotationToQuaternion
 
-        return RotationToQuaternion._find_or_create_linked(self.socket).o.w
+        return RotationToQuaternion._find_or_create_linked(self.socket)
+
+    @property
+    def w(self) -> FloatSocket:
+        "Separate the rotation into a quaternion and return the `w` component"
+        return self._quaternion.o.w
 
     @property
     def x(self) -> FloatSocket:
         "Separate the rotation into a quaternion and return the `x` component"
-        from ..nodes.geometry import RotationToQuaternion
-
-        return RotationToQuaternion._find_or_create_linked(self.socket).o.x
+        return self._quaternion.o.x
 
     @property
     def y(self) -> FloatSocket:
         "Separate the rotation into a quaternion and return the `y` component"
-        from ..nodes.geometry import RotationToQuaternion
-
-        return RotationToQuaternion._find_or_create_linked(self.socket).o.y
+        return self._quaternion.o.y
 
     @property
     def z(self) -> FloatSocket:
         "Separate the rotation into a quaternion and return the `z` component"
-        from ..nodes.geometry import RotationToQuaternion
-
-        return RotationToQuaternion._find_or_create_linked(self.socket).o.z
+        return self._quaternion.o.z
 
     def euler(self) -> "VectorSocket":
         "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
