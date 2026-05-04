@@ -3,7 +3,6 @@ from typing import cast, get_args
 import bpy
 import pytest
 from mathutils import Euler
-from prompt_toolkit.utils import to_str
 
 from nodebpy import compositor as c
 from nodebpy import geometry as g
@@ -885,8 +884,8 @@ def test_integer_socket_methods():
         assert node.data_type == "INT"
 
 
-def test_float_socket_methods():
-    with g.tree():
+def test_float_socket_methods(snapshot):
+    with g.tree() as tree:
         val = g.Float().o.value
 
         result = val.sign()
@@ -898,15 +897,15 @@ def test_float_socket_methods():
         assert result.node.operation == "MULTIPLY"
         assert result.node.inputs[1].default_value == pytest.approx(-1.0)
         assert result.node.inputs[0].links[0].from_node == val.node
-
         assert len(val.links) == 2
 
         string = val.to_string(3)
         assert string.builder_node.i.decimals.default_value == 3
         assert isinstance(string.builder_node, g.ValueToString)
+        assert snapshot == tree._repr_markdown_()
 
 
-def test_vector_socket_methods():
+def test_vector_socket_methods(snapshot):
     with g.tree() as tree:
         vec = tree.inputs.vector()
         norm = vec.normalize()
@@ -932,9 +931,10 @@ def test_vector_socket_methods():
         assert sc.node.bl_idname == g.VectorMath._bl_idname
         assert sc.node.operation == "SCALE"
         assert sc.builder_node.i.scale.default_value == pytest.approx(2.0)
+        assert snapshot == tree._repr_markdown_()
 
 
-def test_socket_builder_reference():
+def test_socket_builder_reference(snapshot):
     with g.tree() as tree:
         position = g.Position()
         pos = position.o.position
@@ -952,9 +952,10 @@ def test_socket_builder_reference():
 
         socks = list(par.o[:2])
         assert all(s.builder_node.node == par.node for s in socks)
+        assert snapshot == tree._repr_markdown_()
 
 
-def test_string_socket_methods():
+def test_string_socket_methods(snapshot):
     with g.tree() as tree:
         string = tree.inputs.string()
 
@@ -1017,3 +1018,4 @@ def test_string_socket_methods():
         ).length()
 
         assert len(tree) == 22
+        assert snapshot == tree._repr_markdown_()

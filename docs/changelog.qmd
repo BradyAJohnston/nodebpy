@@ -57,6 +57,7 @@ g.Integer().o.integer.to_string()
 ### Bug Fixes
 - The `ColorSocket` properly only indexes to length `3` inside of the shader as `SeparateXYZ` and `CombineXYZ` don't have alpha inputs or outputs.
 - Socket return types are more explicit for slicing and math operations for better quality type hinting.
+- Fixed bug in mixins that was resulting in node comparison creation when checking if a node / socket was `None` insetad of using `is None` comparison.
 
 
 ## v0.15.0 - 2026-04-30
