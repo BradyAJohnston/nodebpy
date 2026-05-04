@@ -22,39 +22,39 @@ class TestPowerOperator:
             result = g.Value(2.0) ** 3.0
 
         assert result.node.bl_idname == "ShaderNodeMath"
-        assert result.operation == "POWER"
-        assert result.i.value_001.default_value == 3.0
+        assert result.node.operation == "POWER"
+        assert result.builder_node.i.value_001.default_value == 3.0
 
     def test_integer_power(self):
         with g.tree("TestIntPower"):
             result = g.Integer(2) ** 3
 
         assert result.node.bl_idname == "FunctionNodeIntegerMath"
-        assert result.operation == "POWER"
+        assert result.node.operation == "POWER"
 
     def test_vector_power(self):
         with g.tree("TestVectorPower"):
             result = g.Vector((2, 3, 4)) ** (2, 2, 2)
 
         assert result.node.bl_idname == "ShaderNodeVectorMath"
-        assert result.operation == "POWER"
+        assert result.node.operation == "POWER"
 
     def test_vector_power_scalar_broadcast(self):
         with g.tree("TestVectorPowerScalar"):
             result = g.Vector((2, 3, 4)) ** 2
 
         assert result.node.bl_idname == "ShaderNodeVectorMath"
-        assert result.operation == "POWER"
+        assert result.node.operation == "POWER"
 
     def test_rpow_float(self):
         with g.tree("TestRPowFloat"):
             result = 2.0 ** g.Value(3.0)
 
         assert result.node.bl_idname == "ShaderNodeMath"
-        assert result.operation == "POWER"
-        assert result.i.value.default_value == 2.0
-        assert not result.i.value.links
-        assert result.i.value_001.links
+        assert result.node.operation == "POWER"
+        assert result.builder_node.i.value.default_value == 2.0
+        assert not result.builder_node.i.value.links
+        assert result.builder_node.i.value_001.links
 
 
 class TestModuloOperator:
@@ -65,36 +65,36 @@ class TestModuloOperator:
             result = g.Value(10.0) % 3.0
 
         assert result.node.bl_idname == "ShaderNodeMath"
-        assert result.operation == "FLOORED_MODULO"
+        assert result.node.operation == "FLOORED_MODULO"
 
     def test_integer_modulo(self):
         with g.tree("TestIntModulo"):
             result = g.Integer(10) % 3
 
         assert result.node.bl_idname == "FunctionNodeIntegerMath"
-        assert result.operation == "MODULO"
+        assert result.node.operation == "MODULO"
 
     def test_vector_modulo(self):
         with g.tree("TestVectorModulo"):
             result = g.Vector((10, 20, 30)) % (3, 3, 3)
 
         assert result.node.bl_idname == "ShaderNodeVectorMath"
-        assert result.operation == "MODULO"
+        assert result.node.operation == "MODULO"
 
     def test_vector_modulo_scalar_broadcast(self):
         with g.tree("TestVectorModuloScalar"):
             result = g.Vector((10, 20, 30)) % 3
 
         assert result.node.bl_idname == "ShaderNodeVectorMath"
-        assert result.operation == "MODULO"
+        assert result.node.operation == "MODULO"
 
     def test_rmod_float(self):
         with g.tree("TestRModFloat"):
             result = 10.0 % g.Value(3.0)
 
         assert result.node.bl_idname == "ShaderNodeMath"
-        assert result.operation == "FLOORED_MODULO"
-        assert result.i.value.default_value == 10.0
+        assert result.node.operation == "FLOORED_MODULO"
+        assert result.builder_node.i.value.default_value == 10.0
 
 
 class TestFloorDivOperator:
@@ -105,7 +105,7 @@ class TestFloorDivOperator:
             result = g.Integer(10) // 3
 
         assert result.node.bl_idname == "FunctionNodeIntegerMath"
-        assert result.operation == "DIVIDE_FLOOR"
+        assert result.node.operation == "DIVIDE_FLOOR"
 
     def test_float_floordiv(self):
         with TreeBuilder("TestFloatFloorDiv"):
@@ -113,24 +113,24 @@ class TestFloorDivOperator:
 
         # float floordiv composes divide + floor
         assert result.node.bl_idname == "ShaderNodeMath"
-        assert result.operation == "FLOOR"
+        assert result.node.operation == "FLOOR"
         # the divide node should feed into the floor node
-        assert result.i.value.links[0].from_node.operation == "DIVIDE"
+        assert result.builder_node.i.value.links[0].from_node.operation == "DIVIDE"
 
     def test_vector_floordiv(self):
         with TreeBuilder("TestVectorFloorDiv"):
             result = g.Vector((10, 20, 30)) // (3, 3, 3)
 
         assert result.node.bl_idname == "ShaderNodeVectorMath"
-        assert result.operation == "FLOOR"
-        assert result.i.vector.links[0].from_node.operation == "DIVIDE"
+        assert result.node.operation == "FLOOR"
+        assert result.builder_node.i.vector.links[0].from_node.operation == "DIVIDE"
 
     def test_rfloordiv_integer(self):
         with TreeBuilder("TestRFloorDivInt"):
             result = 10 // g.Integer(3)
 
         assert result.node.bl_idname == "FunctionNodeIntegerMath"
-        assert result.operation == "DIVIDE_FLOOR"
+        assert result.node.operation == "DIVIDE_FLOOR"
 
 
 class TestNegOperator:
@@ -141,23 +141,23 @@ class TestNegOperator:
             result = -g.Value(5.0)
 
         assert result.node.bl_idname == "ShaderNodeMath"
-        assert result.operation == "MULTIPLY"
-        assert result.i.value_001.default_value == -1
+        assert result.node.operation == "MULTIPLY"
+        assert result.builder_node.i.value_001.default_value == -1
 
     def test_neg_integer(self):
         with TreeBuilder("TestNegInt"):
             result = -g.Integer(5)
 
         assert result.node.bl_idname == "FunctionNodeIntegerMath"
-        assert result.operation == "NEGATE"
+        assert result.node.operation == "NEGATE"
 
     def test_neg_vector(self):
         with TreeBuilder("TestNegVector"):
             result = -g.Vector((1, 2, 3))
 
         assert result.node.bl_idname == "ShaderNodeVectorMath"
-        assert result.operation == "SCALE"
-        assert result.i.scale.default_value == -1
+        assert result.node.operation == "SCALE"
+        assert result.builder_node.i.scale.default_value == -1
 
 
 class TestAbsOperator:
@@ -193,72 +193,72 @@ class TestComparisonOperators:
             result = g.Value(1.0) < 2.0
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "LESS_THAN"
-        assert result.data_type == "FLOAT"
+        assert result.node.operation == "LESS_THAN"
+        assert result.node.data_type == "FLOAT"
 
     def test_gt_float(self):
         with TreeBuilder("TestGtFloat"):
             result = g.Value(5.0) > 2.0
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "GREATER_THAN"
-        assert result.data_type == "FLOAT"
+        assert result.node.operation == "GREATER_THAN"
+        assert result.node.data_type == "FLOAT"
 
     def test_le_float(self):
         with TreeBuilder("TestLeFloat"):
             result = g.Value(1.0) <= 2.0
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "LESS_EQUAL"
-        assert result.data_type == "FLOAT"
+        assert result.node.operation == "LESS_EQUAL"
+        assert result.node.data_type == "FLOAT"
 
     def test_ge_float(self):
         with TreeBuilder("TestGeFloat"):
             result = g.Value(5.0) >= 2.0
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "GREATER_EQUAL"
-        assert result.data_type == "FLOAT"
+        assert result.node.operation == "GREATER_EQUAL"
+        assert result.node.data_type == "FLOAT"
 
     def test_lt_integer(self):
         with TreeBuilder("TestLtInt"):
             result = g.Integer(1) < 2
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "LESS_THAN"
-        assert result.data_type == "INT"
+        assert result.node.operation == "LESS_THAN"
+        assert result.node.data_type == "INT"
 
     def test_gt_integer(self):
         with TreeBuilder("TestGtInt"):
             result = g.Integer(5) > 2
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "GREATER_THAN"
-        assert result.data_type == "INT"
+        assert result.node.operation == "GREATER_THAN"
+        assert result.node.data_type == "INT"
 
     def test_le_integer(self):
         with TreeBuilder("TestLeInt"):
             result = g.Integer(1) <= 2
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "LESS_EQUAL"
-        assert result.data_type == "INT"
+        assert result.node.operation == "LESS_EQUAL"
+        assert result.node.data_type == "INT"
 
     def test_ge_integer(self):
         with TreeBuilder("TestGeInt"):
             result = g.Integer(5) >= 2
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "GREATER_EQUAL"
-        assert result.data_type == "INT"
+        assert result.node.operation == "GREATER_EQUAL"
+        assert result.node.data_type == "INT"
 
     def test_lt_vector(self):
         with TreeBuilder("TestLtVector"):
             result = g.Vector((1, 2, 3)) < (4, 5, 6)
 
         assert result.node.bl_idname == g.Compare._bl_idname
-        assert result.operation == "LESS_THAN"
-        assert result.data_type == "VECTOR"
+        assert result.node.operation == "LESS_THAN"
+        assert result.node.data_type == "VECTOR"
 
     def test_comparison_between_nodes(self):
         with TreeBuilder("TestCompareNodes"):
@@ -268,8 +268,8 @@ class TestComparisonOperators:
 
         assert result.node.bl_idname == g.Compare._bl_idname
         assert result.node.operation == "LESS_THAN"
-        assert len(result.i["A"].links) == 1
-        assert len(result.i["B"].links) == 1
+        assert len(result.builder_node.i["A"].links) == 1
+        assert len(result.builder_node.i["B"].links) == 1
 
 
 class TestBooleanOperators:
@@ -376,16 +376,16 @@ class TestParameterizedOperators:
         assert result.node is not None
         match input_cls:
             case g.Integer:
-                assert result.operation == "NEGATE"
+                assert result.node.operation == "NEGATE"
                 assert (
                     result.node.inputs[0].links[0].from_node.bl_idname
                     == "FunctionNodeInputInt"
                 )
             case g.Value:
-                assert result.operation == "MULTIPLY"
+                assert result.node.operation == "MULTIPLY"
                 assert result.node.inputs[1].default_value == -1.0
             case g.Vector:
-                assert result.operation == "SCALE"
+                assert result.node.operation == "SCALE"
                 assert result.node.inputs["Scale"].default_value == -1.0
 
     @pytest.mark.parametrize("input_cls", [g.Vector, g.Value, g.Integer])
@@ -394,7 +394,7 @@ class TestParameterizedOperators:
             result = abs(input_cls())
 
         assert result.node is not None
-        assert result.operation == "ABSOLUTE"
+        assert result.node.operation == "ABSOLUTE"
 
 
 class TestVectorScalarOperandOrder:
@@ -421,8 +421,8 @@ class TestVectorScalarOperandOrder:
             result = 2.0 - vec
 
         # scalar default in input 0, vec links into input 1
-        assert tuple(result.i[0].default_value) == (2.0, 2.0, 2.0)
-        assert len(result.i[1].links) == 1
+        assert tuple(result.node.inputs[0].default_value) == (2.0, 2.0, 2.0)
+        assert len(result.node.inputs[1].links) == 1
 
     def test_vector_div_scalar_order(self):
         """vec / 2.0 should put vec in input 0, (2,2,2) in input 1."""
@@ -430,8 +430,8 @@ class TestVectorScalarOperandOrder:
             vec = g.Vector((1, 2, 3))
             result = vec / 2.0
 
-        assert len(result.i.vector.links) == 1
-        assert tuple(result.i.vector_001.default_value) == (2.0, 2.0, 2.0)
+        assert len(result.builder_node.i.vector.links) == 1
+        assert tuple(result.builder_node.i.vector_001.default_value) == (2.0, 2.0, 2.0)
 
     def test_scalar_div_vector_order(self):
         """2.0 / vec should put (2,2,2) in input 0, vec in input 1."""
@@ -439,8 +439,8 @@ class TestVectorScalarOperandOrder:
             vec = g.Vector((1, 2, 3))
             result = 2.0 / vec
 
-        assert tuple(result.i[0].default_value) == (2.0, 2.0, 2.0)
-        assert len(result.i[1].links) == 1
+        assert tuple(result.node.inputs[0].default_value) == (2.0, 2.0, 2.0)
+        assert len(result.node.inputs[1].links) == 1
 
     def test_vector_pow_scalar_order(self):
         """vec ** 2.0 should put vec in input 0, (2,2,2) in input 1."""
@@ -502,7 +502,7 @@ class TestComparisonEqualNotEqual:
     def test_comparison_float(self):
         """Test float comparison."""
         with TreeBuilder("TestCompareFloat"):
-            result = (g.Integer(5) == 4).switch(5.0, g.RandomValue.integer())
+            result = (g.Integer(5) == 4).switch.float(5.0, g.RandomValue.integer())
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "FLOAT"
@@ -510,7 +510,7 @@ class TestComparisonEqualNotEqual:
     def test_comparison_float_socket(self):
         """Test float comparison with socket."""
         with TreeBuilder("TestCompareFloatSocket"):
-            result = (g.Integer(5) == 4).switch(g.Value(5.0), g.RandomValue.integer())
+            result = (g.Integer(5) == 4).switch.float(g.Value(5.0), g.RandomValue.integer())
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "FLOAT"
@@ -518,15 +518,15 @@ class TestComparisonEqualNotEqual:
     def test_comparison_returns_float(self):
         """Test comparison returns float."""
         with TreeBuilder("TestCompareReturnsFloat"):
-            result = (g.Integer(5) == 4).switch(5.0, int(5))
+            result = (g.Integer(5) == 4).switch.float(5.0, int(5))
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "FLOAT"
 
     def test_comparison_returns_int(self):
-        """Test comparison returns float."""
+        """Test comparison returns int."""
         with TreeBuilder("TestCompareReturnsInt"):
-            result = (g.Integer(5) == 4).switch(int(5), 0)
+            result = (g.Integer(5) == 4).switch.integer(int(5), 0)
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "INT"
@@ -534,7 +534,7 @@ class TestComparisonEqualNotEqual:
     def test_comparison_returns_str(self):
         """Test comparison returns string."""
         with TreeBuilder("TestCompareReturnsString"):
-            result = (g.Integer(5) == 4).switch("some_string", "another_string")
+            result = (g.Integer(5) == 4).switch.string("some_string", "another_string")
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "STRING"
@@ -542,28 +542,18 @@ class TestComparisonEqualNotEqual:
     def test_comparison_int(self):
         """Test int comparison."""
         with TreeBuilder("TestCompareInt"):
-            result = (g.Integer(5) == 4).switch(int(5), g.RandomValue.integer())
+            result = (g.Integer(5) == 4).switch.integer(int(5), g.RandomValue.integer())
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "INT"
 
     def test_comparison_bool(self):
-        """Test int comparison."""
+        """Test bool comparison."""
         with TreeBuilder("TestCompareInt"):
-            result = (g.Integer(5) == 4).switch(False, True)
+            result = (g.Integer(5) == 4).switch.boolean(False, True)
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "BOOLEAN"
-
-        with pytest.raises(ValueError, match="Cannot infer compatible type from"):
-            with TreeBuilder("TestCompareInt"):
-                # we don't automatically infer changing data types of string & numeric
-                result = (g.Integer(5) == 4).switch("str", 5.0)
-
-    def test_raise_warning(self):
-        with pytest.raises(ValueError, match="Cannot infer compatible type from"):
-            with TreeBuilder("TestCompareInt"):
-                _ = (g.Integer(5) == 4).switch(list, int)
 
     def test_comparison_into_switch_node(self):
         """Test using a comparison result as a switch condition."""
@@ -587,7 +577,7 @@ class TestComparisonEqualNotEqual:
         """Test using a comparison result as a switch condition."""
         with TreeBuilder("TestCompareSwitch"):
             val = g.Integer(5)
-            result = (val == 5).switch(g.Cube(), g.IcoSphere())
+            result = (val == 5).switch.geometry(g.Cube(), g.IcoSphere())
 
         assert result.node.input_type == "GEOMETRY"
         assert (
@@ -811,51 +801,51 @@ class TestReverseOperators:
             result = 3.0 * g.Value(2.0)
 
         assert result.node.bl_idname == g.Math._bl_idname
-        assert result.operation == "MULTIPLY"
+        assert result.node.operation == "MULTIPLY"
 
     def test_rtruediv(self):
         with TreeBuilder("TestRTrueDiv"):
             result = 10.0 / g.Value(2.0)
 
         assert result.node.bl_idname == g.Math._bl_idname
-        assert result.operation == "DIVIDE"
-        assert result.i.value.default_value == 10.0
+        assert result.node.operation == "DIVIDE"
+        assert result.builder_node.i.value.default_value == 10.0
 
     def test_radd(self):
         with TreeBuilder("TestRAdd"):
             result = 5.0 + g.Value(3.0)
 
         assert result.node.bl_idname == g.Math._bl_idname
-        assert result.operation == "ADD"
+        assert result.node.operation == "ADD"
 
     def test_rsub(self):
         with TreeBuilder("TestRSub"):
             result = 10.0 - g.Value(3.0)
 
         assert result.node.bl_idname == g.Math._bl_idname
-        assert result.operation == "SUBTRACT"
-        assert result.i.value.default_value == 10.0
+        assert result.node.operation == "SUBTRACT"
+        assert result.builder_node.i.value.default_value == 10.0
 
     def test_rand(self):
         with TreeBuilder("TestRAnd"):
             result = True & g.Boolean(False)
 
         assert result.node.bl_idname == g.BooleanMath._bl_idname
-        assert result.operation == "AND"
+        assert result.node.operation == "AND"
 
     def test_ror(self):
         with TreeBuilder("TestROr"):
             result = False | g.Boolean(True)
 
         assert result.node.bl_idname == g.BooleanMath._bl_idname
-        assert result.operation == "OR"
+        assert result.node.operation == "OR"
 
     def test_rxor(self):
         with TreeBuilder("TestRXor"):
             result = True ^ g.Boolean(False)
 
         assert result.node.bl_idname == g.BooleanMath._bl_idname
-        assert result.operation == "XOR"
+        assert result.node.operation == "XOR"
 
     def test_matmul(self):
         with TreeBuilder("TestMatmul"):
@@ -964,26 +954,26 @@ class TestColorSocketOperatorMath:
 
         assert result.node.bl_idname == g.VectorMath._bl_idname
         assert result2.node.bl_idname == g.VectorMath._bl_idname
-        assert result2.operation == "SCALE"
+        assert result2.node.operation == "SCALE"
         assert result3.node.bl_idname == g.VectorMath._bl_idname
-        assert result3.operation == "SCALE"
+        assert result3.node.operation == "SCALE"
         assert result4.node.bl_idname == g.VectorMath._bl_idname
-        assert result4.operation == "SCALE"
+        assert result4.node.operation == "SCALE"
         assert result5.node.bl_idname == g.VectorMath._bl_idname
-        assert result5.operation == "POWER"
+        assert result5.node.operation == "POWER"
         assert result6.node.bl_idname == g.VectorMath._bl_idname
-        assert result6.operation == "MULTIPLY"
+        assert result6.node.operation == "MULTIPLY"
         assert result7.node.bl_idname == g.VectorMath._bl_idname
-        assert result7.operation == "POWER"
-        assert result7.i.vector_001.default_value == pytest.approx((0.1, 0.1, 0.1))
+        assert result7.node.operation == "POWER"
+        assert result7.builder_node.i.vector_001.default_value == pytest.approx((0.1, 0.1, 0.1))
         assert result8.node.bl_idname == g.VectorMath._bl_idname
-        assert result8.operation == "SCALE"
-        assert result8.i.vector.links[0].from_node == color.node
-        assert result8.i.scale.links[0].from_node.bl_idname == g.Value._bl_idname
-        assert result9.operation == "EQUAL"
-        assert result9.data_type == "FLOAT"
-        assert result10.operation == "EQUAL"
-        assert result10.data_type == "FLOAT"
+        assert result8.node.operation == "SCALE"
+        assert result8.builder_node.i.vector.links[0].from_node == color.node
+        assert result8.builder_node.i.scale.links[0].from_node.bl_idname == g.Value._bl_idname
+        assert result9.node.operation == "EQUAL"
+        assert result9.node.data_type == "FLOAT"
+        assert result10.node.operation == "EQUAL"
+        assert result10.node.data_type == "FLOAT"
 
 
 class TestIntegerSocketOperators:
@@ -993,13 +983,13 @@ class TestIntegerSocketOperators:
             input = tree.inputs.integer()
             result = -input
             assert result.node.bl_idname == c.Math._bl_idname
-            assert result.operation == "MULTIPLY"
-            assert result.i.value.links
-            assert result.i.value.links[0].from_node == input.node
-            assert not result.i.value_001.links
-            assert result.i.value_001.default_value == pytest.approx(-1.0)
+            assert result.node.operation == "MULTIPLY"
+            assert result.builder_node.i.value.links
+            assert result.builder_node.i.value.links[0].from_node == input.node
+            assert not result.builder_node.i.value_001.links
+            assert result.builder_node.i.value_001.default_value == pytest.approx(-1.0)
 
-            result2 = result.o.value == input
+            result2 = result == input
             assert result2.node.bl_idname == c.Math._bl_idname
-            assert result2.operation == "COMPARE"
-            assert result2.i.value_002.default_value == pytest.approx(0.00001)
+            assert result2.node.operation == "COMPARE"
+            assert result2.builder_node.i.value_002.default_value == pytest.approx(0.00001)

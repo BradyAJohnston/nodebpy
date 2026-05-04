@@ -18,7 +18,7 @@ def test_shader_math():
         _ = prin >> tree.outputs.shader()
 
     assert comp.node.bl_idname == "ShaderNodeMath"
-    assert comp.operation == "SUBTRACT"
+    assert comp.node.operation == "SUBTRACT"
     assert comp.node.inputs[1].links[0].from_node.bl_idname == "ShaderNodeMath"
     assert comp.node.inputs[1].links[0].from_node.inputs[1].default_value == 10.0
     assert (

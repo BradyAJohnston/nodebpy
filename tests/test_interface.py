@@ -761,7 +761,7 @@ def test_matrix_socket_output_iteration():
     assert sep_node
     assert sep_node.bl_idname == g.SeparateMatrix._bl_idname
     assert all(c.socket.node == sep_node for c in components)
-    assert math.i[0].links[0].from_node == comb.i[0].links[0].from_node
+    assert math.builder_node.i[0].links[0].from_node == comb.i[0].links[0].from_node
 
 
 def test_accessor_rotation():
