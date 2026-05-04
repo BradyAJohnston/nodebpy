@@ -1125,7 +1125,7 @@ class MatrixSocket(_MatrixMixin, Socket):
     """Runtime matrix socket wrapper."""
 
 
-class StringSocket(_StringMixin):
+class StringSocket(_StringMixin, Socket):
     """Runtime string socket wrapper."""
 
 
