@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator, cast, overload
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, Mapping, cast, overload
 
 import bpy
+from anyio.abc import SocketStream
 from bpy.types import (
     GeometryNodeTree,
     Node,
@@ -32,6 +33,7 @@ from mathutils import Euler
 
 from ..types import (
     SOCKET_TYPES,
+    InputAny,
     InputBoolean,
     InputBundle,
     InputClosure,
@@ -60,8 +62,8 @@ if TYPE_CHECKING:
         IntegerMath,
         Math,
         MultiplyMatrices,
-        TransformPoint,
         StringLength,
+        TransformPoint,
     )
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
@@ -581,97 +583,6 @@ class _ColorMixin(BaseSocket):
             return vector_method(*values)
 
 
-class _IntegerMixin(BaseSocket):
-    """Integer-specific dispatch — uses IntegerMath in geometry trees."""
-
-    socket: NodeSocketInt
-    tree: TreeBuilder
-    _tree: TreeBuilder
-
-    @property
-    def default_value(self) -> int:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: int) -> None:
-        self.socket.default_value = value
-
-    @staticmethod
-    def _is_integer_socket(value: Any) -> bool:
-        socket = getattr(
-            value, "socket", getattr(value, "_default_output_socket", None)
-        )
-        return isinstance(socket, NodeSocket) and socket.type == "INT"
-
-    def _other_is_integer(self, other: Any) -> bool:
-        return isinstance(other, int) or self._is_integer_socket(other)
-
-    def _dispatch_math(
-        self, other: Any, operation: str, reverse: bool = False
-    ) -> "IntegerMath | Math":
-        if self._is_geometry_tree and self._other_is_integer(other):
-            from ..nodes.geometry.converter import IntegerMath
-
-            values = (self.socket, other) if not reverse else (other, self.socket)
-            return getattr(IntegerMath, operation)(*values)
-        return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)
-
-    def _dispatch_unary(self, operation: str) -> "IntegerMath | Math":
-        if self._is_geometry_tree:
-            from ..nodes.geometry.converter import IntegerMath
-
-            if operation == "negate":
-                return IntegerMath.negate(self.socket)
-            elif operation == "absolute":
-                return IntegerMath.absolute(self.socket)
-        return Socket._dispatch_unary(cast("Socket", self), operation)
-
-    def _dispatch_floordiv(
-        self, other: Any, reverse: bool = False
-    ) -> "IntegerMath | Math":
-        if self._is_geometry_tree and self._other_is_integer(other):
-            from ..nodes.geometry.converter import IntegerMath
-
-            values = (self.socket, other) if not reverse else (other, self.socket)
-            return IntegerMath.divide_floor(*values)
-        return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
-
-    def _dispatch_compare(
-        self, other: Any, operation: str
-    ) -> "Compare[IntegerSocket] | Math":
-        if self._is_geometry_tree:
-            from ..nodes.geometry.manual import Compare
-
-            return getattr(Compare.integer, operation)(self.socket, other)
-        return cast(
-            "Math", Socket._dispatch_compare(cast("Socket", self), other, operation)
-        )
-
-    if TYPE_CHECKING:
-
-        def __add__(self, other: Any) -> "IntegerMath": ...
-        def __radd__(self, other: Any) -> "IntegerMath": ...
-        def __sub__(self, other: Any) -> "IntegerMath": ...
-        def __rsub__(self, other: Any) -> "IntegerMath": ...
-        def __mul__(self, other: Any) -> "IntegerMath": ...
-        def __rmul__(self, other: Any) -> "IntegerMath": ...
-        def __truediv__(self, other: Any) -> "IntegerMath": ...
-        def __rtruediv__(self, other: Any) -> "IntegerMath": ...
-        def __floordiv__(self, other: Any) -> "IntegerMath": ...
-        def __rfloordiv__(self, other: Any) -> "IntegerMath": ...
-        def __neg__(self) -> "IntegerMath": ...
-        def __abs__(self) -> "IntegerMath": ...
-        def __lt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __gt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __le__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __ge__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-
-
-# ---------------------------------------------------------------------------
-# Type-specific behaviour mixins (continued)
-# ---------------------------------------------------------------------------
-
-
 class _BooleanSwitchSocketFactory:
     def __init__(self, socket: NodeSocketBool):
         self._socket = socket
@@ -864,6 +775,104 @@ class _FloatMixin(BaseSocket):
 
         return Math.multiply(self.socket, -1.0).o.value
 
+    def to_string(self, decimals: InputInteger = 0) -> "StringSocket":
+        "Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places"
+        from ..nodes.geometry import ValueToString
+
+        return ValueToString.float(self.socket, decimals).o.string
+
+
+class _IntegerMixin(BaseSocket):
+    """Integer-specific dispatch — uses IntegerMath in geometry trees."""
+
+    socket: NodeSocketInt
+    tree: TreeBuilder
+    _tree: TreeBuilder
+
+    @property
+    def default_value(self) -> int:
+        return self.socket.default_value
+
+    @default_value.setter
+    def default_value(self, value: int) -> None:
+        self.socket.default_value = value
+
+    def to_string(self) -> "StringSocket":
+        "Convert the `IntegerSocket` to a `StringSocket`."
+        from ..nodes.geometry import ValueToString
+
+        return ValueToString.integer(self.socket).o.string
+
+    @staticmethod
+    def _is_integer_socket(value: Any) -> bool:
+        socket = getattr(
+            value, "socket", getattr(value, "_default_output_socket", None)
+        )
+        return isinstance(socket, NodeSocket) and socket.type == "INT"
+
+    def _other_is_integer(self, other: Any) -> bool:
+        return isinstance(other, int) or self._is_integer_socket(other)
+
+    def _dispatch_math(
+        self, other: Any, operation: str, reverse: bool = False
+    ) -> "IntegerMath | Math":
+        if self._is_geometry_tree and self._other_is_integer(other):
+            from ..nodes.geometry.converter import IntegerMath
+
+            values = (self.socket, other) if not reverse else (other, self.socket)
+            return getattr(IntegerMath, operation)(*values)
+        return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)
+
+    def _dispatch_unary(self, operation: str) -> "IntegerMath | Math":
+        if self._is_geometry_tree:
+            from ..nodes.geometry.converter import IntegerMath
+
+            if operation == "negate":
+                return IntegerMath.negate(self.socket)
+            elif operation == "absolute":
+                return IntegerMath.absolute(self.socket)
+        return Socket._dispatch_unary(cast("Socket", self), operation)
+
+    def _dispatch_floordiv(
+        self, other: Any, reverse: bool = False
+    ) -> "IntegerMath | Math":
+        if self._is_geometry_tree and self._other_is_integer(other):
+            from ..nodes.geometry.converter import IntegerMath
+
+            values = (self.socket, other) if not reverse else (other, self.socket)
+            return IntegerMath.divide_floor(*values)
+        return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
+
+    def _dispatch_compare(
+        self, other: Any, operation: str
+    ) -> "Compare[IntegerSocket] | Math":
+        if self._is_geometry_tree:
+            from ..nodes.geometry.manual import Compare
+
+            return getattr(Compare.integer, operation)(self.socket, other)
+        return cast(
+            "Math", Socket._dispatch_compare(cast("Socket", self), other, operation)
+        )
+
+    if TYPE_CHECKING:
+
+        def __add__(self, other: Any) -> "IntegerMath": ...
+        def __radd__(self, other: Any) -> "IntegerMath": ...
+        def __sub__(self, other: Any) -> "IntegerMath": ...
+        def __rsub__(self, other: Any) -> "IntegerMath": ...
+        def __mul__(self, other: Any) -> "IntegerMath": ...
+        def __rmul__(self, other: Any) -> "IntegerMath": ...
+        def __truediv__(self, other: Any) -> "IntegerMath": ...
+        def __rtruediv__(self, other: Any) -> "IntegerMath": ...
+        def __floordiv__(self, other: Any) -> "IntegerMath": ...
+        def __rfloordiv__(self, other: Any) -> "IntegerMath": ...
+        def __neg__(self) -> "IntegerMath": ...
+        def __abs__(self) -> "IntegerMath": ...
+        def __lt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+        def __gt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+        def __le__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+        def __ge__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+
 
 class _StringMixin(BaseSocket):
     """Float-specific properties (.x, .y, .z) and dispatch."""
@@ -896,12 +905,68 @@ class _StringMixin(BaseSocket):
     def slice(
         self, position: InputInteger = 0, length: InputInteger = 0
     ) -> StringSocket:
+        "Slice a given string from a starting position for a given length."
         from ..nodes.geometry import SliceString
 
         return SliceString(self.socket, position, length).o.string
 
-    def __len__(self) -> "IntegerSocket":
+    def format(
+        self, items: Mapping[str, InputString | InputInteger | InputFloat]
+    ) -> "StringSocket":
+        "Format a given string with the key-value items."
+        from ..nodes.geometry import FormatString
+
+        return FormatString(self.socket, items).o.string
+
+    def replace(self, find: InputString, replace: InputString) -> "StringSocket":
+        "Replace every match of the string with teh replacement string"
+        from ..nodes.geometry import ReplaceString
+
+        return ReplaceString(self.socket, find, replace).o.string
+
+    def length(self) -> "IntegerSocket":
+        "Compute the length of a string and return as `IntegerSocket`."
+        from ..nodes.geometry import StringLength
+
         return StringLength(self.socket).o.length
+
+    def find(self, search: InputString) -> tuple["IntegerSocket", "IntegerSocket"]:
+        """Find where in a string a pattern occurs.
+
+        Returns a tuple(IntegerSocket, IntegerSocket), corresponding to (index_of_first_match, count_of_matches)."""
+        from ..nodes.geometry import FindInString
+
+        return tuple(FindInString(self.socket, search).o)
+
+    def join(
+        self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
+    ) -> "StringSocket":
+        """Join the input strings with this as the separator."""
+        from ..nodes.geometry import JoinStrings
+
+        return JoinStrings(strings, self.socket).o.string
+
+    def __len__(self) -> "IntegerSocket":
+        # TODO: decide if it's a bad idea to mix up "python methods" and chainable methods
+        # len(string) feels like it should be evaluated once maybe? Whereas string.length()
+        # feels more like it will create a node that will compute length?
+        return self.length()
+
+    def __add__(self, other: "StringSocket" | str) -> StringSocket:
+        from ..nodes.geometry import JoinStrings, String
+
+        if isinstance(other, str):
+            other = String(other).o.string
+
+        return JoinStrings((self.socket, other)).o.string
+
+    def __radd__(self, other: str | "StringSocket") -> StringSocket:
+        from ..nodes.geometry import JoinStrings, String
+
+        if isinstance(other, str):
+            other = String(other).o.string
+
+        return JoinStrings((other, self.socket)).o.string
 
 
 class _MatrixMixin(BaseSocket):
