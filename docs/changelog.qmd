@@ -5,6 +5,7 @@ title: Changelog
 ## v0.16.0 - UNRELEASED
 
 ### Enhancements
+- Sockets have a reference to the buidler/node that they belong to via `self.builder_node` property.
 - Added `svd()` method onto `MatrixSocket` which returns a `tuple[MatrixSocket, VectorSocket, MatrixSocket]` for the `[u, s, v]` outputs of the `MatrixSVD` node.
 - Add `sign()` and `negate()` methods onto the `FloatSocket` for method chaining. Both return `FloatSocket`.
 - Remove `socket_name` property from `BaseSocket`, already accessible via `.socket.name`.

@@ -898,3 +898,23 @@ def test_vector_socket_methods():
         assert ln.node.bl_idname == g.VectorMath._bl_idname
         assert ln.node.operation == "LENGTH"
         assert ln.socket == vec.length().socket
+
+
+def test_socket_builder_reference():
+    with g.tree() as tree:
+        position = g.Position()
+        pos = position.o.position
+        assert pos.builder_node
+        assert pos.builder_node.node == position.node
+
+        _node = pos.builder_node.node
+        del position
+        del pos
+
+        position = g.Position._from_node(_node)
+        assert position.node == _node
+
+        par = g.SplineParameter()
+
+        socks = list(par.o[:2])
+        assert all(s.builder_node.node == par.node for s in socks)

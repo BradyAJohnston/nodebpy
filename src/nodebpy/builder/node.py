@@ -21,6 +21,7 @@ from bpy.types import (
     GeometryNodeTree,
     Node,
     NodeSocket,
+    NodeTree,
     ShaderNodeGroup,
     ShaderNodeTree,
 )
@@ -101,8 +102,9 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
     @classmethod
     def _from_node(cls, node: Node) -> Self:
-        builder = cls()
-        builder.tree.nodes.remove(builder.node)
+        builder = cls.__new__(cls)
+        builder._tree = TreeBuilder(cast(NodeTree, node.id_data))
+        builder._placeholder_inputs = []
         builder.node = node
         return builder
 
@@ -178,12 +180,12 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     @property
     def o(self) -> SocketAccessor:
         """Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
-        return SocketAccessor(self.node.outputs, "output")
+        return SocketAccessor(self.node.outputs, "output", builder=self)
 
     @property
     def i(self) -> SocketAccessor:
         """Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
-        return SocketAccessor(self.node.inputs, "input")
+        return SocketAccessor(self.node.inputs, "input", builder=self)
 
 
 class DynamicInputsMixin(ABC):
