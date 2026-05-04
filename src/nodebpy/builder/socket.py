@@ -936,7 +936,9 @@ class _StringMixin(BaseSocket):
         Returns a tuple(IntegerSocket, IntegerSocket), corresponding to (index_of_first_match, count_of_matches)."""
         from ..nodes.geometry import FindInString
 
-        return tuple(FindInString(self.socket, search).o)
+        node = FindInString(self.socket, search)
+
+        return (node.o.first_found, node.o.count)
 
     def join(
         self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
