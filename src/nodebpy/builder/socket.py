@@ -1,9 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, Mapping, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Iterable,
+    Iterator,
+    Mapping,
+    cast,
+    overload,
+)
 
 import bpy
-from anyio.abc import SocketStream
 from bpy.types import (
     GeometryNodeTree,
     Node,
@@ -33,7 +40,6 @@ from mathutils import Euler
 
 from ..types import (
     SOCKET_TYPES,
-    InputAny,
     InputBoolean,
     InputBundle,
     InputClosure,
@@ -60,9 +66,9 @@ if TYPE_CHECKING:
     from ..nodes import compositor, geometry, shader
     from ..nodes.geometry import (
         IntegerMath,
+        MatchString,
         Math,
         MultiplyMatrices,
-        StringLength,
         TransformPoint,
     )
     from ..nodes.geometry.manual import Compare
@@ -763,17 +769,19 @@ class _FloatMixin(BaseSocket):
     def default_value(self, value: float) -> None:
         self.socket.default_value = value
 
-    def sign(self) -> "FloatSocket":
-        "Return the sign of the FloatSocket, eithe `-1` or `1`."
+    @property
+    def _math(self) -> "type[Math]":
         from ..nodes.geometry import Math
 
-        return Math.sign(self.socket).o.value
+        return Math
+
+    def sign(self) -> "FloatSocket":
+        "Return the sign of the FloatSocket, eithe `-1`, `0` or `1`."
+        return self._math.sign(self.socket).o.value
 
     def negate(self) -> "FloatSocket":
         "Negate the `FloatSocket` by multiplying the value by `-1`."
-        from ..nodes.geometry import Math
-
-        return Math.multiply(self.socket, -1.0).o.value
+        return self._math.multiply(self.socket, -1).o.value
 
     def to_string(self, decimals: InputInteger = 0) -> "StringSocket":
         "Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places"
@@ -797,11 +805,24 @@ class _IntegerMixin(BaseSocket):
     def default_value(self, value: int) -> None:
         self.socket.default_value = value
 
+    @property
+    def _imath(self) -> "type[IntegerMath]":
+        from ..nodes.geometry import IntegerMath
+
+        return IntegerMath
+
     def to_string(self) -> "StringSocket":
         "Convert the `IntegerSocket` to a `StringSocket`."
         from ..nodes.geometry import ValueToString
 
         return ValueToString.integer(self.socket).o.string
+
+    def sign(self) -> "IntegerSocket":
+        "Return the sign of the IntegerSocket, either `-1`, `0`, or `1`."
+        return self._imath.sign(self.socket).o.value
+
+    def negate(self) -> "IntegerSocket":
+        return self._imath.negate(self.socket).o.value
 
     @staticmethod
     def _is_integer_socket(value: Any) -> bool:
@@ -887,20 +908,20 @@ class _StringMixin(BaseSocket):
     def default_value(self, value: str) -> None:
         self.socket.default_value = value
 
-    def starts_with(self, search: InputString) -> "BooleanSocket":
+    @property
+    def _match(self) -> "type[MatchString]":
         from ..nodes.geometry import MatchString
 
-        return MatchString(self.socket, "Starts With", search).o.result
+        return MatchString
+
+    def starts_with(self, search: InputString) -> "BooleanSocket":
+        return self._match(self.socket, "Starts With", search).o.result
 
     def ends_with(self, search: InputString) -> "BooleanSocket":
-        from ..nodes.geometry import MatchString
-
-        return MatchString(self.socket, "Ends With", search).o.result
+        return self._match(self.socket, "Ends With", search).o.result
 
     def contains(self, search: InputString) -> "BooleanSocket":
-        from ..nodes.geometry import MatchString
-
-        return MatchString(self.socket, "Contains", search).o.result
+        return self._match(self.socket, "Contains", search).o.result
 
     def slice(
         self, position: InputInteger = 0, length: InputInteger = 0
