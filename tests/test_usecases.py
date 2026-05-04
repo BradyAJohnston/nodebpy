@@ -12,8 +12,6 @@ from nodebpy.nodes.geometry.groups import PrincipalComponents
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
-    string_to_format = "{base_path}/{scale}/x0y0z0/x0y0z0c0t{time:04}.vdb"
-
     with g.tree("Channel Import", arrange="simple") as tree:
         base_path = tree.inputs.string("base_path", subtype="FILE_PATH")
         time = tree.inputs.integer("Time")
@@ -22,18 +20,17 @@ def import_channel() -> bpy.types.GeometryNodeTree:
         min_value = tree.inputs.float("Minimum Value")
         max_value = tree.inputs.float("Maximum Value")
 
-        volume = g.ImportVDB(
-            g.FormatString(
-                string_to_format,
-                {
-                    "time": time,
-                    "channel_number": channel_number,
-                    "base_path": base_path,
-                    "scale": g.Integer(0),
-                },
-            )
+        string = g.String("{base_path}/{scale}/x0y0z0/x0y0z0c0t{time:04}.vdb").o.string
+        path = string.format(
+            {
+                "time": time,
+                "channel_number": channel_number,
+                "base_path": base_path,
+                "scale": g.Integer(0),
+            }
         )
-        gng = g.GetNamedGrid.float(volume, "data")
+
+        gng = g.GetNamedGrid.float(g.ImportVDB(path), "data")
         sng = g.StoreNamedGrid.float(
             gng,
             name=channel_name,
@@ -69,7 +66,7 @@ def test_decoder_8bit():
 
 def test_import_channel():
     tree = import_channel()
-    assert len(tree.nodes) == 10
+    assert len(tree.nodes) == 11
 
 
 def test_PCA_asset():
@@ -119,7 +116,7 @@ def test_eulers_number():
 
         (
             zone.output.o.value
-            >> g.ValueToString(decimals=10)
+            >> g.ValueToString.float(decimals=10)
             >> g.StringToCurves()
             >> g.FillCurve()
             >> g.ExtrudeMesh(offset_scale=0.1)
@@ -487,7 +484,7 @@ def test_import_microscopy_meshes_node_group(snapshot):
     with g.tree("Import Microscopy Meshes") as tree:
         include = tree.inputs.boolean("Include")
         template_str = tree.inputs.string("template_str")
-        to_format = {
+        items = {
             "cache_dir": tree.inputs.string("cache_dir"),
             "dataset_hash": tree.inputs.string("dataset_hash"),
             **{
@@ -498,12 +495,10 @@ def test_import_microscopy_meshes_node_group(snapshot):
         _ = tree.inputs.string("original_path")
         affine_mat = tree.inputs.matrix("Channel Affine Matrix")
 
-        string = g.FormatString(template_str, to_format)
+        path = template_str.format(items)
 
-        csv = g.ImportCSV(
-            g.JoinStrings(strings=(string, g.String(".csv"))), delimiter=","
-        )
-        obj = g.ImportOBJ(g.JoinStrings(strings=(string, g.String(".obj"))))
+        csv = g.ImportCSV(path + ".csv", delimiter=",")
+        obj = g.ImportOBJ(path + ".obj")
 
         zone = g.ForEachGeometryElementZone()
         zone.output.node.domain = "INSTANCE"
@@ -538,7 +533,7 @@ def test_import_microscopy_volume_nodebpy_node_group(snapshot):
         include = tree.inputs.boolean("Include")
         string = tree.inputs.string("template_str")
 
-        to_format = {
+        items = {
             "cache_dir": tree.inputs.string("cache_dir"),
             "dataset_has": tree.inputs.string("dataset_hash"),
             **{
@@ -551,7 +546,8 @@ def test_import_microscopy_volume_nodebpy_node_group(snapshot):
         _ = tree.inputs.string("original_path")
         affine_mat = tree.inputs.matrix("Channel Affine Matrix")
 
-        vdb = g.ImportVDB(g.FormatString(string, to_format))
+        vdb = g.ImportVDB(string.format(items))
+
         with g.Frame("Normalize Grid"):
             grid = g.GetNamedGrid.float(vdb, grid_name).o.grid
             grid_normalised = g.MapRange.float(grid, min, max, 0.0, 1.0)
@@ -776,3 +772,23 @@ def test_import_microscopy_volume_node_group():
     links.new(set_grid_transform.outputs["Grid"], group_output.inputs["Grid"])
 
     # return node_group
+
+
+def test_bundle_path_filter(snapshot):
+    with g.tree() as tree:
+        path = tree.inputs.string("Self Path")
+        other = tree.inputs.string("Other Path")
+        local = tree.inputs.boolean("Filter Local")
+
+        first, count = path.find("/")
+        starter = path.slice(length=first + 1)
+
+        (
+            local.switch.boolean(
+                True,
+                (count == 0) | other.starts_with(starter),
+            )
+            >> tree.outputs.boolean("Selected")
+        )
+
+    assert snapshot == tree._repr_markdown_()

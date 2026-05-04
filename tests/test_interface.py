@@ -1,4 +1,4 @@
-from typing import get_args
+from typing import cast, get_args
 
 import bpy
 import pytest
@@ -7,7 +7,7 @@ from mathutils import Euler
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import FloatSocket, Socket, VectorSocket
+from nodebpy.builder import FloatSocket, IntegerSocket, Socket, VectorSocket
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -861,8 +861,31 @@ def test_boolean_socket_switches():
             assert sock.node.input_type == name
 
 
-def test_float_socket_methods():
+def test_integer_socket_methods():
     with g.tree():
+        val = g.Integer().o.integer
+
+        result = val.sign()
+        node = cast(g.IntegerMath, result.builder_node)
+        assert isinstance(node, g.IntegerMath)
+        assert node.operation == "SIGN"
+        assert node.i.value.links[0].from_socket == val.socket
+
+        result = val.negate()
+        node = cast(g.IntegerMath, result.builder_node)
+        assert isinstance(node, g.IntegerMath)
+        assert node.operation == "NEGATE"
+        assert node.i.value.links[0].from_socket == val.socket
+        assert len(val.links) == 2
+
+        string = val.to_string()
+        node = cast(g.ValueToString, string.builder_node)
+        assert isinstance(node, g.ValueToString)
+        assert node.data_type == "INT"
+
+
+def test_float_socket_methods(snapshot):
+    with g.tree() as tree:
         val = g.Float().o.value
 
         result = val.sign()
@@ -874,18 +897,22 @@ def test_float_socket_methods():
         assert result.node.operation == "MULTIPLY"
         assert result.node.inputs[1].default_value == pytest.approx(-1.0)
         assert result.node.inputs[0].links[0].from_node == val.node
-
         assert len(val.links) == 2
 
+        string = val.to_string(3)
+        assert string.builder_node.i.decimals.default_value == 3
+        assert isinstance(string.builder_node, g.ValueToString)
+        assert snapshot == tree._repr_markdown_()
 
-def test_vector_socket_methods():
+
+def test_vector_socket_methods(snapshot):
     with g.tree() as tree:
         vec = tree.inputs.vector()
         norm = vec.normalize()
         assert isinstance(norm, VectorSocket)
         assert norm.node.bl_idname == g.VectorMath._bl_idname
         assert norm.node.operation == "NORMALIZE"
-        assert norm.socket == vec.normalize().socket
+        assert norm.socket != vec.normalize().socket
 
         dot = vec.dot(g.Vector())
         assert isinstance(dot, FloatSocket)
@@ -897,10 +924,17 @@ def test_vector_socket_methods():
         assert isinstance(ln, FloatSocket)
         assert ln.node.bl_idname == g.VectorMath._bl_idname
         assert ln.node.operation == "LENGTH"
-        assert ln.socket == vec.length().socket
+        assert ln.socket != vec.length().socket
+
+        sc = vec.scale(2.0)
+        assert isinstance(sc, VectorSocket)
+        assert sc.node.bl_idname == g.VectorMath._bl_idname
+        assert sc.node.operation == "SCALE"
+        assert sc.builder_node.i.scale.default_value == pytest.approx(2.0)
+        assert snapshot == tree._repr_markdown_()
 
 
-def test_socket_builder_reference():
+def test_socket_builder_reference(snapshot):
     with g.tree() as tree:
         position = g.Position()
         pos = position.o.position
@@ -918,3 +952,70 @@ def test_socket_builder_reference():
 
         socks = list(par.o[:2])
         assert all(s.builder_node.node == par.node for s in socks)
+        assert snapshot == tree._repr_markdown_()
+
+
+def test_string_socket_methods(snapshot):
+    with g.tree() as tree:
+        string = tree.inputs.string()
+
+        ew = string.ends_with("test")
+        assert isinstance(ew.builder_node, g.MatchString)
+        assert ew.builder_node.i.operation.default_value == "Ends With"
+        assert ew.builder_node.i.key.default_value == "test"
+        assert ew.builder_node.i.string.links[0].from_node == string.node
+
+        con = string.contains("abc")
+        assert isinstance(con.builder_node, g.MatchString)
+        assert con.builder_node.i.operation.default_value == "Contains"
+        assert con.builder_node.i.key.default_value == "abc"
+        assert con.builder_node.i.string.links[0].from_node == string.node
+
+        sw = string.starts_with("hello")
+        assert isinstance(sw.builder_node, g.MatchString)
+        assert sw.builder_node.i.operation.default_value == "Starts With"
+        assert sw.builder_node.i.key.default_value == "hello"
+        assert sw.builder_node.i.string.links[0].from_node == string.node
+
+        slice = string.slice(1, 4)
+        assert isinstance(slice.builder_node, g.SliceString)
+        assert slice.builder_node.i.position.default_value == 1
+        assert slice.builder_node.i.length.default_value == 4
+        assert slice.builder_node.i.string.links[0].from_node == string.node
+
+        rep = string.replace("a", "b")
+        assert isinstance(rep.builder_node, g.ReplaceString)
+        assert rep.builder_node.i.find.default_value == "a"
+        assert rep.builder_node.i.replace.default_value == "b"
+        assert rep.builder_node.i.string.links[0].from_node == string.node
+
+        length = string.length()
+        assert isinstance(length.builder_node, g.StringLength)
+        assert length.builder_node.i.string.links[0].from_node == string.node
+        assert isinstance(length, IntegerSocket)
+
+        joined = string + "test"
+        node = cast(g.JoinStrings, joined.builder_node)
+        assert isinstance(node, g.JoinStrings)
+        assert len(node.i.strings.links) == 2
+        assert node.i.strings.links[0].from_node == string.node
+        assert node.i.strings.links[1].from_node.bl_idname == g.String._bl_idname
+
+        joined = "test" + string
+        node = cast(g.JoinStrings, joined.builder_node)
+        assert isinstance(node, g.JoinStrings)
+        assert len(node.i.strings.links) == 2
+        assert node.i.strings.links[0].from_node.bl_idname == g.String._bl_idname
+        assert node.i.strings.links[1].from_node == string.node
+
+        join = g.String(",").o.string.join([slice, rep, joined])
+        node = cast(g.JoinStrings, join.builder_node)
+        assert isinstance(node, g.JoinStrings)
+        assert len(node.i.strings.links) == 3
+
+        string.replace("A", "B").slice(1, 2).join(["test"]).slice(2, 3).join(
+            ["A", "test"]
+        ).length()
+
+        assert len(tree) == 22
+        assert snapshot == tree._repr_markdown_()
