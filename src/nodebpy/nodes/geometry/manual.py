@@ -7,6 +7,7 @@ from bpy.types import (
     ColorRamp,
     ColorRampElements,
     CurveMapPoints,
+    GeometryNodeTree,
     NodeEvaluateClosure,
     NodeSocket,
     NodeSocketString,
@@ -144,7 +145,7 @@ def tree(
     *,
     collapse: bool = False,
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
-) -> TreeBuilder:
+) -> TreeBuilder[GeometryNodeTree]:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
 
 
@@ -406,7 +407,7 @@ class Switch(BaseNode, Generic[_T]):
     def input_type(
         self,
     ) -> _SwitchDataTypes:
-        return self.node.input_type
+        return self.node.input_type  # ty: ignore[invalid-return-type]
 
     @input_type.setter
     def input_type(
@@ -3157,74 +3158,6 @@ class Compare(BaseNode, Generic[_T]):
         if self.data_type == "VECTOR":
             self.mode = kwargs.pop("mode")
         self._establish_links(**kwargs)
-
-    def switch(self, false: InputAny, true: InputAny) -> Switch:
-        def _infer_data_type(
-            a: InputAny, b: InputAny
-        ) -> Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-        ]:
-            # Check plain Python types first (most specific to least)
-            # bool must come before int since bool is a subclass of int
-            has_str = isinstance(a, str) or isinstance(b, str)
-            has_numeric = isinstance(a, (int, float)) or isinstance(b, (int, float))
-
-            # Reject mixing string with numeric types
-            if has_str and has_numeric:
-                raise ValueError(
-                    f"Cannot infer compatible type from {type(a).__name__} and {type(b).__name__}"
-                )
-
-            has_float = isinstance(a, float) or isinstance(b, float)
-            has_bool = isinstance(a, bool) or isinstance(b, bool)
-            has_int = isinstance(a, int) or isinstance(b, int)
-
-            set_types = [
-                x._default_output_socket.type
-                for x in (a, b)
-                if hasattr(x, "_default_output_socket")
-            ]
-            if set_types:
-                value = set_types[0]
-                match value:
-                    case "VALUE":
-                        return "FLOAT"
-                    case "INT":
-                        # A float literal should promote INT to FLOAT
-                        return "FLOAT" if has_float else "INT"
-                    case _:
-                        return value
-
-            if has_float:
-                return "FLOAT"
-            if has_bool:
-                return "BOOLEAN"
-            if has_int:
-                return "INT"
-            if has_str:
-                return "STRING"
-
-            raise ValueError(f"Cannot infer compatible type from {a} and {b}")
-
-        method = _infer_data_type(false, true).lower()
-        if method == "int":
-            method = "integer"
-        return getattr(Switch, method)(switch=self, false=false, true=true)
 
     @staticmethod
     def _suffix(data_type: str) -> str:

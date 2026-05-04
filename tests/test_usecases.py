@@ -7,7 +7,7 @@ import bpy
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy.builder import FloatSocket
+from nodebpy.builder import BooleanSocket, FloatSocket
 from nodebpy.nodes.geometry.groups import PrincipalComponents
 
 
@@ -158,14 +158,15 @@ class TestCompareMiNCleanGridVerts(CompareGenerationMethods):
             pos = g.Position().o.position
             mul = extent * world
 
-            equals = []
-            for x in [-0.5, 0.5]:
-                comp = g.VectorMath.multiply(mul, x).o.vector
-                equals.append(
-                    (g.Compare.float.equal(a, b, 0.001) for a, b in zip(comp, pos))
+            equals = [
+                tuple(
+                    g.Compare.float.equal(a, b, 0.001).o.result
+                    for a, b in zip(mul * x, pos)
                 )
+                for x in [-0.5, 0.5]
+            ]
 
-            ors = [a | b for a, b in zip(*equals)]
+            ors: list[BooleanSocket] = [a | b for a, b in zip(*equals)]
             ands = [a & b for a, b in combinations(ors, 2)]
             final = reduce(or_, ands)
             final >> tree.outputs.boolean()

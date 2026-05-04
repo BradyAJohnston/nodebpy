@@ -220,14 +220,14 @@ def test_vector_multiply_dispatch(other, expected_op):
     with TreeBuilder("VecMul"):
         pos = g.Position()
         result = pos * other
-    assert result.operation == expected_op
+    assert result.node.operation == expected_op
 
 
 def test_vector_multiply_by_scalar_node():
     """VectorSocket * scalar-type node uses VectorMath.scale."""
     with TreeBuilder("VecMulScalar"):
         result = g.Position() * g.Value()
-    assert result.operation == "SCALE"
+    assert result.node.operation == "SCALE"
 
 
 @pytest.mark.parametrize(
@@ -335,7 +335,7 @@ def test_rmatmul_numpy_matrix_times_vector():
 
     with TreeBuilder("RMatMul"):
         result = np.eye(4) @ g.Position()
-    assert result._bl_idname == g.TransformPoint._bl_idname
+    assert result.node.bl_idname == g.TransformPoint._bl_idname
 
 
 def test_target_socket_accepts_base_node():

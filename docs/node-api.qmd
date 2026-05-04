@@ -76,7 +76,7 @@ with g.tree() as tree:
     diff = g.FieldAverage.point.vector(pos).o.mean - pos
     matrix = g.CombineMatrix()
 
-    for i, axis1 in enumerate(diff.o.vector):
+    for i, axis1 in enumerate(diff):
         sep = g.FieldAverage.point.vector(diff * axis1)
         for j, axis2 in enumerate(sep.o.mean):
             axis2 >> matrix.i[int(i * 4 + j)]
