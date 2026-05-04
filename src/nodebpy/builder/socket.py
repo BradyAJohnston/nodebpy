@@ -970,12 +970,6 @@ class _StringMixin(BaseSocket):
 
         return JoinStrings(strings, self.socket).o.string
 
-    def __len__(self) -> "IntegerSocket":
-        # TODO: decide if it's a bad idea to mix up "python methods" and chainable methods
-        # len(string) feels like it should be evaluated once maybe? Whereas string.length()
-        # feels more like it will create a node that will compute length?
-        return self.length()
-
     def __add__(self, other: "StringSocket" | str) -> StringSocket:
         from ..nodes.geometry import JoinStrings, String
 

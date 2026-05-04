@@ -867,14 +867,22 @@ def test_integer_socket_methods():
         val = g.Integer().o.integer
 
         result = val.sign()
-        assert result.node.bl_idname == g.IntegerMath._bl_idname
-        assert result.node.operation == "SIGN"
+        node = cast(g.IntegerMath, result.builder_node)
+        assert isinstance(node, g.IntegerMath)
+        assert node.operation == "SIGN"
+        assert node.i.value.links[0].from_socket == val.socket
 
         result = val.negate()
-        assert result.node.bl_idname == g.IntegerMath._bl_idname
-        assert result.node.operation == "NEGATE"
-
+        node = cast(g.IntegerMath, result.builder_node)
+        assert isinstance(node, g.IntegerMath)
+        assert node.operation == "NEGATE"
+        assert node.i.value.links[0].from_socket == val.socket
         assert len(val.links) == 2
+
+        string = val.to_string()
+        node = cast(g.ValueToString, string.builder_node)
+        assert isinstance(node, g.ValueToString)
+        assert node.data_type == "INT"
 
 
 def test_float_socket_methods():
@@ -992,12 +1000,20 @@ def test_string_socket_methods():
         assert node.i.strings.links[0].from_node == string.node
         assert node.i.strings.links[1].from_node.bl_idname == g.String._bl_idname
 
+        joined = "test" + string
+        node = cast(g.JoinStrings, joined.builder_node)
+        assert isinstance(node, g.JoinStrings)
+        assert len(node.i.strings.links) == 2
+        assert node.i.strings.links[0].from_node.bl_idname == g.String._bl_idname
+        assert node.i.strings.links[1].from_node == string.node
+
         join = g.String(",").o.string.join([slice, rep, joined])
-        assert isinstance(join.builder_node, g.JoinStrings)
-        assert len(join.builder_node.i.strings.links) == 3
+        node = cast(g.JoinStrings, join.builder_node)
+        assert isinstance(node, g.JoinStrings)
+        assert len(node.i.strings.links) == 3
 
         string.replace("A", "B").slice(1, 2).join(["test"]).slice(2, 3).join(
             ["A", "test"]
         ).length()
 
-        assert len(tree) == 20
+        assert len(tree) == 22
