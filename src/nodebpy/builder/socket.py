@@ -278,6 +278,10 @@ class _VectorMixin(BaseSocket):
         """
         return self._vmath.dot_product(self.socket, vector).o.value
 
+    def scale(self, scale: InputFloat) -> "VectorSocket":
+        """Scale this vector by a scalar value and return VectorSocket"""
+        return self._vmath.scale(self.socket, scale).o.vector
+
     def length(self) -> "FloatSocket":
         return self._vmath.length(self.socket).o.value
 
