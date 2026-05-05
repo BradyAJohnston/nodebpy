@@ -32,6 +32,20 @@ from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
 
+
+def _srgb_to_linear(c: float) -> float:
+    if c <= 0.04045:
+        return c / 12.92
+    return ((c + 0.055) / 1.055) ** 2.4
+
+
+def _hex_to_linear_rgba(hex_str: str) -> tuple[float, float, float, float]:
+    h = hex_str.lstrip("#")
+    r, g, b = (v / 255 for v in bytes.fromhex(h[:6]))
+    a = int(h[6:8], 16) / 255 if len(h) == 8 else 1.0
+    return (_srgb_to_linear(r), _srgb_to_linear(g), _srgb_to_linear(b), a)
+
+
 _T = TypeVar("_T", bound=bpy.types.NodeTree)
 
 if TYPE_CHECKING:
@@ -133,6 +147,8 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     def _set_input_default_value(self, input: NodeSocket, value: Any) -> None:
         """Set the default value for an input socket, handling type conversions."""
         assert hasattr(input, "default_value")
+        if isinstance(value, str) and hasattr(input, "type") and input.type == "RGBA":
+            value = _hex_to_linear_rgba(value)
         if (
             hasattr(input, "type")
             and input.type == "VECTOR"
