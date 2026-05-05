@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, overload
+from typing import TYPE_CHECKING, Iterator, Literal, overload
 
 import bpy
 from bpy.types import NodeSocket
@@ -200,7 +200,7 @@ class SocketAccessor:
     def __len__(self) -> int:
         return len(self._items())
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator["Socket"]:
         return iter(self._values())
 
     def __getattr__(self, name: str) -> "Socket":
