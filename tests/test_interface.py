@@ -8,6 +8,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
+    ColorSocket,
     FloatSocket,
     IntegerSocket,
     RotationSocket,
@@ -1127,11 +1128,10 @@ def test_float_socket_mix():
         b = g.Value(2.0).o.value
         result = fac.mix.float(a, b)
 
-    assert isinstance(result, FloatSocket)
-    assert result.node.bl_idname == g.Mix._bl_idname
-    assert result.builder_node.i.factor_float.links[0].from_node == fac.node
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.Mix._bl_idname
+        assert result.builder_node.i.factor_float.links[0].from_node == fac.node
 
-    with g.tree():
         fac = g.Value(0.5).o.value
         result_v = fac.mix.vector((0, 0, 0), (1, 1, 1))
         result_r = fac.mix.rotation(
@@ -1139,8 +1139,13 @@ def test_float_socket_mix():
             g.AlignRotationToVector().o.rotation,
         )
 
-    assert isinstance(result_v, VectorSocket)
-    assert isinstance(result_r, RotationSocket)
+        assert isinstance(result_v, VectorSocket)
+        assert isinstance(result_r, RotationSocket)
+
+        result = fac.mix.color(g.Color(), g.Mix.color())
+        assert isinstance(result, ColorSocket)
+        assert result.node.bl_idname == g.Mix._bl_idname
+        assert result.builder_node.i.factor_float.links[0].from_node == fac.node
 
 
 def test_float_socket_to_integer():
