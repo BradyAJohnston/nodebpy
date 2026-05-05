@@ -74,6 +74,16 @@
   ```
   '''
 # ---
+# name: test_vector_socket_input_methods
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Combine XYZ"):::converter-node
+      N1("Set Position"):::geometry-node
+      N0 -->|"Vector->Offset"| N1
+  ```
+  '''
+# ---
 # name: test_vector_socket_methods
   '''
   ```{mermaid}
