@@ -292,18 +292,6 @@ Perform a comparison operation on the two given inputs
 | [`type`](#nodebpy.nodes.geometry.manual.Compare.type) |  |
 | [`vector`](#nodebpy.nodes.geometry.manual.Compare.vector) |  |
 
-#### Methods
-
-| Name                                                    | Description |
-|---------------------------------------------------------|-------------|
-| [switch](#nodebpy.nodes.geometry.manual.Compare.switch) |             |
-
-##### switch
-
-``` python
-switch(false, true)
-```
-
 ### EvaluateAtIndex
 
 ``` python

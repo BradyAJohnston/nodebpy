@@ -1,5 +1,119 @@
 # Changelog
 
+## v0.16.0 - UNRELEASED
+
+### Enhancements
+
+- Input `VectorSocket` now properly has the `x`, `y`, `z` attributes through `CombineXYZ` node.
+- Socket methods added for strings. Methods added are: `length()`, `starts_with()`, `ends_with()`, `contains()`, `slice()`, `format()`, `replace()`, `find()`, `join()`
+
+``` py
+
+string = g.String("Example String").o.string
+
+string.length()      # return g.StringLength().o.length, same as len(string)
+string.starts_with() # return g.MatchString().o.result
+string.ends_with()   # return g.MatchString().o.result
+string.contains()    # return g.MatchString().o.result
+string.slice()       # return g.SliceString().o.string
+string.format()      # return g.FormatString().o.string
+string.replace()     # return g.ReplaceString().o.string
+string.find()        # return (g.FindInString().o.first_found, g.FindInString().o.count)
+string.join(x)       # return g.JoinStrings(x, delimeter=string)
+```
+
+String sockets can also be joined with `+` operator like python strings.
+
+These two are equivalent.
+
+``` py
+
+string + "example"
+
+JoinStrings((string, g.String("example")), separator="").o.string
+```
+
+Float and integer sockets have `to_string()` methods:
+
+``` py
+g.Float().o.value.to_string(3) # specify decimal places
+
+g.Integer().o.integer.to_string()
+```
+
+- Math, comparison, and unary operations on sockets now return the **output socket** of the created node rather than the node itself. This allows method chaining directly on the result.
+
+``` py
+# Before: result was a Math / VectorMath / Compare node
+# After:  result is a FloatSocket / VectorSocket / BooleanSocket
+pos = g.Position().o.position
+scaled = pos * 2.0            # VectorSocket
+clamped = (scaled > 0.5)      # BooleanSocket
+mat = g.CombineTransform() @ g.CombineTransform()  # MatrixSocket
+vec = g.CombineTransform() @ g.Position()           # VectorSocket
+```
+
+To access the underlying builder node from any socket returned by a math operation, use the `.builder_node` property:
+
+``` py
+result = g.Value(2.0) ** 3.0   # FloatSocket
+result.builder_node             # the Math node
+result.builder_node.i.value_001 # input socket on that node
+```
+
+- Accessing `.o` or `.i` on any `BaseNode` now sets `.builder_node` on the returned socket, pointing back to that node.
+
+``` py
+pos = g.Position().o.position
+pos.builder_node   # the Position node
+```
+
+- Added `svd()` method onto `MatrixSocket` which returns a `tuple[MatrixSocket, VectorSocket, MatrixSocket]` for the `[u, s, v]` outputs of the `MatrixSVD` node.
+- Add `sign()` and `negate()` methods onto the `FloatSocket` for method chaining. Both return `FloatSocket`.
+- Remove `socket_name` property from `BaseSocket`, already accessible via `.socket.name`.
+- Added `.dot()`, `.length()` and `.normalize()` methods to `VectorSocket` which create the corresponding `DotProduct`, `VectorLength` and `Normalize` nodes.
+- Properties on sockets that aren’t just accessing components of the socket are node methods. They still return sockets and not nodes.
+  - `RotationSocket.invert` -\> `RotationSocket.invert()`
+  - `RotationSocket.euler` -\> `Rotation.euler()`
+  - `MatrixSocket.invert` -\> `MatrixSocket.invert()`
+  - `MatrixSocket.transpose` -\> `MatrixSocket.transpose()`
+  - `MatrixSocket.determinant` -\> `MatrixSocket.determinant()`
+
+### Breaking Changes
+
+- `Compare.switch(false, true)` with automatic type inference has been removed. Use the explicit typed factory methods on `BooleanSocket.switch` instead.
+
+``` py
+# Before
+(val == 5).switch(g.Cube(), g.IcoSphere())
+
+# After
+(val == 5).switch.geometry(g.Cube(), g.IcoSphere())
+(val == 5).switch.float(0.0, 1.0)
+(val == 5).switch.integer(0, 1)
+```
+
+- Math operations no longer return nodes — code that accessed node properties directly on the result (e.g. `result.operation`, `result.data_type`, `result.i`) must now go through `result.node` or `result.builder_node`:
+
+``` py
+result = g.Value(2.0) * 3.0
+
+# Before
+result.operation              # "MULTIPLY"
+result.i.value.default_value  # 2.0
+
+# After
+result.node.operation              # "MULTIPLY"
+result.builder_node.i.value.default_value  # 2.0
+```
+
+### Bug Fixes
+
+- The `ColorSocket` properly only indexes to length `3` inside of the shader as `SeparateXYZ` and `CombineXYZ` don’t have alpha inputs or outputs.
+- Fixed bug in mixins that was resulting in node comparison creation when checking if a node / socket was `None` instead of using `is None` comparison.
+- `tree()` helper functions in `geometry`, `shader`, and `compositor` modules now return a typed `TreeBuilder[NodeTreeType]` for improved type-checker support.
+- Fixed `BaseNode._from_node()` to correctly wrap an existing node without creating and immediately discarding a temporary node.
+
 ## v0.15.0 - 2026-04-30
 
 ### Enhancements

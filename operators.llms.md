@@ -168,7 +168,7 @@ The result of a comparison is a `Compare` node, which can be used to directly ch
 with g.tree("SwitchDemo") as tree:
     v = g.Value(5.0)
     pos = g.Position().o.position
-    result = (pos.z > v).switch(g.RandomValue.float(), 5.0 ** g.Value(10.0))
+    result = (pos.z > v).switch.float(g.RandomValue.float(), 5.0 ** g.Value(10.0))
 
 tree
 ```

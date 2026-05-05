@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.15.1</span>
+    <span class="navbar-title">nodebpy 0.16.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -541,7 +541,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.builder.accessor.SocketAccessor" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.builder.accessor.SocketAccessor">SocketAccessor</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>SocketAccessor(collection, direction)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>SocketAccessor(collection, direction, <span class="op">*</span>, builder<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Unified accessor for a node’s input or output socket collection.</p>
 <p>Supports identifier/name lookup, dict-style <code>[]</code> access, availability filtering, and type-compatible matching — replacing the former pairs of <code>_input_idx</code>/<code>_output_idx</code>, <code>_input</code>/<code>_output</code>, <code>_available_inputs</code>/<code>_available_outputs</code>, and <code>_best_output_socket</code>.</p>
 
@@ -624,7 +624,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

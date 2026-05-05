@@ -118,7 +118,7 @@ with g.tree() as tree:
     diff = g.FieldAverage.point.vector(pos).o.mean - pos
     matrix = g.CombineMatrix()
 
-    for i, axis1 in enumerate(diff.o.vector):
+    for i, axis1 in enumerate(diff):
         sep = g.FieldAverage.point.vector(diff * axis1)
         for j, axis2 in enumerate(sep.o.mean):
             axis2 >> matrix.i[int(i * 4 + j)]
@@ -165,8 +165,8 @@ graph LR
     N12 -->|"Y->Column 3 Row 2"| N13
     N12 -->|"Z->Column 3 Row 3"| N13
     N2 -->|"Vector->Vector"| N5
-    N2 -->|"Vector->Vector"| N6
     N2 -->|"Vector->Vector"| N4
+    N2 -->|"Vector->Vector"| N6
 ```
 
 #### Vector Outputs
@@ -343,7 +343,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.nodes.geometry.manual.Compare at 0x113021160>
+>     <nodebpy.builder.socket.BooleanSocket at 0x13d176cf0>
 >
 > ### Comparing Python Objects
 >

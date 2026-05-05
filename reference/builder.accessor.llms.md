@@ -11,7 +11,7 @@
 ### SocketAccessor
 
 ``` python
-SocketAccessor(collection, direction)
+SocketAccessor(collection, direction, *, builder=None)
 ```
 
 Unified accessor for a node’s input or output socket collection.
