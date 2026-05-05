@@ -70,8 +70,6 @@ if TYPE_CHECKING:
         IntegerMath,
         MatchString,
         Math,
-        MultiplyMatrices,
-        TransformPoint,
     )
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
@@ -79,7 +77,7 @@ if TYPE_CHECKING:
     from .tree import TreeBuilder
 
 
-class Quaternion(NamedTuple):
+class QuaternionComponents(NamedTuple):
     """Quaternion components returned by `RotationSocket.to_quaternion()`."""
 
     w: "FloatSocket"
@@ -796,12 +794,12 @@ class _RotationMixin(BaseSocket):
 
         return RotationToEuler._find_or_create_linked(self.socket).o.euler
 
-    def to_quaternion(self) -> Quaternion:
+    def to_quaternion(self) -> QuaternionComponents:
         "Decompose the rotation into quaternion components `(w, x, y, z)`."
         from ..nodes.geometry import RotationToQuaternion
 
         o = RotationToQuaternion._find_or_create_linked(self.socket).o
-        return Quaternion(o.w, o.x, o.y, o.z)
+        return QuaternionComponents(o.w, o.x, o.y, o.z)
 
     def to_axis_angle(self) -> AxisAngle:
         "Decompose the rotation into axis-angle components `(axis, angle)`."

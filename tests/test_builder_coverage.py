@@ -289,7 +289,6 @@ def test_color_separate_in_compositor_tree():
     assert r is not None
 
 
-
 @pytest.mark.parametrize("component", ["translation", "rotation", "scale"])
 def test_matrix_socket_properties(component):
     """_MatrixMixin .translation/.rotation/.scale via SeparateTransform."""

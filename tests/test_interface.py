@@ -7,7 +7,13 @@ from mathutils import Euler
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import FloatSocket, IntegerSocket, RotationSocket, Socket, VectorSocket
+from nodebpy.builder import (
+    FloatSocket,
+    IntegerSocket,
+    RotationSocket,
+    Socket,
+    VectorSocket,
+)
 from nodebpy.nodes.compositor import CombineXYZ
 from nodebpy.types import SOCKET_TYPES
 
