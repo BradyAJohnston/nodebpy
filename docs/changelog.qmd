@@ -5,6 +5,7 @@ title: Changelog
 ## v0.16.0 - UNRELEASED
 
 ### Enhancements
+- Input `VectorSocket` now properly has the `x`, `y`, `z` attributes through `CombineXYZ` node.
 - Socket methods added for strings. Methods added are: `length()`, `starts_with()`, `ends_with()`, `contains()`, `slice()`, `format()`, `replace()`, `find()`, `join()`
 
 ```py
