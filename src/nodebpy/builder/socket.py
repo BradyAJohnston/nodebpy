@@ -255,23 +255,36 @@ class _VectorMixin(BaseSocket):
 
         return VectorMath
 
-    @property
     def _separate(self) -> "geometry.SeparateXYZ":
         from ..nodes.geometry import SeparateXYZ
 
         return SeparateXYZ._find_or_create_linked(self.socket)
 
+    def _combine(self) -> "geometry.CombineXYZ":
+        from ..nodes.geometry import CombineXYZ
+
+        return CombineXYZ._find_or_create_linked(self.socket)
+
     @property
     def x(self) -> FloatSocket:
-        return self._separate.o.x
+        if self.socket.is_output:
+            return self._separate().o.x
+        else:
+            return self._combine().i.x
 
     @property
     def y(self) -> FloatSocket:
-        return self._separate.o.y
+        if self.socket.is_output:
+            return self._separate().o.y
+        else:
+            return self._combine().i.y
 
     @property
     def z(self) -> FloatSocket:
-        return self._separate.o.z
+        if self.socket.is_output:
+            return self._separate().o.z
+        else:
+            return self._combine().i.z
 
     def dot(self, vector: InputVector) -> "FloatSocket":
         """Dot product with another vector. The other vector can be a Socket, a NodeSocket, or a 3-tuple of floats.
@@ -307,26 +320,22 @@ class _VectorMixin(BaseSocket):
     @overload
     def __getitem__(self, key: int) -> "FloatSocket": ...
     def __getitem__(self, key: int | slice) -> "FloatSocket | list[FloatSocket]":
-        from ..nodes.geometry import CombineXYZ, SeparateXYZ
-
         if self.socket.is_output:
-            node = SeparateXYZ._find_or_create_linked(self.socket)
+            node = self._separate()
             return [node.o.x, node.o.y, node.o.z][key]
 
         else:
-            node = CombineXYZ._find_or_create_linked(self.socket)
+            node = self._combine()
             return [node.i.x, node.i.y, node.i.z][key]
 
     def __iter__(self) -> Iterator["FloatSocket"]:
-        from ..nodes.geometry import CombineXYZ, SeparateXYZ
-
         if self.socket.is_output:
-            node = SeparateXYZ._find_or_create_linked(self.socket)
+            node = self._separate()
             yield node.o.x
             yield node.o.y
             yield node.o.z
         else:
-            node = CombineXYZ._find_or_create_linked(self.socket)
+            node = self._combine()
             yield node.i.x
             yield node.i.y
             yield node.i.z
@@ -335,30 +344,26 @@ class _VectorMixin(BaseSocket):
         return 3
 
     def _dispatch_unary(self, operation: str) -> "VectorSocket":
-        from ..nodes.geometry import VectorMath
-
         if operation == "negate":
-            return VectorMath.scale(self.socket, -1).o.vector
+            return self._vmath.scale(self.socket, -1).o.vector
         elif operation == "absolute":
-            return VectorMath.absolute(self.socket).o.vector
+            return self._vmath.absolute(self.socket).o.vector
         raise ValueError(f"Unknown unary operation: {operation}")
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
     ) -> "VectorSocket":
-        from ..nodes.geometry import VectorMath
-
         values = (self.socket, other) if not reverse else (other, self.socket)
 
         if operation == "multiply":
             if isinstance(other, (int, float)):
-                return VectorMath.scale(self.socket, other).o.vector
+                return self._vmath.scale(self.socket, other).o.vector
             elif isinstance(other, NodeSocket) and other.type in (
                 "VALUE",
                 "FLOAT",
                 "INT",
             ):
-                return VectorMath.scale(self.socket, other).o.vector
+                return self._vmath.scale(self.socket, other).o.vector
             elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(
                 other, "type", None
             ) in (
@@ -366,19 +371,19 @@ class _VectorMixin(BaseSocket):
                 "FLOAT",
                 "INT",
             ):
-                return VectorMath.scale(
+                return self._vmath.scale(
                     self.socket, other._default_output_socket
                 ).o.vector
             elif isinstance(other, (list, tuple)) and len(other) == 3:
-                return VectorMath.multiply(*values).o.vector
+                return self._vmath.multiply(*values).o.vector
             elif isinstance(other, (_SocketLike, _NodeLike, NodeSocket)):
-                return VectorMath.multiply(*values).o.vector
+                return self._vmath.multiply(*values).o.vector
             else:
                 raise TypeError(
                     f"Unsupported type for {operation} with VECTOR socket: {type(other)}, {other=}"
                 )
         else:
-            vector_method = getattr(VectorMath, operation)
+            vector_method = getattr(self._vmath, operation)
             if isinstance(other, (int, float)):
                 scalar_vector = (other, other, other)
                 return (
@@ -396,10 +401,8 @@ class _VectorMixin(BaseSocket):
                 )
 
     def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "VectorSocket":
-        from ..nodes.geometry import VectorMath
-
         divided = self._dispatch_math(other, "divide", reverse=reverse)
-        return VectorMath.floor(divided).o.vector
+        return self._vmath.floor(divided).o.vector
 
     def _dispatch_compare(
         self, other: Any, operation: str

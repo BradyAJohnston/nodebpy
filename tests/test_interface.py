@@ -8,6 +8,7 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import FloatSocket, IntegerSocket, Socket, VectorSocket
+from nodebpy.nodes.compositor import CombineXYZ
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -932,6 +933,27 @@ def test_vector_socket_methods(snapshot):
         assert sc.node.operation == "SCALE"
         assert sc.builder_node.i.scale.default_value == pytest.approx(2.0)
         assert snapshot == tree._repr_markdown_()
+
+
+def test_vector_socket_input_methods(snapshot):
+    with g.tree() as tree:
+        setpos = g.SetPosition()
+        offset = setpos.i.offset
+        assert isinstance(offset, VectorSocket)
+
+        x = offset.x
+        assert isinstance(x, FloatSocket)
+        assert isinstance(x.builder_node, CombineXYZ)
+        y = offset.y
+        assert isinstance(y, FloatSocket)
+        assert isinstance(y.builder_node, CombineXYZ)
+        z = offset.z
+        assert isinstance(z, FloatSocket)
+        assert isinstance(z.builder_node, CombineXYZ)
+
+        assert x.node == y.node == z.node
+
+    assert snapshot == tree._repr_markdown_()
 
 
 def test_socket_builder_reference(snapshot):
