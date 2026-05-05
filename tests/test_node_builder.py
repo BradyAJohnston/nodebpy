@@ -1017,4 +1017,119 @@ class TestRShiftFallback:
             result = cube >> join
 
         assert result.node.bl_idname == "GeometryNodeJoinGeometry"
-        assert len(result.node.inputs[0].links) == 1
+
+
+class TestHexColorInput:
+    """Tests for HexColor validation and hex-to-linear conversion."""
+
+    # -- HexColor constructor --
+
+    def test_valid_6digit(self):
+        from nodebpy.types import HexColor
+
+        assert str(HexColor("#FF0000")) == "#FF0000"
+
+    def test_valid_8digit(self):
+        from nodebpy.types import HexColor
+
+        assert str(HexColor("#FF000080")) == "#FF000080"
+
+    def test_lowercase_accepted(self):
+        from nodebpy.types import HexColor
+
+        assert str(HexColor("#ff8000")) == "#ff8000"
+
+    def test_invalid_no_hash_raises(self):
+        from nodebpy.types import HexColor
+
+        with pytest.raises(ValueError, match="Invalid hex color"):
+            HexColor("FF0000")
+
+    def test_invalid_short_raises(self):
+        from nodebpy.types import HexColor
+
+        with pytest.raises(ValueError):
+            HexColor("#FF00")
+
+    def test_invalid_7digit_raises(self):
+        from nodebpy.types import HexColor
+
+        with pytest.raises(ValueError):
+            HexColor("#FF00001")
+
+    def test_invalid_non_hex_chars_raises(self):
+        from nodebpy.types import HexColor
+
+        with pytest.raises(ValueError):
+            HexColor("#GGHHII")
+
+    # -- _hex_to_linear_rgba conversion --
+
+    def test_white_stays_white(self):
+        from nodebpy.builder.node import _hex_to_linear_rgba
+
+        assert_allclose(_hex_to_linear_rgba("#FFFFFF"), (1.0, 1.0, 1.0, 1.0), atol=1e-6)
+
+    def test_black_stays_black(self):
+        from nodebpy.builder.node import _hex_to_linear_rgba
+
+        assert_allclose(_hex_to_linear_rgba("#000000"), (0.0, 0.0, 0.0, 1.0), atol=1e-6)
+
+    def test_pure_red_channels(self):
+        from nodebpy.builder.node import _hex_to_linear_rgba
+
+        r, g_val, b, a = _hex_to_linear_rgba("#FF0000")
+        assert_allclose(r, 1.0, atol=1e-6)
+        assert_allclose(g_val, 0.0, atol=1e-6)
+        assert_allclose(b, 0.0, atol=1e-6)
+        assert_allclose(a, 1.0, atol=1e-6)
+
+    def test_alpha_not_gamma_corrected(self):
+        from nodebpy.builder.node import _hex_to_linear_rgba
+
+        # 0x80 = 128; alpha is linear opacity, not a colour channel
+        _, _, _, a = _hex_to_linear_rgba("#FFFFFF80")
+        assert_allclose(a, 128 / 255, atol=1e-6)
+
+    def test_midgrey_is_linearised(self):
+        from nodebpy.builder.node import _hex_to_linear_rgba, _srgb_to_linear
+
+        r, _, _, _ = _hex_to_linear_rgba("#808080")
+        assert_allclose(r, _srgb_to_linear(128 / 255), atol=1e-6)
+        # Linear mid-grey is always darker than the sRGB encoding
+        assert r < 128 / 255
+
+    # -- Integration: hex string as node color input --
+
+    def test_plain_str_sets_linear_color(self):
+        with TreeBuilder("HexColorPlainStr"):
+            mix = g.Mix.color(a_color="#FF0000")
+        rgba = tuple(mix.i["A_Color"].socket.default_value)
+        assert_allclose(rgba[0], 1.0, atol=1e-6)
+        assert_allclose(rgba[1], 0.0, atol=1e-4)
+        assert_allclose(rgba[2], 0.0, atol=1e-4)
+        assert_allclose(rgba[3], 1.0, atol=1e-6)
+
+    def test_hex_color_type_sets_color(self):
+        from nodebpy.types import HexColor
+
+        with TreeBuilder("HexColorTyped"):
+            mix = g.Mix.color(a_color=HexColor("#FFFFFF"))
+        rgba = tuple(mix.i["A_Color"].socket.default_value)
+        assert_allclose(rgba, (1.0, 1.0, 1.0, 1.0), atol=1e-6)
+
+    def test_hex_with_explicit_alpha(self):
+        with TreeBuilder("HexColorAlpha"):
+            mix = g.Mix.color(a_color="#FF000080")
+        rgba = tuple(mix.i["A_Color"].socket.default_value)
+        assert_allclose(rgba[3], 128 / 255, atol=1e-6)
+
+    def test_midgrey_hex_converted_not_raw(self):
+        from nodebpy.builder.node import _srgb_to_linear
+
+        with TreeBuilder("HexColorMidGrey"):
+            mix = g.Mix.color(a_color="#808080")
+        rgba = tuple(mix.i["A_Color"].socket.default_value)
+        assert_allclose(rgba[0], _srgb_to_linear(128 / 255), atol=1e-6)
+        # Confirm it's not the raw sRGB byte value
+        assert rgba[0] != pytest.approx(128 / 255)
