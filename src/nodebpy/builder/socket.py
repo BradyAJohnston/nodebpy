@@ -1158,10 +1158,12 @@ class _MatrixMixin(BaseSocket):
 
         if self.socket.is_output:
             node = SeparateMatrix._find_or_create_linked(self.socket)
-            return iter(node.o)
+            for i in node.o:
+                yield cast(FloatSocket, i)
         else:
             node = CombineMatrix._find_or_create_linked(self.socket)
-            return iter(node.i)
+            for i in node.i:
+                yield cast(FloatSocket, i)
 
     def __len__(self) -> int:
         return 16
