@@ -7,7 +7,14 @@ from mathutils import Euler
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import FloatSocket, IntegerSocket, Socket, VectorSocket
+from nodebpy.builder import (
+    ColorSocket,
+    FloatSocket,
+    IntegerSocket,
+    RotationSocket,
+    Socket,
+    VectorSocket,
+)
 from nodebpy.nodes.compositor import CombineXYZ
 from nodebpy.types import SOCKET_TYPES
 
@@ -775,9 +782,9 @@ def test_accessor_rotation():
             axis.node.inputs[0].links[0].from_node == rot_to_quat for axis in quat.o
         )
 
-        eul = rot.o.rotation.euler()
+        eul = rot.o.rotation.to_euler()
         assert isinstance(eul, VectorSocket)
-        assert eul.node == rot.o.rotation.euler().node
+        assert eul.node == rot.o.rotation.to_euler().node
 
 
 def test_matrix_socket_output_len():
@@ -1041,3 +1048,113 @@ def test_string_socket_methods(snapshot):
 
         assert len(tree) == 22
         assert snapshot == tree._repr_markdown_()
+
+
+def test_vector_socket_rotate():
+    with g.tree():
+        vec = g.Position().o.position
+        rot = g.AlignRotationToVector().o.rotation
+
+        result = vec.rotate(rot)
+
+    assert isinstance(result, VectorSocket)
+    assert result.node.bl_idname == g.RotateVector._bl_idname
+    assert result.builder_node.i.vector.links[0].from_node == vec.node
+    assert result.builder_node.i.rotation.links[0].from_node == rot.node
+
+
+def test_vector_socket_transform():
+    with g.tree():
+        vec = g.Position().o.position
+        mat = g.CombineTransform().o.transform
+
+        result = vec.transform(mat)
+
+    assert isinstance(result, VectorSocket)
+    assert result.node.bl_idname == g.TransformPoint._bl_idname
+    assert result.builder_node.i.vector.links[0].from_node == vec.node
+    assert result.builder_node.i.transform.links[0].from_node == mat.node
+
+
+def test_rotation_socket_rotate():
+    with g.tree():
+        rot = g.AlignRotationToVector().o.rotation
+        result_global = rot.rotate(rot)
+        result_local = rot.rotate(rot, rotation_space="LOCAL")
+
+    assert isinstance(result_global, RotationSocket)
+    assert result_global.node.bl_idname == g.RotateRotation._bl_idname
+    assert result_global.node.rotation_space == "GLOBAL"
+    assert result_local.node.rotation_space == "LOCAL"
+
+
+def test_rotation_socket_to_quaternion():
+    with g.tree():
+        rot = g.AlignRotationToVector().o.rotation
+        w, x, y, z = rot.to_quaternion()
+
+    assert all(isinstance(s, FloatSocket) for s in (w, x, y, z))
+    assert w.node == x.node == y.node == z.node
+    assert w.node.bl_idname == g.RotationToQuaternion._bl_idname
+
+    with g.tree():
+        rot = g.AlignRotationToVector().o.rotation
+        quat = rot.to_quaternion()
+        assert isinstance(quat.w, FloatSocket)
+        assert isinstance(quat.x, FloatSocket)
+
+
+def test_rotation_socket_to_axis_angle():
+    with g.tree():
+        rot = g.AlignRotationToVector().o.rotation
+        axis, angle = rot.to_axis_angle()
+
+    assert isinstance(axis, VectorSocket)
+    assert isinstance(angle, FloatSocket)
+    assert axis.node == angle.node
+    assert axis.node.bl_idname == g.RotationToAxisAngle._bl_idname
+
+    with g.tree():
+        rot = g.AlignRotationToVector().o.rotation
+        aa = rot.to_axis_angle()
+        assert isinstance(aa.axis, VectorSocket)
+        assert isinstance(aa.angle, FloatSocket)
+
+
+def test_float_socket_mix():
+    with g.tree():
+        fac = g.Value(0.5).o.value
+        a = g.Value(1.0).o.value
+        b = g.Value(2.0).o.value
+        result = fac.mix.float(a, b)
+
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.Mix._bl_idname
+        assert result.builder_node.i.factor_float.links[0].from_node == fac.node
+
+        fac = g.Value(0.5).o.value
+        result_v = fac.mix.vector((0, 0, 0), (1, 1, 1))
+        result_r = fac.mix.rotation(
+            g.AlignRotationToVector().o.rotation,
+            g.AlignRotationToVector().o.rotation,
+        )
+
+        assert isinstance(result_v, VectorSocket)
+        assert isinstance(result_r, RotationSocket)
+
+        result = fac.mix.color(g.Color(), g.Mix.color())
+        assert isinstance(result, ColorSocket)
+        assert result.node.bl_idname == g.Mix._bl_idname
+        assert result.builder_node.i.factor_float.links[0].from_node == fac.node
+
+
+def test_float_socket_to_integer():
+    with g.tree():
+        val = g.Value(3.7).o.value
+        result = val.to_integer()
+        result_floor = val.to_integer(rounding_mode="FLOOR")
+
+    assert isinstance(result, IntegerSocket)
+    assert result.node.bl_idname == g.FloatToInteger._bl_idname
+    assert result.node.rounding_mode == "ROUND"
+    assert result_floor.node.rounding_mode == "FLOOR"

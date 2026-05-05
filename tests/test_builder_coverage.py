@@ -289,23 +289,6 @@ def test_color_separate_in_compositor_tree():
     assert r is not None
 
 
-@pytest.mark.parametrize("component", ["w", "x", "y", "z"])
-def test_rotation_socket_properties(component):
-    """_RotationMixin .w/.x/.y/.z via RotationToQuaternion."""
-    with TreeBuilder("RotProp"):
-        rot_sock = g.AxisAngleToRotation(angle=1.0).o._get("Rotation")
-        assert getattr(rot_sock, component) is not None
-
-
-def test_rotation_socket_cached_link():
-    """_RotationMixin second access reuses existing RotationToQuaternion node."""
-    with TreeBuilder("RotCached"):
-        rot_sock = g.AxisAngleToRotation(angle=1.0).o._get("Rotation")
-        x1 = rot_sock.x
-        x2 = rot_sock.x
-    assert x1 is not None and x2 is not None
-
-
 @pytest.mark.parametrize("component", ["translation", "rotation", "scale"])
 def test_matrix_socket_properties(component):
     """_MatrixMixin .translation/.rotation/.scale via SeparateTransform."""

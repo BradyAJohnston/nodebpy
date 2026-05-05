@@ -510,7 +510,9 @@ class TestComparisonEqualNotEqual:
     def test_comparison_float_socket(self):
         """Test float comparison with socket."""
         with TreeBuilder("TestCompareFloatSocket"):
-            result = (g.Integer(5) == 4).switch.float(g.Value(5.0), g.RandomValue.integer())
+            result = (g.Integer(5) == 4).switch.float(
+                g.Value(5.0), g.RandomValue.integer()
+            )
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "FLOAT"
@@ -965,11 +967,16 @@ class TestColorSocketOperatorMath:
         assert result6.node.operation == "MULTIPLY"
         assert result7.node.bl_idname == g.VectorMath._bl_idname
         assert result7.node.operation == "POWER"
-        assert result7.builder_node.i.vector_001.default_value == pytest.approx((0.1, 0.1, 0.1))
+        assert result7.builder_node.i.vector_001.default_value == pytest.approx(
+            (0.1, 0.1, 0.1)
+        )
         assert result8.node.bl_idname == g.VectorMath._bl_idname
         assert result8.node.operation == "SCALE"
         assert result8.builder_node.i.vector.links[0].from_node == color.node
-        assert result8.builder_node.i.scale.links[0].from_node.bl_idname == g.Value._bl_idname
+        assert (
+            result8.builder_node.i.scale.links[0].from_node.bl_idname
+            == g.Value._bl_idname
+        )
         assert result9.node.operation == "EQUAL"
         assert result9.node.data_type == "FLOAT"
         assert result10.node.operation == "EQUAL"
@@ -992,4 +999,6 @@ class TestIntegerSocketOperators:
             result2 = result == input
             assert result2.node.bl_idname == c.Math._bl_idname
             assert result2.node.operation == "COMPARE"
-            assert result2.builder_node.i.value_002.default_value == pytest.approx(0.00001)
+            assert result2.builder_node.i.value_002.default_value == pytest.approx(
+                0.00001
+            )

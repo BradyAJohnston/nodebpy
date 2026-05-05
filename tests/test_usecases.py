@@ -561,7 +561,7 @@ def test_import_microscopy_volume_nodebpy_node_group(snapshot):
         volume = include.switch.geometry(None, volume)
         volume >> tree.outputs.geometry("Volume")
         (
-            g.Switch.float(include, None, grid)
+            include.switch.float(None, grid)
             >> tree.outputs.float("Grid", structure_type="GRID")
         )
 

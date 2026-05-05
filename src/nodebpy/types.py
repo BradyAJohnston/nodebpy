@@ -100,7 +100,7 @@ InputColor = typing.Union[
     InputLinkable,
     "ColorSocket",
 ]
-InputString = typing.Union[str, NodeSocketString, EllipsisType, "StringSocket"]
+InputString = typing.Union[None, str, NodeSocketString, EllipsisType, "StringSocket"]
 InputGeometry = typing.Union[NodeSocketGeometry, InputLinkable, "GeometrySocket"]
 InputObject = typing.Union[NodeSocketObject, Object, InputLinkable, "ObjectSocket"]
 InputMaterial = typing.Union[

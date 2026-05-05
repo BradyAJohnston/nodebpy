@@ -5,7 +5,9 @@ from typing import (
     Any,
     Iterable,
     Iterator,
+    Literal,
     Mapping,
+    NamedTuple,
     cast,
     overload,
 )
@@ -68,13 +70,42 @@ if TYPE_CHECKING:
         IntegerMath,
         MatchString,
         Math,
-        MultiplyMatrices,
-        TransformPoint,
     )
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
     from .tree import TreeBuilder
+
+
+class QuaternionComponents(NamedTuple):
+    """Quaternion components returned by `RotationSocket.to_quaternion()`."""
+
+    w: "FloatSocket"
+    x: "FloatSocket"
+    y: "FloatSocket"
+    z: "FloatSocket"
+
+
+class AxisAngle(NamedTuple):
+    """Axis-angle components returned by `RotationSocket.to_axis_angle()`."""
+
+    axis: "VectorSocket"
+    angle: "FloatSocket"
+
+
+class FindResult(NamedTuple):
+    """Result of `StringSocket.find()`."""
+
+    first_found: "IntegerSocket"
+    count: "IntegerSocket"
+
+
+class SVDResult(NamedTuple):
+    """SVD components returned by `MatrixSocket.svd()`."""
+
+    u: "MatrixSocket"
+    s: "VectorSocket"
+    v: "MatrixSocket"
 
 
 class BaseSocket:
@@ -306,6 +337,21 @@ class _VectorMixin(BaseSocket):
         The same normalize node is re-used each time unless `new_node=True` where a new `VectorMath` node is created each time.
         """
         return self._vmath.normalize(self.socket).o.vector
+
+    def rotate(
+        self,
+        rotation: InputRotation,
+    ) -> "VectorSocket":
+        "Rotate this vector by the given rotation."
+        from ..nodes.geometry import RotateVector
+
+        return RotateVector(self.socket, rotation).o.vector
+
+    def transform(self, matrix: InputMatrix) -> "VectorSocket":
+        "Transform this vector by the given matrix."
+        from ..nodes.geometry import TransformPoint
+
+        return TransformPoint(self.socket, matrix).o.vector
 
     @property
     def default_value(self) -> list[float]:
@@ -712,7 +758,7 @@ class _BooleanMixin(BaseSocket):
 
 
 class _RotationMixin(BaseSocket):
-    """Rotation-specific properties (.w, .x, .y, .z) via RotationToQuaternion."""
+    """Rotation-specific methods."""
 
     socket: NodeSocketRotation
 
@@ -724,43 +770,73 @@ class _RotationMixin(BaseSocket):
     def default_value(self, value: Euler) -> None:
         self.socket.default_value = value
 
-    @property
-    def _quaternion(self) -> "geometry.RotationToQuaternion":
-        from ..nodes.geometry import RotationToQuaternion
-
-        return RotationToQuaternion._find_or_create_linked(self.socket)
-
-    @property
-    def w(self) -> FloatSocket:
-        "Separate the rotation into a quaternion and return the `w` component"
-        return self._quaternion.o.w
-
-    @property
-    def x(self) -> FloatSocket:
-        "Separate the rotation into a quaternion and return the `x` component"
-        return self._quaternion.o.x
-
-    @property
-    def y(self) -> FloatSocket:
-        "Separate the rotation into a quaternion and return the `y` component"
-        return self._quaternion.o.y
-
-    @property
-    def z(self) -> FloatSocket:
-        "Separate the rotation into a quaternion and return the `z` component"
-        return self._quaternion.o.z
-
-    def euler(self) -> "VectorSocket":
-        "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
-        from ..nodes.geometry.converter import RotationToEuler
-
-        return RotationToEuler._find_or_create_linked(self.socket).o.euler
-
     def invert(self) -> "RotationSocket":
         "Invert the rotation of the socket."
         from ..nodes.geometry import InvertRotation
 
         return InvertRotation._find_or_create_linked(self.socket).o.rotation
+
+    def rotate(
+        self,
+        rotation: InputRotation,
+        rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
+    ) -> "RotationSocket":
+        "Rotate this rotation by the given rotation in the specified rotation space."
+        from ..nodes.geometry import RotateRotation
+
+        return RotateRotation(
+            self.socket, rotation, rotation_space=rotation_space
+        ).o.rotation
+
+    def to_euler(self) -> "VectorSocket":
+        "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
+        from ..nodes.geometry.converter import RotationToEuler
+
+        return RotationToEuler._find_or_create_linked(self.socket).o.euler
+
+    def to_quaternion(self) -> QuaternionComponents:
+        "Decompose the rotation into quaternion components `(w, x, y, z)`."
+        from ..nodes.geometry import RotationToQuaternion
+
+        o = RotationToQuaternion._find_or_create_linked(self.socket).o
+        return QuaternionComponents(o.w, o.x, o.y, o.z)
+
+    def to_axis_angle(self) -> AxisAngle:
+        "Decompose the rotation into axis-angle components `(axis, angle)`."
+        from ..nodes.geometry import RotationToAxisAngle
+
+        o = RotationToAxisAngle(self.socket).o
+        return AxisAngle(o.axis, o.angle)
+
+
+class _FloatMixDataTypeFactory:
+    """Factory for typed Mix nodes driven by a float factor socket.
+
+    Access via ``FloatSocket.mix``. Each method creates a ``Mix`` node using
+    this socket as the factor and returns the corresponding output socket.
+    """
+
+    def __init__(self, socket: NodeSocket):
+        self._socket = socket
+        from ..nodes.geometry import Mix
+
+        self._mix = Mix
+
+    def float(self, a: InputFloat, b: InputFloat) -> "FloatSocket":
+        "Mix two float values, returning a ``FloatSocket``."
+        return self._mix.float(self._socket, a, b).o.result_float
+
+    def vector(self, a: InputVector, b: InputVector) -> "VectorSocket":
+        "Mix two vectors, returning a ``VectorSocket``."
+        return self._mix.vector(self._socket, a, b).o.result_vector
+
+    def color(self, a: InputColor, b: InputColor) -> "ColorSocket":
+        "Mix two colors, returning a ``ColorSocket``."
+        return self._mix.color(self._socket, a, b).o.result_color
+
+    def rotation(self, a: InputRotation, b: InputRotation) -> "RotationSocket":
+        "Mix two rotations, returning a ``RotationSocket``."
+        return self._mix.rotation(self._socket, a, b).o.result_rotation
 
 
 class _FloatMixin(BaseSocket):
@@ -782,6 +858,11 @@ class _FloatMixin(BaseSocket):
 
         return Math
 
+    @property
+    def mix(self) -> _FloatMixDataTypeFactory:
+        "Create a ``Mix`` node using this socket as the factor."
+        return _FloatMixDataTypeFactory(self.socket)
+
     def sign(self) -> "FloatSocket":
         "Return the sign of the FloatSocket, eithe `-1`, `0` or `1`."
         return self._math.sign(self.socket).o.value
@@ -795,6 +876,14 @@ class _FloatMixin(BaseSocket):
         from ..nodes.geometry import ValueToString
 
         return ValueToString.float(self.socket, decimals).o.string
+
+    def to_integer(
+        self, rounding_mode: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"] = "ROUND"
+    ) -> "IntegerSocket":
+        "Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part."
+        from ..nodes.geometry import FloatToInteger
+
+        return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer
 
 
 class _IntegerMixin(BaseSocket):
@@ -959,15 +1048,12 @@ class _StringMixin(BaseSocket):
 
         return StringLength(self.socket).o.length
 
-    def find(self, search: InputString) -> tuple["IntegerSocket", "IntegerSocket"]:
-        """Find where in a string a pattern occurs.
-
-        Returns a tuple(IntegerSocket, IntegerSocket), corresponding to (index_of_first_match, count_of_matches)."""
+    def find(self, search: InputString) -> FindResult:
+        "Find where in a string a pattern occurs. Returns `(first_found, count)`."
         from ..nodes.geometry import FindInString
 
-        node = FindInString(self.socket, search)
-
-        return (node.o.first_found, node.o.count)
+        o = FindInString(self.socket, search).o
+        return FindResult(o.first_found, o.count)
 
     def join(
         self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
@@ -1035,11 +1121,12 @@ class _MatrixMixin(BaseSocket):
 
         return TransposeMatrix._find_or_create_linked(self.socket).o.matrix
 
-    def svd(self) -> tuple[MatrixSocket, VectorSocket, MatrixSocket]:
-        "Compute the 'Single Value Decomposition' and return output sockets of the MatrixSVD node, `tuple[u, s, v]`"
+    def svd(self) -> SVDResult:
+        "Decompose the matrix via SVD. Returns `(u, s, v)`."
         from ..nodes.geometry import MatrixSVD
 
-        return tuple(MatrixSVD(self.socket).o)
+        o = MatrixSVD(self.socket).o
+        return SVDResult(o.u, o.s, o.v)
 
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
@@ -1071,10 +1158,12 @@ class _MatrixMixin(BaseSocket):
 
         if self.socket.is_output:
             node = SeparateMatrix._find_or_create_linked(self.socket)
-            return iter(node.o)
+            for i in node.o:
+                yield cast(FloatSocket, i)
         else:
             node = CombineMatrix._find_or_create_linked(self.socket)
-            return iter(node.i)
+            for i in node.i:
+                yield cast(FloatSocket, i)
 
     def __len__(self) -> int:
         return 16

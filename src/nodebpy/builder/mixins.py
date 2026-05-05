@@ -11,7 +11,7 @@ from ._utils import SocketError, _resolve_promotion, _SocketLike
 _RShiftT = TypeVar("_RShiftT")
 
 if TYPE_CHECKING:
-    from ..nodes.geometry import Compare, Math, MultiplyMatrices, TransformPoint
+    from ..nodes.geometry import Compare
     from ..types import InputLinkable
     from .node import BaseNode
     from .socket import (
