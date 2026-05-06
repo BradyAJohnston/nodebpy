@@ -39,6 +39,12 @@ def _srgb_to_linear(c: float) -> float:
     return ((c + 0.055) / 1.055) ** 2.4
 
 
+def _linear_to_srgb(c: float) -> float:
+    if c <= 0.0031308:
+        return c * 12.92
+    return 1.055 * c ** (1.0 / 2.4) - 0.055
+
+
 def _hex_to_linear_rgba(hex_str: str) -> tuple[float, float, float, float]:
     h = hex_str.lstrip("#")
     r, g, b = (v / 255 for v in bytes.fromhex(h[:6]))
