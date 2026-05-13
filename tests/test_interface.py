@@ -1374,7 +1374,7 @@ def test_domain_factory_evaluate_and_at_index():
         assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
         assert result.builder_node.i.value.links[0].from_node == val.node
 
-        result = val.edge.at_index(2)
+        result = val.edge.at(2)
         assert isinstance(result, FloatSocket)
         assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
         assert result.builder_node.i.index.default_value == 2
@@ -1385,7 +1385,7 @@ def test_domain_factory_evaluate_and_at_index():
         assert isinstance(result, VectorSocket)
         assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
 
-        result = vec.corner.at_index(0)
+        result = vec.corner.at(0)
         assert isinstance(result, VectorSocket)
         assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
 
@@ -1401,7 +1401,7 @@ def test_domain_factory_evaluate_and_at_index():
         assert isinstance(result, BooleanSocket)
         assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
 
-        result = flag.edge.at_index(1)
+        result = flag.edge.at(1)
         assert isinstance(result, BooleanSocket)
         assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
 
@@ -1411,7 +1411,7 @@ def test_domain_factory_evaluate_and_at_index():
         assert isinstance(result, RotationSocket)
         assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
 
-        result = rot.face.at_index(0)
+        result = rot.face.at(0)
         assert isinstance(result, RotationSocket)
         assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
 
@@ -1421,7 +1421,7 @@ def test_domain_factory_evaluate_and_at_index():
         assert isinstance(result, MatrixSocket)
         assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
 
-        result = mat.edge.at_index(3)
+        result = mat.edge.at(3)
         assert isinstance(result, MatrixSocket)
         assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
 

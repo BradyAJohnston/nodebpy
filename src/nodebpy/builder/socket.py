@@ -291,15 +291,15 @@ class _BaseDomainFactory(Generic[_T]):
         self._domain = domain
 
     def evaluate(self) -> "_T":
-        """Re-evaluate this field on the bound domain via ``EvaluateOnDomain``."""
+        """Force evaluation of this field on the bound domain via ``EvaluateOnDomain``."""
         from ..nodes.geometry import EvaluateOnDomain
 
         return getattr(getattr(EvaluateOnDomain, self._domain), self._dtype)(
             self._socket
         ).o.value
 
-    def at_index(self, index: InputInteger = 0) -> "_T":
-        """Retrieve this field's value at *index* on the bound domain via ``EvaluateAtIndex``."""
+    def at(self, index: InputInteger = 0) -> "_T":
+        """Evaluate this field's value at *index* on the bound domain via ``EvaluateAtIndex``."""
         from ..nodes.geometry import EvaluateAtIndex
 
         return getattr(getattr(EvaluateAtIndex, self._domain), self._dtype)(

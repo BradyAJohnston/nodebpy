@@ -14,11 +14,10 @@ from ...builder import (
 from . import (
     AxesToRotation,
     CombineMatrix,
+    Compare,
     EdgesOfVertex,
     EdgeVertices,
-    EvaluateAtIndex,
     Frame,
-    Switch,
 )
 
 
@@ -59,13 +58,15 @@ class OtherVertex(CustomGeometryGroup):
         vertex_index = tree.inputs.integer("Vertex Index", default_input="INDEX")
         edge_number = tree.inputs.integer("Edge Number")
 
-        eov = EdgesOfVertex(vertex_index, sort_index=edge_number)
+        eov = EdgesOfVertex(vertex_index, sort_index=edge_number).o.edge_index
         ev = EdgeVertices()
-        vert_1 = EvaluateAtIndex.edge.integer(ev.o.vertex_index_1, eov)
-        vert_2 = EvaluateAtIndex.edge.integer(ev.o.vertex_index_2, eov)
-        switch = (vert_1 != vertex_index) >> Switch.integer(..., vert_1, vert_2)
+        vert_1 = ev.o.vertex_index_1.edge.at(eov)
+        vert_2 = ev.o.vertex_index_2.edge.at(eov)
+        index = Compare.integer.not_equal(vert_1, vertex_index).o.result.switch.integer(
+            vert_1, vert_2
+        )
 
-        _ = switch >> tree.outputs.integer("Other Vertex")
+        index >> tree.outputs.integer("Other Vertex")
 
 
 class OffsetVector(CustomGeometryGroup):
@@ -109,7 +110,7 @@ class OffsetVector(CustomGeometryGroup):
         vector = tree.inputs.vector("Vector", default_input="POSITION")
         offset = tree.inputs.integer("Offset")
 
-        value = EvaluateAtIndex.point.vector(vector, index + offset)
+        value = vector.point.at(index + offset)
 
         _ = value >> tree.outputs.vector("Vector")
 

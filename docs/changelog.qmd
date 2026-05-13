@@ -41,14 +41,14 @@ remapped_vec = vec.map_range((0,0,0), (1,1,1), (-1,-1,-1), (1,1,1))
 
 - Domain factories on `FloatSocket`, `VectorSocket`, `IntegerSocket`, `BooleanSocket`, `RotationSocket`, and `MatrixSocket` — select a domain property, then call the operation. Each call returns a single typed socket.
     - Domain properties: `.point`, `.edge`, `.face`, `.corner`, `.spline`, `.instance`, `.layer`
-    - All socket types: `.evaluate()` — re-evaluate on the domain via `EvaluateOnDomain`; `.at_index(i)` — retrieve at an index via `EvaluateAtIndex`
+    - All socket types: `.evaluate()` — re-evaluate on the domain via `EvaluateOnDomain`; `.at(i)` — retrieve at an index via `EvaluateAtIndex`
     - Float/Vector additionally: `.min()`, `.max()`, `.mean()`, `.median()`, `.std_dev()`, `.variance()` (with optional `group_index`)
     - Integer additionally: `.min()`, `.max()` (with optional `group_index`)
 
 ```py
 # Field evaluation — works on all socket types
 position.face.evaluate()       # VectorSocket — position re-evaluated on face domain
-flag.point.at_index(3)         # BooleanSocket — flag value at point index 3
+flag.point.at(3)         # BooleanSocket — flag value at point index 3
 rot.edge.evaluate()            # RotationSocket
 
 # Statistics — Float / Vector
