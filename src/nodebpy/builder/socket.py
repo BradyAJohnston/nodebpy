@@ -285,7 +285,9 @@ class _VectorMinMaxDomainFactory:
 
         self._min_max = FieldMinAndMax
 
-    def _call(self, domain: str, group_index: InputInteger) -> "MinMaxReturn[VectorSocket]":
+    def _call(
+        self, domain: str, group_index: InputInteger
+    ) -> "MinMaxReturn[VectorSocket]":
         node = getattr(self._min_max, domain).vector(self._socket, group_index)
         return MinMaxReturn(node.o.min, node.o.max)
 
@@ -304,7 +306,9 @@ class _VectorMinMaxDomainFactory:
     def spline(self, group_index: InputInteger = None) -> "MinMaxReturn[VectorSocket]":
         return self._call("spline", group_index)
 
-    def instance(self, group_index: InputInteger = None) -> "MinMaxReturn[VectorSocket]":
+    def instance(
+        self, group_index: InputInteger = None
+    ) -> "MinMaxReturn[VectorSocket]":
         return self._call("instance", group_index)
 
     def layer(self, group_index: InputInteger = None) -> "MinMaxReturn[VectorSocket]":
@@ -318,29 +322,45 @@ class _VectorAverageDomainFactory:
 
         self._average = FieldAverage
 
-    def _call(self, domain: str, group_index: InputInteger) -> "AverageFieldResult[VectorSocket]":
+    def _call(
+        self, domain: str, group_index: InputInteger
+    ) -> "AverageFieldResult[VectorSocket]":
         node = getattr(self._average, domain).vector(self._socket, group_index)
         return AverageFieldResult(node.o.mean, node.o.median)
 
-    def point(self, group_index: InputInteger = None) -> "AverageFieldResult[VectorSocket]":
+    def point(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[VectorSocket]":
         return self._call("point", group_index)
 
-    def edge(self, group_index: InputInteger = None) -> "AverageFieldResult[VectorSocket]":
+    def edge(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[VectorSocket]":
         return self._call("edge", group_index)
 
-    def face(self, group_index: InputInteger = None) -> "AverageFieldResult[VectorSocket]":
+    def face(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[VectorSocket]":
         return self._call("face", group_index)
 
-    def corner(self, group_index: InputInteger = None) -> "AverageFieldResult[VectorSocket]":
+    def corner(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[VectorSocket]":
         return self._call("corner", group_index)
 
-    def spline(self, group_index: InputInteger = None) -> "AverageFieldResult[VectorSocket]":
+    def spline(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[VectorSocket]":
         return self._call("spline", group_index)
 
-    def instance(self, group_index: InputInteger = None) -> "AverageFieldResult[VectorSocket]":
+    def instance(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[VectorSocket]":
         return self._call("instance", group_index)
 
-    def layer(self, group_index: InputInteger = None) -> "AverageFieldResult[VectorSocket]":
+    def layer(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[VectorSocket]":
         return self._call("layer", group_index)
 
 
@@ -356,29 +376,45 @@ class _VectorVarianceDomainFactory:
 
         self._variance = FieldVariance
 
-    def _call(self, domain: str, group_index: InputInteger) -> "FieldVarianceResult[VectorSocket]":
+    def _call(
+        self, domain: str, group_index: InputInteger
+    ) -> "FieldVarianceResult[VectorSocket]":
         node = getattr(self._variance, domain).vector(self._socket, group_index)
         return FieldVarianceResult(node.o.standard_deviation, node.o.variance)
 
-    def point(self, group_index: InputInteger = None) -> "FieldVarianceResult[VectorSocket]":
+    def point(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[VectorSocket]":
         return self._call("point", group_index)
 
-    def edge(self, group_index: InputInteger = None) -> "FieldVarianceResult[VectorSocket]":
+    def edge(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[VectorSocket]":
         return self._call("edge", group_index)
 
-    def face(self, group_index: InputInteger = None) -> "FieldVarianceResult[VectorSocket]":
+    def face(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[VectorSocket]":
         return self._call("face", group_index)
 
-    def corner(self, group_index: InputInteger = None) -> "FieldVarianceResult[VectorSocket]":
+    def corner(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[VectorSocket]":
         return self._call("corner", group_index)
 
-    def spline(self, group_index: InputInteger = None) -> "FieldVarianceResult[VectorSocket]":
+    def spline(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[VectorSocket]":
         return self._call("spline", group_index)
 
-    def instance(self, group_index: InputInteger = None) -> "FieldVarianceResult[VectorSocket]":
+    def instance(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[VectorSocket]":
         return self._call("instance", group_index)
 
-    def layer(self, group_index: InputInteger = None) -> "FieldVarianceResult[VectorSocket]":
+    def layer(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[VectorSocket]":
         return self._call("layer", group_index)
 
 
@@ -494,7 +530,8 @@ class _VectorMixin(BaseSocket):
         node.clamp = clamp
         node.interpolation_type = interpolation_type
         if interpolation_type == "STEPPED":
-            node._establish_links(steps_float3=steps)
+            kwargs = {"Steps_FLOAT3": steps}
+            node._establish_links(**kwargs)
         return node.o.vector
 
     def rotate(
@@ -1010,7 +1047,9 @@ class _FloatMinMaxDomainFactory:
 
         self._min_max = FieldMinAndMax
 
-    def _call(self, domain: str, group_index: InputInteger) -> "MinMaxReturn[FloatSocket]":
+    def _call(
+        self, domain: str, group_index: InputInteger
+    ) -> "MinMaxReturn[FloatSocket]":
         node = getattr(self._min_max, domain).float(self._socket, group_index)
         return MinMaxReturn(node.o.min, node.o.max)
 
@@ -1048,29 +1087,45 @@ class _FloatAverageDomainFactory:
 
         self._average = FieldAverage
 
-    def _call(self, domain: str, group_index: InputInteger) -> "AverageFieldResult[FloatSocket]":
+    def _call(
+        self, domain: str, group_index: InputInteger
+    ) -> "AverageFieldResult[FloatSocket]":
         node = getattr(self._average, domain).float(self._socket, group_index)
         return AverageFieldResult(node.o.mean, node.o.median)
 
-    def point(self, group_index: InputInteger = None) -> "AverageFieldResult[FloatSocket]":
+    def point(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[FloatSocket]":
         return self._call("point", group_index)
 
-    def edge(self, group_index: InputInteger = None) -> "AverageFieldResult[FloatSocket]":
+    def edge(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[FloatSocket]":
         return self._call("edge", group_index)
 
-    def face(self, group_index: InputInteger = None) -> "AverageFieldResult[FloatSocket]":
+    def face(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[FloatSocket]":
         return self._call("face", group_index)
 
-    def corner(self, group_index: InputInteger = None) -> "AverageFieldResult[FloatSocket]":
+    def corner(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[FloatSocket]":
         return self._call("corner", group_index)
 
-    def spline(self, group_index: InputInteger = None) -> "AverageFieldResult[FloatSocket]":
+    def spline(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[FloatSocket]":
         return self._call("spline", group_index)
 
-    def instance(self, group_index: InputInteger = None) -> "AverageFieldResult[FloatSocket]":
+    def instance(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[FloatSocket]":
         return self._call("instance", group_index)
 
-    def layer(self, group_index: InputInteger = None) -> "AverageFieldResult[FloatSocket]":
+    def layer(
+        self, group_index: InputInteger = None
+    ) -> "AverageFieldResult[FloatSocket]":
         return self._call("layer", group_index)
 
 
@@ -1081,29 +1136,45 @@ class _FloatVarianceDomainFactory:
 
         self._variance = FieldVariance
 
-    def _call(self, domain: str, group_index: InputInteger) -> "FieldVarianceResult[FloatSocket]":
+    def _call(
+        self, domain: str, group_index: InputInteger
+    ) -> "FieldVarianceResult[FloatSocket]":
         node = getattr(self._variance, domain).float(self._socket, group_index)
         return FieldVarianceResult(node.o.standard_deviation, node.o.variance)
 
-    def point(self, group_index: InputInteger = None) -> "FieldVarianceResult[FloatSocket]":
+    def point(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[FloatSocket]":
         return self._call("point", group_index)
 
-    def edge(self, group_index: InputInteger = None) -> "FieldVarianceResult[FloatSocket]":
+    def edge(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[FloatSocket]":
         return self._call("edge", group_index)
 
-    def face(self, group_index: InputInteger = None) -> "FieldVarianceResult[FloatSocket]":
+    def face(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[FloatSocket]":
         return self._call("face", group_index)
 
-    def corner(self, group_index: InputInteger = None) -> "FieldVarianceResult[FloatSocket]":
+    def corner(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[FloatSocket]":
         return self._call("corner", group_index)
 
-    def spline(self, group_index: InputInteger = None) -> "FieldVarianceResult[FloatSocket]":
+    def spline(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[FloatSocket]":
         return self._call("spline", group_index)
 
-    def instance(self, group_index: InputInteger = None) -> "FieldVarianceResult[FloatSocket]":
+    def instance(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[FloatSocket]":
         return self._call("instance", group_index)
 
-    def layer(self, group_index: InputInteger = None) -> "FieldVarianceResult[FloatSocket]":
+    def layer(
+        self, group_index: InputInteger = None
+    ) -> "FieldVarianceResult[FloatSocket]":
         return self._call("layer", group_index)
 
 
@@ -1166,9 +1237,7 @@ class _FloatMixin(BaseSocket):
             node._establish_links(steps=steps)
         return node.o.result
 
-    def clamp(
-        self, min: "InputFloat" = 0.0, max: "InputFloat" = 1.0
-    ) -> "FloatSocket":
+    def clamp(self, min: "InputFloat" = 0.0, max: "InputFloat" = 1.0) -> "FloatSocket":
         """Clamp the value to *[min, max]*. Defaults to the unit interval ``[0, 1]``."""
         from ..nodes.geometry import Clamp
 
@@ -1200,7 +1269,9 @@ class _FloatMixin(BaseSocket):
 
     def wrap(self, min: "InputFloat", max: "InputFloat") -> "FloatSocket":
         """Wrap the value into the *[min, max]* range, repeating cyclically."""
-        return self._math.wrap(self.socket, min, max).o.value
+        # the wrap method has different order of arguments with max being first
+        # compared to other nodes that are defined.
+        return self._math.wrap(self.socket, value_001=max, value_002=min).o.value
 
     def to_radians(self) -> "FloatSocket":
         """Convert degrees to radians."""
@@ -1240,7 +1311,9 @@ class _IntegerMinMaxDomainFactory:
 
         self._min_max = FieldMinAndMax
 
-    def _call(self, domain: str, group_index: InputInteger) -> "MinMaxReturn[IntegerSocket]":
+    def _call(
+        self, domain: str, group_index: InputInteger
+    ) -> "MinMaxReturn[IntegerSocket]":
         node = getattr(self._min_max, domain).integer(self._socket, group_index)
         return MinMaxReturn(node.o.min, node.o.max)
 
@@ -1259,7 +1332,9 @@ class _IntegerMinMaxDomainFactory:
     def spline(self, group_index: InputInteger = None) -> "MinMaxReturn[IntegerSocket]":
         return self._call("spline", group_index)
 
-    def instance(self, group_index: InputInteger = None) -> "MinMaxReturn[IntegerSocket]":
+    def instance(
+        self, group_index: InputInteger = None
+    ) -> "MinMaxReturn[IntegerSocket]":
         return self._call("instance", group_index)
 
     def layer(self, group_index: InputInteger = None) -> "MinMaxReturn[IntegerSocket]":

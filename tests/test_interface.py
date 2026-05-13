@@ -1158,3 +1158,238 @@ def test_float_socket_to_integer():
     assert result.node.bl_idname == g.FloatToInteger._bl_idname
     assert result.node.rounding_mode == "ROUND"
     assert result_floor.node.rounding_mode == "FLOOR"
+
+
+def test_float_socket_math_methods():
+    with g.tree():
+        val = g.Value(4.0).o.value
+
+        result = val.clamp()
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.Clamp._bl_idname
+        assert result.node.clamp_type == "MINMAX"
+        assert result.builder_node.i.min.default_value == pytest.approx(0.0)
+        assert result.builder_node.i.max.default_value == pytest.approx(1.0)
+        assert result.builder_node.i.value.links[0].from_node == val.node
+
+        result = val.clamp(-1.0, 1.0)
+        assert result.builder_node.i.min.default_value == pytest.approx(-1.0)
+        assert result.builder_node.i.max.default_value == pytest.approx(1.0)
+
+        result = val.sqrt()
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.Math._bl_idname
+        assert result.node.operation == "SQRT"
+        assert result.builder_node.i.value.links[0].from_node == val.node
+
+        result = val.power(2.0)
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.Math._bl_idname
+        assert result.node.operation == "POWER"
+        assert result.builder_node.i.value_001.default_value == pytest.approx(2.0)
+
+        result = val.floor()
+        assert result.node.operation == "FLOOR"
+
+        result = val.ceil()
+        assert result.node.operation == "CEIL"
+
+        result = val.round()
+        assert result.node.operation == "ROUND"
+
+        result = val.modulo(3.0)
+        assert result.node.operation == "FLOORED_MODULO"
+        assert result.builder_node.i.value_001.default_value == pytest.approx(3.0)
+
+        result = val.wrap(0.0, 1.0)
+        assert result.node.operation == "WRAP"
+        assert result.builder_node.i.value_001.default_value == pytest.approx(1.0)
+        assert result.builder_node.i.value_002.default_value == pytest.approx(0.0)
+
+        result = val.to_radians()
+        assert result.node.operation == "RADIANS"
+
+        result = val.to_degrees()
+        assert result.node.operation == "DEGREES"
+
+
+def test_float_socket_map_range():
+    with g.tree():
+        val = g.Value(0.5).o.value
+
+        result = val.map_range(0.0, 100.0, 0.0, 1.0)
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.MapRange._bl_idname
+        assert result.builder_node.i.value.links[0].from_node == val.node
+        assert result.builder_node.i.from_min.default_value == pytest.approx(0.0)
+        assert result.builder_node.i.from_max.default_value == pytest.approx(100.0)
+        assert result.builder_node.i.to_min.default_value == pytest.approx(0.0)
+        assert result.builder_node.i.to_max.default_value == pytest.approx(1.0)
+
+        result_stepped = val.map_range(interpolation_type="STEPPED", steps=8.0)
+        assert result_stepped.node.interpolation_type == "STEPPED"
+        assert result_stepped.builder_node.i.steps.default_value == pytest.approx(8.0)
+
+
+def test_float_socket_domain_aggregation():
+    from nodebpy.builder.socket import (
+        AverageFieldResult,
+        FieldVarianceResult,
+        MinMaxReturn,
+    )
+
+    with g.tree():
+        val = g.Position().o.position.length()
+
+        lo, hi = val.min_max.point()
+        assert isinstance(lo, FloatSocket)
+        assert isinstance(hi, FloatSocket)
+        assert lo.node.bl_idname == g.FieldMinAndMax._bl_idname
+        assert lo.node == hi.node
+        assert lo.builder_node.i.value.links[0].from_node == val.node
+
+        result = val.min_max.edge()
+        assert isinstance(result, MinMaxReturn)
+        assert result.min.node.bl_idname == g.FieldMinAndMax._bl_idname
+
+        mean, median = val.average.point()
+        assert isinstance(mean, FloatSocket)
+        assert isinstance(median, FloatSocket)
+        assert mean.node.bl_idname == g.FieldAverage._bl_idname
+        assert mean.node == median.node
+
+        result = val.average.face()
+        assert isinstance(result, AverageFieldResult)
+
+        std_dev, variance = val.variance.point()
+        assert isinstance(std_dev, FloatSocket)
+        assert isinstance(variance, FloatSocket)
+        assert std_dev.node.bl_idname == g.FieldVariance._bl_idname
+
+        result = val.variance.spline()
+        assert isinstance(result, FieldVarianceResult)
+
+
+def test_vector_socket_new_methods():
+    with g.tree():
+        vec = g.Position().o.position
+        other = g.Vector().o.vector
+
+        result = vec.cross(other)
+        assert isinstance(result, VectorSocket)
+        assert result.node.bl_idname == g.VectorMath._bl_idname
+        assert result.node.operation == "CROSS_PRODUCT"
+        assert result.builder_node.i.vector.links[0].from_node == vec.node
+        assert result.builder_node.i.vector_001.links[0].from_node == other.node
+
+        result = vec.distance(other)
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.VectorMath._bl_idname
+        assert result.node.operation == "DISTANCE"
+
+        result = vec.project(other)
+        assert isinstance(result, VectorSocket)
+        assert result.node.operation == "PROJECT"
+
+        result = vec.reflect(other)
+        assert isinstance(result, VectorSocket)
+        assert result.node.operation == "REFLECT"
+
+
+def test_vector_socket_map_range():
+    with g.tree():
+        vec = g.Position().o.position
+
+        result = vec.map_range((0, 0, 0), (1, 1, 1), (-1, -1, -1), (1, 1, 1))
+        assert isinstance(result, VectorSocket)
+        assert result.node.bl_idname == g.MapRange._bl_idname
+        assert result.builder_node.i.vector.links[0].from_node == vec.node
+
+        result_stepped = vec.map_range(interpolation_type="STEPPED")
+        assert result_stepped.node.interpolation_type == "STEPPED"
+
+
+def test_vector_socket_domain_aggregation():
+    from nodebpy.builder.socket import (
+        AverageFieldResult,
+        FieldVarianceResult,
+        MinMaxReturn,
+    )
+
+    with g.tree():
+        vec = g.Position().o.position
+
+        lo, hi = vec.min_max.point()
+        assert isinstance(lo, VectorSocket)
+        assert isinstance(hi, VectorSocket)
+        assert lo.node.bl_idname == g.FieldMinAndMax._bl_idname
+        assert lo.node == hi.node
+
+        result = vec.min_max.edge()
+        assert isinstance(result, MinMaxReturn)
+
+        mean, median = vec.average.point()
+        assert isinstance(mean, VectorSocket)
+        assert isinstance(median, VectorSocket)
+        assert mean.node.bl_idname == g.FieldAverage._bl_idname
+
+        result = vec.average.corner()
+        assert isinstance(result, AverageFieldResult)
+
+        std_dev, variance = vec.variance.point()
+        assert isinstance(std_dev, VectorSocket)
+        assert isinstance(variance, VectorSocket)
+        assert std_dev.node.bl_idname == g.FieldVariance._bl_idname
+
+        result = vec.variance.instance()
+        assert isinstance(result, FieldVarianceResult)
+
+
+def test_integer_socket_new_methods():
+    with g.tree():
+        val = g.Integer().o.integer
+
+        result = val.clamp(0, 10)
+        assert isinstance(result, IntegerSocket)
+        assert result.builder_node.operation == "MINIMUM"
+        inner = result.builder_node.i.value.links[0].from_node
+        assert inner.bl_idname == g.IntegerMath._bl_idname
+        assert inner.operation == "MAXIMUM"
+        assert inner.inputs[1].default_value == 0
+        assert result.builder_node.i.value_001.default_value == 10
+
+        result = val.modulo(7)
+        assert isinstance(result, IntegerSocket)
+        assert result.node.bl_idname == g.IntegerMath._bl_idname
+        assert result.node.operation == "MODULO"
+        assert result.builder_node.i.value.links[0].from_node == val.node
+        assert result.builder_node.i.value_001.default_value == 7
+
+
+def test_integer_socket_domain_aggregation():
+    from nodebpy.builder.socket import MinMaxReturn
+
+    with g.tree():
+        val = g.Integer().o.integer
+
+        lo, hi = val.min_max.point()
+        assert isinstance(lo, IntegerSocket)
+        assert isinstance(hi, IntegerSocket)
+        assert lo.node.bl_idname == g.FieldMinAndMax._bl_idname
+        assert lo.node == hi.node
+
+        result = val.min_max.face()
+        assert isinstance(result, MinMaxReturn)
+
+
+def test_matrix_socket_transform_direction():
+    with g.tree():
+        mat = g.CombineTransform().o.transform
+        direction = g.Vector().o.vector
+
+        result = mat.transform_direction(direction)
+
+    assert isinstance(result, VectorSocket)
+    assert result.node.bl_idname == g.TransformDirection._bl_idname
+    assert result.builder_node.i.direction.links[0].from_node == direction.node
+    assert result.builder_node.i.transform.links[0].from_node == mat.node
