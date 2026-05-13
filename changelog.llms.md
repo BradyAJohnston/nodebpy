@@ -1,6 +1,91 @@
 # Changelog
 
-## v0.16.0 - UNRELEASED
+## v0.17.0 - 2026-05-13
+
+### Enhancements
+
+- New methods on `VectorSocket` for applying transforms:
+  - `rotate(rotation)` — apply a `RotationSocket` via `RotateVector`, returns `VectorSocket`
+  - `transform(matrix)` — apply a `MatrixSocket` via `TransformPoint`, returns `VectorSocket`
+- New methods on `RotationSocket`:
+  - `rotate(rotation, rotation_space="GLOBAL")` — compose rotations via `RotateRotation`, returns `RotationSocket`
+  - `to_euler()` — convert to XYZ euler angles, returns `VectorSocket` (renamed from `euler()`)
+  - `to_quaternion()` — decompose via `RotationToQuaternion`, returns a `Quaternion` named tuple with `.w`, `.x`, `.y`, `.z`
+  - `to_axis_angle()` — decompose via `RotationToAxisAngle`, returns an `AxisAngle` with `.axis` and `.angle`
+- `FloatSocket.mix` — factory property for creating typed `Mix` nodes driven by this socket as the factor. Supports `.float()`, `.vector()`, `.color()`, `.rotation()`.
+- `FloatSocket.map_range()` and `VectorSocket.map_range()` — remap a socket’s values using `MapRange`. Supports `from_min`, `from_max`, `to_min`, `to_max`, `clamp`, `interpolation_type`, and `steps`.
+
+``` py
+normalized = value.map_range(0.0, 100.0, 0.0, 1.0)
+remapped_vec = vec.map_range((0,0,0), (1,1,1), (-1,-1,-1), (1,1,1))
+```
+
+- New methods on `FloatSocket`:
+  - `clamp(min=0.0, max=1.0)` — clamp to range via `Clamp`
+  - `sqrt()` — square root
+  - `power(exponent)` — raise to a power
+  - `floor()` / `ceil()` / `round()` — rounding variants
+  - `modulo(divisor)` — floored modulo (always non-negative, consistent with Python `%`)
+  - `wrap(min, max)` — repeat cyclically within a range
+  - `to_radians()` / `to_degrees()` — angle unit conversion
+- New methods on `VectorSocket`:
+  - `cross(other)` — cross product, returns `VectorSocket`
+  - `distance(other)` — Euclidean distance, returns `FloatSocket`
+  - `project(other)` — project onto another vector
+  - `reflect(normal)` — reflect around a normal (*normal* does not need to be normalised)
+- New methods on `IntegerSocket`:
+  - `clamp(min=0, max=1)` — clamp to integer range
+  - `modulo(divisor)` — integer remainder (always non-negative)
+- New method on `MatrixSocket`:
+  - `transform_direction(direction)` — apply the matrix to a direction vector, ignoring translation. Use this instead of `transform()` for normals and tangents.
+- Domain factories on `FloatSocket`, `VectorSocket`, `IntegerSocket`, `BooleanSocket`, `RotationSocket`, and `MatrixSocket` — select a domain property, then call the operation. Each call returns a single typed socket.
+  - Domain properties: `.point`, `.edge`, `.face`, `.corner`, `.spline`, `.instance`, `.layer`
+  - All socket types: `.evaluate()` — re-evaluate on the domain via `EvaluateOnDomain`; `.at(i)` — retrieve at an index via `EvaluateAtIndex`
+  - Float/Vector additionally: `.min()`, `.max()`, `.mean()`, `.median()`, `.std_dev()`, `.variance()` (with optional `group_index`)
+  - Integer additionally: `.min()`, `.max()` (with optional `group_index`)
+
+``` py
+# Field evaluation — works on all socket types
+position.face.evaluate()       # VectorSocket — position re-evaluated on face domain
+flag.point.at(3)         # BooleanSocket — flag value at point index 3
+rot.edge.evaluate()            # RotationSocket
+
+# Statistics — Float / Vector
+lo = position.point.min()
+mean = curvature.face.mean()
+std_dev = weight.point.std_dev(group_index)
+```
+
+``` py
+fac = g.Value(0.5).o.value
+fac.mix.float(0.0, 1.0)          # FloatSocket
+fac.mix.vector((0,0,0), (1,1,1)) # VectorSocket
+fac.mix.color(color_a, color_b)  # ColorSocket
+```
+
+### Breaking Changes
+
+- `RotationSocket.euler()` renamed to `RotationSocket.to_euler()` for consistency with the new `to_quaternion()` and `to_axis_angle()` methods.
+- `RotationSocket.w`, `.x`, `.y`, `.z` component properties removed. Use `to_quaternion()` instead.
+- Multi-output socket methods (`to_quaternion()`, `to_axis_angle()`, `find()`, `svd()`) now return typed `NamedTuple` results. Both named access and positional unpacking are fully typed.
+
+``` py
+# Named access
+rot.to_quaternion().w      # FloatSocket
+rot.to_axis_angle().angle  # FloatSocket
+string.find("/").first_found  # IntegerSocket
+mat.svd().u                # MatrixSocket
+
+# Positional unpacking — all variables are specifically typed
+w, x, y, z = rot.to_quaternion()
+axis, angle = rot.to_axis_angle()
+first, count = string.find("/")
+u, s, v = mat.svd()
+```
+
+- `FloatSocket.to_integer(rounding_mode="ROUND")` — convert to integer via `FloatToInteger`. Accepts `"ROUND"`, `"FLOOR"`, `"CEILING"`, or `"TRUNCATE"`.
+
+## v0.16.0 - 2026-05-05
 
 ### Enhancements
 
@@ -18,7 +103,7 @@ string.contains()    # return g.MatchString().o.result
 string.slice()       # return g.SliceString().o.string
 string.format()      # return g.FormatString().o.string
 string.replace()     # return g.ReplaceString().o.string
-string.find()        # return (g.FindInString().o.first_found, g.FindInString().o.count)
+string.find()        # return FindResult(first_found, count)
 string.join(x)       # return g.JoinStrings(x, delimeter=string)
 ```
 
@@ -68,13 +153,13 @@ pos = g.Position().o.position
 pos.builder_node   # the Position node
 ```
 
-- Added `svd()` method onto `MatrixSocket` which returns a `tuple[MatrixSocket, VectorSocket, MatrixSocket]` for the `[u, s, v]` outputs of the `MatrixSVD` node.
+- Added `svd()` method onto `MatrixSocket` which returns an `SVDResult` with `.u`, `.s`, `.v` properties.
 - Add `sign()` and `negate()` methods onto the `FloatSocket` for method chaining. Both return `FloatSocket`.
 - Remove `socket_name` property from `BaseSocket`, already accessible via `.socket.name`.
 - Added `.dot()`, `.length()` and `.normalize()` methods to `VectorSocket` which create the corresponding `DotProduct`, `VectorLength` and `Normalize` nodes.
 - Properties on sockets that aren’t just accessing components of the socket are node methods. They still return sockets and not nodes.
   - `RotationSocket.invert` -\> `RotationSocket.invert()`
-  - `RotationSocket.euler` -\> `Rotation.euler()`
+  - `RotationSocket.euler` -\> `RotationSocket.to_euler()`
   - `MatrixSocket.invert` -\> `MatrixSocket.invert()`
   - `MatrixSocket.transpose` -\> `MatrixSocket.transpose()`
   - `MatrixSocket.determinant` -\> `MatrixSocket.determinant()`
