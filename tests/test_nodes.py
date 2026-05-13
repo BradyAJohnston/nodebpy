@@ -916,7 +916,7 @@ def test_manual_field_factories():
         assert eod.domain == "EDGE"
         assert eod.data_type == "FLOAT_VECTOR"
 
-        eod = g.EvaluateOnDomain.edge.rotation()
+        eod = g.EvaluateOnDomain.edge.quaternion()
         assert eod.domain == "EDGE"
         assert eod.data_type == "QUATERNION"
 

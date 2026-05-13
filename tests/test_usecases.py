@@ -793,3 +793,54 @@ def test_bundle_path_filter(snapshot):
         )
 
     assert snapshot == tree._repr_markdown_()
+
+
+def test_style_density_iso():
+    with g.tree("Style Density ISO Surface") as tree:
+        volume = tree.inputs.geometry("Volume")
+        visible = tree.inputs.boolean("Visible", True)
+        smooth = tree.inputs.boolean("Smooth")
+        iso = tree.inputs.float("ISO Value")
+        col_pos = tree.inputs.color(
+            "Positive Color", default_value=(0.66, 0.0, 0.0, 1.0)
+        )
+        col_neg = tree.inputs.color(
+            "Negative Color", default_value=(0.0, 0.0, 0.66, 1.0)
+        )
+        mat = tree.inputs.material("Material")
+
+        min_factor = tree.inputs.vector(
+            "left",
+            default_value=(0, 0, 0),
+            min_value=0.0,
+            max_value=1.0,
+            subtype="FACTOR",
+        )
+        max_factor = tree.inputs.vector(
+            "Right",
+            default_value=(1.0, 1.0, 1.0),
+            min_value=0.0,
+            max_value=1.0,
+            subtype="FACTOR",
+        )
+
+        pos = g.Position().o.position
+        pos_mapped = pos.map_range(pos.point.min(), pos.point.max())
+
+        geom = (
+            g.JoinGeometry(
+                (
+                    visible.switch.geometry(None, volume)
+                    >> g.VolumeToMesh(threshold=val)
+                    >> g.StoreNamedAttribute.point.color(name="Color", value=col)
+                    >> g.SetMaterial(material=mat)
+                    for val, col in ((iso, col_pos), (-iso, col_neg))
+                )
+            )
+            >> g.SetShadeSmooth.face(shade_smooth=smooth)
+            >> g.DeleteGeometry.all(
+                selection=(pos_mapped < min_factor) & (pos_mapped > max_factor)
+            )
+        )
+
+        geom >> tree.outputs.geometry("Geometry")

@@ -14,6 +14,7 @@ from bpy.types import (
 )
 
 from nodebpy.builder._registry import _get_socket_linker
+from nodebpy.builder.socket import BaseSocket
 
 from ...builder import (
     BaseNode,
@@ -88,7 +89,7 @@ from .zone import (
     _sync_closure_items,
 )
 
-_T = TypeVar("_T")
+_T = TypeVar("_T", bound=BaseSocket)
 _S = TypeVar("_S")
 
 __all__ = (
@@ -1441,7 +1442,7 @@ class JoinGeometry(BaseNode):
 
     def __init__(self, geometry: Iterable[InputGeometry] = ()):
         super().__init__()
-        for source in reversed(geometry):
+        for source in reversed(list(geometry)):
             assert source
             self._link(*self._find_best_socket_pair(source, self))
 
@@ -2493,20 +2494,6 @@ class FieldAverage(BaseNode, Generic[_T]):
     instance = _FieldAverageDomainFactory("INSTANCE")
     layer = _FieldAverageDomainFactory("LAYER")
 
-    def __init__(
-        self,
-        value: InputFloat | InputVector = None,
-        group_index: InputFloat | InputVector = 0,
-        *,
-        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
-        domain: _AttributeDomains = "POINT",
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Group Index": group_index}
-        self.data_type = data_type
-        self.domain = domain
-        self._establish_links(**key_args)
-
     class _Inputs(SocketAccessor, Generic[_S]):
         value: _S
         """The field value to average."""
@@ -2526,6 +2513,20 @@ class FieldAverage(BaseNode, Generic[_T]):
 
         @property
         def o(self) -> "_Outputs[_T]": ...
+
+    def __init__(
+        self,
+        value: InputFloat | InputVector = None,
+        group_index: InputFloat | InputVector = 0,
+        *,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
 
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
@@ -2597,20 +2598,6 @@ class FieldMinAndMax(BaseNode, Generic[_T]):
     instance = _FieldMinAndMaxDomainFactory("INSTANCE")
     layer = _FieldMinAndMaxDomainFactory("LAYER")
 
-    def __init__(
-        self,
-        value: InputFloat | InputVector | InputInteger = 1.0,
-        group_index: InputInteger = 0,
-        *,
-        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
-        domain: _AttributeDomains = "POINT",
-    ):
-        super().__init__()
-        key_args = {"Value": value, "Group Index": group_index}
-        self.data_type = data_type
-        self.domain = domain
-        self._establish_links(**key_args)
-
     class _Inputs(SocketAccessor, Generic[_S]):
         value: _S
         """The field value to find the min/max of."""
@@ -2630,6 +2617,20 @@ class FieldMinAndMax(BaseNode, Generic[_T]):
 
         @property
         def o(self) -> "_Outputs[_T]": ...
+
+    def __init__(
+        self,
+        value: InputFloat | InputVector | InputInteger = 1.0,
+        group_index: InputInteger = 0,
+        *,
+        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: _AttributeDomains = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR"]:
@@ -2681,7 +2682,7 @@ class EvaluateOnDomain(BaseNode, Generic[_T]):
                 value, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-        def rotation(
+        def quaternion(
             self, value: InputRotation = None
         ) -> "EvaluateOnDomain[RotationSocket]":
             return EvaluateOnDomain(value, domain=self._domain, data_type="QUATERNION")
