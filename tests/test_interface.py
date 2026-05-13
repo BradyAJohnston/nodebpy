@@ -1426,6 +1426,26 @@ def test_domain_factory_evaluate_and_at_index():
         assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
 
 
+def test_all_domain_properties_reachable():
+    """Every domain property on every socket type constructs its factory and evaluates."""
+    domains = ("point", "edge", "face", "corner", "spline", "instance", "layer")
+    with g.tree():
+        vec = g.Position().o.position
+        val = vec.length()
+        idx = g.Integer().o.integer
+        flag = g.Boolean(True).o.boolean
+        rot = g.AlignRotationToVector().o.rotation
+        mat = g.CombineTransform().o.transform
+
+        for d in domains:
+            assert isinstance(getattr(vec, d).evaluate(), VectorSocket)
+            assert isinstance(getattr(val, d).evaluate(), FloatSocket)
+            assert isinstance(getattr(idx, d).evaluate(), IntegerSocket)
+            assert isinstance(getattr(flag, d).evaluate(), BooleanSocket)
+            assert isinstance(getattr(rot, d).evaluate(), RotationSocket)
+            assert isinstance(getattr(mat, d).evaluate(), MatrixSocket)
+
+
 def test_matrix_socket_transform_direction():
     with g.tree():
         mat = g.CombineTransform().o.transform
