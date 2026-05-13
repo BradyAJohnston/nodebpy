@@ -278,7 +278,7 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
 # ---------------------------------------------------------------------------
 
 
-class _BaseDomainFactory(Generic[_T]):
+class _FieldDomain(Generic[_T]):
     """Domain-bound factory available on all socket types.
 
     Access via a domain property (e.g. ``socket.point``). Provides field
@@ -307,8 +307,8 @@ class _BaseDomainFactory(Generic[_T]):
         ).o.value
 
 
-class _MinMaxDomainFactory(_BaseDomainFactory[_T]):
-    """Extends ``_BaseDomainFactory`` with min/max aggregation for Integer sockets."""
+class _MinMaxDomain(_FieldDomain[_T]):
+    """Extends ``_FieldDomain`` with min/max aggregation for Integer sockets."""
 
     def _minmax(self, field: str, group_index: InputInteger) -> "_T":
         from ..nodes.geometry import FieldMinAndMax
@@ -325,8 +325,8 @@ class _MinMaxDomainFactory(_BaseDomainFactory[_T]):
         return self._minmax("max", group_index)
 
 
-class _StatsDomainFactory(_MinMaxDomainFactory[_T]):
-    """Extends ``_MinMaxDomainFactory`` with full statistics for Float and Vector sockets."""
+class _StatsDomain(_MinMaxDomain[_T]):
+    """Extends ``_MinMaxDomain`` with full statistics for Float and Vector sockets."""
 
     def mean(self, group_index: InputInteger = None) -> "_T":
         from ..nodes.geometry import FieldAverage
@@ -405,32 +405,32 @@ class _VectorMixin(BaseSocket):
             return self._combine().i.z
 
     @property
-    def point(self) -> "_StatsDomainFactory[VectorSocket]":
-        return _StatsDomainFactory(self.socket, "vector", "point")
+    def point(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "point")
 
     @property
-    def edge(self) -> "_StatsDomainFactory[VectorSocket]":
-        return _StatsDomainFactory(self.socket, "vector", "edge")
+    def edge(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "edge")
 
     @property
-    def face(self) -> "_StatsDomainFactory[VectorSocket]":
-        return _StatsDomainFactory(self.socket, "vector", "face")
+    def face(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "face")
 
     @property
-    def corner(self) -> "_StatsDomainFactory[VectorSocket]":
-        return _StatsDomainFactory(self.socket, "vector", "corner")
+    def corner(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "corner")
 
     @property
-    def spline(self) -> "_StatsDomainFactory[VectorSocket]":
-        return _StatsDomainFactory(self.socket, "vector", "spline")
+    def spline(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "spline")
 
     @property
-    def instance(self) -> "_StatsDomainFactory[VectorSocket]":
-        return _StatsDomainFactory(self.socket, "vector", "instance")
+    def instance(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "instance")
 
     @property
-    def layer(self) -> "_StatsDomainFactory[VectorSocket]":
-        return _StatsDomainFactory(self.socket, "vector", "layer")
+    def layer(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "layer")
 
     def dot(self, vector: InputVector) -> "FloatSocket":
         """Dot product with another vector. The other vector can be a Socket, a NodeSocket, or a 3-tuple of floats.
@@ -912,32 +912,32 @@ class _BooleanMixin(BaseSocket):
         return _BooleanSwitchSocketFactory(self.socket)
 
     @property
-    def point(self) -> "_BaseDomainFactory[BooleanSocket]":
-        return _BaseDomainFactory(self.socket, "boolean", "point")
+    def point(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "point")
 
     @property
-    def edge(self) -> "_BaseDomainFactory[BooleanSocket]":
-        return _BaseDomainFactory(self.socket, "boolean", "edge")
+    def edge(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "edge")
 
     @property
-    def face(self) -> "_BaseDomainFactory[BooleanSocket]":
-        return _BaseDomainFactory(self.socket, "boolean", "face")
+    def face(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "face")
 
     @property
-    def corner(self) -> "_BaseDomainFactory[BooleanSocket]":
-        return _BaseDomainFactory(self.socket, "boolean", "corner")
+    def corner(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "corner")
 
     @property
-    def spline(self) -> "_BaseDomainFactory[BooleanSocket]":
-        return _BaseDomainFactory(self.socket, "boolean", "spline")
+    def spline(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "spline")
 
     @property
-    def instance(self) -> "_BaseDomainFactory[BooleanSocket]":
-        return _BaseDomainFactory(self.socket, "boolean", "instance")
+    def instance(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "instance")
 
     @property
-    def layer(self) -> "_BaseDomainFactory[BooleanSocket]":
-        return _BaseDomainFactory(self.socket, "boolean", "layer")
+    def layer(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "layer")
 
 
 class _RotationMixin(BaseSocket):
@@ -992,32 +992,32 @@ class _RotationMixin(BaseSocket):
         return AxisAngle(o.axis, o.angle)
 
     @property
-    def point(self) -> "_BaseDomainFactory[RotationSocket]":
-        return _BaseDomainFactory(self.socket, "quaternion", "point")
+    def point(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "point")
 
     @property
-    def edge(self) -> "_BaseDomainFactory[RotationSocket]":
-        return _BaseDomainFactory(self.socket, "quaternion", "edge")
+    def edge(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "edge")
 
     @property
-    def face(self) -> "_BaseDomainFactory[RotationSocket]":
-        return _BaseDomainFactory(self.socket, "quaternion", "face")
+    def face(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "face")
 
     @property
-    def corner(self) -> "_BaseDomainFactory[RotationSocket]":
-        return _BaseDomainFactory(self.socket, "quaternion", "corner")
+    def corner(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "corner")
 
     @property
-    def spline(self) -> "_BaseDomainFactory[RotationSocket]":
-        return _BaseDomainFactory(self.socket, "quaternion", "spline")
+    def spline(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "spline")
 
     @property
-    def instance(self) -> "_BaseDomainFactory[RotationSocket]":
-        return _BaseDomainFactory(self.socket, "quaternion", "instance")
+    def instance(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "instance")
 
     @property
-    def layer(self) -> "_BaseDomainFactory[RotationSocket]":
-        return _BaseDomainFactory(self.socket, "quaternion", "layer")
+    def layer(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "layer")
 
 
 class _FloatMixDataTypeFactory:
@@ -1075,32 +1075,32 @@ class _FloatMixin(BaseSocket):
         return _FloatMixDataTypeFactory(self.socket)
 
     @property
-    def point(self) -> "_StatsDomainFactory[FloatSocket]":
-        return _StatsDomainFactory(self.socket, "float", "point")
+    def point(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "point")
 
     @property
-    def edge(self) -> "_StatsDomainFactory[FloatSocket]":
-        return _StatsDomainFactory(self.socket, "float", "edge")
+    def edge(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "edge")
 
     @property
-    def face(self) -> "_StatsDomainFactory[FloatSocket]":
-        return _StatsDomainFactory(self.socket, "float", "face")
+    def face(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "face")
 
     @property
-    def corner(self) -> "_StatsDomainFactory[FloatSocket]":
-        return _StatsDomainFactory(self.socket, "float", "corner")
+    def corner(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "corner")
 
     @property
-    def spline(self) -> "_StatsDomainFactory[FloatSocket]":
-        return _StatsDomainFactory(self.socket, "float", "spline")
+    def spline(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "spline")
 
     @property
-    def instance(self) -> "_StatsDomainFactory[FloatSocket]":
-        return _StatsDomainFactory(self.socket, "float", "instance")
+    def instance(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "instance")
 
     @property
-    def layer(self) -> "_StatsDomainFactory[FloatSocket]":
-        return _StatsDomainFactory(self.socket, "float", "layer")
+    def layer(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "layer")
 
     def map_range(
         self,
@@ -1208,32 +1208,32 @@ class _IntegerMixin(BaseSocket):
         self.socket.default_value = value
 
     @property
-    def point(self) -> "_MinMaxDomainFactory[IntegerSocket]":
-        return _MinMaxDomainFactory(self.socket, "integer", "point")
+    def point(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "point")
 
     @property
-    def edge(self) -> "_MinMaxDomainFactory[IntegerSocket]":
-        return _MinMaxDomainFactory(self.socket, "integer", "edge")
+    def edge(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "edge")
 
     @property
-    def face(self) -> "_MinMaxDomainFactory[IntegerSocket]":
-        return _MinMaxDomainFactory(self.socket, "integer", "face")
+    def face(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "face")
 
     @property
-    def corner(self) -> "_MinMaxDomainFactory[IntegerSocket]":
-        return _MinMaxDomainFactory(self.socket, "integer", "corner")
+    def corner(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "corner")
 
     @property
-    def spline(self) -> "_MinMaxDomainFactory[IntegerSocket]":
-        return _MinMaxDomainFactory(self.socket, "integer", "spline")
+    def spline(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "spline")
 
     @property
-    def instance(self) -> "_MinMaxDomainFactory[IntegerSocket]":
-        return _MinMaxDomainFactory(self.socket, "integer", "instance")
+    def instance(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "instance")
 
     @property
-    def layer(self) -> "_MinMaxDomainFactory[IntegerSocket]":
-        return _MinMaxDomainFactory(self.socket, "integer", "layer")
+    def layer(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "layer")
 
     @property
     def _imath(self) -> "type[IntegerMath]":
@@ -1483,32 +1483,32 @@ class _MatrixMixin(BaseSocket):
         return TransformDirection(direction, self.socket).o.direction
 
     @property
-    def point(self) -> "_BaseDomainFactory[MatrixSocket]":
-        return _BaseDomainFactory(self.socket, "matrix", "point")
+    def point(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "point")
 
     @property
-    def edge(self) -> "_BaseDomainFactory[MatrixSocket]":
-        return _BaseDomainFactory(self.socket, "matrix", "edge")
+    def edge(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "edge")
 
     @property
-    def face(self) -> "_BaseDomainFactory[MatrixSocket]":
-        return _BaseDomainFactory(self.socket, "matrix", "face")
+    def face(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "face")
 
     @property
-    def corner(self) -> "_BaseDomainFactory[MatrixSocket]":
-        return _BaseDomainFactory(self.socket, "matrix", "corner")
+    def corner(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "corner")
 
     @property
-    def spline(self) -> "_BaseDomainFactory[MatrixSocket]":
-        return _BaseDomainFactory(self.socket, "matrix", "spline")
+    def spline(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "spline")
 
     @property
-    def instance(self) -> "_BaseDomainFactory[MatrixSocket]":
-        return _BaseDomainFactory(self.socket, "matrix", "instance")
+    def instance(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "instance")
 
     @property
-    def layer(self) -> "_BaseDomainFactory[MatrixSocket]":
-        return _BaseDomainFactory(self.socket, "matrix", "layer")
+    def layer(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "layer")
 
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
