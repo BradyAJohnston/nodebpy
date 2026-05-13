@@ -3,11 +3,13 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
+    Generic,
     Iterable,
     Iterator,
     Literal,
     Mapping,
     NamedTuple,
+    TypeVar,
     cast,
     overload,
 )
@@ -75,6 +77,8 @@ if TYPE_CHECKING:
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
     from .tree import TreeBuilder
+
+_T = TypeVar("_T")
 
 
 class QuaternionComponents(NamedTuple):
@@ -274,6 +278,89 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
 # ---------------------------------------------------------------------------
 
 
+class _FieldDomain(Generic[_T]):
+    """Domain-bound factory available on all socket types.
+
+    Access via a domain property (e.g. ``socket.point``). Provides field
+    evaluation methods; subclasses add statistics for numeric socket types.
+    """
+
+    def __init__(self, socket: NodeSocket, dtype: str, domain: str) -> None:
+        self._socket = socket
+        self._dtype = dtype
+        self._domain = domain
+
+    def evaluate(self) -> "_T":
+        """Force evaluation of this field on the bound domain via ``EvaluateOnDomain``."""
+        from ..nodes.geometry import EvaluateOnDomain
+
+        return getattr(getattr(EvaluateOnDomain, self._domain), self._dtype)(
+            self._socket
+        ).o.value
+
+    def at(self, index: InputInteger = 0) -> "_T":
+        """Evaluate this field's value at *index* on the bound domain via ``EvaluateAtIndex``."""
+        from ..nodes.geometry import EvaluateAtIndex
+
+        return getattr(getattr(EvaluateAtIndex, self._domain), self._dtype)(
+            self._socket, index
+        ).o.value
+
+
+class _MinMaxDomain(_FieldDomain[_T]):
+    """Extends ``_FieldDomain`` with min/max aggregation for Integer sockets."""
+
+    def _minmax(self, field: str, group_index: InputInteger) -> "_T":
+        from ..nodes.geometry import FieldMinAndMax
+
+        node = getattr(getattr(FieldMinAndMax, self._domain), self._dtype)(
+            self._socket, group_index
+        )
+        return getattr(node.o, field)
+
+    def min(self, group_index: InputInteger = None) -> "_T":
+        return self._minmax("min", group_index)
+
+    def max(self, group_index: InputInteger = None) -> "_T":
+        return self._minmax("max", group_index)
+
+
+class _StatsDomain(_MinMaxDomain[_T]):
+    """Extends ``_MinMaxDomain`` with full statistics for Float and Vector sockets."""
+
+    def mean(self, group_index: InputInteger = None) -> "_T":
+        from ..nodes.geometry import FieldAverage
+
+        node = getattr(getattr(FieldAverage, self._domain), self._dtype)(
+            self._socket, group_index
+        )
+        return node.o.mean
+
+    def median(self, group_index: InputInteger = None) -> "_T":
+        from ..nodes.geometry import FieldAverage
+
+        node = getattr(getattr(FieldAverage, self._domain), self._dtype)(
+            self._socket, group_index
+        )
+        return node.o.median
+
+    def std_dev(self, group_index: InputInteger = None) -> "_T":
+        from ..nodes.geometry import FieldVariance
+
+        node = getattr(getattr(FieldVariance, self._domain), self._dtype)(
+            self._socket, group_index
+        )
+        return node.o.standard_deviation
+
+    def variance(self, group_index: InputInteger = None) -> "_T":
+        from ..nodes.geometry import FieldVariance
+
+        node = getattr(getattr(FieldVariance, self._domain), self._dtype)(
+            self._socket, group_index
+        )
+        return node.o.variance
+
+
 class _VectorMixin(BaseSocket):
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
@@ -317,6 +404,34 @@ class _VectorMixin(BaseSocket):
         else:
             return self._combine().i.z
 
+    @property
+    def point(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "point")
+
+    @property
+    def edge(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "edge")
+
+    @property
+    def face(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "face")
+
+    @property
+    def corner(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "corner")
+
+    @property
+    def spline(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "spline")
+
+    @property
+    def instance(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "instance")
+
+    @property
+    def layer(self) -> "_StatsDomain[VectorSocket]":
+        return _StatsDomain(self.socket, "vector", "layer")
+
     def dot(self, vector: InputVector) -> "FloatSocket":
         """Dot product with another vector. The other vector can be a Socket, a NodeSocket, or a 3-tuple of floats.
 
@@ -337,6 +452,46 @@ class _VectorMixin(BaseSocket):
         The same normalize node is re-used each time unless `new_node=True` where a new `VectorMath` node is created each time.
         """
         return self._vmath.normalize(self.socket).o.vector
+
+    def cross(self, other: InputVector) -> "VectorSocket":
+        """Cross product of this vector with *other*. Returns a vector perpendicular to both."""
+        return self._vmath.cross_product(self.socket, other).o.vector
+
+    def distance(self, other: InputVector) -> "FloatSocket":
+        """Euclidean distance between this vector and *other*."""
+        return self._vmath.distance(self.socket, other).o.value
+
+    def project(self, other: InputVector) -> "VectorSocket":
+        """Project this vector onto *other*."""
+        return self._vmath.project(self.socket, other).o.vector
+
+    def reflect(self, normal: InputVector) -> "VectorSocket":
+        """Reflect this vector around *normal*. *normal* does not need to be normalised."""
+        return self._vmath.reflect(self.socket, normal).o.vector
+
+    def map_range(
+        self,
+        from_min: InputVector = (0.0, 0.0, 0.0),
+        from_max: InputVector = (1.0, 1.0, 1.0),
+        to_min: InputVector = (0.0, 0.0, 0.0),
+        to_max: InputVector = (1.0, 1.0, 1.0),
+        *,
+        clamp: bool = True,
+        interpolation_type: Literal[
+            "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
+        ] = "LINEAR",
+        steps: InputVector = (4.0, 4.0, 4.0),
+    ) -> "VectorSocket":
+        """Convenience method to remap a vector socket using the `MapRange.vector()` node with this socket as input"""
+        from ..nodes.geometry import MapRange
+
+        node = MapRange.vector(self.socket, from_min, from_max, to_min, to_max)
+        node.clamp = clamp
+        node.interpolation_type = interpolation_type
+        if interpolation_type == "STEPPED":
+            kwargs = {"Steps_FLOAT3": steps}
+            node._establish_links(**kwargs)
+        return node.o.vector
 
     def rotate(
         self,
@@ -474,10 +629,10 @@ class _VectorMixin(BaseSocket):
         def __rfloordiv__(self, other: Any) -> "VectorSocket": ...
         def __neg__(self) -> "VectorSocket": ...
         def __abs__(self) -> "VectorSocket": ...
-        def __lt__(self, other: Any) -> "Compare[NodeSocketVector]": ...
-        def __gt__(self, other: Any) -> "Compare[NodeSocketVector]": ...
-        def __le__(self, other: Any) -> "Compare[NodeSocketVector]": ...
-        def __ge__(self, other: Any) -> "Compare[NodeSocketVector]": ...
+        def __lt__(self, other: Any) -> "Compare[VectorSocket]": ...
+        def __gt__(self, other: Any) -> "Compare[VectorSocket]": ...
+        def __le__(self, other: Any) -> "Compare[VectorSocket]": ...
+        def __ge__(self, other: Any) -> "Compare[VectorSocket]": ...
 
 
 _SEPARATE_COLOR_IDNAMES = (
@@ -756,6 +911,34 @@ class _BooleanMixin(BaseSocket):
 
         return _BooleanSwitchSocketFactory(self.socket)
 
+    @property
+    def point(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "point")
+
+    @property
+    def edge(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "edge")
+
+    @property
+    def face(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "face")
+
+    @property
+    def corner(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "corner")
+
+    @property
+    def spline(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "spline")
+
+    @property
+    def instance(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "instance")
+
+    @property
+    def layer(self) -> "_FieldDomain[BooleanSocket]":
+        return _FieldDomain(self.socket, "boolean", "layer")
+
 
 class _RotationMixin(BaseSocket):
     """Rotation-specific methods."""
@@ -807,6 +990,34 @@ class _RotationMixin(BaseSocket):
 
         o = RotationToAxisAngle(self.socket).o
         return AxisAngle(o.axis, o.angle)
+
+    @property
+    def point(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "point")
+
+    @property
+    def edge(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "edge")
+
+    @property
+    def face(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "face")
+
+    @property
+    def corner(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "corner")
+
+    @property
+    def spline(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "spline")
+
+    @property
+    def instance(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "instance")
+
+    @property
+    def layer(self) -> "_FieldDomain[RotationSocket]":
+        return _FieldDomain(self.socket, "quaternion", "layer")
 
 
 class _FloatMixDataTypeFactory:
@@ -863,6 +1074,101 @@ class _FloatMixin(BaseSocket):
         "Create a ``Mix`` node using this socket as the factor."
         return _FloatMixDataTypeFactory(self.socket)
 
+    @property
+    def point(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "point")
+
+    @property
+    def edge(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "edge")
+
+    @property
+    def face(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "face")
+
+    @property
+    def corner(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "corner")
+
+    @property
+    def spline(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "spline")
+
+    @property
+    def instance(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "instance")
+
+    @property
+    def layer(self) -> "_StatsDomain[FloatSocket]":
+        return _StatsDomain(self.socket, "float", "layer")
+
+    def map_range(
+        self,
+        from_min: InputFloat = 0.0,
+        from_max: InputFloat = 1.0,
+        to_min: InputFloat = 0.0,
+        to_max: InputFloat = 1.0,
+        *,
+        clamp=True,
+        interpolation_type: Literal[
+            "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
+        ] = "LINEAR",
+        steps: InputFloat = 4.0,
+    ) -> "FloatSocket":
+        """Remap the values on the float socket using the MapRange node."""
+        from ..nodes.geometry import MapRange
+
+        node = MapRange.float(self.socket, from_min, from_max, to_min, to_max)
+        node.clamp = clamp
+        node.interpolation_type = interpolation_type
+        if interpolation_type == "STEPPED":
+            node._establish_links(steps=steps)
+        return node.o.result
+
+    def clamp(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> "FloatSocket":
+        """Clamp the value to *[min, max]*. Defaults to the unit interval ``[0, 1]``."""
+        from ..nodes.geometry import Clamp
+
+        return Clamp.min_max(self.socket, min, max).o.result
+
+    def sqrt(self) -> "FloatSocket":
+        """Return the square root of this value."""
+        return self._math.square_root(self.socket).o.value
+
+    def power(self, exponent: InputFloat) -> "FloatSocket":
+        """Raise this value to *exponent*."""
+        return self._math.power(self.socket, exponent).o.value
+
+    def floor(self) -> "FloatSocket":
+        """Round down to the nearest integer."""
+        return self._math.floor(self.socket).o.value
+
+    def ceil(self) -> "FloatSocket":
+        """Round up to the nearest integer."""
+        return self._math.ceil(self.socket).o.value
+
+    def round(self) -> "FloatSocket":
+        """Round to the nearest integer."""
+        return self._math.round(self.socket).o.value
+
+    def modulo(self, divisor: InputFloat) -> "FloatSocket":
+        """Floored modulo — remainder after dividing by *divisor*, always non-negative."""
+        return self._math.floored_modulo(self.socket, divisor).o.value
+
+    def wrap(self, min: InputFloat, max: InputFloat) -> "FloatSocket":
+        """Wrap the value into the *[min, max]* range, repeating cyclically."""
+        # the wrap method has different order of arguments with max being first
+        # compared to other nodes that are defined.
+        return self._math.wrap(self.socket, value_001=max, value_002=min).o.value
+
+    def to_radians(self) -> "FloatSocket":
+        """Convert degrees to radians."""
+        return self._math.to_radians(self.socket).o.value
+
+    def to_degrees(self) -> "FloatSocket":
+        """Convert radians to degrees."""
+        return self._math.to_degrees(self.socket).o.value
+
     def sign(self) -> "FloatSocket":
         "Return the sign of the FloatSocket, eithe `-1`, `0` or `1`."
         return self._math.sign(self.socket).o.value
@@ -902,6 +1208,34 @@ class _IntegerMixin(BaseSocket):
         self.socket.default_value = value
 
     @property
+    def point(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "point")
+
+    @property
+    def edge(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "edge")
+
+    @property
+    def face(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "face")
+
+    @property
+    def corner(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "corner")
+
+    @property
+    def spline(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "spline")
+
+    @property
+    def instance(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "instance")
+
+    @property
+    def layer(self) -> "_MinMaxDomain[IntegerSocket]":
+        return _MinMaxDomain(self.socket, "integer", "layer")
+
+    @property
     def _imath(self) -> "type[IntegerMath]":
         from ..nodes.geometry import IntegerMath
 
@@ -912,6 +1246,16 @@ class _IntegerMixin(BaseSocket):
         from ..nodes.geometry import ValueToString
 
         return ValueToString.integer(self.socket).o.string
+
+    def clamp(self, min: InputInteger = 0, max: InputInteger = 1) -> "IntegerSocket":
+        """Clamp the value to *[min, max]*."""
+        return self._imath.minimum(
+            self._imath.maximum(self.socket, min).o.value, max
+        ).o.value
+
+    def modulo(self, divisor: InputInteger) -> "IntegerSocket":
+        """Remainder after dividing by *divisor* (always non-negative)."""
+        return self._imath.modulo(self.socket, divisor).o.value
 
     def sign(self) -> "IntegerSocket":
         "Return the sign of the IntegerSocket, either `-1`, `0`, or `1`."
@@ -983,10 +1327,10 @@ class _IntegerMixin(BaseSocket):
         def __rfloordiv__(self, other: Any) -> "IntegerSocket": ...
         def __neg__(self) -> "IntegerSocket": ...
         def __abs__(self) -> "IntegerSocket": ...
-        def __lt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __gt__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __le__(self, other: Any) -> "Compare[NodeSocketInt]": ...
-        def __ge__(self, other: Any) -> "Compare[NodeSocketInt]": ...
+        def __lt__(self, other: Any) -> "Compare[IntegerSocket]": ...
+        def __gt__(self, other: Any) -> "Compare[IntegerSocket]": ...
+        def __le__(self, other: Any) -> "Compare[IntegerSocket]": ...
+        def __ge__(self, other: Any) -> "Compare[IntegerSocket]": ...
 
 
 class _StringMixin(BaseSocket):
@@ -1127,6 +1471,44 @@ class _MatrixMixin(BaseSocket):
 
         o = MatrixSVD(self.socket).o
         return SVDResult(o.u, o.s, o.v)
+
+    def transform_direction(self, direction: InputVector) -> "VectorSocket":
+        """Apply this matrix to *direction*, ignoring translation.
+
+        Use this instead of ``transform()`` when transforming a direction vector
+        (e.g. a normal) where translation must not affect the result.
+        """
+        from ..nodes.geometry import TransformDirection
+
+        return TransformDirection(direction, self.socket).o.direction
+
+    @property
+    def point(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "point")
+
+    @property
+    def edge(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "edge")
+
+    @property
+    def face(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "face")
+
+    @property
+    def corner(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "corner")
+
+    @property
+    def spline(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "spline")
+
+    @property
+    def instance(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "instance")
+
+    @property
+    def layer(self) -> "_FieldDomain[MatrixSocket]":
+        return _FieldDomain(self.socket, "matrix", "layer")
 
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
