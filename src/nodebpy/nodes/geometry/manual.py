@@ -2682,7 +2682,7 @@ class EvaluateOnDomain(BaseNode, Generic[_T]):
                 value, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-        def rotation(
+        def quaternion(
             self, value: InputRotation = None
         ) -> "EvaluateOnDomain[RotationSocket]":
             return EvaluateOnDomain(value, domain=self._domain, data_type="QUATERNION")

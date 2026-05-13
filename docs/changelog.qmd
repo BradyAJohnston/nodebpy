@@ -39,17 +39,22 @@ remapped_vec = vec.map_range((0,0,0), (1,1,1), (-1,-1,-1), (1,1,1))
 - New method on `MatrixSocket`:
     - `transform_direction(direction)` — apply the matrix to a direction vector, ignoring translation. Use this instead of `transform()` for normals and tangents.
 
-- Domain aggregation on `FloatSocket`, `VectorSocket`, and `IntegerSocket` — select a domain property, then call the statistic. Each call returns a single socket.
+- Domain factories on `FloatSocket`, `VectorSocket`, `IntegerSocket`, `BooleanSocket`, `RotationSocket`, and `MatrixSocket` — select a domain property, then call the operation. Each call returns a single typed socket.
     - Domain properties: `.point`, `.edge`, `.face`, `.corner`, `.spline`, `.instance`, `.layer`
-    - Float/Vector statistics: `.min()`, `.max()`, `.mean()`, `.median()`, `.std_dev()`, `.variance()`
-    - Integer statistics: `.min()`, `.max()`
-    - All domain methods accept an optional `group_index` argument
+    - All socket types: `.evaluate()` — re-evaluate on the domain via `EvaluateOnDomain`; `.at_index(i)` — retrieve at an index via `EvaluateAtIndex`
+    - Float/Vector additionally: `.min()`, `.max()`, `.mean()`, `.median()`, `.std_dev()`, `.variance()` (with optional `group_index`)
+    - Integer additionally: `.min()`, `.max()` (with optional `group_index`)
 
 ```py
-lo = position.point.min()              # VectorSocket
-hi = position.edge.max()               # VectorSocket
-mean = curvature.face.mean()           # FloatSocket
-std_dev = weight.point.std_dev(group_index)  # FloatSocket
+# Field evaluation — works on all socket types
+position.face.evaluate()       # VectorSocket — position re-evaluated on face domain
+flag.point.at_index(3)         # BooleanSocket — flag value at point index 3
+rot.edge.evaluate()            # RotationSocket
+
+# Statistics — Float / Vector
+lo = position.point.min()
+mean = curvature.face.mean()
+std_dev = weight.point.std_dev(group_index)
 ```
 
 ```py

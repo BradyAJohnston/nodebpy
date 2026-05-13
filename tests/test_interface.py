@@ -8,9 +8,11 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
+    BooleanSocket,
     ColorSocket,
     FloatSocket,
     IntegerSocket,
+    MatrixSocket,
     RotationSocket,
     Socket,
     VectorSocket,
@@ -1361,6 +1363,67 @@ def test_integer_socket_domain_aggregation():
         hi = val.face.max()
         assert isinstance(hi, IntegerSocket)
         assert hi.node.bl_idname == g.FieldMinAndMax._bl_idname
+
+
+def test_domain_factory_evaluate_and_at_index():
+    with g.tree():
+        # Float
+        val = g.Position().o.position.length()
+        result = val.point.evaluate()
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
+        assert result.builder_node.i.value.links[0].from_node == val.node
+
+        result = val.edge.at_index(2)
+        assert isinstance(result, FloatSocket)
+        assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
+        assert result.builder_node.i.index.default_value == 2
+
+        # Vector
+        vec = g.Position().o.position
+        result = vec.face.evaluate()
+        assert isinstance(result, VectorSocket)
+        assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
+
+        result = vec.corner.at_index(0)
+        assert isinstance(result, VectorSocket)
+        assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
+
+        # Integer
+        idx = g.Integer().o.integer
+        result = idx.spline.evaluate()
+        assert isinstance(result, IntegerSocket)
+        assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
+
+        # Boolean
+        flag = g.Boolean().o.boolean
+        result = flag.point.evaluate()
+        assert isinstance(result, BooleanSocket)
+        assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
+
+        result = flag.edge.at_index(1)
+        assert isinstance(result, BooleanSocket)
+        assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
+
+        # Rotation
+        rot = g.AlignRotationToVector().o.rotation
+        result = rot.point.evaluate()
+        assert isinstance(result, RotationSocket)
+        assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
+
+        result = rot.face.at_index(0)
+        assert isinstance(result, RotationSocket)
+        assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
+
+        # Matrix
+        mat = g.CombineTransform().o.transform
+        result = mat.point.evaluate()
+        assert isinstance(result, MatrixSocket)
+        assert result.node.bl_idname == g.EvaluateOnDomain._bl_idname
+
+        result = mat.edge.at_index(3)
+        assert isinstance(result, MatrixSocket)
+        assert result.node.bl_idname == g.EvaluateAtIndex._bl_idname
 
 
 def test_matrix_socket_transform_direction():
