@@ -825,7 +825,7 @@ def test_style_density_iso():
         )
 
         pos = g.Position().o.position
-        pos_mapped = pos.map_range(*pos.min_max.point())
+        pos_mapped = pos.map_range(pos.point.min(), pos.point.max())
 
         geom = (
             g.JoinGeometry(

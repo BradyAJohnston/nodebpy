@@ -39,15 +39,17 @@ remapped_vec = vec.map_range((0,0,0), (1,1,1), (-1,-1,-1), (1,1,1))
 - New method on `MatrixSocket`:
     - `transform_direction(direction)` — apply the matrix to a direction vector, ignoring translation. Use this instead of `transform()` for normals and tangents.
 
-- Domain aggregation properties on `FloatSocket`, `VectorSocket`, and `IntegerSocket` — compute field statistics per geometry domain. Each returns a typed `NamedTuple`.
-    - `.min_max.point()` / `.edge()` / `.face()` / `.corner()` / `.spline()` / `.instance()` / `.layer()` → `MinMaxReturn(min, max)`
-    - `.average.point()` / … → `AverageFieldResult(mean, median)` *(Float and Vector only)*
-    - `.variance.point()` / … → `FieldVarianceResult(standard_deviation, variance)` *(Float and Vector only)*
+- Domain aggregation on `FloatSocket`, `VectorSocket`, and `IntegerSocket` — select a domain property, then call the statistic. Each call returns a single socket.
+    - Domain properties: `.point`, `.edge`, `.face`, `.corner`, `.spline`, `.instance`, `.layer`
+    - Float/Vector statistics: `.min()`, `.max()`, `.mean()`, `.median()`, `.std_dev()`, `.variance()`
+    - Integer statistics: `.min()`, `.max()`
+    - All domain methods accept an optional `group_index` argument
 
 ```py
-lo, hi = position.min_max.point()
-mean, median = curvature.average.face()
-std_dev, variance = weight.variance.point(group_index)
+lo = position.point.min()              # VectorSocket
+hi = position.edge.max()               # VectorSocket
+mean = curvature.face.mean()           # FloatSocket
+std_dev = weight.point.std_dev(group_index)  # FloatSocket
 ```
 
 ```py

@@ -1232,42 +1232,33 @@ def test_float_socket_map_range():
 
 
 def test_float_socket_domain_aggregation():
-    from nodebpy.builder.socket import (
-        AverageFieldResult,
-        FieldVarianceResult,
-        MinMaxReturn,
-    )
-
     with g.tree():
         val = g.Position().o.position.length()
 
-        lo, hi = val.min_max.point()
+        lo = val.point.min()
         assert isinstance(lo, FloatSocket)
-        assert isinstance(hi, FloatSocket)
         assert lo.node.bl_idname == g.FieldMinAndMax._bl_idname
-        assert lo.node == hi.node
         assert lo.builder_node.i.value.links[0].from_node == val.node
 
-        result = val.min_max.edge()
-        assert isinstance(result, MinMaxReturn)
-        assert result.min.node.bl_idname == g.FieldMinAndMax._bl_idname
+        hi = val.edge.max()
+        assert isinstance(hi, FloatSocket)
+        assert hi.node.bl_idname == g.FieldMinAndMax._bl_idname
 
-        mean, median = val.average.point()
+        mean = val.point.mean()
         assert isinstance(mean, FloatSocket)
-        assert isinstance(median, FloatSocket)
         assert mean.node.bl_idname == g.FieldAverage._bl_idname
-        assert mean.node == median.node
 
-        result = val.average.face()
-        assert isinstance(result, AverageFieldResult)
+        median = val.face.median()
+        assert isinstance(median, FloatSocket)
+        assert median.node.bl_idname == g.FieldAverage._bl_idname
 
-        std_dev, variance = val.variance.point()
+        std_dev = val.point.std_dev()
         assert isinstance(std_dev, FloatSocket)
-        assert isinstance(variance, FloatSocket)
         assert std_dev.node.bl_idname == g.FieldVariance._bl_idname
 
-        result = val.variance.spline()
-        assert isinstance(result, FieldVarianceResult)
+        variance = val.spline.variance()
+        assert isinstance(variance, FloatSocket)
+        assert variance.node.bl_idname == g.FieldVariance._bl_idname
 
 
 def test_vector_socket_new_methods():
@@ -1310,39 +1301,32 @@ def test_vector_socket_map_range():
 
 
 def test_vector_socket_domain_aggregation():
-    from nodebpy.builder.socket import (
-        AverageFieldResult,
-        FieldVarianceResult,
-        MinMaxReturn,
-    )
-
     with g.tree():
         vec = g.Position().o.position
 
-        lo, hi = vec.min_max.point()
+        lo = vec.point.min()
         assert isinstance(lo, VectorSocket)
-        assert isinstance(hi, VectorSocket)
         assert lo.node.bl_idname == g.FieldMinAndMax._bl_idname
-        assert lo.node == hi.node
 
-        result = vec.min_max.edge()
-        assert isinstance(result, MinMaxReturn)
+        hi = vec.edge.max()
+        assert isinstance(hi, VectorSocket)
+        assert hi.node.bl_idname == g.FieldMinAndMax._bl_idname
 
-        mean, median = vec.average.point()
+        mean = vec.point.mean()
         assert isinstance(mean, VectorSocket)
-        assert isinstance(median, VectorSocket)
         assert mean.node.bl_idname == g.FieldAverage._bl_idname
 
-        result = vec.average.corner()
-        assert isinstance(result, AverageFieldResult)
+        median = vec.corner.median()
+        assert isinstance(median, VectorSocket)
+        assert median.node.bl_idname == g.FieldAverage._bl_idname
 
-        std_dev, variance = vec.variance.point()
+        std_dev = vec.point.std_dev()
         assert isinstance(std_dev, VectorSocket)
-        assert isinstance(variance, VectorSocket)
         assert std_dev.node.bl_idname == g.FieldVariance._bl_idname
 
-        result = vec.variance.instance()
-        assert isinstance(result, FieldVarianceResult)
+        variance = vec.instance.variance()
+        assert isinstance(variance, VectorSocket)
+        assert variance.node.bl_idname == g.FieldVariance._bl_idname
 
 
 def test_integer_socket_new_methods():
@@ -1367,19 +1351,16 @@ def test_integer_socket_new_methods():
 
 
 def test_integer_socket_domain_aggregation():
-    from nodebpy.builder.socket import MinMaxReturn
-
     with g.tree():
         val = g.Integer().o.integer
 
-        lo, hi = val.min_max.point()
+        lo = val.point.min()
         assert isinstance(lo, IntegerSocket)
-        assert isinstance(hi, IntegerSocket)
         assert lo.node.bl_idname == g.FieldMinAndMax._bl_idname
-        assert lo.node == hi.node
 
-        result = val.min_max.face()
-        assert isinstance(result, MinMaxReturn)
+        hi = val.face.max()
+        assert isinstance(hi, IntegerSocket)
+        assert hi.node.bl_idname == g.FieldMinAndMax._bl_idname
 
 
 def test_matrix_socket_transform_direction():
