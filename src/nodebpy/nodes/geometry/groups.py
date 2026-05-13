@@ -17,9 +17,7 @@ from . import (
     EdgesOfVertex,
     EdgeVertices,
     EvaluateAtIndex,
-    FieldAverage,
     Frame,
-    String,
     Switch,
 )
 
