@@ -13,6 +13,49 @@ title: Changelog
     - `to_quaternion()` — decompose via `RotationToQuaternion`, returns a `Quaternion` named tuple with `.w`, `.x`, `.y`, `.z`
     - `to_axis_angle()` — decompose via `RotationToAxisAngle`, returns an `AxisAngle` with `.axis` and `.angle`
 - `FloatSocket.mix` — factory property for creating typed `Mix` nodes driven by this socket as the factor. Supports `.float()`, `.vector()`, `.color()`, `.rotation()`.
+- `FloatSocket.map_range()` and `VectorSocket.map_range()` — remap a socket's values using `MapRange`. Supports `from_min`, `from_max`, `to_min`, `to_max`, `clamp`, `interpolation_type`, and `steps`.
+
+```py
+normalized = value.map_range(0.0, 100.0, 0.0, 1.0)
+remapped_vec = vec.map_range((0,0,0), (1,1,1), (-1,-1,-1), (1,1,1))
+```
+
+- New methods on `FloatSocket`:
+    - `clamp(min=0.0, max=1.0)` — clamp to range via `Clamp`
+    - `sqrt()` — square root
+    - `power(exponent)` — raise to a power
+    - `floor()` / `ceil()` / `round()` — rounding variants
+    - `modulo(divisor)` — floored modulo (always non-negative, consistent with Python `%`)
+    - `wrap(min, max)` — repeat cyclically within a range
+    - `to_radians()` / `to_degrees()` — angle unit conversion
+- New methods on `VectorSocket`:
+    - `cross(other)` — cross product, returns `VectorSocket`
+    - `distance(other)` — Euclidean distance, returns `FloatSocket`
+    - `project(other)` — project onto another vector
+    - `reflect(normal)` — reflect around a normal (*normal* does not need to be normalised)
+- New methods on `IntegerSocket`:
+    - `clamp(min=0, max=1)` — clamp to integer range
+    - `modulo(divisor)` — integer remainder (always non-negative)
+- New method on `MatrixSocket`:
+    - `transform_direction(direction)` — apply the matrix to a direction vector, ignoring translation. Use this instead of `transform()` for normals and tangents.
+
+- Domain factories on `FloatSocket`, `VectorSocket`, `IntegerSocket`, `BooleanSocket`, `RotationSocket`, and `MatrixSocket` — select a domain property, then call the operation. Each call returns a single typed socket.
+    - Domain properties: `.point`, `.edge`, `.face`, `.corner`, `.spline`, `.instance`, `.layer`
+    - All socket types: `.evaluate()` — re-evaluate on the domain via `EvaluateOnDomain`; `.at(i)` — retrieve at an index via `EvaluateAtIndex`
+    - Float/Vector additionally: `.min()`, `.max()`, `.mean()`, `.median()`, `.std_dev()`, `.variance()` (with optional `group_index`)
+    - Integer additionally: `.min()`, `.max()` (with optional `group_index`)
+
+```py
+# Field evaluation — works on all socket types
+position.face.evaluate()       # VectorSocket — position re-evaluated on face domain
+flag.point.at(3)         # BooleanSocket — flag value at point index 3
+rot.edge.evaluate()            # RotationSocket
+
+# Statistics — Float / Vector
+lo = position.point.min()
+mean = curvature.face.mean()
+std_dev = weight.point.std_dev(group_index)
+```
 
 ```py
 fac = g.Value(0.5).o.value
