@@ -1222,7 +1222,7 @@ class PrincipledBSDF(BaseNode):
 
     @property
     def subsurface_method(self) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]:
-        return self.node.subsurface_method  # type: ignore
+        return self.node.subsurface_method  # ty: ignore
 
     @subsurface_method.setter
     def subsurface_method(
@@ -1920,7 +1920,7 @@ class SubsurfaceScattering(BaseNode):
 
     @property
     def falloff(self) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]:
-        return self.node.falloff  # type: ignore
+        return self.node.falloff  # ty: ignore
 
     @falloff.setter
     def falloff(self, value: Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]):

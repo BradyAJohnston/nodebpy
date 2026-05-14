@@ -200,7 +200,7 @@ def restore_multi_input_orders(G: nx.MultiDiGraph[Node]) -> None:
                 for s, t in nx.edge_dfs(SH, base_from_socket)
                 if t == socket and s not in seen
             )
-            as_links[from_socket.bpy].swap_multi_input_sort_id(other)  # type: ignore
+            as_links[from_socket.bpy].swap_multi_input_sort_id(other)
             seen.add(from_socket)
 
 

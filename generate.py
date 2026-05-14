@@ -350,13 +350,14 @@ class PropertyInfo:
     def format_property_accessors(self) -> str:
         name = self.format_name()
         type = self.type_hint()
-        # bpy stubs often have wrong Literals for enum properties (too narrow or wrong values)
-        ignore = (
-            "  # type: ignore"
-            if self.prop_type == "ENUM"
-            and name in ("data_type", "falloff", "subsurface_method", "socket_type")
-            else ""
-        )
+        # bpy stubs often have wrong types for these property categories:
+        #   ENUM: stubs use a wider or incorrect Literal than we declare
+        #   FLOAT tuple: stubs return Euler/Vector/Color (mathutils), not plain tuple
+        needs_ignore = (
+            self.prop_type == "ENUM"
+            and name in ["data_type", "subsurface_method", "falloff", "socket_type"]
+        )  # or (self.prop_type == "FLOAT" and not isinstance(self.default, (int, float)))
+        ignore = "  # ty: ignore" if needs_ignore else ""
         return f"""    @property
 
     def {name}(self) -> {type}:
@@ -786,7 +787,7 @@ def collect_socket_info(
 
 def collect_property_info(node, node_type):
     properties = []
-    props_to_ignore = {"active_index", "active_output"}
+    props_to_ignore = {"active_index", "active_output", "active_item_index"}
     for base in node_type.__bases__:
         if hasattr(base, "bl_rna"):
             for prop in base.bl_rna.properties:

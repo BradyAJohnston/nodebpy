@@ -45,12 +45,12 @@ def frame_padding_of_col(
     ST2 = T.subgraph(chain(clusters2, *[nx.ancestors(T, c) for c in clusters2])).copy()
 
     for *e, d in ST1.edges(data=True):
-        d["weight"] = int(e not in ST2.edges)  # type: ignore
+        d["weight"] = int(e not in ST2.edges)
 
     for *e, d in ST2.edges(data=True):
-        d["weight"] = int(e not in ST1.edges)  # type: ignore
+        d["weight"] = int(e not in ST1.edges)
 
-    dist = nx.dag_longest_path_length(ST1) + nx.dag_longest_path_length(ST2)  # type: ignore
+    dist = nx.dag_longest_path_length(ST1) + nx.dag_longest_path_length(ST2)
     return frame_padding() * dist
 
 

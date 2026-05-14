@@ -134,7 +134,7 @@ class BlurAttribute(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]):

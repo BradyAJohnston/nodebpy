@@ -138,9 +138,9 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             and input.type == "VECTOR"
             and isinstance(value, (int, float))
         ):
-            input.default_value = [value] * len(input.default_value)
+            input.default_value = [value] * len(input.default_value)  # type: ignore
         else:
-            input.default_value = value
+            input.default_value = value  # type: ignore
 
     def _establish_links(self, **kwargs: InputAny):
         input_ids = [input.identifier for input in self.node.inputs]
@@ -165,7 +165,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             elif isinstance(value, NodeSocket):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
-                self._link_from(value.o._best_match(self.i._get(name).type), name)
+                self._link_from(value.o._best_match(self.i._get(name).type), name)  # type: ignore
             else:
                 if name in input_ids:
                     input = self.node.inputs[input_ids.index(name)]

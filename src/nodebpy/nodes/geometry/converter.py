@@ -1575,7 +1575,7 @@ class GetBundleItem(BaseNode):
         "CLOSURE",
         "FONT",
     ]:
-        return self.node.socket_type  # type: ignore
+        return self.node.socket_type  # ty: ignore
 
     @socket_type.setter
     def socket_type(
@@ -1720,7 +1720,7 @@ class HashValue(BaseNode):
     def data_type(
         self,
     ) -> Literal["FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore
 
     @data_type.setter
     def data_type(
@@ -2477,7 +2477,7 @@ class MapRange(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
@@ -3319,7 +3319,7 @@ class Mix(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]):
@@ -3850,7 +3850,7 @@ class RandomValue(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]):
@@ -5027,7 +5027,7 @@ class StoreBundleItem(BaseNode):
         "CLOSURE",
         "FONT",
     ]:
-        return self.node.socket_type  # type: ignore
+        return self.node.socket_type  # ty: ignore
 
     @socket_type.setter
     def socket_type(
@@ -5177,7 +5177,7 @@ class StringToValue(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT"]):
@@ -5508,7 +5508,7 @@ class ValueToString(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT"]):

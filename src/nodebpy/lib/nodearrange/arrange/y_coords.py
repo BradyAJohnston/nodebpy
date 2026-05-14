@@ -317,7 +317,7 @@ def bk_assign_y_coords(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) 
 
     layouts = []
     for dir_x in (-1, 1):
-        G = nx.reverse_view(G)  # type: ignore
+        G = nx.reverse_view(G)
         columns.reverse()
         for dir_y in (-1, 1):
             i = 0

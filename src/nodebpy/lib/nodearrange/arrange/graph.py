@@ -142,7 +142,7 @@ class Node:
 
 
 class _RealNode(Node):
-    node: BlenderNode  # type: ignore
+    node: BlenderNode
 
 
 def is_real(v: Node | Cluster) -> TypeGuard[_RealNode]:
@@ -157,7 +157,7 @@ Edge = tuple[Node, Node]
 MultiEdge = tuple[Node, Node, int]
 
 
-def opposite(v: Node, e: tuple[Node, Node] | tuple[Node, ...]) -> Node:
+def opposite(v: Node, e: Edge | MultiEdge) -> Node:
     return e[0] if v != e[0] else e[1]
 
 
@@ -225,7 +225,7 @@ def add_dummy_nodes_to_edge(
             add_dummy_edge(G, *pair)
 
     u, v, _ = edge
-    d = G.edges[edge]  # type: ignore
+    d = G.edges[edge]
 
     w = dummy_nodes[0]
     if w not in G[u]:

@@ -2521,7 +2521,7 @@ class NamedAttribute(BaseNode):
         "QUATERNION",
         "FLOAT4X4",
     ]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore
 
     @data_type.setter
     def data_type(
