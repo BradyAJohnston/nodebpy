@@ -131,3 +131,11 @@ def test_convert_colorspace_properties():
         node.to_color_space = "sRGB"
         assert node.from_color_space == "scene_linear"
         assert node.to_color_space == "sRGB"
+
+
+def test_simple_compositor_nodes():
+    with c.tree():
+        mix = c.Mix.float()
+        assert mix.data_type == "FLOAT"
+        mix.data_type = "VECTOR"
+        assert mix.data_type == "VECTOR"

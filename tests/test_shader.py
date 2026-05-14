@@ -124,3 +124,11 @@ def test_bsdf_distribution_setter():
         assert glossy.distribution == "BECKMANN"
         glossy.distribution = "GGX"
         assert glossy.distribution == "GGX"
+
+
+def test_specific_shader_nodes():
+    with s.tree():
+        mix = s.Mix.float()
+        assert mix.data_type == "FLOAT"
+        mix.data_type = "VECTOR"
+        assert mix.data_type == "VECTOR"

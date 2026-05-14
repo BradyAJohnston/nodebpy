@@ -203,17 +203,22 @@ def test_geometry_to_instance():
     assert gti._default_input_socket.links[1].from_node == inputs[1].node
 
 
-def test_get_named_grid(snapshot_tree):
+def test_get_named_grid(snapshot):
     with TreeBuilder() as tree:
-        _ = (
+        gng = g.GetNamedGrid(name="density")
+        (
             g.VolumeCube()
-            >> g.GetNamedGrid.float(name="density")
+            >> gng
             >> g.FieldToGrid.float(
                 items={"Position": g.Position(), "value": g.Position() * 2 + 10}
             )
         )
 
-    assert snapshot_tree == tree
+        assert gng.data_type == "FLOAT"
+        gng.data_type = "INT"
+        assert gng.data_type == "INT"
+
+    assert snapshot == tree._repr_markdown_()
 
 
 def test_advect_grid():
@@ -1014,6 +1019,31 @@ def test_grid():
         gde.data_type = "FLOAT"
         assert gde.data_type == "FLOAT"
 
+        prune = g.PruneGrid.vector()
+        assert prune.data_type == "VECTOR"
+        prune.data_type = "FLOAT"
+        assert prune.data_type == "FLOAT"
+
+        sample = g.SampleGrid.float()
+        assert sample.data_type == "FLOAT"
+        sample.data_type = "INT"
+        assert sample.data_type == "INT"
+
+        sgi = g.SampleGridIndex.integer()
+        assert sgi.data_type == "INT"
+        sgi.data_type = "FLOAT"
+        assert sgi.data_type == "FLOAT"
+
+        sng = g.StoreNamedGrid.boolean()
+        assert sng.data_type == "BOOLEAN"
+        sng.data_type = "FLOAT"
+        assert sng.data_type == "FLOAT"
+
+        vox = g.VoxelizeGrid.float()
+        assert vox.data_type == "FLOAT"
+        vox.data_type = "INT"
+        assert vox.data_type == "INT"
+
         idx = g.IndexSwitch.bundle()
         assert idx.data_type == "BUNDLE"
         idx.data_type = "FLOAT"
@@ -1137,6 +1167,41 @@ def test_geometry_nodes():
         assert not res.keep_last_segment
         res.keep_last_segment = True
         assert res.keep_last_segment
+
+        ray = g.Raycast.boolean()
+        assert ray.data_type == "BOOLEAN"
+        ray.data_type = "FLOAT"
+        assert ray.data_type == "FLOAT"
+
+        sns = g.SampleNearestSurface.color()
+        assert sns.data_type == "FLOAT_COLOR"
+        sns.data_type = "FLOAT"
+        assert sns.data_type == "FLOAT"
+
+        suv = g.SampleUVSurface.float()
+        assert suv.data_type == "FLOAT"
+        suv.data_type = "FLOAT_COLOR"
+        assert suv.data_type == "FLOAT_COLOR"
+
+        att = g.NamedAttribute.vector()
+        assert att.data_type == "FLOAT_VECTOR"
+        att.data_type = "FLOAT"
+        assert att.data_type == "FLOAT"
+
+        rot = g.Rotation()
+        assert list(rot.rotation_euler) == [0.0, 0.0, 0.0]  # ty: ignore[invalid-argument-type]
+        rot.rotation_euler = (1.0, 2.0, 3.0)
+        assert list(rot.rotation_euler) == [1.0, 2.0, 3.0]  # ty: ignore[invalid-argument-type]
+
+        vec = g.Vector()
+        assert list(vec.vector) == [0.0, 0.0, 0.0]  # ty: ignore[invalid-argument-type]
+        vec.vector = (1.0, 2.0, 3.0)
+        assert list(vec.vector) == [1.0, 2.0, 3.0]  # ty: ignore[invalid-argument-type]
+
+        blur = g.BlurAttribute.integer()
+        assert blur.data_type == "INT"
+        blur.data_type = "FLOAT"
+        assert blur.data_type == "FLOAT"
 
 
 def test_node_float_input():

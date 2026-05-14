@@ -1250,8 +1250,6 @@ class FormatString(BaseNode, DynamicInputsMixin):
         default_value: float | int | str | None = None,
     ):
         item = self.node.format_items.new(socket_type=type, name=name)
-        if default_value is not None and hasattr(self.i[item.name], "default_value"):
-            self.i[item.name].default_value = default_value
         return self.node.inputs[item.name]
 
     @property
