@@ -8,9 +8,6 @@ authors = [
 ]
 requires-python = ">=3.13"
 license = { text = "GPL-3.0-or-later" }
-dependencies = [
-    "fake-bpy-module>=20260501",
-]
 
 [project.scripts]
 nodebpy = "nodebpy:main"
@@ -31,7 +28,7 @@ build-backend = "uv_build"
 dev = [
     "ipython>=8.0.0",
     "networkx>=3.6.1",
-    "fake-bpy-module>=20260113",
+    "fake-bpy-module>=20260501",
     "jsondiff>=2.2.1",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",

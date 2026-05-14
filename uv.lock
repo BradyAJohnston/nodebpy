@@ -1196,9 +1196,6 @@ wheels = [
 name = "nodebpy"
 version = "0.17.0"
 source = { editable = "." }
-dependencies = [
-    { name = "fake-bpy-module" },
-]
 
 [package.optional-dependencies]
 bpy = [
@@ -1229,14 +1226,13 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.1.0" },
-    { name = "fake-bpy-module", specifier = ">=20260501" },
     { name = "networkx", marker = "extra == 'networkx'", specifier = ">=3.6.1" },
 ]
 provides-extras = ["networkx", "bpy"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "fake-bpy-module", specifier = ">=20260113" },
+    { name = "fake-bpy-module", specifier = ">=20260501" },
     { name = "griffe", specifier = "<2.0.0" },
     { name = "ipython", specifier = ">=8.0.0" },
     { name = "jsondiff", specifier = ">=2.2.1" },
