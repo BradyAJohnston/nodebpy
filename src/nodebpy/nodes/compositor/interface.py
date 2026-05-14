@@ -69,7 +69,13 @@ class EnableOutput(BaseNode):
     def __init__(
         self,
         enable: InputBoolean = False,
-        value: InputFloat = 0.0,
+        value: InputBoolean
+        | InputColor
+        | InputFloat
+        | InputInteger
+        | InputMenu
+        | InputString
+        | InputVector = 0.0,
         *,
         data_type: Literal[
             "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"

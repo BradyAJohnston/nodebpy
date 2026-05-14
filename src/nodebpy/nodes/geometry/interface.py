@@ -176,7 +176,23 @@ class EnableOutput(BaseNode):
     def __init__(
         self,
         enable: InputBoolean = False,
-        value: InputFloat = 0.0,
+        value: InputBoolean
+        | InputBundle
+        | InputClosure
+        | InputCollection
+        | InputColor
+        | InputFloat
+        | InputFont
+        | InputGeometry
+        | InputImage
+        | InputInteger
+        | InputMaterial
+        | InputMatrix
+        | InputMenu
+        | InputObject
+        | InputRotation
+        | InputString
+        | InputVector = 0.0,
         *,
         data_type: Literal[
             "FLOAT",

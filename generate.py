@@ -175,6 +175,7 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "Float",
         "Image",
         "Cryptomatte",
+        "ConvertColorspace",
     ),
     class_name_prefix_strips=[
         "CompositorNode",
@@ -349,10 +350,17 @@ class PropertyInfo:
     def format_property_accessors(self) -> str:
         name = self.format_name()
         type = self.type_hint()
+        # bpy stubs often have wrong Literals for enum properties (too narrow or wrong values)
+        ignore = (
+            "  # type: ignore"
+            if self.prop_type == "ENUM"
+            and name in ("data_type", "falloff", "subsurface_method", "socket_type")
+            else ""
+        )
         return f"""    @property
 
     def {name}(self) -> {type}:
-        return self.node.{self.identifier}
+        return self.node.{self.identifier}{ignore}
 
     @{name}.setter
     def {name}(self, value: {type}):
@@ -380,7 +388,7 @@ class NodeInfo:
     @property
     def node_docs_url(self) -> str | None:
         "Find adn returl the URL for the online Blender documentation for this node"
-        return bpy.types.WM_OT_doc_view_manual._lookup_rna_url(  # type: ignore
+        return bpy.types.WM_OT_doc_view_manual._lookup_rna_url(
             f"bpy.types.{self.bl_idname}", verbose=False
         )
 
@@ -961,14 +969,34 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     all_labels = [socket.label for socket in node_info.inputs]
     sockets_use_same_name = all(label == all_labels[0] for label in all_labels)
 
+    # For sockets that change type across enum states (e.g. a "Value" socket that is
+    # Float in the default state but Vector when data_type="VECTOR"), widen the __init__
+    # parameter to accept all possible types so factory classmethods type-check cleanly.
+    _socket_type_variants: dict[str, set[str]] = {}
+    for s in node_info.inputs:
+        _socket_type_variants.setdefault(s.identifier, set()).add(s.type_hint)
+    for prop in node_info.properties:
+        for enum in prop.enum_items:
+            for s in enum.sockets:
+                if s.identifier in _socket_type_variants:
+                    _socket_type_variants[s.identifier].add(s.type_hint)
+    for enum in node_info.type_socket_enums:
+        for s in enum.sockets:
+            if s.identifier in _socket_type_variants:
+                _socket_type_variants[s.identifier].add(s.type_hint)
+
     for socket in node_info.inputs:
         param_name = get_socket_param_name(socket, sockets_use_same_name)
+        variants = _socket_type_variants[socket.identifier]
+        type_hint = (
+            " | ".join(sorted(variants)) if len(variants) > 1 else socket.type_hint
+        )
 
         if hasattr(socket, "default_value"):
             default = format_python_value(socket.default_value)
         else:
             default = "None"
-        init_params.append(f"{param_name}: {socket.type_hint} = {default}")
+        init_params.append(f"{param_name}: {type_hint} = {default}")
         establish_links_params.append((param_name, socket))
 
     # Add sockets that only appear in certain enum states (e.g. mode="FREE" reveals
@@ -1056,14 +1084,8 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     ]
     enum_methods = node_info.generate_enum_class_methods(config)
 
-    # Add node type annotation
-    node_type_annotation = (
-        f"bpy.types.{node_info.bl_idname}"
-        if node_info.bl_idname.startswith(
-            ("Geometry", "Function", "Shader", "Compositor")
-        )
-        else "bpy.types.Node"
-    )
+    # Add node type annotation — always use specific type so property access is typed
+    node_type_annotation = f"bpy.types.{node_info.bl_idname}"
 
     # Build numpy-style class docstring
     doc_lines = [node_info.description, ""]

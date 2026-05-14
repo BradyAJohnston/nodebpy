@@ -11,7 +11,6 @@ from ._utils import SocketError, _resolve_promotion, _SocketLike
 _RShiftT = TypeVar("_RShiftT")
 
 if TYPE_CHECKING:
-    from ..nodes.geometry import Compare
     from ..types import InputLinkable
     from .accessor import SocketAccessor
     from .node import BaseNode
@@ -107,7 +106,9 @@ class OperatorMixin:
         return _get_socket_linker(self._default_output_socket)._dispatch_unary("negate")
 
     def __abs__(self) -> "FloatSocket | VectorSocket | IntegerSocket":
-        return _get_socket_linker(self._default_output_socket)._dispatch_unary("absolute")
+        return _get_socket_linker(self._default_output_socket)._dispatch_unary(
+            "absolute"
+        )
 
     def _apply_compare_operation(
         self, other: Any, operation: str
@@ -361,12 +362,18 @@ class LinkingMixin:
                 target = node_other.node.inputs[name]
             except KeyError:
                 target = node_other.node.inputs[node_other.i._index(name)]
-            source = self.o._best_match(target.type) if hasattr(self, "o") else self._default_output_socket
+            source = (
+                self.o._best_match(target.type)
+                if hasattr(self, "o")
+                else self._default_output_socket
+            )
         else:
             try:
                 source, target = self._find_best_socket_pair(self, cast(Any, other))
             except SocketError:
-                source, target = cast("LinkingMixin", other)._find_best_socket_pair(self, cast(Any, other))
+                source, target = cast("LinkingMixin", other)._find_best_socket_pair(
+                    self, cast(Any, other)
+                )
 
         self.tree.link(source, target)
         return other

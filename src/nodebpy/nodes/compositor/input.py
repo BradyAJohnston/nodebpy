@@ -484,7 +484,7 @@ class RenderLayers(BaseNode):
 
     @layer.setter
     def layer(self, value: str):
-        self.node.layer = value  # type: ignore
+        self.node.layer = value
 
 
 class SceneTime(BaseNode):

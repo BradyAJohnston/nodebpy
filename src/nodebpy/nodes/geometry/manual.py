@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar, cast
 
 import bpy
 import bpy.types
@@ -1288,7 +1288,7 @@ class JoinStrings(BaseNode):
         super().__init__()
 
         self._establish_links(Delimiter=delimiter)
-        for string in reversed(strings):
+        for string in reversed(list(strings)):
             if isinstance(string, str):
                 from . import String
 
@@ -1785,7 +1785,8 @@ class _MenuSwitchBase(BaseNode, Generic[_T]):
         self._link_args(**items)
         self._establish_links(**key_args)
         if self.node.enum_items:
-            self.node.inputs[0].default_value = self.node.enum_items[0].name  # type: ignore
+            menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
+            menu_socket.default_value = self.node.enum_items[0].name
 
     def _link_args(self, **kwargs: InputAny):
         for key, value in kwargs.items():

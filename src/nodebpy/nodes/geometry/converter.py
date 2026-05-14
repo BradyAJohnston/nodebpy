@@ -631,7 +631,7 @@ class CombineBundle(BaseNode):
     """
 
     _bl_idname = "NodeCombineBundle"
-    node: bpy.types.Node
+    node: bpy.types.NodeCombineBundle
 
     class _Inputs(SocketAccessor):
         pass
@@ -1263,7 +1263,7 @@ class GetBundleItem(BaseNode):
     """
 
     _bl_idname = "NodeGetBundleItem"
-    node: bpy.types.Node
+    node: bpy.types.NodeGetBundleItem
 
     class _Inputs(SocketAccessor):
         bundle: BundleSocket
@@ -1575,7 +1575,7 @@ class GetBundleItem(BaseNode):
         "CLOSURE",
         "FONT",
     ]:
-        return self.node.socket_type
+        return self.node.socket_type  # type: ignore
 
     @socket_type.setter
     def socket_type(
@@ -1661,7 +1661,13 @@ class HashValue(BaseNode):
 
     def __init__(
         self,
-        value: InputInteger = 0,
+        value: InputColor
+        | InputFloat
+        | InputInteger
+        | InputMatrix
+        | InputRotation
+        | InputString
+        | InputVector = 0,
         seed: InputInteger = 0,
         *,
         data_type: Literal[
@@ -1714,7 +1720,7 @@ class HashValue(BaseNode):
     def data_type(
         self,
     ) -> Literal["FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(
@@ -2160,7 +2166,7 @@ class JoinBundle(BaseNode):
     """
 
     _bl_idname = "NodeJoinBundle"
-    node: bpy.types.Node
+    node: bpy.types.NodeJoinBundle
 
     class _Inputs(SocketAccessor):
         bundle: BundleSocket
@@ -2471,7 +2477,7 @@ class MapRange(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
@@ -3313,7 +3319,7 @@ class Mix(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]):
@@ -3844,7 +3850,7 @@ class RandomValue(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]):
@@ -4313,7 +4319,7 @@ class SeparateBundle(BaseNode):
     """
 
     _bl_idname = "NodeSeparateBundle"
-    node: bpy.types.Node
+    node: bpy.types.NodeSeparateBundle
 
     class _Inputs(SocketAccessor):
         bundle: BundleSocket
@@ -4736,7 +4742,7 @@ class StoreBundleItem(BaseNode):
     """
 
     _bl_idname = "NodeStoreBundleItem"
-    node: bpy.types.Node
+    node: bpy.types.NodeStoreBundleItem
 
     class _Inputs(SocketAccessor):
         bundle: BundleSocket
@@ -4761,7 +4767,23 @@ class StoreBundleItem(BaseNode):
         self,
         bundle: InputBundle = None,
         path: InputString = "",
-        item: InputFloat = 0.0,
+        item: InputBoolean
+        | InputBundle
+        | InputClosure
+        | InputCollection
+        | InputColor
+        | InputFloat
+        | InputFont
+        | InputGeometry
+        | InputImage
+        | InputInteger
+        | InputMaterial
+        | InputMatrix
+        | InputMenu
+        | InputObject
+        | InputRotation
+        | InputString
+        | InputVector = 0.0,
         *,
         socket_type: Literal[
             "FLOAT",
@@ -5005,7 +5027,7 @@ class StoreBundleItem(BaseNode):
         "CLOSURE",
         "FONT",
     ]:
-        return self.node.socket_type
+        return self.node.socket_type  # type: ignore
 
     @socket_type.setter
     def socket_type(
@@ -5155,7 +5177,7 @@ class StringToValue(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT"]):
@@ -5462,7 +5484,7 @@ class ValueToString(BaseNode):
 
     def __init__(
         self,
-        value: InputFloat = 0.0,
+        value: InputFloat | InputInteger = 0.0,
         decimals: InputInteger = 0,
         *,
         data_type: Literal["FLOAT", "INT"] = "FLOAT",
@@ -5486,7 +5508,7 @@ class ValueToString(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT"]):

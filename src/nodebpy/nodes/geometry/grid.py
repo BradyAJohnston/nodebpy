@@ -93,7 +93,7 @@ class AdvectGrid(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloat | InputInteger | InputVector = 0.0,
         velocity: InputVector = None,
         time_step: InputFloat = 1.0,
         integration_scheme: InputMenu
@@ -203,7 +203,7 @@ class AdvectGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
@@ -286,7 +286,7 @@ class ClipGrid(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         min_x: InputInteger = 0,
         min_y: InputInteger = 0,
         min_z: InputInteger = 0,
@@ -403,7 +403,7 @@ class ClipGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -824,7 +824,7 @@ class GetNamedGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -934,7 +934,7 @@ class GridDilateErode(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
         tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
         steps: InputInteger = 1,
@@ -1021,7 +1021,7 @@ class GridDilateErode(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -1162,7 +1162,7 @@ class GridInfo(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1193,7 +1193,7 @@ class GridInfo(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -1297,7 +1297,7 @@ class GridMean(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloat | InputInteger | InputVector = 0.0,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
         *,
@@ -1340,7 +1340,7 @@ class GridMean(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
@@ -1399,7 +1399,7 @@ class GridMedian(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloat | InputInteger | InputVector = 0.0,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
         *,
@@ -1442,7 +1442,7 @@ class GridMedian(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
@@ -1575,7 +1575,7 @@ class GridToPoints(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1606,7 +1606,7 @@ class GridToPoints(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2043,9 +2043,9 @@ class PruneGrid(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
-        threshold: InputFloat = 0.01,
+        threshold: InputFloat | InputInteger | InputVector = 0.01,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -2095,7 +2095,7 @@ class PruneGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2498,7 +2498,7 @@ class SampleGrid(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
@@ -2570,7 +2570,7 @@ class SampleGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2635,7 +2635,7 @@ class SampleGridIndex(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         x: InputInteger = 0,
         y: InputInteger = 0,
         z: InputInteger = 0,
@@ -2693,7 +2693,7 @@ class SampleGridIndex(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2752,8 +2752,8 @@ class SetGridBackground(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
-        background: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
+        background: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         update_inactive: InputBoolean = False,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
@@ -2829,7 +2829,7 @@ class SetGridBackground(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2886,7 +2886,7 @@ class SetGridTransform(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         transform: InputMatrix = None,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
@@ -2926,7 +2926,7 @@ class SetGridTransform(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2987,7 +2987,7 @@ class StoreNamedGrid(BaseNode):
         self,
         volume: InputGeometry = None,
         name: InputString = "",
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         *,
         data_type: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"] = "FLOAT",
     ):
@@ -3038,7 +3038,7 @@ class StoreNamedGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]):
@@ -3273,7 +3273,7 @@ class VoxelizeGrid(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -3304,7 +3304,7 @@ class VoxelizeGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
