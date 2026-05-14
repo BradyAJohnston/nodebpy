@@ -382,7 +382,7 @@ class PropertyInfo:
             self.prop_type == "STRING"
             and self.identifier in ["layer", "view", "layer_name"]
         )
-        ignore = "  # type: ignore" if needs_ignore else ""
+        ignore = "  # ty: ignore[invalid-return-type]" if needs_ignore else ""
         return f"""    @property
 
     def {name}(self) -> {getter_type}:
@@ -390,7 +390,7 @@ class PropertyInfo:
 
     @{name}.setter
     def {name}(self, value: {setter_type}):
-        self.node.{self.identifier} = value{ignore}
+        self.node.{self.identifier} = value{" # ty: ignore[invalid-assignment]" if name == "layer" else ""}
 """
 
 

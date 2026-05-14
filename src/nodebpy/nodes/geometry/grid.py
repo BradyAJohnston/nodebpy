@@ -203,7 +203,7 @@ class AdvectGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
@@ -403,7 +403,7 @@ class ClipGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -824,7 +824,7 @@ class GetNamedGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -1021,7 +1021,7 @@ class GridDilateErode(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -1193,7 +1193,7 @@ class GridInfo(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -1340,7 +1340,7 @@ class GridMean(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
@@ -1442,7 +1442,7 @@ class GridMedian(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
@@ -1606,7 +1606,7 @@ class GridToPoints(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2095,7 +2095,7 @@ class PruneGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2570,7 +2570,7 @@ class SampleGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2693,7 +2693,7 @@ class SampleGridIndex(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2829,7 +2829,7 @@ class SetGridBackground(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -2926,7 +2926,7 @@ class SetGridTransform(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
@@ -3038,7 +3038,7 @@ class StoreNamedGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]):
@@ -3304,7 +3304,7 @@ class VoxelizeGrid(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):

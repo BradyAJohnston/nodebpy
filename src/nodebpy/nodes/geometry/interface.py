@@ -360,7 +360,7 @@ class EnableOutput(BaseNode):
         "CLOSURE",
         "FONT",
     ]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(

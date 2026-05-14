@@ -1575,7 +1575,7 @@ class GetBundleItem(BaseNode):
         "CLOSURE",
         "FONT",
     ]:
-        return self.node.socket_type  # type: ignore
+        return self.node.socket_type  # ty: ignore[invalid-return-type]
 
     @socket_type.setter
     def socket_type(
@@ -1720,7 +1720,7 @@ class HashValue(BaseNode):
     def data_type(
         self,
     ) -> Literal["FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(
@@ -3850,7 +3850,7 @@ class RandomValue(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]:
-        return self.node.data_type  # type: ignore
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]):
@@ -5027,7 +5027,7 @@ class StoreBundleItem(BaseNode):
         "CLOSURE",
         "FONT",
     ]:
-        return self.node.socket_type  # type: ignore
+        return self.node.socket_type  # ty: ignore[invalid-return-type]
 
     @socket_type.setter
     def socket_type(
