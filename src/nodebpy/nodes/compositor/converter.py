@@ -406,7 +406,7 @@ class ConvertColorspace(BaseNode):
             "scene_linear",
         ],
     ):
-        self.node.from_color_space = value
+        self.node.from_color_space = value  # type: ignore
 
     @property
     def to_color_space(
@@ -471,7 +471,7 @@ class ConvertColorspace(BaseNode):
             "scene_linear",
         ],
     ):
-        self.node.to_color_space = value
+        self.node.to_color_space = value  # type: ignore
 
 
 class ConvertToDisplay(BaseNode):

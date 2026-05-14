@@ -120,19 +120,19 @@ class OperatorMixin:
     def __lt__(self, other: Any) -> "BooleanSocket":
         return self._apply_compare_operation(other, "less_than")
 
-    def __gt__(self, other: Any) -> "Compare":
+    def __gt__(self, other: Any) -> "BooleanSocket":
         return self._apply_compare_operation(other, "greater_than")
 
-    def __le__(self, other: Any) -> "Compare":
+    def __le__(self, other: Any) -> "BooleanSocket":
         return self._apply_compare_operation(other, "less_equal")
 
-    def __ge__(self, other: Any) -> "Compare":
+    def __ge__(self, other: Any) -> "BooleanSocket":
         return self._apply_compare_operation(other, "greater_equal")
 
-    def __eq__(self, other: Any) -> "Compare":  # type: ignore[override]
+    def __eq__(self, other: Any) -> "BooleanSocket":  # type: ignore
         return self._apply_compare_operation(other, "equal")
 
-    def __ne__(self, other: Any) -> "Compare":  # type: ignore[override]
+    def __ne__(self, other: Any) -> "BooleanSocket":  # type: ignore
         return self._apply_compare_operation(other, "not_equal")
 
     def _apply_boolean_operation(self, other: Any, operation: str):

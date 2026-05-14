@@ -201,7 +201,7 @@ class Image(BaseNode):
 
     @layer.setter
     def layer(self, value: str):
-        self.node.layer = value
+        self.node.layer = value  # type: ignore
 
     @property
     def has_layers(self) -> bool:
@@ -213,7 +213,7 @@ class Image(BaseNode):
 
     @view.setter
     def view(self, value: str):
-        self.node.view = value
+        self.node.view = value  # type: ignore
 
     @property
     def has_views(self) -> bool:
@@ -320,7 +320,7 @@ class Cryptomatte(BaseNode):
 
     @layer_name.setter
     def layer_name(self, value: str):
-        self.node.layer_name = value
+        self.node.layer_name = value  # type: ignore
 
     @property
     def frame_duration(self) -> int:
@@ -368,7 +368,7 @@ class Cryptomatte(BaseNode):
 
     @layer.setter
     def layer(self, value: str):
-        self.node.layer = value
+        self.node.layer = value  # type: ignore
 
     @property
     def has_layers(self) -> bool:
@@ -380,7 +380,7 @@ class Cryptomatte(BaseNode):
 
     @view.setter
     def view(self, value: str):
-        self.node.view = value
+        self.node.view = value  # type: ignore
 
     @property
     def has_views(self) -> bool:
