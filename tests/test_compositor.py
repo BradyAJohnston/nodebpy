@@ -93,3 +93,41 @@ def test_nodes():
         assert idx.data_type == "VECTOR"
         idx.data_type = "FLOAT"
         assert idx.data_type == "FLOAT"
+
+
+def test_enable_output_data_type_setter():
+    with c.tree():
+        node = c.EnableOutput()
+        assert node.data_type == "FLOAT"
+        node.data_type = "INT"
+        assert node.data_type == "INT"
+
+
+def test_image_node_properties():
+    with c.tree():
+        img = c.Image()
+        # has_layers / has_views are readable regardless of scene render layers
+        assert isinstance(img.has_layers, bool)
+        assert isinstance(img.has_views, bool)
+
+
+def test_cryptomatte_layer_name():
+    with c.tree():
+        # layer_name is a plain string property (unlike layer/view which are render enums)
+        crypto = c.Cryptomatte(layer_name="ViewLayer.CryptoObject")
+        assert crypto.layer_name == "ViewLayer.CryptoObject"
+        crypto.layer_name = "ViewLayer.CryptoMaterial"
+        assert crypto.layer_name == "ViewLayer.CryptoMaterial"
+
+
+def test_convert_colorspace_properties():
+    with c.tree():
+        node = c.ConvertColorspace(
+            from_color_space="sRGB", to_color_space="scene_linear"
+        )
+        assert node.from_color_space == "sRGB"
+        assert node.to_color_space == "scene_linear"
+        node.from_color_space = "scene_linear"
+        node.to_color_space = "sRGB"
+        assert node.from_color_space == "scene_linear"
+        assert node.to_color_space == "sRGB"

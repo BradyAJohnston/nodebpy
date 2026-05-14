@@ -233,6 +233,30 @@ def test_advect_grid():
     assert ag.i.integration_scheme.socket.default_value == "Midpoint"
 
 
+def test_grid_node_data_type_setters():
+    with TreeBuilder():
+        grid = g.GetNamedGrid(g.VolumeCube(), name="density")
+
+        adv = g.AdvectGrid(grid)
+        assert adv.data_type == "FLOAT"
+        adv.data_type = "VECTOR"
+        assert adv.data_type == "VECTOR"
+
+        clip = g.ClipGrid(grid)
+        assert clip.data_type == "FLOAT"
+        clip.data_type = "INT"
+        assert clip.data_type == "INT"
+
+
+def test_duplicate_elements_domain_setter():
+    with TreeBuilder():
+        geo = g.IcoSphere()
+        node = g.DuplicateElements(geo)
+        assert node.domain == "POINT"
+        node.domain = "EDGE"
+        assert node.domain == "EDGE"
+
+
 def test_sdf_grid_boolean():
     with TreeBuilder() as tree:
         trio = [g.PointsToSDFGrid() for _ in range(3)]

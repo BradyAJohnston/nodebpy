@@ -109,3 +109,18 @@ def test_nodes():
         assert norm.convention == "OPENGL"
         norm.convention = "DIRECTX"
         assert norm.convention == "DIRECTX"
+
+
+def test_bsdf_distribution_setter():
+    with s.tree():
+        glass = s.GlassBSDF()
+        glass.distribution = "BECKMANN"
+        assert glass.distribution == "BECKMANN"
+        glass.distribution = "GGX"
+        assert glass.distribution == "GGX"
+
+        glossy = s.GlossyBSDF()
+        glossy.distribution = "BECKMANN"
+        assert glossy.distribution == "BECKMANN"
+        glossy.distribution = "GGX"
+        assert glossy.distribution == "GGX"
