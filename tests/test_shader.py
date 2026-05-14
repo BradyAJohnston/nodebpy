@@ -132,3 +132,13 @@ def test_specific_shader_nodes():
         assert mix.data_type == "FLOAT"
         mix.data_type = "VECTOR"
         assert mix.data_type == "VECTOR"
+
+        bsdf = s.PrincipledBSDF()
+        assert bsdf.subsurface_method == "RANDOM_WALK"
+        bsdf.subsurface_method = "BURLEY"
+        assert bsdf.subsurface_method == "BURLEY"
+
+        sub = s.SubsurfaceScattering()
+        assert sub.falloff == "RANDOM_WALK"
+        sub.falloff = "BURLEY"
+        assert sub.falloff == "BURLEY"

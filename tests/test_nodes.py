@@ -1203,6 +1203,31 @@ def test_geometry_nodes():
         blur.data_type = "FLOAT"
         assert blur.data_type == "FLOAT"
 
+        hash = g.HashValue.matrix()
+        assert hash.data_type == "MATRIX"
+        hash.data_type = "INT"
+        assert hash.data_type == "INT"
+
+        rand = g.RandomValue.vector()
+        assert rand.data_type == "FLOAT_VECTOR"
+        rand.data_type = "INT"
+        assert rand.data_type == "INT"
+
+        sgb = g.SetGridBackground.integer()
+        assert sgb.data_type == "INT"
+        sgb.data_type = "FLOAT"
+        assert sgb.data_type == "FLOAT"
+
+        sgt = g.SetGridTransform.integer()
+        assert sgt.data_type == "INT"
+        sgt.data_type = "FLOAT"
+        assert sgt.data_type == "FLOAT"
+
+        eo = g.EnableOutput.closure()
+        assert eo.data_type == "CLOSURE"
+        eo.data_type = "FLOAT"
+        assert eo.data_type == "FLOAT"
+
 
 def test_node_float_input():
     with g.tree():
