@@ -1,6 +1,19 @@
 ---
 title: Changelog
 ---
+## Unreleased
+
+### Added
+- Pre-commit hooks for `ruff` and `ty` checks and auto-formatting.
+- `ty` type checking for the full `src/` directory for type safety
+
+
+### Fixed
+-
+
+### Changed
+-
+
 ## v0.17.0 - 2026-05-13
 
 ### Enhancements
