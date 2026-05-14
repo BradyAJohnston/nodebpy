@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from types import EllipsisType
-from typing import TYPE_CHECKING, Any, TypeVar, overload
+from typing import TYPE_CHECKING, Any, TypeVar, cast, overload
 
 from bpy.types import NodeLink, NodeSocket
 
@@ -13,6 +13,7 @@ _RShiftT = TypeVar("_RShiftT")
 if TYPE_CHECKING:
     from ..nodes.geometry import Compare
     from ..types import InputLinkable
+    from .accessor import SocketAccessor
     from .node import BaseNode
     from .socket import (
         BooleanSocket,
@@ -35,104 +36,105 @@ class OperatorMixin:
 
     __array_ufunc__ = None
 
+    if TYPE_CHECKING:
+
+        @property
+        def _default_output_socket(self) -> "NodeSocket": ...
+
     def _apply_math_operation(
         self, other: Any, operation: str, reverse: bool = False
     ) -> "FloatSocket | VectorSocket | IntegerSocket":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
-            reverse,  # type: ignore[attr-defined]
+            reverse,
         )
         return _get_socket_linker(socket)._dispatch_math(other, operation, reverse)
 
-    def __mul__(self, other: Any) -> "FloatSocket":
+    def __mul__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "multiply")
 
-    def __rmul__(self, other: Any) -> "FloatSocket":
+    def __rmul__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "multiply", reverse=True)
 
-    def __truediv__(self, other: Any) -> "FloatSocket":
+    def __truediv__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "divide")
 
-    def __rtruediv__(self, other: Any) -> "FloatSocket":
+    def __rtruediv__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "divide", reverse=True)
 
-    def __add__(self, other: Any) -> "FloatSocket":
+    def __add__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "add")
 
-    def __radd__(self, other: Any) -> "FloatSocket":
+    def __radd__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "add", reverse=True)
 
-    def __sub__(self, other: Any) -> "FloatSocket":
+    def __sub__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "subtract")
 
-    def __rsub__(self, other: Any) -> "FloatSocket":
+    def __rsub__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "subtract", reverse=True)
 
-    def __pow__(self, other: Any) -> "FloatSocket":
+    def __pow__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "power")
 
-    def __rpow__(self, other: Any) -> "FloatSocket":
+    def __rpow__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "power", reverse=True)
 
-    def __mod__(self, other: Any) -> "FloatSocket":
+    def __mod__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "modulo")
 
-    def __rmod__(self, other: Any) -> "FloatSocket":
+    def __rmod__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "modulo", reverse=True)
 
-    def __floordiv__(self, other: Any) -> "FloatSocket":
+    def __floordiv__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
-            False,  # type: ignore[attr-defined]
+            False,
         )
         return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
 
-    def __rfloordiv__(self, other: Any) -> "FloatSocket":
+    def __rfloordiv__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
-            True,  # type: ignore[attr-defined]
+            True,
         )
         return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
 
-    def __neg__(self) -> "FloatSocket":
-        return _get_socket_linker(self._default_output_socket)._dispatch_unary(  # type: ignore[attr-defined]
-            "negate"
-        )
+    def __neg__(self) -> "FloatSocket | VectorSocket | IntegerSocket":
+        return _get_socket_linker(self._default_output_socket)._dispatch_unary("negate")
 
-    def __abs__(self) -> "FloatSocket":
-        return _get_socket_linker(self._default_output_socket)._dispatch_unary(  # type: ignore[attr-defined]
-            "absolute"
-        )
+    def __abs__(self) -> "FloatSocket | VectorSocket | IntegerSocket":
+        return _get_socket_linker(self._default_output_socket)._dispatch_unary("absolute")
 
     def _apply_compare_operation(
         self, other: Any, operation: str
     ) -> "FloatSocket | BooleanSocket":
         socket, other, _ = _resolve_promotion(
-            self._default_output_socket,  # type: ignore[attr-defined]
+            self._default_output_socket,
             other,
             False,
         )
         return _get_socket_linker(socket)._dispatch_compare(other, operation)
 
-    def __lt__(self, other: Any) -> "BooleanSocket":
+    def __lt__(self, other: Any) -> "FloatSocket | BooleanSocket":
         return self._apply_compare_operation(other, "less_than")
 
-    def __gt__(self, other: Any) -> "BooleanSocket":
+    def __gt__(self, other: Any) -> "FloatSocket | BooleanSocket":
         return self._apply_compare_operation(other, "greater_than")
 
-    def __le__(self, other: Any) -> "BooleanSocket":
+    def __le__(self, other: Any) -> "FloatSocket | BooleanSocket":
         return self._apply_compare_operation(other, "less_equal")
 
-    def __ge__(self, other: Any) -> "BooleanSocket":
+    def __ge__(self, other: Any) -> "FloatSocket | BooleanSocket":
         return self._apply_compare_operation(other, "greater_equal")
 
-    def __eq__(self, other: Any) -> "BooleanSocket":  # type: ignore
+    def __eq__(self, other: Any) -> "FloatSocket | BooleanSocket":  # type: ignore
         return self._apply_compare_operation(other, "equal")
 
-    def __ne__(self, other: Any) -> "BooleanSocket":  # type: ignore
+    def __ne__(self, other: Any) -> "FloatSocket | BooleanSocket":  # type: ignore
         return self._apply_compare_operation(other, "not_equal")
 
     def _apply_boolean_operation(self, other: Any, operation: str):
@@ -146,7 +148,7 @@ class OperatorMixin:
     def __rand__(self, other: Any):
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_and(other, self)
+        return BooleanMath.l_and(other, cast(Any, self))
 
     def __or__(self, other: Any):
         return self._apply_boolean_operation(other, "l_or")
@@ -154,7 +156,7 @@ class OperatorMixin:
     def __ror__(self, other: Any):
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_or(other, self)
+        return BooleanMath.l_or(other, cast(Any, self))
 
     def __xor__(self, other: Any):
         return self._apply_boolean_operation(other, "not_equal")
@@ -162,12 +164,12 @@ class OperatorMixin:
     def __rxor__(self, other: Any):
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.not_equal(other, self)
+        return BooleanMath.not_equal(other, cast(Any, self))
 
     def __invert__(self):
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_not(self)
+        return BooleanMath.l_not(cast(Any, self))
 
     @staticmethod
     def _cast_to_matrix(value) -> MatrixSocket:
@@ -214,6 +216,20 @@ class LinkingMixin:
 
     tree: "TreeBuilder"
 
+    if TYPE_CHECKING:
+        import bpy
+
+        node: bpy.types.Node
+
+        @property
+        def i(self) -> "SocketAccessor": ...
+
+        @property
+        def o(self) -> "SocketAccessor": ...
+
+        @property
+        def _default_output_socket(self) -> "NodeSocket": ...
+
     def _source_socket(self, node: "InputLinkable | Socket | NodeSocket") -> NodeSocket:
         assert node is not None
         if isinstance(node, NodeSocket):
@@ -254,8 +270,12 @@ class LinkingMixin:
 
         if isinstance(target, BaseNode):
             inputs = target.i._available
-        else:
+        elif isinstance(target, Socket):
+            inputs = [target.socket]
+        elif isinstance(target, NodeSocket):
             inputs = [target]
+        else:
+            raise TypeError(f"Cannot get inputs from {type(target)}")
 
         # NodeReroute adapts its type to whatever is linked — skip type matching
         if getattr(getattr(target, "node", None), "bl_idname", None) == "NodeReroute":
@@ -291,8 +311,10 @@ class LinkingMixin:
         if possible_combos:
             return sorted(possible_combos, key=lambda x: x[0])[0][1]
 
+        src_name = getattr(getattr(source, "node", None), "name", repr(source))
+        tgt_name = getattr(getattr(target, "node", None), "name", repr(target))
         raise SocketError(
-            f"Cannot link any output from {source.node.name} to any input of {target.node.name}. "  # type: ignore[union-attr]
+            f"Cannot link any output from {src_name} to any input of {tgt_name}. "
             f"Available output types: {[f'{o.name}:{o.type}' for o in outputs]}, "
             f"Available input types: {[f'{i.name}:{i.type}' for i in inputs]}"
         )
@@ -333,17 +355,18 @@ class LinkingMixin:
             source = self._default_output_socket
             target = other.socket
         elif getattr(other, "_placeholder_inputs", None):
-            name = other._placeholder_inputs.pop(0)
+            node_other = cast("BaseNode", other)
+            name = node_other._placeholder_inputs.pop(0)
             try:
-                target = other.node.inputs[name]
+                target = node_other.node.inputs[name]
             except KeyError:
-                target = other.node.inputs[other.i._index(name)]
-            source = self.o._best_match(target.type) if hasattr(self, "o") else self
+                target = node_other.node.inputs[node_other.i._index(name)]
+            source = self.o._best_match(target.type) if hasattr(self, "o") else self._default_output_socket
         else:
             try:
-                source, target = self._find_best_socket_pair(self, other)
+                source, target = self._find_best_socket_pair(self, cast(Any, other))
             except SocketError:
-                source, target = other._find_best_socket_pair(self, other)
+                source, target = cast("LinkingMixin", other)._find_best_socket_pair(self, cast(Any, other))
 
         self.tree.link(source, target)
         return other
