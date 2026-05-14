@@ -7,6 +7,7 @@ from .manual import (
     Float,
     Image,
     Cryptomatte,
+    ConvertColorspace,
 )
 from ..geometry.color import (
     Gamma,
@@ -117,7 +118,6 @@ from .matte import (
 from .converter import (
     AlphaConvert,
     CombineColor,
-    ConvertColorspace,
     ConvertToDisplay,
     IDMask,
     IndexSwitch,

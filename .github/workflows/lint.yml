@@ -1,0 +1,30 @@
+name: Lint & Type Check
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: ruff format
+        run: uv run ruff format --check src/ generate.py
+
+      - name: ruff check
+        run: uv run ruff check src/ generate.py
+
+      - name: ty check
+        run: uv run ty check src/

@@ -22,7 +22,6 @@ from ...types import (
     InputString,
     InputFloat,
     InputVector,
-    InputAny,
 )
 
 
@@ -78,7 +77,7 @@ class BlurAttribute(BaseNode):
 
     def __init__(
         self,
-        value: InputAny = 0.0,
+        value: InputColor | InputFloat | InputInteger | InputVector = 0.0,
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
         *,
@@ -135,7 +134,7 @@ class BlurAttribute(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]:
-        return self.node.data_type
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]):

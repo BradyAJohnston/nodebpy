@@ -132,7 +132,7 @@ def compute_cut_values(H: nx.MultiDiGraph[Node], T: nx.MultiDiGraph[Node]) -> No
 
 
 def feasible_tree(H: nx.MultiDiGraph[Node]) -> nx.MultiDiGraph[Node]:
-    generations = nx.topological_generations(nx.reverse_view(H))  # type: ignore
+    generations = nx.topological_generations(nx.reverse_view(H))
     for i, col in enumerate(reversed(tuple(generations))):
         for v in col:
             v.rank = i
@@ -254,7 +254,7 @@ def compute_ranks(CG: ClusterGraph) -> None:
             c.nesting_level = i
 
     H = get_nesting_graph(CG)
-    nx.set_edge_attributes(H, 1, "weight")  # type: ignore
+    nx.set_edge_attributes(H, 1, "weight")
 
     T = feasible_tree(H)
     i = 0

@@ -60,10 +60,8 @@ class OtherVertex(CustomGeometryGroup):
 
         edge_index = EdgesOfVertex(vertex_index, sort_index=edge_number).o.edge_index
         edge_vertices = EdgeVertices()
-        v1, v2 = [
-            v.edge.at(edge_index)
-            for v in [edge_vertices.o.vertex_index_1, edge_vertices.o.vertex_index_2]
-        ]
+        v1 = edge_vertices.o.vertex_index_1.edge.at(edge_index)
+        v2 = edge_vertices.o.vertex_index_2.edge.at(edge_index)
         index = Switch.integer(vertex_index == v1, v1, v2)
 
         index >> tree.outputs.integer("Other Vertex")

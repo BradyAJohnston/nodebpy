@@ -4174,7 +4174,13 @@ class Raycast(BaseNode):
     def __init__(
         self,
         target_geometry: InputGeometry = None,
-        attribute: InputFloat = 0.0,
+        attribute: InputBoolean
+        | InputColor
+        | InputFloat
+        | InputInteger
+        | InputMatrix
+        | InputRotation
+        | InputVector = 0.0,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: InputVector = None,
         ray_direction: InputVector = None,
@@ -4361,7 +4367,7 @@ class Raycast(BaseNode):
         "QUATERNION",
         "FLOAT4X4",
     ]:
-        return self.node.data_type
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(
@@ -4916,7 +4922,13 @@ class SampleNearestSurface(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        value: InputFloat = 0.0,
+        value: InputBoolean
+        | InputColor
+        | InputFloat
+        | InputInteger
+        | InputMatrix
+        | InputRotation
+        | InputVector = 0.0,
         group_id: InputInteger = 0,
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
@@ -5087,7 +5099,7 @@ class SampleNearestSurface(BaseNode):
         "QUATERNION",
         "FLOAT4X4",
     ]:
-        return self.node.data_type
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(
@@ -5168,7 +5180,13 @@ class SampleUVSurface(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        value: InputFloat = 0.0,
+        value: InputBoolean
+        | InputColor
+        | InputFloat
+        | InputInteger
+        | InputMatrix
+        | InputRotation
+        | InputVector = 0.0,
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
         *,
@@ -5323,7 +5341,7 @@ class SampleUVSurface(BaseNode):
         "QUATERNION",
         "FLOAT4X4",
     ]:
-        return self.node.data_type
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(
@@ -7096,7 +7114,7 @@ class SetSelection(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean | InputFloat = True,
         *,
         domain: Literal["POINT", "EDGE", "FACE", "CURVE"] = "POINT",
         selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",

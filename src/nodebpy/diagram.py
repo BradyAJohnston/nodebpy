@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import bpy
 from bpy.types import Node
 
 _COLOR_CLASS_MAP = {
@@ -22,8 +23,9 @@ def _node_css_class(node: Node) -> str:
 
 
 def _node_label(node: Node) -> str:
-    if hasattr(node, "node_tree") and node.node_tree:
-        label = node.node_tree.name.replace('"', "'")
+    node_tree = getattr(node, "node_tree", None)
+    if isinstance(node_tree, bpy.types.NodeTree):
+        label = node_tree.name.replace('"', "'")
     else:
         label = node.bl_label.replace('"', "'")
 

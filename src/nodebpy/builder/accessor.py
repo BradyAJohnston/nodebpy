@@ -103,10 +103,12 @@ class SocketAccessor:
     def _node(self) -> bpy.types.Node:
         """The node this accessor is associated with."""
         if isinstance(self._collection, list):
+            assert self._collection[0].node is not None
             return self._collection[0].node
         # bpy NodeInputs/NodeOutputs.id_data returns the NodeTree (top-level ID),
         # not the Node. Retrieve the node via the first socket instead.
         for s in self._collection:
+            assert s.node is not None
             return s.node
         return self._collection.data  # empty collection fallback
 

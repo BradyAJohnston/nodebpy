@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
+from mathutils import Vector
+
 from ...builder import (
     BaseNode as BaseNode,
     SocketAccessor,
@@ -452,11 +454,11 @@ class SkyTexture(BaseNode):
         self.node.ozone_density = value
 
     @property
-    def sun_direction(self) -> tuple[float, float, float]:
+    def sun_direction(self) -> Vector:
         return self.node.sun_direction
 
     @sun_direction.setter
-    def sun_direction(self, value: tuple[float, float, float]):
+    def sun_direction(self, value: Vector | tuple[float, float, float]):
         self.node.sun_direction = value
 
     @property

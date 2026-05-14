@@ -2,6 +2,7 @@ import math
 from functools import reduce
 from itertools import combinations, product
 from operator import and_, or_
+from typing import cast
 
 import bpy
 
@@ -468,8 +469,9 @@ def test_import_microscopy_meshes():
             group_input.outputs["Channel Affine Matrix"],
             transform_geometry.inputs["Transform"],
         )
-
-        include_switch = nodes.new("GeometryNodeSwitch")
+        include_switch = cast(
+            bpy.types.GeometryNodeSwitch, nodes.new("GeometryNodeSwitch")
+        )
         include_switch.name = "Include Switch"
         include_switch.location = (2030, -150)
         include_switch.input_type = "GEOMETRY"
@@ -551,7 +553,7 @@ def test_import_microscopy_volume_nodebpy_node_group(snapshot):
 
         with g.Frame("Normalize Grid"):
             grid = g.GetNamedGrid.float(vdb, grid_name).o.grid
-            grid_normalised = g.MapRange.float(grid, min, max, 0.0, 1.0)
+            grid_normalised = grid.map_range(min, max, 0.0, 1.0)
             grid = normalized.switch.float(
                 grid_normalised * original_max,
                 grid_normalised,

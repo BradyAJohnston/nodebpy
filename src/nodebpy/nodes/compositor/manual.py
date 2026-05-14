@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Generic, Literal
 
 from bpy.types import (
+    CompositorNodeConvertColorSpace,
     CompositorNodeCryptomatteV2,
     CompositorNodeImage,
     CompositorNodeTree,
@@ -201,7 +202,7 @@ class Image(BaseNode):
 
     @layer.setter
     def layer(self, value: str):
-        self.node.layer = value
+        self.node.layer = value  # type: ignore
 
     @property
     def has_layers(self) -> bool:
@@ -213,7 +214,7 @@ class Image(BaseNode):
 
     @view.setter
     def view(self, value: str):
-        self.node.view = value
+        self.node.view = value  # type: ignore
 
     @property
     def has_views(self) -> bool:
@@ -320,7 +321,7 @@ class Cryptomatte(BaseNode):
 
     @layer_name.setter
     def layer_name(self, value: str):
-        self.node.layer_name = value
+        self.node.layer_name = value  # type: ignore
 
     @property
     def frame_duration(self) -> int:
@@ -368,7 +369,7 @@ class Cryptomatte(BaseNode):
 
     @layer.setter
     def layer(self, value: str):
-        self.node.layer = value
+        self.node.layer = value  # type: ignore
 
     @property
     def has_layers(self) -> bool:
@@ -380,8 +381,115 @@ class Cryptomatte(BaseNode):
 
     @view.setter
     def view(self, value: str):
-        self.node.view = value
+        self.node.view = value  # type: ignore
 
     @property
     def has_views(self) -> bool:
         return self.node.has_views
+
+
+_ColorSpaces = Literal[
+    "ACES 1.3 sRGB",
+    "ACES 2.0 sRGB",
+    "ACES2065-1",
+    "ACEScc",
+    "ACEScct",
+    "ACEScg",
+    "AgX Base sRGB",
+    "AgX Log",
+    "Display P3",
+    "Filmic Log",
+    "Filmic sRGB",
+    "Khronos PBR Neutral sRGB",
+    "Linear CIE-XYZ D65",
+    "Linear CIE-XYZ E",
+    "Linear DCI-P3 D65",
+    "Linear FilmLight E-Gamut",
+    "Linear Rec.2020",
+    "Linear Rec.709",
+    "Non-Color",
+    "Rec.1886",
+    "Rec.2020",
+    "Rec.2100-HLG",
+    "Rec.2100-PQ",
+    "sRGB",
+    "scene_linear",
+]
+
+
+class ConvertColorspace(BaseNode):
+    """
+    Convert between color spaces
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+
+    Outputs
+    -------
+    o.image : ColorSocket
+        Image
+    """
+
+    _bl_idname = "CompositorNodeConvertColorSpace"
+    node: CompositorNodeConvertColorSpace
+
+    class _Inputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    class _Outputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        image: InputColor = None,
+        *,
+        from_color_space: _ColorSpaces = "scene_linear",
+        to_color_space: _ColorSpaces = "scene_linear",
+    ):
+        super().__init__()
+        key_args = {"Image": image}
+        self.from_color_space = from_color_space
+        self.to_color_space = to_color_space
+        self._establish_links(**key_args)
+
+    @property
+    def from_color_space(
+        self,
+    ) -> _ColorSpaces:
+        return self.node.from_color_space  # ty: ignore[invalid-return-type]
+
+    @from_color_space.setter
+    def from_color_space(
+        self,
+        value: _ColorSpaces,
+    ):
+        self.node.from_color_space = value  # ty: ignore[invalid-assignment]
+
+    @property
+    def to_color_space(
+        self,
+    ) -> _ColorSpaces:
+        return self.node.to_color_space  # ty: ignore[invalid-return-type]
+
+    @to_color_space.setter
+    def to_color_space(
+        self,
+        value: _ColorSpaces,
+    ):
+        self.node.to_color_space = value  # ty: ignore[invalid-assignment]

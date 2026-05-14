@@ -359,13 +359,16 @@ class ForEachGeometryElementInput(BaseZoneInput):
 
     @property
     def items(self) -> bpy.types.NodeGeometryForeachGeometryElementInputItems:
+        assert isinstance(
+            self.output, bpy.types.GeometryNodeForeachGeometryElementOutput
+        )
         return self.output.input_items
 
 
 class ForEachGeometryElementOutput(BaseZoneOutput):
     """For Each Geometry Element Output node"""
 
-    _socket_data_types = [
+    _socket_data_types: tuple[str, ...] = (
         "VALUE",
         "INT",
         "BOOLEAN",
@@ -373,7 +376,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         "RGBA",
         "ROTATION",
         "MATRIX",
-    ]
+    )
     _type_map = {"VALUE": "FLOAT"}
 
     _bl_idname = "GeometryNodeForeachGeometryElementOutput"
@@ -422,7 +425,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         self, suffix: str, sockets: Iterable[bpy.types.NodeSocket]
     ) -> bpy.types.NodeSocket:
         idx = [o.identifier for o in sockets].index(f"__extend__{suffix}") - 1
-        return sockets[idx]
+        return list(sockets)[idx]
 
     def capture(
         self, value: InputLinkable, domain: _AttributeDomains = "POINT"
@@ -434,13 +437,13 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
 
     def capture_generated(self, value: InputLinkable) -> SocketLinker:
         self._socket_data_types = tuple(list(self._socket_data_types) + ["GEOMETRY"])
-        self._add_socket = self._add_socket_generated
+        self._add_socket = self._add_socket_generated  # type: ignore
         item_dict = self._add_inputs(value)
         self._establish_links(**item_dict)
         self._socket_data_types = tuple(
             [x for x in self._socket_data_types if x != "GEOMETRY"]
         )
-        self._add_socket = self._add_socket_main
+        self._add_socket = self._add_socket_main  # type: ignore
         return SocketLinker(self._latest("generation", self.node.outputs))
 
     def _add_socket_main(self, name: str, type: _BakeDataTypes):

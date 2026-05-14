@@ -47,7 +47,7 @@ class EnableOutput(BaseNode):
     """
 
     _bl_idname = "NodeEnableOutput"
-    node: bpy.types.Node
+    node: bpy.types.NodeEnableOutput
 
     class _Inputs(SocketAccessor):
         enable: BooleanSocket
@@ -69,7 +69,13 @@ class EnableOutput(BaseNode):
     def __init__(
         self,
         enable: InputBoolean = False,
-        value: InputFloat = 0.0,
+        value: InputBoolean
+        | InputColor
+        | InputFloat
+        | InputInteger
+        | InputMenu
+        | InputString
+        | InputVector = 0.0,
         *,
         data_type: Literal[
             "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"
@@ -133,7 +139,7 @@ class EnableOutput(BaseNode):
     def data_type(
         self,
     ) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"]:
-        return self.node.data_type
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(

@@ -13,7 +13,7 @@ from nodebpy.builder import (
     IntegerSocket,
     VectorSocket,
 )
-from nodebpy.builder._utils import normalize_name
+from nodebpy.builder._utils import SocketError, normalize_name
 
 # ---------------------------------------------------------------------------
 # _utils.py
@@ -380,6 +380,22 @@ def test_find_best_socket_pair_bad_source_raises():
     with TreeBuilder("PairBadSrc"):
         with pytest.raises(TypeError):
             g.Position()._find_best_socket_pair(42, g.Position())
+
+
+def test_find_best_socket_pair_bad_target_raises():
+    """non-inputs, non-NodeSocket target raises TypeError."""
+    with TreeBuilder("PairBadTgt"):
+        with pytest.raises(TypeError):
+            g.Position()._find_best_socket_pair(g.Position(), 42)
+
+
+def test_find_best_socket_pair_no_compatible_sockets_raises():
+    """SocketError is raised when source and target have no compatible socket pair."""
+    with TreeBuilder("PairIncompat"):
+        with pytest.raises(SocketError):
+            # Position outputs Vector; BooleanMath.l_and has only Boolean inputs —
+            # no compatible pair exists so _find_best_socket_pair raises SocketError.
+            g.Position() >> g.Switch.geometry(False, ...)
 
 
 def test_rshift_fallback_path():

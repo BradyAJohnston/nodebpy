@@ -102,7 +102,7 @@ def crossing_reduction_graph(
     G_h = nx.MultiDiGraph()
     G_h.add_nodes_from(LT[h])
     TC = reflexive_transitive_closure(LT)
-    for s, t, k, d in G.in_edges(TC[h], data=True, keys=True):  # type: ignore
+    for s, t, k, d in G.in_edges(TC[h], data=True, keys=True):
         c = next(c for c in TC.pred[t] if c in LT[h])
 
         input_k = TO_SOCKET
@@ -166,7 +166,7 @@ class _CrossingReductionGraph:
                     c,
                     weight=(0.5 * _BALANCING_FAC) * fac,
                     from_socket=Socket(border_v, 0, is_forwards),
-                    to_socket=Socket(c, 0, not is_forwards),  # type: ignore
+                    to_socket=Socket(c, 0, not is_forwards),
                 )
 
             bordered_nodes = [
@@ -433,7 +433,7 @@ def get_cross_count(H: _CrossingReductionGraph) -> int:
     return cross_weight
 
 
-def get_new_col_order(v: Node | Cluster, LT: _MixedGraph) -> Iterator[Node]:
+def get_new_col_order(v: Node | Cluster, LT: _MixedGraph) -> Iterator[Node | Cluster]:
     if v.type == Kind.CLUSTER:
         for w in sorted(LT[v], key=get_barycenter):
             yield from get_new_col_order(w, LT)
@@ -453,7 +453,7 @@ def sort_reduced_free_columns(
 
         def pos(v: Node | Cluster) -> int:
             w = non_cluster_descendant(H.free_LT, v) if v.type == Kind.CLUSTER else v
-            return H.free_col.index(w)
+            return H.free_col.index(cast(Node, w))
 
         for H in crossing_reduction_graphs:
             H.reduced_free_col.sort(key=pos)
@@ -530,7 +530,7 @@ def minimize_crossings(G: nx.MultiDiGraph[Node], T: _MixedGraph) -> None:
 
     forward_items = crossing_reduction_items(trees, G_, True)
 
-    G__ = cast("nx.MultiDiGraph[Node]", nx.reverse_view(G_))  # type: ignore
+    G__ = cast("nx.MultiDiGraph[Node]", nx.reverse_view(G_))
     backward_items = crossing_reduction_items(reversed(trees), G__, False)
 
     # -------------------------------------------------------------------
