@@ -559,11 +559,13 @@ class SocketContext:
         return self._wrap(ShaderSocket, iface)
 
     def __len__(self) -> int:
+        assert self.tree.interface is not None
         return len(
             list(
                 item
                 for item in self.tree.interface.items_tree
-                if item.in_out == self._direction
+                if isinstance(item, bpy.types.NodeTreeInterfaceSocket)
+                and item.in_out == self._direction
             )
         )
 

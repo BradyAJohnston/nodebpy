@@ -359,6 +359,9 @@ class ForEachGeometryElementInput(BaseZoneInput):
 
     @property
     def items(self) -> bpy.types.NodeGeometryForeachGeometryElementInputItems:
+        assert isinstance(
+            self.output, bpy.types.GeometryNodeForeachGeometryElementOutput
+        )
         return self.output.input_items
 
 

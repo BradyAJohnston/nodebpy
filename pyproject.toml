@@ -8,6 +8,9 @@ authors = [
 ]
 requires-python = ">=3.13"
 license = { text = "GPL-3.0-or-later" }
+dependencies = [
+    "fake-bpy-module>=20260501",
+]
 
 [project.scripts]
 nodebpy = "nodebpy:main"

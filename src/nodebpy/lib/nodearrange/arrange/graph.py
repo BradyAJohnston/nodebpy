@@ -157,7 +157,7 @@ Edge = tuple[Node, Node]
 MultiEdge = tuple[Node, Node, int]
 
 
-def opposite(v: Node, e: tuple[Node, Node] | tuple[Node, Node, ...]) -> Node:
+def opposite(v: Node, e: tuple[Node, Node] | tuple[Node, ...]) -> Node:
     return e[0] if v != e[0] else e[1]
 
 

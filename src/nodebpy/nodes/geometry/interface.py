@@ -154,7 +154,7 @@ class EnableOutput(BaseNode):
     """
 
     _bl_idname = "NodeEnableOutput"
-    node: bpy.types.Node
+    node: bpy.types.NodeEnableOutput
 
     class _Inputs(SocketAccessor):
         enable: BooleanSocket
@@ -344,7 +344,7 @@ class EnableOutput(BaseNode):
         "CLOSURE",
         "FONT",
     ]:
-        return self.node.data_type
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(
@@ -378,7 +378,7 @@ class GroupInput(BaseNode):
     """
 
     _bl_idname = "NodeGroupInput"
-    node: bpy.types.Node
+    node: bpy.types.NodeGroupInput
 
     class _Inputs(SocketAccessor):
         pass
@@ -406,7 +406,7 @@ class GroupOutput(BaseNode):
     """
 
     _bl_idname = "NodeGroupOutput"
-    node: bpy.types.Node
+    node: bpy.types.NodeGroupOutput
 
     class _Inputs(SocketAccessor):
         pass

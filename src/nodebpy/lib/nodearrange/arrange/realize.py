@@ -39,7 +39,7 @@ def is_safe_to_remove(v: Node) -> bool:
             return False
 
     return all(
-        s.node.select
+        s.node is not None and s.node.select
         for s in chain(
             config.linked_sockets[v.node.inputs[0]],
             config.linked_sockets[v.node.outputs[0]],
