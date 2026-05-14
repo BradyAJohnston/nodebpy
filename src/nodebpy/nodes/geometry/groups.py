@@ -14,10 +14,10 @@ from ...builder import (
 from . import (
     AxesToRotation,
     CombineMatrix,
-    Compare,
     EdgesOfVertex,
     EdgeVertices,
     Frame,
+    Switch,
 )
 
 
@@ -58,13 +58,13 @@ class OtherVertex(CustomGeometryGroup):
         vertex_index = tree.inputs.integer("Vertex Index", default_input="INDEX")
         edge_number = tree.inputs.integer("Edge Number")
 
-        eov = EdgesOfVertex(vertex_index, sort_index=edge_number).o.edge_index
-        ev = EdgeVertices()
-        vert_1 = ev.o.vertex_index_1.edge.at(eov)
-        vert_2 = ev.o.vertex_index_2.edge.at(eov)
-        index = Compare.integer.not_equal(vert_1, vertex_index).o.result.switch.integer(
-            vert_1, vert_2
-        )
+        edge_index = EdgesOfVertex(vertex_index, sort_index=edge_number).o.edge_index
+        edge_vertices = EdgeVertices()
+        v1, v2 = [
+            v.edge.at(edge_index)
+            for v in [edge_vertices.o.vertex_index_1, edge_vertices.o.vertex_index_2]
+        ]
+        index = Switch.integer(vertex_index == v1, v1, v2)
 
         index >> tree.outputs.integer("Other Vertex")
 
