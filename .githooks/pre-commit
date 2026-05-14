@@ -8,4 +8,4 @@ echo "→ ruff check --fix"
 uv run ruff check --fix src/ generate.py
 
 echo "→ ty check"
-uvx ty check src/
+uv run ty check src/
