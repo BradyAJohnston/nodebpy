@@ -32,7 +32,7 @@ class Reroute(BaseNode):
     """
 
     _bl_idname = "NodeReroute"
-    node: bpy.types.Node
+    node: bpy.types.NodeReroute
 
     class _Inputs(SocketAccessor):
         input: ColorSocket

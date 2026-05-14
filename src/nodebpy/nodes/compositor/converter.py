@@ -240,240 +240,6 @@ class CombineColor(BaseNode):
         self.node.ycc_mode = value
 
 
-class ConvertColorspace(BaseNode):
-    """
-    Convert between color spaces
-
-    Parameters
-    ----------
-    image : InputColor
-        Image
-
-    Inputs
-    ------
-    i.image : ColorSocket
-        Image
-
-    Outputs
-    -------
-    o.image : ColorSocket
-        Image
-    """
-
-    _bl_idname = "CompositorNodeConvertColorSpace"
-    node: bpy.types.CompositorNodeConvertColorSpace
-
-    class _Inputs(SocketAccessor):
-        image: ColorSocket
-        """Image"""
-
-    class _Outputs(SocketAccessor):
-        image: ColorSocket
-        """Image"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        image: InputColor = None,
-        *,
-        from_color_space: Literal[
-            "ACES 1.3 sRGB",
-            "ACES 2.0 sRGB",
-            "ACES2065-1",
-            "ACEScc",
-            "ACEScct",
-            "ACEScg",
-            "AgX Base sRGB",
-            "AgX Log",
-            "Display P3",
-            "Filmic Log",
-            "Filmic sRGB",
-            "Khronos PBR Neutral sRGB",
-            "Linear CIE-XYZ D65",
-            "Linear CIE-XYZ E",
-            "Linear DCI-P3 D65",
-            "Linear FilmLight E-Gamut",
-            "Linear Rec.2020",
-            "Linear Rec.709",
-            "Non-Color",
-            "Rec.1886",
-            "Rec.2020",
-            "Rec.2100-HLG",
-            "Rec.2100-PQ",
-            "sRGB",
-            "scene_linear",
-        ] = "scene_linear",
-        to_color_space: Literal[
-            "ACES 1.3 sRGB",
-            "ACES 2.0 sRGB",
-            "ACES2065-1",
-            "ACEScc",
-            "ACEScct",
-            "ACEScg",
-            "AgX Base sRGB",
-            "AgX Log",
-            "Display P3",
-            "Filmic Log",
-            "Filmic sRGB",
-            "Khronos PBR Neutral sRGB",
-            "Linear CIE-XYZ D65",
-            "Linear CIE-XYZ E",
-            "Linear DCI-P3 D65",
-            "Linear FilmLight E-Gamut",
-            "Linear Rec.2020",
-            "Linear Rec.709",
-            "Non-Color",
-            "Rec.1886",
-            "Rec.2020",
-            "Rec.2100-HLG",
-            "Rec.2100-PQ",
-            "sRGB",
-            "scene_linear",
-        ] = "scene_linear",
-    ):
-        super().__init__()
-        key_args = {"Image": image}
-        self.from_color_space = from_color_space
-        self.to_color_space = to_color_space
-        self._establish_links(**key_args)
-
-    @property
-    def from_color_space(
-        self,
-    ) -> Literal[
-        "ACES 1.3 sRGB",
-        "ACES 2.0 sRGB",
-        "ACES2065-1",
-        "ACEScc",
-        "ACEScct",
-        "ACEScg",
-        "AgX Base sRGB",
-        "AgX Log",
-        "Display P3",
-        "Filmic Log",
-        "Filmic sRGB",
-        "Khronos PBR Neutral sRGB",
-        "Linear CIE-XYZ D65",
-        "Linear CIE-XYZ E",
-        "Linear DCI-P3 D65",
-        "Linear FilmLight E-Gamut",
-        "Linear Rec.2020",
-        "Linear Rec.709",
-        "Non-Color",
-        "Rec.1886",
-        "Rec.2020",
-        "Rec.2100-HLG",
-        "Rec.2100-PQ",
-        "sRGB",
-        "scene_linear",
-    ]:
-        return self.node.from_color_space
-
-    @from_color_space.setter
-    def from_color_space(
-        self,
-        value: Literal[
-            "ACES 1.3 sRGB",
-            "ACES 2.0 sRGB",
-            "ACES2065-1",
-            "ACEScc",
-            "ACEScct",
-            "ACEScg",
-            "AgX Base sRGB",
-            "AgX Log",
-            "Display P3",
-            "Filmic Log",
-            "Filmic sRGB",
-            "Khronos PBR Neutral sRGB",
-            "Linear CIE-XYZ D65",
-            "Linear CIE-XYZ E",
-            "Linear DCI-P3 D65",
-            "Linear FilmLight E-Gamut",
-            "Linear Rec.2020",
-            "Linear Rec.709",
-            "Non-Color",
-            "Rec.1886",
-            "Rec.2020",
-            "Rec.2100-HLG",
-            "Rec.2100-PQ",
-            "sRGB",
-            "scene_linear",
-        ],
-    ):
-        self.node.from_color_space = value
-
-    @property
-    def to_color_space(
-        self,
-    ) -> Literal[
-        "ACES 1.3 sRGB",
-        "ACES 2.0 sRGB",
-        "ACES2065-1",
-        "ACEScc",
-        "ACEScct",
-        "ACEScg",
-        "AgX Base sRGB",
-        "AgX Log",
-        "Display P3",
-        "Filmic Log",
-        "Filmic sRGB",
-        "Khronos PBR Neutral sRGB",
-        "Linear CIE-XYZ D65",
-        "Linear CIE-XYZ E",
-        "Linear DCI-P3 D65",
-        "Linear FilmLight E-Gamut",
-        "Linear Rec.2020",
-        "Linear Rec.709",
-        "Non-Color",
-        "Rec.1886",
-        "Rec.2020",
-        "Rec.2100-HLG",
-        "Rec.2100-PQ",
-        "sRGB",
-        "scene_linear",
-    ]:
-        return self.node.to_color_space
-
-    @to_color_space.setter
-    def to_color_space(
-        self,
-        value: Literal[
-            "ACES 1.3 sRGB",
-            "ACES 2.0 sRGB",
-            "ACES2065-1",
-            "ACEScc",
-            "ACEScct",
-            "ACEScg",
-            "AgX Base sRGB",
-            "AgX Log",
-            "Display P3",
-            "Filmic Log",
-            "Filmic sRGB",
-            "Khronos PBR Neutral sRGB",
-            "Linear CIE-XYZ D65",
-            "Linear CIE-XYZ E",
-            "Linear DCI-P3 D65",
-            "Linear FilmLight E-Gamut",
-            "Linear Rec.2020",
-            "Linear Rec.709",
-            "Non-Color",
-            "Rec.1886",
-            "Rec.2020",
-            "Rec.2100-HLG",
-            "Rec.2100-PQ",
-            "sRGB",
-            "scene_linear",
-        ],
-    ):
-        self.node.to_color_space = value
-
-
 class ConvertToDisplay(BaseNode):
     """
     Convert from scene linear to display color space, with a view transform and look for tone mapping
@@ -649,8 +415,20 @@ class IndexSwitch(BaseNode):
     def __init__(
         self,
         index: InputInteger = 0,
-        item_0: InputColor = None,
-        item_1: InputColor = None,
+        item_0: InputBoolean
+        | InputColor
+        | InputFloat
+        | InputInteger
+        | InputMenu
+        | InputString
+        | InputVector = None,
+        item_1: InputBoolean
+        | InputColor
+        | InputFloat
+        | InputInteger
+        | InputMenu
+        | InputString
+        | InputVector = None,
         extend: InputLinkable = None,
         *,
         data_type: Literal[
@@ -766,7 +544,7 @@ class IndexSwitch(BaseNode):
     def data_type(
         self,
     ) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"]:
-        return self.node.data_type
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(
@@ -1027,7 +805,7 @@ class Mix(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
-        return self.node.data_type
+        return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA"]):

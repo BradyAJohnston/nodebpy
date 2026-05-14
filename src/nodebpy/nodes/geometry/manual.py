@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar, cast
 
 import bpy
 import bpy.types
@@ -1195,11 +1195,11 @@ class Value(BaseNode):
     def value(self) -> float:
         """Input socket: Value"""
 
-        return self.node.outputs[0].default_value  # type: ignore
+        return self.node.outputs[0].default_value
 
     @value.setter
     def value(self, value: float):
-        self.node.outputs[0].default_value = value  # type: ignore
+        self.node.outputs[0].default_value = value
 
 
 class Float(Value):
@@ -1240,7 +1240,7 @@ class FormatString(BaseNode, DynamicInputsMixin):
     ):
         super().__init__()
         key_args = {"Format": format}
-        key_args.update(self._add_inputs(**items))
+        key_args.update(self._add_inputs(**items))  # type: ignore
         self._establish_links(**key_args)
 
     def _add_socket(
@@ -1250,8 +1250,6 @@ class FormatString(BaseNode, DynamicInputsMixin):
         default_value: float | int | str | None = None,
     ):
         item = self.node.format_items.new(socket_type=type, name=name)
-        if default_value is not None and hasattr(self.i[item.name], "default_value"):
-            self.i[item.name].default_value = default_value  # ty: ignore[unresolved-attribute]
         return self.node.inputs[item.name]
 
     @property
@@ -1288,7 +1286,7 @@ class JoinStrings(BaseNode):
         super().__init__()
 
         self._establish_links(Delimiter=delimiter)
-        for string in reversed(strings):
+        for string in reversed(list(strings)):
             if isinstance(string, str):
                 from . import String
 
@@ -1737,7 +1735,7 @@ class IndexSwitch(BaseNode, Generic[_T]):
                 socket = self._create_socket()
                 socket.default_value = arg  # ty: ignore[unresolved-attribute]
             else:
-                source = self._source_socket(arg)
+                source = self._source_socket(arg)  # type: ignore
                 self.tree.link(source, self.node.inputs["__extend__"])
 
     @property
@@ -1785,7 +1783,8 @@ class _MenuSwitchBase(BaseNode, Generic[_T]):
         self._link_args(**items)
         self._establish_links(**key_args)
         if self.node.enum_items:
-            self.node.inputs[0].default_value = self.node.enum_items[0].name  # type: ignore
+            menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
+            menu_socket.default_value = self.node.enum_items[0].name
 
     def _link_args(self, **kwargs: InputAny):
         for key, value in kwargs.items():
@@ -2102,7 +2101,7 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
 
         key_args.update(self._add_inputs(**linkable))
         for name, value in defaults.items():
-            self._add_socket(name=name, default_value=value)
+            self._add_socket(name=name, default_value=value)  # type: ignore
 
         self._establish_links(**key_args)
 
@@ -2114,7 +2113,7 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     ):
         item = self.node.grid_items.new(socket_type=type, name=name)
         if default_value is not None:
-            self.node.inputs[item.name].default_value = default_value  # ty: ignore[unresolved-attribute]
+            self.node.inputs[item.name].default_value = default_value
         return self.node.inputs[item.name]
 
     def capture(self, items: dict[str, InputAny]) -> list[SocketLinker]:
@@ -3118,12 +3117,12 @@ class Compare(BaseNode, Generic[_T]):
         @property
         def a(self) -> _S:
             """Input socket: A"""
-            return self._get("A{}".format(Compare._suffix(self._bpy_node.data_type)))  # type: ignore[return-value]
+            return self._get("A{}".format(Compare._suffix(self._bpy_node.data_type)))  # type: ignore
 
         @property
         def b(self) -> _S:
             """Input socket: B"""
-            return self._get("B{}".format(Compare._suffix(self._bpy_node.data_type)))  # type: ignore[return-value]
+            return self._get("B{}".format(Compare._suffix(self._bpy_node.data_type)))  # type: ignore
 
         c: FloatSocket
         epsilon: FloatSocket

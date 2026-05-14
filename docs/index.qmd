@@ -119,7 +119,7 @@ Some nodes are manually specified in the `src/nodebpy/nodes/geometry/manual.py` 
 Run the build & format script as such:
 
 ```bash
-uv run generate.py && uvx ruff format && uvx ruff check --fix
+uv run generate.py && uvx ruff format && uvx ruff check --fix && uvx ty check --fix src
 ```
 
 ## Other Projects

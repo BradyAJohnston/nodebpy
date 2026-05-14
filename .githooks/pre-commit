@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+echo "→ ruff format"
+uv run ruff format src/ generate.py
+
+echo "→ ruff check --fix"
+uv run ruff check --fix src/ generate.py
+
+echo "→ ty check"
+uv run ty check src/

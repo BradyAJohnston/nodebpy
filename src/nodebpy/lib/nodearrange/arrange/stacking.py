@@ -209,17 +209,17 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     for u, a in H.adj.copy().items():
         for v, d in a.items():
             if len(d) > 1:
-                H.remove_edges_from([(u, v, k) for k in d])  # type: ignore
+                H.remove_edges_from([(u, v, k) for k in d])
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     for c in nx.weakly_connected_components(H):
         H_c = H.subgraph(c)
-        B = max_linear_branching(H_c)  # type: ignore
+        B = max_linear_branching(H_c)
         H.remove_edges_from(H_c.edges - B.edges)
 
     for c in nx.weakly_connected_components(H):
-        H.remove_edges_from(edges_preventing_acyclic_contraction(G, H.subgraph(c)))  # type: ignore
+        H.remove_edges_from(edges_preventing_acyclic_contraction(G, H.subgraph(c)))
 
     H.remove_edges_from(edges_preventing_acyclic_contraction(G, H))
 

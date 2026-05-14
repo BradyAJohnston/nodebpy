@@ -175,6 +175,7 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
         "Float",
         "Image",
         "Cryptomatte",
+        "ConvertColorspace",
     ),
     class_name_prefix_strips=[
         "CompositorNode",
@@ -346,17 +347,50 @@ class PropertyInfo:
 
         return "{}: {} = {}".format(self.format_name(), self.type_hint(), default)
 
+    @property
+    def _mathutils_type(self) -> str | None:
+        """The mathutils return type for float-array properties, or None if not applicable."""
+        if self.prop_type != "FLOAT" or isinstance(self.default, (int, float)):
+            return None
+        if self.subtype == "EULER":
+            return "Euler"
+        if self.subtype in ("XYZ", "DIRECTION"):
+            return "Vector"
+        if self.subtype == "COLOR" and len(self.default) == 3:
+            return "Color"
+        return None
+
     def format_property_accessors(self) -> str:
         name = self.format_name()
-        type = self.type_hint()
+        scalar_type = self.type_hint()
+
+        mathutils_type = self._mathutils_type
+        if mathutils_type:
+            # Getter returns the actual bpy type; setter also accepts plain tuples
+            getter_type = mathutils_type
+            setter_type = f"{mathutils_type} | {scalar_type}"
+        else:
+            getter_type = scalar_type
+            setter_type = scalar_type
+
+        # bpy stubs occasionally have wrong types for specific properties
+        needs_ignore = (
+            self.prop_type == "ENUM"
+            and name
+            in ["data_type", "subsurface_method", "falloff", "socket_type", "layer"]
+        ) or (
+            self.prop_type == "STRING"
+            and self.identifier in ["layer", "view", "layer_name"]
+        )
+        ignore = "  # ty: ignore[invalid-return-type]" if needs_ignore else ""
         return f"""    @property
 
-    def {name}(self) -> {type}:
-        return self.node.{self.identifier}
+    def {name}(self) -> {getter_type}:
+        return self.node.{self.identifier}{ignore}
 
     @{name}.setter
-    def {name}(self, value: {type}):
-        self.node.{self.identifier} = value
+    def {name}(self, value: {setter_type}):
+        self.node.{self.identifier} = value{" # ty: ignore[invalid-assignment]" if name == "layer" else ""}
 """
 
 
@@ -380,7 +414,7 @@ class NodeInfo:
     @property
     def node_docs_url(self) -> str | None:
         "Find adn returl the URL for the online Blender documentation for this node"
-        return bpy.types.WM_OT_doc_view_manual._lookup_rna_url(  # type: ignore
+        return bpy.types.WM_OT_doc_view_manual._lookup_rna_url(
             f"bpy.types.{self.bl_idname}", verbose=False
         )
 
@@ -778,7 +812,7 @@ def collect_socket_info(
 
 def collect_property_info(node, node_type):
     properties = []
-    props_to_ignore = {"active_index", "active_output"}
+    props_to_ignore = {"active_index", "active_output", "active_item_index"}
     for base in node_type.__bases__:
         if hasattr(base, "bl_rna"):
             for prop in base.bl_rna.properties:
@@ -961,14 +995,34 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     all_labels = [socket.label for socket in node_info.inputs]
     sockets_use_same_name = all(label == all_labels[0] for label in all_labels)
 
+    # For sockets that change type across enum states (e.g. a "Value" socket that is
+    # Float in the default state but Vector when data_type="VECTOR"), widen the __init__
+    # parameter to accept all possible types so factory classmethods type-check cleanly.
+    _socket_type_variants: dict[str, set[str]] = {}
+    for s in node_info.inputs:
+        _socket_type_variants.setdefault(s.identifier, set()).add(s.type_hint)
+    for prop in node_info.properties:
+        for enum in prop.enum_items:
+            for s in enum.sockets:
+                if s.identifier in _socket_type_variants:
+                    _socket_type_variants[s.identifier].add(s.type_hint)
+    for enum in node_info.type_socket_enums:
+        for s in enum.sockets:
+            if s.identifier in _socket_type_variants:
+                _socket_type_variants[s.identifier].add(s.type_hint)
+
     for socket in node_info.inputs:
         param_name = get_socket_param_name(socket, sockets_use_same_name)
+        variants = _socket_type_variants[socket.identifier]
+        type_hint = (
+            " | ".join(sorted(variants)) if len(variants) > 1 else socket.type_hint
+        )
 
         if hasattr(socket, "default_value"):
             default = format_python_value(socket.default_value)
         else:
             default = "None"
-        init_params.append(f"{param_name}: {socket.type_hint} = {default}")
+        init_params.append(f"{param_name}: {type_hint} = {default}")
         establish_links_params.append((param_name, socket))
 
     # Add sockets that only appear in certain enum states (e.g. mode="FREE" reveals
@@ -1056,14 +1110,8 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     ]
     enum_methods = node_info.generate_enum_class_methods(config)
 
-    # Add node type annotation
-    node_type_annotation = (
-        f"bpy.types.{node_info.bl_idname}"
-        if node_info.bl_idname.startswith(
-            ("Geometry", "Function", "Shader", "Compositor")
-        )
-        else "bpy.types.Node"
-    )
+    # Add node type annotation — always use specific type so property access is typed
+    node_type_annotation = f"bpy.types.{node_info.bl_idname}"
 
     # Build numpy-style class docstring
     doc_lines = [node_info.description, ""]
@@ -1201,9 +1249,19 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
                     for socket in enum.sockets:
                         _check_socket(socket)
 
+    # Collect mathutils types needed by float-array property accessors
+    mathutils_needed: set[str] = set()
+    for node in nodes:
+        for prop in node.properties:
+            mt = prop._mathutils_type
+            if mt:
+                mathutils_needed.add(mt)
+
     lines = ["# Auto-generated by generate.py — do not edit manually."]
     lines.append("from typing import TYPE_CHECKING, Literal")
     lines.append("import bpy")
+    if mathutils_needed:
+        lines.append(f"from mathutils import {', '.join(sorted(mathutils_needed))}")
 
     # Builder imports
     builder_imports = ["BaseNode as BaseNode", "SocketAccessor"]

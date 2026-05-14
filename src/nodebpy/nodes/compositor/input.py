@@ -484,7 +484,7 @@ class RenderLayers(BaseNode):
 
     @layer.setter
     def layer(self, value: str):
-        self.node.layer = value
+        self.node.layer = value  # ty: ignore[invalid-assignment]
 
 
 class SceneTime(BaseNode):
