@@ -368,7 +368,7 @@ class ForEachGeometryElementInput(BaseZoneInput):
 class ForEachGeometryElementOutput(BaseZoneOutput):
     """For Each Geometry Element Output node"""
 
-    _socket_data_types = (
+    _socket_data_types: tuple[str, ...] = (
         "VALUE",
         "INT",
         "BOOLEAN",
