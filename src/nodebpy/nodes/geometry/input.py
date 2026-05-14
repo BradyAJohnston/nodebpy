@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
+from mathutils import Euler, Vector
+
 from ...builder import (
     BaseNode as BaseNode,
     SocketAccessor,
@@ -2521,7 +2523,7 @@ class NamedAttribute(BaseNode):
         "QUATERNION",
         "FLOAT4X4",
     ]:
-        return self.node.data_type  # ty: ignore
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(
@@ -2997,11 +2999,11 @@ class Rotation(BaseNode):
         self._establish_links(**key_args)
 
     @property
-    def rotation_euler(self) -> tuple[float, float, float]:
+    def rotation_euler(self) -> Euler:
         return self.node.rotation_euler
 
     @rotation_euler.setter
-    def rotation_euler(self, value: tuple[float, float, float]):
+    def rotation_euler(self, value: Euler | tuple[float, float, float]):
         self.node.rotation_euler = value
 
 
@@ -3457,11 +3459,11 @@ class Vector(BaseNode):
         self._establish_links(**key_args)
 
     @property
-    def vector(self) -> tuple[float, float, float]:
+    def vector(self) -> Vector:
         return self.node.vector
 
     @vector.setter
-    def vector(self, value: tuple[float, float, float]):
+    def vector(self, value: Vector | tuple[float, float, float]):
         self.node.vector = value
 
 

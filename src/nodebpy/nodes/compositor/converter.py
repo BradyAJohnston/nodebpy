@@ -544,7 +544,7 @@ class IndexSwitch(BaseNode):
     def data_type(
         self,
     ) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"]:
-        return self.node.data_type  # ty: ignore
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(
@@ -805,7 +805,7 @@ class Mix(BaseNode):
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
-        return self.node.data_type  # ty: ignore
+        return self.node.data_type  # type: ignore
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA"]):
