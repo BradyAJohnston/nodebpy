@@ -1,4 +1,5 @@
 from __future__ import annotations
+from nodebpy.nodes.geometry import ObjectInfo, CollectionInfo
 
 from typing import (
     TYPE_CHECKING,
@@ -1635,6 +1636,28 @@ class ObjectSocket(Socket):
     def default_value(self, value: bpy.types.Object) -> None:
         self.socket.default_value = value
 
+    @property
+    def _info(self) -> type[ObjectInfo]:
+        from ..nodes.geometry.input import ObjectInfo
+        return ObjectInfo
+
+    def transform(self, transform_space: Literal["ORIGINAL", "RELATIVE"]) -> "MatrixSocket":
+        return self._info(object=self.socket, transform_space=transform_space).o.transform
+
+    def location(self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL") -> "VectorSocket":
+        return self._info(object=self.socket, transform_space=transform_space).o.location
+
+    def rotation(self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL") -> "RotationSocket":
+        return self._info(object=self.socket, transform_space=transform_space).o.rotation
+
+    def scale(self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL") -> "VectorSocket":
+        return self._info(object=self.socket, transform_space=transform_space).o.scale
+
+    def geometry(self, as_instance: InputBoolean = False, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL") -> "GeometrySocket":
+        return self._info(object=self.socket, as_instance=as_instance, transform_space=transform_space).o.geometry
+
+
+
 
 class MaterialSocket(Socket):
     """Runtime material socket wrapper."""
@@ -1676,6 +1699,15 @@ class CollectionSocket(Socket):
     @default_value.setter
     def default_value(self, value: bpy.types.Collection) -> None:
         self.socket.default_value = value
+
+    @property
+    def _info(self) -> type[CollectionInfo]:
+        from ..nodes.geometry import CollectionInfo
+        return CollectionInfo
+
+    def instances(self, separate_children: InputBoolean = False, reset_children: InputBoolean = False) -> "GeometrySocket":
+        return self._info(self.socket, separate_children=separate_children, reset_children=reset_children).o.instances
+
 
 
 class BundleSocket(Socket):
