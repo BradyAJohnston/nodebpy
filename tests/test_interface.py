@@ -1451,7 +1451,7 @@ def test_matrix_socket_transform_direction():
         mat = g.CombineTransform().o.transform
         direction = g.Vector().o.vector
 
-        result = mat.transform_direction(direction)
+        result = direction.transform_direction(mat)
 
     assert isinstance(result, VectorSocket)
     assert result.node.bl_idname == g.TransformDirection._bl_idname

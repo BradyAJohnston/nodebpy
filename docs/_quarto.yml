@@ -52,6 +52,8 @@ filters:
   - interlinks
 
 interlinks:
+  aliases:
+    nodebpy.nodes.geometry: g
   sources:
     python:
       url: https://docs.python.org/3/

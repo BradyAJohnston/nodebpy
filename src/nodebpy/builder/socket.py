@@ -81,7 +81,7 @@ if TYPE_CHECKING:
 _T = TypeVar("_T")
 
 
-class QuaternionComponents(NamedTuple):
+class ResultQuaternionComponents(NamedTuple):
     """Quaternion components returned by `RotationSocket.to_quaternion()`."""
 
     w: "FloatSocket"
@@ -90,21 +90,21 @@ class QuaternionComponents(NamedTuple):
     z: "FloatSocket"
 
 
-class AxisAngle(NamedTuple):
+class ResultAxisAngle(NamedTuple):
     """Axis-angle components returned by `RotationSocket.to_axis_angle()`."""
 
     axis: "VectorSocket"
     angle: "FloatSocket"
 
 
-class FindResult(NamedTuple):
+class ResultFindInString(NamedTuple):
     """Result of `StringSocket.find()`."""
 
     first_found: "IntegerSocket"
     count: "IntegerSocket"
 
 
-class SVDResult(NamedTuple):
+class ResultSVD(NamedTuple):
     """SVD components returned by `MatrixSocket.svd()`."""
 
     u: "MatrixSocket"
@@ -278,7 +278,7 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
 # ---------------------------------------------------------------------------
 
 
-class _FieldDomain(Generic[_T]):
+class FieldDomain(Generic[_T]):
     """Domain-bound factory available on all socket types.
 
     Access via a domain property (e.g. ``socket.point``). Provides field
@@ -291,27 +291,27 @@ class _FieldDomain(Generic[_T]):
         self._domain = domain
 
     def evaluate(self) -> "_T":
-        """Force evaluation of this field on the bound domain via ``EvaluateOnDomain``."""
-        from ..nodes.geometry import EvaluateOnDomain
+        """Force evaluation of this field on the bound domain via [](`~g.manual.EvaluateOnDomain`)."""
+        from ..nodes.geometry.manual import EvaluateOnDomain
 
         return getattr(getattr(EvaluateOnDomain, self._domain), self._dtype)(
             self._socket
         ).o.value
 
     def at(self, index: InputInteger = 0) -> "_T":
-        """Evaluate this field's value at *index* on the bound domain via ``EvaluateAtIndex``."""
-        from ..nodes.geometry import EvaluateAtIndex
+        """Evaluate this field's value at `index` on the bound domain via [](`~g.manual.EvaluateAtIndex`)."""
+        from ..nodes.geometry.manual import EvaluateAtIndex
 
         return getattr(getattr(EvaluateAtIndex, self._domain), self._dtype)(
             self._socket, index
         ).o.value
 
 
-class _MinMaxDomain(_FieldDomain[_T]):
-    """Extends ``_FieldDomain`` with min/max aggregation for Integer sockets."""
+class FieldMinMaxDomain(FieldDomain[_T]):
+    """Extends ``FieldDomain`` with min/max aggregation for Integer sockets."""
 
     def _minmax(self, field: str, group_index: InputInteger) -> "_T":
-        from ..nodes.geometry import FieldMinAndMax
+        from ..nodes.geometry.manual import FieldMinAndMax
 
         node = getattr(getattr(FieldMinAndMax, self._domain), self._dtype)(
             self._socket, group_index
@@ -319,16 +319,19 @@ class _MinMaxDomain(_FieldDomain[_T]):
         return getattr(node.o, field)
 
     def min(self, group_index: InputInteger = None) -> "_T":
+        """Return the minimum value of this field on the bound domain via [](`~g.manual.FieldMinAndMax`)."""
         return self._minmax("min", group_index)
 
     def max(self, group_index: InputInteger = None) -> "_T":
+        """Return the maximum value of this field on the bound domain via [](`~g.manual.FieldMinAndMax`)."""
         return self._minmax("max", group_index)
 
 
-class _StatsDomain(_MinMaxDomain[_T]):
-    """Extends ``_MinMaxDomain`` with full statistics for Float and Vector sockets."""
+class FieldStatsDomain(FieldMinMaxDomain[_T]):
+    """Extends ``MinMaxFieldDomain`` with full statistics for Float and Vector sockets."""
 
     def mean(self, group_index: InputInteger = None) -> "_T":
+        """Return the mean value of this field on the bound domain via [](`~g.manual.FieldAverage`)."""
         from ..nodes.geometry import FieldAverage
 
         node = getattr(getattr(FieldAverage, self._domain), self._dtype)(
@@ -337,6 +340,7 @@ class _StatsDomain(_MinMaxDomain[_T]):
         return node.o.mean
 
     def median(self, group_index: InputInteger = None) -> "_T":
+        """Return the median value of this field on the bound domain via [](`~g.manual.FieldAverage`)."""
         from ..nodes.geometry import FieldAverage
 
         node = getattr(getattr(FieldAverage, self._domain), self._dtype)(
@@ -345,6 +349,7 @@ class _StatsDomain(_MinMaxDomain[_T]):
         return node.o.median
 
     def std_dev(self, group_index: InputInteger = None) -> "_T":
+        """Return the standard deviation of this field on the bound domain via [](`~g.manual.FieldVariance`)."""
         from ..nodes.geometry import FieldVariance
 
         node = getattr(getattr(FieldVariance, self._domain), self._dtype)(
@@ -353,6 +358,7 @@ class _StatsDomain(_MinMaxDomain[_T]):
         return node.o.standard_deviation
 
     def variance(self, group_index: InputInteger = None) -> "_T":
+        """Return the variance of this field on the bound domain via [](`~g.manual.FieldVariance`)."""
         from ..nodes.geometry import FieldVariance
 
         node = getattr(getattr(FieldVariance, self._domain), self._dtype)(
@@ -385,6 +391,12 @@ class _VectorMixin(BaseSocket):
 
     @property
     def x(self) -> FloatSocket:
+        """Access the `x` component of this vector
+
+        If the socket is an output socket, the `x` component is extracted via a [SeparateXYZ](`~g.converter.SeparateXYZ`) node.
+        If the socket is an input socket, the `x` component is combined via a [CombineXYZ](`~g.converter.CombineXYZ`) node.
+
+        """
         if self.socket.is_output:
             return self._separate().o.x
         else:
@@ -392,6 +404,12 @@ class _VectorMixin(BaseSocket):
 
     @property
     def y(self) -> FloatSocket:
+        """Access the `y` component of this vector
+
+        If the socket is an output socket, the `y` component is extracted via a [](`~g.converter.SeparateXYZ`) node.
+        If the socket is an input socket, the `y` component is combined via a [](`~g.converter.CombineXYZ`) node.
+
+        """
         if self.socket.is_output:
             return self._separate().o.y
         else:
@@ -399,38 +417,51 @@ class _VectorMixin(BaseSocket):
 
     @property
     def z(self) -> FloatSocket:
+        """Access the `z` component of this vector
+
+        If the socket is an output socket, the `z` component is extracted via a [](`~g.converter.SeparateXYZ`) node.
+        If the socket is an input socket, the `z` component is combined via a [](`~g.converter.CombineXYZ`) node.
+
+        """
         if self.socket.is_output:
             return self._separate().o.z
         else:
             return self._combine().i.z
 
     @property
-    def point(self) -> "_StatsDomain[VectorSocket]":
-        return _StatsDomain(self.socket, "vector", "point")
+    def point(self) -> "FieldStatsDomain[VectorSocket]":
+        """Access possible statistics evaluated on the point domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)"""
+        return FieldStatsDomain(self.socket, "vector", "point")
 
     @property
-    def edge(self) -> "_StatsDomain[VectorSocket]":
-        return _StatsDomain(self.socket, "vector", "edge")
+    def edge(self) -> "FieldStatsDomain[VectorSocket]":
+        """Access possible statistics evaluated on the edge domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)"""
+        return FieldStatsDomain(self.socket, "vector", "edge")
 
     @property
-    def face(self) -> "_StatsDomain[VectorSocket]":
-        return _StatsDomain(self.socket, "vector", "face")
+    def face(self) -> "FieldStatsDomain[VectorSocket]":
+        """Access possible statistics evaluated on the face domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)"""
+        return FieldStatsDomain(self.socket, "vector", "face")
 
     @property
-    def corner(self) -> "_StatsDomain[VectorSocket]":
-        return _StatsDomain(self.socket, "vector", "corner")
+    def corner(self) -> "FieldStatsDomain[VectorSocket]":
+        """Access possible statistics evaluated on the corner domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)"""
+        return FieldStatsDomain(self.socket, "vector", "corner")
 
     @property
-    def spline(self) -> "_StatsDomain[VectorSocket]":
-        return _StatsDomain(self.socket, "vector", "spline")
+    def spline(self) -> "FieldStatsDomain[VectorSocket]":
+        """Access possible statistics evaluated on the spline domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)"""
+        return FieldStatsDomain(self.socket, "vector", "spline")
 
     @property
-    def instance(self) -> "_StatsDomain[VectorSocket]":
-        return _StatsDomain(self.socket, "vector", "instance")
+    def instance(self) -> "FieldStatsDomain[VectorSocket]":
+        """Access possible statistics evaluated on the instance domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)"""
+        return FieldStatsDomain(self.socket, "vector", "instance")
 
     @property
-    def layer(self) -> "_StatsDomain[VectorSocket]":
-        return _StatsDomain(self.socket, "vector", "layer")
+    def layer(self) -> "FieldStatsDomain[VectorSocket]":
+        """Access possible statistics evaluated on the layer domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)"""
+        return FieldStatsDomain(self.socket, "vector", "layer")
 
     def dot(self, vector: InputVector) -> "FloatSocket":
         """Dot product with another vector. The other vector can be a Socket, a NodeSocket, or a 3-tuple of floats.
@@ -497,16 +528,32 @@ class _VectorMixin(BaseSocket):
         self,
         rotation: InputRotation,
     ) -> "VectorSocket":
-        "Rotate this vector by the given rotation."
-        from ..nodes.geometry import RotateVector
+        "Rotate this vector by the given rotation using [](`~g.converter.RotateVector`)."
+        from ..nodes.geometry.converter import RotateVector
 
         return RotateVector(self.socket, rotation).o.vector
 
     def transform(self, matrix: InputMatrix) -> "VectorSocket":
-        "Transform this vector by the given matrix."
-        from ..nodes.geometry import TransformPoint
+        "Transform this vector by the given matrix using [](`~g.converter.TransformPoint`)."
+        from ..nodes.geometry.converter import TransformPoint
 
         return TransformPoint(self.socket, matrix).o.vector
+
+    def transform_direction(self, matrix: InputMatrix) -> "VectorSocket":
+        """Apply this matrix to *direction*, ignoring translation using [](`~g.converter.TransformDirection`).
+
+        Use this instead of ``transform()`` when transforming a direction vector
+        (e.g. a normal) where translation must not affect the result.
+        """
+        from ..nodes.geometry.converter import TransformDirection
+
+        return TransformDirection(self.socket, matrix).o.direction
+
+    def project_point(self, matrix: InputMatrix) -> "VectorSocket":
+        """Project a point using a matrix, using location, rotation, scale and perspective divide using [](`~g.converter.ProjectPoint`)."""
+        from ..nodes.geometry.converter import ProjectPoint
+
+        return ProjectPoint(self.socket, matrix).o.vector
 
     @property
     def default_value(self) -> list[float]:
@@ -912,32 +959,39 @@ class _BooleanMixin(BaseSocket):
         return _BooleanSwitchSocketFactory(self.socket)
 
     @property
-    def point(self) -> "_FieldDomain[BooleanSocket]":
-        return _FieldDomain(self.socket, "boolean", "point")
+    def point(self) -> "FieldDomain[BooleanSocket]":
+        """Access possible statistics evaluated on the point domain via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "boolean", "point")
 
     @property
-    def edge(self) -> "_FieldDomain[BooleanSocket]":
-        return _FieldDomain(self.socket, "boolean", "edge")
+    def edge(self) -> "FieldDomain[BooleanSocket]":
+        """Access possible statistics evaluated on the edge domain via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "boolean", "edge")
 
     @property
-    def face(self) -> "_FieldDomain[BooleanSocket]":
-        return _FieldDomain(self.socket, "boolean", "face")
+    def face(self) -> "FieldDomain[BooleanSocket]":
+        """Access possible statistics evaluated on the face domain via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "boolean", "face")
 
     @property
-    def corner(self) -> "_FieldDomain[BooleanSocket]":
-        return _FieldDomain(self.socket, "boolean", "corner")
+    def corner(self) -> "FieldDomain[BooleanSocket]":
+        """Access possible statistics evaluated on the corner domain via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "boolean", "corner")
 
     @property
-    def spline(self) -> "_FieldDomain[BooleanSocket]":
-        return _FieldDomain(self.socket, "boolean", "spline")
+    def spline(self) -> "FieldDomain[BooleanSocket]":
+        """Access possible statistics evaluated on the spline domain via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "boolean", "spline")
 
     @property
-    def instance(self) -> "_FieldDomain[BooleanSocket]":
-        return _FieldDomain(self.socket, "boolean", "instance")
+    def instance(self) -> "FieldDomain[BooleanSocket]":
+        """Access possible statistics evaluated on the instance domain via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "boolean", "instance")
 
     @property
-    def layer(self) -> "_FieldDomain[BooleanSocket]":
-        return _FieldDomain(self.socket, "boolean", "layer")
+    def layer(self) -> "FieldDomain[BooleanSocket]":
+        """Access possible statistics evaluated on the layer domain via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "boolean", "layer")
 
 
 class _RotationMixin(BaseSocket):
@@ -977,47 +1031,54 @@ class _RotationMixin(BaseSocket):
 
         return RotationToEuler._find_or_create_linked(self.socket).o.euler
 
-    def to_quaternion(self) -> QuaternionComponents:
+    def to_quaternion(self) -> ResultQuaternionComponents:
         "Decompose the rotation into quaternion components `(w, x, y, z)`."
         from ..nodes.geometry import RotationToQuaternion
 
         o = RotationToQuaternion._find_or_create_linked(self.socket).o
-        return QuaternionComponents(o.w, o.x, o.y, o.z)
+        return ResultQuaternionComponents(o.w, o.x, o.y, o.z)
 
-    def to_axis_angle(self) -> AxisAngle:
+    def to_axis_angle(self) -> ResultAxisAngle:
         "Decompose the rotation into axis-angle components `(axis, angle)`."
         from ..nodes.geometry import RotationToAxisAngle
 
         o = RotationToAxisAngle(self.socket).o
-        return AxisAngle(o.axis, o.angle)
+        return ResultAxisAngle(o.axis, o.angle)
 
     @property
-    def point(self) -> "_FieldDomain[RotationSocket]":
-        return _FieldDomain(self.socket, "quaternion", "point")
+    def point(self) -> "FieldDomain[RotationSocket]":
+        """Possibly evaluate this field on the point domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "quaternion", "point")
 
     @property
-    def edge(self) -> "_FieldDomain[RotationSocket]":
-        return _FieldDomain(self.socket, "quaternion", "edge")
+    def edge(self) -> "FieldDomain[RotationSocket]":
+        """Possibly evaluate this field on the edge domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "quaternion", "edge")
 
     @property
-    def face(self) -> "_FieldDomain[RotationSocket]":
-        return _FieldDomain(self.socket, "quaternion", "face")
+    def face(self) -> "FieldDomain[RotationSocket]":
+        """Possibly evaluate this field on the face domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "quaternion", "face")
 
     @property
-    def corner(self) -> "_FieldDomain[RotationSocket]":
-        return _FieldDomain(self.socket, "quaternion", "corner")
+    def corner(self) -> "FieldDomain[RotationSocket]":
+        """Possibly evaluate this field on the corner domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "quaternion", "corner")
 
     @property
-    def spline(self) -> "_FieldDomain[RotationSocket]":
-        return _FieldDomain(self.socket, "quaternion", "spline")
+    def spline(self) -> "FieldDomain[RotationSocket]":
+        """Possibly evaluate this field on the spline domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "quaternion", "spline")
 
     @property
-    def instance(self) -> "_FieldDomain[RotationSocket]":
-        return _FieldDomain(self.socket, "quaternion", "instance")
+    def instance(self) -> "FieldDomain[RotationSocket]":
+        """Possibly evaluate this field on the instance domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "quaternion", "instance")
 
     @property
-    def layer(self) -> "_FieldDomain[RotationSocket]":
-        return _FieldDomain(self.socket, "quaternion", "layer")
+    def layer(self) -> "FieldDomain[RotationSocket]":
+        """Possibly evaluate this field on the layer domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "quaternion", "layer")
 
 
 class _FloatMixDataTypeFactory:
@@ -1071,36 +1132,43 @@ class _FloatMixin(BaseSocket):
 
     @property
     def mix(self) -> _FloatMixDataTypeFactory:
-        "Create a ``Mix`` node using this socket as the factor."
+        "Create a ``Mix`` node using this socket as the factor"
         return _FloatMixDataTypeFactory(self.socket)
 
     @property
-    def point(self) -> "_StatsDomain[FloatSocket]":
-        return _StatsDomain(self.socket, "float", "point")
+    def point(self) -> "FieldStatsDomain[FloatSocket]":
+        """Access possible statistics evaluated on the point domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)."""
+        return FieldStatsDomain(self.socket, "float", "point")
 
     @property
-    def edge(self) -> "_StatsDomain[FloatSocket]":
-        return _StatsDomain(self.socket, "float", "edge")
+    def edge(self) -> "FieldStatsDomain[FloatSocket]":
+        """Access possible statistics evaluated on the edge domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)."""
+        return FieldStatsDomain(self.socket, "float", "edge")
 
     @property
-    def face(self) -> "_StatsDomain[FloatSocket]":
-        return _StatsDomain(self.socket, "float", "face")
+    def face(self) -> "FieldStatsDomain[FloatSocket]":
+        """Access possible statistics evaluated on the face domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)."""
+        return FieldStatsDomain(self.socket, "float", "face")
 
     @property
-    def corner(self) -> "_StatsDomain[FloatSocket]":
-        return _StatsDomain(self.socket, "float", "corner")
+    def corner(self) -> "FieldStatsDomain[FloatSocket]":
+        """Access possible statistics evaluated on the corner domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)."""
+        return FieldStatsDomain(self.socket, "float", "corner")
 
     @property
-    def spline(self) -> "_StatsDomain[FloatSocket]":
-        return _StatsDomain(self.socket, "float", "spline")
+    def spline(self) -> "FieldStatsDomain[FloatSocket]":
+        """Access possible statistics evaluated on the spline domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)."""
+        return FieldStatsDomain(self.socket, "float", "spline")
 
     @property
-    def instance(self) -> "_StatsDomain[FloatSocket]":
-        return _StatsDomain(self.socket, "float", "instance")
+    def instance(self) -> "FieldStatsDomain[FloatSocket]":
+        """Access possible statistics evaluated on the instance domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)."""
+        return FieldStatsDomain(self.socket, "float", "instance")
 
     @property
-    def layer(self) -> "_StatsDomain[FloatSocket]":
-        return _StatsDomain(self.socket, "float", "layer")
+    def layer(self) -> "FieldStatsDomain[FloatSocket]":
+        """Access possible statistics evaluated on the layer domain, via [](`~nodebpy.builder.socket.FieldStatsDomain`)."""
+        return FieldStatsDomain(self.socket, "float", "layer")
 
     def map_range(
         self,
@@ -1186,7 +1254,7 @@ class _FloatMixin(BaseSocket):
     def to_integer(
         self, rounding_mode: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"] = "ROUND"
     ) -> "IntegerSocket":
-        "Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part."
+        "Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part using [](`~g.FloatToInteger`)."
         from ..nodes.geometry import FloatToInteger
 
         return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer
@@ -1208,32 +1276,39 @@ class _IntegerMixin(BaseSocket):
         self.socket.default_value = value
 
     @property
-    def point(self) -> "_MinMaxDomain[IntegerSocket]":
-        return _MinMaxDomain(self.socket, "integer", "point")
+    def point(self) -> "FieldMinMaxDomain[IntegerSocket]":
+        """Access possible min/max statistics evaluated on the point domain, via [](`~nodebpy.builder.socket.FieldMinMaxDomain`)"""
+        return FieldMinMaxDomain(self.socket, "integer", "point")
 
     @property
-    def edge(self) -> "_MinMaxDomain[IntegerSocket]":
-        return _MinMaxDomain(self.socket, "integer", "edge")
+    def edge(self) -> "FieldMinMaxDomain[IntegerSocket]":
+        """Access possible min/max statistics evaluated on the edge domain, via [](`~nodebpy.builder.socket.FieldMinMaxDomain`)"""
+        return FieldMinMaxDomain(self.socket, "integer", "edge")
 
     @property
-    def face(self) -> "_MinMaxDomain[IntegerSocket]":
-        return _MinMaxDomain(self.socket, "integer", "face")
+    def face(self) -> "FieldMinMaxDomain[IntegerSocket]":
+        """Access possible min/max statistics evaluated on the face domain, via [](`~nodebpy.builder.socket.FieldMinMaxDomain`)"""
+        return FieldMinMaxDomain(self.socket, "integer", "face")
 
     @property
-    def corner(self) -> "_MinMaxDomain[IntegerSocket]":
-        return _MinMaxDomain(self.socket, "integer", "corner")
+    def corner(self) -> "FieldMinMaxDomain[IntegerSocket]":
+        """Access possible min/max statistics evaluated on the corner domain, via [](`~nodebpy.builder.socket.FieldMinMaxDomain`)"""
+        return FieldMinMaxDomain(self.socket, "integer", "corner")
 
     @property
-    def spline(self) -> "_MinMaxDomain[IntegerSocket]":
-        return _MinMaxDomain(self.socket, "integer", "spline")
+    def spline(self) -> "FieldMinMaxDomain[IntegerSocket]":
+        """Access possible min/max statistics evaluated on the spline domain, via [](`~nodebpy.builder.socket.FieldMinMaxDomain`)"""
+        return FieldMinMaxDomain(self.socket, "integer", "spline")
 
     @property
-    def instance(self) -> "_MinMaxDomain[IntegerSocket]":
-        return _MinMaxDomain(self.socket, "integer", "instance")
+    def instance(self) -> "FieldMinMaxDomain[IntegerSocket]":
+        """Access possible min/max statistics evaluated on the instance domain, via [](`~nodebpy.builder.socket.FieldMinMaxDomain`)"""
+        return FieldMinMaxDomain(self.socket, "integer", "instance")
 
     @property
-    def layer(self) -> "_MinMaxDomain[IntegerSocket]":
-        return _MinMaxDomain(self.socket, "integer", "layer")
+    def layer(self) -> "FieldMinMaxDomain[IntegerSocket]":
+        """Access possible min/max statistics evaluated on the layer domain, via [](`~nodebpy.builder.socket.FieldMinMaxDomain`)"""
+        return FieldMinMaxDomain(self.socket, "integer", "layer")
 
     @property
     def _imath(self) -> "type[IntegerMath]":
@@ -1348,62 +1423,62 @@ class _StringMixin(BaseSocket):
 
     @property
     def _match(self) -> "type[MatchString]":
-        from ..nodes.geometry import MatchString
+        from ..nodes.geometry.converter import MatchString
 
         return MatchString
 
     def starts_with(self, search: InputString) -> "BooleanSocket":
-        "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
+        "Create a [](`~g.converter.MatchString`) set to `Starts With` mode with the given search string, returning a `BooleanSocket`."
         return self._match(self.socket, "Starts With", search).o.result
 
     def ends_with(self, search: InputString) -> "BooleanSocket":
-        "Create a MatchString[Ends With], return the result as a `BooleanSocket`."
+        "Create a [](`~g.converter.MatchString`) set to `Ends With` mode with the given search string, returning a `BooleanSocket`."
         return self._match(self.socket, "Ends With", search).o.result
 
     def contains(self, search: InputString) -> "BooleanSocket":
-        "Create a MatchString[Contains], return the result as a `BooleanSocket`."
+        "Create a [](`~g.converter.MatchString`) set to `Contains` mode with the given search string, returning a `BooleanSocket`."
         return self._match(self.socket, "Contains", search).o.result
 
     def slice(
         self, position: InputInteger = 0, length: InputInteger = 0
     ) -> StringSocket:
-        "Slice a given string from a starting position for a given length."
-        from ..nodes.geometry import SliceString
+        "Slice a given string from a starting position for a given length. Adds a [](`~g.converter.SliceString`) node to the tree."
+        from ..nodes.geometry.converter import SliceString
 
         return SliceString(self.socket, position, length).o.string
 
     def format(
         self, items: Mapping[str, InputString | InputInteger | InputFloat]
     ) -> "StringSocket":
-        "Format a given string with the key-value items."
-        from ..nodes.geometry import FormatString
+        "Format a given string with the key-value items using a [](`~g.converter.FormatString`) node."
+        from ..nodes.geometry.manual import FormatString
 
         return FormatString(self.socket, items).o.string
 
     def replace(self, find: InputString, replace: InputString) -> "StringSocket":
-        "Replace every match of the string with teh replacement string"
-        from ..nodes.geometry import ReplaceString
+        "Replace every match of the string with the replacement string using a [](`~g.converter.ReplaceString`) node."
+        from ..nodes.geometry.converter import ReplaceString
 
         return ReplaceString(self.socket, find, replace).o.string
 
     def length(self) -> "IntegerSocket":
-        "Compute the length of a string and return as `IntegerSocket`."
-        from ..nodes.geometry import StringLength
+        "Compute the length of a string and return as `IntegerSocket` using a [](`~g.converter.StringLength`) node."
+        from ..nodes.geometry.converter import StringLength
 
         return StringLength(self.socket).o.length
 
-    def find(self, search: InputString) -> FindResult:
-        "Find where in a string a pattern occurs. Returns `(first_found, count)`."
-        from ..nodes.geometry import FindInString
+    def find(self, search: InputString) -> ResultFindInString:
+        "Find where in a string a pattern occurs. Returns `(first_found, count)` using a [](`~g.converter.FindInString`) node."
+        from ..nodes.geometry.converter import FindInString
 
         o = FindInString(self.socket, search).o
-        return FindResult(o.first_found, o.count)
+        return ResultFindInString(o.first_found, o.count)
 
     def join(
         self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
     ) -> "StringSocket":
         """Join the input strings with this as the separator."""
-        from ..nodes.geometry import JoinStrings
+        from ..nodes.geometry.manual import JoinStrings
 
         return JoinStrings(strings, self.socket).o.string
 
@@ -1431,84 +1506,84 @@ class _MatrixMixin(BaseSocket):
 
     @property
     def translation(self) -> "VectorSocket":
-        from ..nodes.geometry import SeparateTransform
+        """Separate the translation component from the matrix using a [](`~g.converter.SeparateTransform`) node, returning the translation `VectorSocket`."""
+        from ..nodes.geometry.converter import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.translation
 
     @property
     def rotation(self) -> "RotationSocket":
-        from ..nodes.geometry import SeparateTransform
+        """Separate the rotation component from the matrix using a [](`~g.converter.SeparateTransform`) node, returning the rotation `RotationSocket`."""
+        from ..nodes.geometry.converter import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.rotation
 
     @property
     def scale(self) -> "VectorSocket":
-        from ..nodes.geometry import SeparateTransform
+        """Separate the scale component from the matrix using a [](`~g.converter.SeparateTransform`) node, returning the scale `VectorSocket`."""
+        from ..nodes.geometry.converter import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.scale
 
     def determinant(self) -> "FloatSocket":
-        "Compute the determinant of a matrix input and return as a `FloatSocket`"
+        """Compute the determinant of a matrix input and return as a `FloatSocket` using a [](`~g.converter.MatrixDeterminant`) node."""
         from ..nodes.geometry import MatrixDeterminant
 
         return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
 
     def invert(self) -> "MatrixSocket":
-        "Invert the `MatrixSocet` and return a `MatrixSocket`"
+        """Invert the `MatrixSocet` and return a `MatrixSocket` using a [](`~g.converter.InvertMatrix`) node."""
         from ..nodes.geometry import InvertMatrix
 
         return InvertMatrix._find_or_create_linked(self.socket).o.matrix
 
     def transpose(self) -> "MatrixSocket":
-        "Transpose the `MatrixSocket` and return a `MatrixSocket`"
+        """Transpose the `MatrixSocket` and return a `MatrixSocket` using a [](`~g.converter.TransposeMatrix`) node."""
         from ..nodes.geometry import TransposeMatrix
 
         return TransposeMatrix._find_or_create_linked(self.socket).o.matrix
 
-    def svd(self) -> SVDResult:
-        "Decompose the matrix via SVD. Returns `(u, s, v)`."
-        from ..nodes.geometry import MatrixSVD
+    def svd(self) -> ResultSVD:
+        """Decompose the matrix via SVD. Returns `(u, s, v)` using a [](`~g.converter.MatrixSVD`) node."""
+        from ..nodes.geometry.converter import MatrixSVD
 
         o = MatrixSVD(self.socket).o
-        return SVDResult(o.u, o.s, o.v)
-
-    def transform_direction(self, direction: InputVector) -> "VectorSocket":
-        """Apply this matrix to *direction*, ignoring translation.
-
-        Use this instead of ``transform()`` when transforming a direction vector
-        (e.g. a normal) where translation must not affect the result.
-        """
-        from ..nodes.geometry import TransformDirection
-
-        return TransformDirection(direction, self.socket).o.direction
+        return ResultSVD(o.u, o.s, o.v)
 
     @property
-    def point(self) -> "_FieldDomain[MatrixSocket]":
-        return _FieldDomain(self.socket, "matrix", "point")
+    def point(self) -> "FieldDomain[MatrixSocket]":
+        """Possibly evaluate this field on the point domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "matrix", "point")
 
     @property
-    def edge(self) -> "_FieldDomain[MatrixSocket]":
-        return _FieldDomain(self.socket, "matrix", "edge")
+    def edge(self) -> "FieldDomain[MatrixSocket]":
+        """Possibly evaluate this field on the edge domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "matrix", "edge")
 
     @property
-    def face(self) -> "_FieldDomain[MatrixSocket]":
-        return _FieldDomain(self.socket, "matrix", "face")
+    def face(self) -> "FieldDomain[MatrixSocket]":
+        """Possibly evaluate this field on the face domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "matrix", "face")
 
     @property
-    def corner(self) -> "_FieldDomain[MatrixSocket]":
-        return _FieldDomain(self.socket, "matrix", "corner")
+    def corner(self) -> "FieldDomain[MatrixSocket]":
+        """Possibly evaluate this field on the corner domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "matrix", "corner")
 
     @property
-    def spline(self) -> "_FieldDomain[MatrixSocket]":
-        return _FieldDomain(self.socket, "matrix", "spline")
+    def spline(self) -> "FieldDomain[MatrixSocket]":
+        """Possibly evaluate this field on the spline domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "matrix", "spline")
 
     @property
-    def instance(self) -> "_FieldDomain[MatrixSocket]":
-        return _FieldDomain(self.socket, "matrix", "instance")
+    def instance(self) -> "FieldDomain[MatrixSocket]":
+        """Possibly evaluate this field on the instance domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "matrix", "instance")
 
     @property
-    def layer(self) -> "_FieldDomain[MatrixSocket]":
-        return _FieldDomain(self.socket, "matrix", "layer")
+    def layer(self) -> "FieldDomain[MatrixSocket]":
+        """Possibly evaluate this field on the layer domain at a given index, via [](`~nodebpy.builder.socket.FieldDomain`)"""
+        return FieldDomain(self.socket, "matrix", "layer")
 
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
