@@ -15,7 +15,12 @@ from ...builder import (
 )
 
 from ...types import (
+    InputBoolean,
+    InputBundle,
+    InputClosure,
     InputColor,
+    InputInteger,
+    InputMenu,
     InputRotation,
     InputShader,
     InputFloat,
@@ -114,6 +119,162 @@ class CombineColor(BaseNode):
     @mode.setter
     def mode(self, value: Literal["RGB", "HSV", "HSL"]):
         self.node.mode = value
+
+
+class ImplicitConversion(BaseNode):
+    """
+    Implicitly convert the input value to a fixed socket type
+
+    Parameters
+    ----------
+    value : InputColor
+        Value
+
+    Inputs
+    ------
+    i.value : ColorSocket
+        Value
+
+    Outputs
+    -------
+    o.value : ColorSocket
+        Value
+    """
+
+    _bl_idname = "NodeImplicitConversion"
+    node: bpy.types.NodeImplicitConversion
+
+    class _Inputs(SocketAccessor):
+        value: ColorSocket
+        """Value"""
+
+    class _Outputs(SocketAccessor):
+        value: ColorSocket
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        value: InputBoolean
+        | InputBundle
+        | InputClosure
+        | InputColor
+        | InputFloat
+        | InputInteger
+        | InputMenu
+        | InputShader
+        | InputVector = None,
+        *,
+        socket_idname: str = "",
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "MENU",
+            "SHADER",
+            "BUNDLE",
+            "CLOSURE",
+        ] = "RGBA",
+    ):
+        super().__init__()
+        key_args = {"Value": value}
+        self.socket_idname = socket_idname
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, value: InputFloat = 0.0) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Float'."""
+        return cls(data_type="FLOAT", value=value)
+
+    @classmethod
+    def integer(cls, value: InputInteger = 0) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Integer'."""
+        return cls(data_type="INT", value=value)
+
+    @classmethod
+    def boolean(cls, value: InputBoolean = False) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", value=value)
+
+    @classmethod
+    def vector(cls, value: InputVector = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Vector'."""
+        return cls(data_type="VECTOR", value=value)
+
+    @classmethod
+    def color(cls, value: InputColor = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Color'."""
+        return cls(data_type="RGBA", value=value)
+
+    @classmethod
+    def menu(cls, value: InputMenu = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Menu'."""
+        return cls(data_type="MENU", value=value)
+
+    @classmethod
+    def shader(cls, value: InputShader = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Shader'."""
+        return cls(data_type="SHADER", value=value)
+
+    @classmethod
+    def bundle(cls, value: InputBundle = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Bundle'."""
+        return cls(data_type="BUNDLE", value=value)
+
+    @classmethod
+    def closure(cls, value: InputClosure = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Closure'."""
+        return cls(data_type="CLOSURE", value=value)
+
+    @property
+    def socket_idname(self) -> str:
+        return self.node.socket_idname
+
+    @socket_idname.setter
+    def socket_idname(self, value: str):
+        self.node.socket_idname = value
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "MENU",
+        "SHADER",
+        "BUNDLE",
+        "CLOSURE",
+    ]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "MENU",
+            "SHADER",
+            "BUNDLE",
+            "CLOSURE",
+        ],
+    ):
+        self.node.data_type = value
 
 
 class Mix(BaseNode):
@@ -222,7 +383,7 @@ class Mix(BaseNode):
 
     def __init__(
         self,
-        factor_float: InputFloat = 0.5,
+        factor_float: InputFloat = 1.0,
         factor_vector: InputVector = None,
         a_float: InputFloat = 0.0,
         b_float: InputFloat = 0.0,
@@ -280,30 +441,19 @@ class Mix(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(
-        cls, factor: InputFloat = 0.5, a: InputFloat = 0.0, b: InputFloat = 0.0
-    ) -> "Mix":
+    def float(cls, factor: InputFloat = 1.0, b: InputFloat = 0.0) -> "Mix":
         """Create Mix with operation 'Float'."""
-        return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
+        return cls(data_type="FLOAT", factor_float=factor, b_float=b)
 
     @classmethod
-    def vector(
-        cls, factor: InputFloat = 0.5, a: InputVector = None, b: InputVector = None
-    ) -> "Mix":
+    def vector(cls, factor: InputFloat = 1.0, b: InputVector = None) -> "Mix":
         """Create Mix with operation 'Vector'."""
-        return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
+        return cls(data_type="VECTOR", factor_float=factor, b_vector=b)
 
     @classmethod
-    def color(
-        cls,
-        factor: InputFloat = 0.5,
-        a_color: InputColor = None,
-        b_color: InputColor = None,
-    ) -> "Mix":
+    def color(cls, factor: InputFloat = 1.0, b_color: InputColor = None) -> "Mix":
         """Create Mix with operation 'Color'."""
-        return cls(
-            data_type="RGBA", factor_float=factor, a_color=a_color, b_color=b_color
-        )
+        return cls(data_type="RGBA", factor_float=factor, b_color=b_color)
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:

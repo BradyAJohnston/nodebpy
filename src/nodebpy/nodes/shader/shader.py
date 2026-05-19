@@ -1171,7 +1171,7 @@ class PrincipledBSDF(BaseNode):
         *,
         distribution: Literal["GGX", "MULTI_GGX"] = "MULTI_GGX",
         subsurface_method: Literal[
-            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"
+            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
         ] = "RANDOM_WALK",
     ):
         super().__init__()
@@ -1221,12 +1221,17 @@ class PrincipledBSDF(BaseNode):
         self.node.distribution = value
 
     @property
-    def subsurface_method(self) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]:
-        return self.node.subsurface_method  # ty: ignore[invalid-return-type]
+    def subsurface_method(
+        self,
+    ) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"]:
+        return self.node.subsurface_method
 
     @subsurface_method.setter
     def subsurface_method(
-        self, value: Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]
+        self,
+        value: Literal[
+            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
+        ],
     ):
         self.node.subsurface_method = value
 
@@ -1902,7 +1907,9 @@ class SubsurfaceScattering(BaseNode):
         normal: InputVector = None,
         weight: InputFloat = 0.0,
         *,
-        falloff: Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"] = "RANDOM_WALK",
+        falloff: Literal[
+            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
+        ] = "RANDOM_WALK",
     ):
         super().__init__()
         key_args = {
@@ -1919,11 +1926,18 @@ class SubsurfaceScattering(BaseNode):
         self._establish_links(**key_args)
 
     @property
-    def falloff(self) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]:
-        return self.node.falloff  # ty: ignore[invalid-return-type]
+    def falloff(
+        self,
+    ) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"]:
+        return self.node.falloff
 
     @falloff.setter
-    def falloff(self, value: Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]):
+    def falloff(
+        self,
+        value: Literal[
+            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
+        ],
+    ):
         self.node.falloff = value
 
 

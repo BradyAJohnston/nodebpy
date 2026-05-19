@@ -10,8 +10,10 @@ from ...builder import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
+    FontSocket,
     IntegerSocket,
     MenuSocket,
+    StringSocket,
     VectorSocket,
 )
 
@@ -20,8 +22,65 @@ from ...types import (
     InputColor,
     InputInteger,
     InputMenu,
+    InputString,
     InputFloat,
+    InputFont,
 )
+
+
+class BlankImage(BaseNode):
+    """
+    Returns an image with the given size and constant color
+
+    Parameters
+    ----------
+    color : InputColor
+        Color
+    size : InputInteger
+        Size
+
+    Inputs
+    ------
+    i.color : ColorSocket
+        Color
+    i.size : IntegerSocket
+        Size
+
+    Outputs
+    -------
+    o.image : ColorSocket
+        Image
+    """
+
+    _bl_idname = "CompositorNodeBlankImage"
+    node: bpy.types.CompositorNodeBlankImage
+
+    class _Inputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+        size: IntegerSocket
+        """Size"""
+
+    class _Outputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        color: InputColor = None,
+        size: InputInteger = None,
+    ):
+        super().__init__()
+        key_args = {"Color": color, "Size": size}
+
+        self._establish_links(**key_args)
 
 
 class BokehImage(BaseNode):
@@ -160,7 +219,7 @@ class ImageCoordinates(BaseNode):
         Uniform
     o.normalized : VectorSocket
         Normalized
-    o.pixel : VectorSocket
+    o.pixel : IntegerSocket
         Pixel
     """
 
@@ -176,7 +235,7 @@ class ImageCoordinates(BaseNode):
         """Uniform"""
         normalized: VectorSocket
         """Normalized"""
-        pixel: VectorSocket
+        pixel: IntegerSocket
         """Pixel"""
 
     if TYPE_CHECKING:
@@ -209,9 +268,9 @@ class ImageInfo(BaseNode):
 
     Outputs
     -------
-    o.dimensions : VectorSocket
+    o.dimensions : IntegerSocket
         Dimensions
-    o.resolution : VectorSocket
+    o.resolution : IntegerSocket
         Resolution
     o.location : VectorSocket
         Location
@@ -229,9 +288,9 @@ class ImageInfo(BaseNode):
         """Image"""
 
     class _Outputs(SocketAccessor):
-        dimensions: VectorSocket
+        dimensions: IntegerSocket
         """Dimensions"""
-        resolution: VectorSocket
+        resolution: IntegerSocket
         """Resolution"""
         location: VectorSocket
         """Location"""
@@ -571,6 +630,107 @@ class SequencerStripInfo(BaseNode):
     def __init__(self):
         super().__init__()
         key_args = {}
+
+        self._establish_links(**key_args)
+
+
+class StringToImage(BaseNode):
+    """
+    Generates an image containing the given paragraph of text
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    font : InputFont
+        Font
+    size : InputFloat
+        Size
+    horizontal_alignment : InputMenu | Literal['Left', 'Center', 'Right']
+        Horizontal Alignment
+    vertical_alignment : InputMenu | Literal['Top', 'Top Baseline', 'Middle', 'Bottom Baseline', 'Bottom']
+        Vertical Alignment
+    wrap : InputBoolean
+        Wrap
+    wrap_width : InputInteger
+        Width
+
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.font : FontSocket
+        Font
+    i.size : FloatSocket
+        Size
+    i.horizontal_alignment : MenuSocket
+        Horizontal Alignment
+    i.vertical_alignment : MenuSocket
+        Vertical Alignment
+    i.wrap : BooleanSocket
+        Wrap
+    i.wrap_width : IntegerSocket
+        Width
+
+    Outputs
+    -------
+    o.image : FloatSocket
+        Image
+    """
+
+    _bl_idname = "CompositorNodeStringToImage"
+    node: bpy.types.CompositorNodeStringToImage
+
+    class _Inputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+        font: FontSocket
+        """Font"""
+        size: FloatSocket
+        """Size"""
+        horizontal_alignment: MenuSocket
+        """Horizontal Alignment"""
+        vertical_alignment: MenuSocket
+        """Vertical Alignment"""
+        wrap: BooleanSocket
+        """Wrap"""
+        wrap_width: IntegerSocket
+        """Width"""
+
+    class _Outputs(SocketAccessor):
+        image: FloatSocket
+        """Image"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        string: InputString = "",
+        font: InputFont = None,
+        size: InputFloat = 128.0,
+        horizontal_alignment: InputMenu | Literal["Left", "Center", "Right"] = "Center",
+        vertical_alignment: InputMenu
+        | Literal[
+            "Top", "Top Baseline", "Middle", "Bottom Baseline", "Bottom"
+        ] = "Middle",
+        wrap: InputBoolean = True,
+        wrap_width: InputInteger = 1920,
+    ):
+        super().__init__()
+        key_args = {
+            "String": string,
+            "Font": font,
+            "Size": size,
+            "Horizontal Alignment": horizontal_alignment,
+            "Vertical Alignment": vertical_alignment,
+            "Wrap": wrap,
+            "Wrap Width": wrap_width,
+        }
 
         self._establish_links(**key_args)
 

@@ -15,10 +15,14 @@ from ...types import (
     InputBoolean,
     InputColor,
     InputInteger,
+    InputMatrix,
     InputMenu,
+    InputObject,
+    InputRotation,
     InputString,
     InputFloat,
     InputVector,
+    InputFont,
 )
 
 
@@ -72,13 +76,28 @@ class EnableOutput(BaseNode):
         value: InputBoolean
         | InputColor
         | InputFloat
+        | InputFont
         | InputInteger
+        | InputMatrix
         | InputMenu
+        | InputObject
+        | InputRotation
         | InputString
         | InputVector = 0.0,
         *,
         data_type: Literal[
-            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "FONT",
+            "INT_VECTOR",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -122,6 +141,20 @@ class EnableOutput(BaseNode):
         return cls(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
+    def rotation(
+        cls, enable: InputBoolean = False, value: InputRotation = None
+    ) -> "EnableOutput":
+        """Create Enable Output with operation 'Rotation'."""
+        return cls(data_type="ROTATION", enable=enable, value=value)
+
+    @classmethod
+    def matrix(
+        cls, enable: InputBoolean = False, value: InputMatrix = None
+    ) -> "EnableOutput":
+        """Create Enable Output with operation 'Matrix'."""
+        return cls(data_type="MATRIX", enable=enable, value=value)
+
+    @classmethod
     def string(
         cls, enable: InputBoolean = False, value: InputString = ""
     ) -> "EnableOutput":
@@ -135,15 +168,62 @@ class EnableOutput(BaseNode):
         """Create Enable Output with operation 'Menu'."""
         return cls(data_type="MENU", enable=enable, value=value)
 
+    @classmethod
+    def object(
+        cls, enable: InputBoolean = False, value: InputObject = None
+    ) -> "EnableOutput":
+        """Create Enable Output with operation 'Object'."""
+        return cls(data_type="OBJECT", enable=enable, value=value)
+
+    @classmethod
+    def font(
+        cls, enable: InputBoolean = False, value: InputFont = None
+    ) -> "EnableOutput":
+        """Create Enable Output with operation 'Font'."""
+        return cls(data_type="FONT", enable=enable, value=value)
+
+    @classmethod
+    def integer_vector(
+        cls, enable: InputBoolean = False, value: InputInteger = None
+    ) -> "EnableOutput":
+        """Create Enable Output with operation 'Integer Vector'."""
+        return cls(data_type="INT_VECTOR", enable=enable, value=value)
+
     @property
     def data_type(
         self,
-    ) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"]:
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "FONT",
+        "INT_VECTOR",
+    ]:
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(
         self,
-        value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"],
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "FONT",
+            "INT_VECTOR",
+        ],
     ):
         self.node.data_type = value

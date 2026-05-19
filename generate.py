@@ -50,6 +50,7 @@ _OUTPUT_SOCKET_CLASSES: dict[str, str] = {
     "NodeSocketClosure": "ClosureSocket",
     "NodeSocketShader": "ShaderSocket",
     "NodeSocketFont": "FontSocket",
+    "NodeSocketSound": "SoundSocket",
 }
 
 
@@ -109,6 +110,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "ClosureZone",
         "FormatString",
         "JoinStrings",
+        "Menu",
         "Collection",
         "Material",
         "Object",
@@ -121,8 +123,10 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "EvaluateOnDomain",
         "FieldVariance",
         "Compare",
+        "Mix",
         "AttributeStatistic",
         "SampleIndex",
+        "IntegerVector",
         "SampleCurve",
         "Frame",
         "Float",
@@ -244,6 +248,7 @@ class SocketInfo:
             # Shader trees use NodeSocketShader for BSDF/closure outputs
             "NodeSocketShader": "InputShader",
             "NodeSocketFont": "InputFont",
+            "NodeSocketSound": "InputSound",
             # Virtual sockets adapt to whatever is connected
             "NodeSocketVirtual": "InputLinkable",
         }
@@ -1294,6 +1299,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         "InputFloat",
         "InputVector",
         "InputFont",
+        "InputSound",
     ]
     type_imports = [
         t

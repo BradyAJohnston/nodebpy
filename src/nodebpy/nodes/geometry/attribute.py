@@ -7,6 +7,7 @@ import bpy
 from ...builder import (
     BaseNode as BaseNode,
     SocketAccessor,
+    BooleanSocket,
     FloatSocket,
     GeometrySocket,
     IntegerSocket,
@@ -15,6 +16,7 @@ from ...builder import (
 )
 
 from ...types import (
+    InputBoolean,
     InputColor,
     InputGeometry,
     InputInteger,
@@ -227,6 +229,107 @@ class DomainSize(BaseNode):
         self, value: Literal["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"]
     ):
         self.node.component = value
+
+
+class GetAttributeNames(BaseNode):
+    """
+    Retrieves attribute names as a list of strings
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    filter_data_type : InputBoolean
+        Filter Data Type
+    data_type : InputMenu | Literal['Float', 'Integer', 'Boolean', 'Vector', 'Color', 'Quaternion', '4x4 Matrix', 'String', '8-Bit Integer', '2D 16-Bit Integer Vector', '2D Integer Vector', '2D Vector', '4D Vector', 'Byte Color']
+        Data Type
+    filter_domain : InputBoolean
+        Filter Domain
+    domain : InputMenu | Literal['Point', 'Edge', 'Face', 'Face Corner', 'Spline', 'Instance', 'Layer']
+        Domain
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.filter_data_type : BooleanSocket
+        Filter Data Type
+    i.data_type : MenuSocket
+        Data Type
+    i.filter_domain : BooleanSocket
+        Filter Domain
+    i.domain : MenuSocket
+        Domain
+
+    Outputs
+    -------
+    o.names : StringSocket
+        Names
+    """
+
+    _bl_idname = "GeometryNodeGetAttributeNames"
+    node: bpy.types.GeometryNodeGetAttributeNames
+
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        filter_data_type: BooleanSocket
+        """Filter Data Type"""
+        data_type: MenuSocket
+        """Data Type"""
+        filter_domain: BooleanSocket
+        """Filter Domain"""
+        domain: MenuSocket
+        """Domain"""
+
+    class _Outputs(SocketAccessor):
+        names: StringSocket
+        """Names"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        filter_data_type: InputBoolean = False,
+        data_type: InputMenu
+        | Literal[
+            "Float",
+            "Integer",
+            "Boolean",
+            "Vector",
+            "Color",
+            "Quaternion",
+            "4x4 Matrix",
+            "String",
+            "8-Bit Integer",
+            "2D 16-Bit Integer Vector",
+            "2D Integer Vector",
+            "2D Vector",
+            "4D Vector",
+            "Byte Color",
+        ] = "Float",
+        filter_domain: InputBoolean = False,
+        domain: InputMenu
+        | Literal[
+            "Point", "Edge", "Face", "Face Corner", "Spline", "Instance", "Layer"
+        ] = "Point",
+    ):
+        super().__init__()
+        key_args = {
+            "Geometry": geometry,
+            "Filter Data Type": filter_data_type,
+            "Data Type": data_type,
+            "Filter Domain": filter_domain,
+            "Domain": domain,
+        }
+
+        self._establish_links(**key_args)
 
 
 class RemoveNamedAttribute(BaseNode):

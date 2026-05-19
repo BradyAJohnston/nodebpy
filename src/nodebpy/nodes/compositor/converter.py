@@ -13,7 +13,6 @@ from ...builder import (
     FloatSocket,
     IntegerSocket,
     MenuSocket,
-    RotationSocket,
     VectorSocket,
 )
 
@@ -22,11 +21,14 @@ from ...types import (
     InputBoolean,
     InputColor,
     InputInteger,
+    InputMatrix,
     InputMenu,
+    InputObject,
     InputRotation,
     InputString,
     InputFloat,
     InputVector,
+    InputFont,
 )
 
 
@@ -357,6 +359,188 @@ class IDMask(BaseNode):
         self._establish_links(**key_args)
 
 
+class ImplicitConversion(BaseNode):
+    """
+    Implicitly convert the input value to a fixed socket type
+
+    Parameters
+    ----------
+    value : InputColor
+        Value
+
+    Inputs
+    ------
+    i.value : ColorSocket
+        Value
+
+    Outputs
+    -------
+    o.value : ColorSocket
+        Value
+    """
+
+    _bl_idname = "NodeImplicitConversion"
+    node: bpy.types.NodeImplicitConversion
+
+    class _Inputs(SocketAccessor):
+        value: ColorSocket
+        """Value"""
+
+    class _Outputs(SocketAccessor):
+        value: ColorSocket
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        value: InputBoolean
+        | InputColor
+        | InputFloat
+        | InputFont
+        | InputInteger
+        | InputMatrix
+        | InputMenu
+        | InputObject
+        | InputRotation
+        | InputString
+        | InputVector = None,
+        *,
+        socket_idname: str = "",
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "FONT",
+            "INT_VECTOR",
+        ] = "RGBA",
+    ):
+        super().__init__()
+        key_args = {"Value": value}
+        self.socket_idname = socket_idname
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, value: InputFloat = 0.0) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Float'."""
+        return cls(data_type="FLOAT", value=value)
+
+    @classmethod
+    def integer(cls, value: InputInteger = 0) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Integer'."""
+        return cls(data_type="INT", value=value)
+
+    @classmethod
+    def boolean(cls, value: InputBoolean = False) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", value=value)
+
+    @classmethod
+    def vector(cls, value: InputVector = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Vector'."""
+        return cls(data_type="VECTOR", value=value)
+
+    @classmethod
+    def color(cls, value: InputColor = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Color'."""
+        return cls(data_type="RGBA", value=value)
+
+    @classmethod
+    def rotation(cls, value: InputRotation = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Rotation'."""
+        return cls(data_type="ROTATION", value=value)
+
+    @classmethod
+    def matrix(cls, value: InputMatrix = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Matrix'."""
+        return cls(data_type="MATRIX", value=value)
+
+    @classmethod
+    def string(cls, value: InputString = "") -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'String'."""
+        return cls(data_type="STRING", value=value)
+
+    @classmethod
+    def menu(cls, value: InputMenu = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Menu'."""
+        return cls(data_type="MENU", value=value)
+
+    @classmethod
+    def object(cls, value: InputObject = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Object'."""
+        return cls(data_type="OBJECT", value=value)
+
+    @classmethod
+    def font(cls, value: InputFont = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Font'."""
+        return cls(data_type="FONT", value=value)
+
+    @classmethod
+    def integer_vector(cls, value: InputInteger = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Integer Vector'."""
+        return cls(data_type="INT_VECTOR", value=value)
+
+    @property
+    def socket_idname(self) -> str:
+        return self.node.socket_idname
+
+    @socket_idname.setter
+    def socket_idname(self, value: str):
+        self.node.socket_idname = value
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "FONT",
+        "INT_VECTOR",
+    ]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "FONT",
+            "INT_VECTOR",
+        ],
+    ):
+        self.node.data_type = value
+
+
 class IndexSwitch(BaseNode):
     """
     Choose between an arbitrary number of values with an index
@@ -418,21 +602,40 @@ class IndexSwitch(BaseNode):
         item_0: InputBoolean
         | InputColor
         | InputFloat
+        | InputFont
         | InputInteger
+        | InputMatrix
         | InputMenu
+        | InputObject
+        | InputRotation
         | InputString
         | InputVector = None,
         item_1: InputBoolean
         | InputColor
         | InputFloat
+        | InputFont
         | InputInteger
+        | InputMatrix
         | InputMenu
+        | InputObject
+        | InputRotation
         | InputString
         | InputVector = None,
         extend: InputLinkable = None,
         *,
         data_type: Literal[
-            "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "FONT",
+            "INT_VECTOR",
         ] = "RGBA",
     ):
         super().__init__()
@@ -515,6 +718,36 @@ class IndexSwitch(BaseNode):
         )
 
     @classmethod
+    def rotation(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputRotation = None,
+        item_1: InputRotation = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Rotation'."""
+        return cls(
+            data_type="ROTATION",
+            index=index,
+            item_0=item_0,
+            item_1=item_1,
+            extend=extend,
+        )
+
+    @classmethod
+    def matrix(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputMatrix = None,
+        item_1: InputMatrix = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Matrix'."""
+        return cls(
+            data_type="MATRIX", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
     def string(
         cls,
         index: InputInteger = 0,
@@ -540,16 +773,85 @@ class IndexSwitch(BaseNode):
             data_type="MENU", index=index, item_0=item_0, item_1=item_1, extend=extend
         )
 
+    @classmethod
+    def object(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputObject = None,
+        item_1: InputObject = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Object'."""
+        return cls(
+            data_type="OBJECT", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def font(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputFont = None,
+        item_1: InputFont = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Font'."""
+        return cls(
+            data_type="FONT", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def integer_vector(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputInteger = None,
+        item_1: InputInteger = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch":
+        """Create Index Switch with operation 'Integer Vector'."""
+        return cls(
+            data_type="INT_VECTOR",
+            index=index,
+            item_0=item_0,
+            item_1=item_1,
+            extend=extend,
+        )
+
     @property
     def data_type(
         self,
-    ) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"]:
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "FONT",
+        "INT_VECTOR",
+    ]:
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
     def data_type(
         self,
-        value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "STRING", "MENU"],
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "FONT",
+            "INT_VECTOR",
+        ],
     ):
         self.node.data_type = value
 
@@ -578,6 +880,10 @@ class Levels(BaseNode):
         Mean
     o.standard_deviation : FloatSocket
         Standard Deviation
+    o.minimum : FloatSocket
+        Minimum
+    o.maximum : FloatSocket
+        Maximum
     """
 
     _bl_idname = "CompositorNodeLevels"
@@ -594,6 +900,10 @@ class Levels(BaseNode):
         """Mean"""
         standard_deviation: FloatSocket
         """Standard Deviation"""
+        minimum: FloatSocket
+        """Minimum"""
+        maximum: FloatSocket
+        """Maximum"""
 
     if TYPE_CHECKING:
 
@@ -612,281 +922,6 @@ class Levels(BaseNode):
         key_args = {"Image": image, "Channel": channel}
 
         self._establish_links(**key_args)
-
-
-class Mix(BaseNode):
-    """
-    Mix values by a factor
-
-    Parameters
-    ----------
-    factor_float : InputFloat
-        Factor
-    factor_vector : InputVector
-        Factor
-    a_float : InputFloat
-        A
-    b_float : InputFloat
-        B
-    a_vector : InputVector
-        A
-    b_vector : InputVector
-        B
-    a_color : InputColor
-        A
-    b_color : InputColor
-        B
-    a_rotation : InputRotation
-        A
-    b_rotation : InputRotation
-        B
-
-    Inputs
-    ------
-    i.factor_float : FloatSocket
-        Factor
-    i.factor_vector : VectorSocket
-        Factor
-    i.a_float : FloatSocket
-        A
-    i.b_float : FloatSocket
-        B
-    i.a_vector : VectorSocket
-        A
-    i.b_vector : VectorSocket
-        B
-    i.a_color : ColorSocket
-        A
-    i.b_color : ColorSocket
-        B
-    i.a_rotation : RotationSocket
-        A
-    i.b_rotation : RotationSocket
-        B
-
-    Outputs
-    -------
-    o.result_float : FloatSocket
-        Result
-    o.result_vector : VectorSocket
-        Result
-    o.result_color : ColorSocket
-        Result
-    o.result_rotation : RotationSocket
-        Result
-    """
-
-    _bl_idname = "ShaderNodeMix"
-    node: bpy.types.ShaderNodeMix
-
-    class _Inputs(SocketAccessor):
-        factor_float: FloatSocket
-        """Factor"""
-        factor_vector: VectorSocket
-        """Factor"""
-        a_float: FloatSocket
-        """A"""
-        b_float: FloatSocket
-        """B"""
-        a_vector: VectorSocket
-        """A"""
-        b_vector: VectorSocket
-        """B"""
-        a_color: ColorSocket
-        """A"""
-        b_color: ColorSocket
-        """B"""
-        a_rotation: RotationSocket
-        """A"""
-        b_rotation: RotationSocket
-        """B"""
-
-    class _Outputs(SocketAccessor):
-        result_float: FloatSocket
-        """Result"""
-        result_vector: VectorSocket
-        """Result"""
-        result_color: ColorSocket
-        """Result"""
-        result_rotation: RotationSocket
-        """Result"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        factor_float: InputFloat = 0.5,
-        factor_vector: InputVector = None,
-        a_float: InputFloat = 0.0,
-        b_float: InputFloat = 0.0,
-        a_vector: InputVector = None,
-        b_vector: InputVector = None,
-        a_color: InputColor = None,
-        b_color: InputColor = None,
-        a_rotation: InputRotation = None,
-        b_rotation: InputRotation = None,
-        *,
-        data_type: Literal["FLOAT", "VECTOR", "RGBA"] = "FLOAT",
-        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
-        blend_type: Literal[
-            "MIX",
-            "DARKEN",
-            "MULTIPLY",
-            "BURN",
-            "LIGHTEN",
-            "SCREEN",
-            "DODGE",
-            "ADD",
-            "OVERLAY",
-            "SOFT_LIGHT",
-            "LINEAR_LIGHT",
-            "DIFFERENCE",
-            "EXCLUSION",
-            "SUBTRACT",
-            "DIVIDE",
-            "HUE",
-            "SATURATION",
-            "COLOR",
-            "VALUE",
-        ] = "MIX",
-        clamp_factor: bool = False,
-        clamp_result: bool = False,
-    ):
-        super().__init__()
-        key_args = {
-            "Factor_Float": factor_float,
-            "Factor_Vector": factor_vector,
-            "A_Float": a_float,
-            "B_Float": b_float,
-            "A_Vector": a_vector,
-            "B_Vector": b_vector,
-            "A_Color": a_color,
-            "B_Color": b_color,
-            "A_Rotation": a_rotation,
-            "B_Rotation": b_rotation,
-        }
-        self.data_type = data_type
-        self.factor_mode = factor_mode
-        self.blend_type = blend_type
-        self.clamp_factor = clamp_factor
-        self.clamp_result = clamp_result
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls, factor: InputFloat = 0.5, a: InputFloat = 0.0, b: InputFloat = 0.0
-    ) -> "Mix":
-        """Create Mix with operation 'Float'."""
-        return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
-
-    @classmethod
-    def vector(
-        cls, factor: InputFloat = 0.5, a: InputVector = None, b: InputVector = None
-    ) -> "Mix":
-        """Create Mix with operation 'Vector'."""
-        return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
-
-    @classmethod
-    def color(
-        cls,
-        factor: InputFloat = 0.5,
-        a_color: InputColor = None,
-        b_color: InputColor = None,
-    ) -> "Mix":
-        """Create Mix with operation 'Color'."""
-        return cls(
-            data_type="RGBA", factor_float=factor, a_color=a_color, b_color=b_color
-        )
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
-        return self.node.data_type  # ty: ignore[invalid-return-type]
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA"]):
-        self.node.data_type = value
-
-    @property
-    def factor_mode(self) -> Literal["UNIFORM", "NON_UNIFORM"]:
-        return self.node.factor_mode
-
-    @factor_mode.setter
-    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]):
-        self.node.factor_mode = value
-
-    @property
-    def blend_type(
-        self,
-    ) -> Literal[
-        "MIX",
-        "DARKEN",
-        "MULTIPLY",
-        "BURN",
-        "LIGHTEN",
-        "SCREEN",
-        "DODGE",
-        "ADD",
-        "OVERLAY",
-        "SOFT_LIGHT",
-        "LINEAR_LIGHT",
-        "DIFFERENCE",
-        "EXCLUSION",
-        "SUBTRACT",
-        "DIVIDE",
-        "HUE",
-        "SATURATION",
-        "COLOR",
-        "VALUE",
-    ]:
-        return self.node.blend_type
-
-    @blend_type.setter
-    def blend_type(
-        self,
-        value: Literal[
-            "MIX",
-            "DARKEN",
-            "MULTIPLY",
-            "BURN",
-            "LIGHTEN",
-            "SCREEN",
-            "DODGE",
-            "ADD",
-            "OVERLAY",
-            "SOFT_LIGHT",
-            "LINEAR_LIGHT",
-            "DIFFERENCE",
-            "EXCLUSION",
-            "SUBTRACT",
-            "DIVIDE",
-            "HUE",
-            "SATURATION",
-            "COLOR",
-            "VALUE",
-        ],
-    ):
-        self.node.blend_type = value
-
-    @property
-    def clamp_factor(self) -> bool:
-        return self.node.clamp_factor
-
-    @clamp_factor.setter
-    def clamp_factor(self, value: bool):
-        self.node.clamp_factor = value
-
-    @property
-    def clamp_result(self) -> bool:
-        return self.node.clamp_result
-
-    @clamp_result.setter
-    def clamp_result(self, value: bool):
-        self.node.clamp_result = value
 
 
 class RGBToBW(BaseNode):

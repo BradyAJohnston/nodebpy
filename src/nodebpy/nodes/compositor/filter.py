@@ -1847,7 +1847,7 @@ class MaskToSDF(BaseNode):
     -------
     o.sdf : FloatSocket
         SDF
-    o.nearest_pixel : VectorSocket
+    o.nearest_pixel : IntegerSocket
         Nearest Pixel
     """
 
@@ -1861,7 +1861,7 @@ class MaskToSDF(BaseNode):
     class _Outputs(SocketAccessor):
         sdf: FloatSocket
         """SDF"""
-        nearest_pixel: VectorSocket
+        nearest_pixel: IntegerSocket
         """Nearest Pixel"""
 
     if TYPE_CHECKING:

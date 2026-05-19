@@ -27,6 +27,8 @@ from bpy.types import (
     NodeSocketShader,
     NodeSocketString,
     NodeSocketVector,
+    NodeSocketSound,
+    Sound,
     Object,
     VectorFont,
 )
@@ -52,6 +54,7 @@ if typing.TYPE_CHECKING:
         ShaderSocket,
         StringSocket,
         VectorSocket,
+        SoundSocket,
     )
 
     from .builder import BaseNode as BaseNode
@@ -125,6 +128,7 @@ InputShader = typing.Union[
     "ShaderSocket",
 ]
 InputFont = typing.Union[NodeSocketFont, InputLinkable, VectorFont, "FontSocket"]
+InputSound = typing.Union[NodeSocketSound, InputLinkable, "SoundSocket", Sound]
 
 
 InputGrid = typing.Union[
@@ -226,6 +230,7 @@ SOCKET_TYPES = Literal[
     "CLOSURE",
     "SHADER",
     "FONT",
+    "SOUND",
     # "CUSTOM",
 ]
 
@@ -280,6 +285,7 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
     "BUNDLE": ("BUNDLE",),
     "CLOSURE": ("CLOSURE",),
     "SHADER": ("SHADER", "RGBA"),
+    "SOUND": ("SOUND",),
 }
 
 # Type pairs (output, input) where the first available input socket should be

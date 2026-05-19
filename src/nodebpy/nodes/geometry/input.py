@@ -13,6 +13,7 @@ from ...builder import (
     CollectionSocket,
     ColorSocket,
     FloatSocket,
+    FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
@@ -371,6 +372,65 @@ class CameraInfo(BaseNode):
     def __init__(self, camera: InputObject = None):
         super().__init__()
         key_args = {"Camera": camera}
+
+        self._establish_links(**key_args)
+
+
+class CollectionChildren(BaseNode):
+    """
+    Retrieve a collection's object and collection children, in a name-based order
+
+    Parameters
+    ----------
+    collection : InputCollection
+        Collection
+    recursive : InputBoolean
+        Recursive
+
+    Inputs
+    ------
+    i.collection : CollectionSocket
+        Collection
+    i.recursive : BooleanSocket
+        Recursive
+
+    Outputs
+    -------
+    o.collections : CollectionSocket
+        Collections
+    o.objects : ObjectSocket
+        Objects
+    """
+
+    _bl_idname = "GeometryNodeCollectionChildren"
+    node: bpy.types.GeometryNodeCollectionChildren
+
+    class _Inputs(SocketAccessor):
+        collection: CollectionSocket
+        """Collection"""
+        recursive: BooleanSocket
+        """Recursive"""
+
+    class _Outputs(SocketAccessor):
+        collections: CollectionSocket
+        """Collections"""
+        objects: ObjectSocket
+        """Objects"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        collection: InputCollection = None,
+        recursive: InputBoolean = False,
+    ):
+        super().__init__()
+        key_args = {"Collection": collection, "Recursive": recursive}
 
         self._establish_links(**key_args)
 
@@ -1470,6 +1530,40 @@ class FaceOfCorner(BaseNode):
         self._establish_links(**key_args)
 
 
+class Font(BaseNode):
+    """
+    Output a font
+
+    Outputs
+    -------
+    o.font : FontSocket
+        Font
+    """
+
+    _bl_idname = "GeometryNodeInputFont"
+    node: bpy.types.GeometryNodeInputFont
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        font: FontSocket
+        """Font"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+
+        self._establish_links(**key_args)
+
+
 class ID(BaseNode):
     """
     Retrieve a stable random identifier value from the "id" attribute on the point domain, or the index if the attribute does not exist
@@ -1968,6 +2062,40 @@ class InstanceBounds(BaseNode):
     def __init__(self, use_radius: InputBoolean = True):
         super().__init__()
         key_args = {"Use Radius": use_radius}
+
+        self._establish_links(**key_args)
+
+
+class InstanceReference(BaseNode):
+    """
+    Output the reference index of the instance
+
+    Outputs
+    -------
+    o.reference_index : IntegerSocket
+        Reference Index
+    """
+
+    _bl_idname = "GeometryNodeInputInstanceReference"
+    node: bpy.types.GeometryNodeInputInstanceReference
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        reference_index: IntegerSocket
+        """Reference Index"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
 
         self._establish_links(**key_args)
 
@@ -3452,10 +3580,15 @@ class Vector(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, vector: tuple[float, float, float] = (0.0, 0.0, 0.0)):
+    def __init__(
+        self,
+        vector: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        vector_dimensions: int = 3,
+    ):
         super().__init__()
         key_args = {}
         self.vector = vector
+        self.vector_dimensions = vector_dimensions
         self._establish_links(**key_args)
 
     @property
@@ -3465,6 +3598,14 @@ class Vector(BaseNode):
     @vector.setter
     def vector(self, value: Vector | tuple[float, float, float]):
         self.node.vector = value
+
+    @property
+    def vector_dimensions(self) -> int:
+        return self.node.vector_dimensions
+
+    @vector_dimensions.setter
+    def vector_dimensions(self, value: int):
+        self.node.vector_dimensions = value
 
 
 class VertexNeighbors(BaseNode):

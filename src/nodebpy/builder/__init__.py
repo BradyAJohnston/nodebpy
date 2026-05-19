@@ -29,6 +29,7 @@ from .socket import (
     Socket,
     StringSocket,
     VectorSocket,
+    SoundSocket,
 )
 from .tree import (
     InputInterfaceContext,
@@ -74,6 +75,7 @@ __all__ = [
     "BundleSocket",
     "ClosureSocket",
     "ShaderSocket",
+    "SoundSocket",
     # Tree context
     "SocketContext",
     "PanelContext",

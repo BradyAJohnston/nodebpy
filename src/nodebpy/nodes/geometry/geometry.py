@@ -3114,6 +3114,68 @@ class MergeLayers(BaseNode):
         self.node.mode = value
 
 
+class MergePoints(BaseNode):
+    """
+    Merge points of a point cloud or mesh based on group ID and selection.
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    selection : InputBoolean
+        Selection
+    merge_id : InputInteger
+        Merge ID
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.selection : BooleanSocket
+        Selection
+    i.merge_id : IntegerSocket
+        Merge ID
+
+    Outputs
+    -------
+    o.geometry : GeometrySocket
+        Geometry
+    """
+
+    _bl_idname = "GeometryNodeMergePoints"
+    node: bpy.types.GeometryNodeMergePoints
+
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        selection: BooleanSocket
+        """Selection"""
+        merge_id: IntegerSocket
+        """Merge ID"""
+
+    class _Outputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        merge_id: InputInteger = 0,
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry, "Selection": selection, "Merge ID": merge_id}
+
+        self._establish_links(**key_args)
+
+
 class MergeByDistance(BaseNode):
     """
     Merge vertices or points within a given distance
@@ -4467,6 +4529,88 @@ class RealizeInstances(BaseNode):
     @realize_to_point_domain.setter
     def realize_to_point_domain(self, value: bool):
         self.node.realize_to_point_domain = value
+
+
+class RenameAttribute(BaseNode):
+    """
+    Change the name of an attribute
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    mode : InputMenu | Literal['Single', 'Prefix']
+        Mode
+    old : InputString
+        Old
+    new : InputString
+        New
+    overwrite : InputBoolean
+        Overwrite
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.mode : MenuSocket
+        Mode
+    i.old : StringSocket
+        Old
+    i.new : StringSocket
+        New
+    i.overwrite : BooleanSocket
+        Overwrite
+
+    Outputs
+    -------
+    o.geometry : GeometrySocket
+        Geometry
+    """
+
+    _bl_idname = "GeometryNodeRenameAttribute"
+    node: bpy.types.GeometryNodeRenameAttribute
+
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        mode: MenuSocket
+        """Mode"""
+        old: StringSocket
+        """Old"""
+        new: StringSocket
+        """New"""
+        overwrite: BooleanSocket
+        """Overwrite"""
+
+    class _Outputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        mode: InputMenu | Literal["Single", "Prefix"] = "Single",
+        old: InputString = "",
+        new: InputString = "",
+        overwrite: InputBoolean = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Geometry": geometry,
+            "Mode": mode,
+            "Old": old,
+            "New": new,
+            "Overwrite": overwrite,
+        }
+
+        self._establish_links(**key_args)
 
 
 class ReplaceMaterial(BaseNode):
@@ -6931,6 +7075,130 @@ class SetMeshNormal(BaseNode):
         self.node.domain = value
 
 
+class SetNurbsOrder(BaseNode):
+    """
+    Control how many curve control points influence each evaluated point by changing the "nurbs_order" attribute
+
+    Parameters
+    ----------
+    curves : InputGeometry
+        Curves
+    selection : InputBoolean
+        Selection
+    order : InputInteger
+        Order
+
+    Inputs
+    ------
+    i.curves : GeometrySocket
+        Curves
+    i.selection : BooleanSocket
+        Selection
+    i.order : IntegerSocket
+        Order
+
+    Outputs
+    -------
+    o.curves : GeometrySocket
+        Curves
+    """
+
+    _bl_idname = "GeometryNodeSetNURBSOrder"
+    node: bpy.types.GeometryNodeSetNURBSOrder
+
+    class _Inputs(SocketAccessor):
+        curves: GeometrySocket
+        """Curves"""
+        selection: BooleanSocket
+        """Selection"""
+        order: IntegerSocket
+        """Order"""
+
+    class _Outputs(SocketAccessor):
+        curves: GeometrySocket
+        """Curves"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        curves: InputGeometry = None,
+        selection: InputBoolean = True,
+        order: InputInteger = 4,
+    ):
+        super().__init__()
+        key_args = {"Curves": curves, "Selection": selection, "Order": order}
+
+        self._establish_links(**key_args)
+
+
+class SetNurbsWeight(BaseNode):
+    """
+    Control the influence of each NURBS control point on the curve by changing the "nurbs_weight" attribute
+
+    Parameters
+    ----------
+    curves : InputGeometry
+        Curves
+    selection : InputBoolean
+        Selection
+    weight : InputFloat
+        Weight
+
+    Inputs
+    ------
+    i.curves : GeometrySocket
+        Curves
+    i.selection : BooleanSocket
+        Selection
+    i.weight : FloatSocket
+        Weight
+
+    Outputs
+    -------
+    o.curves : GeometrySocket
+        Curves
+    """
+
+    _bl_idname = "GeometryNodeSetNURBSWeight"
+    node: bpy.types.GeometryNodeSetNURBSWeight
+
+    class _Inputs(SocketAccessor):
+        curves: GeometrySocket
+        """Curves"""
+        selection: BooleanSocket
+        """Selection"""
+        weight: FloatSocket
+        """Weight"""
+
+    class _Outputs(SocketAccessor):
+        curves: GeometrySocket
+        """Curves"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        curves: InputGeometry = None,
+        selection: InputBoolean = True,
+        weight: InputFloat = 1.0,
+    ):
+        super().__init__()
+        key_args = {"Curves": curves, "Selection": selection, "Weight": weight}
+
+        self._establish_links(**key_args)
+
+
 class SetPointRadius(BaseNode):
     """
     Set the display size of point cloud points
@@ -8349,6 +8617,8 @@ class SubdivisionSurface(BaseNode):
         Vertex Crease
     limit_surface : InputBoolean
         Limit Surface
+    quality : InputInteger
+        Quality
     uv_smooth : InputMenu | Literal['None', 'Keep Corners', 'Keep Corners, Junctions', 'Keep Corners, Junctions, Concave', 'Keep Boundaries', 'All']
         UV Smooth
     boundary_smooth : InputMenu | Literal['Keep Corners', 'All']
@@ -8366,6 +8636,8 @@ class SubdivisionSurface(BaseNode):
         Vertex Crease
     i.limit_surface : BooleanSocket
         Limit Surface
+    i.quality : IntegerSocket
+        Quality
     i.uv_smooth : MenuSocket
         UV Smooth
     i.boundary_smooth : MenuSocket
@@ -8391,6 +8663,8 @@ class SubdivisionSurface(BaseNode):
         """Vertex Crease"""
         limit_surface: BooleanSocket
         """Limit Surface"""
+        quality: IntegerSocket
+        """Quality"""
         uv_smooth: MenuSocket
         """UV Smooth"""
         boundary_smooth: MenuSocket
@@ -8414,6 +8688,7 @@ class SubdivisionSurface(BaseNode):
         edge_crease: InputFloat = 0.0,
         vertex_crease: InputFloat = 0.0,
         limit_surface: InputBoolean = True,
+        quality: InputInteger = 3,
         uv_smooth: InputMenu
         | Literal[
             "None",
@@ -8432,8 +8707,183 @@ class SubdivisionSurface(BaseNode):
             "Edge Crease": edge_crease,
             "Vertex Crease": vertex_crease,
             "Limit Surface": limit_surface,
+            "Quality": quality,
             "UV Smooth": uv_smooth,
             "Boundary Smooth": boundary_smooth,
+        }
+
+        self._establish_links(**key_args)
+
+
+class TransferAttributes(BaseNode):
+    """
+    Copy attributes from one geometry to another
+
+    Parameters
+    ----------
+    target : InputGeometry
+        Target
+    target_point_id : InputInteger
+        Target Point ID
+    target_edge_id : InputInteger
+        Target Edge ID
+    target_face_id : InputInteger
+        Target Face ID
+    target_corner_id : InputInteger
+        Target Corner ID
+    target_curve_id : InputInteger
+        Target Curve ID
+    target_instance_id : InputInteger
+        Target Instance ID
+    source : InputGeometry
+        Source
+    source_point_id : InputInteger
+        Source Point ID
+    source_edge_id : InputInteger
+        Source Edge ID
+    source_face_id : InputInteger
+        Source Face ID
+    source_corner_id : InputInteger
+        Source Corner ID
+    source_curve_id : InputInteger
+        Source Curve ID
+    source_instance_id : InputInteger
+        Source Instance ID
+    names : InputString
+        Names
+    ignore_names : InputBoolean
+        Ignore Names
+
+    Inputs
+    ------
+    i.target : GeometrySocket
+        Target
+    i.target_point_id : IntegerSocket
+        Target Point ID
+    i.target_edge_id : IntegerSocket
+        Target Edge ID
+    i.target_face_id : IntegerSocket
+        Target Face ID
+    i.target_corner_id : IntegerSocket
+        Target Corner ID
+    i.target_curve_id : IntegerSocket
+        Target Curve ID
+    i.target_instance_id : IntegerSocket
+        Target Instance ID
+    i.source : GeometrySocket
+        Source
+    i.source_point_id : IntegerSocket
+        Source Point ID
+    i.source_edge_id : IntegerSocket
+        Source Edge ID
+    i.source_face_id : IntegerSocket
+        Source Face ID
+    i.source_corner_id : IntegerSocket
+        Source Corner ID
+    i.source_curve_id : IntegerSocket
+        Source Curve ID
+    i.source_instance_id : IntegerSocket
+        Source Instance ID
+    i.names : StringSocket
+        Names
+    i.ignore_names : BooleanSocket
+        Ignore Names
+
+    Outputs
+    -------
+    o.target : GeometrySocket
+        Target
+    o.success : BooleanSocket
+        Success
+    """
+
+    _bl_idname = "GeometryNodeTransferAttributes"
+    node: bpy.types.GeometryNodeTransferAttributes
+
+    class _Inputs(SocketAccessor):
+        target: GeometrySocket
+        """Target"""
+        target_point_id: IntegerSocket
+        """Target Point ID"""
+        target_edge_id: IntegerSocket
+        """Target Edge ID"""
+        target_face_id: IntegerSocket
+        """Target Face ID"""
+        target_corner_id: IntegerSocket
+        """Target Corner ID"""
+        target_curve_id: IntegerSocket
+        """Target Curve ID"""
+        target_instance_id: IntegerSocket
+        """Target Instance ID"""
+        source: GeometrySocket
+        """Source"""
+        source_point_id: IntegerSocket
+        """Source Point ID"""
+        source_edge_id: IntegerSocket
+        """Source Edge ID"""
+        source_face_id: IntegerSocket
+        """Source Face ID"""
+        source_corner_id: IntegerSocket
+        """Source Corner ID"""
+        source_curve_id: IntegerSocket
+        """Source Curve ID"""
+        source_instance_id: IntegerSocket
+        """Source Instance ID"""
+        names: StringSocket
+        """Names"""
+        ignore_names: BooleanSocket
+        """Ignore Names"""
+
+    class _Outputs(SocketAccessor):
+        target: GeometrySocket
+        """Target"""
+        success: BooleanSocket
+        """Success"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        target: InputGeometry = None,
+        target_point_id: InputInteger = 0,
+        target_edge_id: InputInteger = 0,
+        target_face_id: InputInteger = 0,
+        target_corner_id: InputInteger = 0,
+        target_curve_id: InputInteger = 0,
+        target_instance_id: InputInteger = 0,
+        source: InputGeometry = None,
+        source_point_id: InputInteger = 0,
+        source_edge_id: InputInteger = 0,
+        source_face_id: InputInteger = 0,
+        source_corner_id: InputInteger = 0,
+        source_curve_id: InputInteger = 0,
+        source_instance_id: InputInteger = 0,
+        names: InputString = "",
+        ignore_names: InputBoolean = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Target": target,
+            "Target Point ID": target_point_id,
+            "Target Edge ID": target_edge_id,
+            "Target Face ID": target_face_id,
+            "Target Corner ID": target_corner_id,
+            "Target Curve ID": target_curve_id,
+            "Target Instance ID": target_instance_id,
+            "Source": source,
+            "Source Point ID": source_point_id,
+            "Source Edge ID": source_edge_id,
+            "Source Face ID": source_face_id,
+            "Source Corner ID": source_corner_id,
+            "Source Curve ID": source_curve_id,
+            "Source Instance ID": source_instance_id,
+            "Names": names,
+            "Ignore Names": ignore_names,
         }
 
         self._establish_links(**key_args)
@@ -8876,5 +9326,111 @@ class UVSphere(BaseNode):
     ):
         super().__init__()
         key_args = {"Segments": segments, "Rings": rings, "Radius": radius}
+
+        self._establish_links(**key_args)
+
+
+class XpbdSolver(BaseNode):
+    """
+    Simulate physics using the XPBD framework
+
+    Parameters
+    ----------
+    world : InputBundle
+        World
+    delta_time : InputFloat
+        Delta Time
+    filter : InputString
+        Filter
+    simulation_to_world : InputMatrix
+        Simulation to World
+    substeps : InputInteger
+        Substeps
+    constraint_iterations : InputInteger
+        Constraint Iterations
+    begin : InputFloat
+        Begin
+    end : InputFloat
+        End
+
+    Inputs
+    ------
+    i.world : BundleSocket
+        World
+    i.delta_time : FloatSocket
+        Delta Time
+    i.filter : StringSocket
+        Filter
+    i.simulation_to_world : MatrixSocket
+        Simulation to World
+    i.substeps : IntegerSocket
+        Substeps
+    i.constraint_iterations : IntegerSocket
+        Constraint Iterations
+    i.begin : FloatSocket
+        Begin
+    i.end : FloatSocket
+        End
+
+    Outputs
+    -------
+    o.world : BundleSocket
+        World
+    """
+
+    _bl_idname = "GeometryNodeXPBDSolver"
+    node: bpy.types.GeometryNodeXPBDSolver
+
+    class _Inputs(SocketAccessor):
+        world: BundleSocket
+        """World"""
+        delta_time: FloatSocket
+        """Delta Time"""
+        filter: StringSocket
+        """Filter"""
+        simulation_to_world: MatrixSocket
+        """Simulation to World"""
+        substeps: IntegerSocket
+        """Substeps"""
+        constraint_iterations: IntegerSocket
+        """Constraint Iterations"""
+        begin: FloatSocket
+        """Begin"""
+        end: FloatSocket
+        """End"""
+
+    class _Outputs(SocketAccessor):
+        world: BundleSocket
+        """World"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        world: InputBundle = None,
+        delta_time: InputFloat = 0.04,
+        filter: InputString = "",
+        simulation_to_world: InputMatrix = None,
+        substeps: InputInteger = 10,
+        constraint_iterations: InputInteger = 1,
+        begin: InputFloat = 0.0,
+        end: InputFloat = 1.0,
+    ):
+        super().__init__()
+        key_args = {
+            "World": world,
+            "Delta Time": delta_time,
+            "Filter": filter,
+            "Simulation to World": simulation_to_world,
+            "Substeps": substeps,
+            "Constraint Iterations": constraint_iterations,
+            "Begin": begin,
+            "End": end,
+        }
 
         self._establish_links(**key_args)

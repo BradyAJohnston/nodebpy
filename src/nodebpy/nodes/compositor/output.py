@@ -37,12 +37,14 @@ class FileOutput(BaseNode):
         directory: str = "",
         file_name: str = "",
         save_as_render: bool = False,
+        use_file_extension: bool = False,
     ):
         super().__init__()
         key_args = {}
         self.directory = directory
         self.file_name = file_name
         self.save_as_render = save_as_render
+        self.use_file_extension = use_file_extension
         self._establish_links(**key_args)
 
     @property
@@ -68,6 +70,14 @@ class FileOutput(BaseNode):
     @save_as_render.setter
     def save_as_render(self, value: bool):
         self.node.save_as_render = value
+
+    @property
+    def use_file_extension(self) -> bool:
+        return self.node.use_file_extension
+
+    @use_file_extension.setter
+    def use_file_extension(self, value: bool):
+        self.node.use_file_extension = value
 
 
 class Viewer(BaseNode):

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 from types import EllipsisType
 from typing import TYPE_CHECKING, Any, TypeVar, cast, overload
 
@@ -332,11 +333,10 @@ class LinkingMixin:
         source: "InputLinkable",
         input: "InputLinkable | str",
     ):
+        from .node import _find_socket_from_name
+
         if isinstance(input, str):
-            try:
-                self._link(source, self.node.inputs[input])
-            except KeyError:
-                self._link(source, self.node.inputs[self.i._index(input)])
+            self._link(source, _find_socket_from_name(self.node.inputs, input))
         else:
             self._link(source, input)
 

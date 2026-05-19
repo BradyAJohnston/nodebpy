@@ -34,6 +34,7 @@ from ...types import (
     InputFloat,
     InputVector,
     InputFont,
+    InputSound,
 )
 
 
@@ -191,6 +192,7 @@ class EnableOutput(BaseNode):
         | InputMenu
         | InputObject
         | InputRotation
+        | InputSound
         | InputString
         | InputVector = 0.0,
         *,
@@ -212,6 +214,7 @@ class EnableOutput(BaseNode):
             "BUNDLE",
             "CLOSURE",
             "FONT",
+            "SOUND",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -338,6 +341,13 @@ class EnableOutput(BaseNode):
         """Create Enable Output with operation 'Font'."""
         return cls(data_type="FONT", enable=enable, value=value)
 
+    @classmethod
+    def sound(
+        cls, enable: InputBoolean = False, value: InputSound = None
+    ) -> "EnableOutput":
+        """Create Enable Output with operation 'Sound'."""
+        return cls(data_type="SOUND", enable=enable, value=value)
+
     @property
     def data_type(
         self,
@@ -359,6 +369,7 @@ class EnableOutput(BaseNode):
         "BUNDLE",
         "CLOSURE",
         "FONT",
+        "SOUND",
     ]:
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
@@ -383,6 +394,7 @@ class EnableOutput(BaseNode):
             "BUNDLE",
             "CLOSURE",
             "FONT",
+            "SOUND",
         ],
     ):
         self.node.data_type = value

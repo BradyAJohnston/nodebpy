@@ -15,6 +15,7 @@ from ...builder import (
     MatrixSocket,
     MenuSocket,
     RotationSocket,
+    SoundSocket,
     StringSocket,
     VectorSocket,
 )
@@ -37,6 +38,7 @@ from ...types import (
     InputFloat,
     InputVector,
     InputFont,
+    InputSound,
 )
 
 
@@ -620,6 +622,142 @@ class Clamp(BaseNode):
         self.node.clamp_type = value
 
 
+class ClusterByConnected(BaseNode):
+    """
+    Group mesh vertices connected by edges when they are within a specified distance
+
+    Parameters
+    ----------
+    selection : InputBoolean
+        Selection
+    position : InputVector
+        Position
+    distance : InputFloat
+        Distance
+
+    Inputs
+    ------
+    i.selection : BooleanSocket
+        Selection
+    i.position : VectorSocket
+        Position
+    i.distance : FloatSocket
+        Distance
+
+    Outputs
+    -------
+    o.cluster_id : IntegerSocket
+        Cluster ID
+    """
+
+    _bl_idname = "GeometryNodeClusterByConnected"
+    node: bpy.types.GeometryNodeClusterByConnected
+
+    class _Inputs(SocketAccessor):
+        selection: BooleanSocket
+        """Selection"""
+        position: VectorSocket
+        """Position"""
+        distance: FloatSocket
+        """Distance"""
+
+    class _Outputs(SocketAccessor):
+        cluster_id: IntegerSocket
+        """Cluster ID"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        selection: InputBoolean = True,
+        position: InputVector = None,
+        distance: InputFloat = 0.001,
+    ):
+        super().__init__()
+        key_args = {"Selection": selection, "Position": position, "Distance": distance}
+
+        self._establish_links(**key_args)
+
+
+class ClusterByDistance(BaseNode):
+    """
+    Group elements into integer IDs based on proximity of vector values
+
+    Parameters
+    ----------
+    selection : InputBoolean
+        Selection
+    group_id : InputInteger
+        Group ID
+    position : InputVector
+        Position
+    distance : InputFloat
+        Distance
+
+    Inputs
+    ------
+    i.selection : BooleanSocket
+        Selection
+    i.group_id : IntegerSocket
+        Group ID
+    i.position : VectorSocket
+        Position
+    i.distance : FloatSocket
+        Distance
+
+    Outputs
+    -------
+    o.cluster_id : IntegerSocket
+        Cluster ID
+    """
+
+    _bl_idname = "GeometryNodeClusterByDistance"
+    node: bpy.types.GeometryNodeClusterByDistance
+
+    class _Inputs(SocketAccessor):
+        selection: BooleanSocket
+        """Selection"""
+        group_id: IntegerSocket
+        """Group ID"""
+        position: VectorSocket
+        """Position"""
+        distance: FloatSocket
+        """Distance"""
+
+    class _Outputs(SocketAccessor):
+        cluster_id: IntegerSocket
+        """Cluster ID"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        position: InputVector = None,
+        distance: InputFloat = 0.001,
+    ):
+        super().__init__()
+        key_args = {
+            "Selection": selection,
+            "Group ID": group_id,
+            "Position": position,
+            "Distance": distance,
+        }
+
+        self._establish_links(**key_args)
+
+
 class CombineBundle(BaseNode):
     """
     Combine multiple socket values into one.
@@ -1123,6 +1261,8 @@ class FindInString(BaseNode):
         String
     search : InputString
         Search
+    mode : InputMenu | Literal['From Start', 'From End']
+        Mode
 
     Inputs
     ------
@@ -1130,6 +1270,8 @@ class FindInString(BaseNode):
         String
     i.search : StringSocket
         Search
+    i.mode : MenuSocket
+        Mode
 
     Outputs
     -------
@@ -1147,6 +1289,8 @@ class FindInString(BaseNode):
         """String"""
         search: StringSocket
         """Search"""
+        mode: MenuSocket
+        """Mode"""
 
     class _Outputs(SocketAccessor):
         first_found: IntegerSocket
@@ -1165,9 +1309,10 @@ class FindInString(BaseNode):
         self,
         string: InputString = "",
         search: InputString = "",
+        mode: InputMenu | Literal["From Start", "From End"] = "From Start",
     ):
         super().__init__()
-        key_args = {"String": string, "Search": search}
+        key_args = {"String": string, "Search": search, "Mode": mode}
 
         self._establish_links(**key_args)
 
@@ -1312,6 +1457,7 @@ class GetBundleItem(BaseNode):
             "BUNDLE",
             "CLOSURE",
             "FONT",
+            "SOUND",
         ] = "FLOAT",
         structure_type: Literal[
             "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
@@ -1494,6 +1640,16 @@ class GetBundleItem(BaseNode):
         return cls(socket_type="FONT", bundle=bundle, path=path, remove=remove)
 
     @classmethod
+    def sound(
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        remove: InputBoolean = False,
+    ) -> "GetBundleItem":
+        """Create Get Bundle Item with operation 'Sound'."""
+        return cls(socket_type="SOUND", bundle=bundle, path=path, remove=remove)
+
+    @classmethod
     def auto(
         cls,
         bundle: InputBundle = None,
@@ -1574,6 +1730,7 @@ class GetBundleItem(BaseNode):
         "BUNDLE",
         "CLOSURE",
         "FONT",
+        "SOUND",
     ]:
         return self.node.socket_type  # ty: ignore[invalid-return-type]
 
@@ -1598,6 +1755,7 @@ class GetBundleItem(BaseNode):
             "BUNDLE",
             "CLOSURE",
             "FONT",
+            "SOUND",
         ],
     ):
         self.node.socket_type = value
@@ -1613,6 +1771,100 @@ class GetBundleItem(BaseNode):
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
     ):
         self.node.structure_type = value
+
+
+class GetNestedBundlePaths(BaseNode):
+    """
+    Get paths to items in a nested bundle with a filter
+
+    Parameters
+    ----------
+    bundle : InputBundle
+        Bundle
+    mode : InputMenu | Literal['All', 'Bundle Type', 'Data Type']
+        Mode
+    bundle_type : InputString
+        Bundle Type
+    data_type : InputMenu | Literal['Float', 'Integer', 'Boolean', 'Vector', 'Color', 'Rotation', 'Matrix', 'String', 'Menu', 'Object', 'Image', 'Geometry', 'Collection', 'Material', 'Bundle', 'Closure', 'Font', 'Sound']
+        Data Type
+
+    Inputs
+    ------
+    i.bundle : BundleSocket
+        Bundle
+    i.mode : MenuSocket
+        Mode
+    i.bundle_type : StringSocket
+        Bundle Type
+    i.data_type : MenuSocket
+        Data Type
+
+    Outputs
+    -------
+    o.paths : StringSocket
+        Paths
+    """
+
+    _bl_idname = "NodeGetNestedBundlePaths"
+    node: bpy.types.NodeGetNestedBundlePaths
+
+    class _Inputs(SocketAccessor):
+        bundle: BundleSocket
+        """Bundle"""
+        mode: MenuSocket
+        """Mode"""
+        bundle_type: StringSocket
+        """Bundle Type"""
+        data_type: MenuSocket
+        """Data Type"""
+
+    class _Outputs(SocketAccessor):
+        paths: StringSocket
+        """Paths"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        bundle: InputBundle = None,
+        mode: InputMenu | Literal["All", "Bundle Type", "Data Type"] = "All",
+        bundle_type: InputString = "",
+        data_type: InputMenu
+        | Literal[
+            "Float",
+            "Integer",
+            "Boolean",
+            "Vector",
+            "Color",
+            "Rotation",
+            "Matrix",
+            "String",
+            "Menu",
+            "Object",
+            "Image",
+            "Geometry",
+            "Collection",
+            "Material",
+            "Bundle",
+            "Closure",
+            "Font",
+            "Sound",
+        ] = "Float",
+    ):
+        super().__init__()
+        key_args = {
+            "Bundle": bundle,
+            "Mode": mode,
+            "Bundle Type": bundle_type,
+            "Data Type": data_type,
+        }
+
+        self._establish_links(**key_args)
 
 
 class HashValue(BaseNode):
@@ -1727,6 +1979,243 @@ class HashValue(BaseNode):
         self,
         value: Literal[
             "FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"
+        ],
+    ):
+        self.node.data_type = value
+
+
+class ImplicitConversion(BaseNode):
+    """
+    Implicitly convert the input value to a fixed socket type
+
+    Parameters
+    ----------
+    value : InputColor
+        Value
+
+    Inputs
+    ------
+    i.value : ColorSocket
+        Value
+
+    Outputs
+    -------
+    o.value : ColorSocket
+        Value
+    """
+
+    _bl_idname = "NodeImplicitConversion"
+    node: bpy.types.NodeImplicitConversion
+
+    class _Inputs(SocketAccessor):
+        value: ColorSocket
+        """Value"""
+
+    class _Outputs(SocketAccessor):
+        value: ColorSocket
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        value: InputBoolean
+        | InputBundle
+        | InputClosure
+        | InputCollection
+        | InputColor
+        | InputFloat
+        | InputFont
+        | InputGeometry
+        | InputImage
+        | InputInteger
+        | InputMaterial
+        | InputMatrix
+        | InputMenu
+        | InputObject
+        | InputRotation
+        | InputSound
+        | InputString
+        | InputVector = None,
+        *,
+        socket_idname: str = "",
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "RGBA",
+    ):
+        super().__init__()
+        key_args = {"Value": value}
+        self.socket_idname = socket_idname
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, value: InputFloat = 0.0) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Float'."""
+        return cls(data_type="FLOAT", value=value)
+
+    @classmethod
+    def integer(cls, value: InputInteger = 0) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Integer'."""
+        return cls(data_type="INT", value=value)
+
+    @classmethod
+    def boolean(cls, value: InputBoolean = False) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", value=value)
+
+    @classmethod
+    def vector(cls, value: InputVector = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Vector'."""
+        return cls(data_type="VECTOR", value=value)
+
+    @classmethod
+    def color(cls, value: InputColor = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Color'."""
+        return cls(data_type="RGBA", value=value)
+
+    @classmethod
+    def rotation(cls, value: InputRotation = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Rotation'."""
+        return cls(data_type="ROTATION", value=value)
+
+    @classmethod
+    def matrix(cls, value: InputMatrix = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Matrix'."""
+        return cls(data_type="MATRIX", value=value)
+
+    @classmethod
+    def string(cls, value: InputString = "") -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'String'."""
+        return cls(data_type="STRING", value=value)
+
+    @classmethod
+    def menu(cls, value: InputMenu = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Menu'."""
+        return cls(data_type="MENU", value=value)
+
+    @classmethod
+    def object(cls, value: InputObject = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Object'."""
+        return cls(data_type="OBJECT", value=value)
+
+    @classmethod
+    def image(cls, value: InputImage = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Image'."""
+        return cls(data_type="IMAGE", value=value)
+
+    @classmethod
+    def geometry(cls, value: InputGeometry = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Geometry'."""
+        return cls(data_type="GEOMETRY", value=value)
+
+    @classmethod
+    def collection(cls, value: InputCollection = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Collection'."""
+        return cls(data_type="COLLECTION", value=value)
+
+    @classmethod
+    def material(cls, value: InputMaterial = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Material'."""
+        return cls(data_type="MATERIAL", value=value)
+
+    @classmethod
+    def bundle(cls, value: InputBundle = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Bundle'."""
+        return cls(data_type="BUNDLE", value=value)
+
+    @classmethod
+    def closure(cls, value: InputClosure = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Closure'."""
+        return cls(data_type="CLOSURE", value=value)
+
+    @classmethod
+    def font(cls, value: InputFont = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Font'."""
+        return cls(data_type="FONT", value=value)
+
+    @classmethod
+    def sound(cls, value: InputSound = None) -> "ImplicitConversion":
+        """Create Implicit Conversion with operation 'Sound'."""
+        return cls(data_type="SOUND", value=value)
+
+    @property
+    def socket_idname(self) -> str:
+        return self.node.socket_idname
+
+    @socket_idname.setter
+    def socket_idname(self, value: str):
+        self.node.socket_idname = value
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+        "SOUND",
+    ]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
         ],
     ):
         self.node.data_type = value
@@ -3113,296 +3602,6 @@ class MatrixSVD(BaseNode):
         self._establish_links(**key_args)
 
 
-class Mix(BaseNode):
-    """
-    Mix values by a factor
-
-    Parameters
-    ----------
-    factor_float : InputFloat
-        Factor
-    factor_vector : InputVector
-        Factor
-    a_float : InputFloat
-        A
-    b_float : InputFloat
-        B
-    a_vector : InputVector
-        A
-    b_vector : InputVector
-        B
-    a_color : InputColor
-        A
-    b_color : InputColor
-        B
-    a_rotation : InputRotation
-        A
-    b_rotation : InputRotation
-        B
-
-    Inputs
-    ------
-    i.factor_float : FloatSocket
-        Factor
-    i.factor_vector : VectorSocket
-        Factor
-    i.a_float : FloatSocket
-        A
-    i.b_float : FloatSocket
-        B
-    i.a_vector : VectorSocket
-        A
-    i.b_vector : VectorSocket
-        B
-    i.a_color : ColorSocket
-        A
-    i.b_color : ColorSocket
-        B
-    i.a_rotation : RotationSocket
-        A
-    i.b_rotation : RotationSocket
-        B
-
-    Outputs
-    -------
-    o.result_float : FloatSocket
-        Result
-    o.result_vector : VectorSocket
-        Result
-    o.result_color : ColorSocket
-        Result
-    o.result_rotation : RotationSocket
-        Result
-    """
-
-    _bl_idname = "ShaderNodeMix"
-    node: bpy.types.ShaderNodeMix
-
-    class _Inputs(SocketAccessor):
-        factor_float: FloatSocket
-        """Factor"""
-        factor_vector: VectorSocket
-        """Factor"""
-        a_float: FloatSocket
-        """A"""
-        b_float: FloatSocket
-        """B"""
-        a_vector: VectorSocket
-        """A"""
-        b_vector: VectorSocket
-        """B"""
-        a_color: ColorSocket
-        """A"""
-        b_color: ColorSocket
-        """B"""
-        a_rotation: RotationSocket
-        """A"""
-        b_rotation: RotationSocket
-        """B"""
-
-    class _Outputs(SocketAccessor):
-        result_float: FloatSocket
-        """Result"""
-        result_vector: VectorSocket
-        """Result"""
-        result_color: ColorSocket
-        """Result"""
-        result_rotation: RotationSocket
-        """Result"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        factor_float: InputFloat = 0.5,
-        factor_vector: InputVector = None,
-        a_float: InputFloat = 0.0,
-        b_float: InputFloat = 0.0,
-        a_vector: InputVector = None,
-        b_vector: InputVector = None,
-        a_color: InputColor = None,
-        b_color: InputColor = None,
-        a_rotation: InputRotation = None,
-        b_rotation: InputRotation = None,
-        *,
-        data_type: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"] = "FLOAT",
-        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
-        blend_type: Literal[
-            "MIX",
-            "DARKEN",
-            "MULTIPLY",
-            "BURN",
-            "LIGHTEN",
-            "SCREEN",
-            "DODGE",
-            "ADD",
-            "OVERLAY",
-            "SOFT_LIGHT",
-            "LINEAR_LIGHT",
-            "DIFFERENCE",
-            "EXCLUSION",
-            "SUBTRACT",
-            "DIVIDE",
-            "HUE",
-            "SATURATION",
-            "COLOR",
-            "VALUE",
-        ] = "MIX",
-        clamp_factor: bool = False,
-        clamp_result: bool = False,
-    ):
-        super().__init__()
-        key_args = {
-            "Factor_Float": factor_float,
-            "Factor_Vector": factor_vector,
-            "A_Float": a_float,
-            "B_Float": b_float,
-            "A_Vector": a_vector,
-            "B_Vector": b_vector,
-            "A_Color": a_color,
-            "B_Color": b_color,
-            "A_Rotation": a_rotation,
-            "B_Rotation": b_rotation,
-        }
-        self.data_type = data_type
-        self.factor_mode = factor_mode
-        self.blend_type = blend_type
-        self.clamp_factor = clamp_factor
-        self.clamp_result = clamp_result
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls, factor: InputFloat = 0.5, a: InputFloat = 0.0, b: InputFloat = 0.0
-    ) -> "Mix":
-        """Create Mix with operation 'Float'."""
-        return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
-
-    @classmethod
-    def vector(
-        cls, factor: InputFloat = 0.5, a: InputVector = None, b: InputVector = None
-    ) -> "Mix":
-        """Create Mix with operation 'Vector'."""
-        return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
-
-    @classmethod
-    def color(
-        cls,
-        factor: InputFloat = 0.5,
-        a_color: InputColor = None,
-        b_color: InputColor = None,
-    ) -> "Mix":
-        """Create Mix with operation 'Color'."""
-        return cls(
-            data_type="RGBA", factor_float=factor, a_color=a_color, b_color=b_color
-        )
-
-    @classmethod
-    def rotation(
-        cls,
-        factor: InputFloat = 0.5,
-        a_rotation: InputRotation = None,
-        b_rotation: InputRotation = None,
-    ) -> "Mix":
-        """Create Mix with operation 'Rotation'."""
-        return cls(
-            data_type="ROTATION",
-            factor_float=factor,
-            a_rotation=a_rotation,
-            b_rotation=b_rotation,
-        )
-
-    @property
-    def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]:
-        return self.node.data_type
-
-    @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]):
-        self.node.data_type = value
-
-    @property
-    def factor_mode(self) -> Literal["UNIFORM", "NON_UNIFORM"]:
-        return self.node.factor_mode
-
-    @factor_mode.setter
-    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]):
-        self.node.factor_mode = value
-
-    @property
-    def blend_type(
-        self,
-    ) -> Literal[
-        "MIX",
-        "DARKEN",
-        "MULTIPLY",
-        "BURN",
-        "LIGHTEN",
-        "SCREEN",
-        "DODGE",
-        "ADD",
-        "OVERLAY",
-        "SOFT_LIGHT",
-        "LINEAR_LIGHT",
-        "DIFFERENCE",
-        "EXCLUSION",
-        "SUBTRACT",
-        "DIVIDE",
-        "HUE",
-        "SATURATION",
-        "COLOR",
-        "VALUE",
-    ]:
-        return self.node.blend_type
-
-    @blend_type.setter
-    def blend_type(
-        self,
-        value: Literal[
-            "MIX",
-            "DARKEN",
-            "MULTIPLY",
-            "BURN",
-            "LIGHTEN",
-            "SCREEN",
-            "DODGE",
-            "ADD",
-            "OVERLAY",
-            "SOFT_LIGHT",
-            "LINEAR_LIGHT",
-            "DIFFERENCE",
-            "EXCLUSION",
-            "SUBTRACT",
-            "DIVIDE",
-            "HUE",
-            "SATURATION",
-            "COLOR",
-            "VALUE",
-        ],
-    ):
-        self.node.blend_type = value
-
-    @property
-    def clamp_factor(self) -> bool:
-        return self.node.clamp_factor
-
-    @clamp_factor.setter
-    def clamp_factor(self, value: bool):
-        self.node.clamp_factor = value
-
-    @property
-    def clamp_result(self) -> bool:
-        return self.node.clamp_result
-
-    @clamp_result.setter
-    def clamp_result(self, value: bool):
-        self.node.clamp_result = value
-
-
 class MultiplyMatrices(BaseNode):
     """
     Perform a matrix multiplication on two input matrices
@@ -3687,55 +3886,33 @@ class RandomValue(BaseNode):
 
     Parameters
     ----------
-    min : InputVector
+    min : InputFloat
         Min
-    max : InputVector
+    max : InputFloat
         Max
-    min_001 : InputFloat
-        Min
-    max_001 : InputFloat
-        Max
-    min_002 : InputInteger
-        Min
-    max_002 : InputInteger
-        Max
-    probability : InputFloat
-        Probability
     id : InputInteger
         ID
     seed : InputInteger
         Seed
+    probability : InputFloat
+        Probability
 
     Inputs
     ------
-    i.min : VectorSocket
+    i.min : FloatSocket
         Min
-    i.max : VectorSocket
+    i.max : FloatSocket
         Max
-    i.min_001 : FloatSocket
-        Min
-    i.max_001 : FloatSocket
-        Max
-    i.min_002 : IntegerSocket
-        Min
-    i.max_002 : IntegerSocket
-        Max
-    i.probability : FloatSocket
-        Probability
     i.id : IntegerSocket
         ID
     i.seed : IntegerSocket
         Seed
+    i.probability : FloatSocket
+        Probability
 
     Outputs
     -------
-    o.value : VectorSocket
-        Value
-    o.value_001 : FloatSocket
-        Value
-    o.value_002 : IntegerSocket
-        Value
-    o.value_003 : BooleanSocket
+    o.value : FloatSocket
         Value
     """
 
@@ -3743,33 +3920,19 @@ class RandomValue(BaseNode):
     node: bpy.types.FunctionNodeRandomValue
 
     class _Inputs(SocketAccessor):
-        min: VectorSocket
+        min: FloatSocket
         """Min"""
-        max: VectorSocket
+        max: FloatSocket
         """Max"""
-        min_001: FloatSocket
-        """Min"""
-        max_001: FloatSocket
-        """Max"""
-        min_002: IntegerSocket
-        """Min"""
-        max_002: IntegerSocket
-        """Max"""
-        probability: FloatSocket
-        """Probability"""
         id: IntegerSocket
         """ID"""
         seed: IntegerSocket
         """Seed"""
+        probability: FloatSocket
+        """Probability"""
 
     class _Outputs(SocketAccessor):
-        value: VectorSocket
-        """Value"""
-        value_001: FloatSocket
-        """Value"""
-        value_002: IntegerSocket
-        """Value"""
-        value_003: BooleanSocket
+        value: FloatSocket
         """Value"""
 
     if TYPE_CHECKING:
@@ -3781,31 +3944,25 @@ class RandomValue(BaseNode):
 
     def __init__(
         self,
-        min: InputVector = None,
-        max: InputVector = None,
-        min_001: InputFloat = 0.0,
-        max_001: InputFloat = 1.0,
-        min_002: InputInteger = 0,
-        max_002: InputInteger = 100,
-        probability: InputFloat = 0.5,
+        min: InputFloat | InputInteger | InputVector = 0.0,
+        max: InputFloat | InputInteger | InputVector = 1.0,
         id: InputInteger = 0,
         seed: InputInteger = 0,
+        probability: InputFloat = None,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"] = "FLOAT",
     ):
         super().__init__()
-        key_args = {
+        self.data_type = data_type
+        _all_args = {
             "Min": min,
             "Max": max,
-            "Min_001": min_001,
-            "Max_001": max_001,
-            "Min_002": min_002,
-            "Max_002": max_002,
-            "Probability": probability,
             "ID": id,
             "Seed": seed,
+            "Probability": probability,
         }
-        self.data_type = data_type
+        _socket_ids = {s.identifier for s in self.node.inputs}
+        key_args = {k: v for k, v in _all_args.items() if k in _socket_ids}
         self._establish_links(**key_args)
 
     @classmethod
@@ -3817,7 +3974,7 @@ class RandomValue(BaseNode):
         seed: InputInteger = 0,
     ) -> "RandomValue":
         """Create Random Value with operation 'Float'. Floating-point value"""
-        return cls(data_type="FLOAT", min_001=min, max_001=max, id=id, seed=seed)
+        return cls(data_type="FLOAT", min=min, max=max, id=id, seed=seed)
 
     @classmethod
     def integer(
@@ -3828,7 +3985,7 @@ class RandomValue(BaseNode):
         seed: InputInteger = 0,
     ) -> "RandomValue":
         """Create Random Value with operation 'Integer'. 32-bit integer"""
-        return cls(data_type="INT", min_002=min, max_002=max, id=id, seed=seed)
+        return cls(data_type="INT", min=min, max=max, id=id, seed=seed)
 
     @classmethod
     def boolean(
@@ -3919,6 +4076,51 @@ class ReplaceString(BaseNode):
         self._establish_links(**key_args)
 
 
+class ReverseString(BaseNode):
+    """
+    Reverse the order of the characters in a string
+
+    Parameters
+    ----------
+    string : InputString
+        String
+
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+
+    Outputs
+    -------
+    o.string : StringSocket
+        String
+    """
+
+    _bl_idname = "FunctionNodeReverseString"
+    node: bpy.types.FunctionNodeReverseString
+
+    class _Inputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+
+    class _Outputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, string: InputString = ""):
+        super().__init__()
+        key_args = {"String": string}
+
+        self._establish_links(**key_args)
+
+
 class RotateEuler(BaseNode):
     """
     Apply a secondary Euler rotation to a given Euler rotation
@@ -3980,20 +4182,22 @@ class RotateEuler(BaseNode):
         rotation: InputVector = None,
         rotate_by: InputVector = None,
         axis: InputVector = None,
-        angle: InputFloat = 0.0,
+        angle: InputFloat = None,
         *,
         rotation_type: Literal["AXIS_ANGLE", "EULER"] = "EULER",
         space: Literal["OBJECT", "LOCAL"] = "OBJECT",
     ):
         super().__init__()
-        key_args = {
+        self.rotation_type = rotation_type
+        self.space = space
+        _all_args = {
             "Rotation": rotation,
             "Rotate By": rotate_by,
             "Axis": axis,
             "Angle": angle,
         }
-        self.rotation_type = rotation_type
-        self.space = space
+        _socket_ids = {s.identifier for s in self.node.inputs}
+        key_args = {k: v for k, v in _all_args.items() if k in _socket_ids}
         self._establish_links(**key_args)
 
     @classmethod
@@ -4299,6 +4503,116 @@ class RotationToQuaternion(BaseNode):
     def __init__(self, rotation: InputRotation = None):
         super().__init__()
         key_args = {"Rotation": rotation}
+
+        self._establish_links(**key_args)
+
+
+class SampleSoundFrequencies(BaseNode):
+    """
+    Retrieve the amplitude from a sound data-block of a frequency range at a given time
+
+    Parameters
+    ----------
+    sound : InputSound
+        Sound
+    time : InputFloat
+        Time
+    all_channels : InputBoolean
+        All Channels
+    channel : InputInteger
+        Channel
+    low : InputFloat
+        Low
+    high : InputFloat
+        High
+    fft_size : InputMenu | Literal['128', '256', '512', '1024', '2048', '4096', '8192', '16384', '32768']
+        FFT Size
+    window_function : InputMenu | Literal['Hann', 'Hamming', 'Blackman', 'Rectangular']
+        Window Function
+
+    Inputs
+    ------
+    i.sound : SoundSocket
+        Sound
+    i.time : FloatSocket
+        Time
+    i.all_channels : BooleanSocket
+        All Channels
+    i.channel : IntegerSocket
+        Channel
+    i.low : FloatSocket
+        Low
+    i.high : FloatSocket
+        High
+    i.fft_size : MenuSocket
+        FFT Size
+    i.window_function : MenuSocket
+        Window Function
+
+    Outputs
+    -------
+    o.amplitude : FloatSocket
+        Amplitude
+    """
+
+    _bl_idname = "GeometryNodeSampleSoundFrequencies"
+    node: bpy.types.GeometryNodeSampleSoundFrequencies
+
+    class _Inputs(SocketAccessor):
+        sound: SoundSocket
+        """Sound"""
+        time: FloatSocket
+        """Time"""
+        all_channels: BooleanSocket
+        """All Channels"""
+        channel: IntegerSocket
+        """Channel"""
+        low: FloatSocket
+        """Low"""
+        high: FloatSocket
+        """High"""
+        fft_size: MenuSocket
+        """FFT Size"""
+        window_function: MenuSocket
+        """Window Function"""
+
+    class _Outputs(SocketAccessor):
+        amplitude: FloatSocket
+        """Amplitude"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        sound: InputSound = None,
+        time: InputFloat = 0.0,
+        all_channels: InputBoolean = True,
+        channel: InputInteger = 0,
+        low: InputFloat = 0.0,
+        high: InputFloat = 10000.0,
+        fft_size: InputMenu
+        | Literal[
+            "128", "256", "512", "1024", "2048", "4096", "8192", "16384", "32768"
+        ] = "4096",
+        window_function: InputMenu
+        | Literal["Hann", "Hamming", "Blackman", "Rectangular"] = "Hann",
+    ):
+        super().__init__()
+        key_args = {
+            "Sound": sound,
+            "Time": time,
+            "All Channels": all_channels,
+            "Channel": channel,
+            "Low": low,
+            "High": high,
+            "FFT Size": fft_size,
+            "Window Function": window_function,
+        }
 
         self._establish_links(**key_args)
 
@@ -4713,6 +5027,61 @@ class SliceString(BaseNode):
         self._establish_links(**key_args)
 
 
+class SplitString(BaseNode):
+    """
+    Split a string into a list using a separator
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    separator : InputString
+        Separator
+
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.separator : StringSocket
+        Separator
+
+    Outputs
+    -------
+    o.list : StringSocket
+        List
+    """
+
+    _bl_idname = "FunctionNodeSplitString"
+    node: bpy.types.FunctionNodeSplitString
+
+    class _Inputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+        separator: StringSocket
+        """Separator"""
+
+    class _Outputs(SocketAccessor):
+        list: StringSocket
+        """List"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        string: InputString = "",
+        separator: InputString = "",
+    ):
+        super().__init__()
+        key_args = {"String": string, "Separator": separator}
+
+        self._establish_links(**key_args)
+
+
 class StoreBundleItem(BaseNode):
     """
     Store a bundle item by path and data type.
@@ -4782,6 +5151,7 @@ class StoreBundleItem(BaseNode):
         | InputMenu
         | InputObject
         | InputRotation
+        | InputSound
         | InputString
         | InputVector = 0.0,
         *,
@@ -4803,6 +5173,7 @@ class StoreBundleItem(BaseNode):
             "BUNDLE",
             "CLOSURE",
             "FONT",
+            "SOUND",
         ] = "FLOAT",
         structure_type: Literal[
             "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
@@ -4964,6 +5335,13 @@ class StoreBundleItem(BaseNode):
         return cls(socket_type="FONT", bundle=bundle, path=path, item=item)
 
     @classmethod
+    def sound(
+        cls, bundle: InputBundle = None, path: InputString = "", item: InputSound = None
+    ) -> "StoreBundleItem":
+        """Create Store Bundle Item with operation 'Sound'."""
+        return cls(socket_type="SOUND", bundle=bundle, path=path, item=item)
+
+    @classmethod
     def auto(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
     ) -> "StoreBundleItem":
@@ -5026,6 +5404,7 @@ class StoreBundleItem(BaseNode):
         "BUNDLE",
         "CLOSURE",
         "FONT",
+        "SOUND",
     ]:
         return self.node.socket_type  # ty: ignore[invalid-return-type]
 
@@ -5050,6 +5429,7 @@ class StoreBundleItem(BaseNode):
             "BUNDLE",
             "CLOSURE",
             "FONT",
+            "SOUND",
         ],
     ):
         self.node.socket_type = value
@@ -5120,11 +5500,15 @@ class StringToValue(BaseNode):
     ----------
     string : InputString
         String
+    base : InputInteger
+        Base
 
     Inputs
     ------
     i.string : StringSocket
         String
+    i.base : IntegerSocket
+        Base
 
     Outputs
     -------
@@ -5140,6 +5524,8 @@ class StringToValue(BaseNode):
     class _Inputs(SocketAccessor):
         string: StringSocket
         """String"""
+        base: IntegerSocket
+        """Base"""
 
     class _Outputs(SocketAccessor):
         value: FloatSocket
@@ -5157,11 +5543,12 @@ class StringToValue(BaseNode):
     def __init__(
         self,
         string: InputString = "",
+        base: InputInteger = 10,
         *,
         data_type: Literal["FLOAT", "INT"] = "FLOAT",
     ):
         super().__init__()
-        key_args = {"String": string}
+        key_args = {"String": string, "Base": base}
         self.data_type = data_type
         self._establish_links(**key_args)
 
@@ -5171,9 +5558,11 @@ class StringToValue(BaseNode):
         return cls(data_type="FLOAT", string=string)
 
     @classmethod
-    def integer(cls, string: InputString = "") -> "StringToValue":
+    def integer(
+        cls, string: InputString = "", base: InputInteger = 10
+    ) -> "StringToValue":
         """Create String to Value with operation 'Integer'. 32-bit integer"""
-        return cls(data_type="INT", string=string)
+        return cls(data_type="INT", string=string, base=base)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT"]:
@@ -5182,6 +5571,61 @@ class StringToValue(BaseNode):
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT"]):
         self.node.data_type = value
+
+
+class TagFilter(BaseNode):
+    """
+    Check if a filter string matches a list of tags
+
+    Parameters
+    ----------
+    tag_filter : InputString
+        Tag Filter
+    tags : InputString
+        Tags
+
+    Inputs
+    ------
+    i.tag_filter : StringSocket
+        Tag Filter
+    i.tags : StringSocket
+        Tags
+
+    Outputs
+    -------
+    o.match : BooleanSocket
+        Match
+    """
+
+    _bl_idname = "GeometryNodeTagFilter"
+    node: bpy.types.GeometryNodeTagFilter
+
+    class _Inputs(SocketAccessor):
+        tag_filter: StringSocket
+        """Tag Filter"""
+        tags: StringSocket
+        """Tags"""
+
+    class _Outputs(SocketAccessor):
+        match: BooleanSocket
+        """Match"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        tag_filter: InputString = "",
+        tags: InputString = "",
+    ):
+        super().__init__()
+        key_args = {"Tag Filter": tag_filter, "Tags": tags}
+
+        self._establish_links(**key_args)
 
 
 class TransformDirection(BaseNode):
@@ -5339,6 +5783,88 @@ class TransposeMatrix(BaseNode):
         self._establish_links(**key_args)
 
 
+class TrimString(BaseNode):
+    """
+    Remove characters from the beginning and end of a string
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    characters : InputString
+        Characters
+    whitespace : InputBoolean
+        Whitespace
+    start : InputBoolean
+        Start
+    end : InputBoolean
+        End
+
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.characters : StringSocket
+        Characters
+    i.whitespace : BooleanSocket
+        Whitespace
+    i.start : BooleanSocket
+        Start
+    i.end : BooleanSocket
+        End
+
+    Outputs
+    -------
+    o.string : StringSocket
+        String
+    """
+
+    _bl_idname = "FunctionNodeTrimString"
+    node: bpy.types.FunctionNodeTrimString
+
+    class _Inputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+        characters: StringSocket
+        """Characters"""
+        whitespace: BooleanSocket
+        """Whitespace"""
+        start: BooleanSocket
+        """Start"""
+        end: BooleanSocket
+        """End"""
+
+    class _Outputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        string: InputString = "",
+        characters: InputString = "",
+        whitespace: InputBoolean = True,
+        start: InputBoolean = True,
+        end: InputBoolean = True,
+    ):
+        super().__init__()
+        key_args = {
+            "String": string,
+            "Characters": characters,
+            "Whitespace": whitespace,
+            "Start": start,
+            "End": end,
+        }
+
+        self._establish_links(**key_args)
+
+
 class UVUnwrap(BaseNode):
     """
     Generate a UV map based on seam edges
@@ -5448,6 +5974,10 @@ class ValueToString(BaseNode):
         Value
     decimals : InputInteger
         Decimals
+    base : InputInteger
+        Base
+    padding : InputInteger
+        Padding
 
     Inputs
     ------
@@ -5455,6 +5985,10 @@ class ValueToString(BaseNode):
         Value
     i.decimals : IntegerSocket
         Decimals
+    i.base : IntegerSocket
+        Base
+    i.padding : IntegerSocket
+        Padding
 
     Outputs
     -------
@@ -5470,6 +6004,10 @@ class ValueToString(BaseNode):
         """Value"""
         decimals: IntegerSocket
         """Decimals"""
+        base: IntegerSocket
+        """Base"""
+        padding: IntegerSocket
+        """Padding"""
 
     class _Outputs(SocketAccessor):
         string: StringSocket
@@ -5486,11 +6024,18 @@ class ValueToString(BaseNode):
         self,
         value: InputFloat | InputInteger = 0.0,
         decimals: InputInteger = 0,
+        base: InputInteger = 10,
+        padding: InputInteger = 0,
         *,
         data_type: Literal["FLOAT", "INT"] = "FLOAT",
     ):
         super().__init__()
-        key_args = {"Value": value, "Decimals": decimals}
+        key_args = {
+            "Value": value,
+            "Decimals": decimals,
+            "Base": base,
+            "Padding": padding,
+        }
         self.data_type = data_type
         self._establish_links(**key_args)
 
@@ -5502,9 +6047,11 @@ class ValueToString(BaseNode):
         return cls(data_type="FLOAT", value=value, decimals=decimals)
 
     @classmethod
-    def integer(cls, value: InputInteger = 0) -> "ValueToString":
+    def integer(
+        cls, value: InputInteger = 0, base: InputInteger = 10, padding: InputInteger = 0
+    ) -> "ValueToString":
         """Create Value to String with operation 'Integer'. 32-bit integer"""
-        return cls(data_type="INT", value=value)
+        return cls(data_type="INT", value=value, base=base, padding=padding)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT"]:
