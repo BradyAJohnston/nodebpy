@@ -651,7 +651,7 @@ class ClusterByConnected(BaseNode):
     """
 
     _bl_idname = "GeometryNodeClusterByConnected"
-    node: bpy.types.GeometryNodeClusterByConnected
+    node: bpy.types.GeometryNodeClusterByConnected  #  ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         selection: BooleanSocket
@@ -717,7 +717,7 @@ class ClusterByDistance(BaseNode):
     """
 
     _bl_idname = "GeometryNodeClusterByDistance"
-    node: bpy.types.GeometryNodeClusterByDistance
+    node: bpy.types.GeometryNodeClusterByDistance  # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         selection: BooleanSocket
@@ -4097,7 +4097,7 @@ class ReverseString(BaseNode):
     """
 
     _bl_idname = "FunctionNodeReverseString"
-    node: bpy.types.FunctionNodeReverseString
+    node: bpy.types.FunctionNodeReverseString  # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         string: StringSocket
@@ -5598,7 +5598,7 @@ class TagFilter(BaseNode):
     """
 
     _bl_idname = "GeometryNodeTagFilter"
-    node: bpy.types.GeometryNodeTagFilter
+    node: bpy.types.GeometryNodeTagFilter  # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         tag_filter: StringSocket

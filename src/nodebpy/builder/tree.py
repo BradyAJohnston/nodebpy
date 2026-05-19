@@ -814,7 +814,7 @@ class TreeBuilder(Generic[_TreeT]):
                     # active and if they match the currently selected data type. If they are the same data type
                     # then we allow it because they poll as innative when factor is 0.0 or 1.0.
                     not _allow_innactive_sockets(socket.node)
-                    and socket.type != socket.node.data_type
+                    and (getattr(socket.node, "data_type", None) != socket.type)
                 ):
                     message = f"Socket {socket1.name} from node {socket1.node.name} is inactive."
                     message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."

@@ -268,7 +268,7 @@ class GetAttributeNames(BaseNode):
     """
 
     _bl_idname = "GeometryNodeGetAttributeNames"
-    node: bpy.types.GeometryNodeGetAttributeNames
+    node: bpy.types.GeometryNodeGetAttributeNames  # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket

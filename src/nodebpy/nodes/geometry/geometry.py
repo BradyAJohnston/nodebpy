@@ -3143,7 +3143,7 @@ class MergePoints(BaseNode):
     """
 
     _bl_idname = "GeometryNodeMergePoints"
-    node: bpy.types.GeometryNodeMergePoints
+    node: bpy.types.GeometryNodeMergePoints  # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
@@ -8798,7 +8798,7 @@ class TransferAttributes(BaseNode):
     """
 
     _bl_idname = "GeometryNodeTransferAttributes"
-    node: bpy.types.GeometryNodeTransferAttributes
+    node: bpy.types.GeometryNodeTransferAttributes  # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         target: GeometrySocket
@@ -9379,7 +9379,7 @@ class XpbdSolver(BaseNode):
     """
 
     _bl_idname = "GeometryNodeXPBDSolver"
-    node: bpy.types.GeometryNodeXPBDSolver
+    node: bpy.types.GeometryNodeXPBDSolver  # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         world: BundleSocket
