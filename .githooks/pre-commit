@@ -3,9 +3,12 @@ set -e
 
 echo "→ ruff format"
 uv run ruff format src/ generate.py
+git add -u
 
 echo "→ ruff check --fix"
 uv run ruff check --fix src/ generate.py
+git add -u
 
-echo "→ ty check"
-uv run ty check src/
+echo "→ ty check --fix"
+uv run ty check --fix src/
+git add -u
