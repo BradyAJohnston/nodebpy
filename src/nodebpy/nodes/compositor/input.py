@@ -4,18 +4,7 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
-    BooleanSocket,
-    ColorSocket,
-    FloatSocket,
-    FontSocket,
-    IntegerSocket,
-    MenuSocket,
-    StringSocket,
-    VectorSocket,
-)
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
@@ -25,6 +14,17 @@ from ...types import (
     InputString,
     InputFloat,
     InputFont,
+)
+
+from ...builder.socket import (
+    FloatSocket,
+    BooleanSocket,
+    VectorSocket,
+    StringSocket,
+    MenuSocket,
+    FontSocket,
+    IntegerSocket,
+    ColorSocket,
 )
 
 

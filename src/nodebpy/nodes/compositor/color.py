@@ -6,20 +6,20 @@ import bpy
 
 from mathutils import Color
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
-    BooleanSocket,
-    ColorSocket,
-    FloatSocket,
-    MenuSocket,
-)
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
     InputColor,
     InputMenu,
     InputFloat,
+)
+
+from ...builder.socket import (
+    FloatSocket,
+    BooleanSocket,
+    MenuSocket,
+    ColorSocket,
 )
 
 

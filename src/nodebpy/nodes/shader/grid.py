@@ -4,21 +4,21 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
-    ColorSocket,
-    FloatSocket,
-    ShaderSocket,
-    StringSocket,
-    VectorSocket,
-)
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputColor,
     InputString,
     InputFloat,
     InputVector,
+)
+
+from ...builder.socket import (
+    FloatSocket,
+    VectorSocket,
+    StringSocket,
+    ShaderSocket,
+    ColorSocket,
 )
 
 

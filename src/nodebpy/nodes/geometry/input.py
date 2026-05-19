@@ -6,24 +6,7 @@ import bpy
 
 from mathutils import Euler, Vector
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
-    BooleanSocket,
-    CollectionSocket,
-    ColorSocket,
-    FloatSocket,
-    FontSocket,
-    GeometrySocket,
-    ImageSocket,
-    IntegerSocket,
-    MatrixSocket,
-    MenuSocket,
-    ObjectSocket,
-    RotationSocket,
-    StringSocket,
-    VectorSocket,
-)
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
@@ -35,6 +18,25 @@ from ...types import (
     InputString,
     InputFloat,
     InputVector,
+)
+
+from ...builder.socket import (
+    FloatSocket,
+    BooleanSocket,
+    VectorSocket,
+    RotationSocket,
+    MatrixSocket,
+    StringSocket,
+    MenuSocket,
+    ObjectSocket,
+    GeometrySocket,
+    CollectionSocket,
+    ImageSocket,
+    FontSocket,
+    IntegerSocket,
+    ColorSocket,
+    ObjectSocketList,
+    CollectionSocketList,
 )
 
 
@@ -412,9 +414,9 @@ class CollectionChildren(BaseNode):
         """Recursive"""
 
     class _Outputs(SocketAccessor):
-        collections: CollectionSocket
+        collections: CollectionSocketList
         """Collections"""
-        objects: ObjectSocket
+        objects: ObjectSocketList
         """Objects"""
 
     if TYPE_CHECKING:

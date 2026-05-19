@@ -4,16 +4,7 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
-    BooleanSocket,
-    FloatSocket,
-    GeometrySocket,
-    IntegerSocket,
-    MenuSocket,
-    StringSocket,
-)
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
@@ -24,6 +15,16 @@ from ...types import (
     InputString,
     InputFloat,
     InputVector,
+)
+
+from ...builder.socket import (
+    FloatSocket,
+    BooleanSocket,
+    StringSocket,
+    MenuSocket,
+    GeometrySocket,
+    IntegerSocket,
+    StringSocketList,
 )
 
 
@@ -283,7 +284,7 @@ class GetAttributeNames(BaseNode):
         """Domain"""
 
     class _Outputs(SocketAccessor):
-        names: StringSocket
+        names: StringSocketList
         """Names"""
 
     if TYPE_CHECKING:

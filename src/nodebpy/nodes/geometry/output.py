@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import BaseNode as BaseNode, SocketAccessor
+from ...builder import BaseNode, SocketAccessor
+
 
 
 class Viewer(BaseNode):

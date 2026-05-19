@@ -4,21 +4,7 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
-    BooleanSocket,
-    BundleSocket,
-    ColorSocket,
-    FloatSocket,
-    IntegerSocket,
-    MatrixSocket,
-    MenuSocket,
-    RotationSocket,
-    SoundSocket,
-    StringSocket,
-    VectorSocket,
-)
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
@@ -39,6 +25,21 @@ from ...types import (
     InputVector,
     InputFont,
     InputSound,
+)
+
+from ...builder.socket import (
+    FloatSocket,
+    BooleanSocket,
+    VectorSocket,
+    RotationSocket,
+    MatrixSocket,
+    StringSocket,
+    MenuSocket,
+    BundleSocket,
+    SoundSocket,
+    IntegerSocket,
+    ColorSocket,
+    StringSocketList,
 )
 
 
@@ -651,7 +652,7 @@ class ClusterByConnected(BaseNode):
     """
 
     _bl_idname = "GeometryNodeClusterByConnected"
-    node: bpy.types.GeometryNodeClusterByConnected  #  ty: ignore[unresolved-attribute]
+    node: bpy.types.GeometryNodeClusterByConnected  # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         selection: BooleanSocket
@@ -1251,6 +1252,45 @@ class EulerToRotation(BaseNode):
         self._establish_links(**key_args)
 
 
+class FieldToList(BaseNode):
+    """
+    Create a list of values
+
+    Parameters
+    ----------
+    count : InputInteger
+        Count
+
+    Inputs
+    ------
+    i.count : IntegerSocket
+        Count
+    """
+
+    _bl_idname = "GeometryNodeFieldToList"
+    node: bpy.types.GeometryNodeFieldToList
+
+    class _Inputs(SocketAccessor):
+        count: IntegerSocket
+        """Count"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, count: InputInteger = 1):
+        super().__init__()
+        key_args = {"Count": count}
+
+        self._establish_links(**key_args)
+
+
 class FindInString(BaseNode):
     """
     Find the number of times a given string occurs in another string and the position of the first match
@@ -1773,6 +1813,298 @@ class GetBundleItem(BaseNode):
         self.node.structure_type = value
 
 
+class GetListItem(BaseNode):
+    """
+    Retrieve a value from a list
+
+    Parameters
+    ----------
+    list : InputFloat
+        List
+    index : InputInteger
+        Index
+
+    Inputs
+    ------
+    i.list : FloatSocket
+        List
+    i.index : IntegerSocket
+        Index
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    """
+
+    _bl_idname = "GeometryNodeListGetItem"
+    node: bpy.types.GeometryNodeListGetItem
+
+    class _Inputs(SocketAccessor):
+        list: FloatSocket
+        """List"""
+        index: IntegerSocket
+        """Index"""
+
+    class _Outputs(SocketAccessor):
+        value: FloatSocket
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        list: InputBoolean
+        | InputBundle
+        | InputClosure
+        | InputCollection
+        | InputColor
+        | InputFloat
+        | InputFont
+        | InputGeometry
+        | InputImage
+        | InputInteger
+        | InputMaterial
+        | InputMatrix
+        | InputMenu
+        | InputObject
+        | InputRotation
+        | InputSound
+        | InputString
+        | InputVector = 0.0,
+        index: InputInteger = 0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
+    ):
+        super().__init__()
+        key_args = {"List": list, "Index": index}
+        self.socket_type = socket_type
+        self.structure_type = structure_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, list: InputFloat = 0.0, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Float'."""
+        return cls(socket_type="FLOAT", list=list, index=index)
+
+    @classmethod
+    def integer(cls, list: InputInteger = 0, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Integer'."""
+        return cls(socket_type="INT", list=list, index=index)
+
+    @classmethod
+    def boolean(
+        cls, list: InputBoolean = False, index: InputInteger = 0
+    ) -> "GetListItem":
+        """Create Get List Item with operation 'Boolean'."""
+        return cls(socket_type="BOOLEAN", list=list, index=index)
+
+    @classmethod
+    def vector(cls, list: InputVector = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Vector'."""
+        return cls(socket_type="VECTOR", list=list, index=index)
+
+    @classmethod
+    def color(cls, list: InputColor = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Color'."""
+        return cls(socket_type="RGBA", list=list, index=index)
+
+    @classmethod
+    def rotation(
+        cls, list: InputRotation = None, index: InputInteger = 0
+    ) -> "GetListItem":
+        """Create Get List Item with operation 'Rotation'."""
+        return cls(socket_type="ROTATION", list=list, index=index)
+
+    @classmethod
+    def matrix(cls, list: InputMatrix = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Matrix'."""
+        return cls(socket_type="MATRIX", list=list, index=index)
+
+    @classmethod
+    def string(cls, list: InputString = "", index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'String'."""
+        return cls(socket_type="STRING", list=list, index=index)
+
+    @classmethod
+    def menu(cls, list: InputMenu = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Menu'."""
+        return cls(socket_type="MENU", list=list, index=index)
+
+    @classmethod
+    def object(cls, list: InputObject = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Object'."""
+        return cls(socket_type="OBJECT", list=list, index=index)
+
+    @classmethod
+    def image(cls, list: InputImage = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Image'."""
+        return cls(socket_type="IMAGE", list=list, index=index)
+
+    @classmethod
+    def geometry(
+        cls, list: InputGeometry = None, index: InputInteger = 0
+    ) -> "GetListItem":
+        """Create Get List Item with operation 'Geometry'."""
+        return cls(socket_type="GEOMETRY", list=list, index=index)
+
+    @classmethod
+    def collection(
+        cls, list: InputCollection = None, index: InputInteger = 0
+    ) -> "GetListItem":
+        """Create Get List Item with operation 'Collection'."""
+        return cls(socket_type="COLLECTION", list=list, index=index)
+
+    @classmethod
+    def material(
+        cls, list: InputMaterial = None, index: InputInteger = 0
+    ) -> "GetListItem":
+        """Create Get List Item with operation 'Material'."""
+        return cls(socket_type="MATERIAL", list=list, index=index)
+
+    @classmethod
+    def bundle(cls, list: InputBundle = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Bundle'."""
+        return cls(socket_type="BUNDLE", list=list, index=index)
+
+    @classmethod
+    def closure(
+        cls, list: InputClosure = None, index: InputInteger = 0
+    ) -> "GetListItem":
+        """Create Get List Item with operation 'Closure'."""
+        return cls(socket_type="CLOSURE", list=list, index=index)
+
+    @classmethod
+    def font(cls, list: InputFont = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Font'."""
+        return cls(socket_type="FONT", list=list, index=index)
+
+    @classmethod
+    def sound(cls, list: InputSound = None, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Sound'."""
+        return cls(socket_type="SOUND", list=list, index=index)
+
+    @classmethod
+    def auto(cls, list: InputFloat = 0.0, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
+        return cls(structure_type="AUTO", list=list, index=index)
+
+    @classmethod
+    def dynamic(cls, list: InputFloat = 0.0, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
+        return cls(structure_type="DYNAMIC", list=list, index=index)
+
+    @classmethod
+    def field(cls, list: InputFloat = 0.0, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Field'. Socket expects a field"""
+        return cls(structure_type="FIELD", list=list, index=index)
+
+    @classmethod
+    def grid(cls, list: InputFloat = 0.0, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Grid'. Socket expects a grid"""
+        return cls(structure_type="GRID", list=list, index=index)
+
+    @classmethod
+    def list(cls, list: InputFloat = 0.0, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'List'. Socket expects a list"""
+        return cls(structure_type="LIST", list=list, index=index)
+
+    @classmethod
+    def single(cls, list: InputFloat = 0.0, index: InputInteger = 0) -> "GetListItem":
+        """Create Get List Item with operation 'Single'. Socket expects a single value"""
+        return cls(structure_type="SINGLE", list=list, index=index)
+
+    @property
+    def socket_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+        "SOUND",
+    ]:
+        return self.node.socket_type  # ty: ignore[invalid-return-type]
+
+    @socket_type.setter
+    def socket_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ],
+    ):
+        self.node.socket_type = value
+
+    @property
+    def structure_type(
+        self,
+    ) -> Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]:
+        return self.node.structure_type
+
+    @structure_type.setter
+    def structure_type(
+        self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
+    ):
+        self.node.structure_type = value
+
+
 class GetNestedBundlePaths(BaseNode):
     """
     Get paths to items in a nested bundle with a filter
@@ -1819,7 +2151,7 @@ class GetNestedBundlePaths(BaseNode):
         """Data Type"""
 
     class _Outputs(SocketAccessor):
-        paths: StringSocket
+        paths: StringSocketList
         """Paths"""
 
     if TYPE_CHECKING:
@@ -2677,6 +3009,233 @@ class JoinBundle(BaseNode):
         key_args = {"Bundle": bundle}
 
         self._establish_links(**key_args)
+
+
+class ListLength(BaseNode):
+    """
+    Count how many items are in a given list
+
+    Parameters
+    ----------
+    list : InputFloat
+        List
+
+    Inputs
+    ------
+    i.list : FloatSocket
+        List
+
+    Outputs
+    -------
+    o.length : IntegerSocket
+        Length
+    """
+
+    _bl_idname = "GeometryNodeListLength"
+    node: bpy.types.GeometryNodeListLength
+
+    class _Inputs(SocketAccessor):
+        list: FloatSocket
+        """List"""
+
+    class _Outputs(SocketAccessor):
+        length: IntegerSocket
+        """Length"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        list: InputBoolean
+        | InputBundle
+        | InputClosure
+        | InputCollection
+        | InputColor
+        | InputFloat
+        | InputFont
+        | InputGeometry
+        | InputImage
+        | InputInteger
+        | InputMaterial
+        | InputMatrix
+        | InputMenu
+        | InputObject
+        | InputRotation
+        | InputSound
+        | InputString
+        | InputVector = 0.0,
+        *,
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"List": list}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(cls, list: InputFloat = 0.0) -> "ListLength":
+        """Create List Length with operation 'Float'."""
+        return cls(data_type="FLOAT", list=list)
+
+    @classmethod
+    def integer(cls, list: InputInteger = 0) -> "ListLength":
+        """Create List Length with operation 'Integer'."""
+        return cls(data_type="INT", list=list)
+
+    @classmethod
+    def boolean(cls, list: InputBoolean = False) -> "ListLength":
+        """Create List Length with operation 'Boolean'."""
+        return cls(data_type="BOOLEAN", list=list)
+
+    @classmethod
+    def vector(cls, list: InputVector = None) -> "ListLength":
+        """Create List Length with operation 'Vector'."""
+        return cls(data_type="VECTOR", list=list)
+
+    @classmethod
+    def color(cls, list: InputColor = None) -> "ListLength":
+        """Create List Length with operation 'Color'."""
+        return cls(data_type="RGBA", list=list)
+
+    @classmethod
+    def rotation(cls, list: InputRotation = None) -> "ListLength":
+        """Create List Length with operation 'Rotation'."""
+        return cls(data_type="ROTATION", list=list)
+
+    @classmethod
+    def matrix(cls, list: InputMatrix = None) -> "ListLength":
+        """Create List Length with operation 'Matrix'."""
+        return cls(data_type="MATRIX", list=list)
+
+    @classmethod
+    def string(cls, list: InputString = "") -> "ListLength":
+        """Create List Length with operation 'String'."""
+        return cls(data_type="STRING", list=list)
+
+    @classmethod
+    def menu(cls, list: InputMenu = None) -> "ListLength":
+        """Create List Length with operation 'Menu'."""
+        return cls(data_type="MENU", list=list)
+
+    @classmethod
+    def object(cls, list: InputObject = None) -> "ListLength":
+        """Create List Length with operation 'Object'."""
+        return cls(data_type="OBJECT", list=list)
+
+    @classmethod
+    def image(cls, list: InputImage = None) -> "ListLength":
+        """Create List Length with operation 'Image'."""
+        return cls(data_type="IMAGE", list=list)
+
+    @classmethod
+    def geometry(cls, list: InputGeometry = None) -> "ListLength":
+        """Create List Length with operation 'Geometry'."""
+        return cls(data_type="GEOMETRY", list=list)
+
+    @classmethod
+    def collection(cls, list: InputCollection = None) -> "ListLength":
+        """Create List Length with operation 'Collection'."""
+        return cls(data_type="COLLECTION", list=list)
+
+    @classmethod
+    def material(cls, list: InputMaterial = None) -> "ListLength":
+        """Create List Length with operation 'Material'."""
+        return cls(data_type="MATERIAL", list=list)
+
+    @classmethod
+    def bundle(cls, list: InputBundle = None) -> "ListLength":
+        """Create List Length with operation 'Bundle'."""
+        return cls(data_type="BUNDLE", list=list)
+
+    @classmethod
+    def closure(cls, list: InputClosure = None) -> "ListLength":
+        """Create List Length with operation 'Closure'."""
+        return cls(data_type="CLOSURE", list=list)
+
+    @classmethod
+    def font(cls, list: InputFont = None) -> "ListLength":
+        """Create List Length with operation 'Font'."""
+        return cls(data_type="FONT", list=list)
+
+    @classmethod
+    def sound(cls, list: InputSound = None) -> "ListLength":
+        """Create List Length with operation 'Sound'."""
+        return cls(data_type="SOUND", list=list)
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+        "SOUND",
+    ]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ],
+    ):
+        self.node.data_type = value
 
 
 class MapRange(BaseNode):
@@ -5061,7 +5620,7 @@ class SplitString(BaseNode):
         """Separator"""
 
     class _Outputs(SocketAccessor):
-        list: StringSocket
+        list: StringSocketList
         """List"""
 
     if TYPE_CHECKING:

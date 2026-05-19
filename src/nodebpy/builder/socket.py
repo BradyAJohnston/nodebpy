@@ -1574,36 +1574,72 @@ class _MatrixMixin(BaseSocket):
 # ---------------------------------------------------------------------------
 
 
+class _ListMixin(Generic[_T]):
+    """Generic list mixin for socket lists."""
+
+
 class FloatSocket(_FloatMixin, Socket):
     """Runtime float socket wrapper."""
+
+
+class FloatSocketList(FloatSocket, _ListMixin[FloatSocket]):
+    """"""
 
 
 class VectorSocket(_VectorMixin, Socket):
     """Runtime vector socket wrapper."""
 
 
+class VectorSocketList(VectorSocket, _ListMixin[VectorSocket]):
+    """"""
+
+
 class ColorSocket(_ColorMixin, Socket):
     """Runtime color socket wrapper."""
+
+
+class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):
+    """List of color sockets."""
 
 
 class IntegerSocket(_IntegerMixin, Socket):
     """Runtime integer socket wrapper."""
 
 
+class IntegerSocketList(IntegerSocket, _ListMixin[IntegerSocket]):
+    """List of integer sockets."""
+
+
 class BooleanSocket(_BooleanMixin, Socket):
     """Runtime boolean socket wrapper."""
+
+
+class BooleanSocketList(BooleanSocket, _ListMixin[BooleanSocket]):
+    """List of boolean sockets."""
 
 
 class RotationSocket(_RotationMixin, Socket):
     """Runtime rotation socket wrapper."""
 
 
+class RotationSocketList(RotationSocket, _ListMixin[RotationSocket]):
+    """List of rotation sockets."""
+
+
 class MatrixSocket(_MatrixMixin, Socket):
     """Runtime matrix socket wrapper."""
 
 
+class MatrixSocketList(MatrixSocket, _ListMixin[MatrixSocket]):
+    """List of matrix sockets."""
+
+
 class StringSocket(_StringMixin, Socket):
     """Runtime string socket wrapper."""
+
+
+class StringSocketList(StringSocket, _ListMixin[StringSocket]):
+    """List of string sockets."""
 
 
 class MenuSocket(Socket):
@@ -1620,10 +1656,18 @@ class MenuSocket(Socket):
         self.socket.default_value = value
 
 
+class MenuSocketList(MenuSocket, _ListMixin[MenuSocket]):
+    """List of menu sockets."""
+
+
 class GeometrySocket(Socket):
     """Runtime geometry socket wrapper."""
 
     socket: NodeSocketGeometry
+
+
+class GeometrySocketList(GeometrySocket, _ListMixin[GeometrySocket]):
+    """List of geometry sockets."""
 
 
 class ObjectSocket(Socket):
@@ -1640,6 +1684,10 @@ class ObjectSocket(Socket):
         self.socket.default_value = value
 
 
+class ObjectSocketList(ObjectSocket, _ListMixin[ObjectSocket]):
+    """List of object sockets."""
+
+
 class MaterialSocket(Socket):
     """Runtime material socket wrapper."""
 
@@ -1652,6 +1700,10 @@ class MaterialSocket(Socket):
     @default_value.setter
     def default_value(self, value: bpy.types.Material) -> None:
         self.socket.default_value = value
+
+
+class MaterialSocketList(MaterialSocket, _ListMixin[MaterialSocket]):
+    """List of material sockets."""
 
 
 class ImageSocket(Socket):
@@ -1668,6 +1720,10 @@ class ImageSocket(Socket):
         self.socket.default_value = value
 
 
+class ImageSocketList(ImageSocket, _ListMixin[ImageSocket]):
+    """List of image sockets."""
+
+
 class CollectionSocket(Socket):
     """Runtime collection socket wrapper."""
 
@@ -1682,10 +1738,18 @@ class CollectionSocket(Socket):
         self.socket.default_value = value
 
 
+class CollectionSocketList(CollectionSocket, _ListMixin[CollectionSocket]):
+    """List of collection sockets."""
+
+
 class BundleSocket(Socket):
     """Runtime bundle socket wrapper."""
 
     socket: NodeSocketBundle
+
+
+class BundleSocketList(BundleSocket, _ListMixin[BundleSocket]):
+    """List of bundle sockets."""
 
 
 class ClosureSocket(Socket):
@@ -1694,10 +1758,18 @@ class ClosureSocket(Socket):
     socket: NodeSocketClosure
 
 
+class ClosureSocketList(ClosureSocket, _ListMixin[ClosureSocket]):
+    """List of closure sockets."""
+
+
 class ShaderSocket(Socket):
     """Runtime shader socket wrapper."""
 
     socket: NodeSocketShader
+
+
+class ShaderSocketList(ShaderSocket, _ListMixin[ShaderSocket]):
+    """List of shader sockets."""
 
 
 class FontSocket(Socket):
@@ -1706,8 +1778,16 @@ class FontSocket(Socket):
     socket: NodeSocketFont
 
 
+class FontSocketList(FontSocket, _ListMixin[FontSocket]):
+    """List of font sockets."""
+
+
 class SoundSocket(Socket):
     """Runtime sound socket wrapper."""
+
+
+class SoundSocketList(SoundSocket, _ListMixin[SoundSocket]):
+    """List of sound sockets."""
 
 
 _SOCKET_LINKER_REGISTRY["NodeSocketFloat"] = FloatSocket

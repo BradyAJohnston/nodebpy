@@ -11,6 +11,8 @@ Run this script from within Blender to generate node classes:
 """
 
 from __future__ import annotations
+import typing
+from nodebpy.types import SOCKET_TYPES
 
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -212,6 +214,7 @@ class SocketInfo:
     max_value: Any = None
     always_enabled: bool = True
     menu_items: list[str] = field(default_factory=list)
+    structure_type: str = ""
 
     def format_argument_string(self) -> str:
         param_name = get_socket_param_name(self)
@@ -256,7 +259,11 @@ class SocketInfo:
         # instead just check to see if the name is in the socket type
         for key, item in type_map.items():
             if key in self.bl_socket_type:
-                return item
+                return (
+                    item
+                    if "LIST" not in self.structure_type
+                    else item.replace("Input", "InputList")
+                )
         raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
     def format_accessor_annotation(self) -> str:
@@ -267,6 +274,8 @@ class SocketInfo:
         for key, cls in _OUTPUT_SOCKET_CLASSES.items():
             if key in self.bl_socket_type:
                 return_type = cls
+                if "LIST" in self.structure_type:
+                    return_type = return_type + "List"
                 break
 
         doc = self.description or self.name
@@ -487,8 +496,8 @@ class NodeInfo:
         if any(keyword in self.bl_idname for keyword in ["Volume", "Grid"]):
             return "grid" if self.class_name != "Grid" else "geometry"
 
-        if "List" in self.bl_idname:
-            return "experimental"
+        # if "List" in self.bl_idname:
+        #     return "experimental"
 
         # Map color_tag to filename – covers geometry, shader, and compositor tags
         color_tag_to_filename = {
@@ -793,6 +802,7 @@ def collect_socket_info(
             socket_type=socket.type,
             is_output=is_output,
             is_multi_input=getattr(socket, "is_multi_input", False),
+            structure_type=getattr(socket, "inferred_structure_type", ""),
             menu_items=_collect_socket_menu_items(socket)
             if socket.type == "MENU" and socket.default_value != ""
             else [],
@@ -1116,7 +1126,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     enum_methods = node_info.generate_enum_class_methods(config)
 
     # Add node type annotation — always use specific type so property access is typed
-    node_type_annotation = f"bpy.types.{node_info.bl_idname}"
+    node_type_annotation = (
+        f"bpy.types.{node_info.bl_idname}  # ty: ignore[unresolved-attribute]"
+    )
 
     # Build numpy-style class docstring
     doc_lines = [node_info.description, ""]
@@ -1269,13 +1281,11 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         lines.append(f"from mathutils import {', '.join(sorted(mathutils_needed))}")
 
     # Builder imports
-    builder_imports = ["BaseNode as BaseNode", "SocketAccessor"]
-    if has_sockets:
-        builder_imports.append("Socket")
+    builder_imports = ["BaseNode", "SocketAccessor", "Socket"]
     # Add only the specific output socket classes actually used in this file
-    for cls in sorted(used_output_socket_classes):
-        if cls != "Socket":
-            builder_imports.append(cls)
+    # for cls in sorted(used_output_socket_classes):
+    #     if cls != "Socket":
+    #         builder_imports.append(cls)
     lines.append(f"from ...builder import {', '.join(builder_imports)}")
 
     # Types imports — use canonical order matching the type_map
@@ -1309,6 +1319,15 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     if type_imports:
         imports_str = ",\n    ".join(type_imports)
         lines.append(f"from ...types import (\n    {imports_str},\n)")
+
+    sockets = [f"{t.title()}Socket" for t in typing.get_args(SOCKET_TYPES)]
+    sockets += ["IntegerSocket", "ColorSocket"]
+    lists = [s + "List" for s in sockets]
+
+    lines.append(f"from ...builder.socket import ({', '.join(sockets + lists)})")
+
+    # if sockets:
+    #     lines.append(f"from ...types import ({', '.join(sockets)})")
 
     return "\n\n".join(lines) + "\n"
 
