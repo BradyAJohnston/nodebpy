@@ -162,6 +162,7 @@ InputAny = typing.Union[
     InputBundle,
     InputClosure,
     InputShader,
+    InputSound
 ]
 
 _AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]

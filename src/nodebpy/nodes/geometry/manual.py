@@ -170,6 +170,7 @@ _SwitchDataTypes = Literal[
     "BUNDLE",
     "CLOSURE",
     "FONT",
+    "SOUND",
 ]
 
 
