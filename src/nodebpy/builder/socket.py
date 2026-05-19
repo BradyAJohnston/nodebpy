@@ -143,6 +143,13 @@ class BaseSocket:
     def name(self) -> str:
         return str(self.socket.name)
 
+    def _assert_output(self, method: str) -> None:
+        if not self.socket.is_output:
+            raise RuntimeError(
+                f"'{method}' is only available on output sockets, "
+                f"not input socket '{self.socket.name}'."
+            )
+
     @property
     def _is_geometry_tree(self) -> bool:
         return self.tree.tree.bl_idname == "GeometryNodeTree"
@@ -274,6 +281,7 @@ class GridSocketMixin(Socket, Generic[_T]):
     def _info(self) -> "GridInfo":
         from ..nodes.geometry import GridInfo
 
+        self._assert_output("transform / background_value")
         return GridInfo(self.socket, data_type=self.socket.type)  # ty: ignore[invalid-argument-type]
 
     @property
@@ -302,6 +310,11 @@ class _FieldDomain(Generic[_T]):
     """
 
     def __init__(self, socket: NodeSocket, dtype: str, domain: str) -> None:
+        if not socket.is_output:
+            raise RuntimeError(
+                f"Domain access ('{domain}') is only available on output sockets, "
+                f"not input socket '{socket.name}'."
+            )
         self._socket = socket
         self._dtype = dtype
         self._domain = domain
@@ -453,36 +466,40 @@ class _VectorMixin(BaseSocket):
 
         A different VectorMath node is created each time.
         """
+        self._assert_output("dot")
         return self._vmath.dot_product(self.socket, vector).o.value
 
     def scale(self, scale: InputFloat) -> "VectorSocket":
         """Scale this vector by a scalar value and return VectorSocket"""
+        self._assert_output("scale")
         return self._vmath.scale(self.socket, scale).o.vector
 
     def length(self) -> "FloatSocket":
+        self._assert_output("length")
         return self._vmath.length(self.socket).o.value
 
     def normalize(self) -> "VectorSocket":
-        """Normalize this vector. Only valid for output sockets, as it creates a Normalize node linked from this socket.
-
-        The same normalize node is re-used each time unless `new_node=True` where a new `VectorMath` node is created each time.
-        """
+        self._assert_output("normalize")
         return self._vmath.normalize(self.socket).o.vector
 
     def cross(self, other: InputVector) -> "VectorSocket":
         """Cross product of this vector with *other*. Returns a vector perpendicular to both."""
+        self._assert_output("cross")
         return self._vmath.cross_product(self.socket, other).o.vector
 
     def distance(self, other: InputVector) -> "FloatSocket":
         """Euclidean distance between this vector and *other*."""
+        self._assert_output("distance")
         return self._vmath.distance(self.socket, other).o.value
 
     def project(self, other: InputVector) -> "VectorSocket":
         """Project this vector onto *other*."""
+        self._assert_output("project")
         return self._vmath.project(self.socket, other).o.vector
 
     def reflect(self, normal: InputVector) -> "VectorSocket":
         """Reflect this vector around *normal*. *normal* does not need to be normalised."""
+        self._assert_output("reflect")
         return self._vmath.reflect(self.socket, normal).o.vector
 
     def map_range(
@@ -499,6 +516,7 @@ class _VectorMixin(BaseSocket):
         steps: InputVector = (4.0, 4.0, 4.0),
     ) -> "VectorSocket":
         """Convenience method to remap a vector socket using the `MapRange.vector()` node with this socket as input"""
+        self._assert_output("map_range")
         from ..nodes.geometry import MapRange
 
         node = MapRange.vector(self.socket, from_min, from_max, to_min, to_max)
@@ -514,12 +532,14 @@ class _VectorMixin(BaseSocket):
         rotation: InputRotation,
     ) -> "VectorSocket":
         "Rotate this vector by the given rotation."
+        self._assert_output("rotate")
         from ..nodes.geometry import RotateVector
 
         return RotateVector(self.socket, rotation).o.vector
 
     def transform(self, matrix: InputMatrix) -> "VectorSocket":
         "Transform this vector by the given matrix."
+        self._assert_output("transform")
         from ..nodes.geometry import TransformPoint
 
         return TransformPoint(self.socket, matrix).o.vector
@@ -915,11 +935,13 @@ class _BooleanMixin(BaseSocket):
         self.socket.default_value = value
 
     def __or__(self, other: Any) -> "BooleanSocket":
+        self._assert_output("|")
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_or(self.socket, other).o.boolean
 
     def __and__(self, other: Any) -> "BooleanSocket":
+        self._assert_output("&")
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_and(self.socket, other).o.boolean
@@ -927,7 +949,7 @@ class _BooleanMixin(BaseSocket):
     @property
     def switch(self) -> "_BooleanSwitchSocketFactory":
         "Creat a Switch node with this boolean as the `switch` input."
-
+        self._assert_output("switch")
         return _BooleanSwitchSocketFactory(self.socket)
 
     @property
@@ -974,6 +996,7 @@ class _RotationMixin(BaseSocket):
 
     def invert(self) -> "RotationSocket":
         "Invert the rotation of the socket."
+        self._assert_output("invert")
         from ..nodes.geometry import InvertRotation
 
         return InvertRotation._find_or_create_linked(self.socket).o.rotation
@@ -984,6 +1007,7 @@ class _RotationMixin(BaseSocket):
         rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
     ) -> "RotationSocket":
         "Rotate this rotation by the given rotation in the specified rotation space."
+        self._assert_output("rotate")
         from ..nodes.geometry import RotateRotation
 
         return RotateRotation(
@@ -992,12 +1016,14 @@ class _RotationMixin(BaseSocket):
 
     def to_euler(self) -> "VectorSocket":
         "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
+        self._assert_output("to_euler")
         from ..nodes.geometry.converter import RotationToEuler
 
         return RotationToEuler._find_or_create_linked(self.socket).o.euler
 
     def to_quaternion(self) -> QuaternionComponents:
         "Decompose the rotation into quaternion components `(w, x, y, z)`."
+        self._assert_output("to_quaternion")
         from ..nodes.geometry import RotationToQuaternion
 
         o = RotationToQuaternion._find_or_create_linked(self.socket).o
@@ -1005,6 +1031,7 @@ class _RotationMixin(BaseSocket):
 
     def to_axis_angle(self) -> AxisAngle:
         "Decompose the rotation into axis-angle components `(axis, angle)`."
+        self._assert_output("to_axis_angle")
         from ..nodes.geometry import RotationToAxisAngle
 
         o = RotationToAxisAngle(self.socket).o
@@ -1091,6 +1118,7 @@ class _FloatMixin(BaseSocket):
     @property
     def mix(self) -> _FloatMixDataTypeFactory:
         "Create a ``Mix`` node using this socket as the factor."
+        self._assert_output("mix")
         return _FloatMixDataTypeFactory(self.socket)
 
     @property
@@ -1135,6 +1163,7 @@ class _FloatMixin(BaseSocket):
         steps: InputFloat = 4.0,
     ) -> "FloatSocket":
         """Remap the values on the float socket using the MapRange node."""
+        self._assert_output("map_range")
         from ..nodes.geometry import MapRange
 
         node = MapRange.float(self.socket, from_min, from_max, to_min, to_max)
@@ -1146,58 +1175,71 @@ class _FloatMixin(BaseSocket):
 
     def clamp(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> "FloatSocket":
         """Clamp the value to *[min, max]*. Defaults to the unit interval ``[0, 1]``."""
+        self._assert_output("clamp")
         from ..nodes.geometry import Clamp
 
         return Clamp.min_max(self.socket, min, max).o.result
 
     def sqrt(self) -> "FloatSocket":
         """Return the square root of this value."""
+        self._assert_output("sqrt")
         return self._math.square_root(self.socket).o.value
 
     def power(self, exponent: InputFloat) -> "FloatSocket":
         """Raise this value to *exponent*."""
+        self._assert_output("power")
         return self._math.power(self.socket, exponent).o.value
 
     def floor(self) -> "FloatSocket":
         """Round down to the nearest integer."""
+        self._assert_output("floor")
         return self._math.floor(self.socket).o.value
 
     def ceil(self) -> "FloatSocket":
         """Round up to the nearest integer."""
+        self._assert_output("ceil")
         return self._math.ceil(self.socket).o.value
 
     def round(self) -> "FloatSocket":
         """Round to the nearest integer."""
+        self._assert_output("round")
         return self._math.round(self.socket).o.value
 
     def modulo(self, divisor: InputFloat) -> "FloatSocket":
         """Floored modulo — remainder after dividing by *divisor*, always non-negative."""
+        self._assert_output("modulo")
         return self._math.floored_modulo(self.socket, divisor).o.value
 
     def wrap(self, min: InputFloat, max: InputFloat) -> "FloatSocket":
         """Wrap the value into the *[min, max]* range, repeating cyclically."""
+        self._assert_output("wrap")
         # the wrap method has different order of arguments with max being first
         # compared to other nodes that are defined.
         return self._math.wrap(self.socket, value_001=max, value_002=min).o.value
 
     def to_radians(self) -> "FloatSocket":
         """Convert degrees to radians."""
+        self._assert_output("to_radians")
         return self._math.to_radians(self.socket).o.value
 
     def to_degrees(self) -> "FloatSocket":
         """Convert radians to degrees."""
+        self._assert_output("to_degrees")
         return self._math.to_degrees(self.socket).o.value
 
     def sign(self) -> "FloatSocket":
         "Return the sign of the FloatSocket, eithe `-1`, `0` or `1`."
+        self._assert_output("sign")
         return self._math.sign(self.socket).o.value
 
     def negate(self) -> "FloatSocket":
         "Negate the `FloatSocket` by multiplying the value by `-1`."
+        self._assert_output("negate")
         return self._math.multiply(self.socket, -1).o.value
 
     def to_string(self, decimals: InputInteger = 0) -> "StringSocket":
         "Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places"
+        self._assert_output("to_string")
         from ..nodes.geometry import ValueToString
 
         return ValueToString.float(self.socket, decimals).o.string
@@ -1206,6 +1248,7 @@ class _FloatMixin(BaseSocket):
         self, rounding_mode: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"] = "ROUND"
     ) -> "IntegerSocket":
         "Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part."
+        self._assert_output("to_integer")
         from ..nodes.geometry import FloatToInteger
 
         return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer
@@ -1262,25 +1305,30 @@ class _IntegerMixin(BaseSocket):
 
     def to_string(self) -> "StringSocket":
         "Convert the `IntegerSocket` to a `StringSocket`."
+        self._assert_output("to_string")
         from ..nodes.geometry import ValueToString
 
         return ValueToString.integer(self.socket).o.string
 
     def clamp(self, min: InputInteger = 0, max: InputInteger = 1) -> "IntegerSocket":
         """Clamp the value to *[min, max]*."""
+        self._assert_output("clamp")
         return self._imath.minimum(
             self._imath.maximum(self.socket, min).o.value, max
         ).o.value
 
     def modulo(self, divisor: InputInteger) -> "IntegerSocket":
         """Remainder after dividing by *divisor* (always non-negative)."""
+        self._assert_output("modulo")
         return self._imath.modulo(self.socket, divisor).o.value
 
     def sign(self) -> "IntegerSocket":
         "Return the sign of the IntegerSocket, either `-1`, `0`, or `1`."
+        self._assert_output("sign")
         return self._imath.sign(self.socket).o.value
 
     def negate(self) -> "IntegerSocket":
+        self._assert_output("negate")
         return self._imath.negate(self.socket).o.value
 
     @staticmethod
@@ -1373,20 +1421,24 @@ class _StringMixin(BaseSocket):
 
     def starts_with(self, search: InputString) -> "BooleanSocket":
         "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
+        self._assert_output("starts_with")
         return self._match(self.socket, "Starts With", search).o.result
 
     def ends_with(self, search: InputString) -> "BooleanSocket":
         "Create a MatchString[Ends With], return the result as a `BooleanSocket`."
+        self._assert_output("ends_with")
         return self._match(self.socket, "Ends With", search).o.result
 
     def contains(self, search: InputString) -> "BooleanSocket":
         "Create a MatchString[Contains], return the result as a `BooleanSocket`."
+        self._assert_output("contains")
         return self._match(self.socket, "Contains", search).o.result
 
     def slice(
         self, position: InputInteger = 0, length: InputInteger = 0
     ) -> StringSocket:
         "Slice a given string from a starting position for a given length."
+        self._assert_output("slice")
         from ..nodes.geometry import SliceString
 
         return SliceString(self.socket, position, length).o.string
@@ -1395,24 +1447,28 @@ class _StringMixin(BaseSocket):
         self, items: Mapping[str, InputString | InputInteger | InputFloat]
     ) -> "StringSocket":
         "Format a given string with the key-value items."
+        self._assert_output("format")
         from ..nodes.geometry import FormatString
 
         return FormatString(self.socket, items).o.string
 
     def replace(self, find: InputString, replace: InputString) -> "StringSocket":
         "Replace every match of the string with teh replacement string"
+        self._assert_output("replace")
         from ..nodes.geometry import ReplaceString
 
         return ReplaceString(self.socket, find, replace).o.string
 
     def length(self) -> "IntegerSocket":
         "Compute the length of a string and return as `IntegerSocket`."
+        self._assert_output("length")
         from ..nodes.geometry import StringLength
 
         return StringLength(self.socket).o.length
 
     def find(self, search: InputString) -> FindResult:
         "Find where in a string a pattern occurs. Returns `(first_found, count)`."
+        self._assert_output("find")
         from ..nodes.geometry import FindInString
 
         o = FindInString(self.socket, search).o
@@ -1422,11 +1478,13 @@ class _StringMixin(BaseSocket):
         self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
     ) -> "StringSocket":
         """Join the input strings with this as the separator."""
+        self._assert_output("join")
         from ..nodes.geometry import JoinStrings
 
         return JoinStrings(strings, self.socket).o.string
 
     def __add__(self, other: "StringSocket" | str) -> StringSocket:
+        self._assert_output("+")
         from ..nodes.geometry import JoinStrings, String
 
         if isinstance(other, str):
@@ -1435,6 +1493,7 @@ class _StringMixin(BaseSocket):
         return JoinStrings((self.socket, other)).o.string
 
     def __radd__(self, other: str | "StringSocket") -> StringSocket:
+        self._assert_output("+")
         from ..nodes.geometry import JoinStrings, String
 
         if isinstance(other, str):
@@ -1450,42 +1509,49 @@ class _MatrixMixin(BaseSocket):
 
     @property
     def translation(self) -> "VectorSocket":
+        self._assert_output("translation")
         from ..nodes.geometry import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.translation
 
     @property
     def rotation(self) -> "RotationSocket":
+        self._assert_output("rotation")
         from ..nodes.geometry import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.rotation
 
     @property
     def scale(self) -> "VectorSocket":
+        self._assert_output("scale")
         from ..nodes.geometry import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.scale
 
     def determinant(self) -> "FloatSocket":
         "Compute the determinant of a matrix input and return as a `FloatSocket`"
+        self._assert_output("determinant")
         from ..nodes.geometry import MatrixDeterminant
 
         return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
 
     def invert(self) -> "MatrixSocket":
         "Invert the `MatrixSocet` and return a `MatrixSocket`"
+        self._assert_output("invert")
         from ..nodes.geometry import InvertMatrix
 
         return InvertMatrix._find_or_create_linked(self.socket).o.matrix
 
     def transpose(self) -> "MatrixSocket":
         "Transpose the `MatrixSocket` and return a `MatrixSocket`"
+        self._assert_output("transpose")
         from ..nodes.geometry import TransposeMatrix
 
         return TransposeMatrix._find_or_create_linked(self.socket).o.matrix
 
     def svd(self) -> SVDResult:
         "Decompose the matrix via SVD. Returns `(u, s, v)`."
+        self._assert_output("svd")
         from ..nodes.geometry import MatrixSVD
 
         o = MatrixSVD(self.socket).o
@@ -1497,6 +1563,7 @@ class _MatrixMixin(BaseSocket):
         Use this instead of ``transform()`` when transforming a direction vector
         (e.g. a normal) where translation must not affect the result.
         """
+        self._assert_output("transform_direction")
         from ..nodes.geometry import TransformDirection
 
         return TransformDirection(direction, self.socket).o.direction

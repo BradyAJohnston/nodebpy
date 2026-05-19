@@ -805,7 +805,7 @@ def test_matrix_socket_output_len():
         rot.o.rotation.invert().node.bl_idname == g.InvertRotation._bl_idname
 
 
-def test_socket_defaults():
+def test_socket_default_values():
     with g.tree():
         sep = g.SeparateXYZ()
         assert sep.i.vector.links == []
