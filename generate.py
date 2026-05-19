@@ -11,9 +11,8 @@ Run this script from within Blender to generate node classes:
 """
 
 from __future__ import annotations
-import typing
-from nodebpy.types import SOCKET_TYPES
 
+import typing
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
@@ -21,6 +20,8 @@ from typing import Any, Literal
 import bpy
 from bpy.types import VectorFont, bpy_prop_array
 from mathutils import Euler, Vector
+
+from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
 # Tree-type configuration
@@ -1322,7 +1323,14 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         lines.append(f"from ...types import (\n    {imports_str},\n)")
 
     sockets = [f"{t.title()}Socket" for t in typing.get_args(SOCKET_TYPES)]
-    sockets += ["IntegerSocket", "ColorSocket"]
+    sockets += [
+        "IntegerSocket",
+        "ColorSocket",
+        "FloatGrid",
+        "IntegerGrid",
+        "VectorGrid",
+        "BooleanGrid",
+    ]
     lists = [s + "List" for s in sockets]
 
     lines.append(f"from ...builder.socket import ({', '.join(sockets + lists)})")

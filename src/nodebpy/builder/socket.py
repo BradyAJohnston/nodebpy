@@ -69,11 +69,7 @@ from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
     from ..nodes import compositor, geometry, shader
-    from ..nodes.geometry import (
-        IntegerMath,
-        MatchString,
-        Math,
-    )
+    from ..nodes.geometry import GridInfo, IntegerMath, MatchString, Math
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
@@ -272,6 +268,25 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         def __ge__(self, other: Any) -> "BooleanSocket": ...
         def __eq__(self, other: Any) -> "BooleanSocket": ...
         def __ne__(self, other: Any) -> "BooleanSocket": ...
+
+
+class GridSocketMixin(Socket, Generic[_T]):
+    def _info(self) -> "GridInfo":
+        from ..nodes.geometry import GridInfo
+
+        return GridInfo(self.socket, data_type=self.socket.type)  # ty: ignore[invalid-argument-type]
+
+    @property
+    def transform(
+        self,
+    ) -> "MatrixSocket":
+        return self._info().o.transform
+
+    @property
+    def background_value(
+        self,
+    ) -> "_T":
+        return self._info().o.background_value
 
 
 # ---------------------------------------------------------------------------
@@ -1586,12 +1601,20 @@ class FloatSocketList(FloatSocket, _ListMixin[FloatSocket]):
     """"""
 
 
+class FloatGrid(FloatSocket, GridSocketMixin[FloatSocket]):
+    """Runtime float grid socket wrapper."""
+
+
 class VectorSocket(_VectorMixin, Socket):
     """Runtime vector socket wrapper."""
 
 
 class VectorSocketList(VectorSocket, _ListMixin[VectorSocket]):
     """"""
+
+
+class VectorGrid(VectorSocket, GridSocketMixin[VectorSocket]):
+    """Runtime vector grid socket wrapper."""
 
 
 class ColorSocket(_ColorMixin, Socket):
@@ -1610,12 +1633,20 @@ class IntegerSocketList(IntegerSocket, _ListMixin[IntegerSocket]):
     """List of integer sockets."""
 
 
+class IntegerGrid(IntegerSocket, GridSocketMixin[IntegerSocket]):
+    """Runtime integer grid socket wrapper."""
+
+
 class BooleanSocket(_BooleanMixin, Socket):
     """Runtime boolean socket wrapper."""
 
 
 class BooleanSocketList(BooleanSocket, _ListMixin[BooleanSocket]):
     """List of boolean sockets."""
+
+
+class BooleanGrid(BooleanSocket, GridSocketMixin[BooleanSocket]):
+    """Runtime boolean grid socket wrapper."""
 
 
 class RotationSocket(_RotationMixin, Socket):
