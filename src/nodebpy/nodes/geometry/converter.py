@@ -1806,7 +1806,7 @@ class GetNestedBundlePaths(BaseNode):
     """
 
     _bl_idname = "NodeGetNestedBundlePaths"
-    node: bpy.types.NodeGetNestedBundlePaths
+    node: bpy.types.NodeGetNestedBundlePaths # ty: ignore[unresolved-attribute]
 
     class _Inputs(SocketAccessor):
         bundle: BundleSocket
