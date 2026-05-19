@@ -17,7 +17,7 @@ networkx = [
     "networkx>=3.6.1",
 ]
 bpy = [
-    "bpy>=5.1.0",
+    "bpy>=5.2.0",
 ]
 
 [build-system]

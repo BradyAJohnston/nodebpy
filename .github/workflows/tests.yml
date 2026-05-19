@@ -28,7 +28,7 @@ jobs:
 
       - name: Run tests
         run: |
-          uv run -m pytest -n auto -vv --cov=nodebpy --cov-report=xml
+          uv run --with "bpy==5.2.*" --extra-index-url https://bradyajohnston.github.io/dailybpy pytest -n auto -vv --cov=nodebpy --cov-report=xml
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
