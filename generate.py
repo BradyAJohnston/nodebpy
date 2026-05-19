@@ -296,6 +296,7 @@ class EnumInfo:
     name: str
     description: str = ""
     sockets: list[SocketInfo] = field(default_factory=lambda: list())
+    output_sockets: list[SocketInfo] = field(default_factory=lambda: list())
 
 
 @dataclass
@@ -531,6 +532,40 @@ class NodeInfo:
 
         return filename
 
+    @property
+    def varying_output_identifiers(self) -> set[str]:
+        """Output socket identifiers whose type changes across enum values."""
+        default_types = {s.identifier: s.bl_socket_type for s in self.outputs}
+        varying = set()
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                for s in enum.output_sockets:
+                    if (
+                        s.identifier in default_types
+                        and s.bl_socket_type != default_types[s.identifier]
+                    ):
+                        varying.add(s.identifier)
+        return varying
+
+    def output_class_for_enum(
+        self, socket_identifier: str, enum_identifier: str
+    ) -> str:
+        """Return the socket class name for a varying output given an enum identifier."""
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                if enum.identifier == enum_identifier:
+                    for s in enum.output_sockets:
+                        if s.identifier == socket_identifier:
+                            for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                                if key in s.bl_socket_type:
+                                    return cls
+        for s in self.outputs:
+            if s.identifier == socket_identifier:
+                for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                    if key in s.bl_socket_type:
+                        return cls
+        return "Socket"
+
     def generate_enum_class_methods(self, config: TreeTypeConfig | None = None) -> str:
         """Generate @classmethod convenience methods for enum operations."""
         methods = []
@@ -615,13 +650,25 @@ class NodeInfo:
                 if enum.description:
                     docstring += f" {enum.description}"
 
+                varying = self.varying_output_identifiers
+                if len(varying) == 1:
+                    varying_id = next(iter(varying))
+                    socket_cls = self.output_class_for_enum(varying_id, enum.identifier)
+                    return_type = f"{cls_name}[{socket_cls}]"
+                    # Use the class name directly (not cls) so the type checker
+                    # can resolve the parameterized return type.
+                    call_expr = f"{cls_name}({call_params_str})"
+                else:
+                    return_type = cls_name
+                    call_expr = f"cls({call_params_str})"
+
                 method = f'''
     @classmethod
     def {method_name}(
         {params_str}
-    ) -> "{cls_name}":
+    ) -> "{return_type}":
         """{docstring}"""
-        return cls({call_params_str})'''
+        return {call_expr}'''
 
                 methods.append(method)
 
@@ -858,6 +905,9 @@ def collect_property_info(node, node_type):
                             name=item.name,
                             description=item.description,
                             sockets=collect_socket_info(node.inputs),
+                            output_sockets=collect_socket_info(
+                                node.outputs, is_output=True
+                            ),
                         )
                     )
                     setattr(node, prop_identifier, default)
@@ -1181,16 +1231,31 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     else:
         inputs_class = "    class _Inputs(SocketAccessor):\n        pass"
 
-    # Build Outputs inner class
-    output_annotations = [
-        socket.format_accessor_annotation() for socket in node_info.outputs
-    ]
+    # Build Outputs inner class — use Generic[_S] if any output varies with enum values.
+    varying_outputs = node_info.varying_output_identifiers
+    is_generic = len(varying_outputs) == 1
+    output_annotations = []
+    for socket in node_info.outputs:
+        if is_generic and socket.identifier in varying_outputs:
+            attr_name = normalize_name(socket.identifier)
+            doc = socket.description or socket.name
+            ann = f"        {attr_name}: _S"
+            if doc:
+                ann += f'\n        """{doc}"""'
+            output_annotations.append(ann)
+        else:
+            output_annotations.append(socket.format_accessor_annotation())
+
+    outputs_base = "(SocketAccessor, Generic[_S])" if is_generic else "(SocketAccessor)"
     if output_annotations:
-        outputs_class = "    class _Outputs(SocketAccessor):\n" + "\n".join(
+        outputs_class = f"    class _Outputs{outputs_base}:\n" + "\n".join(
             output_annotations
         )
     else:
         outputs_class = "    class _Outputs(SocketAccessor):\n        pass"
+
+    class_base = "(BaseNode, Generic[_T])" if is_generic else "(BaseNode)"
+    o_return_type = "_Outputs[_T]" if is_generic else "_Outputs"
 
     # When extra sockets exist, properties must be set before collecting socket IDs
     # so the node reflects the correct enum state when we filter key_args.
@@ -1199,7 +1264,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     else:
         init_body = f"\n{establish_call}\n{property_setting}"
 
-    class_code = f'''class {class_name}(BaseNode):
+    class_code = f'''class {class_name}{class_base}:
     """
     {docstring_body}
     """
@@ -1215,7 +1280,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         @property
         def i(self) -> _Inputs: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> {o_return_type}: ...
 
     def __init__{init_signature}:
         super().__init__(){init_body}
@@ -1278,8 +1343,15 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
             if mt:
                 mathutils_needed.add(mt)
 
+    has_generic_nodes = any(len(n.varying_output_identifiers) == 1 for n in nodes)
+
     lines = ["# Auto-generated by generate.py — do not edit manually."]
-    lines.append("from typing import TYPE_CHECKING, Literal")
+    typing_imports = (
+        ["TYPE_CHECKING", "Generic", "Literal"]
+        if has_generic_nodes
+        else ["TYPE_CHECKING", "Literal"]
+    )
+    lines.append(f"from typing import {', '.join(typing_imports)}")
     lines.append("import bpy")
     if mathutils_needed:
         lines.append(f"from mathutils import {', '.join(sorted(mathutils_needed))}")
@@ -1336,9 +1408,10 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         "BooleanSocketGrid",
     ]
     lists = [s + "List" for s in sockets]
+    typevars = ["_T", "_S"] if has_generic_nodes else []
 
     lines.append(
-        f"from ...builder.socket import ({', '.join(sockets + grids + lists)})"
+        f"from ...builder.socket import ({', '.join(typevars + sockets + grids + lists)})"
     )
 
     # if sockets:

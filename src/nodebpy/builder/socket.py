@@ -76,6 +76,7 @@ if TYPE_CHECKING:
     from .tree import TreeBuilder
 
 _T = TypeVar("_T")
+_S = TypeVar("_S")
 
 
 class QuaternionComponents(NamedTuple):
@@ -278,11 +279,11 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
 
 
 class GridSocketMixin(Socket, Generic[_T]):
-    def _info(self) -> "GridInfo":
+    def _info(self) -> "GridInfo[_T]":
         from ..nodes.geometry import GridInfo
 
         self._assert_output("transform / background_value")
-        return GridInfo(self.socket, data_type=self.socket.type)  # ty: ignore[invalid-argument-type]
+        return GridInfo(self.socket, data_type=self.socket.type)  # ty: ignore[invalid-argument-type, invalid-return-type]
 
     @property
     def transform(
