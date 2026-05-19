@@ -196,8 +196,8 @@ css = [
 
 [[package]]
 name = "bpy"
-version = "5.1.1"
-source = { registry = "https://pypi.org/simple" }
+version = "5.2.0a0"
+source = { registry = "https://bradyajohnston.github.io/dailybpy" }
 dependencies = [
     { name = "cattrs" },
     { name = "cython" },
@@ -206,10 +206,9 @@ dependencies = [
     { name = "zstandard" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4b/aa/d117c294ac7ed642c18ea2aa41f0ecdda702984827cb2b19be9ab4230002/bpy-5.1.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:35b743881dbea27bb60b5037c9c2515e6a042ef51a2dc6753b0457da70332cbc", size = 238526545, upload-time = "2026-04-14T10:17:23.953Z" },
-    { url = "https://files.pythonhosted.org/packages/5a/a0/650997508de20fa46bcc9570940478cf90611bde9517873d0736786c73ab/bpy-5.1.1-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:3862c54c8c1680650d9e5a0d0938407e9a796e336c33cd65a0a0db8522f0b31d", size = 390854849, upload-time = "2026-04-14T10:18:23.676Z" },
-    { url = "https://files.pythonhosted.org/packages/b8/d6/2aca539ae3abec0e3b11d20910078ac652fb6c51c05544450752489b00a5/bpy-5.1.1-cp313-cp313-win_amd64.whl", hash = "sha256:185f589f250d968ccdf0fcf7b1e29b24954061bba2e95bc71e75ff06c7d7a2e3", size = 350204761, upload-time = "2026-04-14T10:17:50.318Z" },
-    { url = "https://files.pythonhosted.org/packages/e1/9f/14dc5334c361d24f4e004c12d791625bad5dac785c4b3e82f8f16426d464/bpy-5.1.1-cp313-cp313-win_arm64.whl", hash = "sha256:368049d613c29da0d0ea7f94208e19965c39307a2c788684cde90650981cf8a6", size = 205578813, upload-time = "2026-04-14T10:17:03.666Z" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-05-19/bpy-5.2.0a0-cp313-cp313-macosx_11_0_arm64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-05-19/bpy-5.2.0a0-cp313-cp313-manylinux_2_39_x86_64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-05-19/bpy-5.2.0a0-cp313-cp313-win_amd64.whl" },
 ]
 
 [[package]]
@@ -1225,7 +1224,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bpy", marker = "extra == 'bpy'", specifier = ">=5.1.0" },
+    { name = "bpy", marker = "extra == 'bpy'", specifier = "==5.2.*" },
     { name = "networkx", marker = "extra == 'networkx'", specifier = ">=3.6.1" },
 ]
 provides-extras = ["networkx", "bpy"]
