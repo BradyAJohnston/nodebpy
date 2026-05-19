@@ -20,6 +20,8 @@ website:
           - node-api.qmd
       - href: reference/
         text: Reference
+      - href: gotchas.qmd
+        text: Gotchas
       - href: changelog.qmd
         text: Changelog
     right:
