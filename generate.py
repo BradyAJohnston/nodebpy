@@ -277,6 +277,8 @@ class SocketInfo:
                 return_type = cls
                 if "LIST" in self.structure_type:
                     return_type = return_type + "List"
+                elif "GRID" in self.structure_type:
+                    return_type = return_type.replace("Socket", "SocketGrid")
                 break
 
         doc = self.description or self.name
@@ -1326,14 +1328,18 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     sockets += [
         "IntegerSocket",
         "ColorSocket",
-        "FloatGrid",
-        "IntegerGrid",
-        "VectorGrid",
-        "BooleanGrid",
+    ]
+    grids = [
+        "FloatSocketGrid",
+        "IntegerSocketGrid",
+        "VectorSocketGrid",
+        "BooleanSocketGrid",
     ]
     lists = [s + "List" for s in sockets]
 
-    lines.append(f"from ...builder.socket import ({', '.join(sockets + lists)})")
+    lines.append(
+        f"from ...builder.socket import ({', '.join(sockets + grids + lists)})"
+    )
 
     # if sockets:
     #     lines.append(f"from ...types import ({', '.join(sockets)})")

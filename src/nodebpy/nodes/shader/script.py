@@ -7,6 +7,7 @@ import bpy
 from ...builder import BaseNode, SocketAccessor
 
 
+
 class Script(BaseNode):
     """
         Generate an OSL shader from a file or text data-block.

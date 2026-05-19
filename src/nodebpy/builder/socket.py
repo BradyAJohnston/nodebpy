@@ -63,7 +63,7 @@ from ..types import (
     InputString,
     InputVector,
 )
-from ._registry import _SOCKET_LINKER_REGISTRY
+from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
 from ._utils import _NodeLike, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
@@ -187,7 +187,7 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         return self._builder_node
 
     # -- Dispatch methods: per-type math logic. --
-    # Called by OperatorMixin operators via _get_socket_linker().
+    # Called by OperatorMixin operators via _wrap_socket().
     # Subclasses (and type-specific mixins) override to provide type-specific behaviour.
 
     def _dispatch_math(
@@ -1583,7 +1583,7 @@ class _MatrixMixin(BaseSocket):
 
 # ---------------------------------------------------------------------------
 # Registry-target socket classes
-# Used by _get_socket_linker() for runtime socket wrapping.
+# Used by _wrap_socket() for runtime socket wrapping.
 # The corresponding SocketVector / SocketColor / etc. in interface.py
 # inherit the same mixins and gain identical behaviour for interface sockets.
 # ---------------------------------------------------------------------------
@@ -1601,7 +1601,7 @@ class FloatSocketList(FloatSocket, _ListMixin[FloatSocket]):
     """"""
 
 
-class FloatGrid(FloatSocket, GridSocketMixin[FloatSocket]):
+class FloatSocketGrid(FloatSocket, GridSocketMixin[FloatSocket]):
     """Runtime float grid socket wrapper."""
 
 
@@ -1613,7 +1613,7 @@ class VectorSocketList(VectorSocket, _ListMixin[VectorSocket]):
     """"""
 
 
-class VectorGrid(VectorSocket, GridSocketMixin[VectorSocket]):
+class VectorSocketGrid(VectorSocket, GridSocketMixin[VectorSocket]):
     """Runtime vector grid socket wrapper."""
 
 
@@ -1633,7 +1633,7 @@ class IntegerSocketList(IntegerSocket, _ListMixin[IntegerSocket]):
     """List of integer sockets."""
 
 
-class IntegerGrid(IntegerSocket, GridSocketMixin[IntegerSocket]):
+class IntegerSocketGrid(IntegerSocket, GridSocketMixin[IntegerSocket]):
     """Runtime integer grid socket wrapper."""
 
 
@@ -1645,7 +1645,7 @@ class BooleanSocketList(BooleanSocket, _ListMixin[BooleanSocket]):
     """List of boolean sockets."""
 
 
-class BooleanGrid(BooleanSocket, GridSocketMixin[BooleanSocket]):
+class BooleanSocketGrid(BooleanSocket, GridSocketMixin[BooleanSocket]):
     """Runtime boolean grid socket wrapper."""
 
 
@@ -1821,22 +1821,45 @@ class SoundSocketList(SoundSocket, _ListMixin[SoundSocket]):
     """List of sound sockets."""
 
 
-_SOCKET_LINKER_REGISTRY["NodeSocketFloat"] = FloatSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketVector"] = VectorSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketColor"] = ColorSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketInt"] = IntegerSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketBool"] = BooleanSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketRotation"] = RotationSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketMatrix"] = MatrixSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketString"] = StringSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketMenu"] = MenuSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketGeometry"] = GeometrySocket
-_SOCKET_LINKER_REGISTRY["NodeSocketObject"] = ObjectSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketMaterial"] = MaterialSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketImage"] = ImageSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketSound"] = SoundSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketFont"] = FontSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketCollection"] = CollectionSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketBundle"] = BundleSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketClosure"] = ClosureSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketShader"] = ShaderSocket
+_SOCKET_REGISTRY["NodeSocketFloat"] = FloatSocket
+_SOCKET_REGISTRY["NodeSocketVector"] = VectorSocket
+_SOCKET_REGISTRY["NodeSocketColor"] = ColorSocket
+_SOCKET_REGISTRY["NodeSocketInt"] = IntegerSocket
+_SOCKET_REGISTRY["NodeSocketBool"] = BooleanSocket
+_SOCKET_REGISTRY["NodeSocketRotation"] = RotationSocket
+_SOCKET_REGISTRY["NodeSocketMatrix"] = MatrixSocket
+_SOCKET_REGISTRY["NodeSocketString"] = StringSocket
+_SOCKET_REGISTRY["NodeSocketMenu"] = MenuSocket
+_SOCKET_REGISTRY["NodeSocketGeometry"] = GeometrySocket
+_SOCKET_REGISTRY["NodeSocketObject"] = ObjectSocket
+_SOCKET_REGISTRY["NodeSocketMaterial"] = MaterialSocket
+_SOCKET_REGISTRY["NodeSocketImage"] = ImageSocket
+_SOCKET_REGISTRY["NodeSocketSound"] = SoundSocket
+_SOCKET_REGISTRY["NodeSocketFont"] = FontSocket
+_SOCKET_REGISTRY["NodeSocketCollection"] = CollectionSocket
+_SOCKET_REGISTRY["NodeSocketBundle"] = BundleSocket
+_SOCKET_REGISTRY["NodeSocketClosure"] = ClosureSocket
+_SOCKET_REGISTRY["NodeSocketShader"] = ShaderSocket
+
+_SOCKET_LIST_REGISTRY["NodeSocketFloat"] = FloatSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketVector"] = VectorSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketColor"] = ColorSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketInt"] = IntegerSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketBool"] = BooleanSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketRotation"] = RotationSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketMatrix"] = MatrixSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketString"] = StringSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketMenu"] = MenuSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketGeometry"] = GeometrySocketList
+_SOCKET_LIST_REGISTRY["NodeSocketObject"] = ObjectSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketImage"] = ImageSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketCollection"] = CollectionSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketBundle"] = BundleSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketShader"] = ShaderSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketFont"] = FontSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketSound"] = SoundSocketList
+
+_SOCKET_GRID_REGISTRY["NodeSocketFloat"] = FloatSocketGrid
+_SOCKET_GRID_REGISTRY["NodeSocketVector"] = VectorSocketGrid
+_SOCKET_GRID_REGISTRY["NodeSocketInt"] = IntegerSocketGrid
+_SOCKET_GRID_REGISTRY["NodeSocketBool"] = BooleanSocketGrid

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast, overload
 
 from bpy.types import NodeLink, NodeSocket
 
-from ._registry import _get_socket_linker
+from ._registry import _wrap_socket
 from ._utils import SocketError, _resolve_promotion, _SocketLike
 
 _RShiftT = TypeVar("_RShiftT")
@@ -31,7 +31,7 @@ class OperatorMixin:
 
     Requires ``_default_output_socket`` on the concrete class.
     Delegates all dispatch to type-specific ``_dispatch_*`` methods on Socket
-    subclasses, looked up via ``_get_socket_linker``.
+    subclasses, looked up via ``_wrap_socket``.
     """
 
     __array_ufunc__ = None
@@ -49,7 +49,7 @@ class OperatorMixin:
             other,
             reverse,
         )
-        return _get_socket_linker(socket)._dispatch_math(other, operation, reverse)
+        return _wrap_socket(socket)._dispatch_math(other, operation, reverse)
 
     def __mul__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         return self._apply_math_operation(other, "multiply")
@@ -93,7 +93,7 @@ class OperatorMixin:
             other,
             False,
         )
-        return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
+        return _wrap_socket(socket)._dispatch_floordiv(other, reverse)
 
     def __rfloordiv__(self, other: Any) -> "FloatSocket | VectorSocket | IntegerSocket":
         socket, other, reverse = _resolve_promotion(
@@ -101,15 +101,13 @@ class OperatorMixin:
             other,
             True,
         )
-        return _get_socket_linker(socket)._dispatch_floordiv(other, reverse)
+        return _wrap_socket(socket)._dispatch_floordiv(other, reverse)
 
     def __neg__(self) -> "FloatSocket | VectorSocket | IntegerSocket":
-        return _get_socket_linker(self._default_output_socket)._dispatch_unary("negate")
+        return _wrap_socket(self._default_output_socket)._dispatch_unary("negate")
 
     def __abs__(self) -> "FloatSocket | VectorSocket | IntegerSocket":
-        return _get_socket_linker(self._default_output_socket)._dispatch_unary(
-            "absolute"
-        )
+        return _wrap_socket(self._default_output_socket)._dispatch_unary("absolute")
 
     def _apply_compare_operation(
         self, other: Any, operation: str
@@ -119,7 +117,7 @@ class OperatorMixin:
             other,
             False,
         )
-        return _get_socket_linker(socket)._dispatch_compare(other, operation)
+        return _wrap_socket(socket)._dispatch_compare(other, operation)
 
     def __lt__(self, other: Any) -> "FloatSocket | BooleanSocket":
         return self._apply_compare_operation(other, "less_than")

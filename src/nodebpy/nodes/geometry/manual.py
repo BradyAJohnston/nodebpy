@@ -13,7 +13,7 @@ from bpy.types import (
     NodeSocketString,
 )
 
-from nodebpy.builder._registry import _get_socket_linker
+from nodebpy.builder._registry import _wrap_socket
 from nodebpy.builder.socket import BaseSocket
 
 from ...builder import (
@@ -2230,7 +2230,7 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     def capture(self, items: dict[str, InputAny]) -> list[SocketLinker]:
         outputs = {name: self.node.outputs[name] for name in self._add_inputs(**items)}
 
-        return [_get_socket_linker(x) for x in outputs.values()]
+        return [_wrap_socket(x) for x in outputs.values()]
 
     @classmethod
     def float(
