@@ -7,7 +7,6 @@ import bpy
 from ...builder import BaseNode, SocketAccessor
 
 
-
 class Group(BaseNode):
     """
     Group node

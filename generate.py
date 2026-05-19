@@ -1126,6 +1126,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     enum_methods = node_info.generate_enum_class_methods(config)
 
     # Add node type annotation — always use specific type so property access is typed
+    # TODO: remove the ty: ignore as its only for unreleased bpy version and the new nodes
     node_type_annotation = (
         f"bpy.types.{node_info.bl_idname}  # ty: ignore[unresolved-attribute]"
     )
