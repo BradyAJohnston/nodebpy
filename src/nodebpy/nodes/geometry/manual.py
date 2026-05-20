@@ -1,5 +1,14 @@
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generic,
+    Iterable,
+    Literal,
+    TypeVar,
+    cast,
+    get_args,
+)
 
 import bpy
 import bpy.types
@@ -29,13 +38,13 @@ from ...builder import (
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
-    SoundSocket,
     MaterialSocket,
     MatrixSocket,
     MenuSocket,
     ObjectSocket,
     RotationSocket,
     SocketAccessor,
+    SoundSocket,
     StringSocket,
     TreeBuilder,
     VectorSocket,
@@ -54,7 +63,6 @@ from ...types import (
     InputFloat,
     InputFont,
     InputGeometry,
-    InputSound,
     InputGrid,
     InputImage,
     InputInteger,
@@ -64,6 +72,7 @@ from ...types import (
     InputMenu,
     InputObject,
     InputRotation,
+    InputSound,
     InputString,
     InputVector,
     _AccumulateFieldDataTypes,
@@ -118,6 +127,7 @@ __all__ = (
     "MeshBoolean",
     "CaptureAttribute",
     "FieldToGrid",
+    "FieldToList",
     "JoinGeometry",
     "SDFGridBoolean",
     "Bake",
@@ -2161,6 +2171,66 @@ class CaptureAttribute(BaseNode, DynamicInputsMixin):
         value: _AttributeDomains,
     ):
         self.node.domain = value
+
+
+class FieldToList(DynamicInputsMixin, BaseNode):
+    """
+    Create a list of values
+
+    Parameters
+    ----------
+    count : InputInteger
+        Count
+
+    Inputs
+    ------
+    i.count : IntegerSocket
+        Count
+    """
+
+    _bl_idname = "GeometryNodeFieldToList"
+    node: bpy.types.GeometryNodeFieldToList
+    _socket_data_types = list(get_args(SOCKET_TYPES))
+
+    class _Inputs(SocketAccessor):
+        count: IntegerSocket
+        """Count"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, count: InputInteger = 1, fields: dict[str, InputAny] = {}):
+        super().__init__()
+        key_args = {"Count": count}
+
+        for name, field in fields.items():
+            assert hasattr(field, "_default_output_socket")
+            self._link(field._default_output_socket, self.node.inputs[-1])  # ty: ignore[invalid-argument-type]
+            self.node.list_items[self.node.inputs[-2].name].name = name
+
+        self._establish_links(**key_args)
+
+    def _add_socket(
+        self, name: str, type: SOCKET_TYPES, default_value: Any = None
+    ) -> NodeSocket:  # ty: ignore
+        pass
+
+    def capture(self, fields: dict[str, InputAny]) -> list[SocketLinker]:
+        outputs = {}
+        for name, field in fields.items():
+            assert hasattr(field, "_default_output_socket")
+            self._link(field._default_output_socket, self.node.inputs[-1])  # ty: ignore[invalid-argument-type]
+            self.node.list_items[self.node.inputs[-2].name].name = name
+            outputs[name] = self.node.outputs[name]
+
+        return [_wrap_socket(x) for x in outputs.values()]
 
 
 class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):

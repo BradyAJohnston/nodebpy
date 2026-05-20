@@ -16,6 +16,7 @@ from nodebpy.builder import (
     StringSocket,
     VectorSocket,
     VectorSocketGrid,
+    VectorSocketList,
 )
 from nodebpy.nodes.geometry import SplitString
 
@@ -1544,3 +1545,20 @@ def test_string_split():
 
         count = string.o.string.split(" ").list_length()
         assert count.node.bl_idname == g.ListLength._bl_idname
+
+        ftl = g.FieldToList(
+            10, {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
+        )
+        assert len(ftl.node.list_items) == 3
+
+        assert ftl.i.pos
+        assert ftl.i.idx
+        assert ftl.i.num
+
+        assert isinstance(ftl.i.pos, VectorSocket)
+        assert isinstance(ftl.o.pos, VectorSocketList)
+
+        pos = ftl.o.pos
+        norm = pos.normalize()
+        assert isinstance(norm, VectorSocketList)
+        assert norm.node.bl_idname == g.VectorMath._bl_idname

@@ -1261,45 +1261,6 @@ class EulerToRotation(BaseNode):
         self._establish_links(**key_args)
 
 
-class FieldToList(BaseNode):
-    """
-    Create a list of values
-
-    Parameters
-    ----------
-    count : InputInteger
-        Count
-
-    Inputs
-    ------
-    i.count : IntegerSocket
-        Count
-    """
-
-    _bl_idname = "GeometryNodeFieldToList"
-    node: bpy.types.GeometryNodeFieldToList
-
-    class _Inputs(SocketAccessor):
-        count: IntegerSocket
-        """Count"""
-
-    class _Outputs(SocketAccessor):
-        pass
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(self, count: InputInteger = 1):
-        super().__init__()
-        key_args = {"Count": count}
-
-        self._establish_links(**key_args)
-
-
 class FindInString(BaseNode):
     """
     Find the number of times a given string occurs in another string and the position of the first match

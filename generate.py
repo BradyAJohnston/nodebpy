@@ -93,6 +93,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Switch",
         "CaptureAttribute",
         "FieldToGrid",
+        "FieldToList",
         "JoinGeometry",
         "SDFGridBoolean",
         "Bake",
