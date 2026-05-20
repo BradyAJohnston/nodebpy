@@ -15,6 +15,7 @@ title: Changelog
         - `rotation(transform_space="ORIGINAL")` — get the rotation, returns `RotationSocket`
         - `scale(transform_space="ORIGINAL")` — get the scale, returns `VectorSocket`
         - `geometry(as_instance=False, transform_space="ORIGINAL")` — get the geometry, returns `GeometrySocket`
+- Added `is_selected()` method to `MenuSwitch` - returns the `BooleanSocket` for the named menu item that is true when the item is selected
 
 ### Fixed
 -

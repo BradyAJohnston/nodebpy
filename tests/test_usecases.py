@@ -858,7 +858,11 @@ def test_ClipFieldToBox(snapshot):
 def test_mask_grid(snapshot):
     with g.tree() as tree:
         _build_mask_grid(tree)
-    assert snapshot == tree._repr_markdown_()
+        assert snapshot == tree._repr_markdown_()
+
+    with g.tree() as points_tree:
+        _build_microscopy_grid_to_points(points_tree)
+        assert snapshot == points_tree._repr_markdown_()
 
 
 def _build_mask_grid(tree: TreeBuilder):
@@ -937,3 +941,17 @@ def _build_mask_grid(tree: TreeBuilder):
         )
         >> masked_grid
     )
+
+
+def _build_microscopy_grid_to_points(tree):
+    tree.tree.show_modifier_manage_panel = True
+
+    grid = tree.inputs.float("Grid", hide_value=True)
+    geometry = tree.outputs.geometry("Geometry")
+
+    points = g.GridToPoints.float(grid)
+    delete = g.DeleteGeometry(
+        geometry=points.o.points,
+        selection=(points.o.value < 0.0001) | points.o.is_tile,
+    )
+    delete.o.geometry >> geometry
