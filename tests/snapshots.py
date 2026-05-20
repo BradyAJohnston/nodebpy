@@ -42,7 +42,7 @@ def _serialize_tree_builder(data: TreeBuilder) -> str:
     )
 
     # Export to compressed string
-    compressed_data = export_intermediate.export_to_str(compress=True, json_indent=4)
+    compressed_data = export_intermediate.export_to_str(compress=False, json_indent=4)
 
     return compressed_data
 
