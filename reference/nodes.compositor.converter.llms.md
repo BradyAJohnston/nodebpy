@@ -8,7 +8,6 @@
 |----|----|
 | [AlphaConvert](#nodebpy.nodes.compositor.converter.AlphaConvert) | Convert to and from premultiplied (associated) alpha |
 | [CombineColor](#nodebpy.nodes.compositor.converter.CombineColor) | Combine an image from its composite color channels |
-| [ConvertColorspace](#nodebpy.nodes.compositor.converter.ConvertColorspace) | Convert between color spaces |
 | [ConvertToDisplay](#nodebpy.nodes.compositor.converter.ConvertToDisplay) | Convert from scene linear to display color space, with a view transform and look for tone mapping |
 | [IDMask](#nodebpy.nodes.compositor.converter.IDMask) | Create a matte from an object or material index pass |
 | [IndexSwitch](#nodebpy.nodes.compositor.converter.IndexSwitch) | Choose between an arbitrary number of values with an index |
@@ -182,51 +181,6 @@ Create Combine Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) 
 | `i.green` | `FloatSocket` | Green       |
 | `i.blue`  | `FloatSocket` | Blue        |
 | `i.alpha` | `FloatSocket` | Alpha       |
-
-**Outputs**
-
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.image` | `ColorSocket` | Image       |
-
-### ConvertColorspace
-
-``` python
-ConvertColorspace(
-    image=None,
-    *,
-    from_color_space='scene_linear',
-    to_color_space='scene_linear',
-)
-```
-
-Convert between color spaces
-
-#### Parameters
-
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`from_color_space`](#nodebpy.nodes.compositor.converter.ConvertColorspace.from_color_space) |  |
-| [`i`](#nodebpy.nodes.compositor.converter.ConvertColorspace.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.ConvertColorspace.name) |  |
-| [`node`](#nodebpy.nodes.compositor.converter.ConvertColorspace.node) |  |
-| [`o`](#nodebpy.nodes.compositor.converter.ConvertColorspace.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.ConvertColorspace.outputs) |  |
-| [`to_color_space`](#nodebpy.nodes.compositor.converter.ConvertColorspace.to_color_space) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.ConvertColorspace.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.ConvertColorspace.type) |  |
-
-**Inputs**
-
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.image` | `ColorSocket` | Image       |
 
 **Outputs**
 

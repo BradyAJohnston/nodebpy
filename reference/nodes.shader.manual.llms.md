@@ -95,17 +95,18 @@ Node builder for the Menu Switch node (Shader tree)
 
 #### Methods
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [boolean](#nodebpy.nodes.shader.manual.MenuSwitch.boolean) |             |
-| [bundle](#nodebpy.nodes.shader.manual.MenuSwitch.bundle)   |             |
-| [closure](#nodebpy.nodes.shader.manual.MenuSwitch.closure) |             |
-| [color](#nodebpy.nodes.shader.manual.MenuSwitch.color)     |             |
-| [float](#nodebpy.nodes.shader.manual.MenuSwitch.float)     |             |
-| [integer](#nodebpy.nodes.shader.manual.MenuSwitch.integer) |             |
-| [menu](#nodebpy.nodes.shader.manual.MenuSwitch.menu)       |             |
-| [shader](#nodebpy.nodes.shader.manual.MenuSwitch.shader)   |             |
-| [vector](#nodebpy.nodes.shader.manual.MenuSwitch.vector)   |             |
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.shader.manual.MenuSwitch.boolean) |  |
+| [bundle](#nodebpy.nodes.shader.manual.MenuSwitch.bundle) |  |
+| [closure](#nodebpy.nodes.shader.manual.MenuSwitch.closure) |  |
+| [color](#nodebpy.nodes.shader.manual.MenuSwitch.color) |  |
+| [float](#nodebpy.nodes.shader.manual.MenuSwitch.float) |  |
+| [integer](#nodebpy.nodes.shader.manual.MenuSwitch.integer) |  |
+| [is_selected](#nodebpy.nodes.shader.manual.MenuSwitch.is_selected) | Gets the boolean output socket that is True when the named menu item is selected. |
+| [menu](#nodebpy.nodes.shader.manual.MenuSwitch.menu) |  |
+| [shader](#nodebpy.nodes.shader.manual.MenuSwitch.shader) |  |
+| [vector](#nodebpy.nodes.shader.manual.MenuSwitch.vector) |  |
 
 ##### boolean
 
@@ -142,6 +143,28 @@ float(menu=None, items={})
 ``` python
 integer(menu=None, items={})
 ```
+
+##### is_selected
+
+``` python
+is_selected(name)
+```
+
+Gets the boolean output socket that is True when the named menu item is selected.
+
+Cannot be used with the “Output” name as this refers to the output socket itself.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| name | str | The name of the menu item to get the selected socket for. | *required* |
+
+###### Returns
+
+| Name | Type | Description |
+|----|----|----|
+|  | BooleanSocket | The boolean output socket that is True when the named menu item is selected. |
 
 ##### menu
 

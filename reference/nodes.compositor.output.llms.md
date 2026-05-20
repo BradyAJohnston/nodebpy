@@ -12,12 +12,7 @@
 ### FileOutput
 
 ``` python
-FileOutput(
-    active_item_index=0,
-    directory='',
-    file_name='',
-    save_as_render=False,
-)
+FileOutput(directory='', file_name='', save_as_render=False)
 ```
 
 Write image file to disk
@@ -26,7 +21,6 @@ Write image file to disk
 
 | Name | Description |
 |----|----|
-| [`active_item_index`](#nodebpy.nodes.compositor.output.FileOutput.active_item_index) |  |
 | [`directory`](#nodebpy.nodes.compositor.output.FileOutput.directory) |  |
 | [`file_name`](#nodebpy.nodes.compositor.output.FileOutput.file_name) |  |
 | [`i`](#nodebpy.nodes.compositor.output.FileOutput.i) |  |

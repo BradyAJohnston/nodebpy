@@ -110,7 +110,7 @@ Most of the code for classes are generated automatically with the `generate.py` 
 Run the build & format script as such:
 
 ``` bash
-uv run generate.py && uvx ruff format && uvx ruff check --fix
+uv run generate.py && uvx ruff format && uvx ruff check --fix && uvx ty check --fix src
 ```
 
 ## Other Projects

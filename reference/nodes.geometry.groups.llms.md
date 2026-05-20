@@ -2,13 +2,39 @@
 
 `groups`
 
+## Attributes
+
+| Name                                                      | Description |
+|-----------------------------------------------------------|-------------|
+| [`GROUP_NAME`](#nodebpy.nodes.geometry.groups.GROUP_NAME) |             |
+
 ## Classes
 
 | Name | Description |
 |----|----|
+| [ClipFieldToBox](#nodebpy.nodes.geometry.groups.ClipFieldToBox) |  |
 | [OffsetVector](#nodebpy.nodes.geometry.groups.OffsetVector) | Evaluate a given vector field at an offset to the current `Index`. |
 | [OtherVertex](#nodebpy.nodes.geometry.groups.OtherVertex) | Given a vertex and an edge number from that vertex, returns the other |
 | [PrincipalComponents](#nodebpy.nodes.geometry.groups.PrincipalComponents) | Compute PCA on a given vector field. |
+
+### ClipFieldToBox
+
+``` python
+ClipFieldToBox(box_object=None, invert=False)
+```
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`name`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.name) |  |
+| [`node`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.node) |  |
+| [`node_tree`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.node_tree) |  |
+| [`o`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
+| [`outputs`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.type) |  |
 
 ### OffsetVector
 

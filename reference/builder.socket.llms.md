@@ -80,11 +80,13 @@ Runtime boolean socket wrapper.
 | [`default_value`](#nodebpy.builder.socket.BooleanSocket.default_value) |  |
 | [`edge`](#nodebpy.builder.socket.BooleanSocket.edge) |  |
 | [`face`](#nodebpy.builder.socket.BooleanSocket.face) |  |
+| [`i`](#nodebpy.builder.socket.BooleanSocket.i) |  |
 | [`instance`](#nodebpy.builder.socket.BooleanSocket.instance) |  |
 | [`layer`](#nodebpy.builder.socket.BooleanSocket.layer) |  |
 | [`links`](#nodebpy.builder.socket.BooleanSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.BooleanSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.BooleanSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.BooleanSocket.o) |  |
 | [`point`](#nodebpy.builder.socket.BooleanSocket.point) |  |
 | [`socket`](#nodebpy.builder.socket.BooleanSocket.socket) |  |
 | [`spline`](#nodebpy.builder.socket.BooleanSocket.spline) |  |
@@ -105,9 +107,11 @@ Runtime bundle socket wrapper.
 | Name | Description |
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.BundleSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`i`](#nodebpy.builder.socket.BundleSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.BundleSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.BundleSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.BundleSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.BundleSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.BundleSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.BundleSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.BundleSocket.type) |  |
@@ -125,9 +129,11 @@ Runtime closure socket wrapper.
 | Name | Description |
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.ClosureSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`i`](#nodebpy.builder.socket.ClosureSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.ClosureSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.ClosureSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.ClosureSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.ClosureSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.ClosureSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.ClosureSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.ClosureSocket.type) |  |
@@ -146,12 +152,46 @@ Runtime collection socket wrapper.
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.CollectionSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
 | [`default_value`](#nodebpy.builder.socket.CollectionSocket.default_value) |  |
+| [`i`](#nodebpy.builder.socket.CollectionSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.CollectionSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.CollectionSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.CollectionSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.CollectionSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.CollectionSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.CollectionSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.CollectionSocket.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [instances](#nodebpy.builder.socket.CollectionSocket.instances) | Import objects from the collection as instances. |
+
+##### instances
+
+``` python
+instances(
+    transform_space='ORIGINAL',
+    separate_children=False,
+    reset_children=False,
+)
+```
+
+Import objects from the collection as instances.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| transform_space | Literal\['ORIGINAL', 'RELATIVE'\] | The transform space to use for the instances. | `'ORIGINAL'` |
+| separate_children | bool | Whether to separate objects as their own instances. | `False` |
+| reset_children | bool | Whether to reset children of the collection to world origin. | `False` |
+
+###### Returns
+
+| Name | Type | Description |
+|----|----|----|
+|  | GeometrySocket | The output ‘Instances’ `GeometrySocket`. Will be a single instance or multiple instances if `separate_children` is `True`. |
 
 ### ColorSocket
 
@@ -170,9 +210,11 @@ Runtime color socket wrapper.
 | [`builder_node`](#nodebpy.builder.socket.ColorSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
 | [`default_value`](#nodebpy.builder.socket.ColorSocket.default_value) |  |
 | [`g`](#nodebpy.builder.socket.ColorSocket.g) |  |
+| [`i`](#nodebpy.builder.socket.ColorSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.ColorSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.ColorSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.ColorSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.ColorSocket.o) |  |
 | [`r`](#nodebpy.builder.socket.ColorSocket.r) |  |
 | [`socket`](#nodebpy.builder.socket.ColorSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.ColorSocket.tree) |  |
@@ -210,12 +252,14 @@ Runtime float socket wrapper.
 | [`default_value`](#nodebpy.builder.socket.FloatSocket.default_value) |  |
 | [`edge`](#nodebpy.builder.socket.FloatSocket.edge) |  |
 | [`face`](#nodebpy.builder.socket.FloatSocket.face) |  |
+| [`i`](#nodebpy.builder.socket.FloatSocket.i) |  |
 | [`instance`](#nodebpy.builder.socket.FloatSocket.instance) |  |
 | [`layer`](#nodebpy.builder.socket.FloatSocket.layer) |  |
 | [`links`](#nodebpy.builder.socket.FloatSocket.links) |  |
 | [`mix`](#nodebpy.builder.socket.FloatSocket.mix) | Create a `Mix` node using this socket as the factor. |
 | [`name`](#nodebpy.builder.socket.FloatSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.FloatSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.FloatSocket.o) |  |
 | [`point`](#nodebpy.builder.socket.FloatSocket.point) |  |
 | [`socket`](#nodebpy.builder.socket.FloatSocket.socket) |  |
 | [`spline`](#nodebpy.builder.socket.FloatSocket.spline) |  |
@@ -384,9 +428,11 @@ Runtime font socket wrapper.
 | Name | Description |
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.FontSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`i`](#nodebpy.builder.socket.FontSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.FontSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.FontSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.FontSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.FontSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.FontSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.FontSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.FontSocket.type) |  |
@@ -404,12 +450,26 @@ Runtime geometry socket wrapper.
 | Name | Description |
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.GeometrySocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`i`](#nodebpy.builder.socket.GeometrySocket.i) |  |
 | [`links`](#nodebpy.builder.socket.GeometrySocket.links) |  |
 | [`name`](#nodebpy.builder.socket.GeometrySocket.name) |  |
 | [`node`](#nodebpy.builder.socket.GeometrySocket.node) |  |
+| [`o`](#nodebpy.builder.socket.GeometrySocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.GeometrySocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.GeometrySocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.GeometrySocket.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [realize_instances](#nodebpy.builder.socket.GeometrySocket.realize_instances) |  |
+
+##### realize_instances
+
+``` python
+realize_instances(selection=True, realize_all=False, depth=0)
+```
 
 ### ImageSocket
 
@@ -425,9 +485,11 @@ Runtime image socket wrapper.
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.ImageSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
 | [`default_value`](#nodebpy.builder.socket.ImageSocket.default_value) |  |
+| [`i`](#nodebpy.builder.socket.ImageSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.ImageSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.ImageSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.ImageSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.ImageSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.ImageSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.ImageSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.ImageSocket.type) |  |
@@ -449,11 +511,13 @@ Runtime integer socket wrapper.
 | [`default_value`](#nodebpy.builder.socket.IntegerSocket.default_value) |  |
 | [`edge`](#nodebpy.builder.socket.IntegerSocket.edge) |  |
 | [`face`](#nodebpy.builder.socket.IntegerSocket.face) |  |
+| [`i`](#nodebpy.builder.socket.IntegerSocket.i) |  |
 | [`instance`](#nodebpy.builder.socket.IntegerSocket.instance) |  |
 | [`layer`](#nodebpy.builder.socket.IntegerSocket.layer) |  |
 | [`links`](#nodebpy.builder.socket.IntegerSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.IntegerSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.IntegerSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.IntegerSocket.o) |  |
 | [`point`](#nodebpy.builder.socket.IntegerSocket.point) |  |
 | [`socket`](#nodebpy.builder.socket.IntegerSocket.socket) |  |
 | [`spline`](#nodebpy.builder.socket.IntegerSocket.spline) |  |
@@ -522,9 +586,11 @@ Runtime material socket wrapper.
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.MaterialSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
 | [`default_value`](#nodebpy.builder.socket.MaterialSocket.default_value) |  |
+| [`i`](#nodebpy.builder.socket.MaterialSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.MaterialSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.MaterialSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.MaterialSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.MaterialSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.MaterialSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.MaterialSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.MaterialSocket.type) |  |
@@ -545,11 +611,13 @@ Runtime matrix socket wrapper.
 | [`corner`](#nodebpy.builder.socket.MatrixSocket.corner) |  |
 | [`edge`](#nodebpy.builder.socket.MatrixSocket.edge) |  |
 | [`face`](#nodebpy.builder.socket.MatrixSocket.face) |  |
+| [`i`](#nodebpy.builder.socket.MatrixSocket.i) |  |
 | [`instance`](#nodebpy.builder.socket.MatrixSocket.instance) |  |
 | [`layer`](#nodebpy.builder.socket.MatrixSocket.layer) |  |
 | [`links`](#nodebpy.builder.socket.MatrixSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.MatrixSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.MatrixSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.MatrixSocket.o) |  |
 | [`point`](#nodebpy.builder.socket.MatrixSocket.point) |  |
 | [`rotation`](#nodebpy.builder.socket.MatrixSocket.rotation) |  |
 | [`scale`](#nodebpy.builder.socket.MatrixSocket.scale) |  |
@@ -625,9 +693,11 @@ Runtime menu socket wrapper.
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.MenuSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
 | [`default_value`](#nodebpy.builder.socket.MenuSocket.default_value) |  |
+| [`i`](#nodebpy.builder.socket.MenuSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.MenuSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.MenuSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.MenuSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.MenuSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.MenuSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.MenuSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.MenuSocket.type) |  |
@@ -646,12 +716,127 @@ Runtime object socket wrapper.
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.ObjectSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
 | [`default_value`](#nodebpy.builder.socket.ObjectSocket.default_value) |  |
+| [`i`](#nodebpy.builder.socket.ObjectSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.ObjectSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.ObjectSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.ObjectSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.ObjectSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.ObjectSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.ObjectSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.ObjectSocket.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [geometry](#nodebpy.builder.socket.ObjectSocket.geometry) | The object’s geometry, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
+| [location](#nodebpy.builder.socket.ObjectSocket.location) | The object’s location, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
+| [rotation](#nodebpy.builder.socket.ObjectSocket.rotation) | The object’s rotation, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
+| [scale](#nodebpy.builder.socket.ObjectSocket.scale) | The object’s scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
+| [transform](#nodebpy.builder.socket.ObjectSocket.transform) | The Object’s transform matrix, optionally in relative space. |
+
+##### geometry
+
+``` python
+geometry(transform_space='ORIGINAL', as_instance=False)
+```
+
+The object’s geometry, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| transform_space | Literal\['ORIGINAL', 'RELATIVE'\] | The space in which to return the geometry. | `'ORIGINAL'` |
+| as_instance | InputBoolean | Whether to return the geometry as an instance. | `False` |
+
+###### Returns
+
+| Name | Type           | Description                             |
+|------|----------------|-----------------------------------------|
+|      | GeometrySocket | The output ‘Geometry’ `GeometrySocket`. |
+
+##### location
+
+``` python
+location(transform_space='ORIGINAL')
+```
+
+The object’s location, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| transform_space | Literal\['ORIGINAL', 'RELATIVE'\] | The space in which to return the location. | `'ORIGINAL'` |
+
+###### Returns
+
+| Name | Type         | Description                           |
+|------|--------------|---------------------------------------|
+|      | VectorSocket | The output ‘Location’ `VectorSocket`. |
+
+##### rotation
+
+``` python
+rotation(transform_space='ORIGINAL')
+```
+
+The object’s rotation, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| transform_space | Literal\['ORIGINAL', 'RELATIVE'\] | The space in which to return the rotation. | `'ORIGINAL'` |
+
+###### Returns
+
+| Name | Type           | Description                             |
+|------|----------------|-----------------------------------------|
+|      | RotationSocket | The output ‘Rotation’ `RotationSocket`. |
+
+##### scale
+
+``` python
+scale(transform_space='ORIGINAL')
+```
+
+The object’s scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| transform_space | Literal\['ORIGINAL', 'RELATIVE'\] | The space in which to return the scale. | `'ORIGINAL'` |
+
+###### Returns
+
+| Name | Type         | Description                        |
+|------|--------------|------------------------------------|
+|      | VectorSocket | The output ‘Scale’ `VectorSocket`. |
+
+##### transform
+
+``` python
+transform(transform_space='ORIGINAL')
+```
+
+The Object’s transform matrix, optionally in relative space.
+
+Adds [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo) to the node tree and returns.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| transform_space | Literal\['ORIGINAL', 'RELATIVE'\] | The space in which to return the transform matrix. | `'ORIGINAL'` |
+
+###### Returns
+
+| Name | Type         | Description                            |
+|------|--------------|----------------------------------------|
+|      | MatrixSocket | The output ‘Transform’ `MatrixSocket`. |
 
 ### QuaternionComponents
 
@@ -687,11 +872,13 @@ Runtime rotation socket wrapper.
 | [`default_value`](#nodebpy.builder.socket.RotationSocket.default_value) |  |
 | [`edge`](#nodebpy.builder.socket.RotationSocket.edge) |  |
 | [`face`](#nodebpy.builder.socket.RotationSocket.face) |  |
+| [`i`](#nodebpy.builder.socket.RotationSocket.i) |  |
 | [`instance`](#nodebpy.builder.socket.RotationSocket.instance) |  |
 | [`layer`](#nodebpy.builder.socket.RotationSocket.layer) |  |
 | [`links`](#nodebpy.builder.socket.RotationSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.RotationSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.RotationSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.RotationSocket.o) |  |
 | [`point`](#nodebpy.builder.socket.RotationSocket.point) |  |
 | [`socket`](#nodebpy.builder.socket.RotationSocket.socket) |  |
 | [`spline`](#nodebpy.builder.socket.RotationSocket.spline) |  |
@@ -777,9 +964,11 @@ Runtime shader socket wrapper.
 | Name | Description |
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.ShaderSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`i`](#nodebpy.builder.socket.ShaderSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.ShaderSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.ShaderSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.ShaderSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.ShaderSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.ShaderSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.ShaderSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.ShaderSocket.type) |  |
@@ -803,9 +992,11 @@ tree : TreeBuilder The tree this socket belongs to. socket : NodeSocket The unde
 | Name | Description |
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.Socket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`i`](#nodebpy.builder.socket.Socket.i) |  |
 | [`links`](#nodebpy.builder.socket.Socket.links) |  |
 | [`name`](#nodebpy.builder.socket.Socket.name) |  |
 | [`node`](#nodebpy.builder.socket.Socket.node) |  |
+| [`o`](#nodebpy.builder.socket.Socket.o) |  |
 | [`socket`](#nodebpy.builder.socket.Socket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.Socket.tree) |  |
 | [`type`](#nodebpy.builder.socket.Socket.type) |  |
@@ -824,9 +1015,11 @@ Runtime string socket wrapper.
 |----|----|
 | [`builder_node`](#nodebpy.builder.socket.StringSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
 | [`default_value`](#nodebpy.builder.socket.StringSocket.default_value) |  |
+| [`i`](#nodebpy.builder.socket.StringSocket.i) |  |
 | [`links`](#nodebpy.builder.socket.StringSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.StringSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.StringSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.StringSocket.o) |  |
 | [`socket`](#nodebpy.builder.socket.StringSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.StringSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.StringSocket.type) |  |
@@ -934,11 +1127,13 @@ Runtime vector socket wrapper.
 | [`default_value`](#nodebpy.builder.socket.VectorSocket.default_value) |  |
 | [`edge`](#nodebpy.builder.socket.VectorSocket.edge) |  |
 | [`face`](#nodebpy.builder.socket.VectorSocket.face) |  |
+| [`i`](#nodebpy.builder.socket.VectorSocket.i) |  |
 | [`instance`](#nodebpy.builder.socket.VectorSocket.instance) |  |
 | [`layer`](#nodebpy.builder.socket.VectorSocket.layer) |  |
 | [`links`](#nodebpy.builder.socket.VectorSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.VectorSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.VectorSocket.node) |  |
+| [`o`](#nodebpy.builder.socket.VectorSocket.o) |  |
 | [`point`](#nodebpy.builder.socket.VectorSocket.point) |  |
 | [`socket`](#nodebpy.builder.socket.VectorSocket.socket) |  |
 | [`spline`](#nodebpy.builder.socket.VectorSocket.spline) |  |

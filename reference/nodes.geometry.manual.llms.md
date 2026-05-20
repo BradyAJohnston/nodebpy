@@ -936,6 +936,7 @@ Node builder for the Menu Switch node
 | [geometry](#nodebpy.nodes.geometry.manual.MenuSwitch.geometry) |  |
 | [image](#nodebpy.nodes.geometry.manual.MenuSwitch.image) |  |
 | [integer](#nodebpy.nodes.geometry.manual.MenuSwitch.integer) |  |
+| [is_selected](#nodebpy.nodes.geometry.manual.MenuSwitch.is_selected) | Gets the boolean output socket that is True when the named menu item is selected. |
 | [material](#nodebpy.nodes.geometry.manual.MenuSwitch.material) |  |
 | [matrix](#nodebpy.nodes.geometry.manual.MenuSwitch.matrix) |  |
 | [menu](#nodebpy.nodes.geometry.manual.MenuSwitch.menu) |  |
@@ -997,6 +998,28 @@ image(menu=None, items={})
 ``` python
 integer(menu=None, items={})
 ```
+
+##### is_selected
+
+``` python
+is_selected(name)
+```
+
+Gets the boolean output socket that is True when the named menu item is selected.
+
+Cannot be used with the “Output” name as this refers to the output socket itself.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| name | str | The name of the menu item to get the selected socket for. | *required* |
+
+###### Returns
+
+| Name | Type | Description |
+|----|----|----|
+|  | BooleanSocket | The boolean output socket that is True when the named menu item is selected. |
 
 ##### material
 

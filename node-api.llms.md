@@ -164,9 +164,9 @@ graph LR
     N12 -->|"X->Column 3 Row 1"| N13
     N12 -->|"Y->Column 3 Row 2"| N13
     N12 -->|"Z->Column 3 Row 3"| N13
+    N2 -->|"Vector->Vector"| N4
     N2 -->|"Vector->Vector"| N6
     N2 -->|"Vector->Vector"| N5
-    N2 -->|"Vector->Vector"| N4
 ```
 
 #### Vector Outputs
@@ -343,7 +343,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x13568ef90>
+>     <nodebpy.builder.socket.BooleanSocket at 0x7f8a5212a7b0>
 >
 > ### Comparing Python Objects
 >

@@ -37,6 +37,7 @@ Node builder for the Menu Switch node (Compositor tree)
 | [color](#nodebpy.nodes.compositor.manual.MenuSwitch.color) |  |
 | [float](#nodebpy.nodes.compositor.manual.MenuSwitch.float) |  |
 | [integer](#nodebpy.nodes.compositor.manual.MenuSwitch.integer) |  |
+| [is_selected](#nodebpy.nodes.compositor.manual.MenuSwitch.is_selected) | Gets the boolean output socket that is True when the named menu item is selected. |
 | [menu](#nodebpy.nodes.compositor.manual.MenuSwitch.menu) |  |
 | [string](#nodebpy.nodes.compositor.manual.MenuSwitch.string) |  |
 | [vector](#nodebpy.nodes.compositor.manual.MenuSwitch.vector) |  |
@@ -64,6 +65,28 @@ float(menu=None, items={})
 ``` python
 integer(menu=None, items={})
 ```
+
+##### is_selected
+
+``` python
+is_selected(name)
+```
+
+Gets the boolean output socket that is True when the named menu item is selected.
+
+Cannot be used with the “Output” name as this refers to the output socket itself.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| name | str | The name of the menu item to get the selected socket for. | *required* |
+
+###### Returns
+
+| Name | Type | Description |
+|----|----|----|
+|  | BooleanSocket | The boolean output socket that is True when the named menu item is selected. |
 
 ##### menu
 
