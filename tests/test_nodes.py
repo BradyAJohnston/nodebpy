@@ -10,11 +10,14 @@ from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
     FloatSocket,
+    FloatSocketGrid,
     IntegerSocket,
     MatrixSocket,
     StringSocket,
     VectorSocket,
+    VectorSocketGrid,
 )
+from nodebpy.nodes.geometry import SplitString
 
 
 def test_capture_attribute():
@@ -173,11 +176,13 @@ def test_field_to_grid():
             {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
         )
         assert len(ftg.o) == 4
-        assert isinstance(pos, VectorSocket)
+        assert isinstance(pos, VectorSocketGrid)
         assert pos.name == "position"
-        assert isinstance(vec, VectorSocket)
+        assert isinstance(vec, VectorSocketGrid)
         assert vec.name == "vec"
         assert isinstance(nt.o.fac, FloatSocket)
+        assert fac.name == "fac"
+        assert isinstance(fac, FloatSocketGrid)
         assert fac.name == "fac"
 
 
@@ -1529,3 +1534,13 @@ def test_store_named_attribute():
         assert cr.hue_interpolation == "CCW"
         assert cr.mode == "HSL"
         assert cr.color_interpolation == "EASE"
+
+
+def test_string_split():
+    with g.tree():
+        string = g.String("Example String")
+        split = g.SplitString(string.o.string, separator=" ")
+        assert split.node.bl_idname == SplitString._bl_idname
+
+        count = string.o.string.split(" ").list_length()
+        assert count.node.bl_idname == g.ListLength._bl_idname

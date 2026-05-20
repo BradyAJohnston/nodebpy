@@ -36,6 +36,7 @@ from bpy.types import (
     NodeSocketObject,
     NodeSocketRotation,
     NodeSocketShader,
+    NodeSocketSound,
     NodeSocketString,
     NodeSocketVector,
     NodeTree,
@@ -545,14 +546,6 @@ class _VectorMixin(BaseSocket):
 
         return TransformPoint(self.socket, matrix).o.vector
 
-    @property
-    def default_value(self) -> list[float]:
-        return list(self.socket.default_value)
-
-    @default_value.setter
-    def default_value(self, value: list[float] | tuple[float, float, float]) -> None:
-        self.socket.default_value = value
-
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
     @overload
@@ -762,14 +755,6 @@ class _ColorMixin(BaseSocket):
                 raise TypeError("Shader CombineColor node doesn't have an alpha input")
             return node.i.alpha
 
-    @property
-    def default_value(self) -> list[float]:
-        return list(self.socket.default_value)
-
-    @default_value.setter
-    def default_value(self, value: list[float]) -> None:
-        self.socket.default_value = value
-
     _COMBINE_COLOR_IDNAMES = (
         "FunctionNodeCombineColor",
         "ShaderNodeCombineColor",
@@ -927,14 +912,6 @@ class _BooleanMixin(BaseSocket):
 
     socket: NodeSocketBool
 
-    @property
-    def default_value(self) -> bool:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: bool) -> None:
-        self.socket.default_value = value
-
     def __or__(self, other: Any) -> "BooleanSocket":
         self._assert_output("|")
         from ..nodes.geometry.converter import BooleanMath
@@ -986,14 +963,6 @@ class _RotationMixin(BaseSocket):
     """Rotation-specific methods."""
 
     socket: NodeSocketRotation
-
-    @property
-    def default_value(self) -> Euler:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: Euler) -> None:
-        self.socket.default_value = value
 
     def invert(self) -> "RotationSocket":
         "Invert the rotation of the socket."
@@ -1101,14 +1070,6 @@ class _FloatMixin(BaseSocket):
     """Float-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketFloat
-
-    @property
-    def default_value(self) -> float:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: float) -> None:
-        self.socket.default_value = value
 
     @property
     def _math(self) -> "type[Math]":
@@ -1263,14 +1224,6 @@ class _IntegerMixin(BaseSocket):
     _tree: TreeBuilder
 
     @property
-    def default_value(self) -> int:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: int) -> None:
-        self.socket.default_value = value
-
-    @property
     def point(self) -> "_MinMaxDomain[IntegerSocket]":
         return _MinMaxDomain(self.socket, "integer", "point")
 
@@ -1407,18 +1360,15 @@ class _StringMixin(BaseSocket):
     socket: NodeSocketString
 
     @property
-    def default_value(self) -> str:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: str) -> None:
-        self.socket.default_value = value
-
-    @property
     def _match(self) -> "type[MatchString]":
         from ..nodes.geometry import MatchString
 
         return MatchString
+
+    def split(self, separator: InputString = "") -> "_ListMixin[StringSocket]":
+        from ..nodes.geometry import SplitString
+
+        return SplitString(self.socket, separator=separator).o.list
 
     def starts_with(self, search: InputString) -> "BooleanSocket":
         "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
@@ -1657,67 +1607,107 @@ class _MatrixMixin(BaseSocket):
 # ---------------------------------------------------------------------------
 
 
-class _ListMixin(Generic[_T]):
+class _ListMixin(Socket, Generic[_T]):
     """Generic list mixin for socket lists."""
 
+    def list_length(self) -> "IntegerSocket":
+        from ..nodes.geometry import ListLength
 
-class FloatSocket(_FloatMixin, Socket):
+        return ListLength(self.socket, data_type=self.socket.type).o.length  # ty: ignore[invalid-argument-type]
+
+    def get(self, index: InputInteger) -> _T:
+        from ..nodes.geometry import GetListItem
+
+        return GetListItem(  # ty: ignore[invalid-return-type]
+            self.socket,
+            index=index,
+            socket_type=self.socket.type,  # ty: ignore[invalid-argument-type]
+        ).o.item
+
+
+class _DefaultValueMixin(Generic[_T]):
+    @property
+    def default_value(self) -> _T:
+        return self.socket.default_value  # ty: ignore[unresolved-attribute]
+
+    @default_value.setter
+    def default_value(self, value: _T) -> None:
+        self.socket.default_value = value  # ty: ignore[unresolved-attribute]
+
+
+class FloatSocket(_FloatMixin, _DefaultValueMixin[float], Socket):
     """Runtime float socket wrapper."""
 
 
-class FloatSocketList(FloatSocket, _ListMixin[FloatSocket]):
+class FloatSocketList(_FloatMixin, _ListMixin[FloatSocket]):
     """"""
 
 
-class FloatSocketGrid(FloatSocket, GridSocketMixin[FloatSocket]):
+class FloatSocketGrid(_FloatMixin, GridSocketMixin[FloatSocket]):
     """Runtime float grid socket wrapper."""
 
 
 class VectorSocket(_VectorMixin, Socket):
     """Runtime vector socket wrapper."""
 
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
 
-class VectorSocketList(VectorSocket, _ListMixin[VectorSocket]):
+    @default_value.setter
+    def default_value(self, value: list[float] | tuple[float, float, float]) -> None:
+        self.socket.default_value = value
+
+
+class VectorSocketList(_VectorMixin, _ListMixin[VectorSocket]):
     """"""
 
 
-class VectorSocketGrid(VectorSocket, GridSocketMixin[VectorSocket]):
+class VectorSocketGrid(_VectorMixin, GridSocketMixin[VectorSocket]):
     """Runtime vector grid socket wrapper."""
 
 
 class ColorSocket(_ColorMixin, Socket):
     """Runtime color socket wrapper."""
 
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float]) -> None:
+        self.socket.default_value = value
+
 
 class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):
     """List of color sockets."""
 
 
-class IntegerSocket(_IntegerMixin, Socket):
+class IntegerSocket(_IntegerMixin, _DefaultValueMixin[int], Socket):
     """Runtime integer socket wrapper."""
 
 
-class IntegerSocketList(IntegerSocket, _ListMixin[IntegerSocket]):
+class IntegerSocketList(_IntegerMixin, _ListMixin[IntegerSocket]):
     """List of integer sockets."""
 
 
-class IntegerSocketGrid(IntegerSocket, GridSocketMixin[IntegerSocket]):
+class IntegerSocketGrid(_IntegerMixin, GridSocketMixin[IntegerSocket]):
     """Runtime integer grid socket wrapper."""
 
 
-class BooleanSocket(_BooleanMixin, Socket):
+class BooleanSocket(_BooleanMixin, _DefaultValueMixin[bool], Socket):
     """Runtime boolean socket wrapper."""
 
 
-class BooleanSocketList(BooleanSocket, _ListMixin[BooleanSocket]):
+class BooleanSocketList(_BooleanMixin, _ListMixin[BooleanSocket]):
     """List of boolean sockets."""
 
 
-class BooleanSocketGrid(BooleanSocket, GridSocketMixin[BooleanSocket]):
+class BooleanSocketGrid(_BooleanMixin, GridSocketMixin[BooleanSocket]):
     """Runtime boolean grid socket wrapper."""
 
 
-class RotationSocket(_RotationMixin, Socket):
+class RotationSocket(_RotationMixin, _DefaultValueMixin[Euler], Socket):
     """Runtime rotation socket wrapper."""
 
 
@@ -1729,22 +1719,24 @@ class MatrixSocket(_MatrixMixin, Socket):
     """Runtime matrix socket wrapper."""
 
 
-class MatrixSocketList(MatrixSocket, _ListMixin[MatrixSocket]):
+class MatrixSocketList(_MatrixMixin, _ListMixin[MatrixSocket]):
     """List of matrix sockets."""
 
 
-class StringSocket(_StringMixin, Socket):
+class StringSocket(_StringMixin, _DefaultValueMixin[str], Socket):
     """Runtime string socket wrapper."""
 
 
-class StringSocketList(StringSocket, _ListMixin[StringSocket]):
+class StringSocketList(_StringMixin, _ListMixin[StringSocket]):
     """List of string sockets."""
 
 
-class MenuSocket(Socket):
-    """Runtime menu socket wrapper."""
-
+class _MenuSocketMixin(Socket):
     socket: NodeSocketMenu
+
+
+class MenuSocket(_MenuSocketMixin):
+    """Runtime menu socket wrapper."""
 
     @property
     def default_value(self) -> str:
@@ -1755,7 +1747,7 @@ class MenuSocket(Socket):
         self.socket.default_value = value
 
 
-class MenuSocketList(MenuSocket, _ListMixin[MenuSocket]):
+class MenuSocketList(_MenuSocketMixin, _ListMixin[MenuSocket]):
     """List of menu sockets."""
 
 
@@ -1769,123 +1761,113 @@ class GeometrySocketList(GeometrySocket, _ListMixin[GeometrySocket]):
     """List of geometry sockets."""
 
 
-class ObjectSocket(Socket):
-    """Runtime object socket wrapper."""
-
+class _ObjectMixin(Socket):
     socket: NodeSocketObject
 
-    @property
-    def default_value(self) -> bpy.types.Object | None:
-        return self.socket.default_value
 
-    @default_value.setter
-    def default_value(self, value: bpy.types.Object) -> None:
-        self.socket.default_value = value
+class ObjectSocket(_ObjectMixin, _DefaultValueMixin[bpy.types.Object]):
+    """Runtime object socket wrapper."""
 
 
-class ObjectSocketList(ObjectSocket, _ListMixin[ObjectSocket]):
+class ObjectSocketList(_ObjectMixin, _ListMixin[ObjectSocket]):
     """List of object sockets."""
 
 
-class MaterialSocket(Socket):
-    """Runtime material socket wrapper."""
-
+class _MaterialSocketMixin(Socket):
     socket: NodeSocketMaterial
 
-    @property
-    def default_value(self) -> bpy.types.Material | None:
-        return self.socket.default_value
 
-    @default_value.setter
-    def default_value(self, value: bpy.types.Material) -> None:
-        self.socket.default_value = value
+class MaterialSocket(_MaterialSocketMixin, _DefaultValueMixin[bpy.types.Material]):
+    """Runtime material socket wrapper."""
 
 
-class MaterialSocketList(MaterialSocket, _ListMixin[MaterialSocket]):
+class MaterialSocketList(_MaterialSocketMixin, _ListMixin[MaterialSocket]):
     """List of material sockets."""
 
 
-class ImageSocket(Socket):
-    """Runtime image socket wrapper."""
-
+class _ImageSocketMixin(Socket):
     socket: NodeSocketImage
 
-    @property
-    def default_value(self) -> bpy.types.Image | None:
-        return self.socket.default_value
 
-    @default_value.setter
-    def default_value(self, value: bpy.types.Image) -> None:
-        self.socket.default_value = value
+class ImageSocket(_ImageSocketMixin, _DefaultValueMixin[bpy.types.Image]):
+    """Runtime image socket wrapper."""
 
 
-class ImageSocketList(ImageSocket, _ListMixin[ImageSocket]):
+class ImageSocketList(_ImageSocketMixin, _ListMixin[ImageSocket]):
     """List of image sockets."""
 
 
-class CollectionSocket(Socket):
-    """Runtime collection socket wrapper."""
-
+class _CollectionSocketMixin(Socket):
     socket: NodeSocketCollection
 
-    @property
-    def default_value(self) -> bpy.types.Collection | None:
-        return self.socket.default_value
 
-    @default_value.setter
-    def default_value(self, value: bpy.types.Collection) -> None:
-        self.socket.default_value = value
+class CollectionSocket(
+    _CollectionSocketMixin, _DefaultValueMixin[bpy.types.Collection]
+):
+    """Runtime collection socket wrapper."""
 
 
-class CollectionSocketList(CollectionSocket, _ListMixin[CollectionSocket]):
+class CollectionSocketList(_CollectionSocketMixin, _ListMixin[CollectionSocket]):
     """List of collection sockets."""
 
 
-class BundleSocket(Socket):
-    """Runtime bundle socket wrapper."""
-
+class _BundleSocketMixin(Socket):
     socket: NodeSocketBundle
 
 
-class BundleSocketList(BundleSocket, _ListMixin[BundleSocket]):
+class BundleSocket(_BundleSocketMixin):
+    """Runtime bundle socket wrapper."""
+
+
+class BundleSocketList(_BundleSocketMixin, _ListMixin[BundleSocket]):
     """List of bundle sockets."""
 
 
-class ClosureSocket(Socket):
-    """Runtime closure socket wrapper."""
-
+class _ClosureSocketMixin(Socket):
     socket: NodeSocketClosure
 
 
-class ClosureSocketList(ClosureSocket, _ListMixin[ClosureSocket]):
+class ClosureSocket(_ClosureSocketMixin):
+    """Runtime closure socket wrapper."""
+
+
+class ClosureSocketList(_ClosureSocketMixin, _ListMixin[ClosureSocket]):
     """List of closure sockets."""
 
 
-class ShaderSocket(Socket):
-    """Runtime shader socket wrapper."""
-
+class _ShaderSocketMixin(Socket):
     socket: NodeSocketShader
 
 
-class ShaderSocketList(ShaderSocket, _ListMixin[ShaderSocket]):
+class ShaderSocket(_ShaderSocketMixin):
+    """Runtime shader socket wrapper."""
+
+
+class ShaderSocketList(_ShaderSocketMixin, _ListMixin[ShaderSocket]):
     """List of shader sockets."""
 
 
-class FontSocket(Socket):
-    """Runtime font socket wrapper."""
-
+class _FontSocketMixin(Socket):
     socket: NodeSocketFont
 
 
-class FontSocketList(FontSocket, _ListMixin[FontSocket]):
+class FontSocket(_FontSocketMixin):
+    """Runtime font socket wrapper."""
+
+
+class FontSocketList(_FontSocketMixin, _ListMixin[FontSocket]):
     """List of font sockets."""
 
 
-class SoundSocket(Socket):
+class _SoundSocketMixin(Socket):
+    socket: NodeSocketSound
+
+
+class SoundSocket(_SoundSocketMixin):
     """Runtime sound socket wrapper."""
 
 
-class SoundSocketList(SoundSocket, _ListMixin[SoundSocket]):
+class SoundSocketList(_SoundSocketMixin, _ListMixin[SoundSocket]):
     """List of sound sockets."""
 
 
