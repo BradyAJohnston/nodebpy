@@ -1,8 +1,12 @@
 from typing import TYPE_CHECKING
 
 from nodebpy import TreeBuilder
-from nodebpy.nodes.compositor import CombineXYZ
-from nodebpy.types import InputInteger, InputVector
+from nodebpy.types import (
+    InputInteger,
+    InputVector,
+    InputObject,
+    InputBoolean,
+)
 
 from ...builder import (
     CustomGeometryGroup,
@@ -18,6 +22,8 @@ from . import (
     EdgeVertices,
     Frame,
     Switch,
+    Position,
+    CombineXYZ,
 )
 
 
@@ -195,3 +201,38 @@ class PrincipalComponents(CustomGeometryGroup):
             short >> out_short
             AxesToRotation(long, short) >> out_rotation
             inter * u.determinant().sign() >> out_inter
+
+
+class ClipFieldToBox(CustomGeometryGroup):
+    _name = "Clip Field to Box"
+
+    def __init__(
+        self,
+        box_object: InputObject = None,
+        invert: InputBoolean = False,
+    ):
+        super().__init__(
+            **{
+                "Box Object": box_object,
+                "Invert": invert,
+            }
+        )
+
+    def _build_group(self, tree: TreeBuilder):
+        box = tree.inputs.object("Box Object", optional_label=True)
+        invert = tree.inputs.boolean("Invert")
+        masked = tree.outputs.boolean("Clipped Field")
+
+        pos = Position().o.position
+        local_pos = box.transform("RELATIVE").invert() @ pos * 0.5
+
+        result = (
+            (abs(local_pos.x) < 0.5)
+            & (abs(local_pos.y) < 0.5)
+            & (abs(local_pos.z) < 0.5)
+        )
+
+        (result != invert) >> masked
+
+
+GROUP_NAME = "Mask Grid"

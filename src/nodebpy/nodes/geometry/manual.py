@@ -1922,6 +1922,25 @@ class _MenuSwitchBase(BaseNode, Generic[_T]):
         # -1 is the last item (__extent__ socket) and -2 is the socket for the item we just added
         return self.node.inputs[-2]
 
+    def is_selected(self, name: str) -> BooleanSocket:
+        """Gets the boolean output socket that is True when the named menu item is selected.
+
+        Cannot be used with the "Output" name as this refers to the output socket itself.
+
+        Parameters
+        ----------
+        name : str
+            The name of the menu item to get the selected socket for.
+
+        Returns
+        -------
+        BooleanSocket
+            The boolean output socket that is True when the named menu item is selected.
+
+        """
+        assert name != "Output"
+        return cast(BooleanSocket, self.o[name])
+
     @property
     def data_type(self) -> SOCKET_TYPES:
         """Input socket: Data Type"""
