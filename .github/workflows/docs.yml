@@ -19,11 +19,11 @@ jobs:
           version: "latest"
       - name: Build Docs
         run: |
-          uv add "bpy==5.2.*" --dev --extra-index-url https://bradyajohnston.github.io/dailybpy
-          uv sync --all-extras
+          uv sync --all-extras --extra-index-url https://bradyajohnston.github.io/dailybpy
           uv pip install -e .
           cd docs
-          uv run -m quartodoc build
+          uv run quartodoc build
+          uv run quartodoc interlinks
 
       - name: Quarto Render
         run: |

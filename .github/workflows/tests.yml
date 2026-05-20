@@ -24,8 +24,7 @@ jobs:
 
       - name: Install
         run: |
-          uv add "bpy==5.2.*" --dev --extra-index-url https://bradyajohnston.github.io/dailybpy
-          uv sync --all-extras
+          uv sync --all-extras --extra-index-url https://bradyajohnston.github.io/dailybpy
 
       - name: Run tests
         run: |
