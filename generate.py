@@ -219,7 +219,12 @@ class SocketInfo:
 
     def format_argument_string(self) -> str:
         param_name = get_socket_param_name(self)
-        return f"{param_name}: {self.type_hint} = {format_python_value(self.default_value)}"
+        default = (
+            "None"
+            if ("GRID" in self.structure_type or "LIST" in self.structure_type)
+            else format_python_value(self.default_value)
+        )
+        return f"{param_name}: {self.type_hint} = {default}"
 
     @property
     def type_hint(self) -> str:
@@ -258,13 +263,19 @@ class SocketInfo:
         }
         # to handle all of the subtypes we have to iterate through and
         # instead just check to see if the name is in the socket type
+        _GRID_TYPE_MAP = {
+            "InputFloat": "InputFloatGrid",
+            "InputInteger": "InputIntegerGrid",
+            "InputBoolean": "InputBooleanGrid",
+            "InputVector": "InputVectorGrid",
+        }
         for key, item in type_map.items():
             if key in self.bl_socket_type:
-                return (
-                    item
-                    if "LIST" not in self.structure_type
-                    else item.replace("Input", "InputList")
-                )
+                if "GRID" in self.structure_type:
+                    return _GRID_TYPE_MAP.get(item, item)
+                if "LIST" in self.structure_type:
+                    return item.replace("Input", "InputList")
+                return item
         raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
     def format_accessor_annotation(self) -> str:
@@ -1086,7 +1097,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
             " | ".join(sorted(variants)) if len(variants) > 1 else socket.type_hint
         )
 
-        if hasattr(socket, "default_value"):
+        if "GRID" in socket.structure_type or "LIST" in socket.structure_type:
+            default = "None"
+        elif hasattr(socket, "default_value"):
             default = format_python_value(socket.default_value)
         else:
             default = "None"
@@ -1386,6 +1399,29 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         "InputVector",
         "InputFont",
         "InputSound",
+        "InputFloatGrid",
+        "InputVectorGrid",
+        "InputIntegerGrid",
+        "InputBooleanGrid",
+        "InputFloatList",
+        "InputVectorList",
+        "InputColorList",
+        "InputIntegerList",
+        "InputBooleanList",
+        "InputRotationList",
+        "InputMatrixList",
+        "InputStringList",
+        "InputMenuList",
+        "InputObjectList",
+        "InputGeometryList",
+        "InputCollectionList",
+        "InputImageList",
+        "InputMaterialList",
+        "InputBundleList",
+        "InputClosureList",
+        "InputShaderList",
+        "InputFontList",
+        "InputSoundList",
     ]
     type_imports = [
         t

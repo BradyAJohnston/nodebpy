@@ -25,11 +25,11 @@ from bpy.types import (
     NodeSocketObject,
     NodeSocketRotation,
     NodeSocketShader,
+    NodeSocketSound,
     NodeSocketString,
     NodeSocketVector,
-    NodeSocketSound,
-    Sound,
     Object,
+    Sound,
     VectorFont,
 )
 from mathutils import Euler
@@ -37,24 +37,47 @@ from mathutils import Euler
 if typing.TYPE_CHECKING:
     from nodebpy.builder import (
         BooleanSocket,
+        BooleanSocketGrid,
+        BooleanSocketList,
         BundleSocket,
+        BundleSocketList,
         ClosureSocket,
+        ClosureSocketList,
         CollectionSocket,
+        CollectionSocketList,
         ColorSocket,
+        ColorSocketList,
         FloatSocket,
+        FloatSocketGrid,
+        FloatSocketList,
         FontSocket,
+        FontSocketList,
         GeometrySocket,
+        GeometrySocketList,
         ImageSocket,
+        ImageSocketList,
         IntegerSocket,
+        IntegerSocketGrid,
+        IntegerSocketList,
         MaterialSocket,
+        MaterialSocketList,
         MatrixSocket,
+        MatrixSocketList,
         MenuSocket,
+        MenuSocketList,
         ObjectSocket,
+        ObjectSocketList,
         RotationSocket,
+        RotationSocketList,
         ShaderSocket,
-        StringSocket,
-        VectorSocket,
+        ShaderSocketList,
         SoundSocket,
+        SoundSocketList,
+        StringSocket,
+        StringSocketList,
+        VectorSocket,
+        VectorSocketGrid,
+        VectorSocketList,
     )
 
     from .builder import BaseNode as BaseNode
@@ -130,17 +153,58 @@ InputShader = typing.Union[
 InputFont = typing.Union[NodeSocketFont, InputLinkable, VectorFont, "FontSocket"]
 InputSound = typing.Union[NodeSocketSound, InputLinkable, "SoundSocket", Sound]
 
+InputFloatGrid = typing.Union[NodeSocketFloat, "FloatSocketGrid", None]
+InputVectorGrid = typing.Union[NodeSocketVector, "VectorSocketGrid", None]
+InputIntegerGrid = typing.Union[NodeSocketInt, "IntegerSocketGrid", None]
+InputBooleanGrid = typing.Union[NodeSocketBool, "BooleanSocketGrid", None]
 
 InputGrid = typing.Union[
-    NodeSocketFloat,
-    NodeSocketInt,
-    NodeSocketVector,
-    NodeSocketBool,
-    InputLinkable,
-    "FloatSocket",
-    "IntegerSocket",
-    "VectorSocket",
-    "BooleanSocket",
+    InputFloatGrid,
+    InputVectorGrid,
+    InputIntegerGrid,
+    InputBooleanGrid,
+]
+
+InputFloatList = typing.Union[NodeSocketFloat, "FloatSocketList", None]
+InputVectorList = typing.Union[NodeSocketVector, "VectorSocketList", None]
+InputColorList = typing.Union[NodeSocketColor, "ColorSocketList", None]
+InputIntegerList = typing.Union[NodeSocketInt, "IntegerSocketList", None]
+InputBooleanList = typing.Union[NodeSocketBool, "BooleanSocketList", None]
+InputRotationList = typing.Union[NodeSocketRotation, "RotationSocketList", None]
+InputMatrixList = typing.Union[NodeSocketMatrix, "MatrixSocketList", None]
+InputStringList = typing.Union[NodeSocketString, "StringSocketList", None]
+InputMenuList = typing.Union[NodeSocketMenu, "MenuSocketList", None]
+InputObjectList = typing.Union[NodeSocketObject, "ObjectSocketList", None]
+InputGeometryList = typing.Union[NodeSocketGeometry, "GeometrySocketList", None]
+InputCollectionList = typing.Union[NodeSocketCollection, "CollectionSocketList", None]
+InputImageList = typing.Union[NodeSocketImage, "ImageSocketList", None]
+InputMaterialList = typing.Union[NodeSocketMaterial, "MaterialSocketList", None]
+InputBundleList = typing.Union[NodeSocketBundle, "BundleSocketList", None]
+InputClosureList = typing.Union[NodeSocketClosure, "ClosureSocketList", None]
+InputShaderList = typing.Union[NodeSocketShader, "ShaderSocketList", None]
+InputFontList = typing.Union[NodeSocketFont, "FontSocketList", None]
+InputSoundList = typing.Union[NodeSocketSound, "SoundSocketList", None]
+
+InputList = typing.Union[
+    InputFloatList,
+    InputVectorList,
+    InputColorList,
+    InputIntegerList,
+    InputBooleanList,
+    InputRotationList,
+    InputMatrixList,
+    InputStringList,
+    InputMenuList,
+    InputObjectList,
+    InputGeometryList,
+    InputCollectionList,
+    InputImageList,
+    InputMaterialList,
+    InputBundleList,
+    InputClosureList,
+    InputShaderList,
+    InputFontList,
+    InputSoundList,
 ]
 
 InputAny = typing.Union[
