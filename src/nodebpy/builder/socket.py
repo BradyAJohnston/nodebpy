@@ -68,11 +68,7 @@ from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
     from ..nodes import compositor, geometry, shader
-    from ..nodes.geometry import (
-        IntegerMath,
-        MatchString,
-        Math,
-    )
+    from ..nodes.geometry import IntegerMath, MatchString, Math, ObjectInfo
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
@@ -1553,13 +1549,10 @@ class _MatrixMixin(BaseSocket):
     if TYPE_CHECKING:
 
         @overload
-        def __matmul__(
-            self, other: "VectorSocket | NodeSocketVector"
-        ) -> "VectorSocket": ...
+        def __matmul__(self, other: "VectorSocket") -> "VectorSocket": ...
         @overload
-        def __matmul__(self, other: Any) -> "MatrixSocket": ...
-
-        def __rmatmul__(self, other: Any) -> "MatrixSocket": ...
+        def __matmul__(self, other: "MatrixSocket") -> "MatrixSocket": ...
+        def __rmatmul__(self, other: "MatrixSocket") -> "MatrixSocket": ...
 
 
 # ---------------------------------------------------------------------------
@@ -1621,6 +1614,21 @@ class GeometrySocket(Socket):
 
     socket: NodeSocketGeometry
 
+    def realize_instances(
+        self,
+        selection: InputBoolean = True,
+        realize_all: InputBoolean = False,
+        depth: InputInteger = 0,
+    ) -> "GeometrySocket":
+        from ..nodes.geometry import RealizeInstances
+
+        return RealizeInstances(
+            self.socket,
+            selection=selection,
+            realize_all=realize_all,
+            depth=depth,
+        ).o.geometry
+
 
 class ObjectSocket(Socket):
     """Runtime object socket wrapper."""
@@ -1634,6 +1642,110 @@ class ObjectSocket(Socket):
     @default_value.setter
     def default_value(self, value: bpy.types.Object) -> None:
         self.socket.default_value = value
+
+    @property
+    def _info(self) -> "type[ObjectInfo]":
+        from ..nodes.geometry import ObjectInfo
+
+        return ObjectInfo
+
+    def transform(
+        self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
+    ) -> "MatrixSocket":
+        """The Object's transform matrix, optionally in relative space.
+
+        Adds [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo) to the node tree and returns.
+
+        Parameters
+        ----------
+        transform_space : Literal["ORIGINAL", "RELATIVE"]
+            The space in which to return the transform matrix.
+
+        Returns
+        -------
+        MatrixSocket
+            The output 'Transform' `MatrixSocket`.
+        """
+        return self._info(self.socket, transform_space=transform_space).o.transform
+
+    def location(
+        self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
+    ) -> "VectorSocket":
+        """
+        The object's location, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+        Parameters
+        ----------
+        transform_space : Literal["ORIGINAL", "RELATIVE"]
+            The space in which to return the location.
+
+        Returns
+        -------
+        VectorSocket
+            The output 'Location' `VectorSocket`.
+
+        """
+        return self._info(self.socket, transform_space=transform_space).o.location
+
+    def rotation(
+        self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
+    ) -> "RotationSocket":
+        """
+        The object's rotation, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+        Parameters
+        ----------
+        transform_space : Literal["ORIGINAL", "RELATIVE"]
+            The space in which to return the rotation.
+
+        Returns
+        -------
+        RotationSocket
+            The output 'Rotation' `RotationSocket`.
+        """
+        return self._info(self.socket, transform_space=transform_space).o.rotation
+
+    def scale(
+        self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL"
+    ) -> "VectorSocket":
+        """
+        The object's scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+        Parameters
+        ----------
+        transform_space : Literal["ORIGINAL", "RELATIVE"]
+            The space in which to return the scale.
+
+        Returns
+        -------
+        VectorSocket
+            The output 'Scale' `VectorSocket`.
+        """
+        return self._info(self.socket, transform_space=transform_space).o.scale
+
+    def geometry(
+        self,
+        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
+        as_instance: InputBoolean = False,
+    ) -> "GeometrySocket":
+        """
+        The object's geometry, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
+
+        Parameters
+        ----------
+        transform_space : Literal["ORIGINAL", "RELATIVE"]
+            The space in which to return the geometry.
+        as_instance : InputBoolean
+            Whether to return the geometry as an instance.
+
+        Returns
+        -------
+        GeometrySocket
+            The output 'Geometry' `GeometrySocket`.
+        """
+        return self._info(
+            self.socket, as_instance=as_instance, transform_space=transform_space
+        ).o.geometry
 
 
 class MaterialSocket(Socket):
@@ -1676,6 +1788,38 @@ class CollectionSocket(Socket):
     @default_value.setter
     def default_value(self, value: bpy.types.Collection) -> None:
         self.socket.default_value = value
+
+    def instances(
+        self,
+        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
+        separate_children: InputBoolean = False,
+        reset_children: InputBoolean = False,
+    ) -> "GeometrySocket":
+        """Import objects from the collection as instances.
+
+        Parameters
+        ----------
+        transform_space : Literal["ORIGINAL", "RELATIVE"]
+            The transform space to use for the instances.
+        separate_children : bool
+            Whether to separate objects as their own instances.
+        reset_children : bool
+            Whether to reset children of the collection to world origin.
+
+        Returns
+        -------
+        GeometrySocket
+            The output 'Instances' `GeometrySocket`. Will be a single instance or multiple instances if `separate_children` is `True`.
+
+        """
+        from ..nodes.geometry import CollectionInfo
+
+        return CollectionInfo(
+            self.socket,
+            separate_children,
+            reset_children,
+            transform_space=transform_space,
+        ).o.instances
 
 
 class BundleSocket(Socket):
