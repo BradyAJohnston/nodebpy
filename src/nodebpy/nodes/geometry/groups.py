@@ -1,8 +1,12 @@
 from typing import TYPE_CHECKING
 
 from nodebpy import TreeBuilder
-from nodebpy.nodes.compositor import CombineXYZ
-from nodebpy.types import InputInteger, InputVector, InputObject, InputBoolean
+from nodebpy.types import (
+    InputInteger,
+    InputVector,
+    InputObject,
+    InputBoolean,
+)
 
 from ...builder import (
     CustomGeometryGroup,
@@ -19,6 +23,7 @@ from . import (
     Frame,
     Switch,
     Position,
+    CombineXYZ,
 )
 
 
@@ -228,3 +233,6 @@ class ClipFieldToBox(CustomGeometryGroup):
         )
 
         (result != invert) >> masked
+
+
+GROUP_NAME = "Mask Grid"

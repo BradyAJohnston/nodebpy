@@ -1614,6 +1614,21 @@ class GeometrySocket(Socket):
 
     socket: NodeSocketGeometry
 
+    def realize_instances(
+        self,
+        selection: InputBoolean = True,
+        realize_all: InputBoolean = False,
+        depth: InputInteger = 0,
+    ) -> "GeometrySocket":
+        from ..nodes.geometry import RealizeInstances
+
+        return RealizeInstances(
+            self.socket,
+            selection=selection,
+            realize_all=realize_all,
+            depth=depth,
+        ).o.geometry
+
 
 class ObjectSocket(Socket):
     """Runtime object socket wrapper."""
