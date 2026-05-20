@@ -171,7 +171,7 @@ def test_field_to_grid():
 
     with TreeBuilder() as tree:
         nt = g.NoiseTexture()
-        ftg = g.FieldToGrid(g.CubeGridTopology())
+        ftg = g.FieldToGrid(g.CubeGridTopology().o.topology)
         pos, vec, fac = ftg.capture(
             {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
         )
