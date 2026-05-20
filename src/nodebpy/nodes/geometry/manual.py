@@ -2206,7 +2206,7 @@ class FieldToList(DynamicInputsMixin, BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, count: InputInteger = 1, fields: dict[str, InputAny] = {}):
+    def __init__(self, count: InputInteger = 1, fields: dict[str, InputLinkable] = {}):
         super().__init__()
         key_args = {"Count": count}
 
@@ -2222,7 +2222,7 @@ class FieldToList(DynamicInputsMixin, BaseNode):
     ) -> NodeSocket:  # ty: ignore
         pass
 
-    def capture(self, fields: dict[str, InputAny]) -> list[SocketLinker]:
+    def capture(self, fields: dict[str, InputLinkable]) -> list[SocketLinker]:
         outputs = {}
         for name, field in fields.items():
             assert hasattr(field, "_default_output_socket")
