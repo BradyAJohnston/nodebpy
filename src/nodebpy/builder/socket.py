@@ -1,5 +1,4 @@
 from __future__ import annotations
-from nodebpy.nodes.geometry import ObjectInfo
 
 from typing import (
     TYPE_CHECKING,
