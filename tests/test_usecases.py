@@ -9,7 +9,7 @@ import bpy
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.builder import BooleanSocket, FloatSocket
-from nodebpy.nodes.geometry.groups import PrincipalComponents
+from nodebpy.nodes.geometry.groups import PrincipalComponents, ClipFieldToBox
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
@@ -846,3 +846,112 @@ def test_style_density_iso():
         )
 
         geom >> tree.outputs.geometry("Geometry")
+
+
+def test_ClipFieldToBox(snapshot):
+    with g.tree():
+        node = ClipFieldToBox()
+
+    assert snapshot == TreeBuilder(node.node_tree)._repr_markdown_()
+
+
+def test_mask_grid(snapshot):
+    with g.tree() as tree:
+        _build_mask_grid(tree)
+        assert snapshot == tree._repr_markdown_()
+
+    with g.tree() as points_tree:
+        _build_microscopy_grid_to_points(points_tree)
+        assert snapshot == points_tree._repr_markdown_()
+
+
+def _build_mask_grid(tree: TreeBuilder):
+    tree.tree.show_modifier_manage_panel = True
+
+    grid = tree.inputs.float(
+        "Grid",
+        0.5,
+        structure_type="GRID",
+    )
+    with_ = tree.inputs.menu("With", "Object")
+    object = tree.inputs.object("Object")
+    collection = tree.inputs.collection("Collection", optional_label=True)
+    mesh = tree.inputs.geometry("Mesh")
+    mask_resolution = tree.inputs.float(
+        "Mask Resolution",
+        0.3,
+        min_value=0.01,
+        subtype="DISTANCE",
+    )
+    mask = tree.inputs.float(
+        "Mask",
+        hide_value=True,
+        optional_label=True,
+    )
+    invert = tree.inputs.boolean("Invert")
+    masked_grid = tree.outputs.float("Masked Grid")
+
+    object_geometry = object.geometry("RELATIVE")
+
+    mask_source = g.MenuSwitch.geometry(
+        with_,
+        {
+            "Object": object_geometry,
+            "Collection": collection.instances("RELATIVE"),
+            "Mesh": mesh,
+            "Grid": object_geometry,
+            "Box": object_geometry,
+        },
+    )
+
+    volume_grid = g.GetNamedGrid.float(
+        volume=g.MeshToVolume(
+            mesh=mask_source.o.output.realize_instances(),
+            resolution_mode="Size",
+            voxel_size=mask_resolution,
+            interior_band_width=0.0,
+        ).o.volume,
+        name="density",
+    ).o.grid
+
+    box_mask = g.FieldToGrid.boolean(
+        topology=grid,
+        items={
+            "Mask": ClipFieldToBox(
+                box_object=object,
+            ).o.clipped_field,
+        },
+    ).o["Mask"]
+
+    selected_grid = mask_source.is_selected("Grid").switch.float(volume_grid, mask)
+    sampled_mask = (
+        g.SampleGrid.float(
+            grid=selected_grid,
+        ).o.value
+        > 0.0
+    )
+    mask_value = mask_source.is_selected("Box").switch.float(
+        false=sampled_mask, true=box_mask
+    )
+    mask_factor = invert.switch.float(mask_value, ~mask_value)
+
+    (
+        g.PruneGrid.float(
+            grid * mask_factor,
+        )
+        >> masked_grid
+    )
+
+
+def _build_microscopy_grid_to_points(tree):
+    tree.tree.show_modifier_manage_panel = True
+
+    grid = tree.inputs.float("Grid", hide_value=True)
+    geometry = tree.outputs.geometry("Geometry")
+
+    points = g.GridToPoints.float(grid)
+    delete = g.DeleteGeometry(
+        geometry=points.o.points,
+        selection=(points.o.value < 0.0001) | points.o.is_tile,
+    )
+    delete.o.geometry >> geometry
