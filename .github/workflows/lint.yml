@@ -18,7 +18,7 @@ jobs:
           version: "latest"
 
       - name: Install dependencies
-        run: uv sync --all-extras --dev
+        run: uv pip install ruff ty
 
       - name: ruff format
         run: uv run ruff format --check src/ generate.py

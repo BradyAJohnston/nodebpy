@@ -8,6 +8,9 @@ authors = [
 ]
 requires-python = ">=3.13"
 license = { text = "GPL-3.0-or-later" }
+dependencies = [
+    "bpy==5.2.*",
+]
 
 [project.scripts]
 nodebpy = "nodebpy:main"
