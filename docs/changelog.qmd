@@ -1,7 +1,7 @@
 ---
 title: Changelog
 ---
-## v0.18.0 - UNRELEASED
+## v0.18.0 - 2026-05-20
 
 ### Added
 - Pre-commit hooks for `ruff` and `ty` checks and auto-formatting.
