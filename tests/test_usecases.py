@@ -9,7 +9,7 @@ import bpy
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.builder import BooleanSocket, FloatSocket
-from nodebpy.nodes.geometry.groups import PrincipalComponents
+from nodebpy.nodes.geometry.groups import PrincipalComponents, ClipFieldToBox
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
@@ -846,3 +846,10 @@ def test_style_density_iso():
         )
 
         geom >> tree.outputs.geometry("Geometry")
+
+
+def test_ClipFieldToBox(snapshot):
+    with g.tree():
+        node = ClipFieldToBox()
+
+    assert snapshot == TreeBuilder(node.node_tree)._repr_markdown_()
