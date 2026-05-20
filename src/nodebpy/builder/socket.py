@@ -1,5 +1,5 @@
 from __future__ import annotations
-from nodebpy.nodes.geometry import ObjectInfo, CollectionInfo
+from nodebpy.nodes.geometry import ObjectInfo
 
 from typing import (
     TYPE_CHECKING,
@@ -1710,7 +1710,9 @@ class ObjectSocket(Socket):
         return self._info(self.socket, transform_space=transform_space).o.scale
 
     def geometry(
-        self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL", as_instance: InputBoolean = False
+        self,
+        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
+        as_instance: InputBoolean = False,
     ) -> "GeometrySocket":
         """
         The object's geometry, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo).
@@ -1727,7 +1729,9 @@ class ObjectSocket(Socket):
         GeometrySocket
             The output 'Geometry' `GeometrySocket`.
         """
-        return self._info(self.socket,  as_instance=as_instance, transform_space=transform_space).o.geometry
+        return self._info(
+            self.socket, as_instance=as_instance, transform_space=transform_space
+        ).o.geometry
 
 
 class MaterialSocket(Socket):
@@ -1771,7 +1775,12 @@ class CollectionSocket(Socket):
     def default_value(self, value: bpy.types.Collection) -> None:
         self.socket.default_value = value
 
-    def instances(self, transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL", separate_children: InputBoolean = False, reset_children: InputBoolean = False) -> "GeometrySocket":
+    def instances(
+        self,
+        transform_space: Literal["ORIGINAL", "RELATIVE"] = "ORIGINAL",
+        separate_children: InputBoolean = False,
+        reset_children: InputBoolean = False,
+    ) -> "GeometrySocket":
         """Import objects from the collection as instances.
 
         Parameters
@@ -1791,8 +1800,12 @@ class CollectionSocket(Socket):
         """
         from ..nodes.geometry import CollectionInfo
 
-        return CollectionInfo(self.socket, separate_children, reset_children, transform_space=transform_space).o.instances
-
+        return CollectionInfo(
+            self.socket,
+            separate_children,
+            reset_children,
+            transform_space=transform_space,
+        ).o.instances
 
 
 class BundleSocket(Socket):
