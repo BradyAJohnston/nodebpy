@@ -1221,7 +1221,6 @@ dev = [
     { name = "quartodoc" },
     { name = "ruff" },
     { name = "syrupy" },
-    { name = "tree-clipper" },
     { name = "ty" },
 ]
 
@@ -1247,7 +1246,6 @@ dev = [
     { name = "quartodoc", specifier = ">=0.11.1" },
     { name = "ruff", specifier = ">=0.14.11" },
     { name = "syrupy", specifier = ">=5.0.0" },
-    { name = "tree-clipper", specifier = ">=0.1.1" },
     { name = "ty", specifier = ">=0.0.35" },
 ]
 
@@ -2086,15 +2084,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/1b/22/40f55b26baeab80c2d7b3f1db0682f8954e4617fee7d90ce634022ef05c6/traitlets-5.15.0.tar.gz", hash = "sha256:4fead733f81cf1c4c938e06f8ca4633896833c9d89eff878159457f4d4392971", size = 163197, upload-time = "2026-05-06T08:05:58.016Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/da/98/a9937a969d018a23badfea0b381f66783649d48e0ea6c41923265c3cbeb3/traitlets-5.15.0-py3-none-any.whl", hash = "sha256:fb36a18867a6803deab09f3c5e0fa81bb7b26a5c9e82501c9933f759166eff40", size = 85877, upload-time = "2026-05-06T08:05:55.853Z" },
-]
-
-[[package]]
-name = "tree-clipper"
-version = "0.1.6"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/40/91/712c496935cb719a2dbb457e8581d6195d33a403b88b77aa66c35c82b877/tree_clipper-0.1.6.tar.gz", hash = "sha256:3aa5b543da7534eaa98cbf931d274e7d9d7aeb63dd2d53fdf8233d272effe803", size = 37406, upload-time = "2026-02-26T01:59:46.316Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/1d/dab36efbc37366ff2af0922f245100833efe9941cc939e33e89c31ebb376/tree_clipper-0.1.6-py3-none-any.whl", hash = "sha256:5ab586f8d23b736c8b36870203c6a9124f0d9f099298bfbe5e7cc9c2314a5e34", size = 42934, upload-time = "2026-02-26T01:59:45.103Z" },
 ]
 
 [[package]]

@@ -7,8 +7,6 @@ from nodebpy import TreeBuilder, shader
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 
-from .snapshots import TreeBuilderSnapshotExtension
-
 CURRENT = Path(__file__).parent
 BLEND_DIR = CURRENT / "blend_files"
 JSON_DIR = CURRENT / "clippings"

@@ -392,7 +392,7 @@ def test_repeat(snapshot):
     assert snapshot == tree._repr_markdown_()
 
 
-def test_index_switch(snapshot_tree):
+def test_index_switch():
     with TreeBuilder() as tree:
         items = (g.Cube(), g.UVSphere(), g.Cube(), g.Cube())
         index = g.IndexSwitch.geometry(5, items)
@@ -469,7 +469,7 @@ def test_multi_menu():
         g.JoinGeometry([switch1, switch2]) >> tree.outputs.geometry("Output")
 
 
-def test_switch_repeatzone(snapshot_tree):
+def test_switch_repeatzone(snapshot):
     with TreeBuilder() as tree:
         input = tree.inputs.geometry()
         output = tree.outputs.geometry()
@@ -482,7 +482,7 @@ def test_switch_repeatzone(snapshot_tree):
 
     assert len(zone.output.items) == 1
     assert zone.output.i["Geometry"].socket.links[0].from_node == join.node
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
 def test_generate_select_group():
