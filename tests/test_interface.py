@@ -1459,6 +1459,7 @@ def test_matrix_socket_transform_direction():
     assert result.builder_node.i.direction.links[0].from_node == direction.node
     assert result.builder_node.i.transform.links[0].from_node == mat.node
 
+
 def test_object_methods():
     with g.tree() as tree:
         o = tree.inputs.object()
