@@ -28,16 +28,19 @@ from nodebpy.builder.socket import BaseSocket
 from ...builder import (
     BaseNode,
     BooleanSocket,
+    BooleanSocketGrid,
     BundleSocket,
     ClosureSocket,
     CollectionSocket,
     ColorSocket,
     DynamicInputsMixin,
     FloatSocket,
+    FloatSocketGrid,
     FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
+    IntegerSocketGrid,
     MaterialSocket,
     MatrixSocket,
     MenuSocket,
@@ -48,6 +51,7 @@ from ...builder import (
     StringSocket,
     TreeBuilder,
     VectorSocket,
+    VectorSocketGrid,
 )
 from ...builder import (
     Socket as SocketLinker,
@@ -2324,25 +2328,25 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     @classmethod
     def float(
         cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
-    ) -> "FieldToGrid[FloatSocket]":
+    ) -> "FieldToGrid[FloatSocketGrid]":
         return FieldToGrid(topology, items, data_type="FLOAT")
 
     @classmethod
     def integer(
         cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
-    ) -> "FieldToGrid[IntegerSocket]":
+    ) -> "FieldToGrid[IntegerSocketGrid]":
         return FieldToGrid(topology, items, data_type="INT")
 
     @classmethod
     def vector(
         cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
-    ) -> "FieldToGrid[VectorSocket]":
+    ) -> "FieldToGrid[VectorSocketGrid]":
         return FieldToGrid(topology, items, data_type="VECTOR")
 
     @classmethod
     def boolean(
         cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
-    ) -> "FieldToGrid[BooleanSocket]":
+    ) -> "FieldToGrid[BooleanSocketGrid]":
         return FieldToGrid(topology, items, data_type="BOOLEAN")
 
     @property

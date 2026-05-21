@@ -1,8 +1,10 @@
 import itertools
+from typing import cast
 
 import bpy
 import pytest
 from numpy import random
+from numpy.f2py.crackfortran import dimensionpattern
 
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
@@ -11,7 +13,9 @@ from nodebpy import shader as s
 from nodebpy.builder import (
     FloatSocket,
     FloatSocketGrid,
+    FloatSocketList,
     IntegerSocket,
+    IntegerSocketList,
     MatrixSocket,
     StringSocket,
     VectorSocket,
@@ -1562,3 +1566,48 @@ def test_string_split():
         norm = pos.normalize()
         assert isinstance(norm, VectorSocketList)
         assert norm.node.bl_idname == g.VectorMath._bl_idname
+
+
+def test_input_menu():
+    with g.tree():
+        menu = g.Menu()
+        switch = g.MenuSwitch.float(items={"a": 0.0, "b": 0.0, "c": 0.0})
+        assert menu.value == ""
+        menu >> switch
+        assert menu.value == ""
+        menu.value = "a"
+        assert menu.value == "a"
+
+
+def test_vector_dimensions():
+    with g.tree():
+        vec = g.Vector()
+        assert vec.vector_dimensions == 3
+        assert len(vec.o.vector) == 3
+        vec.vector_dimensions = 2
+        assert vec.vector_dimensions == 2
+        # assert len(vec.o.vector) == 2
+
+
+def test_field_to_list():
+    with g.tree():
+        ftl = g.FieldToList(10)
+        pos, idx, num = ftl.capture(
+            {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
+        )
+        assert len(ftl.node.list_items) == 3
+        assert isinstance(pos, VectorSocketList)
+        assert isinstance(idx, IntegerSocketList)
+        assert isinstance(num, FloatSocketList)
+
+
+def test_grid_methods():
+    with g.tree():
+        grid = g.CubeGridTopology().o.topology
+        trans = grid.transform
+        assert isinstance(trans, MatrixSocket)
+        assert trans.node.bl_idname == g.GridInfo._bl_idname
+
+        grid = cast(FloatSocketGrid, g.FieldToGrid().capture({"test": g.Float()})[0])
+        value = grid.background_value
+        assert isinstance(value, FloatSocket)

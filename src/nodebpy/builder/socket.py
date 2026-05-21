@@ -71,8 +71,7 @@ from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
     from ..nodes import compositor, geometry, shader
-    from ..nodes.geometry import GridInfo, IntegerMath, MatchString, Math
-    from ..nodes.geometry import ObjectInfo
+    from ..nodes.geometry import GridInfo, IntegerMath, MatchString, Math, ObjectInfo
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
@@ -286,7 +285,8 @@ class GridSocketMixin(Socket, Generic[_T]):
         from ..nodes.geometry import GridInfo
 
         self._assert_output("transform / background_value")
-        return GridInfo(self.socket, data_type=self.socket.type)  # ty: ignore[invalid-argument-type, invalid-return-type]
+        dtype = self.socket.type.replace("VALUE", "FLOAT")
+        return GridInfo(self.socket, data_type=dtype)  # ty: ignore[invalid-argument-type, invalid-return-type]
 
     @property
     def transform(
