@@ -41,8 +41,8 @@ def test_capture_attribute():
 
     assert "Capture Attribute" in tree.nodes
     assert len(cap._items) == 1
-    assert cap.node.outputs[1].name == "Position"
-    assert cap.node.outputs[1].type == "VECTOR"
+    assert cap.node.outputs[-2].name == "Position"
+    assert cap.node.outputs[-2].type == "VECTOR"
     assert cap.i.position.links
     assert len(cap.i.position.links) == 1
     assert cap.i.position.links[0].from_node.bl_idname == g.Position._bl_idname
