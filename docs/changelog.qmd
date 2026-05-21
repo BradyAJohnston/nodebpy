@@ -1,6 +1,15 @@
 ---
 title: Changelog
 ---
+## v0.19.0 - UNRELEASED
+
+### Enhancements
+- Added `leading()`, `trailling()` and `total()` methods from [`AccumulateField`](`~nodebpy.nodes.geometry.converter.AccumulateField`) node onto relevant sockets. Added to `Float`, `Vector`, `Integer` and `Matrix` sockets.
+
+### Fixed
+
+### Breaking Changes
+
 ## v0.18.0 - 2026-05-20
 
 ### Added
@@ -16,12 +25,6 @@ title: Changelog
         - `scale(transform_space="ORIGINAL")` — get the scale, returns `VectorSocket`
         - `geometry(as_instance=False, transform_space="ORIGINAL")` — get the geometry, returns `GeometrySocket`
 - Added `is_selected()` method to `MenuSwitch` - returns the `BooleanSocket` for the named menu item that is true when the item is selected
-
-### Fixed
--
-
-### Changed
--
 
 ## v0.17.0 - 2026-05-13
 

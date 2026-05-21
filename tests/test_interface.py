@@ -1459,6 +1459,47 @@ def test_matrix_socket_transform_direction():
     assert result.builder_node.i.direction.links[0].from_node == direction.node
     assert result.builder_node.i.transform.links[0].from_node == mat.node
 
+
+def test_accumulate_field_socket_methods():
+    with g.tree():
+        vec = g.Position().o.position
+        val = g.Value().o.value
+        int = g.Integer().o.integer
+        mat = g.CombineTransform().o.transform
+
+        acc = vec.point.leading()
+        node = acc.builder_node
+        assert isinstance(acc, VectorSocket)
+        assert acc.name == "Leading"
+        assert isinstance(node, g.AccumulateField)
+        assert node.data_type == "FLOAT_VECTOR"
+        assert node.domain == "POINT"
+
+        acc = val.edge.trailing()
+        node = acc.builder_node
+        assert isinstance(acc, FloatSocket)
+        assert acc.name == "Trailing"
+        assert isinstance(node, g.AccumulateField)
+        assert node.data_type == "FLOAT"
+        assert node.domain == "EDGE"
+
+        acc = int.face.total()
+        node = acc.builder_node
+        assert isinstance(acc, IntegerSocket)
+        assert acc.name == "Total"
+        assert isinstance(node, g.AccumulateField)
+        assert node.data_type == "INT"
+        assert node.domain == "FACE"
+
+        acc = mat.spline.trailing()
+        node = acc.builder_node
+        assert isinstance(acc, MatrixSocket)
+        assert acc.name == "Trailing"
+        assert isinstance(node, g.AccumulateField)
+        assert node.data_type == "TRANSFORM"
+        assert node.domain == "CURVE"
+
+
 def test_object_methods():
     with g.tree() as tree:
         o = tree.inputs.object()

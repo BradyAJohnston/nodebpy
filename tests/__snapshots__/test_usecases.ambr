@@ -42,6 +42,48 @@
   ```
   '''
 # ---
+# name: test_accumulate_along_spline
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Position"):::input-node
+      N1("Curve of Point"):::input-node
+      N2("Vector Math<br/><small>(ADD)</small>"):::vector-node
+      N3("Noise Texture<br/><small>×5</small>"):::texture-node
+      N4("Noise Texture<br/><small>×5</small>"):::texture-node
+      N5("Vector Math<br/><small>(SCALE)</small><br/><small>×0.2</small>"):::vector-node
+      N6("Vector Math<br/><small>(SCALE)</small><br/><small>×0.1</small>"):::vector-node
+      N7("Curve Line<br/><small>(0,0,1) (0,0,1)</small>"):::geometry-node
+      N8("Combine Transform"):::converter-node
+      N9("Duplicate Elements"):::geometry-node
+      N10("Random Value"):::converter-node
+      N11("Vector"):::input-node
+      N12("Accumulate Field"):::converter-node
+      N13("Resample Curve"):::geometry-node
+      N14("Transform Point"):::converter-node
+      N15("Set Position"):::geometry-node
+      N16("Group Output"):::default-node
+      N0 -->|"Position->Vector"| N2
+      N1 -->|"Curve Index->Vector"| N2
+      N2 -->|"Vector->Vector"| N3
+      N3 -->|"Color->Vector"| N5
+      N2 -->|"Vector->Vector"| N4
+      N4 -->|"Color->Vector"| N6
+      N5 -->|"Vector->Translation"| N8
+      N6 -->|"Vector->Rotation"| N8
+      N7 -->|"Curve->Geometry"| N9
+      N10 -->|"Value->Count"| N13
+      N9 -->|"Geometry->Curve"| N13
+      N8 -->|"Transform->Value"| N12
+      N11 -->|"Vector->Vector"| N14
+      N12 -->|"Trailing->Transform"| N14
+      N14 -->|"Vector->Position"| N15
+      N13 -->|"Curve->Geometry"| N15
+      N15 -->|"Geometry->Curve"| N16
+      N1 -->|"Curve Index->Group ID"| N12
+  ```
+  '''
+# ---
 # name: test_bundle_path_filter
   '''
   ```{mermaid}
