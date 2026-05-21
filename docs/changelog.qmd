@@ -26,6 +26,16 @@ title: Changelog
 ## v0.17.0 - 2026-05-13
 
 ### Enhancements
+- `HexColor` type added to `InputColor` — hex strings (`'#RRGGBB'` or `'#RRGGBBAA'`) can now be passed wherever a color input is accepted. Values are automatically converted from sRGB to linear color space before being applied to the socket.
+
+```py
+from nodebpy.types import HexColor
+
+mix = g.Mix.color(a_color=HexColor("#FF8000"))   # type-safe
+mix = g.Mix.color(a_color="#FF8000")             # also works at runtime
+mix = g.Mix.color(a_color="#FF8000CC")           # with explicit alpha
+```
+
 - New methods on `VectorSocket` for applying transforms:
     - `rotate(rotation)` — apply a `RotationSocket` via `RotateVector`, returns `VectorSocket`
     - `transform(matrix)` — apply a `MatrixSocket` via `TransformPoint`, returns `VectorSocket`
