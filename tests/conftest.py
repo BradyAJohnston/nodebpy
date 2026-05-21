@@ -90,9 +90,3 @@ def clean_and_save(request):
     ):
         name = name.replace(key, value)
     bpy.ops.wm.save_as_mainfile(filepath=str(BLEND_DIR / f"{name}.blend"))
-
-
-@pytest.fixture
-def snapshot_tree(snapshot):
-    """Fixture that provides tree snapshot functionality."""
-    return snapshot.with_defaults(extension_class=TreeBuilderSnapshotExtension)

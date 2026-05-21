@@ -79,6 +79,13 @@ if TYPE_CHECKING:
 
 _T = TypeVar("_T")
 _S = TypeVar("_S")
+_BoolResult = TypeVar(
+    "_BoolResult", "BooleanSocket", "BooleanSocketGrid", "BooleanSocketList"
+)
+_StringResult = TypeVar("_StringResult", "StringSocket", "StringSocketList")
+_IntegerResult = TypeVar(
+    "_IntegerResult", "IntegerSocket", "IntegerSocketGrid", "IntegerSocketList"
+)
 
 
 class QuaternionComponents(NamedTuple):
@@ -1470,8 +1477,8 @@ class _IntegerMixin(BaseSocket):
         def __ge__(self, other: Any) -> "Compare[IntegerSocket]": ...
 
 
-class _StringMixin(BaseSocket):
-    """Float-specific properties (.x, .y, .z) and dispatch."""
+class _StringMixin(BaseSocket, Generic[_StringResult, _BoolResult, _IntegerResult]):
+    """String-specific methods (match, slice, join, etc.)."""
 
     socket: NodeSocketString
 
@@ -1481,57 +1488,52 @@ class _StringMixin(BaseSocket):
 
         return MatchString
 
-    def split(self, separator: InputString = "") -> "_ListMixin[StringSocket]":
-        from ..nodes.geometry import SplitString
-
-        return SplitString(self.socket, separator=separator).o.list
-
-    def starts_with(self, search: InputString) -> "BooleanSocket":
+    def starts_with(self, search: InputString) -> _BoolResult:
         "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
         self._assert_output("starts_with")
-        return self._match(self.socket, "Starts With", search).o.result
+        return self._match(self.socket, "Starts With", search).o.result  # ty: ignore[invalid-return-type]
 
-    def ends_with(self, search: InputString) -> "BooleanSocket":
+    def ends_with(self, search: InputString) -> _BoolResult:
         "Create a MatchString[Ends With], return the result as a `BooleanSocket`."
         self._assert_output("ends_with")
-        return self._match(self.socket, "Ends With", search).o.result
+        return self._match(self.socket, "Ends With", search).o.result  # ty: ignore[invalid-return-type]
 
-    def contains(self, search: InputString) -> "BooleanSocket":
+    def contains(self, search: InputString) -> _BoolResult:
         "Create a MatchString[Contains], return the result as a `BooleanSocket`."
         self._assert_output("contains")
-        return self._match(self.socket, "Contains", search).o.result
+        return self._match(self.socket, "Contains", search).o.result  # ty: ignore[invalid-return-type]
 
     def slice(
         self, position: InputInteger = 0, length: InputInteger = 0
-    ) -> "StringSocket":
+    ) -> _StringResult:
         "Slice a given string from a starting position for a given length."
         self._assert_output("slice")
         from ..nodes.geometry import SliceString
 
-        return SliceString(self.socket, position, length).o.string
+        return SliceString(self.socket, position, length).o.string  # ty: ignore[invalid-return-type]
 
     def format(
         self, items: Mapping[str, InputString | InputInteger | InputFloat]
-    ) -> "StringSocket":
+    ) -> _StringResult:
         "Format a given string with the key-value items."
         self._assert_output("format")
         from ..nodes.geometry import FormatString
 
-        return FormatString(self.socket, items).o.string
+        return FormatString(self.socket, items).o.string  # ty: ignore[invalid-return-type]
 
-    def replace(self, find: InputString, replace: InputString) -> "StringSocket":
+    def replace(self, find: InputString, replace: InputString) -> "_StringResult":
         "Replace every match of the string with teh replacement string"
         self._assert_output("replace")
         from ..nodes.geometry import ReplaceString
 
-        return ReplaceString(self.socket, find, replace).o.string
+        return ReplaceString(self.socket, find, replace).o.string  # ty: ignore[invalid-return-type]
 
-    def length(self) -> "IntegerSocket":
+    def length(self) -> "_IntegerResult":
         "Compute the length of a string and return as `IntegerSocket`."
         self._assert_output("length")
         from ..nodes.geometry import StringLength
 
-        return StringLength(self.socket).o.length
+        return StringLength(self.socket).o.length  # ty: ignore[invalid-return-type]
 
     def find(self, search: InputString) -> FindResult:
         "Find where in a string a pattern occurs. Returns `(first_found, count)`."
@@ -1540,33 +1542,6 @@ class _StringMixin(BaseSocket):
 
         o = FindInString(self.socket, search).o
         return FindResult(o.first_found, o.count)
-
-    def join(
-        self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
-    ) -> "StringSocket":
-        """Join the input strings with this as the separator."""
-        self._assert_output("join")
-        from ..nodes.geometry import JoinStrings
-
-        return JoinStrings(strings, self.socket).o.string
-
-    def __add__(self, other: "StringSocket" | str) -> "StringSocket":
-        self._assert_output("+")
-        from ..nodes.geometry import JoinStrings, String
-
-        if isinstance(other, str):
-            other = String(other).o.string
-
-        return JoinStrings((self.socket, other)).o.string
-
-    def __radd__(self, other: str | "StringSocket") -> "StringSocket":
-        self._assert_output("+")
-        from ..nodes.geometry import JoinStrings, String
-
-        if isinstance(other, str):
-            other = String(other).o.string
-
-        return JoinStrings((other, self.socket)).o.string
 
     if TYPE_CHECKING:
 
@@ -1863,11 +1838,50 @@ class MatrixSocketList(_MatrixMixin, _ListMixin[MatrixSocket]):
     """List of matrix sockets."""
 
 
-class StringSocket(_StringMixin, _DefaultValueMixin[str], Socket):
+class StringSocket(
+    _StringMixin["StringSocket", "BooleanSocket", "IntegerSocket"],
+    _DefaultValueMixin[str],
+    Socket,
+):
     """Runtime string socket wrapper."""
 
+    def split(self, separator: InputString = "") -> "StringSocketList":
+        from ..nodes.geometry import SplitString
 
-class StringSocketList(_StringMixin, _ListMixin[StringSocket]):
+        return SplitString(self.socket, separator=separator).o.list
+
+    def join(
+        self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
+    ) -> "StringSocket":
+        """Join the input strings with this as the separator."""
+        self._assert_output("join")
+        from ..nodes.geometry import JoinStrings
+
+        return JoinStrings(strings, self.socket).o.string
+
+    def __add__(self, other: "StringSocket" | str) -> "StringSocket":
+        self._assert_output("+")
+        from ..nodes.geometry import JoinStrings, String
+
+        if isinstance(other, str):
+            other = String(other).o.string
+
+        return JoinStrings((self.socket, other)).o.string
+
+    def __radd__(self, other: str | "StringSocket") -> "StringSocket":
+        self._assert_output("+")
+        from ..nodes.geometry import JoinStrings, String
+
+        if isinstance(other, str):
+            other = String(other).o.string
+
+        return JoinStrings((other, self.socket)).o.string
+
+
+class StringSocketList(
+    _StringMixin["StringSocketList", "BooleanSocketList", "IntegerSocketList"],
+    _ListMixin[StringSocket],
+):
     """List of string sockets."""
 
 

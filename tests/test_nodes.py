@@ -4,7 +4,6 @@ from typing import cast
 import bpy
 import pytest
 from numpy import random
-from numpy.f2py.crackfortran import dimensionpattern
 
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
@@ -1610,4 +1609,7 @@ def test_grid_methods():
 
         grid = cast(FloatSocketGrid, g.FieldToGrid().capture({"test": g.Float()})[0])
         value = grid.background_value
+
+        g.String().o.string.split()
+
         assert isinstance(value, FloatSocket)
