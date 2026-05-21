@@ -1161,7 +1161,7 @@ class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
         def negate(self) -> Self: ...
 
 
-class _IntegerMixin(BaseSocket):
+class _IntegerMixin(BaseSocket, Generic[_FloatResult]):
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""
 
     socket: NodeSocketInt
@@ -1169,73 +1169,31 @@ class _IntegerMixin(BaseSocket):
     _tree: TreeBuilder
 
     @property
-    def point(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "point")
-
-    @property
-    def edge(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "edge")
-
-    @property
-    def face(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "face")
-
-    @property
-    def corner(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "corner")
-
-    @property
-    def spline(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "spline")
-
-    @property
-    def instance(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "instance")
-
-    @property
-    def layer(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "layer")
-
-    @property
     def _imath(self) -> "type[IntegerMath]":
         from ..nodes.geometry import IntegerMath
 
         return IntegerMath
 
-    def to_string(self) -> "StringSocket":
-        "Convert the `IntegerSocket` to a `StringSocket`."
-        self._assert_output("to_string")
-        from ..nodes.geometry import ValueToString
-
-        return ValueToString.integer(self.socket).o.string
-
-    def clamp(self, min: InputInteger = 0, max: InputInteger = 1) -> "IntegerSocket":
+    def clamp(self, min: InputInteger = 0, max: InputInteger = 1) -> Self:
         """Clamp the value to *[min, max]*."""
         self._assert_output("clamp")
         return self._imath.minimum(
             self._imath.maximum(self.socket, min).o.value, max
-        ).o.value
+        ).o.value  # ty: ignore[invalid-return-type]
 
-    def modulo(self, divisor: InputInteger) -> "IntegerSocket":
+    def modulo(self, divisor: InputInteger) -> Self:
         """Remainder after dividing by *divisor* (always non-negative)."""
         self._assert_output("modulo")
-        return self._imath.modulo(self.socket, divisor).o.value
+        return self._imath.modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
 
-    def sign(self) -> "IntegerSocket":
+    def sign(self) -> Self:
         "Return the sign of the IntegerSocket, either `-1`, `0`, or `1`."
         self._assert_output("sign")
-        return self._imath.sign(self.socket).o.value
+        return self._imath.sign(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def negate(self) -> "IntegerSocket":
+    def negate(self) -> Self:
         self._assert_output("negate")
-        return self._imath.negate(self.socket).o.value
+        return self._imath.negate(self.socket).o.value  # ty: ignore[invalid-return-type]
 
     if TYPE_CHECKING:
 
@@ -1256,42 +1214,40 @@ class _IntegerMixin(BaseSocket):
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "IntegerSocket | FloatSocket":
+    ) -> Self | _FloatResult:
         if self._is_geometry_tree and self._other_is_integer(other):
             from ..nodes.geometry.converter import IntegerMath
 
             values = (self.socket, other) if not reverse else (other, self.socket)
             return getattr(IntegerMath, operation)(*values).o.value
-        return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)
+        return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)  # ty: ignore[invalid-return-type]
 
-    def _dispatch_unary(self, operation: str) -> "IntegerSocket | FloatSocket":
+    def _dispatch_unary(self, operation: str) -> Self | _FloatResult:
         if self._is_geometry_tree:
             from ..nodes.geometry.converter import IntegerMath
 
             if operation == "negate":
-                return IntegerMath.negate(self.socket).o.value
+                return IntegerMath.negate(self.socket).o.value  # ty: ignore[invalid-return-type]
             elif operation == "absolute":
-                return IntegerMath.absolute(self.socket).o.value
-        return Socket._dispatch_unary(cast("Socket", self), operation)
+                return IntegerMath.absolute(self.socket).o.value  # ty: ignore[invalid-return-type]
+        return Socket._dispatch_unary(cast("Socket", self), operation)  # ty: ignore[invalid-return-type]
 
     def _dispatch_floordiv(
         self, other: Any, reverse: bool = False
-    ) -> "IntegerSocket | FloatSocket":
+    ) -> Self | _FloatResult:
         if self._is_geometry_tree and self._other_is_integer(other):
             from ..nodes.geometry.converter import IntegerMath
 
             values = (self.socket, other) if not reverse else (other, self.socket)
-            return IntegerMath.divide_floor(*values).o.value
-        return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
+            return IntegerMath.divide_floor(*values).o.value  # ty: ignore[invalid-return-type]
+        return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)  # ty: ignore[invalid-return-type]
 
-    def _dispatch_compare(
-        self, other: Any, operation: str
-    ) -> "BooleanSocket | FloatSocket":
+    def _dispatch_compare(self, other: Any, operation: str) -> Self | _FloatResult:
         if self._is_geometry_tree:
             from ..nodes.geometry.manual import Compare
 
             return getattr(Compare.integer, operation)(self.socket, other).o.result
-        return Socket._dispatch_compare(cast("Socket", self), other, operation)
+        return Socket._dispatch_compare(cast("Socket", self), other, operation)  # ty: ignore[invalid-return-type]
 
     if TYPE_CHECKING:
 
@@ -1697,11 +1653,64 @@ class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):
     """List of color sockets."""
 
 
-class IntegerSocket(_IntegerMixin, _DefaultValueMixin[int], Socket):
+class _IntegerConvertDatatypeMixin(Socket, Generic[_StringResult]):
+    def to_string(self) -> _StringResult:
+        "Convert the `IntegerSocket` to a `StringSocket`."
+        self._assert_output("to_string")
+        from ..nodes.geometry import ValueToString
+
+        return ValueToString.integer(self.socket).o.string  # ty: ignore[invalid-return-type]
+
+
+class IntegerSocket(
+    _IntegerMixin[FloatSocket],
+    _IntegerConvertDatatypeMixin["StringSocket"],
+    _DefaultValueMixin[int],
+    Socket,
+):
     """Runtime integer socket wrapper."""
 
+    @property
+    def point(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "point")
 
-class IntegerSocketList(_IntegerMixin, _ListMixin[IntegerSocket]):
+    @property
+    def edge(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "edge")
+
+    @property
+    def face(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "face")
+
+    @property
+    def corner(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "corner")
+
+    @property
+    def spline(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "spline")
+
+    @property
+    def instance(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "instance")
+
+    @property
+    def layer(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "layer")
+
+
+class IntegerSocketList(
+    _IntegerMixin["FloatSocket"],
+    _IntegerConvertDatatypeMixin["StringSocket"],
+    _ListMixin[IntegerSocket],
+):
     """List of integer sockets."""
 
 

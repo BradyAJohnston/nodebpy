@@ -19,7 +19,10 @@ from nodebpy.builder import (
     StringSocket,
     VectorSocket,
     VectorSocketGrid,
-    VectorSocketList, RotationSocketList, MatrixSocketList, StringSocketList,
+    VectorSocketList,
+    RotationSocketList,
+    MatrixSocketList,
+    StringSocketList,
 )
 from nodebpy.nodes.geometry import SplitString
 
