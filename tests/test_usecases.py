@@ -858,6 +858,7 @@ def test_accumulate_along_spline(snapshot):
             g.NoiseTexture(vector=pos).o.color * 0.1,
         ).o.transform
 
+
         (
             g.CurveLine()
             >> g.DuplicateElements.spline(amount=20)

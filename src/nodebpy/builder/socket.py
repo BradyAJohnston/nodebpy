@@ -279,7 +279,7 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
 
 
 class _EvaluateField(Generic[_T]):
-    """Domain-bound methods; `EvaluateOnDomain` and `EvaluateAtIndex`.
+    """Domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`.
 
     Access via a domain property (e.g. ``socket.point``). Provides field
     evaluation methods; subclasses add statistics for numeric socket types.
@@ -308,7 +308,7 @@ class _EvaluateField(Generic[_T]):
 
 
 class _AccumulateField(_EvaluateField[_T]):
-    """Extends `_EvaluateField` domain methods with `AccumulateField`."""
+    """Domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
 
     def _accumulate(
         self, output: Literal["leading", "trailing", "total"], group_index: InputInteger
@@ -336,7 +336,7 @@ class _AccumulateField(_EvaluateField[_T]):
 
 
 class _MinMaxField(_AccumulateField[_T]):
-    """Extends `_EvaluateField` with min/max from `FieldMinAndMax`."""
+    """Domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
 
     def _minmax(self, output: str, group_index: InputInteger) -> "_T":
         from ..nodes.geometry import FieldMinAndMax
@@ -354,7 +354,7 @@ class _MinMaxField(_AccumulateField[_T]):
 
 
 class _StatsField(_MinMaxField[_T]):
-    """Extends `_MinMaxField` with full statistics for Float and Vector sockets via `FieldAverage` and `FieldVariance`."""
+    """Domain-bound methods from `EvaluateAtIndex`, `EvaluateoOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
 
     def mean(self, group_index: InputInteger = None) -> "_T":
         from ..nodes.geometry import FieldAverage
@@ -434,30 +434,37 @@ class _VectorMixin(BaseSocket):
 
     @property
     def point(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "vector", "point")
 
     @property
     def edge(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "vector", "edge")
 
     @property
     def face(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "vector", "face")
 
     @property
     def corner(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "vector", "corner")
 
     @property
     def spline(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "vector", "spline")
 
     @property
     def instance(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "vector", "instance")
 
     @property
     def layer(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "vector", "layer")
 
     def dot(self, vector: InputVector) -> "FloatSocket":
@@ -941,30 +948,38 @@ class _BooleanMixin(BaseSocket):
 
     @property
     def point(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+
         return _EvaluateField(self.socket, "boolean", "point")
 
     @property
     def edge(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "boolean", "edge")
 
     @property
     def face(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "boolean", "face")
 
     @property
     def corner(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "boolean", "corner")
 
     @property
     def spline(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "boolean", "spline")
 
     @property
     def instance(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "boolean", "instance")
 
     @property
     def layer(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "boolean", "layer")
 
 
@@ -1021,30 +1036,37 @@ class _RotationMixin(BaseSocket):
 
     @property
     def point(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "quaternion", "point")
 
     @property
     def edge(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "quaternion", "edge")
 
     @property
     def face(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "quaternion", "face")
 
     @property
     def corner(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "quaternion", "corner")
 
     @property
     def spline(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "quaternion", "spline")
 
     @property
     def instance(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "quaternion", "instance")
 
     @property
     def layer(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
         return _EvaluateField(self.socket, "quaternion", "layer")
 
 
@@ -1104,30 +1126,37 @@ class _FloatMixin(BaseSocket):
 
     @property
     def point(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "float", "point")
 
     @property
     def edge(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "float", "edge")
 
     @property
     def face(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "float", "face")
 
     @property
     def corner(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "float", "corner")
 
     @property
     def spline(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "float", "spline")
 
     @property
     def instance(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "float", "instance")
 
     @property
     def layer(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
         return _StatsField(self.socket, "float", "layer")
 
     def map_range(
@@ -1237,30 +1266,37 @@ class _IntegerMixin(BaseSocket):
 
     @property
     def point(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
         return _MinMaxField(self.socket, "integer", "point")
 
     @property
     def edge(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
         return _MinMaxField(self.socket, "integer", "edge")
 
     @property
     def face(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
         return _MinMaxField(self.socket, "integer", "face")
 
     @property
     def corner(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
         return _MinMaxField(self.socket, "integer", "corner")
 
     @property
     def spline(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
         return _MinMaxField(self.socket, "integer", "spline")
 
     @property
     def instance(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
         return _MinMaxField(self.socket, "integer", "instance")
 
     @property
     def layer(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
         return _MinMaxField(self.socket, "integer", "layer")
 
     @property
@@ -1512,30 +1548,37 @@ class _MatrixMixin(BaseSocket):
 
     @property
     def point(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
         return _AccumulateField(self.socket, "matrix", "point")
 
     @property
     def edge(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
         return _AccumulateField(self.socket, "matrix", "edge")
 
     @property
     def face(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
         return _AccumulateField(self.socket, "matrix", "face")
 
     @property
     def corner(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
         return _AccumulateField(self.socket, "matrix", "corner")
 
     @property
     def spline(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
         return _AccumulateField(self.socket, "matrix", "spline")
 
     @property
     def instance(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
         return _AccumulateField(self.socket, "matrix", "instance")
 
     @property
     def layer(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
         return _AccumulateField(self.socket, "matrix", "layer")
 
     @overload
