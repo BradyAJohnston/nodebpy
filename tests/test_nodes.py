@@ -1611,6 +1611,6 @@ def test_grid_methods():
         value = grid.background_value
 
         list = g.FieldToList(10).capture({"test": g.Vector()})[0]
-        assert isinstance(list, StringSocketList)
+        assert isinstance(list, VectorSocketList)
 
         assert isinstance(value, FloatSocket)
