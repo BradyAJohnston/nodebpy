@@ -1610,6 +1610,7 @@ def test_grid_methods():
         grid = cast(FloatSocketGrid, g.FieldToGrid().capture({"test": g.Float()})[0])
         value = grid.background_value
 
-        g.String().o.string.split()
+        list = g.FieldToList(10).capture({"test": g.Vector()})[0]
+        assert isinstance(list, VectorSocketList)
 
         assert isinstance(value, FloatSocket)
