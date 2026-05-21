@@ -1,12 +1,21 @@
 ---
 title: Changelog
 ---
-## Unreleased
+## v0.18.0 - 2026-05-20
 
 ### Added
 - Pre-commit hooks for `ruff` and `ty` checks and auto-formatting.
 - `ty` type checking for the full `src/` directory for type safety
-
+- Convenience methods for `ObjectSocket` and `CollectionSocket`:
+    - `CollectionSocket`
+        - `instances(transform_space="ORIGINAL", separate_children=False, reset_children=False)` — import objects from the collection as instances, returns `GeometrySocket`
+    - `ObjectSocket`:
+        - `transform(transform_space="ORIGINAL")` — get the transform matrix, returns `MatrixSocket`
+        - `location(transform_space="ORIGINAL")` — get the location, returns `VectorSocket`
+        - `rotation(transform_space="ORIGINAL")` — get the rotation, returns `RotationSocket`
+        - `scale(transform_space="ORIGINAL")` — get the scale, returns `VectorSocket`
+        - `geometry(as_instance=False, transform_space="ORIGINAL")` — get the geometry, returns `GeometrySocket`
+- Added `is_selected()` method to `MenuSwitch` - returns the `BooleanSocket` for the named menu item that is true when the item is selected
 
 ### Fixed
 -

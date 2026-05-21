@@ -168,3 +168,79 @@
   ```
   '''
 # ---
+# name: test_mask_grid
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Object Info"):::input-node
+      N2("Collection Info"):::input-node
+      N3("Menu Switch"):::converter-node
+      N4("Realize Instances"):::geometry-node
+      N5("Mesh to Volume"):::geometry-node
+      N6("Get Named Grid"):::geometry-node
+      N7("Clip Field to Box"):::default-node
+      N8("Field to Grid"):::geometry-node
+      N9("Switch"):::converter-node
+      N10("Sample Grid"):::geometry-node
+      N11("Compare<br/><small>(GREATER_THAN)</small>"):::converter-node
+      N12("Switch"):::converter-node
+      N13("Boolean Math<br/><small>(NOT)</small>"):::converter-node
+      N14("Switch"):::converter-node
+      N15("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N16("Prune Grid"):::geometry-node
+      N17("Group Output"):::default-node
+      N0 -->|"Object->Object"| N1
+      N0 -->|"Collection->Collection"| N2
+      N1 -->|"Geometry->Object"| N3
+      N2 -->|"Instances->Collection"| N3
+      N0 -->|"Mesh->Mesh"| N3
+      N1 -->|"Geometry->Grid"| N3
+      N1 -->|"Geometry->Box"| N3
+      N0 -->|"With->Menu"| N3
+      N3 -->|"Output->Geometry"| N4
+      N4 -->|"Geometry->Mesh"| N5
+      N0 -->|"Mask Resolution->Voxel Size"| N5
+      N5 -->|"Volume->Volume"| N6
+      N0 -->|"Object->Box Object"| N7
+      N0 -->|"Grid->Topology"| N8
+      N7 -->|"Clipped Field->Mask"| N8
+      N3 -->|"Grid->Switch"| N9
+      N6 -->|"Grid->False"| N9
+      N0 -->|"Mask->True"| N9
+      N9 -->|"Output->Grid"| N10
+      N10 -->|"Value->A"| N11
+      N3 -->|"Box->Switch"| N12
+      N11 -->|"Result->False"| N12
+      N8 -->|"Mask->True"| N12
+      N12 -->|"Output->Boolean"| N13
+      N0 -->|"Invert->Switch"| N14
+      N12 -->|"Output->False"| N14
+      N13 -->|"Boolean->True"| N14
+      N0 -->|"Grid->Value"| N15
+      N14 -->|"Output->Value"| N15
+      N15 -->|"Value->Grid"| N16
+      N16 -->|"Grid->Masked Grid"| N17
+  ```
+  '''
+# ---
+# name: test_mask_grid.1
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Grid to Points"):::geometry-node
+      N2("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
+      N3("Boolean Math<br/><small>(OR)</small>"):::converter-node
+      N4("Delete Geometry"):::geometry-node
+      N5("Group Output"):::default-node
+      N0 -->|"Grid->Grid"| N1
+      N1 -->|"Value->A"| N2
+      N2 -->|"Result->Boolean"| N3
+      N1 -->|"Is Tile->Boolean"| N3
+      N1 -->|"Points->Geometry"| N4
+      N3 -->|"Boolean->Selection"| N4
+      N4 -->|"Geometry->Geometry"| N5
+  ```
+  '''
+# ---

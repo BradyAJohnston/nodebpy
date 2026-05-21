@@ -1,3 +1,4 @@
+from nodebpy.nodes.geometry import ObjectInfo
 from typing import cast, get_args
 
 import bpy
@@ -1457,3 +1458,29 @@ def test_matrix_socket_transform_direction():
     assert result.node.bl_idname == g.TransformDirection._bl_idname
     assert result.builder_node.i.direction.links[0].from_node == direction.node
     assert result.builder_node.i.transform.links[0].from_node == mat.node
+
+def test_object_methods():
+    with g.tree() as tree:
+        o = tree.inputs.object()
+
+        loc = o.location()
+        assert isinstance(loc, VectorSocket)
+        assert isinstance(loc.builder_node, ObjectInfo)
+
+        rot = o.rotation()
+        assert isinstance(rot, RotationSocket)
+        assert isinstance(rot.builder_node, ObjectInfo)
+
+        scale = o.scale()
+        assert isinstance(scale, VectorSocket)
+        assert isinstance(scale.builder_node, ObjectInfo)
+
+        assert loc.builder_node.transform_space == "ORIGINAL"
+        assert rot.builder_node.transform_space == "ORIGINAL"
+        assert scale.builder_node.transform_space == "ORIGINAL"
+        rot.builder_node.transform_space = "RELATIVE"
+        assert rot.builder_node.transform_space == "RELATIVE"
+        scale.builder_node.transform_space = "RELATIVE"
+        assert scale.builder_node.transform_space == "RELATIVE"
+        loc.builder_node.transform_space = "RELATIVE"
+        assert loc.builder_node.transform_space == "RELATIVE"
