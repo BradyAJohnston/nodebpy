@@ -92,37 +92,39 @@ _FloatResult = TypeVar(
 _VectorResult = TypeVar(
     "_VectorResult", "VectorSocket", "VectorSocketGrid", "VectorSocketList"
 )
+_RotationResult = TypeVar("_RotationResult", "RotationSocket", "RotationSocketList")
+_MatrixResult = TypeVar("_MatrixResult", "MatrixSocket", "MatrixSocketList")
 
 
-class QuaternionComponents(NamedTuple):
+class QuaternionComponents(NamedTuple, Generic[_FloatResult]):
     """Quaternion components returned by `RotationSocket.to_quaternion()`."""
 
-    w: "FloatSocket"
-    x: "FloatSocket"
-    y: "FloatSocket"
-    z: "FloatSocket"
+    w: "_FloatResult"
+    x: "_FloatResult"
+    y: "_FloatResult"
+    z: "_FloatResult"
 
 
-class AxisAngle(NamedTuple):
+class AxisAngle(NamedTuple, Generic[_FloatResult, _VectorResult]):
     """Axis-angle components returned by `RotationSocket.to_axis_angle()`."""
 
-    axis: "VectorSocket"
-    angle: "FloatSocket"
+    axis: "_VectorResult"
+    angle: "_FloatResult"
 
 
-class FindResult(NamedTuple):
+class FindResult(NamedTuple, Generic[_IntegerResult]):
     """Result of `StringSocket.find()`."""
 
-    first_found: "IntegerSocket"
-    count: "IntegerSocket"
+    first_found: _IntegerResult
+    count: _IntegerResult
 
 
-class SVDResult(NamedTuple):
+class SVDResult(NamedTuple, Generic[_MatrixResult, _VectorResult]):
     """SVD components returned by `MatrixSocket.svd()`."""
 
-    u: "MatrixSocket"
-    s: "VectorSocket"
-    v: "MatrixSocket"
+    u: "_MatrixResult"
+    s: "_VectorResult"
+    v: "_MatrixResult"
 
 
 class BaseSocket:
@@ -958,97 +960,53 @@ class _BooleanMixin(BaseSocket):
         return _BooleanSwitchSocketFactory(self.socket)
 
 
-class _RotationMixin(BaseSocket):
+class _RotationMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
     """Rotation-specific methods."""
 
     socket: NodeSocketRotation
 
-    def invert(self) -> "RotationSocket":
+    def invert(self) -> Self:
         "Invert the rotation of the socket."
         self._assert_output("invert")
         from ..nodes.geometry import InvertRotation
 
-        return InvertRotation._find_or_create_linked(self.socket).o.rotation
+        return InvertRotation._find_or_create_linked(self.socket).o.rotation  # ty: ignore[invalid-return-type]
 
     def rotate(
         self,
         rotation: InputRotation,
         rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
-    ) -> "RotationSocket":
+    ) -> Self:
         "Rotate this rotation by the given rotation in the specified rotation space."
         self._assert_output("rotate")
         from ..nodes.geometry import RotateRotation
 
         return RotateRotation(
             self.socket, rotation, rotation_space=rotation_space
-        ).o.rotation
+        ).o.rotation  # ty: ignore[invalid-return-type]
 
-    if TYPE_CHECKING:
-
-        def invert(self) -> Self: ...
-        def rotate(
-            self,
-            rotation: InputRotation,
-            rotation_space: Literal["GLOBAL", "LOCAL"] = ...,
-        ) -> Self: ...
-
-    def to_euler(self) -> "VectorSocket":
+    def to_euler(self) -> _VectorResult:
         "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
         self._assert_output("to_euler")
         from ..nodes.geometry.converter import RotationToEuler
 
-        return RotationToEuler._find_or_create_linked(self.socket).o.euler
+        return RotationToEuler._find_or_create_linked(self.socket).o.euler  # ty: ignore[invalid-return-type]
 
-    def to_quaternion(self) -> QuaternionComponents:
+    def to_quaternion(self) -> QuaternionComponents[_FloatResult]:
         "Decompose the rotation into quaternion components `(w, x, y, z)`."
         self._assert_output("to_quaternion")
         from ..nodes.geometry import RotationToQuaternion
 
         o = RotationToQuaternion._find_or_create_linked(self.socket).o
-        return QuaternionComponents(o.w, o.x, o.y, o.z)
+        return QuaternionComponents(o.w, o.x, o.y, o.z)  # ty: ignore[invalid-return-type]
 
-    def to_axis_angle(self) -> AxisAngle:
+    def to_axis_angle(self) -> AxisAngle[_FloatResult, _VectorResult]:
         "Decompose the rotation into axis-angle components `(axis, angle)`."
         self._assert_output("to_axis_angle")
         from ..nodes.geometry import RotationToAxisAngle
 
         o = RotationToAxisAngle(self.socket).o
-        return AxisAngle(o.axis, o.angle)
-
-    @property
-    def point(self) -> "_EvaluateField[RotationSocket]":
-        """RotationSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "quaternion", "point")
-
-    @property
-    def edge(self) -> "_EvaluateField[RotationSocket]":
-        """RotationSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "quaternion", "edge")
-
-    @property
-    def face(self) -> "_EvaluateField[RotationSocket]":
-        """RotationSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "quaternion", "face")
-
-    @property
-    def corner(self) -> "_EvaluateField[RotationSocket]":
-        """RotationSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "quaternion", "corner")
-
-    @property
-    def spline(self) -> "_EvaluateField[RotationSocket]":
-        """RotationSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "quaternion", "spline")
-
-    @property
-    def instance(self) -> "_EvaluateField[RotationSocket]":
-        """RotationSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "quaternion", "instance")
-
-    @property
-    def layer(self) -> "_EvaluateField[RotationSocket]":
-        """RotationSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "quaternion", "layer")
+        return AxisAngle(o.axis, o.angle)  # ty: ignore[invalid-return-type]
 
 
 class _FloatMixDataTypeFactory:
@@ -1413,13 +1371,13 @@ class _StringMixin(BaseSocket, Generic[_StringResult, _BooleanResult, _IntegerRe
 
         return StringLength(self.socket).o.length  # ty: ignore[invalid-return-type]
 
-    def find(self, search: InputString) -> FindResult:
+    def find(self, search: InputString) -> FindResult[_IntegerResult]:
         "Find where in a string a pattern occurs. Returns `(first_found, count)`."
         self._assert_output("find")
         from ..nodes.geometry import FindInString
 
         o = FindInString(self.socket, search).o
-        return FindResult(o.first_found, o.count)
+        return FindResult(o.first_found, o.count)  # ty: ignore[invalid-return-type]
 
     if TYPE_CHECKING:
 
@@ -1437,67 +1395,64 @@ class _StringMixin(BaseSocket, Generic[_StringResult, _BooleanResult, _IntegerRe
         def __radd__(self, other: str | "StringSocket") -> Self: ...
 
 
-class _MatrixMixin(BaseSocket):
+class _MatrixMixin(
+    BaseSocket, Generic[_VectorResult, _RotationResult, _FloatResult, _MatrixResult]
+):
     """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
 
     socket: NodeSocketMatrix
 
     @property
-    def translation(self) -> "VectorSocket":
+    def translation(self) -> _VectorResult:
         self._assert_output("translation")
         from ..nodes.geometry import SeparateTransform
 
-        return SeparateTransform._find_or_create_linked(self.socket).o.translation
+        return SeparateTransform._find_or_create_linked(self.socket).o.translation  # ty: ignore[invalid-return-type]
 
     @property
-    def rotation(self) -> "RotationSocket":
+    def rotation(self) -> _RotationResult:
         self._assert_output("rotation")
         from ..nodes.geometry import SeparateTransform
 
-        return SeparateTransform._find_or_create_linked(self.socket).o.rotation
+        return SeparateTransform._find_or_create_linked(self.socket).o.rotation  # ty: ignore[invalid-return-type]
 
     @property
-    def scale(self) -> "VectorSocket":
+    def scale(self) -> _VectorResult:
         self._assert_output("scale")
         from ..nodes.geometry import SeparateTransform
 
-        return SeparateTransform._find_or_create_linked(self.socket).o.scale
+        return SeparateTransform._find_or_create_linked(self.socket).o.scale  # ty: ignore[invalid-return-type]
 
-    def determinant(self) -> "FloatSocket":
+    def determinant(self) -> _FloatResult:
         "Compute the determinant of a matrix input and return as a `FloatSocket`"
         self._assert_output("determinant")
         from ..nodes.geometry import MatrixDeterminant
 
-        return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
+        return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant  # ty: ignore[invalid-return-type]
 
-    def invert(self) -> "MatrixSocket":
+    def invert(self) -> Self:
         "Invert the `MatrixSocet` and return a `MatrixSocket`"
         self._assert_output("invert")
         from ..nodes.geometry import InvertMatrix
 
-        return InvertMatrix._find_or_create_linked(self.socket).o.matrix
+        return InvertMatrix._find_or_create_linked(self.socket).o.matrix  # ty: ignore[invalid-return-type]
 
-    def transpose(self) -> "MatrixSocket":
+    def transpose(self) -> Self:
         "Transpose the `MatrixSocket` and return a `MatrixSocket`"
         self._assert_output("transpose")
         from ..nodes.geometry import TransposeMatrix
 
-        return TransposeMatrix._find_or_create_linked(self.socket).o.matrix
+        return TransposeMatrix._find_or_create_linked(self.socket).o.matrix  # ty: ignore[invalid-return-type]
 
-    if TYPE_CHECKING:
-
-        def invert(self) -> Self: ...
-        def transpose(self) -> Self: ...
-
-    def svd(self) -> SVDResult:
+    def svd(self) -> SVDResult[_MatrixResult, _VectorResult]:
         "Decompose the matrix via SVD. Returns `(u, s, v)`."
         self._assert_output("svd")
         from ..nodes.geometry import MatrixSVD
 
         o = MatrixSVD(self.socket).o
-        return SVDResult(o.u, o.s, o.v)
+        return SVDResult(o.u, o.s, o.v)  # ty: ignore[invalid-return-type]
 
-    def transform_direction(self, direction: InputVector) -> "VectorSocket":
+    def transform_direction(self, direction: InputVector) -> _VectorResult:
         """Apply this matrix to *direction*, ignoring translation.
 
         Use this instead of ``transform()`` when transforming a direction vector
@@ -1506,42 +1461,7 @@ class _MatrixMixin(BaseSocket):
         self._assert_output("transform_direction")
         from ..nodes.geometry import TransformDirection
 
-        return TransformDirection(direction, self.socket).o.direction
-
-    @property
-    def point(self) -> "_AccumulateField[MatrixSocket]":
-        """MatrixSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
-        return _AccumulateField(self.socket, "matrix", "point")
-
-    @property
-    def edge(self) -> "_AccumulateField[MatrixSocket]":
-        """MatrixSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
-        return _AccumulateField(self.socket, "matrix", "edge")
-
-    @property
-    def face(self) -> "_AccumulateField[MatrixSocket]":
-        """MatrixSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
-        return _AccumulateField(self.socket, "matrix", "face")
-
-    @property
-    def corner(self) -> "_AccumulateField[MatrixSocket]":
-        """MatrixSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
-        return _AccumulateField(self.socket, "matrix", "corner")
-
-    @property
-    def spline(self) -> "_AccumulateField[MatrixSocket]":
-        """MatrixSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
-        return _AccumulateField(self.socket, "matrix", "spline")
-
-    @property
-    def instance(self) -> "_AccumulateField[MatrixSocket]":
-        """MatrixSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
-        return _AccumulateField(self.socket, "matrix", "instance")
-
-    @property
-    def layer(self) -> "_AccumulateField[MatrixSocket]":
-        """MatrixSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
-        return _AccumulateField(self.socket, "matrix", "layer")
+        return TransformDirection(direction, self.socket).o.direction  # ty: ignore[invalid-return-type]
 
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
@@ -1837,19 +1757,100 @@ class BooleanSocketGrid(_BooleanMixin, GridSocketMixin[BooleanSocket]):
     """Runtime boolean grid socket wrapper."""
 
 
-class RotationSocket(_RotationMixin, _DefaultValueMixin[Euler], Socket):
+class RotationSocket(
+    _RotationMixin["FloatSocket", "VectorSocket"], _DefaultValueMixin[Euler], Socket
+):
     """Runtime rotation socket wrapper."""
 
+    @property
+    def point(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "quaternion", "point")
 
-class RotationSocketList(RotationSocket, _ListMixin[RotationSocket]):
+    @property
+    def edge(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "quaternion", "edge")
+
+    @property
+    def face(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "quaternion", "face")
+
+    @property
+    def corner(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "quaternion", "corner")
+
+    @property
+    def spline(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "quaternion", "spline")
+
+    @property
+    def instance(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "quaternion", "instance")
+
+    @property
+    def layer(self) -> "_EvaluateField[RotationSocket]":
+        """RotationSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "quaternion", "layer")
+
+
+class RotationSocketList(
+    _RotationMixin["FloatSocketList", "VectorSocketList"], _ListMixin[RotationSocket]
+):
     """List of rotation sockets."""
 
 
-class MatrixSocket(_MatrixMixin, Socket):
+class MatrixSocket(
+    _MatrixMixin[VectorSocket, RotationSocket, FloatSocket, "MatrixSocket"], Socket
+):
     """Runtime matrix socket wrapper."""
 
+    @property
+    def point(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
+        return _AccumulateField(self.socket, "matrix", "point")
 
-class MatrixSocketList(_MatrixMixin, _ListMixin[MatrixSocket]):
+    @property
+    def edge(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
+        return _AccumulateField(self.socket, "matrix", "edge")
+
+    @property
+    def face(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
+        return _AccumulateField(self.socket, "matrix", "face")
+
+    @property
+    def corner(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
+        return _AccumulateField(self.socket, "matrix", "corner")
+
+    @property
+    def spline(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
+        return _AccumulateField(self.socket, "matrix", "spline")
+
+    @property
+    def instance(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
+        return _AccumulateField(self.socket, "matrix", "instance")
+
+    @property
+    def layer(self) -> "_AccumulateField[MatrixSocket]":
+        """MatrixSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
+        return _AccumulateField(self.socket, "matrix", "layer")
+
+
+class MatrixSocketList(
+    _MatrixMixin[
+        VectorSocketList, RotationSocketList, FloatSocketList, "MatrixSocketList"
+    ],
+    _ListMixin[MatrixSocket],
+):
     """List of matrix sockets."""
 
 

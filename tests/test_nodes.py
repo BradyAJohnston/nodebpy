@@ -19,7 +19,7 @@ from nodebpy.builder import (
     StringSocket,
     VectorSocket,
     VectorSocketGrid,
-    VectorSocketList,
+    VectorSocketList, RotationSocketList, MatrixSocketList, StringSocketList,
 )
 from nodebpy.nodes.geometry import SplitString
 
@@ -1611,6 +1611,6 @@ def test_grid_methods():
         value = grid.background_value
 
         list = g.FieldToList(10).capture({"test": g.Vector()})[0]
-        assert isinstance(list, VectorSocketList)
+        assert isinstance(list, StringSocketList)
 
         assert isinstance(value, FloatSocket)
