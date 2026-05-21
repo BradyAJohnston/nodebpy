@@ -934,69 +934,28 @@ class _BooleanSwitchSocketFactory:
         return self._switch.sound(self._socket, false, true).o.output
 
 
-class _BooleanMixin(BaseSocket):
+class _BooleanMixin(Socket, Generic[_BooleanResult]):
     """Boolean-specific operator overrides — routes directly through BooleanMath."""
 
     socket: NodeSocketBool
 
-    def __or__(self, other: Any) -> "BooleanSocket":
+    def __or__(self, other: Any) -> _BooleanResult:
         self._assert_output("|")
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_or(self.socket, other).o.boolean
+        return BooleanMath.l_or(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
 
-    def __and__(self, other: Any) -> "BooleanSocket":
+    def __and__(self, other: Any) -> _BooleanResult:
         self._assert_output("&")
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_and(self.socket, other).o.boolean
-
-    if TYPE_CHECKING:
-
-        def __or__(self, other: Any) -> Self: ...
-        def __and__(self, other: Any) -> Self: ...
+        return BooleanMath.l_and(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
 
     @property
     def switch(self) -> "_BooleanSwitchSocketFactory":
         "Creat a Switch node with this boolean as the `switch` input."
         self._assert_output("switch")
         return _BooleanSwitchSocketFactory(self.socket)
-
-    @property
-    def point(self) -> "_EvaluateField[BooleanSocket]":
-        """BooleanSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-
-        return _EvaluateField(self.socket, "boolean", "point")
-
-    @property
-    def edge(self) -> "_EvaluateField[BooleanSocket]":
-        """BooleanSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "boolean", "edge")
-
-    @property
-    def face(self) -> "_EvaluateField[BooleanSocket]":
-        """BooleanSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "boolean", "face")
-
-    @property
-    def corner(self) -> "_EvaluateField[BooleanSocket]":
-        """BooleanSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "boolean", "corner")
-
-    @property
-    def spline(self) -> "_EvaluateField[BooleanSocket]":
-        """BooleanSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "boolean", "spline")
-
-    @property
-    def instance(self) -> "_EvaluateField[BooleanSocket]":
-        """BooleanSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "boolean", "instance")
-
-    @property
-    def layer(self) -> "_EvaluateField[BooleanSocket]":
-        """BooleanSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
-        return _EvaluateField(self.socket, "boolean", "layer")
 
 
 class _RotationMixin(BaseSocket):
@@ -1122,7 +1081,7 @@ class _FloatMixDataTypeFactory:
         return self._mix.rotation(self._socket, a, b).o.result_rotation
 
 
-class _FloatMixin(BaseSocket):
+class _FloatMixin(BaseSocket, Generic[_FloatResult, _IntegerResult]):
     """Float-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketFloat
@@ -1139,41 +1098,6 @@ class _FloatMixin(BaseSocket):
         self._assert_output("mix")
         return _FloatMixDataTypeFactory(self.socket)
 
-    @property
-    def point(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "point")
-
-    @property
-    def edge(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "edge")
-
-    @property
-    def face(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "face")
-
-    @property
-    def corner(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "corner")
-
-    @property
-    def spline(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "spline")
-
-    @property
-    def instance(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "instance")
-
-    @property
-    def layer(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "layer")
-
     def map_range(
         self,
         from_min: InputFloat = 0.0,
@@ -1186,7 +1110,7 @@ class _FloatMixin(BaseSocket):
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
         ] = "LINEAR",
         steps: InputFloat = 4.0,
-    ) -> "FloatSocket":
+    ) -> "_FloatResult":
         """Remap the values on the float socket using the MapRange node."""
         self._assert_output("map_range")
         from ..nodes.geometry import MapRange
@@ -1196,71 +1120,71 @@ class _FloatMixin(BaseSocket):
         node.interpolation_type = interpolation_type
         if interpolation_type == "STEPPED":
             node._establish_links(steps=steps)
-        return node.o.result
+        return node.o.result  # ty: ignore[invalid-return-type]
 
-    def clamp(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> "FloatSocket":
+    def clamp(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> "_FloatResult":
         """Clamp the value to *[min, max]*. Defaults to the unit interval ``[0, 1]``."""
         self._assert_output("clamp")
         from ..nodes.geometry import Clamp
 
-        return Clamp.min_max(self.socket, min, max).o.result
+        return Clamp.min_max(self.socket, min, max).o.result  # ty: ignore[invalid-return-type]
 
-    def sqrt(self) -> "FloatSocket":
+    def sqrt(self) -> "_FloatResult":
         """Return the square root of this value."""
         self._assert_output("sqrt")
-        return self._math.square_root(self.socket).o.value
+        return self._math.square_root(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def power(self, exponent: InputFloat) -> "FloatSocket":
+    def power(self, exponent: InputFloat) -> "_FloatResult":
         """Raise this value to *exponent*."""
         self._assert_output("power")
-        return self._math.power(self.socket, exponent).o.value
+        return self._math.power(self.socket, exponent).o.value  # ty: ignore[invalid-return-type]
 
-    def floor(self) -> "FloatSocket":
+    def floor(self) -> "_FloatResult":
         """Round down to the nearest integer."""
         self._assert_output("floor")
-        return self._math.floor(self.socket).o.value
+        return self._math.floor(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def ceil(self) -> "FloatSocket":
+    def ceil(self) -> "_FloatResult":
         """Round up to the nearest integer."""
         self._assert_output("ceil")
-        return self._math.ceil(self.socket).o.value
+        return self._math.ceil(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def round(self) -> "FloatSocket":
+    def round(self) -> "_FloatResult":
         """Round to the nearest integer."""
         self._assert_output("round")
-        return self._math.round(self.socket).o.value
+        return self._math.round(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def modulo(self, divisor: InputFloat) -> "FloatSocket":
+    def modulo(self, divisor: InputFloat) -> "_FloatResult":
         """Floored modulo — remainder after dividing by *divisor*, always non-negative."""
         self._assert_output("modulo")
-        return self._math.floored_modulo(self.socket, divisor).o.value
+        return self._math.floored_modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
 
-    def wrap(self, min: InputFloat, max: InputFloat) -> "FloatSocket":
+    def wrap(self, min: InputFloat, max: InputFloat) -> "_FloatResult":
         """Wrap the value into the *[min, max]* range, repeating cyclically."""
         self._assert_output("wrap")
         # the wrap method has different order of arguments with max being first
         # compared to other nodes that are defined.
-        return self._math.wrap(self.socket, value_001=max, value_002=min).o.value
+        return self._math.wrap(self.socket, value_001=max, value_002=min).o.value  # ty: ignore[invalid-return-type]
 
-    def to_radians(self) -> "FloatSocket":
+    def to_radians(self) -> "_FloatResult":
         """Convert degrees to radians."""
         self._assert_output("to_radians")
-        return self._math.to_radians(self.socket).o.value
+        return self._math.to_radians(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def to_degrees(self) -> "FloatSocket":
+    def to_degrees(self) -> "_FloatResult":
         """Convert radians to degrees."""
         self._assert_output("to_degrees")
-        return self._math.to_degrees(self.socket).o.value
+        return self._math.to_degrees(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def sign(self) -> "FloatSocket":
+    def sign(self) -> "_FloatResult":
         "Return the sign of the FloatSocket, eithe `-1`, `0` or `1`."
         self._assert_output("sign")
-        return self._math.sign(self.socket).o.value
+        return self._math.sign(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def negate(self) -> "FloatSocket":
+    def negate(self) -> "_FloatResult":
         "Negate the `FloatSocket` by multiplying the value by `-1`."
         self._assert_output("negate")
-        return self._math.multiply(self.socket, -1).o.value
+        return self._math.multiply(self.socket, -1).o.value  # ty: ignore[invalid-return-type]
 
     if TYPE_CHECKING:
 
@@ -1277,22 +1201,6 @@ class _FloatMixin(BaseSocket):
         def to_degrees(self) -> Self: ...
         def sign(self) -> Self: ...
         def negate(self) -> Self: ...
-
-    def to_string(self, decimals: InputInteger = 0) -> "StringSocket":
-        "Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places"
-        self._assert_output("to_string")
-        from ..nodes.geometry import ValueToString
-
-        return ValueToString.float(self.socket, decimals).o.string
-
-    def to_integer(
-        self, rounding_mode: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"] = "ROUND"
-    ) -> "IntegerSocket":
-        "Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part."
-        self._assert_output("to_integer")
-        from ..nodes.geometry import FloatToInteger
-
-        return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer
 
 
 class _IntegerMixin(BaseSocket):
@@ -1722,15 +1630,79 @@ class _DefaultValueMixin(Generic[_T]):
         self.socket.default_value = value  # ty: ignore[unresolved-attribute]
 
 
-class FloatSocket(_FloatMixin, _DefaultValueMixin[float], Socket):
+class _FloatConvertDatatypeMixin(Socket, Generic[_IntegerResult, _StringResult]):
+    def to_string(self, decimals: InputInteger = 0) -> "_StringResult":
+        "Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places"
+        self._assert_output("to_string")
+        from ..nodes.geometry import ValueToString
+
+        return ValueToString.float(self.socket, decimals).o.string  # ty: ignore[invalid-return-type]
+
+    def to_integer(
+        self, rounding_mode: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"] = "ROUND"
+    ) -> "_IntegerResult":
+        "Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part."
+        self._assert_output("to_integer")
+        from ..nodes.geometry import FloatToInteger
+
+        return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer  # ty: ignore[invalid-return-type]
+
+
+class FloatSocket(
+    _FloatMixin["FloatSocket", "IntegerSocket"],
+    _FloatConvertDatatypeMixin["IntegerSocket", "StringSocket"],
+    _DefaultValueMixin[float],
+    Socket,
+):
     """Runtime float socket wrapper."""
 
+    @property
+    def point(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "point")
 
-class FloatSocketList(_FloatMixin, _ListMixin[FloatSocket]):
+    @property
+    def edge(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "edge")
+
+    @property
+    def face(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "face")
+
+    @property
+    def corner(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "corner")
+
+    @property
+    def spline(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "spline")
+
+    @property
+    def instance(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "instance")
+
+    @property
+    def layer(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "layer")
+
+
+class FloatSocketList(
+    _FloatMixin["FloatSocketList", "IntegerSocketList"],
+    _FloatConvertDatatypeMixin["IntegerSocketList", "StringSocketList"],
+    _ListMixin[FloatSocket],
+):
     """"""
 
 
-class FloatSocketGrid(_FloatMixin, GridSocketMixin[FloatSocket]):
+class FloatSocketGrid(
+    _FloatMixin["FloatSocketGrid", "IntegerSocketGrid"], GridSocketMixin[FloatSocket]
+):
     """Runtime float grid socket wrapper."""
 
 
@@ -1819,15 +1791,51 @@ class IntegerSocketGrid(_IntegerMixin, GridSocketMixin[IntegerSocket]):
     """Runtime integer grid socket wrapper."""
 
 
-class BooleanSocket(_BooleanMixin, _DefaultValueMixin[bool], Socket):
+class BooleanSocket(_BooleanMixin["BooleanSocket"], _DefaultValueMixin[bool]):
     """Runtime boolean socket wrapper."""
 
+    @property
+    def point(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
 
-class BooleanSocketList(_BooleanMixin, _ListMixin[BooleanSocket]):
+        return _EvaluateField(self.socket, "boolean", "point")
+
+    @property
+    def edge(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "boolean", "edge")
+
+    @property
+    def face(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "boolean", "face")
+
+    @property
+    def corner(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "boolean", "corner")
+
+    @property
+    def spline(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "boolean", "spline")
+
+    @property
+    def instance(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "boolean", "instance")
+
+    @property
+    def layer(self) -> "_EvaluateField[BooleanSocket]":
+        """BooleanSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "boolean", "layer")
+
+
+class BooleanSocketList(_BooleanMixin["BooleanSocketList"], _ListMixin[BooleanSocket]):
     """List of boolean sockets."""
 
 
-class BooleanSocketGrid(_BooleanMixin, GridSocketMixin[BooleanSocket]):
+class BooleanSocketGrid(_BooleanMixin[BooleanSocket], GridSocketMixin[BooleanSocket]):
     """Runtime boolean grid socket wrapper."""
 
 

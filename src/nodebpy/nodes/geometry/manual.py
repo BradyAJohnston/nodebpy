@@ -53,9 +53,7 @@ from ...builder import (
     VectorSocket,
     VectorSocketGrid,
 )
-from ...builder import (
-    Socket as SocketLinker,
-)
+from ...builder import Socket as SocketLinker
 from ...types import (
     SOCKET_TYPES,
     InputAny,
