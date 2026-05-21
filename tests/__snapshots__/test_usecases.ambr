@@ -1,4 +1,47 @@
 # serializer version: 1
+# name: test_ClipFieldToBox
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Object Info"):::input-node
+      N2("Position"):::input-node
+      N3("Invert Matrix"):::converter-node
+      N4("Transform Point"):::converter-node
+      N5("Vector Math<br/><small>(SCALE)</small><br/><small>×0.5</small>"):::vector-node
+      N6("Separate XYZ"):::converter-node
+      N7("Math<br/><small>(ABSOLUTE)</small>"):::converter-node
+      N8("Math<br/><small>(ABSOLUTE)</small>"):::converter-node
+      N9("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
+      N10("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
+      N11("Math<br/><small>(ABSOLUTE)</small>"):::converter-node
+      N12("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N13("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
+      N14("Boolean Math<br/><small>(AND)</small>"):::converter-node
+      N15("Compare<br/><small>(NOT_EQUAL)</small>"):::converter-node
+      N16("Group Output"):::default-node
+      N0 -->|"Box Object->Object"| N1
+      N1 -->|"Transform->Matrix"| N3
+      N2 -->|"Position->Vector"| N4
+      N3 -->|"Matrix->Transform"| N4
+      N4 -->|"Vector->Vector"| N5
+      N5 -->|"Vector->Vector"| N6
+      N6 -->|"X->Value"| N7
+      N7 -->|"Value->A"| N9
+      N6 -->|"Y->Value"| N8
+      N8 -->|"Value->A"| N10
+      N9 -->|"Result->Boolean"| N12
+      N10 -->|"Result->Boolean"| N12
+      N11 -->|"Value->A"| N13
+      N12 -->|"Boolean->Boolean"| N14
+      N13 -->|"Result->Boolean"| N14
+      N14 -->|"Boolean->A"| N15
+      N15 -->|"Result->Clipped Field"| N16
+      N0 -->|"Invert->B"| N15
+      N6 -->|"Z->Value"| N11
+  ```
+  '''
+# ---
 # name: test_accumulate_along_spline
   '''
   ```{mermaid}
