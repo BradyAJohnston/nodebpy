@@ -846,3 +846,23 @@ def test_style_density_iso():
         )
 
         geom >> tree.outputs.geometry("Geometry")
+
+
+def test_accumulate_along_spline():
+    with g.tree("Accumulate Along Spline") as tree:
+        id = g.CurveOfPoint().o.curve_index
+        pos = g.Position() + id
+        transform = g.CombineTransform(
+            g.NoiseTexture(vector=pos).o.color * 0.2,
+            g.NoiseTexture(vector=pos).o.color * 0.1,
+        ).o.transform
+
+        (
+            g.CurveLine()
+            >> g.DuplicateElements.spline(amount=20)
+            >> g.ResampleCurve(count=10, mode="Count")
+            >> g.SetPosition(
+                position=transform.point.trailing(id) @ g.Vector().o.vector
+            )
+            >> tree.outputs.geometry("Curve")
+        )
