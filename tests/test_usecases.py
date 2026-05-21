@@ -858,7 +858,6 @@ def test_accumulate_along_spline(snapshot):
             g.NoiseTexture(vector=pos).o.color * 0.1,
         ).o.transform
 
-
         (
             g.CurveLine()
             >> g.DuplicateElements.spline(amount=20)
@@ -872,6 +871,7 @@ def test_accumulate_along_spline(snapshot):
         )
 
     assert snapshot == tree._repr_markdown_()
+
 
 def test_ClipFieldToBox(snapshot):
     with g.tree():

@@ -1459,8 +1459,9 @@ def test_matrix_socket_transform_direction():
     assert result.builder_node.i.direction.links[0].from_node == direction.node
     assert result.builder_node.i.transform.links[0].from_node == mat.node
 
+
 def test_accumulate_field_socket_methods():
-    with g.tree() as tree:
+    with g.tree():
         vec = g.Position().o.position
         val = g.Value().o.value
         int = g.Integer().o.integer
@@ -1497,6 +1498,7 @@ def test_accumulate_field_socket_methods():
         assert isinstance(node, g.AccumulateField)
         assert node.data_type == "TRANSFORM"
         assert node.domain == "CURVE"
+
 
 def test_object_methods():
     with g.tree() as tree:
