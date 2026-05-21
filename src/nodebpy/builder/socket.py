@@ -934,18 +934,18 @@ class _BooleanSwitchSocketFactory:
         return self._switch.sound(self._socket, false, true).o.output
 
 
-class _BooleanMixin(Socket, Generic[_BooleanResult]):
+class _BooleanMixin(BaseSocket):
     """Boolean-specific operator overrides — routes directly through BooleanMath."""
 
     socket: NodeSocketBool
 
-    def __or__(self, other: Any) -> _BooleanResult:
+    def __or__(self, other: Any) -> Self:
         self._assert_output("|")
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_or(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
 
-    def __and__(self, other: Any) -> _BooleanResult:
+    def __and__(self, other: Any) -> Self:
         self._assert_output("&")
         from ..nodes.geometry.converter import BooleanMath
 
@@ -1081,7 +1081,7 @@ class _FloatMixDataTypeFactory:
         return self._mix.rotation(self._socket, a, b).o.result_rotation
 
 
-class _FloatMixin(BaseSocket, Generic[_FloatResult, _IntegerResult]):
+class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
     """Float-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketFloat
@@ -1110,7 +1110,7 @@ class _FloatMixin(BaseSocket, Generic[_FloatResult, _IntegerResult]):
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
         ] = "LINEAR",
         steps: InputFloat = 4.0,
-    ) -> "_FloatResult":
+    ) -> Self:
         """Remap the values on the float socket using the MapRange node."""
         self._assert_output("map_range")
         from ..nodes.geometry import MapRange
@@ -1122,66 +1122,66 @@ class _FloatMixin(BaseSocket, Generic[_FloatResult, _IntegerResult]):
             node._establish_links(steps=steps)
         return node.o.result  # ty: ignore[invalid-return-type]
 
-    def clamp(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> "_FloatResult":
+    def clamp(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> Self:
         """Clamp the value to *[min, max]*. Defaults to the unit interval ``[0, 1]``."""
         self._assert_output("clamp")
         from ..nodes.geometry import Clamp
 
         return Clamp.min_max(self.socket, min, max).o.result  # ty: ignore[invalid-return-type]
 
-    def sqrt(self) -> "_FloatResult":
+    def sqrt(self) -> Self:
         """Return the square root of this value."""
         self._assert_output("sqrt")
         return self._math.square_root(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def power(self, exponent: InputFloat) -> "_FloatResult":
+    def power(self, exponent: InputFloat) -> Self:
         """Raise this value to *exponent*."""
         self._assert_output("power")
         return self._math.power(self.socket, exponent).o.value  # ty: ignore[invalid-return-type]
 
-    def floor(self) -> "_FloatResult":
+    def floor(self) -> Self:
         """Round down to the nearest integer."""
         self._assert_output("floor")
         return self._math.floor(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def ceil(self) -> "_FloatResult":
+    def ceil(self) -> Self:
         """Round up to the nearest integer."""
         self._assert_output("ceil")
         return self._math.ceil(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def round(self) -> "_FloatResult":
+    def round(self) -> Self:
         """Round to the nearest integer."""
         self._assert_output("round")
         return self._math.round(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def modulo(self, divisor: InputFloat) -> "_FloatResult":
+    def modulo(self, divisor: InputFloat) -> Self:
         """Floored modulo — remainder after dividing by *divisor*, always non-negative."""
         self._assert_output("modulo")
         return self._math.floored_modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
 
-    def wrap(self, min: InputFloat, max: InputFloat) -> "_FloatResult":
+    def wrap(self, min: InputFloat, max: InputFloat) -> Self:
         """Wrap the value into the *[min, max]* range, repeating cyclically."""
         self._assert_output("wrap")
         # the wrap method has different order of arguments with max being first
         # compared to other nodes that are defined.
         return self._math.wrap(self.socket, value_001=max, value_002=min).o.value  # ty: ignore[invalid-return-type]
 
-    def to_radians(self) -> "_FloatResult":
+    def to_radians(self) -> Self:
         """Convert degrees to radians."""
         self._assert_output("to_radians")
         return self._math.to_radians(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def to_degrees(self) -> "_FloatResult":
+    def to_degrees(self) -> Self:
         """Convert radians to degrees."""
         self._assert_output("to_degrees")
         return self._math.to_degrees(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def sign(self) -> "_FloatResult":
+    def sign(self) -> Self:
         "Return the sign of the FloatSocket, eithe `-1`, `0` or `1`."
         self._assert_output("sign")
         return self._math.sign(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def negate(self) -> "_FloatResult":
+    def negate(self) -> Self:
         "Negate the `FloatSocket` by multiplying the value by `-1`."
         self._assert_output("negate")
         return self._math.multiply(self.socket, -1).o.value  # ty: ignore[invalid-return-type]
@@ -1620,7 +1620,7 @@ class _ListMixin(Socket, Generic[_T]):
         ).o.item
 
 
-class _DefaultValueMixin(Generic[_T]):
+class _DefaultValueMixin(BaseSocket, Generic[_T]):
     @property
     def default_value(self) -> _T:
         return self.socket.default_value  # ty: ignore[unresolved-attribute]
@@ -1630,7 +1630,7 @@ class _DefaultValueMixin(Generic[_T]):
         self.socket.default_value = value  # ty: ignore[unresolved-attribute]
 
 
-class _FloatConvertDatatypeMixin(Socket, Generic[_IntegerResult, _StringResult]):
+class _FloatConvertDatatypeMixin(BaseSocket, Generic[_IntegerResult, _StringResult]):
     def to_string(self, decimals: InputInteger = 0) -> "_StringResult":
         "Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places"
         self._assert_output("to_string")
@@ -1649,7 +1649,7 @@ class _FloatConvertDatatypeMixin(Socket, Generic[_IntegerResult, _StringResult])
 
 
 class FloatSocket(
-    _FloatMixin["FloatSocket", "IntegerSocket"],
+    _FloatMixin["IntegerSocket"],
     _FloatConvertDatatypeMixin["IntegerSocket", "StringSocket"],
     _DefaultValueMixin[float],
     Socket,
@@ -1693,16 +1693,14 @@ class FloatSocket(
 
 
 class FloatSocketList(
-    _FloatMixin["FloatSocketList", "IntegerSocketList"],
+    _FloatMixin["IntegerSocketList"],
     _FloatConvertDatatypeMixin["IntegerSocketList", "StringSocketList"],
     _ListMixin[FloatSocket],
 ):
     """"""
 
 
-class FloatSocketGrid(
-    _FloatMixin["FloatSocketGrid", "IntegerSocketGrid"], GridSocketMixin[FloatSocket]
-):
+class FloatSocketGrid(_FloatMixin["IntegerSocketGrid"], GridSocketMixin[FloatSocket]):
     """Runtime float grid socket wrapper."""
 
 
@@ -1791,7 +1789,7 @@ class IntegerSocketGrid(_IntegerMixin, GridSocketMixin[IntegerSocket]):
     """Runtime integer grid socket wrapper."""
 
 
-class BooleanSocket(_BooleanMixin["BooleanSocket"], _DefaultValueMixin[bool]):
+class BooleanSocket(_BooleanMixin, _DefaultValueMixin[bool], Socket):
     """Runtime boolean socket wrapper."""
 
     @property
@@ -1831,11 +1829,11 @@ class BooleanSocket(_BooleanMixin["BooleanSocket"], _DefaultValueMixin[bool]):
         return _EvaluateField(self.socket, "boolean", "layer")
 
 
-class BooleanSocketList(_BooleanMixin["BooleanSocketList"], _ListMixin[BooleanSocket]):
+class BooleanSocketList(_BooleanMixin, _ListMixin[BooleanSocket]):
     """List of boolean sockets."""
 
 
-class BooleanSocketGrid(_BooleanMixin[BooleanSocket], GridSocketMixin[BooleanSocket]):
+class BooleanSocketGrid(_BooleanMixin, GridSocketMixin[BooleanSocket]):
     """Runtime boolean grid socket wrapper."""
 
 
