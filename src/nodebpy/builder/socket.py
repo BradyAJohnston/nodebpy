@@ -495,7 +495,7 @@ class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
         self._assert_output("length")
         return self._vmath.length(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def normalize(self) -> "_VectorResult":
+    def normalize(self) -> _VectorResult:
         """Normalize this vector, making its length 1.0."""
         self._assert_output("normalize")
         return self._vmath.normalize(self.socket).o.vector  # ty: ignore[invalid-return-type]
@@ -505,17 +505,17 @@ class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
         self._assert_output("cross")
         return self._vmath.cross_product(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
 
-    def distance(self, other: InputVector = (0.0, 0.0, 0.0)) -> "_FloatResult":
+    def distance(self, other: InputVector = (0.0, 0.0, 0.0)) -> _FloatResult:
         """Euclidean distance between this vector and *other*, as a `FloatSocket`."""
         self._assert_output("distance")
         return self._vmath.distance(self.socket, other).o.value  # ty: ignore[invalid-return-type]
 
-    def project(self, other: InputVector = (0.0, 0.0, 0.0)) -> "_VectorResult":
+    def project(self, other: InputVector = (0.0, 0.0, 0.0)) -> _VectorResult:
         """Project this vector onto *other*, as a `VectorSocket`."""
         self._assert_output("project")
         return self._vmath.project(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
 
-    def reflect(self, normal: InputVector = (0.0, 0.0, 1.0)) -> "_VectorResult":
+    def reflect(self, normal: InputVector = (0.0, 0.0, 1.0)) -> _VectorResult:
         """Reflect this vector around *normal*, as a `VectorSocket`."""
         self._assert_output("reflect")
         return self._vmath.reflect(self.socket, normal).o.vector  # ty: ignore[invalid-return-type]
