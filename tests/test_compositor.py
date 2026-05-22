@@ -139,3 +139,15 @@ def test_simple_compositor_nodes():
         assert mix.data_type == "FLOAT"
         mix.data_type = "VECTOR"
         assert mix.data_type == "VECTOR"
+
+
+def test_compositor_file_output():
+    with c.tree():
+        f = c.FileOutput()
+
+        assert not f.save_as_render
+        f.save_as_render = True
+        assert f.save_as_render
+        assert not f.use_file_extension
+        f.use_file_extension = True
+        assert f.use_file_extension

@@ -296,6 +296,7 @@ SOCKET_TYPES = Literal[
     "SHADER",
     "FONT",
     "SOUND",
+    # "INT_VECTOR",
     # "CUSTOM",
 ]
 
@@ -315,6 +316,7 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
         "VECTOR",
         "RGBA",
     ),
+    "INT_VECTOR": ("INT_VECTOR",),
     "BOOLEAN": (
         "BOOLEAN",
         "INT",
