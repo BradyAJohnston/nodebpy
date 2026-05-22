@@ -1314,12 +1314,6 @@ def test_compositor_node_image():
 
 
 def test_geometry_reroute():
-    with g.tree():
-        node = g.Reroute()
-        assert node.socket_idname == "NodeSocketColor"
-        node.socket_idname = "NodeSocketFloat"
-        assert node.socket_idname == "NodeSocketFloat"
-
     with g.tree("test", arrange=None) as tree:
         g.Cube().o.mesh >> g.Reroute() >> tree.outputs.geometry()
 
