@@ -38,6 +38,7 @@ from ...builder.socket import (
     FontSocket,
     IntegerSocket,
     ColorSocket,
+    StringSocketList,
 )
 
 
@@ -2487,6 +2488,121 @@ class GetGeometryBundle(BaseNode):
         key_args = {"Geometry": geometry, "Remove": remove}
 
         self._establish_links(**key_args)
+
+
+class GetGeometryComponent(BaseNode):
+    """
+    Get a single component of a geometry
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    type : InputMenu | Literal['Mesh', 'Point Cloud', 'Curve', 'Instances', 'Grease Pencil', 'Volume']
+        Type
+    remove : InputBoolean
+        Remove
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.type : MenuSocket
+        Type
+    i.remove : BooleanSocket
+        Remove
+
+    Outputs
+    -------
+    o.geometry : GeometrySocket
+        Geometry
+    o.component : GeometrySocket
+        Component
+    o.exists : BooleanSocket
+        Exists
+    """
+
+    _bl_idname = "GeometryNodeGetGeometryComponent"
+    node: bpy.types.GeometryNodeGetGeometryComponent  # ty: ignore[unresolved-attribute]
+
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        type: MenuSocket
+        """Type"""
+        remove: BooleanSocket
+        """Remove"""
+
+    class _Outputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        component: GeometrySocket
+        """Component"""
+        exists: BooleanSocket
+        """Exists"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        type: InputMenu
+        | Literal[
+            "Mesh", "Point Cloud", "Curve", "Instances", "Grease Pencil", "Volume"
+        ] = "Mesh",
+        remove: InputBoolean = True,
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry, "Type": type, "Remove": remove}
+
+        self._establish_links(**key_args)
+
+    @classmethod
+    def mesh(
+        cls, geometry: InputGeometry = None, remove: InputBoolean = True
+    ) -> "GetGeometryComponent":
+        """Create Get Geometry Component node with type 'Mesh'."""
+        return cls(geometry=geometry, remove=remove, type="Mesh")
+
+    @classmethod
+    def point_cloud(
+        cls, geometry: InputGeometry = None, remove: InputBoolean = True
+    ) -> "GetGeometryComponent":
+        """Create Get Geometry Component node with type 'Point Cloud'."""
+        return cls(geometry=geometry, remove=remove, type="Point Cloud")
+
+    @classmethod
+    def curve(
+        cls, geometry: InputGeometry = None, remove: InputBoolean = True
+    ) -> "GetGeometryComponent":
+        """Create Get Geometry Component node with type 'Curve'."""
+        return cls(geometry=geometry, remove=remove, type="Curve")
+
+    @classmethod
+    def instances(
+        cls, geometry: InputGeometry = None, remove: InputBoolean = True
+    ) -> "GetGeometryComponent":
+        """Create Get Geometry Component node with type 'Instances'."""
+        return cls(geometry=geometry, remove=remove, type="Instances")
+
+    @classmethod
+    def grease_pencil(
+        cls, geometry: InputGeometry = None, remove: InputBoolean = True
+    ) -> "GetGeometryComponent":
+        """Create Get Geometry Component node with type 'Grease Pencil'."""
+        return cls(geometry=geometry, remove=remove, type="Grease Pencil")
+
+    @classmethod
+    def volume(
+        cls, geometry: InputGeometry = None, remove: InputBoolean = True
+    ) -> "GetGeometryComponent":
+        """Create Get Geometry Component node with type 'Volume'."""
+        return cls(geometry=geometry, remove=remove, type="Volume")
 
 
 class GreasePencilToCurves(BaseNode):
@@ -8751,10 +8867,12 @@ class TransferAttributes(BaseNode):
         Source Curve ID
     source_instance_id : InputInteger
         Source Instance ID
-    names : InputString
-        Names
-    ignore_names : InputBoolean
-        Ignore Names
+    pattern_mode : InputMenu | Literal['Exact', 'Wildcard']
+        Pattern Mode
+    attribute_names : InputString
+        Attribute Names
+    exclude_names : InputBoolean
+        Exclude Names
 
     Inputs
     ------
@@ -8786,17 +8904,19 @@ class TransferAttributes(BaseNode):
         Source Curve ID
     i.source_instance_id : IntegerSocket
         Source Instance ID
-    i.names : StringSocket
-        Names
-    i.ignore_names : BooleanSocket
-        Ignore Names
+    i.pattern_mode : MenuSocket
+        Pattern Mode
+    i.attribute_names : StringSocket
+        Attribute Names
+    i.exclude_names : BooleanSocket
+        Exclude Names
 
     Outputs
     -------
     o.target : GeometrySocket
         Target
-    o.success : BooleanSocket
-        Success
+    o.transferred_names : StringSocket
+        Transferred Names
     """
 
     _bl_idname = "GeometryNodeTransferAttributes"
@@ -8831,16 +8951,18 @@ class TransferAttributes(BaseNode):
         """Source Curve ID"""
         source_instance_id: IntegerSocket
         """Source Instance ID"""
-        names: StringSocket
-        """Names"""
-        ignore_names: BooleanSocket
-        """Ignore Names"""
+        pattern_mode: MenuSocket
+        """Pattern Mode"""
+        attribute_names: StringSocket
+        """Attribute Names"""
+        exclude_names: BooleanSocket
+        """Exclude Names"""
 
     class _Outputs(SocketAccessor):
         target: GeometrySocket
         """Target"""
-        success: BooleanSocket
-        """Success"""
+        transferred_names: StringSocketList
+        """Transferred Names"""
 
     if TYPE_CHECKING:
 
@@ -8865,8 +8987,9 @@ class TransferAttributes(BaseNode):
         source_corner_id: InputInteger = 0,
         source_curve_id: InputInteger = 0,
         source_instance_id: InputInteger = 0,
-        names: InputString = "",
-        ignore_names: InputBoolean = False,
+        pattern_mode: InputMenu | Literal["Exact", "Wildcard"] = "Wildcard",
+        attribute_names: InputString = "",
+        exclude_names: InputBoolean = False,
     ):
         super().__init__()
         key_args = {
@@ -8884,8 +9007,9 @@ class TransferAttributes(BaseNode):
             "Source Corner ID": source_corner_id,
             "Source Curve ID": source_curve_id,
             "Source Instance ID": source_instance_id,
-            "Names": names,
-            "Ignore Names": ignore_names,
+            "Pattern Mode": pattern_mode,
+            "Attribute Names": attribute_names,
+            "Exclude Names": exclude_names,
         }
 
         self._establish_links(**key_args)

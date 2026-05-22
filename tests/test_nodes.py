@@ -20,9 +20,6 @@ from nodebpy.builder import (
     VectorSocket,
     VectorSocketGrid,
     VectorSocketList,
-    RotationSocketList,
-    MatrixSocketList,
-    StringSocketList,
 )
 from nodebpy.nodes.geometry import SplitString
 
@@ -1601,6 +1598,16 @@ def test_field_to_list():
         assert isinstance(pos, VectorSocketList)
         assert isinstance(idx, IntegerSocketList)
         assert isinstance(num, FloatSocketList)
+        filtered = pos.filter().get(0)
+        assert isinstance(filtered, VectorSocket)
+        filtered = idx.filter()
+        assert isinstance(filtered, IntegerSocketList)
+        filtered = num.filter()
+        assert isinstance(filtered, FloatSocketList)
+        # if we get using a list index, we should get a list of values
+        assert isinstance(pos.get(idx), VectorSocketList)
+        # if we get using a single index, we should get a single value
+        assert isinstance(pos.get(1), VectorSocket)
 
 
 def test_grid_methods():

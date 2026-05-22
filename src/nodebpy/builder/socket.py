@@ -56,6 +56,7 @@ from ..types import (
     InputGeometry,
     InputImage,
     InputInteger,
+    InputIntegerList,
     InputMaterial,
     InputMatrix,
     InputMenu,
@@ -1485,15 +1486,31 @@ class _ListMixin(Socket, Generic[_T]):
 
         return ListLength(self.socket, data_type=self.socket.type).o.length  # ty: ignore[invalid-argument-type]
 
-    def get(self, index: InputInteger) -> _T:
+    @overload
+    def get(self, index: InputIntegerList) -> Self: ...
+
+    @overload
+    def get(self, index: InputInteger) -> _T: ...
+
+    def get(self, index: InputInteger | InputIntegerList) -> _T | Self:
         """Get the item at the given index from the list."""
         from ..nodes.geometry import GetListItem
 
         return GetListItem(  # ty: ignore[invalid-return-type]
-            self.socket,
+            list=self.socket,
             index=index,
-            socket_type=self.socket.type,  # ty: ignore[invalid-argument-type]
-        ).o.item
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.value
+
+    def filter(self, selection: InputBoolean | BooleanSocketList = True) -> Self:
+        """Filter the list based on the selection."""
+        from ..nodes.geometry import FilterList
+
+        return FilterList(
+            self.socket,
+            selection=selection,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.selection  # ty: ignore[invalid-return-type]
 
 
 class _DefaultValueMixin(BaseSocket, Generic[_T]):

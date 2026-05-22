@@ -48,6 +48,7 @@ from ...builder.socket import (
     SoundSocket,
     IntegerSocket,
     ColorSocket,
+    FloatSocketList,
     StringSocketList,
 )
 
@@ -1261,6 +1262,280 @@ class EulerToRotation(BaseNode):
         self._establish_links(**key_args)
 
 
+class FilterList(BaseNode):
+    """
+    Remove items from a list
+
+    Parameters
+    ----------
+    list : InputFloat
+        List
+    selection : InputBoolean
+        Selection
+
+    Inputs
+    ------
+    i.list : FloatSocket
+        List
+    i.selection : BooleanSocket
+        Selection
+
+    Outputs
+    -------
+    o.selection : FloatSocket
+        Selection
+    o.inverted : FloatSocket
+        Inverted
+    """
+
+    _bl_idname = "GeometryNodeFilterList"
+    node: bpy.types.GeometryNodeFilterList  # ty: ignore[unresolved-attribute]
+
+    class _Inputs(SocketAccessor):
+        list: FloatSocket
+        """List"""
+        selection: BooleanSocket
+        """Selection"""
+
+    class _Outputs(SocketAccessor):
+        selection: FloatSocketList
+        """Selection"""
+        inverted: FloatSocketList
+        """Inverted"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        list: InputBoolean
+        | InputBundle
+        | InputClosure
+        | InputCollection
+        | InputColor
+        | InputFloat
+        | InputFont
+        | InputGeometry
+        | InputImage
+        | InputInteger
+        | InputMaterial
+        | InputMatrix
+        | InputMenu
+        | InputObject
+        | InputRotation
+        | InputSound
+        | InputString
+        | InputVector = 0.0,
+        selection: InputBoolean = True,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"List": list, "Selection": selection}
+        self.socket_type = socket_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, list: InputFloat = 0.0, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Float'."""
+        return cls(socket_type="FLOAT", list=list, selection=selection)
+
+    @classmethod
+    def integer(
+        cls, list: InputInteger = 0, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Integer'."""
+        return cls(socket_type="INT", list=list, selection=selection)
+
+    @classmethod
+    def boolean(
+        cls, list: InputBoolean = False, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Boolean'."""
+        return cls(socket_type="BOOLEAN", list=list, selection=selection)
+
+    @classmethod
+    def vector(
+        cls, list: InputVector = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Vector'."""
+        return cls(socket_type="VECTOR", list=list, selection=selection)
+
+    @classmethod
+    def color(
+        cls, list: InputColor = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Color'."""
+        return cls(socket_type="RGBA", list=list, selection=selection)
+
+    @classmethod
+    def rotation(
+        cls, list: InputRotation = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Rotation'."""
+        return cls(socket_type="ROTATION", list=list, selection=selection)
+
+    @classmethod
+    def matrix(
+        cls, list: InputMatrix = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Matrix'."""
+        return cls(socket_type="MATRIX", list=list, selection=selection)
+
+    @classmethod
+    def string(
+        cls, list: InputString = "", selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'String'."""
+        return cls(socket_type="STRING", list=list, selection=selection)
+
+    @classmethod
+    def menu(
+        cls, list: InputMenu = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Menu'."""
+        return cls(socket_type="MENU", list=list, selection=selection)
+
+    @classmethod
+    def object(
+        cls, list: InputObject = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Object'."""
+        return cls(socket_type="OBJECT", list=list, selection=selection)
+
+    @classmethod
+    def image(
+        cls, list: InputImage = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Image'."""
+        return cls(socket_type="IMAGE", list=list, selection=selection)
+
+    @classmethod
+    def geometry(
+        cls, list: InputGeometry = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Geometry'."""
+        return cls(socket_type="GEOMETRY", list=list, selection=selection)
+
+    @classmethod
+    def collection(
+        cls, list: InputCollection = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Collection'."""
+        return cls(socket_type="COLLECTION", list=list, selection=selection)
+
+    @classmethod
+    def material(
+        cls, list: InputMaterial = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Material'."""
+        return cls(socket_type="MATERIAL", list=list, selection=selection)
+
+    @classmethod
+    def bundle(
+        cls, list: InputBundle = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Bundle'."""
+        return cls(socket_type="BUNDLE", list=list, selection=selection)
+
+    @classmethod
+    def closure(
+        cls, list: InputClosure = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Closure'."""
+        return cls(socket_type="CLOSURE", list=list, selection=selection)
+
+    @classmethod
+    def font(
+        cls, list: InputFont = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Font'."""
+        return cls(socket_type="FONT", list=list, selection=selection)
+
+    @classmethod
+    def sound(
+        cls, list: InputSound = None, selection: InputBoolean = True
+    ) -> "FilterList":
+        """Create Filter List with operation 'Sound'."""
+        return cls(socket_type="SOUND", list=list, selection=selection)
+
+    @property
+    def socket_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+        "SOUND",
+    ]:
+        return self.node.socket_type
+
+    @socket_type.setter
+    def socket_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ],
+    ):
+        self.node.socket_type = value
+
+
 class FindInString(BaseNode):
     """
     Find the number of times a given string occurs in another string and the position of the first match
@@ -2167,6 +2442,8 @@ class GetNestedBundlePaths(BaseNode):
         Bundle
     mode : InputMenu | Literal['All', 'Bundle Type', 'Data Type']
         Mode
+    pattern_mode : InputMenu | Literal['Exact', 'Wildcard']
+        Pattern Mode
     bundle_type : InputString
         Bundle Type
     data_type : InputMenu | Literal['Float', 'Integer', 'Boolean', 'Vector', 'Color', 'Rotation', 'Matrix', 'String', 'Menu', 'Object', 'Image', 'Geometry', 'Collection', 'Material', 'Bundle', 'Closure', 'Font', 'Sound']
@@ -2178,6 +2455,8 @@ class GetNestedBundlePaths(BaseNode):
         Bundle
     i.mode : MenuSocket
         Mode
+    i.pattern_mode : MenuSocket
+        Pattern Mode
     i.bundle_type : StringSocket
         Bundle Type
     i.data_type : MenuSocket
@@ -2197,6 +2476,8 @@ class GetNestedBundlePaths(BaseNode):
         """Bundle"""
         mode: MenuSocket
         """Mode"""
+        pattern_mode: MenuSocket
+        """Pattern Mode"""
         bundle_type: StringSocket
         """Bundle Type"""
         data_type: MenuSocket
@@ -2217,6 +2498,7 @@ class GetNestedBundlePaths(BaseNode):
         self,
         bundle: InputBundle = None,
         mode: InputMenu | Literal["All", "Bundle Type", "Data Type"] = "All",
+        pattern_mode: InputMenu | Literal["Exact", "Wildcard"] = "Exact",
         bundle_type: InputString = "",
         data_type: InputMenu
         | Literal[
@@ -2244,6 +2526,7 @@ class GetNestedBundlePaths(BaseNode):
         key_args = {
             "Bundle": bundle,
             "Mode": mode,
+            "Pattern Mode": pattern_mode,
             "Bundle Type": bundle_type,
             "Data Type": data_type,
         }

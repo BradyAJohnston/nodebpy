@@ -29,6 +29,7 @@ from ..geometry.converter import (
 from ..geometry.input import (
     Boolean,
     Integer,
+    SceneTime,
     Vector,
 )
 from ..geometry.interface import (
@@ -243,6 +244,7 @@ __all__ = (
     "RepeatOutput",
     "RepeatZone",
     "Reroute",
+    "SceneTime",
     "Script",
     "SeparateBundle",
     "SeparateColor",
