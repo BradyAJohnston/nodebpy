@@ -163,10 +163,14 @@ class BaseSocket:
         return str(self.socket.name)
 
     def _assert_output(self, method: str) -> None:
-        if not self.socket.is_output:
+        if hasattr(self, "socket"):
+            socket = self.socket
+        else:
+            socket = self._socket
+        if not socket.is_output:
             raise RuntimeError(
                 f"'{method}' is only available on output sockets, "
-                f"not input socket '{self.socket.name}'."
+                f"not input socket '{socket.name}'."
             )
 
     @property
@@ -322,7 +326,7 @@ class GridSocketMixin(Socket, Generic[_T]):
 # ---------------------------------------------------------------------------
 
 
-class _EvaluateField(Generic[_T]):
+class _EvaluateField(Socket, Generic[_T]):
     """Domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`.
 
     Access via a domain property (e.g. ``socket.point``). Provides field
@@ -330,12 +334,8 @@ class _EvaluateField(Generic[_T]):
     """
 
     def __init__(self, socket: NodeSocket, dtype: str, domain: str) -> None:
-        if not socket.is_output:
-            raise RuntimeError(
-                f"Domain access ('{domain}') is only available on output sockets, "
-                f"not input socket '{socket.name}'."
-            )
         self._socket = socket
+        self._assert_output("Domain-specific evaluation")
         self._dtype = dtype
         self._domain = domain
 

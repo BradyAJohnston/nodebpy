@@ -1,4 +1,3 @@
-from nodebpy.nodes.geometry import ObjectInfo
 from typing import cast, get_args
 
 import bpy
@@ -19,6 +18,7 @@ from nodebpy.builder import (
     VectorSocket,
 )
 from nodebpy.nodes.compositor import CombineXYZ
+from nodebpy.nodes.geometry import ObjectInfo
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -1445,6 +1445,10 @@ def test_all_domain_properties_reachable():
             assert isinstance(getattr(flag, d).evaluate(), BooleanSocket)
             assert isinstance(getattr(rot, d).evaluate(), RotationSocket)
             assert isinstance(getattr(mat, d).evaluate(), MatrixSocket)
+
+        input_pos = g.SetPosition().i.position
+        with pytest.raises(RuntimeError):
+            input_pos.point.evaluate()
 
 
 def test_matrix_socket_transform_direction():
