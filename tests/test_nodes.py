@@ -16,6 +16,7 @@ from nodebpy.builder import (
     IntegerSocket,
     IntegerSocketList,
     MatrixSocket,
+    MatrixSocketList,
     StringSocket,
     VectorSocket,
     VectorSocketGrid,
@@ -1643,7 +1644,7 @@ def test_implicit_conversion():
 def test_integer_vector():
     with c.tree():
         vec = c.IntegerVector()
-        assert len(vec.o.vector.default_value) == 3
+        assert len(vec.vector) == 3
         assert vec.vector == [0, 0, 0]
         assert vec.vector_dimensions == 3
         vec.vector_dimensions = 2
@@ -1654,3 +1655,12 @@ def test_integer_vector():
         vec.vector_dimensions = 3
         vec.vector = [3, 2, 1]
         assert vec.vector == [3, 2, 1]
+
+
+def test_matrix_socket():
+    with g.tree():
+        mat = g.CombineTransform().o.transform
+        result = mat @ g.Position().o.position
+        result = cast(MatrixSocketList, mat)
+
+        r2 = mat @ result

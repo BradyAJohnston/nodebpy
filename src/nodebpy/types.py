@@ -84,6 +84,7 @@ if typing.TYPE_CHECKING:
 
     from .builder import BaseNode as BaseNode
     from .builder import Socket as SocketLinker
+    from .nodes.geometry.converter import CombineMatrix, CombineTransform
 
 
 def _is_default_value(value: InputAny):
@@ -143,7 +144,12 @@ InputCollection = typing.Union[
     Collection, NodeSocketCollection, InputLinkable, "CollectionSocket"
 ]
 InputMatrix = typing.Union[
-    NodeSocketMatrix, NodeSocketRotation, InputLinkable, "MatrixSocket"
+    NodeSocketMatrix,
+    NodeSocketRotation,
+    InputLinkable,
+    "MatrixSocket",
+    "CombineTransform",
+    "CombineMatrix",
 ]
 InputMenu = typing.Union[str, NodeSocketMenu, InputLinkable, "MenuSocket"]
 InputBundle = typing.Union[NodeSocketBundle, InputLinkable, "BundleSocket"]

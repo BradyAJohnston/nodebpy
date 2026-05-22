@@ -72,7 +72,18 @@ from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
     from ..nodes import compositor, geometry, shader
-    from ..nodes.geometry import GridInfo, IntegerMath, MatchString, Math, ObjectInfo
+    from ..nodes.geometry import (
+        CombineMatrix,
+        CombineTransform,
+        GridInfo,
+        IntegerMath,
+        MatchString,
+        Math,
+        MultiplyMatrices,
+        ObjectInfo,
+        Position,
+        Vector,
+    )
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
@@ -168,6 +179,17 @@ class BaseSocket:
         else:
             socket = self._socket
         if not socket.is_output:
+            raise RuntimeError(
+                f"'{method}' is only available on output sockets, "
+                f"not input socket '{socket.name}'."
+            )
+
+    def _assert_input(self, method: str) -> None:
+        if hasattr(self, "socket"):
+            socket = self.socket
+        else:
+            socket = self._socket
+        if socket.is_output:
             raise RuntimeError(
                 f"'{method}' is only available on output sockets, "
                 f"not input socket '{socket.name}'."
@@ -562,6 +584,20 @@ class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
         from ..nodes.geometry import TransformPoint
 
         return TransformPoint(self.socket, matrix).o.vector  # ty: ignore[invalid-return-type]
+
+    @overload
+    def __rmatmul__(self, other: CombineTransform) -> _VectorResult: ...
+    @overload
+    def __rmatmul__(self, other: MultiplyMatrices) -> _VectorResult: ...
+    @overload
+    def __rmatmul__(self, other: CombineMatrix) -> _VectorResult: ...
+    def __rmatmul__(
+        self, other: CombineTransform | MultiplyMatrices | CombineMatrix | MatrixSocket
+    ) -> _VectorResult:
+        "Transform this vector by the given matrix."
+        from ..nodes.geometry import TransformPoint
+
+        return TransformPoint(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
 
     @overload
     def __getitem__(self, key: slice) -> "list[_FloatResult]": ...
@@ -1145,22 +1181,6 @@ class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
         self._assert_output("negate")
         return self._math.multiply(self.socket, -1).o.value  # ty: ignore[invalid-return-type]
 
-    if TYPE_CHECKING:
-
-        def map_range(self, *args: Any, **kwargs: Any) -> Self: ...
-        def clamp(self, min: InputFloat = ..., max: InputFloat = ...) -> Self: ...
-        def sqrt(self) -> Self: ...
-        def power(self, exponent: InputFloat) -> Self: ...
-        def floor(self) -> Self: ...
-        def ceil(self) -> Self: ...
-        def round(self) -> Self: ...
-        def modulo(self, divisor: InputFloat) -> Self: ...
-        def wrap(self, min: InputFloat, max: InputFloat) -> Self: ...
-        def to_radians(self) -> Self: ...
-        def to_degrees(self) -> Self: ...
-        def sign(self) -> Self: ...
-        def negate(self) -> Self: ...
-
 
 class _IntegerMixin(BaseSocket, Generic[_FloatResult]):
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""
@@ -1193,15 +1213,9 @@ class _IntegerMixin(BaseSocket, Generic[_FloatResult]):
         return self._imath.sign(self.socket).o.value  # ty: ignore[invalid-return-type]
 
     def negate(self) -> Self:
+        """Negate the IntegerSocket value. Positive becomes negative, negative becomes positive."""
         self._assert_output("negate")
         return self._imath.negate(self.socket).o.value  # ty: ignore[invalid-return-type]
-
-    if TYPE_CHECKING:
-
-        def clamp(self, min: InputInteger = ..., max: InputInteger = ...) -> Self: ...
-        def modulo(self, divisor: InputInteger) -> Self: ...
-        def sign(self) -> Self: ...
-        def negate(self) -> Self: ...
 
     @staticmethod
     def _is_integer_socket(value: Any) -> bool:
@@ -1336,21 +1350,6 @@ class _StringMixin(BaseSocket, Generic[_StringResult, _BooleanResult, _IntegerRe
         o = FindInString(self.socket, search).o
         return FindResult(o.first_found, o.count)  # ty: ignore[invalid-return-type]
 
-    if TYPE_CHECKING:
-
-        def slice(
-            self, position: InputInteger = ..., length: InputInteger = ...
-        ) -> Self: ...
-        def format(
-            self, items: Mapping[str, InputString | InputInteger | InputFloat]
-        ) -> Self: ...
-        def replace(self, find: InputString, replace: InputString) -> Self: ...
-        def join(
-            self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
-        ) -> Self: ...
-        def __add__(self, other: "StringSocket" | str) -> Self: ...
-        def __radd__(self, other: str | "StringSocket") -> Self: ...
-
 
 class _MatrixMixin(
     BaseSocket, Generic[_VectorResult, _RotationResult, _FloatResult, _MatrixResult]
@@ -1361,48 +1360,51 @@ class _MatrixMixin(
 
     @property
     def translation(self) -> _VectorResult:
+        """Get the translation component of the matrix, via [`~nodebpy.nodes.geometry.converter.SeparateTransform`]."""
         self._assert_output("translation")
-        from ..nodes.geometry import SeparateTransform
+        from ..nodes.geometry.converter import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.translation  # ty: ignore[invalid-return-type]
 
     @property
     def rotation(self) -> _RotationResult:
+        """Get the rotation component of the matrix, via [`~nodebpy.nodes.geometry.converter.SeparateTransform`]."""
         self._assert_output("rotation")
-        from ..nodes.geometry import SeparateTransform
+        from ..nodes.geometry.converter import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.rotation  # ty: ignore[invalid-return-type]
 
     @property
     def scale(self) -> _VectorResult:
+        """Get the scale component of the matrix, via [`~nodebpy.nodes.geometry.converter.SeparateTransform`]."""
         self._assert_output("scale")
-        from ..nodes.geometry import SeparateTransform
+        from ..nodes.geometry.converter import SeparateTransform
 
         return SeparateTransform._find_or_create_linked(self.socket).o.scale  # ty: ignore[invalid-return-type]
 
     def determinant(self) -> _FloatResult:
-        "Compute the determinant of a matrix input and return as a `FloatSocket`"
+        """Compute the determinant of a matrix input and return as a `FloatSocket`."""
         self._assert_output("determinant")
         from ..nodes.geometry import MatrixDeterminant
 
         return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant  # ty: ignore[invalid-return-type]
 
     def invert(self) -> Self:
-        "Invert the `MatrixSocet` and return a `MatrixSocket`"
+        """Invert the `MatrixSocet` and return a `MatrixSocket`."""
         self._assert_output("invert")
         from ..nodes.geometry import InvertMatrix
 
         return InvertMatrix._find_or_create_linked(self.socket).o.matrix  # ty: ignore[invalid-return-type]
 
     def transpose(self) -> Self:
-        "Transpose the `MatrixSocket` and return a `MatrixSocket`"
+        """Transpose the `MatrixSocket` and return a `MatrixSocket`."""
         self._assert_output("transpose")
         from ..nodes.geometry import TransposeMatrix
 
         return TransposeMatrix._find_or_create_linked(self.socket).o.matrix  # ty: ignore[invalid-return-type]
 
     def svd(self) -> SVDResult[_MatrixResult, _VectorResult]:
-        "Decompose the matrix via SVD. Returns `(u, s, v)`."
+        """Decompose the matrix via SVD. Returns `(u, s, v)`."""
         self._assert_output("svd")
         from ..nodes.geometry import MatrixSVD
 
@@ -1420,53 +1422,46 @@ class _MatrixMixin(
 
         return TransformDirection(direction, self.socket).o.direction  # ty: ignore[invalid-return-type]
 
-    @overload
-    def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
-    @overload
-    def __getitem__(self, key: int) -> "FloatSocket": ...
-    def __getitem__(self, key: int | slice) -> "FloatSocket | list[FloatSocket]":
-        from ..nodes.geometry import CombineMatrix, SeparateMatrix
+    @staticmethod
+    def _cast_to_matrix(value) -> MatrixSocket:
+        from ..nodes.geometry.converter import CombineMatrix
 
-        if self.socket.is_output:
-            node = SeparateMatrix._find_or_create_linked(self.socket)
-            if isinstance(key, slice):
-                return [
-                    cast(FloatSocket, node.o[i])
-                    for i in range(*key.indices(len(node.o)))
-                ]
-            return cast(FloatSocket, node.o[key])
+        if hasattr(value, "shape") and value.shape == (4, 4):
+            return CombineMatrix(*value.ravel()).o.matrix
         else:
-            node = CombineMatrix._find_or_create_linked(self.socket)
-            if isinstance(key, slice):
-                return [
-                    cast(FloatSocket, node.i[i])
-                    for i in range(*key.indices(len(node.i)))
-                ]
+            return value
 
-        return cast(FloatSocket, node.i[key])
+    @overload
+    def __matmul__(self, other: MatrixSocket) -> _MatrixResult: ...
+    @overload
+    def __matmul__(self, other: RotationSocket) -> _RotationResult: ...
+    @overload
+    def __matmul__(self, other: Position) -> _VectorResult: ...
+    @overload
+    def __matmul__(self, other: VectorSocket) -> _VectorResult: ...
+    @overload
+    def __matmul__(self, other: Vector) -> _VectorResult: ...
+    def __matmul__(self, other: Any) -> Self | _VectorResult:
+        from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
-    def __iter__(self) -> Iterator["FloatSocket"]:
-        from ..nodes.geometry import CombineMatrix, SeparateMatrix
+        other = self._cast_to_matrix(other)
+        socket = self._default_output_socket
 
-        if self.socket.is_output:
-            node = SeparateMatrix._find_or_create_linked(self.socket)
-            for i in node.o:
-                yield cast(FloatSocket, i)
-        else:
-            node = CombineMatrix._find_or_create_linked(self.socket)
-            for i in node.i:
-                yield cast(FloatSocket, i)
+        if socket.type == "MATRIX" and other.type == "VECTOR":
+            return TransformPoint(other, socket).o.vector  # ty: ignore[invalid-return-type]
 
-    def __len__(self) -> int:
-        return 16
+        return MultiplyMatrices(socket, other).o.matrix  # ty: ignore[invalid-return-type]
 
-    if TYPE_CHECKING:
+    def __rmatmul__(self, other: MatrixSocket | MatrixSocketList) -> Self:
+        from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
 
-        @overload
-        def __matmul__(self, other: "VectorSocket") -> "VectorSocket": ...
-        @overload
-        def __matmul__(self, other: "MatrixSocket") -> "MatrixSocket": ...
-        def __rmatmul__(self, other: "MatrixSocket") -> "MatrixSocket": ...
+        other = self._cast_to_matrix(other)
+        socket = self._default_output_socket
+
+        if socket.type == "VECTOR" and getattr(other, "type", None) == "MATRIX":
+            return TransformPoint(socket, other).o.vector  # ty: ignore[invalid-return-type]
+
+        return MultiplyMatrices(other, socket).o.matrix  # ty: ignore[invalid-return-type]
 
 
 # ---------------------------------------------------------------------------
@@ -1512,14 +1507,42 @@ class _ListMixin(Socket, Generic[_T]):
             socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
         ).o.selection  # ty: ignore[invalid-return-type]
 
+    # TODO: support slicing once an appropriate node is available
+    # @overload
+    # def __getitem__(self, key: slice) -> Self: ...
+    @overload
+    def __getitem__(self, key: int) -> _T: ...
+    @overload
+    def __getitem__(self, key: IntegerSocketList) -> Self: ...
+    def __getitem__(self, key: int | IntegerSocketList) -> _T:
+        from ..nodes.geometry.converter import GetListItem
+
+        return GetListItem(
+            self.socket,
+            index=key,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.value  # ty: ignore[invalid-return-type]
+
+    def __len__(self) -> IntegerSocket:
+        from ..nodes.geometry.converter import ListLength
+
+        return ListLength(
+            self.socket,
+            data_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.length
+
 
 class _DefaultValueMixin(BaseSocket, Generic[_T]):
     @property
     def default_value(self) -> _T:
+        """Get or set the default value of the socket. Only relevant for input sockets."""
+        self._assert_input("default_value")
         return self.socket.default_value  # ty: ignore[unresolved-attribute]
 
     @default_value.setter
     def default_value(self, value: _T) -> None:
+        """Get or set the default value of the socket. Only relevant for input sockets."""
+        self._assert_input("default_value")
         self.socket.default_value = value  # ty: ignore[unresolved-attribute]
 
 
@@ -1877,6 +1900,46 @@ class MatrixSocket(
     def layer(self) -> "_AccumulateField[MatrixSocket]":
         """MatrixSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`."""
         return _AccumulateField(self.socket, "matrix", "layer")
+
+    @overload
+    def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
+    @overload
+    def __getitem__(self, key: int) -> "FloatSocket": ...
+    def __getitem__(self, key: int | slice) -> "FloatSocket | list[FloatSocket]":
+        from ..nodes.geometry import CombineMatrix, SeparateMatrix
+
+        if self.socket.is_output:
+            node = SeparateMatrix._find_or_create_linked(self.socket)
+            if isinstance(key, slice):
+                return [
+                    cast(FloatSocket, node.o[i])
+                    for i in range(*key.indices(len(node.o)))
+                ]
+            return cast(FloatSocket, node.o[key])
+        else:
+            node = CombineMatrix._find_or_create_linked(self.socket)
+            if isinstance(key, slice):
+                return [
+                    cast(FloatSocket, node.i[i])
+                    for i in range(*key.indices(len(node.i)))
+                ]
+
+        return cast(FloatSocket, node.i[key])
+
+    def __iter__(self) -> Iterator["FloatSocket"]:
+        from ..nodes.geometry import CombineMatrix, SeparateMatrix
+
+        if self.socket.is_output:
+            node = SeparateMatrix._find_or_create_linked(self.socket)
+            for i in node.o:
+                yield cast(FloatSocket, i)
+        else:
+            node = CombineMatrix._find_or_create_linked(self.socket)
+            for i in node.i:
+                yield cast(FloatSocket, i)
+
+    def __len__(self) -> int:
+        return 16
 
 
 class MatrixSocketList(

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from types import EllipsisType
 from typing import TYPE_CHECKING, Any, Self, TypeVar, cast, overload
 
@@ -12,6 +11,7 @@ from ._utils import SocketError, _resolve_promotion, _SocketLike
 _RShiftT = TypeVar("_RShiftT")
 
 if TYPE_CHECKING:
+    from ..nodes.geometry import CombineTransform
     from ..types import InputLinkable
     from .accessor import SocketAccessor
     from .node import BaseNode
@@ -20,6 +20,7 @@ if TYPE_CHECKING:
         FloatSocket,
         IntegerSocket,
         MatrixSocket,
+        Position,
         Socket,
         VectorSocket,
     )
@@ -102,6 +103,39 @@ class OperatorMixin:
             True,
         )
         return _wrap_socket(socket)._dispatch_floordiv(other, reverse)
+
+    @overload
+    def __matmul__(self, other: "Position") -> "VectorSocket": ...
+    @overload
+    def __matmul__(self, other: "CombineTransform") -> "VectorSocket": ...
+    def __matmul__(
+        self, other: "Position | CombineTransform | VectorSocket | MatrixSocket"
+    ) -> "VectorSocket | MatrixSocket":
+        from ..builder.socket import VectorSocket
+        from ..nodes.geometry import (
+            MultiplyMatrices,
+            Position,
+            TransformPoint,
+        )
+
+        if isinstance(other, (Position, VectorSocket)):
+            return TransformPoint(other, self).o.vector  # ty: ignore[invalid-argument-type]
+
+        return MultiplyMatrices(self, other).o.matrix  # ty: ignore[invalid-argument-type]
+
+    def __rmatmul__(self, other: Any) -> "MatrixSocket | VectorSocket":
+        from ..nodes.geometry import MultiplyMatrices, TransformPoint
+
+        if isinstance(
+            self,
+            (
+                VectorSocket,
+                Position,
+            ),
+        ):
+            return TransformPoint(self, other).o.vector
+
+        return MultiplyMatrices(other, self).o.matrix  # ty: ignore[invalid-argument-type]
 
     def __neg__(self) -> "FloatSocket | VectorSocket | IntegerSocket":
         return _wrap_socket(self._default_output_socket)._dispatch_unary("negate")
@@ -189,41 +223,6 @@ class OperatorMixin:
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_not(cast(Any, self))
-
-    @staticmethod
-    def _cast_to_matrix(value) -> MatrixSocket:
-        from ..nodes.geometry.converter import CombineMatrix
-
-        if hasattr(value, "shape") and value.shape == (4, 4):
-            return CombineMatrix(*value.ravel()).o.matrix
-        else:
-            return value
-
-    def __matmul__(self, other: Any) -> "MatrixSocket | VectorSocket":
-        from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
-
-        other = self._cast_to_matrix(other)
-        socket = self._default_output_socket
-
-        if socket.type == "MATRIX" and other.type == "VECTOR":
-            return TransformPoint(other, socket).o.vector
-
-        return MultiplyMatrices(socket, other).o.matrix
-
-    @overload
-    def __rmatmul__(self, other: MatrixSocket) -> "MatrixSocket": ...
-    @overload
-    def __rmatmul__(self, other: VectorSocket) -> "VectorSocket": ...
-    def __rmatmul__(self, other: Any) -> "MatrixSocket | VectorSocket":
-        from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
-
-        other = self._cast_to_matrix(other)
-        socket = self._default_output_socket
-
-        if socket.type == "VECTOR" and getattr(other, "type", None) == "MATRIX":
-            return TransformPoint(socket, other).o.vector
-
-        return MultiplyMatrices(other, socket).o.matrix
 
 
 class LinkingMixin:

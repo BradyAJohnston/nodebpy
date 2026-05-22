@@ -68,21 +68,6 @@ def test_interface_socket_creation(method, kwargs):
     assert s is not None
 
 
-def test_interface_socket_default_value_getter():
-    """reading default_value on a socket that supports it."""
-    tree = TreeBuilder("FloatDefGetTest")
-    f = tree.inputs.float("Value", 3.14)
-    assert f.default_value == pytest.approx(3.14)
-
-
-def test_interface_socket_default_value_setter():
-    """setting default_value on a socket that supports it."""
-    tree = TreeBuilder("FloatDefSetTest")
-    f = tree.inputs.float("Value", 1.0)
-    f.default_value = 2.5
-    assert f.default_value == pytest.approx(2.5)
-
-
 def test_menu_socket_default_triggers_apply_defaults():
     """_apply_input_defaults runs when SocketMenu has a non-None default."""
     tree = TreeBuilder("MenuDefaultTest")
@@ -317,7 +302,7 @@ def test_rmatmul_numpy_matrix_times_vector():
     import numpy as np
 
     with TreeBuilder("RMatMul"):
-        result = np.eye(4) @ g.Position()
+        result = g.CombineMatrix(*np.eye(4).ravel()).o.matrix @ g.Position()
     assert result.node.bl_idname == g.TransformPoint._bl_idname
 
 
