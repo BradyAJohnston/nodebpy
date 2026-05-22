@@ -1641,11 +1641,16 @@ def test_implicit_conversion():
 
 
 def test_integer_vector():
-    with c.Tree():
+    with c.tree():
         vec = c.IntegerVector()
         assert len(vec.o.vector.default_value) == 3
-        assert vec.o.vector.default_value == [0, 0, 0]
+        assert vec.vector == [0, 0, 0]
         assert vec.vector_dimensions == 3
         vec.vector_dimensions = 2
         assert vec.vector_dimensions == 2
-        assert vec.o.vector.default_value == [0, 0]
+        assert vec.vector == [0, 0]
+        vec.vector = [1, 2]
+        assert vec.vector == [1, 2]
+        vec.vector_dimensions = 3
+        vec.vector = [3, 2, 1]
+        assert vec.vector == [3, 2, 1]

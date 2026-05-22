@@ -41,6 +41,7 @@ from ...builder import (
     ImageSocket,
     IntegerSocket,
     IntegerSocketGrid,
+    IntegerVectorSocket,
     MaterialSocket,
     MatrixSocket,
     MenuSocket,
@@ -1291,7 +1292,7 @@ class IntegerVector(BaseNode):
         pass
 
     class _Outputs(SocketAccessor):
-        vector: IntegerSocket
+        vector: IntegerVectorSocket
         """Vector"""
 
     if TYPE_CHECKING:
@@ -1314,7 +1315,7 @@ class IntegerVector(BaseNode):
 
     @property
     def vector(self) -> list[int]:
-        return self.node.vector
+        return list(self.node.vector)
 
     @vector.setter
     def vector(self, value: list[int]):
