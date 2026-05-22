@@ -1235,6 +1235,8 @@ class Menu(BaseNode):
     """
     Provide a menu value that can be connected to other nodes in the tree
 
+    Menu value can't be set when created as possible options aren't known until it is linked to a menu input.
+
     Outputs
     -------
     o.menu : MenuSocket
@@ -1258,12 +1260,10 @@ class Menu(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, value: str | None = None):
+    def __init__(self):
         super().__init__()
         key_args = {}
         self._establish_links(**key_args)
-        if value is not None:
-            self.value = value
 
     @property
     def value(self) -> str:

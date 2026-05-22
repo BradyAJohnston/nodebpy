@@ -19,6 +19,7 @@ from bpy.types import (
     NodeSocketGeometry,
     NodeSocketImage,
     NodeSocketInt,
+    NodeSocketIntVector3D,
     NodeSocketMaterial,
     NodeSocketMatrix,
     NodeSocketMenu,
@@ -59,6 +60,7 @@ if typing.TYPE_CHECKING:
         IntegerSocket,
         IntegerSocketGrid,
         IntegerSocketList,
+        IntegerVectorSocket,
         MaterialSocket,
         MaterialSocketList,
         MatrixSocket,
@@ -101,6 +103,10 @@ InputFloat = typing.Union[
     "FloatSocket",
 ]
 InputInteger = typing.Union[int, NodeSocketInt, InputLinkable, "IntegerSocket"]
+InputIntegerVector = typing.Union[
+    list[int], NodeSocketIntVector3D, InputLinkable, "IntegerVectorSocket"
+]
+
 InputBoolean = typing.Union[bool, NodeSocketBool, InputLinkable, "BooleanSocket"]
 InputVector = typing.Union[
     tuple[float, float, float],
@@ -212,6 +218,7 @@ InputAny = typing.Union[
     InputInteger,
     InputString,
     InputColor,
+    InputIntegerVector,
     InputGeometry,
     InputObject,
     InputMaterial,

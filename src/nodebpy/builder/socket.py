@@ -1731,6 +1731,14 @@ class IntegerSocketList(
     """List of integer sockets."""
 
 
+class IntegerVectorSocket(
+    _IntegerMixin["FloatSocket"],
+    _DefaultValueMixin[list[int]],
+    Socket,
+):
+    """Runtime integer vector socket wrapper."""
+
+
 class IntegerSocketGrid(_IntegerMixin, GridSocketMixin[IntegerSocket]):
     """Runtime integer grid socket wrapper."""
 
@@ -2222,6 +2230,7 @@ _SOCKET_REGISTRY["NodeSocketFloat"] = FloatSocket
 _SOCKET_REGISTRY["NodeSocketVector"] = VectorSocket
 _SOCKET_REGISTRY["NodeSocketColor"] = ColorSocket
 _SOCKET_REGISTRY["NodeSocketInt"] = IntegerSocket
+_SOCKET_REGISTRY["NodeSocketIntVector3D"] = IntegerVectorSocket
 _SOCKET_REGISTRY["NodeSocketBool"] = BooleanSocket
 _SOCKET_REGISTRY["NodeSocketRotation"] = RotationSocket
 _SOCKET_REGISTRY["NodeSocketMatrix"] = MatrixSocket

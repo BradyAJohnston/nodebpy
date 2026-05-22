@@ -11,6 +11,7 @@ from ...types import (
     InputBoolean,
     InputColor,
     InputInteger,
+    InputIntegerVector,
     InputMatrix,
     InputMenu,
     InputObject,
@@ -410,6 +411,7 @@ class ImplicitConversion(BaseNode, Generic[_T]):
         | InputFloat
         | InputFont
         | InputInteger
+        | InputIntegerVector
         | InputMatrix
         | InputMenu
         | InputObject
@@ -498,7 +500,7 @@ class ImplicitConversion(BaseNode, Generic[_T]):
 
     @classmethod
     def integer_vector(
-        cls, value: InputInteger = None
+        cls, value: InputIntegerVector = None
     ) -> "ImplicitConversion[IntegerSocket]":
         """Create Implicit Conversion with operation 'Integer Vector'."""
         return ImplicitConversion(data_type="INT_VECTOR", value=value)
@@ -606,6 +608,7 @@ class IndexSwitch(BaseNode, Generic[_T]):
         | InputFloat
         | InputFont
         | InputInteger
+        | InputIntegerVector
         | InputMatrix
         | InputMenu
         | InputObject
@@ -617,6 +620,7 @@ class IndexSwitch(BaseNode, Generic[_T]):
         | InputFloat
         | InputFont
         | InputInteger
+        | InputIntegerVector
         | InputMatrix
         | InputMenu
         | InputObject
@@ -805,8 +809,8 @@ class IndexSwitch(BaseNode, Generic[_T]):
     def integer_vector(
         cls,
         index: InputInteger = 0,
-        item_0: InputInteger = None,
-        item_1: InputInteger = None,
+        item_0: InputIntegerVector = None,
+        item_1: InputIntegerVector = None,
         extend: InputLinkable = None,
     ) -> "IndexSwitch[IntegerSocket]":
         """Create Index Switch with operation 'Integer Vector'."""

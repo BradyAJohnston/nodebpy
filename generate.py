@@ -39,6 +39,7 @@ _OUTPUT_SOCKET_CLASSES: dict[str, str] = {
     "NodeSocketVector": "VectorSocket",
     "NodeSocketColor": "ColorSocket",
     "NodeSocketInt": "IntegerSocket",
+    "NodeSocketIntVector3D": "IntegerVectorSocket",
     "NodeSocketBool": "BooleanSocket",
     "NodeSocketRotation": "RotationSocket",
     "NodeSocketMatrix": "MatrixSocket",
@@ -240,6 +241,7 @@ class SocketInfo:
         """Get the Python type hint for a socket."""
         type_map = {
             "NodeSocketFloat": "InputFloat",
+            "NodeSocketIntVector3D": "InputIntegerVector",
             "NodeSocketInt": "InputInteger",
             "NodeSocketBool": "InputBoolean",
             "NodeSocketVector": "InputVector",
@@ -1394,6 +1396,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         "InputGeometry",
         "InputImage",
         "InputInteger",
+        "InputIntegerVector",
         "InputMaterial",
         "InputMatrix",
         "InputMenu",

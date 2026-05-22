@@ -1618,3 +1618,34 @@ def test_grid_methods():
         assert isinstance(list, VectorSocketList)
 
         assert isinstance(value, FloatSocket)
+
+
+def test_implicit_conversion():
+    with g.tree():
+        con = g.ImplicitConversion.boolean(g.Float())
+        assert con.data_type == "BOOLEAN"
+        con.data_type = "VECTOR"
+        assert con.data_type == "VECTOR"
+
+    with c.tree():
+        con = c.ImplicitConversion.boolean(c.Float())
+        assert con.data_type == "BOOLEAN"
+        con.data_type = "VECTOR"
+        assert con.data_type == "VECTOR"
+
+    with s.tree():
+        con = s.ImplicitConversion.boolean(s.Float())
+        assert con.data_type == "BOOLEAN"
+        con.data_type = "VECTOR"
+        assert con.data_type == "VECTOR"
+
+
+def test_integer_vector():
+    with c.Tree():
+        vec = c.IntegerVector()
+        assert len(vec.o.vector.default_value) == 3
+        assert vec.o.vector.default_value == [0, 0, 0]
+        assert vec.vector_dimensions == 3
+        vec.vector_dimensions = 2
+        assert vec.vector_dimensions == 2
+        assert vec.o.vector.default_value == [0, 0]

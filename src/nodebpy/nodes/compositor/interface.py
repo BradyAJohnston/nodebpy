@@ -10,6 +10,7 @@ from ...types import (
     InputBoolean,
     InputColor,
     InputInteger,
+    InputIntegerVector,
     InputMatrix,
     InputMenu,
     InputObject,
@@ -89,6 +90,7 @@ class EnableOutput(BaseNode, Generic[_T]):
         | InputFloat
         | InputFont
         | InputInteger
+        | InputIntegerVector
         | InputMatrix
         | InputMenu
         | InputObject
@@ -195,7 +197,7 @@ class EnableOutput(BaseNode, Generic[_T]):
 
     @classmethod
     def integer_vector(
-        cls, enable: InputBoolean = False, value: InputInteger = None
+        cls, enable: InputBoolean = False, value: InputIntegerVector = None
     ) -> "EnableOutput[IntegerSocket]":
         """Create Enable Output with operation 'Integer Vector'."""
         return EnableOutput(data_type="INT_VECTOR", enable=enable, value=value)
