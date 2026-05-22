@@ -2710,7 +2710,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
         | InputString
         | InputVector = None,
         *,
-        socket_idname: str = "",
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -2734,7 +2733,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     ):
         super().__init__()
         key_args = {"Value": value}
-        self.socket_idname = socket_idname
         self.data_type = data_type
         self._establish_links(**key_args)
 
@@ -2837,14 +2835,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     def sound(cls, value: InputSound = None) -> "ImplicitConversion[SoundSocket]":
         """Create Implicit Conversion with operation 'Sound'."""
         return ImplicitConversion(data_type="SOUND", value=value)
-
-    @property
-    def socket_idname(self) -> str:
-        return self.node.socket_idname
-
-    @socket_idname.setter
-    def socket_idname(self, value: str):
-        self.node.socket_idname = value
 
     @property
     def data_type(

@@ -178,7 +178,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
         | InputShader
         | InputVector = None,
         *,
-        socket_idname: str = "",
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -193,7 +192,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     ):
         super().__init__()
         key_args = {"Value": value}
-        self.socket_idname = socket_idname
         self.data_type = data_type
         self._establish_links(**key_args)
 
@@ -243,14 +241,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     def closure(cls, value: InputClosure = None) -> "ImplicitConversion[ClosureSocket]":
         """Create Implicit Conversion with operation 'Closure'."""
         return ImplicitConversion(data_type="CLOSURE", value=value)
-
-    @property
-    def socket_idname(self) -> str:
-        return self.node.socket_idname
-
-    @socket_idname.setter
-    def socket_idname(self, value: str):
-        self.node.socket_idname = value
 
     @property
     def data_type(

@@ -417,7 +417,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
         | InputString
         | InputVector = None,
         *,
-        socket_idname: str = "",
         data_type: Literal[
             "FLOAT",
             "INT",
@@ -435,7 +434,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     ):
         super().__init__()
         key_args = {"Value": value}
-        self.socket_idname = socket_idname
         self.data_type = data_type
         self._establish_links(**key_args)
 
@@ -504,14 +502,6 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     ) -> "ImplicitConversion[IntegerSocket]":
         """Create Implicit Conversion with operation 'Integer Vector'."""
         return ImplicitConversion(data_type="INT_VECTOR", value=value)
-
-    @property
-    def socket_idname(self) -> str:
-        return self.node.socket_idname
-
-    @socket_idname.setter
-    def socket_idname(self, value: str):
-        self.node.socket_idname = value
 
     @property
     def data_type(

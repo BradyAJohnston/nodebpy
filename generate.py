@@ -889,7 +889,12 @@ def collect_socket_info(
 
 def collect_property_info(node, node_type):
     properties = []
-    props_to_ignore = {"active_index", "active_output", "active_item_index"}
+    props_to_ignore = {
+        "active_index",
+        "active_output",
+        "active_item_index",
+        "socket_idname",
+    }
     for base in node_type.__bases__:
         if hasattr(base, "bl_rna"):
             for prop in base.bl_rna.properties:
