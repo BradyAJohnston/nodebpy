@@ -234,8 +234,9 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
     """
 
     @property
-    def builder_node(self) -> "BaseNode | None":
+    def builder_node(self) -> "BaseNode":
         """The builder node that owns this socket, if accessed via .o/.i."""
+        assert self._builder_node is not None
         return self._builder_node
 
     # -- Dispatch methods: per-type math logic. --
