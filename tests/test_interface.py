@@ -15,6 +15,7 @@ from nodebpy.builder import (
     MatrixSocket,
     RotationSocket,
     Socket,
+    StringSocket,
     VectorSocket,
 )
 from nodebpy.nodes.compositor import CombineXYZ
@@ -1051,6 +1052,11 @@ def test_string_socket_methods(snapshot):
 
         assert len(tree) == 22
         assert snapshot == tree._repr_markdown_()
+
+        reversed = string.reverse()
+        assert isinstance(reversed, StringSocket)
+        assert reversed.node.bl_idname == g.ReverseString._bl_idname
+        assert reversed.builder_node.i.string.links[0].from_node == string.node
 
 
 def test_vector_socket_rotate():

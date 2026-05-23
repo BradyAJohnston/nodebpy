@@ -1328,14 +1328,21 @@ class _StringMixin(BaseSocket, Generic[_StringResult, _BooleanResult, _IntegerRe
 
         return FormatString(self.socket, items).o.string  # ty: ignore[invalid-return-type]
 
-    def replace(self, find: InputString, replace: InputString) -> "_StringResult":
+    def replace(self, find: InputString, replace: InputString) -> _StringResult:
         "Replace every match of the string with teh replacement string"
         self._assert_output("replace")
         from ..nodes.geometry import ReplaceString
 
         return ReplaceString(self.socket, find, replace).o.string  # ty: ignore[invalid-return-type]
 
-    def length(self) -> "_IntegerResult":
+    def reverse(self) -> _StringResult:
+        "Reverse the string."
+        self._assert_output("reverse")
+        from ..nodes.geometry import ReverseString
+
+        return ReverseString(self.socket).o.string  # ty: ignore[invalid-return-type]
+
+    def length(self) -> _IntegerResult:
         "Compute the length of a string and return as `IntegerSocket`."
         self._assert_output("length")
         from ..nodes.geometry import StringLength
