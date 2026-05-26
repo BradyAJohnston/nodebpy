@@ -1195,9 +1195,6 @@ wheels = [
 name = "nodebpy"
 version = "0.19.0"
 source = { editable = "." }
-dependencies = [
-    { name = "bpy" },
-]
 
 [package.optional-dependencies]
 bpy = [
@@ -1226,7 +1223,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bpy", specifier = "==5.2.*" },
     { name = "bpy", marker = "extra == 'bpy'", specifier = "==5.2.*" },
     { name = "networkx", marker = "extra == 'networkx'", specifier = ">=3.6.1" },
 ]
