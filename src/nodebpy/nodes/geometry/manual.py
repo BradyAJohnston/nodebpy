@@ -1,3 +1,4 @@
+from mathutils import Euler
 from collections.abc import Mapping
 from typing import (
     TYPE_CHECKING,
@@ -53,6 +54,15 @@ from ...builder import (
     TreeBuilder,
     VectorSocket,
     VectorSocketGrid,
+    FloatSocketList,
+    IntegerSocketList,
+    BooleanSocketList,
+    VectorSocketList,
+    ColorSocketList,
+    RotationSocketList,
+    MatrixSocketList,
+    StringSocketList,
+    MenuSocketList,
 )
 from ...builder import Socket as SocketLinker
 from ...types import (
@@ -86,6 +96,10 @@ from ...types import (
     _EvaluateAtIndexDataTypes,
     _GridDataTypes,
     _is_default_value,
+    InputFloatGrid,
+    InputIntegerGrid,
+    InputVectorGrid,
+    InputBooleanGrid,
 )
 from .zone import (
     ClosureInput,
@@ -1473,16 +1487,20 @@ class MeshBoolean(BaseNode):
         *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
-        key_args = {}
         if solver == "EXACT":
-            key_args["self_intersection"] = self_intersection
-            key_args["hole_tolerant"] = hole_tolerant
-        return cls(
-            mesh_2=items,
-            **key_args,
-            solver=solver,
-            operation="INTERSECT",
-        )
+            return cls(
+                mesh_2=items,
+                self_intersection=self_intersection,
+                hole_tolerant=hole_tolerant,
+                solver=solver,
+                operation="INTERSECT",
+            )
+        else:
+            return cls(
+                mesh_2=items,
+                solver=solver,
+                operation="INTERSECT",
+            )
 
     @classmethod
     def union(
@@ -1493,16 +1511,20 @@ class MeshBoolean(BaseNode):
         *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
-        key_args = {}
         if solver == "EXACT":
-            key_args["self_intersection"] = self_intersection
-            key_args["hole_tolerant"] = hole_tolerant
-        return cls(
-            mesh_2=items,
-            **key_args,
-            solver=solver,
-            operation="UNION",
-        )
+            return cls(
+                mesh_2=items,
+                self_intersection=self_intersection,
+                hole_tolerant=hole_tolerant,
+                solver=solver,
+                operation="UNION",
+            )
+        else:
+            return cls(
+                mesh_2=items,
+                solver=solver,
+                operation="UNION",
+            )
 
     @classmethod
     def difference(
@@ -1514,17 +1536,22 @@ class MeshBoolean(BaseNode):
         *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
-        key_args = {}
         if solver == "EXACT":
-            key_args["self_intersection"] = self_intersection
-            key_args["hole_tolerant"] = hole_tolerant
-        return cls(
-            mesh_1=mesh_1,
-            mesh_2=items,
-            solver=solver,
-            operation="DIFFERENCE",
-            **key_args,
-        )
+            return cls(
+                mesh_1=mesh_1,
+                mesh_2=items,
+                self_intersection=self_intersection,
+                hole_tolerant=hole_tolerant,
+                solver=solver,
+                operation="DIFFERENCE",
+            )
+        else:
+            return cls(
+                mesh_1=mesh_1,
+                mesh_2=items,
+                solver=solver,
+                operation="DIFFERENCE",
+            )
 
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
@@ -2254,6 +2281,77 @@ class FieldToList(DynamicInputsMixin, BaseNode):
 
         return [_wrap_socket(x) for x in outputs.values()]
 
+    def _new_item(
+        self,
+        type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+        ],
+        name: str | None = None,
+        default: Any | None = None,
+    ) -> bpy.types.NodeSocket:
+        item = self.node.list_items.new(type)
+        if name is not None:
+            item.name = name
+
+        input_socket = self.i[item.name]
+        if default is not None:
+            input_socket.default_value = default  # ty: ignore[invalid-assignment]
+
+        return self.o[item.name].socket
+
+    def capture_float(
+        self, input: InputFloat = 0, name: str | None = None
+    ) -> FloatSocketList:
+        return FloatSocketList(self._new_item("FLOAT", name, input))
+
+    def capture_integer(
+        self, input: InputInteger = 0, name: str | None = None
+    ) -> IntegerSocketList:
+        return IntegerSocketList(self._new_item("INT", name, input))
+
+    def capture_boolean(
+        self, input: InputBoolean = False, name: str | None = None
+    ) -> BooleanSocketList:
+        return BooleanSocketList(self._new_item("BOOLEAN", name, input))
+
+    def capture_vector(
+        self, input: InputVector = (0, 0, 0), name: str | None = None
+    ) -> VectorSocketList:
+        return VectorSocketList(self._new_item("VECTOR", name, input))
+
+    def capture_color(
+        self, input: InputColor = (0, 0, 0, 1), name: str | None = None
+    ) -> ColorSocketList:
+        return ColorSocketList(self._new_item("RGBA", name, input))
+
+    def capture_rotation(
+        self, input: InputRotation = Euler((0, 0, 0)), name: str | None = None
+    ) -> RotationSocketList:
+        return RotationSocketList(self._new_item("ROTATION", name, input))
+
+    def capture_matrix(
+        self, input: InputMatrix = None, name: str | None = None
+    ) -> MatrixSocketList:
+        return MatrixSocketList(self._new_item("MATRIX", name, input))
+
+    def capture_string(
+        self, input: InputString = "", name: str | None = None
+    ) -> StringSocketList:
+        return StringSocketList(self._new_item("STRING", name, input))
+
+    def capture_menu(
+        self, input: InputString = None, name: str | None = None
+    ) -> MenuSocketList:
+        return MenuSocketList(self._new_item("MENU", name, input))
+
 
 class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     """Create new grids by evaluating new values on an existing volume grid topology
@@ -2326,26 +2424,30 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
 
     @classmethod
     def float(
-        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+        cls, topology: InputFloatGrid = None, items: dict[str, InputAny] = {}
     ) -> "FieldToGrid[FloatSocketGrid]":
+        """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="FLOAT")
 
     @classmethod
     def integer(
-        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+        cls, topology: InputIntegerGrid = None, items: dict[str, InputAny] = {}
     ) -> "FieldToGrid[IntegerSocketGrid]":
+        """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="INT")
 
     @classmethod
     def vector(
-        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+        cls, topology: InputVectorGrid = None, items: dict[str, InputAny] = {}
     ) -> "FieldToGrid[VectorSocketGrid]":
+        """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="VECTOR")
 
     @classmethod
     def boolean(
-        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
+        cls, topology: InputBooleanGrid = None, items: dict[str, InputAny] = {}
     ) -> "FieldToGrid[BooleanSocketGrid]":
+        """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="BOOLEAN")
 
     @property
@@ -2360,6 +2462,32 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
         value: _GridDataTypes,
     ):
         self.node.data_type = value
+
+    def _new_item(self, type: _GridDataTypes, name: str | None = None) -> NodeSocket:
+        item = self.node.grid_items.new(type=type)
+        if name is not None:
+            item.name = name
+        return self.o[item.name].socket
+
+    def capture_float(
+        self, field: InputFloat = None, name: str | None = None
+    ) -> FloatSocketGrid:
+        return FloatSocketGrid(self._new_item(type="FLOAT", name=name))
+
+    def capture_boolean(
+        self, field: InputBoolean = None, name: str | None = None
+    ) -> BooleanSocketGrid:
+        return BooleanSocketGrid(self._new_item(type="BOOLEAN", name=name))
+
+    def capture_vector(
+        self, field: InputVector = None, name: str | None = None
+    ) -> VectorSocketGrid:
+        return VectorSocketGrid(self._new_item(type="VECTOR", name=name))
+
+    def capture_integer(
+        self, field: InputInteger = None, name: str | None = None
+    ) -> IntegerSocketGrid:
+        return IntegerSocketGrid(self._new_item(type="INT", name=name))
 
 
 class SDFGridBoolean(BaseNode):

@@ -1599,8 +1599,10 @@ def test_field_to_list():
         assert isinstance(filtered, IntegerSocketList)
         filtered = num.filter()
         assert isinstance(filtered, FloatSocketList)
-        # if we get using a list index, we should get a list of values
-        assert isinstance(pos.get(idx), VectorSocketList)
+        # if we get using a list index, we should get a list of values, but Blender
+        # won't infer that during node tree creation. For type checking it will propagate
+        # but not during execution
+        assert isinstance(pos.get(idx), VectorSocket)
         # if we get using a single index, we should get a single value
         assert isinstance(pos.get(1), VectorSocket)
 
