@@ -1386,8 +1386,8 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     lines.append(f"from ...builder import {', '.join(builder_imports)}")
 
     data_types = [f"{t.title()}" for t in typing.get_args(SOCKET_TYPES)]
+    data_types += ["Integer", "Color", "IntegerVector", "Linkable"]
     data_types.sort()
-    data_types += ["Integer", "Color", "Sound", "IntegerVector", "Linkable"]
 
     sockets = [f"{d}Socket" for d in data_types]
     grids = [

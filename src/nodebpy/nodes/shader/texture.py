@@ -14,9 +14,9 @@ from ...types import (
 )
 
 from ...builder.socket import (
+    ColorSocket,
     FloatSocket,
     VectorSocket,
-    ColorSocket,
 )
 
 

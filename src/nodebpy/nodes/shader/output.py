@@ -7,17 +7,17 @@ import bpy
 from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
+    InputColor,
     InputFloat,
     InputShader,
     InputVector,
-    InputColor,
 )
 
 from ...builder.socket import (
+    ColorSocket,
     FloatSocket,
     ShaderSocket,
     VectorSocket,
-    ColorSocket,
 )
 
 
