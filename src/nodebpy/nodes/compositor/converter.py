@@ -7,35 +7,35 @@ import bpy
 from ...builder import BaseNode, SocketAccessor, Socket
 
 from ...types import (
-    InputLinkable,
     InputBoolean,
-    InputColor,
-    InputInteger,
-    InputIntegerVector,
+    InputFloat,
+    InputFont,
     InputMatrix,
     InputMenu,
     InputObject,
     InputRotation,
     InputString,
-    InputFloat,
     InputVector,
-    InputFont,
+    InputInteger,
+    InputColor,
+    InputIntegerVector,
+    InputLinkable,
 )
 
 from ...builder.socket import (
-    _T,
-    _S,
-    FloatSocket,
     BooleanSocket,
-    VectorSocket,
-    RotationSocket,
+    FloatSocket,
+    FontSocket,
     MatrixSocket,
-    StringSocket,
     MenuSocket,
     ObjectSocket,
-    FontSocket,
+    RotationSocket,
+    StringSocket,
+    VectorSocket,
     IntegerSocket,
     ColorSocket,
+    _T,
+    _S,
 )
 
 

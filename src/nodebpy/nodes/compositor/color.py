@@ -10,14 +10,14 @@ from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
-    InputColor,
-    InputMenu,
     InputFloat,
+    InputMenu,
+    InputColor,
 )
 
 from ...builder.socket import (
-    FloatSocket,
     BooleanSocket,
+    FloatSocket,
     MenuSocket,
     ColorSocket,
 )

@@ -10,28 +10,28 @@ from ...types import (
     InputBoolean,
     InputBundle,
     InputClosure,
-    InputColor,
-    InputInteger,
+    InputFloat,
     InputMenu,
     InputRotation,
     InputShader,
-    InputFloat,
     InputVector,
+    InputInteger,
+    InputColor,
 )
 
 from ...builder.socket import (
-    _T,
-    _S,
-    FloatSocket,
     BooleanSocket,
-    VectorSocket,
-    RotationSocket,
-    MenuSocket,
     BundleSocket,
     ClosureSocket,
+    FloatSocket,
+    MenuSocket,
+    RotationSocket,
     ShaderSocket,
+    VectorSocket,
     IntegerSocket,
     ColorSocket,
+    _T,
+    _S,
 )
 
 

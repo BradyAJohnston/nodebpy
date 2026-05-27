@@ -8,29 +8,29 @@ from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
+    InputFloat,
     InputGeometry,
-    InputInteger,
     InputMatrix,
     InputMenu,
     InputString,
-    InputFloat,
     InputVector,
+    InputInteger,
 )
 
 from ...builder.socket import (
-    _T,
-    _S,
-    FloatSocket,
     BooleanSocket,
-    VectorSocket,
-    MatrixSocket,
-    StringSocket,
-    MenuSocket,
+    FloatSocket,
     GeometrySocket,
+    MatrixSocket,
+    MenuSocket,
+    StringSocket,
+    VectorSocket,
     IntegerSocket,
     FloatSocketGrid,
     VectorSocketGrid,
     BooleanSocketGrid,
+    _T,
+    _S,
 )
 
 

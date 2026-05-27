@@ -1385,67 +1385,11 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     #         builder_imports.append(cls)
     lines.append(f"from ...builder import {', '.join(builder_imports)}")
 
-    # Types imports — use canonical order matching the type_map
-    type_order = [
-        "InputLinkable",
-        "InputBoolean",
-        "InputBundle",
-        "InputClosure",
-        "InputCollection",
-        "InputColor",
-        "InputGeometry",
-        "InputImage",
-        "InputInteger",
-        "InputIntegerVector",
-        "InputMaterial",
-        "InputMatrix",
-        "InputMenu",
-        "InputObject",
-        "InputRotation",
-        "InputShader",
-        "InputString",
-        "InputFloat",
-        "InputVector",
-        "InputFont",
-        "InputSound",
-        "InputFloatGrid",
-        "InputVectorGrid",
-        "InputIntegerGrid",
-        "InputBooleanGrid",
-        "InputFloatList",
-        "InputVectorList",
-        "InputColorList",
-        "InputIntegerList",
-        "InputBooleanList",
-        "InputRotationList",
-        "InputMatrixList",
-        "InputStringList",
-        "InputMenuList",
-        "InputObjectList",
-        "InputGeometryList",
-        "InputCollectionList",
-        "InputImageList",
-        "InputMaterialList",
-        "InputBundleList",
-        "InputClosureList",
-        "InputShaderList",
-        "InputFontList",
-        "InputSoundList",
-    ]
-    type_imports = [
-        t
-        for t in type_order
-        if t in used_type_hints or (t == "InputLinkable" and has_linkable)
-    ]
-    if type_imports:
-        imports_str = ",\n    ".join(type_imports)
-        lines.append(f"from ...types import (\n    {imports_str},\n)")
+    data_types = [f"{t.title()}" for t in typing.get_args(SOCKET_TYPES)]
+    data_types.sort()
+    data_types += ["Integer", "Color", "Sound", "IntegerVector", "Linkable"]
 
-    sockets = [f"{t.title()}Socket" for t in typing.get_args(SOCKET_TYPES)]
-    sockets += [
-        "IntegerSocket",
-        "ColorSocket",
-    ]
+    sockets = [f"{d}Socket" for d in data_types]
     grids = [
         "FloatSocketGrid",
         "IntegerSocketGrid",
@@ -1453,14 +1397,13 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
         "BooleanSocketGrid",
     ]
     lists = [s + "List" for s in sockets]
-    typevars = ["_T", "_S"] if has_generic_nodes else []
+    all = sockets + grids + lists
+    inputs = [f"Input{x}".replace("Socket", "") for x in all]
+    typevars = ["_T", "_S"]
 
-    lines.append(
-        f"from ...builder.socket import ({', '.join(typevars + sockets + grids + lists)})"
-    )
+    lines.append(f"from ...types import (\n    {',\n'.join(inputs)},\n)")
 
-    # if sockets:
-    #     lines.append(f"from ...types import ({', '.join(sockets)})")
+    lines.append(f"from ...builder.socket import ({', '.join(all + typevars)})")
 
     return "\n\n".join(lines) + "\n"
 

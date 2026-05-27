@@ -8,18 +8,18 @@ from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
-    InputColor,
-    InputInteger,
-    InputMenu,
     InputFloat,
+    InputMenu,
     InputVector,
+    InputInteger,
+    InputColor,
 )
 
 from ...builder.socket import (
-    FloatSocket,
     BooleanSocket,
-    VectorSocket,
+    FloatSocket,
     MenuSocket,
+    VectorSocket,
     IntegerSocket,
     ColorSocket,
 )

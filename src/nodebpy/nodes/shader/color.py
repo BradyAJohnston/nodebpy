@@ -7,8 +7,8 @@ import bpy
 from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
-    InputColor,
     InputFloat,
+    InputColor,
 )
 
 from ...builder.socket import (
