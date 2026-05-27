@@ -1666,3 +1666,4 @@ def test_matrix_socket():
         result = cast(MatrixSocketList, mat)
 
         r2 = mat @ result
+        assert isinstance(r2, MatrixSocketList)
