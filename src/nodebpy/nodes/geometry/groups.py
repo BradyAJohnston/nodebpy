@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING
 
 from nodebpy import TreeBuilder
 from nodebpy.types import (
-    InputInteger,
-    InputVector,
-    InputObject,
     InputBoolean,
+    InputInteger,
+    InputObject,
+    InputVector,
 )
 
 from ...builder import (
@@ -18,12 +18,12 @@ from ...builder import (
 from . import (
     AxesToRotation,
     CombineMatrix,
+    CombineXYZ,
     EdgesOfVertex,
     EdgeVertices,
     Frame,
-    Switch,
     Position,
-    CombineXYZ,
+    Switch,
 )
 
 
@@ -225,13 +225,7 @@ class ClipFieldToBox(CustomGeometryGroup):
 
         pos = Position().o.position
         local_pos = box.transform("RELATIVE").invert() @ pos * 0.5
-
-        result = (
-            (abs(local_pos.x) < 0.5)
-            & (abs(local_pos.y) < 0.5)
-            & (abs(local_pos.z) < 0.5)
-        )
-
+        result = abs(local_pos) < 0.5
         (result != invert) >> masked
 
 
