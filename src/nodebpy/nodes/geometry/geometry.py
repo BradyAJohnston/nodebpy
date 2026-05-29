@@ -9474,6 +9474,8 @@ class XpbdSolver(BaseNode):
         Substeps
     constraint_iterations : InputInteger
         Constraint Iterations
+    solver_path : InputString
+        Solver Path
     begin : InputFloat
         Begin
     end : InputFloat
@@ -9493,6 +9495,8 @@ class XpbdSolver(BaseNode):
         Substeps
     i.constraint_iterations : IntegerSocket
         Constraint Iterations
+    i.solver_path : StringSocket
+        Solver Path
     i.begin : FloatSocket
         Begin
     i.end : FloatSocket
@@ -9520,6 +9524,8 @@ class XpbdSolver(BaseNode):
         """Substeps"""
         constraint_iterations: IntegerSocket
         """Constraint Iterations"""
+        solver_path: StringSocket
+        """Solver Path"""
         begin: FloatSocket
         """Begin"""
         end: FloatSocket
@@ -9544,6 +9550,7 @@ class XpbdSolver(BaseNode):
         simulation_to_world: InputMatrix = None,
         substeps: InputInteger = 10,
         constraint_iterations: InputInteger = 1,
+        solver_path: InputString = "",
         begin: InputFloat = 0.0,
         end: InputFloat = 1.0,
     ):
@@ -9555,6 +9562,7 @@ class XpbdSolver(BaseNode):
             "Simulation to World": simulation_to_world,
             "Substeps": substeps,
             "Constraint Iterations": constraint_iterations,
+            "Solver Path": solver_path,
             "Begin": begin,
             "End": end,
         }

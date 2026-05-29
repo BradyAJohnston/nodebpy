@@ -1014,6 +1014,8 @@ class Stabilize2D(BaseNode):
     ----------
     image : InputColor
         Image
+    frame : InputInteger
+        Frame
     invert : InputBoolean
         Invert
     interpolation : InputMenu | Literal['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic']
@@ -1027,6 +1029,8 @@ class Stabilize2D(BaseNode):
     ------
     i.image : ColorSocket
         Image
+    i.frame : IntegerSocket
+        Frame
     i.invert : BooleanSocket
         Invert
     i.interpolation : MenuSocket
@@ -1048,6 +1052,8 @@ class Stabilize2D(BaseNode):
     class _Inputs(SocketAccessor):
         image: ColorSocket
         """Image"""
+        frame: IntegerSocket
+        """Frame"""
         invert: BooleanSocket
         """Invert"""
         interpolation: MenuSocket
@@ -1071,6 +1077,7 @@ class Stabilize2D(BaseNode):
     def __init__(
         self,
         image: InputColor = None,
+        frame: InputInteger = 0,
         invert: InputBoolean = False,
         interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
@@ -1080,6 +1087,7 @@ class Stabilize2D(BaseNode):
         super().__init__()
         key_args = {
             "Image": image,
+            "Frame": frame,
             "Invert": invert,
             "Interpolation": interpolation,
             "Extension X": extension_x,

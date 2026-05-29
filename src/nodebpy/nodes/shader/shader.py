@@ -7,6 +7,7 @@ import bpy
 from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
+    InputBoolean,
     InputColor,
     InputFloat,
     InputShader,
@@ -14,6 +15,7 @@ from ...types import (
 )
 
 from ...builder.socket import (
+    BooleanSocket,
     ColorSocket,
     FloatSocket,
     ShaderSocket,
@@ -933,6 +935,8 @@ class PrincipledBSDF(BaseNode):
         IOR
     alpha : InputFloat
         Alpha
+    thin_wall : InputBoolean
+        Thin Wall
     normal : InputVector
         Normal
     weight : InputFloat
@@ -998,6 +1002,8 @@ class PrincipledBSDF(BaseNode):
         IOR
     i.alpha : FloatSocket
         Alpha
+    i.thin_wall : BooleanSocket
+        Thin Wall
     i.normal : VectorSocket
         Normal
     i.weight : FloatSocket
@@ -1071,6 +1077,8 @@ class PrincipledBSDF(BaseNode):
         """IOR"""
         alpha: FloatSocket
         """Alpha"""
+        thin_wall: BooleanSocket
+        """Thin Wall"""
         normal: VectorSocket
         """Normal"""
         weight: FloatSocket
@@ -1142,6 +1150,7 @@ class PrincipledBSDF(BaseNode):
         roughness: InputFloat = 0.5,
         ior: InputFloat = 1.5,
         alpha: InputFloat = 1.0,
+        thin_wall: InputBoolean = False,
         normal: InputVector = None,
         weight: InputFloat = 0.0,
         diffuse_roughness: InputFloat = 0.0,
@@ -1181,6 +1190,7 @@ class PrincipledBSDF(BaseNode):
             "Roughness": roughness,
             "IOR": ior,
             "Alpha": alpha,
+            "Thin Wall": thin_wall,
             "Normal": normal,
             "Weight": weight,
             "Diffuse Roughness": diffuse_roughness,
