@@ -96,6 +96,61 @@
   ```
   '''
 # ---
+# name: test_geometryscript_city_builder
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N2("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N3("Curve to Points"):::geometry-node
+      N4("Grid"):::geometry-node
+      N5("Random Value"):::converter-node
+      N6("Combine XYZ"):::converter-node
+      N7("Combine XYZ"):::converter-node
+      N8("Geometry Proximity"):::geometry-node
+      N9("Distribute Points on Faces"):::geometry-node
+      N10("Curve Line<br/><small>(0,0,1)</small>"):::geometry-node
+      N11("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
+      N12("Cube"):::geometry-node
+      N13("Curve to Mesh"):::geometry-node
+      N14("Delete Geometry"):::geometry-node
+      N15("Transform Geometry<br/><small>(0,0,0.5)</small>"):::geometry-node
+      N16("Instance on Points"):::geometry-node
+      N17("Join Geometry"):::geometry-node
+      N18("Group Output"):::default-node
+      N0 -->|"Road Width->Value"| N1
+      N1 -->|"Value->X"| N6
+      N0 -->|"Road Width->Value"| N2
+      N2 -->|"Value->X"| N7
+      N6 -->|"Vector->Start"| N10
+      N7 -->|"Vector->End"| N10
+      N10 -->|"Curve->Profile Curve"| N13
+      N0 -->|"Geometry->Curve"| N13
+      N0 -->|"Size X->Size X"| N4
+      N0 -->|"Size Y->Size Y"| N4
+      N4 -->|"Mesh->Mesh"| N9
+      N0 -->|"Geometry->Curve"| N3
+      N3 -->|"Points->Geometry"| N8
+      N8 -->|"Distance->A"| N11
+      N11 -->|"Result->Selection"| N14
+      N12 -->|"Mesh->Geometry"| N15
+      N0 -->|"Building Size Min->Min"| N5
+      N0 -->|"Building Size Max->Max"| N5
+      N0 -->|"Seed->Seed"| N5
+      N15 -->|"Geometry->Instance"| N16
+      N14 -->|"Geometry->Points"| N16
+      N16 -->|"Instances->Geometry"| N17
+      N17 -->|"Geometry->Result"| N18
+      N0 -->|"Seed->Seed"| N9
+      N0 -->|"Density->Density"| N9
+      N0 -->|"Road Width->B"| N11
+      N9 -->|"Points->Geometry"| N14
+      N5 -->|"Value->Scale"| N16
+      N13 -->|"Mesh->Geometry"| N17
+  ```
+  '''
+# ---
 # name: test_import_microscopy_meshes_node_group
   '''
   ```{mermaid}

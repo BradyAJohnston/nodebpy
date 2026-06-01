@@ -9,7 +9,7 @@ import bpy
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.builder import BooleanSocket, FloatSocket
-from nodebpy.nodes.geometry.groups import PrincipalComponents, ClipFieldToBox
+from nodebpy.nodes.geometry.groups import ClipFieldToBox, PrincipalComponents
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
@@ -80,13 +80,13 @@ def test_PCA_asset():
 def test_surface_hello_world():
     with g.tree("Hello World") as tree:
         height = tree.inputs.float("Height", 3.0)
-        omega = tree.inputs.float("Omega", 0.5)
+        omega = tree.inputs.float("Omega", 2.0)
 
         with g.Frame("Computing the wave"):
             with g.Frame("Distance"):
                 pos = g.Position().o.position
                 distance = g.Math.square_root(pos.x**2 + pos.y**2)
-            z = height * g.Math.sine(distance / omega) / distance
+            z = height * g.Math.sine(distance * omega) / distance
 
         with g.Frame("Point offset & smooth"):
             mesh = (
@@ -980,3 +980,47 @@ def _build_microscopy_grid_to_points(tree):
         selection=(points.o.value < 0.0001) | points.o.is_tile,
     )
     delete.o.geometry >> geometry
+
+
+def test_geometryscript_city_builder(snapshot):
+    with g.tree("Voxelise") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        seed = tree.inputs.integer("Seed")
+        road_width = tree.inputs.float("Road Width", 0.25)
+        size_x = tree.inputs.float("Size X", 5.0)
+        size_y = tree.inputs.float("Size Y", 5.0)
+        density = tree.inputs.float("Density", 10.0)
+        building_size_min = tree.inputs.vector("Building Size Min", (0.1, 0.1, 0.2))
+        building_size_max = tree.inputs.vector("Building Size Max", (0.3, 0.3, 1.0))
+
+        curve_mesh = geo >> g.CurveToMesh(
+            profile_curve=g.CurveLine(
+                start=g.CombineXYZ(x=road_width * -0.5),
+                end=g.CombineXYZ(x=road_width * 0.5),
+            ),
+        )
+
+        building_points = g.Grid(size_x, size_y) >> g.DistributePointsOnFaces(
+            density=density, seed=seed
+        )
+
+        road_points = geo >> g.CurveToPoints(mode="EVALUATED")
+        building_points = g.DeleteGeometry.point(
+            building_points,
+            selection=g.GeometryProximity(
+                road_points,
+                target_element="POINTS",
+            ).o.distance
+            < road_width,
+        )
+
+        buildings = building_points >> g.InstanceOnPoints(
+            instance=g.Cube() >> g.TransformGeometry(translation=(0, 0, 0.5)),
+            scale=g.RandomValue.vector(
+                min=building_size_min, max=building_size_max, seed=seed
+            ),
+        )
+
+        g.JoinGeometry((curve_mesh, buildings)) >> tree.outputs.geometry("Result")
+
+    assert snapshot == tree._repr_markdown_()
