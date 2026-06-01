@@ -11,7 +11,7 @@ from bpy.types import (
     NodeEvaluateClosureOutputItems,
 )
 
-from nodebpy.builder._registry import _get_socket_linker
+from nodebpy.builder._registry import _wrap_socket
 from nodebpy.builder._utils import _SocketLike
 
 if TYPE_CHECKING:
@@ -536,7 +536,7 @@ class ClosureInput(BaseNode):
 
     def link(self, target: _SocketLike) -> SocketLinker:
         self.tree.link(self.node.outputs[-1], target.socket)
-        return _get_socket_linker(self.node.outputs[-2])
+        return _wrap_socket(self.node.outputs[-2])
 
 
 class ClosureOutput(BaseNode):
@@ -578,7 +578,7 @@ class ClosureOutput(BaseNode):
     def link(self, source: _SocketLike) -> SocketLinker:
         self.tree.link(source.socket, self.node.inputs[-1])
 
-        return _get_socket_linker(self.node.inputs[-2])
+        return _wrap_socket(self.node.inputs[-2])
 
     def sync_signature(self, node: "EvaluateClosure") -> None:
         for name in ["input_items", "output_items"]:

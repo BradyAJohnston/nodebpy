@@ -851,28 +851,29 @@ class TestReverseOperators:
 
     def test_matmul(self):
         with TreeBuilder("TestMatmul"):
-            mat = np.random.rand(4, 4)
+            npmat = np.random.rand(4, 4)
+            mat = g.CombineMatrix(*npmat.ravel())
             a = g.CombineTransform(translation=(1, 0, 0))
             result = a @ mat
             result2 = mat @ a
         assert result.node.bl_idname == g.MultiplyMatrices._bl_idname
         assert result2.node.bl_idname == g.MultiplyMatrices._bl_idname
         assert np.allclose(
-            mat.ravel(),
+            npmat.ravel(),
             [i.default_value for i in result.node.inputs[1].links[0].from_node.inputs],
         )
         assert np.allclose(
-            mat.ravel(),
+            npmat.ravel(),
             [i.default_value for i in result2.node.inputs[0].links[0].from_node.inputs],
         )
 
     def test_rmatmul(self):
         with TreeBuilder("TestRMatmul"):
-            a = g.CombineTransform(translation=(1, 0, 0))
-            b = g.CombineTransform(rotation=(0, 90, 0))
+            a = g.CombineTransform(translation=(1, 0, 0)).o.transform
+            b = g.CombineTransform(rotation=(0, 90, 0)).o.transform
             mat = np.random.rand(4, 4)
             # use the output socket as the left operand so Python calls b.__rmatmul__
-            result = a.o.transform.socket @ b
+            result = a.socket @ b
             result2 = mat @ a
 
         assert result.node.bl_idname == g.MultiplyMatrices._bl_idname
@@ -886,9 +887,9 @@ class TestReverseOperators:
         """matrix @ vector should produce a TransformPoint node."""
         with TreeBuilder("TestMatrixMatmulVector") as tree:
             mat = g.CombineTransform(translation=(1, 0, 0))
-            vec = g.Vector((1, 2, 3))
+            vec = g.Vector((1, 2, 3)).o.vector
             result = mat @ vec
-            result2 = mat @ np.random.rand(4, 4)
+            result2 = mat @ g.CombineMatrix(*np.random.rand(4, 4).ravel()).o.matrix
             _ = mat @ result2
 
         assert result.node.bl_idname == g.TransformPoint._bl_idname

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Iterator, Literal, overload
 import bpy
 from bpy.types import NodeSocket
 
-from ._registry import _get_socket_linker
+from ._registry import _wrap_socket
 from ._utils import (
     SocketError,
     _allow_innactive_sockets,
@@ -79,14 +79,14 @@ class SocketAccessor:
         """Get a Socket for a socket by identifier, name, or index."""
         if isinstance(key, slice):
             sockets = [
-                _get_socket_linker(self._collection[i])
+                _wrap_socket(self._collection[i])
                 for i in range(*key.indices(len(self._collection)))
             ]
             if self._builder is not None:
                 for s in sockets:
                     s._builder_node = self._builder
             return sockets
-        socket = _get_socket_linker(self._collection[self._index(key)])
+        socket = _wrap_socket(self._collection[self._index(key)])
         if self._builder is not None:
             socket._builder_node = self._builder
         return socket
@@ -185,7 +185,7 @@ class SocketAccessor:
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
         see ``_visible_sockets`` for rationale.
         """
-        return [_get_socket_linker(s) for s in self._visible_sockets()]
+        return [_wrap_socket(s) for s in self._visible_sockets()]
 
     def _items(self) -> "list[tuple[str, Socket]]":
         """All visible sockets as (name, Socket) pairs.
@@ -193,7 +193,7 @@ class SocketAccessor:
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
         see ``_visible_sockets`` for rationale.
         """
-        return [(s.name, _get_socket_linker(s)) for s in self._visible_sockets()]
+        return [(s.name, _wrap_socket(s)) for s in self._visible_sockets()]
 
     def _keys(self) -> list[str]:
         """All visible socket names."""

@@ -1,3 +1,4 @@
+from typing import cast
 import itertools
 
 import bpy
@@ -10,11 +11,18 @@ from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
     FloatSocket,
+    FloatSocketGrid,
+    FloatSocketList,
     IntegerSocket,
+    IntegerSocketList,
     MatrixSocket,
+    MatrixSocketList,
     StringSocket,
     VectorSocket,
+    VectorSocketGrid,
+    VectorSocketList,
 )
+from nodebpy.nodes.geometry import SplitString
 
 
 def test_capture_attribute():
@@ -31,8 +39,8 @@ def test_capture_attribute():
 
     assert "Capture Attribute" in tree.nodes
     assert len(cap._items) == 1
-    assert cap.node.outputs[1].name == "Position"
-    assert cap.node.outputs[1].type == "VECTOR"
+    assert cap.node.outputs[-2].name == "Position"
+    assert cap.node.outputs[-2].type == "VECTOR"
     assert cap.i.position.links
     assert len(cap.i.position.links) == 1
     assert cap.i.position.links[0].from_node.bl_idname == g.Position._bl_idname
@@ -168,16 +176,18 @@ def test_field_to_grid():
 
     with TreeBuilder() as tree:
         nt = g.NoiseTexture()
-        ftg = g.FieldToGrid(g.CubeGridTopology())
+        ftg = g.FieldToGrid(g.CubeGridTopology().o.topology)
         pos, vec, fac = ftg.capture(
             {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
         )
         assert len(ftg.o) == 4
-        assert isinstance(pos, VectorSocket)
+        assert isinstance(pos, VectorSocketGrid)
         assert pos.name == "position"
-        assert isinstance(vec, VectorSocket)
+        assert isinstance(vec, VectorSocketGrid)
         assert vec.name == "vec"
         assert isinstance(nt.o.fac, FloatSocket)
+        assert fac.name == "fac"
+        assert isinstance(fac, FloatSocketGrid)
         assert fac.name == "fac"
 
 
@@ -386,7 +396,7 @@ def test_repeat(snapshot):
     assert snapshot == tree._repr_markdown_()
 
 
-def test_index_switch(snapshot_tree):
+def test_index_switch():
     with TreeBuilder() as tree:
         items = (g.Cube(), g.UVSphere(), g.Cube(), g.Cube())
         index = g.IndexSwitch.geometry(5, items)
@@ -463,7 +473,7 @@ def test_multi_menu():
         g.JoinGeometry([switch1, switch2]) >> tree.outputs.geometry("Output")
 
 
-def test_switch_repeatzone(snapshot_tree):
+def test_switch_repeatzone(snapshot):
     with TreeBuilder() as tree:
         input = tree.inputs.geometry()
         output = tree.outputs.geometry()
@@ -476,7 +486,7 @@ def test_switch_repeatzone(snapshot_tree):
 
     assert len(zone.output.items) == 1
     assert zone.output.i["Geometry"].socket.links[0].from_node == join.node
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
 def test_generate_select_group():
@@ -1305,12 +1315,6 @@ def test_compositor_node_image():
 
 
 def test_geometry_reroute():
-    with g.tree():
-        node = g.Reroute()
-        assert node.socket_idname == "NodeSocketColor"
-        node.socket_idname = "NodeSocketFloat"
-        assert node.socket_idname == "NodeSocketFloat"
-
     with g.tree("test", arrange=None) as tree:
         g.Cube().o.mesh >> g.Reroute() >> tree.outputs.geometry()
 
@@ -1529,3 +1533,137 @@ def test_store_named_attribute():
         assert cr.hue_interpolation == "CCW"
         assert cr.mode == "HSL"
         assert cr.color_interpolation == "EASE"
+
+
+def test_string_split():
+    with g.tree():
+        string = g.String("Example String")
+        split = g.SplitString(string.o.string, separator=" ")
+        assert split.node.bl_idname == SplitString._bl_idname
+
+        count = string.o.string.split(" ").list_length()
+        assert count.node.bl_idname == g.ListLength._bl_idname
+
+        ftl = g.FieldToList(
+            10, {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
+        )
+        assert len(ftl.node.list_items) == 3
+
+        assert ftl.i.pos
+        assert ftl.i.idx
+        assert ftl.i.num
+
+        assert isinstance(ftl.i.pos, VectorSocket)
+        assert isinstance(ftl.o.pos, VectorSocketList)
+
+        pos = ftl.o.pos
+        norm = pos.normalize()
+        assert isinstance(norm, VectorSocketList)
+        assert norm.node.bl_idname == g.VectorMath._bl_idname
+
+
+def test_input_menu():
+    with g.tree():
+        menu = g.Menu()
+        switch = g.MenuSwitch.float(items={"a": 0.0, "b": 0.0, "c": 0.0})
+        assert menu.value == ""
+        menu >> switch
+        assert menu.value == ""
+        menu.value = "a"
+        assert menu.value == "a"
+
+
+def test_vector_dimensions():
+    with g.tree():
+        vec = g.Vector()
+        assert vec.vector_dimensions == 3
+        assert len(vec.o.vector) == 3
+        vec.vector_dimensions = 2
+        assert vec.vector_dimensions == 2
+        # assert len(vec.o.vector) == 2
+
+
+def test_field_to_list():
+    with g.tree():
+        ftl = g.FieldToList(10)
+        pos, idx, num = ftl.capture(
+            {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
+        )
+        assert len(ftl.node.list_items) == 3
+        assert isinstance(pos, VectorSocketList)
+        assert isinstance(idx, IntegerSocketList)
+        assert isinstance(num, FloatSocketList)
+        filtered = pos.filter().get(0)
+        assert isinstance(filtered, VectorSocket)
+        filtered = idx.filter()
+        assert isinstance(filtered, IntegerSocketList)
+        filtered = num.filter()
+        assert isinstance(filtered, FloatSocketList)
+        # if we get using a list index, we should get a list of values, but Blender
+        # won't infer that during node tree creation. For type checking it will propagate
+        # but not during execution
+        assert isinstance(pos.get(idx), VectorSocket)
+        # if we get using a single index, we should get a single value
+        assert isinstance(pos.get(1), VectorSocket)
+
+
+def test_grid_methods():
+    with g.tree():
+        grid = g.CubeGridTopology().o.topology
+        trans = grid.transform
+        assert isinstance(trans, MatrixSocket)
+        assert trans.node.bl_idname == g.GridInfo._bl_idname
+
+        grid = cast(FloatSocketGrid, g.FieldToGrid().capture({"test": g.Float()})[0])
+        value = grid.background_value
+
+        list = g.FieldToList(10).capture({"test": g.Vector()})[0]
+        assert isinstance(list, VectorSocketList)
+
+        assert isinstance(value, FloatSocket)
+
+
+def test_implicit_conversion():
+    with g.tree():
+        con = g.ImplicitConversion.boolean(g.Float())
+        assert con.data_type == "BOOLEAN"
+        con.data_type = "VECTOR"
+        assert con.data_type == "VECTOR"
+
+    with c.tree():
+        con = c.ImplicitConversion.boolean(c.Float())
+        assert con.data_type == "BOOLEAN"
+        con.data_type = "VECTOR"
+        assert con.data_type == "VECTOR"
+
+    with s.tree():
+        con = s.ImplicitConversion.boolean(s.Float())
+        assert con.data_type == "BOOLEAN"
+        con.data_type = "VECTOR"
+        assert con.data_type == "VECTOR"
+
+
+def test_integer_vector():
+    with c.tree():
+        vec = c.IntegerVector()
+        assert len(vec.vector) == 3
+        assert vec.vector == [0, 0, 0]
+        assert vec.vector_dimensions == 3
+        vec.vector_dimensions = 2
+        assert vec.vector_dimensions == 2
+        assert vec.vector == [0, 0]
+        vec.vector = [1, 2]
+        assert vec.vector == [1, 2]
+        vec.vector_dimensions = 3
+        vec.vector = [3, 2, 1]
+        assert vec.vector == [3, 2, 1]
+
+
+def test_matrix_socket():
+    with g.tree():
+        mat = g.CombineTransform().o.transform
+        result = mat @ g.Position().o.position
+        result = cast(MatrixSocketList, mat)
+
+        r2 = mat @ result
+        assert isinstance(r2, MatrixSocket)

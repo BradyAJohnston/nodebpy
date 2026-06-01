@@ -1,4 +1,3 @@
-from nodebpy.nodes.geometry import ObjectInfo
 from typing import cast, get_args
 
 import bpy
@@ -16,9 +15,11 @@ from nodebpy.builder import (
     MatrixSocket,
     RotationSocket,
     Socket,
+    StringSocket,
     VectorSocket,
 )
 from nodebpy.nodes.compositor import CombineXYZ
+from nodebpy.nodes.geometry import ObjectInfo
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -806,7 +807,7 @@ def test_matrix_socket_output_len():
         rot.o.rotation.invert().node.bl_idname == g.InvertRotation._bl_idname
 
 
-def test_socket_defaults():
+def test_socket_default_values():
     with g.tree():
         sep = g.SeparateXYZ()
         assert sep.i.vector.links == []
@@ -1051,6 +1052,11 @@ def test_string_socket_methods(snapshot):
 
         assert len(tree) == 22
         assert snapshot == tree._repr_markdown_()
+
+        reversed = string.reverse()
+        assert isinstance(reversed, StringSocket)
+        assert reversed.node.bl_idname == g.ReverseString._bl_idname
+        assert reversed.builder_node.i.string.links[0].from_node == string.node
 
 
 def test_vector_socket_rotate():
@@ -1445,6 +1451,10 @@ def test_all_domain_properties_reachable():
             assert isinstance(getattr(flag, d).evaluate(), BooleanSocket)
             assert isinstance(getattr(rot, d).evaluate(), RotationSocket)
             assert isinstance(getattr(mat, d).evaluate(), MatrixSocket)
+
+        input_pos = g.SetPosition().i.position
+        with pytest.raises(RuntimeError):
+            input_pos.point.evaluate()
 
 
 def test_matrix_socket_transform_direction():
