@@ -36,24 +36,28 @@ Each version of `nodebpy` will target a specific Blender release, but you can im
 ```yaml
 YourAddon/
 ├── lib/
+|   ├── __init__.py (empty)
 │   ├── nodebpy/
 │   │   ├── __init__.py
-│   │   ├── 520/
-│   │   │   ├── nodebpy/ (5.2.0)
-│   │   ├── 530/
-│   │   │   ├── nodebpy/ (5.3.0)
+│   │   ├── _520/
+│   │   │   ├── src/nodebpy (5.2.0)
+│   │   ├── _530/
+│   │   │   ├── src/nodebpy/ (5.3.0)
 └── ...
 ```
 
 ```{.python filename="lib/nodebpy/__init__.py"}
 import bpy
 
-if bpy.app.version == (5, 2, 0):
-    from .520.nodebpy import *
-elif bpy.app.version >= (5, 3, 0):
-    from .530.nodebpy import *
+_v = bpy.app.version
+
+if _v == (5, 2, 0):
+    from ._520.src.nodebpy import *
+elif _v >= (5, 3, 0):
+    from ._530.src.nodebpy import *
 else:
-    raise ImportError(f"Unsupported Blender version: {bpy.app.version}")
+    raise ImportError(f"Unsupported Blender version: {_v}")
+
 ```
 
 This way you can import the correct version of `nodebpy` based on the Blender version at runtime.
