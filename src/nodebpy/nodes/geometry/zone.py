@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Iterable, Union
-
 import bpy
 from bpy.types import (
     NodeClosureInput,
@@ -11,14 +10,11 @@ from bpy.types import (
     NodeEvaluateClosureOutputItems,
 )
 
-from nodebpy.builder._registry import _wrap_socket
-from nodebpy.builder._utils import _SocketLike
-
 if TYPE_CHECKING:
     from .manual import EvaluateClosure
 
-from nodebpy.builder import BaseNode as BaseNode
-from nodebpy.builder import (
+from ...builder import BaseNode as BaseNode
+from ...builder import (
     BooleanSocket,
     ClosureSocket,
     DynamicInputsMixin,
@@ -26,9 +22,10 @@ from nodebpy.builder import (
     GeometrySocket,
     IntegerSocket,
 )
-from nodebpy.builder import Socket as SocketLinker
-from nodebpy.builder.accessor import SocketAccessor
-
+from ...builder import Socket as SocketLinker
+from ...builder._registry import _wrap_socket
+from ...builder._utils import _SocketLike
+from ...builder.accessor import SocketAccessor
 from ...types import (
     InputBoolean,
     InputGeometry,

@@ -1,4 +1,3 @@
-from mathutils import Euler
 from collections.abc import Mapping
 from typing import (
     TYPE_CHECKING,
@@ -10,7 +9,6 @@ from typing import (
     cast,
     get_args,
 )
-
 import bpy
 import bpy.types
 from bpy.types import (
@@ -22,63 +20,65 @@ from bpy.types import (
     NodeSocket,
     NodeSocketString,
 )
-
-from nodebpy.builder._registry import _wrap_socket
-from nodebpy.builder.socket import BaseSocket
-
+from mathutils import Euler
 from ...builder import (
     BaseNode,
     BooleanSocket,
     BooleanSocketGrid,
+    BooleanSocketList,
     BundleSocket,
     ClosureSocket,
     CollectionSocket,
     ColorSocket,
+    ColorSocketList,
     DynamicInputsMixin,
     FloatSocket,
     FloatSocketGrid,
+    FloatSocketList,
     FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
     IntegerSocketGrid,
+    IntegerSocketList,
     IntegerVectorSocket,
     MaterialSocket,
     MatrixSocket,
+    MatrixSocketList,
     MenuSocket,
+    MenuSocketList,
     ObjectSocket,
     RotationSocket,
+    RotationSocketList,
     SocketAccessor,
     SoundSocket,
     StringSocket,
+    StringSocketList,
     TreeBuilder,
     VectorSocket,
     VectorSocketGrid,
-    FloatSocketList,
-    IntegerSocketList,
-    BooleanSocketList,
     VectorSocketList,
-    ColorSocketList,
-    RotationSocketList,
-    MatrixSocketList,
-    StringSocketList,
-    MenuSocketList,
 )
 from ...builder import Socket as SocketLinker
+from ...builder._registry import _wrap_socket
+from ...builder.socket import BaseSocket
 from ...types import (
     SOCKET_TYPES,
     InputAny,
     InputBoolean,
+    InputBooleanGrid,
     InputBundle,
     InputClosure,
     InputCollection,
     InputColor,
     InputFloat,
+    InputFloatGrid,
     InputFont,
     InputGeometry,
     InputGrid,
     InputImage,
     InputInteger,
+    InputIntegerGrid,
     InputLinkable,
     InputMaterial,
     InputMatrix,
@@ -88,6 +88,7 @@ from ...types import (
     InputSound,
     InputString,
     InputVector,
+    InputVectorGrid,
     _AccumulateFieldDataTypes,
     _AttributeDataTypes,
     _AttributeDomains,
@@ -96,10 +97,6 @@ from ...types import (
     _EvaluateAtIndexDataTypes,
     _GridDataTypes,
     _is_default_value,
-    InputFloatGrid,
-    InputIntegerGrid,
-    InputVectorGrid,
-    InputBooleanGrid,
 )
 from .zone import (
     ClosureInput,
