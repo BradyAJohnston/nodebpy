@@ -633,6 +633,55 @@ class Clamp(BaseNode):
         self.node.clamp_type = value
 
 
+class ClosureToList(BaseNode):
+    """
+    Create a list of values
+
+    Parameters
+    ----------
+    count : InputInteger
+        Count
+    closure : InputClosure
+        Closure
+
+    Inputs
+    ------
+    i.count : IntegerSocket
+        Count
+    i.closure : ClosureSocket
+        Closure
+    """
+
+    _bl_idname = "GeometryNodeClosureToList"
+    node: bpy.types.GeometryNodeClosureToList  # ty: ignore[unresolved-attribute]
+
+    class _Inputs(SocketAccessor):
+        count: IntegerSocket
+        """Count"""
+        closure: ClosureSocket
+        """Closure"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        count: InputInteger = 1,
+        closure: InputClosure = None,
+    ):
+        super().__init__()
+        key_args = {"Count": count, "Closure": closure}
+
+        self._establish_links(**key_args)
+
+
 class ClusterByConnected(BaseNode):
     """
     Group mesh vertices connected by edges when they are within a specified distance
@@ -5857,6 +5906,61 @@ class SeparateXYZ(BaseNode):
     def __init__(self, vector: InputVector = None):
         super().__init__()
         key_args = {"Vector": vector}
+
+        self._establish_links(**key_args)
+
+
+class SetStringCase(BaseNode):
+    """
+    Convert the case of a string
+
+    Parameters
+    ----------
+    string : InputString
+        String
+    case : InputMenu | Literal['Uppercase', 'Lowercase']
+        Case
+
+    Inputs
+    ------
+    i.string : StringSocket
+        String
+    i.case : MenuSocket
+        Case
+
+    Outputs
+    -------
+    o.string : StringSocket
+        String
+    """
+
+    _bl_idname = "FunctionNodeSetStringCase"
+    node: bpy.types.FunctionNodeSetStringCase  # ty: ignore[unresolved-attribute]
+
+    class _Inputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+        case: MenuSocket
+        """Case"""
+
+    class _Outputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        string: InputString = "",
+        case: InputMenu | Literal["Uppercase", "Lowercase"] = "Uppercase",
+    ):
+        super().__init__()
+        key_args = {"String": string, "Case": case}
 
         self._establish_links(**key_args)
 

@@ -108,7 +108,7 @@ _RotationResult = TypeVar("_RotationResult", "RotationSocket", "RotationSocketLi
 _MatrixResult = TypeVar("_MatrixResult", "MatrixSocket", "MatrixSocketList")
 
 
-class QuaternionComponents(NamedTuple, Generic[_FloatResult]):
+class ResultQuaternionComponents(NamedTuple, Generic[_FloatResult]):
     """Quaternion components returned by `RotationSocket.to_quaternion()`."""
 
     w: "_FloatResult"
@@ -117,21 +117,21 @@ class QuaternionComponents(NamedTuple, Generic[_FloatResult]):
     z: "_FloatResult"
 
 
-class AxisAngle(NamedTuple, Generic[_FloatResult, _VectorResult]):
+class ResultAxisAngle(NamedTuple, Generic[_FloatResult, _VectorResult]):
     """Axis-angle components returned by `RotationSocket.to_axis_angle()`."""
 
     axis: "_VectorResult"
     angle: "_FloatResult"
 
 
-class FindResult(NamedTuple, Generic[_IntegerResult]):
+class ResultStringFind(NamedTuple, Generic[_IntegerResult]):
     """Result of `StringSocket.find()`."""
 
     first_found: _IntegerResult
     count: _IntegerResult
 
 
-class SVDResult(NamedTuple, Generic[_MatrixResult, _VectorResult]):
+class ResultMatrixSVD(NamedTuple, Generic[_MatrixResult, _VectorResult]):
     """SVD components returned by `MatrixSocket.svd()`."""
 
     u: "_MatrixResult"
@@ -1030,21 +1030,21 @@ class _RotationMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
 
         return RotationToEuler._find_or_create_linked(self.socket).o.euler  # ty: ignore[invalid-return-type]
 
-    def to_quaternion(self) -> QuaternionComponents[_FloatResult]:
+    def to_quaternion(self) -> ResultQuaternionComponents[_FloatResult]:
         "Decompose the rotation into quaternion components `(w, x, y, z)`."
         self._assert_output("to_quaternion")
         from ..nodes.geometry import RotationToQuaternion
 
         o = RotationToQuaternion._find_or_create_linked(self.socket).o
-        return QuaternionComponents(o.w, o.x, o.y, o.z)  # ty: ignore[invalid-return-type]
+        return ResultQuaternionComponents(o.w, o.x, o.y, o.z)  # ty: ignore[invalid-return-type]
 
-    def to_axis_angle(self) -> AxisAngle[_FloatResult, _VectorResult]:
+    def to_axis_angle(self) -> ResultAxisAngle[_FloatResult, _VectorResult]:
         "Decompose the rotation into axis-angle components `(axis, angle)`."
         self._assert_output("to_axis_angle")
         from ..nodes.geometry import RotationToAxisAngle
 
         o = RotationToAxisAngle(self.socket).o
-        return AxisAngle(o.axis, o.angle)  # ty: ignore[invalid-return-type]
+        return ResultAxisAngle(o.axis, o.angle)  # ty: ignore[invalid-return-type]
 
 
 class _FloatMixDataTypeFactory:
@@ -1330,7 +1330,7 @@ class _StringMixin(BaseSocket, Generic[_StringResult, _BooleanResult, _IntegerRe
         return FormatString(self.socket, items).o.string  # ty: ignore[invalid-return-type]
 
     def replace(self, find: InputString, replace: InputString) -> _StringResult:
-        "Replace every match of the string with teh replacement string"
+        "Replace every match of the string with the replacement string"
         self._assert_output("replace")
         from ..nodes.geometry import ReplaceString
 
@@ -1350,13 +1350,27 @@ class _StringMixin(BaseSocket, Generic[_StringResult, _BooleanResult, _IntegerRe
 
         return StringLength(self.socket).o.length  # ty: ignore[invalid-return-type]
 
-    def find(self, search: InputString) -> FindResult[_IntegerResult]:
+    def find(self, search: InputString) -> ResultStringFind[_IntegerResult]:
         "Find where in a string a pattern occurs. Returns `(first_found, count)`."
         self._assert_output("find")
         from ..nodes.geometry import FindInString
 
         o = FindInString(self.socket, search).o
-        return FindResult(o.first_found, o.count)  # ty: ignore[invalid-return-type]
+        return ResultStringFind(o.first_found, o.count)  # ty: ignore[invalid-return-type]
+
+    def uppercase(self) -> _StringResult:
+        "Convert the string to uppercase and return as `StringSocket`."
+        self._assert_output("uppercase")
+        from ..nodes.geometry import SetStringCase
+
+        return SetStringCase(self.socket, case="upper").o.string  # ty: ignore[invalid-return-type]
+
+    def lowercase(self) -> _StringResult:
+        "Convert the string to lowercase and return as `StringSocket`."
+        self._assert_output("lowercase")
+        from ..nodes.geometry import SetStringCase
+
+        return SetStringCase(self.socket, case="lower").o.string  # ty: ignore[invalid-return-type]
 
 
 class _MatrixMixin(
@@ -1411,13 +1425,13 @@ class _MatrixMixin(
 
         return TransposeMatrix._find_or_create_linked(self.socket).o.matrix  # ty: ignore[invalid-return-type]
 
-    def svd(self) -> SVDResult[_MatrixResult, _VectorResult]:
+    def svd(self) -> ResultMatrixSVD[_MatrixResult, _VectorResult]:
         """Decompose the matrix via SVD. Returns `(u, s, v)`."""
         self._assert_output("svd")
         from ..nodes.geometry import MatrixSVD
 
         o = MatrixSVD(self.socket).o
-        return SVDResult(o.u, o.s, o.v)  # ty: ignore[invalid-return-type]
+        return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-return-type]
 
     def transform_direction(self, direction: InputVector) -> _VectorResult:
         """Apply this matrix to *direction*, ignoring translation.
