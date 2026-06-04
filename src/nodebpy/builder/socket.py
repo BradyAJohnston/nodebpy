@@ -9,6 +9,7 @@ from typing import (
     Literal,
     Mapping,
     NamedTuple,
+    Self,
     TypeVar,
     cast,
     overload,
@@ -36,6 +37,7 @@ from bpy.types import (
     NodeSocketObject,
     NodeSocketRotation,
     NodeSocketShader,
+    NodeSocketSound,
     NodeSocketString,
     NodeSocketVector,
     NodeTree,
@@ -54,58 +56,88 @@ from ..types import (
     InputGeometry,
     InputImage,
     InputInteger,
+    InputIntegerList,
     InputMaterial,
     InputMatrix,
     InputMenu,
     InputObject,
     InputRotation,
+    InputSound,
     InputString,
     InputVector,
+    InputFloatList,
 )
-from ._registry import _SOCKET_LINKER_REGISTRY
+from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
 from ._utils import _NodeLike, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
     from ..nodes import compositor, geometry, shader
-    from ..nodes.geometry import IntegerMath, MatchString, Math, ObjectInfo
+    from ..nodes.geometry import (
+        CombineMatrix,
+        CombineTransform,
+        GridInfo,
+        IntegerMath,
+        MatchString,
+        Math,
+        MultiplyMatrices,
+        ObjectInfo,
+        Position,
+        Vector,
+    )
     from ..nodes.geometry.manual import Compare
     from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
     from .tree import TreeBuilder
 
 _T = TypeVar("_T")
+_S = TypeVar("_S")
+_BooleanResult = TypeVar(
+    "_BooleanResult", "BooleanSocket", "BooleanSocketGrid", "BooleanSocketList"
+)
+_StringResult = TypeVar("_StringResult", "StringSocket", "StringSocketList")
+_IntegerResult = TypeVar(
+    "_IntegerResult", "IntegerSocket", "IntegerSocketGrid", "IntegerSocketList"
+)
+_FloatResult = TypeVar(
+    "_FloatResult", "FloatSocket", "FloatSocketGrid", "FloatSocketList"
+)
+_VectorResult = TypeVar(
+    "_VectorResult", "VectorSocket", "VectorSocketGrid", "VectorSocketList"
+)
+_RotationResult = TypeVar("_RotationResult", "RotationSocket", "RotationSocketList")
+_MatrixResult = TypeVar("_MatrixResult", "MatrixSocket", "MatrixSocketList")
 
 
-class QuaternionComponents(NamedTuple):
+class ResultQuaternionComponents(NamedTuple, Generic[_FloatResult]):
     """Quaternion components returned by `RotationSocket.to_quaternion()`."""
 
-    w: "FloatSocket"
-    x: "FloatSocket"
-    y: "FloatSocket"
-    z: "FloatSocket"
+    w: "_FloatResult"
+    x: "_FloatResult"
+    y: "_FloatResult"
+    z: "_FloatResult"
 
 
-class AxisAngle(NamedTuple):
+class ResultAxisAngle(NamedTuple, Generic[_FloatResult, _VectorResult]):
     """Axis-angle components returned by `RotationSocket.to_axis_angle()`."""
 
-    axis: "VectorSocket"
-    angle: "FloatSocket"
+    axis: "_VectorResult"
+    angle: "_FloatResult"
 
 
-class FindResult(NamedTuple):
+class ResultStringFind(NamedTuple, Generic[_IntegerResult]):
     """Result of `StringSocket.find()`."""
 
-    first_found: "IntegerSocket"
-    count: "IntegerSocket"
+    first_found: _IntegerResult
+    count: _IntegerResult
 
 
-class SVDResult(NamedTuple):
+class ResultMatrixSVD(NamedTuple, Generic[_MatrixResult, _VectorResult]):
     """SVD components returned by `MatrixSocket.svd()`."""
 
-    u: "MatrixSocket"
-    s: "VectorSocket"
-    v: "MatrixSocket"
+    u: "_MatrixResult"
+    s: "_VectorResult"
+    v: "_MatrixResult"
 
 
 class BaseSocket:
@@ -141,6 +173,28 @@ class BaseSocket:
     @property
     def name(self) -> str:
         return str(self.socket.name)
+
+    def _assert_output(self, method: str) -> None:
+        if hasattr(self, "socket"):
+            socket = self.socket
+        else:
+            socket = self._socket
+        if not socket.is_output:
+            raise RuntimeError(
+                f"'{method}' is only available on output sockets, "
+                f"not input socket '{socket.name}'."
+            )
+
+    def _assert_input(self, method: str) -> None:
+        if hasattr(self, "socket"):
+            socket = self.socket
+        else:
+            socket = self._socket
+        if socket.is_output:
+            raise RuntimeError(
+                f"'{method}' is only available on output sockets, "
+                f"not input socket '{socket.name}'."
+            )
 
     @property
     def _is_geometry_tree(self) -> bool:
@@ -181,12 +235,13 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
     """
 
     @property
-    def builder_node(self) -> "BaseNode | None":
+    def builder_node(self) -> "BaseNode":
         """The builder node that owns this socket, if accessed via .o/.i."""
+        assert self._builder_node is not None
         return self._builder_node
 
     # -- Dispatch methods: per-type math logic. --
-    # Called by OperatorMixin operators via _get_socket_linker().
+    # Called by OperatorMixin operators via _wrap_socket().
     # Subclasses (and type-specific mixins) override to provide type-specific behaviour.
 
     def _dispatch_math(
@@ -247,20 +302,20 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
 
     if TYPE_CHECKING:
 
-        def __add__(self, other: Any) -> "FloatSocket": ...
-        def __radd__(self, other: Any) -> "FloatSocket": ...
-        def __sub__(self, other: Any) -> "FloatSocket": ...
-        def __rsub__(self, other: Any) -> "FloatSocket": ...
-        def __mul__(self, other: Any) -> "FloatSocket": ...
-        def __rmul__(self, other: Any) -> "FloatSocket": ...
-        def __div__(self, other: Any) -> "FloatSocket": ...
-        def __rdiv__(self, other: Any) -> "FloatSocket": ...
-        def __truediv__(self, other: Any) -> "FloatSocket": ...
-        def __rtruediv__(self, other: Any) -> "FloatSocket": ...
-        def __floordiv__(self, other: Any) -> "FloatSocket": ...
-        def __rfloordiv__(self, other: Any) -> "FloatSocket": ...
-        def __neg__(self) -> "FloatSocket": ...
-        def __abs__(self) -> "FloatSocket": ...
+        def __add__(self, other: Any) -> Self: ...
+        def __radd__(self, other: Any) -> Self: ...
+        def __sub__(self, other: Any) -> Self: ...
+        def __rsub__(self, other: Any) -> Self: ...
+        def __mul__(self, other: Any) -> Self: ...
+        def __rmul__(self, other: Any) -> Self: ...
+        def __div__(self, other: Any) -> Self: ...
+        def __rdiv__(self, other: Any) -> Self: ...
+        def __truediv__(self, other: Any) -> Self: ...
+        def __rtruediv__(self, other: Any) -> Self: ...
+        def __floordiv__(self, other: Any) -> Self: ...
+        def __rfloordiv__(self, other: Any) -> Self: ...
+        def __neg__(self) -> Self: ...
+        def __abs__(self) -> Self: ...
         def __lt__(self, other: Any) -> "BooleanSocket": ...
         def __gt__(self, other: Any) -> "BooleanSocket": ...
         def __le__(self, other: Any) -> "BooleanSocket": ...
@@ -269,12 +324,33 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         def __ne__(self, other: Any) -> "BooleanSocket": ...
 
 
+class GridSocketMixin(Socket, Generic[_T]):
+    def _info(self) -> "GridInfo[_T]":
+        from ..nodes.geometry import GridInfo
+
+        self._assert_output("transform / background_value")
+        dtype = self.socket.type.replace("VALUE", "FLOAT")
+        return GridInfo(self.socket, data_type=dtype)  # ty: ignore[invalid-argument-type, invalid-return-type]
+
+    @property
+    def transform(
+        self,
+    ) -> "MatrixSocket":
+        return self._info().o.transform
+
+    @property
+    def background_value(
+        self,
+    ) -> "_T":
+        return self._info().o.background_value
+
+
 # ---------------------------------------------------------------------------
 # Type-specific behaviour mixins
 # ---------------------------------------------------------------------------
 
 
-class _EvaluateField(Generic[_T]):
+class _EvaluateField(Socket, Generic[_T]):
     """Domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`.
 
     Access via a domain property (e.g. ``socket.point``). Provides field
@@ -283,6 +359,7 @@ class _EvaluateField(Generic[_T]):
 
     def __init__(self, socket: NodeSocket, dtype: str, domain: str) -> None:
         self._socket = socket
+        self._assert_output("Domain-specific evaluation")
         self._dtype = dtype
         self._domain = domain
 
@@ -385,7 +462,7 @@ class _StatsField(_MinMaxField[_T]):
         return node.o.variance
 
 
-class _VectorMixin(BaseSocket):
+class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketVector
@@ -408,97 +485,65 @@ class _VectorMixin(BaseSocket):
         return CombineXYZ._find_or_create_linked(self.socket)
 
     @property
-    def x(self) -> FloatSocket:
+    def x(self) -> _FloatResult:
         if self.socket.is_output:
-            return self._separate().o.x
+            return self._separate().o.x  # ty: ignore[invalid-return-type]
         else:
-            return self._combine().i.x
+            return self._combine().i.x  # ty: ignore[invalid-return-type]
 
     @property
-    def y(self) -> FloatSocket:
+    def y(self) -> _FloatResult:
         if self.socket.is_output:
-            return self._separate().o.y
+            return self._separate().o.y  # ty: ignore[invalid-return-type]
         else:
-            return self._combine().i.y
+            return self._combine().i.y  # ty: ignore[invalid-return-type]
 
     @property
-    def z(self) -> FloatSocket:
+    def z(self) -> _FloatResult:
         if self.socket.is_output:
-            return self._separate().o.z
+            return self._separate().o.z  # ty: ignore[invalid-return-type]
         else:
-            return self._combine().i.z
+            return self._combine().i.z  # ty: ignore[invalid-return-type]
 
-    @property
-    def point(self) -> "_StatsField[VectorSocket]":
-        """VectorSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "vector", "point")
+    def dot(self, vector: InputVector = (0.0, 0.0, 1.0)) -> _FloatResult:
+        """Dot product with another vector and return the result as a `FloatSocket`."""
+        self._assert_output("dot")
+        return self._vmath.dot_product(self.socket, vector).o.value  # ty: ignore[invalid-return-type]
 
-    @property
-    def edge(self) -> "_StatsField[VectorSocket]":
-        """VectorSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "vector", "edge")
-
-    @property
-    def face(self) -> "_StatsField[VectorSocket]":
-        """VectorSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "vector", "face")
-
-    @property
-    def corner(self) -> "_StatsField[VectorSocket]":
-        """VectorSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "vector", "corner")
-
-    @property
-    def spline(self) -> "_StatsField[VectorSocket]":
-        """VectorSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "vector", "spline")
-
-    @property
-    def instance(self) -> "_StatsField[VectorSocket]":
-        """VectorSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "vector", "instance")
-
-    @property
-    def layer(self) -> "_StatsField[VectorSocket]":
-        """VectorSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "vector", "layer")
-
-    def dot(self, vector: InputVector) -> "FloatSocket":
-        """Dot product with another vector. The other vector can be a Socket, a NodeSocket, or a 3-tuple of floats.
-
-        A different VectorMath node is created each time.
-        """
-        return self._vmath.dot_product(self.socket, vector).o.value
-
-    def scale(self, scale: InputFloat) -> "VectorSocket":
+    def scale(self, scale: InputFloat) -> _VectorResult:
         """Scale this vector by a scalar value and return VectorSocket"""
-        return self._vmath.scale(self.socket, scale).o.vector
+        self._assert_output("scale")
+        return self._vmath.scale(self.socket, scale).o.vector  # ty: ignore[invalid-return-type]
 
-    def length(self) -> "FloatSocket":
-        return self._vmath.length(self.socket).o.value
+    def length(self) -> _FloatResult:
+        """Get the length of this vector as a `FloatSocket`"""
+        self._assert_output("length")
+        return self._vmath.length(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def normalize(self) -> "VectorSocket":
-        """Normalize this vector. Only valid for output sockets, as it creates a Normalize node linked from this socket.
+    def normalize(self) -> _VectorResult:
+        """Normalize this vector, making its length 1.0."""
+        self._assert_output("normalize")
+        return self._vmath.normalize(self.socket).o.vector  # ty: ignore[invalid-return-type]
 
-        The same normalize node is re-used each time unless `new_node=True` where a new `VectorMath` node is created each time.
-        """
-        return self._vmath.normalize(self.socket).o.vector
-
-    def cross(self, other: InputVector) -> "VectorSocket":
+    def cross(self, other: InputVector = (0.0, 0.0, 1.0)) -> _VectorResult:
         """Cross product of this vector with *other*. Returns a vector perpendicular to both."""
-        return self._vmath.cross_product(self.socket, other).o.vector
+        self._assert_output("cross")
+        return self._vmath.cross_product(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
 
-    def distance(self, other: InputVector) -> "FloatSocket":
-        """Euclidean distance between this vector and *other*."""
-        return self._vmath.distance(self.socket, other).o.value
+    def distance(self, other: InputVector = (0.0, 0.0, 0.0)) -> _FloatResult:
+        """Euclidean distance between this vector and *other*, as a `FloatSocket`."""
+        self._assert_output("distance")
+        return self._vmath.distance(self.socket, other).o.value  # ty: ignore[invalid-return-type]
 
-    def project(self, other: InputVector) -> "VectorSocket":
-        """Project this vector onto *other*."""
-        return self._vmath.project(self.socket, other).o.vector
+    def project(self, other: InputVector = (0.0, 0.0, 0.0)) -> _VectorResult:
+        """Project this vector onto *other*, as a `VectorSocket`."""
+        self._assert_output("project")
+        return self._vmath.project(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
 
-    def reflect(self, normal: InputVector) -> "VectorSocket":
-        """Reflect this vector around *normal*. *normal* does not need to be normalised."""
-        return self._vmath.reflect(self.socket, normal).o.vector
+    def reflect(self, normal: InputVector = (0.0, 0.0, 1.0)) -> _VectorResult:
+        """Reflect this vector around *normal*, as a `VectorSocket`."""
+        self._assert_output("reflect")
+        return self._vmath.reflect(self.socket, normal).o.vector  # ty: ignore[invalid-return-type]
 
     def map_range(
         self,
@@ -512,8 +557,9 @@ class _VectorMixin(BaseSocket):
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
         ] = "LINEAR",
         steps: InputVector = (4.0, 4.0, 4.0),
-    ) -> "VectorSocket":
+    ) -> _VectorResult:
         """Convenience method to remap a vector socket using the `MapRange.vector()` node with this socket as input"""
+        self._assert_output("map_range")
         from ..nodes.geometry import MapRange
 
         node = MapRange.vector(self.socket, from_min, from_max, to_min, to_max)
@@ -522,80 +568,88 @@ class _VectorMixin(BaseSocket):
         if interpolation_type == "STEPPED":
             kwargs = {"Steps_FLOAT3": steps}
             node._establish_links(**kwargs)
-        return node.o.vector
+        return node.o.vector  # ty: ignore[invalid-return-type]
 
     def rotate(
         self,
         rotation: InputRotation,
-    ) -> "VectorSocket":
+    ) -> _VectorResult:
         "Rotate this vector by the given rotation."
+        self._assert_output("rotate")
         from ..nodes.geometry import RotateVector
 
-        return RotateVector(self.socket, rotation).o.vector
+        return RotateVector(self.socket, rotation).o.vector  # ty: ignore[invalid-return-type]
 
-    def transform(self, matrix: InputMatrix) -> "VectorSocket":
+    def transform(self, matrix: InputMatrix) -> _VectorResult:
+        "Transform this vector by the given matrix."
+        self._assert_output("transform")
+        from ..nodes.geometry import TransformPoint
+
+        return TransformPoint(self.socket, matrix).o.vector  # ty: ignore[invalid-return-type]
+
+    @overload
+    def __rmatmul__(self, other: CombineTransform) -> _VectorResult: ...
+    @overload
+    def __rmatmul__(self, other: MultiplyMatrices) -> _VectorResult: ...
+    @overload
+    def __rmatmul__(self, other: CombineMatrix) -> _VectorResult: ...
+    def __rmatmul__(
+        self, other: CombineTransform | MultiplyMatrices | CombineMatrix | MatrixSocket
+    ) -> _VectorResult:
         "Transform this vector by the given matrix."
         from ..nodes.geometry import TransformPoint
 
-        return TransformPoint(self.socket, matrix).o.vector
-
-    @property
-    def default_value(self) -> list[float]:
-        return list(self.socket.default_value)
-
-    @default_value.setter
-    def default_value(self, value: list[float] | tuple[float, float, float]) -> None:
-        self.socket.default_value = value
+        return TransformPoint(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
 
     @overload
-    def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
+    def __getitem__(self, key: slice) -> "list[_FloatResult]": ...
     @overload
-    def __getitem__(self, key: int) -> "FloatSocket": ...
-    def __getitem__(self, key: int | slice) -> "FloatSocket | list[FloatSocket]":
+    def __getitem__(self, key: int) -> "_FloatResult": ...
+    def __getitem__(self, key: int | slice) -> "_FloatResult | list[_FloatResult]":
         if self.socket.is_output:
             node = self._separate()
-            return [node.o.x, node.o.y, node.o.z][key]
+            return [node.o.x, node.o.y, node.o.z][key]  # ty: ignore[invalid-return-type]
 
         else:
             node = self._combine()
-            return [node.i.x, node.i.y, node.i.z][key]
+            return [node.i.x, node.i.y, node.i.z][key]  # ty: ignore[invalid-return-type]
 
-    def __iter__(self) -> Iterator["FloatSocket"]:
+    def __iter__(self) -> Iterator[_FloatResult]:
         if self.socket.is_output:
             node = self._separate()
-            yield node.o.x
-            yield node.o.y
-            yield node.o.z
+            yield node.o.x  # ty: ignore[invalid-yield]
+            yield node.o.y  # ty: ignore[invalid-yield]
+            yield node.o.z  # ty: ignore[invalid-yield]
         else:
             node = self._combine()
-            yield node.i.x
-            yield node.i.y
-            yield node.i.z
+            yield node.i.x  # ty: ignore[invalid-yield]
+            yield node.i.y  # ty: ignore[invalid-yield]
+            yield node.i.z  # ty: ignore[invalid-yield]
 
     def __len__(self) -> int:
         return 3
 
-    def _dispatch_unary(self, operation: str) -> "VectorSocket":
+    def _dispatch_unary(self, operation: str) -> _VectorResult:
         if operation == "negate":
-            return self._vmath.scale(self.socket, -1).o.vector
+            return self._vmath.scale(self.socket, -1).o.vector  # ty: ignore[invalid-return-type]
         elif operation == "absolute":
-            return self._vmath.absolute(self.socket).o.vector
+            return self._vmath.absolute(self.socket).o.vector  # ty: ignore[invalid-return-type]
         raise ValueError(f"Unknown unary operation: {operation}")
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> "VectorSocket":
+    ) -> _VectorResult:
         values = (self.socket, other) if not reverse else (other, self.socket)
 
         if operation == "multiply":
             if isinstance(other, (int, float)):
-                return self._vmath.scale(self.socket, other).o.vector
+                return self._vmath.scale(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
             elif isinstance(other, NodeSocket) and other.type in (
                 "VALUE",
                 "FLOAT",
                 "INT",
             ):
-                return self._vmath.scale(self.socket, other).o.vector
+                return self._vmath.scale(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
             elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(
                 other, "type", None
             ) in (
@@ -605,11 +659,11 @@ class _VectorMixin(BaseSocket):
             ):
                 return self._vmath.scale(
                     self.socket, other._default_output_socket
-                ).o.vector
+                ).o.vector  # ty: ignore[invalid-return-type]
             elif isinstance(other, (list, tuple)) and len(other) == 3:
-                return self._vmath.multiply(*values).o.vector
+                return self._vmath.multiply(*values).o.vector  # ty: ignore[invalid-return-type]
             elif isinstance(other, (_SocketLike, _NodeLike, NodeSocket)):
-                return self._vmath.multiply(*values).o.vector
+                return self._vmath.multiply(*values).o.vector  # ty: ignore[invalid-return-type]
             else:
                 raise TypeError(
                     f"Unsupported type for {operation} with VECTOR socket: {type(other)}, {other=}"
@@ -632,38 +686,51 @@ class _VectorMixin(BaseSocket):
                     f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
                 )
 
-    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "VectorSocket":
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> _VectorResult:
         divided = self._dispatch_math(other, "divide", reverse=reverse)
-        return self._vmath.floor(divided).o.vector
+        return self._vmath.floor(divided).o.vector  # ty: ignore[invalid-return-type, invalid-argument-type]
 
     def _dispatch_compare(
         self, other: Any, operation: str
-    ) -> "BooleanSocket | FloatSocket":
+    ) -> _BooleanResult | _FloatResult:
         if self._is_geometry_tree:
             from ..nodes.geometry import Compare
 
             return getattr(Compare.vector, operation)(self.socket, other).o.result
         else:
-            return Socket._dispatch_compare(cast("Socket", self), other, operation)
+            return Socket._dispatch_compare(cast("Socket", self), other, operation)  # ty: ignore[invalid-return-type]
 
     if TYPE_CHECKING:
 
-        def __add__(self, other: Any) -> "VectorSocket": ...
-        def __radd__(self, other: Any) -> "VectorSocket": ...
-        def __sub__(self, other: Any) -> "VectorSocket": ...
-        def __rsub__(self, other: Any) -> "VectorSocket": ...
-        def __mul__(self, other: Any) -> "VectorSocket": ...
-        def __rmul__(self, other: Any) -> "VectorSocket": ...
-        def __truediv__(self, other: Any) -> "VectorSocket": ...
-        def __rtruediv__(self, other: Any) -> "VectorSocket": ...
-        def __floordiv__(self, other: Any) -> "VectorSocket": ...
-        def __rfloordiv__(self, other: Any) -> "VectorSocket": ...
-        def __neg__(self) -> "VectorSocket": ...
-        def __abs__(self) -> "VectorSocket": ...
-        def __lt__(self, other: Any) -> "Compare[VectorSocket]": ...
-        def __gt__(self, other: Any) -> "Compare[VectorSocket]": ...
-        def __le__(self, other: Any) -> "Compare[VectorSocket]": ...
-        def __ge__(self, other: Any) -> "Compare[VectorSocket]": ...
+        def scale(self, scale: InputFloat) -> Self: ...
+        def normalize(self) -> Self: ...
+        def cross(self, other: InputVector) -> Self: ...
+        def project(self, other: InputVector) -> Self: ...
+        def reflect(self, normal: InputVector) -> Self: ...
+        def map_range(self, *args: Any, **kwargs: Any) -> Self: ...
+        def rotate(self, rotation: InputRotation) -> Self: ...
+        def transform(self, matrix: InputMatrix) -> Self: ...
+        def _dispatch_unary(self, operation: str) -> Self: ...
+        def _dispatch_math(
+            self, other: Any, operation: str, reverse: bool = ...
+        ) -> Self: ...
+        def _dispatch_floordiv(self, other: Any, reverse: bool = ...) -> Self: ...
+        def __add__(self, other: Any) -> Self: ...
+        def __radd__(self, other: Any) -> Self: ...
+        def __sub__(self, other: Any) -> Self: ...
+        def __rsub__(self, other: Any) -> Self: ...
+        def __mul__(self, other: Any) -> Self: ...
+        def __rmul__(self, other: Any) -> Self: ...
+        def __truediv__(self, other: Any) -> Self: ...
+        def __rtruediv__(self, other: Any) -> Self: ...
+        def __floordiv__(self, other: Any) -> Self: ...
+        def __rfloordiv__(self, other: Any) -> Self: ...
+        def __neg__(self) -> Self: ...
+        def __abs__(self) -> Self: ...
+        def __lt__(self, other: Any) -> "Compare[_VectorResult]": ...
+        def __gt__(self, other: Any) -> "Compare[_VectorResult]": ...
+        def __le__(self, other: Any) -> "Compare[_VectorResult]": ...
+        def __ge__(self, other: Any) -> "Compare[_VectorResult]": ...
 
 
 _SEPARATE_COLOR_IDNAMES = (
@@ -755,14 +822,6 @@ class _ColorMixin(BaseSocket):
             if isinstance(node, shader.CombineColor):
                 raise TypeError("Shader CombineColor node doesn't have an alpha input")
             return node.i.alpha
-
-    @property
-    def default_value(self) -> list[float]:
-        return list(self.socket.default_value)
-
-    @default_value.setter
-    def default_value(self, value: list[float]) -> None:
-        self.socket.default_value = value
 
     _COMBINE_COLOR_IDNAMES = (
         "FunctionNodeCombineColor",
@@ -912,35 +971,920 @@ class _BooleanSwitchSocketFactory:
     def font(self, false: InputFont = None, true: InputFont = None) -> "FontSocket":
         return self._switch.font(self._socket, false, true).o.output
 
+    def sound(self, false: InputSound = None, true: InputSound = None) -> "SoundSocket":
+        return self._switch.sound(self._socket, false, true).o.output
+
 
 class _BooleanMixin(BaseSocket):
     """Boolean-specific operator overrides — routes directly through BooleanMath."""
 
     socket: NodeSocketBool
 
-    @property
-    def default_value(self) -> bool:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: bool) -> None:
-        self.socket.default_value = value
-
-    def __or__(self, other: Any) -> "BooleanSocket":
+    def __or__(self, other: Any) -> Self:
+        self._assert_output("|")
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_or(self.socket, other).o.boolean
+        return BooleanMath.l_or(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
 
-    def __and__(self, other: Any) -> "BooleanSocket":
+    def __and__(self, other: Any) -> Self:
+        self._assert_output("&")
         from ..nodes.geometry.converter import BooleanMath
 
-        return BooleanMath.l_and(self.socket, other).o.boolean
+        return BooleanMath.l_and(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
 
     @property
     def switch(self) -> "_BooleanSwitchSocketFactory":
         "Creat a Switch node with this boolean as the `switch` input."
-
+        self._assert_output("switch")
         return _BooleanSwitchSocketFactory(self.socket)
+
+
+class _RotationMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
+    """Rotation-specific methods."""
+
+    socket: NodeSocketRotation
+
+    def invert(self) -> Self:
+        "Invert the rotation of the socket."
+        self._assert_output("invert")
+        from ..nodes.geometry import InvertRotation
+
+        return InvertRotation._find_or_create_linked(self.socket).o.rotation  # ty: ignore[invalid-return-type]
+
+    def rotate(
+        self,
+        rotation: InputRotation,
+        rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
+    ) -> Self:
+        "Rotate this rotation by the given rotation in the specified rotation space."
+        self._assert_output("rotate")
+        from ..nodes.geometry import RotateRotation
+
+        return RotateRotation(
+            self.socket, rotation, rotation_space=rotation_space
+        ).o.rotation  # ty: ignore[invalid-return-type]
+
+    def to_euler(self) -> _VectorResult:
+        "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
+        self._assert_output("to_euler")
+        from ..nodes.geometry.converter import RotationToEuler
+
+        return RotationToEuler._find_or_create_linked(self.socket).o.euler  # ty: ignore[invalid-return-type]
+
+    def to_quaternion(self) -> ResultQuaternionComponents[_FloatResult]:
+        "Decompose the rotation into quaternion components `(w, x, y, z)`."
+        self._assert_output("to_quaternion")
+        from ..nodes.geometry import RotationToQuaternion
+
+        o = RotationToQuaternion._find_or_create_linked(self.socket).o
+        return ResultQuaternionComponents(o.w, o.x, o.y, o.z)  # ty: ignore[invalid-return-type]
+
+    def to_axis_angle(self) -> ResultAxisAngle[_FloatResult, _VectorResult]:
+        "Decompose the rotation into axis-angle components `(axis, angle)`."
+        self._assert_output("to_axis_angle")
+        from ..nodes.geometry import RotationToAxisAngle
+
+        o = RotationToAxisAngle(self.socket).o
+        return ResultAxisAngle(o.axis, o.angle)  # ty: ignore[invalid-return-type]
+
+
+class _FloatMixDataTypeFactory:
+    """Factory for typed Mix nodes driven by a float factor socket.
+
+    Access via ``FloatSocket.mix``. Each method creates a ``Mix`` node using
+    this socket as the factor and returns the corresponding output socket.
+    """
+
+    def __init__(self, socket: NodeSocket):
+        self._socket = socket
+        from ..nodes.geometry import Mix
+
+        self._mix = Mix
+
+    def float(self, a: InputFloat, b: InputFloat) -> "FloatSocket":
+        "Mix two float values, returning a ``FloatSocket``."
+        return self._mix.float(self._socket, a, b).o.result_float
+
+    def vector(self, a: InputVector, b: InputVector) -> "VectorSocket":
+        "Mix two vectors, returning a ``VectorSocket``."
+        return self._mix.vector(self._socket, a, b).o.result_vector
+
+    def color(self, a: InputColor, b: InputColor) -> "ColorSocket":
+        "Mix two colors, returning a ``ColorSocket``."
+        return self._mix.color(self._socket, a, b).o.result_color
+
+    def rotation(self, a: InputRotation, b: InputRotation) -> "RotationSocket":
+        "Mix two rotations, returning a ``RotationSocket``."
+        return self._mix.rotation(self._socket, a, b).o.result_rotation
+
+
+class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
+    """Float-specific properties (.x, .y, .z) and dispatch."""
+
+    socket: NodeSocketFloat
+
+    @property
+    def _math(self) -> "type[Math]":
+        from ..nodes.geometry import Math
+
+        return Math
+
+    @property
+    def mix(self) -> _FloatMixDataTypeFactory:
+        "Create a ``Mix`` node using this socket as the factor."
+        self._assert_output("mix")
+        return _FloatMixDataTypeFactory(self.socket)
+
+    def map_range(
+        self,
+        from_min: InputFloat = 0.0,
+        from_max: InputFloat = 1.0,
+        to_min: InputFloat = 0.0,
+        to_max: InputFloat = 1.0,
+        *,
+        clamp=True,
+        interpolation_type: Literal[
+            "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
+        ] = "LINEAR",
+        steps: InputFloat = 4.0,
+    ) -> Self:
+        """Remap the values on the float socket using the MapRange node."""
+        self._assert_output("map_range")
+        from ..nodes.geometry import MapRange
+
+        node = MapRange.float(self.socket, from_min, from_max, to_min, to_max)
+        node.clamp = clamp
+        node.interpolation_type = interpolation_type
+        if interpolation_type == "STEPPED":
+            node._establish_links(steps=steps)
+        return node.o.result  # ty: ignore[invalid-return-type]
+
+    def clamp(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> Self:
+        """Clamp the value to *[min, max]*. Defaults to the unit interval ``[0, 1]``."""
+        self._assert_output("clamp")
+        from ..nodes.geometry import Clamp
+
+        return Clamp.min_max(self.socket, min, max).o.result  # ty: ignore[invalid-return-type]
+
+    def sqrt(self) -> Self:
+        """Return the square root of this value."""
+        self._assert_output("sqrt")
+        return self._math.square_root(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def power(self, exponent: InputFloat) -> Self:
+        """Raise this value to *exponent*."""
+        self._assert_output("power")
+        return self._math.power(self.socket, exponent).o.value  # ty: ignore[invalid-return-type]
+
+    def floor(self) -> Self:
+        """Round down to the nearest integer."""
+        self._assert_output("floor")
+        return self._math.floor(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def ceil(self) -> Self:
+        """Round up to the nearest integer."""
+        self._assert_output("ceil")
+        return self._math.ceil(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def round(self) -> Self:
+        """Round to the nearest integer."""
+        self._assert_output("round")
+        return self._math.round(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def modulo(self, divisor: InputFloat) -> Self:
+        """Floored modulo — remainder after dividing by *divisor*, always non-negative."""
+        self._assert_output("modulo")
+        return self._math.floored_modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
+
+    def wrap(self, min: InputFloat, max: InputFloat) -> Self:
+        """Wrap the value into the *[min, max]* range, repeating cyclically."""
+        self._assert_output("wrap")
+        # the wrap method has different order of arguments with max being first
+        # compared to other nodes that are defined.
+        return self._math.wrap(self.socket, value_001=max, value_002=min).o.value  # ty: ignore[invalid-return-type]
+
+    def to_radians(self) -> Self:
+        """Convert degrees to radians."""
+        self._assert_output("to_radians")
+        return self._math.to_radians(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def to_degrees(self) -> Self:
+        """Convert radians to degrees."""
+        self._assert_output("to_degrees")
+        return self._math.to_degrees(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def sign(self) -> Self:
+        "Return the sign of the FloatSocket, eithe `-1`, `0` or `1`."
+        self._assert_output("sign")
+        return self._math.sign(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def negate(self) -> Self:
+        "Negate the `FloatSocket` by multiplying the value by `-1`."
+        self._assert_output("negate")
+        return self._math.multiply(self.socket, -1).o.value  # ty: ignore[invalid-return-type]
+
+
+class _IntegerMixin(BaseSocket, Generic[_FloatResult]):
+    """Integer-specific dispatch — uses IntegerMath in geometry trees."""
+
+    socket: NodeSocketInt
+    tree: TreeBuilder
+    _tree: TreeBuilder
+
+    @property
+    def _imath(self) -> "type[IntegerMath]":
+        from ..nodes.geometry import IntegerMath
+
+        return IntegerMath
+
+    def clamp(self, min: InputInteger = 0, max: InputInteger = 1) -> Self:
+        """Clamp the value to *[min, max]*."""
+        self._assert_output("clamp")
+        return self._imath.minimum(
+            self._imath.maximum(self.socket, min).o.value, max
+        ).o.value  # ty: ignore[invalid-return-type]
+
+    def modulo(self, divisor: InputInteger) -> Self:
+        """Remainder after dividing by *divisor* (always non-negative)."""
+        self._assert_output("modulo")
+        return self._imath.modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
+
+    def abs(self) -> Self:
+        """Return the absolute value of the IntegerSocket."""
+        self._assert_output("abs")
+        return self._imath.absolute(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def sign(self) -> Self:
+        "Return the sign of the IntegerSocket, either `-1`, `0`, or `1`."
+        self._assert_output("sign")
+        return self._imath.sign(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def negate(self) -> Self:
+        """Negate the IntegerSocket value. Positive becomes negative, negative becomes positive."""
+        self._assert_output("negate")
+        return self._imath.negate(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    @staticmethod
+    def _is_integer_socket(value: Any) -> bool:
+        socket = getattr(
+            value, "socket", getattr(value, "_default_output_socket", None)
+        )
+        return isinstance(socket, NodeSocket) and socket.type == "INT"
+
+    def _other_is_integer(self, other: Any) -> bool:
+        return isinstance(other, int) or self._is_integer_socket(other)
+
+    def _dispatch_math(
+        self, other: Any, operation: str, reverse: bool = False
+    ) -> Self | _FloatResult:
+        if self._is_geometry_tree and self._other_is_integer(other):
+            from ..nodes.geometry.converter import IntegerMath
+
+            values = (self.socket, other) if not reverse else (other, self.socket)
+            return getattr(IntegerMath, operation)(*values).o.value
+        return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)  # ty: ignore[invalid-return-type]
+
+    def _dispatch_unary(self, operation: str) -> Self | _FloatResult:
+        if self._is_geometry_tree:
+            from ..nodes.geometry.converter import IntegerMath
+
+            if operation == "negate":
+                return IntegerMath.negate(self.socket).o.value  # ty: ignore[invalid-return-type]
+            elif operation == "absolute":
+                return IntegerMath.absolute(self.socket).o.value  # ty: ignore[invalid-return-type]
+        return Socket._dispatch_unary(cast("Socket", self), operation)  # ty: ignore[invalid-return-type]
+
+    def _dispatch_floordiv(
+        self, other: Any, reverse: bool = False
+    ) -> Self | _FloatResult:
+        if self._is_geometry_tree and self._other_is_integer(other):
+            from ..nodes.geometry.converter import IntegerMath
+
+            values = (self.socket, other) if not reverse else (other, self.socket)
+            return IntegerMath.divide_floor(*values).o.value  # ty: ignore[invalid-return-type]
+        return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)  # ty: ignore[invalid-return-type]
+
+    def _dispatch_compare(self, other: Any, operation: str) -> Self | _FloatResult:
+        if self._is_geometry_tree:
+            from ..nodes.geometry.manual import Compare
+
+            return getattr(Compare.integer, operation)(self.socket, other).o.result
+        return Socket._dispatch_compare(cast("Socket", self), other, operation)  # ty: ignore[invalid-return-type]
+
+    if TYPE_CHECKING:
+
+        def __add__(self, other: Any) -> Self: ...
+        def __radd__(self, other: Any) -> Self: ...
+        def __sub__(self, other: Any) -> Self: ...
+        def __rsub__(self, other: Any) -> Self: ...
+        def __mul__(self, other: Any) -> Self: ...
+        def __rmul__(self, other: Any) -> Self: ...
+        def __truediv__(self, other: Any) -> Self: ...
+        def __rtruediv__(self, other: Any) -> Self: ...
+        def __floordiv__(self, other: Any) -> Self: ...
+        def __rfloordiv__(self, other: Any) -> Self: ...
+        def __neg__(self) -> Self: ...
+        def __abs__(self) -> Self: ...
+        def __lt__(self, other: Any) -> "Compare[IntegerSocket]": ...
+        def __gt__(self, other: Any) -> "Compare[IntegerSocket]": ...
+        def __le__(self, other: Any) -> "Compare[IntegerSocket]": ...
+        def __ge__(self, other: Any) -> "Compare[IntegerSocket]": ...
+
+
+class _StringMixin(BaseSocket, Generic[_StringResult, _BooleanResult, _IntegerResult]):
+    """String-specific methods (match, slice, join, etc.)."""
+
+    socket: NodeSocketString
+
+    @property
+    def _match(self) -> "type[MatchString]":
+        from ..nodes.geometry import MatchString
+
+        return MatchString
+
+    def starts_with(self, search: InputString) -> _BooleanResult:
+        "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
+        self._assert_output("starts_with")
+        return self._match(self.socket, "Starts With", search).o.result  # ty: ignore[invalid-return-type]
+
+    def ends_with(self, search: InputString) -> _BooleanResult:
+        "Create a MatchString[Ends With], return the result as a `BooleanSocket`."
+        self._assert_output("ends_with")
+        return self._match(self.socket, "Ends With", search).o.result  # ty: ignore[invalid-return-type]
+
+    def contains(self, search: InputString) -> _BooleanResult:
+        "Create a MatchString[Contains], return the result as a `BooleanSocket`."
+        self._assert_output("contains")
+        return self._match(self.socket, "Contains", search).o.result  # ty: ignore[invalid-return-type]
+
+    def slice(
+        self, position: InputInteger = 0, length: InputInteger = 0
+    ) -> _StringResult:
+        "Slice a given string from a starting position for a given length."
+        self._assert_output("slice")
+        from ..nodes.geometry import SliceString
+
+        return SliceString(self.socket, position, length).o.string  # ty: ignore[invalid-return-type]
+
+    def format(
+        self, items: Mapping[str, InputString | InputInteger | InputFloat]
+    ) -> _StringResult:
+        "Format a given string with the key-value items."
+        self._assert_output("format")
+        from ..nodes.geometry import FormatString
+
+        return FormatString(self.socket, items).o.string  # ty: ignore[invalid-return-type]
+
+    def replace(self, find: InputString, replace: InputString) -> _StringResult:
+        "Replace every match of the string with the replacement string"
+        self._assert_output("replace")
+        from ..nodes.geometry import ReplaceString
+
+        return ReplaceString(self.socket, find, replace).o.string  # ty: ignore[invalid-return-type]
+
+    def reverse(self) -> _StringResult:
+        "Reverse the string."
+        self._assert_output("reverse")
+        from ..nodes.geometry import ReverseString
+
+        return ReverseString(self.socket).o.string  # ty: ignore[invalid-return-type]
+
+    def length(self) -> _IntegerResult:
+        "Compute the length of a string and return as `IntegerSocket`."
+        self._assert_output("length")
+        from ..nodes.geometry import StringLength
+
+        return StringLength(self.socket).o.length  # ty: ignore[invalid-return-type]
+
+    def find(self, search: InputString) -> ResultStringFind[_IntegerResult]:
+        "Find where in a string a pattern occurs. Returns `(first_found, count)`."
+        self._assert_output("find")
+        from ..nodes.geometry import FindInString
+
+        o = FindInString(self.socket, search).o
+        return ResultStringFind(o.first_found, o.count)  # ty: ignore[invalid-return-type]
+
+    def uppercase(self) -> _StringResult:
+        "Convert the string to uppercase and return as `StringSocket`."
+        self._assert_output("uppercase")
+        from ..nodes.geometry import SetStringCase
+
+        return SetStringCase(self.socket, case="Uppercase").o.string  # ty: ignore[invalid-return-type]
+
+    def lowercase(self) -> _StringResult:
+        "Convert the string to lowercase and return as `StringSocket`."
+        self._assert_output("lowercase")
+        from ..nodes.geometry import SetStringCase
+
+        return SetStringCase(self.socket, case="Lowercase").o.string  # ty: ignore[invalid-return-type]
+
+
+class _MatrixMixin(
+    BaseSocket, Generic[_VectorResult, _RotationResult, _FloatResult, _MatrixResult]
+):
+    """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
+
+    socket: NodeSocketMatrix
+
+    @property
+    def translation(self) -> _VectorResult:
+        """Get the translation component of the matrix, via [`~nodebpy.nodes.geometry.converter.SeparateTransform`]."""
+        self._assert_output("translation")
+        from ..nodes.geometry.converter import SeparateTransform
+
+        return SeparateTransform._find_or_create_linked(self.socket).o.translation  # ty: ignore[invalid-return-type]
+
+    @property
+    def rotation(self) -> _RotationResult:
+        """Get the rotation component of the matrix, via [`~nodebpy.nodes.geometry.converter.SeparateTransform`]."""
+        self._assert_output("rotation")
+        from ..nodes.geometry.converter import SeparateTransform
+
+        return SeparateTransform._find_or_create_linked(self.socket).o.rotation  # ty: ignore[invalid-return-type]
+
+    @property
+    def scale(self) -> _VectorResult:
+        """Get the scale component of the matrix, via [`~nodebpy.nodes.geometry.converter.SeparateTransform`]."""
+        self._assert_output("scale")
+        from ..nodes.geometry.converter import SeparateTransform
+
+        return SeparateTransform._find_or_create_linked(self.socket).o.scale  # ty: ignore[invalid-return-type]
+
+    def determinant(self) -> _FloatResult:
+        """Compute the determinant of a matrix input and return as a `FloatSocket`."""
+        self._assert_output("determinant")
+        from ..nodes.geometry import MatrixDeterminant
+
+        return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant  # ty: ignore[invalid-return-type]
+
+    def invert(self) -> Self:
+        """Invert the `MatrixSocet` and return a `MatrixSocket`."""
+        self._assert_output("invert")
+        from ..nodes.geometry import InvertMatrix
+
+        return InvertMatrix._find_or_create_linked(self.socket).o.matrix  # ty: ignore[invalid-return-type]
+
+    def transpose(self) -> Self:
+        """Transpose the `MatrixSocket` and return a `MatrixSocket`."""
+        self._assert_output("transpose")
+        from ..nodes.geometry import TransposeMatrix
+
+        return TransposeMatrix._find_or_create_linked(self.socket).o.matrix  # ty: ignore[invalid-return-type]
+
+    def svd(self) -> ResultMatrixSVD[_MatrixResult, _VectorResult]:
+        """Decompose the matrix via SVD. Returns `(u, s, v)`."""
+        self._assert_output("svd")
+        from ..nodes.geometry import MatrixSVD
+
+        o = MatrixSVD(self.socket).o
+        return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-return-type]
+
+    def transform_direction(self, direction: InputVector) -> _VectorResult:
+        """Apply this matrix to *direction*, ignoring translation.
+
+        Use this instead of ``transform()`` when transforming a direction vector
+        (e.g. a normal) where translation must not affect the result.
+        """
+        self._assert_output("transform_direction")
+        from ..nodes.geometry import TransformDirection
+
+        return TransformDirection(direction, self.socket).o.direction  # ty: ignore[invalid-return-type]
+
+    @staticmethod
+    def _cast_to_matrix(value) -> MatrixSocket:
+        from ..nodes.geometry.converter import CombineMatrix
+
+        if hasattr(value, "shape") and value.shape == (4, 4):
+            return CombineMatrix(*value.ravel()).o.matrix
+        else:
+            return value
+
+    @overload
+    def __matmul__(self, other: MatrixSocket) -> _MatrixResult: ...
+    @overload
+    def __matmul__(self, other: RotationSocket) -> _RotationResult: ...
+    @overload
+    def __matmul__(self, other: Position) -> _VectorResult: ...
+    @overload
+    def __matmul__(self, other: VectorSocket) -> _VectorResult: ...
+    @overload
+    def __matmul__(self, other: Vector) -> _VectorResult: ...
+    def __matmul__(self, other: Any) -> Self | _VectorResult:
+        from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
+
+        other = self._cast_to_matrix(other)
+        socket = self._default_output_socket
+
+        if socket.type == "MATRIX" and other.type == "VECTOR":
+            return TransformPoint(other, socket).o.vector  # ty: ignore[invalid-return-type]
+
+        return MultiplyMatrices(socket, other).o.matrix  # ty: ignore[invalid-return-type]
+
+    def __rmatmul__(self, other: MatrixSocket | MatrixSocketList) -> Self:
+        from ..nodes.geometry.converter import MultiplyMatrices, TransformPoint
+
+        other = self._cast_to_matrix(other)
+        socket = self._default_output_socket
+
+        if socket.type == "VECTOR" and getattr(other, "type", None) == "MATRIX":
+            return TransformPoint(socket, other).o.vector  # ty: ignore[invalid-return-type]
+
+        return MultiplyMatrices(other, socket).o.matrix  # ty: ignore[invalid-return-type]
+
+
+# ---------------------------------------------------------------------------
+# Registry-target socket classes
+# Used by _wrap_socket() for runtime socket wrapping.
+# The corresponding SocketVector / SocketColor / etc. in interface.py
+# inherit the same mixins and gain identical behaviour for interface sockets.
+# ---------------------------------------------------------------------------
+
+
+class _ListMixin(Socket, Generic[_T]):
+    """Generic list mixin for socket lists."""
+
+    def list_length(self) -> "IntegerSocket":
+        """Get the length of the list."""
+        from ..nodes.geometry import ListLength
+
+        return ListLength(self.socket, data_type=self.socket.type).o.length  # ty: ignore[invalid-argument-type]
+
+    @overload
+    def get(self, index: InputIntegerList) -> Self: ...
+
+    @overload
+    def get(self, index: InputInteger) -> _T: ...
+
+    def get(self, index: InputInteger | InputIntegerList) -> _T | Self:
+        """Get the item at the given index from the list."""
+        from ..nodes.geometry import GetListItem
+
+        return GetListItem(  # ty: ignore[invalid-return-type]
+            list=self.socket,
+            index=index,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.value
+
+    def filter(self, selection: InputBoolean | BooleanSocketList = True) -> Self:
+        """Filter the list based on the selection."""
+        from ..nodes.geometry import FilterList
+
+        return FilterList(
+            self.socket,
+            selection=selection,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.selection  # ty: ignore[invalid-return-type]
+
+    def sort(
+        self,
+        sort_weight: InputFloat | InputFloatList,
+        group_id: InputInteger | IntegerSocket = None,
+        selection: InputBoolean | BooleanSocketList = None,
+    ) -> Self:
+        """Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided.
+
+        Parameters
+        ----------
+        sort_weight : InputFloat | InputFloatList
+            The weight to sort by.
+        group_id : InputInteger | IntegerSocket, optional
+            The group ID to sort within. Groups are sorted independently and groups returned in order of Group ID.
+        selection : InputBoolean | BooleanSocketList, optional
+            The selection to sort by. If False then an element is not included in the sort and remains in its original position.
+
+        Returns
+        -------
+        Self
+            The sorted list.
+        """
+        from ..nodes.geometry import SortList
+
+        return SortList(
+            self.socket,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.list  # ty: ignore[invalid-return-type]
+
+    def reverse(self) -> Self:
+        """Reverse the list. Currently uses a SortList node with negative Index to reverse the list."""
+        from ..nodes.geometry import SortList, Index
+
+        return SortList(
+            list=self.socket,
+            sort_weight=Index().o.index.negate(),
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.list  # ty: ignore[invalid-return-type]
+
+    def list_slice(
+        self, start: InputInteger = 0, stop: InputInteger = None, step: InputInteger = 1
+    ) -> Self:
+        """Slice the list using start, stop, and step indices. Behaves like Python's slice notation."""
+        from ..nodes.geometry.groups import SliceToIndices
+        from ..nodes.geometry.converter import GetListItem
+
+        if stop is None:
+            stop = self.list_length()
+        elif isinstance(stop, int):
+            if stop < 0:
+                stop = self.list_length() + stop
+
+        if start is None:
+            start = 0
+        elif isinstance(start, int):
+            if start < 0:
+                start = self.list_length() + start
+
+        if step is None:
+            step = 1
+
+        indices = SliceToIndices(start=start, stop=stop, step=step).o.indices
+        return GetListItem(  # ty: ignore[invalid-return-type]
+            self.socket,
+            indices,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.value
+
+    @overload
+    def __getitem__(self, key: int) -> _T: ...
+    @overload
+    def __getitem__(self, key: IntegerSocketList) -> Self: ...
+    @overload
+    def __getitem__(self, key: slice) -> Self: ...
+    def __getitem__(self, key: int | IntegerSocketList | slice) -> _T:
+        from ..nodes.geometry.converter import GetListItem
+
+        if isinstance(key, slice):
+            return self.list_slice(key.start, key.stop, key.step)  # ty: ignore[invalid-return-type]
+
+        return GetListItem(
+            self.socket,
+            index=key,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.value  # ty: ignore[invalid-return-type]
+
+    def __len__(self) -> IntegerSocket:
+        from ..nodes.geometry.converter import ListLength
+
+        return ListLength(
+            self.socket,
+            data_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.length
+
+
+class _DefaultValueMixin(BaseSocket, Generic[_T]):
+    @property
+    def default_value(self) -> _T:
+        """Get or set the default value of the socket. Only relevant for input sockets."""
+        self._assert_input("default_value")
+        return self.socket.default_value  # ty: ignore[unresolved-attribute]
+
+    @default_value.setter
+    def default_value(self, value: _T) -> None:
+        """Get or set the default value of the socket. Only relevant for input sockets."""
+        self._assert_input("default_value")
+        self.socket.default_value = value  # ty: ignore[unresolved-attribute]
+
+
+class _ToListMixin(BaseSocket, Generic[_T]):
+    def to_list(self, count: InputInteger = 10) -> _T:
+        """Create a list of elements, evaluating this field `count` times based on the `Index` node."""
+        from ..nodes.geometry import FieldToList
+
+        return FieldToList(count, {self.name: self}).o[0]  # ty: ignore[invalid-return-type, invalid-argument-type]
+
+
+class _FloatConvertDatatypeMixin(BaseSocket, Generic[_IntegerResult, _StringResult]):
+    def to_string(self, decimals: InputInteger = 0) -> "_StringResult":
+        "Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places"
+        self._assert_output("to_string")
+        from ..nodes.geometry import ValueToString
+
+        return ValueToString.float(self.socket, decimals).o.string  # ty: ignore[invalid-return-type]
+
+    def to_integer(
+        self, rounding_mode: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"] = "ROUND"
+    ) -> "_IntegerResult":
+        "Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part."
+        self._assert_output("to_integer")
+        from ..nodes.geometry import FloatToInteger
+
+        return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer  # ty: ignore[invalid-return-type]
+
+
+class FloatSocket(
+    _FloatMixin["IntegerSocket"],
+    _ToListMixin["FloatSocketList"],
+    _FloatConvertDatatypeMixin["IntegerSocket", "StringSocket"],
+    _DefaultValueMixin[float],
+    Socket,
+):
+    """Runtime float socket wrapper."""
+
+    @property
+    def point(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "point")
+
+    @property
+    def edge(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "edge")
+
+    @property
+    def face(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "face")
+
+    @property
+    def corner(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "corner")
+
+    @property
+    def spline(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "spline")
+
+    @property
+    def instance(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "instance")
+
+    @property
+    def layer(self) -> "_StatsField[FloatSocket]":
+        """FloatSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "float", "layer")
+
+
+class FloatSocketList(
+    _FloatMixin["IntegerSocketList"],
+    _FloatConvertDatatypeMixin["IntegerSocketList", "StringSocketList"],
+    _ListMixin[FloatSocket],
+):
+    """"""
+
+
+class FloatSocketGrid(_FloatMixin["IntegerSocketGrid"], GridSocketMixin[FloatSocket]):
+    """Runtime float grid socket wrapper."""
+
+
+class VectorSocket(
+    _VectorMixin["FloatSocket", "VectorSocket"],
+    _ToListMixin["VectorSocketList"],
+    Socket,
+):
+    """Runtime vector socket wrapper."""
+
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float] | tuple[float, float, float]) -> None:
+        self.socket.default_value = value
+
+    @property
+    def point(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "vector", "point")
+
+    @property
+    def edge(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "vector", "edge")
+
+    @property
+    def face(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "vector", "face")
+
+    @property
+    def corner(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "vector", "corner")
+
+    @property
+    def spline(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "vector", "spline")
+
+    @property
+    def instance(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "vector", "instance")
+
+    @property
+    def layer(self) -> "_StatsField[VectorSocket]":
+        """VectorSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
+        return _StatsField(self.socket, "vector", "layer")
+
+
+class VectorSocketList(
+    _VectorMixin["FloatSocketList", "VectorSocketList"], _ListMixin[VectorSocket]
+):
+    """"""
+
+
+class VectorSocketGrid(_VectorMixin, GridSocketMixin[VectorSocket]):
+    """Runtime vector grid socket wrapper."""
+
+
+class ColorSocket(_ColorMixin, _ToListMixin["ColorSocketList"], Socket):
+    """Runtime color socket wrapper."""
+
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float]) -> None:
+        self.socket.default_value = value
+
+
+class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):
+    """List of color sockets."""
+
+
+class _IntegerConvertDatatypeMixin(Socket, Generic[_StringResult]):
+    def to_string(self) -> _StringResult:
+        "Convert the `IntegerSocket` to a `StringSocket`."
+        self._assert_output("to_string")
+        from ..nodes.geometry import ValueToString
+
+        return ValueToString.integer(self.socket).o.string  # ty: ignore[invalid-return-type]
+
+
+class IntegerSocket(
+    _IntegerMixin[FloatSocket],
+    _ToListMixin["IntegerSocketList"],
+    _IntegerConvertDatatypeMixin["StringSocket"],
+    _DefaultValueMixin[int],
+    Socket,
+):
+    """Runtime integer socket wrapper."""
+
+    @property
+    def point(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "point")
+
+    @property
+    def edge(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "edge")
+
+    @property
+    def face(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "face")
+
+    @property
+    def corner(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "corner")
+
+    @property
+    def spline(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "spline")
+
+    @property
+    def instance(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "instance")
+
+    @property
+    def layer(self) -> "_MinMaxField[IntegerSocket]":
+        """IntegerSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
+        return _MinMaxField(self.socket, "integer", "layer")
+
+
+class IntegerSocketList(
+    _IntegerMixin["FloatSocket"],
+    _IntegerConvertDatatypeMixin["StringSocket"],
+    _ListMixin[IntegerSocket],
+):
+    """List of integer sockets."""
+
+
+class IntegerVectorSocket(
+    _IntegerMixin["FloatSocket"],
+    _DefaultValueMixin[list[int]],
+    Socket,
+):
+    """Runtime integer vector socket wrapper."""
+
+
+class IntegerSocketGrid(_IntegerMixin, GridSocketMixin[IntegerSocket]):
+    """Runtime integer grid socket wrapper."""
+
+
+class BooleanSocket(
+    _BooleanMixin, _ToListMixin["BooleanSocketList"], _DefaultValueMixin[bool], Socket
+):
+    """Runtime boolean socket wrapper."""
 
     @property
     def point(self) -> "_EvaluateField[BooleanSocket]":
@@ -979,56 +1923,21 @@ class _BooleanMixin(BaseSocket):
         return _EvaluateField(self.socket, "boolean", "layer")
 
 
-class _RotationMixin(BaseSocket):
-    """Rotation-specific methods."""
+class BooleanSocketList(_BooleanMixin, _ListMixin[BooleanSocket]):
+    """List of boolean sockets."""
 
-    socket: NodeSocketRotation
 
-    @property
-    def default_value(self) -> Euler:
-        return self.socket.default_value
+class BooleanSocketGrid(_BooleanMixin, GridSocketMixin[BooleanSocket]):
+    """Runtime boolean grid socket wrapper."""
 
-    @default_value.setter
-    def default_value(self, value: Euler) -> None:
-        self.socket.default_value = value
 
-    def invert(self) -> "RotationSocket":
-        "Invert the rotation of the socket."
-        from ..nodes.geometry import InvertRotation
-
-        return InvertRotation._find_or_create_linked(self.socket).o.rotation
-
-    def rotate(
-        self,
-        rotation: InputRotation,
-        rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
-    ) -> "RotationSocket":
-        "Rotate this rotation by the given rotation in the specified rotation space."
-        from ..nodes.geometry import RotateRotation
-
-        return RotateRotation(
-            self.socket, rotation, rotation_space=rotation_space
-        ).o.rotation
-
-    def to_euler(self) -> "VectorSocket":
-        "Convert the rotation to an XYZ euler rotation and return `VectorSocket`."
-        from ..nodes.geometry.converter import RotationToEuler
-
-        return RotationToEuler._find_or_create_linked(self.socket).o.euler
-
-    def to_quaternion(self) -> QuaternionComponents:
-        "Decompose the rotation into quaternion components `(w, x, y, z)`."
-        from ..nodes.geometry import RotationToQuaternion
-
-        o = RotationToQuaternion._find_or_create_linked(self.socket).o
-        return QuaternionComponents(o.w, o.x, o.y, o.z)
-
-    def to_axis_angle(self) -> AxisAngle:
-        "Decompose the rotation into axis-angle components `(axis, angle)`."
-        from ..nodes.geometry import RotationToAxisAngle
-
-        o = RotationToAxisAngle(self.socket).o
-        return AxisAngle(o.axis, o.angle)
+class RotationSocket(
+    _RotationMixin["FloatSocket", "VectorSocket"],
+    _ToListMixin["RotationSocketList"],
+    _DefaultValueMixin[Euler],
+    Socket,
+):
+    """Runtime rotation socket wrapper."""
 
     @property
     def point(self) -> "_EvaluateField[RotationSocket]":
@@ -1066,481 +1975,18 @@ class _RotationMixin(BaseSocket):
         return _EvaluateField(self.socket, "quaternion", "layer")
 
 
-class _FloatMixDataTypeFactory:
-    """Factory for typed Mix nodes driven by a float factor socket.
-
-    Access via ``FloatSocket.mix``. Each method creates a ``Mix`` node using
-    this socket as the factor and returns the corresponding output socket.
-    """
-
-    def __init__(self, socket: NodeSocket):
-        self._socket = socket
-        from ..nodes.geometry import Mix
-
-        self._mix = Mix
-
-    def float(self, a: InputFloat, b: InputFloat) -> "FloatSocket":
-        "Mix two float values, returning a ``FloatSocket``."
-        return self._mix.float(self._socket, a, b).o.result_float
-
-    def vector(self, a: InputVector, b: InputVector) -> "VectorSocket":
-        "Mix two vectors, returning a ``VectorSocket``."
-        return self._mix.vector(self._socket, a, b).o.result_vector
-
-    def color(self, a: InputColor, b: InputColor) -> "ColorSocket":
-        "Mix two colors, returning a ``ColorSocket``."
-        return self._mix.color(self._socket, a, b).o.result_color
-
-    def rotation(self, a: InputRotation, b: InputRotation) -> "RotationSocket":
-        "Mix two rotations, returning a ``RotationSocket``."
-        return self._mix.rotation(self._socket, a, b).o.result_rotation
-
-
-class _FloatMixin(BaseSocket):
-    """Float-specific properties (.x, .y, .z) and dispatch."""
-
-    socket: NodeSocketFloat
-
-    @property
-    def default_value(self) -> float:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: float) -> None:
-        self.socket.default_value = value
-
-    @property
-    def _math(self) -> "type[Math]":
-        from ..nodes.geometry import Math
-
-        return Math
-
-    @property
-    def mix(self) -> _FloatMixDataTypeFactory:
-        "Create a ``Mix`` node using this socket as the factor."
-        return _FloatMixDataTypeFactory(self.socket)
-
-    @property
-    def point(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "point")
-
-    @property
-    def edge(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "edge")
-
-    @property
-    def face(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "face")
-
-    @property
-    def corner(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "corner")
-
-    @property
-    def spline(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "spline")
-
-    @property
-    def instance(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "instance")
-
-    @property
-    def layer(self) -> "_StatsField[FloatSocket]":
-        """FloatSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`, `FieldAverage`, `FieldVariance`."""
-        return _StatsField(self.socket, "float", "layer")
-
-    def map_range(
-        self,
-        from_min: InputFloat = 0.0,
-        from_max: InputFloat = 1.0,
-        to_min: InputFloat = 0.0,
-        to_max: InputFloat = 1.0,
-        *,
-        clamp=True,
-        interpolation_type: Literal[
-            "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
-        ] = "LINEAR",
-        steps: InputFloat = 4.0,
-    ) -> "FloatSocket":
-        """Remap the values on the float socket using the MapRange node."""
-        from ..nodes.geometry import MapRange
-
-        node = MapRange.float(self.socket, from_min, from_max, to_min, to_max)
-        node.clamp = clamp
-        node.interpolation_type = interpolation_type
-        if interpolation_type == "STEPPED":
-            node._establish_links(steps=steps)
-        return node.o.result
-
-    def clamp(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> "FloatSocket":
-        """Clamp the value to *[min, max]*. Defaults to the unit interval ``[0, 1]``."""
-        from ..nodes.geometry import Clamp
-
-        return Clamp.min_max(self.socket, min, max).o.result
-
-    def sqrt(self) -> "FloatSocket":
-        """Return the square root of this value."""
-        return self._math.square_root(self.socket).o.value
-
-    def power(self, exponent: InputFloat) -> "FloatSocket":
-        """Raise this value to *exponent*."""
-        return self._math.power(self.socket, exponent).o.value
-
-    def floor(self) -> "FloatSocket":
-        """Round down to the nearest integer."""
-        return self._math.floor(self.socket).o.value
-
-    def ceil(self) -> "FloatSocket":
-        """Round up to the nearest integer."""
-        return self._math.ceil(self.socket).o.value
-
-    def round(self) -> "FloatSocket":
-        """Round to the nearest integer."""
-        return self._math.round(self.socket).o.value
-
-    def modulo(self, divisor: InputFloat) -> "FloatSocket":
-        """Floored modulo — remainder after dividing by *divisor*, always non-negative."""
-        return self._math.floored_modulo(self.socket, divisor).o.value
-
-    def wrap(self, min: InputFloat, max: InputFloat) -> "FloatSocket":
-        """Wrap the value into the *[min, max]* range, repeating cyclically."""
-        # the wrap method has different order of arguments with max being first
-        # compared to other nodes that are defined.
-        return self._math.wrap(self.socket, value_001=max, value_002=min).o.value
-
-    def to_radians(self) -> "FloatSocket":
-        """Convert degrees to radians."""
-        return self._math.to_radians(self.socket).o.value
-
-    def to_degrees(self) -> "FloatSocket":
-        """Convert radians to degrees."""
-        return self._math.to_degrees(self.socket).o.value
-
-    def sign(self) -> "FloatSocket":
-        "Return the sign of the FloatSocket, eithe `-1`, `0` or `1`."
-        return self._math.sign(self.socket).o.value
-
-    def negate(self) -> "FloatSocket":
-        "Negate the `FloatSocket` by multiplying the value by `-1`."
-        return self._math.multiply(self.socket, -1).o.value
-
-    def to_string(self, decimals: InputInteger = 0) -> "StringSocket":
-        "Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places"
-        from ..nodes.geometry import ValueToString
-
-        return ValueToString.float(self.socket, decimals).o.string
-
-    def to_integer(
-        self, rounding_mode: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"] = "ROUND"
-    ) -> "IntegerSocket":
-        "Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part."
-        from ..nodes.geometry import FloatToInteger
-
-        return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer
-
-
-class _IntegerMixin(BaseSocket):
-    """Integer-specific dispatch — uses IntegerMath in geometry trees."""
-
-    socket: NodeSocketInt
-    tree: TreeBuilder
-    _tree: TreeBuilder
-
-    @property
-    def default_value(self) -> int:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: int) -> None:
-        self.socket.default_value = value
-
-    @property
-    def point(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "point")
-
-    @property
-    def edge(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "edge")
-
-    @property
-    def face(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "face")
-
-    @property
-    def corner(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "corner")
-
-    @property
-    def spline(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "spline")
-
-    @property
-    def instance(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "instance")
-
-    @property
-    def layer(self) -> "_MinMaxField[IntegerSocket]":
-        """IntegerSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`, `AccumulateField`, `FieldMinAndMax`."""
-        return _MinMaxField(self.socket, "integer", "layer")
-
-    @property
-    def _imath(self) -> "type[IntegerMath]":
-        from ..nodes.geometry import IntegerMath
-
-        return IntegerMath
-
-    def to_string(self) -> "StringSocket":
-        "Convert the `IntegerSocket` to a `StringSocket`."
-        from ..nodes.geometry import ValueToString
-
-        return ValueToString.integer(self.socket).o.string
-
-    def clamp(self, min: InputInteger = 0, max: InputInteger = 1) -> "IntegerSocket":
-        """Clamp the value to *[min, max]*."""
-        return self._imath.minimum(
-            self._imath.maximum(self.socket, min).o.value, max
-        ).o.value
-
-    def modulo(self, divisor: InputInteger) -> "IntegerSocket":
-        """Remainder after dividing by *divisor* (always non-negative)."""
-        return self._imath.modulo(self.socket, divisor).o.value
-
-    def sign(self) -> "IntegerSocket":
-        "Return the sign of the IntegerSocket, either `-1`, `0`, or `1`."
-        return self._imath.sign(self.socket).o.value
-
-    def negate(self) -> "IntegerSocket":
-        return self._imath.negate(self.socket).o.value
-
-    @staticmethod
-    def _is_integer_socket(value: Any) -> bool:
-        socket = getattr(
-            value, "socket", getattr(value, "_default_output_socket", None)
-        )
-        return isinstance(socket, NodeSocket) and socket.type == "INT"
-
-    def _other_is_integer(self, other: Any) -> bool:
-        return isinstance(other, int) or self._is_integer_socket(other)
-
-    def _dispatch_math(
-        self, other: Any, operation: str, reverse: bool = False
-    ) -> "IntegerSocket | FloatSocket":
-        if self._is_geometry_tree and self._other_is_integer(other):
-            from ..nodes.geometry.converter import IntegerMath
-
-            values = (self.socket, other) if not reverse else (other, self.socket)
-            return getattr(IntegerMath, operation)(*values).o.value
-        return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)
-
-    def _dispatch_unary(self, operation: str) -> "IntegerSocket | FloatSocket":
-        if self._is_geometry_tree:
-            from ..nodes.geometry.converter import IntegerMath
-
-            if operation == "negate":
-                return IntegerMath.negate(self.socket).o.value
-            elif operation == "absolute":
-                return IntegerMath.absolute(self.socket).o.value
-        return Socket._dispatch_unary(cast("Socket", self), operation)
-
-    def _dispatch_floordiv(
-        self, other: Any, reverse: bool = False
-    ) -> "IntegerSocket | FloatSocket":
-        if self._is_geometry_tree and self._other_is_integer(other):
-            from ..nodes.geometry.converter import IntegerMath
-
-            values = (self.socket, other) if not reverse else (other, self.socket)
-            return IntegerMath.divide_floor(*values).o.value
-        return Socket._dispatch_floordiv(cast("Socket", self), other, reverse)
-
-    def _dispatch_compare(
-        self, other: Any, operation: str
-    ) -> "BooleanSocket | FloatSocket":
-        if self._is_geometry_tree:
-            from ..nodes.geometry.manual import Compare
-
-            return getattr(Compare.integer, operation)(self.socket, other).o.result
-        return Socket._dispatch_compare(cast("Socket", self), other, operation)
-
-    if TYPE_CHECKING:
-
-        def __add__(self, other: Any) -> "IntegerSocket": ...
-        def __radd__(self, other: Any) -> "IntegerSocket": ...
-        def __sub__(self, other: Any) -> "IntegerSocket": ...
-        def __rsub__(self, other: Any) -> "IntegerSocket": ...
-        def __mul__(self, other: Any) -> "IntegerSocket": ...
-        def __rmul__(self, other: Any) -> "IntegerSocket": ...
-        def __truediv__(self, other: Any) -> "IntegerSocket": ...
-        def __rtruediv__(self, other: Any) -> "IntegerSocket": ...
-        def __floordiv__(self, other: Any) -> "IntegerSocket": ...
-        def __rfloordiv__(self, other: Any) -> "IntegerSocket": ...
-        def __neg__(self) -> "IntegerSocket": ...
-        def __abs__(self) -> "IntegerSocket": ...
-        def __lt__(self, other: Any) -> "Compare[IntegerSocket]": ...
-        def __gt__(self, other: Any) -> "Compare[IntegerSocket]": ...
-        def __le__(self, other: Any) -> "Compare[IntegerSocket]": ...
-        def __ge__(self, other: Any) -> "Compare[IntegerSocket]": ...
-
-
-class _StringMixin(BaseSocket):
-    """Float-specific properties (.x, .y, .z) and dispatch."""
-
-    socket: NodeSocketString
-
-    @property
-    def default_value(self) -> str:
-        return self.socket.default_value
-
-    @default_value.setter
-    def default_value(self, value: str) -> None:
-        self.socket.default_value = value
-
-    @property
-    def _match(self) -> "type[MatchString]":
-        from ..nodes.geometry import MatchString
-
-        return MatchString
-
-    def starts_with(self, search: InputString) -> "BooleanSocket":
-        "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
-        return self._match(self.socket, "Starts With", search).o.result
-
-    def ends_with(self, search: InputString) -> "BooleanSocket":
-        "Create a MatchString[Ends With], return the result as a `BooleanSocket`."
-        return self._match(self.socket, "Ends With", search).o.result
-
-    def contains(self, search: InputString) -> "BooleanSocket":
-        "Create a MatchString[Contains], return the result as a `BooleanSocket`."
-        return self._match(self.socket, "Contains", search).o.result
-
-    def slice(
-        self, position: InputInteger = 0, length: InputInteger = 0
-    ) -> StringSocket:
-        "Slice a given string from a starting position for a given length."
-        from ..nodes.geometry import SliceString
-
-        return SliceString(self.socket, position, length).o.string
-
-    def format(
-        self, items: Mapping[str, InputString | InputInteger | InputFloat]
-    ) -> "StringSocket":
-        "Format a given string with the key-value items."
-        from ..nodes.geometry import FormatString
-
-        return FormatString(self.socket, items).o.string
-
-    def replace(self, find: InputString, replace: InputString) -> "StringSocket":
-        "Replace every match of the string with teh replacement string"
-        from ..nodes.geometry import ReplaceString
-
-        return ReplaceString(self.socket, find, replace).o.string
-
-    def length(self) -> "IntegerSocket":
-        "Compute the length of a string and return as `IntegerSocket`."
-        from ..nodes.geometry import StringLength
-
-        return StringLength(self.socket).o.length
-
-    def find(self, search: InputString) -> FindResult:
-        "Find where in a string a pattern occurs. Returns `(first_found, count)`."
-        from ..nodes.geometry import FindInString
-
-        o = FindInString(self.socket, search).o
-        return FindResult(o.first_found, o.count)
-
-    def join(
-        self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
-    ) -> "StringSocket":
-        """Join the input strings with this as the separator."""
-        from ..nodes.geometry import JoinStrings
-
-        return JoinStrings(strings, self.socket).o.string
-
-    def __add__(self, other: "StringSocket" | str) -> StringSocket:
-        from ..nodes.geometry import JoinStrings, String
-
-        if isinstance(other, str):
-            other = String(other).o.string
-
-        return JoinStrings((self.socket, other)).o.string
-
-    def __radd__(self, other: str | "StringSocket") -> StringSocket:
-        from ..nodes.geometry import JoinStrings, String
-
-        if isinstance(other, str):
-            other = String(other).o.string
-
-        return JoinStrings((other, self.socket)).o.string
-
-
-class _MatrixMixin(BaseSocket):
-    """Matrix-specific properties (.translation, .rotation, .scale) via SeparateTransform."""
-
-    socket: NodeSocketMatrix
-
-    @property
-    def translation(self) -> "VectorSocket":
-        from ..nodes.geometry import SeparateTransform
-
-        return SeparateTransform._find_or_create_linked(self.socket).o.translation
-
-    @property
-    def rotation(self) -> "RotationSocket":
-        from ..nodes.geometry import SeparateTransform
-
-        return SeparateTransform._find_or_create_linked(self.socket).o.rotation
-
-    @property
-    def scale(self) -> "VectorSocket":
-        from ..nodes.geometry import SeparateTransform
-
-        return SeparateTransform._find_or_create_linked(self.socket).o.scale
-
-    def determinant(self) -> "FloatSocket":
-        "Compute the determinant of a matrix input and return as a `FloatSocket`"
-        from ..nodes.geometry import MatrixDeterminant
-
-        return MatrixDeterminant._find_or_create_linked(self.socket).o.determinant
-
-    def invert(self) -> "MatrixSocket":
-        "Invert the `MatrixSocet` and return a `MatrixSocket`"
-        from ..nodes.geometry import InvertMatrix
-
-        return InvertMatrix._find_or_create_linked(self.socket).o.matrix
-
-    def transpose(self) -> "MatrixSocket":
-        "Transpose the `MatrixSocket` and return a `MatrixSocket`"
-        from ..nodes.geometry import TransposeMatrix
-
-        return TransposeMatrix._find_or_create_linked(self.socket).o.matrix
-
-    def svd(self) -> SVDResult:
-        "Decompose the matrix via SVD. Returns `(u, s, v)`."
-        from ..nodes.geometry import MatrixSVD
-
-        o = MatrixSVD(self.socket).o
-        return SVDResult(o.u, o.s, o.v)
-
-    def transform_direction(self, direction: InputVector) -> "VectorSocket":
-        """Apply this matrix to *direction*, ignoring translation.
-
-        Use this instead of ``transform()`` when transforming a direction vector
-        (e.g. a normal) where translation must not affect the result.
-        """
-        from ..nodes.geometry import TransformDirection
-
-        return TransformDirection(direction, self.socket).o.direction
+class RotationSocketList(
+    _RotationMixin["FloatSocketList", "VectorSocketList"], _ListMixin[RotationSocket]
+):
+    """List of rotation sockets."""
+
+
+class MatrixSocket(
+    _MatrixMixin[VectorSocket, RotationSocket, FloatSocket, "MatrixSocket"],
+    _ToListMixin["MatrixSocketList"],
+    Socket,
+):
+    """Runtime matrix socket wrapper."""
 
     @property
     def point(self) -> "_AccumulateField[MatrixSocket]":
@@ -1617,59 +2063,70 @@ class _MatrixMixin(BaseSocket):
     def __len__(self) -> int:
         return 16
 
-    if TYPE_CHECKING:
 
-        @overload
-        def __matmul__(self, other: "VectorSocket") -> "VectorSocket": ...
-        @overload
-        def __matmul__(self, other: "MatrixSocket") -> "MatrixSocket": ...
-        def __rmatmul__(self, other: "MatrixSocket") -> "MatrixSocket": ...
-
-
-# ---------------------------------------------------------------------------
-# Registry-target socket classes
-# Used by _get_socket_linker() for runtime socket wrapping.
-# The corresponding SocketVector / SocketColor / etc. in interface.py
-# inherit the same mixins and gain identical behaviour for interface sockets.
-# ---------------------------------------------------------------------------
+class MatrixSocketList(
+    _MatrixMixin[
+        VectorSocketList, RotationSocketList, FloatSocketList, "MatrixSocketList"
+    ],
+    _ListMixin[MatrixSocket],
+):
+    """List of matrix sockets."""
 
 
-class FloatSocket(_FloatMixin, Socket):
-    """Runtime float socket wrapper."""
-
-
-class VectorSocket(_VectorMixin, Socket):
-    """Runtime vector socket wrapper."""
-
-
-class ColorSocket(_ColorMixin, Socket):
-    """Runtime color socket wrapper."""
-
-
-class IntegerSocket(_IntegerMixin, Socket):
-    """Runtime integer socket wrapper."""
-
-
-class BooleanSocket(_BooleanMixin, Socket):
-    """Runtime boolean socket wrapper."""
-
-
-class RotationSocket(_RotationMixin, Socket):
-    """Runtime rotation socket wrapper."""
-
-
-class MatrixSocket(_MatrixMixin, Socket):
-    """Runtime matrix socket wrapper."""
-
-
-class StringSocket(_StringMixin, Socket):
+class StringSocket(
+    _StringMixin["StringSocket", "BooleanSocket", IntegerSocket],
+    _ToListMixin["StringSocketList"],
+    _DefaultValueMixin[str],
+    Socket,
+):
     """Runtime string socket wrapper."""
 
+    def split(self, separator: InputString = "") -> "StringSocketList":
+        from ..nodes.geometry import SplitString
 
-class MenuSocket(Socket):
-    """Runtime menu socket wrapper."""
+        return SplitString(self.socket, separator=separator).o.list
 
+    def join(
+        self, strings: Iterable[str | "StringSocket" | NodeSocketString | BaseNode]
+    ) -> "StringSocket":
+        """Join the input strings with this as the separator."""
+        self._assert_output("join")
+        from ..nodes.geometry import JoinStrings
+
+        return JoinStrings(strings, self.socket).o.string
+
+    def __add__(self, other: "StringSocket" | str) -> "StringSocket":
+        self._assert_output("+")
+        from ..nodes.geometry import JoinStrings, String
+
+        if isinstance(other, str):
+            other = String(other).o.string
+
+        return JoinStrings((self.socket, other)).o.string
+
+    def __radd__(self, other: str | "StringSocket") -> "StringSocket":
+        self._assert_output("+")
+        from ..nodes.geometry import JoinStrings, String
+
+        if isinstance(other, str):
+            other = String(other).o.string
+
+        return JoinStrings((other, self.socket)).o.string
+
+
+class StringSocketList(
+    _StringMixin["StringSocketList", "BooleanSocketList", "IntegerSocketList"],
+    _ListMixin[StringSocket],
+):
+    """List of string sockets."""
+
+
+class _MenuSocketMixin(Socket):
     socket: NodeSocketMenu
+
+
+class MenuSocket(_MenuSocketMixin, _ToListMixin["MenuSocketList"]):
+    """Runtime menu socket wrapper."""
 
     @property
     def default_value(self) -> str:
@@ -1678,6 +2135,10 @@ class MenuSocket(Socket):
     @default_value.setter
     def default_value(self, value: str) -> None:
         self.socket.default_value = value
+
+
+class MenuSocketList(_MenuSocketMixin, _ListMixin[MenuSocket]):
+    """List of menu sockets."""
 
 
 class GeometrySocket(Socket):
@@ -1701,18 +2162,16 @@ class GeometrySocket(Socket):
         ).o.geometry
 
 
-class ObjectSocket(Socket):
-    """Runtime object socket wrapper."""
+class GeometrySocketList(GeometrySocket, _ListMixin[GeometrySocket]):
+    """List of geometry sockets."""
 
+
+class _ObjectMixin(Socket):
     socket: NodeSocketObject
 
-    @property
-    def default_value(self) -> bpy.types.Object | None:
-        return self.socket.default_value
 
-    @default_value.setter
-    def default_value(self, value: bpy.types.Object) -> None:
-        self.socket.default_value = value
+class ObjectSocket(_ObjectMixin, _DefaultValueMixin[bpy.types.Object]):
+    """Runtime object socket wrapper."""
 
     @property
     def _info(self) -> "type[ObjectInfo]":
@@ -1819,46 +2278,42 @@ class ObjectSocket(Socket):
         ).o.geometry
 
 
-class MaterialSocket(Socket):
-    """Runtime material socket wrapper."""
+class ObjectSocketList(_ObjectMixin, _ListMixin[ObjectSocket]):
+    """List of object sockets."""
 
+
+class _MaterialSocketMixin(Socket):
     socket: NodeSocketMaterial
 
-    @property
-    def default_value(self) -> bpy.types.Material | None:
-        return self.socket.default_value
 
-    @default_value.setter
-    def default_value(self, value: bpy.types.Material) -> None:
-        self.socket.default_value = value
+class MaterialSocket(_MaterialSocketMixin, _DefaultValueMixin[bpy.types.Material]):
+    """Runtime material socket wrapper."""
 
 
-class ImageSocket(Socket):
-    """Runtime image socket wrapper."""
+class MaterialSocketList(_MaterialSocketMixin, _ListMixin[MaterialSocket]):
+    """List of material sockets."""
 
+
+class _ImageSocketMixin(Socket):
     socket: NodeSocketImage
 
-    @property
-    def default_value(self) -> bpy.types.Image | None:
-        return self.socket.default_value
 
-    @default_value.setter
-    def default_value(self, value: bpy.types.Image) -> None:
-        self.socket.default_value = value
+class ImageSocket(_ImageSocketMixin, _DefaultValueMixin[bpy.types.Image]):
+    """Runtime image socket wrapper."""
 
 
-class CollectionSocket(Socket):
-    """Runtime collection socket wrapper."""
+class ImageSocketList(_ImageSocketMixin, _ListMixin[ImageSocket]):
+    """List of image sockets."""
 
+
+class _CollectionSocketMixin(Socket):
     socket: NodeSocketCollection
 
-    @property
-    def default_value(self) -> bpy.types.Collection | None:
-        return self.socket.default_value
 
-    @default_value.setter
-    def default_value(self, value: bpy.types.Collection) -> None:
-        self.socket.default_value = value
+class CollectionSocket(
+    _CollectionSocketMixin, _DefaultValueMixin[bpy.types.Collection]
+):
+    """Runtime collection socket wrapper."""
 
     def instances(
         self,
@@ -1893,45 +2348,110 @@ class CollectionSocket(Socket):
         ).o.instances
 
 
-class BundleSocket(Socket):
-    """Runtime bundle socket wrapper."""
+class CollectionSocketList(_CollectionSocketMixin, _ListMixin[CollectionSocket]):
+    """List of collection sockets."""
 
+
+class _BundleSocketMixin(Socket):
     socket: NodeSocketBundle
 
 
-class ClosureSocket(Socket):
-    """Runtime closure socket wrapper."""
+class BundleSocket(_BundleSocketMixin):
+    """Runtime bundle socket wrapper."""
 
+
+class BundleSocketList(_BundleSocketMixin, _ListMixin[BundleSocket]):
+    """List of bundle sockets."""
+
+
+class _ClosureSocketMixin(Socket):
     socket: NodeSocketClosure
 
 
-class ShaderSocket(Socket):
-    """Runtime shader socket wrapper."""
+class ClosureSocket(_ClosureSocketMixin):
+    """Runtime closure socket wrapper."""
 
+
+class ClosureSocketList(_ClosureSocketMixin, _ListMixin[ClosureSocket]):
+    """List of closure sockets."""
+
+
+class _ShaderSocketMixin(Socket):
     socket: NodeSocketShader
 
 
-class FontSocket(Socket):
-    """Runtime font socket wrapper."""
+class ShaderSocket(_ShaderSocketMixin):
+    """Runtime shader socket wrapper."""
 
+
+class ShaderSocketList(_ShaderSocketMixin, _ListMixin[ShaderSocket]):
+    """List of shader sockets."""
+
+
+class _FontSocketMixin(Socket):
     socket: NodeSocketFont
 
 
-_SOCKET_LINKER_REGISTRY["NodeSocketFloat"] = FloatSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketVector"] = VectorSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketColor"] = ColorSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketInt"] = IntegerSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketBool"] = BooleanSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketRotation"] = RotationSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketMatrix"] = MatrixSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketString"] = StringSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketMenu"] = MenuSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketGeometry"] = GeometrySocket
-_SOCKET_LINKER_REGISTRY["NodeSocketObject"] = ObjectSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketMaterial"] = MaterialSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketImage"] = ImageSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketFont"] = FontSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketCollection"] = CollectionSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketBundle"] = BundleSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketClosure"] = ClosureSocket
-_SOCKET_LINKER_REGISTRY["NodeSocketShader"] = ShaderSocket
+class FontSocket(_FontSocketMixin):
+    """Runtime font socket wrapper."""
+
+
+class FontSocketList(_FontSocketMixin, _ListMixin[FontSocket]):
+    """List of font sockets."""
+
+
+class _SoundSocketMixin(Socket):
+    socket: NodeSocketSound
+
+
+class SoundSocket(_SoundSocketMixin):
+    """Runtime sound socket wrapper."""
+
+
+class SoundSocketList(_SoundSocketMixin, _ListMixin[SoundSocket]):
+    """List of sound sockets."""
+
+
+_SOCKET_REGISTRY["NodeSocketFloat"] = FloatSocket
+_SOCKET_REGISTRY["NodeSocketVector"] = VectorSocket
+_SOCKET_REGISTRY["NodeSocketColor"] = ColorSocket
+_SOCKET_REGISTRY["NodeSocketInt"] = IntegerSocket
+_SOCKET_REGISTRY["NodeSocketIntVector3D"] = IntegerVectorSocket
+_SOCKET_REGISTRY["NodeSocketBool"] = BooleanSocket
+_SOCKET_REGISTRY["NodeSocketRotation"] = RotationSocket
+_SOCKET_REGISTRY["NodeSocketMatrix"] = MatrixSocket
+_SOCKET_REGISTRY["NodeSocketString"] = StringSocket
+_SOCKET_REGISTRY["NodeSocketMenu"] = MenuSocket
+_SOCKET_REGISTRY["NodeSocketGeometry"] = GeometrySocket
+_SOCKET_REGISTRY["NodeSocketObject"] = ObjectSocket
+_SOCKET_REGISTRY["NodeSocketMaterial"] = MaterialSocket
+_SOCKET_REGISTRY["NodeSocketImage"] = ImageSocket
+_SOCKET_REGISTRY["NodeSocketSound"] = SoundSocket
+_SOCKET_REGISTRY["NodeSocketFont"] = FontSocket
+_SOCKET_REGISTRY["NodeSocketCollection"] = CollectionSocket
+_SOCKET_REGISTRY["NodeSocketBundle"] = BundleSocket
+_SOCKET_REGISTRY["NodeSocketClosure"] = ClosureSocket
+_SOCKET_REGISTRY["NodeSocketShader"] = ShaderSocket
+
+_SOCKET_LIST_REGISTRY["NodeSocketFloat"] = FloatSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketVector"] = VectorSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketColor"] = ColorSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketInt"] = IntegerSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketBool"] = BooleanSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketRotation"] = RotationSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketMatrix"] = MatrixSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketString"] = StringSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketMenu"] = MenuSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketGeometry"] = GeometrySocketList
+_SOCKET_LIST_REGISTRY["NodeSocketObject"] = ObjectSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketImage"] = ImageSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketCollection"] = CollectionSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketBundle"] = BundleSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketShader"] = ShaderSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketFont"] = FontSocketList
+_SOCKET_LIST_REGISTRY["NodeSocketSound"] = SoundSocketList
+
+_SOCKET_GRID_REGISTRY["NodeSocketFloat"] = FloatSocketGrid
+_SOCKET_GRID_REGISTRY["NodeSocketVector"] = VectorSocketGrid
+_SOCKET_GRID_REGISTRY["NodeSocketInt"] = IntegerSocketGrid
+_SOCKET_GRID_REGISTRY["NodeSocketBool"] = BooleanSocketGrid

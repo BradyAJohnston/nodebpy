@@ -4,24 +4,24 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
+from ...builder import BaseNode, SocketAccessor
+
+from ...types import (
+    InputBoolean,
+    InputColor,
+    InputFloat,
+    InputInteger,
+    InputMenu,
+    InputVector,
+)
+
+from ...builder.socket import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
     IntegerSocket,
     MenuSocket,
     VectorSocket,
-)
-
-from ...types import (
-    InputBoolean,
-    InputColor,
-    InputInteger,
-    InputMenu,
-    InputFloat,
-    InputVector,
 )
 
 
@@ -1847,7 +1847,7 @@ class MaskToSDF(BaseNode):
     -------
     o.sdf : FloatSocket
         SDF
-    o.nearest_pixel : VectorSocket
+    o.nearest_pixel : IntegerSocket
         Nearest Pixel
     """
 
@@ -1861,7 +1861,7 @@ class MaskToSDF(BaseNode):
     class _Outputs(SocketAccessor):
         sdf: FloatSocket
         """SDF"""
-        nearest_pixel: VectorSocket
+        nearest_pixel: IntegerSocket
         """Nearest Pixel"""
 
     if TYPE_CHECKING:

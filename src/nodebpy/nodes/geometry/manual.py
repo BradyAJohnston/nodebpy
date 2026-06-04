@@ -1,6 +1,14 @@
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Generic, Iterable, Literal, TypeVar, cast
-
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generic,
+    Iterable,
+    Literal,
+    TypeVar,
+    cast,
+    get_args,
+)
 import bpy
 import bpy.types
 from bpy.types import (
@@ -12,58 +20,75 @@ from bpy.types import (
     NodeSocket,
     NodeSocketString,
 )
-
-from nodebpy.builder._registry import _get_socket_linker
-from nodebpy.builder.socket import BaseSocket
-
+from mathutils import Euler
 from ...builder import (
     BaseNode,
     BooleanSocket,
+    BooleanSocketGrid,
+    BooleanSocketList,
     BundleSocket,
     ClosureSocket,
     CollectionSocket,
     ColorSocket,
+    ColorSocketList,
     DynamicInputsMixin,
     FloatSocket,
+    FloatSocketGrid,
+    FloatSocketList,
     FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
+    IntegerSocketGrid,
+    IntegerSocketList,
+    IntegerVectorSocket,
     MaterialSocket,
     MatrixSocket,
+    MatrixSocketList,
     MenuSocket,
+    MenuSocketList,
     ObjectSocket,
     RotationSocket,
+    RotationSocketList,
     SocketAccessor,
+    SoundSocket,
     StringSocket,
+    StringSocketList,
     TreeBuilder,
     VectorSocket,
+    VectorSocketGrid,
+    VectorSocketList,
 )
-from ...builder import (
-    Socket as SocketLinker,
-)
+from ...builder import Socket as SocketLinker
+from ...builder._registry import _wrap_socket
+from ...builder.socket import BaseSocket
 from ...types import (
     SOCKET_TYPES,
     InputAny,
     InputBoolean,
+    InputBooleanGrid,
     InputBundle,
     InputClosure,
     InputCollection,
     InputColor,
     InputFloat,
+    InputFloatGrid,
     InputFont,
     InputGeometry,
     InputGrid,
     InputImage,
     InputInteger,
+    InputIntegerGrid,
     InputLinkable,
     InputMaterial,
     InputMatrix,
     InputMenu,
     InputObject,
     InputRotation,
+    InputSound,
     InputString,
     InputVector,
+    InputVectorGrid,
     _AccumulateFieldDataTypes,
     _AttributeDataTypes,
     _AttributeDomains,
@@ -116,6 +141,7 @@ __all__ = (
     "MeshBoolean",
     "CaptureAttribute",
     "FieldToGrid",
+    "FieldToList",
     "JoinGeometry",
     "SDFGridBoolean",
     "Bake",
@@ -168,6 +194,7 @@ _SwitchDataTypes = Literal[
     "BUNDLE",
     "CLOSURE",
     "FONT",
+    "SOUND",
 ]
 
 
@@ -403,6 +430,16 @@ class Switch(BaseNode, Generic[_T]):
     ) -> "Switch[FontSocket]":
         """Create Switch with operation 'Font'."""
         return Switch(input_type="FONT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def sound(
+        cls,
+        switch: InputBoolean = False,
+        false: InputSound = None,
+        true: InputSound = None,
+    ) -> "Switch[SoundSocket]":
+        """Create Switch with operation 'Sound'."""
+        return Switch(input_type="SOUND", switch=switch, false=false, true=true)
 
     @property
     def input_type(
@@ -1206,6 +1243,104 @@ class Float(Value):
     """Input numerical values to other nodes in the tree. A 'type-hinted' wrapper of the Value node."""
 
 
+class Menu(BaseNode):
+    """
+    Provide a menu value that can be connected to other nodes in the tree
+
+    Menu value can't be set when created as possible options aren't known until it is linked to a menu input.
+
+    Outputs
+    -------
+    o.menu : MenuSocket
+        Menu
+    """
+
+    _bl_idname = "FunctionNodeInputMenu"
+    node: bpy.types.FunctionNodeInputMenu
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        menu: MenuSocket
+        """Menu"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self):
+        super().__init__()
+        key_args = {}
+        self._establish_links(**key_args)
+
+    @property
+    def value(self) -> str:
+        return self.node.value
+
+    @value.setter
+    def value(self, value: str):
+        self.node.value = value
+
+
+class IntegerVector(BaseNode):
+    """
+    Provide an integer vector value that can be connected to other nodes in the tree
+
+    Outputs
+    -------
+    o.vector : IntegerSocket
+        Vector
+    """
+
+    _bl_idname = "FunctionNodeInputIntVector"
+    node: bpy.types.FunctionNodeInputIntVector
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        vector: IntegerVectorSocket
+        """Vector"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        vector: list[int] = [0, 0, 0],
+        vector_dimensions: Literal[2, 3] = 3,
+    ):
+        super().__init__()
+        key_args = {}
+        self.vector = vector
+        self.vector_dimensions = vector_dimensions
+        self._establish_links(**key_args)
+
+    @property
+    def vector(self) -> list[int]:
+        return list(self.node.vector)
+
+    @vector.setter
+    def vector(self, value: list[int]):
+        self.node.vector = value
+
+    @property
+    def vector_dimensions(self) -> int:
+        return self.node.vector_dimensions
+
+    @vector_dimensions.setter
+    def vector_dimensions(self, value: Literal[2, 3]):
+        self.node.vector_dimensions = value
+
+
 ### === ###
 
 
@@ -1349,16 +1484,20 @@ class MeshBoolean(BaseNode):
         *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
-        key_args = {}
         if solver == "EXACT":
-            key_args["self_intersection"] = self_intersection
-            key_args["hole_tolerant"] = hole_tolerant
-        return cls(
-            mesh_2=items,
-            **key_args,
-            solver=solver,
-            operation="INTERSECT",
-        )
+            return cls(
+                mesh_2=items,
+                self_intersection=self_intersection,
+                hole_tolerant=hole_tolerant,
+                solver=solver,
+                operation="INTERSECT",
+            )
+        else:
+            return cls(
+                mesh_2=items,
+                solver=solver,
+                operation="INTERSECT",
+            )
 
     @classmethod
     def union(
@@ -1369,16 +1508,20 @@ class MeshBoolean(BaseNode):
         *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
-        key_args = {}
         if solver == "EXACT":
-            key_args["self_intersection"] = self_intersection
-            key_args["hole_tolerant"] = hole_tolerant
-        return cls(
-            mesh_2=items,
-            **key_args,
-            solver=solver,
-            operation="UNION",
-        )
+            return cls(
+                mesh_2=items,
+                self_intersection=self_intersection,
+                hole_tolerant=hole_tolerant,
+                solver=solver,
+                operation="UNION",
+            )
+        else:
+            return cls(
+                mesh_2=items,
+                solver=solver,
+                operation="UNION",
+            )
 
     @classmethod
     def difference(
@@ -1390,17 +1533,22 @@ class MeshBoolean(BaseNode):
         *,
         solver: Literal["EXACT", "FLOAT", "MANIFOLD"] = "FLOAT",
     ) -> "MeshBoolean":
-        key_args = {}
         if solver == "EXACT":
-            key_args["self_intersection"] = self_intersection
-            key_args["hole_tolerant"] = hole_tolerant
-        return cls(
-            mesh_1=mesh_1,
-            mesh_2=items,
-            solver=solver,
-            operation="DIFFERENCE",
-            **key_args,
-        )
+            return cls(
+                mesh_1=mesh_1,
+                mesh_2=items,
+                self_intersection=self_intersection,
+                hole_tolerant=hole_tolerant,
+                solver=solver,
+                operation="DIFFERENCE",
+            )
+        else:
+            return cls(
+                mesh_1=mesh_1,
+                mesh_2=items,
+                solver=solver,
+                operation="DIFFERENCE",
+            )
 
     @property
     def operation(self) -> Literal["INTERSECT", "UNION", "DIFFERENCE"]:
@@ -2071,6 +2219,139 @@ class CaptureAttribute(BaseNode, DynamicInputsMixin):
         self.node.domain = value
 
 
+class FieldToList(DynamicInputsMixin, BaseNode):
+    """
+    Create a list of values
+
+    Parameters
+    ----------
+    count : InputInteger
+        Count
+
+    Inputs
+    ------
+    i.count : IntegerSocket
+        Count
+    """
+
+    _bl_idname = "GeometryNodeFieldToList"
+    node: bpy.types.GeometryNodeFieldToList
+    _socket_data_types = list(get_args(SOCKET_TYPES))
+
+    class _Inputs(SocketAccessor):
+        count: IntegerSocket
+        """Count"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, count: InputInteger = 1, fields: dict[str, InputLinkable] = {}):
+        super().__init__()
+        key_args = {"Count": count}
+
+        for name, field in fields.items():
+            assert hasattr(field, "_default_output_socket")
+            self._link(field._default_output_socket, self.node.inputs[-1])  # ty: ignore[invalid-argument-type]
+            self.node.list_items[self.node.inputs[-2].name].name = name
+
+        self._establish_links(**key_args)
+
+    def _add_socket(
+        self, name: str, type: SOCKET_TYPES, default_value: Any = None
+    ) -> NodeSocket:  # ty: ignore
+        pass
+
+    def capture(self, fields: dict[str, InputLinkable]) -> list[SocketLinker]:
+        outputs = {}
+        for name, field in fields.items():
+            assert hasattr(field, "_default_output_socket")
+            self._link(field._default_output_socket, self.node.inputs[-1])  # ty: ignore[invalid-argument-type]
+            self.node.list_items[self.node.inputs[-2].name].name = name
+            outputs[name] = self.node.outputs[name]
+
+        return [_wrap_socket(x) for x in outputs.values()]
+
+    def _new_item(
+        self,
+        type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+        ],
+        name: str | None = None,
+        default: Any | None = None,
+    ) -> bpy.types.NodeSocket:
+        item = self.node.list_items.new(type, name if name else type)
+        if name is not None:
+            item.name = name
+
+        input_socket = self.i[item.name]
+        if isinstance(default, (BaseNode, SocketLinker)):
+            self._establish_links(**{item.name: default})
+        else:
+            input_socket.default_value = default  # ty: ignore[invalid-assignment]
+
+        return self.o[item.name].socket
+
+    def float(
+        self, input: InputFloat = 0.0, name: str | None = None
+    ) -> FloatSocketList:
+        return FloatSocketList(self._new_item("FLOAT", name, input))
+
+    def integer(
+        self, input: InputInteger = 0, name: str | None = None
+    ) -> IntegerSocketList:
+        return IntegerSocketList(self._new_item("INT", name, input))
+
+    def boolean(
+        self, input: InputBoolean = False, name: str | None = None
+    ) -> BooleanSocketList:
+        return BooleanSocketList(self._new_item("BOOLEAN", name, input))
+
+    def vector(
+        self, input: InputVector = (0, 0, 0), name: str | None = None
+    ) -> VectorSocketList:
+        return VectorSocketList(self._new_item("VECTOR", name, input))
+
+    def color(
+        self, input: InputColor = (0, 0, 0, 1), name: str | None = None
+    ) -> ColorSocketList:
+        return ColorSocketList(self._new_item("RGBA", name, input))
+
+    def rotation(
+        self, input: InputRotation = Euler((0, 0, 0)), name: str | None = None
+    ) -> RotationSocketList:
+        return RotationSocketList(self._new_item("ROTATION", name, input))
+
+    def matrix(
+        self, input: InputMatrix = None, name: str | None = None
+    ) -> MatrixSocketList:
+        return MatrixSocketList(self._new_item("MATRIX", name, input))
+
+    def string(
+        self, input: InputString = "", name: str | None = None
+    ) -> StringSocketList:
+        return StringSocketList(self._new_item("STRING", name, input))
+
+    def menu(
+        self, input: InputString = None, name: str | None = None
+    ) -> MenuSocketList:
+        return MenuSocketList(self._new_item("MENU", name, input))
+
+
 class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     """Create new grids by evaluating new values on an existing volume grid topology
 
@@ -2118,7 +2399,7 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
         linkable = {k: v for k, v in items.items() if not _is_default_value(v)}
         defaults = {k: v for k, v in items.items() if _is_default_value(v)}
 
-        key_args.update(self._add_inputs(**linkable))
+        key_args.update(self._add_inputs(**linkable))  # ty: ignore[no-matching-overload]
         for name, value in defaults.items():
             self._add_socket(name=name, default_value=value)  # type: ignore
 
@@ -2138,30 +2419,34 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     def capture(self, items: dict[str, InputAny]) -> list[SocketLinker]:
         outputs = {name: self.node.outputs[name] for name in self._add_inputs(**items)}
 
-        return [_get_socket_linker(x) for x in outputs.values()]
+        return [_wrap_socket(x) for x in outputs.values()]
 
     @classmethod
     def float(
-        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
-    ) -> "FieldToGrid[FloatSocket]":
+        cls, topology: InputFloatGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[FloatSocketGrid]":
+        """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="FLOAT")
 
     @classmethod
     def integer(
-        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
-    ) -> "FieldToGrid[IntegerSocket]":
+        cls, topology: InputIntegerGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[IntegerSocketGrid]":
+        """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="INT")
 
     @classmethod
     def vector(
-        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
-    ) -> "FieldToGrid[VectorSocket]":
+        cls, topology: InputVectorGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[VectorSocketGrid]":
+        """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="VECTOR")
 
     @classmethod
     def boolean(
-        cls, topology: InputGrid = None, items: dict[str, InputAny] = {}
-    ) -> "FieldToGrid[BooleanSocket]":
+        cls, topology: InputBooleanGrid = None, items: dict[str, InputAny] = {}
+    ) -> "FieldToGrid[BooleanSocketGrid]":
+        """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="BOOLEAN")
 
     @property
@@ -2176,6 +2461,30 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
         value: _GridDataTypes,
     ):
         self.node.data_type = value
+
+    def _new_item(self, type: _GridDataTypes, name: str | None = None) -> NodeSocket:
+        item = self.node.grid_items.new(socket_type=type, name=name if name else type)
+        return self.o[item.name].socket
+
+    def capture_float(
+        self, field: InputFloat = None, name: str | None = None
+    ) -> FloatSocketGrid:
+        return FloatSocketGrid(self._new_item(type="FLOAT", name=name))
+
+    def capture_boolean(
+        self, field: InputBoolean = None, name: str | None = None
+    ) -> BooleanSocketGrid:
+        return BooleanSocketGrid(self._new_item(type="BOOLEAN", name=name))
+
+    def capture_vector(
+        self, field: InputVector = None, name: str | None = None
+    ) -> VectorSocketGrid:
+        return VectorSocketGrid(self._new_item(type="VECTOR", name=name))
+
+    def capture_integer(
+        self, field: InputInteger = None, name: str | None = None
+    ) -> IntegerSocketGrid:
+        return IntegerSocketGrid(self._new_item(type="INT", name=name))
 
 
 class SDFGridBoolean(BaseNode):
@@ -2948,35 +3257,35 @@ class Compare(BaseNode, Generic[_T]):
         def less_than(
             a: InputInteger = 0, b: InputInteger = 0
         ) -> "Compare[IntegerSocket]":
-            return Compare(operation="LESS_THAN", data_type="INT", A_INT=a, B_INT=b)
+            return Compare(operation="LESS_THAN", data_type="INT", A=a, B=b)
 
         @staticmethod
         def less_equal(
             a: InputInteger = 0, b: InputInteger = 0
         ) -> "Compare[IntegerSocket]":
-            return Compare(operation="LESS_EQUAL", data_type="INT", A_INT=a, B_INT=b)
+            return Compare(operation="LESS_EQUAL", data_type="INT", A=a, B=b)
 
         @staticmethod
         def greater_than(
             a: InputInteger = 0, b: InputInteger = 0
         ) -> "Compare[IntegerSocket]":
-            return Compare(operation="GREATER_THAN", data_type="INT", A_INT=a, B_INT=b)
+            return Compare(operation="GREATER_THAN", data_type="INT", A=a, B=b)
 
         @staticmethod
         def greater_equal(
             a: InputInteger = 0, b: InputInteger = 0
         ) -> "Compare[IntegerSocket]":
-            return Compare(operation="GREATER_EQUAL", data_type="INT", A_INT=a, B_INT=b)
+            return Compare(operation="GREATER_EQUAL", data_type="INT", A=a, B=b)
 
         @staticmethod
         def equal(a: InputInteger = 0, b: InputInteger = 0) -> "Compare[IntegerSocket]":
-            return Compare(operation="EQUAL", data_type="INT", A_INT=a, B_INT=b)
+            return Compare(operation="EQUAL", data_type="INT", A=a, B=b)
 
         @staticmethod
         def not_equal(
             a: InputInteger = 0, b: InputInteger = 0
         ) -> "Compare[IntegerSocket]":
-            return Compare(operation="NOT_EQUAL", data_type="INT", A_INT=a, B_INT=b)
+            return Compare(operation="NOT_EQUAL", data_type="INT", A=a, B=b)
 
     class _VectorFactory:
         @staticmethod
@@ -2993,8 +3302,8 @@ class Compare(BaseNode, Generic[_T]):
                 "operation": operation,
                 "data_type": "VECTOR",
                 "mode": mode,
-                "A_VEC3": a,
-                "B_VEC3": b,
+                "A": a,
+                "B": b,
             }
             if operation in ("EQUAL", "NOT_EQUAL") and epsilon is not None:
                 kwargs["Epsilon"] = epsilon
@@ -3085,20 +3394,20 @@ class Compare(BaseNode, Generic[_T]):
         def brighter(
             a: InputColor = None, b: InputColor = None
         ) -> "Compare[ColorSocket]":
-            return Compare(operation="BRIGHTER", data_type="RGBA", A_COL=a, B_COL=b)
+            return Compare(operation="BRIGHTER", data_type="RGBA", A=a, B=b)
 
         @staticmethod
         def darker(
             a: InputColor = None, b: InputColor = None
         ) -> "Compare[ColorSocket]":
-            return Compare(operation="DARKER", data_type="RGBA", A_COL=a, B_COL=b)
+            return Compare(operation="DARKER", data_type="RGBA", A=a, B=b)
 
         @staticmethod
         def equal(
             a: InputColor = None, b: InputColor = None, epsilon: InputFloat = 0.0001
         ) -> "Compare[ColorSocket]":
             return Compare(
-                operation="EQUAL", data_type="RGBA", A_COL=a, B_COL=b, Epsilon=epsilon
+                operation="EQUAL", data_type="RGBA", A=a, B=b, Epsilon=epsilon
             )
 
         @staticmethod
@@ -3108,21 +3417,21 @@ class Compare(BaseNode, Generic[_T]):
             return Compare(
                 operation="NOT_EQUAL",
                 data_type="RGBA",
-                A_COL=a,
-                B_COL=b,
+                A=a,
+                B=b,
                 Epsilon=epsilon,
             )
 
     class _StringFactory:
         @staticmethod
         def equal(a: InputString = "", b: InputString = "") -> "Compare[StringSocket]":
-            return Compare(operation="EQUAL", data_type="STRING", A_STR=a, B_STR=b)
+            return Compare(operation="EQUAL", data_type="STRING", A=a, B=b)
 
         @staticmethod
         def not_equal(
             a: InputString = "", b: InputString = ""
         ) -> "Compare[StringSocket]":
-            return Compare(operation="NOT_EQUAL", data_type="STRING", A_STR=a, B_STR=b)
+            return Compare(operation="NOT_EQUAL", data_type="STRING", A=a, B=b)
 
     float = _FloatFactory()
     integer = _IntegerFactory()
@@ -3132,17 +3441,8 @@ class Compare(BaseNode, Generic[_T]):
 
     class _Inputs(SocketAccessor, Generic[_S]):
         _bpy_node: "bpy.types.FunctionNodeCompare"
-
-        @property
-        def a(self) -> _S:
-            """Input socket: A"""
-            return self._get("A{}".format(Compare._suffix(self._bpy_node.data_type)))  # type: ignore
-
-        @property
-        def b(self) -> _S:
-            """Input socket: B"""
-            return self._get("B{}".format(Compare._suffix(self._bpy_node.data_type)))  # type: ignore
-
+        a: _S
+        b: _S
         c: FloatSocket
         epsilon: FloatSocket
         angle: FloatSocket
@@ -3177,17 +3477,6 @@ class Compare(BaseNode, Generic[_T]):
         if self.data_type == "VECTOR":
             self.mode = kwargs.pop("mode")
         self._establish_links(**kwargs)
-
-    @staticmethod
-    def _suffix(data_type: str) -> str:
-        suffix_lookup = {
-            "FLOAT": "",
-            "INT": "_INT",
-            "VECTOR": "_VEC3",
-            "RGBA": "_COL",
-            "STRING": "_STR",
-        }
-        return suffix_lookup[data_type]
 
     @property
     def operation(
@@ -3227,6 +3516,296 @@ class Compare(BaseNode, Generic[_T]):
         value: _CompareVectorModes,
     ):
         self.node.mode = value
+
+
+class Mix(BaseNode):
+    """
+    Mix values by a factor
+
+    Parameters
+    ----------
+    factor_float : InputFloat
+        Factor
+    factor_vector : InputVector
+        Factor
+    a_float : InputFloat
+        A
+    b_float : InputFloat
+        B
+    a_vector : InputVector
+        A
+    b_vector : InputVector
+        B
+    a_color : InputColor
+        A
+    b_color : InputColor
+        B
+    a_rotation : InputRotation
+        A
+    b_rotation : InputRotation
+        B
+
+    Inputs
+    ------
+    i.factor_float : FloatSocket
+        Factor
+    i.factor_vector : VectorSocket
+        Factor
+    i.a_float : FloatSocket
+        A
+    i.b_float : FloatSocket
+        B
+    i.a_vector : VectorSocket
+        A
+    i.b_vector : VectorSocket
+        B
+    i.a_color : ColorSocket
+        A
+    i.b_color : ColorSocket
+        B
+    i.a_rotation : RotationSocket
+        A
+    i.b_rotation : RotationSocket
+        B
+
+    Outputs
+    -------
+    o.result_float : FloatSocket
+        Result
+    o.result_vector : VectorSocket
+        Result
+    o.result_color : ColorSocket
+        Result
+    o.result_rotation : RotationSocket
+        Result
+    """
+
+    _bl_idname = "ShaderNodeMix"
+    node: bpy.types.ShaderNodeMix
+
+    class _Inputs(SocketAccessor):
+        factor_float: FloatSocket
+        """Factor"""
+        factor_vector: VectorSocket
+        """Factor"""
+        a_float: FloatSocket
+        """A"""
+        b_float: FloatSocket
+        """B"""
+        a_vector: VectorSocket
+        """A"""
+        b_vector: VectorSocket
+        """B"""
+        a_color: ColorSocket
+        """A"""
+        b_color: ColorSocket
+        """B"""
+        a_rotation: RotationSocket
+        """A"""
+        b_rotation: RotationSocket
+        """B"""
+
+    class _Outputs(SocketAccessor):
+        result_float: FloatSocket
+        """Result"""
+        result_vector: VectorSocket
+        """Result"""
+        result_color: ColorSocket
+        """Result"""
+        result_rotation: RotationSocket
+        """Result"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        factor_float: InputFloat = 1.0,
+        factor_vector: InputVector = None,
+        a_float: InputFloat = 0.0,
+        b_float: InputFloat = 0.0,
+        a_vector: InputVector = None,
+        b_vector: InputVector = None,
+        a_color: InputColor = None,
+        b_color: InputColor = None,
+        a_rotation: InputRotation = None,
+        b_rotation: InputRotation = None,
+        *,
+        data_type: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"] = "FLOAT",
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Factor_Float": factor_float,
+            "Factor_Vector": factor_vector,
+            "A_Float": a_float,
+            "B_Float": b_float,
+            "A_Vector": a_vector,
+            "B_Vector": b_vector,
+            "A_Color": a_color,
+            "B_Color": b_color,
+            "A_Rotation": a_rotation,
+            "B_Rotation": b_rotation,
+        }
+        self.data_type = data_type
+        self.factor_mode = factor_mode
+        self.blend_type = blend_type
+        self.clamp_factor = clamp_factor
+        self.clamp_result = clamp_result
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, factor: InputFloat = 1.0, a: InputFloat = 0.0, b: InputFloat = 0.0
+    ) -> "Mix":
+        """Create Mix with operation 'Float'."""
+        return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
+
+    @classmethod
+    def vector(
+        cls, factor: InputFloat = 1.0, a: InputVector = None, b: InputVector = None
+    ) -> "Mix":
+        """Create Mix with operation 'Vector'."""
+        return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
+
+    @classmethod
+    def color(
+        cls,
+        factor: InputFloat = 1.0,
+        a_color: InputColor = None,
+        b_color: InputColor = None,
+    ) -> "Mix":
+        """Create Mix with operation 'Color'."""
+        return cls(
+            data_type="RGBA", factor_float=factor, a_color=a_color, b_color=b_color
+        )
+
+    @classmethod
+    def rotation(
+        cls,
+        factor: InputFloat = 1.0,
+        a_rotation: InputRotation = None,
+        b_rotation: InputRotation = None,
+    ) -> "Mix":
+        """Create Mix with operation 'Rotation'."""
+        return cls(
+            data_type="ROTATION",
+            factor_float=factor,
+            a_rotation=a_rotation,
+            b_rotation=b_rotation,
+        )
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]):
+        self.node.data_type = value
+
+    @property
+    def factor_mode(self) -> Literal["UNIFORM", "NON_UNIFORM"]:
+        return self.node.factor_mode
+
+    @factor_mode.setter
+    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]):
+        self.node.factor_mode = value
+
+    @property
+    def blend_type(
+        self,
+    ) -> Literal[
+        "MIX",
+        "DARKEN",
+        "MULTIPLY",
+        "BURN",
+        "LIGHTEN",
+        "SCREEN",
+        "DODGE",
+        "ADD",
+        "OVERLAY",
+        "SOFT_LIGHT",
+        "LINEAR_LIGHT",
+        "DIFFERENCE",
+        "EXCLUSION",
+        "SUBTRACT",
+        "DIVIDE",
+        "HUE",
+        "SATURATION",
+        "COLOR",
+        "VALUE",
+    ]:
+        return self.node.blend_type
+
+    @blend_type.setter
+    def blend_type(
+        self,
+        value: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ],
+    ):
+        self.node.blend_type = value
+
+    @property
+    def clamp_factor(self) -> bool:
+        return self.node.clamp_factor
+
+    @clamp_factor.setter
+    def clamp_factor(self, value: bool):
+        self.node.clamp_factor = value
+
+    @property
+    def clamp_result(self) -> bool:
+        return self.node.clamp_result
+
+    @clamp_result.setter
+    def clamp_result(self, value: bool):
+        self.node.clamp_result = value
 
 
 class AttributeStatistic(BaseNode, Generic[_T]):
