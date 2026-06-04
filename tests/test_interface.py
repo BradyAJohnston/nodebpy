@@ -16,10 +16,12 @@ from nodebpy.builder import (
     RotationSocket,
     Socket,
     StringSocket,
-    VectorSocket, VectorSocketList,
+    VectorSocket,
+    VectorSocketList,
+    FloatSocketList,
 )
 from nodebpy.nodes.compositor import CombineXYZ
-from nodebpy.nodes.geometry import ObjectInfo, SortList
+from nodebpy.nodes.geometry import ObjectInfo, SortList, GetListItem
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -1307,9 +1309,13 @@ def test_vector_socket_new_methods():
         assert node.i.list.links[0].from_node == ftl.node
         assert not node.i.group_id.links
         assert not node.i.selection.links
-        assert node.i.sort_weight.links[0].from_node.bl_idname == g.VectorMath._bl_idname
+        assert (
+            node.i.sort_weight.links[0].from_node.bl_idname == g.VectorMath._bl_idname
+        )
 
-
+        list = ftl.float(1.0)
+        assert isinstance(list, FloatSocketList)
+        assert list.node.bl_idname == g.FieldToList._bl_idname
 
 
 def test_vector_socket_map_range():
@@ -1551,3 +1557,13 @@ def test_object_methods():
         assert scale.builder_node.transform_space == "RELATIVE"
         loc.builder_node.transform_space = "RELATIVE"
         assert loc.builder_node.transform_space == "RELATIVE"
+
+
+def test_list_slicing(snapshot):
+    with g.tree() as tree:
+        list = g.FieldToList(10).integer(g.Index())
+        sliced = list[::2]
+
+        assert sliced.node.bl_idname == GetListItem._bl_idname
+
+    assert snapshot == tree._repr_markdown_()

@@ -1209,6 +1209,11 @@ class _IntegerMixin(BaseSocket, Generic[_FloatResult]):
         self._assert_output("modulo")
         return self._imath.modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
 
+    def abs(self) -> Self:
+        """Return the absolute value of the IntegerSocket."""
+        self._assert_output("abs")
+        return self._imath.absolute(self.socket).o.value  # ty: ignore[invalid-return-type]
+
     def sign(self) -> Self:
         "Return the sign of the IntegerSocket, either `-1`, `0`, or `1`."
         self._assert_output("sign")
@@ -1532,11 +1537,26 @@ class _ListMixin(Socket, Generic[_T]):
 
     def sort(
         self,
-        sort_weight: InputFloat | InputFloatList = None,
+        sort_weight: InputFloat | InputFloatList,
         group_id: InputInteger | IntegerSocket = None,
         selection: InputBoolean | BooleanSocketList = None,
     ) -> Self:
-        """Sort the list based on the weights."""
+        """Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided.
+
+        Parameters
+        ----------
+        sort_weight : InputFloat | InputFloatList
+            The weight to sort by.
+        group_id : InputInteger | IntegerSocket, optional
+            The group ID to sort within. Groups are sorted independently and groups returned in order of Group ID.
+        selection : InputBoolean | BooleanSocketList, optional
+            The selection to sort by. If False then an element is not included in the sort and remains in its original position.
+
+        Returns
+        -------
+        Self
+            The sorted list.
+        """
         from ..nodes.geometry import SortList
 
         return SortList(
@@ -1547,6 +1567,16 @@ class _ListMixin(Socket, Generic[_T]):
             socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
         ).o.list  # ty: ignore[invalid-return-type]
 
+    def reverse(self) -> Self:
+        """Reverse the list. Currently uses a SortList node with negative Index to reverse the list."""
+        from ..nodes.geometry import SortList, Index
+
+        return SortList(
+            list=self.socket,
+            sort_weight=Index().o.index.negate(),
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.list  # ty: ignore[invalid-return-type]
+
     # TODO: support slicing once an appropriate node is available
     # @overload
     # def __getitem__(self, key: slice) -> Self: ...
@@ -1554,8 +1584,17 @@ class _ListMixin(Socket, Generic[_T]):
     def __getitem__(self, key: int) -> _T: ...
     @overload
     def __getitem__(self, key: IntegerSocketList) -> Self: ...
-    def __getitem__(self, key: int | IntegerSocketList) -> _T:
+    @overload
+    def __getitem__(self, key: slice) -> Self: ...
+    def __getitem__(self, key: int | IntegerSocketList | slice) -> _T:
         from ..nodes.geometry.converter import GetListItem
+        from ..nodes.geometry.groups import SliceToIndices
+
+        if isinstance(key, slice):
+            start = key.start if key.start is not None else 0
+            stop = key.stop if key.stop is not None else self.list_length()
+            step = key.step if key.step is not None else 1
+            key = SliceToIndices(start=start, stop=stop, step=step).o.indices
 
         return GetListItem(
             self.socket,
@@ -1570,6 +1609,9 @@ class _ListMixin(Socket, Generic[_T]):
             self.socket,
             data_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
         ).o.length
+
+
+s = slice(1, 3)
 
 
 class _DefaultValueMixin(BaseSocket, Generic[_T]):

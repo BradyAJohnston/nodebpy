@@ -13,6 +13,23 @@
   ```
   '''
 # ---
+# name: test_list_slicing
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Index"):::input-node
+      N1("Field to List"):::converter-node
+      N2("List Length"):::converter-node
+      N3("Slice to Indices"):::converter-node
+      N4("Get List Item"):::converter-node
+      N0 -->|"Index->INT"| N1
+      N1 -->|"INT->List"| N2
+      N2 -->|"Length->Stop"| N3
+      N1 -->|"INT->List"| N4
+      N3 -->|"Indices->Index"| N4
+  ```
+  '''
+# ---
 # name: test_socket_builder_reference
   '''
   ```{mermaid}

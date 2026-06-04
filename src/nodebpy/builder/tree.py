@@ -243,10 +243,12 @@ class SocketContext:
     def vector(
         self,
         name: str = "Vector",
-        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
+        default_value: tuple[float, float]  # ty: ignore[invalid-type-form]
+        | tuple[float, float, float]  # ty: ignore[invalid-type-form]
+        | tuple[float, float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
-        dimensions: int = 3,
+        dimensions: Literal[2, 3, 4] = 3,
         min_value: float | None = None,  # ty: ignore[invalid-type-form]
         max_value: float | None = None,  # ty: ignore[invalid-type-form]
         optional_label: bool = False,

@@ -285,7 +285,9 @@ _AttributeDataTypes = Literal[
     "FLOAT", "INT", "BOOLEAN", "VECTOR", "RGBA", "ROTATION", "MATRIX"
 ]
 
-_SocketShapeStructureType = Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "SINGLE"]
+_SocketShapeStructureType = Literal[
+    "AUTO", "DYNAMIC", "FIELD", "GRID", "SINGLE", "LIST"
+]
 
 
 SOCKET_TYPES = Literal[
@@ -388,8 +390,10 @@ PREFER_FIRST_SOCKET: frozenset[tuple[str, str]] = frozenset(
 
 FloatInterfaceSubtypes = typing.Literal[
     "NONE",
+    "PIXEL",
     "PERCENTAGE",
     "FACTOR",
+    "MASS",
     "ANGLE",
     "TIME",
     "TIME_ABSOLUTE",
@@ -398,8 +402,19 @@ FloatInterfaceSubtypes = typing.Literal[
     "COLOR_TEMPERATURE",
     "FREQUENCY",
 ]
-VectorInterfaceSubtypes = FloatInterfaceSubtypes
+VectorInterfaceSubtypes = typing.Literal[
+    "NONE",
+    "PIXEL",
+    "PERCENTAGE",
+    "FACTOR",
+    "TRANSLATION",
+    "DIRECTION",
+    "VELOCITY",
+    "ACCELERATION",
+    "EULER",
+    "XYZ",
+]
 
-IntegerInterfaceSubtypes = typing.Literal["NONE", "PERCENTAGE", "FACTOR"]
+IntegerInterfaceSubtypes = typing.Literal["NONE", "PIXEL", "PERCENTAGE", "FACTOR"]
 
 StringInterfaceSubtypes = typing.Literal["NONE", "FILE_PATH"]
