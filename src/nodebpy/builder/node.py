@@ -45,6 +45,25 @@ if TYPE_CHECKING:
         def i(self) -> SocketAccessor: ...
 
 
+def _find_socket_from_name(
+    collection: bpy.types.NodeInputs | bpy.types.NodeOutputs | list[NodeSocket],
+    name: str,
+) -> NodeSocket:
+    ids = [socket.identifier for socket in collection]
+    names = [socket.name for socket in collection]
+    for format in [name, name.title(), name.replace("_", " ").title()]:
+        try:
+            return collection[names.index(format)]
+        except ValueError:
+            try:
+                return collection[ids.index(format)]
+            except ValueError:
+                continue
+    raise ValueError(
+        f"Socket '{name}' not found in collection names or ids, available names: {names}, available ids: {ids}"
+    )
+
+
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     """Base class for all node wrappers."""
 
@@ -143,8 +162,8 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             input.default_value = value  # type: ignore
 
     def _establish_links(self, **kwargs: InputAny):
-        input_ids = [input.identifier for input in self.node.inputs]
         for name, value in kwargs.items():
+            # TODO: don't like these manual overrides for particular nodes, but best I can do for now
             if value is None or (
                 "GridPrune" in self._bl_idname
                 and name == "Threshold"
@@ -167,15 +186,13 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             elif isinstance(value, _NodeLike):
                 self._link_from(value.o._best_match(self.i._get(name).type), name)  # type: ignore
             else:
-                if name in input_ids:
-                    input = self.node.inputs[input_ids.index(name)]
-                    self._set_input_default_value(input, value)
-                else:
-                    if name in self.node.inputs:
-                        input = self.node.inputs[name]
-                    else:
-                        input = self.node.inputs[name.replace("_", " ").title()]
-                    self._set_input_default_value(input, value)
+                # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
+                # but this needs to be a more generic solution for sockets which aren't available
+                # https://github.com/BradyAJohnston/nodebpy/issues/90
+                if "BooleanMath" in self._bl_idname and value is False:
+                    continue
+                socket = _find_socket_from_name(self.node.inputs, name)
+                self._set_input_default_value(socket, value)
 
     @property
     def o(self) -> SocketAccessor:

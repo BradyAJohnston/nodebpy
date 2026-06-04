@@ -26,6 +26,12 @@ from ..geometry.converter import (
     SeparateBundle,
     SeparateXYZ,
 )
+from ..geometry.input import (
+    Boolean,
+    Integer,
+    SceneTime,
+    Vector,
+)
 from ..geometry.interface import (
     GroupInput,
     GroupOutput,
@@ -36,6 +42,7 @@ from ..geometry.manual import (
     ColorRamp,
     EvaluateClosure,
     FloatCurve,
+    Menu,
     Value,
 )
 from ..geometry.texture import (
@@ -57,6 +64,15 @@ from ..geometry.vector import (
     VectorCurves,
     VectorMath,
     VectorRotate,
+)
+from .converter import (
+    CombineColor,
+    ImplicitConversion,
+    Mix,
+    RGBToBW,
+    SeparateColor,
+    ShaderToRGB,
+    Wavelength,
 )
 from .shader import (
     AddShader,
@@ -116,14 +132,6 @@ from .vector import (
     VectorDisplacement,
     VectorTransform,
 )
-from .converter import (
-    CombineColor,
-    Mix,
-    RGBToBW,
-    SeparateColor,
-    ShaderToRGB,
-    Wavelength,
-)
 from .group import (
     Group,
 )
@@ -159,6 +167,7 @@ __all__ = (
     "Background",
     "Bevel",
     "Blackbody",
+    "Boolean",
     "BrickTexture",
     "Brightnesscontrast",
     "Bump",
@@ -197,6 +206,8 @@ __all__ = (
     "Huesaturationvalue",
     "IesTexture",
     "ImageTexture",
+    "ImplicitConversion",
+    "Integer",
     "InvertColor",
     "JoinBundle",
     "LayerWeight",
@@ -209,6 +220,7 @@ __all__ = (
     "Mapping",
     "MaterialOutput",
     "Math",
+    "Menu",
     "MenuSwitch",
     "MetallicBSDF",
     "Mix",
@@ -232,6 +244,7 @@ __all__ = (
     "RepeatOutput",
     "RepeatZone",
     "Reroute",
+    "SceneTime",
     "Script",
     "SeparateBundle",
     "SeparateColor",
@@ -249,6 +262,7 @@ __all__ = (
     "UVAlongStroke",
     "UVMap",
     "Value",
+    "Vector",
     "VectorCurves",
     "VectorDisplacement",
     "VectorMath",

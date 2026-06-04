@@ -4,24 +4,24 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
+from ...builder import BaseNode, SocketAccessor
+
+from ...types import (
+    InputBoolean,
+    InputColor,
+    InputFloat,
+    InputInteger,
+    InputMenu,
+    InputVector,
+)
+
+from ...builder.socket import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
     IntegerSocket,
     MenuSocket,
     VectorSocket,
-)
-
-from ...types import (
-    InputBoolean,
-    InputColor,
-    InputInteger,
-    InputMenu,
-    InputFloat,
-    InputVector,
 )
 
 

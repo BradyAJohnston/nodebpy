@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Iterable, Union
-
 import bpy
 from bpy.types import (
     NodeClosureInput,
@@ -11,14 +10,11 @@ from bpy.types import (
     NodeEvaluateClosureOutputItems,
 )
 
-from nodebpy.builder._registry import _get_socket_linker
-from nodebpy.builder._utils import _SocketLike
-
 if TYPE_CHECKING:
     from .manual import EvaluateClosure
 
-from nodebpy.builder import BaseNode as BaseNode
-from nodebpy.builder import (
+from ...builder import BaseNode as BaseNode
+from ...builder import (
     BooleanSocket,
     ClosureSocket,
     DynamicInputsMixin,
@@ -26,9 +22,10 @@ from nodebpy.builder import (
     GeometrySocket,
     IntegerSocket,
 )
-from nodebpy.builder import Socket as SocketLinker
-from nodebpy.builder.accessor import SocketAccessor
-
+from ...builder import Socket as SocketLinker
+from ...builder._registry import _wrap_socket
+from ...builder._utils import _SocketLike
+from ...builder.accessor import SocketAccessor
 from ...types import (
     InputBoolean,
     InputGeometry,
@@ -536,7 +533,7 @@ class ClosureInput(BaseNode):
 
     def link(self, target: _SocketLike) -> SocketLinker:
         self.tree.link(self.node.outputs[-1], target.socket)
-        return _get_socket_linker(self.node.outputs[-2])
+        return _wrap_socket(self.node.outputs[-2])
 
 
 class ClosureOutput(BaseNode):
@@ -578,7 +575,7 @@ class ClosureOutput(BaseNode):
     def link(self, source: _SocketLike) -> SocketLinker:
         self.tree.link(source.socket, self.node.inputs[-1])
 
-        return _get_socket_linker(self.node.inputs[-2])
+        return _wrap_socket(self.node.inputs[-2])
 
     def sync_signature(self, node: "EvaluateClosure") -> None:
         for name in ["input_items", "output_items"]:

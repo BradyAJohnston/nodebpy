@@ -12,6 +12,7 @@ Run this script from within Blender to generate node classes:
 
 from __future__ import annotations
 
+import typing
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
@@ -19,6 +20,8 @@ from typing import Any, Literal
 import bpy
 from bpy.types import VectorFont, bpy_prop_array
 from mathutils import Euler, Vector
+
+from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
 # Tree-type configuration
@@ -36,6 +39,7 @@ _OUTPUT_SOCKET_CLASSES: dict[str, str] = {
     "NodeSocketVector": "VectorSocket",
     "NodeSocketColor": "ColorSocket",
     "NodeSocketInt": "IntegerSocket",
+    "NodeSocketIntVector3D": "IntegerVectorSocket",
     "NodeSocketBool": "BooleanSocket",
     "NodeSocketRotation": "RotationSocket",
     "NodeSocketMatrix": "MatrixSocket",
@@ -50,6 +54,7 @@ _OUTPUT_SOCKET_CLASSES: dict[str, str] = {
     "NodeSocketClosure": "ClosureSocket",
     "NodeSocketShader": "ShaderSocket",
     "NodeSocketFont": "FontSocket",
+    "NodeSocketSound": "SoundSocket",
 }
 
 
@@ -89,6 +94,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Switch",
         "CaptureAttribute",
         "FieldToGrid",
+        "FieldToList",
         "JoinGeometry",
         "SDFGridBoolean",
         "Bake",
@@ -109,6 +115,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "ClosureZone",
         "FormatString",
         "JoinStrings",
+        "Menu",
         "Collection",
         "Material",
         "Object",
@@ -121,8 +128,10 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "EvaluateOnDomain",
         "FieldVariance",
         "Compare",
+        "Mix",
         "AttributeStatistic",
         "SampleIndex",
+        "IntegerVector",
         "SampleCurve",
         "Frame",
         "Float",
@@ -208,10 +217,16 @@ class SocketInfo:
     max_value: Any = None
     always_enabled: bool = True
     menu_items: list[str] = field(default_factory=list)
+    structure_type: str = ""
 
     def format_argument_string(self) -> str:
         param_name = get_socket_param_name(self)
-        return f"{param_name}: {self.type_hint} = {format_python_value(self.default_value)}"
+        default = (
+            "None"
+            if ("GRID" in self.structure_type or "LIST" in self.structure_type)
+            else format_python_value(self.default_value)
+        )
+        return f"{param_name}: {self.type_hint} = {default}"
 
     @property
     def type_hint(self) -> str:
@@ -226,6 +241,7 @@ class SocketInfo:
         """Get the Python type hint for a socket."""
         type_map = {
             "NodeSocketFloat": "InputFloat",
+            "NodeSocketIntVector3D": "InputIntegerVector",
             "NodeSocketInt": "InputInteger",
             "NodeSocketBool": "InputBoolean",
             "NodeSocketVector": "InputVector",
@@ -244,13 +260,24 @@ class SocketInfo:
             # Shader trees use NodeSocketShader for BSDF/closure outputs
             "NodeSocketShader": "InputShader",
             "NodeSocketFont": "InputFont",
+            "NodeSocketSound": "InputSound",
             # Virtual sockets adapt to whatever is connected
             "NodeSocketVirtual": "InputLinkable",
         }
         # to handle all of the subtypes we have to iterate through and
         # instead just check to see if the name is in the socket type
+        _GRID_TYPE_MAP = {
+            "InputFloat": "InputFloatGrid",
+            "InputInteger": "InputIntegerGrid",
+            "InputBoolean": "InputBooleanGrid",
+            "InputVector": "InputVectorGrid",
+        }
         for key, item in type_map.items():
             if key in self.bl_socket_type:
+                if "GRID" in self.structure_type:
+                    return _GRID_TYPE_MAP.get(item, item)
+                if "LIST" in self.structure_type:
+                    return item.replace("Input", "InputList")
                 return item
         raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
@@ -262,6 +289,10 @@ class SocketInfo:
         for key, cls in _OUTPUT_SOCKET_CLASSES.items():
             if key in self.bl_socket_type:
                 return_type = cls
+                if "LIST" in self.structure_type:
+                    return_type = return_type + "List"
+                elif "GRID" in self.structure_type:
+                    return_type = return_type.replace("Socket", "SocketGrid")
                 break
 
         doc = self.description or self.name
@@ -279,6 +310,7 @@ class EnumInfo:
     name: str
     description: str = ""
     sockets: list[SocketInfo] = field(default_factory=lambda: list())
+    output_sockets: list[SocketInfo] = field(default_factory=lambda: list())
 
 
 @dataclass
@@ -482,8 +514,8 @@ class NodeInfo:
         if any(keyword in self.bl_idname for keyword in ["Volume", "Grid"]):
             return "grid" if self.class_name != "Grid" else "geometry"
 
-        if "List" in self.bl_idname:
-            return "experimental"
+        # if "List" in self.bl_idname:
+        #     return "experimental"
 
         # Map color_tag to filename – covers geometry, shader, and compositor tags
         color_tag_to_filename = {
@@ -513,6 +545,40 @@ class NodeInfo:
         filename = color_tag_to_filename.get(self.color_tag, "utilities")
 
         return filename
+
+    @property
+    def varying_output_identifiers(self) -> set[str]:
+        """Output socket identifiers whose type changes across enum values."""
+        default_types = {s.identifier: s.bl_socket_type for s in self.outputs}
+        varying = set()
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                for s in enum.output_sockets:
+                    if (
+                        s.identifier in default_types
+                        and s.bl_socket_type != default_types[s.identifier]
+                    ):
+                        varying.add(s.identifier)
+        return varying
+
+    def output_class_for_enum(
+        self, socket_identifier: str, enum_identifier: str
+    ) -> str:
+        """Return the socket class name for a varying output given an enum identifier."""
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                if enum.identifier == enum_identifier:
+                    for s in enum.output_sockets:
+                        if s.identifier == socket_identifier:
+                            for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                                if key in s.bl_socket_type:
+                                    return cls
+        for s in self.outputs:
+            if s.identifier == socket_identifier:
+                for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                    if key in s.bl_socket_type:
+                        return cls
+        return "Socket"
 
     def generate_enum_class_methods(self, config: TreeTypeConfig | None = None) -> str:
         """Generate @classmethod convenience methods for enum operations."""
@@ -598,13 +664,25 @@ class NodeInfo:
                 if enum.description:
                     docstring += f" {enum.description}"
 
+                varying = self.varying_output_identifiers
+                if len(varying) == 1:
+                    varying_id = next(iter(varying))
+                    socket_cls = self.output_class_for_enum(varying_id, enum.identifier)
+                    return_type = f"{cls_name}[{socket_cls}]"
+                    # Use the class name directly (not cls) so the type checker
+                    # can resolve the parameterized return type.
+                    call_expr = f"{cls_name}({call_params_str})"
+                else:
+                    return_type = cls_name
+                    call_expr = f"cls({call_params_str})"
+
                 method = f'''
     @classmethod
     def {method_name}(
         {params_str}
-    ) -> "{cls_name}":
+    ) -> "{return_type}":
         """{docstring}"""
-        return cls({call_params_str})'''
+        return {call_expr}'''
 
                 methods.append(method)
 
@@ -788,6 +866,7 @@ def collect_socket_info(
             socket_type=socket.type,
             is_output=is_output,
             is_multi_input=getattr(socket, "is_multi_input", False),
+            structure_type=getattr(socket, "inferred_structure_type", ""),
             menu_items=_collect_socket_menu_items(socket)
             if socket.type == "MENU" and socket.default_value != ""
             else [],
@@ -812,7 +891,12 @@ def collect_socket_info(
 
 def collect_property_info(node, node_type):
     properties = []
-    props_to_ignore = {"active_index", "active_output", "active_item_index"}
+    props_to_ignore = {
+        "active_index",
+        "active_output",
+        "active_item_index",
+        "socket_idname",
+    }
     for base in node_type.__bases__:
         if hasattr(base, "bl_rna"):
             for prop in base.bl_rna.properties:
@@ -840,6 +924,9 @@ def collect_property_info(node, node_type):
                             name=item.name,
                             description=item.description,
                             sockets=collect_socket_info(node.inputs),
+                            output_sockets=collect_socket_info(
+                                node.outputs, is_output=True
+                            ),
                         )
                     )
                     setattr(node, prop_identifier, default)
@@ -1018,7 +1105,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
             " | ".join(sorted(variants)) if len(variants) > 1 else socket.type_hint
         )
 
-        if hasattr(socket, "default_value"):
+        if "GRID" in socket.structure_type or "LIST" in socket.structure_type:
+            default = "None"
+        elif hasattr(socket, "default_value"):
             default = format_python_value(socket.default_value)
         else:
             default = "None"
@@ -1111,7 +1200,10 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     enum_methods = node_info.generate_enum_class_methods(config)
 
     # Add node type annotation — always use specific type so property access is typed
-    node_type_annotation = f"bpy.types.{node_info.bl_idname}"
+    # TODO: remove the ty: ignore as its only for unreleased bpy version and the new nodes
+    node_type_annotation = (
+        f"bpy.types.{node_info.bl_idname}  # ty: ignore[unresolved-attribute]"
+    )
 
     # Build numpy-style class docstring
     doc_lines = [node_info.description, ""]
@@ -1160,16 +1252,31 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     else:
         inputs_class = "    class _Inputs(SocketAccessor):\n        pass"
 
-    # Build Outputs inner class
-    output_annotations = [
-        socket.format_accessor_annotation() for socket in node_info.outputs
-    ]
+    # Build Outputs inner class — use Generic[_S] if any output varies with enum values.
+    varying_outputs = node_info.varying_output_identifiers
+    is_generic = len(varying_outputs) == 1
+    output_annotations = []
+    for socket in node_info.outputs:
+        if is_generic and socket.identifier in varying_outputs:
+            attr_name = normalize_name(socket.identifier)
+            doc = socket.description or socket.name
+            ann = f"        {attr_name}: _S"
+            if doc:
+                ann += f'\n        """{doc}"""'
+            output_annotations.append(ann)
+        else:
+            output_annotations.append(socket.format_accessor_annotation())
+
+    outputs_base = "(SocketAccessor, Generic[_S])" if is_generic else "(SocketAccessor)"
     if output_annotations:
-        outputs_class = "    class _Outputs(SocketAccessor):\n" + "\n".join(
+        outputs_class = f"    class _Outputs{outputs_base}:\n" + "\n".join(
             output_annotations
         )
     else:
         outputs_class = "    class _Outputs(SocketAccessor):\n        pass"
+
+    class_base = "(BaseNode, Generic[_T])" if is_generic else "(BaseNode)"
+    o_return_type = "_Outputs[_T]" if is_generic else "_Outputs"
 
     # When extra sockets exist, properties must be set before collecting socket IDs
     # so the node reflects the correct enum state when we filter key_args.
@@ -1178,7 +1285,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     else:
         init_body = f"\n{establish_call}\n{property_setting}"
 
-    class_code = f'''class {class_name}(BaseNode):
+    class_code = f'''class {class_name}{class_base}:
     """
     {docstring_body}
     """
@@ -1194,7 +1301,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         @property
         def i(self) -> _Inputs: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> {o_return_type}: ...
 
     def __init__{init_signature}:
         super().__init__(){init_body}
@@ -1257,52 +1364,46 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
             if mt:
                 mathutils_needed.add(mt)
 
+    has_generic_nodes = any(len(n.varying_output_identifiers) == 1 for n in nodes)
+
     lines = ["# Auto-generated by generate.py — do not edit manually."]
-    lines.append("from typing import TYPE_CHECKING, Literal")
+    typing_imports = (
+        ["TYPE_CHECKING", "Generic", "Literal"]
+        if has_generic_nodes
+        else ["TYPE_CHECKING", "Literal"]
+    )
+    lines.append(f"from typing import {', '.join(typing_imports)}")
     lines.append("import bpy")
     if mathutils_needed:
         lines.append(f"from mathutils import {', '.join(sorted(mathutils_needed))}")
 
     # Builder imports
-    builder_imports = ["BaseNode as BaseNode", "SocketAccessor"]
-    if has_sockets:
-        builder_imports.append("Socket")
+    builder_imports = ["BaseNode", "SocketAccessor", "Socket"]
     # Add only the specific output socket classes actually used in this file
-    for cls in sorted(used_output_socket_classes):
-        if cls != "Socket":
-            builder_imports.append(cls)
+    # for cls in sorted(used_output_socket_classes):
+    #     if cls != "Socket":
+    #         builder_imports.append(cls)
     lines.append(f"from ...builder import {', '.join(builder_imports)}")
 
-    # Types imports — use canonical order matching the type_map
-    type_order = [
-        "InputLinkable",
-        "InputBoolean",
-        "InputBundle",
-        "InputClosure",
-        "InputCollection",
-        "InputColor",
-        "InputGeometry",
-        "InputImage",
-        "InputInteger",
-        "InputMaterial",
-        "InputMatrix",
-        "InputMenu",
-        "InputObject",
-        "InputRotation",
-        "InputShader",
-        "InputString",
-        "InputFloat",
-        "InputVector",
-        "InputFont",
+    data_types = [f"{t.title()}" for t in typing.get_args(SOCKET_TYPES)]
+    data_types += ["Integer", "Color", "IntegerVector", "Linkable", "Sound"]
+    data_types.sort()
+
+    sockets = [f"{d}Socket" for d in data_types]
+    grids = [
+        "FloatSocketGrid",
+        "IntegerSocketGrid",
+        "VectorSocketGrid",
+        "BooleanSocketGrid",
     ]
-    type_imports = [
-        t
-        for t in type_order
-        if t in used_type_hints or (t == "InputLinkable" and has_linkable)
-    ]
-    if type_imports:
-        imports_str = ",\n    ".join(type_imports)
-        lines.append(f"from ...types import (\n    {imports_str},\n)")
+    lists = [s + "List" for s in sockets]
+    all = sockets + grids + lists
+    inputs = [f"Input{x}".replace("Socket", "") for x in all]
+    typevars = ["_T", "_S"]
+
+    lines.append(f"from ...types import (\n    {',\n'.join(inputs)},\n)")
+
+    lines.append(f"from ...builder.socket import ({', '.join(all + typevars)})")
 
     return "\n\n".join(lines) + "\n"
 

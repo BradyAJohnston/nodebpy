@@ -1,4 +1,3 @@
-from nodebpy.nodes.geometry import ObjectInfo
 from typing import cast, get_args
 
 import bpy
@@ -16,9 +15,13 @@ from nodebpy.builder import (
     MatrixSocket,
     RotationSocket,
     Socket,
+    StringSocket,
     VectorSocket,
+    VectorSocketList,
+    FloatSocketList,
 )
 from nodebpy.nodes.compositor import CombineXYZ
+from nodebpy.nodes.geometry import ObjectInfo, SortList, GetListItem
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -806,7 +809,7 @@ def test_matrix_socket_output_len():
         rot.o.rotation.invert().node.bl_idname == g.InvertRotation._bl_idname
 
 
-def test_socket_defaults():
+def test_socket_default_values():
     with g.tree():
         sep = g.SeparateXYZ()
         assert sep.i.vector.links == []
@@ -1052,6 +1055,23 @@ def test_string_socket_methods(snapshot):
         assert len(tree) == 22
         assert snapshot == tree._repr_markdown_()
 
+        reversed = string.reverse()
+        assert isinstance(reversed, StringSocket)
+        assert reversed.node.bl_idname == g.ReverseString._bl_idname
+        assert reversed.builder_node.i.string.links[0].from_node == string.node
+
+        upper = string.uppercase()
+        assert isinstance(upper, StringSocket)
+        assert upper.node.bl_idname == g.SetStringCase._bl_idname
+        assert upper.builder_node.i.case.default_value == "Uppercase"
+        assert upper.builder_node.i.string.links[0].from_node == string.node
+
+        lower = string.lowercase()
+        assert isinstance(lower, StringSocket)
+        assert lower.node.bl_idname == g.SetStringCase._bl_idname
+        assert lower.builder_node.i.case.default_value == "Lowercase"
+        assert lower.builder_node.i.string.links[0].from_node == string.node
+
 
 def test_vector_socket_rotate():
     with g.tree():
@@ -1289,6 +1309,26 @@ def test_vector_socket_new_methods():
         assert isinstance(result, VectorSocket)
         assert result.node.operation == "REFLECT"
 
+        ftl = g.FieldToList(10)
+        veclist = ftl.vector(vec)
+        assert ftl.i["VECTOR"].links
+        assert ftl.i["VECTOR"].links[0].from_node == vec.node
+        sorted = veclist.sort(veclist.length())
+        assert isinstance(sorted, VectorSocketList)
+        node = sorted.builder_node
+        assert isinstance(node, SortList)
+        assert node.socket_type == "VECTOR"
+        assert node.i.list.links[0].from_node == ftl.node
+        assert not node.i.group_id.links
+        assert not node.i.selection.links
+        assert (
+            node.i.sort_weight.links[0].from_node.bl_idname == g.VectorMath._bl_idname
+        )
+
+        list = ftl.float(1.0)
+        assert isinstance(list, FloatSocketList)
+        assert list.node.bl_idname == g.FieldToList._bl_idname
+
 
 def test_vector_socket_map_range():
     with g.tree():
@@ -1446,6 +1486,10 @@ def test_all_domain_properties_reachable():
             assert isinstance(getattr(rot, d).evaluate(), RotationSocket)
             assert isinstance(getattr(mat, d).evaluate(), MatrixSocket)
 
+        input_pos = g.SetPosition().i.position
+        with pytest.raises(RuntimeError):
+            input_pos.point.evaluate()
+
 
 def test_matrix_socket_transform_direction():
     with g.tree():
@@ -1525,3 +1569,38 @@ def test_object_methods():
         assert scale.builder_node.transform_space == "RELATIVE"
         loc.builder_node.transform_space = "RELATIVE"
         assert loc.builder_node.transform_space == "RELATIVE"
+
+
+def test_list_slicing(snapshot):
+    with g.tree() as tree:
+        sliced = g.Index().o.index.to_list(10)[::2]
+        assert sliced.node.bl_idname == GetListItem._bl_idname
+
+    assert snapshot == tree._repr_markdown_()
+
+
+def test_list_operations():
+    with g.tree():
+        lst = g.Index().o.index.to_list(10)
+
+        # reverse uses a SortList node with a negated Index weight
+        rev = lst.reverse()
+        assert rev.node.bl_idname == SortList._bl_idname
+
+        # negative start/stop are resolved relative to the list length
+        neg = lst[-3:-1]
+        assert neg.node.bl_idname == GetListItem._bl_idname
+
+        # explicit None step falls back to a step of 1
+        none_step = lst.list_slice(0, 5, None)
+        assert none_step.node.bl_idname == GetListItem._bl_idname
+
+        # integer indexing returns a single value via GetListItem
+        item = lst[2]
+        assert isinstance(item, IntegerSocket)
+        assert item.node.bl_idname == GetListItem._bl_idname
+
+        # __len__ returns an IntegerSocket backed by ListLength
+        length = lst.__len__()
+        assert isinstance(length, IntegerSocket)
+        assert length.node.bl_idname == g.ListLength._bl_idname

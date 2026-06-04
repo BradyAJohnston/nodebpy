@@ -409,7 +409,7 @@ def test_mix_node():
 def test_warning_innactive_socket():
     "Raises an error because we want to not let a user silently link sockets that won't do anything"
     with TreeBuilder():
-        pos = g.Position()
+        pos = g.Position().o.position
         # this works because by default we link to the currently active vector sockets
         g.Mix(a_vector=pos, data_type="VECTOR")
         # this now fails because we try to link to the innactive float sockets

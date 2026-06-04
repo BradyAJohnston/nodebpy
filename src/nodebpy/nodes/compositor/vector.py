@@ -4,10 +4,14 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as BaseNode, SocketAccessor, FloatSocket
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputFloat,
+)
+
+from ...builder.socket import (
+    FloatSocket,
 )
 
 

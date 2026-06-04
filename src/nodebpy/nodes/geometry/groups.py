@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING
 
 from nodebpy import TreeBuilder
 from nodebpy.types import (
-    InputInteger,
-    InputVector,
-    InputObject,
     InputBoolean,
+    InputInteger,
+    InputObject,
+    InputVector,
 )
 
 from ...builder import (
@@ -14,17 +14,63 @@ from ...builder import (
     RotationSocket,
     SocketAccessor,
     VectorSocket,
+    IntegerSocketList,
 )
 from . import (
     AxesToRotation,
     CombineMatrix,
+    CombineXYZ,
     EdgesOfVertex,
     EdgeVertices,
     Frame,
-    Switch,
     Position,
-    CombineXYZ,
+    Switch,
+    IntegerMath,
+    FieldToList,
+    Index,
 )
+
+
+class SliceToIndices(CustomGeometryGroup):
+    """
+    Converts a python slice to a list of indices.
+    """
+
+    _name = "Slice to Indices"
+    _color_tag = "CONVERTER"
+
+    class _Inputs(SocketAccessor):
+        start: IntegerSocket
+        stop: IntegerSocket
+        step: IntegerSocket
+
+    class _Outputs(SocketAccessor):
+        indices: IntegerSocketList
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self, start: InputInteger = 0, stop: InputInteger = 0, step: InputInteger = 1
+    ):
+        kwargs = {"Start": start, "Stop": stop, "Step": step}
+        super().__init__(**kwargs)
+
+    def _build_group(self, tree: TreeBuilder) -> None:
+        start = tree.inputs.integer("Start")
+        stop = tree.inputs.integer("Stop")
+        step = tree.inputs.integer("Step")
+
+        range = stop - start
+        length = IntegerMath.divide_ceiling(range, step).o.value.abs()
+        indices = FieldToList(length).integer((start + step) * Index())
+
+        indices >> tree.outputs.integer("Indices", structure_type="LIST")
 
 
 class OtherVertex(CustomGeometryGroup):
@@ -225,14 +271,5 @@ class ClipFieldToBox(CustomGeometryGroup):
 
         pos = Position().o.position
         local_pos = box.transform("RELATIVE").invert() @ pos * 0.5
-
-        result = (
-            (abs(local_pos.x) < 0.5)
-            & (abs(local_pos.y) < 0.5)
-            & (abs(local_pos.z) < 0.5)
-        )
-
+        result = abs(local_pos) < 0.5
         (result != invert) >> masked
-
-
-GROUP_NAME = "Mask Grid"

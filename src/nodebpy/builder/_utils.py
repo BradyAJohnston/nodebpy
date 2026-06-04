@@ -47,6 +47,7 @@ def _allow_innactive_sockets(node: bpy.types.Node) -> bool:
         "GeometryNodeIndexSwitch",
         "GeometryNodeMenuSwitch",
         "ShaderNodeMixShader",
+        # "ShaderNodeMix",
         "GeometryNodeSwitch",
     )
 
