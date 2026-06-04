@@ -10,14 +10,21 @@ from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import (
+    BooleanSocketGrid,
+    BooleanSocketList,
+    ColorSocketList,
     FloatSocket,
     FloatSocketGrid,
     FloatSocketList,
     IntegerSocket,
+    IntegerSocketGrid,
     IntegerSocketList,
     MatrixSocket,
     MatrixSocketList,
+    MenuSocketList,
+    RotationSocketList,
     StringSocket,
+    StringSocketList,
     VectorSocket,
     VectorSocketGrid,
     VectorSocketList,
@@ -1667,3 +1674,104 @@ def test_matrix_socket():
 
         r2 = mat @ result
         assert isinstance(r2, MatrixSocket)
+
+
+def test_set_handle_type():
+    with g.tree():
+        sh = g.SetHandleType(handle_type="VECTOR", left=True, right=True)
+        assert sh.handle_type == "VECTOR"
+        assert sh.left
+        assert sh.right
+
+        sh.handle_type = "AUTO"
+        assert sh.handle_type == "AUTO"
+
+        sh.left = False
+        sh.right = False
+        assert not sh.left
+        assert not sh.right
+
+        # left setter while right is False: True -> {"LEFT"}, then False -> set()
+        sh.left = True
+        assert sh.left and not sh.right
+        sh.left = False
+        assert not sh.left and not sh.right
+
+        sh.right = True
+        assert sh.right
+        sh.left = True
+        assert sh.left
+
+        sh2 = g.SetHandleType(left=False, right=True)
+        assert not sh2.left
+        assert sh2.right
+
+        sh3 = g.SetHandleType(left=True, right=False)
+        assert sh3.left
+        assert not sh3.right
+
+
+def test_handle_type_selection_mode():
+    with g.tree():
+        node = g.HandleTypeSelection(handle_type="VECTOR", left=True, right=True)
+        assert node.handle_type == "VECTOR"
+        assert node.mode == {"LEFT", "RIGHT"}
+
+        # right setter while left is True: True -> {"LEFT", "RIGHT"}, False -> {"LEFT"}
+        node.right = False
+        assert node.left and not node.right
+        # left setter while right is False -> set()
+        node.left = False
+        assert not node.left and not node.right
+
+        node.mode = {"LEFT"}
+        assert node.mode == {"LEFT"}
+
+
+def test_input_node_value_getters():
+    """The collection/material/object input nodes expose their stored value."""
+    with g.tree():
+        assert g.Collection().collection is None
+        assert g.Material().material is None
+        assert g.Object().object is None
+
+
+def test_node_enum_property_getters():
+    """Enum/bool properties added in 5.2 round-trip through their getters."""
+    with g.tree():
+        assert g.CaptureAttribute.point().domain == "POINT"
+        assert g.MenuSwitch.float(items={"a": 0.0}).data_type == "FLOAT"
+        assert g.SDFGridBoolean().operation == "DIFFERENCE"
+
+        mix = g.Mix.float()
+        assert mix.factor_mode == "UNIFORM"
+        assert mix.blend_type == "MIX"
+        assert mix.clamp_factor is False
+        assert mix.clamp_result is False
+
+
+def test_field_to_list_typed_items():
+    """Each typed FieldToList helper adds an item of the matching list type."""
+    with g.tree():
+        ftl = g.FieldToList(5)
+        assert isinstance(ftl.float(1.0), FloatSocketList)
+        assert isinstance(ftl.integer(2), IntegerSocketList)
+        assert isinstance(ftl.boolean(True), BooleanSocketList)
+        assert isinstance(ftl.vector((1, 2, 3)), VectorSocketList)
+        assert isinstance(ftl.color((1, 0, 0, 1)), ColorSocketList)
+        assert isinstance(ftl.rotation(), RotationSocketList)
+        assert isinstance(ftl.matrix(), MatrixSocketList)
+        assert isinstance(ftl.string("name", name="Label"), StringSocketList)
+        assert isinstance(ftl.menu(g.Menu()), MenuSocketList)
+
+
+def test_field_to_grid_capture_typed():
+    """Each typed FieldToGrid capture helper adds a grid item of the matching type."""
+    with g.tree():
+        ftg = g.FieldToGrid(g.CubeGridTopology().o.topology)
+        assert isinstance(ftg.capture_float(g.Float()), FloatSocketGrid)
+        assert isinstance(ftg.capture_boolean(g.Boolean()), BooleanSocketGrid)
+        assert isinstance(ftg.capture_vector(g.Vector()), VectorSocketGrid)
+        named = ftg.capture_integer(g.Integer(), name="idx")
+        assert isinstance(named, IntegerSocketGrid)
+        assert named.name == "idx"

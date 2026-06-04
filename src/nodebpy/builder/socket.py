@@ -1369,14 +1369,14 @@ class _StringMixin(BaseSocket, Generic[_StringResult, _BooleanResult, _IntegerRe
         self._assert_output("uppercase")
         from ..nodes.geometry import SetStringCase
 
-        return SetStringCase(self.socket, case="upper").o.string  # ty: ignore[invalid-return-type]
+        return SetStringCase(self.socket, case="Uppercase").o.string  # ty: ignore[invalid-return-type]
 
     def lowercase(self) -> _StringResult:
         "Convert the string to lowercase and return as `StringSocket`."
         self._assert_output("lowercase")
         from ..nodes.geometry import SetStringCase
 
-        return SetStringCase(self.socket, case="lower").o.string  # ty: ignore[invalid-return-type]
+        return SetStringCase(self.socket, case="Lowercase").o.string  # ty: ignore[invalid-return-type]
 
 
 class _MatrixMixin(
@@ -1633,9 +1633,6 @@ class _ListMixin(Socket, Generic[_T]):
         ).o.length
 
 
-s = slice(1, 3)
-
-
 class _DefaultValueMixin(BaseSocket, Generic[_T]):
     @property
     def default_value(self) -> _T:
@@ -1648,6 +1645,14 @@ class _DefaultValueMixin(BaseSocket, Generic[_T]):
         """Get or set the default value of the socket. Only relevant for input sockets."""
         self._assert_input("default_value")
         self.socket.default_value = value  # ty: ignore[unresolved-attribute]
+
+
+class _ToListMixin(BaseSocket, Generic[_T]):
+    def to_list(self, count: InputInteger = 10) -> _T:
+        """Create a list of elements, evaluating this field `count` times based on the `Index` node."""
+        from ..nodes.geometry import FieldToList
+
+        return FieldToList(count, {self.name: self}).o[0]  # ty: ignore[invalid-return-type, invalid-argument-type]
 
 
 class _FloatConvertDatatypeMixin(BaseSocket, Generic[_IntegerResult, _StringResult]):
@@ -1670,6 +1675,7 @@ class _FloatConvertDatatypeMixin(BaseSocket, Generic[_IntegerResult, _StringResu
 
 class FloatSocket(
     _FloatMixin["IntegerSocket"],
+    _ToListMixin["FloatSocketList"],
     _FloatConvertDatatypeMixin["IntegerSocket", "StringSocket"],
     _DefaultValueMixin[float],
     Socket,
@@ -1724,7 +1730,11 @@ class FloatSocketGrid(_FloatMixin["IntegerSocketGrid"], GridSocketMixin[FloatSoc
     """Runtime float grid socket wrapper."""
 
 
-class VectorSocket(_VectorMixin["FloatSocket", "VectorSocket"], Socket):
+class VectorSocket(
+    _VectorMixin["FloatSocket", "VectorSocket"],
+    _ToListMixin["VectorSocketList"],
+    Socket,
+):
     """Runtime vector socket wrapper."""
 
     @property
@@ -1781,7 +1791,7 @@ class VectorSocketGrid(_VectorMixin, GridSocketMixin[VectorSocket]):
     """Runtime vector grid socket wrapper."""
 
 
-class ColorSocket(_ColorMixin, Socket):
+class ColorSocket(_ColorMixin, _ToListMixin["ColorSocketList"], Socket):
     """Runtime color socket wrapper."""
 
     @property
@@ -1808,6 +1818,7 @@ class _IntegerConvertDatatypeMixin(Socket, Generic[_StringResult]):
 
 class IntegerSocket(
     _IntegerMixin[FloatSocket],
+    _ToListMixin["IntegerSocketList"],
     _IntegerConvertDatatypeMixin["StringSocket"],
     _DefaultValueMixin[int],
     Socket,
@@ -1870,7 +1881,9 @@ class IntegerSocketGrid(_IntegerMixin, GridSocketMixin[IntegerSocket]):
     """Runtime integer grid socket wrapper."""
 
 
-class BooleanSocket(_BooleanMixin, _DefaultValueMixin[bool], Socket):
+class BooleanSocket(
+    _BooleanMixin, _ToListMixin["BooleanSocketList"], _DefaultValueMixin[bool], Socket
+):
     """Runtime boolean socket wrapper."""
 
     @property
@@ -1919,7 +1932,10 @@ class BooleanSocketGrid(_BooleanMixin, GridSocketMixin[BooleanSocket]):
 
 
 class RotationSocket(
-    _RotationMixin["FloatSocket", "VectorSocket"], _DefaultValueMixin[Euler], Socket
+    _RotationMixin["FloatSocket", "VectorSocket"],
+    _ToListMixin["RotationSocketList"],
+    _DefaultValueMixin[Euler],
+    Socket,
 ):
     """Runtime rotation socket wrapper."""
 
@@ -1966,7 +1982,9 @@ class RotationSocketList(
 
 
 class MatrixSocket(
-    _MatrixMixin[VectorSocket, RotationSocket, FloatSocket, "MatrixSocket"], Socket
+    _MatrixMixin[VectorSocket, RotationSocket, FloatSocket, "MatrixSocket"],
+    _ToListMixin["MatrixSocketList"],
+    Socket,
 ):
     """Runtime matrix socket wrapper."""
 
@@ -2057,6 +2075,7 @@ class MatrixSocketList(
 
 class StringSocket(
     _StringMixin["StringSocket", "BooleanSocket", IntegerSocket],
+    _ToListMixin["StringSocketList"],
     _DefaultValueMixin[str],
     Socket,
 ):
@@ -2106,7 +2125,7 @@ class _MenuSocketMixin(Socket):
     socket: NodeSocketMenu
 
 
-class MenuSocket(_MenuSocketMixin):
+class MenuSocket(_MenuSocketMixin, _ToListMixin["MenuSocketList"]):
     """Runtime menu socket wrapper."""
 
     @property

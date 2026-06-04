@@ -124,7 +124,8 @@ class OperatorMixin:
         return MultiplyMatrices(self, other).o.matrix  # ty: ignore[invalid-argument-type]
 
     def __rmatmul__(self, other: Any) -> "MatrixSocket | VectorSocket":
-        from ..nodes.geometry import MultiplyMatrices, TransformPoint
+        from ..builder.socket import VectorSocket
+        from ..nodes.geometry import MultiplyMatrices, Position, TransformPoint
 
         if isinstance(
             self,

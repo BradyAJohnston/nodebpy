@@ -1060,6 +1060,18 @@ def test_string_socket_methods(snapshot):
         assert reversed.node.bl_idname == g.ReverseString._bl_idname
         assert reversed.builder_node.i.string.links[0].from_node == string.node
 
+        upper = string.uppercase()
+        assert isinstance(upper, StringSocket)
+        assert upper.node.bl_idname == g.SetStringCase._bl_idname
+        assert upper.builder_node.i.case.default_value == "Uppercase"
+        assert upper.builder_node.i.string.links[0].from_node == string.node
+
+        lower = string.lowercase()
+        assert isinstance(lower, StringSocket)
+        assert lower.node.bl_idname == g.SetStringCase._bl_idname
+        assert lower.builder_node.i.case.default_value == "Lowercase"
+        assert lower.builder_node.i.string.links[0].from_node == string.node
+
 
 def test_vector_socket_rotate():
     with g.tree():
@@ -1561,9 +1573,34 @@ def test_object_methods():
 
 def test_list_slicing(snapshot):
     with g.tree() as tree:
-        list = g.FieldToList(10).integer(g.Index())
-        sliced = list[::2]
-
+        sliced = g.Index().o.index.to_list(10)[::2]
         assert sliced.node.bl_idname == GetListItem._bl_idname
 
     assert snapshot == tree._repr_markdown_()
+
+
+def test_list_operations():
+    with g.tree():
+        lst = g.Index().o.index.to_list(10)
+
+        # reverse uses a SortList node with a negated Index weight
+        rev = lst.reverse()
+        assert rev.node.bl_idname == SortList._bl_idname
+
+        # negative start/stop are resolved relative to the list length
+        neg = lst[-3:-1]
+        assert neg.node.bl_idname == GetListItem._bl_idname
+
+        # explicit None step falls back to a step of 1
+        none_step = lst.list_slice(0, 5, None)
+        assert none_step.node.bl_idname == GetListItem._bl_idname
+
+        # integer indexing returns a single value via GetListItem
+        item = lst[2]
+        assert isinstance(item, IntegerSocket)
+        assert item.node.bl_idname == GetListItem._bl_idname
+
+        # __len__ returns an IntegerSocket backed by ListLength
+        length = lst.__len__()
+        assert isinstance(length, IntegerSocket)
+        assert length.node.bl_idname == g.ListLength._bl_idname

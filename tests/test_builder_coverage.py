@@ -398,3 +398,66 @@ def test_rshift_to_socket_wrapper():
     with tree:
         _ = in_geo >> out_geo
     assert len(tree.tree.links) >= 1
+
+
+def test_find_best_socket_pair_compatible_type_fallback():
+    """When no exact type match exists, the best compatible socket pair is used.
+
+    Value outputs FLOAT/VALUE; IntegerMath only has INT inputs. No exact match
+    exists, so _find_best_socket_pair falls back to the compatible INT input.
+    """
+    with TreeBuilder("CompatPair"):
+        src = g.Value()
+        tgt = g.IntegerMath.add()
+        tgt_input, src_output = src._find_best_socket_pair(src, tgt)
+    assert tgt_input.type == "INT"
+    assert src_output.type == "VALUE"
+
+
+def test_link_from_unknown_socket_name_raises():
+    """_link_from with a name absent from the node inputs raises ValueError."""
+    with TreeBuilder("LinkFromBadName"):
+        with pytest.raises(ValueError):
+            g.Position()._link_from(g.Index(), "NoSuchSocket")
+
+
+def test_dynamic_inputs_incompatible_source_raises():
+    """Adding a source with no compatible grid type raises SocketError.
+
+    FieldToGrid only accepts VALUE/INT/VECTOR/BOOLEAN data; a String source has
+    no compatible grid type so _match_compatible_data raises SocketError.
+    """
+    with TreeBuilder("DynIncompat"):
+        with pytest.raises(SocketError):
+            g.FieldToGrid(items={"x": g.String("x")})
+
+
+def test_default_value_on_output_socket_raises():
+    """default_value is input-only; accessing it on an output socket raises."""
+    with TreeBuilder("DefValOutput"):
+        out = g.Value().o._get("Value")
+        with pytest.raises(RuntimeError):
+            out.default_value
+
+
+def test_vector_socket_rmatmul():
+    """matrix @ vector via VectorSocket.__rmatmul__ builds a TransformPoint."""
+    with TreeBuilder("VecRMatMul"):
+        vec = g.Position().o.position
+        mat = g.CombineTransform().o.transform
+        result = vec.__rmatmul__(mat)
+    assert result.node.bl_idname == g.TransformPoint._bl_idname
+
+
+def test_node_rmatmul_branches():
+    """_ArithmeticMixin.__rmatmul__ routes vector nodes to TransformPoint and
+    matrix nodes to MultiplyMatrices."""
+    import numpy as np
+
+    with TreeBuilder("NodeRMatMul"):
+        mat = g.CombineMatrix(*np.eye(4).ravel())
+        transformed = g.Position().__rmatmul__(mat)
+        assert transformed.node.bl_idname == g.TransformPoint._bl_idname
+
+        multiplied = g.CombineMatrix(*np.eye(4).ravel()).__rmatmul__(mat.o.matrix)
+        assert multiplied.node.bl_idname == g.MultiplyMatrices._bl_idname

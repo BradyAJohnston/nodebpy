@@ -2463,9 +2463,7 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
         self.node.data_type = value
 
     def _new_item(self, type: _GridDataTypes, name: str | None = None) -> NodeSocket:
-        item = self.node.grid_items.new(type=type)
-        if name is not None:
-            item.name = name
+        item = self.node.grid_items.new(socket_type=type, name=name if name else type)
         return self.o[item.name].socket
 
     def capture_float(

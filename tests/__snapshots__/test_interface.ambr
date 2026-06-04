@@ -22,10 +22,10 @@
       N2("List Length"):::converter-node
       N3("Slice to Indices"):::converter-node
       N4("Get List Item"):::converter-node
-      N0 -->|"Index->INT"| N1
-      N1 -->|"INT->List"| N2
+      N0 -->|"Index->Index"| N1
+      N1 -->|"Index->List"| N2
       N2 -->|"Length->Stop"| N3
-      N1 -->|"INT->List"| N4
+      N1 -->|"Index->List"| N4
       N3 -->|"Indices->Index"| N4
   ```
   '''
