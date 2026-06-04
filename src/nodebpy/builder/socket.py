@@ -1577,9 +1577,35 @@ class _ListMixin(Socket, Generic[_T]):
             socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
         ).o.list  # ty: ignore[invalid-return-type]
 
-    # TODO: support slicing once an appropriate node is available
-    # @overload
-    # def __getitem__(self, key: slice) -> Self: ...
+    def list_slice(
+        self, start: InputInteger = 0, stop: InputInteger = None, step: InputInteger = 1
+    ) -> Self:
+        """Slice the list using start, stop, and step indices. Behaves like Python's slice notation."""
+        from ..nodes.geometry.groups import SliceToIndices
+        from ..nodes.geometry.converter import GetListItem
+
+        if stop is None:
+            stop = self.list_length()
+        elif isinstance(stop, int):
+            if stop < 0:
+                stop = self.list_length() + stop
+
+        if start is None:
+            start = 0
+        elif isinstance(start, int):
+            if start < 0:
+                start = self.list_length() + start
+
+        if step is None:
+            step = 1
+
+        indices = SliceToIndices(start=start, stop=stop, step=step).o.indices
+        return GetListItem(  # ty: ignore[invalid-return-type]
+            self.socket,
+            indices,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.value
+
     @overload
     def __getitem__(self, key: int) -> _T: ...
     @overload
@@ -1588,13 +1614,9 @@ class _ListMixin(Socket, Generic[_T]):
     def __getitem__(self, key: slice) -> Self: ...
     def __getitem__(self, key: int | IntegerSocketList | slice) -> _T:
         from ..nodes.geometry.converter import GetListItem
-        from ..nodes.geometry.groups import SliceToIndices
 
         if isinstance(key, slice):
-            start = key.start if key.start is not None else 0
-            stop = key.stop if key.stop is not None else self.list_length()
-            step = key.step if key.step is not None else 1
-            key = SliceToIndices(start=start, stop=stop, step=step).o.indices
+            return self.list_slice(key.start, key.stop, key.step)  # ty: ignore[invalid-return-type]
 
         return GetListItem(
             self.socket,
