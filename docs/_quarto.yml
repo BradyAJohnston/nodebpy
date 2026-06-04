@@ -19,12 +19,9 @@ website:
           - custom-node-groups.qmd
           - node-api.qmd
           - using.qmd
+          - comparisons.qmd
       - href: reference/
         text: Reference
-      - href: comparisons.qmd
-        text: Comparisons
-      - href: gotchas.qmd
-        text: Gotchas
       - href: changelog.qmd
         text: Changelog
     right:
