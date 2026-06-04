@@ -10,9 +10,9 @@
 | [CombineColor](#nodebpy.nodes.compositor.converter.CombineColor) | Combine an image from its composite color channels |
 | [ConvertToDisplay](#nodebpy.nodes.compositor.converter.ConvertToDisplay) | Convert from scene linear to display color space, with a view transform and look for tone mapping |
 | [IDMask](#nodebpy.nodes.compositor.converter.IDMask) | Create a matte from an object or material index pass |
+| [ImplicitConversion](#nodebpy.nodes.compositor.converter.ImplicitConversion) | Implicitly convert the input value to a fixed socket type |
 | [IndexSwitch](#nodebpy.nodes.compositor.converter.IndexSwitch) | Choose between an arbitrary number of values with an index |
 | [Levels](#nodebpy.nodes.compositor.converter.Levels) | Compute average and standard deviation of pixel values |
-| [Mix](#nodebpy.nodes.compositor.converter.Mix) | Mix values by a factor |
 | [RGBToBW](#nodebpy.nodes.compositor.converter.RGBToBW) | Convert RGB input into grayscale using luminance |
 | [RelativeToPixel](#nodebpy.nodes.compositor.converter.RelativeToPixel) | Converts values that are relative to the image size to be in terms of pixels |
 | [SeparateColor](#nodebpy.nodes.compositor.converter.SeparateColor) | Split an image into its composite color channels |
@@ -270,6 +270,158 @@ Create a matte from an object or material index pass
 |-----------|---------------|-------------|
 | `o.alpha` | `FloatSocket` | Alpha       |
 
+### ImplicitConversion
+
+``` python
+ImplicitConversion(value=None, *, data_type='RGBA')
+```
+
+Implicitly convert the input value to a fixed socket type
+
+#### Parameters
+
+| Name  | Type       | Description | Default |
+|-------|------------|-------------|---------|
+| value | InputColor | Value       | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.compositor.converter.ImplicitConversion.data_type) |  |
+| [`i`](#nodebpy.nodes.compositor.converter.ImplicitConversion.i) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.ImplicitConversion.name) |  |
+| [`node`](#nodebpy.nodes.compositor.converter.ImplicitConversion.node) |  |
+| [`o`](#nodebpy.nodes.compositor.converter.ImplicitConversion.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.converter.ImplicitConversion.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.ImplicitConversion.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.converter.ImplicitConversion.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.compositor.converter.ImplicitConversion.boolean) | Create Implicit Conversion with operation ‘Boolean’. |
+| [color](#nodebpy.nodes.compositor.converter.ImplicitConversion.color) | Create Implicit Conversion with operation ‘Color’. |
+| [float](#nodebpy.nodes.compositor.converter.ImplicitConversion.float) | Create Implicit Conversion with operation ‘Float’. |
+| [font](#nodebpy.nodes.compositor.converter.ImplicitConversion.font) | Create Implicit Conversion with operation ‘Font’. |
+| [integer](#nodebpy.nodes.compositor.converter.ImplicitConversion.integer) | Create Implicit Conversion with operation ‘Integer’. |
+| [integer_vector](#nodebpy.nodes.compositor.converter.ImplicitConversion.integer_vector) | Create Implicit Conversion with operation ‘Integer Vector’. |
+| [matrix](#nodebpy.nodes.compositor.converter.ImplicitConversion.matrix) | Create Implicit Conversion with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.compositor.converter.ImplicitConversion.menu) | Create Implicit Conversion with operation ‘Menu’. |
+| [object](#nodebpy.nodes.compositor.converter.ImplicitConversion.object) | Create Implicit Conversion with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.compositor.converter.ImplicitConversion.rotation) | Create Implicit Conversion with operation ‘Rotation’. |
+| [string](#nodebpy.nodes.compositor.converter.ImplicitConversion.string) | Create Implicit Conversion with operation ‘String’. |
+| [vector](#nodebpy.nodes.compositor.converter.ImplicitConversion.vector) | Create Implicit Conversion with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(value=False)
+```
+
+Create Implicit Conversion with operation ‘Boolean’.
+
+##### color
+
+``` python
+color(value=None)
+```
+
+Create Implicit Conversion with operation ‘Color’.
+
+##### float
+
+``` python
+float(value=0.0)
+```
+
+Create Implicit Conversion with operation ‘Float’.
+
+##### font
+
+``` python
+font(value=None)
+```
+
+Create Implicit Conversion with operation ‘Font’.
+
+##### integer
+
+``` python
+integer(value=0)
+```
+
+Create Implicit Conversion with operation ‘Integer’.
+
+##### integer_vector
+
+``` python
+integer_vector(value=None)
+```
+
+Create Implicit Conversion with operation ‘Integer Vector’.
+
+##### matrix
+
+``` python
+matrix(value=None)
+```
+
+Create Implicit Conversion with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(value=None)
+```
+
+Create Implicit Conversion with operation ‘Menu’.
+
+##### object
+
+``` python
+object(value=None)
+```
+
+Create Implicit Conversion with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(value=None)
+```
+
+Create Implicit Conversion with operation ‘Rotation’.
+
+##### string
+
+``` python
+string(value='')
+```
+
+Create Implicit Conversion with operation ‘String’.
+
+##### vector
+
+``` python
+vector(value=None)
+```
+
+Create Implicit Conversion with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.value` | `ColorSocket` | Value       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.value` | `ColorSocket` | Value       |
+
 ### IndexSwitch
 
 ``` python
@@ -307,8 +459,13 @@ Choose between an arbitrary number of values with an index
 | [boolean](#nodebpy.nodes.compositor.converter.IndexSwitch.boolean) | Create Index Switch with operation ‘Boolean’. |
 | [color](#nodebpy.nodes.compositor.converter.IndexSwitch.color) | Create Index Switch with operation ‘Color’. |
 | [float](#nodebpy.nodes.compositor.converter.IndexSwitch.float) | Create Index Switch with operation ‘Float’. |
+| [font](#nodebpy.nodes.compositor.converter.IndexSwitch.font) | Create Index Switch with operation ‘Font’. |
 | [integer](#nodebpy.nodes.compositor.converter.IndexSwitch.integer) | Create Index Switch with operation ‘Integer’. |
+| [integer_vector](#nodebpy.nodes.compositor.converter.IndexSwitch.integer_vector) | Create Index Switch with operation ‘Integer Vector’. |
+| [matrix](#nodebpy.nodes.compositor.converter.IndexSwitch.matrix) | Create Index Switch with operation ‘Matrix’. |
 | [menu](#nodebpy.nodes.compositor.converter.IndexSwitch.menu) | Create Index Switch with operation ‘Menu’. |
+| [object](#nodebpy.nodes.compositor.converter.IndexSwitch.object) | Create Index Switch with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.compositor.converter.IndexSwitch.rotation) | Create Index Switch with operation ‘Rotation’. |
 | [string](#nodebpy.nodes.compositor.converter.IndexSwitch.string) | Create Index Switch with operation ‘String’. |
 | [vector](#nodebpy.nodes.compositor.converter.IndexSwitch.vector) | Create Index Switch with operation ‘Vector’. |
 
@@ -336,6 +493,14 @@ float(index=0, item_0=0.0, item_1=0.0, extend=None)
 
 Create Index Switch with operation ‘Float’.
 
+##### font
+
+``` python
+font(index=0, item_0=None, item_1=None, extend=None)
+```
+
+Create Index Switch with operation ‘Font’.
+
 ##### integer
 
 ``` python
@@ -344,6 +509,22 @@ integer(index=0, item_0=0, item_1=0, extend=None)
 
 Create Index Switch with operation ‘Integer’.
 
+##### integer_vector
+
+``` python
+integer_vector(index=0, item_0=None, item_1=None, extend=None)
+```
+
+Create Index Switch with operation ‘Integer Vector’.
+
+##### matrix
+
+``` python
+matrix(index=0, item_0=None, item_1=None, extend=None)
+```
+
+Create Index Switch with operation ‘Matrix’.
+
 ##### menu
 
 ``` python
@@ -351,6 +532,22 @@ menu(index=0, item_0=None, item_1=None, extend=None)
 ```
 
 Create Index Switch with operation ‘Menu’.
+
+##### object
+
+``` python
+object(index=0, item_0=None, item_1=None, extend=None)
+```
+
+Create Index Switch with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(index=0, item_0=None, item_1=None, extend=None)
+```
+
+Create Index Switch with operation ‘Rotation’.
 
 ##### string
 
@@ -423,119 +620,8 @@ Compute average and standard deviation of pixel values
 |------------------------|---------------|--------------------|
 | `o.mean`               | `FloatSocket` | Mean               |
 | `o.standard_deviation` | `FloatSocket` | Standard Deviation |
-
-### Mix
-
-``` python
-Mix(
-    factor_float=0.5,
-    factor_vector=None,
-    a_float=0.0,
-    b_float=0.0,
-    a_vector=None,
-    b_vector=None,
-    a_color=None,
-    b_color=None,
-    a_rotation=None,
-    b_rotation=None,
-    *,
-    data_type='FLOAT',
-    factor_mode='UNIFORM',
-    blend_type='MIX',
-    clamp_factor=False,
-    clamp_result=False,
-)
-```
-
-Mix values by a factor
-
-#### Parameters
-
-| Name          | Type          | Description | Default |
-|---------------|---------------|-------------|---------|
-| factor_float  | InputFloat    | Factor      | `0.5`   |
-| factor_vector | InputVector   | Factor      | `None`  |
-| a_float       | InputFloat    | A           | `0.0`   |
-| b_float       | InputFloat    | B           | `0.0`   |
-| a_vector      | InputVector   | A           | `None`  |
-| b_vector      | InputVector   | B           | `None`  |
-| a_color       | InputColor    | A           | `None`  |
-| b_color       | InputColor    | B           | `None`  |
-| a_rotation    | InputRotation | A           | `None`  |
-| b_rotation    | InputRotation | B           | `None`  |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`blend_type`](#nodebpy.nodes.compositor.converter.Mix.blend_type) |  |
-| [`clamp_factor`](#nodebpy.nodes.compositor.converter.Mix.clamp_factor) |  |
-| [`clamp_result`](#nodebpy.nodes.compositor.converter.Mix.clamp_result) |  |
-| [`data_type`](#nodebpy.nodes.compositor.converter.Mix.data_type) |  |
-| [`factor_mode`](#nodebpy.nodes.compositor.converter.Mix.factor_mode) |  |
-| [`i`](#nodebpy.nodes.compositor.converter.Mix.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.Mix.name) |  |
-| [`node`](#nodebpy.nodes.compositor.converter.Mix.node) |  |
-| [`o`](#nodebpy.nodes.compositor.converter.Mix.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.Mix.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.Mix.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.Mix.type) |  |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [color](#nodebpy.nodes.compositor.converter.Mix.color) | Create Mix with operation ‘Color’. |
-| [float](#nodebpy.nodes.compositor.converter.Mix.float) | Create Mix with operation ‘Float’. |
-| [vector](#nodebpy.nodes.compositor.converter.Mix.vector) | Create Mix with operation ‘Vector’. |
-
-##### color
-
-``` python
-color(factor=0.5, a_color=None, b_color=None)
-```
-
-Create Mix with operation ‘Color’.
-
-##### float
-
-``` python
-float(factor=0.5, a=0.0, b=0.0)
-```
-
-Create Mix with operation ‘Float’.
-
-##### vector
-
-``` python
-vector(factor=0.5, a=None, b=None)
-```
-
-Create Mix with operation ‘Vector’.
-
-**Inputs**
-
-| Attribute         | Type             | Description |
-|-------------------|------------------|-------------|
-| `i.factor_float`  | `FloatSocket`    | Factor      |
-| `i.factor_vector` | `VectorSocket`   | Factor      |
-| `i.a_float`       | `FloatSocket`    | A           |
-| `i.b_float`       | `FloatSocket`    | B           |
-| `i.a_vector`      | `VectorSocket`   | A           |
-| `i.b_vector`      | `VectorSocket`   | B           |
-| `i.a_color`       | `ColorSocket`    | A           |
-| `i.b_color`       | `ColorSocket`    | B           |
-| `i.a_rotation`    | `RotationSocket` | A           |
-| `i.b_rotation`    | `RotationSocket` | B           |
-
-**Outputs**
-
-| Attribute           | Type             | Description |
-|---------------------|------------------|-------------|
-| `o.result_float`    | `FloatSocket`    | Result      |
-| `o.result_vector`   | `VectorSocket`   | Result      |
-| `o.result_color`    | `ColorSocket`    | Result      |
-| `o.result_rotation` | `RotationSocket` | Result      |
+| `o.minimum`            | `FloatSocket` | Minimum            |
+| `o.maximum`            | `FloatSocket` | Maximum            |
 
 ### RGBToBW
 

@@ -2,12 +2,6 @@
 
 `groups`
 
-## Attributes
-
-| Name                                                      | Description |
-|-----------------------------------------------------------|-------------|
-| [`GROUP_NAME`](#nodebpy.nodes.geometry.groups.GROUP_NAME) |             |
-
 ## Classes
 
 | Name | Description |
@@ -16,6 +10,7 @@
 | [OffsetVector](#nodebpy.nodes.geometry.groups.OffsetVector) | Evaluate a given vector field at an offset to the current `Index`. |
 | [OtherVertex](#nodebpy.nodes.geometry.groups.OtherVertex) | Given a vertex and an edge number from that vertex, returns the other |
 | [PrincipalComponents](#nodebpy.nodes.geometry.groups.PrincipalComponents) | Compute PCA on a given vector field. |
+| [SliceToIndices](#nodebpy.nodes.geometry.groups.SliceToIndices) | Converts a python slice to a list of indices. |
 
 ### ClipFieldToBox
 
@@ -98,3 +93,24 @@ Compute PCA on a given vector field.
 | [`outputs`](#nodebpy.nodes.geometry.groups.PrincipalComponents.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.groups.PrincipalComponents.tree) |  |
 | [`type`](#nodebpy.nodes.geometry.groups.PrincipalComponents.type) |  |
+
+### SliceToIndices
+
+``` python
+SliceToIndices(start=0, stop=0, step=1)
+```
+
+Converts a python slice to a list of indices.
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.groups.SliceToIndices.i) |  |
+| [`name`](#nodebpy.nodes.geometry.groups.SliceToIndices.name) |  |
+| [`node`](#nodebpy.nodes.geometry.groups.SliceToIndices.node) |  |
+| [`node_tree`](#nodebpy.nodes.geometry.groups.SliceToIndices.node_tree) |  |
+| [`o`](#nodebpy.nodes.geometry.groups.SliceToIndices.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.groups.SliceToIndices.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.groups.SliceToIndices.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.groups.SliceToIndices.type) |  |

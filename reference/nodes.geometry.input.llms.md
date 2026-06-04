@@ -11,6 +11,7 @@
 | [BoneInfo](#nodebpy.nodes.geometry.input.BoneInfo) | Retrieve information of armature bones |
 | [Boolean](#nodebpy.nodes.geometry.input.Boolean) | Provide a True/False value that can be connected to other nodes in the tree |
 | [CameraInfo](#nodebpy.nodes.geometry.input.CameraInfo) | Retrieve information from a camera object |
+| [CollectionChildren](#nodebpy.nodes.geometry.input.CollectionChildren) | Retrieve a collection’s object and collection children, in a name-based order |
 | [CollectionInfo](#nodebpy.nodes.geometry.input.CollectionInfo) | Retrieve geometry instances from a collection |
 | [Color](#nodebpy.nodes.geometry.input.Color) | Output a color value chosen with the color picker widget |
 | [CornersOfEdge](#nodebpy.nodes.geometry.input.CornersOfEdge) | Retrieve face corners connected to edges |
@@ -34,6 +35,7 @@
 | [FaceNeighbors](#nodebpy.nodes.geometry.input.FaceNeighbors) | Retrieve topology information relating to each face of a mesh |
 | [FaceOfCorner](#nodebpy.nodes.geometry.input.FaceOfCorner) | Retrieve the face each face corner is part of |
 | [FaceSet](#nodebpy.nodes.geometry.input.FaceSet) | Each face’s sculpt face set value |
+| [Font](#nodebpy.nodes.geometry.input.Font) | Output a font |
 | [ID](#nodebpy.nodes.geometry.input.ID) | Retrieve a stable random identifier value from the “id” attribute on the point domain, or the index if the attribute does not exist |
 | [Image](#nodebpy.nodes.geometry.input.Image) | Input an image data-block |
 | [ImageInfo](#nodebpy.nodes.geometry.input.ImageInfo) | Retrieve information about an image |
@@ -45,6 +47,7 @@
 | [ImportVDB](#nodebpy.nodes.geometry.input.ImportVDB) | Import volume data from a .vdb file |
 | [Index](#nodebpy.nodes.geometry.input.Index) | Retrieve an integer value indicating the position of each element in the list, starting at zero |
 | [InstanceBounds](#nodebpy.nodes.geometry.input.InstanceBounds) | Calculate position bounds of each instance’s geometry set |
+| [InstanceReference](#nodebpy.nodes.geometry.input.InstanceReference) | Output the reference index of the instance |
 | [InstanceRotation](#nodebpy.nodes.geometry.input.InstanceRotation) | Retrieve the rotation of each instance in the geometry |
 | [InstanceScale](#nodebpy.nodes.geometry.input.InstanceScale) | Retrieve the scale of each instance in the geometry |
 | [InstanceTransform](#nodebpy.nodes.geometry.input.InstanceTransform) | Retrieve the full transformation of each instance in the geometry |
@@ -215,13 +218,14 @@ Retrieve information of armature bones
 
 **Outputs**
 
-| Attribute          | Type           | Description    |
-|--------------------|----------------|----------------|
-| `o.pose`           | `MatrixSocket` | Pose           |
-| `o.local_pose`     | `MatrixSocket` | Local Pose     |
-| `o.transform_pose` | `MatrixSocket` | Transform Pose |
-| `o.rest_pose`      | `MatrixSocket` | Rest Pose      |
-| `o.rest_length`    | `FloatSocket`  | Rest Length    |
+| Attribute          | Type            | Description    |
+|--------------------|-----------------|----------------|
+| `o.pose`           | `MatrixSocket`  | Pose           |
+| `o.local_pose`     | `MatrixSocket`  | Local Pose     |
+| `o.transform_pose` | `MatrixSocket`  | Transform Pose |
+| `o.rest_pose`      | `MatrixSocket`  | Rest Pose      |
+| `o.rest_length`    | `FloatSocket`   | Rest Length    |
+| `o.exists`         | `BooleanSocket` | Exists         |
 
 ### Boolean
 
@@ -295,6 +299,47 @@ Retrieve information from a camera object
 | `o.focus_distance`     | `FloatSocket`   | Focus Distance     |
 | `o.is_orthographic`    | `BooleanSocket` | Is Orthographic    |
 | `o.orthographic_scale` | `FloatSocket`   | Orthographic Scale |
+
+### CollectionChildren
+
+``` python
+CollectionChildren(collection=None, recursive=False)
+```
+
+Retrieve a collection’s object and collection children, in a name-based order
+
+#### Parameters
+
+| Name       | Type            | Description | Default |
+|------------|-----------------|-------------|---------|
+| collection | InputCollection | Collection  | `None`  |
+| recursive  | InputBoolean    | Recursive   | `False` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.CollectionChildren.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CollectionChildren.name) |  |
+| [`node`](#nodebpy.nodes.geometry.input.CollectionChildren.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.CollectionChildren.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.CollectionChildren.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CollectionChildren.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.input.CollectionChildren.type) |  |
+
+**Inputs**
+
+| Attribute      | Type               | Description |
+|----------------|--------------------|-------------|
+| `i.collection` | `CollectionSocket` | Collection  |
+| `i.recursive`  | `BooleanSocket`    | Recursive   |
+
+**Outputs**
+
+| Attribute       | Type               | Description |
+|-----------------|--------------------|-------------|
+| `o.collections` | `CollectionSocket` | Collections |
+| `o.objects`     | `ObjectSocket`     | Objects     |
 
 ### CollectionInfo
 
@@ -1097,6 +1142,32 @@ Each face’s sculpt face set value
 | `o.face_set` | `IntegerSocket` | Face Set    |
 | `o.exists`   | `BooleanSocket` | Exists      |
 
+### Font
+
+``` python
+Font()
+```
+
+Output a font
+
+#### Attributes
+
+| Name                                                    | Description |
+|---------------------------------------------------------|-------------|
+| [`i`](#nodebpy.nodes.geometry.input.Font.i)             |             |
+| [`name`](#nodebpy.nodes.geometry.input.Font.name)       |             |
+| [`node`](#nodebpy.nodes.geometry.input.Font.node)       |             |
+| [`o`](#nodebpy.nodes.geometry.input.Font.o)             |             |
+| [`outputs`](#nodebpy.nodes.geometry.input.Font.outputs) |             |
+| [`tree`](#nodebpy.nodes.geometry.input.Font.tree)       |             |
+| [`type`](#nodebpy.nodes.geometry.input.Font.type)       |             |
+
+**Outputs**
+
+| Attribute | Type         | Description |
+|-----------|--------------|-------------|
+| `o.font`  | `FontSocket` | Font        |
+
 ### ID
 
 ``` python
@@ -1487,6 +1558,32 @@ Calculate position bounds of each instance’s geometry set
 |-----------|----------------|-------------|
 | `o.min`   | `VectorSocket` | Min         |
 | `o.max`   | `VectorSocket` | Max         |
+
+### InstanceReference
+
+``` python
+InstanceReference()
+```
+
+Output the reference index of the instance
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.InstanceReference.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.InstanceReference.name) |  |
+| [`node`](#nodebpy.nodes.geometry.input.InstanceReference.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.InstanceReference.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.InstanceReference.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.InstanceReference.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.input.InstanceReference.type) |  |
+
+**Outputs**
+
+| Attribute           | Type            | Description     |
+|---------------------|-----------------|-----------------|
+| `o.reference_index` | `IntegerSocket` | Reference Index |
 
 ### InstanceRotation
 
@@ -2538,23 +2635,24 @@ Generate tangent directions based on a UV map
 ### Vector
 
 ``` python
-Vector(vector=(0.0, 0.0, 0.0))
+Vector(vector=(0.0, 0.0, 0.0), vector_dimensions=3)
 ```
 
 Provide a vector value that can be connected to other nodes in the tree
 
 #### Attributes
 
-| Name                                                      | Description |
-|-----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Vector.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Vector.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Vector.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Vector.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Vector.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Vector.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Vector.type)       |             |
-| [`vector`](#nodebpy.nodes.geometry.input.Vector.vector)   |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Vector.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Vector.name) |  |
+| [`node`](#nodebpy.nodes.geometry.input.Vector.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Vector.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Vector.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Vector.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.input.Vector.type) |  |
+| [`vector`](#nodebpy.nodes.geometry.input.Vector.vector) |  |
+| [`vector_dimensions`](#nodebpy.nodes.geometry.input.Vector.vector_dimensions) |  |
 
 **Outputs**
 

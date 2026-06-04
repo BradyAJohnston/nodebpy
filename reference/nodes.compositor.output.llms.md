@@ -12,7 +12,12 @@
 ### FileOutput
 
 ``` python
-FileOutput(directory='', file_name='', save_as_render=False)
+FileOutput(
+    directory='',
+    file_name='',
+    save_as_render=False,
+    use_file_extension=False,
+)
 ```
 
 Write image file to disk
@@ -31,6 +36,7 @@ Write image file to disk
 | [`save_as_render`](#nodebpy.nodes.compositor.output.FileOutput.save_as_render) |  |
 | [`tree`](#nodebpy.nodes.compositor.output.FileOutput.tree) |  |
 | [`type`](#nodebpy.nodes.compositor.output.FileOutput.type) |  |
+| [`use_file_extension`](#nodebpy.nodes.compositor.output.FileOutput.use_file_extension) |  |
 
 ### Viewer
 

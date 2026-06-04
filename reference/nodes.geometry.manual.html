@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -76,10 +76,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3b55550aa65ec9d27c7f2186ab0055e9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.18.0</span>
+    <span class="navbar-title">nodebpy 520.0.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -152,6 +152,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../node-api.html">
  <span class="dropdown-text">Node API Design</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../using.html">
+ <span class="dropdown-text">Using Nodebpy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../comparisons.html">
+ <span class="dropdown-text">Comapring the API</span></a>
   </li>  
     </ul>
   </li>
@@ -520,6 +528,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nodebpy.nodes.geometry.manual.FieldAverage" id="toc-nodebpy.nodes.geometry.manual.FieldAverage" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.FieldAverage">FieldAverage</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.FieldMinAndMax" id="toc-nodebpy.nodes.geometry.manual.FieldMinAndMax" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.FieldMinAndMax">FieldMinAndMax</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.FieldToGrid" id="toc-nodebpy.nodes.geometry.manual.FieldToGrid" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.FieldToGrid">FieldToGrid</a></li>
+  <li><a href="#nodebpy.nodes.geometry.manual.FieldToList" id="toc-nodebpy.nodes.geometry.manual.FieldToList" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.FieldToList">FieldToList</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.FieldVariance" id="toc-nodebpy.nodes.geometry.manual.FieldVariance" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.FieldVariance">FieldVariance</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.Float" id="toc-nodebpy.nodes.geometry.manual.Float" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.Float">Float</a></li>
   <li><a href="#nodebpy.nodes.geometry.manual.FloatCurve" id="toc-nodebpy.nodes.geometry.manual.FloatCurve" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.manual.FloatCurve">FloatCurve</a></li>
@@ -610,70 +619,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Create new grids by evaluating new values on an existing volume grid topology</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList">FieldToList</a></td>
+<td>Create a list of values</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.FieldVariance">FieldVariance</a></td>
 <td>Calculate the standard deviation and variance of a given field</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.Float">Float</a></td>
 <td>Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper of the Value node.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.FloatCurve">FloatCurve</a></td>
 <td>Map an input float to a curve and outputs a float value</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.FormatString">FormatString</a></td>
 <td>Insert values into a string using a Python and path template compatible formatting syntax</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.Frame">Frame</a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.GeometryToInstance">GeometryToInstance</a></td>
 <td>Convert each input geometry into an instance, which can be much faster</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.HandleTypeSelection">HandleTypeSelection</a></td>
 <td>Provide a selection based on the handle types of Bézier control points</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.IndexSwitch">IndexSwitch</a></td>
 <td>Node builder for the Index Switch node</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.JoinGeometry">JoinGeometry</a></td>
 <td>Merge separately generated geometries into a single one</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.JoinStrings">JoinStrings</a></td>
 <td>Combine any number of input strings</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.MenuSwitch">MenuSwitch</a></td>
 <td>Node builder for the Menu Switch node</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.MeshBoolean">MeshBoolean</a></td>
 <td>Cut, subtract, or join multiple mesh inputs</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.SDFGridBoolean">SDFGridBoolean</a></td>
 <td>Cut, subtract, or join multiple SDF volume grid inputs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.SetHandleType">SetHandleType</a></td>
 <td>Set the handle type for the control points of a Bézier curve</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.StoreNamedAttribute">StoreNamedAttribute</a></td>
 <td>Store the result of a field on a geometry as an attribute with the specified name</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.Switch">Switch</a></td>
 <td>Switch between two inputs</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.Value">Value</a></td>
 <td>Input numerical values to other nodes in the tree</td>
 </tr>
@@ -1811,60 +1824,273 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.boolean">boolean</a></td>
-<td></td>
+<td>Data type for the topology grid</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.capture">capture</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.float">float</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.capture_boolean">capture_boolean</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.integer">integer</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.capture_float">capture_float</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.vector">vector</a></td>
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.capture_integer">capture_integer</a></td>
 <td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.capture_vector">capture_vector</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.float">float</a></td>
+<td>Data type for the topology grid</td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.integer">integer</a></td>
+<td>Data type for the topology grid</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.vector">vector</a></td>
+<td>Data type for the topology grid</td>
 </tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.boolean">boolean</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>boolean(topology<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Data type for the topology grid</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.capture" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.capture">capture</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>capture(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
+<section id="nodebpy.nodes.geometry.manual.FieldToGrid.capture_boolean" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.capture_boolean">capture_boolean</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>capture_boolean(field<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToGrid.capture_float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.capture_float">capture_float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>capture_float(field<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToGrid.capture_integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.capture_integer">capture_integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>capture_integer(field<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToGrid.capture_vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.capture_vector">capture_vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>capture_vector(field<span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(topology<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(topology<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Data type for the topology grid</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>integer(topology<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>integer(topology<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Data type for the topology grid</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldToGrid.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToGrid.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>vector(topology<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>vector(topology<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Data type for the topology grid</p>
+</section>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList">FieldToList</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>FieldToList(count<span class="op">=</span><span class="dv">1</span>, fields<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create a list of values</p>
+<section id="parameters-2" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>count</td>
+<td>InputInteger</td>
+<td>Count</td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes-12" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="methods-4" class="level4">
+<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.boolean">boolean</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.capture">capture</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.color">color</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.float">float</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.integer">integer</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.matrix">matrix</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.menu">menu</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.rotation">rotation</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.string">string</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToList.vector">vector</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.boolean" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.boolean">boolean</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">input</span><span class="op">=</span><span class="va">False</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.capture" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.capture">capture</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>capture(fields)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.color" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.color">color</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>color(<span class="bu">input</span><span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.float">float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">input</span><span class="op">=</span><span class="fl">0.0</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.integer">integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">input</span><span class="op">=</span><span class="dv">0</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.matrix" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.matrix">matrix</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>matrix(<span class="bu">input</span><span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.menu" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.menu">menu</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>menu(<span class="bu">input</span><span class="op">=</span><span class="va">None</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.rotation" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.rotation">rotation</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>rotation(<span class="bu">input</span><span class="op">=</span>Euler((<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)), name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.string" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.string">string</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">input</span><span class="op">=</span><span class="st">''</span>, name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="nodebpy.nodes.geometry.manual.FieldToList.vector" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldToList.vector">vector</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>vector(<span class="bu">input</span><span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), name<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Inputs</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>i.count</code></td>
+<td><code>IntegerSocket</code></td>
+<td>Count</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.manual.FieldVariance" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FieldVariance">FieldVariance</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>FieldVariance(</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>FieldVariance(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    group_index<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the standard deviation and variance of a given field</p>
-<section id="attributes-12" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-12">Attributes</h4>
+<section id="attributes-13" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1943,10 +2169,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.Float" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Float">Float</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Float(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>Float(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper of the Value node.</p>
-<section id="attributes-13" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-13">Attributes</h4>
+<section id="attributes-14" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1993,10 +2219,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.FloatCurve" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FloatCurve">FloatCurve</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>FloatCurve(factor<span class="op">=</span><span class="fl">1.0</span>, value<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>FloatCurve(factor<span class="op">=</span><span class="fl">1.0</span>, value<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Map an input float to a curve and outputs a float value</p>
-<section id="parameters-2" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
+<section id="parameters-3" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 2%">
@@ -2034,8 +2260,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-14" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-14">Attributes</h4>
+<section id="attributes-15" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2121,10 +2347,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.FormatString" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.FormatString">FormatString</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>FormatString(<span class="bu">format</span><span class="op">=</span><span class="st">''</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>FormatString(<span class="bu">format</span><span class="op">=</span><span class="st">''</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Insert values into a string using a Python and path template compatible formatting syntax</p>
-<section id="attributes-15" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-15">Attributes</h4>
+<section id="attributes-16" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2171,9 +2397,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.Frame" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Frame">Frame</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Frame(label<span class="op">=</span><span class="va">None</span>, shrink<span class="op">=</span><span class="va">True</span>, text<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="attributes-16" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-16">Attributes</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>Frame(label<span class="op">=</span><span class="va">None</span>, shrink<span class="op">=</span><span class="va">True</span>, text<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="attributes-17" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2228,10 +2454,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.GeometryToInstance" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.GeometryToInstance">GeometryToInstance</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>GeometryToInstance(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>GeometryToInstance(<span class="op">*</span>args)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert each input geometry into an instance, which can be much faster than the Join Geometry node when the inputs are large</p>
-<section id="attributes-17" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-17">Attributes</h4>
+<section id="attributes-18" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2318,10 +2544,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.HandleTypeSelection" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.HandleTypeSelection">HandleTypeSelection</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>HandleTypeSelection(handle_type<span class="op">=</span><span class="st">'AUTO'</span>, left<span class="op">=</span><span class="va">True</span>, right<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>HandleTypeSelection(handle_type<span class="op">=</span><span class="st">'AUTO'</span>, left<span class="op">=</span><span class="va">True</span>, right<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Provide a selection based on the handle types of Bézier control points</p>
-<section id="attributes-18" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-18">Attributes</h4>
+<section id="attributes-19" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2380,10 +2606,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch">IndexSwitch</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>IndexSwitch(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>(), data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>IndexSwitch(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>(), data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Node builder for the Index Switch node</p>
-<section id="attributes-19" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-19">Attributes</h4>
+<section id="attributes-20" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2427,8 +2653,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-4" class="level4">
-<h4 class="anchored" data-anchor-id="methods-4">Methods</h4>
+<section id="methods-5" class="level4">
+<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2505,76 +2731,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>boolean(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>boolean(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.bundle" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.bundle">bundle</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>bundle(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>bundle(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.closure" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.closure">closure</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>closure(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>closure(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.collection" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.collection">collection</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>collection(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>collection(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>color(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>color(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.geometry" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.geometry">geometry</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>geometry(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>geometry(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.image" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.image">image</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>image(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>image(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>integer(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>integer(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.material" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.material">material</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>material(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>material(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.matrix">matrix</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>matrix(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>matrix(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.menu" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.menu">menu</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>menu(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>menu(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.object" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.object">object</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.rotation" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.rotation">rotation</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rotation(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>rotation(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>string(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>string(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.IndexSwitch.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.IndexSwitch.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>vector(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>vector(index<span class="op">=</span><span class="dv">0</span>, items<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.manual.JoinGeometry" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.JoinGeometry">JoinGeometry</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>JoinGeometry(geometry<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>JoinGeometry(geometry<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Merge separately generated geometries into a single one</p>
-<section id="attributes-20" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-20">Attributes</h4>
+<section id="attributes-21" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2617,10 +2843,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.JoinStrings" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.JoinStrings">JoinStrings</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>JoinStrings(strings<span class="op">=</span>(), delimiter<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>JoinStrings(strings<span class="op">=</span>(), delimiter<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Combine any number of input strings</p>
-<section id="attributes-21" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-21">Attributes</h4>
+<section id="attributes-22" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2663,10 +2889,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch">MenuSwitch</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>MenuSwitch(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{}, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>MenuSwitch(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{}, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Node builder for the Menu Switch node</p>
-<section id="attributes-22" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-22">Attributes</h4>
+<section id="attributes-23" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2710,8 +2936,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-5" class="level4">
-<h4 class="anchored" data-anchor-id="methods-5">Methods</h4>
+<section id="methods-6" class="level4">
+<h4 class="anchored" data-anchor-id="methods-6">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2792,47 +3018,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>boolean(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>boolean(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.bundle" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.bundle">bundle</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>bundle(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>bundle(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.closure" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.closure">closure</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>closure(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>closure(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.collection" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.collection">collection</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>collection(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>collection(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>color(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>color(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.geometry" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.geometry">geometry</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>geometry(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>geometry(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.image" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.image">image</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>image(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>image(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>integer(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>integer(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.is_selected" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.is_selected">is_selected</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>is_selected(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>is_selected(name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Gets the boolean output socket that is True when the named menu item is selected.</p>
 <p>Cannot be used with the “Output” name as this refers to the output socket itself.</p>
-<section id="parameters-3" class="level6 doc-section doc-section-parameters">
-<h6 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h6>
+<section id="parameters-4" class="level6 doc-section doc-section-parameters">
+<h6 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h6>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
@@ -2885,48 +3111,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.material" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.material">material</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>material(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>material(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.matrix">matrix</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>matrix(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>matrix(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.menu" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.menu">menu</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>menu(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>menu(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.object" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.object">object</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.rotation" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.rotation">rotation</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>rotation(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>rotation(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>string(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>string(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MenuSwitch.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MenuSwitch.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>vector(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>vector(menu<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span>{})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MeshBoolean" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MeshBoolean">MeshBoolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>MeshBoolean(</span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>    mesh_1<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>    mesh_2<span class="op">=</span>(),</span>
-<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>,</span>
-<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>MeshBoolean(</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>    mesh_1<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>    mesh_2<span class="op">=</span>(),</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>    operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>,</span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Cut, subtract, or join multiple mesh inputs</p>
-<section id="attributes-23" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-23">Attributes</h4>
+<section id="attributes-24" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -2974,8 +3200,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-6" class="level4">
-<h4 class="anchored" data-anchor-id="methods-6">Methods</h4>
+<section id="methods-7" class="level4">
+<h4 class="anchored" data-anchor-id="methods-7">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3000,37 +3226,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.manual.MeshBoolean.difference" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MeshBoolean.difference">difference</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>difference(</span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>    mesh_1<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>    items<span class="op">=</span>(),</span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>difference(</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>    mesh_1<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>    items<span class="op">=</span>(),</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MeshBoolean.intersect" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MeshBoolean.intersect">intersect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>intersect(</span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>    items<span class="op">=</span>(),</span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>intersect(</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>    items<span class="op">=</span>(),</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>    self_intersection<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>    hole_tolerant<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.MeshBoolean.union" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.MeshBoolean.union">union</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>union(items<span class="op">=</span>(), self_intersection<span class="op">=</span><span class="va">False</span>, hole_tolerant<span class="op">=</span><span class="va">False</span>, <span class="op">*</span>, solver<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>union(items<span class="op">=</span>(), self_intersection<span class="op">=</span><span class="va">False</span>, hole_tolerant<span class="op">=</span><span class="va">False</span>, <span class="op">*</span>, solver<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean">SDFGridBoolean</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>SDFGridBoolean(operation<span class="op">=</span><span class="st">'DIFFERENCE'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Cut, subtract, or join multiple SDF volume grid inputs</p>
-<section id="attributes-24" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-24">Attributes</h4>
+<section id="attributes-25" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3074,8 +3300,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-7" class="level4">
-<h4 class="anchored" data-anchor-id="methods-7">Methods</h4>
+<section id="methods-8" class="level4">
+<h4 class="anchored" data-anchor-id="methods-8">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3100,32 +3326,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean.difference" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean.difference">difference</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>difference(grid_1<span class="op">=</span><span class="va">None</span>, grids<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>difference(grid_1<span class="op">=</span><span class="va">None</span>, grids<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create SDF Grid Boolean with operation ‘Difference’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean.intersect">intersect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>intersect(grids<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>intersect(grids<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.nodes.geometry.manual.SDFGridBoolean.union" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SDFGridBoolean.union">union</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>union(grids<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>union(grids<span class="op">=</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.nodes.geometry.manual.SetHandleType" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.SetHandleType">SetHandleType</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>SetHandleType(</span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>    curve<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>    left<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>    right<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>    handle_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
-<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>SetHandleType(</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>    curve<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>    left<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>    right<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a>    handle_type<span class="op">=</span><span class="st">'AUTO'</span>,</span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Set the handle type for the control points of a Bézier curve</p>
-<section id="attributes-25" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-25">Attributes</h4>
+<section id="attributes-26" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3180,18 +3406,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.StoreNamedAttribute" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.StoreNamedAttribute">StoreNamedAttribute</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>StoreNamedAttribute(</span>
-<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
-<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
-<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
-<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>StoreNamedAttribute(</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>    geometry<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">'FLOAT'</span>,</span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">=</span><span class="st">'POINT'</span>,</span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store the result of a field on a geometry as an attribute with the specified name</p>
-<section id="parameters-4" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
+<section id="parameters-5" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3229,8 +3455,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-26" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-26">Attributes</h4>
+<section id="attributes-27" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3358,10 +3584,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch">Switch</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>Switch(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, input_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>Switch(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, input_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Switch between two inputs</p>
-<section id="parameters-5" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-5">Parameters</h4>
+<section id="parameters-6" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3393,8 +3619,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="attributes-27" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-27">Attributes</h4>
+<section id="attributes-28" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3438,8 +3664,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="methods-8" class="level4">
-<h4 class="anchored" data-anchor-id="methods-8">Methods</h4>
+<section id="methods-9" class="level4">
+<h4 class="anchored" data-anchor-id="methods-9">Methods</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -3509,10 +3735,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Create Switch with operation ‘Rotation’.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.Switch.sound">sound</a></td>
+<td>Create Switch with operation ‘Sound’.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.Switch.string">string</a></td>
 <td>Create Switch with operation ‘String’.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.Switch.vector">vector</a></td>
 <td>Create Switch with operation ‘Vector’.</td>
 </tr>
@@ -3520,87 +3750,92 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.manual.Switch.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>boolean(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">False</span>, true<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb95"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>boolean(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">False</span>, true<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.bundle" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.bundle">bundle</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>bundle(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>bundle(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Bundle’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.closure" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.closure">closure</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>closure(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>closure(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Closure’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.collection" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.collection">collection</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>collection(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb98"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>collection(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Collection’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.color" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>color(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb99"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>color(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Color’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="fl">0.0</span>, true<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="fl">0.0</span>, true<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.font" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.font">font</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>font(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>font(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Font’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.geometry" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.geometry">geometry</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>geometry(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb102"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>geometry(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Geometry’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.image" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.image">image</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>image(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>image(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Image’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>integer(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="dv">0</span>, true<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>integer(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="dv">0</span>, true<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.material" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.material">material</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>material(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>material(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Material’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.matrix" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.matrix">matrix</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>matrix(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb106"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>matrix(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Matrix’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.menu" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.menu">menu</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>menu(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb107"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>menu(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Menu’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.object" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.object">object</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb108"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Object’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.rotation" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.rotation">rotation</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>rotation(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb109"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>rotation(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Rotation’.</p>
+</section>
+<section id="nodebpy.nodes.geometry.manual.Switch.sound" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.sound">sound</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb110"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>sound(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create Switch with operation ‘Sound’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb95"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>string(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="st">''</span>, true<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb111"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>string(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="st">''</span>, true<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘String’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.manual.Switch.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Switch.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>vector(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb112"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>vector(switch<span class="op">=</span><span class="va">False</span>, false<span class="op">=</span><span class="va">None</span>, true<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Switch with operation ‘Vector’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -3651,10 +3886,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.manual.Value" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.manual.Value">Value</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb113"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>Value(value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Input numerical values to other nodes in the tree</p>
-<section id="attributes-28" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-28">Attributes</h4>
+<section id="attributes-29" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-29">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">

@@ -43,8 +43,13 @@ Either pass through the input value or output the fallback value
 | [boolean](#nodebpy.nodes.compositor.interface.EnableOutput.boolean) | Create Enable Output with operation ‘Boolean’. |
 | [color](#nodebpy.nodes.compositor.interface.EnableOutput.color) | Create Enable Output with operation ‘Color’. |
 | [float](#nodebpy.nodes.compositor.interface.EnableOutput.float) | Create Enable Output with operation ‘Float’. |
+| [font](#nodebpy.nodes.compositor.interface.EnableOutput.font) | Create Enable Output with operation ‘Font’. |
 | [integer](#nodebpy.nodes.compositor.interface.EnableOutput.integer) | Create Enable Output with operation ‘Integer’. |
+| [integer_vector](#nodebpy.nodes.compositor.interface.EnableOutput.integer_vector) | Create Enable Output with operation ‘Integer Vector’. |
+| [matrix](#nodebpy.nodes.compositor.interface.EnableOutput.matrix) | Create Enable Output with operation ‘Matrix’. |
 | [menu](#nodebpy.nodes.compositor.interface.EnableOutput.menu) | Create Enable Output with operation ‘Menu’. |
+| [object](#nodebpy.nodes.compositor.interface.EnableOutput.object) | Create Enable Output with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.compositor.interface.EnableOutput.rotation) | Create Enable Output with operation ‘Rotation’. |
 | [string](#nodebpy.nodes.compositor.interface.EnableOutput.string) | Create Enable Output with operation ‘String’. |
 | [vector](#nodebpy.nodes.compositor.interface.EnableOutput.vector) | Create Enable Output with operation ‘Vector’. |
 
@@ -72,6 +77,14 @@ float(enable=False, value=0.0)
 
 Create Enable Output with operation ‘Float’.
 
+##### font
+
+``` python
+font(enable=False, value=None)
+```
+
+Create Enable Output with operation ‘Font’.
+
 ##### integer
 
 ``` python
@@ -80,6 +93,22 @@ integer(enable=False, value=0)
 
 Create Enable Output with operation ‘Integer’.
 
+##### integer_vector
+
+``` python
+integer_vector(enable=False, value=None)
+```
+
+Create Enable Output with operation ‘Integer Vector’.
+
+##### matrix
+
+``` python
+matrix(enable=False, value=None)
+```
+
+Create Enable Output with operation ‘Matrix’.
+
 ##### menu
 
 ``` python
@@ -87,6 +116,22 @@ menu(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘Menu’.
+
+##### object
+
+``` python
+object(enable=False, value=None)
+```
+
+Create Enable Output with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(enable=False, value=None)
+```
+
+Create Enable Output with operation ‘Rotation’.
 
 ##### string
 

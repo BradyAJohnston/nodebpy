@@ -1178,10 +1178,10 @@ Computes a signed distance field from the given mask
 
 **Outputs**
 
-| Attribute         | Type           | Description   |
-|-------------------|----------------|---------------|
-| `o.sdf`           | `FloatSocket`  | SDF           |
-| `o.nearest_pixel` | `VectorSocket` | Nearest Pixel |
+| Attribute         | Type            | Description   |
+|-------------------|-----------------|---------------|
+| `o.sdf`           | `FloatSocket`   | SDF           |
+| `o.nearest_pixel` | `IntegerSocket` | Nearest Pixel |
 
 ### Pixelate
 

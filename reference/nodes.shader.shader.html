@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -76,10 +76,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3b55550aa65ec9d27c7f2186ab0055e9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.18.0</span>
+    <span class="navbar-title">nodebpy 520.0.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -152,6 +152,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../node-api.html">
  <span class="dropdown-text">Node API Design</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../using.html">
+ <span class="dropdown-text">Using Nodebpy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../comparisons.html">
+ <span class="dropdown-text">Comapring the API</span></a>
   </li>  
     </ul>
   </li>
@@ -2094,43 +2102,44 @@ i.weight : FloatSocket
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    ior<span class="op">=</span><span class="fl">1.5</span>,</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    diffuse_roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    subsurface_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    subsurface_radius<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    subsurface_scale<span class="op">=</span><span class="fl">0.05</span>,</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    subsurface_ior<span class="op">=</span><span class="fl">1.4</span>,</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    subsurface_anisotropy<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    specular_ior_level<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    specular_tint<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    anisotropic<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    anisotropic_rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    transmission_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    coat_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    coat_roughness<span class="op">=</span><span class="fl">0.03</span>,</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    coat_ior<span class="op">=</span><span class="fl">1.5</span>,</span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>    coat_tint<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>    coat_normal<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    sheen_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    sheen_roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>    sheen_tint<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>    emission_color<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>    emission_strength<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    thin_film_thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>    thin_film_ior<span class="op">=</span><span class="fl">1.33</span>,</span>
-<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    distribution<span class="op">=</span><span class="st">'MULTI_GGX'</span>,</span>
-<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>    subsurface_method<span class="op">=</span><span class="st">'RANDOM_WALK'</span>,</span>
-<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    thin_wall<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    diffuse_roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    subsurface_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    subsurface_radius<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    subsurface_scale<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    subsurface_ior<span class="op">=</span><span class="fl">1.4</span>,</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    subsurface_anisotropy<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    specular_ior_level<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    specular_tint<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    anisotropic<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    anisotropic_rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    transmission_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    coat_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    coat_roughness<span class="op">=</span><span class="fl">0.03</span>,</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>    coat_ior<span class="op">=</span><span class="fl">1.5</span>,</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>    coat_tint<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    coat_normal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    sheen_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>    sheen_roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>    sheen_tint<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>    emission_color<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    emission_strength<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>    thin_film_thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>    thin_film_ior<span class="op">=</span><span class="fl">1.33</span>,</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>    distribution<span class="op">=</span><span class="st">'MULTI_GGX'</span>,</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>    subsurface_method<span class="op">=</span><span class="st">'RANDOM_WALK'</span>,</span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Physically-based, easy-to-use shader for rendering surface materials, based on the OpenPBR model</p>
 <section id="parameters-10" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 32%">
-<col style="width: 18%">
+<col style="width: 19%">
 <col style="width: 32%">
 <col style="width: 15%">
 </colgroup>
@@ -2174,156 +2183,162 @@ i.weight : FloatSocket
 <td><code>1.0</code></td>
 </tr>
 <tr class="even">
+<td>thin_wall</td>
+<td>InputBoolean</td>
+<td>Thin Wall</td>
+<td><code>False</code></td>
+</tr>
+<tr class="odd">
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
 <td><code>None</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>weight</td>
 <td>InputFloat</td>
 <td>Weight</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>diffuse_roughness</td>
 <td>InputFloat</td>
 <td>Diffuse Roughness</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>subsurface_weight</td>
 <td>InputFloat</td>
 <td>Subsurface Weight</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>subsurface_radius</td>
 <td>InputVector</td>
 <td>Subsurface Radius</td>
 <td><code>None</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>subsurface_scale</td>
 <td>InputFloat</td>
 <td>Subsurface Scale</td>
 <td><code>0.05</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>subsurface_ior</td>
 <td>InputFloat</td>
 <td>Subsurface IOR</td>
 <td><code>1.4</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>subsurface_anisotropy</td>
 <td>InputFloat</td>
 <td>Subsurface Anisotropy</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>specular_ior_level</td>
 <td>InputFloat</td>
 <td>Specular IOR Level</td>
 <td><code>0.5</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>specular_tint</td>
 <td>InputColor</td>
 <td>Specular Tint</td>
 <td><code>None</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>anisotropic</td>
 <td>InputFloat</td>
 <td>Anisotropic</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>anisotropic_rotation</td>
 <td>InputFloat</td>
 <td>Anisotropic Rotation</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>tangent</td>
 <td>InputVector</td>
 <td>Tangent</td>
 <td><code>None</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>transmission_weight</td>
 <td>InputFloat</td>
 <td>Transmission Weight</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>coat_weight</td>
 <td>InputFloat</td>
 <td>Coat Weight</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>coat_roughness</td>
 <td>InputFloat</td>
 <td>Coat Roughness</td>
 <td><code>0.03</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>coat_ior</td>
 <td>InputFloat</td>
 <td>Coat IOR</td>
 <td><code>1.5</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>coat_tint</td>
 <td>InputColor</td>
 <td>Coat Tint</td>
 <td><code>None</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>coat_normal</td>
 <td>InputVector</td>
 <td>Coat Normal</td>
 <td><code>None</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sheen_weight</td>
 <td>InputFloat</td>
 <td>Sheen Weight</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sheen_roughness</td>
 <td>InputFloat</td>
 <td>Sheen Roughness</td>
 <td><code>0.5</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sheen_tint</td>
 <td>InputColor</td>
 <td>Sheen Tint</td>
 <td><code>None</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>emission_color</td>
 <td>InputColor</td>
 <td>Emission Color</td>
 <td><code>None</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>emission_strength</td>
 <td>InputFloat</td>
 <td>Emission Strength</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>thin_film_thickness</td>
 <td>InputFloat</td>
 <td>Thin Film Thickness</td>
 <td><code>0.0</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>thin_film_ior</td>
 <td>InputFloat</td>
 <td>Thin Film IOR</td>
@@ -2416,131 +2431,136 @@ i.weight : FloatSocket
 <td>Alpha</td>
 </tr>
 <tr class="even">
+<td><code>i.thin_wall</code></td>
+<td><code>BooleanSocket</code></td>
+<td>Thin Wall</td>
+</tr>
+<tr class="odd">
 <td><code>i.normal</code></td>
 <td><code>VectorSocket</code></td>
 <td>Normal</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.weight</code></td>
 <td><code>FloatSocket</code></td>
 <td>Weight</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.diffuse_roughness</code></td>
 <td><code>FloatSocket</code></td>
 <td>Diffuse Roughness</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.subsurface_weight</code></td>
 <td><code>FloatSocket</code></td>
 <td>Subsurface Weight</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.subsurface_radius</code></td>
 <td><code>VectorSocket</code></td>
 <td>Subsurface Radius</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.subsurface_scale</code></td>
 <td><code>FloatSocket</code></td>
 <td>Subsurface Scale</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.subsurface_ior</code></td>
 <td><code>FloatSocket</code></td>
 <td>Subsurface IOR</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.subsurface_anisotropy</code></td>
 <td><code>FloatSocket</code></td>
 <td>Subsurface Anisotropy</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.specular_ior_level</code></td>
 <td><code>FloatSocket</code></td>
 <td>Specular IOR Level</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.specular_tint</code></td>
 <td><code>ColorSocket</code></td>
 <td>Specular Tint</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.anisotropic</code></td>
 <td><code>FloatSocket</code></td>
 <td>Anisotropic</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.anisotropic_rotation</code></td>
 <td><code>FloatSocket</code></td>
 <td>Anisotropic Rotation</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.tangent</code></td>
 <td><code>VectorSocket</code></td>
 <td>Tangent</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.transmission_weight</code></td>
 <td><code>FloatSocket</code></td>
 <td>Transmission Weight</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.coat_weight</code></td>
 <td><code>FloatSocket</code></td>
 <td>Coat Weight</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.coat_roughness</code></td>
 <td><code>FloatSocket</code></td>
 <td>Coat Roughness</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.coat_ior</code></td>
 <td><code>FloatSocket</code></td>
 <td>Coat IOR</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.coat_tint</code></td>
 <td><code>ColorSocket</code></td>
 <td>Coat Tint</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.coat_normal</code></td>
 <td><code>VectorSocket</code></td>
 <td>Coat Normal</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.sheen_weight</code></td>
 <td><code>FloatSocket</code></td>
 <td>Sheen Weight</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.sheen_roughness</code></td>
 <td><code>FloatSocket</code></td>
 <td>Sheen Roughness</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.sheen_tint</code></td>
 <td><code>ColorSocket</code></td>
 <td>Sheen Tint</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.emission_color</code></td>
 <td><code>ColorSocket</code></td>
 <td>Emission Color</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.emission_strength</code></td>
 <td><code>FloatSocket</code></td>
 <td>Emission Strength</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>i.thin_film_thickness</code></td>
 <td><code>FloatSocket</code></td>
 <td>Thin Film Thickness</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>i.thin_film_ior</code></td>
 <td><code>FloatSocket</code></td>
 <td>Thin Film IOR</td>

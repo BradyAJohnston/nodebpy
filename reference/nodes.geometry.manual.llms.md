@@ -18,6 +18,7 @@
 | [FieldAverage](#nodebpy.nodes.geometry.manual.FieldAverage) | Calculate the mean and median of a given field |
 | [FieldMinAndMax](#nodebpy.nodes.geometry.manual.FieldMinAndMax) | Calculate the minimum and maximum of a given field |
 | [FieldToGrid](#nodebpy.nodes.geometry.manual.FieldToGrid) | Create new grids by evaluating new values on an existing volume grid topology |
+| [FieldToList](#nodebpy.nodes.geometry.manual.FieldToList) | Create a list of values |
 | [FieldVariance](#nodebpy.nodes.geometry.manual.FieldVariance) | Calculate the standard deviation and variance of a given field |
 | [Float](#nodebpy.nodes.geometry.manual.Float) | Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper of the Value node. |
 | [FloatCurve](#nodebpy.nodes.geometry.manual.FloatCurve) | Map an input float to a curve and outputs a float value |
@@ -490,13 +491,17 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 
 #### Methods
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [boolean](#nodebpy.nodes.geometry.manual.FieldToGrid.boolean) |             |
-| [capture](#nodebpy.nodes.geometry.manual.FieldToGrid.capture) |             |
-| [float](#nodebpy.nodes.geometry.manual.FieldToGrid.float)     |             |
-| [integer](#nodebpy.nodes.geometry.manual.FieldToGrid.integer) |             |
-| [vector](#nodebpy.nodes.geometry.manual.FieldToGrid.vector)   |             |
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.manual.FieldToGrid.boolean) | Data type for the topology grid |
+| [capture](#nodebpy.nodes.geometry.manual.FieldToGrid.capture) |  |
+| [capture_boolean](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_boolean) |  |
+| [capture_float](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_float) |  |
+| [capture_integer](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_integer) |  |
+| [capture_vector](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_vector) |  |
+| [float](#nodebpy.nodes.geometry.manual.FieldToGrid.float) | Data type for the topology grid |
+| [integer](#nodebpy.nodes.geometry.manual.FieldToGrid.integer) | Data type for the topology grid |
+| [vector](#nodebpy.nodes.geometry.manual.FieldToGrid.vector) | Data type for the topology grid |
 
 ##### boolean
 
@@ -504,10 +509,36 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 boolean(topology=None, items={})
 ```
 
+Data type for the topology grid
+
 ##### capture
 
 ``` python
 capture(items)
+```
+
+##### capture_boolean
+
+``` python
+capture_boolean(field=None, name=None)
+```
+
+##### capture_float
+
+``` python
+capture_float(field=None, name=None)
+```
+
+##### capture_integer
+
+``` python
+capture_integer(field=None, name=None)
+```
+
+##### capture_vector
+
+``` python
+capture_vector(field=None, name=None)
 ```
 
 ##### float
@@ -516,17 +547,130 @@ capture(items)
 float(topology=None, items={})
 ```
 
+Data type for the topology grid
+
 ##### integer
 
 ``` python
 integer(topology=None, items={})
 ```
 
+Data type for the topology grid
+
 ##### vector
 
 ``` python
 vector(topology=None, items={})
 ```
+
+Data type for the topology grid
+
+### FieldToList
+
+``` python
+FieldToList(count=1, fields={})
+```
+
+Create a list of values
+
+#### Parameters
+
+| Name  | Type         | Description | Default |
+|-------|--------------|-------------|---------|
+| count | InputInteger | Count       | `1`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.manual.FieldToList.i) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FieldToList.name) |  |
+| [`node`](#nodebpy.nodes.geometry.manual.FieldToList.node) |  |
+| [`o`](#nodebpy.nodes.geometry.manual.FieldToList.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.manual.FieldToList.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.FieldToList.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.manual.FieldToList.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.manual.FieldToList.boolean) |  |
+| [capture](#nodebpy.nodes.geometry.manual.FieldToList.capture) |  |
+| [color](#nodebpy.nodes.geometry.manual.FieldToList.color) |  |
+| [float](#nodebpy.nodes.geometry.manual.FieldToList.float) |  |
+| [integer](#nodebpy.nodes.geometry.manual.FieldToList.integer) |  |
+| [matrix](#nodebpy.nodes.geometry.manual.FieldToList.matrix) |  |
+| [menu](#nodebpy.nodes.geometry.manual.FieldToList.menu) |  |
+| [rotation](#nodebpy.nodes.geometry.manual.FieldToList.rotation) |  |
+| [string](#nodebpy.nodes.geometry.manual.FieldToList.string) |  |
+| [vector](#nodebpy.nodes.geometry.manual.FieldToList.vector) |  |
+
+##### boolean
+
+``` python
+boolean(input=False, name=None)
+```
+
+##### capture
+
+``` python
+capture(fields)
+```
+
+##### color
+
+``` python
+color(input=(0, 0, 0, 1), name=None)
+```
+
+##### float
+
+``` python
+float(input=0.0, name=None)
+```
+
+##### integer
+
+``` python
+integer(input=0, name=None)
+```
+
+##### matrix
+
+``` python
+matrix(input=None, name=None)
+```
+
+##### menu
+
+``` python
+menu(input=None, name=None)
+```
+
+##### rotation
+
+``` python
+rotation(input=Euler((0, 0, 0)), name=None)
+```
+
+##### string
+
+``` python
+string(input='', name=None)
+```
+
+##### vector
+
+``` python
+vector(input=(0, 0, 0), name=None)
+```
+
+**Inputs**
+
+| Attribute | Type            | Description |
+|-----------|-----------------|-------------|
+| `i.count` | `IntegerSocket` | Count       |
 
 ### FieldVariance
 
@@ -1320,6 +1464,7 @@ Switch between two inputs
 | [menu](#nodebpy.nodes.geometry.manual.Switch.menu) | Create Switch with operation ‘Menu’. |
 | [object](#nodebpy.nodes.geometry.manual.Switch.object) | Create Switch with operation ‘Object’. |
 | [rotation](#nodebpy.nodes.geometry.manual.Switch.rotation) | Create Switch with operation ‘Rotation’. |
+| [sound](#nodebpy.nodes.geometry.manual.Switch.sound) | Create Switch with operation ‘Sound’. |
 | [string](#nodebpy.nodes.geometry.manual.Switch.string) | Create Switch with operation ‘String’. |
 | [vector](#nodebpy.nodes.geometry.manual.Switch.vector) | Create Switch with operation ‘Vector’. |
 
@@ -1442,6 +1587,14 @@ rotation(switch=False, false=None, true=None)
 ```
 
 Create Switch with operation ‘Rotation’.
+
+##### sound
+
+``` python
+sound(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Sound’.
 
 ##### string
 

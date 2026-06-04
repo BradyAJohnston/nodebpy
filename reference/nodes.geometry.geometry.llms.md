@@ -31,6 +31,7 @@
 | [FlipFaces](#nodebpy.nodes.geometry.geometry.FlipFaces) | Reverse the order of the vertices and edges of selected faces, flipping their normal direction |
 | [GeometryProximity](#nodebpy.nodes.geometry.geometry.GeometryProximity) | Compute the closest location on the target geometry |
 | [GetGeometryBundle](#nodebpy.nodes.geometry.geometry.GetGeometryBundle) | Get the bundle of a geometry |
+| [GetGeometryComponent](#nodebpy.nodes.geometry.geometry.GetGeometryComponent) | Get a single component of a geometry |
 | [GreasePencilToCurves](#nodebpy.nodes.geometry.geometry.GreasePencilToCurves) | Convert Grease Pencil layers into curve instances |
 | [Grid](#nodebpy.nodes.geometry.geometry.Grid) | Generate a planar mesh on the XY plane |
 | [IcoSphere](#nodebpy.nodes.geometry.geometry.IcoSphere) | Generate a spherical mesh that consists of equally sized triangles |
@@ -40,6 +41,8 @@
 | [MaterialSelection](#nodebpy.nodes.geometry.geometry.MaterialSelection) | Provide a selection of faces that use the specified material |
 | [MergeByDistance](#nodebpy.nodes.geometry.geometry.MergeByDistance) | Merge vertices or points within a given distance |
 | [MergeLayers](#nodebpy.nodes.geometry.geometry.MergeLayers) | Join groups of Grease Pencil layers into one |
+| [MergePoints](#nodebpy.nodes.geometry.geometry.MergePoints) | Merge points of a point cloud or mesh based on group ID and selection. |
+| [MeshBevel](#nodebpy.nodes.geometry.geometry.MeshBevel) | Bevel selected edges or vertices |
 | [MeshCircle](#nodebpy.nodes.geometry.geometry.MeshCircle) | Generate a circular ring of edges |
 | [MeshLine](#nodebpy.nodes.geometry.geometry.MeshLine) | Generate vertices in a line and connect them with edges |
 | [MeshToCurve](#nodebpy.nodes.geometry.geometry.MeshToCurve) | Generate a curve from a mesh |
@@ -51,6 +54,7 @@
 | [Quadrilateral](#nodebpy.nodes.geometry.geometry.Quadrilateral) | Generate a polygon with four points |
 | [Raycast](#nodebpy.nodes.geometry.geometry.Raycast) | Cast rays from the context geometry onto a target geometry, and retrieve information from each hit point |
 | [RealizeInstances](#nodebpy.nodes.geometry.geometry.RealizeInstances) | Convert instances into real geometry data |
+| [RenameAttribute](#nodebpy.nodes.geometry.geometry.RenameAttribute) | Change the name of an attribute |
 | [ReplaceMaterial](#nodebpy.nodes.geometry.geometry.ReplaceMaterial) | Swap one material with another |
 | [ResampleCurve](#nodebpy.nodes.geometry.geometry.ResampleCurve) | Generate a poly spline for each input spline |
 | [ReverseCurve](#nodebpy.nodes.geometry.geometry.ReverseCurve) | Change the direction of curves by swapping their start and end data |
@@ -77,6 +81,8 @@
 | [SetMaterial](#nodebpy.nodes.geometry.geometry.SetMaterial) | Assign a material to geometry elements |
 | [SetMaterialIndex](#nodebpy.nodes.geometry.geometry.SetMaterialIndex) | Set the material index for each selected geometry element |
 | [SetMeshNormal](#nodebpy.nodes.geometry.geometry.SetMeshNormal) | Store a normal vector for each mesh element |
+| [SetNurbsOrder](#nodebpy.nodes.geometry.geometry.SetNurbsOrder) | Control how many curve control points influence each evaluated point by changing the “nurbs_order” attribute |
+| [SetNurbsWeight](#nodebpy.nodes.geometry.geometry.SetNurbsWeight) | Control the influence of each NURBS control point on the curve by changing the “nurbs_weight” attribute |
 | [SetPointRadius](#nodebpy.nodes.geometry.geometry.SetPointRadius) | Set the display size of point cloud points |
 | [SetPosition](#nodebpy.nodes.geometry.geometry.SetPosition) | Set the location of each point |
 | [SetSelection](#nodebpy.nodes.geometry.geometry.SetSelection) | Set selection of the edited geometry, for tool execution |
@@ -93,11 +99,13 @@
 | [SubdivideCurve](#nodebpy.nodes.geometry.geometry.SubdivideCurve) | Dividing each curve segment into a specified number of pieces |
 | [SubdivideMesh](#nodebpy.nodes.geometry.geometry.SubdivideMesh) | Divide mesh faces into smaller ones without changing the shape or volume, using linear interpolation to place the new vertices |
 | [SubdivisionSurface](#nodebpy.nodes.geometry.geometry.SubdivisionSurface) | Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision method |
+| [TransferAttributes](#nodebpy.nodes.geometry.geometry.TransferAttributes) | Copy attributes from one geometry to another |
 | [TransformGeometry](#nodebpy.nodes.geometry.geometry.TransformGeometry) | Translate, rotate or scale the geometry |
 | [TranslateInstances](#nodebpy.nodes.geometry.geometry.TranslateInstances) | Move top-level geometry instances in local or global space |
 | [Triangulate](#nodebpy.nodes.geometry.geometry.Triangulate) | Convert all faces in a mesh to triangular faces |
 | [TrimCurve](#nodebpy.nodes.geometry.geometry.TrimCurve) | Shorten curves by removing portions at the start or end |
 | [UVSphere](#nodebpy.nodes.geometry.geometry.UVSphere) | Generate a spherical mesh with quads, except for triangles at the top and bottom |
+| [XpbdSolver](#nodebpy.nodes.geometry.geometry.XpbdSolver) | Simulate physics using the XPBD framework |
 
 ### Arc
 
@@ -1697,6 +1705,109 @@ Get the bundle of a geometry
 | `o.geometry` | `GeometrySocket` | Geometry    |
 | `o.bundle`   | `BundleSocket`   | Bundle      |
 
+### GetGeometryComponent
+
+``` python
+GetGeometryComponent(geometry=None, type='Mesh', remove=True)
+```
+
+Get a single component of a geometry
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| geometry | InputGeometry | Geometry | `None` |
+| type | InputMenu \| Literal\['Mesh', 'Point Cloud', 'Curve', 'Instances', 'Grease Pencil', 'Volume'\] | Type | `'Mesh'` |
+| remove | InputBoolean | Remove | `True` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [curve](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.curve) | Create Get Geometry Component node with type ‘Curve’. |
+| [grease_pencil](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.grease_pencil) | Create Get Geometry Component node with type ‘Grease Pencil’. |
+| [instances](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.instances) | Create Get Geometry Component node with type ‘Instances’. |
+| [mesh](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.mesh) | Create Get Geometry Component node with type ‘Mesh’. |
+| [point_cloud](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.point_cloud) | Create Get Geometry Component node with type ‘Point Cloud’. |
+| [volume](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.volume) | Create Get Geometry Component node with type ‘Volume’. |
+
+##### curve
+
+``` python
+curve(geometry=None, remove=True)
+```
+
+Create Get Geometry Component node with type ‘Curve’.
+
+##### grease_pencil
+
+``` python
+grease_pencil(geometry=None, remove=True)
+```
+
+Create Get Geometry Component node with type ‘Grease Pencil’.
+
+##### instances
+
+``` python
+instances(geometry=None, remove=True)
+```
+
+Create Get Geometry Component node with type ‘Instances’.
+
+##### mesh
+
+``` python
+mesh(geometry=None, remove=True)
+```
+
+Create Get Geometry Component node with type ‘Mesh’.
+
+##### point_cloud
+
+``` python
+point_cloud(geometry=None, remove=True)
+```
+
+Create Get Geometry Component node with type ‘Point Cloud’.
+
+##### volume
+
+``` python
+volume(geometry=None, remove=True)
+```
+
+Create Get Geometry Component node with type ‘Volume’.
+
+**Inputs**
+
+| Attribute    | Type             | Description |
+|--------------|------------------|-------------|
+| `i.geometry` | `GeometrySocket` | Geometry    |
+| `i.type`     | `MenuSocket`     | Type        |
+| `i.remove`   | `BooleanSocket`  | Remove      |
+
+**Outputs**
+
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `o.geometry`  | `GeometrySocket` | Geometry    |
+| `o.component` | `GeometrySocket` | Component   |
+| `o.exists`    | `BooleanSocket`  | Exists      |
+
 ### GreasePencilToCurves
 
 ``` python
@@ -2149,6 +2260,128 @@ Create Merge Layers with operation ‘By Name’. Combine all layers which have 
 | Attribute         | Type             | Description   |
 |-------------------|------------------|---------------|
 | `o.grease_pencil` | `GeometrySocket` | Grease Pencil |
+
+### MergePoints
+
+``` python
+MergePoints(geometry=None, selection=True, merge_id=0)
+```
+
+Merge points of a point cloud or mesh based on group ID and selection.
+
+#### Parameters
+
+| Name      | Type          | Description | Default |
+|-----------|---------------|-------------|---------|
+| geometry  | InputGeometry | Geometry    | `None`  |
+| selection | InputBoolean  | Selection   | `True`  |
+| merge_id  | InputInteger  | Merge ID    | `0`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.MergePoints.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.MergePoints.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.MergePoints.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.MergePoints.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.MergePoints.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.MergePoints.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.MergePoints.type) |  |
+
+**Inputs**
+
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `i.geometry`  | `GeometrySocket` | Geometry    |
+| `i.selection` | `BooleanSocket`  | Selection   |
+| `i.merge_id`  | `IntegerSocket`  | Merge ID    |
+
+**Outputs**
+
+| Attribute    | Type             | Description |
+|--------------|------------------|-------------|
+| `o.geometry` | `GeometrySocket` | Geometry    |
+
+### MeshBevel
+
+``` python
+MeshBevel(
+    mesh=None,
+    selection=True,
+    affect_kind='Edges',
+    start_left_offset=0.1,
+    start_right_offset=0.1,
+    end_left_offset=0.1,
+    end_right_offset=0.1,
+    offset=0.1,
+    miter=False,
+    spread=0.1,
+    segments=1,
+    shape=0.5,
+    profile=None,
+)
+```
+
+Bevel selected edges or vertices
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| mesh | InputGeometry | Mesh | `None` |
+| selection | InputBoolean | Selection | `True` |
+| affect_kind | InputMenu \| Literal\['Vertices', 'Edges'\] | Affect Kind | `'Edges'` |
+| start_left_offset | InputFloat | Start Left Offset | `0.1` |
+| start_right_offset | InputFloat | Start Right Offset | `0.1` |
+| end_left_offset | InputFloat | End Left Offset | `0.1` |
+| end_right_offset | InputFloat | End Right Offset | `0.1` |
+| offset | InputFloat | Offset | `0.1` |
+| miter | InputBoolean | Miter | `False` |
+| spread | InputFloat | Spread | `0.1` |
+| segments | InputInteger | Segments | `1` |
+| shape | InputFloat | Shape | `0.5` |
+| profile | InputGeometry | Profile | `None` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.MeshBevel.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.MeshBevel.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.MeshBevel.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.MeshBevel.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.MeshBevel.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.MeshBevel.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.MeshBevel.type) |  |
+
+**Inputs**
+
+| Attribute              | Type             | Description        |
+|------------------------|------------------|--------------------|
+| `i.mesh`               | `GeometrySocket` | Mesh               |
+| `i.selection`          | `BooleanSocket`  | Selection          |
+| `i.affect_kind`        | `MenuSocket`     | Affect Kind        |
+| `i.start_left_offset`  | `FloatSocket`    | Start Left Offset  |
+| `i.start_right_offset` | `FloatSocket`    | Start Right Offset |
+| `i.end_left_offset`    | `FloatSocket`    | End Left Offset    |
+| `i.end_right_offset`   | `FloatSocket`    | End Right Offset   |
+| `i.offset`             | `FloatSocket`    | Offset             |
+| `i.miter`              | `BooleanSocket`  | Miter              |
+| `i.spread`             | `FloatSocket`    | Spread             |
+| `i.segments`           | `IntegerSocket`  | Segments           |
+| `i.shape`              | `FloatSocket`    | Shape              |
+| `i.profile`            | `GeometrySocket` | Profile            |
+
+**Outputs**
+
+| Attribute       | Type             | Description |
+|-----------------|------------------|-------------|
+| `o.mesh`        | `GeometrySocket` | Mesh        |
+| `o.vertex_face` | `BooleanSocket`  | Vertex Face |
+| `o.edge_face`   | `BooleanSocket`  | Edge Face   |
+| `o.outer_edge`  | `BooleanSocket`  | Outer Edge  |
+| `o.mid_edge`    | `BooleanSocket`  | Mid Edge    |
 
 ### MeshCircle
 
@@ -2972,6 +3205,52 @@ Convert instances into real geometry data
 | `i.selection`   | `BooleanSocket`  | Selection   |
 | `i.realize_all` | `BooleanSocket`  | Realize All |
 | `i.depth`       | `IntegerSocket`  | Depth       |
+
+**Outputs**
+
+| Attribute    | Type             | Description |
+|--------------|------------------|-------------|
+| `o.geometry` | `GeometrySocket` | Geometry    |
+
+### RenameAttribute
+
+``` python
+RenameAttribute(geometry=None, mode='Single', old='', new='', overwrite=False)
+```
+
+Change the name of an attribute
+
+#### Parameters
+
+| Name      | Type                                       | Description | Default    |
+|-----------|--------------------------------------------|-------------|------------|
+| geometry  | InputGeometry                              | Geometry    | `None`     |
+| mode      | InputMenu \| Literal\['Single', 'Prefix'\] | Mode        | `'Single'` |
+| old       | InputString                                | Old         | `''`       |
+| new       | InputString                                | New         | `''`       |
+| overwrite | InputBoolean                               | Overwrite   | `False`    |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.RenameAttribute.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.RenameAttribute.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.RenameAttribute.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.RenameAttribute.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.RenameAttribute.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.RenameAttribute.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.RenameAttribute.type) |  |
+
+**Inputs**
+
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `i.geometry`  | `GeometrySocket` | Geometry    |
+| `i.mode`      | `MenuSocket`     | Mode        |
+| `i.old`       | `StringSocket`   | Old         |
+| `i.new`       | `StringSocket`   | New         |
+| `i.overwrite` | `BooleanSocket`  | Overwrite   |
 
 **Outputs**
 
@@ -4589,6 +4868,90 @@ Create Set Mesh Normal with operation ‘Tangent Space’. Store normals in a de
 |-----------|------------------|-------------|
 | `o.mesh`  | `GeometrySocket` | Mesh        |
 
+### SetNurbsOrder
+
+``` python
+SetNurbsOrder(curves=None, selection=True, order=4)
+```
+
+Control how many curve control points influence each evaluated point by changing the “nurbs_order” attribute
+
+#### Parameters
+
+| Name      | Type          | Description | Default |
+|-----------|---------------|-------------|---------|
+| curves    | InputGeometry | Curves      | `None`  |
+| selection | InputBoolean  | Selection   | `True`  |
+| order     | InputInteger  | Order       | `4`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.type) |  |
+
+**Inputs**
+
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `i.curves`    | `GeometrySocket` | Curves      |
+| `i.selection` | `BooleanSocket`  | Selection   |
+| `i.order`     | `IntegerSocket`  | Order       |
+
+**Outputs**
+
+| Attribute  | Type             | Description |
+|------------|------------------|-------------|
+| `o.curves` | `GeometrySocket` | Curves      |
+
+### SetNurbsWeight
+
+``` python
+SetNurbsWeight(curves=None, selection=True, weight=1.0)
+```
+
+Control the influence of each NURBS control point on the curve by changing the “nurbs_weight” attribute
+
+#### Parameters
+
+| Name      | Type          | Description | Default |
+|-----------|---------------|-------------|---------|
+| curves    | InputGeometry | Curves      | `None`  |
+| selection | InputBoolean  | Selection   | `True`  |
+| weight    | InputFloat    | Weight      | `1.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.type) |  |
+
+**Inputs**
+
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `i.curves`    | `GeometrySocket` | Curves      |
+| `i.selection` | `BooleanSocket`  | Selection   |
+| `i.weight`    | `FloatSocket`    | Weight      |
+
+**Outputs**
+
+| Attribute  | Type             | Description |
+|------------|------------------|-------------|
+| `o.curves` | `GeometrySocket` | Curves      |
+
 ### SetPointRadius
 
 ``` python
@@ -5531,6 +5894,7 @@ SubdivisionSurface(
     edge_crease=0.0,
     vertex_crease=0.0,
     limit_surface=True,
+    quality=3,
     uv_smooth='Keep Boundaries',
     boundary_smooth='All',
 )
@@ -5547,6 +5911,7 @@ Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision 
 | edge_crease | InputFloat | Edge Crease | `0.0` |
 | vertex_crease | InputFloat | Vertex Crease | `0.0` |
 | limit_surface | InputBoolean | Limit Surface | `True` |
+| quality | InputInteger | Quality | `3` |
 | uv_smooth | InputMenu \| Literal\['None', 'Keep Corners', 'Keep Corners, Junctions', 'Keep Corners, Junctions, Concave', 'Keep Boundaries', 'All'\] | UV Smooth | `'Keep Boundaries'` |
 | boundary_smooth | InputMenu \| Literal\['Keep Corners', 'All'\] | Boundary Smooth | `'All'` |
 
@@ -5571,6 +5936,7 @@ Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision 
 | `i.edge_crease`     | `FloatSocket`    | Edge Crease     |
 | `i.vertex_crease`   | `FloatSocket`    | Vertex Crease   |
 | `i.limit_surface`   | `BooleanSocket`  | Limit Surface   |
+| `i.quality`         | `IntegerSocket`  | Quality         |
 | `i.uv_smooth`       | `MenuSocket`     | UV Smooth       |
 | `i.boundary_smooth` | `MenuSocket`     | Boundary Smooth |
 
@@ -5579,6 +5945,95 @@ Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision 
 | Attribute | Type             | Description |
 |-----------|------------------|-------------|
 | `o.mesh`  | `GeometrySocket` | Mesh        |
+
+### TransferAttributes
+
+``` python
+TransferAttributes(
+    target=None,
+    target_point_id=0,
+    target_edge_id=0,
+    target_face_id=0,
+    target_corner_id=0,
+    target_curve_id=0,
+    target_instance_id=0,
+    source=None,
+    source_point_id=0,
+    source_edge_id=0,
+    source_face_id=0,
+    source_corner_id=0,
+    source_curve_id=0,
+    source_instance_id=0,
+    pattern_mode='Wildcard',
+    attribute_names='',
+    exclude_names=False,
+)
+```
+
+Copy attributes from one geometry to another
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| target | InputGeometry | Target | `None` |
+| target_point_id | InputInteger | Target Point ID | `0` |
+| target_edge_id | InputInteger | Target Edge ID | `0` |
+| target_face_id | InputInteger | Target Face ID | `0` |
+| target_corner_id | InputInteger | Target Corner ID | `0` |
+| target_curve_id | InputInteger | Target Curve ID | `0` |
+| target_instance_id | InputInteger | Target Instance ID | `0` |
+| source | InputGeometry | Source | `None` |
+| source_point_id | InputInteger | Source Point ID | `0` |
+| source_edge_id | InputInteger | Source Edge ID | `0` |
+| source_face_id | InputInteger | Source Face ID | `0` |
+| source_corner_id | InputInteger | Source Corner ID | `0` |
+| source_curve_id | InputInteger | Source Curve ID | `0` |
+| source_instance_id | InputInteger | Source Instance ID | `0` |
+| pattern_mode | InputMenu \| Literal\['Exact', 'Wildcard'\] | Pattern Mode | `'Wildcard'` |
+| attribute_names | InputString | Attribute Names | `''` |
+| exclude_names | InputBoolean | Exclude Names | `False` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.TransferAttributes.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.TransferAttributes.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.TransferAttributes.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.TransferAttributes.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.TransferAttributes.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.TransferAttributes.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.TransferAttributes.type) |  |
+
+**Inputs**
+
+| Attribute              | Type             | Description        |
+|------------------------|------------------|--------------------|
+| `i.target`             | `GeometrySocket` | Target             |
+| `i.target_point_id`    | `IntegerSocket`  | Target Point ID    |
+| `i.target_edge_id`     | `IntegerSocket`  | Target Edge ID     |
+| `i.target_face_id`     | `IntegerSocket`  | Target Face ID     |
+| `i.target_corner_id`   | `IntegerSocket`  | Target Corner ID   |
+| `i.target_curve_id`    | `IntegerSocket`  | Target Curve ID    |
+| `i.target_instance_id` | `IntegerSocket`  | Target Instance ID |
+| `i.source`             | `GeometrySocket` | Source             |
+| `i.source_point_id`    | `IntegerSocket`  | Source Point ID    |
+| `i.source_edge_id`     | `IntegerSocket`  | Source Edge ID     |
+| `i.source_face_id`     | `IntegerSocket`  | Source Face ID     |
+| `i.source_corner_id`   | `IntegerSocket`  | Source Corner ID   |
+| `i.source_curve_id`    | `IntegerSocket`  | Source Curve ID    |
+| `i.source_instance_id` | `IntegerSocket`  | Source Instance ID |
+| `i.pattern_mode`       | `MenuSocket`     | Pattern Mode       |
+| `i.attribute_names`    | `StringSocket`   | Attribute Names    |
+| `i.exclude_names`      | `BooleanSocket`  | Exclude Names      |
+
+**Outputs**
+
+| Attribute             | Type             | Description       |
+|-----------------------|------------------|-------------------|
+| `o.target`            | `GeometrySocket` | Target            |
+| `o.transferred_names` | `StringSocket`   | Transferred Names |
 
 ### TransformGeometry
 
@@ -5856,3 +6311,67 @@ Generate a spherical mesh with quads, except for triangles at the top and bottom
 |------------|------------------|-------------|
 | `o.mesh`   | `GeometrySocket` | Mesh        |
 | `o.uv_map` | `VectorSocket`   | UV Map      |
+
+### XpbdSolver
+
+``` python
+XpbdSolver(
+    world=None,
+    delta_time=0.04,
+    filter='',
+    simulation_to_world=None,
+    substeps=10,
+    constraint_iterations=1,
+    solver_path='',
+    begin=0.0,
+    end=1.0,
+)
+```
+
+Simulate physics using the XPBD framework
+
+#### Parameters
+
+| Name                  | Type         | Description           | Default |
+|-----------------------|--------------|-----------------------|---------|
+| world                 | InputBundle  | World                 | `None`  |
+| delta_time            | InputFloat   | Delta Time            | `0.04`  |
+| filter                | InputString  | Filter                | `''`    |
+| simulation_to_world   | InputMatrix  | Simulation to World   | `None`  |
+| substeps              | InputInteger | Substeps              | `10`    |
+| constraint_iterations | InputInteger | Constraint Iterations | `1`     |
+| solver_path           | InputString  | Solver Path           | `''`    |
+| begin                 | InputFloat   | Begin                 | `0.0`   |
+| end                   | InputFloat   | End                   | `1.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.XpbdSolver.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.XpbdSolver.name) |  |
+| [`node`](#nodebpy.nodes.geometry.geometry.XpbdSolver.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.XpbdSolver.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.XpbdSolver.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.XpbdSolver.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.geometry.XpbdSolver.type) |  |
+
+**Inputs**
+
+| Attribute                 | Type            | Description           |
+|---------------------------|-----------------|-----------------------|
+| `i.world`                 | `BundleSocket`  | World                 |
+| `i.delta_time`            | `FloatSocket`   | Delta Time            |
+| `i.filter`                | `StringSocket`  | Filter                |
+| `i.simulation_to_world`   | `MatrixSocket`  | Simulation to World   |
+| `i.substeps`              | `IntegerSocket` | Substeps              |
+| `i.constraint_iterations` | `IntegerSocket` | Constraint Iterations |
+| `i.solver_path`           | `StringSocket`  | Solver Path           |
+| `i.begin`                 | `FloatSocket`   | Begin                 |
+| `i.end`                   | `FloatSocket`   | End                   |
+
+**Outputs**
+
+| Attribute | Type           | Description |
+|-----------|----------------|-------------|
+| `o.world` | `BundleSocket` | World       |

@@ -6,6 +6,7 @@
 
 | Name | Description |
 |----|----|
+| [BlankImage](#nodebpy.nodes.compositor.input.BlankImage) | Returns an image with the given size and constant color |
 | [BokehImage](#nodebpy.nodes.compositor.input.BokehImage) | Generate image with bokeh shape for use with the Bokeh Blur filter node |
 | [Color](#nodebpy.nodes.compositor.input.Color) | A color picker |
 | [ImageCoordinates](#nodebpy.nodes.compositor.input.ImageCoordinates) | Returns the coordinates of the pixels of an image |
@@ -16,8 +17,49 @@
 | [RenderLayers](#nodebpy.nodes.compositor.input.RenderLayers) | Input render passes from a scene render |
 | [SceneTime](#nodebpy.nodes.compositor.input.SceneTime) | Input the current scene time in seconds or frames |
 | [SequencerStripInfo](#nodebpy.nodes.compositor.input.SequencerStripInfo) | Returns information about the active strip of the modifier |
+| [StringToImage](#nodebpy.nodes.compositor.input.StringToImage) | Generates an image containing the given paragraph of text |
 | [TimeCurve](#nodebpy.nodes.compositor.input.TimeCurve) | Generate a factor value (from 0.0 to 1.0) between scene start and end time, using a curve mapping |
 | [TrackPosition](#nodebpy.nodes.compositor.input.TrackPosition) | Provide information about motion tracking points, such as x and y values |
+
+### BlankImage
+
+``` python
+BlankImage(color=None, size=None)
+```
+
+Returns an image with the given size and constant color
+
+#### Parameters
+
+| Name  | Type         | Description | Default |
+|-------|--------------|-------------|---------|
+| color | InputColor   | Color       | `None`  |
+| size  | InputInteger | Size        | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.BlankImage.i) |  |
+| [`name`](#nodebpy.nodes.compositor.input.BlankImage.name) |  |
+| [`node`](#nodebpy.nodes.compositor.input.BlankImage.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.BlankImage.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.BlankImage.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.BlankImage.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.input.BlankImage.type) |  |
+
+**Inputs**
+
+| Attribute | Type            | Description |
+|-----------|-----------------|-------------|
+| `i.color` | `ColorSocket`   | Color       |
+| `i.size`  | `IntegerSocket` | Size        |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.image` | `ColorSocket` | Image       |
 
 ### BokehImage
 
@@ -131,11 +173,11 @@ Returns the coordinates of the pixels of an image
 
 **Outputs**
 
-| Attribute      | Type           | Description |
-|----------------|----------------|-------------|
-| `o.uniform`    | `VectorSocket` | Uniform     |
-| `o.normalized` | `VectorSocket` | Normalized  |
-| `o.pixel`      | `VectorSocket` | Pixel       |
+| Attribute      | Type            | Description |
+|----------------|-----------------|-------------|
+| `o.uniform`    | `VectorSocket`  | Uniform     |
+| `o.normalized` | `VectorSocket`  | Normalized  |
+| `o.pixel`      | `IntegerSocket` | Pixel       |
 
 ### ImageInfo
 
@@ -171,13 +213,13 @@ Returns information about an image
 
 **Outputs**
 
-| Attribute      | Type           | Description |
-|----------------|----------------|-------------|
-| `o.dimensions` | `VectorSocket` | Dimensions  |
-| `o.resolution` | `VectorSocket` | Resolution  |
-| `o.location`   | `VectorSocket` | Location    |
-| `o.rotation`   | `FloatSocket`  | Rotation    |
-| `o.scale`      | `VectorSocket` | Scale       |
+| Attribute      | Type            | Description |
+|----------------|-----------------|-------------|
+| `o.dimensions` | `IntegerSocket` | Dimensions  |
+| `o.resolution` | `IntegerSocket` | Resolution  |
+| `o.location`   | `VectorSocket`  | Location    |
+| `o.rotation`   | `FloatSocket`   | Rotation    |
+| `o.scale`      | `VectorSocket`  | Scale       |
 
 ### Mask
 
@@ -378,6 +420,64 @@ Returns information about the active strip of the modifier
 | `o.location`    | `VectorSocket`  | Location    |
 | `o.rotation`    | `FloatSocket`   | Rotation    |
 | `o.scale`       | `VectorSocket`  | Scale       |
+
+### StringToImage
+
+``` python
+StringToImage(
+    string='',
+    font=None,
+    size=128.0,
+    horizontal_alignment='Center',
+    vertical_alignment='Middle',
+    wrap=True,
+    wrap_width=1920,
+)
+```
+
+Generates an image containing the given paragraph of text
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| string | InputString | String | `''` |
+| font | InputFont | Font | `None` |
+| size | InputFloat | Size | `128.0` |
+| horizontal_alignment | InputMenu \| Literal\['Left', 'Center', 'Right'\] | Horizontal Alignment | `'Center'` |
+| vertical_alignment | InputMenu \| Literal\['Top', 'Top Baseline', 'Middle', 'Bottom Baseline', 'Bottom'\] | Vertical Alignment | `'Middle'` |
+| wrap | InputBoolean | Wrap | `True` |
+| wrap_width | InputInteger | Width | `1920` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.StringToImage.i) |  |
+| [`name`](#nodebpy.nodes.compositor.input.StringToImage.name) |  |
+| [`node`](#nodebpy.nodes.compositor.input.StringToImage.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.StringToImage.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.StringToImage.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.StringToImage.tree) |  |
+| [`type`](#nodebpy.nodes.compositor.input.StringToImage.type) |  |
+
+**Inputs**
+
+| Attribute                | Type            | Description          |
+|--------------------------|-----------------|----------------------|
+| `i.string`               | `StringSocket`  | String               |
+| `i.font`                 | `FontSocket`    | Font                 |
+| `i.size`                 | `FloatSocket`   | Size                 |
+| `i.horizontal_alignment` | `MenuSocket`    | Horizontal Alignment |
+| `i.vertical_alignment`   | `MenuSocket`    | Vertical Alignment   |
+| `i.wrap`                 | `BooleanSocket` | Wrap                 |
+| `i.wrap_width`           | `IntegerSocket` | Width                |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.image` | `FloatSocket` | Image       |
 
 ### TimeCurve
 

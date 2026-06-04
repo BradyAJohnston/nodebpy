@@ -8,6 +8,7 @@
 |----|----|
 | [BlurAttribute](#nodebpy.nodes.geometry.attribute.BlurAttribute) | Mix attribute values of neighboring elements |
 | [DomainSize](#nodebpy.nodes.geometry.attribute.DomainSize) | Retrieve the number of elements in a geometry for each attribute domain |
+| [GetAttributeNames](#nodebpy.nodes.geometry.attribute.GetAttributeNames) | Retrieves attribute names as a list of strings |
 | [RemoveNamedAttribute](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute) | Delete an attribute with a specified name from a geometry. Typically used to optimize performance |
 
 ### BlurAttribute
@@ -138,6 +139,58 @@ Retrieve the number of elements in a geometry for each attribute domain
 | `o.spline_count`      | `IntegerSocket` | Spline Count      |
 | `o.instance_count`    | `IntegerSocket` | Instance Count    |
 | `o.layer_count`       | `IntegerSocket` | Layer Count       |
+
+### GetAttributeNames
+
+``` python
+GetAttributeNames(
+    geometry=None,
+    filter_data_type=False,
+    data_type='Float',
+    filter_domain=False,
+    domain='Point',
+)
+```
+
+Retrieves attribute names as a list of strings
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| geometry | InputGeometry | Geometry | `None` |
+| filter_data_type | InputBoolean | Filter Data Type | `False` |
+| data_type | InputMenu \| Literal\['Float', 'Integer', 'Boolean', 'Vector', 'Color', 'Quaternion', '4x4 Matrix', 'String', '8-Bit Integer', '2D 16-Bit Integer Vector', '2D Integer Vector', '2D Vector', '4D Vector', 'Byte Color'\] | Data Type | `'Float'` |
+| filter_domain | InputBoolean | Filter Domain | `False` |
+| domain | InputMenu \| Literal\['Point', 'Edge', 'Face', 'Face Corner', 'Spline', 'Instance', 'Layer'\] | Domain | `'Point'` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.i) |  |
+| [`name`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.name) |  |
+| [`node`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.node) |  |
+| [`o`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.type) |  |
+
+**Inputs**
+
+| Attribute            | Type             | Description      |
+|----------------------|------------------|------------------|
+| `i.geometry`         | `GeometrySocket` | Geometry         |
+| `i.filter_data_type` | `BooleanSocket`  | Filter Data Type |
+| `i.data_type`        | `MenuSocket`     | Data Type        |
+| `i.filter_domain`    | `BooleanSocket`  | Filter Domain    |
+| `i.domain`           | `MenuSocket`     | Domain           |
+
+**Outputs**
+
+| Attribute | Type           | Description |
+|-----------|----------------|-------------|
+| `o.names` | `StringSocket` | Names       |
 
 ### RemoveNamedAttribute
 

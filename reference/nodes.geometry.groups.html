@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -76,10 +76,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3b55550aa65ec9d27c7f2186ab0055e9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 0.18.0</span>
+    <span class="navbar-title">nodebpy 520.0.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -152,6 +152,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../node-api.html">
  <span class="dropdown-text">Node API Design</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../using.html">
+ <span class="dropdown-text">Using Nodebpy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../comparisons.html">
+ <span class="dropdown-text">Comapring the API</span></a>
   </li>  
     </ul>
   </li>
@@ -506,13 +514,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#nodebpy.nodes.geometry.groups" id="toc-nodebpy.nodes.geometry.groups" class="nav-link active" data-scroll-target="#nodebpy.nodes.geometry.groups">nodes.geometry.groups</a>
   <ul class="collapse">
-  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
   <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
   <ul class="collapse">
   <li><a href="#nodebpy.nodes.geometry.groups.ClipFieldToBox" id="toc-nodebpy.nodes.geometry.groups.ClipFieldToBox" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.ClipFieldToBox">ClipFieldToBox</a></li>
   <li><a href="#nodebpy.nodes.geometry.groups.OffsetVector" id="toc-nodebpy.nodes.geometry.groups.OffsetVector" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.OffsetVector">OffsetVector</a></li>
   <li><a href="#nodebpy.nodes.geometry.groups.OtherVertex" id="toc-nodebpy.nodes.geometry.groups.OtherVertex" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.OtherVertex">OtherVertex</a></li>
   <li><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents" id="toc-nodebpy.nodes.geometry.groups.PrincipalComponents" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.PrincipalComponents">PrincipalComponents</a></li>
+  <li><a href="#nodebpy.nodes.geometry.groups.SliceToIndices" id="toc-nodebpy.nodes.geometry.groups.SliceToIndices" class="nav-link" data-scroll-target="#nodebpy.nodes.geometry.groups.SliceToIndices">SliceToIndices</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -527,23 +535,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.geometry.groups" class="level1">
 <h1>nodes.geometry.groups</h1>
 <p><code>groups</code></p>
-<section id="attributes" class="level2">
-<h2 class="anchored" data-anchor-id="attributes">Attributes</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.groups.GROUP_NAME"><code>GROUP_NAME</code></a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
 <section id="classes" class="level2">
 <h2 class="anchored" data-anchor-id="classes">Classes</h2>
 <table class="caption-top table">
@@ -570,13 +561,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents">PrincipalComponents</a></td>
 <td>Compute PCA on a given vector field.</td>
 </tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices">SliceToIndices</a></td>
+<td>Converts a python slice to a list of indices.</td>
+</tr>
 </tbody>
 </table>
 <section id="nodebpy.nodes.geometry.groups.ClipFieldToBox" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.groups.ClipFieldToBox">ClipFieldToBox</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ClipFieldToBox(box_object<span class="op">=</span><span class="va">None</span>, invert<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="attributes-1" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
+<section id="attributes" class="level4">
+<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -625,8 +620,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.groups.OffsetVector">OffsetVector</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>OffsetVector(index<span class="op">=</span><span class="va">None</span>, vector<span class="op">=</span><span class="va">None</span>, offset<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Evaluate a given vector field at an offset to the current <code>Index</code>.</p>
-<section id="attributes-2" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
+<section id="attributes-1" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-1">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -675,8 +670,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.groups.OtherVertex">OtherVertex</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>OtherVertex(vertex_index<span class="op">=</span><span class="va">None</span>, edge_number<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Given a vertex and an edge number from that vertex, returns the other vertex of that edge.</p>
-<section id="attributes-3" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
+<section id="attributes-2" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-2">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -725,8 +720,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.groups.PrincipalComponents">PrincipalComponents</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>PrincipalComponents(position<span class="op">=</span><span class="va">None</span>, group_id<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Compute PCA on a given vector field.</p>
-<section id="attributes-4" class="level4">
-<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<section id="attributes-3" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-3">Attributes</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -765,6 +760,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.groups.PrincipalComponents.type"><code>type</code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="nodebpy.nodes.geometry.groups.SliceToIndices" class="level3">
+<h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.groups.SliceToIndices">SliceToIndices</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>SliceToIndices(start<span class="op">=</span><span class="dv">0</span>, stop<span class="op">=</span><span class="dv">0</span>, step<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Converts a python slice to a list of indices.</p>
+<section id="attributes-4" class="level4">
+<h4 class="anchored" data-anchor-id="attributes-4">Attributes</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices.i"><code>i</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices.name"><code>name</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices.node"><code>node</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices.node_tree"><code>node_tree</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices.o"><code>o</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices.outputs"><code>outputs</code></a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices.tree"><code>tree</code></a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#nodebpy.nodes.geometry.groups.SliceToIndices.type"><code>type</code></a></td>
 <td></td>
 </tr>
 </tbody>

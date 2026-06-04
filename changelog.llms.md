@@ -1,5 +1,41 @@
 # Changelog
 
+## v520.0.0 - 2026-06-04
+
+### Enhancements
+
+- Added `leading()`, `trailling()` and `total()` methods from `AccumulateField` node onto relevant sockets. Added to `Float`, `Vector`, `Integer` and `Matrix` sockets.
+- **Blender 5.2 support** — generated nodes updated to include the nodes for Blender 5.2.
+- **List socket subtypes** — new `*SocketList` socket types matching Blender 5.2’s list sockets, added for every base socket type (`FloatSocketList`, `IntegerSocketList`, `VectorSocketList`, `ColorSocketList`, `BooleanSocketList`, `RotationSocketList`, `MatrixSocketList`, `StringSocketList`, `MenuSocketList`, `GeometrySocketList`, `ObjectSocketList`, `MaterialSocketList`, `CollectionSocketList`, `ImageSocketList`, and more). List sockets carry methods for working with the list:
+  - `list_length()` — number of elements, also available via `len()`
+  - `get(index)` — retrieve an element (or a sub-list when indexed with an `IntegerSocketList`) via `GetListItem`
+  - `filter(selection)` — keep elements where *selection* is true
+  - `sort(sort_weight, group_id=None, selection=None)` — sort via `SortList`
+  - `reverse()` — reverse the list
+  - `list_slice(start, stop, step)` — Python-style slicing, also driven through `[]` indexing and slicing (e.g. `list[::2]`, `list[-3:-1]`)
+
+``` py
+indices = g.Index().o.index.to_list(10)
+evens = indices[::2]          # IntegerSocketList via GetListItem
+count = len(indices)          # IntegerSocket via ListLength
+first = indices.get(0)        # IntegerSocket
+```
+
+- **Grid socket subtypes** — new `*SocketGrid` socket types for volume grids (`FloatSocketGrid`, `IntegerSocketGrid`, `VectorSocketGrid`, `BooleanSocketGrid`), with `transform()`, `background_value()`, and component indexing.
+- **`to_list(count)`** — convert a field socket into a list socket via `FieldToList`. Available on `FloatSocket`, `IntegerSocket`, `VectorSocket`, `ColorSocket`, `BooleanSocket`, `RotationSocket`, `MatrixSocket`, `StringSocket`, and `MenuSocket`.
+- **New `StringSocket` methods** — `uppercase()` and `lowercase()` (via `SetStringCase`) and `reverse()` (via `ReverseString`).
+
+``` py
+string = g.String("Example").o.string
+string.uppercase()   # StringSocket via SetStringCase
+string.lowercase()   # StringSocket via SetStringCase
+string.reverse()     # StringSocket via ReverseString
+```
+
+### Fixed
+
+### Breaking Changes
+
 ## v0.18.0 - 2026-05-20
 
 ### Added
@@ -16,10 +52,6 @@
     - `scale(transform_space="ORIGINAL")` — get the scale, returns `VectorSocket`
     - `geometry(as_instance=False, transform_space="ORIGINAL")` — get the geometry, returns `GeometrySocket`
 - Added `is_selected()` method to `MenuSwitch` - returns the `BooleanSocket` for the named menu item that is true when the item is selected
-
-## \### Fixed
-
-## \### Changed
 
 ## v0.17.0 - 2026-05-13
 

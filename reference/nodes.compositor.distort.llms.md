@@ -656,6 +656,7 @@ Create Scale node with type ‘Scene Size’.
 ``` python
 Stabilize2D(
     image=None,
+    frame=0,
     invert=False,
     interpolation='Bilinear',
     extension_x='Clip',
@@ -670,6 +671,7 @@ Stabilize footage using 2D stabilization motion tracking settings
 | Name | Type | Description | Default |
 |----|----|----|----|
 | image | InputColor | Image | `None` |
+| frame | InputInteger | Frame | `0` |
 | invert | InputBoolean | Invert | `False` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
@@ -692,6 +694,7 @@ Stabilize footage using 2D stabilization motion tracking settings
 | Attribute         | Type            | Description   |
 |-------------------|-----------------|---------------|
 | `i.image`         | `ColorSocket`   | Image         |
+| `i.frame`         | `IntegerSocket` | Frame         |
 | `i.invert`        | `BooleanSocket` | Invert        |
 | `i.interpolation` | `MenuSocket`    | Interpolation |
 | `i.extension_x`   | `MenuSocket`    | Extension X   |

@@ -7,6 +7,7 @@
 | Name | Description |
 |----|----|
 | [CombineColor](#nodebpy.nodes.shader.converter.CombineColor) | Create a color from individual components using multiple models |
+| [ImplicitConversion](#nodebpy.nodes.shader.converter.ImplicitConversion) | Implicitly convert the input value to a fixed socket type |
 | [Mix](#nodebpy.nodes.shader.converter.Mix) | Mix values by a factor |
 | [RGBToBW](#nodebpy.nodes.shader.converter.RGBToBW) | Convert a color’s luminance to a grayscale value |
 | [SeparateColor](#nodebpy.nodes.shader.converter.SeparateColor) | Split a color into its individual components using multiple models |
@@ -88,11 +89,136 @@ Create Combine Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color 
 |-----------|---------------|-------------|
 | `o.color` | `ColorSocket` | Color       |
 
+### ImplicitConversion
+
+``` python
+ImplicitConversion(value=None, *, data_type='RGBA')
+```
+
+Implicitly convert the input value to a fixed socket type
+
+#### Parameters
+
+| Name  | Type       | Description | Default |
+|-------|------------|-------------|---------|
+| value | InputColor | Value       | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.shader.converter.ImplicitConversion.data_type) |  |
+| [`i`](#nodebpy.nodes.shader.converter.ImplicitConversion.i) |  |
+| [`name`](#nodebpy.nodes.shader.converter.ImplicitConversion.name) |  |
+| [`node`](#nodebpy.nodes.shader.converter.ImplicitConversion.node) |  |
+| [`o`](#nodebpy.nodes.shader.converter.ImplicitConversion.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.converter.ImplicitConversion.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.converter.ImplicitConversion.tree) |  |
+| [`type`](#nodebpy.nodes.shader.converter.ImplicitConversion.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.shader.converter.ImplicitConversion.boolean) | Create Implicit Conversion with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.shader.converter.ImplicitConversion.bundle) | Create Implicit Conversion with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.shader.converter.ImplicitConversion.closure) | Create Implicit Conversion with operation ‘Closure’. |
+| [color](#nodebpy.nodes.shader.converter.ImplicitConversion.color) | Create Implicit Conversion with operation ‘Color’. |
+| [float](#nodebpy.nodes.shader.converter.ImplicitConversion.float) | Create Implicit Conversion with operation ‘Float’. |
+| [integer](#nodebpy.nodes.shader.converter.ImplicitConversion.integer) | Create Implicit Conversion with operation ‘Integer’. |
+| [menu](#nodebpy.nodes.shader.converter.ImplicitConversion.menu) | Create Implicit Conversion with operation ‘Menu’. |
+| [shader](#nodebpy.nodes.shader.converter.ImplicitConversion.shader) | Create Implicit Conversion with operation ‘Shader’. |
+| [vector](#nodebpy.nodes.shader.converter.ImplicitConversion.vector) | Create Implicit Conversion with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(value=False)
+```
+
+Create Implicit Conversion with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(value=None)
+```
+
+Create Implicit Conversion with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(value=None)
+```
+
+Create Implicit Conversion with operation ‘Closure’.
+
+##### color
+
+``` python
+color(value=None)
+```
+
+Create Implicit Conversion with operation ‘Color’.
+
+##### float
+
+``` python
+float(value=0.0)
+```
+
+Create Implicit Conversion with operation ‘Float’.
+
+##### integer
+
+``` python
+integer(value=0)
+```
+
+Create Implicit Conversion with operation ‘Integer’.
+
+##### menu
+
+``` python
+menu(value=None)
+```
+
+Create Implicit Conversion with operation ‘Menu’.
+
+##### shader
+
+``` python
+shader(value=None)
+```
+
+Create Implicit Conversion with operation ‘Shader’.
+
+##### vector
+
+``` python
+vector(value=None)
+```
+
+Create Implicit Conversion with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.value` | `ColorSocket` | Value       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.value` | `ColorSocket` | Value       |
+
 ### Mix
 
 ``` python
 Mix(
-    factor_float=0.5,
+    factor_float=1.0,
     factor_vector=None,
     a_float=0.0,
     b_float=0.0,
@@ -117,7 +243,7 @@ Mix values by a factor
 
 | Name          | Type          | Description | Default |
 |---------------|---------------|-------------|---------|
-| factor_float  | InputFloat    | Factor      | `0.5`   |
+| factor_float  | InputFloat    | Factor      | `1.0`   |
 | factor_vector | InputVector   | Factor      | `None`  |
 | a_float       | InputFloat    | A           | `0.0`   |
 | b_float       | InputFloat    | B           | `0.0`   |
@@ -156,7 +282,7 @@ Mix values by a factor
 ##### color
 
 ``` python
-color(factor=0.5, a_color=None, b_color=None)
+color(factor=1.0, b_color=None)
 ```
 
 Create Mix with operation ‘Color’.
@@ -164,7 +290,7 @@ Create Mix with operation ‘Color’.
 ##### float
 
 ``` python
-float(factor=0.5, a=0.0, b=0.0)
+float(factor=1.0, b=0.0)
 ```
 
 Create Mix with operation ‘Float’.
@@ -172,7 +298,7 @@ Create Mix with operation ‘Float’.
 ##### vector
 
 ``` python
-vector(factor=0.5, a=None, b=None)
+vector(factor=1.0, b=None)
 ```
 
 Create Mix with operation ‘Vector’.

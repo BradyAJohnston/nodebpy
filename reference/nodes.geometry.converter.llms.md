@@ -13,51 +13,65 @@
 | [Blackbody](#nodebpy.nodes.geometry.converter.Blackbody) | Convert a blackbody temperature to an RGB value |
 | [BooleanMath](#nodebpy.nodes.geometry.converter.BooleanMath) | Perform a logical operation on the given boolean inputs |
 | [Clamp](#nodebpy.nodes.geometry.converter.Clamp) | Clamp a value between a minimum and a maximum |
+| [ClosureToList](#nodebpy.nodes.geometry.converter.ClosureToList) | Create a list of values |
+| [ClusterByConnected](#nodebpy.nodes.geometry.converter.ClusterByConnected) | Group mesh vertices connected by edges when they are within a specified distance |
+| [ClusterByDistance](#nodebpy.nodes.geometry.converter.ClusterByDistance) | Group elements into integer IDs based on proximity of vector values |
 | [CombineBundle](#nodebpy.nodes.geometry.converter.CombineBundle) | Combine multiple socket values into one. |
 | [CombineColor](#nodebpy.nodes.geometry.converter.CombineColor) | Combine four channels into a single color, based on a particular color model |
 | [CombineMatrix](#nodebpy.nodes.geometry.converter.CombineMatrix) | Construct a 4x4 matrix from its individual values |
 | [CombineTransform](#nodebpy.nodes.geometry.converter.CombineTransform) | Combine a translation vector, a rotation, and a scale vector into a transformation matrix |
 | [CombineXYZ](#nodebpy.nodes.geometry.converter.CombineXYZ) | Create a vector from X, Y, and Z components |
 | [EulerToRotation](#nodebpy.nodes.geometry.converter.EulerToRotation) | Build a rotation from separate angles around each axis |
+| [FilterList](#nodebpy.nodes.geometry.converter.FilterList) | Remove items from a list |
 | [FindInString](#nodebpy.nodes.geometry.converter.FindInString) | Find the number of times a given string occurs in another string and the position of the first match |
 | [FloatToInteger](#nodebpy.nodes.geometry.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
 | [GetBundleItem](#nodebpy.nodes.geometry.converter.GetBundleItem) | Retrieve a bundle item by path. |
+| [GetListItem](#nodebpy.nodes.geometry.converter.GetListItem) | Retrieve a value from a list |
+| [GetNestedBundlePaths](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths) | Get paths to items in a nested bundle with a filter |
 | [HashValue](#nodebpy.nodes.geometry.converter.HashValue) | Generate a randomized integer using the given input value as a seed |
+| [ImplicitConversion](#nodebpy.nodes.geometry.converter.ImplicitConversion) | Implicitly convert the input value to a fixed socket type |
 | [IndexOfNearest](#nodebpy.nodes.geometry.converter.IndexOfNearest) | Find the nearest element in a group. Similar to the “Sample Nearest” node |
 | [IntegerMath](#nodebpy.nodes.geometry.converter.IntegerMath) | Perform various math operations on the given integer inputs |
 | [InvertMatrix](#nodebpy.nodes.geometry.converter.InvertMatrix) | Compute the inverse of the given matrix, if one exists |
 | [InvertRotation](#nodebpy.nodes.geometry.converter.InvertRotation) | Compute the inverse of the given rotation |
 | [JoinBundle](#nodebpy.nodes.geometry.converter.JoinBundle) | Join multiple bundles together |
+| [ListLength](#nodebpy.nodes.geometry.converter.ListLength) | Count how many items are in a given list |
 | [MapRange](#nodebpy.nodes.geometry.converter.MapRange) | Remap a value from a range to a target range |
 | [MatchString](#nodebpy.nodes.geometry.converter.MatchString) | Check if a given string exists within another string |
 | [Math](#nodebpy.nodes.geometry.converter.Math) | Perform math operations |
 | [MatrixDeterminant](#nodebpy.nodes.geometry.converter.MatrixDeterminant) | Compute the determinant of the given matrix |
 | [MatrixSVD](#nodebpy.nodes.geometry.converter.MatrixSVD) | Compute the singular value decomposition of the 3x3 part of a matrix |
-| [Mix](#nodebpy.nodes.geometry.converter.Mix) | Mix values by a factor |
 | [MultiplyMatrices](#nodebpy.nodes.geometry.converter.MultiplyMatrices) | Perform a matrix multiplication on two input matrices |
 | [PackUVIslands](#nodebpy.nodes.geometry.converter.PackUVIslands) | Scale islands of a UV map and move them so they fill the UV space as much as possible |
 | [ProjectPoint](#nodebpy.nodes.geometry.converter.ProjectPoint) | Project a point using a matrix, using location, rotation, scale, and perspective divide |
 | [QuaternionToRotation](#nodebpy.nodes.geometry.converter.QuaternionToRotation) | Build a rotation from quaternion components |
 | [RandomValue](#nodebpy.nodes.geometry.converter.RandomValue) | Output a randomized value |
 | [ReplaceString](#nodebpy.nodes.geometry.converter.ReplaceString) | Replace a given string segment with another |
+| [ReverseString](#nodebpy.nodes.geometry.converter.ReverseString) | Reverse the order of the characters in a string |
 | [RotateEuler](#nodebpy.nodes.geometry.converter.RotateEuler) | Apply a secondary Euler rotation to a given Euler rotation |
 | [RotateRotation](#nodebpy.nodes.geometry.converter.RotateRotation) | Apply a secondary rotation to a given rotation value |
 | [RotateVector](#nodebpy.nodes.geometry.converter.RotateVector) | Apply a rotation to a given vector |
 | [RotationToAxisAngle](#nodebpy.nodes.geometry.converter.RotationToAxisAngle) | Convert a rotation to axis angle components |
 | [RotationToEuler](#nodebpy.nodes.geometry.converter.RotationToEuler) | Convert a standard rotation value to an Euler rotation |
 | [RotationToQuaternion](#nodebpy.nodes.geometry.converter.RotationToQuaternion) | Retrieve the quaternion components representing a rotation |
+| [SampleSoundFrequencies](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies) | Retrieve the amplitude from a sound data-block of a frequency range at a given time |
 | [SeparateBundle](#nodebpy.nodes.geometry.converter.SeparateBundle) | Split a bundle into multiple sockets. |
 | [SeparateColor](#nodebpy.nodes.geometry.converter.SeparateColor) | Split a color into separate channels, based on a particular color model |
 | [SeparateMatrix](#nodebpy.nodes.geometry.converter.SeparateMatrix) | Split a 4x4 matrix into its individual values |
 | [SeparateTransform](#nodebpy.nodes.geometry.converter.SeparateTransform) | Split a transformation matrix into a translation vector, a rotation, and a scale vector |
 | [SeparateXYZ](#nodebpy.nodes.geometry.converter.SeparateXYZ) | Split a vector into its X, Y, and Z components |
+| [SetStringCase](#nodebpy.nodes.geometry.converter.SetStringCase) | Convert the case of a string |
 | [SliceString](#nodebpy.nodes.geometry.converter.SliceString) | Extract a string segment from a larger string |
+| [SortList](#nodebpy.nodes.geometry.converter.SortList) | Sort a list based on weights |
+| [SplitString](#nodebpy.nodes.geometry.converter.SplitString) | Split a string into a list using a separator |
 | [StoreBundleItem](#nodebpy.nodes.geometry.converter.StoreBundleItem) | Store a bundle item by path and data type. |
 | [StringLength](#nodebpy.nodes.geometry.converter.StringLength) | Output the number of characters in the given string |
 | [StringToValue](#nodebpy.nodes.geometry.converter.StringToValue) | Derive a numeric value from a given string representation |
+| [TagFilter](#nodebpy.nodes.geometry.converter.TagFilter) | Check if a filter string matches a list of tags |
 | [TransformDirection](#nodebpy.nodes.geometry.converter.TransformDirection) | Apply a transformation matrix (excluding translation) to the given vector |
 | [TransformPoint](#nodebpy.nodes.geometry.converter.TransformPoint) | Apply a transformation matrix to the given vector |
 | [TransposeMatrix](#nodebpy.nodes.geometry.converter.TransposeMatrix) | Flip a matrix over its diagonal, turning columns into rows and vice-versa |
+| [TrimString](#nodebpy.nodes.geometry.converter.TrimString) | Remove characters from the beginning and end of a string |
 | [UVUnwrap](#nodebpy.nodes.geometry.converter.UVUnwrap) | Generate a UV map based on seam edges |
 | [ValueToString](#nodebpy.nodes.geometry.converter.ValueToString) | Generate a string representation of the given input value |
 
@@ -535,6 +549,126 @@ Create Clamp with operation ‘Range’. Constrain value between min and max, sw
 |------------|---------------|-------------|
 | `o.result` | `FloatSocket` | Result      |
 
+### ClosureToList
+
+``` python
+ClosureToList(count=1, closure=None)
+```
+
+Create a list of values
+
+#### Parameters
+
+| Name    | Type         | Description | Default |
+|---------|--------------|-------------|---------|
+| count   | InputInteger | Count       | `1`     |
+| closure | InputClosure | Closure     | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.ClosureToList.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ClosureToList.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.ClosureToList.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.ClosureToList.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.ClosureToList.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ClosureToList.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.ClosureToList.type) |  |
+
+**Inputs**
+
+| Attribute   | Type            | Description |
+|-------------|-----------------|-------------|
+| `i.count`   | `IntegerSocket` | Count       |
+| `i.closure` | `ClosureSocket` | Closure     |
+
+### ClusterByConnected
+
+``` python
+ClusterByConnected(selection=True, position=None, distance=0.001)
+```
+
+Group mesh vertices connected by edges when they are within a specified distance
+
+#### Parameters
+
+| Name      | Type         | Description | Default |
+|-----------|--------------|-------------|---------|
+| selection | InputBoolean | Selection   | `True`  |
+| position  | InputVector  | Position    | `None`  |
+| distance  | InputFloat   | Distance    | `0.001` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.ClusterByConnected.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ClusterByConnected.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.ClusterByConnected.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.ClusterByConnected.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.ClusterByConnected.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ClusterByConnected.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.ClusterByConnected.type) |  |
+
+**Inputs**
+
+| Attribute     | Type            | Description |
+|---------------|-----------------|-------------|
+| `i.selection` | `BooleanSocket` | Selection   |
+| `i.position`  | `VectorSocket`  | Position    |
+| `i.distance`  | `FloatSocket`   | Distance    |
+
+**Outputs**
+
+| Attribute      | Type            | Description |
+|----------------|-----------------|-------------|
+| `o.cluster_id` | `IntegerSocket` | Cluster ID  |
+
+### ClusterByDistance
+
+``` python
+ClusterByDistance(selection=True, group_id=0, position=None, distance=0.001)
+```
+
+Group elements into integer IDs based on proximity of vector values
+
+#### Parameters
+
+| Name      | Type         | Description | Default |
+|-----------|--------------|-------------|---------|
+| selection | InputBoolean | Selection   | `True`  |
+| group_id  | InputInteger | Group ID    | `0`     |
+| position  | InputVector  | Position    | `None`  |
+| distance  | InputFloat   | Distance    | `0.001` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.ClusterByDistance.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ClusterByDistance.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.ClusterByDistance.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.ClusterByDistance.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.ClusterByDistance.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ClusterByDistance.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.ClusterByDistance.type) |  |
+
+**Inputs**
+
+| Attribute     | Type            | Description |
+|---------------|-----------------|-------------|
+| `i.selection` | `BooleanSocket` | Selection   |
+| `i.group_id`  | `IntegerSocket` | Group ID    |
+| `i.position`  | `VectorSocket`  | Position    |
+| `i.distance`  | `FloatSocket`   | Distance    |
+
+**Outputs**
+
+| Attribute      | Type            | Description |
+|----------------|-----------------|-------------|
+| `o.cluster_id` | `IntegerSocket` | Cluster ID  |
+
 ### CombineBundle
 
 ``` python
@@ -846,20 +980,230 @@ Build a rotation from separate angles around each axis
 |--------------|------------------|-------------|
 | `o.rotation` | `RotationSocket` | Rotation    |
 
+### FilterList
+
+``` python
+FilterList(list=0.0, selection=True, *, socket_type='FLOAT')
+```
+
+Remove items from a list
+
+#### Parameters
+
+| Name      | Type         | Description | Default |
+|-----------|--------------|-------------|---------|
+| list      | InputFloat   | List        | `0.0`   |
+| selection | InputBoolean | Selection   | `True`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.FilterList.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.FilterList.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.FilterList.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.FilterList.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.FilterList.outputs) |  |
+| [`socket_type`](#nodebpy.nodes.geometry.converter.FilterList.socket_type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FilterList.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.FilterList.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.converter.FilterList.boolean) | Create Filter List with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.converter.FilterList.bundle) | Create Filter List with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.converter.FilterList.closure) | Create Filter List with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.converter.FilterList.collection) | Create Filter List with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.converter.FilterList.color) | Create Filter List with operation ‘Color’. |
+| [float](#nodebpy.nodes.geometry.converter.FilterList.float) | Create Filter List with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.FilterList.font) | Create Filter List with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.converter.FilterList.geometry) | Create Filter List with operation ‘Geometry’. |
+| [image](#nodebpy.nodes.geometry.converter.FilterList.image) | Create Filter List with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.converter.FilterList.integer) | Create Filter List with operation ‘Integer’. |
+| [material](#nodebpy.nodes.geometry.converter.FilterList.material) | Create Filter List with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.converter.FilterList.matrix) | Create Filter List with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.converter.FilterList.menu) | Create Filter List with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.converter.FilterList.object) | Create Filter List with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.converter.FilterList.rotation) | Create Filter List with operation ‘Rotation’. |
+| [sound](#nodebpy.nodes.geometry.converter.FilterList.sound) | Create Filter List with operation ‘Sound’. |
+| [string](#nodebpy.nodes.geometry.converter.FilterList.string) | Create Filter List with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.converter.FilterList.vector) | Create Filter List with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(list=False, selection=True)
+```
+
+Create Filter List with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Collection’.
+
+##### color
+
+``` python
+color(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Color’.
+
+##### float
+
+``` python
+float(list=0.0, selection=True)
+```
+
+Create Filter List with operation ‘Float’.
+
+##### font
+
+``` python
+font(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Geometry’.
+
+##### image
+
+``` python
+image(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(list=0, selection=True)
+```
+
+Create Filter List with operation ‘Integer’.
+
+##### material
+
+``` python
+material(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Menu’.
+
+##### object
+
+``` python
+object(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Rotation’.
+
+##### sound
+
+``` python
+sound(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Sound’.
+
+##### string
+
+``` python
+string(list='', selection=True)
+```
+
+Create Filter List with operation ‘String’.
+
+##### vector
+
+``` python
+vector(list=None, selection=True)
+```
+
+Create Filter List with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute     | Type            | Description |
+|---------------|-----------------|-------------|
+| `i.list`      | `FloatSocket`   | List        |
+| `i.selection` | `BooleanSocket` | Selection   |
+
+**Outputs**
+
+| Attribute     | Type          | Description |
+|---------------|---------------|-------------|
+| `o.selection` | `FloatSocket` | Selection   |
+| `o.inverted`  | `FloatSocket` | Inverted    |
+
 ### FindInString
 
 ``` python
-FindInString(string='', search='')
+FindInString(string='', search='', mode='From Start')
 ```
 
 Find the number of times a given string occurs in another string and the position of the first match
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| string | InputString | String      | `''`    |
-| search | InputString | Search      | `''`    |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| string | InputString | String | `''` |
+| search | InputString | Search | `''` |
+| mode | InputMenu \| Literal\['From Start', 'From End'\] | Mode | `'From Start'` |
 
 #### Attributes
 
@@ -879,6 +1223,7 @@ Find the number of times a given string occurs in another string and the positio
 |------------|----------------|-------------|
 | `i.string` | `StringSocket` | String      |
 | `i.search` | `StringSocket` | Search      |
+| `i.mode`   | `MenuSocket`   | Mode        |
 
 **Outputs**
 
@@ -988,6 +1333,7 @@ Retrieve a bundle item by path.
 | [object](#nodebpy.nodes.geometry.converter.GetBundleItem.object) | Create Get Bundle Item with operation ‘Object’. |
 | [rotation](#nodebpy.nodes.geometry.converter.GetBundleItem.rotation) | Create Get Bundle Item with operation ‘Rotation’. |
 | [single](#nodebpy.nodes.geometry.converter.GetBundleItem.single) | Create Get Bundle Item with operation ‘Single’. Socket expects a single value |
+| [sound](#nodebpy.nodes.geometry.converter.GetBundleItem.sound) | Create Get Bundle Item with operation ‘Sound’. |
 | [string](#nodebpy.nodes.geometry.converter.GetBundleItem.string) | Create Get Bundle Item with operation ‘String’. |
 | [vector](#nodebpy.nodes.geometry.converter.GetBundleItem.vector) | Create Get Bundle Item with operation ‘Vector’. |
 
@@ -1159,6 +1505,14 @@ single(bundle=None, path='', remove=False)
 
 Create Get Bundle Item with operation ‘Single’. Socket expects a single value
 
+##### sound
+
+``` python
+sound(bundle=None, path='', remove=False)
+```
+
+Create Get Bundle Item with operation ‘Sound’.
+
 ##### string
 
 ``` python
@@ -1190,6 +1544,321 @@ Create Get Bundle Item with operation ‘Vector’.
 | `o.bundle` | `BundleSocket`  | Bundle      |
 | `o.item`   | `FloatSocket`   | Item        |
 | `o.exists` | `BooleanSocket` | Exists      |
+
+### GetListItem
+
+``` python
+GetListItem(list=0.0, index=0, *, socket_type='FLOAT', structure_type='AUTO')
+```
+
+Retrieve a value from a list
+
+#### Parameters
+
+| Name  | Type         | Description | Default |
+|-------|--------------|-------------|---------|
+| list  | InputFloat   | List        | `0.0`   |
+| index | InputInteger | Index       | `0`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.GetListItem.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.GetListItem.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.GetListItem.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.GetListItem.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.GetListItem.outputs) |  |
+| [`socket_type`](#nodebpy.nodes.geometry.converter.GetListItem.socket_type) |  |
+| [`structure_type`](#nodebpy.nodes.geometry.converter.GetListItem.structure_type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.GetListItem.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.GetListItem.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [auto](#nodebpy.nodes.geometry.converter.GetListItem.auto) | Create Get List Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used |
+| [boolean](#nodebpy.nodes.geometry.converter.GetListItem.boolean) | Create Get List Item with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.converter.GetListItem.bundle) | Create Get List Item with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.converter.GetListItem.closure) | Create Get List Item with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.converter.GetListItem.collection) | Create Get List Item with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.converter.GetListItem.color) | Create Get List Item with operation ‘Color’. |
+| [dynamic](#nodebpy.nodes.geometry.converter.GetListItem.dynamic) | Create Get List Item with operation ‘Dynamic’. Socket can work with different kinds of structures |
+| [field](#nodebpy.nodes.geometry.converter.GetListItem.field) | Create Get List Item with operation ‘Field’. Socket expects a field |
+| [float](#nodebpy.nodes.geometry.converter.GetListItem.float) | Create Get List Item with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.GetListItem.font) | Create Get List Item with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.converter.GetListItem.geometry) | Create Get List Item with operation ‘Geometry’. |
+| [grid](#nodebpy.nodes.geometry.converter.GetListItem.grid) | Create Get List Item with operation ‘Grid’. Socket expects a grid |
+| [image](#nodebpy.nodes.geometry.converter.GetListItem.image) | Create Get List Item with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.converter.GetListItem.integer) | Create Get List Item with operation ‘Integer’. |
+| [list](#nodebpy.nodes.geometry.converter.GetListItem.list) | Create Get List Item with operation ‘List’. Socket expects a list |
+| [material](#nodebpy.nodes.geometry.converter.GetListItem.material) | Create Get List Item with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.converter.GetListItem.matrix) | Create Get List Item with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.converter.GetListItem.menu) | Create Get List Item with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.converter.GetListItem.object) | Create Get List Item with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.converter.GetListItem.rotation) | Create Get List Item with operation ‘Rotation’. |
+| [single](#nodebpy.nodes.geometry.converter.GetListItem.single) | Create Get List Item with operation ‘Single’. Socket expects a single value |
+| [sound](#nodebpy.nodes.geometry.converter.GetListItem.sound) | Create Get List Item with operation ‘Sound’. |
+| [string](#nodebpy.nodes.geometry.converter.GetListItem.string) | Create Get List Item with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.converter.GetListItem.vector) | Create Get List Item with operation ‘Vector’. |
+
+##### auto
+
+``` python
+auto(list=0.0, index=0)
+```
+
+Create Get List Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used
+
+##### boolean
+
+``` python
+boolean(list=False, index=0)
+```
+
+Create Get List Item with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Collection’.
+
+##### color
+
+``` python
+color(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Color’.
+
+##### dynamic
+
+``` python
+dynamic(list=0.0, index=0)
+```
+
+Create Get List Item with operation ‘Dynamic’. Socket can work with different kinds of structures
+
+##### field
+
+``` python
+field(list=0.0, index=0)
+```
+
+Create Get List Item with operation ‘Field’. Socket expects a field
+
+##### float
+
+``` python
+float(list=0.0, index=0)
+```
+
+Create Get List Item with operation ‘Float’.
+
+##### font
+
+``` python
+font(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Geometry’.
+
+##### grid
+
+``` python
+grid(list=0.0, index=0)
+```
+
+Create Get List Item with operation ‘Grid’. Socket expects a grid
+
+##### image
+
+``` python
+image(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(list=0, index=0)
+```
+
+Create Get List Item with operation ‘Integer’.
+
+##### list
+
+``` python
+list(list=0.0, index=0)
+```
+
+Create Get List Item with operation ‘List’. Socket expects a list
+
+##### material
+
+``` python
+material(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Menu’.
+
+##### object
+
+``` python
+object(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Rotation’.
+
+##### single
+
+``` python
+single(list=0.0, index=0)
+```
+
+Create Get List Item with operation ‘Single’. Socket expects a single value
+
+##### sound
+
+``` python
+sound(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Sound’.
+
+##### string
+
+``` python
+string(list='', index=0)
+```
+
+Create Get List Item with operation ‘String’.
+
+##### vector
+
+``` python
+vector(list=None, index=0)
+```
+
+Create Get List Item with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute | Type            | Description |
+|-----------|-----------------|-------------|
+| `i.list`  | `FloatSocket`   | List        |
+| `i.index` | `IntegerSocket` | Index       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.value` | `FloatSocket` | Value       |
+
+### GetNestedBundlePaths
+
+``` python
+GetNestedBundlePaths(
+    bundle=None,
+    mode='All',
+    pattern_mode='Exact',
+    bundle_type='',
+    data_type='Float',
+)
+```
+
+Get paths to items in a nested bundle with a filter
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| bundle | InputBundle | Bundle | `None` |
+| mode | InputMenu \| Literal\['All', 'Bundle Type', 'Data Type'\] | Mode | `'All'` |
+| pattern_mode | InputMenu \| Literal\['Exact', 'Wildcard'\] | Pattern Mode | `'Exact'` |
+| bundle_type | InputString | Bundle Type | `''` |
+| data_type | InputMenu \| Literal\['Float', 'Integer', 'Boolean', 'Vector', 'Color', 'Rotation', 'Matrix', 'String', 'Menu', 'Object', 'Image', 'Geometry', 'Collection', 'Material', 'Bundle', 'Closure', 'Font', 'Sound'\] | Data Type | `'Float'` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.type) |  |
+
+**Inputs**
+
+| Attribute        | Type           | Description  |
+|------------------|----------------|--------------|
+| `i.bundle`       | `BundleSocket` | Bundle       |
+| `i.mode`         | `MenuSocket`   | Mode         |
+| `i.pattern_mode` | `MenuSocket`   | Pattern Mode |
+| `i.bundle_type`  | `StringSocket` | Bundle Type  |
+| `i.data_type`    | `MenuSocket`   | Data Type    |
+
+**Outputs**
+
+| Attribute | Type           | Description |
+|-----------|----------------|-------------|
+| `o.paths` | `StringSocket` | Paths       |
 
 ### HashValue
 
@@ -1299,6 +1968,212 @@ Create Hash Value with operation ‘Vector’.
 | Attribute | Type            | Description |
 |-----------|-----------------|-------------|
 | `o.hash`  | `IntegerSocket` | Hash        |
+
+### ImplicitConversion
+
+``` python
+ImplicitConversion(value=None, *, data_type='RGBA')
+```
+
+Implicitly convert the input value to a fixed socket type
+
+#### Parameters
+
+| Name  | Type       | Description | Default |
+|-------|------------|-------------|---------|
+| value | InputColor | Value       | `None`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.converter.ImplicitConversion.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.ImplicitConversion.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ImplicitConversion.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.ImplicitConversion.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.ImplicitConversion.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.ImplicitConversion.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ImplicitConversion.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.ImplicitConversion.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.converter.ImplicitConversion.boolean) | Create Implicit Conversion with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.converter.ImplicitConversion.bundle) | Create Implicit Conversion with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.converter.ImplicitConversion.closure) | Create Implicit Conversion with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.converter.ImplicitConversion.collection) | Create Implicit Conversion with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.converter.ImplicitConversion.color) | Create Implicit Conversion with operation ‘Color’. |
+| [float](#nodebpy.nodes.geometry.converter.ImplicitConversion.float) | Create Implicit Conversion with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.ImplicitConversion.font) | Create Implicit Conversion with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.converter.ImplicitConversion.geometry) | Create Implicit Conversion with operation ‘Geometry’. |
+| [image](#nodebpy.nodes.geometry.converter.ImplicitConversion.image) | Create Implicit Conversion with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.converter.ImplicitConversion.integer) | Create Implicit Conversion with operation ‘Integer’. |
+| [material](#nodebpy.nodes.geometry.converter.ImplicitConversion.material) | Create Implicit Conversion with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.converter.ImplicitConversion.matrix) | Create Implicit Conversion with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.converter.ImplicitConversion.menu) | Create Implicit Conversion with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.converter.ImplicitConversion.object) | Create Implicit Conversion with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.converter.ImplicitConversion.rotation) | Create Implicit Conversion with operation ‘Rotation’. |
+| [sound](#nodebpy.nodes.geometry.converter.ImplicitConversion.sound) | Create Implicit Conversion with operation ‘Sound’. |
+| [string](#nodebpy.nodes.geometry.converter.ImplicitConversion.string) | Create Implicit Conversion with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.converter.ImplicitConversion.vector) | Create Implicit Conversion with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(value=False)
+```
+
+Create Implicit Conversion with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(value=None)
+```
+
+Create Implicit Conversion with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(value=None)
+```
+
+Create Implicit Conversion with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(value=None)
+```
+
+Create Implicit Conversion with operation ‘Collection’.
+
+##### color
+
+``` python
+color(value=None)
+```
+
+Create Implicit Conversion with operation ‘Color’.
+
+##### float
+
+``` python
+float(value=0.0)
+```
+
+Create Implicit Conversion with operation ‘Float’.
+
+##### font
+
+``` python
+font(value=None)
+```
+
+Create Implicit Conversion with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(value=None)
+```
+
+Create Implicit Conversion with operation ‘Geometry’.
+
+##### image
+
+``` python
+image(value=None)
+```
+
+Create Implicit Conversion with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(value=0)
+```
+
+Create Implicit Conversion with operation ‘Integer’.
+
+##### material
+
+``` python
+material(value=None)
+```
+
+Create Implicit Conversion with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(value=None)
+```
+
+Create Implicit Conversion with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(value=None)
+```
+
+Create Implicit Conversion with operation ‘Menu’.
+
+##### object
+
+``` python
+object(value=None)
+```
+
+Create Implicit Conversion with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(value=None)
+```
+
+Create Implicit Conversion with operation ‘Rotation’.
+
+##### sound
+
+``` python
+sound(value=None)
+```
+
+Create Implicit Conversion with operation ‘Sound’.
+
+##### string
+
+``` python
+string(value='')
+```
+
+Create Implicit Conversion with operation ‘String’.
+
+##### vector
+
+``` python
+vector(value=None)
+```
+
+Create Implicit Conversion with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.value` | `ColorSocket` | Value       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.value` | `ColorSocket` | Value       |
 
 ### IndexOfNearest
 
@@ -1665,6 +2540,212 @@ Join multiple bundles together
 | Attribute  | Type           | Description |
 |------------|----------------|-------------|
 | `o.bundle` | `BundleSocket` | Bundle      |
+
+### ListLength
+
+``` python
+ListLength(list=0.0, *, data_type='FLOAT')
+```
+
+Count how many items are in a given list
+
+#### Parameters
+
+| Name | Type       | Description | Default |
+|------|------------|-------------|---------|
+| list | InputFloat | List        | `0.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`data_type`](#nodebpy.nodes.geometry.converter.ListLength.data_type) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.ListLength.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ListLength.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.ListLength.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.ListLength.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.ListLength.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ListLength.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.ListLength.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.converter.ListLength.boolean) | Create List Length with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.converter.ListLength.bundle) | Create List Length with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.converter.ListLength.closure) | Create List Length with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.converter.ListLength.collection) | Create List Length with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.converter.ListLength.color) | Create List Length with operation ‘Color’. |
+| [float](#nodebpy.nodes.geometry.converter.ListLength.float) | Create List Length with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.ListLength.font) | Create List Length with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.converter.ListLength.geometry) | Create List Length with operation ‘Geometry’. |
+| [image](#nodebpy.nodes.geometry.converter.ListLength.image) | Create List Length with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.converter.ListLength.integer) | Create List Length with operation ‘Integer’. |
+| [material](#nodebpy.nodes.geometry.converter.ListLength.material) | Create List Length with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.converter.ListLength.matrix) | Create List Length with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.converter.ListLength.menu) | Create List Length with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.converter.ListLength.object) | Create List Length with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.converter.ListLength.rotation) | Create List Length with operation ‘Rotation’. |
+| [sound](#nodebpy.nodes.geometry.converter.ListLength.sound) | Create List Length with operation ‘Sound’. |
+| [string](#nodebpy.nodes.geometry.converter.ListLength.string) | Create List Length with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.converter.ListLength.vector) | Create List Length with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(list=False)
+```
+
+Create List Length with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(list=None)
+```
+
+Create List Length with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(list=None)
+```
+
+Create List Length with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(list=None)
+```
+
+Create List Length with operation ‘Collection’.
+
+##### color
+
+``` python
+color(list=None)
+```
+
+Create List Length with operation ‘Color’.
+
+##### float
+
+``` python
+float(list=0.0)
+```
+
+Create List Length with operation ‘Float’.
+
+##### font
+
+``` python
+font(list=None)
+```
+
+Create List Length with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(list=None)
+```
+
+Create List Length with operation ‘Geometry’.
+
+##### image
+
+``` python
+image(list=None)
+```
+
+Create List Length with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(list=0)
+```
+
+Create List Length with operation ‘Integer’.
+
+##### material
+
+``` python
+material(list=None)
+```
+
+Create List Length with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(list=None)
+```
+
+Create List Length with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(list=None)
+```
+
+Create List Length with operation ‘Menu’.
+
+##### object
+
+``` python
+object(list=None)
+```
+
+Create List Length with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(list=None)
+```
+
+Create List Length with operation ‘Rotation’.
+
+##### sound
+
+``` python
+sound(list=None)
+```
+
+Create List Length with operation ‘Sound’.
+
+##### string
+
+``` python
+string(list='')
+```
+
+Create List Length with operation ‘String’.
+
+##### vector
+
+``` python
+vector(list=None)
+```
+
+Create List Length with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.list`  | `FloatSocket` | List        |
+
+**Outputs**
+
+| Attribute  | Type            | Description |
+|------------|-----------------|-------------|
+| `o.length` | `IntegerSocket` | Length      |
 
 ### MapRange
 
@@ -2358,128 +3439,6 @@ Compute the singular value decomposition of the 3x3 part of a matrix
 | `o.s`     | `VectorSocket` | S           |
 | `o.v`     | `MatrixSocket` | V           |
 
-### Mix
-
-``` python
-Mix(
-    factor_float=0.5,
-    factor_vector=None,
-    a_float=0.0,
-    b_float=0.0,
-    a_vector=None,
-    b_vector=None,
-    a_color=None,
-    b_color=None,
-    a_rotation=None,
-    b_rotation=None,
-    *,
-    data_type='FLOAT',
-    factor_mode='UNIFORM',
-    blend_type='MIX',
-    clamp_factor=False,
-    clamp_result=False,
-)
-```
-
-Mix values by a factor
-
-#### Parameters
-
-| Name          | Type          | Description | Default |
-|---------------|---------------|-------------|---------|
-| factor_float  | InputFloat    | Factor      | `0.5`   |
-| factor_vector | InputVector   | Factor      | `None`  |
-| a_float       | InputFloat    | A           | `0.0`   |
-| b_float       | InputFloat    | B           | `0.0`   |
-| a_vector      | InputVector   | A           | `None`  |
-| b_vector      | InputVector   | B           | `None`  |
-| a_color       | InputColor    | A           | `None`  |
-| b_color       | InputColor    | B           | `None`  |
-| a_rotation    | InputRotation | A           | `None`  |
-| b_rotation    | InputRotation | B           | `None`  |
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`blend_type`](#nodebpy.nodes.geometry.converter.Mix.blend_type) |  |
-| [`clamp_factor`](#nodebpy.nodes.geometry.converter.Mix.clamp_factor) |  |
-| [`clamp_result`](#nodebpy.nodes.geometry.converter.Mix.clamp_result) |  |
-| [`data_type`](#nodebpy.nodes.geometry.converter.Mix.data_type) |  |
-| [`factor_mode`](#nodebpy.nodes.geometry.converter.Mix.factor_mode) |  |
-| [`i`](#nodebpy.nodes.geometry.converter.Mix.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.Mix.name) |  |
-| [`node`](#nodebpy.nodes.geometry.converter.Mix.node) |  |
-| [`o`](#nodebpy.nodes.geometry.converter.Mix.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.Mix.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.Mix.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.Mix.type) |  |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [color](#nodebpy.nodes.geometry.converter.Mix.color) | Create Mix with operation ‘Color’. |
-| [float](#nodebpy.nodes.geometry.converter.Mix.float) | Create Mix with operation ‘Float’. |
-| [rotation](#nodebpy.nodes.geometry.converter.Mix.rotation) | Create Mix with operation ‘Rotation’. |
-| [vector](#nodebpy.nodes.geometry.converter.Mix.vector) | Create Mix with operation ‘Vector’. |
-
-##### color
-
-``` python
-color(factor=0.5, a_color=None, b_color=None)
-```
-
-Create Mix with operation ‘Color’.
-
-##### float
-
-``` python
-float(factor=0.5, a=0.0, b=0.0)
-```
-
-Create Mix with operation ‘Float’.
-
-##### rotation
-
-``` python
-rotation(factor=0.5, a_rotation=None, b_rotation=None)
-```
-
-Create Mix with operation ‘Rotation’.
-
-##### vector
-
-``` python
-vector(factor=0.5, a=None, b=None)
-```
-
-Create Mix with operation ‘Vector’.
-
-**Inputs**
-
-| Attribute         | Type             | Description |
-|-------------------|------------------|-------------|
-| `i.factor_float`  | `FloatSocket`    | Factor      |
-| `i.factor_vector` | `VectorSocket`   | Factor      |
-| `i.a_float`       | `FloatSocket`    | A           |
-| `i.b_float`       | `FloatSocket`    | B           |
-| `i.a_vector`      | `VectorSocket`   | A           |
-| `i.b_vector`      | `VectorSocket`   | B           |
-| `i.a_color`       | `ColorSocket`    | A           |
-| `i.b_color`       | `ColorSocket`    | B           |
-| `i.a_rotation`    | `RotationSocket` | A           |
-| `i.b_rotation`    | `RotationSocket` | B           |
-
-**Outputs**
-
-| Attribute           | Type             | Description |
-|---------------------|------------------|-------------|
-| `o.result_float`    | `FloatSocket`    | Result      |
-| `o.result_vector`   | `VectorSocket`   | Result      |
-| `o.result_color`    | `ColorSocket`    | Result      |
-| `o.result_rotation` | `RotationSocket` | Result      |
-
 ### MultiplyMatrices
 
 ``` python
@@ -2666,15 +3625,11 @@ Build a rotation from quaternion components
 
 ``` python
 RandomValue(
-    min=None,
-    max=None,
-    min_001=0.0,
-    max_001=1.0,
-    min_002=0,
-    max_002=100,
-    probability=0.5,
+    min=0.0,
+    max=1.0,
     id=0,
     seed=0,
+    probability=None,
     *,
     data_type='FLOAT',
 )
@@ -2686,15 +3641,11 @@ Output a randomized value
 
 | Name        | Type         | Description | Default |
 |-------------|--------------|-------------|---------|
-| min         | InputVector  | Min         | `None`  |
-| max         | InputVector  | Max         | `None`  |
-| min_001     | InputFloat   | Min         | `0.0`   |
-| max_001     | InputFloat   | Max         | `1.0`   |
-| min_002     | InputInteger | Min         | `0`     |
-| max_002     | InputInteger | Max         | `100`   |
-| probability | InputFloat   | Probability | `0.5`   |
+| min         | InputFloat   | Min         | `0.0`   |
+| max         | InputFloat   | Max         | `1.0`   |
 | id          | InputInteger | ID          | `0`     |
 | seed        | InputInteger | Seed        | `0`     |
+| probability | InputFloat   | Probability | `None`  |
 
 #### Attributes
 
@@ -2754,24 +3705,17 @@ Create Random Value with operation ‘Vector’. 3D vector with floating-point v
 
 | Attribute       | Type            | Description |
 |-----------------|-----------------|-------------|
-| `i.min`         | `VectorSocket`  | Min         |
-| `i.max`         | `VectorSocket`  | Max         |
-| `i.min_001`     | `FloatSocket`   | Min         |
-| `i.max_001`     | `FloatSocket`   | Max         |
-| `i.min_002`     | `IntegerSocket` | Min         |
-| `i.max_002`     | `IntegerSocket` | Max         |
-| `i.probability` | `FloatSocket`   | Probability |
+| `i.min`         | `FloatSocket`   | Min         |
+| `i.max`         | `FloatSocket`   | Max         |
 | `i.id`          | `IntegerSocket` | ID          |
 | `i.seed`        | `IntegerSocket` | Seed        |
+| `i.probability` | `FloatSocket`   | Probability |
 
 **Outputs**
 
-| Attribute     | Type            | Description |
-|---------------|-----------------|-------------|
-| `o.value`     | `VectorSocket`  | Value       |
-| `o.value_001` | `FloatSocket`   | Value       |
-| `o.value_002` | `IntegerSocket` | Value       |
-| `o.value_003` | `BooleanSocket` | Value       |
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.value` | `FloatSocket` | Value       |
 
 ### ReplaceString
 
@@ -2815,6 +3759,44 @@ Replace a given string segment with another
 |------------|----------------|-------------|
 | `o.string` | `StringSocket` | String      |
 
+### ReverseString
+
+``` python
+ReverseString(string='')
+```
+
+Reverse the order of the characters in a string
+
+#### Parameters
+
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| string | InputString | String      | `''`    |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.ReverseString.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ReverseString.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.ReverseString.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.ReverseString.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.ReverseString.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ReverseString.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.ReverseString.type) |  |
+
+**Inputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `i.string` | `StringSocket` | String      |
+
+**Outputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `o.string` | `StringSocket` | String      |
+
 ### RotateEuler
 
 ``` python
@@ -2822,7 +3804,7 @@ RotateEuler(
     rotation=None,
     rotate_by=None,
     axis=None,
-    angle=0.0,
+    angle=None,
     *,
     rotation_type='EULER',
     space='OBJECT',
@@ -2838,7 +3820,7 @@ Apply a secondary Euler rotation to a given Euler rotation
 | rotation  | InputVector | Rotation    | `None`  |
 | rotate_by | InputVector | Rotate By   | `None`  |
 | axis      | InputVector | Axis        | `None`  |
-| angle     | InputFloat  | Angle       | `0.0`   |
+| angle     | InputFloat  | Angle       | `None`  |
 
 #### Attributes
 
@@ -3091,6 +4073,67 @@ Retrieve the quaternion components representing a rotation
 | `o.y`     | `FloatSocket` | Y           |
 | `o.z`     | `FloatSocket` | Z           |
 
+### SampleSoundFrequencies
+
+``` python
+SampleSoundFrequencies(
+    sound=None,
+    time=0.0,
+    all_channels=True,
+    channel=0,
+    low=0.0,
+    high=10000.0,
+    fft_size='4096',
+    window_function='Hann',
+)
+```
+
+Retrieve the amplitude from a sound data-block of a frequency range at a given time
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| sound | InputSound | Sound | `None` |
+| time | InputFloat | Time | `0.0` |
+| all_channels | InputBoolean | All Channels | `True` |
+| channel | InputInteger | Channel | `0` |
+| low | InputFloat | Low | `0.0` |
+| high | InputFloat | High | `10000.0` |
+| fft_size | InputMenu \| Literal\['128', '256', '512', '1024', '2048', '4096', '8192', '16384', '32768'\] | FFT Size | `'4096'` |
+| window_function | InputMenu \| Literal\['Hann', 'Hamming', 'Blackman', 'Rectangular'\] | Window Function | `'Hann'` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.type) |  |
+
+**Inputs**
+
+| Attribute           | Type            | Description     |
+|---------------------|-----------------|-----------------|
+| `i.sound`           | `SoundSocket`   | Sound           |
+| `i.time`            | `FloatSocket`   | Time            |
+| `i.all_channels`    | `BooleanSocket` | All Channels    |
+| `i.channel`         | `IntegerSocket` | Channel         |
+| `i.low`             | `FloatSocket`   | Low             |
+| `i.high`            | `FloatSocket`   | High            |
+| `i.fft_size`        | `MenuSocket`    | FFT Size        |
+| `i.window_function` | `MenuSocket`    | Window Function |
+
+**Outputs**
+
+| Attribute     | Type          | Description |
+|---------------|---------------|-------------|
+| `o.amplitude` | `FloatSocket` | Amplitude   |
+
 ### SeparateBundle
 
 ``` python
@@ -3331,6 +4374,46 @@ Split a vector into its X, Y, and Z components
 | `o.y`     | `FloatSocket` | Y           |
 | `o.z`     | `FloatSocket` | Z           |
 
+### SetStringCase
+
+``` python
+SetStringCase(string='', case='Uppercase')
+```
+
+Convert the case of a string
+
+#### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| string | InputString | String | `''` |
+| case | InputMenu \| Literal\['Uppercase', 'Lowercase'\] | Case | `'Uppercase'` |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.SetStringCase.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SetStringCase.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.SetStringCase.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.SetStringCase.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.SetStringCase.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SetStringCase.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.SetStringCase.type) |  |
+
+**Inputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `i.string` | `StringSocket` | String      |
+| `i.case`   | `MenuSocket`   | Case        |
+
+**Outputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `o.string` | `StringSocket` | String      |
+
 ### SliceString
 
 ``` python
@@ -3372,6 +4455,265 @@ Extract a string segment from a larger string
 | Attribute  | Type           | Description |
 |------------|----------------|-------------|
 | `o.string` | `StringSocket` | String      |
+
+### SortList
+
+``` python
+SortList(
+    list=0.0,
+    selection=True,
+    group_id=0,
+    sort_weight=0.0,
+    *,
+    socket_type='FLOAT',
+)
+```
+
+Sort a list based on weights
+
+#### Parameters
+
+| Name        | Type         | Description | Default |
+|-------------|--------------|-------------|---------|
+| list        | InputFloat   | List        | `0.0`   |
+| selection   | InputBoolean | Selection   | `True`  |
+| group_id    | InputInteger | Group ID    | `0`     |
+| sort_weight | InputFloat   | Sort Weight | `0.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.SortList.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SortList.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.SortList.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.SortList.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.SortList.outputs) |  |
+| [`socket_type`](#nodebpy.nodes.geometry.converter.SortList.socket_type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SortList.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.SortList.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.converter.SortList.boolean) | Create Sort List with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.converter.SortList.bundle) | Create Sort List with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.converter.SortList.closure) | Create Sort List with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.converter.SortList.collection) | Create Sort List with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.converter.SortList.color) | Create Sort List with operation ‘Color’. |
+| [float](#nodebpy.nodes.geometry.converter.SortList.float) | Create Sort List with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.SortList.font) | Create Sort List with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.converter.SortList.geometry) | Create Sort List with operation ‘Geometry’. |
+| [image](#nodebpy.nodes.geometry.converter.SortList.image) | Create Sort List with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.converter.SortList.integer) | Create Sort List with operation ‘Integer’. |
+| [material](#nodebpy.nodes.geometry.converter.SortList.material) | Create Sort List with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.converter.SortList.matrix) | Create Sort List with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.converter.SortList.menu) | Create Sort List with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.converter.SortList.object) | Create Sort List with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.converter.SortList.rotation) | Create Sort List with operation ‘Rotation’. |
+| [sound](#nodebpy.nodes.geometry.converter.SortList.sound) | Create Sort List with operation ‘Sound’. |
+| [string](#nodebpy.nodes.geometry.converter.SortList.string) | Create Sort List with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.converter.SortList.vector) | Create Sort List with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(list=False, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Collection’.
+
+##### color
+
+``` python
+color(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Color’.
+
+##### float
+
+``` python
+float(list=0.0, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Float’.
+
+##### font
+
+``` python
+font(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Geometry’.
+
+##### image
+
+``` python
+image(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(list=0, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Integer’.
+
+##### material
+
+``` python
+material(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Menu’.
+
+##### object
+
+``` python
+object(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Rotation’.
+
+##### sound
+
+``` python
+sound(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Sound’.
+
+##### string
+
+``` python
+string(list='', selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘String’.
+
+##### vector
+
+``` python
+vector(list=None, selection=True, group_id=0, sort_weight=0.0)
+```
+
+Create Sort List with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `i.list`        | `FloatSocket`   | List        |
+| `i.selection`   | `BooleanSocket` | Selection   |
+| `i.group_id`    | `IntegerSocket` | Group ID    |
+| `i.sort_weight` | `FloatSocket`   | Sort Weight |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.list`  | `FloatSocket` | List        |
+
+### SplitString
+
+``` python
+SplitString(string='', separator='')
+```
+
+Split a string into a list using a separator
+
+#### Parameters
+
+| Name      | Type        | Description | Default |
+|-----------|-------------|-------------|---------|
+| string    | InputString | String      | `''`    |
+| separator | InputString | Separator   | `''`    |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.SplitString.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SplitString.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.SplitString.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.SplitString.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.SplitString.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SplitString.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.SplitString.type) |  |
+
+**Inputs**
+
+| Attribute     | Type           | Description |
+|---------------|----------------|-------------|
+| `i.string`    | `StringSocket` | String      |
+| `i.separator` | `StringSocket` | Separator   |
+
+**Outputs**
+
+| Attribute | Type           | Description |
+|-----------|----------------|-------------|
+| `o.list`  | `StringSocket` | List        |
 
 ### StoreBundleItem
 
@@ -3435,6 +4777,7 @@ Store a bundle item by path and data type.
 | [object](#nodebpy.nodes.geometry.converter.StoreBundleItem.object) | Create Store Bundle Item with operation ‘Object’. |
 | [rotation](#nodebpy.nodes.geometry.converter.StoreBundleItem.rotation) | Create Store Bundle Item with operation ‘Rotation’. |
 | [single](#nodebpy.nodes.geometry.converter.StoreBundleItem.single) | Create Store Bundle Item with operation ‘Single’. Socket expects a single value |
+| [sound](#nodebpy.nodes.geometry.converter.StoreBundleItem.sound) | Create Store Bundle Item with operation ‘Sound’. |
 | [string](#nodebpy.nodes.geometry.converter.StoreBundleItem.string) | Create Store Bundle Item with operation ‘String’. |
 | [vector](#nodebpy.nodes.geometry.converter.StoreBundleItem.vector) | Create Store Bundle Item with operation ‘Vector’. |
 
@@ -3606,6 +4949,14 @@ single(bundle=None, path='', item=0.0)
 
 Create Store Bundle Item with operation ‘Single’. Socket expects a single value
 
+##### sound
+
+``` python
+sound(bundle=None, path='', item=None)
+```
+
+Create Store Bundle Item with operation ‘Sound’.
+
 ##### string
 
 ``` python
@@ -3677,16 +5028,17 @@ Output the number of characters in the given string
 ### StringToValue
 
 ``` python
-StringToValue(string='', *, data_type='FLOAT')
+StringToValue(string='', base=10, *, data_type='FLOAT')
 ```
 
 Derive a numeric value from a given string representation
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| string | InputString | String      | `''`    |
+| Name   | Type         | Description | Default |
+|--------|--------------|-------------|---------|
+| string | InputString  | String      | `''`    |
+| base   | InputInteger | Base        | `10`    |
 
 #### Attributes
 
@@ -3719,16 +5071,17 @@ Create String to Value with operation ‘Float’. Floating-point value
 ##### integer
 
 ``` python
-integer(string='')
+integer(string='', base=10)
 ```
 
 Create String to Value with operation ‘Integer’. 32-bit integer
 
 **Inputs**
 
-| Attribute  | Type           | Description |
-|------------|----------------|-------------|
-| `i.string` | `StringSocket` | String      |
+| Attribute  | Type            | Description |
+|------------|-----------------|-------------|
+| `i.string` | `StringSocket`  | String      |
+| `i.base`   | `IntegerSocket` | Base        |
 
 **Outputs**
 
@@ -3736,6 +5089,46 @@ Create String to Value with operation ‘Integer’. 32-bit integer
 |------------|-----------------|-------------|
 | `o.value`  | `FloatSocket`   | Value       |
 | `o.length` | `IntegerSocket` | Length      |
+
+### TagFilter
+
+``` python
+TagFilter(tag_filter='', tags='')
+```
+
+Check if a filter string matches a list of tags
+
+#### Parameters
+
+| Name       | Type        | Description | Default |
+|------------|-------------|-------------|---------|
+| tag_filter | InputString | Tag Filter  | `''`    |
+| tags       | InputString | Tags        | `''`    |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.TagFilter.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.TagFilter.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.TagFilter.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.TagFilter.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.TagFilter.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.TagFilter.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.TagFilter.type) |  |
+
+**Inputs**
+
+| Attribute      | Type           | Description |
+|----------------|----------------|-------------|
+| `i.tag_filter` | `StringSocket` | Tag Filter  |
+| `i.tags`       | `StringSocket` | Tags        |
+
+**Outputs**
+
+| Attribute | Type            | Description |
+|-----------|-----------------|-------------|
+| `o.match` | `BooleanSocket` | Match       |
 
 ### TransformDirection
 
@@ -3855,6 +5248,52 @@ Flip a matrix over its diagonal, turning columns into rows and vice-versa
 |------------|----------------|-------------|
 | `o.matrix` | `MatrixSocket` | Matrix      |
 
+### TrimString
+
+``` python
+TrimString(string='', characters='', whitespace=True, start=True, end=True)
+```
+
+Remove characters from the beginning and end of a string
+
+#### Parameters
+
+| Name       | Type         | Description | Default |
+|------------|--------------|-------------|---------|
+| string     | InputString  | String      | `''`    |
+| characters | InputString  | Characters  | `''`    |
+| whitespace | InputBoolean | Whitespace  | `True`  |
+| start      | InputBoolean | Start       | `True`  |
+| end        | InputBoolean | End         | `True`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.TrimString.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.TrimString.name) |  |
+| [`node`](#nodebpy.nodes.geometry.converter.TrimString.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.TrimString.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.TrimString.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.TrimString.tree) |  |
+| [`type`](#nodebpy.nodes.geometry.converter.TrimString.type) |  |
+
+**Inputs**
+
+| Attribute      | Type            | Description |
+|----------------|-----------------|-------------|
+| `i.string`     | `StringSocket`  | String      |
+| `i.characters` | `StringSocket`  | Characters  |
+| `i.whitespace` | `BooleanSocket` | Whitespace  |
+| `i.start`      | `BooleanSocket` | Start       |
+| `i.end`        | `BooleanSocket` | End         |
+
+**Outputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `o.string` | `StringSocket` | String      |
+
 ### UVUnwrap
 
 ``` python
@@ -3916,7 +5355,7 @@ Generate a UV map based on seam edges
 ### ValueToString
 
 ``` python
-ValueToString(value=0.0, decimals=0, *, data_type='FLOAT')
+ValueToString(value=0.0, decimals=0, base=10, padding=0, *, data_type='FLOAT')
 ```
 
 Generate a string representation of the given input value
@@ -3927,6 +5366,8 @@ Generate a string representation of the given input value
 |----------|--------------|-------------|---------|
 | value    | InputFloat   | Value       | `0.0`   |
 | decimals | InputInteger | Decimals    | `0`     |
+| base     | InputInteger | Base        | `10`    |
+| padding  | InputInteger | Padding     | `0`     |
 
 #### Attributes
 
@@ -3959,7 +5400,7 @@ Create Value to String with operation ‘Float’. Floating-point value
 ##### integer
 
 ``` python
-integer(value=0)
+integer(value=0, base=10, padding=0)
 ```
 
 Create Value to String with operation ‘Integer’. 32-bit integer
@@ -3970,6 +5411,8 @@ Create Value to String with operation ‘Integer’. 32-bit integer
 |--------------|-----------------|-------------|
 | `i.value`    | `FloatSocket`   | Value       |
 | `i.decimals` | `IntegerSocket` | Decimals    |
+| `i.base`     | `IntegerSocket` | Base        |
+| `i.padding`  | `IntegerSocket` | Padding     |
 
 **Outputs**
 

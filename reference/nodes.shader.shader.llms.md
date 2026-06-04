@@ -587,6 +587,7 @@ PrincipledBSDF(
     roughness=0.5,
     ior=1.5,
     alpha=1.0,
+    thin_wall=False,
     normal=None,
     weight=0.0,
     diffuse_roughness=0.0,
@@ -623,39 +624,40 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 
 #### Parameters
 
-| Name                  | Type        | Description           | Default |
-|-----------------------|-------------|-----------------------|---------|
-| base_color            | InputColor  | Base Color            | `None`  |
-| metallic              | InputFloat  | Metallic              | `0.0`   |
-| roughness             | InputFloat  | Roughness             | `0.5`   |
-| ior                   | InputFloat  | IOR                   | `1.5`   |
-| alpha                 | InputFloat  | Alpha                 | `1.0`   |
-| normal                | InputVector | Normal                | `None`  |
-| weight                | InputFloat  | Weight                | `0.0`   |
-| diffuse_roughness     | InputFloat  | Diffuse Roughness     | `0.0`   |
-| subsurface_weight     | InputFloat  | Subsurface Weight     | `0.0`   |
-| subsurface_radius     | InputVector | Subsurface Radius     | `None`  |
-| subsurface_scale      | InputFloat  | Subsurface Scale      | `0.05`  |
-| subsurface_ior        | InputFloat  | Subsurface IOR        | `1.4`   |
-| subsurface_anisotropy | InputFloat  | Subsurface Anisotropy | `0.0`   |
-| specular_ior_level    | InputFloat  | Specular IOR Level    | `0.5`   |
-| specular_tint         | InputColor  | Specular Tint         | `None`  |
-| anisotropic           | InputFloat  | Anisotropic           | `0.0`   |
-| anisotropic_rotation  | InputFloat  | Anisotropic Rotation  | `0.0`   |
-| tangent               | InputVector | Tangent               | `None`  |
-| transmission_weight   | InputFloat  | Transmission Weight   | `0.0`   |
-| coat_weight           | InputFloat  | Coat Weight           | `0.0`   |
-| coat_roughness        | InputFloat  | Coat Roughness        | `0.03`  |
-| coat_ior              | InputFloat  | Coat IOR              | `1.5`   |
-| coat_tint             | InputColor  | Coat Tint             | `None`  |
-| coat_normal           | InputVector | Coat Normal           | `None`  |
-| sheen_weight          | InputFloat  | Sheen Weight          | `0.0`   |
-| sheen_roughness       | InputFloat  | Sheen Roughness       | `0.5`   |
-| sheen_tint            | InputColor  | Sheen Tint            | `None`  |
-| emission_color        | InputColor  | Emission Color        | `None`  |
-| emission_strength     | InputFloat  | Emission Strength     | `0.0`   |
-| thin_film_thickness   | InputFloat  | Thin Film Thickness   | `0.0`   |
-| thin_film_ior         | InputFloat  | Thin Film IOR         | `1.33`  |
+| Name                  | Type         | Description           | Default |
+|-----------------------|--------------|-----------------------|---------|
+| base_color            | InputColor   | Base Color            | `None`  |
+| metallic              | InputFloat   | Metallic              | `0.0`   |
+| roughness             | InputFloat   | Roughness             | `0.5`   |
+| ior                   | InputFloat   | IOR                   | `1.5`   |
+| alpha                 | InputFloat   | Alpha                 | `1.0`   |
+| thin_wall             | InputBoolean | Thin Wall             | `False` |
+| normal                | InputVector  | Normal                | `None`  |
+| weight                | InputFloat   | Weight                | `0.0`   |
+| diffuse_roughness     | InputFloat   | Diffuse Roughness     | `0.0`   |
+| subsurface_weight     | InputFloat   | Subsurface Weight     | `0.0`   |
+| subsurface_radius     | InputVector  | Subsurface Radius     | `None`  |
+| subsurface_scale      | InputFloat   | Subsurface Scale      | `0.05`  |
+| subsurface_ior        | InputFloat   | Subsurface IOR        | `1.4`   |
+| subsurface_anisotropy | InputFloat   | Subsurface Anisotropy | `0.0`   |
+| specular_ior_level    | InputFloat   | Specular IOR Level    | `0.5`   |
+| specular_tint         | InputColor   | Specular Tint         | `None`  |
+| anisotropic           | InputFloat   | Anisotropic           | `0.0`   |
+| anisotropic_rotation  | InputFloat   | Anisotropic Rotation  | `0.0`   |
+| tangent               | InputVector  | Tangent               | `None`  |
+| transmission_weight   | InputFloat   | Transmission Weight   | `0.0`   |
+| coat_weight           | InputFloat   | Coat Weight           | `0.0`   |
+| coat_roughness        | InputFloat   | Coat Roughness        | `0.03`  |
+| coat_ior              | InputFloat   | Coat IOR              | `1.5`   |
+| coat_tint             | InputColor   | Coat Tint             | `None`  |
+| coat_normal           | InputVector  | Coat Normal           | `None`  |
+| sheen_weight          | InputFloat   | Sheen Weight          | `0.0`   |
+| sheen_roughness       | InputFloat   | Sheen Roughness       | `0.5`   |
+| sheen_tint            | InputColor   | Sheen Tint            | `None`  |
+| emission_color        | InputColor   | Emission Color        | `None`  |
+| emission_strength     | InputFloat   | Emission Strength     | `0.0`   |
+| thin_film_thickness   | InputFloat   | Thin Film Thickness   | `0.0`   |
+| thin_film_ior         | InputFloat   | Thin Film IOR         | `1.33`  |
 
 #### Attributes
 
@@ -673,39 +675,40 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 
 **Inputs**
 
-| Attribute                 | Type           | Description           |
-|---------------------------|----------------|-----------------------|
-| `i.base_color`            | `ColorSocket`  | Base Color            |
-| `i.metallic`              | `FloatSocket`  | Metallic              |
-| `i.roughness`             | `FloatSocket`  | Roughness             |
-| `i.ior`                   | `FloatSocket`  | IOR                   |
-| `i.alpha`                 | `FloatSocket`  | Alpha                 |
-| `i.normal`                | `VectorSocket` | Normal                |
-| `i.weight`                | `FloatSocket`  | Weight                |
-| `i.diffuse_roughness`     | `FloatSocket`  | Diffuse Roughness     |
-| `i.subsurface_weight`     | `FloatSocket`  | Subsurface Weight     |
-| `i.subsurface_radius`     | `VectorSocket` | Subsurface Radius     |
-| `i.subsurface_scale`      | `FloatSocket`  | Subsurface Scale      |
-| `i.subsurface_ior`        | `FloatSocket`  | Subsurface IOR        |
-| `i.subsurface_anisotropy` | `FloatSocket`  | Subsurface Anisotropy |
-| `i.specular_ior_level`    | `FloatSocket`  | Specular IOR Level    |
-| `i.specular_tint`         | `ColorSocket`  | Specular Tint         |
-| `i.anisotropic`           | `FloatSocket`  | Anisotropic           |
-| `i.anisotropic_rotation`  | `FloatSocket`  | Anisotropic Rotation  |
-| `i.tangent`               | `VectorSocket` | Tangent               |
-| `i.transmission_weight`   | `FloatSocket`  | Transmission Weight   |
-| `i.coat_weight`           | `FloatSocket`  | Coat Weight           |
-| `i.coat_roughness`        | `FloatSocket`  | Coat Roughness        |
-| `i.coat_ior`              | `FloatSocket`  | Coat IOR              |
-| `i.coat_tint`             | `ColorSocket`  | Coat Tint             |
-| `i.coat_normal`           | `VectorSocket` | Coat Normal           |
-| `i.sheen_weight`          | `FloatSocket`  | Sheen Weight          |
-| `i.sheen_roughness`       | `FloatSocket`  | Sheen Roughness       |
-| `i.sheen_tint`            | `ColorSocket`  | Sheen Tint            |
-| `i.emission_color`        | `ColorSocket`  | Emission Color        |
-| `i.emission_strength`     | `FloatSocket`  | Emission Strength     |
-| `i.thin_film_thickness`   | `FloatSocket`  | Thin Film Thickness   |
-| `i.thin_film_ior`         | `FloatSocket`  | Thin Film IOR         |
+| Attribute                 | Type            | Description           |
+|---------------------------|-----------------|-----------------------|
+| `i.base_color`            | `ColorSocket`   | Base Color            |
+| `i.metallic`              | `FloatSocket`   | Metallic              |
+| `i.roughness`             | `FloatSocket`   | Roughness             |
+| `i.ior`                   | `FloatSocket`   | IOR                   |
+| `i.alpha`                 | `FloatSocket`   | Alpha                 |
+| `i.thin_wall`             | `BooleanSocket` | Thin Wall             |
+| `i.normal`                | `VectorSocket`  | Normal                |
+| `i.weight`                | `FloatSocket`   | Weight                |
+| `i.diffuse_roughness`     | `FloatSocket`   | Diffuse Roughness     |
+| `i.subsurface_weight`     | `FloatSocket`   | Subsurface Weight     |
+| `i.subsurface_radius`     | `VectorSocket`  | Subsurface Radius     |
+| `i.subsurface_scale`      | `FloatSocket`   | Subsurface Scale      |
+| `i.subsurface_ior`        | `FloatSocket`   | Subsurface IOR        |
+| `i.subsurface_anisotropy` | `FloatSocket`   | Subsurface Anisotropy |
+| `i.specular_ior_level`    | `FloatSocket`   | Specular IOR Level    |
+| `i.specular_tint`         | `ColorSocket`   | Specular Tint         |
+| `i.anisotropic`           | `FloatSocket`   | Anisotropic           |
+| `i.anisotropic_rotation`  | `FloatSocket`   | Anisotropic Rotation  |
+| `i.tangent`               | `VectorSocket`  | Tangent               |
+| `i.transmission_weight`   | `FloatSocket`   | Transmission Weight   |
+| `i.coat_weight`           | `FloatSocket`   | Coat Weight           |
+| `i.coat_roughness`        | `FloatSocket`   | Coat Roughness        |
+| `i.coat_ior`              | `FloatSocket`   | Coat IOR              |
+| `i.coat_tint`             | `ColorSocket`   | Coat Tint             |
+| `i.coat_normal`           | `VectorSocket`  | Coat Normal           |
+| `i.sheen_weight`          | `FloatSocket`   | Sheen Weight          |
+| `i.sheen_roughness`       | `FloatSocket`   | Sheen Roughness       |
+| `i.sheen_tint`            | `ColorSocket`   | Sheen Tint            |
+| `i.emission_color`        | `ColorSocket`   | Emission Color        |
+| `i.emission_strength`     | `FloatSocket`   | Emission Strength     |
+| `i.thin_film_thickness`   | `FloatSocket`   | Thin Film Thickness   |
+| `i.thin_film_ior`         | `FloatSocket`   | Thin Film IOR         |
 
 **Outputs**
 
