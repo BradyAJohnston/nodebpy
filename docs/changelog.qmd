@@ -1,7 +1,7 @@
 ---
 title: Changelog
 ---
-## v520.0.0 - UNRELEASED
+## v520.0.0 - 2026-06-04
 
 ### Enhancements
 - Added `leading()`, `trailling()` and `total()` methods from [`AccumulateField`](`~nodebpy.nodes.geometry.converter.AccumulateField`) node onto relevant sockets. Added to `Float`, `Vector`, `Integer` and `Matrix` sockets.
