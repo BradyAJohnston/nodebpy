@@ -1,0 +1,102 @@
+---
+title: "Using Nodebpy"
+subtitle: Using `nodebpy` inside of your own add-ons & projects.
+---
+
+The package is available on PyPI [here](https://pypi.org/project/nodebpy/).
+You can install it and use it in your own projects using `pip` or your preferred package manager, I recommend [uv](https://docs.astral.sh/uv/).
+
+```bash
+pip install nodebpy
+uv add nodebpy
+```
+
+This will allow it to be shipped with add-ons, following [their guidelines](https://docs.blender.org/manual/en/latest/advanced/extensions/addons.html#bundle-dependencies) on how to bundle `.whl` files or vendoring.
+
+`nodebpy` should be forward-compatible, but likely backwards incompatible with older versions of Blender, as new nodes are added the code will break if trying to use them in older versions of Blender.
+
+## Versioning `nodebpy`
+
+For clarity around which versions of Blender `nodebpy` supports, it will be versioned with a modified semantic versioning scheme.
+
+The scheme will be: `BLENDER_VERSION.MINOR_VERSION.PATCH_VERSION`.
+For example Blender `5.2.0` would be `520.0.0`.
+Major version changes that are compatible with Blender `5.2.0` would be `520.X.Y`, where extra features could be added in `520.1.0` and a bug fix or patch could be added in `520.0.1`.
+Version `520.X.Y` should be forward compatible with Blender 5.3+, but incompatible with Blender 5.1 and earlier.
+
+Development and updates will mostly happen on the later versions as Blender adds new updates and features, but some fixes and patches may be backported to older versions as needed.
+
+
+## Using multiple versions
+
+If you use `nodebpy` in your add-on you likely support multiple versions of Blender.
+
+Each version of `nodebpy` will target a specific Blender release, but you can import multiple versions if you vendor the package inside of your add-on.
+
+```yaml
+YourAddon/
+├── lib/
+|   ├── __init__.py (empty)
+│   ├── nodebpy/
+│   │   ├── __init__.py
+│   │   ├── _520/
+│   │   │   ├── src/nodebpy (5.2.0)
+│   │   ├── _530/
+│   │   │   ├── src/nodebpy/ (5.3.0)
+└── ...
+```
+
+```{.python filename="lib/nodebpy/__init__.py"}
+import bpy
+
+_v = bpy.app.version
+
+if _v == (5, 2, 0):
+    from ._520.src.nodebpy import *
+elif _v >= (5, 3, 0):
+    from ._530.src.nodebpy import *
+else:
+    raise ImportError(f"Unsupported Blender version: {_v}")
+
+```
+
+This way you can import the correct version of `nodebpy` based on the Blender version at runtime.
+
+It's up to your own usual versioning code to ensure that code used is compatible with the right Blender versions, but you should be able to just impotr from `.lib.nodebpy` like regularly using the package.
+
+```{.python}
+from bpy.types import GeometryNodeTree
+from .lib.nodebpy import geometry as g
+
+def default_tree(count: int = 10) -> GeometryNodeTree:
+    with g.tree("Default Tree Name") as tree:
+        (
+            tree.inputs.integer("Count", count)
+            >> g.Points(position=g.RandomValue.vector())
+            >> g.InstanceOnPoints(instance=g.IcoSphere())
+            >> tree.outputs.geometry("Result")
+        )
+
+    return tree.tree
+
+
+default_tree()
+```
+
+```{python}
+#| echo: false
+from nodebpy import geometry as g
+
+def default_tree():
+    with g.tree("Default Tree Name") as tree:
+        (
+            tree.inputs.integer("Count", 10)
+            >> g.Points(position=g.RandomValue.vector())
+            >> g.InstanceOnPoints(instance=g.IcoSphere())
+            >> tree.outputs.geometry("Result")
+        )
+
+    return tree
+
+default_tree()
+```
