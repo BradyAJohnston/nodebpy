@@ -210,6 +210,8 @@ class BoneInfo(BaseNode):
         Rest Pose
     o.rest_length : FloatSocket
         Rest Length
+    o.exists : BooleanSocket
+        Exists
     """
 
     _bl_idname = "GeometryNodeBoneInfo"
@@ -232,6 +234,8 @@ class BoneInfo(BaseNode):
         """Rest Pose"""
         rest_length: FloatSocket
         """Rest Length"""
+        exists: BooleanSocket
+        """Exists"""
 
     if TYPE_CHECKING:
 

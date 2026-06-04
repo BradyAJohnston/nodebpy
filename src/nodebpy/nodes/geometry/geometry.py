@@ -3368,6 +3368,168 @@ class MergeByDistance(BaseNode):
         self._establish_links(**key_args)
 
 
+class MeshBevel(BaseNode):
+    """
+    Bevel selected edges or vertices
+
+    Parameters
+    ----------
+    mesh : InputGeometry
+        Mesh
+    selection : InputBoolean
+        Selection
+    affect_kind : InputMenu | Literal['Vertices', 'Edges']
+        Affect Kind
+    start_left_offset : InputFloat
+        Start Left Offset
+    start_right_offset : InputFloat
+        Start Right Offset
+    end_left_offset : InputFloat
+        End Left Offset
+    end_right_offset : InputFloat
+        End Right Offset
+    offset : InputFloat
+        Offset
+    miter : InputBoolean
+        Miter
+    spread : InputFloat
+        Spread
+    segments : InputInteger
+        Segments
+    shape : InputFloat
+        Shape
+    profile : InputGeometry
+        Profile
+
+    Inputs
+    ------
+    i.mesh : GeometrySocket
+        Mesh
+    i.selection : BooleanSocket
+        Selection
+    i.affect_kind : MenuSocket
+        Affect Kind
+    i.start_left_offset : FloatSocket
+        Start Left Offset
+    i.start_right_offset : FloatSocket
+        Start Right Offset
+    i.end_left_offset : FloatSocket
+        End Left Offset
+    i.end_right_offset : FloatSocket
+        End Right Offset
+    i.offset : FloatSocket
+        Offset
+    i.miter : BooleanSocket
+        Miter
+    i.spread : FloatSocket
+        Spread
+    i.segments : IntegerSocket
+        Segments
+    i.shape : FloatSocket
+        Shape
+    i.profile : GeometrySocket
+        Profile
+
+    Outputs
+    -------
+    o.mesh : GeometrySocket
+        Mesh
+    o.vertex_face : BooleanSocket
+        Vertex Face
+    o.edge_face : BooleanSocket
+        Edge Face
+    o.outer_edge : BooleanSocket
+        Outer Edge
+    o.mid_edge : BooleanSocket
+        Mid Edge
+    """
+
+    _bl_idname = "GeometryNodeMeshBevel"
+    node: bpy.types.GeometryNodeMeshBevel  # ty: ignore[unresolved-attribute]
+
+    class _Inputs(SocketAccessor):
+        mesh: GeometrySocket
+        """Mesh"""
+        selection: BooleanSocket
+        """Selection"""
+        affect_kind: MenuSocket
+        """Affect Kind"""
+        start_left_offset: FloatSocket
+        """Start Left Offset"""
+        start_right_offset: FloatSocket
+        """Start Right Offset"""
+        end_left_offset: FloatSocket
+        """End Left Offset"""
+        end_right_offset: FloatSocket
+        """End Right Offset"""
+        offset: FloatSocket
+        """Offset"""
+        miter: BooleanSocket
+        """Miter"""
+        spread: FloatSocket
+        """Spread"""
+        segments: IntegerSocket
+        """Segments"""
+        shape: FloatSocket
+        """Shape"""
+        profile: GeometrySocket
+        """Profile"""
+
+    class _Outputs(SocketAccessor):
+        mesh: GeometrySocket
+        """Mesh"""
+        vertex_face: BooleanSocket
+        """Vertex Face"""
+        edge_face: BooleanSocket
+        """Edge Face"""
+        outer_edge: BooleanSocket
+        """Outer Edge"""
+        mid_edge: BooleanSocket
+        """Mid Edge"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        mesh: InputGeometry = None,
+        selection: InputBoolean = True,
+        affect_kind: InputMenu | Literal["Vertices", "Edges"] = "Edges",
+        start_left_offset: InputFloat = 0.1,
+        start_right_offset: InputFloat = 0.1,
+        end_left_offset: InputFloat = 0.1,
+        end_right_offset: InputFloat = 0.1,
+        offset: InputFloat = 0.1,
+        miter: InputBoolean = False,
+        spread: InputFloat = 0.1,
+        segments: InputInteger = 1,
+        shape: InputFloat = 0.5,
+        profile: InputGeometry = None,
+    ):
+        super().__init__()
+        key_args = {
+            "Mesh": mesh,
+            "Selection": selection,
+            "Affect Kind": affect_kind,
+            "Start Left Offset": start_left_offset,
+            "Start Right Offset": start_right_offset,
+            "End Left Offset": end_left_offset,
+            "End Right Offset": end_right_offset,
+            "Offset": offset,
+            "Miter": miter,
+            "Spread": spread,
+            "Segments": segments,
+            "Shape": shape,
+            "Profile": profile,
+        }
+
+        self._establish_links(**key_args)
+
+
 class MeshCircle(BaseNode):
     """
     Generate a circular ring of edges

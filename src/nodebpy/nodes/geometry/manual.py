@@ -2294,57 +2294,57 @@ class FieldToList(DynamicInputsMixin, BaseNode):
         name: str | None = None,
         default: Any | None = None,
     ) -> bpy.types.NodeSocket:
-        item = self.node.list_items.new(type)
+        item = self.node.list_items.new(type, name if name else type)
         if name is not None:
             item.name = name
 
         input_socket = self.i[item.name]
-        if default is not None:
+        if not isinstance(default, (BaseNode, SocketLinker)):
             input_socket.default_value = default  # ty: ignore[invalid-assignment]
 
         return self.o[item.name].socket
 
-    def capture_float(
-        self, input: InputFloat = 0, name: str | None = None
+    def float(
+        self, input: InputFloat = 0.0, name: str | None = None
     ) -> FloatSocketList:
         return FloatSocketList(self._new_item("FLOAT", name, input))
 
-    def capture_integer(
+    def integer(
         self, input: InputInteger = 0, name: str | None = None
     ) -> IntegerSocketList:
         return IntegerSocketList(self._new_item("INT", name, input))
 
-    def capture_boolean(
+    def boolean(
         self, input: InputBoolean = False, name: str | None = None
     ) -> BooleanSocketList:
         return BooleanSocketList(self._new_item("BOOLEAN", name, input))
 
-    def capture_vector(
+    def vector(
         self, input: InputVector = (0, 0, 0), name: str | None = None
     ) -> VectorSocketList:
         return VectorSocketList(self._new_item("VECTOR", name, input))
 
-    def capture_color(
+    def color(
         self, input: InputColor = (0, 0, 0, 1), name: str | None = None
     ) -> ColorSocketList:
         return ColorSocketList(self._new_item("RGBA", name, input))
 
-    def capture_rotation(
+    def rotation(
         self, input: InputRotation = Euler((0, 0, 0)), name: str | None = None
     ) -> RotationSocketList:
         return RotationSocketList(self._new_item("ROTATION", name, input))
 
-    def capture_matrix(
+    def matrix(
         self, input: InputMatrix = None, name: str | None = None
     ) -> MatrixSocketList:
         return MatrixSocketList(self._new_item("MATRIX", name, input))
 
-    def capture_string(
+    def string(
         self, input: InputString = "", name: str | None = None
     ) -> StringSocketList:
         return StringSocketList(self._new_item("STRING", name, input))
 
-    def capture_menu(
+    def menu(
         self, input: InputString = None, name: str | None = None
     ) -> MenuSocketList:
         return MenuSocketList(self._new_item("MENU", name, input))

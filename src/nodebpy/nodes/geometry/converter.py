@@ -6027,6 +6027,475 @@ class SliceString(BaseNode):
         self._establish_links(**key_args)
 
 
+class SortList(BaseNode, Generic[_T]):
+    """
+    Sort a list based on weights
+
+    Parameters
+    ----------
+    list : InputFloat
+        List
+    selection : InputBoolean
+        Selection
+    group_id : InputInteger
+        Group ID
+    sort_weight : InputFloat
+        Sort Weight
+
+    Inputs
+    ------
+    i.list : FloatSocket
+        List
+    i.selection : BooleanSocket
+        Selection
+    i.group_id : IntegerSocket
+        Group ID
+    i.sort_weight : FloatSocket
+        Sort Weight
+
+    Outputs
+    -------
+    o.list : FloatSocket
+        List
+    """
+
+    _bl_idname = "GeometryNodeSortList"
+    node: bpy.types.GeometryNodeSortList  # ty: ignore[unresolved-attribute]
+
+    class _Inputs(SocketAccessor):
+        list: FloatSocket
+        """List"""
+        selection: BooleanSocket
+        """Selection"""
+        group_id: IntegerSocket
+        """Group ID"""
+        sort_weight: FloatSocket
+        """Sort Weight"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        list: _S
+        """List"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs[_T]: ...
+
+    def __init__(
+        self,
+        list: InputBoolean
+        | InputBundle
+        | InputClosure
+        | InputCollection
+        | InputColor
+        | InputFloat
+        | InputFont
+        | InputGeometry
+        | InputImage
+        | InputInteger
+        | InputMaterial
+        | InputMatrix
+        | InputMenu
+        | InputObject
+        | InputRotation
+        | InputSound
+        | InputString
+        | InputVector = 0.0,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {
+            "List": list,
+            "Selection": selection,
+            "Group ID": group_id,
+            "Sort Weight": sort_weight,
+        }
+        self.socket_type = socket_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        list: InputFloat = 0.0,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[FloatSocket]":
+        """Create Sort List with operation 'Float'."""
+        return SortList(
+            socket_type="FLOAT",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        list: InputInteger = 0,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[IntegerSocket]":
+        """Create Sort List with operation 'Integer'."""
+        return SortList(
+            socket_type="INT",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        list: InputBoolean = False,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[BooleanSocket]":
+        """Create Sort List with operation 'Boolean'."""
+        return SortList(
+            socket_type="BOOLEAN",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        list: InputVector = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[VectorSocket]":
+        """Create Sort List with operation 'Vector'."""
+        return SortList(
+            socket_type="VECTOR",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def color(
+        cls,
+        list: InputColor = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[ColorSocket]":
+        """Create Sort List with operation 'Color'."""
+        return SortList(
+            socket_type="RGBA",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def rotation(
+        cls,
+        list: InputRotation = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[RotationSocket]":
+        """Create Sort List with operation 'Rotation'."""
+        return SortList(
+            socket_type="ROTATION",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def matrix(
+        cls,
+        list: InputMatrix = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[MatrixSocket]":
+        """Create Sort List with operation 'Matrix'."""
+        return SortList(
+            socket_type="MATRIX",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def string(
+        cls,
+        list: InputString = "",
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[StringSocket]":
+        """Create Sort List with operation 'String'."""
+        return SortList(
+            socket_type="STRING",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def menu(
+        cls,
+        list: InputMenu = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[MenuSocket]":
+        """Create Sort List with operation 'Menu'."""
+        return SortList(
+            socket_type="MENU",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def object(
+        cls,
+        list: InputObject = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[ObjectSocket]":
+        """Create Sort List with operation 'Object'."""
+        return SortList(
+            socket_type="OBJECT",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def image(
+        cls,
+        list: InputImage = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[ImageSocket]":
+        """Create Sort List with operation 'Image'."""
+        return SortList(
+            socket_type="IMAGE",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def geometry(
+        cls,
+        list: InputGeometry = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[GeometrySocket]":
+        """Create Sort List with operation 'Geometry'."""
+        return SortList(
+            socket_type="GEOMETRY",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def collection(
+        cls,
+        list: InputCollection = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[CollectionSocket]":
+        """Create Sort List with operation 'Collection'."""
+        return SortList(
+            socket_type="COLLECTION",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def material(
+        cls,
+        list: InputMaterial = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[MaterialSocket]":
+        """Create Sort List with operation 'Material'."""
+        return SortList(
+            socket_type="MATERIAL",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def bundle(
+        cls,
+        list: InputBundle = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[BundleSocket]":
+        """Create Sort List with operation 'Bundle'."""
+        return SortList(
+            socket_type="BUNDLE",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def closure(
+        cls,
+        list: InputClosure = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[ClosureSocket]":
+        """Create Sort List with operation 'Closure'."""
+        return SortList(
+            socket_type="CLOSURE",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def font(
+        cls,
+        list: InputFont = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[FontSocket]":
+        """Create Sort List with operation 'Font'."""
+        return SortList(
+            socket_type="FONT",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @classmethod
+    def sound(
+        cls,
+        list: InputSound = None,
+        selection: InputBoolean = True,
+        group_id: InputInteger = 0,
+        sort_weight: InputFloat = 0.0,
+    ) -> "SortList[SoundSocket]":
+        """Create Sort List with operation 'Sound'."""
+        return SortList(
+            socket_type="SOUND",
+            list=list,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+        )
+
+    @property
+    def socket_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+        "SOUND",
+    ]:
+        return self.node.socket_type
+
+    @socket_type.setter
+    def socket_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ],
+    ):
+        self.node.socket_type = value
+
+
 class SplitString(BaseNode):
     """
     Split a string into a list using a separator

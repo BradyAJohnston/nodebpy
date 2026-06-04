@@ -65,6 +65,7 @@ from ..types import (
     InputSound,
     InputString,
     InputVector,
+    InputFloatList,
 )
 from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
 from ._utils import _NodeLike, _SocketLike
@@ -1528,6 +1529,23 @@ class _ListMixin(Socket, Generic[_T]):
             selection=selection,
             socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
         ).o.selection  # ty: ignore[invalid-return-type]
+
+    def sort(
+        self,
+        sort_weight: InputFloat | InputFloatList = None,
+        group_id: InputInteger | IntegerSocket = None,
+        selection: InputBoolean | BooleanSocketList = None,
+    ) -> Self:
+        """Sort the list based on the weights."""
+        from ..nodes.geometry import SortList
+
+        return SortList(
+            self.socket,
+            selection=selection,
+            group_id=group_id,
+            sort_weight=sort_weight,
+            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.list  # ty: ignore[invalid-return-type]
 
     # TODO: support slicing once an appropriate node is available
     # @overload

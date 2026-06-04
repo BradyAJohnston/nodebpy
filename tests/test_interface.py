@@ -16,10 +16,10 @@ from nodebpy.builder import (
     RotationSocket,
     Socket,
     StringSocket,
-    VectorSocket,
+    VectorSocket, VectorSocketList,
 )
 from nodebpy.nodes.compositor import CombineXYZ
-from nodebpy.nodes.geometry import ObjectInfo
+from nodebpy.nodes.geometry import ObjectInfo, SortList
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -1294,6 +1294,20 @@ def test_vector_socket_new_methods():
         result = vec.reflect(other)
         assert isinstance(result, VectorSocket)
         assert result.node.operation == "REFLECT"
+
+        ftl = g.FieldToList(10)
+        veclist = ftl.vector(vec)
+        sorted = veclist.sort(veclist.length())
+        assert isinstance(sorted, VectorSocketList)
+        node = sorted.builder_node
+        assert isinstance(node, SortList)
+        assert node.socket_type == "VECTOR"
+        assert node.i.list.links[0].from_node == ftl.node
+        assert not node.i.group_id.links
+        assert not node.i.selection.links
+        assert node.i.sort_weight.links[0].from_node.bl_idname == g.VectorMath._bl_idname
+
+
 
 
 def test_vector_socket_map_range():
