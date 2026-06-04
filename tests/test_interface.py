@@ -1297,6 +1297,8 @@ def test_vector_socket_new_methods():
 
         ftl = g.FieldToList(10)
         veclist = ftl.vector(vec)
+        assert ftl.i["VECTOR"].links
+        assert ftl.i["VECTOR"].links[0].from_node == vec.node
         sorted = veclist.sort(veclist.length())
         assert isinstance(sorted, VectorSocketList)
         node = sorted.builder_node

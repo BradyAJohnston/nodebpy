@@ -2299,7 +2299,9 @@ class FieldToList(DynamicInputsMixin, BaseNode):
             item.name = name
 
         input_socket = self.i[item.name]
-        if not isinstance(default, (BaseNode, SocketLinker)):
+        if isinstance(default, (BaseNode, SocketLinker)):
+            self._establish_links(**{item.name: default})
+        else:
             input_socket.default_value = default  # ty: ignore[invalid-assignment]
 
         return self.o[item.name].socket
