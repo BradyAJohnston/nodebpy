@@ -1026,8 +1026,8 @@ def test_geometryscript_city_builder(snapshot):
     assert snapshot == tree._repr_markdown_()
 
 
-def test_active_grid_positions():
-    with g.tree("Active Grid Positions") as tree:
+def test_active_grid_positions(snapshot):
+    with g.tree("Active Grid Positions", arrange='simple') as tree:
         tree.tree.show_modifier_manage_panel = True
 
         grid = tree.inputs.float("Grid", hide_value=True, structure_type="GRID")
@@ -1043,3 +1043,5 @@ def test_active_grid_positions():
             >> g.DeleteGeometry(selection=points.o.is_tile)
             >> points_output
         )
+
+    assert snapshot == tree._repr_markdown_()
