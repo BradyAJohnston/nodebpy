@@ -7,7 +7,7 @@ on:
     branches: ["*"]
 
 jobs:
-  build:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 4
@@ -25,6 +25,35 @@ jobs:
       - name: Install
         run: |
           uv sync --all-extras --extra-index-url https://bradyajohnston.github.io/dailybpy --refresh --upgrade
+
+      - name: Run tests
+        run: |
+          uv run pytest -n auto -vv --cov=nodebpy --cov-report=xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        if: matrix.os == 'macos-latest'
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: coverage.xml
+
+      - name: Upload coverage reports to Codecov
+        if: matrix.os == 'macos-latest'
+        uses: codecov/codecov-action@v3
+  test-without-networkx:
+    runs-on: maxos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Install
+        run: |
+          uv sync --all-extras --extra-index-url https://bradyajohnston.github.io/dailybpy --refresh --upgrade
+          uv remove networkx
 
       - name: Run tests
         run: |
