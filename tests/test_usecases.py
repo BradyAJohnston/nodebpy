@@ -1024,3 +1024,24 @@ def test_geometryscript_city_builder(snapshot):
         g.JoinGeometry((curve_mesh, buildings)) >> tree.outputs.geometry("Result")
 
     assert snapshot == tree._repr_markdown_()
+
+
+def test_active_grid_positions(snapshot):
+    with g.tree("Active Grid Positions", arrange='simple') as tree:
+        tree.tree.show_modifier_manage_panel = True
+
+        grid = tree.inputs.float("Grid", hide_value=True, structure_type="GRID")
+        points_output = tree.outputs.geometry("Points")
+
+        points = g.GridToPoints.float(grid)
+        indices = g.CombineXYZ(points.o.x, points.o.y, points.o.z).o.vector
+
+        (
+            points.o.points
+            >> g.StoreNamedAttribute.point.vector(name="ix", value=indices)
+            >> g.StoreNamedAttribute.point.boolean(name="value", value=points.o.value)
+            >> g.DeleteGeometry(selection=points.o.is_tile)
+            >> points_output
+        )
+
+    assert snapshot == tree._repr_markdown_()

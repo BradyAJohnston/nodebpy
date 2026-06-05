@@ -68,6 +68,31 @@
   ```
   '''
 # ---
+# name: test_active_grid_positions
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Grid to Points"):::geometry-node
+      N2("Combine XYZ"):::converter-node
+      N3("Store Named Attribute"):::default-node
+      N4("Store Named Attribute"):::default-node
+      N5("Delete Geometry"):::geometry-node
+      N6("Group Output"):::default-node
+      N0 -->|"Grid->Grid"| N1
+      N1 -->|"X->X"| N2
+      N1 -->|"Y->Y"| N2
+      N1 -->|"Z->Z"| N2
+      N2 -->|"Vector->Value"| N3
+      N1 -->|"Points->Geometry"| N3
+      N1 -->|"Value->Value"| N4
+      N3 -->|"Geometry->Geometry"| N4
+      N1 -->|"Is Tile->Selection"| N5
+      N4 -->|"Geometry->Geometry"| N5
+      N5 -->|"Geometry->Points"| N6
+  ```
+  '''
+# ---
 # name: test_bundle_path_filter
   '''
   ```{mermaid}
