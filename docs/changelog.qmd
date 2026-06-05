@@ -1,6 +1,13 @@
 ---
 title: Changelog
 ---
+
+## v520.0.1 - 2026-06-05
+
+### Enhancements
+### Fixes
+ - Import and usage of the `arrange()` function properly handles the optional `netowrkx` dependency
+
 ## v520.0.0 - 2026-06-04
 
 ### Enhancements
