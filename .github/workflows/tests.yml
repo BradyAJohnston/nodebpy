@@ -53,8 +53,8 @@ jobs:
 
       - name: Install
         run: |
+          uv remove networkx --optional networkx
           uv sync --all-extras --extra-index-url https://bradyajohnston.github.io/dailybpy --refresh --upgrade
-          uv remove networkx
 
       - name: Run tests
         run: |
