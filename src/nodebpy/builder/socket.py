@@ -1,3 +1,18 @@
+"""Typed Python wrappers around Blender node sockets.
+
+These classes give each socket type (float, vector, color, …) a fluent,
+type-aware API and the operator overloads used when wiring node trees.
+
+Organization (top to bottom):
+    * Type variables and result types
+    * Base wrappers: ``BaseSocket`` and ``Socket``
+    * Grid sockets and domain-bound field evaluation
+    * Per-type behaviour mixins (``_VectorMixin``, ``_FloatMixin``, …)
+    * Structural mixins (lists, default values, type conversions)
+    * Concrete socket classes — the registry targets returned by ``_wrap_socket``
+    * Registry registration (bl_idname -> socket class)
+"""
+
 from __future__ import annotations
 
 from typing import (
@@ -90,6 +105,11 @@ if TYPE_CHECKING:
     from .node import BaseNode
     from .tree import TreeBuilder
 
+
+# ---------------------------------------------------------------------------
+# Type variables and result types
+# ---------------------------------------------------------------------------
+
 _T = TypeVar("_T")
 _S = TypeVar("_S")
 _BooleanResult = TypeVar(
@@ -138,6 +158,11 @@ class ResultMatrixSVD(NamedTuple, Generic[_MatrixResult, _VectorResult]):
     u: "_MatrixResult"
     s: "_VectorResult"
     v: "_MatrixResult"
+
+
+# ---------------------------------------------------------------------------
+# Base socket wrappers
+# ---------------------------------------------------------------------------
 
 
 class BaseSocket:
@@ -291,10 +316,11 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
                 "less_equal": ("greater_than", True),
                 "greater_equal": ("less_than", True),
                 "equal": ("compare", False),
+                "not_equal": ("compare", True),
             }
             math_op, negate = _MATH_COMPARE_MAP[operation]
             result = getattr(Math, math_op)(self.socket, other).o.value
-            if operation == "equal":
+            if operation in ("equal", "not_equal"):
                 result.builder_node.i.value_002.default_value = 0.00001
             if negate:
                 result = Math.subtract(1.0, result._default_output_socket).o.value
@@ -324,6 +350,11 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         def __ne__(self, other: Any) -> "BooleanSocket": ...
 
 
+# ---------------------------------------------------------------------------
+# Grid sockets and domain-bound field evaluation
+# ---------------------------------------------------------------------------
+
+
 class GridSocketMixin(Socket, Generic[_T]):
     def _info(self) -> "GridInfo[_T]":
         from ..nodes.geometry import GridInfo
@@ -343,11 +374,6 @@ class GridSocketMixin(Socket, Generic[_T]):
         self,
     ) -> "_T":
         return self._info().o.background_value
-
-
-# ---------------------------------------------------------------------------
-# Type-specific behaviour mixins
-# ---------------------------------------------------------------------------
 
 
 class _EvaluateField(Socket, Generic[_T]):
@@ -460,6 +486,86 @@ class _StatsField(_MinMaxField[_T]):
             self._socket, group_index
         )
         return node.o.variance
+
+
+# ---------------------------------------------------------------------------
+# Per-type behaviour mixins
+# ---------------------------------------------------------------------------
+
+
+# Element-wise (Vector Math) dispatch shared by vector and colour sockets.
+# Colours are treated as vectors for arithmetic, so both route through here.
+
+
+def _dispatch_vector_math(
+    socket: NodeSocket, other: Any, operation: str, reverse: bool = False
+) -> "VectorSocket":
+    from ..nodes.geometry import VectorMath
+
+    values = (socket, other) if not reverse else (other, socket)
+
+    if operation == "multiply":
+        if isinstance(other, (int, float)):
+            return VectorMath.scale(socket, other).o.vector
+        if isinstance(other, NodeSocket) and other.type in ("VALUE", "FLOAT", "INT"):
+            return VectorMath.scale(socket, other).o.vector
+        if isinstance(other, (_SocketLike, _NodeLike)) and getattr(
+            other, "type", None
+        ) in ("VALUE", "FLOAT", "INT"):
+            return VectorMath.scale(socket, other._default_output_socket).o.vector
+        if isinstance(other, (list, tuple)) and len(other) == 3:
+            return VectorMath.multiply(*values).o.vector
+        if isinstance(other, (_SocketLike, _NodeLike, NodeSocket)):
+            return VectorMath.multiply(*values).o.vector
+        raise TypeError(
+            f"Unsupported operand for multiply with a vector/colour socket: {type(other)}"
+        )
+
+    method = getattr(VectorMath, operation)
+    if isinstance(other, (int, float)):
+        scalar_vector = (other, other, other)
+        node = (
+            method(socket, scalar_vector)
+            if not reverse
+            else method(scalar_vector, socket)
+        )
+        return node.o.vector
+    if (isinstance(other, (list, tuple)) and len(other) == 3) or isinstance(
+        other, (_SocketLike, _NodeLike, NodeSocket)
+    ):
+        return method(*values).o.vector
+    raise TypeError(
+        f"Unsupported operand for {operation} with a vector/colour socket: {type(other)}"
+    )
+
+
+def _dispatch_vector_unary(socket: NodeSocket, operation: str) -> "VectorSocket":
+    from ..nodes.geometry import VectorMath
+
+    if operation == "negate":
+        return VectorMath.scale(socket, -1).o.vector
+    if operation == "absolute":
+        return VectorMath.absolute(socket).o.vector
+    raise ValueError(f"Unknown unary operation: {operation}")
+
+
+def _dispatch_vector_floordiv(
+    socket: NodeSocket, other: Any, reverse: bool = False
+) -> "VectorSocket":
+    from ..nodes.geometry import VectorMath
+
+    divided = _dispatch_vector_math(socket, other, "divide", reverse)
+    return VectorMath.floor(divided).o.vector
+
+
+def _dispatch_vector_compare(
+    self: BaseSocket, other: Any, operation: str
+) -> "BooleanSocket | FloatSocket":
+    if self._is_geometry_tree:
+        from ..nodes.geometry import Compare
+
+        return getattr(Compare.vector, operation)(self.socket, other).o.result
+    return Socket._dispatch_compare(cast("Socket", self), other, operation)
 
 
 class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
@@ -630,75 +736,20 @@ class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
         return 3
 
     def _dispatch_unary(self, operation: str) -> _VectorResult:
-        if operation == "negate":
-            return self._vmath.scale(self.socket, -1).o.vector  # ty: ignore[invalid-return-type]
-        elif operation == "absolute":
-            return self._vmath.absolute(self.socket).o.vector  # ty: ignore[invalid-return-type]
-        raise ValueError(f"Unknown unary operation: {operation}")
+        return _dispatch_vector_unary(self.socket, operation)  # ty: ignore[invalid-return-type]
 
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
     ) -> _VectorResult:
-        values = (self.socket, other) if not reverse else (other, self.socket)
-
-        if operation == "multiply":
-            if isinstance(other, (int, float)):
-                return self._vmath.scale(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
-            elif isinstance(other, NodeSocket) and other.type in (
-                "VALUE",
-                "FLOAT",
-                "INT",
-            ):
-                return self._vmath.scale(self.socket, other).o.vector  # ty: ignore[invalid-return-type]
-            elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(
-                other, "type", None
-            ) in (
-                "VALUE",
-                "FLOAT",
-                "INT",
-            ):
-                return self._vmath.scale(
-                    self.socket, other._default_output_socket
-                ).o.vector  # ty: ignore[invalid-return-type]
-            elif isinstance(other, (list, tuple)) and len(other) == 3:
-                return self._vmath.multiply(*values).o.vector  # ty: ignore[invalid-return-type]
-            elif isinstance(other, (_SocketLike, _NodeLike, NodeSocket)):
-                return self._vmath.multiply(*values).o.vector  # ty: ignore[invalid-return-type]
-            else:
-                raise TypeError(
-                    f"Unsupported type for {operation} with VECTOR socket: {type(other)}, {other=}"
-                )
-        else:
-            vector_method = getattr(self._vmath, operation)
-            if isinstance(other, (int, float)):
-                scalar_vector = (other, other, other)
-                return (
-                    vector_method(self.socket, scalar_vector)
-                    if not reverse
-                    else vector_method(scalar_vector, self.socket)
-                ).o.vector
-            elif (isinstance(other, (list, tuple)) and len(other) == 3) or isinstance(
-                other, (_SocketLike, _NodeLike, NodeSocket)
-            ):
-                return vector_method(*values).o.vector
-            else:
-                raise TypeError(
-                    f"Unsupported type for {operation} with VECTOR operand: {type(other)}"
-                )
+        return _dispatch_vector_math(self.socket, other, operation, reverse)  # ty: ignore[invalid-return-type]
 
     def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> _VectorResult:
-        divided = self._dispatch_math(other, "divide", reverse=reverse)
-        return self._vmath.floor(divided).o.vector  # ty: ignore[invalid-return-type, invalid-argument-type]
+        return _dispatch_vector_floordiv(self.socket, other, reverse)  # ty: ignore[invalid-return-type]
 
     def _dispatch_compare(
         self, other: Any, operation: str
     ) -> _BooleanResult | _FloatResult:
-        if self._is_geometry_tree:
-            from ..nodes.geometry import Compare
-
-            return getattr(Compare.vector, operation)(self.socket, other).o.result
-        else:
-            return Socket._dispatch_compare(cast("Socket", self), other, operation)  # ty: ignore[invalid-return-type]
+        return _dispatch_vector_compare(self, other, operation)  # ty: ignore[invalid-return-type]
 
     if TYPE_CHECKING:
 
@@ -731,13 +782,6 @@ class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
         def __gt__(self, other: Any) -> "Compare[_VectorResult]": ...
         def __le__(self, other: Any) -> "Compare[_VectorResult]": ...
         def __ge__(self, other: Any) -> "Compare[_VectorResult]": ...
-
-
-_SEPARATE_COLOR_IDNAMES = (
-    "FunctionNodeSeparateColor",
-    "ShaderNodeSeparateColor",
-    "CompositorNodeSeparateColor",
-)
 
 
 class _ColorMixin(BaseSocket):
@@ -823,12 +867,6 @@ class _ColorMixin(BaseSocket):
                 raise TypeError("Shader CombineColor node doesn't have an alpha input")
             return node.i.alpha
 
-    _COMBINE_COLOR_IDNAMES = (
-        "FunctionNodeCombineColor",
-        "ShaderNodeCombineColor",
-        "CompositorNodeCombineColor",
-    )
-
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
     @overload
@@ -852,41 +890,24 @@ class _ColorMixin(BaseSocket):
         else:
             return 4
 
+    # Colours behave like vectors for arithmetic — share the vector dispatch so
+    # ``-col``, ``abs(col)`` and ``col // x`` use Vector Math (not scalar Math).
+
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
     ) -> "VectorSocket":
-        from ..nodes.geometry import VectorMath
+        return _dispatch_vector_math(self.socket, other, operation, reverse)
 
-        values = (self.socket, other) if not reverse else (other, self.socket)
+    def _dispatch_unary(self, operation: str) -> "VectorSocket":
+        return _dispatch_vector_unary(self.socket, operation)
 
-        if operation == "multiply":
-            if isinstance(other, (int, float)):
-                return VectorMath.scale(self.socket, other).o.vector
-            elif isinstance(other, NodeSocket) and other.type in (
-                "VALUE",
-                "FLOAT",
-                "INT",
-            ):
-                return VectorMath.scale(self.socket, other).o.vector
-            elif isinstance(other, (_SocketLike, _NodeLike)) and getattr(
-                other, "type", None
-            ) in ("VALUE", "FLOAT", "INT"):
-                return VectorMath.scale(
-                    self.socket, other._default_output_socket
-                ).o.vector
-            else:
-                return VectorMath.multiply(*values).o.vector
-        else:
-            vector_method = getattr(VectorMath, operation, None)
-            assert vector_method is not None
-            if isinstance(other, (int, float)):
-                scalar_vector = (other, other, other)
-                return (
-                    vector_method(self.socket, scalar_vector)
-                    if not reverse
-                    else vector_method(scalar_vector, self.socket)
-                ).o.vector
-            return vector_method(*values).o.vector
+    def _dispatch_floordiv(self, other: Any, reverse: bool = False) -> "VectorSocket":
+        return _dispatch_vector_floordiv(self.socket, other, reverse)
+
+    def _dispatch_compare(
+        self, other: Any, operation: str
+    ) -> "BooleanSocket | FloatSocket":
+        return _dispatch_vector_compare(self, other, operation)
 
 
 class _BooleanSwitchSocketFactory:
@@ -1493,10 +1514,7 @@ class _MatrixMixin(
 
 
 # ---------------------------------------------------------------------------
-# Registry-target socket classes
-# Used by _wrap_socket() for runtime socket wrapping.
-# The corresponding SocketVector / SocketColor / etc. in interface.py
-# inherit the same mixins and gain identical behaviour for interface sockets.
+# Structural mixins (lists, default values, type conversions)
 # ---------------------------------------------------------------------------
 
 
@@ -1673,6 +1691,24 @@ class _FloatConvertDatatypeMixin(BaseSocket, Generic[_IntegerResult, _StringResu
         return FloatToInteger(self.socket, rounding_mode=rounding_mode).o.integer  # ty: ignore[invalid-return-type]
 
 
+class _IntegerConvertDatatypeMixin(Socket, Generic[_StringResult]):
+    def to_string(self) -> _StringResult:
+        "Convert the `IntegerSocket` to a `StringSocket`."
+        self._assert_output("to_string")
+        from ..nodes.geometry import ValueToString
+
+        return ValueToString.integer(self.socket).o.string  # ty: ignore[invalid-return-type]
+
+
+# ---------------------------------------------------------------------------
+# Concrete socket classes (registry targets)
+#
+# Selected at runtime by ``_wrap_socket()``. The matching Socket* classes in
+# interface.py inherit the same mixins, so interface sockets behave identically.
+# ---------------------------------------------------------------------------
+
+
+# -- Float --
 class FloatSocket(
     _FloatMixin["IntegerSocket"],
     _ToListMixin["FloatSocketList"],
@@ -1730,6 +1766,7 @@ class FloatSocketGrid(_FloatMixin["IntegerSocketGrid"], GridSocketMixin[FloatSoc
     """Runtime float grid socket wrapper."""
 
 
+# -- Vector --
 class VectorSocket(
     _VectorMixin["FloatSocket", "VectorSocket"],
     _ToListMixin["VectorSocketList"],
@@ -1791,6 +1828,7 @@ class VectorSocketGrid(_VectorMixin, GridSocketMixin[VectorSocket]):
     """Runtime vector grid socket wrapper."""
 
 
+# -- Color --
 class ColorSocket(_ColorMixin, _ToListMixin["ColorSocketList"], Socket):
     """Runtime color socket wrapper."""
 
@@ -1807,15 +1845,7 @@ class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):
     """List of color sockets."""
 
 
-class _IntegerConvertDatatypeMixin(Socket, Generic[_StringResult]):
-    def to_string(self) -> _StringResult:
-        "Convert the `IntegerSocket` to a `StringSocket`."
-        self._assert_output("to_string")
-        from ..nodes.geometry import ValueToString
-
-        return ValueToString.integer(self.socket).o.string  # ty: ignore[invalid-return-type]
-
-
+# -- Integer --
 class IntegerSocket(
     _IntegerMixin[FloatSocket],
     _ToListMixin["IntegerSocketList"],
@@ -1881,6 +1911,7 @@ class IntegerSocketGrid(_IntegerMixin, GridSocketMixin[IntegerSocket]):
     """Runtime integer grid socket wrapper."""
 
 
+# -- Boolean --
 class BooleanSocket(
     _BooleanMixin, _ToListMixin["BooleanSocketList"], _DefaultValueMixin[bool], Socket
 ):
@@ -1931,6 +1962,7 @@ class BooleanSocketGrid(_BooleanMixin, GridSocketMixin[BooleanSocket]):
     """Runtime boolean grid socket wrapper."""
 
 
+# -- Rotation --
 class RotationSocket(
     _RotationMixin["FloatSocket", "VectorSocket"],
     _ToListMixin["RotationSocketList"],
@@ -1981,6 +2013,7 @@ class RotationSocketList(
     """List of rotation sockets."""
 
 
+# -- Matrix --
 class MatrixSocket(
     _MatrixMixin[VectorSocket, RotationSocket, FloatSocket, "MatrixSocket"],
     _ToListMixin["MatrixSocketList"],
@@ -2073,6 +2106,7 @@ class MatrixSocketList(
     """List of matrix sockets."""
 
 
+# -- String --
 class StringSocket(
     _StringMixin["StringSocket", "BooleanSocket", IntegerSocket],
     _ToListMixin["StringSocketList"],
@@ -2121,6 +2155,7 @@ class StringSocketList(
     """List of string sockets."""
 
 
+# -- Menu --
 class _MenuSocketMixin(Socket):
     socket: NodeSocketMenu
 
@@ -2141,6 +2176,7 @@ class MenuSocketList(_MenuSocketMixin, _ListMixin[MenuSocket]):
     """List of menu sockets."""
 
 
+# -- Geometry --
 class GeometrySocket(Socket):
     """Runtime geometry socket wrapper."""
 
@@ -2166,6 +2202,7 @@ class GeometrySocketList(GeometrySocket, _ListMixin[GeometrySocket]):
     """List of geometry sockets."""
 
 
+# -- Data-block and opaque sockets (object, material, image, …) --
 class _ObjectMixin(Socket):
     socket: NodeSocketObject
 
@@ -2411,6 +2448,10 @@ class SoundSocket(_SoundSocketMixin):
 class SoundSocketList(_SoundSocketMixin, _ListMixin[SoundSocket]):
     """List of sound sockets."""
 
+
+# ---------------------------------------------------------------------------
+# Registry registration (bl_idname -> socket class)
+# ---------------------------------------------------------------------------
 
 _SOCKET_REGISTRY["NodeSocketFloat"] = FloatSocket
 _SOCKET_REGISTRY["NodeSocketVector"] = VectorSocket
