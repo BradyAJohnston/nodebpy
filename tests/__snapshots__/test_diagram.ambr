@@ -208,6 +208,22 @@
   ```
   '''
 # ---
+# name: test_diagram_frame
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      subgraph F0["Transform"]
+          N1("Set Position"):::geometry-node
+          N2("Transform Geometry"):::geometry-node
+      end
+      N3("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N1 -->|"Geometry->Geometry"| N2
+      N2 -->|"Geometry->Geometry"| N3
+  ```
+  '''
+# ---
 # name: test_diagram_join_geometry
   '''
   ```{mermaid}
@@ -234,6 +250,24 @@
       N0 -->|"Value->Value"| N1
       N1 -->|"Value->Value"| N2
       N2 -->|"Value->Result"| N3
+  ```
+  '''
+# ---
+# name: test_diagram_nested_frames
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      subgraph F0["Outer"]
+          N1("Set Position"):::geometry-node
+          subgraph F1["Inner"]
+              N2("Transform Geometry"):::geometry-node
+          end
+      end
+      N3("Group Output"):::default-node
+      N0 -->|"Geometry->Geometry"| N1
+      N1 -->|"Geometry->Geometry"| N2
+      N2 -->|"Geometry->Geometry"| N3
   ```
   '''
 # ---

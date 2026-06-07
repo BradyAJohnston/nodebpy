@@ -3,6 +3,7 @@ title: "Comapring the API"
 subtitle: How does the API compare to other existing solutions?
 ---
 
+
 ## `geonodes`
 
 ### 'Hello World'
