@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import bpy
-from bpy.types import Node
+from bpy.types import Node, NodeTree, NodeSocket
 
 _COLOR_CLASS_MAP = {
     "GEOMETRY": "geometry-node",
@@ -60,7 +60,7 @@ def _node_label(node: Node) -> str:
     return label.replace('"', "'")
 
 
-def _sorted_nodes(node_tree, reroute_names: set) -> list:
+def _sorted_nodes(node_tree: NodeTree, reroute_names: set) -> list[Node]:
     input_nodes = [n for n in node_tree.nodes if "GroupInput" in n.bl_idname]
     output_nodes = [n for n in node_tree.nodes if "GroupOutput" in n.bl_idname]
     regular_nodes = [
@@ -74,7 +74,9 @@ def _sorted_nodes(node_tree, reroute_names: set) -> list:
     return input_nodes + sorted_regular + output_nodes
 
 
-def _trace_reroute(node_tree, node, socket):
+def _trace_reroute(
+    node_tree: NodeTree, node: Node, socket: NodeSocket
+) -> tuple[Node, NodeSocket]:
     """Follow a reroute chain backward to the real source node and socket."""
     while node.bl_idname == "NodeReroute":
         input_links = [link for link in node_tree.links if link.to_node == node]
@@ -102,13 +104,43 @@ def to_mermaid(tree) -> str:
 
     lines = ["```{mermaid}", "graph LR"]
 
-    node_map = {}
-    for i, node in enumerate(sorted_nodes):
-        node_id = f"N{i}"
-        node_map[node.name] = node_id
-        label = _node_label(node)
-        css_class = _node_css_class(node)
-        lines.append(f'    {node_id}("{label}"):::{css_class}')
+    node_map: dict[str, str] = {}
+
+    # Assign a stable id to every non-frame node up front so edges resolve
+    # regardless of how nodes are nested inside frames.
+    for i, node in enumerate(n for n in sorted_nodes if n.bl_idname != "NodeFrame"):
+        node_map[node.name] = f"N{i}"
+
+    # A NodeFrame is itself a node; its members point back at it via
+    # `node.parent`. Group children by their parent frame and collect the
+    # top-level (unparented) nodes to start rendering from.
+    frame_ids: dict[str, str] = {
+        node.name: f"F{i}"
+        for i, node in enumerate(n for n in sorted_nodes if n.bl_idname == "NodeFrame")
+    }
+
+    children: dict[str, list[Node]] = {}
+    roots: list[Node] = []
+    for node in sorted_nodes:
+        if node.parent is not None:
+            children.setdefault(node.parent.name, []).append(node)
+        else:
+            roots.append(node)
+
+    def _emit(node: Node, indent: str) -> None:
+        if node.bl_idname == "NodeFrame":
+            title = (node.label or node.name).replace('"', "'")
+            lines.append(f'{indent}subgraph {frame_ids[node.name]}["{title}"]')
+            for child in children.get(node.name, []):
+                _emit(child, indent + "    ")
+            lines.append(f"{indent}end")
+        else:
+            label = _node_label(node)
+            css_class = _node_css_class(node)
+            lines.append(f'{indent}{node_map[node.name]}("{label}"):::{css_class}')
+
+    for node in roots:
+        _emit(node, "    ")
 
     seen_edges = set()
     for link in node_tree.links:
