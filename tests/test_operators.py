@@ -1003,3 +1003,60 @@ class TestIntegerSocketOperators:
             assert result2.builder_node.i.value_002.default_value == pytest.approx(
                 0.00001
             )
+
+
+class TestNotEqualOperator:
+    """`!=` must work in every tree type (regression: KeyError in non-geometry)."""
+
+    def test_ne_float_geometry(self):
+        with TreeBuilder("TestNeFloatGeo"):
+            result = g.Value(1.0) != 2.0
+        assert result.node.bl_idname == g.Compare._bl_idname
+        assert result.node.operation == "NOT_EQUAL"
+        assert result.node.data_type == "FLOAT"
+
+    def test_ne_integer_geometry(self):
+        with TreeBuilder("TestNeIntGeo"):
+            result = g.Integer(1) != 2
+        assert result.node.bl_idname == g.Compare._bl_idname
+        assert result.node.operation == "NOT_EQUAL"
+        assert result.node.data_type == "INT"
+
+    def test_ne_non_geometry_uses_math_fallback(self):
+        # Compositor/shader have no Compare node, so != falls back to a
+        # negated COMPARE Math node. This used to raise KeyError('not_equal').
+        with c.tree() as tree:
+            result = tree.inputs.float("a", 0.5) != 0.0
+        assert result.node.bl_idname == c.Math._bl_idname
+        assert result.node.operation == "SUBTRACT"
+        compare = result.builder_node.i.value_001.links[0].from_node
+        assert compare.operation == "COMPARE"
+        assert compare.inputs["Value_002"].default_value == pytest.approx(0.00001)
+
+
+class TestColorArithmetic:
+    """Colours are vector-like: unary/floordiv must use Vector Math, not scalar."""
+
+    def test_color_negate_uses_vector_math(self):
+        with TreeBuilder("TestColorNeg") as t:
+            result = -t.inputs.color("c", (0.2, 0.4, 0.6, 1.0))
+        assert result.node.bl_idname == "ShaderNodeVectorMath"
+        assert result.node.operation == "SCALE"
+
+    def test_color_abs_uses_vector_math(self):
+        with TreeBuilder("TestColorAbs") as t:
+            result = abs(t.inputs.color("c", (0.2, 0.4, 0.6, 1.0)))
+        assert result.node.bl_idname == "ShaderNodeVectorMath"
+        assert result.node.operation == "ABSOLUTE"
+
+    def test_color_floordiv_uses_vector_math(self):
+        with TreeBuilder("TestColorFloorDiv") as t:
+            result = t.inputs.color("c", (0.2, 0.4, 0.6, 1.0)) // 2.0
+        assert result.node.bl_idname == "ShaderNodeVectorMath"
+        assert result.node.operation == "FLOOR"
+
+    def test_color_multiply_uses_vector_math(self):
+        with TreeBuilder("TestColorMul") as t:
+            result = t.inputs.color("c", (0.2, 0.4, 0.6, 1.0)) * 2.0
+        assert result.node.bl_idname == "ShaderNodeVectorMath"
+        assert result.node.operation == "SCALE"
