@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import typing
 from types import EllipsisType
 from typing import Literal
@@ -87,6 +88,22 @@ if typing.TYPE_CHECKING:
     from .nodes.geometry.converter import CombineMatrix, CombineTransform
 
 
+_HEX_RE = re.compile(r"^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$")
+
+
+class HexColor(str):
+    """Hex color string in sRGB: ``'#RRGGBB'`` or ``'#RRGGBBAA'``."""
+
+    __slots__ = ()
+
+    def __new__(cls, value: str) -> "HexColor":
+        if not _HEX_RE.match(value):
+            raise ValueError(
+                f"Invalid hex color {value!r}: expected '#RRGGBB' or '#RRGGBBAA'"
+            )
+        return super().__new__(cls, value)
+
+
 def _is_default_value(value: InputAny):
     return isinstance(value, (int, float, str, bool, tuple, list, Euler))
 
@@ -126,6 +143,7 @@ InputRotation = typing.Union[
 ]
 InputColor = typing.Union[
     tuple[float, float, float, float],
+    HexColor,
     NodeSocketColor,
     NodeSocketVector,
     float,
