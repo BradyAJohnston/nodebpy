@@ -1,5 +1,5 @@
-from typing import cast
 import itertools
+from typing import cast
 
 import bpy
 import pytest
@@ -1762,7 +1762,7 @@ def test_field_to_list_typed_items():
         assert isinstance(ftl.rotation(), RotationSocketList)
         assert isinstance(ftl.matrix(), MatrixSocketList)
         assert isinstance(ftl.string("name", name="Label"), StringSocketList)
-        assert isinstance(ftl.menu(g.Menu()), MenuSocketList)
+        assert isinstance(ftl.menu(g.Menu().o.menu), MenuSocketList)
 
 
 def test_field_to_grid_capture_typed():
@@ -1775,3 +1775,5 @@ def test_field_to_grid_capture_typed():
         named = ftg.capture_integer(g.Integer(), name="idx")
         assert isinstance(named, IntegerSocketGrid)
         assert named.name == "idx"
+
+        named.dilate_erode(-2).voxelize().background_value

@@ -9,6 +9,7 @@ from typing import (
     cast,
     get_args,
 )
+
 import bpy
 import bpy.types
 from bpy.types import (
@@ -21,6 +22,7 @@ from bpy.types import (
     NodeSocketString,
 )
 from mathutils import Euler
+
 from ...builder import (
     BaseNode,
     BooleanSocket,
@@ -2346,9 +2348,7 @@ class FieldToList(DynamicInputsMixin, BaseNode):
     ) -> StringSocketList:
         return StringSocketList(self._new_item("STRING", name, input))
 
-    def menu(
-        self, input: InputString = None, name: str | None = None
-    ) -> MenuSocketList:
+    def menu(self, input: InputMenu = None, name: str | None = None) -> MenuSocketList:
         return MenuSocketList(self._new_item("MENU", name, input))
 
 
