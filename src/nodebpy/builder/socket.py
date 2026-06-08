@@ -91,7 +91,10 @@ if TYPE_CHECKING:
     from ..nodes.geometry import (
         CombineMatrix,
         CombineTransform,
+        Compare,
+        FieldToGrid,
         GridInfo,
+        GridToPoints,
         IntegerMath,
         MatchString,
         Math,
@@ -99,9 +102,8 @@ if TYPE_CHECKING:
         ObjectInfo,
         Position,
         Vector,
+        VectorMath,
     )
-    from ..nodes.geometry.manual import Compare
-    from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
     from .tree import TreeBuilder
 
@@ -350,7 +352,7 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         def __ne__(self, other: Any) -> "BooleanSocket": ...
 
 
-class _GridOperationsMixing(Socket, Generic[_T]):
+class _GridMeanMixin(Socket):
     def mean(self, width: InputInteger = 1, iterations: InputInteger = 1) -> Self:
         from ..nodes.geometry import GridMean
 
@@ -372,7 +374,7 @@ class _GridOperationsMixing(Socket, Generic[_T]):
         ).o.grid
 
 
-class _GridFloatOperationsMixing(Socket):
+class _FloatGridOperatorMixin(Socket):
     def gradient(self) -> VectorSocketGrid:
         from ..nodes.geometry import GridGradient
 
@@ -383,8 +385,49 @@ class _GridFloatOperationsMixing(Socket):
 
         return GridLaplacian(self.socket).o.laplacian
 
+    def sdf_fillet(self, iterations: InputInteger = 1) -> FloatSocketGrid:
+        from ..nodes.geometry import SDFGridFillet
 
-class _GridVectorOperationsMixing(Socket):
+        return SDFGridFillet(self.socket, iterations=iterations).o.grid
+
+    def sdf_laplacian(self, iterations: InputInteger = 1) -> FloatSocketGrid:
+        from ..nodes.geometry import SDFGridLaplacian
+
+        return SDFGridLaplacian(self.socket, iterations=iterations).o.grid
+
+    def sdf_mean(
+        self, width: InputInteger = 1, iterations: InputInteger = 1
+    ) -> FloatSocketGrid:
+        from ..nodes.geometry import SDFGridMean
+
+        return SDFGridMean(self.socket, width=width, iterations=iterations).o.grid
+
+    def sdf_mean_curvature(self, iterations: InputInteger = 1) -> FloatSocketGrid:
+        from ..nodes.geometry import SDFGridMeanCurvature
+
+        return SDFGridMeanCurvature(self.socket, iterations=iterations).o.grid
+
+    def sdf_median(
+        self, width: InputInteger = 1, iterations: InputInteger = 1
+    ) -> FloatSocketGrid:
+        from ..nodes.geometry import SDFGridMedian
+
+        return SDFGridMedian(self.socket, width=width, iterations=iterations).o.grid
+
+    def sdf_offset(self, distance: InputFloat = 0.1) -> FloatSocketGrid:
+        from ..nodes.geometry import SDFGridOffset
+
+        return SDFGridOffset(self.socket, distance=distance).o.grid
+
+    def to_mesh(
+        self, threshold: InputFloat = 0.1, adaptivity: InputFloat = 0.0
+    ) -> GeometrySocket:
+        from ..nodes.geometry import GridToMesh
+
+        return GridToMesh(self.socket).o.mesh
+
+
+class _VectorGridOperatorMixin(Socket):
     def curl(self) -> VectorSocketGrid:
         from ..nodes.geometry import GridCurl
 
@@ -421,18 +464,45 @@ class _GridSocketMixin(Socket, Generic[_T]):
     ) -> "_T":
         return self._info().o.background_value
 
-    def prune(
+    def sample(
         self,
-        threshold: InputFloat = 0.1,
-        mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = None,
-    ) -> Self:
-        from ..nodes.geometry import PruneGrid
+        position: InputVector = None,
+        interpolation: Literal[
+            "Nearest Neighbor", "Trilinear", "Triquadratic"
+        ] = "Trilinear",
+    ) -> _T:
+        from ..nodes.geometry import SampleGrid
 
-        return PruneGrid(
+        return SampleGrid(
             grid=self.socket,
-            threshold=threshold,
-            mode=mode,
-        ).o.grid
+            position=position,
+            interpolation=interpolation,
+            data_type=self.socket.type,  # ty: ignore[invalid-argument-type]
+        ).o.value  # ty: ignore[invalid-return-type]
+
+    def sample_index(
+        self,
+        x: InputInteger = 0,
+        y: InputInteger = 0,
+        z: InputInteger = 0,
+    ) -> _T:
+        from ..nodes.geometry import SampleGridIndex
+
+        return SampleGridIndex(
+            grid=self.socket,
+            x=x,
+            y=y,
+            z=z,
+            data_type=self.socket.type,  # ty: ignore[invalid-argument-type]
+        ).o.value  # ty: ignore[invalid-return-type]
+
+    def field_to_grid(self) -> FieldToGrid:
+        from ..nodes.geometry import FieldToGrid
+
+        return FieldToGrid(
+            topology=self.socket,  # ty: ignore[invalid-argument-type]
+            data_type=self.type,  # ty: ignore[invalid-argument-type]
+        )
 
     def clip(
         self,
@@ -469,7 +539,21 @@ class _GridSocketMixin(Socket, Generic[_T]):
             connectivity=connectivity,
             tiles=tiles,
             steps=steps,
-            data_type=self.socket.type,  # ty: ignore[invalid-argument-type]
+            data_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        ).o.grid  # ty: ignore[invalid-return-type]
+
+    def prune(
+        self,
+        threshold: InputFloat = 0.1,
+        mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = None,
+    ) -> Self:
+        from ..nodes.geometry import PruneGrid
+
+        return PruneGrid(
+            grid=self.socket,
+            threshold=threshold,
+            mode=mode,
+            data_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
         ).o.grid  # ty: ignore[invalid-return-type]
 
     def voxelize(
@@ -479,8 +563,16 @@ class _GridSocketMixin(Socket, Generic[_T]):
 
         return VoxelizeGrid(
             grid=self.socket,
-            data_type=self.socket.type,  # ty: ignore[invalid-argument-type]
+            data_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
         ).o.grid  # ty: ignore[invalid-return-type]
+
+    def to_points(self) -> GridToPoints[_T]:
+        from ..nodes.geometry import GridToPoints
+
+        return GridToPoints(
+            grid=self.socket,
+            data_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+        )  # ty: ignore[invalid-return-type]
 
 
 class _EvaluateField(Socket, Generic[_T]):
@@ -1869,7 +1961,12 @@ class FloatSocketList(
     """"""
 
 
-class FloatSocketGrid(_FloatMixin["IntegerSocketGrid"], _GridSocketMixin[FloatSocket]):
+class FloatSocketGrid(
+    _FloatMixin["IntegerSocketGrid"],
+    _GridSocketMixin[FloatSocket],
+    _FloatGridOperatorMixin,
+    _GridMeanMixin,
+):
     """Runtime float grid socket wrapper."""
 
 
@@ -1931,7 +2028,12 @@ class VectorSocketList(
     """"""
 
 
-class VectorSocketGrid(_VectorMixin, _GridSocketMixin[VectorSocket]):
+class VectorSocketGrid(
+    _VectorMixin,
+    _GridSocketMixin[VectorSocket],
+    _VectorGridOperatorMixin,
+    _GridMeanMixin,
+):
     """Runtime vector grid socket wrapper."""
 
 
@@ -2014,7 +2116,7 @@ class IntegerVectorSocket(
     """Runtime integer vector socket wrapper."""
 
 
-class IntegerSocketGrid(_IntegerMixin, _GridSocketMixin[IntegerSocket]):
+class IntegerSocketGrid(_IntegerMixin, _GridSocketMixin[IntegerSocket], _GridMeanMixin):
     """Runtime integer grid socket wrapper."""
 
 

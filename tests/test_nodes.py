@@ -1765,10 +1765,10 @@ def test_field_to_list_typed_items():
         assert isinstance(ftl.menu(g.Menu().o.menu), MenuSocketList)
 
 
-def test_field_to_grid_capture_typed():
+def test_field_to_grid_capture_typed(snapshot):
     """Each typed FieldToGrid capture helper adds a grid item of the matching type."""
-    with g.tree():
-        ftg = g.FieldToGrid(g.CubeGridTopology().o.topology)
+    with g.tree(arrange="simple") as tree:
+        ftg = g.CubeGridTopology() >> g.FieldToGrid.boolean()
         assert isinstance(ftg.capture_float(g.Float()), FloatSocketGrid)
         assert isinstance(ftg.capture_boolean(g.Boolean()), BooleanSocketGrid)
         assert isinstance(ftg.capture_vector(g.Vector()), VectorSocketGrid)
@@ -1776,4 +1776,12 @@ def test_field_to_grid_capture_typed():
         assert isinstance(named, IntegerSocketGrid)
         assert named.name == "idx"
 
-        named.dilate_erode(-2).voxelize().background_value
+        back = named.dilate_erode(-2).voxelize().background_value
+
+        f = ftg.capture_float(g.NoiseTexture().o.fac)
+        end = f.dilate_erode(1).laplacian().gradient().divergence()
+
+        end >> tree.outputs.float("Grid", structure_type="GRID")
+        back >> tree.outputs.integer("Background", structure_type="SINGLE")
+
+    assert snapshot == tree
