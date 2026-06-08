@@ -2,14 +2,16 @@ import math
 from functools import reduce
 from itertools import combinations, product
 from operator import and_, or_
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import bpy
 
 from nodebpy import TreeBuilder
+from nodebpy import compositor as c
 from nodebpy import geometry as g
-from nodebpy.builder import BooleanSocket, FloatSocket
+from nodebpy.builder import BooleanSocket, CustomCompositorGroup, FloatSocket
 from nodebpy.nodes.geometry.groups import ClipFieldToBox, PrincipalComponents
+from nodebpy.types import InputFloat, InputInteger, InputVector
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
@@ -1043,5 +1045,62 @@ def test_active_grid_positions(snapshot):
             >> g.DeleteGeometry(selection=points.o.is_tile)
             >> points_output
         )
+
+    assert snapshot == tree._repr_markdown_()
+
+
+
+class ImageOffset(CustomCompositorGroup):
+    class Inputs:
+        depth: InputFloat
+        threshold: InputFloat
+        vector: InputVector
+        offset_x: InputInteger
+        offset_y: InputInteger
+        offset_size: InputInteger
+
+    class Outputs:
+        difference: InputFloat
+        thresholded: InputFloat
+
+    if TYPE_CHECKING:
+        @property
+        def inputs(self) -> Inputs: ...
+        @property
+        def outputs(self) -> Outputs: ...
+
+    def __init__(
+        self,
+        depth: InputFloat = None,
+        threshold: InputFloat = 0.5,
+        vector: InputVector = None,
+        offset_x: InputInteger = 0,
+        offset_y: InputInteger = 0,
+        offset_size: InputInteger = 1,
+    ):
+        self.depth = depth
+        self.threshold = threshold
+        self.vector = vector
+        self.offset_x = offset_x
+        self.offset_y = offset_y
+        self.offset_size = offset_size
+
+    def _build_group(self, tree: TreeBuilder) -> None:
+        depth = tree.inputs.float("Depth")
+        threshold = tree.inputs.float("Threshold")
+        vector = tree.inputs.vector("Vector")
+        offset_x = tree.inputs.integer("Offset X")
+        offset_y = tree.inputs.integer("Offset Y")
+        offset_size = tree.inputs.integer("Offset Size")
+
+        translate = c.Translate(depth, offset_x * offset_size + vector.x, offset_y * offset_size + vector.y)
+        diff = depth - translate
+
+        diff >> tree.outputs.float("Difference")
+        diff > threshold >> tree.outputs.float("Thresholded")
+
+def test_screenspace_ao(snapshot):
+    with TreeBuilder("Screenspace AO") as tree:
+        ImageOffset()
 
     assert snapshot == tree._repr_markdown_()

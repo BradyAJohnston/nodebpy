@@ -1,20 +1,18 @@
 from typing import TYPE_CHECKING
 
 from nodebpy import TreeBuilder
-from nodebpy.types import (
-    InputBoolean,
-    InputInteger,
-    InputObject,
-    InputVector,
-)
 
 from ...builder import (
+    BooleanIn,
+    BooleanOut,
     CustomGeometryGroup,
-    IntegerSocket,
-    RotationSocket,
-    SocketAccessor,
-    VectorSocket,
-    IntegerSocketList,
+    IntegerIn,
+    IntegerListOut,
+    IntegerOut,
+    ObjectIn,
+    RotationOut,
+    VectorIn,
+    VectorOut,
 )
 from . import (
     AxesToRotation,
@@ -39,38 +37,24 @@ class SliceToIndices(CustomGeometryGroup):
     _name = "Slice to Indices"
     _color_tag = "CONVERTER"
 
-    class _Inputs(SocketAccessor):
-        start: IntegerSocket
-        stop: IntegerSocket
-        step: IntegerSocket
+    start: IntegerIn = IntegerIn()
+    stop: IntegerIn = IntegerIn()
+    step: IntegerIn = IntegerIn(1)
 
-    class _Outputs(SocketAccessor):
-        indices: IntegerSocketList
+    class _Outputs:
+        indices: IntegerListOut = IntegerListOut(structure_type="LIST")
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
-
-        @property
         def o(self) -> _Outputs: ...
 
-    def __init__(
-        self, start: InputInteger = 0, stop: InputInteger = 0, step: InputInteger = 1
-    ):
-        kwargs = {"Start": start, "Stop": stop, "Step": step}
-        super().__init__(**kwargs)
-
     def _build_group(self, tree: TreeBuilder) -> None:
-        start = tree.inputs.integer("Start")
-        stop = tree.inputs.integer("Stop")
-        step = tree.inputs.integer("Step")
+        range = self.i.stop - self.i.start
+        length = IntegerMath.divide_ceiling(range, self.i.step).o.value.abs()
+        indices = FieldToList(length).integer((self.i.start + self.i.step) * Index())
 
-        range = stop - start
-        length = IntegerMath.divide_ceiling(range, step).o.value.abs()
-        indices = FieldToList(length).integer((start + step) * Index())
-
-        indices >> tree.outputs.integer("Indices", structure_type="LIST")
+        indices >> self.o.indices
 
 
 class OtherVertex(CustomGeometryGroup):
@@ -82,41 +66,30 @@ class OtherVertex(CustomGeometryGroup):
     _name = "Other Vertex"
     _color_tag = "INPUT"
 
-    class _Inputs(SocketAccessor):
-        vertex_index: IntegerSocket
-        """The vertex to start from."""
-        edge_number: IntegerSocket
-        """Which edge of that vertex to traverse."""
+    vertex_index: IntegerIn = IntegerIn(
+        default_input="INDEX", doc="The vertex to start from."
+    )
+    edge_number: IntegerIn = IntegerIn(0, doc="Which edge of that vertex to traverse.")
 
-    class _Outputs(SocketAccessor):
-        other_vertex: IntegerSocket
-        """The vertex at the other end of the selected edge."""
+    class _Outputs:
+        other_vertex: IntegerOut = IntegerOut(
+            doc="The vertex at the other end of the selected edge."
+        )
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
-
-        @property
         def o(self) -> _Outputs: ...
 
-    def __init__(
-        self, vertex_index: InputInteger = None, edge_number: InputInteger = 0
-    ):
-        kwargs = {"Vertex Index": vertex_index, "Edge Number": edge_number}
-        super().__init__(**kwargs)
-
     def _build_group(self, tree: TreeBuilder):
-        vertex_index = tree.inputs.integer("Vertex Index", default_input="INDEX")
-        edge_number = tree.inputs.integer("Edge Number")
-
-        edge_index = EdgesOfVertex(vertex_index, sort_index=edge_number).o.edge_index
+        edge_index = EdgesOfVertex(
+            self.i.vertex_index, sort_index=self.i.edge_number
+        ).o.edge_index
         edge_vertices = EdgeVertices()
         v1 = edge_vertices.o.vertex_index_1.edge.at(edge_index)
         v2 = edge_vertices.o.vertex_index_2.edge.at(edge_index)
-        index = Switch.integer(vertex_index == v1, v1, v2)
 
-        index >> tree.outputs.integer("Other Vertex")
+        Switch.integer(self.i.vertex_index == v1, v1, v2) >> self.o.other_vertex
 
 
 class OffsetVector(CustomGeometryGroup):
@@ -127,42 +100,28 @@ class OffsetVector(CustomGeometryGroup):
     _name = "Offset Vector"
     _color_tag = "INPUT"
 
-    class _Inputs(SocketAccessor):
-        index: IntegerSocket
-        """The base index to evaluate at."""
-        vector: VectorSocket
-        """The vector field to sample."""
-        offset: IntegerSocket
-        """Integer offset added to the index before sampling."""
+    index: IntegerIn = IntegerIn(
+        default_input="INDEX", doc="The base index to evaluate at."
+    )
+    vector: VectorIn = VectorIn(
+        default_input="POSITION", doc="The vector field to sample."
+    )
+    offset: IntegerIn = IntegerIn(
+        0, doc="Integer offset added to the index before sampling."
+    )
 
-    class _Outputs(SocketAccessor):
-        vector: VectorSocket
-        """The vector value at ``index + offset``."""
+    class _Outputs:
+        vector: VectorOut = VectorOut(doc="The vector value at ``index + offset``.")
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
-
-        @property
         def o(self) -> _Outputs: ...
 
-    def __init__(
-        self,
-        index: InputInteger = None,
-        vector: InputVector = None,
-        offset: InputInteger = 0,
-    ):
-        super().__init__(index=index, vector=vector, offset=offset)
-
     def _build_group(self, tree: TreeBuilder):
-        index = tree.inputs.integer("Index", default_input="INDEX")
-        vector = tree.inputs.vector("Vector", default_input="POSITION")
-        offset = tree.inputs.integer("Offset")
+        value = self.i.vector.point.at(self.i.index + self.i.offset)
 
-        value = vector.point.at(index + offset)
-
-        _ = value >> tree.outputs.vector("Vector")
+        value >> self.o.vector
 
 
 class PrincipalComponents(CustomGeometryGroup):
@@ -173,62 +132,38 @@ class PrincipalComponents(CustomGeometryGroup):
     _name = "Principal Components"
     _color_tag = "INPUT"
 
-    class _Inputs(SocketAccessor):
-        position: VectorSocket
-        group_id: IntegerSocket
+    position: VectorIn = VectorIn(default_input="POSITION")
+    group_id: IntegerIn = IntegerIn(
+        name="Group ID",
+        doc="An index used to group values together for multiple separate operations",
+        hide_value=True,
+    )
 
-    class _Outputs(SocketAccessor):
-        center: VectorSocket
-        rotation: RotationSocket
-        principal_components: VectorSocket
-        longest_axis: VectorSocket
-        intermediate_axis: VectorSocket
-        shortest_axis: VectorSocket
+    class _Outputs:
+        centroid: VectorOut = VectorOut()
+        principal_components: VectorOut = VectorOut(
+            doc="Variance of the data along each principal axis"
+        )
+        rotation: RotationOut = RotationOut(
+            doc="Rotation that defines the principal component basis"
+        )
+        longest_axis: VectorOut = VectorOut(panel="Principal Axes", panel_closed=True)
+        intermediate_axis: VectorOut = VectorOut(panel="Principal Axes")
+        shortest_axis: VectorOut = VectorOut(panel="Principal Axes")
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
-
-        @property
         def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        position: InputVector = None,
-        group_id: InputInteger = None,
-    ):
-        kwargs = {
-            "Position": position,
-            "Group ID": group_id,
-        }
-        super().__init__(**kwargs)
 
     def _build_group(self, tree: TreeBuilder):
         tree.collapse = True
-        position = tree.inputs.vector("Position", default_input="POSITION")
-        group_id = tree.inputs.integer(
-            "Group ID",
-            description="An index used to group values together for multiple separate operations",
-            hide_value=True,
-        )
-        out_centroid = tree.outputs.vector("Centroid")
-        out_princ = tree.outputs.vector(
-            "Principal Components",
-            description="Variance of the data along each principal axis",
-        )
-        out_rotation = tree.outputs.rotation(
-            "Rotation",
-            description="Rotation that defines the principal component basis",
-        )
-        with tree.outputs.panel("Principal Axes", default_closed=True):
-            out_long = tree.outputs.vector("Longest Axis")
-            out_inter = tree.outputs.vector("Intermediate Axis")
-            out_short = tree.outputs.vector("Shortest Axis")
+        position = self.i.position
+        group_id = self.i.group_id
 
         with Frame("Centroid"):
             centroid = position.point.mean(group_id)
-            centroid >> out_centroid
+            centroid >> self.o.centroid
 
         with Frame("Covariance Matrix"):
             diff = position - centroid
@@ -241,35 +176,30 @@ class PrincipalComponents(CustomGeometryGroup):
 
         with Frame("SVD"):
             u, s, v = matrix.o.matrix.svd()
-            s >> out_princ
+            s >> self.o.principal_components
             long, inter, short = [CombineXYZ(*u[i * 4 : (i * 4) + 3]) for i in range(3)]
-            long >> out_long
-            short >> out_short
-            AxesToRotation(long, short) >> out_rotation
-            inter * u.determinant().sign() >> out_inter
+            long >> self.o.longest_axis
+            short >> self.o.shortest_axis
+            AxesToRotation(long, short) >> self.o.rotation
+            inter * u.determinant().sign() >> self.o.intermediate_axis
 
 
 class ClipFieldToBox(CustomGeometryGroup):
     _name = "Clip Field to Box"
 
-    def __init__(
-        self,
-        box_object: InputObject = None,
-        invert: InputBoolean = False,
-    ):
-        super().__init__(
-            **{
-                "Box Object": box_object,
-                "Invert": invert,
-            }
-        )
+    box_object: ObjectIn = ObjectIn(optional_label=True)
+    invert: BooleanIn = BooleanIn(False)
+
+    class _Outputs:
+        clipped_field: BooleanOut = BooleanOut()
+
+    if TYPE_CHECKING:
+
+        @property
+        def o(self) -> _Outputs: ...
 
     def _build_group(self, tree: TreeBuilder):
-        box = tree.inputs.object("Box Object", optional_label=True)
-        invert = tree.inputs.boolean("Invert")
-        masked = tree.outputs.boolean("Clipped Field")
-
         pos = Position().o.position
-        local_pos = box.transform("RELATIVE").invert() @ pos * 0.5
+        local_pos = self.i.box_object.transform("RELATIVE").invert() @ pos * 0.5
         result = abs(local_pos) < 0.5
-        (result != invert) >> masked
+        (result != self.i.invert) >> self.o.clipped_field

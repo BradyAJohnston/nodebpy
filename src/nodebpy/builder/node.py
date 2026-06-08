@@ -7,10 +7,12 @@ from typing import (
     Generic,
     Iterable,
     Literal,
+    Mapping,
     Protocol,
     Self,
     TypeVar,
     cast,
+    dataclass_transform,
 )
 
 import bpy
@@ -29,6 +31,7 @@ from bpy.types import (
 from ..types import SOCKET_COMPATIBILITY, SOCKET_TYPES, InputAny
 from ._utils import SocketError, _NodeLike, _SocketLike
 from .accessor import SocketAccessor
+from .group_fields import _INPUT_FIELDS, InputField, OutputField
 from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
 
@@ -258,12 +261,49 @@ class DynamicInputsMixin(ABC):
         return new_sockets
 
 
+class _GroupSocketAccessor(SocketAccessor):
+    """A ``SocketAccessor`` that resolves attribute access via the group's
+    declared fields, so a python field name maps to its (possibly overridden)
+    Blender socket name — e.g. ``self.i.group_id`` -> ``"Group ID"``.
+    """
+
+    def __init__(
+        self,
+        collection: Any,
+        direction: Any,
+        *,
+        builder: BaseNode,
+        fields: Mapping[str, InputField | OutputField],
+    ) -> None:
+        super().__init__(collection, direction, builder=builder)
+        self._fields = fields
+
+    def __getattr__(self, name: str):
+        if name.startswith("_"):
+            raise AttributeError(name)
+        field = self._fields.get(name)
+        try:
+            return self._get(field.display_name if field is not None else name)
+        except RuntimeError:
+            raise AttributeError(
+                f"Socket '{name}' not found on {self._direction} accessor"
+            )
+
+
+@dataclass_transform(field_specifiers=_INPUT_FIELDS)
 class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
     """Base class for custom node groups.
 
-    Subclasses implement :meth:`_build_group` with the node-graph logic.
-    Subclass one of the editor-specific variants: :class:`GeometryNodeGroup`,
-    :class:`ShaderNodeGroup`, or :class:`CompositorNodeGroup`.
+    Subclasses declare inputs as class-level :class:`~nodebpy.builder.group_fields.InputField`
+    descriptors (``vertex_index: IntegerIn = IntegerIn(...)``) and outputs in a
+    nested ``_Outputs`` class. The input declarations drive a fully typed
+    constructor (via ``@dataclass_transform``), typed ``self.i.x`` access, the
+    ``py-name -> display-name`` mapping, and the node-group interface built on
+    first use. Graph logic goes in :meth:`_build_group`, reading inputs from
+    ``self.i`` and linking results into ``self.o`` with ``>>``.
+
+    Subclass one of the editor-specific variants: :class:`CustomGeometryGroup`,
+    :class:`CustomShaderGroup`, or :class:`CustomCompositorGroup`.
     """
 
     _name: str
@@ -282,11 +322,114 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
         "VECTOR",
     ] = "NONE"
 
-    def __init__(self, **kwargs):
+    # Populated by __init_subclass__ from the class body / nested _Outputs.
+    _group_inputs: dict[str, InputField] = {}
+    _group_outputs: dict[str, OutputField] = {}
+    # Set to the inner TreeBuilder only while _build_group runs, so that
+    # ``self.i`` / ``self.o`` resolve to the group's interface sockets.
+    _build_tree: TreeBuilder | None = None
+
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        super().__init_subclass__(**kwargs)
+        cls._group_inputs = {
+            name: field
+            for name, field in vars(cls).items()
+            if isinstance(field, InputField)
+        }
+        outputs_cls = vars(cls).get("_Outputs")
+        cls._group_outputs = (
+            {
+                name: field
+                for name, field in vars(outputs_cls).items()
+                if isinstance(field, OutputField)
+            }
+            if outputs_cls is not None
+            else {}
+        )
+
+    def __init__(self, **kwargs: Any):
+        # Translate python field names to Blender socket names. Unknown keys are
+        # passed through unchanged to support groups still using the explicit
+        # ``super().__init__(**{"Display Name": value})`` style.
+        link_kwargs: dict[str, Any] = {}
+        for key, value in kwargs.items():
+            field = type(self)._group_inputs.get(key)
+            link_kwargs[field.display_name if field is not None else key] = value
         super().__init__()
         self._setup_node_group()
         self.node.show_options = False
-        self._establish_links(**kwargs)
+        self._establish_links(**link_kwargs)
+
+    if TYPE_CHECKING:
+        # Inputs are exposed via ``self.i`` as the node itself, so the typed
+        # InputField descriptors resolve (``self.i.vertex_index -> IntegerSocket``).
+        # Subclasses narrow ``o`` to their nested ``_Outputs`` type.
+        @property
+        def i(self) -> Self: ...
+    else:
+
+        @property
+        def i(self) -> SocketAccessor:
+            collection = (
+                self._build_tree._input_node().outputs
+                if self._build_tree is not None
+                else self.node.inputs
+            )
+            return _GroupSocketAccessor(
+                collection, "input", builder=self, fields=type(self)._group_inputs
+            )
+
+    @property
+    def o(self) -> SocketAccessor:
+        """Output socket accessor (build-aware). Subclasses narrow the type."""
+        collection = (
+            self._build_tree._output_node().inputs
+            if self._build_tree is not None
+            else self.node.outputs
+        )
+        return _GroupSocketAccessor(
+            collection, "output", builder=self, fields=type(self)._group_outputs
+        )
+
+    def _build_interface(self, tree: TreeBuilder) -> None:
+        """Create the group's interface sockets from the declared fields."""
+        self._build_sockets(tree.inputs, type(self)._group_inputs.values())
+        self._build_sockets(tree.outputs, type(self)._group_outputs.values())
+
+    @staticmethod
+    def _build_sockets(
+        context: Any, fields: Iterable[InputField | OutputField]
+    ) -> None:
+        """Create sockets in declaration order, grouping consecutive ``panel=`` runs."""
+        open_panel = None
+        current_panel: str | None = None
+        try:
+            for field in fields:
+                if field._panel != current_panel:
+                    if open_panel is not None:
+                        open_panel.__exit__()
+                    current_panel = field._panel
+                    open_panel = (
+                        context.panel(
+                            current_panel, default_closed=field._panel_closed
+                        ).__enter__()
+                        if current_panel is not None
+                        else None
+                    )
+                args, props = field._build_kwargs()
+                getattr(context, field._method)(*args, **props)
+        finally:
+            if open_panel is not None:
+                open_panel.__exit__()
+
+    def _populate_group(self, tree: TreeBuilder) -> None:
+        """Build the interface, then run the user's graph logic against it."""
+        self._build_interface(tree)
+        self._build_tree = tree
+        try:
+            self._build_group(tree)
+        finally:
+            self._build_tree = None
 
     @property
     @abstractmethod
@@ -324,7 +467,11 @@ class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
     """Node group in a Geometry Nodes tree."""
 
     _bl_idname = "GeometryNodeGroup"
-    node: GeometryNodeGroup
+
+    if TYPE_CHECKING:
+        # Narrows ``self.node`` without becoming a dataclass-transform field.
+        @property
+        def node(self) -> GeometryNodeGroup: ...  # type: ignore[override]
 
     @property
     def node_tree(self) -> GeometryNodeTree:
@@ -340,7 +487,7 @@ class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
             return self._get_or_create_tree()
         except KeyError:
             with TreeBuilder.geometry(self._name) as tree:
-                self._build_group(tree)
+                self._populate_group(tree)
             tree.tree.color_tag = self._color_tag
             return tree.tree
 
@@ -349,7 +496,11 @@ class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
     """Node group in a Shader (Material) node tree."""
 
     _bl_idname = "ShaderNodeGroup"
-    node: ShaderNodeGroup
+
+    if TYPE_CHECKING:
+        # Narrows ``self.node`` without becoming a dataclass-transform field.
+        @property
+        def node(self) -> ShaderNodeGroup: ...  # type: ignore[override]
 
     @property
     def node_tree(self) -> ShaderNodeTree:
@@ -364,7 +515,7 @@ class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
             return self._get_or_create_tree()
         except KeyError:
             with TreeBuilder.shader(self._name) as tree:
-                self._build_group(tree)
+                self._populate_group(tree)
             tree.tree.color_tag = self._color_tag
             return tree.tree
 
@@ -373,7 +524,11 @@ class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
     """Node group in a Compositor node tree."""
 
     _bl_idname = "CompositorNodeGroup"
-    node: CompositorNodeGroup
+
+    if TYPE_CHECKING:
+        # Narrows ``self.node`` without becoming a dataclass-transform field.
+        @property
+        def node(self) -> CompositorNodeGroup: ...  # type: ignore[override]
 
     @property
     def node_tree(self) -> CompositorNodeTree:
@@ -388,6 +543,6 @@ class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
             return self._get_or_create_tree()
         except KeyError:
             with TreeBuilder.compositor(self._name) as tree:
-                self._build_group(tree)
+                self._populate_group(tree)
             tree.tree.color_tag = self._color_tag
             return tree.tree
