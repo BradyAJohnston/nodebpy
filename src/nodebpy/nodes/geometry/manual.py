@@ -200,6 +200,50 @@ _SwitchDataTypes = Literal[
 ]
 
 
+class JoinBundle(BaseNode):
+    """
+    Join multiple bundles together
+
+    Parameters
+    ----------
+    bundle : InputBundle
+        Bundle
+
+    Inputs
+    ------
+    i.bundle : BundleSocket
+        Bundle
+
+    Outputs
+    -------
+    o.bundle : BundleSocket
+        Bundle
+    """
+
+    _bl_idname = "NodeJoinBundle"
+    node: bpy.types.NodeJoinBundle
+
+    class _Inputs(SocketAccessor):
+        bundle: BundleSocket
+        """Bundle"""
+
+    class _Outputs(SocketAccessor):
+        bundle: BundleSocket
+        """Bundle"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, bundle: Iterable[InputBundle] = ()):
+        super().__init__()
+        for i in reversed(list(bundle)):
+            self._link_from(i, "Bundle")
+
+
 class Switch(BaseNode, Generic[_T]):
     """
     Switch between two inputs

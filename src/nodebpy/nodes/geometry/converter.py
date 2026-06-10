@@ -3350,51 +3350,6 @@ class InvertRotation(BaseNode):
         self._establish_links(**key_args)
 
 
-class JoinBundle(BaseNode):
-    """
-    Join multiple bundles together
-
-    Parameters
-    ----------
-    bundle : InputBundle
-        Bundle
-
-    Inputs
-    ------
-    i.bundle : BundleSocket
-        Bundle
-
-    Outputs
-    -------
-    o.bundle : BundleSocket
-        Bundle
-    """
-
-    _bl_idname = "NodeJoinBundle"
-    node: bpy.types.NodeJoinBundle
-
-    class _Inputs(SocketAccessor):
-        bundle: BundleSocket
-        """Bundle"""
-
-    class _Outputs(SocketAccessor):
-        bundle: BundleSocket
-        """Bundle"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(self, bundle: InputBundle = None):
-        super().__init__()
-        key_args = {"Bundle": bundle}
-
-        self._establish_links(**key_args)
-
-
 class ListLength(BaseNode):
     """
     Count how many items are in a given list

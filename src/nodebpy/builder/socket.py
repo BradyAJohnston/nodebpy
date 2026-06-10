@@ -2634,6 +2634,60 @@ class _BundleSocketMixin(Socket):
 class BundleSocket(_BundleSocketMixin):
     """Runtime bundle socket wrapper."""
 
+    def nested_paths(
+        self,
+        mode: InputMenu | Literal["All", "Bundle Type", "Data Type"] = "All",
+        pattern_mode: InputMenu | Literal["Exact", "Wildcard"] = "Exact",
+        bundle_type: InputString = "",
+        data_type: InputMenu
+        | Literal[
+            "Float",
+            "Integer",
+            "Boolean",
+            "Vector",
+            "Color",
+            "Rotation",
+            "Matrix",
+            "String",
+            "Menu",
+            "Object",
+            "Image",
+            "Geometry",
+            "Collection",
+            "Material",
+            "Bundle",
+            "Closure",
+            "Font",
+            "Sound",
+        ] = "Float",
+    ) -> StringSocketList:
+        from ..nodes.geometry import GetNestedBundlePaths
+
+        return GetNestedBundlePaths(
+            self.socket,
+            mode=mode,
+            pattern_mode=pattern_mode,
+            bundle_type=bundle_type,
+            data_type=data_type,
+        ).o.paths
+
+    def __add__(self, other: "BundleSocket") -> "BundleSocket":
+        """Merge two bundles together, with the outputs of both bundles available on the result."""
+        self._assert_output("+")
+        if not isinstance(other, BundleSocket):
+            raise TypeError(
+                f"Unsupported operand type(s) for +: 'BundleSocket' and '{type(other).__name__}'"
+            )
+        from ..nodes.geometry import JoinBundle
+
+        if self.node.bl_idname == JoinBundle._bl_idname:
+            join = cast(JoinBundle, self.builder_node)
+            other >> join
+        else:
+            join = JoinBundle((self.socket, other))
+
+        return join.o.bundle
+
 
 class BundleSocketList(_BundleSocketMixin, _ListMixin[BundleSocket]):
     """List of bundle sockets."""

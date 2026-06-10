@@ -96,6 +96,7 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "FieldToGrid",
         "FieldToList",
         "JoinGeometry",
+        "JoinBundle",
         "SDFGridBoolean",
         "Bake",
         "JoinStrings",

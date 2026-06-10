@@ -20,7 +20,6 @@ from ..geometry.converter import (
     Clamp,
     CombineBundle,
     CombineXYZ,
-    JoinBundle,
     MapRange,
     Math,
     SeparateBundle,
@@ -42,6 +41,7 @@ from ..geometry.manual import (
     ColorRamp,
     EvaluateClosure,
     FloatCurve,
+    JoinBundle,
     Menu,
     Value,
 )
