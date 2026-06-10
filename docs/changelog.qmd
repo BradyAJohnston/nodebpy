@@ -40,7 +40,7 @@ flow = density.dilate_erode(1).laplacian().gradient().divergence()
     - `list_slice(start, stop, step)` — Python-style slicing, also driven through `[]` indexing and slicing (e.g. `list[::2]`, `list[-3:-1]`)
 
 ```py
-indices = g.Index().o.index.to_list(10)
+indices = g.Index().o.index.to_list(10) # an IntegerSocketList of equal to `range(10)`
 evens = indices[::2]          # IntegerSocketList via GetListItem
 count = len(indices)          # IntegerSocket via ListLength
 first = indices.get(0)        # IntegerSocket
