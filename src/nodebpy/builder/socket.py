@@ -67,6 +67,7 @@ from ..types import (
     InputCollection,
     InputColor,
     InputFloat,
+    InputFloatList,
     InputFont,
     InputGeometry,
     InputImage,
@@ -80,7 +81,6 @@ from ..types import (
     InputSound,
     InputString,
     InputVector,
-    InputFloatList,
 )
 from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
 from ._utils import _NodeLike, _SocketLike
@@ -91,7 +91,10 @@ if TYPE_CHECKING:
     from ..nodes.geometry import (
         CombineMatrix,
         CombineTransform,
+        Compare,
+        FieldToGrid,
         GridInfo,
+        GridToPoints,
         IntegerMath,
         MatchString,
         Math,
@@ -99,9 +102,8 @@ if TYPE_CHECKING:
         ObjectInfo,
         Position,
         Vector,
+        VectorMath,
     )
-    from ..nodes.geometry.manual import Compare
-    from ..nodes.geometry.vector import VectorMath
     from .node import BaseNode
     from .tree import TreeBuilder
 
@@ -194,6 +196,15 @@ class BaseSocket:
     @property
     def type(self) -> SOCKET_TYPES:
         return self.socket.type  # type: ignore
+
+    @property
+    def _socket_dtype(self) -> str:
+        """Socket type normalised for node ``data_type`` / ``socket_type`` args.
+
+        Blender names the float socket type ``VALUE``, but grid and list nodes
+        expect ``FLOAT``; every other type passes through unchanged.
+        """
+        return self.socket.type.replace("VALUE", "FLOAT")
 
     @property
     def name(self) -> str:
@@ -350,18 +361,117 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         def __ne__(self, other: Any) -> "BooleanSocket": ...
 
 
+class _GridMeanMixin(Socket):
+    def mean(self, width: InputInteger = 1, iterations: InputInteger = 1) -> Self:
+        """Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value."""
+        from ..nodes.geometry import GridMean
+
+        return GridMean(  # ty: ignore[invalid-return-type]
+            self.socket,
+            width=width,
+            iterations=iterations,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid
+
+    def median(self, width: InputInteger = 1, iterations: InputInteger = 1) -> Self:
+        """Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value."""
+        from ..nodes.geometry import GridMedian
+
+        return GridMedian(  # ty: ignore[invalid-return-type]
+            self.socket,
+            width=width,
+            iterations=iterations,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid
+
+
+class _FloatGridOperatorMixin(Socket):
+    def gradient(self) -> VectorSocketGrid:
+        """Calculate the direction and magnitude of the change in values of a scalar grid."""
+        from ..nodes.geometry import GridGradient
+
+        return GridGradient(self.socket).o.gradient
+
+    def laplacian(self) -> FloatSocketGrid:
+        """Compute the divergence of the gradient of the input grid."""
+        from ..nodes.geometry import GridLaplacian
+
+        return GridLaplacian(self.socket).o.laplacian
+
+    def sdf_fillet(self, iterations: InputInteger = 1) -> FloatSocketGrid:
+        """Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces."""
+        from ..nodes.geometry import SDFGridFillet
+
+        return SDFGridFillet(self.socket, iterations=iterations).o.grid
+
+    def sdf_laplacian(self, iterations: InputInteger = 1) -> FloatSocketGrid:
+        """Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization."""
+        from ..nodes.geometry import SDFGridLaplacian
+
+        return SDFGridLaplacian(self.socket, iterations=iterations).o.grid
+
+    def sdf_mean(
+        self, width: InputInteger = 1, iterations: InputInteger = 1
+    ) -> FloatSocketGrid:
+        """Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field."""
+        from ..nodes.geometry import SDFGridMean
+
+        return SDFGridMean(self.socket, width=width, iterations=iterations).o.grid
+
+    def sdf_mean_curvature(self, iterations: InputInteger = 1) -> FloatSocketGrid:
+        """Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas."""
+        from ..nodes.geometry import SDFGridMeanCurvature
+
+        return SDFGridMeanCurvature(self.socket, iterations=iterations).o.grid
+
+    def sdf_median(
+        self, width: InputInteger = 1, iterations: InputInteger = 1
+    ) -> FloatSocketGrid:
+        """Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field."""
+        from ..nodes.geometry import SDFGridMedian
+
+        return SDFGridMedian(self.socket, width=width, iterations=iterations).o.grid
+
+    def sdf_offset(self, distance: InputFloat = 0.1) -> FloatSocketGrid:
+        """Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property."""
+        from ..nodes.geometry import SDFGridOffset
+
+        return SDFGridOffset(self.socket, distance=distance).o.grid
+
+    def to_mesh(
+        self, threshold: InputFloat = 0.1, adaptivity: InputFloat = 0.0
+    ) -> GeometrySocket:
+        """Generate a mesh on the "surface" of a volume grid."""
+        from ..nodes.geometry import GridToMesh
+
+        return GridToMesh(self.socket).o.mesh
+
+
+class _VectorGridOperatorMixin(Socket):
+    def curl(self) -> VectorSocketGrid:
+        """Calculate the magnitude and direction of circulation of a directional vector grid."""
+        from ..nodes.geometry import GridCurl
+
+        return GridCurl(self.socket).o.curl
+
+    def divergence(self) -> FloatSocketGrid:
+        """Calculate the flow into and out of each point of a directional vector grid."""
+        from ..nodes.geometry import GridDivergence
+
+        return GridDivergence(self.socket).o.divergence
+
+
 # ---------------------------------------------------------------------------
 # Grid sockets and domain-bound field evaluation
 # ---------------------------------------------------------------------------
 
 
-class GridSocketMixin(Socket, Generic[_T]):
+class _GridSocketMixin(Socket, Generic[_T]):
     def _info(self) -> "GridInfo[_T]":
         from ..nodes.geometry import GridInfo
 
         self._assert_output("transform / background_value")
-        dtype = self.socket.type.replace("VALUE", "FLOAT")
-        return GridInfo(self.socket, data_type=dtype)  # ty: ignore[invalid-argument-type, invalid-return-type]
+        return GridInfo(self.socket, data_type=self._socket_dtype)  # ty: ignore[invalid-argument-type, invalid-return-type]
 
     @property
     def transform(
@@ -374,6 +484,124 @@ class GridSocketMixin(Socket, Generic[_T]):
         self,
     ) -> "_T":
         return self._info().o.background_value
+
+    def sample(
+        self,
+        position: InputVector = None,
+        interpolation: Literal[
+            "Nearest Neighbor", "Trilinear", "Triquadratic"
+        ] = "Trilinear",
+    ) -> _T:
+        """Retrieve values from the specified volume grid."""
+        from ..nodes.geometry import SampleGrid
+
+        return SampleGrid(
+            grid=self.socket,
+            position=position,
+            interpolation=interpolation,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.value  # ty: ignore[invalid-return-type]
+
+    def sample_index(
+        self,
+        x: InputInteger = 0,
+        y: InputInteger = 0,
+        z: InputInteger = 0,
+    ) -> _T:
+        """Retrieve volume grid values at specific voxels."""
+        from ..nodes.geometry import SampleGridIndex
+
+        return SampleGridIndex(
+            grid=self.socket,
+            x=x,
+            y=y,
+            z=z,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.value  # ty: ignore[invalid-return-type]
+
+    def field_to_grid(self) -> FieldToGrid:
+        """Create new grids by evaluating new values on an existing volume grid topology."""
+        from ..nodes.geometry import FieldToGrid
+
+        return FieldToGrid(
+            topology=self.socket,  # ty: ignore[invalid-argument-type]
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        )
+
+    def clip(
+        self,
+        min_x: InputInteger = 0,
+        min_y: InputInteger = 0,
+        min_z: InputInteger = 0,
+        max_x: InputInteger = 32,
+        max_y: InputInteger = 32,
+        max_z: InputInteger = 32,
+    ) -> Self:
+        """Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value."""
+        from ..nodes.geometry import ClipGrid
+
+        return ClipGrid(
+            grid=self.socket,
+            min_x=min_x,
+            min_y=min_y,
+            min_z=min_z,
+            max_x=max_x,
+            max_y=max_y,
+            max_z=max_z,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid  # ty: ignore[invalid-return-type]
+
+    def dilate_erode(
+        self,
+        steps: InputInteger = 1,
+        connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
+        tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
+    ) -> Self:
+        """Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values."""
+        from ..nodes.geometry import GridDilateErode
+
+        return GridDilateErode(
+            grid=self.socket,
+            connectivity=connectivity,
+            tiles=tiles,
+            steps=steps,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid  # ty: ignore[invalid-return-type]
+
+    def prune(
+        self,
+        threshold: InputFloat = 0.1,
+        mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = None,
+    ) -> Self:
+        """Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes."""
+        from ..nodes.geometry import PruneGrid
+
+        return PruneGrid(
+            grid=self.socket,
+            threshold=threshold,
+            mode=mode,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid  # ty: ignore[invalid-return-type]
+
+    def voxelize(
+        self,
+    ) -> Self:
+        """Remove sparseness from a volume grid by making the active tiles into voxels."""
+        from ..nodes.geometry import VoxelizeGrid
+
+        return VoxelizeGrid(
+            grid=self.socket,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        ).o.grid  # ty: ignore[invalid-return-type]
+
+    def to_points(self) -> GridToPoints[_T]:
+        """Generate a point cloud from a volume grid's active voxels."""
+        from ..nodes.geometry import GridToPoints
+
+        return GridToPoints(
+            grid=self.socket,
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+        )  # ty: ignore[invalid-return-type]
 
 
 class _EvaluateField(Socket, Generic[_T]):
@@ -1540,7 +1768,7 @@ class _ListMixin(Socket, Generic[_T]):
         return GetListItem(  # ty: ignore[invalid-return-type]
             list=self.socket,
             index=index,
-            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+            socket_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.value
 
     def filter(self, selection: InputBoolean | BooleanSocketList = True) -> Self:
@@ -1550,7 +1778,7 @@ class _ListMixin(Socket, Generic[_T]):
         return FilterList(
             self.socket,
             selection=selection,
-            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+            socket_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.selection  # ty: ignore[invalid-return-type]
 
     def sort(
@@ -1582,25 +1810,25 @@ class _ListMixin(Socket, Generic[_T]):
             selection=selection,
             group_id=group_id,
             sort_weight=sort_weight,
-            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+            socket_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.list  # ty: ignore[invalid-return-type]
 
     def reverse(self) -> Self:
         """Reverse the list. Currently uses a SortList node with negative Index to reverse the list."""
-        from ..nodes.geometry import SortList, Index
+        from ..nodes.geometry import Index, SortList
 
         return SortList(
             list=self.socket,
             sort_weight=Index().o.index.negate(),
-            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+            socket_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.list  # ty: ignore[invalid-return-type]
 
     def list_slice(
         self, start: InputInteger = 0, stop: InputInteger = None, step: InputInteger = 1
     ) -> Self:
         """Slice the list using start, stop, and step indices. Behaves like Python's slice notation."""
-        from ..nodes.geometry.groups import SliceToIndices
         from ..nodes.geometry.converter import GetListItem
+        from ..nodes.geometry.groups import SliceToIndices
 
         if stop is None:
             stop = self.list_length()
@@ -1621,7 +1849,7 @@ class _ListMixin(Socket, Generic[_T]):
         return GetListItem(  # ty: ignore[invalid-return-type]
             self.socket,
             indices,
-            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+            socket_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.value
 
     @overload
@@ -1639,7 +1867,7 @@ class _ListMixin(Socket, Generic[_T]):
         return GetListItem(
             self.socket,
             index=key,
-            socket_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+            socket_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.value  # ty: ignore[invalid-return-type]
 
     def __len__(self) -> IntegerSocket:
@@ -1647,7 +1875,7 @@ class _ListMixin(Socket, Generic[_T]):
 
         return ListLength(
             self.socket,
-            data_type=self.socket.type.replace("VALUE", "FLOAT"),  # ty: ignore[invalid-argument-type]
+            data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.length
 
 
@@ -1762,7 +1990,12 @@ class FloatSocketList(
     """"""
 
 
-class FloatSocketGrid(_FloatMixin["IntegerSocketGrid"], GridSocketMixin[FloatSocket]):
+class FloatSocketGrid(
+    _FloatMixin["IntegerSocketGrid"],
+    _GridSocketMixin[FloatSocket],
+    _FloatGridOperatorMixin,
+    _GridMeanMixin,
+):
     """Runtime float grid socket wrapper."""
 
 
@@ -1824,7 +2057,12 @@ class VectorSocketList(
     """"""
 
 
-class VectorSocketGrid(_VectorMixin, GridSocketMixin[VectorSocket]):
+class VectorSocketGrid(
+    _VectorMixin,
+    _GridSocketMixin[VectorSocket],
+    _VectorGridOperatorMixin,
+    _GridMeanMixin,
+):
     """Runtime vector grid socket wrapper."""
 
 
@@ -1907,7 +2145,7 @@ class IntegerVectorSocket(
     """Runtime integer vector socket wrapper."""
 
 
-class IntegerSocketGrid(_IntegerMixin, GridSocketMixin[IntegerSocket]):
+class IntegerSocketGrid(_IntegerMixin, _GridSocketMixin[IntegerSocket], _GridMeanMixin):
     """Runtime integer grid socket wrapper."""
 
 
@@ -1958,7 +2196,7 @@ class BooleanSocketList(_BooleanMixin, _ListMixin[BooleanSocket]):
     """List of boolean sockets."""
 
 
-class BooleanSocketGrid(_BooleanMixin, GridSocketMixin[BooleanSocket]):
+class BooleanSocketGrid(_BooleanMixin, _GridSocketMixin[BooleanSocket]):
     """Runtime boolean grid socket wrapper."""
 
 
