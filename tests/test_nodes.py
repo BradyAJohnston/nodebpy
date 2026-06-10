@@ -16,6 +16,7 @@ from nodebpy.builder import (
     FloatSocket,
     FloatSocketGrid,
     FloatSocketList,
+    GeometrySocket,
     IntegerSocket,
     IntegerSocketGrid,
     IntegerSocketList,
@@ -1785,3 +1786,43 @@ def test_field_to_grid_capture_typed(snapshot):
         back >> tree.outputs.integer("Background", structure_type="SINGLE")
 
     assert snapshot == tree
+
+
+def test_grid_socket_methods():
+    """Every grid socket helper builds its node and returns the expected socket type."""
+    with g.tree():
+        ftg = g.CubeGridTopology() >> g.FieldToGrid.boolean()
+        fgrid = ftg.capture_float(g.Float())
+        vgrid = ftg.capture_vector(g.Vector())
+        igrid = ftg.capture_integer(g.Integer())
+
+        # _GridMeanMixin (float / vector / integer grids)
+        assert isinstance(fgrid.mean(), FloatSocketGrid)
+        assert isinstance(fgrid.median(), FloatSocketGrid)
+        assert isinstance(vgrid.mean(), VectorSocketGrid)
+        assert isinstance(igrid.median(), IntegerSocketGrid)
+
+        # _FloatGridOperatorMixin (float grids only)
+        assert isinstance(fgrid.gradient(), VectorSocketGrid)
+        assert isinstance(fgrid.laplacian(), FloatSocketGrid)
+        assert isinstance(fgrid.sdf_fillet(), FloatSocketGrid)
+        assert isinstance(fgrid.sdf_laplacian(), FloatSocketGrid)
+        assert isinstance(fgrid.sdf_mean(), FloatSocketGrid)
+        assert isinstance(fgrid.sdf_mean_curvature(), FloatSocketGrid)
+        assert isinstance(fgrid.sdf_median(), FloatSocketGrid)
+        assert isinstance(fgrid.sdf_offset(), FloatSocketGrid)
+        assert isinstance(fgrid.to_mesh(), GeometrySocket)
+
+        # _VectorGridOperatorMixin (vector grids only)
+        assert isinstance(vgrid.curl(), VectorSocketGrid)
+        assert isinstance(vgrid.divergence(), FloatSocketGrid)
+
+        # _GridSocketMixin (all grid types)
+        assert isinstance(fgrid.sample(), FloatSocket)
+        assert isinstance(fgrid.sample_index(), FloatSocket)
+        assert isinstance(fgrid.field_to_grid(), g.FieldToGrid)
+        assert isinstance(fgrid.clip(), FloatSocketGrid)
+        assert isinstance(fgrid.dilate_erode(), FloatSocketGrid)
+        assert isinstance(fgrid.prune(), FloatSocketGrid)
+        assert isinstance(fgrid.voxelize(), FloatSocketGrid)
+        assert isinstance(fgrid.to_points(), g.GridToPoints)
