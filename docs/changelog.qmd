@@ -2,9 +2,10 @@
 title: Changelog
 ---
 
-## v520.0.1 - 2026-06-05
+## v520.0.1 - UNRELEASED
 
 ### Enhancements
+- Socket methods for AlignRotationToVector for `VectorSocket` and `RotationSocket` (`align_rotation()` and `align_to_vector()`
 - **Grid socket operator methods** — chainable methods on the `*SocketGrid` types that build and wire up the matching grid node, so grid pipelines can be expressed fluently:
     - All grids — `sample(position, interpolation)`, `sample_index(x, y, z)`, `field_to_grid()`, `clip(...)`, `dilate_erode(steps, connectivity, tiles)`, `prune(threshold, mode)`, `voxelize()`, `to_points()`
     - Float, vector and integer grids — `mean(width, iterations)`, `median(width, iterations)`
@@ -18,8 +19,12 @@ flow = density.dilate_erode(1).laplacian().gradient().divergence()
 ```
 
 ### Fixes
- - Import and usage of the `arrange()` function properly handles the optional `netowrkx` dependency
  - Grid `mean()` and `median()` now pass the correct `data_type` (Blender's `VALUE` float type is mapped to `FLOAT`), fixing a crash when calling them on float grids
+
+## v520.0.1 - 2026-06-05
+
+### Fixes
+ - Import and usage of the `arrange()` function properly handles the optional `netowrkx` dependency
 
 ## v520.0.0 - 2026-06-04
 
@@ -35,7 +40,7 @@ flow = density.dilate_erode(1).laplacian().gradient().divergence()
     - `list_slice(start, stop, step)` — Python-style slicing, also driven through `[]` indexing and slicing (e.g. `list[::2]`, `list[-3:-1]`)
 
 ```py
-indices = g.Index().o.index.to_list(10)
+indices = g.Index().o.index.to_list(10) # an IntegerSocketList of equal to `range(10)`
 evens = indices[::2]          # IntegerSocketList via GetListItem
 count = len(indices)          # IntegerSocket via ListLength
 first = indices.get(0)        # IntegerSocket
