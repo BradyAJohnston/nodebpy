@@ -141,7 +141,7 @@ class SocketContext:
             bpy_socket = self.builder._output_node().inputs[interface_socket.identifier]
         s = socket_cls(bpy_socket)
         s._tree = self.builder
-        s.interface_socket = interface_socket
+        s._interface_socket = interface_socket
         return s
 
     def float(
@@ -243,10 +243,12 @@ class SocketContext:
     def vector(
         self,
         name: str = "Vector",
-        default_value: tuple[float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
+        default_value: tuple[float, float]  # ty: ignore[invalid-type-form]
+        | tuple[float, float, float]  # ty: ignore[invalid-type-form]
+        | tuple[float, float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
         description: str = "",
         *,
-        dimensions: int = 3,
+        dimensions: Literal[2, 3, 4] = 3,
         min_value: float | None = None,  # ty: ignore[invalid-type-form]
         max_value: float | None = None,  # ty: ignore[invalid-type-form]
         optional_label: bool = False,
@@ -559,11 +561,13 @@ class SocketContext:
         return self._wrap(ShaderSocket, iface)
 
     def __len__(self) -> int:
+        assert self.tree.interface is not None
         return len(
             list(
                 item
                 for item in self.tree.interface.items_tree
-                if item.in_out == self._direction
+                if isinstance(item, bpy.types.NodeTreeInterfaceSocket)
+                and item.in_out == self._direction
             )
         )
 
@@ -610,7 +614,7 @@ class TreeBuilder(Generic[_TreeT]):
         if isinstance(tree, str):
             self.tree = bpy.data.node_groups.new(tree, tree_type)  # type: ignore[assignment]
         else:
-            self.tree = tree  # type: ignore[assignment]
+            self.tree = tree  # type: ignore
 
         self._menu_defaults: dict[str, str] = {}
         self.inputs = InputInterfaceContext(self)
@@ -720,7 +724,7 @@ class TreeBuilder(Generic[_TreeT]):
                     continue
                 if item.identifier == key:
                     if hasattr(item, "default_value"):
-                        item.default_value = value
+                        item.default_value = value  # type: ignore
 
     def __len__(self) -> int:
         return len(self.nodes)
@@ -728,10 +732,10 @@ class TreeBuilder(Generic[_TreeT]):
     def arrange(self):
         if self._arrange == "sugiyama":
             try:
-                from ..lib.nodearrange import arrange as nodearrange
+                from ..lib.nodearrange.arrange import sugiyama
 
-                nodearrange.sugiyama.sugiyama_layout(self.tree)
-                nodearrange.sugiyama.config.reset()
+                sugiyama.sugiyama_layout(self.tree)
+                sugiyama.config.reset()
             except ImportError as e:
                 if "networkx" not in str(e):
                     raise
@@ -805,8 +809,16 @@ class TreeBuilder(Generic[_TreeT]):
             assert socket1.node
             assert socket2.node
             for socket in [socket1, socket2]:
-                if socket.is_inactive and not _allow_innactive_sockets(socket.node):
-                    message = f"Socket {socket.name} from node {socket.node.name} is inactive."  # type: ignore
+                assert socket.node is not None
+                if socket.is_inactive and (
+                    # allow innactive sockets on some node types but we can't just blanket allow the sockets
+                    # for the Mix node as it has sockets for each data type so we have to check if they are
+                    # active and if they match the currently selected data type. If they are the same data type
+                    # then we allow it because they poll as innative when factor is 0.0 or 1.0.
+                    not _allow_innactive_sockets(socket.node)
+                    and (getattr(socket.node, "data_type", None) != socket.type)
+                ):
+                    message = f"Socket {socket1.name} from node {socket1.node.name} is inactive."
                     message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."
                     message += " This link will be created by Blender but ignored when evaluated."
                     message += f"Socket type: {socket.bl_idname}"

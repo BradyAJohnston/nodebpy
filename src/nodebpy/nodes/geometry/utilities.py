@@ -4,10 +4,14 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as BaseNode, SocketAccessor, ColorSocket
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputColor,
+)
+
+from ...builder.socket import (
+    ColorSocket,
 )
 
 
@@ -32,7 +36,7 @@ class Reroute(BaseNode):
     """
 
     _bl_idname = "NodeReroute"
-    node: bpy.types.Node
+    node: bpy.types.NodeReroute
 
     class _Inputs(SocketAccessor):
         input: ColorSocket
@@ -49,21 +53,8 @@ class Reroute(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(
-        self,
-        input: InputColor = None,
-        *,
-        socket_idname: str = "",
-    ):
+    def __init__(self, input: InputColor = None):
         super().__init__()
         key_args = {"Input": input}
-        self.socket_idname = socket_idname
+
         self._establish_links(**key_args)
-
-    @property
-    def socket_idname(self) -> str:
-        return self.node.socket_idname
-
-    @socket_idname.setter
-    def socket_idname(self, value: str):
-        self.node.socket_idname = value

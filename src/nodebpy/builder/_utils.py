@@ -47,6 +47,7 @@ def _allow_innactive_sockets(node: bpy.types.Node) -> bool:
         "GeometryNodeIndexSwitch",
         "GeometryNodeMenuSwitch",
         "ShaderNodeMixShader",
+        # "ShaderNodeMix",
         "GeometryNodeSwitch",
     )
 
@@ -63,7 +64,7 @@ def _resolve_promotion(
     """
     other_type = getattr(other, "type", None)
     self_prec = _TYPE_PRECEDENCE.get(self_socket.type, 1)
-    other_prec = _TYPE_PRECEDENCE.get(other_type, -1)  # type: ignore[arg-type]
+    other_prec = _TYPE_PRECEDENCE.get(other_type, -1) if other_type is not None else -1
 
     if other_prec > self_prec:
         # Other side is dominant — swap so the linker wraps the vector/higher socket

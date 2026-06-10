@@ -358,7 +358,7 @@ def _trace_reroute(node, socket, node_tree):
     visited = set()
     while node.bl_idname == "NodeReroute" and node.name not in visited:
         visited.add(node.name)
-        upstream = [l for l in node_tree.links if l.to_node.name == node.name]
+        upstream = [link for link in node_tree.links if link.to_node.name == node.name]
         if not upstream:
             break
         node = upstream[0].from_node

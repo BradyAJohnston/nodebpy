@@ -2,18 +2,17 @@ import math
 from functools import reduce
 from itertools import combinations, product
 from operator import and_, or_
+from typing import cast
 
 import bpy
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy.builder import FloatSocket
-from nodebpy.nodes.geometry.groups import PrincipalComponents
+from nodebpy.builder import BooleanSocket, FloatSocket
+from nodebpy.nodes.geometry.groups import ClipFieldToBox, PrincipalComponents
 
 
 def import_channel() -> bpy.types.GeometryNodeTree:
-    string_to_format = "{base_path}/{scale}/x0y0z0/x0y0z0c0t{time:04}.vdb"
-
     with g.tree("Channel Import", arrange="simple") as tree:
         base_path = tree.inputs.string("base_path", subtype="FILE_PATH")
         time = tree.inputs.integer("Time")
@@ -22,18 +21,17 @@ def import_channel() -> bpy.types.GeometryNodeTree:
         min_value = tree.inputs.float("Minimum Value")
         max_value = tree.inputs.float("Maximum Value")
 
-        volume = g.ImportVDB(
-            g.FormatString(
-                string_to_format,
-                {
-                    "time": time,
-                    "channel_number": channel_number,
-                    "base_path": base_path,
-                    "scale": g.Integer(0),
-                },
-            )
+        string = g.String("{base_path}/{scale}/x0y0z0/x0y0z0c0t{time:04}.vdb").o.string
+        path = string.format(
+            {
+                "time": time,
+                "channel_number": channel_number,
+                "base_path": base_path,
+                "scale": g.Integer(0),
+            }
         )
-        gng = g.GetNamedGrid.float(volume, "data")
+
+        gng = g.GetNamedGrid.float(g.ImportVDB(path), "data")
         sng = g.StoreNamedGrid.float(
             gng,
             name=channel_name,
@@ -69,7 +67,7 @@ def test_decoder_8bit():
 
 def test_import_channel():
     tree = import_channel()
-    assert len(tree.nodes) == 10
+    assert len(tree.nodes) == 11
 
 
 def test_PCA_asset():
@@ -82,13 +80,13 @@ def test_PCA_asset():
 def test_surface_hello_world():
     with g.tree("Hello World") as tree:
         height = tree.inputs.float("Height", 3.0)
-        omega = tree.inputs.float("Omega", 0.5)
+        omega = tree.inputs.float("Omega", 2.0)
 
         with g.Frame("Computing the wave"):
             with g.Frame("Distance"):
                 pos = g.Position().o.position
                 distance = g.Math.square_root(pos.x**2 + pos.y**2)
-            z = height * g.Math.sine(distance / omega) / distance
+            z = height * g.Math.sine(distance * omega) / distance
 
         with g.Frame("Point offset & smooth"):
             mesh = (
@@ -119,7 +117,7 @@ def test_eulers_number():
 
         (
             zone.output.o.value
-            >> g.ValueToString(decimals=10)
+            >> g.ValueToString.float(decimals=10)
             >> g.StringToCurves()
             >> g.FillCurve()
             >> g.ExtrudeMesh(offset_scale=0.1)
@@ -161,14 +159,15 @@ class TestCompareMiNCleanGridVerts(CompareGenerationMethods):
             pos = g.Position().o.position
             mul = extent * world
 
-            equals = []
-            for x in [-0.5, 0.5]:
-                comp = g.VectorMath.multiply(mul, x).o.vector
-                equals.append(
-                    (g.Compare.float.equal(a, b, 0.001) for a, b in zip(comp, pos))
+            equals = [
+                tuple(
+                    g.Compare.float.equal(a, b, 0.001).o.result
+                    for a, b in zip(mul * x, pos)
                 )
+                for x in [-0.5, 0.5]
+            ]
 
-            ors = [a | b for a, b in zip(*equals)]
+            ors: list[BooleanSocket] = [a | b for a, b in zip(*equals)]
             ands = [a & b for a, b in combinations(ors, 2)]
             final = reduce(or_, ands)
             final >> tree.outputs.boolean()
@@ -470,8 +469,9 @@ def test_import_microscopy_meshes():
             group_input.outputs["Channel Affine Matrix"],
             transform_geometry.inputs["Transform"],
         )
-
-        include_switch = nodes.new("GeometryNodeSwitch")
+        include_switch = cast(
+            bpy.types.GeometryNodeSwitch, nodes.new("GeometryNodeSwitch")
+        )
         include_switch.name = "Include Switch"
         include_switch.location = (2030, -150)
         include_switch.input_type = "GEOMETRY"
@@ -487,23 +487,21 @@ def test_import_microscopy_meshes_node_group(snapshot):
     with g.tree("Import Microscopy Meshes") as tree:
         include = tree.inputs.boolean("Include")
         template_str = tree.inputs.string("template_str")
-        to_format = {
+        items = {
             "cache_dir": tree.inputs.string("cache_dir"),
             "dataset_hash": tree.inputs.string("dataset_hash"),
-            "scale": tree.inputs.integer("scale"),
-            "resolution": tree.inputs.integer("resolution"),
-            "channel_ix": tree.inputs.integer("channel_ix"),
+            **{
+                x: tree.inputs.integer(x) for x in ["scale", "resolution", "channel_ix"]
+            },
             "Frame": tree.inputs.integer("t"),
         }
         _ = tree.inputs.string("original_path")
         affine_mat = tree.inputs.matrix("Channel Affine Matrix")
 
-        string = g.FormatString(template_str, to_format)
+        path = template_str.format(items)
 
-        csv = g.ImportCSV(
-            g.JoinStrings(strings=(string, g.String(".csv"))), delimiter=","
-        )
-        obj = g.ImportOBJ(g.JoinStrings(strings=(string, g.String(".obj"))))
+        csv = g.ImportCSV(path + ".csv", delimiter=",")
+        obj = g.ImportOBJ(path + ".obj")
 
         zone = g.ForEachGeometryElementZone()
         zone.output.node.domain = "INSTANCE"
@@ -525,4 +523,525 @@ def test_import_microscopy_meshes_node_group(snapshot):
             >> g.Switch.geometry(include, None, ...)
             >> tree.outputs.geometry()
         )
+    assert snapshot == tree._repr_markdown_()
+
+
+def test_import_microscopy_volume_nodebpy_node_group(snapshot):
+    with g.tree() as tree:
+        grid_name = tree.inputs.string("Grid Name")
+        normalized = tree.inputs.boolean("Normalized", True)
+        min = tree.inputs.float("VDB Minimum", 0.0)
+        max = tree.inputs.float("VDB Maximum", 1.0)
+        original_max = tree.inputs.float("Original Maximum", 1.0)
+        include = tree.inputs.boolean("Include")
+        string = tree.inputs.string("template_str")
+
+        items = {
+            "cache_dir": tree.inputs.string("cache_dir"),
+            "dataset_has": tree.inputs.string("dataset_hash"),
+            **{
+                x: tree.inputs.integer(x)
+                for x in ["scale", "x", "y", "z", "channel_ix"]
+            },
+            "t": tree.inputs.integer("Frame"),
+        }
+
+        _ = tree.inputs.string("original_path")
+        affine_mat = tree.inputs.matrix("Channel Affine Matrix")
+
+        vdb = g.ImportVDB(string.format(items))
+
+        with g.Frame("Normalize Grid"):
+            grid = g.GetNamedGrid.float(vdb, grid_name).o.grid
+            grid_normalised = grid.map_range(min, max, 0.0, 1.0)
+            grid = normalized.switch.float(
+                grid_normalised * original_max,
+                grid_normalised,
+            )
+            grid = g.SetGridTransform.float(grid, affine_mat)
+        volume = g.StoreNamedGrid(vdb, grid_name, grid)
+        volume = include.switch.geometry(None, volume)
+        volume >> tree.outputs.geometry("Volume")
+        (
+            include.switch.float(None, grid)
+            >> tree.outputs.float("Grid", structure_type="GRID")
+        )
+
+    assert snapshot == tree._repr_markdown_()
+
+
+def test_import_microscopy_volume_node_group():
+    GROUP_NAME = "Import Microscopy Volume"
+
+    def _set_common_socket_defaults(socket):
+        socket.attribute_domain = "POINT"
+        if hasattr(socket, "default_input"):
+            socket.default_input = "VALUE"
+        if hasattr(socket, "structure_type"):
+            socket.structure_type = "AUTO"
+
+    def _new_input(interface, name, socket_type, default=None):
+        socket = interface.new_socket(
+            name=name, in_out="INPUT", socket_type=socket_type
+        )
+        _set_common_socket_defaults(socket)
+        if default is not None:
+            socket.default_value = default
+        return socket
+
+    def _new_output(interface, name, socket_type, default=None):
+        socket = interface.new_socket(
+            name=name, in_out="OUTPUT", socket_type=socket_type
+        )
+        _set_common_socket_defaults(socket)
+        if default is not None:
+            socket.default_value = default
+        return socket
+
+    node_group = bpy.data.node_groups.get(GROUP_NAME)
+    if node_group:
+        return node_group
+
+    node_group = bpy.data.node_groups.new(type="GeometryNodeTree", name=GROUP_NAME)
+    node_group.color_tag = "NONE"
+    node_group.description = ""
+    node_group.default_group_node_width = 140
+    node_group.is_modifier = True
+    node_group.show_modifier_manage_panel = True
+
+    links = node_group.links
+    nodes = node_group.nodes
+    interface = node_group.interface
+
+    _new_output(interface, "Volume", "NodeSocketGeometry")
+    _new_output(interface, "Grid", "NodeSocketFloat", 0.0)
+
+    _new_input(interface, "Grid Name", "NodeSocketString", "data")
+    _new_input(interface, "Normalized", "NodeSocketBool", True)
+
+    vdb_minimum_socket = _new_input(interface, "VDB Minimum", "NodeSocketFloat", 0.0)
+    vdb_minimum_socket.min_value = -10000.0
+    vdb_minimum_socket.max_value = 10000.0
+
+    vdb_maximum_socket = _new_input(interface, "VDB Maximum", "NodeSocketFloat", 1.0)
+    vdb_maximum_socket.min_value = -10000.0
+    vdb_maximum_socket.max_value = 10000.0
+
+    _new_input(interface, "Original Maximum", "NodeSocketFloat", 1.0)
+    _new_input(interface, "Include", "NodeSocketBool", False)
+
+    _new_input(interface, "template_str", "NodeSocketString", "")
+    _new_input(interface, "cache_dir", "NodeSocketString", "")
+    _new_input(interface, "dataset_hash", "NodeSocketString", "")
+    _new_input(interface, "scale", "NodeSocketInt", 0)
+    _new_input(interface, "x", "NodeSocketInt", 0)
+    _new_input(interface, "y", "NodeSocketInt", 0)
+    _new_input(interface, "z", "NodeSocketInt", 0)
+    _new_input(interface, "channel_ix", "NodeSocketInt", 0)
+    _new_input(interface, "Frame", "NodeSocketInt", 0)
+    _new_input(interface, "original_path", "NodeSocketString", "")
+    _new_input(interface, "Channel Affine Matrix", "NodeSocketMatrix")
+
+    group_input = nodes.new("NodeGroupInput")
+    group_input.name = "Group Input"
+    group_input.location = (-760, 80)
+    group_input.width = 150
+
+    group_output = nodes.new("NodeGroupOutput")
+    group_output.name = "Group Output"
+    group_output.location = (1560, 20)
+    group_output.is_active_output = True
+
+    format_string = nodes.new("FunctionNodeFormatString")
+    format_string.name = "Format String"
+    format_string.location = (-580, -40)
+    format_string.width = 410
+    format_string.format_items.clear()
+    for item_type, name in (
+        ("STRING", "cache_dir"),
+        ("STRING", "dataset_hash"),
+        ("INT", "scale"),
+        ("INT", "x"),
+        ("INT", "y"),
+        ("INT", "z"),
+        ("INT", "channel_ix"),
+        ("INT", "t"),
+    ):
+        format_string.format_items.new(item_type, name)
+
+    links.new(group_input.outputs["template_str"], format_string.inputs["Format"])
+    links.new(group_input.outputs["cache_dir"], format_string.inputs["cache_dir"])
+    links.new(group_input.outputs["dataset_hash"], format_string.inputs["dataset_hash"])
+    links.new(group_input.outputs["scale"], format_string.inputs["scale"])
+    links.new(group_input.outputs["x"], format_string.inputs["x"])
+    links.new(group_input.outputs["y"], format_string.inputs["y"])
+    links.new(group_input.outputs["z"], format_string.inputs["z"])
+    links.new(group_input.outputs["channel_ix"], format_string.inputs["channel_ix"])
+    links.new(group_input.outputs["Frame"], format_string.inputs["t"])
+
+    import_vdb = nodes.new("GeometryNodeImportVDB")
+    import_vdb.name = "Import VDB"
+    import_vdb.location = (-100, 160)
+    links.new(format_string.outputs["String"], import_vdb.inputs["Path"])
+
+    get_grid = nodes.new("GeometryNodeGetNamedGrid")
+    get_grid.name = "Get Named Grid"
+    get_grid.location = (90, 250)
+    get_grid.data_type = "FLOAT"
+    get_grid.inputs["Name"].default_value = "data"
+    get_grid.inputs["Remove"].default_value = True
+    links.new(import_vdb.outputs["Volume"], get_grid.inputs["Volume"])
+    links.new(group_input.outputs["Grid Name"], get_grid.inputs["Name"])
+
+    map_range = nodes.new("ShaderNodeMapRange")
+    map_range.name = "Map Range"
+    map_range.location = (280, 290)
+    map_range.clamp = True
+    map_range.data_type = "FLOAT"
+    map_range.interpolation_type = "LINEAR"
+    map_range.inputs["To Min"].default_value = 0.0
+    map_range.inputs["To Max"].default_value = 1.0
+    links.new(get_grid.outputs["Grid"], map_range.inputs["Value"])
+    links.new(group_input.outputs["VDB Minimum"], map_range.inputs["From Min"])
+    links.new(group_input.outputs["VDB Maximum"], map_range.inputs["From Max"])
+
+    store_normalized = nodes.new("GeometryNodeStoreNamedGrid")
+    store_normalized.name = "Store Normalized Grid"
+    store_normalized.location = (750, -40)
+    store_normalized.data_type = "FLOAT"
+    links.new(import_vdb.outputs["Volume"], store_normalized.inputs["Volume"])
+    links.new(group_input.outputs["Grid Name"], store_normalized.inputs["Name"])
+    links.new(map_range.outputs["Result"], store_normalized.inputs["Grid"])
+
+    restore_original_range = nodes.new("ShaderNodeMath")
+    restore_original_range.name = "Restore Original Range"
+    restore_original_range.location = (560, 265)
+    restore_original_range.operation = "MULTIPLY"
+    restore_original_range.use_clamp = False
+    links.new(map_range.outputs["Result"], restore_original_range.inputs["Value"])
+    links.new(group_input.outputs["Original Maximum"], restore_original_range.inputs[1])
+
+    store_original = nodes.new("GeometryNodeStoreNamedGrid")
+    store_original.name = "Store Original Grid"
+    store_original.location = (760, 105)
+    store_original.data_type = "FLOAT"
+    links.new(import_vdb.outputs["Volume"], store_original.inputs["Volume"])
+    links.new(group_input.outputs["Grid Name"], store_original.inputs["Name"])
+    links.new(restore_original_range.outputs["Value"], store_original.inputs["Grid"])
+
+    normalized_switch = nodes.new("GeometryNodeSwitch")
+    normalized_switch.name = "Normalized Switch"
+    normalized_switch.location = (960, 25)
+    normalized_switch.input_type = "GEOMETRY"
+    links.new(group_input.outputs["Normalized"], normalized_switch.inputs["Switch"])
+    links.new(store_original.outputs["Volume"], normalized_switch.inputs["False"])
+    links.new(store_normalized.outputs["Volume"], normalized_switch.inputs["True"])
+
+    include_switch = nodes.new("GeometryNodeSwitch")
+    include_switch.name = "Include Switch"
+    include_switch.location = (1170, 20)
+    include_switch.input_type = "GEOMETRY"
+    links.new(group_input.outputs["Include"], include_switch.inputs["Switch"])
+    links.new(normalized_switch.outputs["Output"], include_switch.inputs["True"])
+
+    output_grid = nodes.new("GeometryNodeGetNamedGrid")
+    output_grid.name = "Output Grid"
+    output_grid.location = (1380, 30)
+    output_grid.data_type = "FLOAT"
+    output_grid.inputs["Remove"].default_value = False
+    links.new(include_switch.outputs["Output"], output_grid.inputs["Volume"])
+    links.new(group_input.outputs["Grid Name"], output_grid.inputs["Name"])
+
+    set_grid_transform = nodes.new("GeometryNodeSetGridTransform")
+    set_grid_transform.name = "Set Channel Affine Transform"
+    set_grid_transform.location = (1560, 250)
+    set_grid_transform.data_type = "FLOAT"
+    links.new(output_grid.outputs["Grid"], set_grid_transform.inputs["Grid"])
+    links.new(
+        group_input.outputs["Channel Affine Matrix"],
+        set_grid_transform.inputs["Transform"],
+    )
+
+    store_transformed_grid = nodes.new("GeometryNodeStoreNamedGrid")
+    store_transformed_grid.name = "Store Transformed Grid"
+    store_transformed_grid.location = (1770, 80)
+    store_transformed_grid.data_type = "FLOAT"
+    links.new(output_grid.outputs["Volume"], store_transformed_grid.inputs["Volume"])
+    links.new(group_input.outputs["Grid Name"], store_transformed_grid.inputs["Name"])
+    links.new(set_grid_transform.outputs["Grid"], store_transformed_grid.inputs["Grid"])
+
+    group_output.location = (2020, 20)
+    links.new(store_transformed_grid.outputs["Volume"], group_output.inputs["Volume"])
+    links.new(set_grid_transform.outputs["Grid"], group_output.inputs["Grid"])
+
+    # return node_group
+
+
+def test_bundle_path_filter(snapshot):
+    with g.tree() as tree:
+        path = tree.inputs.string("Self Path")
+        other = tree.inputs.string("Other Path")
+        local = tree.inputs.boolean("Filter Local")
+
+        first, count = path.find("/")
+        starter = path.slice(length=first + 1)
+
+        (
+            local.switch.boolean(
+                True,
+                (count == 0) | other.starts_with(starter),
+            )
+            >> tree.outputs.boolean("Selected")
+        )
+
+    assert snapshot == tree._repr_markdown_()
+
+
+def test_style_density_iso():
+    with g.tree("Style Density ISO Surface") as tree:
+        volume = tree.inputs.geometry("Volume")
+        visible = tree.inputs.boolean("Visible", True)
+        smooth = tree.inputs.boolean("Smooth")
+        iso = tree.inputs.float("ISO Value")
+        col_pos = tree.inputs.color(
+            "Positive Color", default_value=(0.66, 0.0, 0.0, 1.0)
+        )
+        col_neg = tree.inputs.color(
+            "Negative Color", default_value=(0.0, 0.0, 0.66, 1.0)
+        )
+        mat = tree.inputs.material("Material")
+
+        min_factor = tree.inputs.vector(
+            "left",
+            default_value=(0, 0, 0),
+            min_value=0.0,
+            max_value=1.0,
+            subtype="FACTOR",
+        )
+        max_factor = tree.inputs.vector(
+            "Right",
+            default_value=(1.0, 1.0, 1.0),
+            min_value=0.0,
+            max_value=1.0,
+            subtype="FACTOR",
+        )
+
+        pos = g.Position().o.position
+        pos_mapped = pos.map_range(pos.point.min(), pos.point.max())
+
+        geom = (
+            g.JoinGeometry(
+                (
+                    visible.switch.geometry(None, volume)
+                    >> g.VolumeToMesh(threshold=val)
+                    >> g.StoreNamedAttribute.point.color(name="Color", value=col)
+                    >> g.SetMaterial(material=mat)
+                    for val, col in ((iso, col_pos), (-iso, col_neg))
+                )
+            )
+            >> g.SetShadeSmooth.face(shade_smooth=smooth)
+            >> g.DeleteGeometry.all(
+                selection=(pos_mapped < min_factor) & (pos_mapped > max_factor)
+            )
+        )
+
+        geom >> tree.outputs.geometry("Geometry")
+
+
+def test_accumulate_along_spline(snapshot):
+    with g.tree("Accumulate Along Spline") as tree:
+        id = g.CurveOfPoint().o.curve_index
+        pos = g.Position() + id
+
+        transform = g.CombineTransform(
+            g.NoiseTexture(vector=pos).o.color * 0.2,
+            g.NoiseTexture(vector=pos).o.color * 0.1,
+        ).o.transform
+
+        (
+            g.CurveLine()
+            >> g.DuplicateElements.spline(amount=20)
+            >> g.ResampleCurve(
+                count=g.RandomValue.integer(min=10, max=100), mode="Count"
+            )
+            >> g.SetPosition(
+                position=transform.point.trailing(id) @ g.Vector().o.vector
+            )
+            >> tree.outputs.geometry("Curve")
+        )
+
+    assert snapshot == tree._repr_markdown_()
+
+
+def test_ClipFieldToBox(snapshot):
+    with g.tree():
+        node = ClipFieldToBox()
+
+    assert snapshot == TreeBuilder(node.node_tree)._repr_markdown_()
+
+
+def test_mask_grid(snapshot):
+    with g.tree() as tree:
+        _build_mask_grid(tree)
+        assert snapshot == tree._repr_markdown_()
+
+    with g.tree() as points_tree:
+        _build_microscopy_grid_to_points(points_tree)
+        assert snapshot == points_tree._repr_markdown_()
+
+
+def _build_mask_grid(tree: TreeBuilder):
+    tree.tree.show_modifier_manage_panel = True
+
+    grid = tree.inputs.float(
+        "Grid",
+        0.5,
+        structure_type="GRID",
+    )
+    with_ = tree.inputs.menu("With", "Object")
+    object = tree.inputs.object("Object")
+    collection = tree.inputs.collection("Collection", optional_label=True)
+    mesh = tree.inputs.geometry("Mesh")
+    mask_resolution = tree.inputs.float(
+        "Mask Resolution",
+        0.3,
+        min_value=0.01,
+        subtype="DISTANCE",
+    )
+    mask = tree.inputs.float(
+        "Mask",
+        hide_value=True,
+        optional_label=True,
+    )
+    invert = tree.inputs.boolean("Invert")
+    masked_grid = tree.outputs.float("Masked Grid")
+
+    object_geometry = object.geometry("RELATIVE")
+
+    mask_source = g.MenuSwitch.geometry(
+        with_,
+        {
+            "Object": object_geometry,
+            "Collection": collection.instances("RELATIVE"),
+            "Mesh": mesh,
+            "Grid": object_geometry,
+            "Box": object_geometry,
+        },
+    )
+
+    volume_grid = g.GetNamedGrid.float(
+        volume=g.MeshToVolume(
+            mesh=mask_source.o.output.realize_instances(),
+            resolution_mode="Size",
+            voxel_size=mask_resolution,
+            interior_band_width=0.0,
+        ).o.volume,
+        name="density",
+    ).o.grid
+
+    box_mask = g.FieldToGrid.boolean(
+        topology=grid,
+        items={
+            "Mask": ClipFieldToBox(
+                box_object=object,
+            ).o.clipped_field,
+        },
+    ).o["Mask"]
+
+    selected_grid = mask_source.is_selected("Grid").switch.float(volume_grid, mask)
+    sampled_mask = (
+        g.SampleGrid.float(
+            grid=selected_grid,
+        ).o.value
+        > 0.0
+    )
+    mask_value = mask_source.is_selected("Box").switch.float(
+        false=sampled_mask, true=box_mask
+    )
+    mask_factor = invert.switch.float(mask_value, ~mask_value)
+
+    (
+        g.PruneGrid.float(
+            grid * mask_factor,
+        )
+        >> masked_grid
+    )
+
+
+def _build_microscopy_grid_to_points(tree):
+    tree.tree.show_modifier_manage_panel = True
+
+    grid = tree.inputs.float("Grid", hide_value=True)
+    geometry = tree.outputs.geometry("Geometry")
+
+    points = g.GridToPoints.float(grid)
+    delete = g.DeleteGeometry(
+        geometry=points.o.points,
+        selection=(points.o.value < 0.0001) | points.o.is_tile,
+    )
+    delete.o.geometry >> geometry
+
+
+def test_geometryscript_city_builder(snapshot):
+    with g.tree("Voxelise") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        seed = tree.inputs.integer("Seed")
+        road_width = tree.inputs.float("Road Width", 0.25)
+        size_x = tree.inputs.float("Size X", 5.0)
+        size_y = tree.inputs.float("Size Y", 5.0)
+        density = tree.inputs.float("Density", 10.0)
+        building_size_min = tree.inputs.vector("Building Size Min", (0.1, 0.1, 0.2))
+        building_size_max = tree.inputs.vector("Building Size Max", (0.3, 0.3, 1.0))
+
+        curve_mesh = geo >> g.CurveToMesh(
+            profile_curve=g.CurveLine(
+                start=g.CombineXYZ(x=road_width * -0.5),
+                end=g.CombineXYZ(x=road_width * 0.5),
+            ),
+        )
+
+        building_points = g.Grid(size_x, size_y) >> g.DistributePointsOnFaces(
+            density=density, seed=seed
+        )
+
+        road_points = geo >> g.CurveToPoints(mode="EVALUATED")
+        building_points = g.DeleteGeometry.point(
+            building_points,
+            selection=g.GeometryProximity(
+                road_points,
+                target_element="POINTS",
+            ).o.distance
+            < road_width,
+        )
+
+        buildings = building_points >> g.InstanceOnPoints(
+            instance=g.Cube() >> g.TransformGeometry(translation=(0, 0, 0.5)),
+            scale=g.RandomValue.vector(
+                min=building_size_min, max=building_size_max, seed=seed
+            ),
+        )
+
+        g.JoinGeometry((curve_mesh, buildings)) >> tree.outputs.geometry("Result")
+
+    assert snapshot == tree._repr_markdown_()
+
+
+def test_active_grid_positions(snapshot):
+    with g.tree("Active Grid Positions", arrange='simple') as tree:
+        tree.tree.show_modifier_manage_panel = True
+
+        grid = tree.inputs.float("Grid", hide_value=True, structure_type="GRID")
+        points_output = tree.outputs.geometry("Points")
+
+        points = g.GridToPoints.float(grid)
+        indices = g.CombineXYZ(points.o.x, points.o.y, points.o.z).o.vector
+
+        (
+            points.o.points
+            >> g.StoreNamedAttribute.point.vector(name="ix", value=indices)
+            >> g.StoreNamedAttribute.point.boolean(name="value", value=points.o.value)
+            >> g.DeleteGeometry(selection=points.o.is_tile)
+            >> points_output
+        )
+
     assert snapshot == tree._repr_markdown_()

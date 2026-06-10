@@ -18,6 +18,8 @@ website:
           - operators.qmd
           - custom-node-groups.qmd
           - node-api.qmd
+          - using.qmd
+          - comparisons.qmd
       - href: reference/
         text: Reference
       - href: changelog.qmd

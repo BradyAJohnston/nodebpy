@@ -4,10 +4,14 @@ from typing import TYPE_CHECKING
 
 import bpy
 
-from ...builder import BaseNode as BaseNode, SocketAccessor, ColorSocket
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputColor,
+)
+
+from ...builder.socket import (
+    ColorSocket,
 )
 
 
@@ -34,26 +38,18 @@ class FileOutput(BaseNode):
 
     def __init__(
         self,
-        active_item_index: int = 0,
         directory: str = "",
         file_name: str = "",
         save_as_render: bool = False,
+        use_file_extension: bool = False,
     ):
         super().__init__()
         key_args = {}
-        self.active_item_index = active_item_index
         self.directory = directory
         self.file_name = file_name
         self.save_as_render = save_as_render
+        self.use_file_extension = use_file_extension
         self._establish_links(**key_args)
-
-    @property
-    def active_item_index(self) -> int:
-        return self.node.active_item_index
-
-    @active_item_index.setter
-    def active_item_index(self, value: int):
-        self.node.active_item_index = value
 
     @property
     def directory(self) -> str:
@@ -78,6 +74,14 @@ class FileOutput(BaseNode):
     @save_as_render.setter
     def save_as_render(self, value: bool):
         self.node.save_as_render = value
+
+    @property
+    def use_file_extension(self) -> bool:
+        return self.node.use_file_extension
+
+    @use_file_extension.setter
+    def use_file_extension(self, value: bool):
+        self.node.use_file_extension = value
 
 
 class Viewer(BaseNode):

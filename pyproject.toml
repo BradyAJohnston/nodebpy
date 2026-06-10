@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "0.15.0"
+version = "520.0.1"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
@@ -17,7 +17,7 @@ networkx = [
     "networkx>=3.6.1",
 ]
 bpy = [
-    "bpy>=5.1.0",
+    "bpy==5.2.*",
 ]
 
 [build-system]
@@ -28,7 +28,7 @@ build-backend = "uv_build"
 dev = [
     "ipython>=8.0.0",
     "networkx>=3.6.1",
-    "fake-bpy-module>=20260113",
+    "fake-bpy-module>=20260501",
     "jsondiff>=2.2.1",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
@@ -36,6 +36,7 @@ dev = [
     "quartodoc>=0.11.1",
     "ruff>=0.14.11",
     "syrupy>=5.0.0",
-    "tree-clipper>=0.1.1",
     "pytest-xdist>=3.8.0",
+    "griffe<2.0.0",
+    "ty>=0.0.35",
 ]

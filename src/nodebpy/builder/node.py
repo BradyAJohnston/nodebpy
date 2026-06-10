@@ -21,6 +21,7 @@ from bpy.types import (
     GeometryNodeTree,
     Node,
     NodeSocket,
+    NodeTree,
     ShaderNodeGroup,
     ShaderNodeTree,
 )
@@ -42,6 +43,25 @@ if TYPE_CHECKING:
 
         @property
         def i(self) -> SocketAccessor: ...
+
+
+def _find_socket_from_name(
+    collection: bpy.types.NodeInputs | bpy.types.NodeOutputs | list[NodeSocket],
+    name: str,
+) -> NodeSocket:
+    ids = [socket.identifier for socket in collection]
+    names = [socket.name for socket in collection]
+    for format in [name, name.title(), name.replace("_", " ").title()]:
+        try:
+            return collection[names.index(format)]
+        except ValueError:
+            try:
+                return collection[ids.index(format)]
+            except ValueError:
+                continue
+    raise ValueError(
+        f"Socket '{name}' not found in collection names or ids, available names: {names}, available ids: {ids}"
+    )
 
 
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
@@ -101,8 +121,9 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
     @classmethod
     def _from_node(cls, node: Node) -> Self:
-        builder = cls()
-        builder.tree.nodes.remove(builder.node)
+        builder = cls.__new__(cls)
+        builder._tree = TreeBuilder(cast(NodeTree, node.id_data))
+        builder._placeholder_inputs = []
         builder.node = node
         return builder
 
@@ -136,13 +157,13 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             and input.type == "VECTOR"
             and isinstance(value, (int, float))
         ):
-            input.default_value = [value] * len(input.default_value)
+            input.default_value = [value] * len(input.default_value)  # type: ignore
         else:
-            input.default_value = value
+            input.default_value = value  # type: ignore
 
     def _establish_links(self, **kwargs: InputAny):
-        input_ids = [input.identifier for input in self.node.inputs]
         for name, value in kwargs.items():
+            # TODO: don't like these manual overrides for particular nodes, but best I can do for now
             if value is None or (
                 "GridPrune" in self._bl_idname
                 and name == "Threshold"
@@ -163,27 +184,25 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             elif isinstance(value, NodeSocket):
                 self._link_from(value, name)
             elif isinstance(value, _NodeLike):
-                self._link_from(value.o._best_match(self.i._get(name).type), name)
+                self._link_from(value.o._best_match(self.i._get(name).type), name)  # type: ignore
             else:
-                if name in input_ids:
-                    input = self.node.inputs[input_ids.index(name)]
-                    self._set_input_default_value(input, value)
-                else:
-                    if name in self.node.inputs:
-                        input = self.node.inputs[name]
-                    else:
-                        input = self.node.inputs[name.replace("_", " ").title()]
-                    self._set_input_default_value(input, value)
+                # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
+                # but this needs to be a more generic solution for sockets which aren't available
+                # https://github.com/BradyAJohnston/nodebpy/issues/90
+                if "BooleanMath" in self._bl_idname and value is False:
+                    continue
+                socket = _find_socket_from_name(self.node.inputs, name)
+                self._set_input_default_value(socket, value)
 
     @property
     def o(self) -> SocketAccessor:
         """Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
-        return SocketAccessor(self.node.outputs, "output")
+        return SocketAccessor(self.node.outputs, "output", builder=self)
 
     @property
     def i(self) -> SocketAccessor:
         """Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING."""
-        return SocketAccessor(self.node.inputs, "input")
+        return SocketAccessor(self.node.inputs, "input", builder=self)
 
 
 class DynamicInputsMixin(ABC):

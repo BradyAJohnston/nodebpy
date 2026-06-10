@@ -7,8 +7,6 @@ from nodebpy import TreeBuilder, shader
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 
-from .snapshots import TreeBuilderSnapshotExtension
-
 CURRENT = Path(__file__).parent
 BLEND_DIR = CURRENT / "blend_files"
 JSON_DIR = CURRENT / "clippings"
@@ -35,7 +33,7 @@ def clean_and_save(request):
     if geo_tree_names:
         bpy.data.objects["Cube"].modifiers.clear()
         bpy.data.objects["Cube"].modifiers.new("StoreTrees", "NODES")
-        mod: bpy.types.NodesModifier = bpy.data.objects["Cube"].modifiers["StoreTrees"]  # type: ignore
+        mod: bpy.types.NodesModifier = bpy.data.objects["Cube"].modifiers["StoreTrees"]
         with TreeBuilder("StoredTrees") as tree:
             ing = tree.inputs.geometry()
             ong = tree.outputs.geometry()
@@ -45,8 +43,8 @@ def clean_and_save(request):
                 node.node.node_tree = bpy.data.node_groups[name]
                 node.node.location = (0, 200 * i)
 
-            if node.node.outputs and node.node.outputs[0].type == "GEOMETRY":  # type: ignore
-                _ = node >> ong  # type: ignore
+            if node.node.outputs and node.node.outputs[0].type == "GEOMETRY":
+                _ = node >> ong
             else:
                 _ = ing >> ong
 
@@ -64,7 +62,7 @@ def clean_and_save(request):
         with TreeBuilder.shader(node_tree) as tree:
             for i, name in enumerate(shader_tree_names):
                 group_node = shader.Group()
-                group_node.node.node_tree = bpy.data.node_groups[name]  # type: ignore
+                group_node.node.node_tree = bpy.data.node_groups[name]
                 group_node.node.location = (0, 200 * i)
 
     # --- Compositor node trees: store via the scene compositor ---
@@ -78,7 +76,7 @@ def clean_and_save(request):
         with TreeBuilder.compositor("CompHoldingTree") as tree:
             for i, name in enumerate(compositor_tree_names):
                 group = c.Group()
-                group.node.node_tree = bpy.data.node_groups[name]  # type: ignore
+                group.node.node_tree = bpy.data.node_groups[name]
         bpy.context.scene.compositing_node_group = tree.tree
 
     # save a .blendfile for inspection with the current tests' nodes and also
@@ -92,9 +90,3 @@ def clean_and_save(request):
     ):
         name = name.replace(key, value)
     bpy.ops.wm.save_as_mainfile(filepath=str(BLEND_DIR / f"{name}.blend"))
-
-
-@pytest.fixture
-def snapshot_tree(snapshot):
-    """Fixture that provides tree snapshot functionality."""
-    return snapshot.with_defaults(extension_class=TreeBuilderSnapshotExtension)

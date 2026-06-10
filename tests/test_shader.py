@@ -18,7 +18,7 @@ def test_shader_math():
         _ = prin >> tree.outputs.shader()
 
     assert comp.node.bl_idname == "ShaderNodeMath"
-    assert comp.operation == "SUBTRACT"
+    assert comp.node.operation == "SUBTRACT"
     assert comp.node.inputs[1].links[0].from_node.bl_idname == "ShaderNodeMath"
     assert comp.node.inputs[1].links[0].from_node.inputs[1].default_value == 10.0
     assert (
@@ -109,3 +109,36 @@ def test_nodes():
         assert norm.convention == "OPENGL"
         norm.convention = "DIRECTX"
         assert norm.convention == "DIRECTX"
+
+
+def test_bsdf_distribution_setter():
+    with s.tree():
+        glass = s.GlassBSDF()
+        glass.distribution = "BECKMANN"
+        assert glass.distribution == "BECKMANN"
+        glass.distribution = "GGX"
+        assert glass.distribution == "GGX"
+
+        glossy = s.GlossyBSDF()
+        glossy.distribution = "BECKMANN"
+        assert glossy.distribution == "BECKMANN"
+        glossy.distribution = "GGX"
+        assert glossy.distribution == "GGX"
+
+
+def test_specific_shader_nodes():
+    with s.tree():
+        mix = s.Mix.float()
+        assert mix.data_type == "FLOAT"
+        mix.data_type = "VECTOR"
+        assert mix.data_type == "VECTOR"
+
+        bsdf = s.PrincipledBSDF()
+        assert bsdf.subsurface_method == "RANDOM_WALK"
+        bsdf.subsurface_method = "BURLEY"
+        assert bsdf.subsurface_method == "BURLEY"
+
+        sub = s.SubsurfaceScattering()
+        assert sub.falloff == "RANDOM_WALK"
+        sub.falloff = "BURLEY"
+        assert sub.falloff == "BURLEY"

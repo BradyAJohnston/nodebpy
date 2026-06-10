@@ -4,7 +4,7 @@ from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 
 
-def test_simple_tree_snapshot(snapshot_tree):
+def test_simple_tree_snapshot(snapshot):
     """Test a simple geometry node tree snapshot."""
     with TreeBuilder("SimpleTest") as tree:
         input = tree.inputs.geometry()
@@ -22,10 +22,10 @@ def test_simple_tree_snapshot(snapshot_tree):
         set_pos.i.offset.default_value = (0.5, 0.5, 0.5)
 
     # This will create/compare a snapshot of the tree structure
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
-def test_complex_tree_snapshot(snapshot_tree):
+def test_complex_tree_snapshot(snapshot):
     """Test a more complex geometry node tree snapshot."""
     with TreeBuilder("ComplexTest") as tree:
         input = tree.inputs.geometry()
@@ -50,10 +50,10 @@ def test_complex_tree_snapshot(snapshot_tree):
         transform2.i.translation.default_value = (-2.0, 0.0, 0.0)
         subdivide.i.level.default_value = 2
 
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()
 
 
-def test_tree_with_math_nodes(snapshot_tree):
+def test_tree_with_math_nodes(snapshot):
     """Test tree with math operations."""
     with TreeBuilder("MathTest") as tree:
         geo_in = tree.inputs.geometry()
@@ -69,4 +69,4 @@ def test_tree_with_math_nodes(snapshot_tree):
         geo_in >> set_pos >> geo_out
         math_result >> result
 
-    assert snapshot_tree == tree
+    assert snapshot == tree._repr_markdown_()

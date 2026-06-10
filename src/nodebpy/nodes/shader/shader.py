@@ -4,20 +4,22 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
+from ...builder import BaseNode, SocketAccessor
+
+from ...types import (
+    InputBoolean,
+    InputColor,
+    InputFloat,
+    InputShader,
+    InputVector,
+)
+
+from ...builder.socket import (
+    BooleanSocket,
     ColorSocket,
     FloatSocket,
     ShaderSocket,
     VectorSocket,
-)
-
-from ...types import (
-    InputColor,
-    InputShader,
-    InputFloat,
-    InputVector,
 )
 
 
@@ -933,6 +935,8 @@ class PrincipledBSDF(BaseNode):
         IOR
     alpha : InputFloat
         Alpha
+    thin_wall : InputBoolean
+        Thin Wall
     normal : InputVector
         Normal
     weight : InputFloat
@@ -998,6 +1002,8 @@ class PrincipledBSDF(BaseNode):
         IOR
     i.alpha : FloatSocket
         Alpha
+    i.thin_wall : BooleanSocket
+        Thin Wall
     i.normal : VectorSocket
         Normal
     i.weight : FloatSocket
@@ -1071,6 +1077,8 @@ class PrincipledBSDF(BaseNode):
         """IOR"""
         alpha: FloatSocket
         """Alpha"""
+        thin_wall: BooleanSocket
+        """Thin Wall"""
         normal: VectorSocket
         """Normal"""
         weight: FloatSocket
@@ -1142,6 +1150,7 @@ class PrincipledBSDF(BaseNode):
         roughness: InputFloat = 0.5,
         ior: InputFloat = 1.5,
         alpha: InputFloat = 1.0,
+        thin_wall: InputBoolean = False,
         normal: InputVector = None,
         weight: InputFloat = 0.0,
         diffuse_roughness: InputFloat = 0.0,
@@ -1171,7 +1180,7 @@ class PrincipledBSDF(BaseNode):
         *,
         distribution: Literal["GGX", "MULTI_GGX"] = "MULTI_GGX",
         subsurface_method: Literal[
-            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"
+            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
         ] = "RANDOM_WALK",
     ):
         super().__init__()
@@ -1181,6 +1190,7 @@ class PrincipledBSDF(BaseNode):
             "Roughness": roughness,
             "IOR": ior,
             "Alpha": alpha,
+            "Thin Wall": thin_wall,
             "Normal": normal,
             "Weight": weight,
             "Diffuse Roughness": diffuse_roughness,
@@ -1221,12 +1231,17 @@ class PrincipledBSDF(BaseNode):
         self.node.distribution = value
 
     @property
-    def subsurface_method(self) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]:
+    def subsurface_method(
+        self,
+    ) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"]:
         return self.node.subsurface_method
 
     @subsurface_method.setter
     def subsurface_method(
-        self, value: Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]
+        self,
+        value: Literal[
+            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
+        ],
     ):
         self.node.subsurface_method = value
 
@@ -1902,7 +1917,9 @@ class SubsurfaceScattering(BaseNode):
         normal: InputVector = None,
         weight: InputFloat = 0.0,
         *,
-        falloff: Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"] = "RANDOM_WALK",
+        falloff: Literal[
+            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
+        ] = "RANDOM_WALK",
     ):
         super().__init__()
         key_args = {
@@ -1919,11 +1936,18 @@ class SubsurfaceScattering(BaseNode):
         self._establish_links(**key_args)
 
     @property
-    def falloff(self) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]:
+    def falloff(
+        self,
+    ) -> Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"]:
         return self.node.falloff
 
     @falloff.setter
-    def falloff(self, value: Literal["BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN"]):
+    def falloff(
+        self,
+        value: Literal[
+            "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
+        ],
+    ):
         self.node.falloff = value
 
 

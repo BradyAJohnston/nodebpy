@@ -7,7 +7,7 @@ on:
     branches: ["*"]
 
 jobs:
-  build:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 4
@@ -24,11 +24,11 @@ jobs:
 
       - name: Install
         run: |
-          uv sync  --all-extras --dev
+          uv sync --all-extras --extra-index-url https://bradyajohnston.github.io/dailybpy --refresh --upgrade
 
       - name: Run tests
         run: |
-          uv run -m pytest -n auto -vv --cov=nodebpy --cov-report=xml
+          uv run pytest -n auto -vv --cov=nodebpy --cov-report=xml
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5

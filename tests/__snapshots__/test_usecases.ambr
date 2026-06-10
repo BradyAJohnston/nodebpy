@@ -1,4 +1,181 @@
 # serializer version: 1
+# name: test_ClipFieldToBox
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Object Info"):::input-node
+      N2("Position"):::input-node
+      N3("Invert Matrix"):::converter-node
+      N4("Transform Point"):::converter-node
+      N5("Vector Math<br/><small>(SCALE)</small><br/><small>×0.5</small>"):::vector-node
+      N6("Vector Math<br/><small>(ABSOLUTE)</small>"):::vector-node
+      N7("Compare<br/><small>(LESS_THAN)</small><br/><small>(0.5,0.5,0.5)</small>"):::converter-node
+      N8("Compare<br/><small>(NOT_EQUAL)</small>"):::converter-node
+      N9("Group Output"):::default-node
+      N0 -->|"Box Object->Object"| N1
+      N1 -->|"Transform->Matrix"| N3
+      N2 -->|"Position->Vector"| N4
+      N3 -->|"Matrix->Transform"| N4
+      N4 -->|"Vector->Vector"| N5
+      N5 -->|"Vector->Vector"| N6
+      N6 -->|"Vector->A"| N7
+      N7 -->|"Result->A"| N8
+      N8 -->|"Result->Clipped Field"| N9
+      N0 -->|"Invert->B"| N8
+  ```
+  '''
+# ---
+# name: test_accumulate_along_spline
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Position"):::input-node
+      N1("Curve of Point"):::input-node
+      N2("Vector Math<br/><small>(ADD)</small>"):::vector-node
+      N3("Noise Texture<br/><small>×5</small>"):::texture-node
+      N4("Noise Texture<br/><small>×5</small>"):::texture-node
+      N5("Vector Math<br/><small>(SCALE)</small><br/><small>×0.2</small>"):::vector-node
+      N6("Vector Math<br/><small>(SCALE)</small><br/><small>×0.1</small>"):::vector-node
+      N7("Curve Line<br/><small>(0,0,1) (0,0,1)</small>"):::geometry-node
+      N8("Combine Transform"):::converter-node
+      N9("Duplicate Elements"):::geometry-node
+      N10("Random Value"):::converter-node
+      N11("Vector"):::input-node
+      N12("Accumulate Field"):::converter-node
+      N13("Resample Curve"):::geometry-node
+      N14("Transform Point"):::converter-node
+      N15("Set Position"):::geometry-node
+      N16("Group Output"):::default-node
+      N0 -->|"Position->Vector"| N2
+      N1 -->|"Curve Index->Vector"| N2
+      N2 -->|"Vector->Vector"| N3
+      N3 -->|"Color->Vector"| N5
+      N2 -->|"Vector->Vector"| N4
+      N4 -->|"Color->Vector"| N6
+      N5 -->|"Vector->Translation"| N8
+      N6 -->|"Vector->Rotation"| N8
+      N7 -->|"Curve->Geometry"| N9
+      N10 -->|"Value->Count"| N13
+      N9 -->|"Geometry->Curve"| N13
+      N8 -->|"Transform->Value"| N12
+      N11 -->|"Vector->Vector"| N14
+      N12 -->|"Trailing->Transform"| N14
+      N14 -->|"Vector->Position"| N15
+      N13 -->|"Curve->Geometry"| N15
+      N15 -->|"Geometry->Curve"| N16
+      N1 -->|"Curve Index->Group ID"| N12
+  ```
+  '''
+# ---
+# name: test_active_grid_positions
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Grid to Points"):::geometry-node
+      N2("Combine XYZ"):::converter-node
+      N3("Store Named Attribute"):::default-node
+      N4("Store Named Attribute"):::default-node
+      N5("Delete Geometry"):::geometry-node
+      N6("Group Output"):::default-node
+      N0 -->|"Grid->Grid"| N1
+      N1 -->|"X->X"| N2
+      N1 -->|"Y->Y"| N2
+      N1 -->|"Z->Z"| N2
+      N2 -->|"Vector->Value"| N3
+      N1 -->|"Points->Geometry"| N3
+      N1 -->|"Value->Value"| N4
+      N3 -->|"Geometry->Geometry"| N4
+      N1 -->|"Is Tile->Selection"| N5
+      N4 -->|"Geometry->Geometry"| N5
+      N5 -->|"Geometry->Points"| N6
+  ```
+  '''
+# ---
+# name: test_bundle_path_filter
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Find in String"):::converter-node
+      N2("Integer Math<br/><small>(ADD)</small>"):::converter-node
+      N3("Slice String"):::converter-node
+      N4("Compare<br/><small>(EQUAL)</small>"):::converter-node
+      N5("Match String"):::converter-node
+      N6("Boolean Math<br/><small>(OR)</small>"):::converter-node
+      N7("Switch"):::converter-node
+      N8("Group Output"):::default-node
+      N0 -->|"Self Path->String"| N1
+      N1 -->|"First Found->Value"| N2
+      N0 -->|"Self Path->String"| N3
+      N2 -->|"Value->Length"| N3
+      N3 -->|"String->Key"| N5
+      N4 -->|"Result->Boolean"| N6
+      N5 -->|"Result->Boolean"| N6
+      N6 -->|"Boolean->True"| N7
+      N7 -->|"Output->Selected"| N8
+      N0 -->|"Other Path->String"| N5
+      N0 -->|"Filter Local->Switch"| N7
+      N1 -->|"Count->A"| N4
+  ```
+  '''
+# ---
+# name: test_geometryscript_city_builder
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N2("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N3("Curve to Points"):::geometry-node
+      N4("Grid"):::geometry-node
+      N5("Random Value"):::converter-node
+      N6("Combine XYZ"):::converter-node
+      N7("Combine XYZ"):::converter-node
+      N8("Geometry Proximity"):::geometry-node
+      N9("Distribute Points on Faces"):::geometry-node
+      N10("Curve Line<br/><small>(0,0,1)</small>"):::geometry-node
+      N11("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
+      N12("Cube"):::geometry-node
+      N13("Curve to Mesh"):::geometry-node
+      N14("Delete Geometry"):::geometry-node
+      N15("Transform Geometry<br/><small>(0,0,0.5)</small>"):::geometry-node
+      N16("Instance on Points"):::geometry-node
+      N17("Join Geometry"):::geometry-node
+      N18("Group Output"):::default-node
+      N0 -->|"Road Width->Value"| N1
+      N1 -->|"Value->X"| N6
+      N0 -->|"Road Width->Value"| N2
+      N2 -->|"Value->X"| N7
+      N6 -->|"Vector->Start"| N10
+      N7 -->|"Vector->End"| N10
+      N10 -->|"Curve->Profile Curve"| N13
+      N0 -->|"Geometry->Curve"| N13
+      N0 -->|"Size X->Size X"| N4
+      N0 -->|"Size Y->Size Y"| N4
+      N4 -->|"Mesh->Mesh"| N9
+      N0 -->|"Geometry->Curve"| N3
+      N3 -->|"Points->Geometry"| N8
+      N8 -->|"Distance->A"| N11
+      N11 -->|"Result->Selection"| N14
+      N12 -->|"Mesh->Geometry"| N15
+      N0 -->|"Building Size Min->Min"| N5
+      N0 -->|"Building Size Max->Max"| N5
+      N0 -->|"Seed->Seed"| N5
+      N15 -->|"Geometry->Instance"| N16
+      N14 -->|"Geometry->Points"| N16
+      N16 -->|"Instances->Geometry"| N17
+      N17 -->|"Geometry->Result"| N18
+      N0 -->|"Seed->Seed"| N9
+      N0 -->|"Density->Density"| N9
+      N0 -->|"Road Width->B"| N11
+      N9 -->|"Points->Geometry"| N14
+      N5 -->|"Value->Scale"| N16
+      N13 -->|"Mesh->Geometry"| N17
+  ```
+  '''
+# ---
 # name: test_import_microscopy_meshes_node_group
   '''
   ```{mermaid}
@@ -44,6 +221,134 @@
       N0 -->|"Channel Affine Matrix->Transform"| N13
       N9 -->|"Element->Geometry"| N11
       N1 -->|"String->Strings"| N5
+  ```
+  '''
+# ---
+# name: test_import_microscopy_volume_nodebpy_node_group
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Format String"):::converter-node
+      N2("Import VDB"):::input-node
+      subgraph F0["Normalize Grid"]
+          N3("Get Named Grid"):::geometry-node
+          N4("Map Range<br/><small>(4,4,4)</small>"):::converter-node
+          N5("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+          N6("Switch"):::converter-node
+          N7("Set Grid Transform"):::geometry-node
+      end
+      N8("Store Named Grid"):::geometry-node
+      N9("Switch"):::converter-node
+      N10("Switch"):::converter-node
+      N11("Group Output"):::default-node
+      N0 -->|"template_str->Format"| N1
+      N0 -->|"cache_dir->cache_dir"| N1
+      N0 -->|"dataset_hash->dataset_has"| N1
+      N0 -->|"scale->scale"| N1
+      N0 -->|"x->x"| N1
+      N0 -->|"y->y"| N1
+      N0 -->|"z->z"| N1
+      N0 -->|"channel_ix->channel_ix"| N1
+      N0 -->|"Frame->t"| N1
+      N1 -->|"String->Path"| N2
+      N2 -->|"Volume->Volume"| N3
+      N3 -->|"Grid->Value"| N4
+      N4 -->|"Result->Value"| N5
+      N5 -->|"Value->False"| N6
+      N4 -->|"Result->True"| N6
+      N6 -->|"Output->Grid"| N7
+      N7 -->|"Grid->Grid"| N8
+      N8 -->|"Volume->True"| N10
+      N10 -->|"Output->Volume"| N11
+      N7 -->|"Grid->True"| N9
+      N0 -->|"Grid Name->Name"| N3
+      N0 -->|"Grid Name->Name"| N8
+      N0 -->|"Include->Switch"| N9
+      N0 -->|"Include->Switch"| N10
+      N0 -->|"Normalized->Switch"| N6
+      N0 -->|"VDB Minimum->From Min"| N4
+      N0 -->|"VDB Maximum->From Max"| N4
+      N0 -->|"Original Maximum->Value"| N5
+      N0 -->|"Channel Affine Matrix->Transform"| N7
+      N2 -->|"Volume->Volume"| N8
+      N9 -->|"Output->Grid"| N11
+  ```
+  '''
+# ---
+# name: test_mask_grid
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Object Info"):::input-node
+      N2("Collection Info"):::input-node
+      N3("Menu Switch"):::converter-node
+      N4("Realize Instances"):::geometry-node
+      N5("Mesh to Volume"):::geometry-node
+      N6("Get Named Grid"):::geometry-node
+      N7("Clip Field to Box"):::default-node
+      N8("Field to Grid"):::geometry-node
+      N9("Switch"):::converter-node
+      N10("Sample Grid"):::geometry-node
+      N11("Compare<br/><small>(GREATER_THAN)</small>"):::converter-node
+      N12("Switch"):::converter-node
+      N13("Boolean Math<br/><small>(NOT)</small>"):::converter-node
+      N14("Switch"):::converter-node
+      N15("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N16("Prune Grid"):::geometry-node
+      N17("Group Output"):::default-node
+      N0 -->|"Object->Object"| N1
+      N0 -->|"Collection->Collection"| N2
+      N1 -->|"Geometry->Object"| N3
+      N2 -->|"Instances->Collection"| N3
+      N0 -->|"Mesh->Mesh"| N3
+      N1 -->|"Geometry->Grid"| N3
+      N1 -->|"Geometry->Box"| N3
+      N0 -->|"With->Menu"| N3
+      N3 -->|"Output->Geometry"| N4
+      N4 -->|"Geometry->Mesh"| N5
+      N0 -->|"Mask Resolution->Voxel Size"| N5
+      N5 -->|"Volume->Volume"| N6
+      N0 -->|"Object->Box Object"| N7
+      N0 -->|"Grid->Topology"| N8
+      N7 -->|"Clipped Field->Mask"| N8
+      N3 -->|"Grid->Switch"| N9
+      N6 -->|"Grid->False"| N9
+      N0 -->|"Mask->True"| N9
+      N9 -->|"Output->Grid"| N10
+      N10 -->|"Value->A"| N11
+      N3 -->|"Box->Switch"| N12
+      N11 -->|"Result->False"| N12
+      N8 -->|"Mask->True"| N12
+      N12 -->|"Output->Boolean"| N13
+      N0 -->|"Invert->Switch"| N14
+      N12 -->|"Output->False"| N14
+      N13 -->|"Boolean->True"| N14
+      N0 -->|"Grid->Value"| N15
+      N14 -->|"Output->Value"| N15
+      N15 -->|"Value->Grid"| N16
+      N16 -->|"Grid->Masked Grid"| N17
+  ```
+  '''
+# ---
+# name: test_mask_grid.1
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Grid to Points"):::geometry-node
+      N2("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
+      N3("Boolean Math<br/><small>(OR)</small>"):::converter-node
+      N4("Delete Geometry"):::geometry-node
+      N5("Group Output"):::default-node
+      N0 -->|"Grid->Grid"| N1
+      N1 -->|"Value->A"| N2
+      N2 -->|"Result->Boolean"| N3
+      N1 -->|"Is Tile->Boolean"| N3
+      N1 -->|"Points->Geometry"| N4
+      N3 -->|"Boolean->Selection"| N4
+      N4 -->|"Geometry->Geometry"| N5
   ```
   '''
 # ---

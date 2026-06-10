@@ -129,6 +129,33 @@ def test_diagram_reroute_dedup(snapshot):
     assert snapshot == to_mermaid(tree)
 
 
+def test_diagram_frame(snapshot):
+    """Nodes inside a Frame render as a Mermaid subgraph."""
+    with TreeBuilder("DiagramFrame") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_out = tree.outputs.geometry()
+        with g.Frame("Transform"):
+            set_pos = g.SetPosition()
+            transform = g.TransformGeometry()
+        geo_in >> set_pos >> transform >> geo_out
+
+    assert snapshot == to_mermaid(tree)
+
+
+def test_diagram_nested_frames(snapshot):
+    """Frames nested inside frames produce nested subgraphs."""
+    with TreeBuilder("DiagramNestedFrame") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_out = tree.outputs.geometry()
+        with g.Frame("Outer"):
+            set_pos = g.SetPosition()
+            with g.Frame("Inner"):
+                transform = g.TransformGeometry()
+        geo_in >> set_pos >> transform >> geo_out
+
+    assert snapshot == to_mermaid(tree)
+
+
 def test_diagram_bit_decoder(snapshot):
     N_BITS = 4
     with g.tree("8-Bit Decoder", arrange="simple") as tree:

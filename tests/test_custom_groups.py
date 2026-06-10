@@ -87,7 +87,7 @@ def test_i_prefix_returns_socket_linker():
         linker = node.i.vertex_index
 
     assert isinstance(linker, Socket)
-    assert linker.socket_name == "Vertex Index"
+    assert linker.socket.name == "Vertex Index"
 
 
 def test_o_prefix_returns_socket_linker():

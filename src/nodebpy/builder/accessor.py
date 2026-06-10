@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, overload
+from typing import TYPE_CHECKING, Iterator, Literal, overload
 
 import bpy
 from bpy.types import NodeSocket
 
-from ._registry import _get_socket_linker
+from ._registry import _wrap_socket
 from ._utils import (
     SocketError,
     _allow_innactive_sockets,
@@ -14,6 +14,7 @@ from ._utils import (
 )
 
 if TYPE_CHECKING:
+    from .node import BaseNode
     from .socket import Socket
 
 
@@ -30,9 +31,12 @@ class SocketAccessor:
         self,
         collection: bpy.types.NodeInputs | bpy.types.NodeOutputs | list[NodeSocket],
         direction: Literal["input", "output"],
+        *,
+        builder: BaseNode | None = None,
     ):
         self._direction = direction
         self._collection = collection
+        self._builder = builder
 
     def _index(self, key: str | int) -> int:
         """Find socket index by identifier, falling back to name.
@@ -74,11 +78,18 @@ class SocketAccessor:
     def _get(self, key: str | int | slice) -> "Socket | list[Socket]":
         """Get a Socket for a socket by identifier, name, or index."""
         if isinstance(key, slice):
-            return [
-                _get_socket_linker(self._collection[i])
+            sockets = [
+                _wrap_socket(self._collection[i])
                 for i in range(*key.indices(len(self._collection)))
             ]
-        return _get_socket_linker(self._collection[self._index(key)])
+            if self._builder is not None:
+                for s in sockets:
+                    s._builder_node = self._builder
+            return sockets
+        socket = _wrap_socket(self._collection[self._index(key)])
+        if self._builder is not None:
+            socket._builder_node = self._builder
+        return socket
 
     @overload
     def __getitem__(self, key: slice) -> "list[Socket]": ...
@@ -92,10 +103,12 @@ class SocketAccessor:
     def _node(self) -> bpy.types.Node:
         """The node this accessor is associated with."""
         if isinstance(self._collection, list):
+            assert self._collection[0].node is not None
             return self._collection[0].node
         # bpy NodeInputs/NodeOutputs.id_data returns the NodeTree (top-level ID),
         # not the Node. Retrieve the node via the first socket instead.
         for s in self._collection:
+            assert s.node is not None
             return s.node
         return self._collection.data  # empty collection fallback
 
@@ -172,7 +185,7 @@ class SocketAccessor:
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
         see ``_visible_sockets`` for rationale.
         """
-        return [_get_socket_linker(s) for s in self._visible_sockets()]
+        return [_wrap_socket(s) for s in self._visible_sockets()]
 
     def _items(self) -> "list[tuple[str, Socket]]":
         """All visible sockets as (name, Socket) pairs.
@@ -180,7 +193,7 @@ class SocketAccessor:
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
         see ``_visible_sockets`` for rationale.
         """
-        return [(s.name, _get_socket_linker(s)) for s in self._visible_sockets()]
+        return [(s.name, _wrap_socket(s)) for s in self._visible_sockets()]
 
     def _keys(self) -> list[str]:
         """All visible socket names."""
@@ -189,7 +202,7 @@ class SocketAccessor:
     def __len__(self) -> int:
         return len(self._items())
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator["Socket"]:
         return iter(self._values())
 
     def __getattr__(self, name: str) -> "Socket":

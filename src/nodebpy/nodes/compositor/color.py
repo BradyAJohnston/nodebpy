@@ -4,20 +4,22 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import (
-    BaseNode as BaseNode,
-    SocketAccessor,
-    BooleanSocket,
-    ColorSocket,
-    FloatSocket,
-    MenuSocket,
-)
+from mathutils import Color
+
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
     InputColor,
-    InputMenu,
     InputFloat,
+    InputMenu,
+)
+
+from ...builder.socket import (
+    BooleanSocket,
+    ColorSocket,
+    FloatSocket,
+    MenuSocket,
 )
 
 
@@ -488,19 +490,19 @@ class ColorBalance(BaseNode):
         )
 
     @property
-    def input_whitepoint(self) -> tuple[float, float, float]:
+    def input_whitepoint(self) -> Color:
         return self.node.input_whitepoint
 
     @input_whitepoint.setter
-    def input_whitepoint(self, value: tuple[float, float, float]):
+    def input_whitepoint(self, value: Color | tuple[float, float, float]):
         self.node.input_whitepoint = value
 
     @property
-    def output_whitepoint(self) -> tuple[float, float, float]:
+    def output_whitepoint(self) -> Color:
         return self.node.output_whitepoint
 
     @output_whitepoint.setter
-    def output_whitepoint(self, value: tuple[float, float, float]):
+    def output_whitepoint(self, value: Color | tuple[float, float, float]):
         self.node.output_whitepoint = value
 
 
