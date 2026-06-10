@@ -796,7 +796,7 @@ def _dispatch_vector_compare(
     return Socket._dispatch_compare(cast("Socket", self), other, operation)
 
 
-class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
+class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult, _RotationResult]):
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketVector
@@ -902,13 +902,32 @@ class _VectorMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
         if interpolation_type == "STEPPED":
             kwargs = {"Steps_FLOAT3": steps}
             node._establish_links(**kwargs)
-        return node.o.vector  # ty: ignore[invalid-return-type]
+        return node.o.vector  # ty: ignore[invalid-return-type]\
+
+    def align_rotation(
+        self,
+        rotation: InputRotation = None,
+        factor: InputFloat = 1.0,
+        *,
+        axis: Literal["X", "Y", "Z"] = "Z",
+        pivot_axis: Literal["AUTO", "X", "Y", "Z"] = "AUTO",
+    ) -> _RotationResult:
+        """Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input."""
+        from ..nodes.geometry import AlignRotationToVector
+
+        return AlignRotationToVector(
+            rotation=rotation,
+            factor=factor,
+            vector=self.socket,
+            axis=axis,
+            pivot_axis=pivot_axis,
+        ).o.rotation  # ty: ignore[invalid-return-type]
 
     def rotate(
         self,
         rotation: InputRotation,
     ) -> _VectorResult:
-        "Rotate this vector by the given rotation."
+        "Rotate this vector by the given rotation. Uses `RotateVector` with this socket as the vector input."
         self._assert_output("rotate")
         from ..nodes.geometry import RotateVector
 
@@ -1295,6 +1314,26 @@ class _RotationMixin(BaseSocket, Generic[_FloatResult, _VectorResult]):
 
         o = RotationToAxisAngle(self.socket).o
         return ResultAxisAngle(o.axis, o.angle)  # ty: ignore[invalid-return-type]
+
+    def align_to_vector(
+        self,
+        vector: InputVector = (0.0, 0.0, 1.0),
+        factor: InputFloat = 1.0,
+        *,
+        axis: Literal["X", "Y", "Z"] = "Z",
+        pivot_axis: Literal["AUTO", "X", "Y", "Z"] = "AUTO",
+    ) -> Self:
+        "Align the specified axis of this rotation to the given vector. Uses `AlignRotationToVector` with this socket as the rotation input."
+        self._assert_output("align_to_vector")
+        from ..nodes.geometry import AlignRotationToVector
+
+        return AlignRotationToVector(
+            rotation=self.socket,
+            factor=factor,
+            vector=vector,
+            axis=axis,
+            pivot_axis=pivot_axis,
+        ).o.rotation  # ty: ignore[invalid-return-type]
 
 
 class _FloatMixDataTypeFactory:
@@ -2001,7 +2040,11 @@ class FloatSocketGrid(
 
 # -- Vector --
 class VectorSocket(
-    _VectorMixin["FloatSocket", "VectorSocket"],
+    _VectorMixin[
+        "FloatSocket",
+        "VectorSocket",
+        "RotationSocket",
+    ],
     _ToListMixin["VectorSocketList"],
     Socket,
 ):
@@ -2052,7 +2095,8 @@ class VectorSocket(
 
 
 class VectorSocketList(
-    _VectorMixin["FloatSocketList", "VectorSocketList"], _ListMixin[VectorSocket]
+    _VectorMixin["FloatSocketList", "VectorSocketList", "RotationSocketList"],
+    _ListMixin[VectorSocket],
 ):
     """"""
 
