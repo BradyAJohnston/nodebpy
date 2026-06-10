@@ -9,6 +9,7 @@ from typing import (
     cast,
     get_args,
 )
+
 import bpy
 import bpy.types
 from bpy.types import (
@@ -21,6 +22,7 @@ from bpy.types import (
     NodeSocketString,
 )
 from mathutils import Euler
+
 from ...builder import (
     BaseNode,
     BooleanSocket,
@@ -2346,9 +2348,7 @@ class FieldToList(DynamicInputsMixin, BaseNode):
     ) -> StringSocketList:
         return StringSocketList(self._new_item("STRING", name, input))
 
-    def menu(
-        self, input: InputString = None, name: str | None = None
-    ) -> MenuSocketList:
+    def menu(self, input: InputMenu = None, name: str | None = None) -> MenuSocketList:
         return MenuSocketList(self._new_item("MENU", name, input))
 
 
@@ -2469,22 +2469,30 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     def capture_float(
         self, field: InputFloat = None, name: str | None = None
     ) -> FloatSocketGrid:
-        return FloatSocketGrid(self._new_item(type="FLOAT", name=name))
+        out = self._new_item(type="FLOAT", name=name)
+        self._establish_links(**{out.name: field})
+        return FloatSocketGrid(out)
 
     def capture_boolean(
         self, field: InputBoolean = None, name: str | None = None
     ) -> BooleanSocketGrid:
-        return BooleanSocketGrid(self._new_item(type="BOOLEAN", name=name))
+        out = self._new_item(type="BOOLEAN", name=name)
+        self._establish_links(**{out.name: field})
+        return BooleanSocketGrid(out)
 
     def capture_vector(
         self, field: InputVector = None, name: str | None = None
     ) -> VectorSocketGrid:
-        return VectorSocketGrid(self._new_item(type="VECTOR", name=name))
+        out = self._new_item(type="VECTOR", name=name)
+        self._establish_links(**{out.name: field})
+        return VectorSocketGrid(out)
 
     def capture_integer(
         self, field: InputInteger = None, name: str | None = None
     ) -> IntegerSocketGrid:
-        return IntegerSocketGrid(self._new_item(type="INT", name=name))
+        out = self._new_item(type="INT", name=name)
+        self._establish_links(**{out.name: field})
+        return IntegerSocketGrid(out)
 
 
 class SDFGridBoolean(BaseNode):
