@@ -18,8 +18,7 @@
       geometry = tree.inputs.geometry("Geometry")
       geometry_1 = tree.outputs.geometry("Geometry")
   
-      position = g.Position()
-      geometry >> g.SetPosition(offset=position) >> g.TransformGeometry() >> geometry_1
+      geometry >> g.SetPosition(offset=g.Position()) >> g.TransformGeometry() >> geometry_1
   '''
 # ---
 # name: test_snapshot_fanout
@@ -41,13 +40,13 @@
 # ---
 # name: test_snapshot_math_chain
   '''
-  from nodebpy import geometry as g, TreeBuilder
+  from nodebpy import TreeBuilder
   
   with TreeBuilder("MathChain") as tree:
       value = tree.inputs.float("Value", 1.0)
       result = tree.outputs.float("Result")
   
-      ((value * 2.0) + 1.0) >> result
+      value * 2.0 + 1.0 >> result
   '''
 # ---
 # name: test_snapshot_math_offset
@@ -64,13 +63,13 @@
 # ---
 # name: test_snapshot_math_single
   '''
-  from nodebpy import geometry as g, TreeBuilder
+  from nodebpy import TreeBuilder
   
   with TreeBuilder("MathSingle") as tree:
       value = tree.inputs.float("Value", 1.0)
       result = tree.outputs.float("Result")
   
-      (value * 2.0) >> result
+      value * 2.0 >> result
   '''
 # ---
 # name: test_snapshot_simple
@@ -94,12 +93,12 @@
 # ---
 # name: test_snapshot_with_properties
   '''
-  from nodebpy import geometry as g, TreeBuilder
+  from nodebpy import TreeBuilder
   
   with TreeBuilder("SnapshotProps") as tree:
       value = tree.inputs.float("Value", 1.0)
       result = tree.outputs.float("Result")
   
-      (value * 2.0) >> result
+      value * 2.0 >> result
   '''
 # ---

@@ -1,10 +1,48 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for nodebpy.codegen.to_python() — node tree → Python code generation."""
 
+import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy.codegen import to_python
+from nodebpy.codegen import CodegenError, to_python
+
+
+def _structure(node_tree):
+    """A comparable structural signature: nodes (with key props) and links."""
+    from nodebpy.codegen import _effective_links
+
+    nodes = sorted(
+        (
+            n.bl_idname,
+            str(getattr(n, "operation", "")),
+            str(getattr(n, "data_type", "")),
+            str(getattr(n, "domain", "")),
+            str(getattr(n, "mode", "")),
+        )
+        for n in node_tree.nodes
+        if n.bl_idname not in ("NodeReroute", "NodeFrame")
+    )
+    links = sorted(
+        (
+            link.from_node.bl_idname,
+            link.from_socket.identifier,
+            link.to_node.bl_idname,
+            link.to_socket.identifier,
+        )
+        for link in _effective_links(node_tree)
+    )
+    return nodes, links
+
+
+def _assert_roundtrip(tree):
+    """Exec the generated code and assert the rebuilt tree is structurally equal."""
+    code = to_python(tree)
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt: TreeBuilder = ns["tree"]
+    assert _structure(rebuilt.tree) == _structure(tree.tree), code
+    return code
 
 
 # ---------------------------------------------------------------------------
@@ -297,6 +335,236 @@ def test_operator_output_is_valid_python():
         val = tree.inputs.float("Value", 1.0)
         (val * 2.0 + 1.0) >> tree.outputs.float("Result")
     ast.parse(to_python(tree))
+
+
+# ---------------------------------------------------------------------------
+# Inlining and round-trip fidelity
+# ---------------------------------------------------------------------------
+
+
+def test_single_use_node_inlines_as_kwarg():
+    """A node consumed exactly once is embedded in its consumer's call."""
+    with TreeBuilder("KwargInline") as tree:
+        geo_in = tree.inputs.geometry()
+        noise = g.NoiseTexture(scale=3.0)
+        g.SetPosition(geo_in, offset=noise) >> tree.outputs.geometry()
+    code = to_python(tree)
+    assert "offset=g.NoiseTexture(scale=3.0)" in code
+    assert "noise_texture =" not in code
+
+
+def test_regression_chain_tail_into_kwarg_keeps_link():
+    """A lifted chain whose tail feeds a non-first input must not drop the link.
+
+    Regression: the divide expression below was emitted as an orphaned
+    statement and CombineXYZ lost its z= input entirely.
+    """
+    with TreeBuilder("HelloWorld") as tree:
+        height = tree.inputs.float("Height", 3.0)
+        omega = tree.inputs.float("Omega", 2.0)
+        pos = g.Position().o.position
+        distance = g.Math.square_root(pos.x**2 + pos.y**2)
+        z = height * g.Math.sine(distance * omega) / distance
+        (
+            g.Grid(20, 20, 200, 200)
+            >> g.SetPosition(offset=g.CombineXYZ(z=z))
+            >> g.SetShadeSmooth.face()
+            >> tree.outputs.geometry("Mesh")
+        )
+    code = _assert_roundtrip(tree)
+    assert "g.CombineXYZ(z=" in code
+
+
+def test_roundtrip_structural_chain():
+    with TreeBuilder("RoundTripChain") as tree:
+        geo_in = tree.inputs.geometry()
+        pos = g.Position()
+        (
+            geo_in
+            >> g.SetPosition(offset=pos)
+            >> g.TransformGeometry()
+            >> tree.outputs.geometry()
+        )
+    _assert_roundtrip(tree)
+
+
+def test_multi_input_socket_becomes_tuple():
+    """Several links into one multi-input socket emit a tuple kwarg.
+
+    Regression: JoinGeometry's second branch was silently dropped because the
+    chain logic skipped every link sharing the multi-input identifier.
+    """
+    with TreeBuilder("MultiInput") as tree:
+        a = g.Cube()
+        b = g.UVSphere()
+        g.JoinGeometry((a, b)) >> tree.outputs.geometry()
+    code = _assert_roundtrip(tree)
+    assert "g.JoinGeometry(geometry=(g.Cube(), g.UVSphere()))" in code
+
+
+def test_roundtrip_structural_city_builder():
+    with TreeBuilder("Voxelise") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        seed = tree.inputs.integer("Seed")
+        road_width = tree.inputs.float("Road Width", 0.25)
+        density = tree.inputs.float("Density", 10.0)
+
+        curve_mesh = geo >> g.CurveToMesh(
+            profile_curve=g.CurveLine(
+                start=g.CombineXYZ(x=road_width * -0.5),
+                end=g.CombineXYZ(x=road_width * 0.5),
+            ),
+        )
+        building_points = g.Grid(5.0, 5.0) >> g.DistributePointsOnFaces(
+            density=density, seed=seed
+        )
+        road_points = geo >> g.CurveToPoints(mode="EVALUATED")
+        building_points = g.DeleteGeometry.point(
+            building_points,
+            selection=g.GeometryProximity(
+                road_points, target_element="POINTS"
+            ).o.distance
+            < road_width,
+        )
+        buildings = building_points >> g.InstanceOnPoints(
+            instance=g.Cube() >> g.TransformGeometry(translation=(0, 0, 0.5)),
+        )
+        g.JoinGeometry((curve_mesh, buildings)) >> tree.outputs.geometry("Result")
+    _assert_roundtrip(tree)
+
+
+def test_roundtrip_structural_boolean_decoder():
+    from functools import reduce
+    from itertools import product
+    from operator import and_
+
+    with TreeBuilder("Decoder") as tree:
+        bits = [tree.inputs.boolean(f"Bit {i}") for i in range(2)]
+        not_bits = [g.BooleanMath.l_not(b) for b in bits]
+        for i, combo in enumerate(product((False, True), repeat=2)):
+            terms = [b if on else nb for b, nb, on in zip(bits, not_bits, combo)]
+            reduce(and_, terms) >> tree.outputs.boolean(f"Out {i}")
+    _assert_roundtrip(tree)
+
+
+# ---------------------------------------------------------------------------
+# Operator lifting: boolean, integer, abs(), modulo
+# ---------------------------------------------------------------------------
+
+
+def test_boolean_math_lifts_to_operators():
+    with TreeBuilder("BoolOps") as tree:
+        a = tree.inputs.boolean("A")
+        b = tree.inputs.boolean("B")
+        ((a & b) | ~a) >> tree.outputs.boolean("Out")
+    code = _assert_roundtrip(tree)
+    assert "a & b | ~a" in code
+    assert "BooleanMath" not in code
+
+
+def test_integer_math_lifts_to_operators():
+    with TreeBuilder("IntOps") as tree:
+        i = tree.inputs.integer("I")
+        (i // 2 + abs(i)) >> tree.outputs.integer("Out")
+    code = _assert_roundtrip(tree)
+    assert "i // 2 + abs(i)" in code
+    assert "IntegerMath" not in code
+
+
+def test_compare_emits_operation_and_data_type():
+    """Compare's positional-or-keyword props must survive the round-trip."""
+    with TreeBuilder("CompareProps") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        (val < 0.5) >> tree.outputs.boolean("Out")
+    code = _assert_roundtrip(tree)
+    assert 'operation="LESS_THAN"' in code
+
+
+def test_vector_compare_emits_mode():
+    """VECTOR Compare requires mode= (popped from **kwargs in __init__)."""
+    with TreeBuilder("VecCompare") as tree:
+        vec = tree.inputs.vector("V")
+        (vec < (0.5, 0.5, 0.5)) >> tree.outputs.boolean("Out")
+    code = _assert_roundtrip(tree)
+    assert 'data_type="VECTOR"' in code
+    assert "mode=" in code
+
+
+def test_float_modulo_round_trips_to_floored_modulo():
+    """Python % on floats creates FLOORED_MODULO; lifting must mirror that."""
+    with TreeBuilder("Modulo") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        (val % 3.0) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert "value % 3.0" in code
+
+
+# ---------------------------------------------------------------------------
+# Unsupported nodes and custom emitters
+# ---------------------------------------------------------------------------
+
+
+def test_unsupported_node_raises_by_default(monkeypatch):
+    from nodebpy.codegen import _get_node_registry
+
+    with TreeBuilder("Unsupported") as tree:
+        g.SetPosition()
+    monkeypatch.delitem(_get_node_registry(), "GeometryNodeSetPosition")
+    with pytest.raises(CodegenError, match="GeometryNodeSetPosition"):
+        to_python(tree)
+
+
+def test_unsupported_node_placeholder_when_not_strict(monkeypatch):
+    from nodebpy.codegen import _get_node_registry
+
+    with TreeBuilder("UnsupportedLoose") as tree:
+        g.SetPosition()
+    monkeypatch.delitem(_get_node_registry(), "GeometryNodeSetPosition")
+    code = to_python(tree, strict=False)
+    assert "TODO: unsupported node" in code
+
+
+def test_register_emitter_overrides_default():
+    from nodebpy.codegen import _EMITTERS, BinOp, Call, register_emitter
+
+    @register_emitter("GeometryNodeSetShadeSmooth")
+    def _emit_shade_smooth(node, ctx):
+        if node.domain != "FACE":
+            return None
+        ctx.used_aliases.add("g")
+        call = Call("g.SetShadeSmooth.face")
+        link = ctx.input_link(node, node.inputs[0].identifier)
+        if link is not None:
+            return BinOp(">>", ctx.upstream_expr(link), call)
+        return call
+
+    try:
+        with TreeBuilder("Emitter") as tree:
+            g.Cube() >> g.SetShadeSmooth.face() >> tree.outputs.geometry()
+        code = to_python(tree)
+        assert "g.SetShadeSmooth.face()" in code
+        assert 'domain="FACE"' not in code
+    finally:
+        _EMITTERS.pop("GeometryNodeSetShadeSmooth", None)
+
+
+# ---------------------------------------------------------------------------
+# Imports
+# ---------------------------------------------------------------------------
+
+
+def test_imports_only_used_aliases():
+    with TreeBuilder("GeoOnly") as tree:
+        g.Position()
+    code = to_python(tree)
+    assert code.splitlines()[0] == "from nodebpy import geometry as g, TreeBuilder"
+
+
+def test_imports_no_alias_for_empty_tree():
+    with TreeBuilder("Empty") as tree:
+        tree.inputs.float("Value", 1.0)
+    code = to_python(tree)
+    assert code.splitlines()[0] == "from nodebpy import TreeBuilder"
 
 
 # ---------------------------------------------------------------------------
