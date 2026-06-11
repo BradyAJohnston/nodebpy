@@ -99,21 +99,29 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 - [x] Fixed `_non_default_props` collision with base-Node rna properties
   (socket param `color` shadowed the node UI ``color`` property).
 
+### Stage 8 (items API + zone emitters — June 2026)
+- [x] **Items API unification** (full design + completion notes in
+  [ITEMS_API_PLAN.md](ITEMS_API_PLAN.md)): single `ItemsMixin` for all
+  variable-items nodes, `Item`/`ZoneItem` handles (`item.current` /
+  `item.next` / `item.result`), `capture(value, name=...)`, unified
+  `items=` kwarg with type-string declarations, zone wrapper unpacking,
+  dead-param/monkeypatch fixes.
+- [x] **Zone emitters**: Repeat/Simulation/ForEach paired nodes emit the
+  canonical handle form — `zone = g.RepeatZone(n)` +
+  `h = zone.item("name", initial)` lines at the input node's position
+  (in creation-counter order so socket identifiers round-trip), deferred
+  `expr >> h.next` statements at the output node's position, and both bpy
+  nodes dissolved into per-output handle expressions. `_topo_sort` gains
+  a synthetic input→paired-output edge; emitters may return `_Val` to
+  dissolve nodes; `DictExpr` IR added for items dicts. ForEach's default
+  generation item maps to the new `zone.generation` handle. Fixed
+  `RepeatZone` linking `Iterations` before pairing (inactive sockets).
+  Known gaps: non-default *unlinked* `Skip` values, hand-built zones
+  whose first generation item isn't the default, item reordering.
+
 ## To Do
 
 ### High value
-- [ ] **Items API unification** (do before zone codegen — full design in
-  [ITEMS_API_PLAN.md](ITEMS_API_PLAN.md)): single `ItemsMixin` for all
-  variable-items nodes (CaptureAttribute, Bake, FormatString, FieldToList,
-  IndexSwitch, MenuSwitch, zones), `Item`/`ZoneItem` handle objects
-  (`item.current` / `item.next` / `item.result`), `capture(value, name=...)`
-  with explicit naming, unified `items=` constructor kwarg, zone wrapper
-  unpacking consistency, dead-param/monkeypatch fixes.
-- [ ] **Zone emitters** (after the API cleanup): Repeat/Simulation/ForEach
-  paired nodes currently produce broken constructor pairs. Emit the
-  canonical handle form: zone declaration at input-node position, deferred
-  `expr >> item.next` statements at output-node position, `DictExpr` IR for
-  items dicts.
 - [ ] **Remaining socket-method specs**: `FormatString` → `.format({...})`
   and `StringJoin` (dict/multi-input emission — need custom emitters),
   `.find()` (two-output NamedTuple result), `Mix` → `factor.mix.*`,
