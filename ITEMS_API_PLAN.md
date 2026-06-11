@@ -220,7 +220,12 @@ Existing spellings (`zone.input.o.value`, constructor `items=` dict,
      (`_GenerationItem`); `capture_generated` delegates to
      `add_generated_item`.
 5. Then Stage 8 codegen: zone emitters targeting the handle/canonical form,
-   plus `DictExpr`.
+   plus `DictExpr`. ✅ DONE — see PLAN.md Stage 8 for the emitter design
+   and known gaps. Along the way: `ItemsMixin.add_item` /
+   `add_generated_item` accept plain default values,
+   `ForEachGeometryElementZone.generation` exposes the default generation
+   item handle, and `RepeatZone` pairs before linking `Iterations`
+   (sockets on unpaired zone nodes are inactive).
 
 Each step: `uv run pytest` green before moving on; the structural round-trip
 harness in tests/test_codegen.py is the safety net for codegen stages.

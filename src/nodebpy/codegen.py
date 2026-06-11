@@ -141,6 +141,17 @@ class TupleExpr(Expr):
 
 
 @dataclass
+class DictExpr(Expr):
+    """A dict literal with string keys, used for ``items=`` kwargs."""
+
+    items: dict[str, Expr]
+
+    def render(self) -> str:
+        inner = ", ".join(f"{_fmt(k)}: {v.render()}" for k, v in self.items.items())
+        return "{" + inner + "}"
+
+
+@dataclass
 class MethodCall(Expr):
     """A method call on a receiver expression, e.g. ``value.point.at(i)``.
 
@@ -445,6 +456,19 @@ def _effective_links(node_tree) -> list[_Link]:
     return links
 
 
+def _ordering_edges(node_tree):
+    """(from, to) node pairs that must hold in emission order: real links
+    plus a synthetic edge from each zone input node to its paired output,
+    so the zone wrapper is declared before the output side is emitted."""
+    for link in node_tree.links:
+        if link.from_node != link.to_node:
+            yield link.from_node, link.to_node
+    for node in node_tree.nodes:
+        paired = getattr(node, "paired_output", None)
+        if paired is not None:
+            yield node, paired
+
+
 def _topo_sort(node_tree) -> list:
     """Return nodes in topological order (dependencies first)."""
     try:
@@ -453,9 +477,8 @@ def _topo_sort(node_tree) -> list:
         G: nx.DiGraph = nx.DiGraph()
         for node in node_tree.nodes:
             G.add_node(node)
-        for link in node_tree.links:
-            if link.from_node != link.to_node:
-                G.add_edge(link.from_node, link.to_node)
+        for from_node, to_node in _ordering_edges(node_tree):
+            G.add_edge(from_node, to_node)
         return list(nx.topological_sort(G))
     except ImportError:
         pass
@@ -466,11 +489,10 @@ def _topo_sort(node_tree) -> list:
     node_by_name = {n.name: n for n in nodes}
     in_deg: dict[str, int] = {n.name: 0 for n in nodes}
     adj: dict[str, list[str]] = {n.name: [] for n in nodes}
-    for link in node_tree.links:
-        fn, tn = link.from_node.name, link.to_node.name
-        if fn != tn:
-            adj[fn].append(tn)
-            in_deg[tn] += 1
+    for from_node, to_node in _ordering_edges(node_tree):
+        fn, tn = from_node.name, to_node.name
+        adj[fn].append(tn)
+        in_deg[tn] += 1
     queue: deque = deque(n for n in nodes if in_deg[n.name] == 0)
     order = []
     while queue:
@@ -525,6 +547,7 @@ class EmitContext:
     counter: dict[str, int] = field(default_factory=dict)
     used_aliases: set[str] = field(default_factory=set)
     pending_lines: list[str] = field(default_factory=list)
+    zones: dict[str, "_ZoneState"] = field(default_factory=dict)
 
     def input_link(self, node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
@@ -1598,7 +1621,7 @@ def _dissolve_val(ctx: EmitContext, node, spec: DissolveSpec) -> _Val | None:
 # Custom emitters
 # ---------------------------------------------------------------------------
 
-EmitterFn = Callable[[Any, EmitContext], "Expr | None"]
+EmitterFn = Callable[[Any, EmitContext], "Expr | _Val | None"]
 
 _EMITTERS: dict[str, EmitterFn] = {}
 
@@ -1610,7 +1633,10 @@ def register_emitter(bl_idname: str) -> Callable[[EmitterFn], EmitterFn]:
     :class:`Expr` for the node (or ``None`` to fall back to the default
     emission). ``ctx`` is an :class:`EmitContext`; useful helpers are
     ``ctx.input_expr(node, socket)``, ``ctx.upstream_expr(link)`` and
-    ``ctx.constructor(node)``.
+    ``ctx.constructor(node)``. Emitters may also return a :class:`_Val`
+    with per-output expressions (and queue statements on
+    ``ctx.pending_lines``) to dissolve a node entirely, as the zone
+    emitters do.
 
     Example::
 
@@ -1950,7 +1976,7 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
         if emitter is not None:
             emitted = emitter(node, ctx)
             if emitted is not None:
-                val = _Val(emitted)
+                val = emitted if isinstance(emitted, _Val) else _Val(emitted)
         if val is None:
             val = _socket_method_val(ctx, node)
         if val is None:
@@ -2075,3 +2101,435 @@ def _emit_compare(node, ctx: EmitContext) -> Expr | None:
     if node.data_type == "VECTOR":
         call.kwargs["mode"] = Lit(node.mode)
     return call
+
+
+# ---------------------------------------------------------------------------
+# Zone emitters
+#
+# Paired zone nodes (Simulation/Repeat/ForEachGeometryElement) cannot be
+# expressed as two independent constructors: the wrapper owns the pairing
+# and the shared item collections. The input-node emitter declares the zone
+# wrapper plus one ``zone.item(...)`` handle line per item and dissolves the
+# input node into per-output handle expressions (``h.current``); the
+# output-node emitter renders its incoming links as ``expr >> h.next``
+# statements at its own topological position and dissolves into
+# ``h.result`` expressions. _topo_sort() adds a synthetic input→output
+# edge so the input node is always visited first. Item handle lines are
+# emitted in original creation order (the numeric suffix of the socket
+# identifier) so the rebuilt zone assigns identical socket identifiers.
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class _ZoneState:
+    """Per-zone emission state handed from the input to the output emitter."""
+
+    targets: dict[str, Expr]  # output-node input identifier → ``>>`` target
+    outputs: dict[str, Expr]  # output-node output identifier → expression
+
+
+def _prefixed_sockets(node, prefix: str, *, output: bool = False) -> list:
+    sockets = node.outputs if output else node.inputs
+    return [s for s in sockets if s.identifier.startswith(prefix)]
+
+
+def _ident_num(identifier: str) -> int:
+    """The numeric suffix of an item socket identifier (``Item_3`` → 3)."""
+    try:
+        return int(identifier.rsplit("_", 1)[1])
+    except (IndexError, ValueError):
+        return -1
+
+
+def _item_socket_type(item) -> str:
+    return getattr(item, "socket_type", None) or item.data_type
+
+
+def _significant_default(socket) -> Any | None:
+    """The socket's default value if it is worth emitting, else None."""
+    if not hasattr(socket, "default_value"):
+        return None
+    try:
+        value = socket.default_value
+    except Exception:
+        return None
+    if isinstance(value, str):
+        return value or None
+    if value is None or _is_zero(value):
+        return None
+    try:
+        return tuple(value)
+    except TypeError:
+        return value
+
+
+def _needs_type_kwarg(
+    types: tuple[str, ...],
+    type_map: dict[str, str],
+    item_type: str,
+    link: _Link | None,
+    default: Any,
+) -> bool:
+    """True when item-type inference from the link source or default value
+    would not reproduce ``item_type``, so ``type=`` must be emitted."""
+    if link is not None:
+        from .types import SOCKET_COMPATIBILITY
+
+        for t in SOCKET_COMPATIBILITY.get(link.from_socket.type, ()):
+            if t in types:
+                return type_map.get(t, t) != item_type
+        return True
+    if default is not None:
+        from .builder.items import _infer_value_type
+
+        return _infer_value_type(default) != item_type
+    return True
+
+
+def _zone_value_expr(ctx: EmitContext, link: _Link) -> Expr:
+    """Upstream expression for an item value; pinned to the exact output
+    socket when the source node has several, so the rebuilt link cannot
+    drift to a different best-compatible output."""
+    real_outputs = [s for s in link.from_node.outputs if s.enabled]
+    if len(real_outputs) > 1:
+        return ctx.socket_expr(link)
+    return ctx.upstream_expr(link)
+
+
+def _zone_required(node) -> Any:
+    paired = getattr(node, "paired_output", None)
+    if paired is None:
+        raise CodegenError(
+            f"zone input node '{node.name}' has no paired output — the tree "
+            "cannot be expressed with a zone wrapper"
+        )
+    return paired
+
+
+class _ZoneItemPlan(NamedTuple):
+    """One ``zone.<method>(...)`` declaration line plus its socket roles."""
+
+    sort_key: int
+    method: str  # "item" / "main_item" / "generated_item"
+    item: Any
+    types: tuple[str, ...]
+    type_map: dict[str, str]
+    value_link: _Link | None  # link supplying the declaration's value=
+    default_socket: Any | None  # socket probed for a literal default
+    extra_kwargs: dict[str, Expr]
+    current_id: str | None  # input-node output identifier (read in body)
+    next_id: str | None  # output-node input identifier (>> target)
+    result_id: str | None  # output-node output identifier (read after)
+    roles: tuple[str, str, str]  # expr attr names for the three sockets
+
+
+def _emit_zone_items(
+    ctx: EmitContext,
+    zone_ref: Ref,
+    node,
+    out_node,
+    plans: list[_ZoneItemPlan],
+) -> tuple[dict[str, Expr], dict[str, Expr], dict[str, Expr]]:
+    """Emit handle declaration lines and build the three socket-role maps."""
+    consumed_current = {
+        link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())
+    }
+    linked_next = {
+        link.to_socket.identifier for link in ctx.incoming.get(out_node.name, ())
+    }
+    consumed_result = {
+        link.from_socket.identifier for link in ctx.outgoing.get(out_node.name, ())
+    }
+
+    current_map: dict[str, Expr] = {}
+    targets: dict[str, Expr] = {}
+    outputs: dict[str, Expr] = {}
+    for plan in sorted(plans, key=lambda p: p.sort_key):
+        item_type = _item_socket_type(plan.item)
+        args: list[Expr] = [Lit(plan.item.name)]
+        kwargs: dict[str, Expr] = {}
+        default = None
+        if plan.value_link is not None:
+            args.append(_zone_value_expr(ctx, plan.value_link))
+        elif plan.default_socket is not None:
+            default = _significant_default(plan.default_socket)
+            if default is not None:
+                args.append(Lit(default))
+        if _needs_type_kwarg(
+            plan.types, plan.type_map, item_type, plan.value_link, default
+        ):
+            kwargs["type"] = Lit(item_type)
+        kwargs.update(plan.extra_kwargs)
+        call = Call(f"{zone_ref.name}.{plan.method}", args, kwargs)
+
+        needed = (
+            plan.current_id in consumed_current
+            or plan.next_id in linked_next
+            or plan.result_id in consumed_result
+        )
+        if needed:
+            handle = Ref(_make_var(plan.item.name, ctx.counter))
+            ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
+            current_attr, next_attr, result_attr = plan.roles
+            if plan.current_id is not None:
+                current_map[plan.current_id] = Attr(handle, current_attr)
+            if plan.next_id is not None:
+                targets[plan.next_id] = Attr(handle, next_attr)
+            if plan.result_id is not None:
+                outputs[plan.result_id] = Attr(handle, result_attr)
+        else:
+            ctx.pending_lines.append(f"    {call.render()}")
+    return current_map, targets, outputs
+
+
+def _emit_state_zone_input(
+    node,
+    ctx: EmitContext,
+    *,
+    ctor: str,
+    label: str,
+    items_attr: str,
+    zone_cls_attrs: tuple[tuple[str, ...], dict[str, str]],
+    special_outputs: dict[str, str],
+    ctor_args: list[Expr],
+    extra_targets: dict[str, str],
+) -> _Val:
+    """Shared input-node emitter for simulation/repeat zones."""
+    out_node = _zone_required(node)
+    ctx.used_aliases.add("g")
+    zone_ref = Ref(_make_var(label, ctx.counter))
+    ctx.pending_lines.append(f"    {zone_ref.name} = {Call(ctor, ctor_args).render()}")
+
+    types, type_map = zone_cls_attrs
+    items = list(getattr(out_node, items_attr))
+    in_inputs = _prefixed_sockets(node, "Item_")
+    in_outputs = _prefixed_sockets(node, "Item_", output=True)
+    out_inputs = _prefixed_sockets(out_node, "Item_")
+    out_outputs = _prefixed_sockets(out_node, "Item_", output=True)
+
+    plans = [
+        _ZoneItemPlan(
+            sort_key=_ident_num(in_inputs[i].identifier),
+            method="item",
+            item=item,
+            types=types,
+            type_map=type_map,
+            value_link=ctx.input_link(node, in_inputs[i].identifier),
+            default_socket=in_inputs[i],
+            extra_kwargs={},
+            current_id=in_outputs[i].identifier,
+            next_id=out_inputs[i].identifier,
+            result_id=out_outputs[i].identifier,
+            roles=("current", "next", "result"),
+        )
+        for i, item in enumerate(items)
+    ]
+    current_map, targets, outputs = _emit_zone_items(
+        ctx, zone_ref, node, out_node, plans
+    )
+    for identifier, attr in special_outputs.items():
+        current_map[identifier] = Attr(zone_ref, attr)
+    for identifier, attr in extra_targets.items():
+        targets[identifier] = Attr(zone_ref, attr)
+
+    ctx.zones[out_node.name] = _ZoneState(targets, outputs)
+    return _Val(None, outputs=current_map)
+
+
+@register_emitter("GeometryNodeSimulationInput")
+def _emit_simulation_input(node, ctx: EmitContext) -> _Val:
+    from .nodes.geometry.zone import BaseSimulationZone
+
+    return _emit_state_zone_input(
+        node,
+        ctx,
+        ctor="g.SimulationZone",
+        label="simulation_zone",
+        items_attr="state_items",
+        zone_cls_attrs=(
+            BaseSimulationZone._socket_data_types,
+            BaseSimulationZone._type_map,
+        ),
+        special_outputs={"Delta Time": "delta_time"},
+        ctor_args=[],
+        extra_targets={"Skip": "output.i.skip"},
+    )
+
+
+@register_emitter("GeometryNodeRepeatInput")
+def _emit_repeat_input(node, ctx: EmitContext) -> _Val:
+    from .nodes.geometry.zone import BaseRepeatZone
+
+    ctor_args: list[Expr] = []
+    link = ctx.input_link(node, "Iterations")
+    if link is not None:
+        ctor_args.append(_zone_value_expr(ctx, link))
+    else:
+        iterations = node.inputs["Iterations"].default_value
+        if iterations != 1:
+            ctor_args.append(Lit(iterations))
+    return _emit_state_zone_input(
+        node,
+        ctx,
+        ctor="g.RepeatZone",
+        label="repeat_zone",
+        items_attr="repeat_items",
+        zone_cls_attrs=(
+            BaseRepeatZone._socket_data_types,
+            BaseRepeatZone._type_map,
+        ),
+        special_outputs={"Iteration": "iteration"},
+        ctor_args=ctor_args,
+        extra_targets={},
+    )
+
+
+@register_emitter("GeometryNodeForeachGeometryElementInput")
+def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
+    from .nodes.geometry.zone import (
+        ForEachGeometryElementInput,
+        ForEachGeometryElementOutput,
+    )
+
+    out_node = _zone_required(node)
+    ctx.used_aliases.add("g")
+
+    kwargs: dict[str, Expr] = {}
+    geometry_link = ctx.input_link(node, "Geometry")
+    if geometry_link is not None:
+        kwargs["geometry"] = _zone_value_expr(ctx, geometry_link)
+    selection_link = ctx.input_link(node, "Selection")
+    if selection_link is not None:
+        kwargs["selection"] = _zone_value_expr(ctx, selection_link)
+    elif node.inputs["Selection"].default_value is not True:
+        kwargs["selection"] = Lit(node.inputs["Selection"].default_value)
+    if out_node.domain != "POINT":
+        kwargs["domain"] = Lit(out_node.domain)
+    zone_ref = Ref(_make_var("for_each", ctx.counter))
+    ctx.pending_lines.append(
+        f"    {zone_ref.name} = "
+        f"{Call('g.ForEachGeometryElementZone', kwargs=kwargs).render()}"
+    )
+
+    generation_items = list(out_node.generation_items)
+    if (
+        not generation_items
+        or generation_items[0].socket_type != "GEOMETRY"
+        or generation_items[0].name != "Geometry"
+    ):
+        raise CodegenError(
+            f"foreach zone '{node.name}': the first generation item is not "
+            "the default Geometry item, which the zone wrapper cannot rebuild"
+        )
+
+    in_types = ForEachGeometryElementInput._socket_data_types
+    in_type_map = ForEachGeometryElementInput._type_map
+    main_types = ForEachGeometryElementOutput._socket_data_types
+    gen_types = ForEachGeometryElementOutput._generation_data_types
+    out_type_map = ForEachGeometryElementOutput._type_map
+
+    plans: list[_ZoneItemPlan] = []
+    in_inputs = _prefixed_sockets(node, "Input_")
+    in_outputs = _prefixed_sockets(node, "Input_", output=True)
+    for i, item in enumerate(out_node.input_items):
+        plans.append(
+            _ZoneItemPlan(
+                sort_key=_ident_num(in_inputs[i].identifier),
+                method="item",
+                item=item,
+                types=in_types,
+                type_map=in_type_map,
+                value_link=ctx.input_link(node, in_inputs[i].identifier),
+                default_socket=in_inputs[i],
+                extra_kwargs={},
+                current_id=in_outputs[i].identifier,
+                next_id=None,
+                result_id=None,
+                roles=("output", "", ""),
+            )
+        )
+    main_inputs = _prefixed_sockets(out_node, "Main_")
+    main_outputs = _prefixed_sockets(out_node, "Main_", output=True)
+    for i, item in enumerate(out_node.main_items):
+        plans.append(
+            _ZoneItemPlan(
+                sort_key=_ident_num(main_inputs[i].identifier),
+                method="main_item",
+                item=item,
+                types=main_types,
+                type_map=out_type_map,
+                value_link=None,
+                default_socket=main_inputs[i],
+                extra_kwargs={},
+                current_id=None,
+                next_id=main_inputs[i].identifier,
+                result_id=main_outputs[i].identifier,
+                roles=("", "input", "output"),
+            )
+        )
+    gen_inputs = _prefixed_sockets(out_node, "Generation_")
+    gen_outputs = _prefixed_sockets(out_node, "Generation_", output=True)
+    for i, item in enumerate(generation_items):
+        if i == 0:
+            continue  # the wrapper creates the default Geometry item itself
+        extra: dict[str, Expr] = {}
+        if item.domain != "POINT":
+            extra["domain"] = Lit(item.domain)
+        plans.append(
+            _ZoneItemPlan(
+                sort_key=_ident_num(gen_inputs[i].identifier),
+                method="generated_item",
+                item=item,
+                types=gen_types,
+                type_map=out_type_map,
+                value_link=None,
+                default_socket=gen_inputs[i],
+                extra_kwargs=extra,
+                current_id=None,
+                next_id=gen_inputs[i].identifier,
+                result_id=gen_outputs[i].identifier,
+                roles=("", "input", "output"),
+            )
+        )
+
+    current_map, targets, outputs = _emit_zone_items(
+        ctx, zone_ref, node, out_node, plans
+    )
+    current_map["Index"] = Attr(zone_ref, "index")
+    current_map["Element"] = Attr(zone_ref, "input.o.element")
+    targets[gen_inputs[0].identifier] = Attr(zone_ref, "generation.input")
+    outputs[gen_outputs[0].identifier] = Attr(zone_ref, "generation.output")
+    outputs["Geometry"] = Attr(zone_ref, "output")
+
+    ctx.zones[out_node.name] = _ZoneState(targets, outputs)
+    return _Val(None, outputs=current_map)
+
+
+@register_emitter("GeometryNodeSimulationOutput")
+@register_emitter("GeometryNodeRepeatOutput")
+@register_emitter("GeometryNodeForeachGeometryElementOutput")
+def _emit_zone_output(node, ctx: EmitContext) -> _Val:
+    """Render incoming links as ``expr >> target`` statements and dissolve
+    the output node into the result expressions prepared by the input
+    emitter."""
+    state = ctx.zones.pop(node.name, None)
+    if state is None:
+        raise CodegenError(
+            f"zone output node '{node.name}' was emitted before its paired "
+            "input node — is the zone paired?"
+        )
+    order = {s.identifier: i for i, s in enumerate(node.inputs)}
+    links = sorted(
+        ctx.incoming.get(node.name, ()),
+        key=lambda link: order.get(link.to_socket.identifier, 0),
+    )
+    for link in links:
+        target = state.targets.get(link.to_socket.identifier)
+        if target is None:
+            raise CodegenError(
+                f"zone output node '{node.name}' has a link into "
+                f"'{link.to_socket.name}' with no emit target"
+            )
+        statement = BinOp(">>", ctx.upstream_expr(link), target)
+        ctx.pending_lines.append(f"    {statement.render()}")
+    return _Val(None, outputs=state.outputs)

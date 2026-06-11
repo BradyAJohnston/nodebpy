@@ -897,3 +897,94 @@ def test_snapshot_math_offset(snapshot):
         val = tree.inputs.float("Scale", 1.0)
         geo_in >> g.SetPosition(offset=val * 2.0) >> tree.outputs.geometry()
     assert snapshot == to_python(tree)
+
+
+# ---------------------------------------------------------------------------
+# Zones — emitted as zone wrappers with item handles
+# ---------------------------------------------------------------------------
+
+
+def test_dict_expr_renders():
+    from nodebpy.codegen import DictExpr, Lit, Ref
+
+    expr = DictExpr({"a": Lit(1.0), "b": Ref("value")})
+    assert expr.render() == '{"a": 1.0, "b": value}'
+
+
+def test_repeat_zone_emits_handle_form():
+    with TreeBuilder("RepeatHandles") as tree:
+        out = tree.outputs.geometry("Geometry")
+        zone = g.RepeatZone(10)
+        value = zone.item("value", initial=1.0)
+        (value.current + 1.0) >> value.next
+        cube = zone.item("cube", g.Cube())
+        cube.current >> g.SetPosition(offset=(0, 0, 0.1)) >> cube.next
+        cube.result >> out
+    code = to_python(tree)
+    assert "g.RepeatZone(10)" in code
+    assert 'value = repeat_zone.item("value", 1.0)' in code
+    assert ">> value.next" in code
+    assert "cube.result >> geometry" in code
+
+
+def test_roundtrip_structural_repeat_zone():
+    with TreeBuilder("RepeatRoundtrip") as tree:
+        iterations = tree.inputs.integer("Iterations", 5)
+        out = tree.outputs.geometry("Geometry")
+        zone = g.RepeatZone(iterations)
+        cube = zone.item("cube", g.Cube())
+        fac = zone.item("fac", initial=0.5)
+        (fac.current * 2.0) >> fac.next
+        cube.current >> g.SetPosition(offset=(0, 0, 0.1)) >> cube.next
+        cube.result >> g.SetShadeSmooth(shade_smooth=fac.result > 1.0) >> out
+    _assert_roundtrip(tree)
+
+
+def test_roundtrip_structural_simulation_zone():
+    with TreeBuilder("SimRoundtrip") as tree:
+        out = tree.outputs.geometry("Geometry")
+        zone = g.SimulationZone({"cube": g.Cube()})
+        input, output = zone
+        pos = input.capture(g.Position())
+        pos >> output
+        g.Boolean(False) >> output.i.skip
+        input >> g.SetPosition(offset=zone.delta_time * g.Vector((0, 0, 0.1))) >> output
+        output >> g.SetPosition(position=output.o["Position"]) >> out
+    code = _assert_roundtrip(tree)
+    assert "g.SimulationZone()" in code
+    assert ".delta_time" in code
+    assert ">> simulation_zone.output.i.skip" in code
+
+
+def test_roundtrip_structural_foreach_zone():
+    with TreeBuilder("ForEachRoundtrip") as tree:
+        out = tree.outputs.geometry("Geometry")
+        cube = g.Cube()
+        zone = g.ForEachGeometryElementZone(cube, domain="FACE")
+        pos = zone.item("Pos", g.Position())
+        transformed = g.Cone() >> g.TransformGeometry(translation=pos.output)
+        main = zone.main_item("Out", type="VECTOR")
+        pos.output >> main.input
+        zone.generated_item("Gen", transformed, domain="FACE")
+        transformed >> zone.output
+        g.JoinGeometry([zone.generation.output, cube]) >> out
+    code = _assert_roundtrip(tree)
+    assert 'domain="FACE"' in code
+    assert ">> for_each.generation.input" in code
+    assert "for_each.generation.output" in code
+
+
+def test_zone_unreferenced_item_declared_without_variable():
+    with TreeBuilder("RepeatUnused") as tree:
+        zone = g.RepeatZone(3)
+        zone.item("spare", type="VECTOR")
+    code = _assert_roundtrip(tree)
+    assert 'repeat_zone.item("spare", type="VECTOR")' in code
+    assert "= repeat_zone.item(" not in code
+
+
+def test_unpaired_zone_input_raises():
+    with TreeBuilder("Unpaired") as tree:
+        tree.tree.nodes.new("GeometryNodeSimulationInput")
+    with pytest.raises(CodegenError, match="paired"):
+        to_python(tree)

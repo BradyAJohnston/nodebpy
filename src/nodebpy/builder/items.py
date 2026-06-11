@@ -3,7 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Mapping, cast
 
 from bpy.types import Node, NodeSocket
+from mathutils import Euler
 
+from ..types import _is_default_value
 from ._registry import _wrap_socket
 from ._utils import _SocketLike
 from .node import DynamicInputsMixin
@@ -12,6 +14,25 @@ from .socket import Socket
 if TYPE_CHECKING:
     from ..types import InputLinkable
     from .tree import TreeBuilder
+
+
+def _infer_value_type(value: Any) -> str | None:
+    """Item ``socket_type`` for a plain default value, or None."""
+    match value:
+        case bool():
+            return "BOOLEAN"
+        case int():
+            return "INT"
+        case float():
+            return "FLOAT"
+        case str():
+            return "STRING"
+        case tuple() | list():
+            return "VECTOR"
+        case Euler():
+            return "ROTATION"
+        case _:
+            return None
 
 
 class Item:
@@ -163,22 +184,26 @@ class ItemsMixin(DynamicInputsMixin):
         return _wrap_socket(self._item_socket(item, output=True))
 
     def add_item(
-        self, name: str, value: InputLinkable = None, *, type: str | None = None
+        self, name: str, value: Any = None, *, type: str | None = None
     ) -> Item:
         """Add a single item and return its handle.
 
-        Links ``value`` to the item's input when given; otherwise ``type``
-        (a socket-type string such as ``"FLOAT"``) declares the item
-        unlinked.
+        ``value`` may be a linkable (linked to the item's input) or a plain
+        default value; otherwise ``type`` (a socket-type string such as
+        ``"FLOAT"``) declares the item unlinked.
         """
-        if value is not None:
+        if value is not None and not _is_default_value(value):
             source, inferred, _ = self._resolve_capture(value, name=name)
             item = self._new_item(name, type or inferred)
             self.tree.link(source, self._item_socket(item))
-        elif type is not None:
-            item = self._new_item(name, self._declared_item_type(type) or type)
-        else:
+            return Item(self, item)
+        if type is None:
+            type = _infer_value_type(value)
+        if type is None:
             raise TypeError(f"item {name!r} requires a value or an explicit type=")
+        item = self._new_item(name, self._declared_item_type(type) or type)
+        if value is not None:
+            self._item_socket(item).default_value = value  # ty: ignore[unresolved-attribute]
         return Item(self, item)
 
     def add_items(self, items: Mapping[str, InputLinkable | str]) -> dict[str, Item]:
