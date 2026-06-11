@@ -1,14 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Mapping, cast
 
 from bpy.types import Node, NodeSocket
 
+from ._registry import _wrap_socket
+from ._utils import _SocketLike
 from .node import DynamicInputsMixin
 from .socket import Socket
 
 if TYPE_CHECKING:
     from ..types import InputLinkable
+    from .tree import TreeBuilder
 
 
 class ItemsMixin(DynamicInputsMixin):
@@ -32,6 +35,7 @@ class ItemsMixin(DynamicInputsMixin):
 
     if TYPE_CHECKING:
         node: Node
+        tree: TreeBuilder
 
         def _establish_links(self, **kwargs: Any) -> None: ...
 
@@ -64,15 +68,45 @@ class ItemsMixin(DynamicInputsMixin):
     def _add_socket(self, name: str, type: str) -> NodeSocket:
         return self._item_socket(self._new_item(name, type))
 
+    def _resolve_capture(
+        self,
+        value: InputLinkable,
+        *,
+        name: str | None,
+        types: tuple[str, ...] | None = None,
+    ) -> tuple[NodeSocket, str, str]:
+        """Resolve the source socket, item type and item name for a capture."""
+        accessor = getattr(value, "o", None)
+        sources = (
+            [cast("NodeSocket", value)] if accessor is None else accessor._available
+        )
+        socket_source, type = self._match_compatible_data(sources, types)
+        if type in self._type_map:
+            type = self._type_map[type]
+        if name is None:
+            default_socket = getattr(value, "_default_output_socket", None)
+            name = socket_source.name if default_socket is None else default_socket.name
+        if isinstance(socket_source, _SocketLike):
+            socket_source = socket_source.socket
+        return socket_source, type, name
+
     def capture(self, value: InputLinkable, *, name: str | None = None) -> Socket:
         """Add an item linked from ``value`` and return its output socket.
 
         The item is auto-named after the source socket unless ``name`` is
         given.
         """
-        if name is None:
-            new_sockets = self._add_inputs(value)
-        else:
-            new_sockets = self._add_inputs(**{name: value})
+        source, type, name = self._resolve_capture(value, name=name)
+        item = self._new_item(name, type)
+        self.tree.link(source, self._item_socket(item))
+        return _wrap_socket(self._item_socket(item, output=True))
+
+    def add_items(self, items: Mapping[str, InputLinkable]) -> dict[str, Socket]:
+        """Add an item per mapping entry, linking each value to its new
+        input socket.
+
+        Returns the items' output sockets keyed by name.
+        """
+        new_sockets = self._add_inputs(**items)
         self._establish_links(**new_sockets)
-        return Socket(self.node.outputs[next(iter(new_sockets))])
+        return {name: _wrap_socket(self.node.outputs[name]) for name in new_sockets}

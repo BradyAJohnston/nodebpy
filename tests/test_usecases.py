@@ -1027,7 +1027,7 @@ def test_geometryscript_city_builder(snapshot):
 
 
 def test_active_grid_positions(snapshot):
-    with g.tree("Active Grid Positions", arrange='simple') as tree:
+    with g.tree("Active Grid Positions", arrange="simple") as tree:
         tree.tree.show_modifier_manage_panel = True
 
         grid = tree.inputs.float("Grid", hide_value=True, structure_type="GRID")

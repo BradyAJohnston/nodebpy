@@ -1,3 +1,4 @@
+import warnings
 from collections.abc import Mapping
 from typing import (
     TYPE_CHECKING,
@@ -59,7 +60,6 @@ from ...builder import (
     VectorSocketList,
 )
 from ...builder import Socket as SocketLinker
-from ...builder._registry import _wrap_socket
 from ...builder.socket import BaseSocket
 from ...types import (
     SOCKET_TYPES,
@@ -1058,9 +1058,11 @@ class Bake(ItemsMixin, BaseNode):
     _items_collection = "bake_items"
     _socket_data_types = _BakedDataTypeValues
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, items: dict[str, InputLinkable] | None = None, **kwargs):
         super().__init__()
-        self._establish_links(**self._add_inputs(*args, **kwargs))
+        key_args = dict(items or {})
+        key_args.update(kwargs)
+        self._establish_links(**self._add_inputs(*args, **key_args))
 
 
 class GeometryToInstance(BaseNode):
@@ -1364,11 +1366,11 @@ class FormatString(ItemsMixin, BaseNode):
     def __init__(
         self,
         format: InputString = "",
-        items: Mapping[str, InputString | InputInteger | InputFloat] = {},
+        items: Mapping[str, InputString | InputInteger | InputFloat] | None = None,
     ):
         super().__init__()
         key_args = {"Format": format}
-        key_args.update(self._add_inputs(**items))  # type: ignore
+        key_args.update(self._add_inputs(**(items or {})))  # type: ignore
         self._establish_links(**key_args)
 
     @property
@@ -1922,7 +1924,7 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
     def __init__(
         self,
         menu: InputMenu = None,
-        items: Mapping[str, InputAny] = {},
+        items: Mapping[str, InputAny] | None = None,
         *,
         data_type: SOCKET_TYPES = "FLOAT",
     ):
@@ -1930,7 +1932,7 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         self.data_type = data_type
         self.node.enum_items.clear()
         key_args = {"Menu": menu}
-        self._link_args(**items)
+        self._link_args(**(items or {}))
         self._establish_links(**key_args)
         if self.node.enum_items:
             menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
@@ -1992,7 +1994,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def float(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputFloat] = {},
+        items: dict[str, InputFloat] | None = None,
     ) -> "MenuSwitch[FloatSocket]":
         return MenuSwitch(menu, items, data_type="FLOAT")
 
@@ -2000,7 +2002,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def integer(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputInteger] = {},
+        items: dict[str, InputInteger] | None = None,
     ) -> "MenuSwitch[IntegerSocket]":
         return MenuSwitch(menu, items, data_type="INT")
 
@@ -2008,7 +2010,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def boolean(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputBoolean] = {},
+        items: dict[str, InputBoolean] | None = None,
     ) -> "MenuSwitch[BooleanSocket]":
         return MenuSwitch(menu, items, data_type="BOOLEAN")
 
@@ -2016,7 +2018,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def vector(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputVector] = {},
+        items: dict[str, InputVector] | None = None,
     ) -> "MenuSwitch[VectorSocket]":
         return MenuSwitch(menu, items, data_type="VECTOR")
 
@@ -2024,7 +2026,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def color(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputColor] = {},
+        items: dict[str, InputColor] | None = None,
     ) -> "MenuSwitch[ColorSocket]":
         return MenuSwitch(menu, items, data_type="RGBA")
 
@@ -2032,7 +2034,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def rotation(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputRotation] = {},
+        items: dict[str, InputRotation] | None = None,
     ) -> "MenuSwitch[RotationSocket]":
         return MenuSwitch(menu, items, data_type="ROTATION")
 
@@ -2040,7 +2042,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def matrix(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMatrix] = {},
+        items: dict[str, InputMatrix] | None = None,
     ) -> "MenuSwitch[MatrixSocket]":
         return MenuSwitch(menu, items, data_type="MATRIX")
 
@@ -2048,7 +2050,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def string(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputString] = {},
+        items: dict[str, InputString] | None = None,
     ) -> "MenuSwitch[StringSocket]":
         return MenuSwitch(menu, items, data_type="STRING")
 
@@ -2056,7 +2058,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def menu(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMenu] = {},
+        items: dict[str, InputMenu] | None = None,
     ) -> "MenuSwitch[MenuSocket]":
         return MenuSwitch(menu, items, data_type="MENU")
 
@@ -2064,7 +2066,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def object(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputObject] = {},
+        items: dict[str, InputObject] | None = None,
     ) -> "MenuSwitch[ObjectSocket]":
         return MenuSwitch(menu, items, data_type="OBJECT")
 
@@ -2072,7 +2074,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def geometry(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputGeometry] = {},
+        items: dict[str, InputGeometry] | None = None,
     ) -> "MenuSwitch[GeometrySocket]":
         return MenuSwitch(menu, items, data_type="GEOMETRY")
 
@@ -2080,7 +2082,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def collection(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputCollection] = {},
+        items: dict[str, InputCollection] | None = None,
     ) -> "MenuSwitch[CollectionSocket]":
         return MenuSwitch(menu, items, data_type="COLLECTION")
 
@@ -2088,7 +2090,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def image(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputImage] = {},
+        items: dict[str, InputImage] | None = None,
     ) -> "MenuSwitch[ImageSocket]":
         return MenuSwitch(menu, items, data_type="IMAGE")
 
@@ -2096,7 +2098,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def material(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMaterial] = {},
+        items: dict[str, InputMaterial] | None = None,
     ) -> "MenuSwitch[MaterialSocket]":
         return MenuSwitch(menu, items, data_type="MATERIAL")
 
@@ -2104,7 +2106,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def bundle(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputBundle] = {},
+        items: dict[str, InputBundle] | None = None,
     ) -> "MenuSwitch[BundleSocket]":
         return MenuSwitch(menu, items, data_type="BUNDLE")
 
@@ -2112,7 +2114,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def closure(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputClosure] = {},
+        items: dict[str, InputClosure] | None = None,
     ) -> "MenuSwitch[ClosureSocket]":
         return MenuSwitch(menu, items, data_type="CLOSURE")
 
@@ -2151,7 +2153,7 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         def __call__(
             self,
             geometry: InputGeometry = None,
-            items: dict[str, InputLinkable] = {},
+            items: dict[str, InputLinkable] | None = None,
         ) -> "CaptureAttribute":
             """Create a CaptureAttribute node with a pre-set domain"""
             return CaptureAttribute(geometry=geometry, domain=self._domain, items=items)
@@ -2183,14 +2185,14 @@ class CaptureAttribute(ItemsMixin, BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        items: dict[str, InputLinkable] = {},
+        items: dict[str, InputLinkable] | None = None,
         *,
         domain: _AttributeDomains = "POINT",
     ):
         super().__init__()
         key_args = {"Geometry": geometry}
         self.domain = domain
-        key_args.update(self._add_inputs(**items))
+        key_args.update(self._add_inputs(**(items or {})))
         self._establish_links(**key_args)
 
     @property
@@ -2252,17 +2254,22 @@ class FieldToList(ItemsMixin, BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, count: InputInteger = 1, fields: dict[str, InputLinkable] = {}):
+    def __init__(
+        self,
+        count: InputInteger = 1,
+        items: dict[str, InputLinkable] | None = None,
+        *,
+        fields: dict[str, InputLinkable] | None = None,
+    ):
         super().__init__()
+        if fields is not None:
+            warnings.warn(
+                "'fields' is deprecated, use 'items'", DeprecationWarning, stacklevel=2
+            )
+            items = fields
         key_args = {"Count": count}
-        key_args.update(self._add_inputs(**fields))
+        key_args.update(self._add_inputs(**(items or {})))
         self._establish_links(**key_args)
-
-    # TODO: unify with ItemsMixin.capture(value, *, name=None) (ITEMS_API_PLAN.md step 3)
-    def capture(self, fields: dict[str, InputLinkable]) -> list[SocketLinker]:  # ty: ignore[invalid-method-override]
-        new_sockets = self._add_inputs(**fields)
-        self._establish_links(**new_sockets)
-        return [_wrap_socket(self.node.outputs[name]) for name in new_sockets]
 
     def _declare_item(
         self,
@@ -2373,7 +2380,7 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
     def __init__(
         self,
         topology: InputGrid = None,
-        items: dict[str, InputAny] = {},
+        items: dict[str, InputAny] | None = None,
         *,
         data_type: _GridDataTypes = "FLOAT",
     ):
@@ -2381,6 +2388,7 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
         self.data_type = data_type
         key_args = {"Topology": topology}
 
+        items = items or {}
         linkable = {k: v for k, v in items.items() if not _is_default_value(v)}
         defaults = {k: v for k, v in items.items() if _is_default_value(v)}
 
@@ -2392,36 +2400,30 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
 
         self._establish_links(**key_args)
 
-    # TODO: unify with ItemsMixin.capture(value, *, name=None) (ITEMS_API_PLAN.md step 3)
-    def capture(self, items: dict[str, InputAny]) -> list[SocketLinker]:  # ty: ignore[invalid-method-override]
-        new_sockets = self._add_inputs(**items)
-        self._establish_links(**new_sockets)
-        return [_wrap_socket(self.node.outputs[name]) for name in new_sockets]
-
     @classmethod
     def float(
-        cls, topology: InputFloatGrid = None, items: dict[str, InputAny] = {}
+        cls, topology: InputFloatGrid = None, items: dict[str, InputAny] | None = None
     ) -> "FieldToGrid[FloatSocketGrid]":
         """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="FLOAT")
 
     @classmethod
     def integer(
-        cls, topology: InputIntegerGrid = None, items: dict[str, InputAny] = {}
+        cls, topology: InputIntegerGrid = None, items: dict[str, InputAny] | None = None
     ) -> "FieldToGrid[IntegerSocketGrid]":
         """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="INT")
 
     @classmethod
     def vector(
-        cls, topology: InputVectorGrid = None, items: dict[str, InputAny] = {}
+        cls, topology: InputVectorGrid = None, items: dict[str, InputAny] | None = None
     ) -> "FieldToGrid[VectorSocketGrid]":
         """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="VECTOR")
 
     @classmethod
     def boolean(
-        cls, topology: InputBooleanGrid = None, items: dict[str, InputAny] = {}
+        cls, topology: InputBooleanGrid = None, items: dict[str, InputAny] | None = None
     ) -> "FieldToGrid[BooleanSocketGrid]":
         """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="BOOLEAN")

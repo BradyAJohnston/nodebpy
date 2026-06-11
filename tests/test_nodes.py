@@ -184,9 +184,9 @@ def test_field_to_grid():
     with TreeBuilder() as tree:
         nt = g.NoiseTexture()
         ftg = g.FieldToGrid(g.CubeGridTopology().o.topology)
-        pos, vec, fac = ftg.capture(
+        pos, vec, fac = ftg.add_items(
             {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
-        )
+        ).values()
         assert len(ftg.o) == 4
         assert isinstance(pos, VectorSocketGrid)
         assert pos.name == "position"
@@ -371,15 +371,16 @@ def test_simulation(snapshot):
 def test_repeat(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        for i, input, output in g.RepeatZone(10, {"cube": cube}):
-            pos_math = input.capture(g.Position()) * g.Position()
-            _ = pos_math >> output
-            _ = (
-                input
-                >> g.SetPosition(offset=i * g.Vector((0, 0, 0.1)) * pos_math)
-                >> output
-            )
-            _ = output >> g.SetPosition(position=output.o["Position"])
+        zone = g.RepeatZone(10, {"cube": cube})
+        input, output = zone
+        pos_math = input.capture(g.Position()) * g.Position()
+        _ = pos_math >> output
+        _ = (
+            input
+            >> g.SetPosition(offset=zone.iteration * g.Vector((0, 0, 0.1)) * pos_math)
+            >> output
+        )
+        _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(tree) == 13
     assert len(input.items) == 2
     assert snapshot == tree._repr_markdown_()
@@ -610,6 +611,29 @@ def test_foreachgeometryelement_zone():
     assert len(zone.output.items_generated) == 3
     assert zone.output.items_generated[1].socket_type == "VECTOR"
     assert zone.output.items_generated[2].socket_type == "GEOMETRY"
+
+
+def test_zone_capture_names_and_domains():
+    with TreeBuilder():
+        zone = g.ForEachGeometryElementZone(g.Cube(), domain="FACE")
+        pos = zone.input.capture(g.Position(), name="MyPos")
+        gen = zone.output.capture_generated(pos, name="MyGen", domain="FACE")
+        assert zone.input.items[0].name == "MyPos"
+        assert pos.name == "MyPos"
+        assert zone.output.items_generated[1].name == "MyGen"
+        assert zone.output.items_generated[1].domain == "FACE"
+        assert gen.name == "MyGen"
+
+        rzone = g.RepeatZone(3)
+        val = rzone.input.capture(g.Value(), name="Counter")
+        assert rzone.input.items[0].name == "Counter"
+        assert rzone.input.items[0].socket_type == "FLOAT"
+        assert val.name == "Counter"
+        input, output = rzone
+        assert input is rzone.input
+        assert output is rzone.output
+        with pytest.raises(IndexError):
+            rzone[2]
 
 
 def test_boolean_math_methods():
@@ -1593,9 +1617,9 @@ def test_vector_dimensions():
 def test_field_to_list():
     with g.tree():
         ftl = g.FieldToList(10)
-        pos, idx, num = ftl.capture(
+        pos, idx, num = ftl.add_items(
             {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
-        )
+        ).values()
         assert len(ftl.node.list_items) == 3
         assert isinstance(pos, VectorSocketList)
         assert isinstance(idx, IntegerSocketList)
@@ -1614,6 +1638,14 @@ def test_field_to_list():
         assert isinstance(pos.get(1), VectorSocket)
 
 
+def test_field_to_list_fields_deprecated():
+    with g.tree():
+        with pytest.warns(DeprecationWarning):
+            ftl = g.FieldToList(5, fields={"x": g.Value()})
+        assert len(ftl.node.list_items) == 1
+        assert ftl.node.list_items[0].name == "x"
+
+
 def test_grid_methods():
     with g.tree():
         grid = g.CubeGridTopology().o.topology
@@ -1621,10 +1653,10 @@ def test_grid_methods():
         assert isinstance(trans, MatrixSocket)
         assert trans.node.bl_idname == g.GridInfo._bl_idname
 
-        grid = cast(FloatSocketGrid, g.FieldToGrid().capture({"test": g.Float()})[0])
+        grid = cast(FloatSocketGrid, g.FieldToGrid().capture(g.Float(), name="test"))
         value = grid.background_value
 
-        list = g.FieldToList(10).capture({"test": g.Vector()})[0]
+        list = g.FieldToList(10).capture(g.Vector(), name="test")
         assert isinstance(list, VectorSocketList)
 
         assert isinstance(value, FloatSocket)
