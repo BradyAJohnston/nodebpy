@@ -26,7 +26,7 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
-from ..types import SOCKET_COMPATIBILITY, SOCKET_TYPES, InputAny
+from ..types import SOCKET_COMPATIBILITY, InputAny
 from ._utils import SocketError, _NodeLike, _SocketLike
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
@@ -91,14 +91,12 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
     @property
     def tree(self) -> TreeBuilder:
+        """The `TreeBuilder` instance this node belongs to and is being built within."""
         return self._tree
 
     @property
-    def type(self) -> SOCKET_TYPES:
-        return self._default_output_socket.type  # type: ignore
-
-    @property
     def name(self) -> str:
+        """The name of the node being wrapped by this instance."""
         return str(self.node.name)
 
     @property
