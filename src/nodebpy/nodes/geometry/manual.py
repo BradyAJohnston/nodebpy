@@ -7,7 +7,6 @@ from typing import (
     Literal,
     TypeVar,
     cast,
-    get_args,
 )
 import bpy
 import bpy.types
@@ -31,7 +30,6 @@ from ...builder import (
     CollectionSocket,
     ColorSocket,
     ColorSocketList,
-    DynamicInputsMixin,
     FloatSocket,
     FloatSocketGrid,
     FloatSocketList,
@@ -1730,11 +1728,12 @@ class HandleTypeSelection(BaseNode):
         self.node.mode = value
 
 
-class IndexSwitch(BaseNode, Generic[_T]):
+class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
     """Node builder for the Index Switch node"""
 
     _bl_idname = "GeometryNodeIndexSwitch"
     node: bpy.types.GeometryNodeIndexSwitch
+    _items_collection = "index_switch_items"
 
     @classmethod
     def float(
@@ -1858,19 +1857,35 @@ class IndexSwitch(BaseNode, Generic[_T]):
         self._link_args(*items)
         self._establish_links(**key_args)
 
-    def _create_socket(self) -> NodeSocket:
-        self.node.index_switch_items.new()
-        # -1 is the last item (__extent__ socket) and -2 is the socket for the item we just added
-        return self.node.inputs[-2]
+    @property
+    def _socket_data_types(self) -> tuple[str, ...]:
+        # items are untyped; the node-level data_type fixes the type for all
+        # of them ("FLOAT" is the data_type spelling of socket.type "VALUE")
+        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
+
+    def _new_item(self, name: str, type: str) -> bpy.types.IndexSwitchItem:
+        # index switch items are unnamed and untyped
+        return self._items.new()
+
+    def _item_socket(
+        self, item: bpy.types.IndexSwitchItem, *, output: bool = False
+    ) -> NodeSocket:
+        if output:
+            return self.node.outputs[0]
+        identifier = f"Item_{item.identifier}"
+        for socket in self.node.inputs:
+            if socket.identifier == identifier:
+                return socket
+        raise KeyError(f"No input socket for index switch item {item.identifier}")
 
     def _link_args(self, *args: InputAny):
         for arg in args:
+            socket = self._add_socket(name="", type=self.data_type)
             if _is_default_value(arg):
-                socket = self._create_socket()
                 socket.default_value = arg  # ty: ignore[unresolved-attribute]
             else:
                 source = self._source_socket(arg)  # type: ignore
-                self.tree.link(source, self.node.inputs["__extend__"])
+                self.tree.link(source, socket)
 
     @property
     def data_type(self) -> SOCKET_TYPES:
@@ -1883,11 +1898,12 @@ class IndexSwitch(BaseNode, Generic[_T]):
         self.node.data_type = value
 
 
-class _MenuSwitchBase(BaseNode, Generic[_T]):
+class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
     """Base class for MenuSwitch nodes across all tree types."""
 
     _bl_idname = "GeometryNodeMenuSwitch"
     node: bpy.types.GeometryNodeMenuSwitch
+    _items_collection = "enum_items"
 
     class _Inputs(SocketAccessor):
         menu: MenuSocket
@@ -1920,20 +1936,24 @@ class _MenuSwitchBase(BaseNode, Generic[_T]):
             menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
             menu_socket.default_value = self.node.enum_items[0].name
 
+    @property
+    def _socket_data_types(self) -> tuple[str, ...]:
+        # items are untyped; the node-level data_type fixes the type for all
+        # of them ("FLOAT" is the data_type spelling of socket.type "VALUE")
+        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
+
+    def _new_item(self, name: str, type: str) -> bpy.types.NodeEnumItem:
+        # menu items are untyped; .new() takes only a name
+        return self._items.new(name)
+
     def _link_args(self, **kwargs: InputAny):
         for key, value in kwargs.items():
+            socket = self._add_socket(name=key, type=self.data_type)
             if _is_default_value(value):
-                socket = self._create_socket(key)
                 socket.default_value = value  # type: ignore
             else:
                 source = self._source_socket(value)  # type: ignore
-                self._link(source, self.node.inputs["__extend__"])
-                self.node.enum_items[-1].name = key
-
-    def _create_socket(self, name: str) -> bpy.types.NodeSocket:
-        self.node.enum_items.new(name)
-        # -1 is the last item (__extent__ socket) and -2 is the socket for the item we just added
-        return self.node.inputs[-2]
+                self._link(source, socket)
 
     def is_selected(self, name: str) -> BooleanSocket:
         """Gets the boolean output socket that is True when the named menu item is selected.
@@ -2187,7 +2207,7 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         self.node.domain = value
 
 
-class FieldToList(DynamicInputsMixin, BaseNode):
+class FieldToList(ItemsMixin, BaseNode):
     """
     Create a list of values
 
@@ -2204,7 +2224,19 @@ class FieldToList(DynamicInputsMixin, BaseNode):
 
     _bl_idname = "GeometryNodeFieldToList"
     node: bpy.types.GeometryNodeFieldToList
-    _socket_data_types = list(get_args(SOCKET_TYPES))
+    _items_collection = "list_items"
+    _socket_data_types = (
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+    )
+    _type_map = {"VALUE": "FLOAT"}
 
     class _Inputs(SocketAccessor):
         count: IntegerSocket
@@ -2223,30 +2255,16 @@ class FieldToList(DynamicInputsMixin, BaseNode):
     def __init__(self, count: InputInteger = 1, fields: dict[str, InputLinkable] = {}):
         super().__init__()
         key_args = {"Count": count}
-
-        for name, field in fields.items():
-            assert hasattr(field, "_default_output_socket")
-            self._link(field._default_output_socket, self.node.inputs[-1])  # ty: ignore[invalid-argument-type]
-            self.node.list_items[self.node.inputs[-2].name].name = name
-
+        key_args.update(self._add_inputs(**fields))
         self._establish_links(**key_args)
 
-    def _add_socket(
-        self, name: str, type: SOCKET_TYPES, default_value: Any = None
-    ) -> NodeSocket:  # ty: ignore
-        pass
+    # TODO: unify with ItemsMixin.capture(value, *, name=None) (ITEMS_API_PLAN.md step 3)
+    def capture(self, fields: dict[str, InputLinkable]) -> list[SocketLinker]:  # ty: ignore[invalid-method-override]
+        new_sockets = self._add_inputs(**fields)
+        self._establish_links(**new_sockets)
+        return [_wrap_socket(self.node.outputs[name]) for name in new_sockets]
 
-    def capture(self, fields: dict[str, InputLinkable]) -> list[SocketLinker]:
-        outputs = {}
-        for name, field in fields.items():
-            assert hasattr(field, "_default_output_socket")
-            self._link(field._default_output_socket, self.node.inputs[-1])  # ty: ignore[invalid-argument-type]
-            self.node.list_items[self.node.inputs[-2].name].name = name
-            outputs[name] = self.node.outputs[name]
-
-        return [_wrap_socket(x) for x in outputs.values()]
-
-    def _new_item(
+    def _declare_item(
         self,
         type: Literal[
             "FLOAT",
@@ -2262,65 +2280,63 @@ class FieldToList(DynamicInputsMixin, BaseNode):
         name: str | None = None,
         default: Any | None = None,
     ) -> bpy.types.NodeSocket:
-        item = self.node.list_items.new(type, name if name else type)
-        if name is not None:
-            item.name = name
+        item = self._new_item(name if name else type, type)
 
         input_socket = self.i[item.name]
         if isinstance(default, (BaseNode, SocketLinker)):
             self._establish_links(**{item.name: default})
         else:
-            input_socket.default_value = default  # ty: ignore[invalid-assignment]
+            input_socket.default_value = default
 
         return self.o[item.name].socket
 
     def float(
         self, input: InputFloat = 0.0, name: str | None = None
     ) -> FloatSocketList:
-        return FloatSocketList(self._new_item("FLOAT", name, input))
+        return FloatSocketList(self._declare_item("FLOAT", name, input))
 
     def integer(
         self, input: InputInteger = 0, name: str | None = None
     ) -> IntegerSocketList:
-        return IntegerSocketList(self._new_item("INT", name, input))
+        return IntegerSocketList(self._declare_item("INT", name, input))
 
     def boolean(
         self, input: InputBoolean = False, name: str | None = None
     ) -> BooleanSocketList:
-        return BooleanSocketList(self._new_item("BOOLEAN", name, input))
+        return BooleanSocketList(self._declare_item("BOOLEAN", name, input))
 
     def vector(
         self, input: InputVector = (0, 0, 0), name: str | None = None
     ) -> VectorSocketList:
-        return VectorSocketList(self._new_item("VECTOR", name, input))
+        return VectorSocketList(self._declare_item("VECTOR", name, input))
 
     def color(
         self, input: InputColor = (0, 0, 0, 1), name: str | None = None
     ) -> ColorSocketList:
-        return ColorSocketList(self._new_item("RGBA", name, input))
+        return ColorSocketList(self._declare_item("RGBA", name, input))
 
     def rotation(
         self, input: InputRotation = Euler((0, 0, 0)), name: str | None = None
     ) -> RotationSocketList:
-        return RotationSocketList(self._new_item("ROTATION", name, input))
+        return RotationSocketList(self._declare_item("ROTATION", name, input))
 
     def matrix(
         self, input: InputMatrix = None, name: str | None = None
     ) -> MatrixSocketList:
-        return MatrixSocketList(self._new_item("MATRIX", name, input))
+        return MatrixSocketList(self._declare_item("MATRIX", name, input))
 
     def string(
         self, input: InputString = "", name: str | None = None
     ) -> StringSocketList:
-        return StringSocketList(self._new_item("STRING", name, input))
+        return StringSocketList(self._declare_item("STRING", name, input))
 
     def menu(
         self, input: InputString = None, name: str | None = None
     ) -> MenuSocketList:
-        return MenuSocketList(self._new_item("MENU", name, input))
+        return MenuSocketList(self._declare_item("MENU", name, input))
 
 
-class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
+class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
     """Create new grids by evaluating new values on an existing volume grid topology
 
 
@@ -2340,6 +2356,7 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
 
     _bl_idname = "GeometryNodeFieldToGrid"
     node: bpy.types.GeometryNodeFieldToGrid
+    _items_collection = "grid_items"
     _socket_data_types = ("VALUE", "INT", "VECTOR", "BOOLEAN")
     _type_map = {"VALUE": "FLOAT"}
     _default_input_id = "Topology"
@@ -2369,25 +2386,17 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
 
         key_args.update(self._add_inputs(**linkable))  # ty: ignore[no-matching-overload]
         for name, value in defaults.items():
-            self._add_socket(name=name, default_value=value)  # type: ignore
+            socket = self._add_socket(name=name, type="FLOAT")
+            if value is not None:
+                socket.default_value = value  # ty: ignore[unresolved-attribute]
 
         self._establish_links(**key_args)
 
-    def _add_socket(
-        self,
-        name: str,
-        type: _GridDataTypes = "FLOAT",
-        default_value: float | int | str | None = None,
-    ):
-        item = self.node.grid_items.new(socket_type=type, name=name)
-        if default_value is not None:
-            self.node.inputs[item.name].default_value = default_value
-        return self.node.inputs[item.name]
-
-    def capture(self, items: dict[str, InputAny]) -> list[SocketLinker]:
-        outputs = {name: self.node.outputs[name] for name in self._add_inputs(**items)}
-
-        return [_wrap_socket(x) for x in outputs.values()]
+    # TODO: unify with ItemsMixin.capture(value, *, name=None) (ITEMS_API_PLAN.md step 3)
+    def capture(self, items: dict[str, InputAny]) -> list[SocketLinker]:  # ty: ignore[invalid-method-override]
+        new_sockets = self._add_inputs(**items)
+        self._establish_links(**new_sockets)
+        return [_wrap_socket(self.node.outputs[name]) for name in new_sockets]
 
     @classmethod
     def float(
@@ -2430,29 +2439,33 @@ class FieldToGrid(DynamicInputsMixin, BaseNode, Generic[_T]):
     ):
         self.node.data_type = value
 
-    def _new_item(self, type: _GridDataTypes, name: str | None = None) -> NodeSocket:
-        item = self.node.grid_items.new(socket_type=type, name=name if name else type)
-        return self.o[item.name].socket
+    def _declare_item(
+        self, type: _GridDataTypes, name: str | None = None, value: Any | None = None
+    ) -> NodeSocket:
+        item = self._new_item(name if name else type, type)
+        if value is not None:
+            self._establish_links(**{item.name: value})
+        return self._item_socket(item, output=True)
 
     def capture_float(
         self, field: InputFloat = None, name: str | None = None
     ) -> FloatSocketGrid:
-        return FloatSocketGrid(self._new_item(type="FLOAT", name=name))
+        return FloatSocketGrid(self._declare_item("FLOAT", name, field))
 
     def capture_boolean(
         self, field: InputBoolean = None, name: str | None = None
     ) -> BooleanSocketGrid:
-        return BooleanSocketGrid(self._new_item(type="BOOLEAN", name=name))
+        return BooleanSocketGrid(self._declare_item("BOOLEAN", name, field))
 
     def capture_vector(
         self, field: InputVector = None, name: str | None = None
     ) -> VectorSocketGrid:
-        return VectorSocketGrid(self._new_item(type="VECTOR", name=name))
+        return VectorSocketGrid(self._declare_item("VECTOR", name, field))
 
     def capture_integer(
         self, field: InputInteger = None, name: str | None = None
     ) -> IntegerSocketGrid:
-        return IntegerSocketGrid(self._new_item(type="INT", name=name))
+        return IntegerSocketGrid(self._declare_item("INT", name, field))
 
 
 class SDFGridBoolean(BaseNode):
