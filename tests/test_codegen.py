@@ -23,12 +23,20 @@ def _structure(node_tree):
         for n in node_tree.nodes
         if n.bl_idname not in ("NodeReroute", "NodeFrame")
     )
+
+    def _socket_key(node, socket):
+        # Interface socket identifiers (Socket_N) depend on declaration order;
+        # compare group in/out sockets by name instead.
+        if node.bl_idname in ("NodeGroupInput", "NodeGroupOutput"):
+            return socket.name
+        return socket.identifier
+
     links = sorted(
         (
             link.from_node.bl_idname,
-            link.from_socket.identifier,
+            _socket_key(link.from_node, link.from_socket),
             link.to_node.bl_idname,
-            link.to_socket.identifier,
+            _socket_key(link.to_node, link.to_socket),
         )
         for link in _effective_links(node_tree)
     )
@@ -97,11 +105,14 @@ def test_interface_default_value():
 
 
 def test_non_default_property():
-    """Keyword-only node property is emitted when it differs from the default."""
+    """A non-default property with no factory equivalent is emitted as a kwarg."""
     with TreeBuilder("WithProp") as tree:
-        g.Math(operation="MULTIPLY")
+        g.Math(operation="MULTIPLY", use_clamp=True)
     code = to_python(tree)
+    # use_clamp has no factory shortcut, so the plain constructor is used
+    # and both non-default properties appear explicitly.
     assert 'operation="MULTIPLY"' in code
+    assert "use_clamp=True" in code
 
 
 def test_default_property_omitted():
@@ -288,21 +299,20 @@ def test_math_multiply_lifts_to_operator():
 
 
 def test_math_no_lift_when_unlinked():
-    """Math with no linked inputs stays as a function call."""
+    """Math with no linked inputs stays a call — via the factory shortcut."""
     with TreeBuilder("MathUnlinked") as tree:
         g.Math(operation="MULTIPLY")
     code = to_python(tree)
-    assert "g.Math(" in code
-    assert 'operation="MULTIPLY"' in code
+    assert "g.Math.multiply()" in code
 
 
 def test_math_non_liftable_stays_as_call():
-    """Non-liftable operation (SINE) stays as g.Math()."""
+    """Non-liftable operation (SINE) stays a call — via the factory shortcut."""
     with TreeBuilder("MathSine") as tree:
         val = tree.inputs.float("Value", 1.0)
         g.Math(val, operation="SINE") >> tree.outputs.float("Result")
     code = to_python(tree)
-    assert "g.Math(" in code
+    assert "g.Math.sine(value)" in code
 
 
 def test_math_fanout_assigns_variable():
@@ -471,13 +481,13 @@ def test_integer_math_lifts_to_operators():
     assert "IntegerMath" not in code
 
 
-def test_compare_emits_operation_and_data_type():
-    """Compare's positional-or-keyword props must survive the round-trip."""
+def test_compare_emits_factory_path():
+    """Compare emits the nested factory spelling and round-trips its props."""
     with TreeBuilder("CompareProps") as tree:
         val = tree.inputs.float("Value", 1.0)
         (val < 0.5) >> tree.outputs.boolean("Out")
     code = _assert_roundtrip(tree)
-    assert 'operation="LESS_THAN"' in code
+    assert "g.Compare.float.less_than(value, 0.5)" in code
 
 
 def test_vector_compare_emits_mode():
@@ -497,6 +507,246 @@ def test_float_modulo_round_trips_to_floored_modulo():
         (val % 3.0) >> tree.outputs.float("Out")
     code = _assert_roundtrip(tree)
     assert "value % 3.0" in code
+
+
+# ---------------------------------------------------------------------------
+# Socket-method reverse-mapping
+# ---------------------------------------------------------------------------
+
+
+def test_switch_emits_socket_method():
+    with TreeBuilder("SwitchMethod") as tree:
+        include = tree.inputs.boolean("Include")
+        vol = tree.inputs.geometry("Volume")
+        include.switch.geometry(None, vol) >> tree.outputs.geometry("Out")
+    code = _assert_roundtrip(tree)
+    assert "include.switch.geometry(true=volume)" in code
+    assert "g.Switch" not in code
+
+
+def test_switch_unlinked_condition_falls_back():
+    """Switch with no linked condition can't be a method — constructor/factory.
+
+    FLOAT is the default input_type, so the plain constructor suffices; a
+    non-default type (geometry) uses the factory spelling.
+    """
+    with TreeBuilder("SwitchFactory") as tree:
+        a = tree.inputs.float("A", 1.0)
+        b = tree.inputs.float("B", 2.0)
+        g.Switch.float(None, a, b) >> tree.outputs.float("Out")
+        geo = tree.inputs.geometry("Geo")
+        g.Switch.geometry(None, None, geo) >> tree.outputs.geometry("GeoOut")
+    code = _assert_roundtrip(tree)
+    assert "g.Switch(false=a, true=b)" in code
+    assert "g.Switch.geometry(true=geo)" in code
+
+
+def test_map_range_emits_socket_method():
+    with TreeBuilder("MapRangeMethod") as tree:
+        val = tree.inputs.float("Value", 0.5)
+        lo = tree.inputs.float("Lo")
+        hi = tree.inputs.float("Hi", 1.0)
+        val.map_range(lo, hi, 0.0, 2.0) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert "value.map_range(lo, hi, to_max=2.0)" in code
+
+
+def test_map_range_emits_non_default_props_as_kwargs():
+    with TreeBuilder("MapRangeProps") as tree:
+        val = tree.inputs.float("Value", 0.5)
+        val.map_range(clamp=False) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert "value.map_range(clamp=False)" in code
+
+
+def test_field_at_index_emits_domain_method():
+    with TreeBuilder("FieldAt") as tree:
+        val = tree.inputs.float("Value", 0.5)
+        ix = tree.inputs.integer("Ix")
+        val.point.at(ix) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert "value.point.at(ix)" in code
+
+
+def test_accumulate_field_picks_output_method():
+    with TreeBuilder("Accumulate") as tree:
+        val = tree.inputs.float("Value", 0.5)
+        gid = tree.inputs.integer("Group")
+        val.point.trailing(gid) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert "value.point.trailing(group)" in code
+
+
+def test_field_mean_on_vector():
+    with TreeBuilder("Mean") as tree:
+        vec = tree.inputs.vector("Vec")
+        vec.point.mean() >> tree.outputs.vector("Out")
+    code = _assert_roundtrip(tree)
+    assert "vec.point.mean()" in code
+
+
+def test_separate_xyz_dissolves_to_attrs():
+    """SeparateXYZ becomes vec.x / vec.y, promoting the source to a variable."""
+    with TreeBuilder("SepXYZ") as tree:
+        pos = g.Position().o.position
+        (pos.x**2 + pos.y**2) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert "position = g.Position().o.position" in code
+    assert "position.x ** 2.0 + position.y ** 2.0" in code
+    assert "SeparateXYZ" not in code
+
+
+def test_separate_xyz_single_output_stays_inline():
+    """One used output needs no promotion — the accessor renders once."""
+    with TreeBuilder("SepX") as tree:
+        (g.Position().o.position.x * 2.0) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert "g.Position().o.position.x * 2.0" in code
+    assert "SeparateXYZ" not in code
+
+
+def test_vector_math_methods():
+    with TreeBuilder("VecMethods") as tree:
+        a = tree.inputs.vector("A")
+        b = tree.inputs.vector("B")
+        a.dot(b) >> tree.outputs.float("Dot")
+        a.cross(b) >> tree.outputs.vector("Cross")
+        a.length() >> tree.outputs.float("Len")
+        a.normalize() >> tree.outputs.vector("Norm")
+        a.distance(b) >> tree.outputs.float("Dist")
+    code = _assert_roundtrip(tree)
+    for expected in (
+        "a.dot(b)",
+        "a.cross(b)",
+        "a.length()",
+        "a.normalize()",
+        "a.distance(b)",
+    ):
+        assert expected in code, expected
+    assert "VectorMath" not in code
+
+
+def test_vector_rotate_and_transform_methods():
+    with TreeBuilder("VecTransform") as tree:
+        vec = tree.inputs.vector("Vec")
+        rot = tree.inputs.rotation("Rot")
+        mat = tree.inputs.matrix("Mat")
+        vec.rotate(rot) >> tree.outputs.vector("Rotated")
+        vec.transform(mat) >> tree.outputs.vector("Transformed")
+    code = _assert_roundtrip(tree)
+    assert "vec.rotate(rot)" in code
+    assert "vec.transform(mat)" in code
+
+
+def test_clamp_method():
+    with TreeBuilder("ClampMethod") as tree:
+        val = tree.inputs.float("Value", 0.5)
+        val.clamp(0.2, 0.8) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert "value.clamp(0.2" in code
+
+
+def test_string_methods():
+    with TreeBuilder("StringMethods") as tree:
+        path = tree.inputs.string("Path")
+        prefix = tree.inputs.string("Prefix")
+        path.starts_with(prefix) >> tree.outputs.boolean("Starts")
+        path.slice(1, 3) >> tree.outputs.string("Sliced")
+        path.length() >> tree.outputs.integer("Len")
+        path.uppercase() >> tree.outputs.string("Upper")
+        path.replace("a", "b") >> tree.outputs.string("Replaced")
+    code = _assert_roundtrip(tree)
+    for expected in (
+        "path.starts_with(prefix)",
+        "path.slice(1, 3)",
+        "path.length()",
+        "path.uppercase()",
+        'path.replace("a", "b")',
+    ):
+        assert expected in code, expected
+
+
+def test_matrix_methods():
+    with TreeBuilder("MatrixMethods") as tree:
+        mat = tree.inputs.matrix("Mat")
+        vec = tree.inputs.vector("Vec")
+        mat.invert() >> tree.outputs.matrix("Inverted")
+        mat.transpose() >> tree.outputs.matrix("Transposed")
+        mat.determinant() >> tree.outputs.float("Det")
+        mat.transform_direction(vec) >> tree.outputs.vector("Dir")
+    code = _assert_roundtrip(tree)
+    for expected in (
+        "mat.invert()",
+        "mat.transpose()",
+        "mat.determinant()",
+        "mat.transform_direction(vec)",
+    ):
+        assert expected in code, expected
+
+
+def test_rotation_methods():
+    with TreeBuilder("RotationMethods") as tree:
+        rot = tree.inputs.rotation("Rot")
+        rot.invert() >> tree.outputs.rotation("Inverted")
+        rot.to_euler() >> tree.outputs.vector("Euler")
+    code = _assert_roundtrip(tree)
+    assert "rot.invert()" in code
+    assert "rot.to_euler()" in code
+
+
+def test_separate_transform_dissolves():
+    with TreeBuilder("SepTransform") as tree:
+        mat = tree.inputs.matrix("Mat")
+        mat.translation >> tree.outputs.vector("T")
+        mat.scale >> tree.outputs.vector("S")
+    code = _assert_roundtrip(tree)
+    assert "mat.translation" in code
+    assert "mat.scale" in code
+    assert "SeparateTransform" not in code
+
+
+def test_separate_color_dissolves():
+    with TreeBuilder("SepColor") as tree:
+        col = tree.inputs.color("Col")
+        (col.r + col.g) >> tree.outputs.float("Sum")
+    code = _assert_roundtrip(tree)
+    assert "col.r + col.g" in code
+    assert "SeparateColor" not in code
+
+
+# ---------------------------------------------------------------------------
+# Factory reverse-mapping
+# ---------------------------------------------------------------------------
+
+
+def test_factory_nested_instance_path():
+    """Parameterised factory instances reverse-map (domain via self._domain)."""
+    with TreeBuilder("StoreAttr") as tree:
+        geo_in = tree.inputs.geometry()
+        (
+            g.StoreNamedAttribute.point.integer(geo_in, name="id", value=7)
+            >> tree.outputs.geometry()
+        )
+    code = _assert_roundtrip(tree)
+    assert "g.StoreNamedAttribute.point.integer(" in code
+    assert 'data_type="INT"' not in code
+
+
+def test_factory_fallback_when_props_not_covered():
+    """A non-default prop outside the factory signature forces the constructor."""
+    with TreeBuilder("MathClamp") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        g.Math(val, operation="SINE", use_clamp=True) >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert 'g.Math(value=value, operation="SINE", use_clamp=True)' in code
+
+
+def test_factory_keeps_default_prop_constructor():
+    """No non-default state to cover → plain constructor, no factory."""
+    with TreeBuilder("PlainMath") as tree:
+        g.Math()  # ADD is the default operation
+    code = to_python(tree)
+    assert "math = g.Math()" in code
 
 
 # ---------------------------------------------------------------------------

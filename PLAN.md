@@ -46,22 +46,70 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   domain, mode) + reroute-collapsed links. Covers hello-world surface,
   city-builder, boolean decoder, vector compare, multi-input join.
 
+### Stage 5 (factory reverse-mapping — June 2026)
+- [x] **Classmethod reverse table**: emits `g.Math.square_root(x)`,
+  `g.Compare.float.less_than(a, b)`, `g.StoreNamedAttribute.point.integer(...)`
+  instead of plain constructors with `operation=`/`data_type=` kwargs.
+  Implemented by **AST-parsing the factory bodies at runtime** (no
+  generate.py change needed — single source of truth, works for manual
+  classes, parameterised factory instances resolve `self._domain`).
+  Safety: a factory is used only when it covers *all* non-default props,
+  every socket kwarg maps to a factory parameter, and factory parameter
+  defaults that differ from the node's socket values get explicit kwargs.
+  Unanalysable bodies (positional args, `**kwargs`, helper indirection like
+  `Compare._VectorFactory._make`) fall back to the constructor. Leading
+  consecutive parameters render positionally (`g.Math.sine(x)`).
+
+### Stage 6 (socket-method table — June 2026)
+- [x] **Socket-method table**: declarative `SocketMethodSpec` table renders
+  nodes as methods on the socket feeding their primary input:
+  `value.map_range(...)`, `cond.switch.float(a, b)`, `field.point.at(i)`,
+  `.point.mean/median/min/max/std_dev/variance/leading/trailing/total()`,
+  `.point.evaluate()`. Method paths template on node props
+  (`{domain}` → point/spline/…, `{input_type}` → switch dtype); multi-output
+  nodes (AccumulateField etc.) match the spec for the single output in use.
+  Faithfulness guards: receiver socket type must match (so the method
+  re-derives the same data_type on round-trip), all linked inputs covered by
+  params, no uncovered non-default props.
+- [x] **SeparateXYZ dissolves to `vec.x` / `vec.y` / `vec.z`** via per-output
+  expressions; the source is auto-promoted to a variable
+  (`position = g.Position().o.position`) when referenced more than once, so
+  repeated accessors reuse one node through `_find_or_create_linked`.
+- [x] **Expression kind tracking** (`_Val`): node- vs socket-valued
+  expressions, output pinning, and per-output maps — the foundation for
+  receiver-based emission (`ctx.socket_expr()` forces `.o.<name>` on
+  node-valued upstreams).
+
+### Stage 7 (broadened spec table — June 2026)
+- [x] **Vector methods**: `.dot()`, `.length()`, `.normalize()`, `.cross()`,
+  `.distance()`, `.project()`, `.reflect()` (VectorMath ops without operator
+  equivalents), `.rotate(rotation)` (RotateVector), `.transform(matrix)`
+  (TransformPoint).
+- [x] **String methods**: `.slice()`, `.replace()`, `.reverse()`,
+  `.length()`, `.uppercase()`/`.lowercase()` (SetStringCase), and
+  `.starts_with()`/`.ends_with()`/`.contains()` (MatchString) — menu-socket
+  constants handled via the new `require_sockets` spec field.
+- [x] **Matrix/rotation methods**: `.invert()`, `.transpose()`,
+  `.determinant()`, `.transform_direction()`, rotation `.invert()`,
+  `.rotate()`, `.to_euler()`.
+- [x] **`Clamp` → `.clamp(min, max)`** (MINMAX only).
+- [x] **Generalised dissolution table** (`DissolveSpec`): SeparateTransform →
+  `mat.translation/.rotation/.scale`, SeparateColor (RGB mode) →
+  `col.r/.g/.b/.a`, alongside SeparateXYZ.
+- [x] Fixed `_non_default_props` collision with base-Node rna properties
+  (socket param `color` shadowed the node UI ``color`` property).
+
 ## To Do
 
 ### High value
-- [ ] **Classmethod reverse table**: emit `g.Math.square_root(x)` instead of
-  `g.Math(value=x, operation="SQRT")`. `generate.py` already generates the
-  classmethod shortcuts — have it emit the reverse mapping
-  (bl_idname + props → constructor path) at the same time, single source of
-  truth. Same for nested factories (`g.Compare.float.less_than`,
-  `g.StoreNamedAttribute.point.integer`, `g.SetShadeSmooth.face`).
 - [ ] **Zone emitters**: Repeat/Simulation/ForEach paired nodes currently
   produce broken constructor pairs. Needs `register_emitter` implementations
   emitting `g.RepeatZone(...)`, `zone.input.o.x`, `zone.output.i.x` patterns.
-- [ ] **Socket-method table**: `MapRange` → `.map_range()`, `EvaluateAtIndex`
-  → `.point.at()`, `AccumulateField` → `.point.trailing()`, `FormatString` →
-  `.format()`, `Switch` → `.switch.float()`, SeparateXYZ → `vec.x`, plus
-  future `.curl()` / `.divergence()` / `.laplacian()` when those exist.
+- [ ] **Remaining socket-method specs**: `FormatString` → `.format({...})`
+  and `StringJoin` (dict/multi-input emission — need custom emitters),
+  `.find()` (two-output NamedTuple result), `Mix` → `factor.mix.*`,
+  `.to_quaternion()`/`.svd()` (tuple results), grid methods, plus future
+  `.curl()` / `.divergence()` / `.laplacian()` when those exist.
 - [ ] **Compare lifting**: `a < b` instead of `g.Compare(...)` when props
   match what the operator overload produces (mode ELEMENT, default epsilon).
 
