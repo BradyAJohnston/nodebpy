@@ -102,9 +102,18 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 ## To Do
 
 ### High value
-- [ ] **Zone emitters**: Repeat/Simulation/ForEach paired nodes currently
-  produce broken constructor pairs. Needs `register_emitter` implementations
-  emitting `g.RepeatZone(...)`, `zone.input.o.x`, `zone.output.i.x` patterns.
+- [ ] **Items API unification** (do before zone codegen — full design in
+  [ITEMS_API_PLAN.md](ITEMS_API_PLAN.md)): single `ItemsMixin` for all
+  variable-items nodes (CaptureAttribute, Bake, FormatString, FieldToList,
+  IndexSwitch, MenuSwitch, zones), `Item`/`ZoneItem` handle objects
+  (`item.current` / `item.next` / `item.result`), `capture(value, name=...)`
+  with explicit naming, unified `items=` constructor kwarg, zone wrapper
+  unpacking consistency, dead-param/monkeypatch fixes.
+- [ ] **Zone emitters** (after the API cleanup): Repeat/Simulation/ForEach
+  paired nodes currently produce broken constructor pairs. Emit the
+  canonical handle form: zone declaration at input-node position, deferred
+  `expr >> item.next` statements at output-node position, `DictExpr` IR for
+  items dicts.
 - [ ] **Remaining socket-method specs**: `FormatString` → `.format({...})`
   and `StringJoin` (dict/multi-input emission — need custom emitters),
   `.find()` (two-output NamedTuple result), `Mix` → `factor.mix.*`,

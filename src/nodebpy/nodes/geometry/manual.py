@@ -42,6 +42,7 @@ from ...builder import (
     IntegerSocketGrid,
     IntegerSocketList,
     IntegerVectorSocket,
+    ItemsMixin,
     MaterialSocket,
     MatrixSocket,
     MatrixSocketList,
@@ -90,9 +91,7 @@ from ...types import (
     InputVector,
     InputVectorGrid,
     _AccumulateFieldDataTypes,
-    _AttributeDataTypes,
     _AttributeDomains,
-    _BakeDataTypes,
     _BakedDataTypeValues,
     _EvaluateAtIndexDataTypes,
     _GridDataTypes,
@@ -1050,7 +1049,7 @@ class Frame(BaseNode):
         TreeBuilder._frame_contexts.pop()
 
 
-class Bake(BaseNode, DynamicInputsMixin):
+class Bake(ItemsMixin, BaseNode):
     """Cache the incoming data so that it can be used without recomputation
 
     TODO: properly handle Animation / Still bake opations and ability to bake to a file
@@ -1058,17 +1057,12 @@ class Bake(BaseNode, DynamicInputsMixin):
 
     _bl_idname = "GeometryNodeBake"
     node: bpy.types.GeometryNodeBake
+    _items_collection = "bake_items"
     _socket_data_types = _BakedDataTypeValues
 
     def __init__(self, *args, **kwargs):
         super().__init__()
         self._establish_links(**self._add_inputs(*args, **kwargs))
-
-    def _add_socket(
-        self, name: str, type: _BakeDataTypes, default_value: Any | None = None
-    ):
-        item = self.node.bake_items.new(socket_type=type, name=name)
-        return self.node.inputs[item.name]
 
 
 class GeometryToInstance(BaseNode):
@@ -1344,11 +1338,12 @@ class IntegerVector(BaseNode):
 ### === ###
 
 
-class FormatString(BaseNode, DynamicInputsMixin):
+class FormatString(ItemsMixin, BaseNode):
     """Insert values into a string using a Python and path template compatible formatting syntax"""
 
     _bl_idname = "FunctionNodeFormatString"
     node: bpy.types.FunctionNodeFormatString
+    _items_collection = "format_items"
     _socket_data_types = ("VALUE", "INT", "STRING")
     _type_map = {
         "VALUE": "FLOAT",
@@ -1377,15 +1372,6 @@ class FormatString(BaseNode, DynamicInputsMixin):
         key_args = {"Format": format}
         key_args.update(self._add_inputs(**items))  # type: ignore
         self._establish_links(**key_args)
-
-    def _add_socket(
-        self,
-        name: str,
-        type: Literal["FLOAT", "INT", "STRING"] = "FLOAT",
-        default_value: float | int | str | None = None,
-    ):
-        item = self.node.format_items.new(socket_type=type, name=name)
-        return self.node.inputs[item.name]
 
     @property
     def items(self) -> dict[str, SocketLinker]:
@@ -2111,7 +2097,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
         return MenuSwitch(menu, items, data_type="CLOSURE")
 
 
-class CaptureAttribute(BaseNode, DynamicInputsMixin):
+class CaptureAttribute(ItemsMixin, BaseNode):
     """
     Store the result of a field on a geometry and output the data as a node socket.
     Allows remembering or interpolating data as the geometry changes,
@@ -2120,6 +2106,7 @@ class CaptureAttribute(BaseNode, DynamicInputsMixin):
 
     _bl_idname = "GeometryNodeCaptureAttribute"
     node: bpy.types.GeometryNodeCaptureAttribute
+    _items_collection = "capture_items"
     _socket_data_types = (
         "VALUE",
         "INT",
@@ -2185,25 +2172,6 @@ class CaptureAttribute(BaseNode, DynamicInputsMixin):
         self.domain = domain
         key_args.update(self._add_inputs(**items))
         self._establish_links(**key_args)
-
-    def _add_socket(self, name: str, type: _AttributeDataTypes):
-        item = self.node.capture_items.new(socket_type=type, name=name)
-        return self.node.inputs[item.name]
-
-    def capture(self, value: InputLinkable) -> SocketLinker:
-        """Capture the value to store in the attribute
-
-        Return the SocketLinker for the output socket
-        """
-        # the _add_inputs returns a dictionary but we only want the first key
-        # because we are adding a single input
-        input_dict = self._add_inputs(value)
-        self._establish_links(**input_dict)
-        return SocketLinker(self.node.outputs[next(iter(input_dict))])
-
-    @property
-    def _items(self) -> bpy.types.NodeGeometryCaptureAttributeItems:
-        return self.node.capture_items
 
     @property
     def domain(
