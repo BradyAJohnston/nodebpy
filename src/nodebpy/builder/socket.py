@@ -83,7 +83,7 @@ from ..types import (
     InputVector,
 )
 from ._registry import _SOCKET_GRID_REGISTRY, _SOCKET_LIST_REGISTRY, _SOCKET_REGISTRY
-from ._utils import _NodeLike, _SocketLike
+from ._utils import _NodeLike, _output_socket_type, _SocketLike
 from .mixins import LinkingMixin, OperatorMixin
 
 if TYPE_CHECKING:
@@ -735,12 +735,11 @@ def _dispatch_vector_math(
     if operation == "multiply":
         if isinstance(other, (int, float)):
             return VectorMath.scale(socket, other).o.vector
-        if isinstance(other, NodeSocket) and other.type in ("VALUE", "FLOAT", "INT"):
-            return VectorMath.scale(socket, other).o.vector
-        if isinstance(other, (_SocketLike, _NodeLike)) and getattr(
-            other, "type", None
-        ) in ("VALUE", "FLOAT", "INT"):
-            return VectorMath.scale(socket, other._default_output_socket).o.vector
+        if _output_socket_type(other) in ("VALUE", "FLOAT", "INT"):
+            scale_by = (
+                other if isinstance(other, NodeSocket) else other._default_output_socket
+            )
+            return VectorMath.scale(socket, scale_by).o.vector
         if isinstance(other, (list, tuple)) and len(other) == 3:
             return VectorMath.multiply(*values).o.vector
         if isinstance(other, (_SocketLike, _NodeLike, NodeSocket)):
@@ -1763,7 +1762,7 @@ class _MatrixMixin(
         other = self._cast_to_matrix(other)
         socket = self._default_output_socket
 
-        if socket.type == "MATRIX" and other.type == "VECTOR":
+        if socket.type == "MATRIX" and _output_socket_type(other) == "VECTOR":
             return TransformPoint(other, socket).o.vector  # ty: ignore[invalid-return-type]
 
         return MultiplyMatrices(socket, other).o.matrix  # ty: ignore[invalid-return-type]
@@ -1774,7 +1773,7 @@ class _MatrixMixin(
         other = self._cast_to_matrix(other)
         socket = self._default_output_socket
 
-        if socket.type == "VECTOR" and getattr(other, "type", None) == "MATRIX":
+        if socket.type == "VECTOR" and _output_socket_type(other) == "MATRIX":
             return TransformPoint(socket, other).o.vector  # ty: ignore[invalid-return-type]
 
         return MultiplyMatrices(other, socket).o.matrix  # ty: ignore[invalid-return-type]
