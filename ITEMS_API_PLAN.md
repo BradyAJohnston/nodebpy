@@ -174,12 +174,27 @@ Existing spellings (`zone.input.o.value`, constructor `items=` dict,
 
 1. **`ItemsMixin`** in builder/ — port `CaptureAttribute`, `Bake`,
    `FormatString` first (simple, one collection each). Verify: existing
-   tests pass unchanged (the public constructors don't change).
+   tests pass unchanged (the public constructors don't change). ✅ DONE
 2. Port `FieldToList`/`FieldToGrid` (removes the `_add_socket` stub) and
    `IndexSwitch`/`MenuSwitch` (adapters for their `.new()` signatures).
+   ✅ DONE
 3. Port zones onto the mixin; fix `capture` signatures (`name=`, domain
    move); replace the ForEach monkeypatch with a second collection
-   descriptor; unify wrapper unpacking; mutable-default cleanup.
+   descriptor; unify wrapper unpacking; mutable-default cleanup. ✅ DONE
+   Implementation notes (deviations from the sketch above):
+   - Zone item sockets are found by **identifier prefix + collection
+     index** (`Item_`/`Input_`/`Main_`/`Generation_` via
+     `_socket_for_item` in zone.py) — names are not unique across a zone
+     node's fixed sockets and item collections (e.g. a main item and a
+     generation item can both be called "Position").
+   - The ForEach second collection is handled by an explicit
+     `capture_generated` built on `ItemsMixin._resolve_capture` rather
+     than an `ItemCollection` descriptor — only one node needed it.
+   - `ItemsMixin.add_items(items) -> dict[str, Socket]` is the dict-based
+     verb (replaces the `FieldToList`/`FieldToGrid` dict `capture`); step
+     4 upgrades its return value to `Item` handles.
+   - Constructor kwarg is now `items=` everywhere (incl. `Bake`);
+     `FieldToList(fields=...)` kept as a `DeprecationWarning` alias.
 4. **Item / ZoneItem handles** + `zone.item()` and `items={name: None/type}`
    declaration support.
 5. Then Stage 8 codegen: zone emitters targeting the handle/canonical form,

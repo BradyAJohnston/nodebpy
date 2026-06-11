@@ -210,12 +210,14 @@ class DynamicInputsMixin(ABC):
     _type_map: dict[str, str] = {}
 
     def _match_compatible_data(
-        self, sockets: Iterable[NodeSocket]
+        self, sockets: Iterable[NodeSocket], types: tuple[str, ...] | None = None
     ) -> tuple[NodeSocket, str]:
+        if types is None:
+            types = self._socket_data_types
         possible = []
         for socket in sockets:
             compatible = SOCKET_COMPATIBILITY.get(socket.type, ())
-            for type in self._socket_data_types:
+            for type in types:
                 if type in compatible:
                     possible.append((socket, type, compatible.index(type)))
 
