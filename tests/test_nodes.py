@@ -184,9 +184,12 @@ def test_field_to_grid():
     with TreeBuilder() as tree:
         nt = g.NoiseTexture()
         ftg = g.FieldToGrid(g.CubeGridTopology().o.topology)
-        pos, vec, fac = ftg.add_items(
-            {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
-        ).values()
+        pos, vec, fac = (
+            item.output
+            for item in ftg.add_items(
+                {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
+            ).values()
+        )
         assert len(ftg.o) == 4
         assert isinstance(pos, VectorSocketGrid)
         assert pos.name == "position"
@@ -634,6 +637,68 @@ def test_zone_capture_names_and_domains():
         assert output is rzone.output
         with pytest.raises(IndexError):
             rzone[2]
+
+
+def test_zone_item_handles():
+    with TreeBuilder():
+        zone = g.RepeatZone(10)
+        value = zone.item("value", initial=1.0)
+        _ = (value.current + 1.0) >> value.next
+        assert zone.output.items[0].name == "value"
+        assert zone.output.items[0].socket_type == "FLOAT"
+        assert value.initial.socket.default_value == pytest.approx(1.0)
+        assert value.current.socket.links[0].to_node.bl_idname == "ShaderNodeMath"
+        assert value.next.socket.links[0].from_node.bl_idname == "ShaderNodeMath"
+        assert value.result.socket.name == "value"
+
+        # adding more items must not invalidate existing handles
+        geo = zone.item("geo", type="GEOMETRY")
+        vec = zone.item("vec", (1.0, 2.0, 3.0))
+        assert value.name == "value"
+        assert geo.socket_type == "GEOMETRY"
+        assert len(geo.initial.socket.links) == 0
+        assert vec.socket_type == "VECTOR"
+        assert tuple(vec.initial.socket.default_value) == (1.0, 2.0, 3.0)
+
+        with pytest.raises(TypeError):
+            zone.item("nope")
+
+
+def test_zone_items_declaration():
+    with TreeBuilder():
+        zone = g.SimulationZone({"geo": "GEOMETRY", "fac": g.Value()})
+        assert [i.socket_type for i in zone.output.items] == ["GEOMETRY", "FLOAT"]
+        assert len(zone.input.node.inputs[0].links) == 0
+        assert len(zone.input.node.inputs[1].links) == 1
+
+    with TreeBuilder():
+        cap = g.CaptureAttribute(
+            g.Cube(), items={"Pos": g.Position(), "Mask": "BOOLEAN"}
+        )
+        assert [i.data_type for i in cap.node.capture_items] == [
+            "FLOAT_VECTOR",
+            "BOOLEAN",
+        ]
+        assert len(cap.node.inputs["Pos"].links) == 1
+        assert len(cap.node.inputs["Mask"].links) == 0
+
+
+def test_foreach_item_handles():
+    with TreeBuilder():
+        zone = g.ForEachGeometryElementZone(g.Cube())
+        pos = zone.item("Pos", g.Position())
+        assert (
+            pos.input.socket.links[0].from_node.bl_idname == "GeometryNodeInputPosition"
+        )
+        out = zone.main_item("Out", pos.output)
+        assert out.input.socket.links[0].from_socket == pos.output.socket
+        gen = zone.generated_item("Gen", g.Cone(), domain="FACE")
+        assert gen.socket_type == "GEOMETRY"
+        assert zone.output.items_generated[1].name == "Gen"
+        unlinked = zone.generated_item("Mask", type="BOOLEAN", domain="FACE")
+        assert zone.output.items_generated[2].domain == "FACE"
+        assert len(unlinked.input.socket.links) == 0
+        assert gen.name == "Gen"
 
 
 def test_boolean_math_methods():
@@ -1617,9 +1682,12 @@ def test_vector_dimensions():
 def test_field_to_list():
     with g.tree():
         ftl = g.FieldToList(10)
-        pos, idx, num = ftl.add_items(
-            {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
-        ).values()
+        pos, idx, num = (
+            item.output
+            for item in ftl.add_items(
+                {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
+            ).values()
+        )
         assert len(ftl.node.list_items) == 3
         assert isinstance(pos, VectorSocketList)
         assert isinstance(idx, IntegerSocketList)

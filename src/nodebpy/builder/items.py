@@ -14,6 +14,56 @@ if TYPE_CHECKING:
     from .tree import TreeBuilder
 
 
+class Item:
+    """Handle for one item of an items-driven node.
+
+    Names the item's socket *roles* rather than socket plumbing: ``input``
+    is the node's input socket for the item, ``output`` the matching
+    output socket.
+
+    Holds the item's collection index rather than the bpy item itself —
+    bpy collection item references are invalidated when the collection
+    grows.
+    """
+
+    def __init__(self, owner: ItemsMixin, item: Any):
+        self._owner = owner
+        self._index = next(
+            i for i, candidate in enumerate(self._collection) if candidate == item
+        )
+
+    @property
+    def _collection(self):
+        return self._owner._items
+
+    @property
+    def _item(self):
+        return self._collection[self._index]
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}({self.name!r}, {self.socket_type!r})"
+
+    @property
+    def name(self) -> str:
+        return self._item.name
+
+    @property
+    def socket_type(self) -> str:
+        # some collections (capture_items, grid_items) call this data_type
+        item = self._item
+        return getattr(item, "socket_type", None) or item.data_type
+
+    @property
+    def input(self) -> Socket:
+        """The node's input socket for this item."""
+        return _wrap_socket(self._owner._item_socket(self._item))
+
+    @property
+    def output(self) -> Socket:
+        """The node's output socket for this item."""
+        return _wrap_socket(self._owner._item_socket(self._item, output=True))
+
+
 class ItemsMixin(DynamicInputsMixin):
     """Socket machinery for nodes whose sockets are driven by a bpy item
     collection (``capture_items``, ``bake_items``, ``format_items``, ...).
@@ -90,6 +140,17 @@ class ItemsMixin(DynamicInputsMixin):
             socket_source = socket_source.socket
         return socket_source, type, name
 
+    def _declared_item_type(self, value: Any) -> str | None:
+        """The item ``socket_type`` if ``value`` is a socket-type string
+        (e.g. ``"FLOAT"``) valid for this node, else ``None``."""
+        if not isinstance(value, str):
+            return None
+        if value in self._socket_data_types:
+            return self._type_map.get(value, value)
+        if value in {self._type_map.get(t, t) for t in self._socket_data_types}:
+            return value
+        return None
+
     def capture(self, value: InputLinkable, *, name: str | None = None) -> Socket:
         """Add an item linked from ``value`` and return its output socket.
 
@@ -101,12 +162,36 @@ class ItemsMixin(DynamicInputsMixin):
         self.tree.link(source, self._item_socket(item))
         return _wrap_socket(self._item_socket(item, output=True))
 
-    def add_items(self, items: Mapping[str, InputLinkable]) -> dict[str, Socket]:
-        """Add an item per mapping entry, linking each value to its new
-        input socket.
+    def add_item(
+        self, name: str, value: InputLinkable = None, *, type: str | None = None
+    ) -> Item:
+        """Add a single item and return its handle.
 
-        Returns the items' output sockets keyed by name.
+        Links ``value`` to the item's input when given; otherwise ``type``
+        (a socket-type string such as ``"FLOAT"``) declares the item
+        unlinked.
         """
-        new_sockets = self._add_inputs(**items)
-        self._establish_links(**new_sockets)
-        return {name: _wrap_socket(self.node.outputs[name]) for name in new_sockets}
+        if value is not None:
+            source, inferred, _ = self._resolve_capture(value, name=name)
+            item = self._new_item(name, type or inferred)
+            self.tree.link(source, self._item_socket(item))
+        elif type is not None:
+            item = self._new_item(name, self._declared_item_type(type) or type)
+        else:
+            raise TypeError(f"item {name!r} requires a value or an explicit type=")
+        return Item(self, item)
+
+    def add_items(self, items: Mapping[str, InputLinkable | str]) -> dict[str, Item]:
+        """Add an item per mapping entry and return their handles by name.
+
+        Values may be linkables (linked to the new item's input) or
+        socket-type strings such as ``"FLOAT"`` (declare an unlinked item).
+        """
+        handles = {}
+        for key, value in items.items():
+            type = self._declared_item_type(value)
+            if type is not None:
+                handles[key] = self.add_item(key, type=type)
+            else:
+                handles[key] = self.add_item(key, cast("InputLinkable", value))
+        return handles
