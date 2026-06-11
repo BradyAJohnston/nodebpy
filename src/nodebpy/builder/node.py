@@ -241,6 +241,12 @@ class DynamicInputsMixin(ABC):
     @abstractmethod
     def _add_socket(self, name: str, *args: Any, **kwargs: Any) -> NodeSocket: ...
 
+    def _declared_item_type(self, value: Any) -> str | None:
+        """Subclasses may interpret ``value`` as an explicit socket-type
+        declaration (an unlinked item); ``None`` means treat it as a link
+        source."""
+        return None
+
     def _add_inputs(self, *args, **kwargs) -> dict[str, NodeSocket]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
         new_sockets = {}
@@ -249,6 +255,10 @@ class DynamicInputsMixin(ABC):
             items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
+            declared = self._declared_item_type(source)
+            if declared is not None:
+                self._add_socket(name=key, type=declared)
+                continue
             socket_source, type = self._match_compatible_data(
                 source.o._available if hasattr(source, "o") else [source]
             )

@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, cast
 import bpy
 from bpy.types import (
     NodeClosureInput,
@@ -13,6 +13,8 @@ from bpy.types import (
 if TYPE_CHECKING:
     from .manual import EvaluateClosure
 
+from mathutils import Euler
+
 from ...builder import BaseNode as BaseNode
 from ...builder import (
     BooleanSocket,
@@ -20,6 +22,7 @@ from ...builder import (
     FloatSocket,
     GeometrySocket,
     IntegerSocket,
+    Item,
     ItemsMixin,
 )
 from ...builder import Socket as SocketLinker
@@ -27,11 +30,13 @@ from ...builder._registry import _wrap_socket
 from ...builder._utils import _SocketLike
 from ...builder.accessor import SocketAccessor
 from ...types import (
+    InputAny,
     InputBoolean,
     InputGeometry,
     InputInteger,
     InputLinkable,
     _AttributeDomains,
+    _is_default_value,
 )
 
 
@@ -44,6 +49,25 @@ def _socket_for_item(
     index = next(i for i, candidate in enumerate(items) if candidate == item)
     sockets = node.outputs if output else node.inputs
     return [s for s in sockets if s.identifier.startswith(prefix)][index]
+
+
+def _infer_value_type(value) -> str | None:
+    """Item ``socket_type`` for a plain default value, or None."""
+    match value:
+        case bool():
+            return "BOOLEAN"
+        case int():
+            return "INT"
+        case float():
+            return "FLOAT"
+        case str():
+            return "STRING"
+        case tuple() | list():
+            return "VECTOR"
+        case Euler():
+            return "ROTATION"
+        case _:
+            return None
 
 
 class BaseZone(ItemsMixin, BaseNode, ABC):
@@ -88,6 +112,34 @@ class BaseZoneOutput(BaseZone, ABC):
     node: bpy.types.GeometryNodeSimulationOutput | bpy.types.GeometryNodeRepeatOutput
 
 
+class ZoneItem(Item):
+    """Handle for a simulation/repeat state item (four sockets per item)."""
+
+    def __init__(self, input_node: BaseZoneInput, output_node: BaseZoneOutput, item):
+        super().__init__(output_node, item)
+        self._input_node = input_node
+
+    @property
+    def initial(self) -> SocketLinker:
+        """Input-node input socket — set the item's starting value."""
+        return _wrap_socket(self._input_node._item_socket(self._item))
+
+    @property
+    def current(self) -> SocketLinker:
+        """Input-node output socket — read the item inside the zone body."""
+        return _wrap_socket(self._input_node._item_socket(self._item, output=True))
+
+    @property
+    def next(self) -> SocketLinker:
+        """Output-node input socket — write the item's per-iteration result."""
+        return self.input
+
+    @property
+    def result(self) -> SocketLinker:
+        """Output-node output socket — read the item after the zone."""
+        return self.output
+
+
 class _ZonePair:
     """Zone wrapper holding the paired input and output builder nodes.
 
@@ -109,6 +161,51 @@ class _ZonePair:
 
     def __iter__(self):
         return iter((self.input, self.output))
+
+
+class _StateZone(_ZonePair):
+    """Zone wrapper for zones with shared state items (simulation/repeat)."""
+
+    input: BaseZoneInput
+    output: BaseZoneOutput
+
+    def item(
+        self,
+        name: str,
+        initial: InputAny = None,
+        *,
+        type: str | None = None,
+    ) -> ZoneItem:
+        """Declare a state item and return its handle.
+
+        ``initial`` may be a linkable (linked as the item's starting
+        value), a plain default value, or a socket-type string such as
+        ``"FLOAT"`` (declares the item without linking).
+        """
+        output = self.output
+        if type is None:
+            declared = output._declared_item_type(initial)
+            if declared is not None:
+                type, initial = declared, None
+        if initial is not None and not _is_default_value(initial):
+            source, inferred, _ = output._resolve_capture(
+                cast("InputLinkable", initial), name=name
+            )
+            item = output._new_item(name, type or inferred)
+            handle = ZoneItem(self.input, output, item)
+            output.tree.link(source, handle.initial.socket)
+        else:
+            if type is None:
+                type = _infer_value_type(initial)
+            if type is None:
+                raise TypeError(
+                    f"cannot infer a socket type for item {name!r}; pass type="
+                )
+            item = output._new_item(name, type)
+            handle = ZoneItem(self.input, output, item)
+            if initial is not None:
+                handle.initial.socket.default_value = initial  # ty: ignore[unresolved-attribute]
+        return handle
 
 
 class BaseSimulationZone(BaseZone):
@@ -160,19 +257,18 @@ class SimulationOutput(BaseSimulationZone, BaseZoneOutput):
         def i(self) -> _Inputs: ...
 
 
-class SimulationZone(_ZonePair):
+class SimulationZone(_StateZone):
     input: SimulationInput
     output: SimulationOutput
 
-    def __init__(self, items: dict[str, InputLinkable] | None = None):
+    def __init__(self, items: dict[str, InputAny] | None = None):
         self.input = SimulationInput()
         self.output = SimulationOutput()
         self.input.node.pair_with_output(self.output.node)
 
         self.output.node.state_items.clear()
-        socket_lookup = self.output._add_inputs(**(items or {}))
-        for name, source in socket_lookup.items():
-            self.input._link_from(source, name)
+        for name, value in (items or {}).items():
+            self.item(name, value)
 
     @property
     def delta_time(self) -> FloatSocket:
@@ -230,21 +326,22 @@ class RepeatOutput(BaseRepeatZone, BaseZoneOutput):
     node: bpy.types.GeometryNodeRepeatOutput
 
 
-class RepeatZone(_ZonePair):
+class RepeatZone(_StateZone):
     input: RepeatInput
     output: RepeatOutput
 
     def __init__(
         self,
         iterations: InputInteger = 1,
-        items: dict[str, InputLinkable] | None = None,
+        items: dict[str, InputAny] | None = None,
     ):
         self.input = RepeatInput(iterations)
         self.output = RepeatOutput()
         self.input.node.pair_with_output(self.output.node)
 
         self.output.node.repeat_items.clear()
-        self.input._establish_links(**self.input._add_inputs(**(items or {})))
+        for name, value in (items or {}).items():
+            self.item(name, value)
 
     @property
     def iteration(self) -> SocketLinker:
@@ -272,6 +369,32 @@ class ForEachGeometryElementZone(_ZonePair):
     @property
     def index(self) -> SocketLinker:
         return self.input.o.index
+
+    def item(
+        self, name: str, value: InputLinkable = None, *, type: str | None = None
+    ) -> Item:
+        """Declare an input item — a per-element field made available
+        inside the zone."""
+        return self.input.add_item(name, value, type=type)
+
+    def main_item(
+        self, name: str, value: InputLinkable = None, *, type: str | None = None
+    ) -> Item:
+        """Declare a main item — a per-element result written back onto
+        the input geometry."""
+        return self.output.add_item(name, value, type=type)
+
+    def generated_item(
+        self,
+        name: str,
+        value: InputLinkable = None,
+        *,
+        type: str | None = None,
+        domain: _AttributeDomains = "POINT",
+    ) -> Item:
+        """Declare a generation item — a value stored on the generated
+        geometry with the given ``domain``."""
+        return self.output.add_generated_item(name, value, type=type, domain=domain)
 
 
 class ForEachGeometryElementInput(BaseZoneInput):
@@ -333,6 +456,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         "ROTATION",
         "MATRIX",
     )
+    _generation_data_types = _socket_data_types + ("GEOMETRY",)
     _type_map = {"VALUE": "FLOAT"}
 
     _bl_idname = "GeometryNodeForeachGeometryElementOutput"
@@ -373,6 +497,34 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     ) -> bpy.types.NodeGeometryForeachGeometryElementGenerationItems:
         return self.node.generation_items
 
+    def add_generated_item(
+        self,
+        name: str,
+        value: InputLinkable = None,
+        *,
+        type: str | None = None,
+        domain: _AttributeDomains = "POINT",
+    ) -> Item:
+        """Add a generation item and return its handle.
+
+        Links ``value`` to the item's input when given; otherwise ``type``
+        declares the item unlinked.
+        """
+        source = None
+        if value is not None:
+            source, inferred, _ = self._resolve_capture(
+                value, name=name, types=self._generation_data_types
+            )
+            type = type or inferred
+        elif type is None:
+            raise TypeError(f"item {name!r} requires a value or an explicit type=")
+        item = self.items_generated.new(type, name)  # ty: ignore[invalid-argument-type]
+        item.domain = domain
+        handle = _GenerationItem(self, item)
+        if source is not None:
+            self.tree.link(source, handle.input.socket)
+        return handle
+
     def capture_generated(
         self,
         value: InputLinkable,
@@ -382,20 +534,11 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     ) -> SocketLinker:
         """Capture ``value`` as a generated-geometry item evaluated on the
         given ``domain``, and return its output socket."""
-        source, type, name = self._resolve_capture(
-            value, name=name, types=self._socket_data_types + ("GEOMETRY",)
-        )
-        item = self.items_generated.new(type, name)  # ty: ignore[invalid-argument-type]
-        item.domain = domain
-        self.tree.link(
-            source,
-            _socket_for_item(self.node, self.items_generated, "Generation_", item),
-        )
-        return _wrap_socket(
-            _socket_for_item(
-                self.node, self.items_generated, "Generation_", item, output=True
+        if name is None:
+            _, _, name = self._resolve_capture(
+                value, name=None, types=self._generation_data_types
             )
-        )
+        return self.add_generated_item(name, value, domain=domain).output
 
     @property
     def domain(
@@ -409,6 +552,40 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         value: _AttributeDomains,
     ):
         self.node.domain = value
+
+
+class _GenerationItem(Item):
+    """Handle for a ForEach generation item; its sockets carry the
+    ``Generation_`` identifier prefix rather than the owner's default."""
+
+    _owner: "ForEachGeometryElementOutput"
+
+    @property
+    def _collection(self):
+        return self._owner.items_generated
+
+    @property
+    def input(self) -> SocketLinker:
+        return _wrap_socket(
+            _socket_for_item(
+                self._owner.node,
+                self._owner.items_generated,
+                "Generation_",
+                self._item,
+            )
+        )
+
+    @property
+    def output(self) -> SocketLinker:
+        return _wrap_socket(
+            _socket_for_item(
+                self._owner.node,
+                self._owner.items_generated,
+                "Generation_",
+                self._item,
+                output=True,
+            )
+        )
 
 
 class ClosureZone(_ZonePair):

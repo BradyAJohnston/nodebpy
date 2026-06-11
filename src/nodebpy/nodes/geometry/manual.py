@@ -1058,7 +1058,9 @@ class Bake(ItemsMixin, BaseNode):
     _items_collection = "bake_items"
     _socket_data_types = _BakedDataTypeValues
 
-    def __init__(self, *args, items: dict[str, InputLinkable] | None = None, **kwargs):
+    def __init__(
+        self, *args, items: dict[str, InputLinkable | str] | None = None, **kwargs
+    ):
         super().__init__()
         key_args = dict(items or {})
         key_args.update(kwargs)
@@ -2153,7 +2155,7 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         def __call__(
             self,
             geometry: InputGeometry = None,
-            items: dict[str, InputLinkable] | None = None,
+            items: dict[str, InputLinkable | str] | None = None,
         ) -> "CaptureAttribute":
             """Create a CaptureAttribute node with a pre-set domain"""
             return CaptureAttribute(geometry=geometry, domain=self._domain, items=items)
@@ -2185,7 +2187,7 @@ class CaptureAttribute(ItemsMixin, BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        items: dict[str, InputLinkable] | None = None,
+        items: dict[str, InputLinkable | str] | None = None,
         *,
         domain: _AttributeDomains = "POINT",
     ):
@@ -2257,9 +2259,9 @@ class FieldToList(ItemsMixin, BaseNode):
     def __init__(
         self,
         count: InputInteger = 1,
-        items: dict[str, InputLinkable] | None = None,
+        items: dict[str, InputLinkable | str] | None = None,
         *,
-        fields: dict[str, InputLinkable] | None = None,
+        fields: dict[str, InputLinkable | str] | None = None,
     ):
         super().__init__()
         if fields is not None:

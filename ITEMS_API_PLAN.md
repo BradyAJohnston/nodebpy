@@ -196,7 +196,29 @@ Existing spellings (`zone.input.o.value`, constructor `items=` dict,
    - Constructor kwarg is now `items=` everywhere (incl. `Bake`);
      `FieldToList(fields=...)` kept as a `DeprecationWarning` alias.
 4. **Item / ZoneItem handles** + `zone.item()` and `items={name: None/type}`
-   declaration support.
+   declaration support. ✅ DONE
+   Implementation notes:
+   - `Item` (builder/items.py) stores the item's **collection index**, not
+     the bpy item — bpy collection item references are invalidated when
+     the collection grows (segfault). `Item.socket_type` falls back to
+     `data_type` (capture_items, grid_items spelling).
+   - `ItemsMixin.add_item(name, value=None, *, type=)` is the single-item
+     verb; `add_items` now returns `dict[str, Item]`.
+   - Unlinked declaration uses **socket-type strings as dict values**
+     (`items={"geo": "GEOMETRY"}`), validated against
+     `_socket_data_types`/`_type_map` via `_declared_item_type` — a hook
+     on `DynamicInputsMixin._add_inputs`, so every `items=` constructor
+     supports it. Bare `None` values are rejected (no type to infer).
+   - `zone.item(name, initial=...)` lives on `_StateZone`
+     (Simulation/Repeat wrappers) and returns `ZoneItem`
+     (initial/current/next/result). `initial` accepts linkables, plain
+     defaults (python-type inference), or type strings; the constructor
+     `items=` dict is now sugar over `zone.item()`.
+   - ForEach wrapper: `zone.item()` / `zone.main_item()` /
+     `zone.generated_item(name, value, type=, domain=)`; generation
+     handles resolve sockets with the `Generation_` prefix
+     (`_GenerationItem`); `capture_generated` delegates to
+     `add_generated_item`.
 5. Then Stage 8 codegen: zone emitters targeting the handle/canonical form,
    plus `DictExpr`.
 
