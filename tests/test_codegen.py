@@ -9,6 +9,8 @@ from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.export.codegen import CodegenError, to_python
 
+from .test_usecases import ROUNDTRIP_BUILDERS
+
 
 def _structure(node_tree):
     """A comparable structural signature: nodes (with key props) and links."""
@@ -526,7 +528,11 @@ def test_vector_compare_emits_mode():
     with TreeBuilder("VecCompare") as tree:
         vec = tree.inputs.vector("V")
         g.Compare(
-            a=vec, b=(0.5, 0.5, 0.5), operation="LESS_THAN", data_type="VECTOR", mode="AVERAGE"
+            a=vec,
+            b=(0.5, 0.5, 0.5),
+            operation="LESS_THAN",
+            data_type="VECTOR",
+            mode="AVERAGE",
         ) >> tree.outputs.boolean("Out")
     code = _assert_roundtrip(tree)
     assert 'data_type="VECTOR"' in code
@@ -1331,3 +1337,37 @@ def test_grid_info_accessors_dissolve():
     assert ".transform" in code
     assert ".background_value" in code
     assert "GridInfo" not in code
+
+
+# ---------------------------------------------------------------------------
+# Parametrised round-trip over every tree built in test_usecases.py
+# ---------------------------------------------------------------------------
+
+# Known codegen gaps (see PLAN.md); strict so a fix flips them to XPASS.
+_ROUNDTRIP_XFAIL = {
+    "build_import_microscopy_meshes_api": (
+        "hand-built zone clear()s generation_items so its item identifier is "
+        "Generation_1; a fresh zone always starts at Generation_0"
+    ),
+    "build_mask_grid": (
+        "MenuSwitch enum-items dict and custom group nodes (ClipFieldToBox) "
+        "are not emitted yet"
+    ),
+}
+
+
+@pytest.mark.parametrize(
+    "build",
+    [
+        pytest.param(
+            b,
+            id=b.__name__,
+            marks=pytest.mark.xfail(reason=_ROUNDTRIP_XFAIL[b.__name__], strict=True)
+            if b.__name__ in _ROUNDTRIP_XFAIL
+            else (),
+        )
+        for b in ROUNDTRIP_BUILDERS
+    ],
+)
+def test_roundtrip_usecases(build):
+    _assert_roundtrip(build())

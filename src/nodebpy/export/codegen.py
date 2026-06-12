@@ -22,6 +22,8 @@ from __future__ import annotations
 import ast
 import heapq
 import inspect
+import keyword
+import re
 import textwrap
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Callable, NamedTuple
@@ -533,7 +535,11 @@ def _normalize(name: str) -> str:
 
 def _make_var(label: str, counter: dict[str, int]) -> str:
     """Return a unique snake_case variable name for a node label."""
-    base = _normalize(label) or "node"
+    base = re.sub(r"_+", "_", re.sub(r"\W", "_", _normalize(label))).strip("_")
+    if not base or base[0].isdigit():
+        base = f"n_{base}" if base else "node"
+    if keyword.iskeyword(base):
+        base = f"{base}_"
     if base not in counter:
         counter[base] = 0
         return base

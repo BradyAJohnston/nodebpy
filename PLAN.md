@@ -138,27 +138,49 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   output names (Mix's four "Result" sockets). Future: `.curl()` /
   `.divergence()` / `.laplacian()` when those exist.
 
+### Stage 9 (polish — June 2026)
+- [x] **Line-length handling**: `max_inline_width` budget (default 88) binds
+  long expressions to a variable instead of inlining; top-level `>>` chains
+  that still exceed the width wrap in parentheses with one segment per line.
+- [x] **Interface fidelity**: every keyword-only parameter of the
+  `SocketContext` builder methods (`subtype`, `min_value`/`max_value`,
+  `hide_value`, `structure_type`, …) is compared against a probed fresh
+  interface socket and emitted when non-default; `description` and panels
+  (as `with` blocks; nested panels are inexpressible and skipped) included.
+- [x] **Frames**: `with g.Frame("..."):` blocks re-emitted from node
+  parenting via a cluster-level topological sort; interleaved frames fall
+  back to flat emission.
+- [x] **Tree type detection**: shader/compositor trees emit
+  `TreeBuilder.shader(...)` / `TreeBuilder.compositor(...)`.
+- [x] **TreeBuilder UX**: codegen/diagram moved behind `export/`;
+  `tree.to_python()` method and `_repr_markdown_` integration.
+- [x] **Parametrised usecase round-trip**: every tree built in
+  `tests/test_usecases.py` is exposed as a `build_*() -> TreeBuilder`
+  function (collected in `ROUNDTRIP_BUILDERS`) and round-tripped by
+  `test_roundtrip_usecases` in test_codegen.py. Found and fixed:
+  `_make_var` produced invalid identifiers (Python keywords like `with`,
+  punctuation as in "Extent (unit)", leading digits). Two strict xfails
+  document the open gaps below.
+
 ## To Do
 
-### High value
-
 ### Polish
-- [ ] Line-length handling: deep graphs now collapse into long single
-  statements. Either a max-inline-width budget that falls back to a variable,
-  or document running output through ruff/black.
-- [ ] Interface fidelity: `subtype`, `min_value`/`max_value`, `description`,
-  `hide_value`, `default_input`, `structure_type`, panels.
 - [ ] Mode-dependent socket defaults: probe node currently created with
   default properties, so irrelevant kwargs (e.g. `length=` on EVALUATED
   CurveToPoints) are emitted. Probe could copy enum props first.
-- [ ] Frames: re-emit `with g.Frame("..."):` blocks from node parenting.
-- [ ] Tree type detection: shader/compositor trees should emit
-  `TreeBuilder.shader(...)` / matching constructor, not the geometry default.
-- [ ] Wire codegen into `TreeBuilder` UX (e.g. `tree.to_python()` method,
-  `_repr_` integration, clipboard/CLI entry point).
+- [ ] MenuSwitch/IndexSwitch emitters: items currently fall back to the
+  plain constructor (`g._MenuSwitchBase(item_2=...)`), losing menu item
+  names — the rebuilt interface menu default then fails to apply. Should
+  emit `g.MenuSwitch.geometry(menu, {...})` via `DictExpr`
+  (xfail: `build_mask_grid`).
 
 ### Stretch
-- [ ] Run `to_python` round-trip across every tree built in
-  `tests/test_usecases.py` as a parametrised test.
 - [ ] Round-trip node groups recursively (emit `CustomGeometryGroup`
-  subclasses for nested groups).
+  subclasses for nested groups) — also needed by `build_mask_grid`
+  (ClipFieldToBox).
+
+### Out of reach
+- Item identifiers on hand-built zones: a tree whose `generation_items`
+  were `clear()`ed and re-created carries identifier counters (e.g.
+  `Generation_1` as the only item) that fresh authoring can never
+  reproduce (xfail: `build_import_microscopy_meshes_api`).
