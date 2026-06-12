@@ -127,6 +127,9 @@ class SocketContext:
                 and key == "default_value"
             ):
                 self.builder._menu_defaults[interface_socket.identifier] = value
+            elif key == "default_attribute":
+                # the bpy property is named default_attribute_name
+                interface_socket.default_attribute_name = value
             else:
                 setattr(interface_socket, key, value)
 

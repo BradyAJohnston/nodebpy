@@ -128,13 +128,19 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   decimal that round-trips through float32. Items with plain default values
   (`items={"label": "hello"}`) now supported via `_add_unlinked_input`.
 
+- [x] **Remaining socket-method specs**: `Mix` → `factor.mix.*` (new
+  `always_args` spec field — required params render even at default values);
+  `TupleMethodSpec` for NamedTuple-returning methods (`.find()`, `.svd()`,
+  `.to_quaternion()`, `.to_axis_angle()`) — outputs map to tuple attributes,
+  bound to a variable when consumed more than once; GridInfo dissolves into
+  `.transform`/`.background_value` (builder `_info()` now reuses one GridInfo
+  per grid socket); `_output_expr` falls back to identifiers for duplicated
+  output names (Mix's four "Result" sockets). Future: `.curl()` /
+  `.divergence()` / `.laplacian()` when those exist.
+
 ## To Do
 
 ### High value
-- [ ] **Remaining socket-method specs**: `.find()` (two-output NamedTuple
-  result), `Mix` → `factor.mix.*`, `.to_quaternion()`/`.svd()` (tuple
-  results), grid methods, plus future `.curl()` / `.divergence()` /
-  `.laplacian()` when those exist.
 
 ### Polish
 - [ ] Line-length handling: deep graphs now collapse into long single

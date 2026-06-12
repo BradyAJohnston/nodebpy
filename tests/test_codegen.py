@@ -4,7 +4,9 @@
 import pytest
 
 from nodebpy import TreeBuilder
+from nodebpy import compositor as c
 from nodebpy import geometry as g
+from nodebpy import shader as s
 from nodebpy.codegen import CodegenError, to_python
 
 
@@ -1048,3 +1050,257 @@ def test_join_strings_constructor_and_method():
     code = _assert_roundtrip(tree)
     assert 'delimiter="-"' in code
     assert ".join((" in code
+
+
+# ---------------------------------------------------------------------------
+# Mix / tuple-result methods / grid info accessors
+# ---------------------------------------------------------------------------
+
+
+def test_mix_lifts_to_factor_mix_method():
+    """Mix emits ``factor.mix.<type>(a, b)``; a and b are required params so
+    they render even at their default values."""
+    with TreeBuilder("MixLift") as tree:
+        fac = tree.inputs.float("Fac", 0.5)
+        vec = tree.inputs.vector("V")
+        fac.mix.float(0.0, 1.0) >> tree.outputs.float("F")
+        fac.mix.vector(vec, (1.0, 1.0, 1.0)) >> tree.outputs.vector("Vec")
+        fac.mix.color((1, 0, 0, 1), (0, 0, 1, 1)) >> tree.outputs.color("C")
+    code = _assert_roundtrip(tree)
+    assert "fac.mix.float(0.0, 1.0)" in code
+    assert "fac.mix.vector(v, (1.0, 1.0, 1.0))" in code
+    assert "fac.mix.color(" in code
+
+
+def test_mix_nondefault_props_fall_back_to_constructor():
+    """A blend_type the mix methods cannot express falls back to the
+    constructor spelling."""
+    with TreeBuilder("MixFallback") as tree:
+        fac = tree.inputs.float("Fac", 0.5)
+        node = g.Mix.color(fac, (1, 0, 0, 1), (0, 0, 1, 1))
+        node.blend_type = "MULTIPLY"
+        node.o.result_color >> tree.outputs.color("C")
+    code = _assert_roundtrip(tree)
+    assert ".mix.color(" not in code
+    assert 'blend_type="MULTIPLY"' in code
+
+
+def test_string_find_promotes_tuple_result_to_variable():
+    """Both find() outputs consumed — the NamedTuple binds to a variable so
+    the node is created exactly once."""
+    with TreeBuilder("Find") as tree:
+        s = tree.inputs.string("S")
+        found = s.find("na")
+        found.first_found >> tree.outputs.integer("First")
+        found.count >> tree.outputs.integer("Count")
+    code = _assert_roundtrip(tree)
+    assert '= s.find("na")' in code
+    assert ".first_found" in code
+    assert ".count" in code
+
+
+def test_string_find_single_output_inlines():
+    with TreeBuilder("FindOne") as tree:
+        s = tree.inputs.string("S")
+        s.find("a").count >> tree.outputs.integer("Count")
+    code = _assert_roundtrip(tree)
+    assert 's.find("a").count' in code
+
+
+def test_matrix_svd_and_rotation_decompose():
+    with TreeBuilder("Decompose") as tree:
+        mat = tree.inputs.matrix("M")
+        rot = tree.inputs.rotation("R")
+        u, sing, _v = mat.svd()
+        u.determinant() >> tree.outputs.float("DetU")
+        sing >> tree.outputs.vector("S")
+        quat = rot.to_quaternion()
+        quat.w >> tree.outputs.float("W")
+        quat.x >> tree.outputs.float("X")
+        axis, angle = rot.to_axis_angle()
+        axis >> tree.outputs.vector("Axis")
+        angle >> tree.outputs.float("Angle")
+    code = _assert_roundtrip(tree)
+    assert "= m.svd()" in code
+    assert ".u.determinant()" in code
+    assert "= r.to_quaternion()" in code
+    assert "= r.to_axis_angle()" in code
+
+
+def test_disabled_socket_values_not_emitted():
+    """Sockets disabled by the active mode (Length on an EVALUATED
+    CurveToPoints) hold stale values that must not become kwargs."""
+    with TreeBuilder("DisabledSockets") as tree:
+        pts = g.CurveToPoints.evaluated(g.CurveCircle())
+        # bpy string lookup skips disabled sockets — index to Length directly
+        pts.node.inputs[2].default_value = 0.5
+        pts >> tree.outputs.geometry("Points")
+    code = _assert_roundtrip(tree)
+    assert "length" not in code
+
+
+def test_shader_tree_emits_shader_constructor():
+    with TreeBuilder.shader("ShaderRT") as tree:
+        s.PrincipledBSDF(roughness=0.25) >> tree.outputs.shader("Surface")
+    code = _assert_roundtrip(tree)
+    assert 'with TreeBuilder.shader("ShaderRT") as tree:' in code
+    assert "from nodebpy import shader as s" in code
+
+
+def test_compositor_tree_emits_compositor_constructor():
+    with TreeBuilder.compositor("CompRT") as tree:
+        img = tree.inputs.color("Image")
+        img >> c.Kuwahara(size=4.0) >> tree.outputs.color("Out")
+    code = _assert_roundtrip(tree)
+    assert 'with TreeBuilder.compositor("CompRT") as tree:' in code
+    assert "from nodebpy import compositor as c" in code
+
+
+def _iface_structure(node_tree):
+    """Interface signature: sockets with their expressible properties."""
+    items = []
+    for item in node_tree.interface.items_tree:
+        if item.item_type != "SOCKET":
+            continue
+        parent = item.parent
+        items.append(
+            (
+                item.name,
+                item.socket_type,
+                item.in_out,
+                item.description,
+                parent.name if parent is not None and parent.index != -1 else "",
+                tuple(
+                    (attr, str(getattr(item, attr)))
+                    for attr in (
+                        "subtype",
+                        "min_value",
+                        "max_value",
+                        "hide_value",
+                        "hide_in_modifier",
+                        "default_input",
+                        "structure_type",
+                        "default_attribute_name",
+                        "attribute_domain",
+                    )
+                    if hasattr(item, attr)
+                ),
+            )
+        )
+    return items
+
+
+def test_interface_props_round_trip():
+    with TreeBuilder("IfaceProps") as tree:
+        val = tree.inputs.float(
+            "Value",
+            0.5,
+            "How much",
+            min_value=0.0,
+            max_value=1.0,
+            subtype="FACTOR",
+            default_attribute="my_attr",
+        )
+        idx = tree.inputs.integer("Index", 0, default_input="INDEX")
+        off = tree.inputs.vector("Offset", hide_value=True)
+        (val + idx) >> tree.outputs.float("Out")
+        off >> tree.outputs.vector("Off Out")
+    code = _assert_roundtrip(tree)
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    assert _iface_structure(ns["tree"].tree) == _iface_structure(tree.tree), code
+    assert 'description="How much"' in code
+    assert "min_value=0.0" in code and "max_value=1.0" in code
+    assert 'subtype="FACTOR"' in code
+    assert 'default_attribute="my_attr"' in code
+    assert 'default_input="INDEX"' in code
+    assert "hide_value=True" in code
+
+
+def test_interface_panels_round_trip():
+    with TreeBuilder("IfacePanels") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        with tree.inputs.panel("Settings", default_closed=True):
+            size = tree.inputs.float("Size", 1.0)
+            count = tree.inputs.integer("Count", 4)
+        geo >> tree.outputs.geometry("Out")
+        (size * count) >> tree.outputs.float("Sized")
+    code = _assert_roundtrip(tree)
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    assert _iface_structure(ns["tree"].tree) == _iface_structure(tree.tree), code
+    assert 'with tree.inputs.panel("Settings", default_closed=True):' in code
+    assert '        size = tree.inputs.float("Size", 1.0)' in code
+
+
+def _frame_structure(node_tree):
+    """(node, parent frame label) pairs for frame fidelity comparison."""
+    return sorted(
+        (n.bl_idname, n.parent.label if n.parent is not None else None)
+        for n in node_tree.nodes
+        if n.bl_idname
+        not in ("NodeFrame", "NodeReroute", "NodeGroupInput", "NodeGroupOutput")
+    )
+
+
+def test_frames_round_trip():
+    with TreeBuilder("Frames") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        with g.Frame("Deform"):
+            warped = geo >> g.SetPosition(offset=(0.0, 0.0, 1.0))
+        with g.Frame("Shade"):
+            smooth = warped >> g.SetShadeSmooth()
+        smooth >> tree.outputs.geometry("Out")
+    code = _assert_roundtrip(tree)
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    assert _frame_structure(ns["tree"].tree) == _frame_structure(tree.tree), code
+    assert 'with g.Frame("Deform"):' in code
+    assert 'with g.Frame("Shade"):' in code
+
+
+def test_frame_interleaved_falls_back_flat():
+    """A frame whose members must interleave with outside nodes cannot be
+    one with-block — its nodes emit flat instead."""
+    with TreeBuilder("FrameCycle") as tree:
+        v = tree.inputs.float("V")
+        a = v + 1.0
+        b = a * 2.0
+        c = b + 3.0
+        c >> tree.outputs.float("Out")
+        frame = g.Frame("F")
+        a.node.parent = frame.node
+        c.node.parent = frame.node
+    code = _assert_roundtrip(tree)
+    assert "Frame(" not in code
+
+
+def test_long_expressions_split_into_variables():
+    """Deep operator graphs split at the inline-width budget instead of
+    collapsing into one statement; disabling the budget restores it."""
+    with TreeBuilder("LongExpr") as tree:
+        expr = tree.inputs.float("Value")
+        for i in range(12):
+            expr = expr * 1.5 + float(i)
+        expr >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    body = [line for line in code.splitlines() if line.strip()]
+    assert all(len(line) <= 110 for line in body), code
+    assert any(line.strip().startswith("math = ") for line in body), code
+
+    unbudgeted = to_python(tree, max_inline_width=None)
+    assert any(len(line) > 110 for line in unbudgeted.splitlines())
+
+
+def test_grid_info_accessors_dissolve():
+    """GridInfo dissolves into .transform / .background_value on the grid
+    socket; rebuilt code reuses one GridInfo node per grid."""
+    with TreeBuilder("GridAccessors") as tree:
+        vol = tree.inputs.geometry("Volume")
+        grid = g.GetNamedGrid(vol, "density").o.grid
+        grid.transform >> tree.outputs.matrix("T")
+        grid.background_value >> tree.outputs.float("BG")
+    code = _assert_roundtrip(tree)
+    assert ".transform" in code
+    assert ".background_value" in code
+    assert "GridInfo" not in code
