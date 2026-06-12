@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Tests for nodebpy.codegen.to_python() — node tree → Python code generation."""
+"""Tests for nodebpy.export.codegen.to_python() — node tree → Python code generation."""
 
 import pytest
 
@@ -7,12 +7,12 @@ from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.codegen import CodegenError, to_python
+from nodebpy.export.codegen import CodegenError, to_python
 
 
 def _structure(node_tree):
     """A comparable structural signature: nodes (with key props) and links."""
-    from nodebpy.codegen import _effective_links
+    from nodebpy.export.codegen import _effective_links
 
     nodes = sorted(
         (
@@ -785,7 +785,7 @@ def test_factory_keeps_default_prop_constructor():
 
 
 def test_unsupported_node_raises_by_default(monkeypatch):
-    from nodebpy.codegen import _get_node_registry
+    from nodebpy.export.codegen import _get_node_registry
 
     with TreeBuilder("Unsupported") as tree:
         g.SetPosition()
@@ -795,7 +795,7 @@ def test_unsupported_node_raises_by_default(monkeypatch):
 
 
 def test_unsupported_node_placeholder_when_not_strict(monkeypatch):
-    from nodebpy.codegen import _get_node_registry
+    from nodebpy.export.codegen import _get_node_registry
 
     with TreeBuilder("UnsupportedLoose") as tree:
         g.SetPosition()
@@ -805,7 +805,7 @@ def test_unsupported_node_placeholder_when_not_strict(monkeypatch):
 
 
 def test_register_emitter_overrides_default():
-    from nodebpy.codegen import _EMITTERS, BinOp, Call, register_emitter
+    from nodebpy.export.codegen import _EMITTERS, BinOp, Call, register_emitter
 
     @register_emitter("GeometryNodeSetShadeSmooth")
     def _emit_shade_smooth(node, ctx):
@@ -935,7 +935,7 @@ def test_snapshot_math_offset(snapshot):
 
 
 def test_dict_expr_renders():
-    from nodebpy.codegen import DictExpr, Lit, Ref
+    from nodebpy.export.codegen import DictExpr, Lit, Ref
 
     expr = DictExpr({"a": Lit(1.0), "b": Ref("value")})
     assert expr.render() == '{"a": 1.0, "b": value}'

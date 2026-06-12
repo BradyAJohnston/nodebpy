@@ -32,9 +32,9 @@
       N1 -->|"Volume->Volume"| N3
       N0 -->|"Position->Vector"| N2
       N2 -->|"Vector->Vector"| N5
+      N3 -->|"Grid->Topology"| N6
       N4 -->|"Position->Position"| N6
       N5 -->|"Vector->value"| N6
-      N3 -->|"Grid->Topology"| N6
   ```
   '''
 # ---
@@ -55,18 +55,18 @@
       N10("Set Position"):::geometry-node
       N0 -->|"Mesh->cube"| N3
       N1 -->|"Position->Position"| N3
+      N8 -->|"Geometry->cube"| N9
+      N6 -->|"Vector->Position"| N9
       N3 -->|"Position->Vector"| N6
       N4 -->|"Position->Vector"| N6
       N2 -->|"Vector->Vector"| N5
       N3 -->|"Iteration->Scale"| N5
       N5 -->|"Vector->Vector"| N7
       N6 -->|"Vector->Vector"| N7
-      N7 -->|"Vector->Offset"| N8
       N3 -->|"cube->Geometry"| N8
-      N8 -->|"Geometry->cube"| N9
-      N9 -->|"Position->Position"| N10
+      N7 -->|"Vector->Offset"| N8
       N9 -->|"cube->Geometry"| N10
-      N6 -->|"Vector->Position"| N9
+      N9 -->|"Position->Position"| N10
   ```
   '''
 # ---
@@ -80,11 +80,11 @@
       N3("Join Geometry"):::geometry-node
       N4("Repeat Output"):::default-node
       N3 -->|"Geometry->Geometry"| N4
+      N2 -->|"Points->Geometry"| N3
+      N0 -->|"Geometry->Geometry"| N3
       N0 -->|"Iteration->Seed"| N1
       N0 -->|"Iteration->Count"| N2
       N1 -->|"Value->Position"| N2
-      N2 -->|"Points->Geometry"| N3
-      N0 -->|"Geometry->Geometry"| N3
   ```
   '''
 # ---
@@ -105,18 +105,18 @@
       N10("Set Position"):::geometry-node
       N0 -->|"Mesh->cube"| N3
       N1 -->|"Position->Position"| N3
+      N8 -->|"Geometry->cube"| N9
+      N6 -->|"Vector->Position"| N9
       N3 -->|"Position->Vector"| N6
       N4 -->|"Position->Vector"| N6
       N2 -->|"Vector->Vector"| N5
       N3 -->|"Delta Time->Scale"| N5
       N5 -->|"Vector->Vector"| N7
       N6 -->|"Vector->Vector"| N7
-      N7 -->|"Vector->Offset"| N8
       N3 -->|"cube->Geometry"| N8
-      N8 -->|"Geometry->cube"| N9
-      N9 -->|"Position->Position"| N10
+      N7 -->|"Vector->Offset"| N8
       N9 -->|"cube->Geometry"| N10
-      N6 -->|"Vector->Position"| N9
+      N9 -->|"Position->Position"| N10
   ```
   '''
 # ---
@@ -133,15 +133,15 @@
       N6("Join Geometry"):::geometry-node
       N7("Repeat Output"):::default-node
       N8("Group Output"):::default-node
+      N7 -->|"Geometry->Geometry"| N8
       N0 -->|"Geometry->Geometry"| N1
+      N6 -->|"Geometry->Geometry"| N7
+      N1 -->|"Iteration->Index"| N5
       N2 -->|"Mesh->0"| N5
       N3 -->|"Mesh->1"| N5
       N4 -->|"Mesh->2"| N5
-      N1 -->|"Iteration->Index"| N5
-      N5 -->|"Output->Geometry"| N6
-      N6 -->|"Geometry->Geometry"| N7
-      N7 -->|"Geometry->Geometry"| N8
       N1 -->|"Geometry->Geometry"| N6
+      N5 -->|"Output->Geometry"| N6
   ```
   '''
 # ---

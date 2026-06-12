@@ -536,8 +536,40 @@ def _trace_reroute(node, socket, node_tree):
     return node, socket
 
 
+def _canonical_links(node_tree, links: list[_Link]) -> list[_Link]:
+    """Sort links structurally so emission never depends on insertion order.
+
+    bpy's links collection preserves creation order, which can differ
+    between runs for structurally identical trees (the arrange pass inserts
+    reroute links in set-iteration order). Sorting by node creation order
+    and socket position makes ``to_python`` a pure function of the tree's
+    structure.
+    """
+    node_idx = {n.name: i for i, n in enumerate(node_tree.nodes)}
+
+    def socket_idx(sockets, socket) -> int:
+        for i, s in enumerate(sockets):
+            if s.identifier == socket.identifier:
+                return i
+        return -1
+
+    return sorted(
+        links,
+        key=lambda link: (
+            node_idx.get(link.to_node.name, -1),
+            socket_idx(link.to_node.inputs, link.to_socket),
+            -link.sort_id,  # multi-input: creation order, as emitted
+            node_idx.get(link.from_node.name, -1),
+            socket_idx(link.from_node.outputs, link.from_socket),
+        ),
+    )
+
+
 def _effective_links(node_tree) -> list[_Link]:
-    """All links with reroutes collapsed; reroute-internal segments dropped."""
+    """All links with reroutes collapsed; reroute-internal segments dropped.
+
+    Returned in canonical (structural) order — see :func:`_canonical_links`.
+    """
     links: list[_Link] = []
     for link in node_tree.links:
         if link.to_node.bl_idname == "NodeReroute":
@@ -556,14 +588,15 @@ def _effective_links(node_tree) -> list[_Link]:
                 getattr(link, "multi_input_sort_id", 0),
             )
         )
-    return links
+    return _canonical_links(node_tree, links)
 
 
 def _ordering_edges(node_tree):
-    """(from, to) node pairs that must hold in emission order: real links
-    plus a synthetic edge from each zone input node to its paired output,
-    so the zone wrapper is declared before the output side is emitted."""
-    for link in node_tree.links:
+    """(from, to) node pairs that must hold in emission order: effective
+    links (canonical order, reroutes collapsed) plus a synthetic edge from
+    each zone input node to its paired output, so the zone wrapper is
+    declared before the output side is emitted."""
+    for link in _effective_links(node_tree):
         if link.from_node != link.to_node:
             yield link.from_node, link.to_node
     for node in node_tree.nodes:

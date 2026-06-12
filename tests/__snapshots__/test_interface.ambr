@@ -71,22 +71,22 @@
       N0 -->|"String->String"| N4
       N0 -->|"String->String"| N5
       N0 -->|"String->String"| N6
-      N7 -->|"String->Strings"| N8
       N0 -->|"String->Strings"| N8
-      N0 -->|"String->Strings"| N10
+      N7 -->|"String->Strings"| N8
       N9 -->|"String->Strings"| N10
+      N0 -->|"String->Strings"| N10
       N11 -->|"String->Delimiter"| N12
-      N10 -->|"String->Strings"| N12
-      N5 -->|"String->Strings"| N12
       N4 -->|"String->Strings"| N12
+      N5 -->|"String->Strings"| N12
+      N10 -->|"String->Strings"| N12
       N0 -->|"String->String"| N13
       N13 -->|"String->String"| N14
       N14 -->|"String->Delimiter"| N15
       N16 -->|"String->Strings"| N15
       N15 -->|"String->String"| N17
       N17 -->|"String->Delimiter"| N18
-      N19 -->|"String->Strings"| N18
       N20 -->|"String->Strings"| N18
+      N19 -->|"String->Strings"| N18
       N18 -->|"String->String"| N21
   ```
   '''

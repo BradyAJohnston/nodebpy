@@ -13,6 +13,7 @@
       N7("Compare<br/><small>(LESS_THAN)</small><br/><small>(0.5,0.5,0.5)</small>"):::converter-node
       N8("Compare<br/><small>(NOT_EQUAL)</small>"):::converter-node
       N9("Group Output"):::default-node
+      N8 -->|"Result->Clipped Field"| N9
       N0 -->|"Box Object->Object"| N1
       N1 -->|"Transform->Matrix"| N3
       N2 -->|"Position->Vector"| N4
@@ -21,7 +22,6 @@
       N5 -->|"Vector->Vector"| N6
       N6 -->|"Vector->A"| N7
       N7 -->|"Result->A"| N8
-      N8 -->|"Result->Clipped Field"| N9
       N0 -->|"Invert->B"| N8
   ```
   '''
@@ -56,15 +56,15 @@
       N5 -->|"Vector->Translation"| N8
       N6 -->|"Vector->Rotation"| N8
       N7 -->|"Curve->Geometry"| N9
-      N10 -->|"Value->Count"| N13
       N9 -->|"Geometry->Curve"| N13
+      N10 -->|"Value->Count"| N13
       N8 -->|"Transform->Value"| N12
+      N1 -->|"Curve Index->Group ID"| N12
       N11 -->|"Vector->Vector"| N14
       N12 -->|"Trailing->Transform"| N14
-      N14 -->|"Vector->Position"| N15
       N13 -->|"Curve->Geometry"| N15
+      N14 -->|"Vector->Position"| N15
       N15 -->|"Geometry->Curve"| N16
-      N1 -->|"Curve Index->Group ID"| N12
   ```
   '''
 # ---
@@ -79,17 +79,17 @@
       N4("Store Named Attribute"):::default-node
       N5("Delete Geometry"):::geometry-node
       N6("Group Output"):::default-node
+      N5 -->|"Geometry->Points"| N6
       N0 -->|"Grid->Grid"| N1
       N1 -->|"X->X"| N2
       N1 -->|"Y->Y"| N2
       N1 -->|"Z->Z"| N2
-      N2 -->|"Vector->Value"| N3
       N1 -->|"Points->Geometry"| N3
-      N1 -->|"Value->Value"| N4
+      N2 -->|"Vector->Value"| N3
       N3 -->|"Geometry->Geometry"| N4
-      N1 -->|"Is Tile->Selection"| N5
+      N1 -->|"Value->Value"| N4
       N4 -->|"Geometry->Geometry"| N5
-      N5 -->|"Geometry->Points"| N6
+      N1 -->|"Is Tile->Selection"| N5
   ```
   '''
 # ---
@@ -110,14 +110,14 @@
       N1 -->|"First Found->Value"| N2
       N0 -->|"Self Path->String"| N3
       N2 -->|"Value->Length"| N3
+      N1 -->|"Count->A"| N4
+      N0 -->|"Other Path->String"| N5
       N3 -->|"String->Key"| N5
       N4 -->|"Result->Boolean"| N6
       N5 -->|"Result->Boolean"| N6
+      N0 -->|"Filter Local->Switch"| N7
       N6 -->|"Boolean->True"| N7
       N7 -->|"Output->Selected"| N8
-      N0 -->|"Other Path->String"| N5
-      N0 -->|"Filter Local->Switch"| N7
-      N1 -->|"Count->A"| N4
   ```
   '''
 # ---
@@ -150,29 +150,29 @@
       N2 -->|"Value->X"| N7
       N6 -->|"Vector->Start"| N10
       N7 -->|"Vector->End"| N10
-      N10 -->|"Curve->Profile Curve"| N13
       N0 -->|"Geometry->Curve"| N13
+      N10 -->|"Curve->Profile Curve"| N13
       N0 -->|"Size X->Size X"| N4
       N0 -->|"Size Y->Size Y"| N4
       N4 -->|"Mesh->Mesh"| N9
+      N0 -->|"Density->Density"| N9
+      N0 -->|"Seed->Seed"| N9
       N0 -->|"Geometry->Curve"| N3
       N3 -->|"Points->Geometry"| N8
       N8 -->|"Distance->A"| N11
+      N0 -->|"Road Width->B"| N11
+      N9 -->|"Points->Geometry"| N14
       N11 -->|"Result->Selection"| N14
       N12 -->|"Mesh->Geometry"| N15
       N0 -->|"Building Size Min->Min"| N5
       N0 -->|"Building Size Max->Max"| N5
       N0 -->|"Seed->Seed"| N5
-      N15 -->|"Geometry->Instance"| N16
       N14 -->|"Geometry->Points"| N16
-      N16 -->|"Instances->Geometry"| N17
-      N17 -->|"Geometry->Result"| N18
-      N0 -->|"Seed->Seed"| N9
-      N0 -->|"Density->Density"| N9
-      N0 -->|"Road Width->B"| N11
-      N9 -->|"Points->Geometry"| N14
+      N15 -->|"Geometry->Instance"| N16
       N5 -->|"Value->Scale"| N16
       N13 -->|"Mesh->Geometry"| N17
+      N16 -->|"Instances->Geometry"| N17
+      N17 -->|"Geometry->Result"| N18
   ```
   '''
 # ---
@@ -203,24 +203,24 @@
       N0 -->|"resolution->resolution"| N1
       N0 -->|"channel_ix->channel_ix"| N1
       N0 -->|"t->Frame"| N1
+      N1 -->|"String->Strings"| N5
       N3 -->|"String->Strings"| N5
       N5 -->|"String->Path"| N7
-      N2 -->|"String->Strings"| N4
       N1 -->|"String->Strings"| N4
+      N2 -->|"String->Strings"| N4
       N4 -->|"String->Path"| N6
       N6 -->|"Instances->Geometry"| N9
+      N11 -->|"Geometry->Geometry"| N12
       N7 -->|"Point Cloud->Geometry"| N10
       N8 -->|"Attribute->Value"| N10
       N9 -->|"Index->Index"| N10
+      N9 -->|"Element->Geometry"| N11
       N10 -->|"Value->Value"| N11
-      N11 -->|"Geometry->Geometry"| N12
       N12 -->|"Geometry->Geometry"| N13
+      N0 -->|"Channel Affine Matrix->Transform"| N13
       N0 -->|"Include->Switch"| N14
       N13 -->|"Geometry->True"| N14
       N14 -->|"Output->Geometry"| N15
-      N0 -->|"Channel Affine Matrix->Transform"| N13
-      N9 -->|"Element->Geometry"| N11
-      N1 -->|"String->Strings"| N5
   ```
   '''
 # ---
@@ -253,26 +253,26 @@
       N0 -->|"Frame->t"| N1
       N1 -->|"String->Path"| N2
       N2 -->|"Volume->Volume"| N3
+      N0 -->|"Grid Name->Name"| N3
       N3 -->|"Grid->Value"| N4
+      N0 -->|"VDB Minimum->From Min"| N4
+      N0 -->|"VDB Maximum->From Max"| N4
       N4 -->|"Result->Value"| N5
+      N0 -->|"Original Maximum->Value"| N5
+      N0 -->|"Normalized->Switch"| N6
       N5 -->|"Value->False"| N6
       N4 -->|"Result->True"| N6
       N6 -->|"Output->Grid"| N7
-      N7 -->|"Grid->Grid"| N8
-      N8 -->|"Volume->True"| N10
-      N10 -->|"Output->Volume"| N11
-      N7 -->|"Grid->True"| N9
-      N0 -->|"Grid Name->Name"| N3
-      N0 -->|"Grid Name->Name"| N8
-      N0 -->|"Include->Switch"| N9
-      N0 -->|"Include->Switch"| N10
-      N0 -->|"Normalized->Switch"| N6
-      N0 -->|"VDB Minimum->From Min"| N4
-      N0 -->|"VDB Maximum->From Max"| N4
-      N0 -->|"Original Maximum->Value"| N5
       N0 -->|"Channel Affine Matrix->Transform"| N7
       N2 -->|"Volume->Volume"| N8
+      N0 -->|"Grid Name->Name"| N8
+      N7 -->|"Grid->Grid"| N8
+      N0 -->|"Include->Switch"| N10
+      N8 -->|"Volume->True"| N10
+      N10 -->|"Output->Volume"| N11
       N9 -->|"Output->Grid"| N11
+      N0 -->|"Include->Switch"| N9
+      N7 -->|"Grid->True"| N9
   ```
   '''
 # ---
@@ -298,14 +298,15 @@
       N15("Math<br/><small>(MULTIPLY)</small>"):::converter-node
       N16("Prune Grid"):::geometry-node
       N17("Group Output"):::default-node
+      N16 -->|"Grid->Masked Grid"| N17
       N0 -->|"Object->Object"| N1
       N0 -->|"Collection->Collection"| N2
+      N0 -->|"With->Menu"| N3
       N1 -->|"Geometry->Object"| N3
       N2 -->|"Instances->Collection"| N3
       N0 -->|"Mesh->Mesh"| N3
       N1 -->|"Geometry->Grid"| N3
       N1 -->|"Geometry->Box"| N3
-      N0 -->|"With->Menu"| N3
       N3 -->|"Output->Geometry"| N4
       N4 -->|"Geometry->Mesh"| N5
       N0 -->|"Mask Resolution->Voxel Size"| N5
@@ -328,7 +329,6 @@
       N0 -->|"Grid->Value"| N15
       N14 -->|"Output->Value"| N15
       N15 -->|"Value->Grid"| N16
-      N16 -->|"Grid->Masked Grid"| N17
   ```
   '''
 # ---
@@ -342,13 +342,13 @@
       N3("Boolean Math<br/><small>(OR)</small>"):::converter-node
       N4("Delete Geometry"):::geometry-node
       N5("Group Output"):::default-node
+      N4 -->|"Geometry->Geometry"| N5
       N0 -->|"Grid->Grid"| N1
       N1 -->|"Value->A"| N2
       N2 -->|"Result->Boolean"| N3
       N1 -->|"Is Tile->Boolean"| N3
       N1 -->|"Points->Geometry"| N4
       N3 -->|"Boolean->Selection"| N4
-      N4 -->|"Geometry->Geometry"| N5
   ```
   '''
 # ---

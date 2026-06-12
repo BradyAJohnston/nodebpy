@@ -29,6 +29,7 @@
           N18("Menu Switch"):::converter-node
       end
       N19("Group Output"):::default-node
+      N18 -->|"Output->Image"| N19
       N0 -->|"AO->Value"| N1
       N1 -->|"Value->Value"| N5
       N5 -->|"Value->Image"| N8
@@ -43,21 +44,20 @@
       N6 -->|"Value->Value"| N9
       N7 -->|"Value->Value"| N9
       N9 -->|"Value->Image"| N11
-      N12 -->|"Value->Size"| N13
+      N0 -->|"Outline Size->Value"| N12
       N11 -->|"Image->Mask"| N13
+      N12 -->|"Value->Size"| N13
       N13 -->|"Mask->Image"| N14
       N14 -->|"Image->Background"| N15
-      N15 -->|"Image->Outline"| N16
-      N16 -->|"Output->Foreground"| N17
-      N17 -->|"Image->Image"| N18
-      N18 -->|"Output->Image"| N19
-      N0 -->|"Background->Menu"| N18
-      N0 -->|"Background Color->Background"| N17
-      N0 -->|"Outline->Menu"| N16
-      N0 -->|"Outline Size->Value"| N12
       N0 -->|"Outline Color->Foreground"| N15
+      N0 -->|"Outline->Menu"| N16
       N10 -->|"Result->None"| N16
+      N15 -->|"Image->Outline"| N16
+      N0 -->|"Background Color->Background"| N17
+      N16 -->|"Output->Foreground"| N17
+      N0 -->|"Background->Menu"| N18
       N16 -->|"Output->Output"| N18
+      N17 -->|"Image->Image"| N18
   ```
   '''
 # ---
