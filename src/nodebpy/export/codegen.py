@@ -29,7 +29,7 @@ from typing import TYPE_CHECKING, Any, Callable, NamedTuple
 from bpy.types import NodeTree
 
 if TYPE_CHECKING:
-    from .builder.tree import TreeBuilder
+    from ..builder.tree import TreeBuilder
 
 
 class CodegenError(Exception):
@@ -390,8 +390,8 @@ def _get_node_registry() -> dict[str, tuple[str, type]]:
     if _NODE_REGISTRY is not None:
         return _NODE_REGISTRY
     _NODE_REGISTRY = {}
-    from .builder.node import BaseNode
-    from .nodes import compositor, geometry, shader
+    from ..builder.node import BaseNode
+    from ..nodes import compositor, geometry, shader
 
     domains = [
         ("g", geometry.__name__),
@@ -493,7 +493,7 @@ def _get_interface_defaults(tree_idname: str, socket_type: str) -> dict[str, obj
 
 
 def _normalize(name: str) -> str:
-    from .builder._utils import normalize_name
+    from ..builder._utils import normalize_name
 
     return normalize_name(name)
 
@@ -2268,7 +2268,7 @@ def _interface_kwargs(item, method: str) -> dict[str, Any]:
     parameters like ``min_value`` whose Python default ``None`` means
     "leave Blender's default alone").
     """
-    from .builder.tree import SocketContext
+    from ..builder.tree import SocketContext
 
     fn = getattr(SocketContext, method, None)
     if fn is None:
@@ -2772,14 +2772,14 @@ def _needs_type_kwarg(
     """True when item-type inference from the link source or default value
     would not reproduce ``item_type``, so ``type=`` must be emitted."""
     if link is not None:
-        from .types import SOCKET_COMPATIBILITY
+        from ..types import SOCKET_COMPATIBILITY
 
         for t in SOCKET_COMPATIBILITY.get(link.from_socket.type, ()):
             if t in types:
                 return type_map.get(t, t) != item_type
         return True
     if default is not None:
-        from .builder.items import _infer_value_type
+        from ..builder.items import _infer_value_type
 
         return _infer_value_type(default) != item_type
     return True
@@ -2937,7 +2937,7 @@ def _emit_state_zone_input(
 
 @register_emitter("GeometryNodeSimulationInput")
 def _emit_simulation_input(node, ctx: EmitContext) -> _Val:
-    from .nodes.geometry.zone import BaseSimulationZone
+    from ..nodes.geometry.zone import BaseSimulationZone
 
     return _emit_state_zone_input(
         node,
@@ -2957,7 +2957,7 @@ def _emit_simulation_input(node, ctx: EmitContext) -> _Val:
 
 @register_emitter("GeometryNodeRepeatInput")
 def _emit_repeat_input(node, ctx: EmitContext) -> _Val:
-    from .nodes.geometry.zone import BaseRepeatZone
+    from ..nodes.geometry.zone import BaseRepeatZone
 
     ctor_args: list[Expr] = []
     link = ctx.input_link(node, "Iterations")
@@ -2985,7 +2985,7 @@ def _emit_repeat_input(node, ctx: EmitContext) -> _Val:
 
 @register_emitter("GeometryNodeForeachGeometryElementInput")
 def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
-    from .nodes.geometry.zone import (
+    from ..nodes.geometry.zone import (
         ForEachGeometryElementInput,
         ForEachGeometryElementOutput,
     )

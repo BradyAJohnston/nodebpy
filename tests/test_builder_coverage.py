@@ -111,7 +111,7 @@ def test_repr_markdown_returns_str_or_none():
 
 def test_repr_markdown_exception_path(monkeypatch):
     """exception path when diagram generation raises."""
-    import nodebpy.diagram as diagram_mod
+    import nodebpy.export as diagram_mod
 
     monkeypatch.setattr(
         diagram_mod,

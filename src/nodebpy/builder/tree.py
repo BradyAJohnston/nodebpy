@@ -14,7 +14,6 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
-from ..arrange import arrange_tree
 from ..types import (
     SOCKET_COMPATIBILITY,
     FloatInterfaceSubtypes,
@@ -25,6 +24,7 @@ from ..types import (
     _SocketShapeStructureType,
 )
 from ._utils import SocketError, _allow_innactive_sockets
+from .arrange import arrange_tree
 from .socket import (
     BooleanSocket,
     BundleSocket,
@@ -712,7 +712,7 @@ class TreeBuilder(Generic[_TreeT]):
 
         See :func:`nodebpy.codegen.to_python` for parameter details.
         """
-        from ..codegen import to_python
+        from ..export import to_python
 
         return to_python(
             self,
@@ -736,7 +736,7 @@ class TreeBuilder(Generic[_TreeT]):
         -------
             A string containing the Mermaid diagram syntax representing this node tree.
         """
-        from ..diagram import to_mermaid
+        from ..export import to_mermaid
 
         return to_mermaid(self, fenced=fenced)
 
@@ -799,7 +799,7 @@ class TreeBuilder(Generic[_TreeT]):
         when it's the return value of a cell.
         """
         try:
-            from ..diagram import to_mermaid
+            from ..export import to_mermaid
 
             return to_mermaid(self)
         except Exception as e:
