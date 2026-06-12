@@ -377,6 +377,10 @@ def test_repeat(snapshot):
         cube = g.Cube()
         zone = g.RepeatZone(10, {"cube": cube})
         input, output = zone
+        assert input.node == zone[0].node
+        assert output.node == zone[1].node
+        with pytest.raises(IndexError):
+            zone[2]
         pos_math = input.capture(g.Position()) * g.Position()
         _ = pos_math >> output
         _ = (

@@ -1877,7 +1877,7 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
         self, item: bpy.types.IndexSwitchItem, *, output: bool = False
     ) -> NodeSocket:
         if output:
-            return self.node.outputs[0]
+            raise ValueError("Index switch items do not have output sockets")
         identifier = f"Item_{item.identifier}"
         for socket in self.node.inputs:
             if socket.identifier == identifier:
@@ -2445,13 +2445,13 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
     ):
         self.node.data_type = value
 
-    def _declare_item(
-        self, type: _GridDataTypes, name: str | None = None, value: Any | None = None
-    ) -> NodeSocket:
-        item = self._new_item(name if name else type, type)
-        if value is not None:
-            self._establish_links(**{item.name: value})
-        return self._item_socket(item, output=True)
+    # def _declare_item(
+    #     self, type: _GridDataTypes, name: str | None = None, value: Any | None = None
+    # ) -> NodeSocket:
+    #     item = self._new_item(name if name else type, type)
+    #     if value is not None:
+    #         self._establish_links(**{item.name: value})
+    #     return self._item_socket(item, output=True)
 
     def capture_float(
         self, field: InputFloat = None, name: str | None = None
