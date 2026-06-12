@@ -9,6 +9,7 @@ from typing import (
     TypeVar,
     cast,
 )
+
 import bpy
 import bpy.types
 from bpy.types import (
@@ -21,6 +22,7 @@ from bpy.types import (
     NodeSocketString,
 )
 from mathutils import Euler
+
 from ...builder import (
     BaseNode,
     BooleanSocket,
@@ -2454,22 +2456,30 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
     def capture_float(
         self, field: InputFloat = None, name: str | None = None
     ) -> FloatSocketGrid:
-        return FloatSocketGrid(self._declare_item("FLOAT", name, field))
+        out = self._new_item(type="FLOAT", name=name)
+        self._establish_links(**{out.name: field})
+        return FloatSocketGrid(out)
 
     def capture_boolean(
         self, field: InputBoolean = None, name: str | None = None
     ) -> BooleanSocketGrid:
-        return BooleanSocketGrid(self._declare_item("BOOLEAN", name, field))
+        out = self._new_item(type="BOOLEAN", name=name)
+        self._establish_links(**{out.name: field})
+        return BooleanSocketGrid(out)
 
     def capture_vector(
         self, field: InputVector = None, name: str | None = None
     ) -> VectorSocketGrid:
-        return VectorSocketGrid(self._declare_item("VECTOR", name, field))
+        out = self._new_item(type="VECTOR", name=name)
+        self._establish_links(**{out.name: field})
+        return VectorSocketGrid(out)
 
     def capture_integer(
         self, field: InputInteger = None, name: str | None = None
     ) -> IntegerSocketGrid:
-        return IntegerSocketGrid(self._declare_item("INT", name, field))
+        out = self._new_item(type="INT", name=name)
+        self._establish_links(**{out.name: field})
+        return IntegerSocketGrid(out)
 
 
 class SDFGridBoolean(BaseNode):
