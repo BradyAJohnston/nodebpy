@@ -9,7 +9,7 @@ Every `nodebpy` tree can be written *back out* as Python source.
 This works on *any* node tree, not just ones built with `nodebpy`.
 A tree you wired up by hand in the Blender UI, appended from an asset library, or created with raw `bpy` calls can all be converted, making it easy to migrate existing node setups into version-controlled Python code.
 
-## From an Existing Tree
+## Simple Example
 
 Here we build a tree with the raw `bpy` API, standing in for a tree that already exists in a `.blend` file:
 
@@ -38,6 +38,11 @@ nt.links.new(inst.outputs["Instances"], real.inputs["Geometry"])
 nt.links.new(real.outputs["Geometry"], n_out.inputs["Geometry"])
 ```
 
+```{python}
+#| echo: false
+from nodebpy import TreeBuilder
+TreeBuilder(nt, arrange=None)
+```
 Pass the `bpy` node tree to `to_python()`:
 
 ```{python}
@@ -54,6 +59,80 @@ print(f"```python\n{code}\n```")
 
 Twenty lines of `bpy` plumbing become a single `>>` pipeline.
 The generated source is self-contained — running it recreates the tree.
+
+## Complex Example
+
+This is a new node group asset in Blender 5.2 to do PCA on the positions of points.
+Two examples of this node group below, with the generated and the human-curated / written versions below. More through and elegance can be put into the human-written version, but the generated version can be improved with time.
+
+![](images/node-screenshot-pca.png)
+
+::: {.panel-tabset}
+
+### Generated
+
+```{python}
+#| echo: false
+#| output: asis
+from nodebpy.nodes.geometry.groups import PrincipalComponents
+from nodebpy import geometry as g, TreeBuilder
+
+with g.tree():
+    tree = TreeBuilder(PrincipalComponents().node_tree)
+
+print(f"```python\n{tree.to_python()}\n```")
+```
+
+### Human-written
+
+```{python}
+from nodebpy import geometry as g
+
+with g.tree():
+    position = tree.inputs.vector("Position", default_input="POSITION")
+    group_id = tree.inputs.integer(
+        "Group ID",
+        description="An index used to group values together for multiple separate operations",
+        hide_value=True
+    )
+    out_centroid = tree.outputs.vector("Centroid")
+    out_princ = tree.outputs.vector(
+        "Principal Components",
+        description="Variance of the data along each principal axis",
+    )
+    out_rotation = tree.outputs.rotation(
+        "Rotation",
+        description="Rotation that defines the principal component basis",
+    )
+    with tree.outputs.panel("Principal Axes", default_closed=True):
+        out_long = tree.outputs.vector("Longest Axis")
+        out_inter = tree.outputs.vector("Intermediate Axis")
+        out_short = tree.outputs.vector("Shortest Axis")
+
+    with g.Frame("Centroid"):
+        centroid = position.point.mean(group_id)
+        centroid >> out_centroid
+
+    with g.Frame("Covariance Matrix"):
+        diff = position - centroid
+        matrix = g.CombineMatrix()
+
+        for i, axis1 in enumerate(diff):
+            mean = (diff * axis1).point.mean(group_id)
+            for j, axis2 in enumerate(mean):
+                axis2 >> matrix.i[int(i * 4 + j)]
+
+    with g.Frame("SVD"):
+        u, s, v = matrix.o.matrix.svd()
+        s >> out_princ
+        long, inter, short = [g.CombineXYZ(*u[i * 4 : (i * 4) + 3]) for i in range(3)]
+        long >> out_long
+        short >> out_short
+        g.AxesToRotation(long, short) >> out_rotation
+        inter * u.determinant().sign() >> out_inter
+```
+
+:::
 
 ## From a `TreeBuilder`
 
@@ -131,7 +210,7 @@ print(f"```python\n{code}\n```")
 If a node has no `nodebpy` class and no registered emitter, `to_python()` raises `CodegenError` by default.
 Pass `strict=False` to emit a placeholder and keep going:
 
-```{.python}
+``` python
 to_python(node_tree, strict=False)
 # ...
 # some_node = None  # TODO: unsupported node 'Some Node' (SomeNodeIdname)
@@ -140,7 +219,7 @@ to_python(node_tree, strict=False)
 Alternatively, register a custom emitter for the node type.
 The decorated function receives the `bpy` node and an emit context, and returns an expression (or `None` to fall back to the default emission):
 
-```{.python}
+``` python
 from nodebpy.export.codegen import register_emitter, Call
 
 @register_emitter("GeometryNodeSetShadeSmooth")
