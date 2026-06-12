@@ -18,7 +18,12 @@
       geometry = tree.inputs.geometry("Geometry")
       geometry_1 = tree.outputs.geometry("Geometry")
   
-      geometry >> g.SetPosition(offset=g.Position()) >> g.TransformGeometry() >> geometry_1
+      (
+          geometry
+          >> g.SetPosition(offset=g.Position())
+          >> g.TransformGeometry()
+          >> geometry_1
+      )
   '''
 # ---
 # name: test_snapshot_fanout

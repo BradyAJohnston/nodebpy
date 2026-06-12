@@ -252,6 +252,33 @@ def test_chain_with_extra_kwargs():
     assert "geometry=geometry" not in code
 
 
+def test_long_chain_wraps_one_segment_per_line():
+    """A chain past 88 columns wraps in parens with one >> segment per line."""
+    with TreeBuilder("LongChain") as tree:
+        geo_in = tree.inputs.geometry("Geometry")
+        (
+            geo_in
+            >> g.DistributePointsOnFaces()
+            >> g.InstanceOnPoints(instance=g.IcoSphere())
+            >> g.RealizeInstances()
+            >> tree.outputs.geometry("Geometry")
+        )
+    code = _assert_roundtrip(tree)
+    assert "    (\n        geometry\n" in code
+    assert "\n        >> g.RealizeInstances()\n" in code
+    assert "\n    )" in code
+    assert all(len(line) <= 88 for line in code.splitlines()), code
+
+
+def test_short_chain_stays_one_line():
+    """A chain that fits in 88 columns is not wrapped."""
+    with TreeBuilder("ShortChain") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_in >> g.SetPosition() >> g.TransformGeometry() >> tree.outputs.geometry()
+    code = to_python(tree)
+    assert ">> g.SetPosition() >> g.TransformGeometry() >>" in code
+
+
 def test_chain_fanout_breaks_chain():
     """Fan-out on the chain port prevents that node from being chain-interior."""
     with TreeBuilder("FanOutBreak") as tree:
