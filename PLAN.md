@@ -119,16 +119,22 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   Known gaps: non-default *unlinked* `Skip` values, hand-built zones
   whose first generation item isn't the default, item reordering.
 
+- [x] **String emitters + Compare lifting + float32 literals**:
+  `FormatString` → `fmt.format({...})` / `g.FormatString("...", items={...})`
+  and `StringJoin` → `delim.join((...))` / `g.JoinStrings((...))` custom
+  emitters; Compare lifts to `a < b` (always-parenthesised `CompareOp` IR)
+  when state matches the operator overloads (ELEMENT mode, lhs-type
+  dispatch, default epsilon on `==`/`!=`); float literals emit the shortest
+  decimal that round-trips through float32. Items with plain default values
+  (`items={"label": "hello"}`) now supported via `_add_unlinked_input`.
+
 ## To Do
 
 ### High value
-- [ ] **Remaining socket-method specs**: `FormatString` → `.format({...})`
-  and `StringJoin` (dict/multi-input emission — need custom emitters),
-  `.find()` (two-output NamedTuple result), `Mix` → `factor.mix.*`,
-  `.to_quaternion()`/`.svd()` (tuple results), grid methods, plus future
-  `.curl()` / `.divergence()` / `.laplacian()` when those exist.
-- [ ] **Compare lifting**: `a < b` instead of `g.Compare(...)` when props
-  match what the operator overload produces (mode ELEMENT, default epsilon).
+- [ ] **Remaining socket-method specs**: `.find()` (two-output NamedTuple
+  result), `Mix` → `factor.mix.*`, `.to_quaternion()`/`.svd()` (tuple
+  results), grid methods, plus future `.curl()` / `.divergence()` /
+  `.laplacian()` when those exist.
 
 ### Polish
 - [ ] Line-length handling: deep graphs now collapse into long single
@@ -136,8 +142,6 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   or document running output through ruff/black.
 - [ ] Interface fidelity: `subtype`, `min_value`/`max_value`, `description`,
   `hide_value`, `default_input`, `structure_type`, panels.
-- [ ] Float32 noise in literals (`0.10000000149011612` → `0.1`): shortest
-  repr that round-trips through float32.
 - [ ] Mode-dependent socket defaults: probe node currently created with
   default properties, so irrelevant kwargs (e.g. `length=` on EVALUATED
   CurveToPoints) are emitted. Probe could copy enum props first.

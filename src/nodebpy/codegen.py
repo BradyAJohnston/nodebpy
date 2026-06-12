@@ -183,6 +183,31 @@ class UnaryOp(Expr):
         return f"{self.op}{self._child(self.operand, self.operand.prec < self.prec)}"
 
 
+_COMPARE_PREC = 4  # below every binary operator
+
+
+@dataclass
+class CompareOp(Expr):
+    """A comparison expression (``a < b``).
+
+    Comparison operands are always parenthesised — Python would chain
+    ``a < b < c``, which is not what nested Compare nodes mean — and
+    comparisons bind looser than every binary operator, so they get parens
+    inside ``&``/``|``/``>>`` expressions automatically.
+    """
+
+    op: str
+    lhs: Expr
+    rhs: Expr
+
+    prec: int = field(default=_COMPARE_PREC, init=False)
+
+    def render(self) -> str:
+        lhs = self._child(self.lhs, self.lhs.prec <= self.prec)
+        rhs = self._child(self.rhs, self.rhs.prec <= self.prec)
+        return f"{lhs} {self.op} {rhs}"
+
+
 @dataclass
 class BinOp(Expr):
     """A binary operator expression with precedence-aware rendering.
@@ -216,6 +241,28 @@ class BinOp(Expr):
 # ---------------------------------------------------------------------------
 
 
+def _fmt_float(value: float) -> str:
+    """Shortest literal that round-trips through float32.
+
+    Blender stores socket values as float32, so reading them back through
+    Python gives noisy float64 reprs (``0.10000000149011612``); the
+    shortest decimal that uniquely identifies the float32 (``0.1``)
+    rebuilds the identical socket value.
+    """
+    import math
+
+    if not math.isfinite(value):
+        return repr(value)
+    try:
+        import numpy as np
+    except ImportError:  # pragma: no cover - Blender ships numpy
+        return repr(value)
+    f32 = np.float32(value)
+    if float(f32) != value:
+        return repr(value)  # genuine float64 — keep full precision
+    return np.format_float_positional(f32, unique=True, trim="0")
+
+
 def _fmt(value: Any) -> str:
     """Format a value as a Python literal using double-quoted strings."""
     if isinstance(value, bool):
@@ -223,7 +270,7 @@ def _fmt(value: Any) -> str:
     if isinstance(value, int):
         return str(value)
     if isinstance(value, float):
-        return repr(value)
+        return _fmt_float(value)
     if isinstance(value, str):
         escaped = value.replace("\\", "\\\\").replace('"', '\\"')
         return f'"{escaped}"'
@@ -2093,14 +2140,123 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
 # ---------------------------------------------------------------------------
 
 
+_COMPARE_LIFT = {
+    "LESS_THAN": "<",
+    "GREATER_THAN": ">",
+    "LESS_EQUAL": "<=",
+    "GREATER_EQUAL": ">=",
+    "EQUAL": "==",
+    "NOT_EQUAL": "!=",
+}
+
+# data_type the comparison overloads dispatch to, by lhs socket type
+_COMPARE_DISPATCH = {"VALUE": "FLOAT", "INT": "INT", "VECTOR": "VECTOR"}
+
+# epsilon the ==/!= overloads set (float32 of 1e-4)
+_OPERATOR_EPSILON = 9.999999747378752e-05
+
+
+def _lift_compare(node, ctx: EmitContext) -> _Val | None:
+    """Lift a Compare node to a Python comparison when its state matches
+    exactly what the operator overloads produce on round-trip."""
+    op = _COMPARE_LIFT.get(node.operation)
+    if op is None or node.mode != "ELEMENT":
+        return None
+    linked = _linked_ids(ctx, node)
+    if "A" not in linked or not linked <= {"A", "B"}:
+        return None
+    a_link = ctx.input_link(node, "A")
+    assert a_link is not None
+    if _COMPARE_DISPATCH.get(a_link.from_socket.type) != node.data_type:
+        return None
+    if node.operation in ("EQUAL", "NOT_EQUAL"):
+        epsilon = _input_socket_by_identifier(node, "Epsilon")
+        if epsilon is None or not _eq(epsilon.default_value, _OPERATOR_EPSILON):
+            return None
+    b_link = ctx.input_link(node, "B")
+    if b_link is not None:
+        rhs: Expr = ctx.upstream_expr(b_link)
+    else:
+        b_socket = _input_socket_by_identifier(node, "B")
+        if b_socket is None:
+            return None
+        rhs = Lit(b_socket.default_value)
+    return _Val(
+        CompareOp(op, ctx.upstream_expr(a_link), rhs),
+        is_socket=True,
+        socket_id=node.outputs[0].identifier,
+    )
+
+
 @register_emitter("FunctionNodeCompare")
-def _emit_compare(node, ctx: EmitContext) -> Expr | None:
-    """Compare's ``mode`` is consumed via ``**kwargs`` (required for VECTOR),
-    so it never appears in the constructor signature — add it explicitly."""
+def _emit_compare(node, ctx: EmitContext) -> Expr | _Val | None:
+    """Lift to a Python comparison when possible; otherwise emit the
+    constructor — Compare's ``mode`` is consumed via ``**kwargs`` (required
+    for VECTOR), so it never appears in the signature and is added
+    explicitly."""
+    lifted = _lift_compare(node, ctx)
+    if lifted is not None:
+        return lifted
     call = ctx.constructor(node)
     if node.data_type == "VECTOR":
         call.kwargs["mode"] = Lit(node.mode)
     return call
+
+
+@register_emitter("FunctionNodeFormatString")
+def _emit_format_string(node, ctx: EmitContext) -> Expr | _Val | None:
+    """FormatString renders as ``fmt.format({...})`` when the format string
+    is linked, else ``g.FormatString("...", items={...})``. Item names may
+    not be valid Python kwargs, so items always go through a dict."""
+    items: dict[str, Expr] = {}
+    for socket in node.inputs:
+        if socket.identifier == "Format" or socket.identifier.startswith("__extend__"):
+            continue
+        link = ctx.input_link(node, socket.identifier)
+        items[socket.name] = (
+            ctx.upstream_expr(link) if link is not None else Lit(socket.default_value)
+        )
+    format_link = ctx.input_link(node, "Format")
+    if format_link is not None:
+        return _Val(
+            MethodCall(ctx.socket_expr(format_link), "format", [DictExpr(items)]),
+            is_socket=True,
+            socket_id=node.outputs[0].identifier,
+        )
+    format_socket = _input_socket_by_identifier(node, "Format")
+    args: list[Expr] = [
+        Lit(format_socket.default_value if format_socket is not None else "")
+    ]
+    kwargs: dict[str, Expr] = {"items": DictExpr(items)} if items else {}
+    ctx.used_aliases.add("g")
+    return Call("g.FormatString", args, kwargs)
+
+
+@register_emitter("GeometryNodeStringJoin")
+def _emit_join_strings(node, ctx: EmitContext) -> Expr | _Val | None:
+    """JoinStrings renders as ``delimiter.join((...))`` when the delimiter
+    is linked, else ``g.JoinStrings((...), delimiter=...)``. The strings
+    multi-input becomes a tuple in creation order."""
+    entries = [
+        (link.sort_id, ctx.upstream_expr(link))
+        for link in ctx.incoming.get(node.name, ())
+        if link.to_socket.identifier == "Strings"
+    ]
+    entries.sort(key=lambda e: e[0], reverse=True)
+    strings = TupleExpr([e[1] for e in entries])
+    delimiter_link = ctx.input_link(node, "Delimiter")
+    if delimiter_link is not None:
+        return _Val(
+            MethodCall(ctx.socket_expr(delimiter_link), "join", [strings]),
+            is_socket=True,
+            socket_id=node.outputs[0].identifier,
+        )
+    ctx.used_aliases.add("g")
+    kwargs: dict[str, Expr] = {}
+    delimiter = _input_socket_by_identifier(node, "Delimiter")
+    if delimiter is not None and delimiter.default_value:
+        kwargs["delimiter"] = Lit(delimiter.default_value)
+    return Call("g.JoinStrings", [strings], kwargs)
 
 
 # ---------------------------------------------------------------------------
