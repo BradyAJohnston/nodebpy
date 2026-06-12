@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import bpy
-from bpy.types import Node, NodeSocket, NodeTree
+from bpy.types import Node, NodeTree
 
 _COLOR_CLASS_MAP = {
     "GEOMETRY": "geometry-node",
@@ -74,20 +74,6 @@ def _sorted_nodes(node_tree: NodeTree, reroute_names: set) -> list[Node]:
     return input_nodes + sorted_regular + output_nodes
 
 
-def _trace_reroute(
-    node_tree: NodeTree, node: Node, socket: NodeSocket
-) -> tuple[Node, NodeSocket]:
-    """Follow a reroute chain backward to the real source node and socket."""
-    while node.bl_idname == "NodeReroute":
-        input_links = [link for link in node_tree.links if link.to_node == node]
-        if not input_links:
-            return node, socket
-        link = input_links[0]
-        node = link.from_node
-        socket = link.from_socket
-    return node, socket
-
-
 def to_mermaid(tree, fenced=True) -> str:
     """Generate a Mermaid diagram string from a node tree.
 
@@ -147,30 +133,26 @@ def to_mermaid(tree, fenced=True) -> str:
     for node in roots:
         _emit(node, "    ")
 
+    # Effective links collapse reroute chains and come in canonical
+    # (structural) order, so the diagram never depends on link insertion
+    # order.
+    from .codegen import _effective_links
+
     seen_edges = set()
-    for link in node_tree.links:
-        if link.to_node.name in reroute_names:
+    for link in _effective_links(node_tree):
+        if link.from_node.name not in node_map or link.to_node.name not in node_map:
             continue
 
-        from_node = link.from_node
-        from_socket = link.from_socket
-
-        if from_node.name in reroute_names:
-            from_node, from_socket = _trace_reroute(node_tree, from_node, from_socket)
-
-        if from_node.name not in node_map or link.to_node.name not in node_map:
-            continue
-
-        from_id = node_map[from_node.name]
+        from_id = node_map[link.from_node.name]
         to_id = node_map[link.to_node.name]
 
-        edge_key = (from_id, to_id, from_socket.name, link.to_socket.name)
+        edge_key = (from_id, to_id, link.from_socket.name, link.to_socket.name)
         if edge_key in seen_edges:
             continue
         seen_edges.add(edge_key)
 
         lines.append(
-            f'    {from_id} -->|"{from_socket.name}->{link.to_socket.name}"| {to_id}'
+            f'    {from_id} -->|"{link.from_socket.name}->{link.to_socket.name}"| {to_id}'
         )
 
     pre = ["```{mermaid}"] if fenced else []

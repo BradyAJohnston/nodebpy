@@ -18,10 +18,10 @@
           field_average = position.point.mean(group_id)
       with g.Frame("Covariance Matrix"):
           vector_math = position - field_average
-          mean = (vector_math * vector_math.z).point.mean(group_id)
-          mean_1 = (vector_math * vector_math.x).point.mean(group_id)
-          mean_2 = (vector_math * vector_math.y).point.mean(group_id)
-          combine_matrix = g.CombineMatrix(column_1_row_1=mean_1.x, column_1_row_2=mean_1.y, column_1_row_3=mean_1.z, column_2_row_1=mean_2.x, column_2_row_2=mean_2.y, column_2_row_3=mean_2.z, column_3_row_1=mean.x, column_3_row_2=mean.y, column_3_row_3=mean.z)
+          mean = (vector_math * vector_math.x).point.mean(group_id)
+          mean_1 = (vector_math * vector_math.y).point.mean(group_id)
+          mean_2 = (vector_math * vector_math.z).point.mean(group_id)
+          combine_matrix = g.CombineMatrix(column_1_row_1=mean.x, column_1_row_2=mean.y, column_1_row_3=mean.z, column_2_row_1=mean_1.x, column_2_row_2=mean_1.y, column_2_row_3=mean_1.z, column_3_row_1=mean_2.x, column_3_row_2=mean_2.y, column_3_row_3=mean_2.z)
       with g.Frame("SVD"):
           matrix_svd = combine_matrix.o.matrix.svd()
           separate_matrix = g.SeparateMatrix(matrix=matrix_svd.u)
@@ -31,10 +31,10 @@
           axes_to_rotation = g.AxesToRotation(primary_axis=combine_xyz, secondary_axis=combine_xyz_2)
           combine_xyz_1 * g.Math.sign(matrix_svd.u.determinant()) >> intermediate_axis
   
-      combine_xyz >> longest_axis
-      axes_to_rotation >> rotation
       field_average >> centroid
       matrix_svd.s >> principal_components
+      axes_to_rotation >> rotation
+      combine_xyz >> longest_axis
       combine_xyz_2 >> shortest_axis
   '''
 # ---
@@ -72,28 +72,41 @@
           N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
       end
       N23("Group Output"):::default-node
+      N1 -->|"Mean->Centroid"| N23
+      N14 -->|"S->Principal Components"| N23
+      N20 -->|"Rotation->Rotation"| N23
+      N16 -->|"Vector->Longest Axis"| N23
+      N22 -->|"Vector->Intermediate Axis"| N23
+      N19 -->|"Vector->Shortest Axis"| N23
       N0 -->|"Position->Value"| N1
       N0 -->|"Group ID->Group ID"| N1
+      N0 -->|"Position->Vector"| N2
       N1 -->|"Mean->Vector"| N2
-      N2 -->|"Vector->Vector"| N3
-      N3 -->|"X->Scale"| N4
-      N4 -->|"Vector->Value"| N7
-      N7 -->|"Mean->Vector"| N10
       N10 -->|"X->Column 1 Row 1"| N13
       N10 -->|"Y->Column 1 Row 2"| N13
       N10 -->|"Z->Column 1 Row 3"| N13
-      N3 -->|"Y->Scale"| N5
-      N5 -->|"Vector->Value"| N8
-      N8 -->|"Mean->Vector"| N11
       N11 -->|"X->Column 2 Row 1"| N13
       N11 -->|"Y->Column 2 Row 2"| N13
       N11 -->|"Z->Column 2 Row 3"| N13
-      N3 -->|"Z->Scale"| N6
-      N6 -->|"Vector->Value"| N9
-      N9 -->|"Mean->Vector"| N12
       N12 -->|"X->Column 3 Row 1"| N13
       N12 -->|"Y->Column 3 Row 2"| N13
       N12 -->|"Z->Column 3 Row 3"| N13
+      N2 -->|"Vector->Vector"| N3
+      N2 -->|"Vector->Vector"| N4
+      N3 -->|"X->Scale"| N4
+      N4 -->|"Vector->Value"| N7
+      N0 -->|"Group ID->Group ID"| N7
+      N7 -->|"Mean->Vector"| N10
+      N2 -->|"Vector->Vector"| N5
+      N3 -->|"Y->Scale"| N5
+      N5 -->|"Vector->Value"| N8
+      N0 -->|"Group ID->Group ID"| N8
+      N8 -->|"Mean->Vector"| N11
+      N2 -->|"Vector->Vector"| N6
+      N3 -->|"Z->Scale"| N6
+      N6 -->|"Vector->Value"| N9
+      N0 -->|"Group ID->Group ID"| N9
+      N9 -->|"Mean->Vector"| N12
       N13 -->|"Matrix->Matrix"| N14
       N14 -->|"U->Matrix"| N15
       N15 -->|"Column 1 Row 1->X"| N16
@@ -105,25 +118,12 @@
       N15 -->|"Column 3 Row 1->X"| N19
       N15 -->|"Column 3 Row 2->Y"| N19
       N15 -->|"Column 3 Row 3->Z"| N19
-      N16 -->|"Vector->Longest Axis"| N23
       N16 -->|"Vector->Primary Axis"| N20
       N19 -->|"Vector->Secondary Axis"| N20
-      N20 -->|"Rotation->Rotation"| N23
+      N14 -->|"U->Matrix"| N17
       N17 -->|"Determinant->Value"| N21
       N18 -->|"Vector->Vector"| N22
       N21 -->|"Value->Scale"| N22
-      N22 -->|"Vector->Intermediate Axis"| N23
-      N0 -->|"Group ID->Group ID"| N9
-      N0 -->|"Group ID->Group ID"| N8
-      N0 -->|"Group ID->Group ID"| N7
-      N2 -->|"Vector->Vector"| N6
-      N2 -->|"Vector->Vector"| N4
-      N2 -->|"Vector->Vector"| N5
-      N0 -->|"Position->Vector"| N2
-      N1 -->|"Mean->Centroid"| N23
-      N14 -->|"U->Matrix"| N17
-      N14 -->|"S->Principal Components"| N23
-      N19 -->|"Vector->Shortest Axis"| N23
   ```
   '''
 # ---
@@ -160,28 +160,41 @@
           N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
       end
       N23("Group Output"):::default-node
+      N1 -->|"Mean->Centroid"| N23
+      N14 -->|"S->Principal Components"| N23
+      N20 -->|"Rotation->Rotation"| N23
+      N16 -->|"Vector->Longest Axis"| N23
+      N22 -->|"Vector->Intermediate Axis"| N23
+      N19 -->|"Vector->Shortest Axis"| N23
       N0 -->|"Position->Value"| N1
       N0 -->|"Group ID->Group ID"| N1
+      N0 -->|"Position->Vector"| N2
       N1 -->|"Mean->Vector"| N2
-      N2 -->|"Vector->Vector"| N3
-      N3 -->|"X->Scale"| N4
-      N4 -->|"Vector->Value"| N7
-      N7 -->|"Mean->Vector"| N10
       N10 -->|"X->Column 1 Row 1"| N13
       N10 -->|"Y->Column 1 Row 2"| N13
       N10 -->|"Z->Column 1 Row 3"| N13
-      N3 -->|"Y->Scale"| N5
-      N5 -->|"Vector->Value"| N8
-      N8 -->|"Mean->Vector"| N11
       N11 -->|"X->Column 2 Row 1"| N13
       N11 -->|"Y->Column 2 Row 2"| N13
       N11 -->|"Z->Column 2 Row 3"| N13
-      N3 -->|"Z->Scale"| N6
-      N6 -->|"Vector->Value"| N9
-      N9 -->|"Mean->Vector"| N12
       N12 -->|"X->Column 3 Row 1"| N13
       N12 -->|"Y->Column 3 Row 2"| N13
       N12 -->|"Z->Column 3 Row 3"| N13
+      N2 -->|"Vector->Vector"| N3
+      N2 -->|"Vector->Vector"| N4
+      N3 -->|"X->Scale"| N4
+      N4 -->|"Vector->Value"| N7
+      N0 -->|"Group ID->Group ID"| N7
+      N7 -->|"Mean->Vector"| N10
+      N2 -->|"Vector->Vector"| N5
+      N3 -->|"Y->Scale"| N5
+      N5 -->|"Vector->Value"| N8
+      N0 -->|"Group ID->Group ID"| N8
+      N8 -->|"Mean->Vector"| N11
+      N2 -->|"Vector->Vector"| N6
+      N3 -->|"Z->Scale"| N6
+      N6 -->|"Vector->Value"| N9
+      N0 -->|"Group ID->Group ID"| N9
+      N9 -->|"Mean->Vector"| N12
       N13 -->|"Matrix->Matrix"| N14
       N14 -->|"U->Matrix"| N15
       N15 -->|"Column 1 Row 1->X"| N16
@@ -193,24 +206,11 @@
       N15 -->|"Column 3 Row 1->X"| N19
       N15 -->|"Column 3 Row 2->Y"| N19
       N15 -->|"Column 3 Row 3->Z"| N19
-      N16 -->|"Vector->Longest Axis"| N23
       N16 -->|"Vector->Primary Axis"| N20
       N19 -->|"Vector->Secondary Axis"| N20
-      N20 -->|"Rotation->Rotation"| N23
+      N14 -->|"U->Matrix"| N17
       N17 -->|"Determinant->Value"| N21
       N18 -->|"Vector->Vector"| N22
       N21 -->|"Value->Scale"| N22
-      N22 -->|"Vector->Intermediate Axis"| N23
-      N0 -->|"Group ID->Group ID"| N9
-      N0 -->|"Group ID->Group ID"| N8
-      N0 -->|"Group ID->Group ID"| N7
-      N2 -->|"Vector->Vector"| N6
-      N2 -->|"Vector->Vector"| N4
-      N2 -->|"Vector->Vector"| N5
-      N0 -->|"Position->Vector"| N2
-      N1 -->|"Mean->Centroid"| N23
-      N14 -->|"U->Matrix"| N17
-      N14 -->|"S->Principal Components"| N23
-      N19 -->|"Vector->Shortest Axis"| N23
   '''
 # ---

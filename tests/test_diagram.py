@@ -7,7 +7,7 @@ from operator import and_
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy.diagram import to_mermaid
+from nodebpy.export.diagram import to_mermaid
 from nodebpy.nodes.geometry.groups import OffsetVector, OtherVertex
 
 
