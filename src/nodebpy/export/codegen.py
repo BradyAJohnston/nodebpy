@@ -242,6 +242,39 @@ class BinOp(Expr):
         return f"{lhs} {self.op} {rhs}"
 
 
+_MAX_LINE_WIDTH = 88
+
+
+def _stmt_lines(
+    expr: Expr,
+    assign: str | None = None,
+    indent: str = "    ",
+    width: int = _MAX_LINE_WIDTH,
+) -> list[str]:
+    """Render a statement, wrapping a top-level ``>>`` chain in parentheses
+    with one segment per line when the flat form exceeds ``width`` columns."""
+    prefix = f"{assign} = " if assign else ""
+    flat = f"{indent}{prefix}{expr.render()}"
+    if len(flat) <= width or not (isinstance(expr, BinOp) and expr.op == ">>"):
+        return [flat]
+    segments: list[Expr] = []
+    node: Expr = expr
+    while isinstance(node, BinOp) and node.op == ">>":
+        segments.append(node.rhs)
+        node = node.lhs
+    segments.append(node)
+    segments.reverse()
+    prec = _BINOP_PREC[">>"]
+    inner = indent + "    "
+    head = segments[0]
+    lines = [f"{indent}{prefix}(", f"{inner}{Expr._child(head, head.prec < prec)}"]
+    lines.extend(
+        f"{inner}>> {Expr._child(seg, seg.prec <= prec)}" for seg in segments[1:]
+    )
+    lines.append(f"{indent})")
+    return lines
+
+
 # ---------------------------------------------------------------------------
 # Value formatting
 # ---------------------------------------------------------------------------
@@ -2426,7 +2459,8 @@ def to_python(
             Longest rendered expression (in characters) that may inline into its consumer's
             statement; longer values bind to a variable first, so deep graphs split into
             steps instead of collapsing into one huge statement. ``>>`` chain continuations
-            are exempt — a pipeline stays one statement and wraps well under a formatter.
+            are exempt — a pipeline stays one statement; statements longer than 88 columns
+            wrap in parentheses with one ``>>`` segment per line.
             ``None`` disables the budget.
 
     Returns
@@ -2547,14 +2581,20 @@ def to_python(
                     "interface variable"
                 )
             source = _output_expr(val, node, link.from_socket)
-            tagged_body.append(
-                (frame, f"    {BinOp('>>', source, out_ref.require_expr()).render()}")
+            chain = BinOp(">>", source, out_ref.require_expr())
+            width = _MAX_LINE_WIDTH - (4 if frame is not None else 0)
+            tagged_body.extend(
+                (frame, line) for line in _stmt_lines(chain, width=width)
             )
             consumed_out_links.add(id(link))
             continue
 
         var = _make_var(node.bl_label or "node", ctx.counter)
-        tagged_body.append((frame, f"    {var} = {val.require_expr().render()}"))
+        width = _MAX_LINE_WIDTH - (4 if frame is not None else 0)
+        tagged_body.extend(
+            (frame, line)
+            for line in _stmt_lines(val.require_expr(), assign=var, width=width)
+        )
         ctx.var_map[name] = _Val(
             Ref(var), is_socket=val.is_socket, socket_id=val.socket_id
         )
@@ -2586,7 +2626,7 @@ def to_python(
                 f"Group output socket '{link.to_socket.name}' has no interface variable"
             )
         source = ctx.upstream_expr(link)
-        out_lines.append(f"    {BinOp('>>', source, out_ref.require_expr()).render()}")
+        out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
     # 5. Assemble.
     import_parts = [
@@ -3163,5 +3203,5 @@ def _emit_zone_output(node, ctx: EmitContext) -> _Val:
                 f"'{link.to_socket.name}' with no emit target"
             )
         statement = BinOp(">>", ctx.upstream_expr(link), target)
-        ctx.pending_lines.append(f"    {statement.render()}")
+        ctx.pending_lines.extend(_stmt_lines(statement))
     return _Val(None, outputs=state.outputs)
