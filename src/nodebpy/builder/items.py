@@ -178,8 +178,6 @@ class ItemsMixin(DynamicInputsMixin):
         the Python type and the value becomes the socket default."""
         if super()._add_unlinked_input(name, value):
             return True
-        if not _is_default_value(value):
-            return False
         type = _infer_value_type(value)
         if type is None:
             return False

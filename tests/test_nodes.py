@@ -697,6 +697,12 @@ def test_foreach_item_handles():
         assert zone.output.items_generated[1].name == "Gen"
         unlinked = zone.generated_item("Mask", type="BOOLEAN", domain="FACE")
         assert zone.output.items_generated[2].domain == "FACE"
+        defaulted = zone.generated_item("Weight", 0.5)
+        assert zone.output.items_generated[3].socket_type == "FLOAT"
+        assert defaulted.input.socket.default_value == pytest.approx(0.5)
+        with pytest.raises(TypeError):
+            zone.generated_item("nope")
+        assert zone.output.domain == "POINT"
         assert len(unlinked.input.socket.links) == 0
         assert gen.name == "Gen"
 

@@ -41,6 +41,13 @@ def test_dynamic_inputs():
         assert inferred_rotation_list.name == "rotation"
         assert inferred_rotation_list.socket_type == "ROTATION"
 
+        assert repr(inferred_float_list) == "Item('float', 'FLOAT')"
+
+        handles = ftl.add_items({"declared": "FLOAT", "linked": g.Value()})
+        assert handles["declared"].socket_type == "FLOAT"
+        assert len(handles["declared"].input.socket.links) == 0
+        assert len(handles["linked"].input.socket.links) == 1
+
         switch = g.IndexSwitch.integer(items=range(10))
         assert switch.data_type == "INT"
         assert len(switch.node.inputs) == 12 # 10 items + 1 index + 1 dynamic input socket
@@ -51,3 +58,28 @@ def test_dynamic_inputs():
             switch._item_socket(switch2._items[11])
         with pytest.raises(ValueError):
             switch2._item_socket(switch._items[1], output=True)
+
+
+def test_switch_add_item_infers_type_from_source():
+    with g.tree():
+        sw = g.IndexSwitch(data_type="FLOAT")
+        item = sw.add_item("val", g.Value())
+        assert len(sw._items) == 1
+        assert len(item.input.socket.links) == 1
+
+        ms = g.MenuSwitch(data_type="FLOAT")
+        option = ms.add_item("Option", g.Value())
+        assert option.name == "Option"
+        assert len(ms.node.inputs["Option"].links) == 1
+
+
+def test_dynamic_inputs_base_declared_item_type():
+    from nodebpy.builder import DynamicInputsMixin
+
+    class Plain(DynamicInputsMixin):
+        def _add_socket(self, name, *args, **kwargs):
+            raise AssertionError("should not be called")
+
+    plain = Plain()
+    assert plain._declared_item_type("FLOAT") is None
+    assert plain._add_unlinked_input("x", "FLOAT") is False
