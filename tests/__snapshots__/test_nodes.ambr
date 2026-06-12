@@ -96,27 +96,25 @@
       N1("Position"):::input-node
       N2("Vector"):::input-node
       N3("Simulation Input"):::default-node
-      N4("Position"):::input-node
-      N5("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-      N6("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
-      N7("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
-      N8("Set Position"):::geometry-node
-      N9("Simulation Output"):::default-node
-      N10("Set Position"):::geometry-node
+      N4("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+      N5("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
+      N6("Set Position"):::geometry-node
+      N7("Vector Math<br/><small>(ADD)</small><br/><small>(0.1,0.1,0.1)</small>"):::vector-node
+      N8("Simulation Output"):::default-node
+      N9("Set Position"):::geometry-node
       N0 -->|"Mesh->cube"| N3
       N1 -->|"Position->Position"| N3
-      N8 -->|"Geometry->cube"| N9
-      N6 -->|"Vector->Position"| N9
-      N3 -->|"Position->Vector"| N6
-      N4 -->|"Position->Vector"| N6
-      N2 -->|"Vector->Vector"| N5
-      N3 -->|"Delta Time->Scale"| N5
-      N5 -->|"Vector->Vector"| N7
-      N6 -->|"Vector->Vector"| N7
-      N3 -->|"cube->Geometry"| N8
-      N7 -->|"Vector->Offset"| N8
-      N9 -->|"cube->Geometry"| N10
-      N9 -->|"Position->Position"| N10
+      N6 -->|"Geometry->cube"| N8
+      N7 -->|"Vector->Position"| N8
+      N3 -->|"Position->Vector"| N7
+      N2 -->|"Vector->Vector"| N4
+      N3 -->|"Delta Time->Scale"| N4
+      N4 -->|"Vector->Vector"| N5
+      N3 -->|"Position->Vector"| N5
+      N3 -->|"cube->Geometry"| N6
+      N5 -->|"Vector->Offset"| N6
+      N8 -->|"cube->Geometry"| N9
+      N8 -->|"Position->Position"| N9
   ```
   '''
 # ---

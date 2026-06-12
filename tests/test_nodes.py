@@ -356,19 +356,14 @@ def test_bake():
 def test_simulation(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        input, output = g.SimulationZone({"cube": cube})
-        pos_math = input.capture(g.Position()) * g.Position()
-        _ = pos_math >> output
-        _ = (
-            input
-            >> g.SetPosition(
-                offset=input.o.delta_time * g.Vector((0, 0, 0.1)) * pos_math
-            )
-            >> output
-        )
-        _ = output >> g.SetPosition(position=output.o["Position"])
-    assert len(output.node.inputs["Skip"].links) == 0
-    assert len(tree) == 13
+        sim = g.SimulationZone({"cube": cube})
+        pos = sim.item("Position", g.Position())
+        (pos.current + 0.1) >> pos.next
+        offset = sim.delta_time * g.Vector((0, 0, 0.1)) * pos.current
+        sim.input >> g.SetPosition(offset=offset) >> sim.output
+        sim.output >> g.SetPosition(position=sim.output.o["Position"])
+    assert len(sim.output.node.inputs["Skip"].links) == 0
+    assert len(tree) == 11
     assert snapshot == tree._repr_markdown_()
 
 
