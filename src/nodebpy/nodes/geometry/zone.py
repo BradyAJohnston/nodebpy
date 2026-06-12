@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import TYPE_CHECKING, Union, cast
+
 import bpy
 from bpy.types import (
     NodeClosureInput,
@@ -26,8 +27,8 @@ from ...builder import (
 from ...builder import Socket as SocketLinker
 from ...builder._registry import _wrap_socket
 from ...builder._utils import _SocketLike
-from ...builder.items import _infer_value_type
 from ...builder.accessor import SocketAccessor
+from ...builder.items import _infer_value_type
 from ...types import (
     InputAny,
     InputBoolean,
