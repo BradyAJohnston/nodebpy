@@ -2456,30 +2456,30 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
     def capture_float(
         self, field: InputFloat = None, name: str | None = None
     ) -> FloatSocketGrid:
-        out = self._new_item(type="FLOAT", name=name)
+        out = self._new_item(type="FLOAT", name=name or "Float")
         self._establish_links(**{out.name: field})
-        return FloatSocketGrid(out)
+        return FloatSocketGrid(self.o[out.name])
 
     def capture_boolean(
         self, field: InputBoolean = None, name: str | None = None
     ) -> BooleanSocketGrid:
-        out = self._new_item(type="BOOLEAN", name=name)
+        out = self._new_item(type="BOOLEAN", name=name or "Boolean")
         self._establish_links(**{out.name: field})
-        return BooleanSocketGrid(out)
+        return BooleanSocketGrid(self.o[out.name])
 
     def capture_vector(
         self, field: InputVector = None, name: str | None = None
     ) -> VectorSocketGrid:
-        out = self._new_item(type="VECTOR", name=name)
+        out = self._new_item(type="VECTOR", name=name or "Vector")
         self._establish_links(**{out.name: field})
-        return VectorSocketGrid(out)
+        return VectorSocketGrid(self.o[out.name])
 
     def capture_integer(
         self, field: InputInteger = None, name: str | None = None
     ) -> IntegerSocketGrid:
-        out = self._new_item(type="INT", name=name)
+        out = self._new_item(type="INT", name=name or "Integer")
         self._establish_links(**{out.name: field})
-        return IntegerSocketGrid(out)
+        return IntegerSocketGrid(self.o[out.name])
 
 
 class SDFGridBoolean(BaseNode):
