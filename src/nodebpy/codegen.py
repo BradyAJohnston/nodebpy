@@ -20,6 +20,7 @@ register a custom emitter with :func:`register_emitter`.
 from __future__ import annotations
 
 import ast
+import heapq
 import inspect
 import textwrap
 from dataclasses import dataclass, field
@@ -322,6 +323,18 @@ _NODE_REGISTRY: dict[str, tuple[str, type]] | None = None
 
 _ALIAS_MODULES = {"g": "geometry", "s": "shader", "c": "compositor"}
 
+_TREE_CONSTRUCTORS = {
+    "GeometryNodeTree": "TreeBuilder",
+    "ShaderNodeTree": "TreeBuilder.shader",
+    "CompositorNodeTree": "TreeBuilder.compositor",
+}
+
+_TREE_ALIAS = {
+    "GeometryNodeTree": "g",
+    "ShaderNodeTree": "s",
+    "CompositorNodeTree": "c",
+}
+
 _SKIP_BL_IDNAMES = frozenset(
     {"NodeGroupInput", "NodeGroupOutput", "NodeReroute", "NodeFrame"}
 )
@@ -428,6 +441,44 @@ def _get_blender_socket_defaults(tree_idname: str, bl_idname: str) -> dict[str, 
     except Exception:
         pass
     _BLENDER_SOCKET_DEFAULTS[key] = defaults
+    return defaults
+
+
+_IFACE_DEFAULTS: dict[tuple[str, str], dict[str, object]] = {}
+
+
+def _get_interface_defaults(tree_idname: str, socket_type: str) -> dict[str, object]:
+    """Property identifier → value for a freshly created interface socket."""
+    key = (tree_idname, socket_type)
+    if key in _IFACE_DEFAULTS:
+        return _IFACE_DEFAULTS[key]
+    defaults: dict[str, object] = {}
+    try:
+        import bpy
+
+        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)
+        try:
+            socket = probe_tree.interface.new_socket(
+                "probe", in_out="INPUT", socket_type=socket_type
+            )
+            for prop in socket.bl_rna.properties:
+                if prop.is_readonly:
+                    continue
+                try:
+                    value = getattr(socket, prop.identifier)
+                except Exception:
+                    continue
+                if not isinstance(value, str):
+                    try:
+                        value = tuple(value)
+                    except TypeError:
+                        pass
+                defaults[prop.identifier] = value
+        finally:
+            bpy.data.node_groups.remove(probe_tree)
+    except Exception:
+        pass
+    _IFACE_DEFAULTS[key] = defaults
     return defaults
 
 
@@ -550,6 +601,91 @@ def _topo_sort(node_tree) -> list:
             if in_deg[m_name] == 0:
                 queue.append(node_by_name[m_name])
     return order
+
+
+def _frame_key(node) -> str | None:
+    """The frame a node's statement should be emitted under, or None."""
+    parent = node.parent
+    if parent is None or parent.bl_idname != "NodeFrame":
+        return None
+    if parent.parent is not None:
+        return None  # nested frames are not expressible as with-blocks
+    return parent.name
+
+
+def _frame_order(node_tree, ordered):
+    """Reorder ``ordered`` so each emittable frame's members are contiguous.
+
+    Frames become clusters in a cluster-level topological sort (each `with
+    g.Frame():` block creates one frame, so members must emit together).
+    A frame whose cluster sits on a cycle through outside nodes cannot be
+    contiguous — it falls back to flat, frameless emission.
+
+    Returns ``(order, frame_of, frame_nodes)``: the new node order, node
+    name → frame key (or None), and frame key → bpy frame node.
+    """
+    frame_of = {n.name: _frame_key(n) for n in ordered}
+    frame_nodes: dict[str, Any] = {}
+    for n in ordered:
+        key = frame_of[n.name]
+        if key is not None:
+            frame_nodes[key] = n.parent
+    if not frame_nodes:
+        return ordered, frame_of, frame_nodes
+
+    in_order = {n.name for n in ordered}
+    edges = [
+        (a.name, b.name)
+        for a, b in _ordering_edges(node_tree)
+        if a.name in in_order and b.name in in_order
+    ]
+    while True:
+        key_of = {n.name: frame_of[n.name] or f"__{n.name}" for n in ordered}
+        clusters: dict[str, list] = {}
+        order_keys: list[str] = []
+        for n in ordered:
+            key = key_of[n.name]
+            if key not in clusters:
+                clusters[key] = []
+                order_keys.append(key)
+            clusters[key].append(n)
+        adj: dict[str, set[str]] = {k: set() for k in order_keys}
+        in_deg = dict.fromkeys(order_keys, 0)
+        for a, b in edges:
+            ka, kb = key_of[a], key_of[b]
+            if ka != kb and kb not in adj[ka]:
+                adj[ka].add(kb)
+                in_deg[kb] += 1
+
+        # Kahn's algorithm preferring first-appearance order, so the
+        # emission order stays close to the plain topological sort.
+        pos = {k: i for i, k in enumerate(order_keys)}
+        heap = [pos[k] for k in order_keys if in_deg[k] == 0]
+        heapq.heapify(heap)
+        result: list[str] = []
+        while heap:
+            k = order_keys[heapq.heappop(heap)]
+            result.append(k)
+            for m in adj[k]:
+                in_deg[m] -= 1
+                if in_deg[m] == 0:
+                    heapq.heappush(heap, pos[m])
+        if len(result) == len(order_keys):
+            order = [n for k in result for n in clusters[k]]
+            return order, frame_of, frame_nodes
+
+        # Contract-induced cycle: flatten the first still-blocked frame
+        # and retry (node graphs themselves are acyclic, so every cycle
+        # runs through at least one frame cluster).
+        stuck = next(
+            (k for k in order_keys if in_deg[k] > 0 and k in frame_nodes), None
+        )
+        if stuck is None:  # pragma: no cover - defensive
+            return ordered, dict.fromkeys(frame_of, None), {}
+        del frame_nodes[stuck]
+        for name, key in frame_of.items():
+            if key == stuck:
+                frame_of[name] = None
 
 
 # ---------------------------------------------------------------------------
@@ -746,6 +882,11 @@ class EmitContext:
         for i, socket in enumerate(node.inputs):
             if socket.is_linked:
                 continue
+            if not socket.enabled:
+                # Disabled by the active mode/data_type — the value is stale
+                # and ignored by evaluation (length= on EVALUATED
+                # CurveToPoints).
+                continue
             if skip_input_id and socket.identifier == skip_input_id:
                 continue
             if not hasattr(socket, "default_value"):
@@ -817,6 +958,10 @@ def _output_expr(
         and from_node.outputs[0].identifier == from_socket.identifier
     ):
         return val.expr
+    # Duplicated output names (Mix's four "Result" sockets) are ambiguous on
+    # the accessor — fall back to the identifier, which it resolves first.
+    if sum(s.name == from_socket.name for s in from_node.outputs) > 1:
+        return Attr(val.expr, f"o.{_normalize(from_socket.identifier)}")
     return Attr(val.expr, f"o.{_normalize(from_socket.name)}")
 
 
@@ -1170,6 +1315,9 @@ class SocketMethodSpec:
     # the same data_type from the receiver socket on round-trip.
     require_sockets: tuple[tuple[str, str], ...] = ()  # unlinked input sockets
     # (typically menus) that must hold these values — baked into the method.
+    always_args: int = 0  # leading params the method signature requires —
+    # emitted even when unlinked at the default value (skipping them would
+    # render a call with missing positional arguments).
 
 
 @dataclass(frozen=True)
@@ -1183,7 +1331,30 @@ class DissolveSpec:
     receiver: str  # input identifier
     outputs: tuple[tuple[str, str], ...]  # (output identifier, attribute)
     require: tuple[tuple[str, Any], ...] = ()  # props that must equal these
-    receiver_socket_type: str | None = None  # required from-socket type
+    consumed_props: tuple[str, ...] = ()  # props the accessor re-derives
+    receiver_socket_type: str | None = None  # required from-socket type;
+    # "{data_type}" resolves via _DATA_TYPE_SOCKET like SocketMethodSpec.
+    receiver_structure: str | None = None  # required inferred_structure_type
+    # of the from-socket (grids expose the accessors, plain fields don't)
+
+
+@dataclass(frozen=True)
+class TupleMethodSpec:
+    """A node authored as a socket method returning a NamedTuple of sockets.
+
+    ``s.find(x)`` → ``(first_found, count)``, ``mat.svd()`` → ``(u, s, v)``.
+    Every output maps to a NamedTuple attribute on the call result; when more
+    than one link consumes the node, the call is bound to a variable first so
+    re-rendering it cannot create duplicate nodes.
+    """
+
+    receiver: str  # input identifier whose source becomes the receiver
+    method: str
+    outputs: tuple[tuple[str, str], ...]  # (output identifier, tuple attr)
+    params: tuple[tuple[str, str], ...] = ()  # required params — always
+    # rendered positionally, linked or not
+    receiver_socket_type: str | None = None
+    require_sockets: tuple[tuple[str, str], ...] = ()  # as SocketMethodSpec
 
 
 _DOMAIN_ATTR = {
@@ -1226,6 +1397,7 @@ _DATA_TYPE_SOCKET = {
     "QUATERNION": "ROTATION",
     "FLOAT4X4": "MATRIX",
     "TRANSFORM": "MATRIX",
+    "VECTOR": "VECTOR",  # GridInfo-style enums spell vectors "VECTOR"
 }
 
 _FIELD_PROPS = ("domain", "data_type")
@@ -1288,6 +1460,22 @@ def _matrix_spec(method: str, output: str) -> SocketMethodSpec:
         method=method,
         output=output,
         receiver_socket_type="MATRIX",
+    )
+
+
+def _mix_spec(data_type: str, attr: str, suffix: str) -> SocketMethodSpec:
+    """``factor.mix.float(a, b)`` — the receiver is always the uniform float
+    factor; non-uniform vector mixes have ``Factor_Vector`` linked instead
+    and fall through to the constructor."""
+    return SocketMethodSpec(
+        receiver="Factor_Float",
+        method=f"mix.{attr}",
+        output=f"Result_{suffix}",
+        params=((f"A_{suffix}", "a"), (f"B_{suffix}", "b")),
+        require=(("data_type", data_type),),
+        consumed_props=("data_type",),
+        receiver_socket_type="VALUE",
+        always_args=2,
     )
 
 
@@ -1462,6 +1650,12 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             receiver_socket_type="ROTATION",
         ),
     ],
+    "ShaderNodeMix": [
+        _mix_spec("FLOAT", "float", "Float"),
+        _mix_spec("VECTOR", "vector", "Vector"),
+        _mix_spec("RGBA", "color", "Color"),
+        _mix_spec("ROTATION", "rotation", "Rotation"),
+    ],
 }
 
 _DISSOLVE_SPECS: dict[str, DissolveSpec] = {
@@ -1484,6 +1678,44 @@ _DISSOLVE_SPECS: dict[str, DissolveSpec] = {
         outputs=(("Red", "r"), ("Green", "g"), ("Blue", "b"), ("Alpha", "a")),
         require=(("mode", "RGB"),),
         receiver_socket_type="RGBA",
+    ),
+    # Repeated accessor renders are safe: GridSocketMixin._info reuses one
+    # GridInfo node per grid socket.
+    "GeometryNodeGridInfo": DissolveSpec(
+        receiver="Grid",
+        outputs=(("Transform", "transform"), ("Background Value", "background_value")),
+        consumed_props=("data_type",),
+        receiver_socket_type="{data_type}",
+        receiver_structure="GRID",
+    ),
+}
+
+_TUPLE_METHODS: dict[str, TupleMethodSpec] = {
+    "FunctionNodeFindInString": TupleMethodSpec(
+        receiver="String",
+        method="find",
+        outputs=(("First Found", "first_found"), ("Count", "count")),
+        params=(("Search", "search"),),
+        receiver_socket_type="STRING",
+        require_sockets=(("Mode", "From Start"),),
+    ),
+    "FunctionNodeMatrixSVD": TupleMethodSpec(
+        receiver="Matrix",
+        method="svd",
+        outputs=(("U", "u"), ("S", "s"), ("V", "v")),
+        receiver_socket_type="MATRIX",
+    ),
+    "FunctionNodeRotationToQuaternion": TupleMethodSpec(
+        receiver="Rotation",
+        method="to_quaternion",
+        outputs=(("W", "w"), ("X", "x"), ("Y", "y"), ("Z", "z")),
+        receiver_socket_type="ROTATION",
+    ),
+    "FunctionNodeRotationToAxisAngle": TupleMethodSpec(
+        receiver="Rotation",
+        method="to_axis_angle",
+        outputs=(("Axis", "axis"), ("Angle", "angle")),
+        receiver_socket_type="ROTATION",
     ),
 }
 
@@ -1577,6 +1809,9 @@ def _socket_method_val(ctx: EmitContext, node) -> _Val | None:
     dissolve = _DISSOLVE_SPECS.get(node.bl_idname)
     if dissolve is not None:
         return _dissolve_val(ctx, node, dissolve)
+    tuple_spec = _TUPLE_METHODS.get(node.bl_idname)
+    if tuple_spec is not None:
+        return _tuple_method_val(ctx, node, tuple_spec)
     matched = _match_socket_method(ctx, node)
     if matched is None:
         return None
@@ -1588,7 +1823,7 @@ def _socket_method_val(ctx: EmitContext, node) -> _Val | None:
 
     kwargs: dict[str, Expr] = {}
     blender_defaults: dict[str, object] | None = None
-    for identifier, param in spec.params:
+    for index, (identifier, param) in enumerate(spec.params):
         link = incoming.get(identifier)
         if link is not None:
             kwargs[param] = ctx.upstream_expr(link)
@@ -1596,17 +1831,18 @@ def _socket_method_val(ctx: EmitContext, node) -> _Val | None:
         socket = _input_socket_by_identifier(node, identifier)
         if socket is None or not hasattr(socket, "default_value"):
             continue
-        if blender_defaults is None:
-            blender_defaults = _get_blender_socket_defaults(
-                ctx.node_tree.bl_idname, node.bl_idname
-            )
         value = socket.default_value
-        default = blender_defaults.get(identifier)
-        if default is not None:
-            if _eq(value, default):
+        if index >= spec.always_args:
+            if blender_defaults is None:
+                blender_defaults = _get_blender_socket_defaults(
+                    ctx.node_tree.bl_idname, node.bl_idname
+                )
+            default = blender_defaults.get(identifier)
+            if default is not None:
+                if _eq(value, default):
+                    continue
+            elif _is_zero(value):
                 continue
-        elif _is_zero(value):
-            continue
         kwargs[param] = Lit(value)
 
     for prop, default in spec.prop_kwargs:
@@ -1642,16 +1878,26 @@ def _dissolve_val(ctx: EmitContext, node, spec: DissolveSpec) -> _Val | None:
     links = ctx.incoming.get(node.name, ())
     if len(links) != 1 or links[0].to_socket.identifier != spec.receiver:
         return None
+    expected_type = spec.receiver_socket_type
+    if expected_type == "{data_type}":
+        expected_type = _DATA_TYPE_SOCKET.get(getattr(node, "data_type", ""))
+        if expected_type is None:
+            return None
+    if expected_type is not None and links[0].from_socket.type != expected_type:
+        return None
     if (
-        spec.receiver_socket_type is not None
-        and links[0].from_socket.type != spec.receiver_socket_type
+        spec.receiver_structure is not None
+        and getattr(links[0].from_socket, "inferred_structure_type", None)
+        != spec.receiver_structure
     ):
         return None
     found = _find_cls(node.bl_idname)
     if found is not None:
-        uncovered = set(_non_default_props(node, found[1])) - {
-            key for key, _ in spec.require
-        }
+        uncovered = (
+            set(_non_default_props(node, found[1]))
+            - {key for key, _ in spec.require}
+            - set(spec.consumed_props)
+        )
         if uncovered:
             return None
     out_links = ctx.outgoing.get(node.name, ())
@@ -1661,6 +1907,62 @@ def _dissolve_val(ctx: EmitContext, node, spec: DissolveSpec) -> _Val | None:
     return _Val(
         None,
         outputs={ident: Attr(receiver, attr) for ident, attr in spec.outputs},
+    )
+
+
+def _tuple_method_val(ctx: EmitContext, node, spec: TupleMethodSpec) -> _Val | None:
+    """Dissolve a node into NamedTuple attributes on a socket-method call
+    (``s.find(x).count``, ``mat.svd().u``)."""
+    incoming = {
+        link.to_socket.identifier: link for link in ctx.incoming.get(node.name, ())
+    }
+    receiver_link = incoming.get(spec.receiver)
+    if receiver_link is None:
+        return None
+    if (
+        spec.receiver_socket_type is not None
+        and receiver_link.from_socket.type != spec.receiver_socket_type
+    ):
+        return None
+    if not all(
+        (socket := _input_socket_by_identifier(node, identifier)) is not None
+        and not socket.is_linked
+        and hasattr(socket, "default_value")
+        and _eq(socket.default_value, value)
+        for identifier, value in spec.require_sockets
+    ):
+        return None
+    param_ids = {pid for pid, _ in spec.params}
+    if set(incoming) - {spec.receiver} - param_ids:
+        return None
+    found = _find_cls(node.bl_idname)
+    if found is None or _non_default_props(node, found[1]):
+        return None
+    out_links = ctx.outgoing.get(node.name, ())
+    if not out_links:
+        return None  # unused node — the constructor keeps it visible
+
+    args: list[Expr] = []
+    for identifier, _param in spec.params:
+        link = incoming.get(identifier)
+        if link is not None:
+            args.append(ctx.upstream_expr(link))
+            continue
+        socket = _input_socket_by_identifier(node, identifier)
+        if socket is None or not hasattr(socket, "default_value"):
+            return None
+        args.append(Lit(socket.default_value))
+
+    base: Expr = MethodCall(ctx.socket_expr(receiver_link), spec.method, args)
+    if len(out_links) > 1:
+        # Bind the NamedTuple once — re-rendering the call would create a
+        # new node per consumer.
+        var = _make_var(node.bl_label or "result", ctx.counter)
+        ctx.pending_lines.append(f"    {var} = {base.render()}")
+        base = Ref(var)
+    return _Val(
+        None,
+        outputs={ident: Attr(base, attr) for ident, attr in spec.outputs},
     )
 
 
@@ -1946,13 +2248,57 @@ def _gate_short_chains(
 # ---------------------------------------------------------------------------
 
 
-def _interface_items(node_tree, in_out: str):
-    for item in node_tree.interface.items_tree:
-        if hasattr(item, "socket_type") and item.in_out == in_out:
-            yield item
+# Builder parameter name → bpy interface property name, where they differ.
+_IFACE_PARAM_ATTR = {
+    "expanded": "menu_expanded",
+    "default_attribute": "default_attribute_name",
+}
 
 
-def _emit_interface(item, direction: str, ctx: EmitContext) -> str:
+def _interface_kwargs(item, method: str) -> dict[str, Any]:
+    """Keyword args whose interface values differ from a fresh socket.
+
+    The builder method's keyword-only parameters define what is expressible;
+    each is compared against a probed fresh interface socket (covering
+    parameters like ``min_value`` whose Python default ``None`` means
+    "leave Blender's default alone").
+    """
+    from .builder.tree import SocketContext
+
+    fn = getattr(SocketContext, method, None)
+    if fn is None:
+        return {}
+    try:
+        sig = inspect.signature(fn)
+    except (TypeError, ValueError):
+        return {}
+    defaults = _get_interface_defaults(item.id_data.bl_idname, item.socket_type)
+    kwargs: dict[str, Any] = {}
+    for pname, param in sig.parameters.items():
+        if param.kind != inspect.Parameter.KEYWORD_ONLY:
+            continue
+        attr = _IFACE_PARAM_ATTR.get(pname, pname)
+        try:
+            current = getattr(item, attr)
+        except AttributeError:
+            continue
+        if not isinstance(current, str):
+            try:
+                current = tuple(current)
+            except TypeError:
+                pass
+        if attr in defaults:
+            if _eq(current, defaults[attr]):
+                continue
+        elif param.default is None or _eq(current, param.default):
+            continue
+        kwargs[pname] = current
+    return kwargs
+
+
+def _emit_interface(
+    item, direction: str, ctx: EmitContext, indent: str = "    "
+) -> str:
     """One ``var = tree.inputs.*()`` / ``tree.outputs.*()`` line."""
     method = _INTERFACE_TYPE_METHOD.get(item.socket_type, "geometry")
     var_name = _make_var(item.name, ctx.counter)
@@ -1966,7 +2312,51 @@ def _emit_interface(item, direction: str, ctx: EmitContext) -> str:
             args.append(_fmt(item.default_value))
         except (AttributeError, TypeError):
             pass
-    return f"    {var_name} = tree.{direction}.{method}({', '.join(args)})"
+    description = getattr(item, "description", "")
+    if description:
+        args.append(f"description={_fmt(description)}")
+    args.extend(
+        f"{pname}={_fmt(value)}"
+        for pname, value in _interface_kwargs(item, method).items()
+    )
+    return f"{indent}{var_name} = tree.{direction}.{method}({', '.join(args)})"
+
+
+def _panel_emittable(panel, in_out: str) -> bool:
+    """A panel the builder can author: top-level, sockets all one direction."""
+    if panel is None or panel.index == -1:
+        return False
+    if panel.parent is None or panel.parent.index != -1:
+        return False  # nested panels are not expressible
+    children = [
+        c for c in panel.interface_items if getattr(c, "item_type", "") == "SOCKET"
+    ]
+    return bool(children) and all(c.in_out == in_out for c in children)
+
+
+def _emit_interface_lines(node_tree, ctx: EmitContext) -> list[str]:
+    """Interface lines in items_tree order, grouped into panel with-blocks."""
+    lines: list[str] = []
+    for direction, in_out in (("inputs", "INPUT"), ("outputs", "OUTPUT")):
+        open_panel_index: int | None = None
+        for item in node_tree.interface.items_tree:
+            if getattr(item, "item_type", "") != "SOCKET" or item.in_out != in_out:
+                continue
+            panel = item.parent
+            if not _panel_emittable(panel, in_out):
+                open_panel_index = None
+                lines.append(_emit_interface(item, direction, ctx))
+                continue
+            if open_panel_index != panel.index:
+                open_panel_index = panel.index
+                panel_args = [_fmt(panel.name)]
+                if panel.default_closed:
+                    panel_args.append("default_closed=True")
+                lines.append(
+                    f"    with tree.{direction}.panel({', '.join(panel_args)}):"
+                )
+            lines.append(_emit_interface(item, direction, ctx, indent=" " * 8))
+    return lines
 
 
 # ---------------------------------------------------------------------------
@@ -1974,7 +2364,12 @@ def _emit_interface(item, direction: str, ctx: EmitContext) -> str:
 # ---------------------------------------------------------------------------
 
 
-def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
+def to_python(
+    tree,
+    min_chain_length: int = 3,
+    strict: bool = True,
+    max_inline_width: int | None = 88,
+) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
     Args:
@@ -1985,6 +2380,12 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
         strict: If True (default), raise :class:`CodegenError` for nodes that
             have no nodebpy class and no registered emitter. If False, emit a
             ``var = None  # TODO`` placeholder instead.
+        max_inline_width: Longest rendered expression (in characters) that may
+            inline into its consumer's statement; longer values bind to a
+            variable first, so deep graphs split into steps instead of
+            collapsing into one huge statement. ``>>`` chain continuations
+            are exempt — a pipeline stays one statement and wraps well under
+            a formatter. ``None`` disables the budget.
 
     Returns:
         Python source code as a string.
@@ -2000,21 +2401,22 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
 
     ctx = EmitContext(node_tree, links, incoming, outgoing)
     ordered = [n for n in _topo_sort(node_tree) if n.bl_idname not in _SKIP_BL_IDNAMES]
+    ordered, frame_of, frame_nodes = _frame_order(node_tree, ordered)
 
-    iface_lines = [
-        _emit_interface(item, direction, ctx)
-        for direction, in_out in (("inputs", "INPUT"), ("outputs", "OUTPUT"))
-        for item in _interface_items(node_tree, in_out)
-    ]
+    iface_lines = _emit_interface_lines(node_tree, ctx)
 
     chain_in = _chainable_links(ctx)
     gated_nodes = _gate_short_chains(ctx, chain_in, ordered, min_chain_length)
 
-    body: list[str] = []
+    # Body lines tagged with the emitting node's frame; with-blocks and
+    # indentation are applied after the loop (frame members are contiguous
+    # thanks to _frame_order).
+    tagged_body: list[tuple[str | None, str]] = []
     consumed_out_links: set[int] = set()  # id() of tail-inlined _Link tuples
 
     for node in ordered:
         name = node.name
+        frame = frame_of.get(name)
 
         # 1. Build the node's value:
         #    emitter → socket method → lift → factory/constructor.
@@ -2044,7 +2446,7 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
                     )
                 var = _make_var(node.bl_label or "node", ctx.counter)
                 ctx.var_map[name] = _Val(Ref(var))
-                body.append(f"    {var} = None  # TODO: {message}")
+                tagged_body.append((frame, f"    {var} = None  # TODO: {message}"))
                 continue
             chain_link = chain_in.get(name)
             call = ctx.constructor(
@@ -2058,7 +2460,7 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
 
         # Flush any variable promotions queued while building the value.
         if ctx.pending_lines:
-            body.extend(ctx.pending_lines)
+            tagged_body.extend((frame, line) for line in ctx.pending_lines)
             ctx.pending_lines.clear()
 
         # 2. Bind it: inline into the consumer, finish a >> chain, or assign.
@@ -2073,13 +2475,26 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
             link for link in out_links if link.to_node.bl_idname == "NodeGroupOutput"
         ]
 
-        if len(out_links) == 1 and not group_outs:
+        if (
+            len(out_links) == 1
+            and not group_outs
+            # Inlining would create this node at the consumer's statement —
+            # only allowed when both sit in the same frame.
+            and frame == frame_of.get(out_links[0].to_node.name)
+            # Budget: long expressions bind to a variable instead of growing
+            # the consumer's statement; chain continuations stay inline.
+            and (
+                max_inline_width is None
+                or chain_in.get(out_links[0].to_node.name) is out_links[0]
+                or len(val.require_expr().render()) <= max_inline_width
+            )
+        ):
             ctx.var_map[name] = val  # single consumer → inline
             continue
 
         # Gated nodes render no >> syntax; everything else with a single link
         # to a group output finishes its chain right here.
-        if len(out_links) == 1 and name not in gated_nodes:
+        if len(out_links) == 1 and group_outs and name not in gated_nodes:
             link = group_outs[0]
             out_ref = ctx.var_map.get(f"_iface_outputs_{link.to_socket.identifier}")
             if out_ref is None:
@@ -2088,17 +2503,33 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
                     "interface variable"
                 )
             source = _output_expr(val, node, link.from_socket)
-            body.append(f"    {BinOp('>>', source, out_ref.require_expr()).render()}")
+            tagged_body.append(
+                (frame, f"    {BinOp('>>', source, out_ref.require_expr()).render()}")
+            )
             consumed_out_links.add(id(link))
             continue
 
         var = _make_var(node.bl_label or "node", ctx.counter)
-        body.append(f"    {var} = {val.require_expr().render()}")
+        tagged_body.append((frame, f"    {var} = {val.require_expr().render()}"))
         ctx.var_map[name] = _Val(
             Ref(var), is_socket=val.is_socket, socket_id=val.socket_id
         )
 
-    # 3. Remaining group-output connections.
+    # 3. Wrap frame members in with-blocks.
+    frame_alias = _TREE_ALIAS.get(node_tree.bl_idname, "g")
+    body: list[str] = []
+    open_frame: str | None = None
+    for frame, line in tagged_body:
+        if frame != open_frame:
+            open_frame = frame
+            if frame is not None:
+                ctx.used_aliases.add(frame_alias)
+                frame_node = frame_nodes[frame]
+                label = _fmt(frame_node.label) if frame_node.label else ""
+                body.append(f"    with {frame_alias}.Frame({label}):")
+        body.append(f"    {line}" if frame is not None else line)
+
+    # 4. Remaining group-output connections.
     out_lines: list[str] = []
     for link in links:
         if link.to_node.bl_idname != "NodeGroupOutput":
@@ -2113,7 +2544,7 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
         source = ctx.upstream_expr(link)
         out_lines.append(f"    {BinOp('>>', source, out_ref.require_expr()).render()}")
 
-    # 4. Assemble.
+    # 5. Assemble.
     import_parts = [
         f"{_ALIAS_MODULES[alias]} as {alias}"
         for alias in ("g", "s", "c")
@@ -2121,7 +2552,8 @@ def to_python(tree, min_chain_length: int = 3, strict: bool = True) -> str:
     ]
     import_line = "from nodebpy import " + ", ".join(import_parts + ["TreeBuilder"])
 
-    lines = [import_line, "", f'with TreeBuilder("{node_tree.name}") as tree:']
+    constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
+    lines = [import_line, "", f"with {constructor}({_fmt(node_tree.name)}) as tree:"]
     lines.extend(iface_lines)
     if iface_lines and (body or out_lines):
         lines.append("")

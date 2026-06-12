@@ -360,6 +360,12 @@ class GridSocketMixin(Socket, Generic[_T]):
         from ..nodes.geometry import GridInfo
 
         self._assert_output("transform / background_value")
+        # Reuse one GridInfo per grid socket (cannot go through
+        # _find_or_create_linked — data_type must match the grid type).
+        for link in self.socket.links or ():
+            assert link.to_node
+            if link.to_node.bl_idname == GridInfo._bl_idname:
+                return GridInfo._from_node(link.to_node)
         dtype = self.socket.type.replace("VALUE", "FLOAT")
         return GridInfo(self.socket, data_type=dtype)  # ty: ignore[invalid-argument-type, invalid-return-type]
 
