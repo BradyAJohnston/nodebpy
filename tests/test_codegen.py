@@ -482,22 +482,50 @@ def test_integer_math_lifts_to_operators():
 
 
 def test_compare_emits_factory_path():
-    """Compare emits the nested factory spelling and round-trips its props."""
+    """A Compare whose state no operator produces (custom epsilon) falls
+    back to the nested factory spelling and round-trips its props."""
     with TreeBuilder("CompareProps") as tree:
         val = tree.inputs.float("Value", 1.0)
-        (val < 0.5) >> tree.outputs.boolean("Out")
+        g.Compare.float.equal(val, 0.5, epsilon=0.5) >> tree.outputs.boolean("Out")
     code = _assert_roundtrip(tree)
-    assert "g.Compare.float.less_than(value, 0.5)" in code
+    assert "g.Compare.float.equal(value, 0.5" in code
+    assert "==" not in code
 
 
 def test_vector_compare_emits_mode():
-    """VECTOR Compare requires mode= (popped from **kwargs in __init__)."""
+    """Non-ELEMENT VECTOR Compare requires mode= (popped from **kwargs)."""
     with TreeBuilder("VecCompare") as tree:
         vec = tree.inputs.vector("V")
-        (vec < (0.5, 0.5, 0.5)) >> tree.outputs.boolean("Out")
+        g.Compare(
+            a=vec, b=(0.5, 0.5, 0.5), operation="LESS_THAN", data_type="VECTOR", mode="AVERAGE"
+        ) >> tree.outputs.boolean("Out")
     code = _assert_roundtrip(tree)
     assert 'data_type="VECTOR"' in code
-    assert "mode=" in code
+    assert 'mode="AVERAGE"' in code
+
+
+def test_compare_lifts_to_operators():
+    """ELEMENT-mode comparisons matching the operator overloads lift."""
+    with TreeBuilder("CompareLift") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        vec = tree.inputs.vector("V")
+        (val < 0.5) >> tree.outputs.boolean("Less")
+        (vec >= (0.5, 0.5, 0.5)) >> tree.outputs.boolean("GreaterEq")
+        (val == 0.25) >> tree.outputs.boolean("Equal")
+    code = _assert_roundtrip(tree)
+    assert "val < 0.5" in code or "value < 0.5" in code
+    assert ">= (0.5, 0.5, 0.5)" in code
+    assert "== 0.25" in code
+
+
+def test_compare_lift_parenthesises_nested_comparisons():
+    """Comparisons feeding boolean operators and other comparisons get
+    parens — Python would otherwise chain ``a < b < c``."""
+    with TreeBuilder("CompareNest") as tree:
+        val = tree.inputs.float("Value", 1.0)
+        ((val < 0.5) & (val > 0.1)) >> tree.outputs.boolean("Band")
+    code = _assert_roundtrip(tree)
+    assert "(value < 0.5) & (value > 0.1)" in code
 
 
 def test_float_modulo_round_trips_to_floored_modulo():
@@ -988,3 +1016,35 @@ def test_unpaired_zone_input_raises():
         tree.tree.nodes.new("GeometryNodeSimulationInput")
     with pytest.raises(CodegenError, match="paired"):
         to_python(tree)
+
+
+# ---------------------------------------------------------------------------
+# FormatString / JoinStrings
+# ---------------------------------------------------------------------------
+
+
+def test_format_string_constructor_with_items_dict():
+    with TreeBuilder("Format") as tree:
+        val = g.Value()
+        fmt = g.FormatString("x={x} n={n}", items={"x": val, "n": "hello"})
+        fmt >> tree.outputs.string("Out")
+    code = _assert_roundtrip(tree)
+    assert 'g.FormatString("x={x} n={n}", items={"x": g.Value(), "n": "hello"})' in code
+
+
+def test_format_string_linked_format_uses_method():
+    with TreeBuilder("FormatMethod") as tree:
+        s = g.String("v={v}")
+        s.o.string.format({"v": g.Value()}) >> tree.outputs.string("Out")
+    code = _assert_roundtrip(tree)
+    assert '.format({"v": g.Value()})' in code
+
+
+def test_join_strings_constructor_and_method():
+    with TreeBuilder("Join") as tree:
+        a = g.JoinStrings([g.String("a"), g.String("b")], delimiter="-")
+        d = g.String("+")
+        d.o.string.join([a, g.String("c")]) >> tree.outputs.string("Out")
+    code = _assert_roundtrip(tree)
+    assert 'delimiter="-"' in code
+    assert ".join((" in code

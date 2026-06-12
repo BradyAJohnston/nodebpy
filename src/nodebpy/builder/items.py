@@ -172,6 +172,23 @@ class ItemsMixin(DynamicInputsMixin):
             return value
         return None
 
+    def _add_unlinked_input(self, name: str, value: Any) -> bool:
+        """Items may also be declared with a plain default value
+        (``items={"label": "hello"}``) — the item type is inferred from
+        the Python type and the value becomes the socket default."""
+        if super()._add_unlinked_input(name, value):
+            return True
+        if not _is_default_value(value):
+            return False
+        type = _infer_value_type(value)
+        if type is None:
+            return False
+        socket = self._add_socket(
+            name=name, type=self._declared_item_type(type) or type
+        )
+        socket.default_value = value  # ty: ignore[unresolved-attribute]
+        return True
+
     def capture(self, value: InputLinkable, *, name: str | None = None) -> Socket:
         """Add an item linked from ``value`` and return its output socket.
 
