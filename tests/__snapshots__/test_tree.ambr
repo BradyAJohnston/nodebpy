@@ -18,10 +18,10 @@
           field_average = position.point.mean(group_id)
       with g.Frame("Covariance Matrix"):
           vector_math = position - field_average
-          mean = (vector_math * vector_math.x).point.mean(group_id)
-          mean_1 = (vector_math * vector_math.z).point.mean(group_id)
+          mean = (vector_math * vector_math.z).point.mean(group_id)
+          mean_1 = (vector_math * vector_math.x).point.mean(group_id)
           mean_2 = (vector_math * vector_math.y).point.mean(group_id)
-          combine_matrix = g.CombineMatrix(column_1_row_1=mean.x, column_1_row_2=mean.y, column_1_row_3=mean.z, column_2_row_1=mean_2.x, column_2_row_2=mean_2.y, column_2_row_3=mean_2.z, column_3_row_1=mean_1.x, column_3_row_2=mean_1.y, column_3_row_3=mean_1.z)
+          combine_matrix = g.CombineMatrix(column_1_row_1=mean_1.x, column_1_row_2=mean_1.y, column_1_row_3=mean_1.z, column_2_row_1=mean_2.x, column_2_row_2=mean_2.y, column_2_row_3=mean_2.z, column_3_row_1=mean.x, column_3_row_2=mean.y, column_3_row_3=mean.z)
       with g.Frame("SVD"):
           matrix_svd = combine_matrix.o.matrix.svd()
           separate_matrix = g.SeparateMatrix(matrix=matrix_svd.u)
@@ -114,10 +114,10 @@
       N21 -->|"Value->Scale"| N22
       N22 -->|"Vector->Intermediate Axis"| N23
       N0 -->|"Group ID->Group ID"| N9
-      N0 -->|"Group ID->Group ID"| N7
       N0 -->|"Group ID->Group ID"| N8
-      N2 -->|"Vector->Vector"| N4
+      N0 -->|"Group ID->Group ID"| N7
       N2 -->|"Vector->Vector"| N6
+      N2 -->|"Vector->Vector"| N4
       N2 -->|"Vector->Vector"| N5
       N0 -->|"Position->Vector"| N2
       N1 -->|"Mean->Centroid"| N23
@@ -202,10 +202,10 @@
       N21 -->|"Value->Scale"| N22
       N22 -->|"Vector->Intermediate Axis"| N23
       N0 -->|"Group ID->Group ID"| N9
-      N0 -->|"Group ID->Group ID"| N7
       N0 -->|"Group ID->Group ID"| N8
-      N2 -->|"Vector->Vector"| N4
+      N0 -->|"Group ID->Group ID"| N7
       N2 -->|"Vector->Vector"| N6
+      N2 -->|"Vector->Vector"| N4
       N2 -->|"Vector->Vector"| N5
       N0 -->|"Position->Vector"| N2
       N1 -->|"Mean->Centroid"| N23
