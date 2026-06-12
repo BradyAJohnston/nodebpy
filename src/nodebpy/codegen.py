@@ -24,7 +24,12 @@ import heapq
 import inspect
 import textwrap
 from dataclasses import dataclass, field
-from typing import Any, Callable, NamedTuple
+from typing import TYPE_CHECKING, Any, Callable, NamedTuple
+
+from bpy.types import NodeTree
+
+if TYPE_CHECKING:
+    from .builder.tree import TreeBuilder
 
 
 class CodegenError(Exception):
@@ -2365,32 +2370,38 @@ def _emit_interface_lines(node_tree, ctx: EmitContext) -> list[str]:
 
 
 def to_python(
-    tree,
+    tree: NodeTree | "TreeBuilder",
     min_chain_length: int = 3,
     strict: bool = True,
     max_inline_width: int | None = 88,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
-    Args:
-        tree: A ``TreeBuilder`` instance or ``bpy.types.NodeTree``.
-        min_chain_length: Minimum number of items (including interface
-            endpoints) for a linear pipeline to be expressed with ``>>``
-            syntax; shorter runs are emitted as flat assignments.
-        strict: If True (default), raise :class:`CodegenError` for nodes that
+    Parameters
+    ----------
+        tree: ``TreeBuilder`` | ``bpy.types.NodeTree``.
+
+        min_chain_length: int
+            Minimum number of items (including interface endpoints) for a linear
+            pipeline to be expressed with ``>>`` syntax; shorter runs are emitted
+            as flat assignments.
+        strict: bool
+            If True (default), raise :class:`CodegenError` for nodes that
             have no nodebpy class and no registered emitter. If False, emit a
             ``var = None  # TODO`` placeholder instead.
-        max_inline_width: Longest rendered expression (in characters) that may
-            inline into its consumer's statement; longer values bind to a
-            variable first, so deep graphs split into steps instead of
-            collapsing into one huge statement. ``>>`` chain continuations
-            are exempt — a pipeline stays one statement and wraps well under
-            a formatter. ``None`` disables the budget.
+        max_inline_width: int | None
+            Longest rendered expression (in characters) that may inline into its consumer's
+            statement; longer values bind to a variable first, so deep graphs split into
+            steps instead of collapsing into one huge statement. ``>>`` chain continuations
+            are exempt — a pipeline stays one statement and wraps well under a formatter.
+            ``None`` disables the budget.
 
-    Returns:
+    Returns
+    -------
+    str
         Python source code as a string.
     """
-    node_tree = tree.tree if hasattr(tree, "tree") else tree
+    node_tree: NodeTree = tree.tree if hasattr(tree, "tree") else tree  # ty: ignore[invalid-assignment]
 
     links = _effective_links(node_tree)
     incoming: dict[str, list[_Link]] = {}

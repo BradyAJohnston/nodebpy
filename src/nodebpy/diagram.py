@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import bpy
-from bpy.types import Node, NodeTree, NodeSocket
+from bpy.types import Node, NodeSocket, NodeTree
 
 _COLOR_CLASS_MAP = {
     "GEOMETRY": "geometry-node",
@@ -88,21 +88,26 @@ def _trace_reroute(
     return node, socket
 
 
-def to_mermaid(tree) -> str:
+def to_mermaid(tree, fenced=True) -> str:
     """Generate a Mermaid diagram string from a node tree.
 
-    Args:
-        tree: TreeBuilder or Blender node tree
+    Arguments
+    ---------
+        tree:
+            TreeBuilder or Blender node tree
+        fenced:
+            Whether to wrap the output in a fenced code block
 
-    Returns:
-        Mermaid diagram as a fenced markdown code block
+    Returns
+    -------
+        A string containing the Mermaid diagram as a possibly fenced markdown code block
     """
     node_tree = tree.tree if hasattr(tree, "tree") else tree
 
     reroute_names = {n.name for n in node_tree.nodes if n.bl_idname == "NodeReroute"}
     sorted_nodes = _sorted_nodes(node_tree, reroute_names)
 
-    lines = ["```{mermaid}", "graph LR"]
+    lines = ["graph LR"]
 
     node_map: dict[str, str] = {}
 
@@ -168,6 +173,7 @@ def to_mermaid(tree) -> str:
             f'    {from_id} -->|"{from_socket.name}->{link.to_socket.name}"| {to_id}'
         )
 
-    lines.append("```")
+    pre = ["```{mermaid}"] if fenced else []
+    post = ["```"] if fenced else []
 
-    return "\n".join(lines)
+    return "\n".join(pre + lines + post)

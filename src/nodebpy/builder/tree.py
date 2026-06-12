@@ -702,6 +702,44 @@ class TreeBuilder(Generic[_TreeT]):
     def fake_user(self, value: bool) -> None:
         self.tree.use_fake_user = value
 
+    def to_python(
+        self,
+        min_chain_length: int = 3,
+        strict: bool = True,
+        max_inline_width: int | None = 88,
+    ) -> str:
+        """Generate Python source that recreates this tree using nodebpy.
+
+        See :func:`nodebpy.codegen.to_python` for parameter details.
+        """
+        from ..codegen import to_python
+
+        return to_python(
+            self,
+            min_chain_length=min_chain_length,
+            strict=strict,
+            max_inline_width=max_inline_width,
+        )
+
+    def to_mermaid(self, fenced: bool = True) -> str:
+        """Generate a Mermaid diagram that represents this tree.
+
+        This can be used for documentation or visualization purposes.
+        The Mermaid syntax is supported by many tools, including GitHub and Jupyter notebooks.
+
+        Arguments
+        ---------
+            fenced:
+                Whether to wrap the output in a fenced code block with mermaid syntax highlighting.
+
+        Returns
+        -------
+            A string containing the Mermaid diagram syntax representing this node tree.
+        """
+        from ..diagram import to_mermaid
+
+        return to_mermaid(self, fenced=fenced)
+
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""
         TreeBuilder._tree_contexts.append(self)

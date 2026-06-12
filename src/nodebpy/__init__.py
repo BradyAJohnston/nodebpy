@@ -1,5 +1,6 @@
 from . import nodes, diagram, codegen
 from .builder import TreeBuilder
+from .codegen import to_python
 
 from .nodes import compositor, geometry, shader
 
@@ -11,4 +12,5 @@ __all__ = [
     "diagram",
     "codegen",
     "TreeBuilder",
+    "to_python",
 ]
