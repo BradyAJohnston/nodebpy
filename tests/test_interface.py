@@ -11,6 +11,7 @@ from nodebpy.builder import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
+    FloatSocketList,
     IntegerSocket,
     MatrixSocket,
     RotationSocket,
@@ -18,10 +19,9 @@ from nodebpy.builder import (
     StringSocket,
     VectorSocket,
     VectorSocketList,
-    FloatSocketList,
 )
 from nodebpy.nodes.compositor import CombineXYZ
-from nodebpy.nodes.geometry import ObjectInfo, SortList, GetListItem
+from nodebpy.nodes.geometry import GetListItem, ObjectInfo, SortList
 from nodebpy.types import SOCKET_TYPES
 
 # ---------------------------------------------------------------------------
@@ -946,6 +946,16 @@ def test_vector_socket_methods(snapshot):
         assert sc.node.operation == "SCALE"
         assert sc.builder_node.i.scale.default_value == pytest.approx(2.0)
         assert snapshot == tree._repr_markdown_()
+
+        rot = vec.align_rotation()
+        assert isinstance(rot, RotationSocket)
+        assert rot.node.bl_idname == g.AlignRotationToVector._bl_idname
+
+        rot2 = rot.align_to_vector((1, 0, 0))
+        node = cast(g.AlignRotationToVector, rot2.builder_node)
+        assert isinstance(node, g.AlignRotationToVector)
+        assert node.i.rotation.links[0].from_node == rot.node
+        assert node.i.vector.default_value == [1.0, 0.0, 0.0]
 
 
 def test_vector_socket_input_methods(snapshot):
