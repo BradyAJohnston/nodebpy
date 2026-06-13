@@ -3014,28 +3014,32 @@ def _emit_index_switch(node, ctx: EmitContext) -> Expr | _Val | None:
     return Call(f"g.IndexSwitch.{factory}", kwargs={"items": items})
 
 
+_UNSET = object()
+
+
 # ---------------------------------------------------------------------------
-# Variable-items node emitter (CaptureAttribute / FieldToGrid / …)
+# Variable-items node emitter (CaptureAttribute / FieldToGrid / Bake / …)
 #
 # These take an ``items={name: field}`` dict; the plain constructor path emits
 # each item input as its own kwarg (``field_0=``), which the constructor does
-# not accept. A small spec names the fixed (non-item) inputs and the factory
-# method selected by the node's type/domain property; item sockets are the
-# trailing input/output sockets (one per collection item).
+# not accept. A small spec names the fixed (non-item) inputs and, where the
+# node has one, the factory method selected by its type/domain property; item
+# sockets are the trailing input/output sockets (one per collection item).
 # ---------------------------------------------------------------------------
 
 
 @dataclass(frozen=True)
 class _ItemsNodeSpec:
     collection: str  # bpy items collection attribute
-    factory_prop: str  # node property choosing the factory method
-    factory_map: dict[str, str]  # property value → factory method name
-    fixed: tuple[tuple[str, str], ...]  # (input identifier, factory param) pairs
+    fixed: tuple[tuple[str, str], ...] = ()  # (input identifier, param) pairs
+    factory_prop: str | None = None  # node property choosing the factory method
+    factory_map: dict[str, str] | None = None  # property value → method name
 
 
 _ITEMS_NODE_SPECS = {
     "GeometryNodeFieldToGrid": _ItemsNodeSpec(
         collection="grid_items",
+        fixed=(("Topology", "topology"),),
         factory_prop="data_type",
         factory_map={
             "FLOAT": "float",
@@ -3043,10 +3047,10 @@ _ITEMS_NODE_SPECS = {
             "VECTOR": "vector",
             "BOOLEAN": "boolean",
         },
-        fixed=(("Topology", "topology"),),
     ),
     "GeometryNodeCaptureAttribute": _ItemsNodeSpec(
         collection="capture_items",
+        fixed=(("Geometry", "geometry"),),
         factory_prop="domain",
         factory_map={
             "POINT": "point",
@@ -3057,15 +3061,21 @@ _ITEMS_NODE_SPECS = {
             "INSTANCE": "instance",
             "LAYER": "layer",
         },
-        fixed=(("Geometry", "geometry"),),
+    ),
+    # No node-level type property: items carry individual types and the plain
+    # constructor takes the items dict (Bake has no fixed inputs at all).
+    "GeometryNodeBake": _ItemsNodeSpec(collection="bake_items"),
+    "GeometryNodeFieldToList": _ItemsNodeSpec(
+        collection="list_items", fixed=(("Count", "count"),)
     ),
 }
 
 
 def _emit_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
-    """A variable-items node as ``Factory(fixed=..., items={name: field})``.
+    """A variable-items node as ``Factory(fixed=..., items={name: field})``
+    (or the plain constructor when the node has no type/domain factory).
 
-    Bails (falls through) when an input the factory cannot express — e.g. a
+    Bails (falls through) when an input the call cannot express — e.g. a
     linked CaptureAttribute ``Selection`` — is in use, since no faithful call
     exists."""
     spec = _ITEMS_NODE_SPECS.get(node.bl_idname)
@@ -3100,18 +3110,32 @@ def _emit_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
                 getattr(item, "socket_type", None) or getattr(item, "data_type", "")
             )
 
+    # Fixed inputs: linked → upstream; unlinked → literal only when it differs
+    # from a fresh node's socket default (so e.g. FieldToList count=5 survives).
+    fresh_defaults = _get_blender_socket_defaults(
+        node.id_data.bl_idname, node.bl_idname
+    )
     kwargs: dict[str, Expr] = {}
     for ident, param in spec.fixed:
         link = ctx.input_link(node, ident)
         if link is not None:
             kwargs[param] = ctx.upstream_expr(link)
+            continue
+        socket = _input_socket_by_identifier(node, ident)
+        if socket is None or not hasattr(socket, "default_value"):
+            continue
+        fresh = fresh_defaults.get(ident, _UNSET)
+        if fresh is _UNSET or not _eq(socket.default_value, fresh):
+            kwargs[param] = Lit(socket.default_value)
     kwargs["items"] = DictExpr(items)
 
     ctx.used_aliases.add(alias)
-    method = spec.factory_map.get(getattr(node, spec.factory_prop))
-    if method is not None:
-        return Call(f"{alias}.{cls.__name__}.{method}", kwargs=kwargs)
-    kwargs[spec.factory_prop] = Lit(getattr(node, spec.factory_prop))
+    if spec.factory_prop is not None:
+        prop_value = getattr(node, spec.factory_prop)
+        method = (spec.factory_map or {}).get(prop_value)
+        if method is not None:
+            return Call(f"{alias}.{cls.__name__}.{method}", kwargs=kwargs)
+        kwargs[spec.factory_prop] = Lit(prop_value)
     return Call(f"{alias}.{cls.__name__}", kwargs=kwargs)
 
 
@@ -3122,8 +3146,6 @@ for _items_bl_idname in _ITEMS_NODE_SPECS:
 # ---------------------------------------------------------------------------
 # Node group emitter (recursive)
 # ---------------------------------------------------------------------------
-
-_UNSET = object()
 
 
 def _group_input_defaults(node_tree) -> dict[str, Any]:

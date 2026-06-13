@@ -1173,6 +1173,33 @@ def test_field_to_grid_emits_items_dict():
     assert "field_0" not in code
 
 
+def test_bake_emits_items_dict():
+    """Bake has no fixed inputs or type property: every socket is an item, so
+    it round-trips as g.Bake(items={...}) read back by item name."""
+    with TreeBuilder("BakeRT") as tree:
+        geo = tree.inputs.geometry("Geo")
+        bake = g.Bake(items={"Geometry": geo, "Factor": 1.5})
+        bake.o["Geometry"] >> tree.outputs.geometry("Out")
+        g.StoreNamedAttribute.point.float(
+            bake.o["Geometry"], name="f", value=bake.o["Factor"]
+        ) >> tree.outputs.geometry("Stored")
+    code = _assert_roundtrip(tree)
+    assert 'g.Bake(items={"Geometry": geo, "Factor": 1.5})' in code
+    assert "item_0" not in code  # not the raw Item_N socket kwargs
+
+
+def test_field_to_list_emits_constructor_items_dict():
+    """FieldToList round-trips as g.FieldToList(count, items={...}); an unlinked
+    non-default count is preserved."""
+    with TreeBuilder("FieldListRT") as tree:
+        pos = g.Position().o.position
+        g.FieldToList(5, items={"x": pos.x, "flag": pos.y > 0.0})
+    code = _assert_roundtrip(tree)
+    assert "g.FieldToList(count=5, items={" in code
+    assert '"x":' in code and '"flag":' in code
+    assert "field_0" not in code
+
+
 # ---------------------------------------------------------------------------
 # Recursive node groups
 # ---------------------------------------------------------------------------
