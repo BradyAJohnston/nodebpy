@@ -1735,6 +1735,7 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Separate Cylindrical",
         "Separate Spherical",
         "Set Attachment Surface",
+        "Shrinkwrap Hair Curves",
         "Set Effector",
         "Smooth by Angle",
         "Smooth Geometry",

@@ -2253,10 +2253,24 @@ def _lift_plan(
 
 
 def _lift_expr(ctx: EmitContext, node, plan: _LiftPlan) -> Expr:
-    """Materialise a lift plan into an expression."""
+    """Materialise a lift plan into an expression.
+
+    The leading operand is forced to a socket (``.o.<name>``) when linked. A
+    Python operator dispatches on its left operand, and nodebpy's operators
+    return a socket only when the left operand is already a socket — e.g.
+    ``g.Compare…() & g.Compare…()`` (two *nodes*) returns a BooleanMath *node*,
+    so ``.switch`` on the lifted result would fail. Forcing only the left
+    operand keeps the result a socket with minimal noise (``socket * node`` is
+    already a socket); socket_expr is a no-op on operands that are already
+    sockets.
+    """
     operands: list[Expr] = []
-    for socket in plan.sockets:
-        operand = ctx.input_expr(node, socket)
+    for index, socket in enumerate(plan.sockets):
+        link = ctx.input_link(node, socket.identifier)
+        if index == 0 and link is not None:
+            operand: Expr | None = ctx.socket_expr(link)
+        else:
+            operand = ctx.input_expr(node, socket)
         if operand is None:  # pragma: no cover - guarded by _lift_plan
             raise CodegenError(f"Cannot resolve operands for '{node.name}'")
         operands.append(operand)
