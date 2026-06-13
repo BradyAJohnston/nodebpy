@@ -1140,6 +1140,40 @@ def test_index_switch_emits_factory_tuple():
 
 
 # ---------------------------------------------------------------------------
+# Variable-items nodes (CaptureAttribute / FieldToGrid)
+# ---------------------------------------------------------------------------
+
+
+def test_capture_attribute_emits_items_dict():
+    """CaptureAttribute round-trips as the domain factory with an items dict;
+    the captured output is read by item name."""
+    with TreeBuilder("CaptureRT") as tree:
+        geo = tree.inputs.geometry("Geo")
+        cap = g.CaptureAttribute.point(geo, items={"Pos": g.Position()})
+        cap.o.geometry >> tree.outputs.geometry("Out")
+        g.StoreNamedAttribute.point.vector(
+            cap.o.geometry, name="captured", value=cap.o["Pos"]
+        ) >> tree.outputs.geometry("Stored")
+    code = _assert_roundtrip(tree)
+    assert 'g.CaptureAttribute.point(geometry=geo, items={"Pos":' in code
+    assert "capture_attribute.o.pos" in code
+
+
+def test_field_to_grid_emits_items_dict():
+    """FieldToGrid round-trips as the data-type factory with an items dict."""
+    with TreeBuilder("FieldGridRT") as tree:
+        grid = tree.inputs.float("Grid", structure_type="GRID")
+        mask = g.FieldToGrid.boolean(
+            topology=grid, items={"Mask": g.Position().o.position.x > 0.0}
+        )
+        mask.o["Mask"] >> tree.outputs.boolean("Out", structure_type="GRID")
+    code = _assert_roundtrip(tree)
+    assert "g.FieldToGrid.boolean(" in code
+    assert '"Mask":' in code
+    assert "field_0" not in code
+
+
+# ---------------------------------------------------------------------------
 # Recursive node groups
 # ---------------------------------------------------------------------------
 
@@ -1499,10 +1533,6 @@ _ROUNDTRIP_XFAIL = {
     "build_import_microscopy_meshes_api": (
         "hand-built zone clear()s generation_items so its item identifier is "
         "Generation_1; a fresh zone always starts at Generation_0"
-    ),
-    "build_mask_grid": (
-        "FieldToGrid is a variable-items node with no emitter, so its item "
-        "input is emitted as an invalid field_0= constructor kwarg"
     ),
 }
 

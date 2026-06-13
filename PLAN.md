@@ -183,6 +183,16 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   `**{...}` form because socket names need not be valid identifiers. Tests
   force a fresh `_build_group` rebuild (renaming existing groups) so the
   inner structure — not just reuse-by-name — is verified.
+- [x] **Variable-items node emitter**: `CaptureAttribute` and `FieldToGrid`
+  round-trip as the factory + `items={name: field}` form
+  (`g.CaptureAttribute.point(geometry=…, items={…})`,
+  `g.FieldToGrid.boolean(topology=…, items={…})`) instead of emitting each
+  item input as an invalid `field_0=` kwarg. A small `_ItemsNodeSpec` table
+  names the fixed inputs and the factory method chosen by the node's
+  `data_type`/`domain`; item sockets are identified generically as the
+  trailing N input/output sockets (N = collection length). Bails to the
+  generic path when a fixed input it can't author (e.g. a linked
+  CaptureAttribute `Selection`) is in use. `build_mask_grid` now passes.
 
 ## To Do
 
@@ -190,11 +200,9 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 - [ ] Mode-dependent socket defaults: probe node currently created with
   default properties, so irrelevant kwargs (e.g. `length=` on EVALUATED
   CurveToPoints) are emitted. Probe could copy enum props first.
-- [ ] Variable-items node constructors: `FieldToGrid`/`FieldToList`/
-  `CaptureAttribute`/`Bake` have no emitter, so their item inputs emit as
-  invalid positional kwargs (e.g. `field_0=`). Need the items-dict form
-  (`g.FieldToGrid.boolean(topology=…, items={…})`), like the FormatString
-  emitter (xfail: `build_mask_grid`).
+- [ ] Extend the variable-items emitter to `Bake` and `FieldToList`
+  (per-item types; `FieldToList` factories return socket lists, so its
+  output handling differs from the captured-by-name pattern).
 
 ### Out of reach
 - Item identifiers on hand-built zones: a tree whose `generation_items`

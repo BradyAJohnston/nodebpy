@@ -3015,6 +3015,111 @@ def _emit_index_switch(node, ctx: EmitContext) -> Expr | _Val | None:
 
 
 # ---------------------------------------------------------------------------
+# Variable-items node emitter (CaptureAttribute / FieldToGrid / …)
+#
+# These take an ``items={name: field}`` dict; the plain constructor path emits
+# each item input as its own kwarg (``field_0=``), which the constructor does
+# not accept. A small spec names the fixed (non-item) inputs and the factory
+# method selected by the node's type/domain property; item sockets are the
+# trailing input/output sockets (one per collection item).
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class _ItemsNodeSpec:
+    collection: str  # bpy items collection attribute
+    factory_prop: str  # node property choosing the factory method
+    factory_map: dict[str, str]  # property value → factory method name
+    fixed: tuple[tuple[str, str], ...]  # (input identifier, factory param) pairs
+
+
+_ITEMS_NODE_SPECS = {
+    "GeometryNodeFieldToGrid": _ItemsNodeSpec(
+        collection="grid_items",
+        factory_prop="data_type",
+        factory_map={
+            "FLOAT": "float",
+            "INT": "integer",
+            "VECTOR": "vector",
+            "BOOLEAN": "boolean",
+        },
+        fixed=(("Topology", "topology"),),
+    ),
+    "GeometryNodeCaptureAttribute": _ItemsNodeSpec(
+        collection="capture_items",
+        factory_prop="domain",
+        factory_map={
+            "POINT": "point",
+            "EDGE": "edge",
+            "FACE": "face",
+            "CORNER": "corner",
+            "CURVE": "curve",
+            "INSTANCE": "instance",
+            "LAYER": "layer",
+        },
+        fixed=(("Geometry", "geometry"),),
+    ),
+}
+
+
+def _emit_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
+    """A variable-items node as ``Factory(fixed=..., items={name: field})``.
+
+    Bails (falls through) when an input the factory cannot express — e.g. a
+    linked CaptureAttribute ``Selection`` — is in use, since no faithful call
+    exists."""
+    spec = _ITEMS_NODE_SPECS.get(node.bl_idname)
+    found = _find_cls(node.bl_idname)
+    if spec is None or found is None:
+        return None
+    alias, cls = found
+
+    n_items = len(getattr(node, spec.collection))
+    in_sockets = [s for s in node.inputs if not s.identifier.startswith("__extend__")]
+    split = len(in_sockets) - n_items
+    fixed_inputs, item_inputs = in_sockets[:split], in_sockets[split:]
+    fixed_ids = {ident for ident, _ in spec.fixed}
+
+    # Any fixed input the spec doesn't name can't be authored — only tolerate
+    # it when unlinked (a stray default we can safely drop).
+    for socket in fixed_inputs:
+        if socket.identifier not in fixed_ids and ctx.input_link(
+            node, socket.identifier
+        ):
+            return None
+
+    items: dict[str, Expr] = {}
+    for socket, item in zip(item_inputs, getattr(node, spec.collection)):
+        link = ctx.input_link(node, socket.identifier)
+        if link is not None:
+            items[socket.name] = ctx.upstream_expr(link)
+        elif hasattr(socket, "default_value"):
+            items[socket.name] = Lit(socket.default_value)
+        else:
+            items[socket.name] = Lit(
+                getattr(item, "socket_type", None) or getattr(item, "data_type", "")
+            )
+
+    kwargs: dict[str, Expr] = {}
+    for ident, param in spec.fixed:
+        link = ctx.input_link(node, ident)
+        if link is not None:
+            kwargs[param] = ctx.upstream_expr(link)
+    kwargs["items"] = DictExpr(items)
+
+    ctx.used_aliases.add(alias)
+    method = spec.factory_map.get(getattr(node, spec.factory_prop))
+    if method is not None:
+        return Call(f"{alias}.{cls.__name__}.{method}", kwargs=kwargs)
+    kwargs[spec.factory_prop] = Lit(getattr(node, spec.factory_prop))
+    return Call(f"{alias}.{cls.__name__}", kwargs=kwargs)
+
+
+for _items_bl_idname in _ITEMS_NODE_SPECS:
+    register_emitter(_items_bl_idname)(_emit_items_node)
+
+
+# ---------------------------------------------------------------------------
 # Node group emitter (recursive)
 # ---------------------------------------------------------------------------
 
