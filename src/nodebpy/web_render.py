@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from .builder.tree import TreeBuilder
 
 #: Default geonodes-web-render version served from the CDN.
-DEFAULT_VERSION = "0.3.0"
+DEFAULT_VERSION = "0.3.1"
 
 #: Default ESM CDN. esm.sh transparently resolves the external react/react-dom.
 DEFAULT_CDN = "https://esm.sh"
