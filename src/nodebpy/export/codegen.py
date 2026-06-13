@@ -2191,6 +2191,30 @@ def _linked_src_types(ctx: "EmitContext", node) -> dict[str, str]:
     }
 
 
+def _operator_dispatch_ok(node, pair, linked_ids: set[str], src_types) -> bool:
+    """Whether re-evaluating the lifted operator re-creates *this* node type.
+
+    Python operator dispatch picks the node from the operand types, so a lift
+    is only faithful when the operands would dispatch back to the same node:
+
+    - VectorMath needs a linked **vector** operand (else ``tuple * scalar``
+      makes a scalar Math node).
+    - Math needs a **float** operand — a linked ``VALUE`` socket or an unlinked
+      input (whose default renders as a float literal); otherwise two integer
+      operands dispatch to IntegerMath instead.
+    """
+    if src_types is None:
+        return True
+    if node.bl_idname == "ShaderNodeVectorMath":
+        return any(src_types.get(s.identifier) == "VECTOR" for s in pair)
+    if node.bl_idname == "ShaderNodeMath":
+        return any(
+            s.identifier not in linked_ids or src_types.get(s.identifier) == "VALUE"
+            for s in pair
+        )
+    return True
+
+
 def _lift_plan(
     node, linked_ids: set[str], src_types: dict[str, str] | None = None
 ) -> _LiftPlan | None:
@@ -2212,17 +2236,7 @@ def _lift_plan(
                     s.identifier in linked_ids or hasattr(s, "default_value")
                     for s in pair
                 ):
-                    # A VectorMath lifts to a Python operator only when at least
-                    # one operand is a linked vector socket; otherwise forms like
-                    # ``(1, 0, 0) * scalar`` dispatch to a scalar Math node whose
-                    # float input rejects the tuple, so fall back to the ctor.
-                    if (
-                        node.bl_idname == "ShaderNodeVectorMath"
-                        and src_types is not None
-                        and not any(
-                            src_types.get(s.identifier) == "VECTOR" for s in pair
-                        )
-                    ):
+                    if not _operator_dispatch_ok(node, pair, linked_ids, src_types):
                         return None
                     return _LiftPlan("binary", binary[operation], pair)
 
