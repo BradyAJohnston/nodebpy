@@ -248,7 +248,8 @@ class SocketContext:
         name: str = "Vector",
         default_value: tuple[float, float]  # ty: ignore[invalid-type-form]
         | tuple[float, float, float]  # ty: ignore[invalid-type-form]
-        | tuple[float, float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
+        | tuple[float, float, float, float]  # ty: ignore[invalid-type-form]
+        | None = None,
         description: str = "",
         *,
         dimensions: Literal[2, 3, 4] = 3,
@@ -265,14 +266,18 @@ class SocketContext:
         ] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
     ) -> "VectorSocket":
-        assert len(default_value) == dimensions, (
-            "Default value length must match dimensions"
+        values: tuple[float, ...] = (
+            (0.0,) * dimensions if default_value is None else tuple(default_value)
         )
+        assert len(values) == dimensions, "Default value length must match dimensions"
         iface = self._add_socket("NodeSocketVector", name, description)
+        # The interface socket's default_value RNA is a fixed 3-float array
+        # regardless of `dimensions`; pad (or truncate) to length 3 to assign.
+        rna_default = (values + (0.0, 0.0, 0.0))[:3]
         self._set_props(
             iface,
             dimensions=dimensions,
-            default_value=default_value,
+            default_value=rna_default,
             min_value=min_value,
             max_value=max_value,
             optional_label=optional_label,

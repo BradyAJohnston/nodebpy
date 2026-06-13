@@ -1672,6 +1672,7 @@ _ASSET_FILES = (
 # xfailed; when a codegen gap is closed, re-measure and move names in here.
 _ASSET_ROUNDTRIP_OK = frozenset(
     {
+        "3D to Screen Space",
         "Blend Hair Curves",
         "Box Selection",
         "Capture Rest Geometry",
@@ -1692,16 +1693,20 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Is UV Split",
         "Normal Selection",
         "Principal Components",
+        "Project with Depth",
         "Random Rotation",
         "Randomize Transforms",
         "Redistribute Curve Points",
         "Restore Curve Segment Length",
+        "Screen to 3D Space",
         "Separate Cylindrical",
         "Separate Spherical",
+        "Set Attachment Surface",
         "Set Effector",
         "Smooth by Angle",
         "Smooth Geometry",
         "Sphere Selection",
+        "Transform and Project",
     }
 )
 

@@ -275,9 +275,22 @@ cases (counts approximate), by node/feature gap:
   Cleared the SyntaxError for Cloth Dynamics and Hair Dynamics (they now hit
   the menu/enum gap); Braid Hair Curves has an unrelated `FloatCurve.items`
   property bug, not a string issue.
-- [ ] **Vector vs scalar defaults** (`expected a float`/`should contain 3`/
-  `length must match dimensions`): a vector socket default emitted as a
-  scalar (or vice versa) — `CombineXYZ`-style sockets, `3D to Screen Space`.
+- [x] **Vector interface `dimensions` (2D/4D)** (`should contain 3 items`/
+  `length must match dimensions`): the interface vector socket's
+  `default_value` RNA is a fixed 3-float array regardless of `dimensions`, so
+  a 2-element default (read from a `dimensions=2` socket) couldn't be set and
+  the `(0,0,0)` param default failed the length assert for `dimensions != 3`.
+  `tree.inputs/outputs.vector` now defaults `default_value=None` →
+  `(0.0,)*dimensions` and pads/truncates to 3 floats when assigning. Flipped
+  5 assets: 3D to Screen Space, Screen to 3D Space, Project with Depth,
+  Set Attachment Surface, Transform and Project.
+- [ ] **Operator lifting of `vector_const * scalar`** (`NodeSocketFloat
+  .default_value expected a float, not tuple`): codegen lifts a VectorMath
+  multiply to `(1.0, 0.0, 0.0) * r`, but `tuple * float_socket` re-creates a
+  *scalar* Math node whose float input rejects the tuple. The lift is
+  unfaithful when one operand is a literal vector and the other a scalar
+  socket; refuse it there and fall back to the constructor (Array, Combine
+  Cylindrical, Combine Spherical).
 - [ ] **Socket-method / output-accessor faithfulness**
   (`'BooleanMath' object has no attribute 'switch'`, `Socket 'X' not found
   on output accessor`): a socket method or `.o.<name>` is emitted that the
