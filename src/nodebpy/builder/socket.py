@@ -280,6 +280,34 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
     # Called by OperatorMixin operators via _wrap_socket().
     # Subclasses (and type-specific mixins) override to provide type-specific behaviour.
 
+    def enable_output(self, enable: InputBoolean = True) -> "Self":
+        """Enable or disable the the output of this node group that is connected to this socket.
+
+        If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+        Parameters
+        ----------
+        enable : InputBoolean, optional
+            Whether to enable or disable the output, by default True.
+
+        Returns
+        -------
+        Self
+            The output socket or input socket, depending on the socket type.
+        """
+        from ..nodes.geometry import EnableOutput
+
+        if self.socket.is_output:
+            return EnableOutput(
+                enable,
+                self.socket,
+                data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
+            ).o.value  # ty: ignore[invalid-return-type]
+        else:
+            enable = EnableOutput(enable, None, data_type=self._socket_dtype)  # ty: ignore[invalid-argument-type]
+            enable >> self.socket
+            return enable.i.value  # ty: ignore[invalid-return-type]
+
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
     ) -> "FloatSocket":

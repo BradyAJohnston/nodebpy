@@ -1,4 +1,23 @@
 # serializer version: 1
+# name: test_enable_output
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      N1("Cube"):::geometry-node
+      N2("Ico Sphere"):::geometry-node
+      N3("Enable Output"):::default-node
+      N4("Enable Output"):::default-node
+      N5("Group Output"):::default-node
+      N0 -->|"Boolean->Enable"| N3
+      N1 -->|"Mesh->Value"| N3
+      N3 -->|"Value->Cube"| N5
+      N0 -->|"Boolean->Enable"| N4
+      N4 -->|"Value->IcoSphere"| N5
+      N2 -->|"Mesh->Value"| N4
+  ```
+  '''
+# ---
 # name: test_float_socket_methods
   '''
   ```{mermaid}
