@@ -1887,6 +1887,8 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
     def _link_args(self, *args: InputAny):
         for arg in args:
             socket = self._add_socket(name="", type=self.data_type)
+            if arg is None:
+                continue  # item declared but left unlinked
             if _is_default_value(arg):
                 socket.default_value = arg  # ty: ignore[unresolved-attribute]
             else:
@@ -1938,7 +1940,9 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         key_args = {"Menu": menu}
         self._link_args(**(items or {}))
         self._establish_links(**key_args)
-        if self.node.enum_items:
+        # a plain string `menu` is an explicit selection; otherwise default
+        # the selection to the first item
+        if self.node.enum_items and not isinstance(menu, str):
             menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
             menu_socket.default_value = self.node.enum_items[0].name
 
@@ -1955,6 +1959,8 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
     def _link_args(self, **kwargs: InputAny):
         for key, value in kwargs.items():
             socket = self._add_socket(name=key, type=self.data_type)
+            if value is None:
+                continue  # item declared but left unlinked
             if _is_default_value(value):
                 socket.default_value = value  # type: ignore
             else:

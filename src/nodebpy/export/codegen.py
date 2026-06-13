@@ -433,9 +433,12 @@ def _get_node_registry() -> dict[str, tuple[str, type]]:
         ("s", shader.__name__),
         ("c", compositor.__name__),
     ]
+    # Group bl_idnames are shared by every group/custom-group class, so a
+    # single registry entry would be arbitrary (and emit the wrong class).
+    ambiguous = {"GeometryNodeGroup", "ShaderNodeGroup", "CompositorNodeGroup"}
     for cls in _all_subclasses(BaseNode):
         bl_id = getattr(cls, "_bl_idname", None)
-        if not bl_id or bl_id in _NODE_REGISTRY:
+        if not bl_id or bl_id in ambiguous or bl_id in _NODE_REGISTRY:
             continue
         for alias, prefix in domains:
             if cls.__module__.startswith(prefix):
@@ -2779,6 +2782,91 @@ def _emit_join_strings(node, ctx: EmitContext) -> Expr | _Val | None:
     if delimiter is not None and delimiter.default_value:
         kwargs["delimiter"] = Lit(delimiter.default_value)
     return Call("g.JoinStrings", [strings], kwargs)
+
+
+# data_type → MenuSwitch/IndexSwitch factory classmethod name.
+_SWITCH_FACTORY_NAMES = {
+    "FLOAT": "float",
+    "INT": "integer",
+    "BOOLEAN": "boolean",
+    "VECTOR": "vector",
+    "RGBA": "color",
+    "ROTATION": "rotation",
+    "MATRIX": "matrix",
+    "STRING": "string",
+    "MENU": "menu",
+    "OBJECT": "object",
+    "GEOMETRY": "geometry",
+    "COLLECTION": "collection",
+    "IMAGE": "image",
+    "MATERIAL": "material",
+    "BUNDLE": "bundle",
+    "CLOSURE": "closure",
+}
+
+
+def _switch_item_exprs(node, ctx: EmitContext, skip_id: str) -> list[tuple[str, Expr]]:
+    """(socket name, value expression) per item input, in collection order.
+
+    Unlinked items render their default value, or ``None`` for socket types
+    without one (the constructors declare such items but leave them unlinked).
+    """
+    out: list[tuple[str, Expr]] = []
+    for socket in node.inputs:
+        if socket.identifier == skip_id or socket.identifier.startswith("__extend__"):
+            continue
+        link = ctx.input_link(node, socket.identifier)
+        if link is not None:
+            expr: Expr = ctx.upstream_expr(link)
+        elif hasattr(socket, "default_value"):
+            expr = Lit(socket.default_value)
+        else:
+            expr = Lit(None)
+        out.append((socket.name, expr))
+    return out
+
+
+@register_emitter("GeometryNodeMenuSwitch")
+def _emit_menu_switch(node, ctx: EmitContext) -> Expr | _Val | None:
+    """MenuSwitch emits the factory dict form
+    ``g.MenuSwitch.geometry(menu, {"Name": value, ...})`` — the plain
+    constructor's per-socket kwargs cannot recreate the enum item names."""
+    factory = _SWITCH_FACTORY_NAMES.get(node.data_type)
+    if factory is None:
+        return None
+    ctx.used_aliases.add("g")
+    items = DictExpr(dict(_switch_item_exprs(node, ctx, "Menu")))
+    menu_link = ctx.input_link(node, "Menu")
+    if menu_link is not None:
+        return Call(f"g.MenuSwitch.{factory}", [ctx.upstream_expr(menu_link), items])
+    # The constructor defaults the menu selection to the first item; only a
+    # different selection needs an explicit argument.
+    menu_socket = _input_socket_by_identifier(node, "Menu")
+    first_name = node.enum_items[0].name if node.enum_items else ""
+    if menu_socket is not None and menu_socket.default_value != first_name:
+        return Call(f"g.MenuSwitch.{factory}", [Lit(menu_socket.default_value), items])
+    return Call(f"g.MenuSwitch.{factory}", kwargs={"items": items})
+
+
+@register_emitter("GeometryNodeIndexSwitch")
+def _emit_index_switch(node, ctx: EmitContext) -> Expr | _Val | None:
+    """IndexSwitch emits the factory tuple form
+    ``g.IndexSwitch.float(index, (a, b, ...))`` so the item count
+    round-trips (the constructor clears and recreates the items)."""
+    factory = _SWITCH_FACTORY_NAMES.get(node.data_type)
+    if factory is None:
+        return None
+    ctx.used_aliases.add("g")
+    items = TupleExpr([expr for _, expr in _switch_item_exprs(node, ctx, "Index")])
+    index_link = ctx.input_link(node, "Index")
+    if index_link is not None:
+        return Call(f"g.IndexSwitch.{factory}", [ctx.upstream_expr(index_link), items])
+    index_socket = _input_socket_by_identifier(node, "Index")
+    if index_socket is not None and index_socket.default_value:
+        return Call(
+            f"g.IndexSwitch.{factory}", [Lit(index_socket.default_value), items]
+        )
+    return Call(f"g.IndexSwitch.{factory}", kwargs={"items": items})
 
 
 # ---------------------------------------------------------------------------

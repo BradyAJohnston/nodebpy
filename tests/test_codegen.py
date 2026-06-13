@@ -1086,6 +1086,60 @@ def test_join_strings_constructor_and_method():
 
 
 # ---------------------------------------------------------------------------
+# MenuSwitch / IndexSwitch emitters
+# ---------------------------------------------------------------------------
+
+
+def test_menu_switch_emits_factory_dict():
+    """MenuSwitch round-trips its enum item names through the items dict;
+    is_selected outputs resolve as named output accessors."""
+    with TreeBuilder("MenuRT") as tree:
+        menu = tree.inputs.menu("Mode", "Object")
+        switch = g.MenuSwitch.geometry(menu, {"Object": g.Cube(), "Mesh": g.Grid()})
+        switch >> tree.outputs.geometry("Out")
+        switch.is_selected("Mesh") >> tree.outputs.boolean("IsMesh")
+    code = _assert_roundtrip(tree)
+    assert "g.MenuSwitch.geometry(" in code
+    assert '"Object":' in code and '"Mesh":' in code
+    assert "_MenuSwitchBase" not in code
+
+
+def test_menu_switch_defaults_and_unlinked_items():
+    """Unlinked items keep their default value (or None for linkable types);
+    a non-first menu selection survives as an explicit argument."""
+    with TreeBuilder("MenuDefaults") as tree:
+        switch = g.MenuSwitch.float("B", {"A": 1.0, "B": tree.inputs.float("In")})
+        geo = g.MenuSwitch.geometry(items={"Linked": g.Cube(), "Empty": None})
+        switch >> tree.outputs.float("Out")
+        geo >> tree.outputs.geometry("Geo")
+    code = _assert_roundtrip(tree)
+    assert 'g.MenuSwitch.float("B", {"A": 1.0,' in code
+    assert '"Empty": None' in code
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt = ns["tree"].tree
+    menu_node = next(
+        n
+        for n in rebuilt.nodes
+        if n.bl_idname == "GeometryNodeMenuSwitch" and n.data_type == "FLOAT"
+    )
+    assert menu_node.inputs["Menu"].default_value == "B"
+
+
+def test_index_switch_emits_factory_tuple():
+    """IndexSwitch round-trips item count and order as a tuple; literal
+    defaults and the index input are preserved."""
+    with TreeBuilder("IndexRT") as tree:
+        idx = tree.inputs.integer("Choice")
+        linked = tree.inputs.float("Linked")
+        g.IndexSwitch.float(idx, (1.5, linked, 3.0)) >> tree.outputs.float("Out")
+        g.IndexSwitch.integer(1, (10, 20)) >> tree.outputs.integer("Fixed")
+    code = _assert_roundtrip(tree)
+    assert "g.IndexSwitch.float(" in code
+    assert "g.IndexSwitch.integer(1, (10, 20))" in code
+
+
+# ---------------------------------------------------------------------------
 # Mix / tuple-result methods / grid info accessors
 # ---------------------------------------------------------------------------
 
@@ -1350,8 +1404,8 @@ _ROUNDTRIP_XFAIL = {
         "Generation_1; a fresh zone always starts at Generation_0"
     ),
     "build_mask_grid": (
-        "MenuSwitch enum-items dict and custom group nodes (ClipFieldToBox) "
-        "are not emitted yet"
+        "custom group nodes (ClipFieldToBox) are not emitted yet "
+        "(recursive-groups stretch item)"
     ),
 }
 

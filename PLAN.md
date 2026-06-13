@@ -161,6 +161,15 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   `_make_var` produced invalid identifiers (Python keywords like `with`,
   punctuation as in "Extent (unit)", leading digits). Two strict xfails
   document the open gaps below.
+- [x] **MenuSwitch/IndexSwitch emitters**: MenuSwitch emits the factory
+  dict form (`g.MenuSwitch.geometry(menu, {"Name": value, ...})`) so enum
+  item names round-trip; IndexSwitch emits the factory tuple form
+  (`g.IndexSwitch.float(index, (a, b, ...))`). Along the way: `items=`
+  values of `None` declare an unlinked item (type comes from the node
+  `data_type`), an explicit string `menu=` selection is no longer clobbered
+  by the first-item default, and the ambiguous `*NodeGroup` bl_idnames were
+  dropped from the codegen registry (group nodes now report unsupported
+  instead of emitting an arbitrary `CustomGeometryGroup` subclass).
 
 ## To Do
 
@@ -168,11 +177,6 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 - [ ] Mode-dependent socket defaults: probe node currently created with
   default properties, so irrelevant kwargs (e.g. `length=` on EVALUATED
   CurveToPoints) are emitted. Probe could copy enum props first.
-- [ ] MenuSwitch/IndexSwitch emitters: items currently fall back to the
-  plain constructor (`g._MenuSwitchBase(item_2=...)`), losing menu item
-  names — the rebuilt interface menu default then fails to apply. Should
-  emit `g.MenuSwitch.geometry(menu, {...})` via `DictExpr`
-  (xfail: `build_mask_grid`).
 
 ### Stretch
 - [ ] Round-trip node groups recursively (emit `CustomGeometryGroup`
