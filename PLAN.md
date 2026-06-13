@@ -198,15 +198,18 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   survives). Bails to the generic path when a fixed input it can't author
   (e.g. a linked CaptureAttribute `Selection`) is in use.
 
+- [x] **Variable-items socket identifiers in round-trip comparison**: a
+  hand-built node whose item collection was `clear()`ed and rebuilt keeps a
+  higher creation-order counter (`Generation_1`) than a fresh one
+  (`Generation_0`). The counter is an implementation detail — what matters
+  is that codegen creates a corresponding socket — so the round-trip
+  comparison (`_structure`) keys variable-items sockets on their role prefix
+  + name instead of the raw identifier. This cleared the last xfail
+  (`build_import_microscopy_meshes_api`); every usecase now round-trips.
+
 ## To Do
 
 ### Polish
 - [ ] Mode-dependent socket defaults: probe node currently created with
   default properties, so irrelevant kwargs (e.g. `length=` on EVALUATED
   CurveToPoints) are emitted. Probe could copy enum props first.
-
-### Out of reach
-- Item identifiers on hand-built zones: a tree whose `generation_items`
-  were `clear()`ed and re-created carries identifier counters (e.g.
-  `Generation_1` as the only item) that fresh authoring can never
-  reproduce (xfail: `build_import_microscopy_meshes_api`).

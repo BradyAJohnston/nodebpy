@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for nodebpy.export.codegen.to_python() — node tree → Python code generation."""
 
+import re
+
 import pytest
 
 from nodebpy import TreeBuilder
@@ -33,7 +35,16 @@ def _structure(node_tree):
         # compare group in/out sockets by name instead.
         if node.bl_idname in ("NodeGroupInput", "NodeGroupOutput"):
             return socket.name
-        return socket.identifier
+        # Variable-items sockets carry a creation-order counter in their
+        # identifier (Generation_1, Item_0, Field_2, …). The counter need not
+        # round-trip — a hand-built node whose collection was cleared and
+        # rebuilt keeps a higher counter than a fresh one. What matters is that
+        # a corresponding socket exists, so key on the role prefix + name.
+        ident = socket.identifier
+        prefix = re.sub(r"_\d+$", "", ident)
+        if prefix != ident:
+            return prefix + ":" + socket.name
+        return ident
 
     links = sorted(
         (
@@ -1555,27 +1566,7 @@ def test_grid_info_accessors_dissolve():
 # Parametrised round-trip over every tree built in test_usecases.py
 # ---------------------------------------------------------------------------
 
-# Known codegen gaps (see PLAN.md); strict so a fix flips them to XPASS.
-_ROUNDTRIP_XFAIL = {
-    "build_import_microscopy_meshes_api": (
-        "hand-built zone clear()s generation_items so its item identifier is "
-        "Generation_1; a fresh zone always starts at Generation_0"
-    ),
-}
 
-
-@pytest.mark.parametrize(
-    "build",
-    [
-        pytest.param(
-            b,
-            id=b.__name__,
-            marks=pytest.mark.xfail(reason=_ROUNDTRIP_XFAIL[b.__name__], strict=True)
-            if b.__name__ in _ROUNDTRIP_XFAIL
-            else (),
-        )
-        for b in ROUNDTRIP_BUILDERS
-    ],
-)
+@pytest.mark.parametrize("build", ROUNDTRIP_BUILDERS, ids=lambda b: b.__name__)
 def test_roundtrip_usecases(build):
     _assert_roundtrip(build())
