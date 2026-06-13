@@ -844,6 +844,23 @@ class TreeBuilder(Generic[_TreeT]):
             print(f"Mermaid diagram generation failed: {e}")
             return None
 
+    def _repr_html_(self) -> str | None:
+        """
+        Return an interactive geonodes-web-render graph for Jupyter/Quarto.
+
+        This is called when the TreeBuilder is the return value of a cell. The
+        tree is exported to the Tree Clipper format and embedded as a Blender-
+        styled, pan/zoomable graph. Returning ``None`` on failure lets the
+        Mermaid ``_repr_markdown_`` fallback take over.
+        """
+        try:
+            from ..web_render import to_web_render_html
+
+            return to_web_render_html(self)
+        except Exception as e:
+            print(f"Web render generation failed: {e}")
+            return None
+
     def _input_node(self) -> Node:
         """Get or create the Group Input node."""
         try:
