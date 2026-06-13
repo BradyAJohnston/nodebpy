@@ -2183,7 +2183,17 @@ class _LiftPlan(NamedTuple):
     sockets: tuple
 
 
-def _lift_plan(node, linked_ids: set[str]) -> _LiftPlan | None:
+def _linked_src_types(ctx: "EmitContext", node) -> dict[str, str]:
+    """Input socket identifier → the type of the socket feeding it."""
+    return {
+        link.to_socket.identifier: link.from_socket.type
+        for link in ctx.incoming.get(node.name, ())
+    }
+
+
+def _lift_plan(
+    node, linked_ids: set[str], src_types: dict[str, str] | None = None
+) -> _LiftPlan | None:
     """Structural check: can this node be lifted to an operator expression?
 
     Requires at least one linked operand and that *all* incoming links target
@@ -2202,6 +2212,18 @@ def _lift_plan(node, linked_ids: set[str]) -> _LiftPlan | None:
                     s.identifier in linked_ids or hasattr(s, "default_value")
                     for s in pair
                 ):
+                    # A VectorMath lifts to a Python operator only when at least
+                    # one operand is a linked vector socket; otherwise forms like
+                    # ``(1, 0, 0) * scalar`` dispatch to a scalar Math node whose
+                    # float input rejects the tuple, so fall back to the ctor.
+                    if (
+                        node.bl_idname == "ShaderNodeVectorMath"
+                        and src_types is not None
+                        and not any(
+                            src_types.get(s.identifier) == "VECTOR" for s in pair
+                        )
+                    ):
+                        return None
                     return _LiftPlan("binary", binary[operation], pair)
 
     inputs = list(node.inputs)
@@ -2315,7 +2337,10 @@ def _gate_short_chains(
             continue  # not a run head
         if node.bl_idname in _EMITTERS:
             continue
-        if _lift_plan(node, _linked_ids(ctx, node)) is not None:
+        if (
+            _lift_plan(node, _linked_ids(ctx, node), _linked_src_types(ctx, node))
+            is not None
+        ):
             continue  # lifted expressions always inline freely
         if node.bl_idname in _SOCKET_METHODS and _match_socket_method(ctx, node):
             continue  # socket-method expressions inline freely too
@@ -2699,7 +2724,9 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
         if val is None:
             val = _socket_method_val(ctx, node)
         if val is None:
-            plan = _lift_plan(node, _linked_ids(ctx, node))
+            plan = _lift_plan(
+                node, _linked_ids(ctx, node), _linked_src_types(ctx, node)
+            )
             if plan is not None:
                 val = _Val(
                     _lift_expr(ctx, node, plan),

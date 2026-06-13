@@ -1677,6 +1677,8 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Box Selection",
         "Capture Rest Geometry",
         "Collider",
+        "Combine Cylindrical",
+        "Combine Spherical",
         "Curve Info",
         "Curve Root",
         "Curve Segment",
