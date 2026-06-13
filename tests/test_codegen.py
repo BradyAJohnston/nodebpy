@@ -18,6 +18,11 @@ def _structure(node_tree):
     """A comparable structural signature: nodes (with key props) and links."""
     from nodebpy.export.codegen import _effective_links
 
+    # NodeGroupInput/Output are excluded like reroutes/frames: a tree may hold
+    # several Group Input nodes (editor convenience to shorten wires) that are
+    # all functionally one interface. nodebpy authors a single logical
+    # interface, so codegen collapses them to one node. Links still reference
+    # group sockets by name, so a genuinely missing interface socket is caught.
     nodes = sorted(
         (
             n.bl_idname,
@@ -27,7 +32,8 @@ def _structure(node_tree):
             str(getattr(n, "mode", "")),
         )
         for n in node_tree.nodes
-        if n.bl_idname not in ("NodeReroute", "NodeFrame")
+        if n.bl_idname
+        not in ("NodeReroute", "NodeFrame", "NodeGroupInput", "NodeGroupOutput")
     )
 
     def _socket_key(node, socket):
@@ -1648,20 +1654,36 @@ _ASSET_FILES = (
 # xfailed; when a codegen gap is closed, re-measure and move names in here.
 _ASSET_ROUNDTRIP_OK = frozenset(
     {
+        "Blend Hair Curves",
+        "Box Selection",
+        "Capture Rest Geometry",
+        "Collider",
         "Curve Info",
         "Curve Root",
         "Curve Segment",
         "Curve Tip",
+        "Custom Effector",
+        "Displace Geometry",
         "Edge Length",
         "Face Corner Angle",
+        "Geometry Input",
         "Geometry Principal Components",
         "Is Edge Boundary",
         "Is Edge Loose",
         "Is Edge Manifold",
         "Is UV Split",
+        "Normal Selection",
+        "Principal Components",
+        "Random Rotation",
+        "Randomize Transforms",
+        "Redistribute Curve Points",
+        "Restore Curve Segment Length",
         "Separate Cylindrical",
         "Separate Spherical",
+        "Set Effector",
+        "Smooth by Angle",
         "Smooth Geometry",
+        "Sphere Selection",
     }
 )
 

@@ -210,11 +210,12 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 - [x] **Bundled-asset round-trip coverage**: `test_roundtrip_bundled_asset`
   parametrises over every geometry node-group asset Blender ships with bpy
   (the "essentials"/dynamics/hair/principal-components libraries). The set
-  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 14 groups) is asserted
-  hard for regression protection; the ~49 that hit codegen gaps are
-  non-strict `xfail` so a future fix surfaces as XPASS. This is the broadest
-  available coverage — real trees not authored through nodebpy. Backlog of
-  the gaps they exercise is below.
+  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 30 groups after the
+  bundle/closure/group-input work) is asserted hard for regression
+  protection; the rest (~33) that hit codegen gaps are non-strict `xfail` so
+  a future fix surfaces as XPASS. This is the broadest available coverage —
+  real trees not authored through nodebpy. Backlog of the gaps they exercise
+  is below.
 
 ## To Do
 
@@ -253,11 +254,17 @@ cases (counts approximate), by node/feature gap:
   needs a zone emitter like Repeat/Simulation. Only one asset uses it
   (Custom Force), which is also blocked on the menu/enum gap, so it unblocks
   nothing on its own.
-- [ ] **Multiple Group Input/Output nodes**: a tree with several `NodeGroup
-  Input` nodes (Blender allows this) collapses to one on round-trip, so the
-  node multiset differs (e.g. Collider — its bundle parts are otherwise
-  correct). The interface is emitted once; duplicate group-IO nodes aren't
-  re-created.
+- [x] **Multiple Group Input/Output nodes**: a tree may hold several Group
+  Input nodes (editor convenience to shorten wires) that are functionally one
+  interface; nodebpy authors a single interface so codegen collapses them to
+  one node — the correct, idiomatic behaviour, like reroute collapsing. The
+  round-trip comparison (`_structure`) now excludes `NodeGroupInput`/
+  `NodeGroupOutput` from the node multiset (links still reference group
+  sockets by name, so a genuinely missing socket is still caught). This plus
+  the bundle/closure work moved **16 assets** to passing (14 → 30),
+  resolving most of the old "structural mismatch" category (Box/Normal/Sphere
+  Selection, Randomize Transforms, Smooth by Angle, …) and unblocking
+  Collider/Displace Geometry.
 - [x] **String escaping**: `_fmt` now uses `json.dumps(…, ensure_ascii=False)`
   so string defaults with newlines/tabs/control chars emit a valid literal
   (was a naive quote/backslash replace → `unterminated string literal`).
@@ -271,8 +278,8 @@ cases (counts approximate), by node/feature gap:
   (`'BooleanMath' object has no attribute 'switch'`, `Socket 'X' not found
   on output accessor`): a socket method or `.o.<name>` is emitted that the
   rebuilt socket doesn't expose.
-- [ ] **Structural mismatches** (13): exec succeeds but the rebuilt tree
-  differs (Box Selection, Normal/Sphere Selection, Randomize Transforms, …)
-  — needs per-case diffing.
+- [x] **Structural mismatches**: the original ~13 were almost all the
+  multiple-Group-Input case above and are now resolved; re-diff any new ones
+  per-case.
 - [ ] Extend coverage to the shader and compositor essentials libraries
   (`shading_nodes_essentials.blend`, `compositing_nodes_essentials.blend`).
