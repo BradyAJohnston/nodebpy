@@ -1226,6 +1226,18 @@ def test_capture_attribute_emits_items_dict():
     assert "capture_attribute.o.pos" in code
 
 
+def test_multi_word_output_accessor_round_trips():
+    """An output read by a multi-word name emits ``.o.flip_and_cyclic``; the
+    accessor must resolve that back to the socket named "Flip and Cyclic"
+    (denormalize can't recover the lowercase connector "and")."""
+    with TreeBuilder("MultiWord") as tree:
+        geo = tree.inputs.geometry("Geo")
+        cap = g.CaptureAttribute.point(geo, items={"Flip and Cyclic": g.Position()})
+        cap.o["Flip and Cyclic"] >> tree.outputs.vector("V")
+    code = _assert_roundtrip(tree)
+    assert ".o.flip_and_cyclic" in code
+
+
 def test_field_to_grid_emits_items_dict():
     """FieldToGrid round-trips as the data-type factory with an items dict."""
     with TreeBuilder("FieldGridRT") as tree:
