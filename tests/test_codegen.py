@@ -1140,6 +1140,103 @@ def test_index_switch_emits_factory_tuple():
 
 
 # ---------------------------------------------------------------------------
+# Recursive node groups
+# ---------------------------------------------------------------------------
+
+
+def _force_fresh_group_build():
+    """Rename every existing node group so generated ``_build_group`` methods
+    rebuild from scratch instead of reusing the originals by name."""
+    import bpy
+
+    for t in list(bpy.data.node_groups):
+        t.name = "_orig_" + t.name
+
+
+def test_custom_group_emits_recursive_class():
+    """A node group round-trips as a CustomGeometryGroup subclass whose
+    _build_group rebuilds the inner tree (verified by a forced fresh build)."""
+    from nodebpy.nodes.geometry.groups import ClipFieldToBox
+
+    with TreeBuilder("UsesGroup") as tree:
+        obj = tree.inputs.object("Object")
+        ClipFieldToBox(box_object=obj) >> tree.outputs.boolean("Out")
+
+    code = to_python(tree)
+    assert "from nodebpy.builder import CustomGeometryGroup" in code
+    assert "class ClipFieldToBox(CustomGeometryGroup):" in code
+    assert "def _build_group(self, tree):" in code
+    assert 'ClipFieldToBox(**{"Box Object": object})' in code
+
+    orig_top = _structure(tree.tree)
+    inner = next(
+        n.node_tree for n in tree.tree.nodes if n.bl_idname == "GeometryNodeGroup"
+    )
+    orig_inner = _structure(inner)
+
+    _force_fresh_group_build()
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt = ns["tree"].tree
+    assert _structure(rebuilt) == orig_top, code
+    rebuilt_inner = next(
+        n.node_tree for n in rebuilt.nodes if n.bl_idname == "GeometryNodeGroup"
+    )
+    assert _structure(rebuilt_inner) == orig_inner, code
+
+
+def test_nested_groups_emit_in_dependency_order():
+    """A group nested inside another emits both classes, the inner before the
+    outer (so the outer's _build_group can reference it), and rebuilds fresh."""
+    from nodebpy.builder import CustomGeometryGroup
+
+    class Inner(CustomGeometryGroup):
+        _name = "Nested Inner"
+
+        def _build_group(self, tree):
+            x = tree.inputs.float("X")
+            (x + 1.0) >> tree.outputs.float("Y")
+
+    class Outer(CustomGeometryGroup):
+        _name = "Nested Outer"
+
+        def _build_group(self, tree):
+            x = tree.inputs.float("X")
+            Inner(x=x) >> tree.outputs.float("Y")
+
+    with TreeBuilder("UsesNested") as tree:
+        v = tree.inputs.float("In")
+        Outer(x=v) >> tree.outputs.float("Out")
+
+    code = to_python(tree)
+    lines = code.splitlines()
+    inner_at = next(
+        i for i, ln in enumerate(lines) if ln.startswith("class NestedInner")
+    )
+    outer_at = next(
+        i for i, ln in enumerate(lines) if ln.startswith("class NestedOuter")
+    )
+    with_at = next(i for i, ln in enumerate(lines) if ln.startswith("with "))
+    assert inner_at < outer_at < with_at  # dependency order, all before the tree
+
+    orig_top = _structure(tree.tree)
+    outer_tree = next(
+        n.node_tree for n in tree.tree.nodes if n.bl_idname == "GeometryNodeGroup"
+    )
+    orig_outer = _structure(outer_tree)
+
+    _force_fresh_group_build()
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt = ns["tree"].tree
+    assert _structure(rebuilt) == orig_top, code
+    rebuilt_outer = next(
+        n.node_tree for n in rebuilt.nodes if n.bl_idname == "GeometryNodeGroup"
+    )
+    assert _structure(rebuilt_outer) == orig_outer, code
+
+
+# ---------------------------------------------------------------------------
 # Mix / tuple-result methods / grid info accessors
 # ---------------------------------------------------------------------------
 
@@ -1404,8 +1501,8 @@ _ROUNDTRIP_XFAIL = {
         "Generation_1; a fresh zone always starts at Generation_0"
     ),
     "build_mask_grid": (
-        "custom group nodes (ClipFieldToBox) are not emitted yet "
-        "(recursive-groups stretch item)"
+        "FieldToGrid is a variable-items node with no emitter, so its item "
+        "input is emitted as an invalid field_0= constructor kwarg"
     ),
 }
 

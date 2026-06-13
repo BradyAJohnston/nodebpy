@@ -160,6 +160,25 @@ class DictExpr(Expr):
 
 
 @dataclass
+class GroupCall(Expr):
+    """``ClassName(**{"Socket Name": value, ...})`` for a generated group class.
+
+    Socket names are passed through a dict because they need not be valid
+    Python identifiers (``"Box Object"``); ``_establish_links`` matches them
+    by socket name.
+    """
+
+    func: str
+    items: dict[str, Expr]
+
+    def render(self) -> str:
+        if not self.items:
+            return f"{self.func}()"
+        inner = ", ".join(f"{_fmt(k)}: {v.render()}" for k, v in self.items.items())
+        return f"{self.func}(**{{{inner}}})"
+
+
+@dataclass
 class MethodCall(Expr):
     """A method call on a receiver expression, e.g. ``value.point.at(i)``.
 
@@ -811,6 +830,7 @@ class EmitContext:
     used_aliases: set[str] = field(default_factory=set)
     pending_lines: list[str] = field(default_factory=list)
     zones: dict[str, "_ZoneState"] = field(default_factory=dict)
+    collector: "_GroupCollector | None" = None
 
     def input_link(self, node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
@@ -2479,6 +2499,151 @@ def to_python(
     """
     node_tree: NodeTree = tree.tree if hasattr(tree, "tree") else tree  # ty: ignore[invalid-assignment]
 
+    collector = _GroupCollector(
+        min_chain_length=min_chain_length,
+        strict=strict,
+        max_inline_width=max_inline_width,
+    )
+    emission = _emit_tree(node_tree, collector)
+
+    # 5. Assemble the module: imports, any nested group classes, then the tree,
+    #    each top-level block separated by two blank lines (PEP 8).
+    used_aliases = emission.used_aliases | collector.used_aliases
+    import_parts = [
+        f"{_ALIAS_MODULES[alias]} as {alias}"
+        for alias in ("g", "s", "c")
+        if alias in used_aliases
+    ]
+    lines = ["from nodebpy import " + ", ".join(import_parts + ["TreeBuilder"])]
+    if collector.bases_used:
+        lines.append(
+            "from nodebpy.builder import " + ", ".join(sorted(collector.bases_used))
+        )
+    # Group classes are top-level defs: two blank lines around each (PEP 8).
+    for class_def in collector.class_defs:
+        lines.extend(["", "", class_def])
+    lines.append("")  # one blank line before the tree block
+    if collector.class_defs:
+        lines.append("")  # ...two, when a class def precedes it
+
+    constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
+    lines.append(f"with {constructor}({_fmt(node_tree.name)}) as tree:")
+    lines.extend(_assemble_tree_body(emission))
+    return "\n".join(lines)
+
+
+def _assemble_tree_body(emission: "_TreeEmission") -> list[str]:
+    """The indented lines inside a ``with ... as tree:`` block (or, re-indented,
+    a ``_build_group`` method)."""
+    iface_lines, body, out_lines = (
+        emission.iface_lines,
+        emission.body_lines,
+        emission.out_lines,
+    )
+    lines = list(iface_lines)
+    if iface_lines and (body or out_lines):
+        lines.append("")
+    lines.extend(body)
+    if out_lines:
+        if body:
+            lines.append("")
+        lines.extend(out_lines)
+    if not (iface_lines or body or out_lines):
+        lines.append("    pass")
+    return lines
+
+
+@dataclass
+class _TreeEmission:
+    """The interface, body, and output lines of a single tree (without the
+    surrounding ``with``/class wrapper). Lines carry their in-block 4-space
+    indent."""
+
+    iface_lines: list[str]
+    body_lines: list[str]
+    out_lines: list[str]
+    used_aliases: set[str]
+
+
+# bl_idname of a group node → the CustomGroup base it round-trips to.
+_GROUP_BASES = {
+    "GeometryNodeGroup": "CustomGeometryGroup",
+    "ShaderNodeGroup": "CustomShaderGroup",
+    "CompositorNodeGroup": "CustomCompositorGroup",
+}
+
+
+@dataclass
+class _GroupCollector:
+    """Tracks nested-group class emission across one ``to_python`` call.
+
+    Each distinct inner node tree becomes one ``CustomGroup`` subclass,
+    rendered into :attr:`class_defs` in dependency order (a group is appended
+    only after the groups it nests, since ``register`` recurses first)."""
+
+    min_chain_length: int
+    strict: bool
+    max_inline_width: int | None
+    class_defs: list[str] = field(default_factory=list)
+    names_by_tree: dict[str, str] = field(default_factory=dict)
+    used_names: set[str] = field(default_factory=set)
+    bases_used: set[str] = field(default_factory=set)
+    used_aliases: set[str] = field(default_factory=set)
+
+    def register(self, node_tree) -> str:
+        """Ensure a class exists for ``node_tree`` and return its name."""
+        existing = self.names_by_tree.get(node_tree.name)
+        if existing is not None:
+            return existing
+        class_name = self._unique_name(node_tree.name)
+        # Reserve before recursing so a self-referential group resolves.
+        self.names_by_tree[node_tree.name] = class_name
+        emission = _emit_tree(node_tree, self)
+        self.used_aliases |= emission.used_aliases
+        base = _GROUP_BASES.get(node_tree.bl_idname, "CustomGeometryGroup")
+        self.bases_used.add(base)
+        self.class_defs.append(
+            _render_group_class(class_name, node_tree, base, emission)
+        )
+        return class_name
+
+    def _unique_name(self, tree_name: str) -> str:
+        base = _class_name(tree_name)
+        name, n = base, 1
+        while name in self.used_names:
+            n += 1
+            name = f"{base}{n}"
+        self.used_names.add(name)
+        return name
+
+
+def _class_name(name: str) -> str:
+    """A valid, PascalCase Python class name derived from a tree name."""
+    cleaned = "".join(p[:1].upper() + p[1:] for p in re.split(r"\W+", name) if p)
+    if not cleaned or cleaned[0].isdigit():
+        cleaned = f"Group{cleaned}"
+    if keyword.iskeyword(cleaned):
+        cleaned += "_"
+    return cleaned
+
+
+def _render_group_class(
+    class_name: str, node_tree, base: str, emission: "_TreeEmission"
+) -> str:
+    """A ``class X(CustomGroup): _name = ...; def _build_group(self, tree): ...``
+    block, with the tree body re-indented one level deeper."""
+    header = [f"class {class_name}({base}):", f"    _name = {_fmt(node_tree.name)}"]
+    color = getattr(node_tree, "color_tag", "NONE")
+    if color and color != "NONE":
+        header.append(f"    _color_tag = {_fmt(color)}")
+    header.extend(["", "    def _build_group(self, tree):"])
+    body = [("    " + line) if line else "" for line in _assemble_tree_body(emission)]
+    return "\n".join(header + body)
+
+
+def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
+    """Generate the interface/body/output lines for one tree. Nested group
+    nodes register their classes on ``collector`` as a side effect."""
     links = _effective_links(node_tree)
     incoming: dict[str, list[_Link]] = {}
     outgoing: dict[str, list[_Link]] = {}
@@ -2486,14 +2651,14 @@ def to_python(
         incoming.setdefault(link.to_node.name, []).append(link)
         outgoing.setdefault(link.from_node.name, []).append(link)
 
-    ctx = EmitContext(node_tree, links, incoming, outgoing)
+    ctx = EmitContext(node_tree, links, incoming, outgoing, collector=collector)
     ordered = [n for n in _topo_sort(node_tree) if n.bl_idname not in _SKIP_BL_IDNAMES]
     ordered, frame_of, frame_nodes = _frame_order(node_tree, ordered)
 
     iface_lines = _emit_interface_lines(node_tree, ctx)
 
     chain_in = _chainable_links(ctx)
-    gated_nodes = _gate_short_chains(ctx, chain_in, ordered, min_chain_length)
+    gated_nodes = _gate_short_chains(ctx, chain_in, ordered, collector.min_chain_length)
 
     # Body lines tagged with the emitting node's frame; with-blocks and
     # indentation are applied after the loop (frame members are contiguous
@@ -2526,7 +2691,7 @@ def to_python(
         if val is None:
             if _find_cls(node.bl_idname) is None:
                 message = f"unsupported node '{name}' ({node.bl_idname})"
-                if strict:
+                if collector.strict:
                     raise CodegenError(
                         f"Cannot generate code: {message}. Register an emitter "
                         "with register_emitter() or pass strict=False."
@@ -2571,9 +2736,9 @@ def to_python(
             # Budget: long expressions bind to a variable instead of growing
             # the consumer's statement; chain continuations stay inline.
             and (
-                max_inline_width is None
+                collector.max_inline_width is None
                 or chain_in.get(out_links[0].to_node.name) is out_links[0]
-                or len(val.require_expr().render()) <= max_inline_width
+                or len(val.require_expr().render()) <= collector.max_inline_width
             )
         ):
             ctx.var_map[name] = val  # single consumer → inline
@@ -2637,27 +2802,7 @@ def to_python(
         source = ctx.upstream_expr(link)
         out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
-    # 5. Assemble.
-    import_parts = [
-        f"{_ALIAS_MODULES[alias]} as {alias}"
-        for alias in ("g", "s", "c")
-        if alias in ctx.used_aliases
-    ]
-    import_line = "from nodebpy import " + ", ".join(import_parts + ["TreeBuilder"])
-
-    constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
-    lines = [import_line, "", f"with {constructor}({_fmt(node_tree.name)}) as tree:"]
-    lines.extend(iface_lines)
-    if iface_lines and (body or out_lines):
-        lines.append("")
-    lines.extend(body)
-    if out_lines:
-        if body:
-            lines.append("")
-        lines.extend(out_lines)
-    if not (iface_lines or body or out_lines):
-        lines.append("    pass")
-    return "\n".join(lines)
+    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases)
 
 
 # ---------------------------------------------------------------------------
@@ -2867,6 +3012,69 @@ def _emit_index_switch(node, ctx: EmitContext) -> Expr | _Val | None:
             f"g.IndexSwitch.{factory}", [Lit(index_socket.default_value), items]
         )
     return Call(f"g.IndexSwitch.{factory}", kwargs={"items": items})
+
+
+# ---------------------------------------------------------------------------
+# Node group emitter (recursive)
+# ---------------------------------------------------------------------------
+
+_UNSET = object()
+
+
+def _group_input_defaults(node_tree) -> dict[str, Any]:
+    """Interface input socket identifier → default value, for deciding which
+    unlinked group inputs differ from the group's own defaults."""
+    defaults: dict[str, Any] = {}
+    for item in node_tree.interface.items_tree:
+        if getattr(item, "item_type", "") != "SOCKET" or item.in_out != "INPUT":
+            continue
+        if not hasattr(item, "default_value"):
+            continue
+        value = item.default_value
+        try:
+            value = tuple(value)
+        except TypeError:
+            pass
+        defaults[item.identifier] = value
+    return defaults
+
+
+def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
+    """A group node becomes ``GeneratedClass(**{"Socket": value, ...})``; the
+    inner tree is emitted as a ``CustomGroup`` subclass on the collector.
+
+    Only linked inputs and unlinked inputs whose value differs from the
+    group's own interface default are passed — the rest come from the
+    rebuilt interface."""
+    inner = node.node_tree
+    if inner is None or ctx.collector is None:
+        return None  # unknown group → fall through to the unsupported path
+    class_name = ctx.collector.register(inner)
+    iface_defaults = _group_input_defaults(inner)
+
+    items: dict[str, Expr] = {}
+    for socket in node.inputs:
+        if socket.identifier.startswith("__extend__"):
+            continue
+        link = ctx.input_link(node, socket.identifier)
+        if link is not None:
+            items[socket.name] = ctx.upstream_expr(link)
+            continue
+        if not hasattr(socket, "default_value"):
+            continue
+        current = socket.default_value
+        try:
+            current = tuple(current)
+        except TypeError:
+            pass
+        iface_default = iface_defaults.get(socket.identifier, _UNSET)
+        if iface_default is _UNSET or not _eq(current, iface_default):
+            items[socket.name] = Lit(socket.default_value)
+    return GroupCall(class_name, items)
+
+
+for _group_bl_idname in _GROUP_BASES:
+    register_emitter(_group_bl_idname)(_emit_group_node)
 
 
 # ---------------------------------------------------------------------------

@@ -170,6 +170,19 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   by the first-item default, and the ambiguous `*NodeGroup` bl_idnames were
   dropped from the codegen registry (group nodes now report unsupported
   instead of emitting an arbitrary `CustomGeometryGroup` subclass).
+- [x] **Recursive node groups**: a group node round-trips as a
+  `Custom{Geometry,Shader,Compositor}Group` subclass whose `_build_group`
+  recreates the inner tree, instantiated as
+  `GeneratedClass(**{"Socket Name": value, ...})`. `to_python` body was
+  split into a per-tree `_emit_tree` (returning `_TreeEmission`) plus
+  module assembly; a `_GroupCollector` threads through `EmitContext`,
+  deduplicates inner trees by name, renders each class once, and orders
+  them innermost-first (a group is appended only after the groups it
+  nests). Only linked inputs and unlinked inputs that differ from the
+  group's own interface default are passed; the `GroupCall` IR renders the
+  `**{...}` form because socket names need not be valid identifiers. Tests
+  force a fresh `_build_group` rebuild (renaming existing groups) so the
+  inner structure — not just reuse-by-name — is verified.
 
 ## To Do
 
@@ -177,11 +190,11 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 - [ ] Mode-dependent socket defaults: probe node currently created with
   default properties, so irrelevant kwargs (e.g. `length=` on EVALUATED
   CurveToPoints) are emitted. Probe could copy enum props first.
-
-### Stretch
-- [ ] Round-trip node groups recursively (emit `CustomGeometryGroup`
-  subclasses for nested groups) — also needed by `build_mask_grid`
-  (ClipFieldToBox).
+- [ ] Variable-items node constructors: `FieldToGrid`/`FieldToList`/
+  `CaptureAttribute`/`Bake` have no emitter, so their item inputs emit as
+  invalid positional kwargs (e.g. `field_0=`). Need the items-dict form
+  (`g.FieldToGrid.boolean(topology=…, items={…})`), like the FormatString
+  emitter (xfail: `build_mask_grid`).
 
 ### Out of reach
 - Item identifiers on hand-built zones: a tree whose `generation_items`
