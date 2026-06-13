@@ -301,11 +301,24 @@ cases (counts approximate), by node/feature gap:
   (`g.GeometryToInstance(a, b, c)`, creation order). Removes the error from
   Scatter on Surface / Curve to Tube / Instance on Elements, which now reach
   the socket-method/output-accessor gap below.
-- [ ] **Socket-method / output-accessor faithfulness**
-  (`'BooleanMath' object has no attribute 'switch'`, `'IntegerSocket' object
-  has no attribute 'mix'`, `Socket 'X' not found on output accessor`): a
-  socket method or `.o.<name>` is emitted that the rebuilt socket doesn't
-  expose. Now the dominant remaining category (Array, Curve to Tube, …).
+- [x] **`.mix` on a non-float receiver** (`'IntegerSocket' has no attribute
+  'mix'`): a symptom of the Math-lift bug above — a ShaderNodeMath with two
+  integer inputs lifted to `Index / integer_math` produced an *IntegerMath*
+  receiver, which lacks `.mix`. Fixed by the `_operator_dispatch_ok` Math
+  guard, not by adding `.mix` to IntegerSocket (which would have masked the
+  wrong-node-type lift).
+- [x] **`.o.<name>` output accessor for multi-word names** (`Socket
+  'flip_and_cyclic' not found on output accessor`): the accessor normalised
+  identifiers but not names, and `denormalize_name("flip_and_cyclic")`
+  title-cases the connector → "Flip **And** Cyclic" ≠ the real name "Flip
+  **and** Cyclic". `SocketAccessor._index` now also matches the key against
+  *normalised socket names*, so `.o.flip_and_cyclic` resolves "Flip and
+  Cyclic". Flipped 5 hair assets (Attachment Info, Curl/Duplicate/Roll/
+  Rotate Hair Curves).
+- [ ] **Remaining socket-method faithfulness**: `.switch` emitted on a
+  node-valued expression (`'BooleanMath' object has no attribute 'switch'`),
+  and a `CaptureAttribute` items error (`…CaptureAttributeItems.new(): error
+  with key`) on Curve to Tube. Per-case from here.
 - [x] **Structural mismatches**: the original ~13 were almost all the
   multiple-Group-Input case above and are now resolved; re-diff any new ones
   per-case.
