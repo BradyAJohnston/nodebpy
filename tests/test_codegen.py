@@ -460,6 +460,20 @@ def test_multi_input_socket_becomes_tuple():
     assert "g.JoinGeometry(geometry=(g.Cube(), g.UVSphere()))" in code
 
 
+def test_geometry_to_instance_emits_positional_args():
+    """GeometryToInstance takes its multi-input geometry as *args, so links
+    render as positional arguments — a geometry= kwarg would be rejected by
+    the varargs constructor."""
+    with TreeBuilder("GTI") as tree:
+        (
+            g.GeometryToInstance(g.Cube(), g.UVSphere(), g.Cone())
+            >> tree.outputs.geometry()
+        )
+    code = _assert_roundtrip(tree)
+    assert "g.GeometryToInstance(g.Cube(), g.UVSphere(), g.Cone())" in code
+    assert "geometry=" not in code
+
+
 def test_roundtrip_structural_city_builder():
     with TreeBuilder("Voxelise") as tree:
         geo = tree.inputs.geometry("Geometry")

@@ -293,10 +293,19 @@ cases (counts approximate), by node/feature gap:
   `g.VectorMath.*` constructor — `_lift_plan` gained the incoming source
   types (`_linked_src_types`). Flipped Combine Cylindrical and Combine
   Spherical.
+- [x] **GeometryToInstance multi-input** (`__init__() got an unexpected
+  keyword argument 'geometry'`): unlike JoinGeometry (whose `geometry=`
+  iterable param absorbs the multi-input tuple), GeometryToInstance takes
+  `*args`, so the generic `geometry=(...)` kwarg was rejected. A custom
+  emitter now renders its multi-input geometry links as positional args
+  (`g.GeometryToInstance(a, b, c)`, creation order). Removes the error from
+  Scatter on Surface / Curve to Tube / Instance on Elements, which now reach
+  the socket-method/output-accessor gap below.
 - [ ] **Socket-method / output-accessor faithfulness**
-  (`'BooleanMath' object has no attribute 'switch'`, `Socket 'X' not found
-  on output accessor`): a socket method or `.o.<name>` is emitted that the
-  rebuilt socket doesn't expose.
+  (`'BooleanMath' object has no attribute 'switch'`, `'IntegerSocket' object
+  has no attribute 'mix'`, `Socket 'X' not found on output accessor`): a
+  socket method or `.o.<name>` is emitted that the rebuilt socket doesn't
+  expose. Now the dominant remaining category (Array, Curve to Tube, …).
 - [x] **Structural mismatches**: the original ~13 were almost all the
   multiple-Group-Input case above and are now resolved; re-diff any new ones
   per-case.

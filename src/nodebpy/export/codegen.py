@@ -2976,6 +2976,21 @@ def _emit_join_strings(node, ctx: EmitContext) -> Expr | _Val | None:
     return Call("g.JoinStrings", [strings], kwargs)
 
 
+@register_emitter("GeometryNodeGeometryToInstance")
+def _emit_geometry_to_instance(node, ctx: EmitContext) -> Expr | _Val | None:
+    """GeometryToInstance takes its multi-input geometry as ``*args``, so its
+    links render as positional arguments (in creation order), not a
+    ``geometry=`` kwarg the varargs constructor would reject."""
+    entries = [
+        (link.sort_id, ctx.upstream_expr(link))
+        for link in ctx.incoming.get(node.name, ())
+        if link.to_socket.identifier == "Geometry"
+    ]
+    entries.sort(key=lambda e: e[0], reverse=True)
+    ctx.used_aliases.add("g")
+    return Call("g.GeometryToInstance", args=[expr for _, expr in entries])
+
+
 # data_type → MenuSwitch/IndexSwitch factory classmethod name.
 _SWITCH_FACTORY_NAMES = {
     "FLOAT": "float",
