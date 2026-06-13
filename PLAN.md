@@ -210,9 +210,9 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 - [x] **Bundled-asset round-trip coverage**: `test_roundtrip_bundled_asset`
   parametrises over every geometry node-group asset Blender ships with bpy
   (the "essentials"/dynamics/hair/principal-components libraries). The set
-  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 50 groups after the
+  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 52 groups after the
   backlog work below) is asserted hard for regression protection; the
-  remaining ~13 that hit codegen gaps are non-strict `xfail` so
+  remaining ~11 that hit codegen gaps are non-strict `xfail` so
   a future fix surfaces as XPASS. This is the broadest available coverage —
   real trees not authored through nodebpy. Backlog of the gaps they exercise
   is below.
@@ -332,11 +332,28 @@ cases (counts approximate), by node/feature gap:
 - [x] **CaptureAttribute matrix/color/rotation item types**: `_type_map`
   used data_type spellings (`FLOAT4X4`…) where `capture_items.new()` wants
   socket-type spellings (`MATRIX`…); now `{'VALUE': 'FLOAT'}`.
-- [ ] **Remaining per-asset**: Curve to Tube is now a structural mismatch
-  (re-diff); Set Hair Curve Profile / Clump Hair Curves hit the
-  inactive-socket (mode-dependent default) gap.
-- [x] **Structural mismatches**: the original ~13 were almost all the
-  multiple-Group-Input case above and are now resolved; re-diff any new ones
-  per-case.
+- [x] **Bare reference resolves to the wrong output**: a bare node reference
+  links its output by best type-match, so a `MenuSwitch` (int `Output` +
+  per-item boolean `is_selected`) feeding a boolean `Switch` linked the wrong
+  output. `_output_expr` now pins `.o.<name>` only when the linked output's
+  type differs from the consumer's *and* a better-typed output exists (no
+  churn on same-type cases). Flipped Generate / Interpolate Hair Curves.
+
+### Remaining 11 xfails (each a distinct, harder case)
+- [ ] **Duplicate group socket names** (Array, Scatter on Surface): the group
+  has two interface inputs both named "Randomize Scale" feeding a nested
+  group with two inputs both named "Scale"; `GroupCall(**{name: value})`
+  can't carry two same-name keys, so one link drops. Needs identifier- or
+  position-based group linking.
+- [ ] **Math vs VectorMath with a color operand** (Scatter on Surface):
+  `color - x` dispatches to VectorMath, but the original is a scalar Math
+  taking the color as a single value — operator-lift faithfulness for color.
+- [ ] **CaptureAttribute item pairing** (Instance on Elements): two items
+  ("Value", "Normal") get their linked sources swapped — item/socket order
+  mismatch in the emitter's `zip`.
+- [ ] **Integer socket defaults emitted as float** (Create Guide Index Map),
+  **FloatCurve.items** property mis-read (Braid), **ClosureZone** inline
+  closure definition (Custom Force), and one asset whose generated code
+  segfaults Blender on exec.
 - [ ] Extend coverage to the shader and compositor essentials libraries
   (`shading_nodes_essentials.blend`, `compositing_nodes_essentials.blend`).
