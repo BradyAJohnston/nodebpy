@@ -284,13 +284,15 @@ cases (counts approximate), by node/feature gap:
   `(0.0,)*dimensions` and pads/truncates to 3 floats when assigning. Flipped
   5 assets: 3D to Screen Space, Screen to 3D Space, Project with Depth,
   Set Attachment Surface, Transform and Project.
-- [ ] **Operator lifting of `vector_const * scalar`** (`NodeSocketFloat
-  .default_value expected a float, not tuple`): codegen lifts a VectorMath
+- [x] **Operator lifting of `vector_const * scalar`** (`NodeSocketFloat
+  .default_value expected a float, not tuple`): codegen lifted a VectorMath
   multiply to `(1.0, 0.0, 0.0) * r`, but `tuple * float_socket` re-creates a
-  *scalar* Math node whose float input rejects the tuple. The lift is
-  unfaithful when one operand is a literal vector and the other a scalar
-  socket; refuse it there and fall back to the constructor (Array, Combine
-  Cylindrical, Combine Spherical).
+  *scalar* Math node whose float input rejects the tuple. A VectorMath lift
+  is now refused unless at least one operand is a linked vector socket (so
+  the operator dispatches to VectorMath), falling back to the
+  `g.VectorMath.*` constructor — `_lift_plan` gained the incoming source
+  types (`_linked_src_types`). Flipped Combine Cylindrical and Combine
+  Spherical.
 - [ ] **Socket-method / output-accessor faithfulness**
   (`'BooleanMath' object has no attribute 'switch'`, `Socket 'X' not found
   on output accessor`): a socket method or `.o.<name>` is emitted that the
