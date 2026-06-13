@@ -315,10 +315,21 @@ cases (counts approximate), by node/feature gap:
   *normalised socket names*, so `.o.flip_and_cyclic` resolves "Flip and
   Cyclic". Flipped 5 hair assets (Attachment Info, Curl/Duplicate/Roll/
   Rotate Hair Curves).
-- [ ] **Remaining socket-method faithfulness**: `.switch` emitted on a
-  node-valued expression (`'BooleanMath' object has no attribute 'switch'`),
-  and a `CaptureAttribute` items error (`…CaptureAttributeItems.new(): error
-  with key`) on Curve to Tube. Per-case from here.
+- [x] **Lifted operator returns a node** (`'BooleanMath' has no attribute
+  'switch'`): a Python operator dispatches on its left operand, and nodebpy's
+  operators only return a socket when the left operand is already one — so
+  `g.Compare…() & g.Compare…()` (two nodes) returned a node. `_lift_expr` now
+  forces only the leading operand to a socket (socket_expr; a no-op when
+  already a socket), keeping the lifted result a socket. Flipped Shrinkwrap.
+- [x] **Boolean `~`/`^` returned nodes**: the boolean socket mixin overrode
+  `&`/`|` to return sockets but missed `__invert__`/`__xor__`; added them so
+  all boolean ops return a `BooleanSocket`.
+- [x] **CaptureAttribute matrix/color/rotation item types**: `_type_map`
+  used data_type spellings (`FLOAT4X4`…) where `capture_items.new()` wants
+  socket-type spellings (`MATRIX`…); now `{'VALUE': 'FLOAT'}`.
+- [ ] **Remaining per-asset**: Curve to Tube is now a structural mismatch
+  (re-diff); Set Hair Curve Profile / Clump Hair Curves hit the
+  inactive-socket (mode-dependent default) gap.
 - [x] **Structural mismatches**: the original ~13 were almost all the
   multiple-Group-Input case above and are now resolved; re-diff any new ones
   per-case.
