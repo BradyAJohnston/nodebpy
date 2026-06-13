@@ -232,10 +232,23 @@ cases (counts approximate), by node/feature gap:
   input socket default is set before the node's enum items exist, so the
   value isn't a valid choice yet. Needs ordering or deferral of menu default
   assignment (e.g. Array, Curve to Tube, Scatter on Surface, hair generators).
-- [ ] **Bundle / Closure variable-items nodes** (`CombineBundle`/
-  `SeparateBundle`/`EvaluateClosure __init__ got item_N`): these are
-  items-driven like CaptureAttribute but emit raw `item_N` kwargs. Need an
-  items-dict emitter / Bundle-aware handling.
+- [x] **Bundle nodes** (`CombineBundle`/`SeparateBundle`): both gained an
+  `items=` builder API and a codegen emitter. `CombineBundle(items={name:
+  source})` links each source into the bundle via the `__extend__` virtual
+  socket (Blender infers the item type from the source) then renames the
+  item; `SeparateBundle(bundle, items={name: "TYPE"})` declares each output
+  by name + socket-type string and reads them via `.o[name]`. The bundle
+  parts of the dynamics/hair assets now round-trip (verified by link diffs);
+  those assets remain xfailed on other gaps below.
+- [ ] **Closure nodes** (`EvaluateClosure __init__ got item_0`, `ClosureZone`):
+  `EvaluateClosure` has paired `input_items`/`output_items` and a
+  `sync_signature` from the defining closure — more involved than bundles.
+  Still emits raw `item_N` kwargs (e.g. Displace Geometry).
+- [ ] **Multiple Group Input/Output nodes**: a tree with several `NodeGroup
+  Input` nodes (Blender allows this) collapses to one on round-trip, so the
+  node multiset differs (e.g. Collider — its bundle parts are otherwise
+  correct). The interface is emitted once; duplicate group-IO nodes aren't
+  re-created.
 - [x] **String escaping**: `_fmt` now uses `json.dumps(…, ensure_ascii=False)`
   so string defaults with newlines/tabs/control chars emit a valid literal
   (was a naive quote/backslash replace → `unterminated string literal`).

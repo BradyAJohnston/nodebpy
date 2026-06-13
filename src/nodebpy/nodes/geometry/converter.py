@@ -11,6 +11,7 @@ from ...types import (
     InputBundle,
     InputClosure,
     InputCollection,
+    InputLinkable,
     InputColor,
     InputFloat,
     InputFont,
@@ -845,11 +846,32 @@ class CombineBundle(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, define_signature: bool = False):
+    def __init__(
+        self,
+        items: "dict[str, InputLinkable] | None" = None,
+        *,
+        define_signature: bool = False,
+    ):
         super().__init__()
-        key_args = {}
         self.define_signature = define_signature
-        self._establish_links(**key_args)
+        for name, value in (items or {}).items():
+            self._add_bundle_item(name, value)
+
+    def _add_bundle_item(self, name: str, value: "InputLinkable | str") -> None:
+        """Add a named bundle item.
+
+        A socket-type string (``"GEOMETRY"``) declares an unlinked item; any
+        other value is linked in via the ``__extend__`` virtual socket, which
+        makes Blender create an item of the source socket's own type (then
+        renamed, since the item otherwise inherits the source socket's name)."""
+        if isinstance(value, str):
+            self.node.bundle_items.new(value, name)
+            return
+        extend = self.node.inputs[len(self.node.inputs) - 1]
+        self.tree.link(self._source_socket(value), extend)
+        # Re-fetch by index: the collection just grew, so any earlier item
+        # reference is stale (see bpy collection invalidation).
+        self.node.bundle_items[len(self.node.bundle_items) - 1].name = name
 
     @property
     def define_signature(self) -> bool:
@@ -5597,13 +5619,18 @@ class SeparateBundle(BaseNode):
     def __init__(
         self,
         bundle: InputBundle = None,
+        items: "dict[str, str] | None" = None,
         *,
         define_signature: bool = False,
     ):
         super().__init__()
-        key_args = {"Bundle": bundle}
         self.define_signature = define_signature
-        self._establish_links(**key_args)
+        # Items are output sockets pulled from the bundle; each is declared by
+        # name and socket-type string (the inverse of CombineBundle, where the
+        # type is inferred from a linked source).
+        for name, socket_type in (items or {}).items():
+            self.node.bundle_items.new(socket_type, name)
+        self._establish_links(Bundle=bundle)
 
     @property
     def define_signature(self) -> bool:

@@ -3146,6 +3146,44 @@ for _items_bl_idname in _ITEMS_NODE_SPECS:
     register_emitter(_items_bl_idname)(_emit_items_node)
 
 
+@register_emitter("NodeCombineBundle")
+def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
+    """CombineBundle's inputs are its bundle items; emit
+    ``g.CombineBundle(items={name: source})``. Unlinked items declare their
+    socket type as a string (the inverse direction from a linked source)."""
+    items: dict[str, Expr] = {}
+    for socket, item in zip(
+        (s for s in node.inputs if not s.identifier.startswith("__extend__")),
+        node.bundle_items,
+    ):
+        link = ctx.input_link(node, socket.identifier)
+        items[socket.name] = (
+            ctx.upstream_expr(link) if link is not None else Lit(item.socket_type)
+        )
+    ctx.used_aliases.add("g")
+    kwargs: dict[str, Expr] = {"items": DictExpr(items)}
+    if node.define_signature:
+        kwargs["define_signature"] = Lit(True)
+    return Call("g.CombineBundle", kwargs=kwargs)
+
+
+@register_emitter("NodeSeparateBundle")
+def _emit_separate_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
+    """SeparateBundle's outputs are its bundle items; emit
+    ``g.SeparateBundle(bundle, items={name: "TYPE"})`` declaring each output
+    by name and socket type. Items are read back via ``.o[name]``."""
+    items: dict[str, Expr] = {
+        item.name: Lit(item.socket_type) for item in node.bundle_items
+    }
+    bundle_link = ctx.input_link(node, "Bundle")
+    args = [ctx.upstream_expr(bundle_link)] if bundle_link is not None else []
+    ctx.used_aliases.add("g")
+    kwargs: dict[str, Expr] = {"items": DictExpr(items)}
+    if node.define_signature:
+        kwargs["define_signature"] = Lit(True)
+    return Call("g.SeparateBundle", args, kwargs)
+
+
 # ---------------------------------------------------------------------------
 # Node group emitter (recursive)
 # ---------------------------------------------------------------------------

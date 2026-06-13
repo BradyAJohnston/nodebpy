@@ -1229,6 +1229,25 @@ def test_field_to_list_emits_constructor_items_dict():
     assert "field_0" not in code
 
 
+def test_combine_and_separate_bundle_round_trip():
+    """CombineBundle bundles named sources; SeparateBundle pulls them back out
+    by name and socket type. Both emit the items-dict form."""
+    with TreeBuilder("BundleRT") as tree:
+        geo = tree.inputs.geometry("Geo")
+        val = tree.inputs.float("Val")
+        bundle = g.CombineBundle(items={"Geometry": geo, "Factor": val})
+        parts = g.SeparateBundle(
+            bundle.o.bundle, items={"Geometry": "GEOMETRY", "Factor": "FLOAT"}
+        )
+        parts.o["Geometry"] >> tree.outputs.geometry("Out")
+        parts.o["Factor"] >> tree.outputs.float("F")
+    code = _assert_roundtrip(tree)
+    assert 'g.CombineBundle(items={"Geometry": geo, "Factor": val})' in code
+    assert "g.SeparateBundle(" in code
+    assert '"Geometry": "GEOMETRY"' in code
+    assert "item_0" not in code  # not the raw Item_N socket kwargs
+
+
 # ---------------------------------------------------------------------------
 # Recursive node groups
 # ---------------------------------------------------------------------------
