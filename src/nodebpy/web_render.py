@@ -21,8 +21,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .builder.tree import TreeBuilder
 
-#: Default geonodes-web-render version served from the CDN.
-DEFAULT_VERSION = "0.3.1"
+#: geonodes-web-render version served from the CDN. A semver range (`"0.3"`)
+#: lets esm.sh serve the latest matching patch, so web-render bug fixes ship to
+#: the docs without re-pinning here. Use an exact version (e.g. "0.3.2") to lock.
+DEFAULT_VERSION = "0.3"
 
 #: Default ESM CDN. esm.sh transparently resolves the external react/react-dom.
 DEFAULT_CDN = "https://esm.sh"
