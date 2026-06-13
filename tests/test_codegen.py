@@ -1161,6 +1161,24 @@ def test_menu_switch_defaults_and_unlinked_items():
     assert menu_node.inputs["Menu"].default_value == "B"
 
 
+def test_menu_interface_default_deferred_after_body():
+    """A menu interface input's default is set after the body, not inline: its
+    valid values only exist once the consuming MenuSwitch has been linked, so
+    setting it at creation would raise ``enum "X" not found in ()``."""
+    with TreeBuilder("MenuIface") as tree:
+        shape = tree.inputs.menu("Shape", "Circle")
+        out = tree.outputs.integer("Out")
+        g.MenuSwitch.integer(shape, {"Line": 0, "Circle": 1, "Curve": 2}) >> out
+    code = _assert_roundtrip(tree)  # exec would raise if the default were inline
+    lines = code.splitlines()
+    create = next(i for i, ln in enumerate(lines) if "tree.inputs.menu(" in ln)
+    deferred = next(
+        i for i, ln in enumerate(lines) if 'shape.default_value = "Circle"' in ln
+    )
+    assert '"Circle"' not in lines[create]  # not passed at creation
+    assert deferred > create  # set later, after the MenuSwitch in the body
+
+
 def test_index_switch_emits_factory_tuple():
     """IndexSwitch round-trips item count and order as a tuple; literal
     defaults and the index input are preserved."""

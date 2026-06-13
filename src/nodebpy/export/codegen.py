@@ -834,6 +834,9 @@ class EmitContext:
     pending_lines: list[str] = field(default_factory=list)
     zones: dict[str, "_ZoneState"] = field(default_factory=dict)
     collector: "_GroupCollector | None" = None
+    # Statements emitted after the body — menu interface defaults whose enum is
+    # only populated once the consuming MenuSwitch has been created and linked.
+    iface_deferred: list[str] = field(default_factory=list)
 
     def input_link(self, node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
@@ -2412,9 +2415,15 @@ def _emit_interface(
     args: list[str] = [_fmt(item.name)]
     if direction == "inputs" and item.socket_type not in _NO_DEFAULT_VALUE_TYPES:
         try:
-            args.append(_fmt(item.default_value))
+            default = item.default_value
         except (AttributeError, TypeError):
-            pass
+            default = None
+        if item.socket_type == "NodeSocketMenu" and default:
+            # A menu's valid values come from the MenuSwitch linked to it, so
+            # the default can only be set once the body has created that node.
+            ctx.iface_deferred.append(f"    {var_name}.default_value = {_fmt(default)}")
+        elif default is not None:
+            args.append(_fmt(default))
     description = getattr(item, "description", "")
     if description:
         args.append(f"description={_fmt(description)}")
@@ -2543,6 +2552,7 @@ def _assemble_tree_body(emission: "_TreeEmission") -> list[str]:
         emission.body_lines,
         emission.out_lines,
     )
+    deferred = emission.deferred_lines
     lines = list(iface_lines)
     if iface_lines and (body or out_lines):
         lines.append("")
@@ -2551,7 +2561,11 @@ def _assemble_tree_body(emission: "_TreeEmission") -> list[str]:
         if body:
             lines.append("")
         lines.extend(out_lines)
-    if not (iface_lines or body or out_lines):
+    if deferred:
+        if iface_lines or body or out_lines:
+            lines.append("")
+        lines.extend(deferred)
+    if not (iface_lines or body or out_lines or deferred):
         lines.append("    pass")
     return lines
 
@@ -2566,6 +2580,7 @@ class _TreeEmission:
     body_lines: list[str]
     out_lines: list[str]
     used_aliases: set[str]
+    deferred_lines: list[str] = field(default_factory=list)
 
 
 # bl_idname of a group node → the CustomGroup base it round-trips to.
@@ -2805,7 +2820,9 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
         source = ctx.upstream_expr(link)
         out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
-    return _TreeEmission(iface_lines, body, out_lines, ctx.used_aliases)
+    return _TreeEmission(
+        iface_lines, body, out_lines, ctx.used_aliases, ctx.iface_deferred
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -229,10 +229,14 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 ### Bundled-asset backlog
 Failure categories blocking the xfailed `test_roundtrip_bundled_asset`
 cases (counts approximate), by node/feature gap:
-- [ ] **Menu/enum socket defaults** (`enum "X" not found in ()`, ~9): a menu
-  input socket default is set before the node's enum items exist, so the
-  value isn't a valid choice yet. Needs ordering or deferral of menu default
-  assignment (e.g. Array, Curve to Tube, Scatter on Surface, hair generators).
+- [x] **Menu/enum socket defaults** (`enum "X" not found in ()`): a menu
+  interface input's valid values come from the MenuSwitch linked to it, so
+  its default can only be set once the body has created that node. Codegen
+  now emits the menu input *without* its default and appends a deferred
+  `<var>.default_value = "X"` statement after the body (new
+  `EmitContext.iface_deferred` → `_TreeEmission.deferred_lines`). Removes the
+  enum error from ~9 assets (Array, Curve to Tube, Scatter on Surface, hair
+  generators); those now hit the vector/scalar-default gap below.
 - [x] **Bundle nodes** (`CombineBundle`/`SeparateBundle`): both gained an
   `items=` builder API and a codegen emitter. `CombineBundle(items={name:
   source})` links each source into the bundle via the `__extend__` virtual
