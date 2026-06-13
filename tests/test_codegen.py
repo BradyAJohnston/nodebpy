@@ -1570,3 +1570,85 @@ def test_grid_info_accessors_dissolve():
 @pytest.mark.parametrize("build", ROUNDTRIP_BUILDERS, ids=lambda b: b.__name__)
 def test_roundtrip_usecases(build):
     _assert_roundtrip(build())
+
+
+# ---------------------------------------------------------------------------
+# Round-trip over Blender's bundled node-group assets (the "essentials"
+# libraries shipped with bpy). These are real-world trees not authored through
+# nodebpy, so they are the broadest available codegen coverage. Many use nodes
+# or features codegen does not yet round-trip; those are marked xfail (see the
+# asset backlog in PLAN.md). The set known to round-trip is asserted hard, so a
+# regression in any of them fails the build.
+# ---------------------------------------------------------------------------
+
+_ASSET_FILES = (
+    "geometry_nodes_essentials.blend",
+    "geometry_nodes_dynamics_assets.blend",
+    "procedural_hair_node_assets.blend",
+    "principal_components.blend",
+)
+
+# Bundled geometry assets that currently round-trip cleanly. Everything else is
+# xfailed; when a codegen gap is closed, re-measure and move names in here.
+_ASSET_ROUNDTRIP_OK = frozenset(
+    {
+        "Curve Info",
+        "Curve Root",
+        "Curve Segment",
+        "Curve Tip",
+        "Edge Length",
+        "Face Corner Angle",
+        "Geometry Principal Components",
+        "Is Edge Boundary",
+        "Is Edge Loose",
+        "Is Edge Manifold",
+        "Is UV Split",
+        "Separate Cylindrical",
+        "Separate Spherical",
+        "Smooth Geometry",
+    }
+)
+
+
+def _bundled_geometry_assets():
+    """``[(path, name)]`` for every bundled geometry node-group asset."""
+    import os
+
+    import bpy
+
+    nodes_dir = os.path.join(bpy.utils.system_resource("DATAFILES"), "assets", "nodes")
+    params = []
+    for filename in _ASSET_FILES:
+        path = os.path.join(nodes_dir, filename)
+        if not os.path.exists(path):
+            continue
+        with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, _):
+            for name in src.node_groups:
+                marks = (
+                    ()
+                    if name in _ASSET_ROUNDTRIP_OK
+                    else pytest.mark.xfail(
+                        reason="codegen gap — see asset backlog in PLAN.md",
+                        strict=False,
+                    )
+                )
+                params.append(
+                    pytest.param(
+                        path, name, id=f"{filename.split('.')[0]}-{name}", marks=marks
+                    )
+                )
+    return params
+
+
+@pytest.mark.parametrize("path,name", _bundled_geometry_assets())
+def test_roundtrip_bundled_asset(path, name):
+    import bpy
+
+    with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, dst):
+        if name not in src.node_groups:
+            pytest.skip(f"{name!r} not in {path}")
+        dst.node_groups = [name]
+    group = dst.node_groups[0]
+    if group.bl_idname != "GeometryNodeTree":
+        pytest.skip("not a geometry node group")
+    _assert_roundtrip(TreeBuilder.geometry(group))

@@ -207,9 +207,47 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
   + name instead of the raw identifier. This cleared the last xfail
   (`build_import_microscopy_meshes_api`); every usecase now round-trips.
 
+- [x] **Bundled-asset round-trip coverage**: `test_roundtrip_bundled_asset`
+  parametrises over every geometry node-group asset Blender ships with bpy
+  (the "essentials"/dynamics/hair/principal-components libraries). The set
+  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 14 groups) is asserted
+  hard for regression protection; the ~49 that hit codegen gaps are
+  non-strict `xfail` so a future fix surfaces as XPASS. This is the broadest
+  available coverage — real trees not authored through nodebpy. Backlog of
+  the gaps they exercise is below.
+
 ## To Do
 
 ### Polish
 - [ ] Mode-dependent socket defaults: probe node currently created with
   default properties, so irrelevant kwargs (e.g. `length=` on EVALUATED
-  CurveToPoints) are emitted. Probe could copy enum props first.
+  CurveToPoints) are emitted. Probe could copy enum props first. Also the
+  cause of several bundled-asset `RuntimeError: Socket … is inactive`
+  failures (a link targets a socket inactive under the rebuilt node's mode).
+
+### Bundled-asset backlog
+Failure categories blocking the xfailed `test_roundtrip_bundled_asset`
+cases (counts approximate), by node/feature gap:
+- [ ] **Menu/enum socket defaults** (`enum "X" not found in ()`, ~9): a menu
+  input socket default is set before the node's enum items exist, so the
+  value isn't a valid choice yet. Needs ordering or deferral of menu default
+  assignment (e.g. Array, Curve to Tube, Scatter on Surface, hair generators).
+- [ ] **Bundle / Closure variable-items nodes** (`CombineBundle`/
+  `SeparateBundle`/`EvaluateClosure __init__ got item_N`): these are
+  items-driven like CaptureAttribute but emit raw `item_N` kwargs. Need an
+  items-dict emitter / Bundle-aware handling.
+- [ ] **String escaping** (`SyntaxError: unterminated string literal`, 3):
+  string socket defaults containing newlines/quotes aren't escaped in the
+  emitted literal (`_fmt`).
+- [ ] **Vector vs scalar defaults** (`expected a float`/`should contain 3`/
+  `length must match dimensions`): a vector socket default emitted as a
+  scalar (or vice versa) — `CombineXYZ`-style sockets, `3D to Screen Space`.
+- [ ] **Socket-method / output-accessor faithfulness**
+  (`'BooleanMath' object has no attribute 'switch'`, `Socket 'X' not found
+  on output accessor`): a socket method or `.o.<name>` is emitted that the
+  rebuilt socket doesn't expose.
+- [ ] **Structural mismatches** (13): exec succeeds but the rebuilt tree
+  differs (Box Selection, Normal/Sphere Selection, Randomize Transforms, …)
+  — needs per-case diffing.
+- [ ] Extend coverage to the shader and compositor essentials libraries
+  (`shading_nodes_essentials.blend`, `compositing_nodes_essentials.blend`).
