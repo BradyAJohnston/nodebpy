@@ -129,6 +129,7 @@ def test_panel_context_clears_after_exit():
         assert inside.parent == panel
         assert outside.parent != panel
 
+
 def test_string_generators(snapshot):
     with g.tree():
         tree = TreeBuilder(PrincipalComponents().node_tree)

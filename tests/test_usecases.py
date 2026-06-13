@@ -9,7 +9,11 @@ import bpy
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.builder import BooleanSocket, FloatSocket
-from nodebpy.nodes.geometry.groups import ClipFieldToBox, PrincipalComponents
+from nodebpy.nodes.geometry.groups import (
+    ClipFieldToBox,
+    GeometryPrincipalComponents,
+    PrincipalComponents,
+)
 
 
 def import_channel() -> TreeBuilder:
@@ -77,13 +81,13 @@ def test_import_channel():
 
 def build_principal_components() -> TreeBuilder:
     with g.tree():
-        pca = PrincipalComponents()
+        pca = GeometryPrincipalComponents()
     return TreeBuilder(pca.node_tree)
 
 
 def test_PCA_asset():
     tree = build_principal_components()
-    assert len(tree.nodes) == 35
+    assert len(tree.nodes) == 11
 
 
 def build_surface_hello_world() -> TreeBuilder:

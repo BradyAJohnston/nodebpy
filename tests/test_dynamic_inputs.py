@@ -19,13 +19,11 @@ def test_dynamic_inputs():
         assert inferred_integer.name == "integer"
         assert inferred_integer.socket_type == "INT"
 
-
         with pytest.raises(TypeError):
             ftg.add_item("name", None)
 
         with pytest.raises(TypeError):
-            ftg.add_items({'example': 1.0, 'none': None})
-
+            ftg.add_items({"example": 1.0, "none": None})
 
         ftl = g.FieldToList(10)
         inferred_float_list = ftl.add_item("float", 1.0)
@@ -50,7 +48,9 @@ def test_dynamic_inputs():
 
         switch = g.IndexSwitch.integer(items=range(10))
         assert switch.data_type == "INT"
-        assert len(switch.node.inputs) == 12 # 10 items + 1 index + 1 dynamic input socket
+        assert (
+            len(switch.node.inputs) == 12
+        )  # 10 items + 1 index + 1 dynamic input socket
         assert len(switch._items) == 10
         switch2 = g.IndexSwitch.integer(items=range(20))
 

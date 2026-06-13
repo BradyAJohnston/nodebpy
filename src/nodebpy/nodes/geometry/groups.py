@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from nodebpy import TreeBuilder
 from nodebpy.types import (
     InputBoolean,
+    InputGeometry,
     InputInteger,
     InputObject,
     InputVector,
@@ -11,23 +12,25 @@ from nodebpy.types import (
 from ...builder import (
     CustomGeometryGroup,
     IntegerSocket,
+    IntegerSocketList,
     RotationSocket,
     SocketAccessor,
     VectorSocket,
-    IntegerSocketList,
 )
 from . import (
     AxesToRotation,
+    CaptureAttribute,
     CombineMatrix,
     CombineXYZ,
     EdgesOfVertex,
     EdgeVertices,
-    Frame,
-    Position,
-    Switch,
-    IntegerMath,
     FieldToList,
+    Frame,
     Index,
+    IntegerMath,
+    Position,
+    SampleIndex,
+    Switch,
 )
 
 
@@ -171,14 +174,14 @@ class PrincipalComponents(CustomGeometryGroup):
     """
 
     _name = "Principal Components"
-    _color_tag = "INPUT"
+    _color_tag = "CONVERTER"
 
     class _Inputs(SocketAccessor):
         position: VectorSocket
         group_id: IntegerSocket
 
     class _Outputs(SocketAccessor):
-        center: VectorSocket
+        group_center: VectorSocket
         rotation: RotationSocket
         principal_components: VectorSocket
         longest_axis: VectorSocket
@@ -212,7 +215,7 @@ class PrincipalComponents(CustomGeometryGroup):
             description="An index used to group values together for multiple separate operations",
             hide_value=True,
         )
-        out_centroid = tree.outputs.vector("Centroid")
+        out_centroid = tree.outputs.vector("Group Center")
         out_princ = tree.outputs.vector(
             "Principal Components",
             description="Variance of the data along each principal axis",
@@ -247,6 +250,66 @@ class PrincipalComponents(CustomGeometryGroup):
             short >> out_short
             AxesToRotation(long, short) >> out_rotation
             inter * u.determinant().sign() >> out_inter
+
+
+class GeometryPrincipalComponents(CustomGeometryGroup):
+    _name = "Geometry Principal Components"
+    _color_tag = "GEOMETRY"
+
+    class _Inputs:
+        geometry: InputGeometry
+
+    class _Outputs(SocketAccessor):
+        group_center: VectorSocket
+        rotation: RotationSocket
+        principal_components: VectorSocket
+        longest_axis: VectorSocket
+        intermediate_axis: VectorSocket
+        shortest_axis: VectorSocket
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        position: InputVector = None,
+    ):
+        kwargs = {
+            "Geometry": geometry,
+            "Position": position,
+        }
+        super().__init__(**kwargs)
+
+    def _build_group(self, tree: TreeBuilder):
+        tree.collapse = True
+        geo = tree.inputs.geometry("Geometry")
+        position = tree.inputs.vector("Position", default_input="POSITION")
+        center = tree.outputs.vector("Group Center")
+        rotation = tree.outputs.rotation("Rotation")
+        principal_components = tree.outputs.vector("Principal Components")
+        with tree.outputs.panel("Principal Axes", default_closed=True):
+            longest_axis = tree.outputs.vector("Longest Axis")
+            intermediate_axis = tree.outputs.vector("Intermediate Axis")
+            shortest_axis = tree.outputs.vector("Shortest Axis")
+
+        geo = geo >> CaptureAttribute.point()
+        pca = PrincipalComponents(position=geo.capture(position))
+
+        SampleIndex.point.vector(geo, pca.o.group_center) >> center
+        SampleIndex.point.quaternion(geo, pca.o.rotation) >> rotation
+        (
+            SampleIndex.point.vector(geo, pca.o.principal_components)
+            >> principal_components
+        )
+        SampleIndex.point.vector(geo, pca.o.longest_axis) >> longest_axis
+        SampleIndex.point.vector(geo, pca.o.intermediate_axis) >> intermediate_axis
+        SampleIndex.point.vector(geo, pca.o.shortest_axis) >> shortest_axis
 
 
 class ClipFieldToBox(CustomGeometryGroup):

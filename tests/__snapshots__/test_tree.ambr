@@ -6,7 +6,7 @@
   with TreeBuilder("Principal Components") as tree:
       position = tree.inputs.vector("Position", (0.0, 0.0, 0.0), default_input="POSITION")
       group_id = tree.inputs.integer("Group ID", 0, description="An index used to group values together for multiple separate operations", hide_value=True)
-      centroid = tree.outputs.vector("Centroid")
+      group_center = tree.outputs.vector("Group Center")
       principal_components = tree.outputs.vector("Principal Components", description="Variance of the data along each principal axis")
       rotation = tree.outputs.rotation("Rotation", description="Rotation that defines the principal component basis")
       with tree.outputs.panel("Principal Axes", default_closed=True):
@@ -31,7 +31,7 @@
           axes_to_rotation = g.AxesToRotation(primary_axis=combine_xyz, secondary_axis=combine_xyz_2)
           combine_xyz_1 * g.Math.sign(matrix_svd.u.determinant()) >> intermediate_axis
   
-      field_average >> centroid
+      field_average >> group_center
       matrix_svd.s >> principal_components
       axes_to_rotation >> rotation
       combine_xyz >> longest_axis
@@ -72,7 +72,7 @@
           N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
       end
       N23("Group Output"):::default-node
-      N1 -->|"Mean->Centroid"| N23
+      N1 -->|"Mean->Group Center"| N23
       N14 -->|"S->Principal Components"| N23
       N20 -->|"Rotation->Rotation"| N23
       N16 -->|"Vector->Longest Axis"| N23
@@ -160,7 +160,7 @@
           N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
       end
       N23("Group Output"):::default-node
-      N1 -->|"Mean->Centroid"| N23
+      N1 -->|"Mean->Group Center"| N23
       N14 -->|"S->Principal Components"| N23
       N20 -->|"Rotation->Rotation"| N23
       N16 -->|"Vector->Longest Axis"| N23
