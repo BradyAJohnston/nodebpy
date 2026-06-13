@@ -1700,6 +1700,7 @@ _ASSET_FILES = (
 _ASSET_ROUNDTRIP_OK = frozenset(
     {
         "3D to Screen Space",
+        "Array",
         "Attachment Info",
         "Blend Hair Curves",
         "Box Selection",

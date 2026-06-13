@@ -3369,13 +3369,21 @@ def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
     class_name = ctx.collector.register(inner)
     iface_defaults = _group_input_defaults(inner)
 
+    # _establish_links matches a kwarg key against socket names first, then
+    # identifiers, so a duplicated name (a group may declare two "Scale"
+    # inputs) is ambiguous — key those by identifier instead, which is unique.
+    names = [s.name for s in node.inputs if not s.identifier.startswith("__extend__")]
+
+    def _key(socket) -> str:
+        return socket.identifier if names.count(socket.name) > 1 else socket.name
+
     items: dict[str, Expr] = {}
     for socket in node.inputs:
         if socket.identifier.startswith("__extend__"):
             continue
         link = ctx.input_link(node, socket.identifier)
         if link is not None:
-            items[socket.name] = ctx.upstream_expr(link)
+            items[_key(socket)] = ctx.upstream_expr(link)
             continue
         if not hasattr(socket, "default_value"):
             continue
@@ -3386,7 +3394,7 @@ def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
             pass
         iface_default = iface_defaults.get(socket.identifier, _UNSET)
         if iface_default is _UNSET or not _eq(current, iface_default):
-            items[socket.name] = Lit(socket.default_value)
+            items[_key(socket)] = Lit(socket.default_value)
     return GroupCall(class_name, items)
 
 
