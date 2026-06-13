@@ -44,13 +44,14 @@ def _structure(node_tree):
         # Variable-items sockets carry a creation-order counter in their
         # identifier (Generation_1, Item_0, Field_2, …). The counter need not
         # round-trip — a hand-built node whose collection was cleared and
-        # rebuilt keeps a higher counter than a fresh one. What matters is that
-        # a corresponding socket exists, so key on the role prefix + name.
-        ident = socket.identifier
-        prefix = re.sub(r"_\d+$", "", ident)
-        if prefix != ident:
-            return prefix + ":" + socket.name
-        return ident
+        # rebuilt keeps a higher counter than a fresh one, and the *first* item
+        # often has no counter at all (CaptureAttribute "Attribute" vs
+        # "Attribute_001"). What matters is that a corresponding socket exists,
+        # so always key on the role prefix + name. (Multi-input regular sockets
+        # like Math "Value"/"Value_001" still disambiguate via the link's
+        # source side in the multiset, and codegen never reorders them.)
+        prefix = re.sub(r"_\d+$", "", socket.identifier)
+        return prefix + ":" + socket.name
 
     links = sorted(
         (
