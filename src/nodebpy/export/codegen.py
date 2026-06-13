@@ -3184,6 +3184,39 @@ def _emit_separate_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     return Call("g.SeparateBundle", args, kwargs)
 
 
+@register_emitter("NodeEvaluateClosure")
+def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
+    """EvaluateClosure feeds values into a closure and reads results: emit
+    ``g.EvaluateClosure(closure, input_items={name: source},
+    output_items={name: "TYPE"})``. Input items are linked sources (like
+    CombineBundle); output items declare their type (like SeparateBundle)."""
+    input_items: dict[str, Expr] = {}
+    in_sockets = (
+        s
+        for s in node.inputs
+        if s.identifier != "Closure" and not s.identifier.startswith("__extend__")
+    )
+    for socket, item in zip(in_sockets, node.input_items):
+        link = ctx.input_link(node, socket.identifier)
+        input_items[socket.name] = (
+            ctx.upstream_expr(link) if link is not None else Lit(item.socket_type)
+        )
+    output_items: dict[str, Expr] = {
+        item.name: Lit(item.socket_type) for item in node.output_items
+    }
+    closure_link = ctx.input_link(node, "Closure")
+    args = [ctx.upstream_expr(closure_link)] if closure_link is not None else []
+    ctx.used_aliases.add("g")
+    kwargs: dict[str, Expr] = {}
+    if input_items:
+        kwargs["input_items"] = DictExpr(input_items)
+    if output_items:
+        kwargs["output_items"] = DictExpr(output_items)
+    if node.define_signature:
+        kwargs["define_signature"] = Lit(True)
+    return Call("g.EvaluateClosure", args, kwargs)
+
+
 # ---------------------------------------------------------------------------
 # Node group emitter (recursive)
 # ---------------------------------------------------------------------------

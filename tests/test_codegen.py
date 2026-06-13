@@ -1248,6 +1248,25 @@ def test_combine_and_separate_bundle_round_trip():
     assert "item_0" not in code  # not the raw Item_N socket kwargs
 
 
+def test_evaluate_closure_round_trip():
+    """EvaluateClosure feeds linked values into a closure (input_items) and
+    declares its results by type (output_items), read back via .o[name]."""
+    with TreeBuilder("ClosureRT") as tree:
+        fn = tree.inputs.closure("Fn")
+        geo = tree.inputs.geometry("Geo")
+        strength = tree.inputs.float("Strength")
+        ev = g.EvaluateClosure(
+            fn,
+            input_items={"Geometry": geo, "Strength": strength},
+            output_items={"Geometry": "GEOMETRY"},
+        )
+        ev.o["Geometry"] >> tree.outputs.geometry("Out")
+    code = _assert_roundtrip(tree)
+    assert "g.EvaluateClosure(fn, input_items={" in code
+    assert 'output_items={"Geometry": "GEOMETRY"}' in code
+    assert "item_0" not in code
+
+
 # ---------------------------------------------------------------------------
 # Recursive node groups
 # ---------------------------------------------------------------------------

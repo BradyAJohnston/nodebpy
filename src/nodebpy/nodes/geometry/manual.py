@@ -978,17 +978,36 @@ class EvaluateClosure(BaseNode):
     def __init__(
         self,
         closure: InputClosure = None,
+        input_items: "dict[str, InputLinkable | str] | None" = None,
+        output_items: "dict[str, str] | None" = None,
         *,
         active_input_index: int = 0,
         active_output_index: int = 0,
         define_signature: bool = False,
     ):
         super().__init__()
-        key_args = {"Closure": closure}
+        self.define_signature = define_signature
+        # Output items are results read from the closure — declared by name and
+        # socket-type string. Input items are values fed in — linked sources
+        # (type inferred via the __extend__ socket) or a type string to declare
+        # one unlinked. This mirrors CombineBundle (inputs) / SeparateBundle
+        # (outputs).
+        for name, socket_type in (output_items or {}).items():
+            self.node.output_items.new(socket_type, name)
+        for name, value in (input_items or {}).items():
+            self._add_input_item(name, value)
         self.active_input_index = active_input_index
         self.active_output_index = active_output_index
-        self.define_signature = define_signature
-        self._establish_links(**key_args)
+        self._establish_links(Closure=closure)
+
+    def _add_input_item(self, name: str, value: "InputLinkable | str") -> None:
+        if isinstance(value, str):
+            self.node.input_items.new(value, name)
+            return
+        extend = self.node.inputs[len(self.node.inputs) - 1]  # input __extend__
+        self.tree.link(self._source_socket(value), extend)
+        # Re-fetch by index: the collection just grew (stale refs segfault).
+        self.node.input_items[len(self.node.input_items) - 1].name = name
 
     def sync_signature(self, node: ClosureOutput | ClosureZone) -> None:
         if isinstance(node, ClosureZone):

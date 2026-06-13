@@ -240,10 +240,19 @@ cases (counts approximate), by node/feature gap:
   by name + socket-type string and reads them via `.o[name]`. The bundle
   parts of the dynamics/hair assets now round-trip (verified by link diffs);
   those assets remain xfailed on other gaps below.
-- [ ] **Closure nodes** (`EvaluateClosure __init__ got item_0`, `ClosureZone`):
-  `EvaluateClosure` has paired `input_items`/`output_items` and a
-  `sync_signature` from the defining closure — more involved than bundles.
-  Still emits raw `item_N` kwargs (e.g. Displace Geometry).
+- [x] **EvaluateClosure**: gained `input_items=`/`output_items=` constructor
+  args and a codegen emitter — `g.EvaluateClosure(closure, input_items={name:
+  source}, output_items={name: "TYPE"})`. Input items link sources via the
+  input `__extend__` socket (like CombineBundle); output items declare type
+  strings (like SeparateBundle), read via `.o[name]`. The closure source is
+  whatever feeds the `Closure` input (a group input, etc.). All three
+  EvaluateClosure assets now round-trip the closure correctly; Displace
+  Geometry is left blocked only on the multiple-Group-Input gap.
+- [ ] **ClosureZone** (inline closure *definition* via `ClosureInput`/
+  `ClosureOutput`): a paired zone that defines a closure's signature + body,
+  needs a zone emitter like Repeat/Simulation. Only one asset uses it
+  (Custom Force), which is also blocked on the menu/enum gap, so it unblocks
+  nothing on its own.
 - [ ] **Multiple Group Input/Output nodes**: a tree with several `NodeGroup
   Input` nodes (Blender allows this) collapses to one on round-trip, so the
   node multiset differs (e.g. Collider — its bundle parts are otherwise
