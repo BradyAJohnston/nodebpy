@@ -210,9 +210,9 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 - [x] **Bundled-asset round-trip coverage**: `test_roundtrip_bundled_asset`
   parametrises over every geometry node-group asset Blender ships with bpy
   (the "essentials"/dynamics/hair/principal-components libraries). The set
-  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 30 groups after the
-  bundle/closure/group-input work) is asserted hard for regression
-  protection; the rest (~33) that hit codegen gaps are non-strict `xfail` so
+  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 50 groups after the
+  backlog work below) is asserted hard for regression protection; the
+  remaining ~13 that hit codegen gaps are non-strict `xfail` so
   a future fix surfaces as XPASS. This is the broadest available coverage —
   real trees not authored through nodebpy. Backlog of the gaps they exercise
   is below.
@@ -222,9 +222,14 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 ### Polish
 - [ ] Mode-dependent socket defaults: probe node currently created with
   default properties, so irrelevant kwargs (e.g. `length=` on EVALUATED
-  CurveToPoints) are emitted. Probe could copy enum props first. Also the
-  cause of several bundled-asset `RuntimeError: Socket … is inactive`
-  failures (a link targets a socket inactive under the rebuilt node's mode).
+  CurveToPoints) are emitted. Probe could copy enum props first.
+- [x] **Inactive group-input sockets** (`RuntimeError: Socket … is
+  inactive`): a group input only used behind an internal switch polls as
+  inactive until the group is evaluated — including the input being linked,
+  so `tree.link`'s guard blocked the very link needed to round-trip. Group
+  nodes joined `_allow_innactive_sockets`. Also fixed the guard message,
+  which always named the source socket even when the *target* was inactive.
+  Flipped 7 hair assets.
 
 ### Bundled-asset backlog
 Failure categories blocking the xfailed `test_roundtrip_bundled_asset`
