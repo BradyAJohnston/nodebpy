@@ -53,7 +53,9 @@ def to_tree_clipper_payload(builder: "TreeBuilder", *, compress: bool = True) ->
         parameters=ExportParameters(
             is_material=is_material,
             name=name,
-            specific_handlers=BUILT_IN_EXPORTER,
+            # BUILT_IN_EXPORTER is a dict literal upstream, so ty infers its key
+            # type as NoneType (invariant dict) rather than the runtime `type`.
+            specific_handlers=BUILT_IN_EXPORTER,  # ty: ignore[invalid-argument-type]
             export_sub_trees=True,
             debug_prints=False,
             write_from_roots=False,
@@ -62,7 +64,9 @@ def to_tree_clipper_payload(builder: "TreeBuilder", *, compress: bool = True) ->
     while export.step():
         pass
     export.set_external(
-        (external_id, item.pointed_to_by.get_pointee().name)
+        # get_pointee() is typed as bare bpy_struct upstream; external items are
+        # always ID datablocks, which do carry a `.name`.
+        (external_id, item.pointed_to_by.get_pointee().name)  # ty: ignore[unresolved-attribute]
         for external_id, item in export.get_external().items()
     )
     return export.export_to_str(compress=compress, json_indent=4)
