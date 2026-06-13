@@ -1614,3 +1614,11 @@ def test_list_operations():
         length = lst.__len__()
         assert isinstance(length, IntegerSocket)
         assert length.node.bl_idname == g.ListLength._bl_idname
+
+def test_enable_output(snapshot):
+    with g.tree() as tree:
+        sel = tree.inputs.boolean()
+        g.Cube().o.mesh.enable_output(sel) >> tree.outputs.geometry("Cube")
+        g.IcoSphere() >> tree.outputs.geometry("IcoSphere").enable_output(sel)
+
+    assert snapshot == tree._repr_markdown_()
