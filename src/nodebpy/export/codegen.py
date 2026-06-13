@@ -865,7 +865,12 @@ class EmitContext:
 
     def upstream_expr(self, link: _Link) -> Expr:
         """Expression referencing the source side of ``link``."""
-        return _output_expr(self._resolve(link), link.from_node, link.from_socket)
+        return _output_expr(
+            self._resolve(link),
+            link.from_node,
+            link.from_socket,
+            to_socket=link.to_socket,
+        )
 
     def socket_expr(self, link: _Link) -> Expr:
         """Like :meth:`upstream_expr` but guaranteed to evaluate to a Socket.
@@ -1031,8 +1036,25 @@ class EmitContext:
         return result
 
 
+def _bare_resolves_elsewhere(from_node, from_socket, to_socket) -> bool:
+    """Whether a bare reference to ``from_node`` would link a *different* output
+    than ``from_socket``.
+
+    nodebpy resolves a bare node by best type-match. When the linked output's
+    type differs from the consumer's (an implicit conversion) and the node has
+    another output that matches the consumer's type exactly, that other output
+    wins — so the bare form is wrong (e.g. MenuSwitch's int ``Output`` vs its
+    per-item boolean ``is_selected`` outputs feeding a boolean ``Switch``)."""
+    if to_socket is None or from_socket.type == to_socket.type:
+        return False
+    return any(
+        s.identifier != from_socket.identifier and s.type == to_socket.type
+        for s in from_node.outputs
+    )
+
+
 def _output_expr(
-    val: _Val, from_node, from_socket, *, force_socket: bool = False
+    val: _Val, from_node, from_socket, *, to_socket=None, force_socket: bool = False
 ) -> Expr:
     """Reference an output socket of an emitted value.
 
@@ -1040,6 +1062,12 @@ def _output_expr(
     others via ``.o.<name>``; ``force_socket`` adds the accessor even for the
     first output. Socket-valued expressions are returned as-is, after
     checking they represent the requested output.
+
+    ``to_socket`` is the consumer-side socket of the link, used to detect the
+    case where a bare reference would resolve to a *different* output than the
+    one linked: when the linked output's type differs from the consumer's and a
+    better-typed output exists, best-match linking would pick the other one, so
+    the accessor is forced.
     """
     if val.outputs is not None:
         expr = val.outputs.get(from_socket.identifier)
@@ -1062,6 +1090,7 @@ def _output_expr(
         not force_socket
         and from_node.outputs
         and from_node.outputs[0].identifier == from_socket.identifier
+        and not _bare_resolves_elsewhere(from_node, from_socket, to_socket)
     ):
         return val.expr
     # Duplicated output names (Mix's four "Result" sockets) are ambiguous on
