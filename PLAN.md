@@ -236,9 +236,12 @@ cases (counts approximate), by node/feature gap:
   `SeparateBundle`/`EvaluateClosure __init__ got item_N`): these are
   items-driven like CaptureAttribute but emit raw `item_N` kwargs. Need an
   items-dict emitter / Bundle-aware handling.
-- [ ] **String escaping** (`SyntaxError: unterminated string literal`, 3):
-  string socket defaults containing newlines/quotes aren't escaped in the
-  emitted literal (`_fmt`).
+- [x] **String escaping**: `_fmt` now uses `json.dumps(…, ensure_ascii=False)`
+  so string defaults with newlines/tabs/control chars emit a valid literal
+  (was a naive quote/backslash replace → `unterminated string literal`).
+  Cleared the SyntaxError for Cloth Dynamics and Hair Dynamics (they now hit
+  the menu/enum gap); Braid Hair Curves has an unrelated `FloatCurve.items`
+  property bug, not a string issue.
 - [ ] **Vector vs scalar defaults** (`expected a float`/`should contain 3`/
   `length must match dimensions`): a vector socket default emitted as a
   scalar (or vice versa) — `CombineXYZ`-style sockets, `3D to Screen Space`.

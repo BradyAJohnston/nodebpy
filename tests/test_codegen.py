@@ -1096,6 +1096,24 @@ def test_join_strings_constructor_and_method():
     assert ".join((" in code
 
 
+def test_string_with_control_characters_round_trips():
+    """A string default with newlines/tabs/quotes/backslashes emits a valid,
+    exec'able literal that preserves the exact value (json escaping)."""
+    import ast
+
+    tricky = 'line1\nline2\t"quoted"\\end\r'
+    with TreeBuilder("TrickyStr") as tree:
+        g.String(tricky) >> tree.outputs.string("Out")
+    code = to_python(tree)
+    ast.parse(code)  # would raise SyntaxError on an unterminated literal
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    node = next(
+        n for n in ns["tree"].tree.nodes if n.bl_idname == "FunctionNodeInputString"
+    )
+    assert node.string == tricky
+
+
 # ---------------------------------------------------------------------------
 # MenuSwitch / IndexSwitch emitters
 # ---------------------------------------------------------------------------

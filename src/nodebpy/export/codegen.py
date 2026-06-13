@@ -22,6 +22,7 @@ from __future__ import annotations
 import ast
 import heapq
 import inspect
+import json
 import keyword
 import re
 import textwrap
@@ -332,8 +333,10 @@ def _fmt(value: Any) -> str:
     if isinstance(value, float):
         return _fmt_float(value)
     if isinstance(value, str):
-        escaped = value.replace("\\", "\\\\").replace('"', '\\"')
-        return f'"{escaped}"'
+        # json.dumps escapes control characters (newlines, tabs, …) that a
+        # naive quote/backslash replace would leave to break the literal,
+        # stays double-quoted, and leaves printable non-ASCII as-is.
+        return json.dumps(value, ensure_ascii=False)
     # Vectors / sequences
     try:
         items = list(value)
