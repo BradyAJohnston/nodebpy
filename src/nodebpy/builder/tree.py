@@ -864,10 +864,16 @@ class TreeBuilder(Generic[_TreeT]):
                     not _allow_innactive_sockets(socket.node)
                     and (getattr(socket.node, "data_type", None) != socket.type)
                 ):
-                    message = f"Socket {socket1.name} from node {socket1.node.name} is inactive."
-                    message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."
-                    message += " This link will be created by Blender but ignored when evaluated."
-                    message += f"Socket type: {socket.bl_idname}"
+                    other = socket2 if socket is socket1 else socket1
+                    assert other.node is not None
+                    direction = "input" if socket.is_output is False else "output"
+                    message = (
+                        f"Socket '{socket.name}' ({direction}) on node "
+                        f"'{socket.node.name}' ({socket.node.bl_idname}) is inactive, "
+                        f"so the link from '{other.name}' on '{other.node.name}' will "
+                        "be created by Blender but ignored when evaluated. "
+                        f"Socket type: {socket.bl_idname}."
+                    )
                     raise RuntimeError(message)
 
         return link
