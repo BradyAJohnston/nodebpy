@@ -2167,13 +2167,10 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         "ROTATION",
         "MATRIX",
     )
-    _type_map = {
-        "VALUE": "FLOAT",
-        # "VECTOR": "FLOAT_VECTOR",
-        "RGBA": "FLOAT_COLOR",
-        "ROTATION": "QUATERNION",
-        "MATRIX": "FLOAT4X4",
-    }
+    # capture_items.new(socket_type=...) takes the *socket* type spelling
+    # (VECTOR/RGBA/ROTATION/MATRIX), not the data_type spelling
+    # (FLOAT_VECTOR/FLOAT_COLOR/QUATERNION/FLOAT4X4); only VALUE differs (FLOAT).
+    _type_map = {"VALUE": "FLOAT"}
 
     class _DomainFactory:
         def __init__(self, domain: _AttributeDomains):

@@ -1294,6 +1294,18 @@ class _BooleanMixin(BaseSocket):
 
         return BooleanMath.l_and(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
 
+    def __xor__(self, other: Any) -> Self:
+        self._assert_output("^")
+        from ..nodes.geometry.converter import BooleanMath
+
+        return BooleanMath.not_equal(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
+
+    def __invert__(self) -> Self:
+        self._assert_output("~")
+        from ..nodes.geometry.converter import BooleanMath
+
+        return BooleanMath.l_not(self.socket).o.boolean  # ty: ignore[invalid-return-type]
+
     @property
     def switch(self) -> "_BooleanSwitchSocketFactory":
         "Creat a Switch node with this boolean as the `switch` input."
