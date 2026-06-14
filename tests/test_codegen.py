@@ -1710,6 +1710,7 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Combine Cylindrical",
         "Combine Spherical",
         "Curl Hair Curves",
+        "Create Guide Index Map",
         "Curve Info",
         "Curve Root",
         "Curve Segment",

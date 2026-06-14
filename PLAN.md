@@ -349,13 +349,19 @@ cases (counts approximate), by node/feature gap:
   `_operator_dispatch_ok` now refuses the Math lift when its dispatching (first
   linked) operand is an RGBA/VECTOR source.
 
-### Remaining 9 xfails (each a distinct, harder case)
+- [x] **Float default on an INT socket** (Create Guide Index Map): not a
+  codegen bug but a library one — `g.AccumulateField(data_type="INT")` applies
+  its constructor's `value=1.0` float default to the now-integer Value socket,
+  which bpy rejects. `_set_input_default_value` already broadcasts scalars into
+  VECTOR sockets; it now also coerces a float to `int` for INT sockets (mirrors
+  that special case). Flipped Create Guide Index Map (54 → 55 passing).
+
+### Remaining 8 xfails (each a distinct, harder case)
 - [ ] **CaptureAttribute item pairing** (Instance on Elements): a tree with
   several capture nodes whose items share names ("Normal"/"Tangent"/"Value")
   produces one swapped source link; per-node emission looks faithful, so the
   cause is subtle (needs careful multi-node diffing).
-- [ ] **Integer socket defaults emitted as float** (Create Guide Index Map),
-  **FloatCurve.items** property mis-read (Braid), **ClosureZone** inline
+- [ ] **FloatCurve.items** property mis-read (Braid), **ClosureZone** inline
   closure definition (Custom Force), and one asset whose generated code
   segfaults Blender on exec.
 - [ ] Extend coverage to the shader and compositor essentials libraries

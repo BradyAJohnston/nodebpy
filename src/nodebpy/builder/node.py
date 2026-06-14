@@ -150,12 +150,11 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     def _set_input_default_value(self, input: NodeSocket, value: Any) -> None:
         """Set the default value for an input socket, handling type conversions."""
         assert hasattr(input, "default_value")
-        if (
-            hasattr(input, "type")
-            and input.type == "VECTOR"
-            and isinstance(value, (int, float))
-        ):
+        stype = getattr(input, "type", None)
+        if stype == "VECTOR" and isinstance(value, (int, float)):
             input.default_value = [value] * len(input.default_value)  # type: ignore
+        elif stype == "INT" and isinstance(value, float):
+            input.default_value = int(value)  # type: ignore
         else:
             input.default_value = value  # type: ignore
 
