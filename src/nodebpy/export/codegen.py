@@ -1126,9 +1126,21 @@ def _output_expr(
         and not _bare_resolves_elsewhere(from_node, from_socket, to_socket)
     ):
         return val.expr
-    # Duplicated output names (Mix's four "Result" sockets) are ambiguous on
-    # the accessor — fall back to the identifier, which it resolves first.
+    # Duplicated output names are ambiguous on the accessor.
     if sum(s.name == from_socket.name for s in from_node.outputs) > 1:
+        # A variable-items node's item-output identifier carries a
+        # creation-order counter the rebuilt node reassigns (e.g. a captured
+        # item named "Selection" colliding with CaptureAttribute's built-in
+        # "Selection" output). The *output position* follows the item-collection
+        # order, which round-trips, so reference it by index. Fixed-output nodes
+        # (Mix's four "Result" sockets) keep their stable identifier.
+        if from_node.bl_idname in _ITEMS_NODE_SPECS:
+            index = next(
+                i
+                for i, s in enumerate(from_node.outputs)
+                if s.identifier == from_socket.identifier
+            )
+            return Subscript(Attr(val.expr, "o"), Lit(index))
         key = _normalize(from_socket.identifier)
     else:
         key = _normalize(from_socket.name)
