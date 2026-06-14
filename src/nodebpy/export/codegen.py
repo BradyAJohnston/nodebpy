@@ -1059,17 +1059,31 @@ def _bare_resolves_elsewhere(from_node, from_socket, to_socket) -> bool:
     """Whether a bare reference to ``from_node`` would link a *different* output
     than ``from_socket``.
 
-    nodebpy resolves a bare node by best type-match. When the linked output's
-    type differs from the consumer's (an implicit conversion) and the node has
-    another output that matches the consumer's type exactly, that other output
-    wins — so the bare form is wrong (e.g. MenuSwitch's int ``Output`` vs its
-    per-item boolean ``is_selected`` outputs feeding a boolean ``Switch``)."""
-    if to_socket is None or from_socket.type == to_socket.type:
+    nodebpy resolves a bare node via ``_best_match``, which ranks the node's
+    outputs by their position in ``SOCKET_COMPATIBILITY[consumer_type]`` — *not*
+    by an exact type match. A compatible-but-different type can outrank the
+    linked output (e.g. for a float ``VALUE`` consumer, a ``VECTOR`` output
+    ranks above an ``INT`` one, so EdgeVertices' bare reference resolves to
+    "Position 1" instead of the linked "Vertex Index 1"). Simulate that exact
+    ranking and report when the winner isn't ``from_socket``."""
+    if to_socket is None:
         return False
-    return any(
-        s.identifier != from_socket.identifier and s.type == to_socket.type
-        for s in from_node.outputs
+    from ..types import SOCKET_COMPATIBILITY
+
+    compatible = SOCKET_COMPATIBILITY.get(to_socket.type, ())
+    # Consider every compatible output regardless of the *original* node's
+    # current visibility: the rebuilt node is fresh, so an output the author
+    # manually hid (e.g. ImageTexture's "Alpha") is visible again and would
+    # win best-match. ``__extend__`` (CUSTOM) is never in ``compatible``.
+    candidates = [s for s in from_node.outputs if s.type in compatible]
+    if not candidates:
+        return False
+    # _best_match sorts by compatibility index (stable → first socket on ties).
+    best = min(
+        range(len(candidates)),
+        key=lambda i: (compatible.index(candidates[i].type), i),
     )
+    return candidates[best].identifier != from_socket.identifier
 
 
 def _output_expr(
@@ -2680,6 +2694,12 @@ def to_python(
     constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
     lines.append(f"with {constructor}({_fmt(node_tree.name)}) as tree:")
     lines.extend(_assemble_tree_body(emission))
+
+    # Datablock defaults (a Material/Object/Image socket value) render via
+    # ``repr()`` as ``bpy.data.<collection>['name']``, so the module needs a
+    # bare ``import bpy`` to resolve them on rebuild.
+    if any("bpy.data." in line for line in lines):
+        lines.insert(0, "import bpy")
     return "\n".join(lines)
 
 
