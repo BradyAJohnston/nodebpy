@@ -2687,6 +2687,7 @@ def to_python(
         min_chain_length=min_chain_length,
         strict=strict,
         max_inline_width=max_inline_width,
+        snapshot_positions=snapshot_positions,
     )
     emission = _emit_tree(node_tree, collector)
 
@@ -2718,7 +2719,8 @@ def to_python(
     lines.extend(_assemble_tree_body(emission))
 
     if snapshot_positions:
-        lines.extend(_node_positions_block(node_tree))
+        lines.append("")
+        lines.extend(_node_positions_lines(node_tree, indent=""))
 
     # Datablock defaults (a Material/Object/Image socket value) render via
     # ``repr()`` as ``bpy.data.<collection>['name']``, so the module needs a
@@ -2728,20 +2730,20 @@ def to_python(
     return "\n".join(lines)
 
 
-def _node_positions_block(node_tree) -> list[str]:
-    """A trailing ``{name: (x, y)}`` dict plus a loop restoring each node's
-    authored location. Keyed by node name; a rebuild that drops a node
-    (reroute) or renames it is tolerated via ``.get``."""
-    lines = ["", "", "# Restore authored node positions."]
-    lines.append("_node_positions = {")
+def _node_positions_lines(node_tree, indent: str) -> list[str]:
+    """A ``tree.node_positions = {name: (x, y), ...}`` assignment at ``indent``
+    that restores each node's authored location. ``TreeBuilder.node_positions``
+    applies them by name, tolerating a node a rebuild drops (reroute) or renames.
+    References the local ``tree`` (the top-level ``with`` target, or a group's
+    ``_build_group`` parameter)."""
+    lines = [
+        f"{indent}# Restore authored node positions.",
+        f"{indent}tree.node_positions = {{",
+    ]
     for node in node_tree.nodes:
         loc = tuple(round(v, 1) for v in node.location)
-        lines.append(f"    {_fmt(node.name)}: {_fmt(loc)},")
-    lines.append("}")
-    lines.append("for _name, _location in _node_positions.items():")
-    lines.append("    _node = tree.tree.nodes.get(_name)")
-    lines.append("    if _node is not None:")
-    lines.append("        _node.location = _location")
+        lines.append(f"{indent}    {_fmt(node.name)}: {_fmt(loc)},")
+    lines.append(f"{indent}}}")
     return lines
 
 
@@ -2811,6 +2813,7 @@ class _GroupCollector:
     min_chain_length: int
     strict: bool
     max_inline_width: int | None
+    snapshot_positions: bool = False
     class_defs: list[str] = field(default_factory=list)
     names_by_tree: dict[str, str] = field(default_factory=dict)
     used_names: set[str] = field(default_factory=set)
@@ -2830,7 +2833,9 @@ class _GroupCollector:
         base = _GROUP_BASE_FOR_TREE.get(node_tree.bl_idname, "CustomGeometryGroup")
         self.bases_used.add(base)
         self.class_defs.append(
-            _render_group_class(class_name, node_tree, base, emission)
+            _render_group_class(
+                class_name, node_tree, base, emission, self.snapshot_positions
+            )
         )
         return class_name
 
@@ -2855,7 +2860,11 @@ def _class_name(name: str) -> str:
 
 
 def _render_group_class(
-    class_name: str, node_tree, base: str, emission: "_TreeEmission"
+    class_name: str,
+    node_tree,
+    base: str,
+    emission: "_TreeEmission",
+    snapshot_positions: bool = False,
 ) -> str:
     """A ``class X(CustomGroup): _name = ...; def _build_group(self, tree): ...``
     block, with the tree body re-indented one level deeper."""
@@ -2864,7 +2873,18 @@ def _render_group_class(
     if color and color != "NONE":
         header.append(f"    _color_tag = {_fmt(color)}")
     header.extend(["", "    def _build_group(self, tree):"])
-    body = [("    " + line) if line else "" for line in _assemble_tree_body(emission)]
+    inner = _assemble_tree_body(emission)
+    if snapshot_positions:
+        # Disable this group's auto-layout before building, then restore the
+        # authored positions after — at the body's "in-block" 4-space indent,
+        # which the re-indent below lifts to the method-body depth.
+        inner = (
+            ["    tree.disable_arrange()", ""]
+            + inner
+            + [""]
+            + _node_positions_lines(node_tree, indent="    ")
+        )
+    body = [("    " + line) if line else "" for line in inner]
     return "\n".join(header + body)
 
 

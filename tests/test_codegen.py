@@ -250,7 +250,7 @@ def test_snapshot_positions_round_trip():
 
     code = to_python(tree, snapshot_positions=True)
     assert "arrange=None" in code  # auto-layout disabled
-    assert "_node_positions = {" in code
+    assert "tree.node_positions = {" in code
 
     ns: dict = {}
     exec(code, ns)  # noqa: S102
@@ -267,6 +267,53 @@ def test_default_does_not_snapshot_positions():
     code = to_python(tree)
     assert "arrange=None" not in code
     assert "_node_positions" not in code
+
+
+def test_snapshot_positions_nested_group_round_trip():
+    """snapshot_positions restores locations inside nested group classes too:
+    the generated ``_build_group`` disables its own auto-layout and applies a
+    positions block, so both the outer tree and the group round-trip."""
+    import bpy
+
+    from nodebpy.builder import CustomGeometryGroup
+
+    class _PosInner(CustomGeometryGroup):
+        _name = "PosInner"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            out = tree.outputs.geometry("Geometry")
+            g.SetPosition(geometry=geo, offset=g.Position()) >> out
+
+    with TreeBuilder("PosOuter", arrange=None) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        out = tree.outputs.geometry("Geometry")
+        _PosInner(**{"Geometry": geo}) >> out
+
+    want_outer, want_inner = {}, {}
+    for i, node in enumerate(tree.tree.nodes):
+        node.location = (i * 111.0, i * 40.0)
+        want_outer[node.name] = (i * 111.0, i * 40.0)
+    for i, node in enumerate(bpy.data.node_groups["PosInner"].nodes):
+        node.location = (i * 222.0, i * 70.0)
+        want_inner[node.name] = (i * 222.0, i * 70.0)
+
+    code = to_python(tree, snapshot_positions=True)
+    assert "tree.disable_arrange()" in code  # group's own layout disabled
+
+    _force_fresh_group_build()
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt: TreeBuilder = ns["tree"]
+    for node in rebuilt.tree.nodes:
+        got = tuple(round(v, 1) for v in node.location)
+        assert got == want_outer[node.name], (node.name, got)
+    rebuilt_inner = next(
+        n.node_tree for n in rebuilt.tree.nodes if n.bl_idname == "GeometryNodeGroup"
+    )
+    for node in rebuilt_inner.nodes:
+        got = tuple(round(v, 1) for v in node.location)
+        assert got == want_inner[node.name], (node.name, got)
 
 
 # ---------------------------------------------------------------------------
@@ -986,6 +1033,41 @@ def test_snapshot_fanout(snapshot):
         g.SetPosition(geo_in, offset=noise) >> tree.outputs.geometry("Out1")
         g.SetPosition(geo_in, offset=noise) >> tree.outputs.geometry("Out2")
     assert snapshot == to_python(tree)
+
+
+def test_snapshot_positions_block(snapshot):
+    """snapshot_positions=True: arrange=None + a trailing positions block.
+    Locations are assigned deterministically so the snapshot is stable."""
+    with TreeBuilder("SnapPositions", arrange=None) as tree:
+        geo_in = tree.inputs.geometry("Geometry")
+        g.SetPosition(geo_in, offset=g.Position()) >> tree.outputs.geometry("Geometry")
+    for i, node in enumerate(tree.tree.nodes):
+        node.location = (i * 100.0, i * 40.0)
+    assert snapshot == to_python(tree, snapshot_positions=True)
+
+
+def test_snapshot_positions_nested_group_block(snapshot):
+    """snapshot_positions=True with a nested group: the group's _build_group
+    disables auto-layout and restores its own node positions."""
+    import bpy
+
+    from nodebpy.builder import CustomGeometryGroup
+
+    class _SnapInner(CustomGeometryGroup):
+        _name = "SnapInner"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            g.SetPosition(geometry=geo) >> tree.outputs.geometry("Geometry")
+
+    with TreeBuilder("SnapNested", arrange=None) as tree:
+        geo_in = tree.inputs.geometry("Geometry")
+        _SnapInner(**{"Geometry": geo_in}) >> tree.outputs.geometry("Geometry")
+    for i, node in enumerate(tree.tree.nodes):
+        node.location = (i * 120.0, i * 50.0)
+    for i, node in enumerate(bpy.data.node_groups["SnapInner"].nodes):
+        node.location = (i * 200.0, i * 60.0)
+    assert snapshot == to_python(tree, snapshot_positions=True)
 
 
 def test_snapshot_chain_simple(snapshot):

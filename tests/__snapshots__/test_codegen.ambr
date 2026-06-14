@@ -77,6 +77,64 @@
       value * 2.0 >> result
   '''
 # ---
+# name: test_snapshot_positions_block
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("SnapPositions", arrange=None) as tree:
+      geometry = tree.inputs.geometry("Geometry")
+      geometry_1 = tree.outputs.geometry("Geometry")
+  
+      geometry >> g.SetPosition(offset=g.Position()) >> geometry_1
+  
+  # Restore authored node positions.
+  tree.node_positions = {
+      "Group Input": (0.0, 0.0),
+      "Position": (100.0, 40.0),
+      "Set Position": (200.0, 80.0),
+      "Group Output": (300.0, 120.0),
+  }
+  '''
+# ---
+# name: test_snapshot_positions_nested_group_block
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  from nodebpy.builder import CustomGeometryGroup
+  
+  
+  class SnapInner(CustomGeometryGroup):
+      _name = "SnapInner"
+  
+      def _build_group(self, tree):
+          tree.disable_arrange()
+  
+          geometry = tree.inputs.geometry("Geometry")
+          geometry_1 = tree.outputs.geometry("Geometry")
+  
+          geometry >> g.SetPosition() >> geometry_1
+  
+          # Restore authored node positions.
+          tree.node_positions = {
+              "Group Input": (0.0, 0.0),
+              "Set Position": (200.0, 60.0),
+              "Group Output": (400.0, 120.0),
+          }
+  
+  
+  with TreeBuilder("SnapNested", arrange=None) as tree:
+      geometry = tree.inputs.geometry("Geometry")
+      geometry_1 = tree.outputs.geometry("Geometry")
+  
+      SnapInner(**{"Geometry": geometry}) >> geometry_1
+  
+  # Restore authored node positions.
+  tree.node_positions = {
+      "Group Input": (0.0, 0.0),
+      "Group": (120.0, 50.0),
+      "Group Output": (240.0, 100.0),
+  }
+  '''
+# ---
 # name: test_snapshot_simple
   '''
   from nodebpy import geometry as g, TreeBuilder

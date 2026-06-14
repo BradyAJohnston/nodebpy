@@ -783,6 +783,25 @@ class TreeBuilder(Generic[_TreeT]):
     def __len__(self) -> int:
         return len(self.nodes)
 
+    def disable_arrange(self) -> None:
+        """Disable the auto-layout that otherwise runs when this tree's context
+        exits, so explicitly assigned node locations are preserved."""
+        self._arrange = None
+
+    @property
+    def node_positions(self) -> dict[str, tuple[float, float]]:
+        """A ``{node name: (x, y)}`` snapshot of every node's location."""
+        return {node.name: tuple(node.location) for node in self.tree.nodes}
+
+    @node_positions.setter
+    def node_positions(self, positions: dict[str, tuple[float, float]]) -> None:
+        """Apply ``{node name: (x, y)}`` locations. Names absent from the tree
+        (e.g. a reroute a rebuild dropped) are skipped."""
+        for name, location in positions.items():
+            node = self.tree.nodes.get(name)
+            if node is not None:
+                node.location = location
+
     def arrange(self):
         if self._arrange == "sugiyama":
             try:

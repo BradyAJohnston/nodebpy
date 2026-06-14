@@ -1890,7 +1890,7 @@ def test_field_to_grid_capture_typed(snapshot):
         end >> tree.outputs.float("Grid", structure_type="GRID")
         back >> tree.outputs.integer("Background", structure_type="SINGLE")
 
-    assert snapshot == tree
+    assert snapshot == tree.to_mermaid()
 
 
 def test_grid_socket_methods():

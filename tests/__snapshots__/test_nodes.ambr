@@ -1,22 +1,40 @@
 # serializer version: 1
 # name: test_field_to_grid_capture_typed
-  TreeBuilder(
-    collapse=False,
-    fake_user=False,
-    ignore_visibility=False,
-    inputs=InputInterfaceContext(
-      builder=...,
-      interface=bpy.data.node_groups['Geometry Node Group']...NodeTreeInterface,
-      tree=bpy.data.node_groups['Geometry Node Group'],
-    ),
-    nodes=bpy.data.node_groups['Geometry Node Group'].nodes,
-    outputs=OutputInterfaceContext(
-      builder=...,
-      interface=bpy.data.node_groups['Geometry Node Group']...NodeTreeInterface,
-      tree=bpy.data.node_groups['Geometry Node Group'],
-    ),
-    tree=bpy.data.node_groups['Geometry Node Group'],
-  )
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Cube Grid Topology<br/><small>(-1,-1,-1)</small>"):::geometry-node
+      N1("Value"):::input-node
+      N2("Boolean"):::input-node
+      N3("Vector"):::input-node
+      N4("Integer"):::input-node
+      N5("Noise Texture<br/><small>×5</small>"):::texture-node
+      N6("Field to Grid"):::geometry-node
+      N7("Grid Dilate & Erode"):::geometry-node
+      N8("Grid Laplacian"):::geometry-node
+      N9("Grid Dilate & Erode"):::geometry-node
+      N10("Grid Gradient"):::geometry-node
+      N11("Voxelize Grid"):::geometry-node
+      N12("Grid Divergence"):::geometry-node
+      N13("Grid Info"):::input-node
+      N14("Group Output"):::default-node
+      N0 -->|"Topology->Topology"| N6
+      N1 -->|"Value->Float"| N6
+      N2 -->|"Boolean->Boolean"| N6
+      N3 -->|"Vector->Vector"| N6
+      N4 -->|"Integer->idx"| N6
+      N5 -->|"Factor->Float.001"| N6
+      N6 -->|"idx->Grid"| N9
+      N9 -->|"Grid->Grid"| N11
+      N11 -->|"Grid->Grid"| N13
+      N6 -->|"Float.001->Grid"| N7
+      N7 -->|"Grid->Grid"| N8
+      N8 -->|"Laplacian->Grid"| N10
+      N10 -->|"Gradient->Grid"| N12
+      N12 -->|"Divergence->Grid"| N14
+      N13 -->|"Background Value->Background"| N14
+  ```
+  '''
 # ---
 # name: test_get_named_grid
   '''
