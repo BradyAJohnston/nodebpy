@@ -210,7 +210,7 @@ style of `tests/test_usecases.py` and `nodes/geometry/groups.py`.
 - [x] **Bundled-asset round-trip coverage**: `test_roundtrip_bundled_asset`
   parametrises over every geometry node-group asset Blender ships with bpy
   (the "essentials"/dynamics/hair/principal-components libraries). The set
-  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 52 groups after the
+  that round-trips cleanly (`_ASSET_ROUNDTRIP_OK`, 54 groups after the
   backlog work below) is asserted hard for regression protection; the
   remaining ~11 that hit codegen gaps are non-strict `xfail` so
   a future fix surfaces as XPASS. This is the broadest available coverage —
@@ -339,18 +339,21 @@ cases (counts approximate), by node/feature gap:
   type differs from the consumer's *and* a better-typed output exists (no
   churn on same-type cases). Flipped Generate / Interpolate Hair Curves.
 
-### Remaining 11 xfails (each a distinct, harder case)
-- [ ] **Duplicate group socket names** (Array, Scatter on Surface): the group
-  has two interface inputs both named "Randomize Scale" feeding a nested
-  group with two inputs both named "Scale"; `GroupCall(**{name: value})`
-  can't carry two same-name keys, so one link drops. Needs identifier- or
-  position-based group linking.
-- [ ] **Math vs VectorMath with a color operand** (Scatter on Surface):
-  `color - x` dispatches to VectorMath, but the original is a scalar Math
-  taking the color as a single value — operator-lift faithfulness for color.
-- [ ] **CaptureAttribute item pairing** (Instance on Elements): two items
-  ("Value", "Normal") get their linked sources swapped — item/socket order
-  mismatch in the emitter's `zip`.
+- [x] **Duplicate group socket names** (Array): a group with two interface
+  inputs both named "Randomize Scale" feeding a nested group with two "Scale"
+  inputs — `GroupCall(**{name: value})` can't carry two same-name keys.
+  `_emit_group_node` now keys by socket identifier when the name is not unique
+  (`_establish_links` resolves identifiers too).
+- [x] **Math vs VectorMath with a color operand** (Scatter on Surface):
+  `color - x` dispatches to VectorMath, but the original is a scalar Math.
+  `_operator_dispatch_ok` now refuses the Math lift when its dispatching (first
+  linked) operand is an RGBA/VECTOR source.
+
+### Remaining 9 xfails (each a distinct, harder case)
+- [ ] **CaptureAttribute item pairing** (Instance on Elements): a tree with
+  several capture nodes whose items share names ("Normal"/"Tangent"/"Value")
+  produces one swapped source link; per-node emission looks faithful, so the
+  cause is subtle (needs careful multi-node diffing).
 - [ ] **Integer socket defaults emitted as float** (Create Guide Index Map),
   **FloatCurve.items** property mis-read (Braid), **ClosureZone** inline
   closure definition (Custom Force), and one asset whose generated code
