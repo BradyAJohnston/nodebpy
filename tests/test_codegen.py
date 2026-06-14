@@ -1318,6 +1318,30 @@ def test_evaluate_closure_round_trip():
     assert "item_0" not in code
 
 
+def test_closure_zone_round_trip():
+    """A ClosureZone defines a closure body: input_item reads feed the body,
+    output_item targets collect results, and .closure produces the closure."""
+    with TreeBuilder("ClosureZoneRT") as tree:
+        cz = g.ClosureZone()
+        geo = cz.input_item("Geometry", "GEOMETRY")
+        g.SetPosition(geometry=geo).o.geometry >> cz.output_item(
+            "Geometry", "GEOMETRY"
+        )
+        g.CombineXYZ(x=1.0).o.vector >> cz.output_item("Force", "VECTOR")
+        ev = g.EvaluateClosure(
+            cz.closure,
+            input_items={"Geometry": tree.inputs.geometry("Geo")},
+            output_items={"Force": "VECTOR"},
+        )
+        ev.o["Force"] >> tree.outputs.vector("Out")
+    code = _assert_roundtrip(tree)
+    assert "g.ClosureZone()" in code
+    assert '.input_item("Geometry", "GEOMETRY")' in code
+    assert '.output_item("Force", "VECTOR")' in code
+    assert ".closure" in code
+    assert "item_0" not in code  # no raw Item_N socket kwargs
+
+
 # ---------------------------------------------------------------------------
 # Recursive node groups
 # ---------------------------------------------------------------------------
@@ -1715,6 +1739,7 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Create Guide Index Map",
         "Curve to Tube",
         "Curve Info",
+        "Custom Force",
         "Curve Root",
         "Curve Segment",
         "Curve Tip",

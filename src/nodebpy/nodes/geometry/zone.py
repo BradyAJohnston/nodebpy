@@ -592,6 +592,26 @@ class ClosureZone(_ZonePair):
         self.input.node.pair_with_output(self.output.node)
         self.input._establish_links()
 
+    def input_item(self, name: str, type: str = "GEOMETRY") -> SocketLinker:
+        """Declare a closure input and return the socket to read in the body.
+
+        ``type`` is a socket-type string (``"GEOMETRY"``, ``"MATRIX"``,
+        ``"VECTOR"``, …); the item collection lives on the output node and
+        drives the matching output socket on the input node.
+        """
+        self.output.node.input_items.new(type, name)
+        return _wrap_socket(self.input.node.outputs[-2])
+
+    def output_item(self, name: str, type: str = "GEOMETRY") -> SocketLinker:
+        """Declare a closure output and return the target to feed with ``>>``."""
+        self.output.node.output_items.new(type, name)
+        return _wrap_socket(self.output.node.inputs[-2])
+
+    @property
+    def closure(self) -> ClosureSocket:
+        """The closure produced by the zone."""
+        return self.output.o.closure
+
 
 _ClosureItemCollections = Union[
     NodeClosureInputItems,

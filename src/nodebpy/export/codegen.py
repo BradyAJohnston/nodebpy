@@ -3855,3 +3855,60 @@ def _emit_zone_output(node, ctx: EmitContext) -> _Val:
         statement = BinOp(">>", ctx.upstream_expr(link), target)
         ctx.pending_lines.extend(_stmt_lines(statement))
     return _Val(None, outputs=state.outputs)
+
+
+@register_emitter("NodeClosureInput")
+def _emit_closure_input(node, ctx: EmitContext) -> _Val:
+    """Closure zone: declare ``cz = g.ClosureZone()`` plus one
+    ``cz.input_item(name, type)`` line per input item (read in the body) and
+    prepare ``cz.output_item(name, type)`` ``>>`` targets for each output item.
+    The input node dissolves into the input-item read expressions; the paired
+    output node (``_emit_zone_output``) renders body links as ``expr >> target``
+    and dissolves into the ``cz.closure`` result.
+
+    Items live on the output node (``input_items`` / ``output_items``) and drive
+    the input node's outputs and the output node's inputs respectively."""
+    out_node = _zone_required(node)
+    ctx.used_aliases.add("g")
+    zone_ref = Ref(_make_var("closure_zone", ctx.counter))
+    ctx.pending_lines.append(f"    {zone_ref.name} = {Call('g.ClosureZone').render()}")
+
+    # Input items → readable sockets on the input node's outputs.
+    consumed = {link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())}
+    in_outputs = _prefixed_sockets(node, "Item_", output=True)
+    current_map: dict[str, Expr] = {}
+    for socket, item in zip(in_outputs, out_node.input_items):
+        call = Call(
+            f"{zone_ref.name}.input_item", [Lit(item.name), Lit(item.socket_type)]
+        )
+        if socket.identifier in consumed:
+            handle = Ref(_make_var(item.name, ctx.counter))
+            ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
+            current_map[socket.identifier] = handle
+        else:
+            ctx.pending_lines.append(f"    {call.render()}")
+
+    # Output items → ``>>`` targets on the output node's inputs.
+    linked_next = {
+        link.to_socket.identifier for link in ctx.incoming.get(out_node.name, ())
+    }
+    out_inputs = _prefixed_sockets(out_node, "Item_")
+    targets: dict[str, Expr] = {}
+    for socket, item in zip(out_inputs, out_node.output_items):
+        call = Call(
+            f"{zone_ref.name}.output_item", [Lit(item.name), Lit(item.socket_type)]
+        )
+        if socket.identifier in linked_next:
+            handle = Ref(_make_var(item.name, ctx.counter))
+            ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
+            targets[socket.identifier] = handle
+        else:
+            ctx.pending_lines.append(f"    {call.render()}")
+
+    ctx.zones[out_node.name] = _ZoneState(
+        targets, {"Closure": Attr(zone_ref, "closure")}
+    )
+    return _Val(None, outputs=current_map)
+
+
+register_emitter("NodeClosureOutput")(_emit_zone_output)

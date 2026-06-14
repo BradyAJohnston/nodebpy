@@ -401,10 +401,22 @@ cases (counts approximate), by node/feature gap:
   aligning with SocketAccessor's identifier-first strategy. Flipped Instance on
   Elements (59 → 60 passing).
 
-### Remaining 3 xfails (each a distinct, harder case)
-- [ ] **ClosureZone** inline closure definition (Custom Force): a paired zone
-  defining a closure signature + body (`ClosureInput`/`ClosureOutput`), needs a
-  new zone emitter like Repeat/Simulation.
+- [x] **ClosureZone** inline closure definition (Custom Force): a paired
+  `ClosureInput`/`ClosureOutput` zone defining a closure's signature + body.
+  Items live on the output node (`input_items` drive the input node's outputs,
+  `output_items` drive the output node's inputs), so the plain-constructor path
+  (`g.ClosureInput()` + `g.ClosureOutput(item_0=…)`) can't work. Added a
+  builder API — `cz = g.ClosureZone()`, `cz.input_item(name, type)` (returns
+  the socket read in the body), `cz.output_item(name, type)` (returns a `>>`
+  target), and `cz.closure` (the resulting closure) — plus a zone emitter
+  modelled on Repeat/Simulation: `_emit_closure_input` declares the zone and
+  per-item lines and dissolves the input node into input-item reads; the output
+  node reuses `_emit_zone_output` (links → `expr >> target`, dissolves into
+  `cz.closure`). The synthetic input→paired-output ordering edge already covers
+  closures (`paired_output` is generic). Flipped Custom Force (60 → 61
+  passing).
+
+### Remaining 2 xfails (each a distinct, harder case)
 - [ ] **Generated code segfaults Blender on exec** (Hair Dynamics, Cloth
   Dynamics): the rebuilt tree crashes the process; needs careful bisection of
   the generated code to find the offending construct.
