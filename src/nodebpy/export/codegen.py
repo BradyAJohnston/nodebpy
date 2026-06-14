@@ -29,7 +29,7 @@ import textwrap
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Callable, NamedTuple
 
-from bpy.types import NodeTree
+from bpy.types import FunctionNodeCompare, NodeTree
 
 if TYPE_CHECKING:
     from ..builder.tree import TreeBuilder
@@ -582,7 +582,7 @@ def _make_var(label: str, counter: dict[str, int]) -> str:
     base = re.sub(r"_+", "_", re.sub(r"\W", "_", _normalize(label))).strip("_")
     if not base or base[0].isdigit():
         base = f"n_{base}" if base else "node"
-    if keyword.iskeyword(base):
+    if keyword.iskeyword(base) or base in ["g", "s", "c", "nodebpy"]:
         base = f"{base}_"
     if base not in counter:
         counter[base] = 0
@@ -2995,10 +2995,16 @@ _COMPARE_DISPATCH = {"VALUE": "FLOAT", "INT": "INT", "VECTOR": "VECTOR"}
 _OPERATOR_EPSILON = 9.999999747378752e-05
 
 
-def _lift_compare(node, ctx: EmitContext) -> _Val | None:
+def _lift_compare(node: FunctionNodeCompare, ctx: EmitContext) -> _Val | None:
     """Lift a Compare node to a Python comparison when its state matches
     exactly what the operator overloads produce on round-trip."""
     op = _COMPARE_LIFT.get(node.operation)
+    in_a = _input_socket_by_identifier(node, "A")
+    in_b = _input_socket_by_identifier(node, "B")
+    if (in_a.links and in_b.links) and (
+        in_a.links[0].from_socket.type != in_b.links[0].from_socket.type
+    ):
+        return None
     if op is None or node.mode != "ELEMENT":
         return None
     linked = _linked_ids(ctx, node)

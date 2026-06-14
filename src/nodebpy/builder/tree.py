@@ -774,6 +774,8 @@ class TreeBuilder(Generic[_TreeT]):
 
     def _apply_input_defaults(self) -> None:
         for value in self._menu_defaults:
+            if value.default == "":
+                continue
             value.item.default_value = value.default
 
     def __len__(self) -> int:

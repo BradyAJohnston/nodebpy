@@ -2,6 +2,7 @@
 """Tests for nodebpy.export.codegen.to_python() — node tree → Python code generation."""
 
 import re
+from pathlib import Path
 
 import pytest
 
@@ -69,7 +70,12 @@ def _assert_roundtrip(tree):
     """Exec the generated code and assert the rebuilt tree is structurally equal."""
     code = to_python(tree)
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    # exec(code, ns)  # noqa: S102
+    try:
+        exec(code, ns)  # noqa: S102
+    except Exception as e:
+        print("Generated code:\n", code)
+        pytest.fail(f"Failed to execute generated code: {e}")
     rebuilt: TreeBuilder = ns["tree"]
     assert _structure(rebuilt.tree) == _structure(tree.tree), code
     return code
@@ -1474,22 +1480,22 @@ def test_string_find_promotes_tuple_result_to_variable():
     """Both find() outputs consumed — the NamedTuple binds to a variable so
     the node is created exactly once."""
     with TreeBuilder("Find") as tree:
-        s = tree.inputs.string("S")
-        found = s.find("na")
+        string = tree.inputs.string()
+        found = string.find("na")
         found.first_found >> tree.outputs.integer("First")
         found.count >> tree.outputs.integer("Count")
     code = _assert_roundtrip(tree)
-    assert '= s.find("na")' in code
+    assert '= string.find("na")' in code
     assert ".first_found" in code
     assert ".count" in code
 
 
 def test_string_find_single_output_inlines():
     with TreeBuilder("FindOne") as tree:
-        s = tree.inputs.string("S")
-        s.find("a").count >> tree.outputs.integer("Count")
+        string = tree.inputs.string()
+        string.find("a").count >> tree.outputs.integer("Count")
     code = _assert_roundtrip(tree)
-    assert 's.find("a").count' in code
+    assert 'string.find("a").count' in code
 
 
 def test_matrix_svd_and_rotation_decompose():
@@ -1884,6 +1890,44 @@ def test_roundtrip_bundled_asset(path, name):
     with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, dst):
         if name not in src.node_groups:
             pytest.skip(f"{name!r} not in {path}")
+        dst.node_groups = [name]
+    group = dst.node_groups[0]
+    builder = _TREE_BUILDER_FOR.get(group.bl_idname)
+    if builder is None:
+        pytest.skip(f"unsupported tree type {group.bl_idname}")
+    _assert_roundtrip(builder(group))
+
+
+MN_FILE_PATH = (
+    Path.cwd().parent / "MolecularNodes/molecularnodes/assets/node_data_file.blend"
+)
+
+
+def get_mn_asset_names():
+    """Return the names of all node groups in the MolecularNodes asset library."""
+    import bpy
+
+    with bpy.data.libraries.load(
+        str(MN_FILE_PATH),
+        link=False,
+        assets_only=True,
+    ) as (src, _):
+        return list(src.node_groups)
+
+
+@pytest.mark.skipif(
+    not MN_FILE_PATH.exists(),
+    reason="MolecularNodes asset library not found",
+)
+@pytest.mark.parametrize("name", get_mn_asset_names())
+def test_roundtrip_mn_assets(name):
+    import bpy
+
+    with bpy.data.libraries.load(
+        str(MN_FILE_PATH),
+        link=False,
+        assets_only=True,
+    ) as (src, dst):
         dst.node_groups = [name]
     group = dst.node_groups[0]
     builder = _TREE_BUILDER_FOR.get(group.bl_idname)
