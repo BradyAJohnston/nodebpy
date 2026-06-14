@@ -1908,7 +1908,7 @@ def get_mn_asset_names():
     import bpy
 
     if not MN_FILE_PATH.exists():
-        pytest.skip("MolecularNodes asset library not found")
+        return []
 
     with bpy.data.libraries.load(
         str(MN_FILE_PATH),
