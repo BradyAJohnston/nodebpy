@@ -416,9 +416,23 @@ cases (counts approximate), by node/feature gap:
   closures (`paired_output` is generic). Flipped Custom Force (60 → 61
   passing).
 
-### Remaining 2 xfails (each a distinct, harder case)
-- [ ] **Generated code segfaults Blender on exec** (Hair Dynamics, Cloth
-  Dynamics): the rebuilt tree crashes the process; needs careful bisection of
-  the generated code to find the offending construct.
+- [x] **Hair Dynamics & Cloth Dynamics** (were filed as "segfaults" — actually
+  a chain of three exceptions, not crashes, surfaced by tracing the exec in an
+  isolated subprocess):
+  1. *Duplicate-named group inputs keyed by identifier* — see the
+     name-based fix above; removed the MENU/MATRIX mislink.
+  2. *Multi-input socket fed an iterable* (`JoinBundle(bundle=(…))`):
+     auto-generated multi-input nodes take a single socket param, so the tuple
+     hit the default-value path (`assert hasattr(input, "default_value")`).
+     `_apply_input` now links each source into an `is_multi_input` socket
+     (reversed, as JoinGeometry does); a vector/colour default tuple is not
+     multi-input so it falls through unchanged.
+  3. *Output name that isn't a valid identifier* (`.o.physics_(experimental)`
+     for a socket named "Physics (Experimental)"): added a `Subscript` IR;
+     `_output_expr` emits `value.o["Physics (Experimental)"]` when the
+     normalised name fails `str.isidentifier()`.
+  All 63 bundled geometry assets now round-trip — **zero xfails**.
+
+### To do
 - [ ] Extend coverage to the shader and compositor essentials libraries
   (`shading_nodes_essentials.blend`, `compositing_nodes_essentials.blend`).

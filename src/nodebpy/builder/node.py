@@ -227,6 +227,16 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             socket = (
                 _find_socket_from_name(self.node.inputs, target) if named else target
             )
+            # A multi-input socket (JoinGeometry, JoinBundle, …) fed an iterable
+            # links each source; reversed so the tuple order reproduces creation
+            # order, as JoinGeometry's own constructor does. A vector/colour
+            # default tuple is not multi-input, so it falls through unchanged.
+            if isinstance(value, (list, tuple)) and getattr(
+                socket, "is_multi_input", False
+            ):
+                for source in reversed(list(value)):
+                    self._apply_input(socket, cast("InputAny", source))
+                return
             self._set_input_default_value(socket, value)
 
     def _establish_named_links(self, pairs: "list[tuple[str, InputAny]]"):

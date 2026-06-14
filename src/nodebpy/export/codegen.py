@@ -123,6 +123,18 @@ class Attr(Expr):
 
 
 @dataclass
+class Subscript(Expr):
+    """Subscript access (``expr["key"]``), for socket names that are not valid
+    Python identifiers (e.g. ``value.o["Physics (Experimental)"]``)."""
+
+    base: Expr
+    key: Expr
+
+    def render(self) -> str:
+        return f"{self._child(self.base, self.base.prec < _ATOM_PREC)}[{self.key.render()}]"
+
+
+@dataclass
 class Call(Expr):
     """A call ``func(args, kwargs)``; ``func`` is rendered verbatim."""
 
@@ -1103,8 +1115,15 @@ def _output_expr(
     # Duplicated output names (Mix's four "Result" sockets) are ambiguous on
     # the accessor — fall back to the identifier, which it resolves first.
     if sum(s.name == from_socket.name for s in from_node.outputs) > 1:
-        return Attr(val.expr, f"o.{_normalize(from_socket.identifier)}")
-    return Attr(val.expr, f"o.{_normalize(from_socket.name)}")
+        key = _normalize(from_socket.identifier)
+    else:
+        key = _normalize(from_socket.name)
+    # A name that isn't a valid Python identifier (``"Physics (Experimental)"``
+    # → ``physics_(experimental)``) can't be an attribute — read it by the raw
+    # socket name via subscript, which the accessor resolves by name.
+    if not key.isidentifier():
+        return Subscript(Attr(val.expr, "o"), Lit(from_socket.name))
+    return Attr(val.expr, f"o.{key}")
 
 
 def _is_stable(expr: Expr) -> bool:
