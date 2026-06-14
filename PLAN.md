@@ -365,14 +365,23 @@ cases (counts approximate), by node/feature gap:
   bogus `value=` kwarg. Added `("Selection", "selection")` to the spec's
   `fixed` tuple — Selection is now authored (linked → upstream; unlinked True
   default dropped). Flipped Attach Hair Curves to Surface (55 → 56 passing).
+- [x] **FloatCurve `items` mis-read as a property** (Braid): `_non_default_props`
+  captured every keyword-only constructor param as a node setting via
+  `getattr(node, name)`. FloatCurve's `items` is a nodebpy-only convenience
+  param (curve points), not a bpy property, so `getattr` returned the unrelated
+  `bpy_struct.items` dict method and codegen emitted `items=<built-in method…>`
+  (SyntaxError). `_non_default_props` now requires keyword-only params to be
+  real RNA properties, exactly as it already did for positional-or-keyword
+  params. Flipped Braid Hair Curves (56 → 57 passing). Caveat: the FloatCurve's
+  curve shape is not yet re-emitted (structural round-trip doesn't compare
+  points); a dedicated `items=[(x, y, handle), …]` emitter is a future polish.
 
-### Remaining 7 xfails (each a distinct, harder case)
+### Remaining 6 xfails (each a distinct, harder case)
 - [ ] **CaptureAttribute item pairing** (Instance on Elements): a tree with
   several capture nodes whose items share names ("Normal"/"Tangent"/"Value")
   produces one swapped source link; per-node emission looks faithful, so the
   cause is subtle (needs careful multi-node diffing).
-- [ ] **FloatCurve.items** property mis-read (Braid), **ClosureZone** inline
-  closure definition (Custom Force), and one asset whose generated code
-  segfaults Blender on exec.
+- [ ] **ClosureZone** inline closure definition (Custom Force), and one asset
+  whose generated code segfaults Blender on exec.
 - [ ] Extend coverage to the shader and compositor essentials libraries
   (`shading_nodes_essentials.blend`, `compositing_nodes_essentials.blend`).

@@ -1144,12 +1144,18 @@ def _non_default_props(node, cls: type) -> dict[str, Any]:
     for name, param in sig.parameters.items():
         if name == "self":
             continue
-        if param.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD:
-            if rna_props is None or name not in rna_props:
-                continue
-            if name in _base_node_props():
-                continue
-        elif param.kind != inspect.Parameter.KEYWORD_ONLY:
+        if param.kind not in (
+            inspect.Parameter.POSITIONAL_OR_KEYWORD,
+            inspect.Parameter.KEYWORD_ONLY,
+        ):
+            continue
+        # A constructor param represents a node setting only if it names an
+        # actual bpy property. This excludes nodebpy-only convenience params
+        # such as FloatCurve's ``items`` (curve points), whose ``getattr`` would
+        # otherwise resolve to the unrelated ``bpy_struct.items`` dict method.
+        if rna_props is None or name not in rna_props:
+            continue
+        if name in _base_node_props():
             continue
         if param.default is inspect.Parameter.empty:
             continue

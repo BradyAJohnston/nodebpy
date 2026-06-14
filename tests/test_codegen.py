@@ -1705,6 +1705,7 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Attachment Info",
         "Blend Hair Curves",
         "Box Selection",
+        "Braid Hair Curves",
         "Capture Rest Geometry",
         "Clump Hair Curves",
         "Collider",
