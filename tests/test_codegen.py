@@ -1907,6 +1907,9 @@ def get_mn_asset_names():
     """Return the names of all node groups in the MolecularNodes asset library."""
     import bpy
 
+    if not MN_FILE_PATH.exists():
+        pytest.skip("MolecularNodes asset library not found")
+
     with bpy.data.libraries.load(
         str(MN_FILE_PATH),
         link=False,
