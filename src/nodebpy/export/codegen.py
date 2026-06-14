@@ -2646,6 +2646,7 @@ def to_python(
     min_chain_length: int = 3,
     strict: bool = True,
     max_inline_width: int | None = 88,
+    snapshot_positions: bool = False,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -2668,6 +2669,12 @@ def to_python(
             are exempt — a pipeline stays one statement; statements longer than 88 columns
             wrap in parentheses with one ``>>`` segment per line.
             ``None`` disables the budget.
+        snapshot_positions: bool
+            If True, build the tree with ``arrange=None`` (no auto-layout) and
+            append a block that restores each node's authored ``location`` by
+            name. Nodes a rebuild doesn't recreate (reroutes) or names a rebuild
+            assigns differently (duplicate-type nodes created in another order)
+            are skipped via ``tree.tree.nodes.get(name)``.
 
     Returns
     -------
@@ -2704,8 +2711,14 @@ def to_python(
         lines.append("")  # ...two, when a class def precedes it
 
     constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
-    lines.append(f"with {constructor}({_fmt(node_tree.name)}) as tree:")
+    ctor_args = [_fmt(node_tree.name)]
+    if snapshot_positions:
+        ctor_args.append("arrange=None")
+    lines.append(f"with {constructor}({', '.join(ctor_args)}) as tree:")
     lines.extend(_assemble_tree_body(emission))
+
+    if snapshot_positions:
+        lines.extend(_node_positions_block(node_tree))
 
     # Datablock defaults (a Material/Object/Image socket value) render via
     # ``repr()`` as ``bpy.data.<collection>['name']``, so the module needs a
@@ -2713,6 +2726,23 @@ def to_python(
     if any("bpy.data." in line for line in lines):
         lines.insert(0, "import bpy")
     return "\n".join(lines)
+
+
+def _node_positions_block(node_tree) -> list[str]:
+    """A trailing ``{name: (x, y)}`` dict plus a loop restoring each node's
+    authored location. Keyed by node name; a rebuild that drops a node
+    (reroute) or renames it is tolerated via ``.get``."""
+    lines = ["", "", "# Restore authored node positions."]
+    lines.append("_node_positions = {")
+    for node in node_tree.nodes:
+        loc = tuple(round(v, 1) for v in node.location)
+        lines.append(f"    {_fmt(node.name)}: {_fmt(loc)},")
+    lines.append("}")
+    lines.append("for _name, _location in _node_positions.items():")
+    lines.append("    _node = tree.tree.nodes.get(_name)")
+    lines.append("    if _node is not None:")
+    lines.append("        _node.location = _location")
+    return lines
 
 
 def _assemble_tree_body(emission: "_TreeEmission") -> list[str]:

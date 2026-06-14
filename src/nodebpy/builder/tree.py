@@ -721,6 +721,7 @@ class TreeBuilder(Generic[_TreeT]):
         min_chain_length: int = 3,
         strict: bool = True,
         max_inline_width: int | None = 88,
+        snapshot_positions: bool = False,
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -733,6 +734,7 @@ class TreeBuilder(Generic[_TreeT]):
             min_chain_length=min_chain_length,
             strict=strict,
             max_inline_width=max_inline_width,
+            snapshot_positions=snapshot_positions,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:

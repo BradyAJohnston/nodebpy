@@ -234,6 +234,41 @@ def test_round_trip_executes():
     assert len(new_tree.tree.nodes) == original_node_count
 
 
+def test_snapshot_positions_round_trip():
+    """``snapshot_positions=True`` disables auto-layout and restores each
+    node's authored location by name on rebuild."""
+    with TreeBuilder("Snapshot", arrange=None) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        out = tree.outputs.geometry("Geometry")
+        pos = g.Position()
+        noise = g.NoiseTexture(scale=3.0)
+        g.SetPosition(geometry=geo, offset=pos.o.position + noise.o.color) >> out
+    want = {}
+    for i, node in enumerate(tree.tree.nodes):
+        node.location = (i * 137.0, i * 53.0)
+        want[node.name] = (i * 137.0, i * 53.0)
+
+    code = to_python(tree, snapshot_positions=True)
+    assert "arrange=None" in code  # auto-layout disabled
+    assert "_node_positions = {" in code
+
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt: TreeBuilder = ns["tree"]
+    for node in rebuilt.tree.nodes:
+        got = tuple(round(v, 1) for v in node.location)
+        assert got == want[node.name], (node.name, got, want[node.name])
+
+
+def test_default_does_not_snapshot_positions():
+    """Without the flag, no positions block and no arrange override appear."""
+    with TreeBuilder("NoSnapshot") as tree:
+        g.Position()
+    code = to_python(tree)
+    assert "arrange=None" not in code
+    assert "_node_positions" not in code
+
+
 # ---------------------------------------------------------------------------
 # Phase 2: chain stitching tests
 # ---------------------------------------------------------------------------
