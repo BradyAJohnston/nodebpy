@@ -71,6 +71,22 @@ def _find_socket_from_name(
     )
 
 
+def _value_socket_type(value: Any) -> str | None:
+    """The Blender socket ``type`` an input value carries, when knowable —
+    used to disambiguate same-named target sockets. ``None`` for plain
+    defaults and multi-output nodes (resolution then falls back to order)."""
+    if isinstance(value, _SocketLike):
+        return value.socket.type
+    if isinstance(value, NodeSocket):
+        return value.type
+    if isinstance(value, Node):
+        return value.outputs[0].type if value.outputs else None
+    if isinstance(value, _NodeLike):
+        default = getattr(value, "_default_output_socket", None)
+        return default.type if default is not None else None
+    return None
+
+
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     """Base class for all node wrappers."""
 
@@ -167,36 +183,76 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
     def _establish_links(self, **kwargs: InputAny):
         for name, value in kwargs.items():
-            # TODO: don't like these manual overrides for particular nodes, but best I can do for now
-            if value is None or (
-                "GridPrune" in self._bl_idname
-                and name == "Threshold"
-                and getattr(self.node, "data_type", None) == "BOOLEAN"
-            ):
-                continue
-            if isinstance(value, Node):
-                node = BaseNode.__new__(BaseNode)
-                node.node = value
-                value = node
+            self._apply_input(name, value)
 
-            if value is ...:
-                self._placeholder_inputs.append(name)
-                continue
+    def _apply_input(self, target: "str | NodeSocket", value: InputAny):
+        """Link or default-set ``value`` onto an input.
 
-            elif isinstance(value, _SocketLike):
-                self._link_from(value.socket, name)
-            elif isinstance(value, NodeSocket):
-                self._link_from(value, name)
-            elif isinstance(value, _NodeLike):
-                self._link_from(value.o._best_match(self.i._get(name).type), name)  # type: ignore
-            else:
-                # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
-                # but this needs to be a more generic solution for sockets which aren't available
-                # https://github.com/BradyAJohnston/nodebpy/issues/90
-                if "BooleanMath" in self._bl_idname and value is False:
-                    continue
-                socket = _find_socket_from_name(self.node.inputs, name)
-                self._set_input_default_value(socket, value)
+        ``target`` is a socket name/identifier (resolved against
+        ``self.node.inputs``) or an already-resolved input socket — the latter
+        lets callers address one of several same-named sockets unambiguously.
+        """
+        named = isinstance(target, str)
+        # TODO: don't like these manual overrides for particular nodes, but best I can do for now
+        if value is None or (
+            named
+            and "GridPrune" in self._bl_idname
+            and target == "Threshold"
+            and getattr(self.node, "data_type", None) == "BOOLEAN"
+        ):
+            return
+        if isinstance(value, Node):
+            node = BaseNode.__new__(BaseNode)
+            node.node = value
+            value = node
+
+        if value is ...:
+            if named:
+                self._placeholder_inputs.append(target)
+            return
+
+        elif isinstance(value, _SocketLike):
+            self._link_from(value.socket, target)
+        elif isinstance(value, NodeSocket):
+            self._link_from(value, target)
+        elif isinstance(value, _NodeLike):
+            target_type = target.type if not named else self.i._get(target).type
+            self._link_from(value.o._best_match(target_type), target)  # type: ignore
+        else:
+            # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
+            # but this needs to be a more generic solution for sockets which aren't available
+            # https://github.com/BradyAJohnston/nodebpy/issues/90
+            if "BooleanMath" in self._bl_idname and value is False:
+                return
+            socket = (
+                _find_socket_from_name(self.node.inputs, target) if named else target
+            )
+            self._set_input_default_value(socket, value)
+
+    def _establish_named_links(self, pairs: "list[tuple[str, InputAny]]"):
+        """Link inputs that share a socket name (so the name alone is
+        ambiguous), resolving each to a distinct socket by name plus a type
+        match, falling back to interface order. Used for group nodes whose
+        interface declares several inputs with the same name."""
+        used: set[str] = set()
+        for name, value in pairs:
+            candidates = [
+                s
+                for s in self.node.inputs
+                if s.name == name
+                and s.identifier not in used
+                and not s.identifier.startswith("__extend__")
+            ]
+            if not candidates:
+                raise ValueError(
+                    f"no remaining input socket named {name!r} on {self._bl_idname}"
+                )
+            value_type = _value_socket_type(value)
+            socket = next(
+                (s for s in candidates if s.type == value_type), candidates[0]
+            )
+            used.add(socket.identifier)
+            self._apply_input(socket, value)
 
     @property
     def o(self) -> SocketAccessor:
@@ -313,7 +369,12 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
         super().__init__()
         self._setup_node_group()
         self.node.show_options = False
+        # Inputs whose interface name is shared by several sockets can't be
+        # keyed in the kwargs dict; they arrive as ``(name, value)`` pairs.
+        named_links = kwargs.pop("_named_links", None)
         self._establish_links(**kwargs)
+        if named_links:
+            self._establish_named_links(named_links)
 
     @property
     @abstractmethod

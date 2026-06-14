@@ -166,17 +166,24 @@ class GroupCall(Expr):
 
     Socket names are passed through a dict because they need not be valid
     Python identifiers (``"Box Object"``); ``_establish_links`` matches them
-    by socket name.
+    by socket name. Inputs whose name is shared by several interface sockets
+    are ambiguous as dict keys, so they ride in ``named_links`` — ``(name,
+    value)`` pairs resolved by name + type at link time.
     """
 
     func: str
     items: dict[str, Expr]
+    named_links: list[tuple[str, Expr]] = field(default_factory=list)
 
     def render(self) -> str:
-        if not self.items:
-            return f"{self.func}()"
-        inner = ", ".join(f"{_fmt(k)}: {v.render()}" for k, v in self.items.items())
-        return f"{self.func}(**{{{inner}}})"
+        parts = []
+        if self.items:
+            inner = ", ".join(f"{_fmt(k)}: {v.render()}" for k, v in self.items.items())
+            parts.append(f"**{{{inner}}}")
+        if self.named_links:
+            pairs = ", ".join(f"({_fmt(k)}, {v.render()})" for k, v in self.named_links)
+            parts.append(f"_named_links=[{pairs}]")
+        return f"{self.func}({', '.join(parts)})"
 
 
 @dataclass
@@ -3392,21 +3399,29 @@ def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
     class_name = ctx.collector.register(inner)
     iface_defaults = _group_input_defaults(inner)
 
-    # _establish_links matches a kwarg key against socket names first, then
-    # identifiers, so a duplicated name (a group may declare two "Scale"
-    # inputs) is ambiguous — key those by identifier instead, which is unique.
+    # _establish_links matches a kwarg key against socket names. A name shared
+    # by several interface sockets (a group may declare two "Scale" inputs) is
+    # ambiguous as a dict key — and the raw identifier (Socket_6) is an
+    # authoring-history artifact that the rebuilt group reassigns, so it can't
+    # be used either. Such inputs ride in ``named_links`` as (name, value)
+    # pairs (interface order preserved) and resolve by name + type at link time.
     names = [s.name for s in node.inputs if not s.identifier.startswith("__extend__")]
 
-    def _key(socket) -> str:
-        return socket.identifier if names.count(socket.name) > 1 else socket.name
-
     items: dict[str, Expr] = {}
+    named_links: list[tuple[str, Expr]] = []
+
+    def _add(socket, value: Expr) -> None:
+        if names.count(socket.name) > 1:
+            named_links.append((socket.name, value))
+        else:
+            items[socket.name] = value
+
     for socket in node.inputs:
         if socket.identifier.startswith("__extend__"):
             continue
         link = ctx.input_link(node, socket.identifier)
         if link is not None:
-            items[_key(socket)] = ctx.upstream_expr(link)
+            _add(socket, ctx.upstream_expr(link))
             continue
         if not hasattr(socket, "default_value"):
             continue
@@ -3417,8 +3432,8 @@ def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
             pass
         iface_default = iface_defaults.get(socket.identifier, _UNSET)
         if iface_default is _UNSET or not _eq(current, iface_default):
-            items[_key(socket)] = Lit(socket.default_value)
-    return GroupCall(class_name, items)
+            _add(socket, Lit(socket.default_value))
+    return GroupCall(class_name, items, named_links)
 
 
 for _group_bl_idname in _GROUP_BASES:
