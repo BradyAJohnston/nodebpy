@@ -1604,7 +1604,48 @@ class JoinGeometry(BaseNode):
             self._link(*self._find_best_socket_pair(source, self))
 
 
-class SetHandleType(BaseNode):
+class _HandleModeMixin:
+    """Shared ``left``/``right``/``mode`` flags for the Bézier handle nodes
+    (``SetHandleType`` / ``HandleTypeSelection``), whose ``mode`` is an
+    ENUM_FLAG set drawn from ``{"LEFT", "RIGHT"}``. ``left``/``right`` are
+    ergonomic per-side toggles; ``mode`` exposes the raw set."""
+
+    if TYPE_CHECKING:
+        node: (
+            bpy.types.GeometryNodeCurveSetHandles
+            | bpy.types.GeometryNodeCurveHandleTypeSelection
+        )
+
+    @property
+    def left(self) -> bool:
+        return "LEFT" in self.node.mode
+
+    @left.setter
+    def left(self, value: bool):
+        self.node.mode = (
+            (self.node.mode | {"LEFT"}) if value else (self.node.mode - {"LEFT"})
+        )
+
+    @property
+    def right(self) -> bool:
+        return "RIGHT" in self.node.mode
+
+    @right.setter
+    def right(self, value: bool):
+        self.node.mode = (
+            (self.node.mode | {"RIGHT"}) if value else (self.node.mode - {"RIGHT"})
+        )
+
+    @property
+    def mode(self) -> set[Literal["LEFT", "RIGHT"]]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: set[Literal["LEFT", "RIGHT"]]):
+        self.node.mode = value
+
+
+class SetHandleType(_HandleModeMixin, BaseNode):
     """Set the handle type for the control points of a Bézier curve"""
 
     _bl_idname = "GeometryNodeCurveSetHandles"
@@ -1648,36 +1689,8 @@ class SetHandleType(BaseNode):
     def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
         self.node.handle_type = value
 
-    @property
-    def left(self) -> bool:
-        return "LEFT" in self.node.mode
 
-    @left.setter
-    def left(self, value: bool):
-        self.node.mode = (
-            (self.node.mode | {"LEFT"}) if value else (self.node.mode - {"LEFT"})
-        )
-
-    @property
-    def right(self) -> bool:
-        return "RIGHT" in self.node.mode
-
-    @right.setter
-    def right(self, value: bool):
-        self.node.mode = (
-            (self.node.mode | {"RIGHT"}) if value else (self.node.mode - {"RIGHT"})
-        )
-
-    @property
-    def mode(self) -> set[Literal["LEFT", "RIGHT"]]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: set[Literal["LEFT", "RIGHT"]]):
-        self.node.mode = value
-
-
-class HandleTypeSelection(BaseNode):
+class HandleTypeSelection(_HandleModeMixin, BaseNode):
     """Provide a selection based on the handle types of Bézier control points"""
 
     _bl_idname = "GeometryNodeCurveHandleTypeSelection"
@@ -1709,34 +1722,6 @@ class HandleTypeSelection(BaseNode):
     @handle_type.setter
     def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
         self.node.handle_type = value
-
-    @property
-    def left(self) -> bool:
-        return "LEFT" in self.node.mode
-
-    @left.setter
-    def left(self, value: bool):
-        self.node.mode = (
-            (self.node.mode | {"LEFT"}) if value else (self.node.mode - {"LEFT"})
-        )
-
-    @property
-    def right(self) -> bool:
-        return "RIGHT" in self.node.mode
-
-    @right.setter
-    def right(self, value: bool):
-        self.node.mode = (
-            (self.node.mode | {"RIGHT"}) if value else (self.node.mode - {"RIGHT"})
-        )
-
-    @property
-    def mode(self) -> set[Literal["LEFT", "RIGHT"]]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: set[Literal["LEFT", "RIGHT"]]):
-        self.node.mode = value
 
 
 class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
