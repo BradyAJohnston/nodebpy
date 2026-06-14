@@ -2271,13 +2271,21 @@ def _operator_dispatch_ok(node, pair, linked_ids: set[str], src_types) -> bool:
     if node.bl_idname == "ShaderNodeVectorMath":
         if not any(src_types.get(s.identifier) == "VECTOR" for s in pair):
             return False
-        # SCALE's second operand feeds the float ``Scale`` input; ``vec * x``
-        # only re-creates a SCALE node when ``x`` is a scalar (VALUE/INT) or an
-        # unlinked float literal. A linked BOOLEAN/VECTOR there dispatches to
-        # MULTIPLY instead (see _dispatch_vector_math).
-        if getattr(node, "operation", "") == "SCALE":
-            scale_type = src_types.get(pair[1].identifier)
-            if scale_type is not None and scale_type not in ("VALUE", "INT"):
+        # MULTIPLY and SCALE both lift to ``*`` but dispatch differently on the
+        # *second* operand (see _dispatch_vector_math): ``vec * x`` makes a SCALE
+        # node when ``x`` is a scalar (VALUE/INT) and a MULTIPLY node otherwise.
+        # Refuse the lift when the original operation wouldn't be reproduced.
+        operation = getattr(node, "operation", "")
+        if operation in ("SCALE", "MULTIPLY"):
+            second_type = src_types.get(pair[1].identifier)
+            second_is_scalar = second_type in ("VALUE", "INT")
+            if (
+                operation == "SCALE"
+                and second_type is not None
+                and not second_is_scalar
+            ):
+                return False
+            if operation == "MULTIPLY" and second_is_scalar:
                 return False
         return True
     if node.bl_idname == "ShaderNodeMath":
@@ -2721,6 +2729,14 @@ _GROUP_BASES = {
     "CompositorNodeGroup": "CustomCompositorGroup",
 }
 
+# bl_idname of an inner node *tree* → the CustomGroup base, used when emitting a
+# nested group's class (the group node's bl_idname isn't available there).
+_GROUP_BASE_FOR_TREE = {
+    "GeometryNodeTree": "CustomGeometryGroup",
+    "ShaderNodeTree": "CustomShaderGroup",
+    "CompositorNodeTree": "CustomCompositorGroup",
+}
+
 
 @dataclass
 class _GroupCollector:
@@ -2749,7 +2765,7 @@ class _GroupCollector:
         self.names_by_tree[node_tree.name] = class_name
         emission = _emit_tree(node_tree, self)
         self.used_aliases |= emission.used_aliases
-        base = _GROUP_BASES.get(node_tree.bl_idname, "CustomGeometryGroup")
+        base = _GROUP_BASE_FOR_TREE.get(node_tree.bl_idname, "CustomGeometryGroup")
         self.bases_used.add(base)
         self.class_defs.append(
             _render_group_class(class_name, node_tree, base, emission)

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, ClassVar, Generic, Literal, Self, TypeVar, cast
 
 import bpy
@@ -126,7 +127,9 @@ class SocketContext:
                 interface_socket.socket_type == "NodeSocketMenu"
                 and key == "default_value"
             ):
-                self.builder._menu_defaults[interface_socket.identifier] = value
+                self.builder._menu_defaults.append(
+                    _MenuDefault(interface_socket, value)
+                )
             elif key == "default_attribute":
                 # the bpy property is named default_attribute_name
                 interface_socket.default_attribute_name = value
@@ -597,6 +600,12 @@ class OutputInterfaceContext(DirectionalContext):
 _TreeT = TypeVar("_TreeT", bound=NodeTree)
 
 
+@dataclass
+class _MenuDefault:
+    item: bpy.types.NodeSocketMenu | bpy.types.NodeTreeInterfaceSocketMenu
+    default: str
+
+
 class TreeBuilder(Generic[_TreeT]):
     """Builder for creating Blender node trees with a clean Python API.
 
@@ -624,7 +633,7 @@ class TreeBuilder(Generic[_TreeT]):
         else:
             self.tree = tree  # type: ignore
 
-        self._menu_defaults: dict[str, str] = {}
+        self._menu_defaults: list[_MenuDefault] = []
         self.inputs = InputInterfaceContext(self)
         self.outputs = OutputInterfaceContext(self)
         self._arrange = arrange
@@ -764,13 +773,8 @@ class TreeBuilder(Generic[_TreeT]):
         self.deactivate_tree()
 
     def _apply_input_defaults(self) -> None:
-        for key, value in self._menu_defaults.items():
-            for item in self.tree.interface.items_tree:  # type: ignore
-                if not hasattr(item, "identifier"):
-                    continue
-                if item.identifier == key:
-                    if hasattr(item, "default_value"):
-                        item.default_value = value  # type: ignore
+        for value in self._menu_defaults:
+            value.item.default_value = value.default
 
     def __len__(self) -> int:
         return len(self.nodes)

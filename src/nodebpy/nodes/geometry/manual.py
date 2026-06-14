@@ -23,6 +23,8 @@ from bpy.types import (
 )
 from mathutils import Euler
 
+from nodebpy.builder.tree import _MenuDefault
+
 from ...builder import (
     BaseNode,
     BooleanSocket,
@@ -1909,7 +1911,15 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
             if arg is None:
                 continue  # item declared but left unlinked
             if _is_default_value(arg):
-                socket.default_value = arg  # ty: ignore[unresolved-attribute]
+                if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(
+                    arg, str
+                ):
+                    # the socket is a NodeSocketMenu, but the default_value is not settable
+                    # until the full tree is built and menu items are known. We need to defer
+                    # the setting of the default values until after tree construction.
+                    self.tree._menu_defaults.append(_MenuDefault(socket, arg))
+                else:
+                    socket.default_value = arg  # ty: ignore[unresolved-attribute]
             else:
                 source = self._source_socket(arg)  # type: ignore
                 self.tree.link(source, socket)
@@ -1961,9 +1971,16 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         self._establish_links(**key_args)
         # a plain string `menu` is an explicit selection; otherwise default
         # the selection to the first item
+
         if self.node.enum_items and not isinstance(menu, str):
-            menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
-            menu_socket.default_value = self.node.enum_items[0].name
+            try:
+                menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
+                menu_socket.default_value = self.node.enum_items[0].name
+            except TypeError:
+                # the socket is a NodeSocketMenu, but the default_value is not settable
+                self.tree._menu_defaults.append(
+                    _MenuDefault(self.node.inputs["Menu"], self.node.enum_items[0].name)
+                )
 
     @property
     def _socket_data_types(self) -> tuple[str, ...]:
@@ -1981,7 +1998,15 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
             if value is None:
                 continue  # item declared but left unlinked
             if _is_default_value(value):
-                socket.default_value = value  # type: ignore
+                if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(
+                    value, str
+                ):
+                    # the socket is a NodeSocketMenu, but the default_value is not settable
+                    # until the full tree is built and menu items are known. We need to defer
+                    # the setting of the default values until after tree construction.
+                    self.tree._menu_defaults.append(_MenuDefault(socket, value))
+                else:
+                    socket.default_value = value  # ty: ignore[unresolved-attribute]
             else:
                 source = self._source_socket(value)  # type: ignore
                 self._link(source, socket)

@@ -1324,9 +1324,7 @@ def test_closure_zone_round_trip():
     with TreeBuilder("ClosureZoneRT") as tree:
         cz = g.ClosureZone()
         geo = cz.input_item("Geometry", "GEOMETRY")
-        g.SetPosition(geometry=geo).o.geometry >> cz.output_item(
-            "Geometry", "GEOMETRY"
-        )
+        g.SetPosition(geometry=geo).o.geometry >> cz.output_item("Geometry", "GEOMETRY")
         g.CombineXYZ(x=1.0).o.vector >> cz.output_item("Force", "VECTOR")
         ev = g.EvaluateClosure(
             cz.closure,
@@ -1712,12 +1710,18 @@ def test_roundtrip_usecases(build):
 # regression in any of them fails the build.
 # ---------------------------------------------------------------------------
 
-_ASSET_FILES = (
+# Each essentials/asset library holds node groups of a single tree type, so the
+# per-type OK sets below are keyed by bare group name (unique within a type).
+# Names DO collide across types (a geometry, shader and compositor "Combine
+# Spherical" all exist), which is why membership is checked per tree type.
+_GEOMETRY_ASSET_FILES = (
     "geometry_nodes_essentials.blend",
     "geometry_nodes_dynamics_assets.blend",
     "procedural_hair_node_assets.blend",
     "principal_components.blend",
 )
+_SHADER_ASSET_FILES = ("shading_nodes_essentials.blend",)
+_COMPOSITOR_ASSET_FILES = ("compositing_nodes_essentials.blend",)
 
 # Bundled geometry assets that currently round-trip cleanly. Everything else is
 # xfailed; when a codegen gap is closed, re-measure and move names in here.
@@ -1789,24 +1793,77 @@ _ASSET_ROUNDTRIP_OK = frozenset(
     }
 )
 
+# Bundled shader assets that currently round-trip cleanly (keyed by name within
+# shading_nodes_essentials.blend). Everything else is xfailed.
+_SHADER_ASSET_OK = frozenset(
+    {
+        "Combine Cylindrical",
+        "Combine Spherical",
+        "Separate Cylindrical",
+        "Separate Spherical",
+    }
+)
 
-def _bundled_geometry_assets():
-    """``[(path, name)]`` for every bundled geometry node-group asset."""
+# Bundled compositor assets that currently round-trip cleanly.
+_COMPOSITOR_ASSET_OK = frozenset(
+    {
+        "3D to Screen Space",
+        "Chromatic Aberration",
+        "Combine Cylindrical",
+        "Combine Spherical",
+        "Project with Depth",
+        "Retime",
+        "Screen to 3D Space",
+        "Sensor Noise",
+        "Separate Cylindrical",
+        "Separate Spherical",
+        "Sepia",
+        "Split Toning",
+        "Transform and Project",
+        "Tune Image",
+        "Unsharp Mask",
+        "Vignette",
+        "Film Grain",
+    }
+)
+
+# (files, expected bl_idname, OK set) for each tree type's bundled libraries.
+_ASSET_LIBRARIES = (
+    (_GEOMETRY_ASSET_FILES, "GeometryNodeTree", _ASSET_ROUNDTRIP_OK),
+    (_SHADER_ASSET_FILES, "ShaderNodeTree", _SHADER_ASSET_OK),
+    (_COMPOSITOR_ASSET_FILES, "CompositorNodeTree", _COMPOSITOR_ASSET_OK),
+)
+
+_TREE_BUILDER_FOR = {
+    "GeometryNodeTree": TreeBuilder.geometry,
+    "ShaderNodeTree": TreeBuilder.shader,
+    "CompositorNodeTree": TreeBuilder.compositor,
+}
+
+
+def _bundled_assets():
+    """``[(path, name)]`` for every bundled node-group asset across the
+    geometry, shader and compositor essentials libraries."""
     import os
 
     import bpy
 
     nodes_dir = os.path.join(bpy.utils.system_resource("DATAFILES"), "assets", "nodes")
     params = []
-    for filename in _ASSET_FILES:
-        path = os.path.join(nodes_dir, filename)
-        if not os.path.exists(path):
-            continue
-        with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, _):
-            for name in src.node_groups:
+    for filenames, _bl_idname, ok in _ASSET_LIBRARIES:
+        for filename in filenames:
+            path = os.path.join(nodes_dir, filename)
+            if not os.path.exists(path):
+                continue
+            with bpy.data.libraries.load(path, link=False, assets_only=True) as (
+                src,
+                _,
+            ):
+                names = list(src.node_groups)
+            for name in names:
                 marks = (
                     ()
-                    if name in _ASSET_ROUNDTRIP_OK
+                    if name in ok
                     else pytest.mark.xfail(
                         reason="codegen gap — see asset backlog in PLAN.md",
                         strict=False,
@@ -1820,7 +1877,7 @@ def _bundled_geometry_assets():
     return params
 
 
-@pytest.mark.parametrize("path,name", _bundled_geometry_assets())
+@pytest.mark.parametrize("path,name", _bundled_assets())
 def test_roundtrip_bundled_asset(path, name):
     import bpy
 
@@ -1829,6 +1886,7 @@ def test_roundtrip_bundled_asset(path, name):
             pytest.skip(f"{name!r} not in {path}")
         dst.node_groups = [name]
     group = dst.node_groups[0]
-    if group.bl_idname != "GeometryNodeTree":
-        pytest.skip("not a geometry node group")
-    _assert_roundtrip(TreeBuilder.geometry(group))
+    builder = _TREE_BUILDER_FOR.get(group.bl_idname)
+    if builder is None:
+        pytest.skip(f"unsupported tree type {group.bl_idname}")
+    _assert_roundtrip(builder(group))

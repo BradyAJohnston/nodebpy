@@ -331,7 +331,14 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
         "VECTOR",
         "RGBA",
     ),
-    "INT_VECTOR": ("INT_VECTOR",),
+    "INT_VECTOR": (
+        "INT_VECTOR",
+        "VECTOR",
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+        "RGBA",
+    ),
     "BOOLEAN": (
         "BOOLEAN",
         "INT",
@@ -341,6 +348,7 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
     ),
     "VECTOR": (
         "VECTOR",
+        "INT_VECTOR",
         "RGBA",
         "ROTATION",
         "VALUE",
