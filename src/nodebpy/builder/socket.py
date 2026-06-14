@@ -1148,6 +1148,50 @@ class _ColorMixin(BaseSocket):
                 raise TypeError("Shader CombineColor node doesn't have an alpha input")
             return node.i.alpha
 
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float]) -> None:
+        self.socket.default_value = value
+
+    @property
+    def point(self) -> "_EvaluateField[ColorSocket]":
+        """BooleanSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+
+        return _EvaluateField(self.socket, "color", "point")
+
+    @property
+    def edge(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "edge")
+
+    @property
+    def face(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "face")
+
+    @property
+    def corner(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "corner")
+
+    @property
+    def spline(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "spline")
+
+    @property
+    def instance(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "instance")
+
+    @property
+    def layer(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "layer")
+
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
     @overload
@@ -2159,14 +2203,6 @@ class VectorSocketGrid(
 # -- Color --
 class ColorSocket(_ColorMixin, _ToListMixin["ColorSocketList"], Socket):
     """Runtime color socket wrapper."""
-
-    @property
-    def default_value(self) -> list[float]:
-        return list(self.socket.default_value)
-
-    @default_value.setter
-    def default_value(self, value: list[float]) -> None:
-        self.socket.default_value = value
 
 
 class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):

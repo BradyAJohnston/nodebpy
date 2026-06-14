@@ -2747,6 +2747,13 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
                 value, index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
+        def color(
+            self, value: InputColor = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[ColorSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="FLOAT_COLOR"
+            )
+
         def quaternion(
             self, value: InputRotation = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[RotationSocket]":
@@ -2793,6 +2800,7 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
         | InputInteger
         | InputBoolean
         | InputVector
+        | InputColor
         | InputRotation
         | InputMatrix = None,
         index: InputInteger = 0,
