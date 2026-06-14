@@ -1729,6 +1729,7 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Geometry Input",
         "Geometry Principal Components",
         "Hair Curves Noise",
+        "Instance on Elements",
         "Interpolate Hair Curves",
         "Is Edge Boundary",
         "Is Edge Loose",

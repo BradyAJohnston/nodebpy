@@ -388,19 +388,25 @@ cases (counts approximate), by node/feature gap:
   `_establish_links`) resolved by name to the wrong socket. `_item_socket` now
   falls back to positional resolution (item sockets are the trailing N) on a
   name clash, and `_add_inputs` keys returned sockets by *identifier* so links
-  are established unambiguously. Flipped Curve to Tube (58 → 59 passing). Also
-  fixes Instance on Elements' swapped-link bug *in isolation* — it still
-  xfails in the full suite due to datablock contamination from prior tests
-  (a test-isolation issue, not a codegen gap).
+  are established unambiguously. Flipped Curve to Tube (58 → 59 passing).
+- [x] **Item identifier vs name collision** (Instance on Elements): a
+  CaptureAttribute with items named "Normal" *and* "Value" — the "Normal"
+  item's socket identifier is "Value" (capture_items number sockets from
+  "Value"), colliding with the "Value" item's *name*. `_add_inputs` keys links
+  by identifier, but `_find_socket_from_name` resolved name-first, so the key
+  "Value" hijacked to the socket *named* "Value" and the "Normal" item lost its
+  link — one of two duplicate Normal captures silently dropped (a multiplicity
+  bug the round-trip's old `set()`-based debug masked). `_find_socket_from_name`
+  now returns an exact identifier match before the name-normalising passes,
+  aligning with SocketAccessor's identifier-first strategy. Flipped Instance on
+  Elements (59 → 60 passing).
 
-### Remaining 4 xfails (each a distinct, harder case)
-- [ ] **CaptureAttribute item pairing** (Instance on Elements): round-trips
-  cleanly when run alone but fails in the full suite — leftover node groups in
-  `bpy.data` from earlier tests clash on import (name `.001` suffixes / item
-  identifier shifts). A test-isolation fix (load each asset into a fresh
-  session) rather than a codegen change.
-- [ ] **ClosureZone** inline closure definition (Custom Force), the two
-  dynamics assets whose generated code segfaults Blender on exec (Hair
-  Dynamics, Cloth Dynamics).
+### Remaining 3 xfails (each a distinct, harder case)
+- [ ] **ClosureZone** inline closure definition (Custom Force): a paired zone
+  defining a closure signature + body (`ClosureInput`/`ClosureOutput`), needs a
+  new zone emitter like Repeat/Simulation.
+- [ ] **Generated code segfaults Blender on exec** (Hair Dynamics, Cloth
+  Dynamics): the rebuilt tree crashes the process; needs careful bisection of
+  the generated code to find the offending construct.
 - [ ] Extend coverage to the shader and compositor essentials libraries
   (`shading_nodes_essentials.blend`, `compositing_nodes_essentials.blend`).

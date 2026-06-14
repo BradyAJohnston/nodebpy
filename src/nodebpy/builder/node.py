@@ -51,6 +51,13 @@ def _find_socket_from_name(
 ) -> NodeSocket:
     ids = [socket.identifier for socket in collection]
     names = [socket.name for socket in collection]
+    # An exact identifier match wins (aligning with SocketAccessor's
+    # identifier-first strategy). Item sockets may share a name with another
+    # socket — e.g. a CaptureAttribute item named "Value" alongside the item
+    # whose identifier is "Value" — so the unambiguous identifier must take
+    # precedence over a name match before the name-normalising passes below.
+    if name in ids:
+        return collection[ids.index(name)]
     for format in [name, name.title(), name.replace("_", " ").title()]:
         try:
             return collection[names.index(format)]
