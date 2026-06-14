@@ -2179,10 +2179,13 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         def __call__(
             self,
             geometry: InputGeometry = None,
+            selection: InputBoolean = True,
             items: dict[str, InputLinkable | str] | None = None,
         ) -> "CaptureAttribute":
             """Create a CaptureAttribute node with a pre-set domain"""
-            return CaptureAttribute(geometry=geometry, domain=self._domain, items=items)
+            return CaptureAttribute(
+                geometry=geometry, selection=selection, domain=self._domain, items=items
+            )
 
     point = _DomainFactory("POINT")
     edge = _DomainFactory("EDGE")
@@ -2195,10 +2198,14 @@ class CaptureAttribute(ItemsMixin, BaseNode):
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
         """Input geometry."""
+        selection: BooleanSocket
+        """Selection input, limits the capture to a subset of the geometry."""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
         """Output geometry."""
+        selection: BooleanSocket
+        """Output selection, True for captured elements."""
 
     if TYPE_CHECKING:
 
@@ -2211,12 +2218,13 @@ class CaptureAttribute(ItemsMixin, BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
+        selection: InputBoolean = True,
         items: dict[str, InputLinkable | str] | None = None,
         *,
         domain: _AttributeDomains = "POINT",
     ):
         super().__init__()
-        key_args = {"Geometry": geometry}
+        key_args = {"Geometry": geometry, "Selection": selection}
         self.domain = domain
         key_args.update(self._add_inputs(**(items or {})))
         self._establish_links(**key_args)

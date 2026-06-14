@@ -356,7 +356,17 @@ cases (counts approximate), by node/feature gap:
   VECTOR sockets; it now also coerces a float to `int` for INT sockets (mirrors
   that special case). Flipped Create Guide Index Map (54 → 55 passing).
 
-### Remaining 8 xfails (each a distinct, harder case)
+- [x] **CaptureAttribute built-in `Selection`** (Attach Hair Curves to
+  Surface): Blender gave geometry CaptureAttribute a fixed `Selection`
+  input/output (no item needed); the nodebpy class signature gained the
+  matching `selection=` param. Codegen's `_ItemsNodeSpec` named only
+  `Geometry` as a fixed input, so a *linked* Selection tripped the
+  bail-to-generic guard and the constructor then emitted an item input as a
+  bogus `value=` kwarg. Added `("Selection", "selection")` to the spec's
+  `fixed` tuple — Selection is now authored (linked → upstream; unlinked True
+  default dropped). Flipped Attach Hair Curves to Surface (55 → 56 passing).
+
+### Remaining 7 xfails (each a distinct, harder case)
 - [ ] **CaptureAttribute item pairing** (Instance on Elements): a tree with
   several capture nodes whose items share names ("Normal"/"Tangent"/"Value")
   produces one swapped source link; per-node emission looks faithful, so the

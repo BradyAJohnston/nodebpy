@@ -1701,6 +1701,7 @@ _ASSET_ROUNDTRIP_OK = frozenset(
     {
         "3D to Screen Space",
         "Array",
+        "Attach Hair Curves to Surface",
         "Attachment Info",
         "Blend Hair Curves",
         "Box Selection",

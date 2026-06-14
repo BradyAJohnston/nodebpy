@@ -3176,7 +3176,7 @@ _ITEMS_NODE_SPECS = {
     ),
     "GeometryNodeCaptureAttribute": _ItemsNodeSpec(
         collection="capture_items",
-        fixed=(("Geometry", "geometry"),),
+        fixed=(("Geometry", "geometry"), ("Selection", "selection")),
         factory_prop="domain",
         factory_map={
             "POINT": "point",
