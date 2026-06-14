@@ -1739,6 +1739,7 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Restore Curve Segment Length",
         "Roll Hair Curves",
         "Rotate Hair Curves",
+        "Scatter on Surface",
         "Screen to 3D Space",
         "Separate Cylindrical",
         "Separate Spherical",

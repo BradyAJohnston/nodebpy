@@ -2230,13 +2230,20 @@ def _operator_dispatch_ok(node, pair, linked_ids: set[str], src_types) -> bool:
       makes a scalar Math node).
     - Math needs a **float** operand — a linked ``VALUE`` socket or an unlinked
       input (whose default renders as a float literal); otherwise two integer
-      operands dispatch to IntegerMath instead.
+      operands dispatch to IntegerMath instead. It also needs its *dispatching*
+      operand (the first linked one — the left of ``a op b``) to be a scalar:
+      a color/vector source there dispatches to VectorMath instead.
     """
     if src_types is None:
         return True
     if node.bl_idname == "ShaderNodeVectorMath":
         return any(src_types.get(s.identifier) == "VECTOR" for s in pair)
     if node.bl_idname == "ShaderNodeMath":
+        dispatcher = next(
+            (s.identifier for s in pair if s.identifier in linked_ids), None
+        )
+        if dispatcher is not None and src_types.get(dispatcher) in ("RGBA", "VECTOR"):
+            return False
         return any(
             s.identifier not in linked_ids or src_types.get(s.identifier) == "VALUE"
             for s in pair
