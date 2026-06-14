@@ -3353,6 +3353,47 @@ for _items_bl_idname in _ITEMS_NODE_SPECS:
     register_emitter(_items_bl_idname)(_emit_items_node)
 
 
+@register_emitter("GeometryNodeCurveSetHandles")
+def _emit_set_handle_type(node, ctx: EmitContext) -> Expr | _Val | None:
+    """``SetHandleType``'s ``left``/``right`` constructor params map to the
+    ``mode`` ENUM_FLAG set, but aren't RNA-named properties, so the generic
+    ``_non_default_props`` can't capture them. Build the normal constructor and
+    append the booleans that reproduce ``node.mode`` (the constructor defaults
+    both to ``False`` → ``mode == set()``)."""
+    call = ctx.constructor(node)
+    if "LEFT" in node.mode:
+        call.kwargs["left"] = Lit(True)
+    if "RIGHT" in node.mode:
+        call.kwargs["right"] = Lit(True)
+    return call
+
+
+@register_emitter("GeometryNodeViewer")
+def _emit_viewer(node, ctx: EmitContext) -> Expr | _Val | None:
+    """The Viewer's data inputs are created on link via a virtual ``__extend__``
+    socket, so they can't be passed as constructor kwargs. Emit
+    ``viewer = g.Viewer(...)`` then one ``expr >> viewer`` per linked input
+    (in socket order, so Geometry precedes Value), and dissolve the node."""
+    ctx.used_aliases.add("g")
+    kwargs: dict[str, Expr] = {}
+    if node.domain != "AUTO":
+        kwargs["domain"] = Lit(node.domain)
+    if getattr(node, "ui_shortcut", 0):
+        kwargs["ui_shortcut"] = Lit(node.ui_shortcut)
+    var = _make_var("viewer", ctx.counter)
+    ctx.pending_lines.append(f"    {var} = {Call('g.Viewer', kwargs=kwargs).render()}")
+
+    order = {s.identifier: i for i, s in enumerate(node.inputs)}
+    links = sorted(
+        ctx.incoming.get(node.name, ()),
+        key=lambda link: order.get(link.to_socket.identifier, 0),
+    )
+    for link in links:
+        statement = BinOp(">>", ctx.upstream_expr(link), Ref(var))
+        ctx.pending_lines.extend(_stmt_lines(statement))
+    return _Val(None, outputs={})
+
+
 @register_emitter("NodeCombineBundle")
 def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     """CombineBundle's inputs are its bundle items; emit
