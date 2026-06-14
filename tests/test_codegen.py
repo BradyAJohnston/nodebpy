@@ -1756,6 +1756,7 @@ _ASSET_ROUNDTRIP_OK = frozenset(
         "Sphere Selection",
         "Straighten Hair Curves",
         "Transform and Project",
+        "Trim Hair Curves",
     }
 )
 

@@ -2243,7 +2243,17 @@ def _operator_dispatch_ok(node, pair, linked_ids: set[str], src_types) -> bool:
     if src_types is None:
         return True
     if node.bl_idname == "ShaderNodeVectorMath":
-        return any(src_types.get(s.identifier) == "VECTOR" for s in pair)
+        if not any(src_types.get(s.identifier) == "VECTOR" for s in pair):
+            return False
+        # SCALE's second operand feeds the float ``Scale`` input; ``vec * x``
+        # only re-creates a SCALE node when ``x`` is a scalar (VALUE/INT) or an
+        # unlinked float literal. A linked BOOLEAN/VECTOR there dispatches to
+        # MULTIPLY instead (see _dispatch_vector_math).
+        if getattr(node, "operation", "") == "SCALE":
+            scale_type = src_types.get(pair[1].identifier)
+            if scale_type is not None and scale_type not in ("VALUE", "INT"):
+                return False
+        return True
     if node.bl_idname == "ShaderNodeMath":
         dispatcher = next(
             (s.identifier for s in pair if s.identifier in linked_ids), None
