@@ -375,13 +375,32 @@ cases (counts approximate), by node/feature gap:
   params. Flipped Braid Hair Curves (56 → 57 passing). Caveat: the FloatCurve's
   curve shape is not yet re-emitted (structural round-trip doesn't compare
   points); a dedicated `items=[(x, y, handle), …]` emitter is a future polish.
+- [x] **VectorMath SCALE lifted to `*` with a non-scalar operand** (Trim Hair
+  Curves): a SCALE node lifted to `vec * x`, but `vec * x` only re-creates a
+  SCALE node when `x` is a scalar (VALUE/INT) or an unlinked float literal — a
+  linked BOOLEAN/VECTOR `Scale` operand dispatches to MULTIPLY on rebuild (see
+  `_dispatch_vector_math`), swapping both the op and the target socket.
+  `_operator_dispatch_ok` now refuses the SCALE lift in that case, falling back
+  to `g.VectorMath.scale()`. Flipped Trim Hair Curves (57 → 58 passing).
+- [x] **Item name colliding with a built-in socket** (Curve to Tube): a
+  CaptureAttribute item named "Selection" collides with the new built-in
+  `Selection` socket, so `_item_socket` (and the link target in
+  `_establish_links`) resolved by name to the wrong socket. `_item_socket` now
+  falls back to positional resolution (item sockets are the trailing N) on a
+  name clash, and `_add_inputs` keys returned sockets by *identifier* so links
+  are established unambiguously. Flipped Curve to Tube (58 → 59 passing). Also
+  fixes Instance on Elements' swapped-link bug *in isolation* — it still
+  xfails in the full suite due to datablock contamination from prior tests
+  (a test-isolation issue, not a codegen gap).
 
-### Remaining 6 xfails (each a distinct, harder case)
-- [ ] **CaptureAttribute item pairing** (Instance on Elements): a tree with
-  several capture nodes whose items share names ("Normal"/"Tangent"/"Value")
-  produces one swapped source link; per-node emission looks faithful, so the
-  cause is subtle (needs careful multi-node diffing).
-- [ ] **ClosureZone** inline closure definition (Custom Force), and one asset
-  whose generated code segfaults Blender on exec.
+### Remaining 4 xfails (each a distinct, harder case)
+- [ ] **CaptureAttribute item pairing** (Instance on Elements): round-trips
+  cleanly when run alone but fails in the full suite — leftover node groups in
+  `bpy.data` from earlier tests clash on import (name `.001` suffixes / item
+  identifier shifts). A test-isolation fix (load each asset into a fresh
+  session) rather than a codegen change.
+- [ ] **ClosureZone** inline closure definition (Custom Force), the two
+  dynamics assets whose generated code segfaults Blender on exec (Hair
+  Dynamics, Cloth Dynamics).
 - [ ] Extend coverage to the shader and compositor essentials libraries
   (`shading_nodes_essentials.blend`, `compositing_nodes_essentials.blend`).

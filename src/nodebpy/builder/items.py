@@ -134,7 +134,17 @@ class ItemsMixin(DynamicInputsMixin):
     def _item_socket(self, item, *, output: bool = False) -> NodeSocket:
         """The node socket belonging to ``item``."""
         sockets = self.node.outputs if output else self.node.inputs
-        return sockets[item.name]
+        matches = [s for s in sockets if s.name == item.name]
+        if len(matches) == 1:
+            return matches[0]
+        # Name collides — e.g. a capture item named "Selection" alongside the
+        # built-in CaptureAttribute "Selection" socket. Item sockets are the
+        # trailing N sockets (one per collection item), so resolve by the
+        # item's position in the collection instead.
+        items = list(self._items)
+        idx = next(i for i, it in enumerate(items) if it == item)
+        real = [s for s in sockets if not s.identifier.startswith("__extend__")]
+        return real[len(real) - len(items) + idx]
 
     def _add_socket(self, name: str, type: str) -> NodeSocket:
         return self._item_socket(self._new_item(name, type))

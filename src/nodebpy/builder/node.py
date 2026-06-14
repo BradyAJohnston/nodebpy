@@ -270,7 +270,10 @@ class DynamicInputsMixin(ABC):
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)
-            new_sockets[socket.name] = socket_source
+            # Key by identifier, not name: an item may share a name with a
+            # built-in socket (e.g. a CaptureAttribute item named "Selection"),
+            # and _establish_links resolves identifiers unambiguously.
+            new_sockets[socket.identifier] = socket_source
 
         return new_sockets
 
