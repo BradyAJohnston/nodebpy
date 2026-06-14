@@ -1629,8 +1629,8 @@ class SetHandleType(BaseNode):
         curve: InputGeometry = None,
         selection: InputBoolean = True,
         *,
-        left: bool = False,
-        right: bool = False,
+        left: bool = True,
+        right: bool = True,
         handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
     ):
         super().__init__()
@@ -1654,15 +1654,9 @@ class SetHandleType(BaseNode):
 
     @left.setter
     def left(self, value: bool):
-        match value, self.right:
-            case True, True:
-                self.node.mode = {"LEFT", "RIGHT"}
-            case True, False:
-                self.node.mode = {"LEFT"}
-            case False, True:
-                self.node.mode = {"RIGHT"}
-            case False, False:
-                self.node.mode = set()
+        self.node.mode = (
+            (self.node.mode | {"LEFT"}) if value else (self.node.mode - {"LEFT"})
+        )
 
     @property
     def right(self) -> bool:
@@ -1670,15 +1664,17 @@ class SetHandleType(BaseNode):
 
     @right.setter
     def right(self, value: bool):
-        match self.left, value:
-            case True, True:
-                self.node.mode = {"LEFT", "RIGHT"}
-            case True, False:
-                self.node.mode = {"LEFT"}
-            case False, True:
-                self.node.mode = {"RIGHT"}
-            case False, False:
-                self.node.mode = set()
+        self.node.mode = (
+            (self.node.mode | {"RIGHT"}) if value else (self.node.mode - {"RIGHT"})
+        )
+
+    @property
+    def mode(self) -> set[Literal["LEFT", "RIGHT"]]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: set[Literal["LEFT", "RIGHT"]]):
+        self.node.mode = value
 
 
 class HandleTypeSelection(BaseNode):
@@ -1720,15 +1716,9 @@ class HandleTypeSelection(BaseNode):
 
     @left.setter
     def left(self, value: bool):
-        match value, self.right:
-            case True, True:
-                self.node.mode = {"LEFT", "RIGHT"}
-            case True, False:
-                self.node.mode = {"LEFT"}
-            case False, True:
-                self.node.mode = {"RIGHT"}
-            case False, False:
-                self.node.mode = set()
+        self.node.mode = (
+            (self.node.mode | {"LEFT"}) if value else (self.node.mode - {"LEFT"})
+        )
 
     @property
     def right(self) -> bool:
@@ -1736,15 +1726,9 @@ class HandleTypeSelection(BaseNode):
 
     @right.setter
     def right(self, value: bool):
-        match self.left, value:
-            case True, True:
-                self.node.mode = {"LEFT", "RIGHT"}
-            case True, False:
-                self.node.mode = {"LEFT"}
-            case False, True:
-                self.node.mode = {"RIGHT"}
-            case False, False:
-                self.node.mode = set()
+        self.node.mode = (
+            (self.node.mode | {"RIGHT"}) if value else (self.node.mode - {"RIGHT"})
+        )
 
     @property
     def mode(self) -> set[Literal["LEFT", "RIGHT"]]:

@@ -3370,13 +3370,13 @@ def _emit_set_handle_type(node, ctx: EmitContext) -> Expr | _Val | None:
     """``SetHandleType``'s ``left``/``right`` constructor params map to the
     ``mode`` ENUM_FLAG set, but aren't RNA-named properties, so the generic
     ``_non_default_props`` can't capture them. Build the normal constructor and
-    append the booleans that reproduce ``node.mode`` (the constructor defaults
-    both to ``False`` → ``mode == set()``)."""
+    append the booleans that reproduce ``node.mode`` (both default to ``True``,
+    matching Blender's native default ``{'LEFT', 'RIGHT'}``)."""
     call = ctx.constructor(node)
-    if "LEFT" in node.mode:
-        call.kwargs["left"] = Lit(True)
-    if "RIGHT" in node.mode:
-        call.kwargs["right"] = Lit(True)
+    if "LEFT" not in node.mode:
+        call.kwargs["left"] = Lit(False)
+    if "RIGHT" not in node.mode:
+        call.kwargs["right"] = Lit(False)
     return call
 
 
