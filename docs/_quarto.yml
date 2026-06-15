@@ -91,6 +91,11 @@ quartodoc:
         - builder.accessor
         - TreeBuilder
         - builder.BaseNode
+    - title: Export
+      desc: Exporting node trees to code.
+      contents:
+        - export.to_python
+        - export.to_mermaid
 
     - title: Geometry Nodes
       desc: Nodes use in Geometry Nodes trees.
