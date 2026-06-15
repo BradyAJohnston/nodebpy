@@ -21,10 +21,10 @@ jobs:
         run: uv sync --all-extras --extra-index-url https://bradyajohnston.github.io/dailybpy --refresh --upgrade
 
       - name: ruff format
-        run: uv run ruff format --check src/ generate.py
+        run: uv run ruff format --check src/ gen/
 
       - name: ruff check
-        run: uv run ruff check src/ generate.py
+        run: uv run ruff check src/ gen/
 
       - name: ty check
         run: uv run ty check src/
