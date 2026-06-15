@@ -32,13 +32,12 @@ Transform Coordinate System for Radial Tiling
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.vector.RadialTiling.i) |  |
-| [`name`](#nodebpy.nodes.geometry.vector.RadialTiling.name) |  |
+| [`name`](#nodebpy.nodes.geometry.vector.RadialTiling.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.vector.RadialTiling.node) |  |
 | [`normalize`](#nodebpy.nodes.geometry.vector.RadialTiling.normalize) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.RadialTiling.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.vector.RadialTiling.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.vector.RadialTiling.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.vector.RadialTiling.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.vector.RadialTiling.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -77,12 +76,11 @@ Map input vector components with curves
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.vector.VectorCurves.i) |  |
-| [`name`](#nodebpy.nodes.geometry.vector.VectorCurves.name) |  |
+| [`name`](#nodebpy.nodes.geometry.vector.VectorCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.vector.VectorCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.VectorCurves.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.vector.VectorCurves.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.vector.VectorCurves.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.vector.VectorCurves.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.vector.VectorCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -126,13 +124,12 @@ Perform vector math operation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.vector.VectorMath.i) |  |
-| [`name`](#nodebpy.nodes.geometry.vector.VectorMath.name) |  |
+| [`name`](#nodebpy.nodes.geometry.vector.VectorMath.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.vector.VectorMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.VectorMath.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.vector.VectorMath.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.vector.VectorMath.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.vector.VectorMath.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.vector.VectorMath.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.vector.VectorMath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -458,13 +455,12 @@ Rotate a vector around a pivot point (center)
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.vector.VectorRotate.i) |  |
 | [`invert`](#nodebpy.nodes.geometry.vector.VectorRotate.invert) |  |
-| [`name`](#nodebpy.nodes.geometry.vector.VectorRotate.name) |  |
+| [`name`](#nodebpy.nodes.geometry.vector.VectorRotate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.vector.VectorRotate.node) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.VectorRotate.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.vector.VectorRotate.outputs) |  |
 | [`rotation_type`](#nodebpy.nodes.geometry.vector.VectorRotate.rotation_type) |  |
-| [`tree`](#nodebpy.nodes.geometry.vector.VectorRotate.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.vector.VectorRotate.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.vector.VectorRotate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 

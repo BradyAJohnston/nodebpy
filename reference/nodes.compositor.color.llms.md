@@ -48,12 +48,11 @@ Overlay a foreground image onto a background image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.AlphaOver.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.AlphaOver.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.AlphaOver.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.AlphaOver.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.AlphaOver.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.AlphaOver.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.AlphaOver.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.AlphaOver.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.AlphaOver.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -124,12 +123,11 @@ Adjust brightness and contrast
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.Brightnesscontrast.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.Brightnesscontrast.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.Brightnesscontrast.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.Brightnesscontrast.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Brightnesscontrast.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.Brightnesscontrast.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.Brightnesscontrast.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.Brightnesscontrast.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.Brightnesscontrast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -206,13 +204,12 @@ Adjust color and values
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.ColorBalance.i) |  |
 | [`input_whitepoint`](#nodebpy.nodes.compositor.color.ColorBalance.input_whitepoint) |  |
-| [`name`](#nodebpy.nodes.compositor.color.ColorBalance.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.ColorBalance.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.ColorBalance.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.ColorBalance.o) |  |
 | [`output_whitepoint`](#nodebpy.nodes.compositor.color.ColorBalance.output_whitepoint) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.ColorBalance.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.ColorBalance.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.ColorBalance.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.ColorBalance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -374,12 +371,11 @@ Adjust the color of an image, separately in several tonal ranges (highlights, mi
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.ColorCorrection.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.ColorCorrection.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.ColorCorrection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.ColorCorrection.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.ColorCorrection.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.ColorCorrection.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.ColorCorrection.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.ColorCorrection.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.ColorCorrection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -450,12 +446,11 @@ Combine two images using depth maps
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.DepthCombine.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.DepthCombine.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.DepthCombine.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.DepthCombine.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.DepthCombine.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.DepthCombine.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.DepthCombine.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.DepthCombine.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.DepthCombine.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -492,15 +487,14 @@ Adjust brightness using a camera exposure parameter
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.color.Exposure.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.color.Exposure.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.color.Exposure.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.color.Exposure.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.color.Exposure.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.color.Exposure.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.color.Exposure.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.color.Exposure.i) |  |
+| [`name`](#nodebpy.nodes.compositor.color.Exposure.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.color.Exposure.node) |  |
+| [`o`](#nodebpy.nodes.compositor.color.Exposure.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.color.Exposure.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.Exposure.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -535,12 +529,11 @@ Adjust hue, saturation, and value with a curve
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.HueCorrect.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.HueCorrect.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.HueCorrect.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.HueCorrect.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.HueCorrect.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.HueCorrect.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.HueCorrect.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.HueCorrect.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.HueCorrect.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -578,12 +571,11 @@ Apply a color transformation in the HSV color model
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.Huesaturationvalue.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.Huesaturationvalue.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.Huesaturationvalue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.Huesaturationvalue.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Huesaturationvalue.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.Huesaturationvalue.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.Huesaturationvalue.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.Huesaturationvalue.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.Huesaturationvalue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -623,12 +615,11 @@ Invert colors, producing a negative
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.InvertColor.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.InvertColor.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.InvertColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.InvertColor.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.InvertColor.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.InvertColor.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.InvertColor.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.InvertColor.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.InvertColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -665,12 +656,11 @@ Reduce number of colors in an image, converting smooth gradients into sharp tran
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.Posterize.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.Posterize.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.Posterize.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.Posterize.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Posterize.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.Posterize.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.Posterize.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.Posterize.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.Posterize.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -707,12 +697,11 @@ Perform level adjustments on each color channel of an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.color.RGBCurves.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.RGBCurves.name) |  |
+| [`name`](#nodebpy.nodes.compositor.color.RGBCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.RGBCurves.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.RGBCurves.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.color.RGBCurves.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.RGBCurves.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.color.RGBCurves.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.RGBCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -763,15 +752,14 @@ Map one set of colors to another in order to approximate the appearance of high 
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.color.Tonemap.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.color.Tonemap.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.color.Tonemap.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.color.Tonemap.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.color.Tonemap.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.color.Tonemap.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.color.Tonemap.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.color.Tonemap.i) |  |
+| [`name`](#nodebpy.nodes.compositor.color.Tonemap.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.color.Tonemap.node) |  |
+| [`o`](#nodebpy.nodes.compositor.color.Tonemap.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.color.Tonemap.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.Tonemap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 

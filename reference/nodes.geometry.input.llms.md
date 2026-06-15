@@ -99,12 +99,11 @@ Retrieve the scene’s active camera
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.ActiveCamera.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.ActiveCamera.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ActiveCamera.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.ActiveCamera.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.ActiveCamera.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.ActiveCamera.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.ActiveCamera.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.ActiveCamera.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ActiveCamera.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -126,12 +125,11 @@ Active element indices of the edited geometry, for tool execution
 |----|----|
 | [`domain`](#nodebpy.nodes.geometry.input.ActiveElement.domain) |  |
 | [`i`](#nodebpy.nodes.geometry.input.ActiveElement.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.ActiveElement.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ActiveElement.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.ActiveElement.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.ActiveElement.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.ActiveElement.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.ActiveElement.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.ActiveElement.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ActiveElement.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -201,13 +199,12 @@ Retrieve information of armature bones
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.BoneInfo.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.BoneInfo.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.BoneInfo.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.BoneInfo.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.BoneInfo.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.BoneInfo.outputs) |  |
 | [`transform_space`](#nodebpy.nodes.geometry.input.BoneInfo.transform_space) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.BoneInfo.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.BoneInfo.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.BoneInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -237,16 +234,15 @@ Provide a True/False value that can be connected to other nodes in the tree
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`boolean`](#nodebpy.nodes.geometry.input.Boolean.boolean) |             |
-| [`i`](#nodebpy.nodes.geometry.input.Boolean.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Boolean.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Boolean.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Boolean.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Boolean.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Boolean.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Boolean.type)       |             |
+| Name | Description |
+|----|----|
+| [`boolean`](#nodebpy.nodes.geometry.input.Boolean.boolean) |  |
+| [`i`](#nodebpy.nodes.geometry.input.Boolean.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Boolean.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Boolean.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Boolean.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Boolean.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Boolean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -270,15 +266,14 @@ Retrieve information from a camera object
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.CameraInfo.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.CameraInfo.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.CameraInfo.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.CameraInfo.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.CameraInfo.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.CameraInfo.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.CameraInfo.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.CameraInfo.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CameraInfo.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.CameraInfo.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.CameraInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.CameraInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CameraInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -320,12 +315,11 @@ Retrieve a collection’s object and collection children, in a name-based order
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.CollectionChildren.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.CollectionChildren.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CollectionChildren.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.CollectionChildren.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.CollectionChildren.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.CollectionChildren.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.CollectionChildren.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.CollectionChildren.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CollectionChildren.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -368,13 +362,12 @@ Retrieve geometry instances from a collection
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.CollectionInfo.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.CollectionInfo.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CollectionInfo.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.CollectionInfo.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.CollectionInfo.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.CollectionInfo.outputs) |  |
 | [`transform_space`](#nodebpy.nodes.geometry.input.CollectionInfo.transform_space) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.CollectionInfo.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.CollectionInfo.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CollectionInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -400,16 +393,15 @@ Output a color value chosen with the color picker widget
 
 #### Attributes
 
-| Name                                                     | Description |
-|----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Color.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Color.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Color.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Color.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Color.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Color.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Color.type)       |             |
-| [`value`](#nodebpy.nodes.geometry.input.Color.value)     |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Color.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Color.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Color.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Color.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Color.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Color.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`value`](#nodebpy.nodes.geometry.input.Color.value) |  |
 
 **Outputs**
 
@@ -438,12 +430,11 @@ Retrieve face corners connected to edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.CornersOfEdge.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.CornersOfEdge.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CornersOfEdge.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.CornersOfEdge.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.CornersOfEdge.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.CornersOfEdge.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.CornersOfEdge.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.CornersOfEdge.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CornersOfEdge.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -481,12 +472,11 @@ Retrieve corners that make up a face
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.CornersOfFace.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.CornersOfFace.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CornersOfFace.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.CornersOfFace.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.CornersOfFace.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.CornersOfFace.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.CornersOfFace.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.CornersOfFace.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CornersOfFace.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -524,12 +514,11 @@ Retrieve face corners connected to vertices
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.CornersOfVertex.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.CornersOfVertex.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CornersOfVertex.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.CornersOfVertex.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.CornersOfVertex.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.CornersOfVertex.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.CornersOfVertex.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.CornersOfVertex.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CornersOfVertex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -556,15 +545,14 @@ The scene’s 3D cursor location and rotation
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Cursor3D.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Cursor3D.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Cursor3D.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Cursor3D.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Cursor3D.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Cursor3D.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Cursor3D.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Cursor3D.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Cursor3D.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Cursor3D.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Cursor3D.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Cursor3D.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Cursor3D.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -592,12 +580,11 @@ Retrieve the position of each Bézier control point’s handles
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.CurveHandlePositions.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.CurveHandlePositions.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CurveHandlePositions.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.CurveHandlePositions.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.CurveHandlePositions.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.CurveHandlePositions.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.CurveHandlePositions.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.CurveHandlePositions.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CurveHandlePositions.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -631,12 +618,11 @@ Retrieve the curve a control point is part of
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.CurveOfPoint.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.CurveOfPoint.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CurveOfPoint.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.CurveOfPoint.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.CurveOfPoint.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.CurveOfPoint.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.CurveOfPoint.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.CurveOfPoint.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CurveOfPoint.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -664,12 +650,11 @@ Retrieve the direction of curves at each control point
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.CurveTangent.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.CurveTangent.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CurveTangent.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.CurveTangent.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.CurveTangent.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.CurveTangent.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.CurveTangent.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.CurveTangent.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CurveTangent.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -687,15 +672,14 @@ Retrieve the angle at each control point used to twist the curve’s normal arou
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.CurveTilt.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.CurveTilt.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.CurveTilt.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.CurveTilt.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.CurveTilt.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.CurveTilt.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.CurveTilt.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.CurveTilt.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.CurveTilt.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.CurveTilt.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.CurveTilt.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.CurveTilt.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.CurveTilt.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -713,15 +697,14 @@ The angle between the normals of connected manifold faces
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.EdgeAngle.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.EdgeAngle.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.EdgeAngle.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.EdgeAngle.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.EdgeAngle.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.EdgeAngle.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.EdgeAngle.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.EdgeAngle.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.EdgeAngle.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.EdgeAngle.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.EdgeAngle.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.EdgeAngle.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.EdgeAngle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -743,12 +726,11 @@ Retrieve the number of faces that use each edge as one of their sides
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.EdgeNeighbors.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.EdgeNeighbors.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.EdgeNeighbors.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.EdgeNeighbors.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.EdgeNeighbors.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.EdgeNeighbors.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.EdgeNeighbors.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.EdgeNeighbors.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.EdgeNeighbors.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -776,12 +758,11 @@ Output a selection of edges by following paths across mesh edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.EdgePathsToSelection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -809,12 +790,11 @@ Retrieve topology information relating to each edge of a mesh
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.EdgeVertices.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.EdgeVertices.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.EdgeVertices.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.EdgeVertices.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.EdgeVertices.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.EdgeVertices.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.EdgeVertices.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.EdgeVertices.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.EdgeVertices.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -844,12 +824,11 @@ Retrieve the edges on both sides of a face corner
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.EdgesOfCorner.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.EdgesOfCorner.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.EdgesOfCorner.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.EdgesOfCorner.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.EdgesOfCorner.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.EdgesOfCorner.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.EdgesOfCorner.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.EdgesOfCorner.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.EdgesOfCorner.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -885,12 +864,11 @@ Retrieve the edges connected to each vertex
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.EdgesOfVertex.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.EdgesOfVertex.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.EdgesOfVertex.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.EdgesOfVertex.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.EdgesOfVertex.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.EdgesOfVertex.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.EdgesOfVertex.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.EdgesOfVertex.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.EdgesOfVertex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -926,12 +904,11 @@ Group faces into regions surrounded by the selected boundary edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.EdgesToFaceGroups.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -965,12 +942,11 @@ Provide a selection for an arbitrary number of endpoints in each spline
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.EndpointSelection.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.EndpointSelection.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.EndpointSelection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.EndpointSelection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.EndpointSelection.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.EndpointSelection.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.EndpointSelection.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.EndpointSelection.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.EndpointSelection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -995,15 +971,14 @@ Calculate the surface area of a mesh’s faces
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.FaceArea.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.FaceArea.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.FaceArea.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.FaceArea.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.FaceArea.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.FaceArea.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.FaceArea.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.FaceArea.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.FaceArea.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.FaceArea.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.FaceArea.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.FaceArea.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.FaceArea.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1030,12 +1005,11 @@ Find edges on the boundaries between groups of faces with the same ID value
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.FaceGroupBoundaries.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1062,12 +1036,11 @@ Retrieve topology information relating to each face of a mesh
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.FaceNeighbors.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.FaceNeighbors.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.FaceNeighbors.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.FaceNeighbors.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.FaceNeighbors.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.FaceNeighbors.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.FaceNeighbors.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.FaceNeighbors.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.FaceNeighbors.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1095,12 +1068,11 @@ Retrieve the face each face corner is part of
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.FaceOfCorner.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.FaceOfCorner.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.FaceOfCorner.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.FaceOfCorner.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.FaceOfCorner.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.FaceOfCorner.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.FaceOfCorner.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.FaceOfCorner.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.FaceOfCorner.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1125,15 +1097,14 @@ Each face’s sculpt face set value
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.FaceSet.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.FaceSet.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.FaceSet.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.FaceSet.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.FaceSet.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.FaceSet.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.FaceSet.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.FaceSet.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.FaceSet.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.FaceSet.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.FaceSet.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.FaceSet.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.FaceSet.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1152,15 +1123,14 @@ Output a font
 
 #### Attributes
 
-| Name                                                    | Description |
-|---------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Font.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Font.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Font.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Font.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Font.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Font.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Font.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Font.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Font.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Font.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Font.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Font.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Font.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1178,15 +1148,14 @@ Retrieve a stable random identifier value from the “id” attribute on the poi
 
 #### Attributes
 
-| Name                                                  | Description |
-|-------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.ID.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.ID.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.ID.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.ID.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.ID.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.ID.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.ID.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.ID.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ID.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.ID.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.ID.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.ID.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ID.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1204,15 +1173,14 @@ Input an image data-block
 
 #### Attributes
 
-| Name                                                     | Description |
-|----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Image.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Image.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Image.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Image.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Image.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Image.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Image.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Image.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Image.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Image.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Image.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Image.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Image.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1237,15 +1205,14 @@ Retrieve information about an image
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.ImageInfo.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.ImageInfo.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.ImageInfo.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.ImageInfo.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.ImageInfo.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.ImageInfo.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.ImageInfo.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.ImageInfo.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ImageInfo.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.ImageInfo.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.ImageInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.ImageInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ImageInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1281,15 +1248,14 @@ Import geometry from an CSV file
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.ImportCSV.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.ImportCSV.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.ImportCSV.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.ImportCSV.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.ImportCSV.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.ImportCSV.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.ImportCSV.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.ImportCSV.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ImportCSV.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.ImportCSV.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.ImportCSV.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.ImportCSV.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ImportCSV.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1320,15 +1286,14 @@ Import geometry from an OBJ file
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.ImportOBJ.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.ImportOBJ.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.ImportOBJ.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.ImportOBJ.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.ImportOBJ.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.ImportOBJ.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.ImportOBJ.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.ImportOBJ.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ImportOBJ.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.ImportOBJ.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.ImportOBJ.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.ImportOBJ.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ImportOBJ.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1358,15 +1323,14 @@ Import a point cloud from a PLY file
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.ImportPLY.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.ImportPLY.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.ImportPLY.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.ImportPLY.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.ImportPLY.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.ImportPLY.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.ImportPLY.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.ImportPLY.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ImportPLY.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.ImportPLY.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.ImportPLY.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.ImportPLY.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ImportPLY.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1396,15 +1360,14 @@ Import a mesh from an STL file
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.ImportSTL.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.ImportSTL.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.ImportSTL.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.ImportSTL.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.ImportSTL.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.ImportSTL.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.ImportSTL.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.ImportSTL.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ImportSTL.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.ImportSTL.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.ImportSTL.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.ImportSTL.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ImportSTL.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1434,15 +1397,14 @@ Import a string from a text file
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.ImportText.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.ImportText.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.ImportText.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.ImportText.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.ImportText.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.ImportText.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.ImportText.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.ImportText.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ImportText.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.ImportText.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.ImportText.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.ImportText.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ImportText.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1472,15 +1434,14 @@ Import volume data from a .vdb file
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.ImportVDB.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.ImportVDB.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.ImportVDB.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.ImportVDB.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.ImportVDB.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.ImportVDB.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.ImportVDB.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.ImportVDB.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ImportVDB.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.ImportVDB.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.ImportVDB.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.ImportVDB.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ImportVDB.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1504,15 +1465,14 @@ Retrieve an integer value indicating the position of each element in the list, s
 
 #### Attributes
 
-| Name                                                     | Description |
-|----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Index.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Index.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Index.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Index.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Index.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Index.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Index.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Index.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Index.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Index.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Index.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Index.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Index.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1539,12 +1499,11 @@ Calculate position bounds of each instance’s geometry set
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.InstanceBounds.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.InstanceBounds.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.InstanceBounds.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.InstanceBounds.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.InstanceBounds.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.InstanceBounds.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.InstanceBounds.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.InstanceBounds.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.InstanceBounds.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1572,12 +1531,11 @@ Output the reference index of the instance
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.InstanceReference.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.InstanceReference.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.InstanceReference.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.InstanceReference.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.InstanceReference.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.InstanceReference.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.InstanceReference.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.InstanceReference.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.InstanceReference.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1598,12 +1556,11 @@ Retrieve the rotation of each instance in the geometry
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.InstanceRotation.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.InstanceRotation.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.InstanceRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.InstanceRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.InstanceRotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.InstanceRotation.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.InstanceRotation.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.InstanceRotation.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.InstanceRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1624,12 +1581,11 @@ Retrieve the scale of each instance in the geometry
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.InstanceScale.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.InstanceScale.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.InstanceScale.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.InstanceScale.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.InstanceScale.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.InstanceScale.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.InstanceScale.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.InstanceScale.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.InstanceScale.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1650,12 +1606,11 @@ Retrieve the full transformation of each instance in the geometry
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.InstanceTransform.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.InstanceTransform.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.InstanceTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.InstanceTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.InstanceTransform.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.InstanceTransform.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.InstanceTransform.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.InstanceTransform.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.InstanceTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1673,16 +1628,15 @@ Provide an integer value that can be connected to other nodes in the tree
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Integer.i)             |             |
-| [`integer`](#nodebpy.nodes.geometry.input.Integer.integer) |             |
-| [`name`](#nodebpy.nodes.geometry.input.Integer.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Integer.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Integer.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Integer.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Integer.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Integer.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Integer.i) |  |
+| [`integer`](#nodebpy.nodes.geometry.input.Integer.integer) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Integer.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Integer.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Integer.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Integer.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Integer.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1703,12 +1657,11 @@ Retrieve whether each edge is marked for smooth or split normals
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.IsEdgeSmooth.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1735,12 +1688,11 @@ Retrieve whether all triangles in a face are on the same plane, i.e. whether th
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.IsFacePlanar.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.IsFacePlanar.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.IsFacePlanar.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.IsFacePlanar.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.IsFacePlanar.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.IsFacePlanar.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.IsFacePlanar.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.IsFacePlanar.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.IsFacePlanar.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1767,12 +1719,11 @@ Retrieve whether each face is marked for smooth or sharp normals
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.IsFaceSmooth.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.IsFaceSmooth.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.IsFaceSmooth.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.IsFaceSmooth.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.IsFaceSmooth.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.IsFaceSmooth.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.IsFaceSmooth.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.IsFaceSmooth.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.IsFaceSmooth.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1793,12 +1744,11 @@ Retrieve whether each spline endpoint connects to the beginning
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.IsSplineCyclic.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.IsSplineCyclic.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.IsSplineCyclic.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.IsSplineCyclic.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.IsSplineCyclic.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.IsSplineCyclic.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.IsSplineCyclic.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.IsSplineCyclic.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.IsSplineCyclic.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1816,15 +1766,14 @@ Retrieve whether the nodes are being evaluated for the viewport rather than the 
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.IsViewport.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.IsViewport.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.IsViewport.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.IsViewport.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.IsViewport.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.IsViewport.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.IsViewport.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.IsViewport.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.IsViewport.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.IsViewport.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.IsViewport.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.IsViewport.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.IsViewport.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1845,12 +1794,11 @@ Retrieve the index of the material used for each element in the geometry’s lis
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.MaterialIndex.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.MaterialIndex.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.MaterialIndex.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.MaterialIndex.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.MaterialIndex.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.MaterialIndex.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.MaterialIndex.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.MaterialIndex.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.MaterialIndex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1868,15 +1816,14 @@ Retrieve information about separate connected regions in a mesh
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.MeshIsland.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.MeshIsland.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.MeshIsland.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.MeshIsland.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.MeshIsland.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.MeshIsland.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.MeshIsland.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.MeshIsland.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.MeshIsland.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.MeshIsland.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.MeshIsland.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.MeshIsland.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.MeshIsland.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1898,12 +1845,11 @@ Retrieve the position of the mouse cursor
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.MousePosition.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.MousePosition.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.MousePosition.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.MousePosition.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.MousePosition.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.MousePosition.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.MousePosition.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.MousePosition.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.MousePosition.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -1934,12 +1880,11 @@ Retrieve the data of a specified attribute
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.input.NamedAttribute.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.input.NamedAttribute.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.NamedAttribute.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.NamedAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.NamedAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.NamedAttribute.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.NamedAttribute.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.NamedAttribute.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.NamedAttribute.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.NamedAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -2041,12 +1986,11 @@ Output a selection of a Grease Pencil layer
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.NamedLayerSelection.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.NamedLayerSelection.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.NamedLayerSelection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.NamedLayerSelection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.NamedLayerSelection.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.NamedLayerSelection.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.NamedLayerSelection.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.NamedLayerSelection.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.NamedLayerSelection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2074,12 +2018,11 @@ Retrieve a unit length vector indicating the direction pointing away from the ge
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.Normal.i) |  |
 | [`legacy_corner_normals`](#nodebpy.nodes.geometry.input.Normal.legacy_corner_normals) |  |
-| [`name`](#nodebpy.nodes.geometry.input.Normal.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Normal.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.Normal.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.Normal.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.Normal.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.Normal.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.Normal.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Normal.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2108,13 +2051,12 @@ Retrieve information from an object
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.ObjectInfo.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.ObjectInfo.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ObjectInfo.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.ObjectInfo.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.ObjectInfo.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.ObjectInfo.outputs) |  |
 | [`transform_space`](#nodebpy.nodes.geometry.input.ObjectInfo.transform_space) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.ObjectInfo.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.ObjectInfo.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ObjectInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2153,12 +2095,11 @@ Retrieve corners in the same face as another
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.OffsetCornerInFace.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2193,12 +2134,11 @@ Offset a control point index within its curve
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.OffsetPointInCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2235,12 +2175,11 @@ Retrieve a point index within a curve
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.PointsOfCurve.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.PointsOfCurve.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.PointsOfCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.PointsOfCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.PointsOfCurve.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.PointsOfCurve.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.PointsOfCurve.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.PointsOfCurve.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.PointsOfCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2267,15 +2206,14 @@ Retrieve a vector indicating the location of each element
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Position.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Position.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Position.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Position.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Position.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Position.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Position.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Position.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Position.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Position.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Position.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Position.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Position.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2293,15 +2231,14 @@ Retrieve the radius at each point on curve or point cloud geometry
 
 #### Attributes
 
-| Name                                                      | Description |
-|-----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Radius.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Radius.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Radius.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Radius.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Radius.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Radius.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Radius.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Radius.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Radius.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Radius.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Radius.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Radius.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Radius.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2322,13 +2259,12 @@ Provide a rotation value that can be connected to other nodes in the tree
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.Rotation.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.Rotation.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Rotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.Rotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.Rotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.Rotation.outputs) |  |
 | [`rotation_euler`](#nodebpy.nodes.geometry.input.Rotation.rotation_euler) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.Rotation.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.Rotation.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Rotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2346,15 +2282,14 @@ Retrieve the current time in the scene’s animation in units of seconds or fram
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.SceneTime.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.SceneTime.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.SceneTime.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.SceneTime.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.SceneTime.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.SceneTime.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.SceneTime.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.SceneTime.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.SceneTime.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.SceneTime.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.SceneTime.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.SceneTime.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.SceneTime.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2373,15 +2308,14 @@ User selection of the edited geometry, for tool execution
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.Selection.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.Selection.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.Selection.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.Selection.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.Selection.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.Selection.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.Selection.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.Selection.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Selection.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.Selection.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.Selection.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.Selection.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Selection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2400,15 +2334,14 @@ Retrieve the object that contains the geometry nodes modifier currently being ex
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.SelfObject.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.SelfObject.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.SelfObject.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.SelfObject.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.SelfObject.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.SelfObject.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.SelfObject.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.SelfObject.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.SelfObject.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.SelfObject.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.SelfObject.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.SelfObject.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.SelfObject.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2436,12 +2369,11 @@ Find the shortest paths along mesh edges to selected end vertices, with customiz
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ShortestEdgePaths.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2470,12 +2402,11 @@ Output string characters that cannot be typed directly with the keyboard
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.SpecialCharacters.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.SpecialCharacters.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.SpecialCharacters.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.SpecialCharacters.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.SpecialCharacters.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.SpecialCharacters.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.SpecialCharacters.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.SpecialCharacters.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.SpecialCharacters.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2497,12 +2428,11 @@ Retrieve the total length of each spline, as a distance or as a number of points
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.SplineLength.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.SplineLength.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.SplineLength.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.SplineLength.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.SplineLength.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.SplineLength.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.SplineLength.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.SplineLength.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.SplineLength.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2524,12 +2454,11 @@ Retrieve how far along each spline a control point is
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.SplineParameter.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.SplineParameter.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.SplineParameter.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.SplineParameter.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.SplineParameter.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.SplineParameter.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.SplineParameter.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.SplineParameter.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.SplineParameter.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2552,12 +2481,11 @@ Retrieve the number of evaluated points that will be generated for every control
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.SplineResolution.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.SplineResolution.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.SplineResolution.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.SplineResolution.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.SplineResolution.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.SplineResolution.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.SplineResolution.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.SplineResolution.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.SplineResolution.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2575,16 +2503,15 @@ Provide a string value that can be connected to other nodes in the tree
 
 #### Attributes
 
-| Name                                                      | Description |
-|-----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.String.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.String.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.String.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.String.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.String.outputs) |             |
-| [`string`](#nodebpy.nodes.geometry.input.String.string)   |             |
-| [`tree`](#nodebpy.nodes.geometry.input.String.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.String.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.String.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.String.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.String.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.String.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.String.outputs) |  |
+| [`string`](#nodebpy.nodes.geometry.input.String.string) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.String.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2609,15 +2536,14 @@ Generate tangent directions based on a UV map
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.UVTangent.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.UVTangent.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.UVTangent.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.UVTangent.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.UVTangent.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.UVTangent.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.UVTangent.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.UVTangent.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.UVTangent.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.UVTangent.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.UVTangent.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.UVTangent.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.UVTangent.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2645,12 +2571,11 @@ Provide a vector value that can be connected to other nodes in the tree
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.Vector.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.Vector.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.Vector.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.Vector.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.Vector.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.Vector.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.Vector.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.Vector.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.Vector.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`vector`](#nodebpy.nodes.geometry.input.Vector.vector) |  |
 | [`vector_dimensions`](#nodebpy.nodes.geometry.input.Vector.vector_dimensions) |  |
 
@@ -2673,12 +2598,11 @@ Retrieve topology information relating to each vertex of a mesh
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.VertexNeighbors.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.VertexNeighbors.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.VertexNeighbors.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.VertexNeighbors.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.VertexNeighbors.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.VertexNeighbors.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.VertexNeighbors.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.VertexNeighbors.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.VertexNeighbors.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2706,12 +2630,11 @@ Retrieve the vertex each face corner is attached to
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.VertexOfCorner.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.VertexOfCorner.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.VertexOfCorner.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.VertexOfCorner.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.VertexOfCorner.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.VertexOfCorner.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.VertexOfCorner.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.VertexOfCorner.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.VertexOfCorner.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2738,12 +2661,11 @@ Retrieve the view direction and location of the 3D viewport
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.input.ViewportTransform.i) |  |
-| [`name`](#nodebpy.nodes.geometry.input.ViewportTransform.name) |  |
+| [`name`](#nodebpy.nodes.geometry.input.ViewportTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.input.ViewportTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.input.ViewportTransform.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.input.ViewportTransform.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.input.ViewportTransform.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.input.ViewportTransform.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.ViewportTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -2763,15 +2685,14 @@ Retrieve the integer coordinates of the voxel that the field is evaluated on
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.input.VoxelIndex.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.input.VoxelIndex.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.input.VoxelIndex.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.input.VoxelIndex.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.input.VoxelIndex.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.input.VoxelIndex.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.input.VoxelIndex.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.input.VoxelIndex.i) |  |
+| [`name`](#nodebpy.nodes.geometry.input.VoxelIndex.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.VoxelIndex.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.VoxelIndex.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.VoxelIndex.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.VoxelIndex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 

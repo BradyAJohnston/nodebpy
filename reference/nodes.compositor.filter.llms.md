@@ -51,12 +51,11 @@ Smooth away jagged edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.AntiAliasing.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.AntiAliasing.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.AntiAliasing.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.AntiAliasing.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.AntiAliasing.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.AntiAliasing.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.AntiAliasing.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.AntiAliasing.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.AntiAliasing.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -95,12 +94,11 @@ Adaptively blur image, while retaining sharp edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.BilateralBlur.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.BilateralBlur.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.BilateralBlur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.BilateralBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.BilateralBlur.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.BilateralBlur.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.BilateralBlur.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.BilateralBlur.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.BilateralBlur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -143,15 +141,14 @@ Blur an image, using several blur modes
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.filter.Blur.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.filter.Blur.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.filter.Blur.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.filter.Blur.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Blur.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.filter.Blur.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.filter.Blur.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.filter.Blur.i) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Blur.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.filter.Blur.node) |  |
+| [`o`](#nodebpy.nodes.compositor.filter.Blur.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.filter.Blur.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Blur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -269,12 +266,11 @@ Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.BokehBlur.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.BokehBlur.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.BokehBlur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.BokehBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.BokehBlur.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.BokehBlur.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.BokehBlur.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.BokehBlur.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.BokehBlur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -321,12 +317,11 @@ Convolves an image with a kernel
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Convolve.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.Convolve.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Convolve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Convolve.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Convolve.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.Convolve.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.Convolve.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.Convolve.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Convolve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -378,12 +373,11 @@ Apply depth of field in 2D, using a Z depth map or mask
 | [`bokeh`](#nodebpy.nodes.compositor.filter.Defocus.bokeh) |  |
 | [`f_stop`](#nodebpy.nodes.compositor.filter.Defocus.f_stop) |  |
 | [`i`](#nodebpy.nodes.compositor.filter.Defocus.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.Defocus.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Defocus.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Defocus.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Defocus.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.Defocus.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.Defocus.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.Defocus.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Defocus.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_zbuffer`](#nodebpy.nodes.compositor.filter.Defocus.use_zbuffer) |  |
 | [`z_scale`](#nodebpy.nodes.compositor.filter.Defocus.z_scale) |  |
 
@@ -428,15 +422,14 @@ Denoise renders from Cycles and other ray tracing renderers
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.filter.Denoise.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.filter.Denoise.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.filter.Denoise.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.filter.Denoise.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Denoise.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.filter.Denoise.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.filter.Denoise.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.filter.Denoise.i) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Denoise.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.filter.Denoise.node) |  |
+| [`o`](#nodebpy.nodes.compositor.filter.Denoise.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.filter.Denoise.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Denoise.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -477,12 +470,11 @@ Smooth areas of an image in which noise is noticeable, while leaving complex are
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Despeckle.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.Despeckle.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Despeckle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Despeckle.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Despeckle.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.Despeckle.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.Despeckle.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.Despeckle.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Despeckle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -522,12 +514,11 @@ Expand and shrink masks
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Dilateerode.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.Dilateerode.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Dilateerode.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Dilateerode.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Dilateerode.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.Dilateerode.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.Dilateerode.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.Dilateerode.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Dilateerode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -619,12 +610,11 @@ Blur an image along a direction
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.DirectionalBlur.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.DirectionalBlur.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.DirectionalBlur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.DirectionalBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.DirectionalBlur.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.DirectionalBlur.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.DirectionalBlur.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.DirectionalBlur.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.DirectionalBlur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -662,15 +652,14 @@ Apply common image enhancement filters
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.filter.Filter.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.filter.Filter.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.filter.Filter.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.filter.Filter.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Filter.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.filter.Filter.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.filter.Filter.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.filter.Filter.i) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Filter.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.filter.Filter.node) |  |
+| [`o`](#nodebpy.nodes.compositor.filter.Filter.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.filter.Filter.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Filter.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -823,15 +812,14 @@ Add lens flares, fog and glows around bright parts of the image
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.filter.Glare.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.filter.Glare.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.filter.Glare.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.filter.Glare.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Glare.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.filter.Glare.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.filter.Glare.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.filter.Glare.i) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Glare.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.filter.Glare.node) |  |
+| [`o`](#nodebpy.nodes.compositor.filter.Glare.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.filter.Glare.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Glare.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1040,15 +1028,14 @@ Extend borders of an image into transparent or masked regions
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.filter.Inpaint.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.filter.Inpaint.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.filter.Inpaint.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.filter.Inpaint.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Inpaint.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.filter.Inpaint.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.filter.Inpaint.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.filter.Inpaint.i) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Inpaint.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.filter.Inpaint.node) |  |
+| [`o`](#nodebpy.nodes.compositor.filter.Inpaint.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.filter.Inpaint.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Inpaint.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1096,12 +1083,11 @@ Apply smoothing filter that preserves edges, for stylized and painterly effects
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Kuwahara.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.Kuwahara.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Kuwahara.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Kuwahara.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Kuwahara.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.Kuwahara.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.Kuwahara.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.Kuwahara.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Kuwahara.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1163,12 +1149,11 @@ Computes a signed distance field from the given mask
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.MaskToSDF.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.MaskToSDF.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.MaskToSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.MaskToSDF.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.MaskToSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.MaskToSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.MaskToSDF.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.MaskToSDF.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.MaskToSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1203,12 +1188,11 @@ Reduce detail in an image by making individual pixels more prominent, for a bloc
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.Pixelate.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.Pixelate.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.Pixelate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Pixelate.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Pixelate.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.Pixelate.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.Pixelate.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.Pixelate.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.Pixelate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1246,12 +1230,11 @@ Uses the vector speed render pass to blur the image pixels in 2D
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.filter.VectorBlur.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.VectorBlur.name) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.VectorBlur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.VectorBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.VectorBlur.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.filter.VectorBlur.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.VectorBlur.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.filter.VectorBlur.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.VectorBlur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

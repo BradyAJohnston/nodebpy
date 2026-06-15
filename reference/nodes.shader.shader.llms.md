@@ -44,15 +44,14 @@ Add two Shaders together
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.shader.AddShader.i)             |             |
-| [`name`](#nodebpy.nodes.shader.shader.AddShader.name)       |             |
-| [`node`](#nodebpy.nodes.shader.shader.AddShader.node)       |             |
-| [`o`](#nodebpy.nodes.shader.shader.AddShader.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.shader.AddShader.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.shader.AddShader.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.shader.AddShader.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.shader.AddShader.i) |  |
+| [`name`](#nodebpy.nodes.shader.shader.AddShader.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.shader.AddShader.node) |  |
+| [`o`](#nodebpy.nodes.shader.shader.AddShader.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.shader.AddShader.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.AddShader.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -102,15 +101,14 @@ Note: This node should only be used for the world surface output
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.shader.Background.i)             |             |
-| [`name`](#nodebpy.nodes.shader.shader.Background.name)       |             |
-| [`node`](#nodebpy.nodes.shader.shader.Background.node)       |             |
-| [`o`](#nodebpy.nodes.shader.shader.Background.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.shader.Background.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.shader.Background.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.shader.Background.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.shader.Background.i) |  |
+| [`name`](#nodebpy.nodes.shader.shader.Background.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.shader.Background.node) |  |
+| [`o`](#nodebpy.nodes.shader.shader.Background.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.shader.Background.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.Background.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### DiffuseBSDF
 
@@ -131,15 +129,14 @@ Lambertian and Oren-Nayar diffuse reflection
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.shader.DiffuseBSDF.i)             |             |
-| [`name`](#nodebpy.nodes.shader.shader.DiffuseBSDF.name)       |             |
-| [`node`](#nodebpy.nodes.shader.shader.DiffuseBSDF.node)       |             |
-| [`o`](#nodebpy.nodes.shader.shader.DiffuseBSDF.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.shader.DiffuseBSDF.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.shader.DiffuseBSDF.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.shader.DiffuseBSDF.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.shader.DiffuseBSDF.i) |  |
+| [`name`](#nodebpy.nodes.shader.shader.DiffuseBSDF.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.shader.DiffuseBSDF.node) |  |
+| [`o`](#nodebpy.nodes.shader.shader.DiffuseBSDF.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.shader.DiffuseBSDF.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.DiffuseBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -174,15 +171,14 @@ Lambertian emission shader
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.shader.Emission.i)             |             |
-| [`name`](#nodebpy.nodes.shader.shader.Emission.name)       |             |
-| [`node`](#nodebpy.nodes.shader.shader.Emission.node)       |             |
-| [`o`](#nodebpy.nodes.shader.shader.Emission.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.shader.Emission.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.shader.Emission.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.shader.Emission.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.shader.Emission.i) |  |
+| [`name`](#nodebpy.nodes.shader.shader.Emission.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.shader.Emission.node) |  |
+| [`o`](#nodebpy.nodes.shader.shader.Emission.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.shader.Emission.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.Emission.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -234,12 +230,11 @@ Glass-like shader mixing refraction and reflection at grazing angles
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.GlassBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.GlassBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.GlassBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.GlassBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.GlassBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.GlassBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.GlassBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.GlassBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.GlassBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.GlassBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -295,12 +290,11 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.GlossyBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.GlossyBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.GlossyBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.GlossyBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.GlossyBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.GlossyBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.GlossyBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.GlossyBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.GlossyBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.GlossyBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -354,12 +348,11 @@ Reflection and transmission shaders optimized for hair rendering
 |----|----|
 | [`component`](#nodebpy.nodes.shader.shader.HairBSDF.component) |  |
 | [`i`](#nodebpy.nodes.shader.shader.HairBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.HairBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.HairBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.HairBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.HairBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.HairBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.HairBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.HairBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.HairBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -405,15 +398,14 @@ Note: the holdout shader can only create alpha when transparency is enabled in t
 
 #### Attributes
 
-| Name                                                      | Description |
-|-----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.shader.Holdout.i)             |             |
-| [`name`](#nodebpy.nodes.shader.shader.Holdout.name)       |             |
-| [`node`](#nodebpy.nodes.shader.shader.Holdout.node)       |             |
-| [`o`](#nodebpy.nodes.shader.shader.Holdout.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.shader.Holdout.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.shader.Holdout.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.shader.Holdout.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.shader.Holdout.i) |  |
+| [`name`](#nodebpy.nodes.shader.shader.Holdout.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.shader.Holdout.node) |  |
+| [`o`](#nodebpy.nodes.shader.shader.Holdout.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.shader.Holdout.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.Holdout.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### MetallicBSDF
 
@@ -463,12 +455,11 @@ Metallic reflection with microfacet distribution, and metallic fresnel
 | [`distribution`](#nodebpy.nodes.shader.shader.MetallicBSDF.distribution) |  |
 | [`fresnel_type`](#nodebpy.nodes.shader.shader.MetallicBSDF.fresnel_type) |  |
 | [`i`](#nodebpy.nodes.shader.shader.MetallicBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.MetallicBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.MetallicBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.MetallicBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.MetallicBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.MetallicBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.MetallicBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.MetallicBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.MetallicBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -554,15 +545,14 @@ Mix two shaders together. Typically used for material layering
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.shader.MixShader.i)             |             |
-| [`name`](#nodebpy.nodes.shader.shader.MixShader.name)       |             |
-| [`node`](#nodebpy.nodes.shader.shader.MixShader.node)       |             |
-| [`o`](#nodebpy.nodes.shader.shader.MixShader.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.shader.MixShader.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.shader.MixShader.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.shader.MixShader.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.shader.MixShader.i) |  |
+| [`name`](#nodebpy.nodes.shader.shader.MixShader.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.shader.MixShader.node) |  |
+| [`o`](#nodebpy.nodes.shader.shader.MixShader.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.shader.MixShader.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.MixShader.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -593,7 +583,7 @@ PrincipledBSDF(
     diffuse_roughness=0.0,
     subsurface_weight=0.0,
     subsurface_radius=None,
-    subsurface_scale=0.05,
+    subsurface_scale=0.005,
     subsurface_ior=1.4,
     subsurface_anisotropy=0.0,
     specular_ior_level=0.5,
@@ -637,7 +627,7 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 | diffuse_roughness     | InputFloat   | Diffuse Roughness     | `0.0`   |
 | subsurface_weight     | InputFloat   | Subsurface Weight     | `0.0`   |
 | subsurface_radius     | InputVector  | Subsurface Radius     | `None`  |
-| subsurface_scale      | InputFloat   | Subsurface Scale      | `0.05`  |
+| subsurface_scale      | InputFloat   | Subsurface Scale      | `0.005` |
 | subsurface_ior        | InputFloat   | Subsurface IOR        | `1.4`   |
 | subsurface_anisotropy | InputFloat   | Subsurface Anisotropy | `0.0`   |
 | specular_ior_level    | InputFloat   | Specular IOR Level    | `0.5`   |
@@ -665,13 +655,12 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.PrincipledBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.PrincipledBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.PrincipledBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.PrincipledBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.PrincipledBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.PrincipledBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.PrincipledBSDF.outputs) |  |
 | [`subsurface_method`](#nodebpy.nodes.shader.shader.PrincipledBSDF.subsurface_method) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.PrincipledBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.PrincipledBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.PrincipledBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -775,13 +764,12 @@ Physically-based, easy-to-use shader for rendering hair and fur
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.i) |  |
 | [`model`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.model) |  |
-| [`name`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.outputs) |  |
 | [`parametrization`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.parametrization) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -834,12 +822,11 @@ Continue tracing from an arbitrary new position and in a new direction
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.RayPortalBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.RayPortalBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.RayPortalBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.RayPortalBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.RayPortalBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.RayPortalBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.RayPortalBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.RayPortalBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.RayPortalBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -888,12 +875,11 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.RefractionBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.RefractionBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.RefractionBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.RefractionBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.RefractionBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.RefractionBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.RefractionBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.RefractionBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.RefractionBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.RefractionBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -961,12 +947,11 @@ Typically mixed with other shaders (such as a Diffuse Shader) and is not particu
 |----|----|
 | [`distribution`](#nodebpy.nodes.shader.shader.SheenBSDF.distribution) |  |
 | [`i`](#nodebpy.nodes.shader.shader.SheenBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.SheenBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.SheenBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.SheenBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SheenBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.SheenBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.SheenBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.SheenBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.SheenBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### SpecularBSDF
 
@@ -1007,12 +992,11 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.SpecularBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.SpecularBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.SpecularBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.SpecularBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SpecularBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.SpecularBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.SpecularBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.SpecularBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.SpecularBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1040,7 +1024,7 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 ``` python
 SubsurfaceScattering(
     color=None,
-    scale=0.05,
+    scale=0.005,
     radius=None,
     ior=1.4,
     roughness=1.0,
@@ -1105,12 +1089,11 @@ Typically used for materials such as skin, wax, marble or milk
 |----|----|
 | [`falloff`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.falloff) |  |
 | [`i`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### ToonBSDF
 
@@ -1144,12 +1127,11 @@ Diffuse and Glossy shaders with cartoon light effects
 |----|----|
 | [`component`](#nodebpy.nodes.shader.shader.ToonBSDF.component) |  |
 | [`i`](#nodebpy.nodes.shader.shader.ToonBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.ToonBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.ToonBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.ToonBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.ToonBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.ToonBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.ToonBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.ToonBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.ToonBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1188,12 +1170,11 @@ Lambertian diffuse transmission
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.TranslucentBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.TranslucentBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.TranslucentBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.TranslucentBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.TranslucentBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.TranslucentBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.TranslucentBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.TranslucentBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.TranslucentBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1229,12 +1210,11 @@ Transparency without refraction, passing straight through the surface as if ther
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.shader.TransparentBSDF.i) |  |
-| [`name`](#nodebpy.nodes.shader.shader.TransparentBSDF.name) |  |
+| [`name`](#nodebpy.nodes.shader.shader.TransparentBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.TransparentBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.TransparentBSDF.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.shader.TransparentBSDF.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.shader.TransparentBSDF.tree) |  |
-| [`type`](#nodebpy.nodes.shader.shader.TransparentBSDF.type) |  |
+| [`tree`](#nodebpy.nodes.shader.shader.TransparentBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

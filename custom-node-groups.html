@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Custom Node Groups – nodebpy 520.0.0</title>
+<title>Custom Node Groups – nodebpy 520.1.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -79,7 +79,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-da754bb905dfff91d967e43b5e6004aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,6 +107,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script type="module">
+    // Re-highlight code blocks with Shiki (the TextMate-grammar engine VS Code
+    // uses) for richer tokens than Pandoc's skylighting: function calls,
+    // attribute access, keyword arguments, etc. Pandoc's highlighting is kept
+    // in the HTML as a no-JS fallback and replaced here on load.
+    //
+    // To change colors, swap "dracula" for any theme from
+    // https://shiki.style/themes, or add/edit `tokenColors` rules below
+    // (scope reference: https://macromates.com/manual/en/language_grammars).
+    import { codeToHtml, bundledThemes } from "https://esm.sh/shiki@3";
+
+    const dracula = (await bundledThemes["dracula-soft"]()).default;
+    const theme = {
+        ...dracula,
+        name: "dracula-nodebpy",
+        tokenColors: [
+            ...dracula.tokenColors,
+            // Dracula ships no rule for Python call expressions; color them like
+            // function definitions so g.Cube() / tree.inputs.integer() pop.
+            {
+                scope: "meta.function-call.generic.python",
+                settings: { foreground: "#50FA7B" },
+            },
+        ],
+    };
+
+    async function rehighlight(pre) {
+        const code = pre.querySelector("code");
+        const lang = [...pre.classList].find(
+            (c) => !["sourceCode", "code-with-copy"].includes(c),
+        );
+        if (!code || !lang) return;
+        try {
+            const html = await codeToHtml(code.textContent.replace(/\n$/, ""), {
+                lang,
+                theme,
+            });
+            const shikiPre = new DOMParser()
+                .parseFromString(html, "text/html")
+                .querySelector("pre");
+            code.innerHTML = shikiPre.querySelector("code").innerHTML;
+            pre.style.backgroundColor = shikiPre.style.backgroundColor;
+            pre.style.color = shikiPre.style.color;
+        } catch {
+            // Unknown language for Shiki — keep Pandoc's highlighting.
+        }
+    }
+
+    await Promise.all(
+        [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
+    );
+</script>
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script>
 <script src="site_libs/quarto-diagram/mermaid-init.js"></script>
 <link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
@@ -122,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.0.0</span>
+    <span class="navbar-title">nodebpy 520.1.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -155,6 +207,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="./node-api.html">
  <span class="dropdown-text">Node API Design</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./nodes-to-code.html">
+ <span class="dropdown-text">Nodes to Code</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./using.html">
@@ -228,6 +284,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Node API Design</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nodes-to-code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nodes to Code</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Nodebpy</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparisons.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Comapring the API</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -271,7 +345,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="4c2f5709" class="cell" data-execution_count="1">
+<div id="db4369d8" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy.builder <span class="im">import</span> CustomGeometryGroup</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy.types <span class="im">import</span> (</span>
@@ -291,7 +365,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="anatomy-of-a-custom-node-group" class="level2">
 <h2 class="anchored" data-anchor-id="anatomy-of-a-custom-node-group">Anatomy of a Custom Node Group</h2>
 <p>A custom node group class has four parts:</p>
-<div id="f531cb0d" class="cell" data-execution_count="2">
+<div id="1c1bd960" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyNode(CustomGeometryGroup):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    _name <span class="op">=</span> <span class="st">"My Node"</span>  <span class="co"># 1. Name</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -309,7 +383,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="a-first-example-jitter" class="level2">
 <h2 class="anchored" data-anchor-id="a-first-example-jitter">A First Example: Jitter</h2>
 <p>Let’s start with something visually obvious – a node that randomly displaces each point on a mesh. This is useful any time you want to add organic variation to geometry.</p>
-<div id="3c6cf9e7" class="cell" data-execution_count="3">
+<div id="a3369acd" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Jitter(CustomGeometryGroup):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Randomly offset each point by a bounded amount."""</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -335,7 +409,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> result <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s see the internal node graph:</p>
-<div id="f02a5673" class="cell" data-execution_count="4">
+<div id="2799a5fa" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"JitterInternal"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> Jitter()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -357,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Now use it like any built-in node – apply it to an ico sphere:</p>
-<div id="39a3e158" class="cell" data-execution_count="5">
+<div id="9977cfd3" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"JitterDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> g.IcoSphere(subdivisions<span class="op">=</span><span class="dv">4</span>) <span class="op">&gt;&gt;</span> Jitter(amount<span class="op">=</span><span class="fl">0.15</span>) <span class="op">&gt;&gt;</span> out</span>
@@ -373,8 +447,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N0("Ico Sphere"):::geometry-node
     N1("Jitter"):::geometry-node
     N2("Group Output"):::default-node
-    N0 --&gt;|"Mesh-&gt;Geometry"| N1
     N1 --&gt;|"Geometry-&gt;Geometry"| N2
+    N0 --&gt;|"Mesh-&gt;Geometry"| N1
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -387,7 +461,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="radial-array" class="level2">
 <h2 class="anchored" data-anchor-id="radial-array">Radial Array</h2>
 <p>Next, a node that distributes instances in a ring. This is a common pattern for creating wheels, flower petals, gears, and other radially symmetric objects.</p>
-<div id="609af7c7" class="cell" data-execution_count="6">
+<div id="74a92496" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> tau</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -426,7 +500,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        _ <span class="op">=</span> result <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="08ad24da" class="cell" data-execution_count="7">
+<div id="66cf2cea" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"RadialInternal"</span>) <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> RadialArray()</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -447,7 +521,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="32635986" class="cell" data-execution_count="8">
+<div id="2f9ba68d" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"RadialDemo"</span>) <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    petal <span class="op">=</span> g.Cone(vertices<span class="op">=</span><span class="dv">4</span>, radius_bottom<span class="op">=</span><span class="fl">0.3</span>, depth<span class="op">=</span><span class="fl">0.8</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> (</span>
@@ -484,7 +558,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="composing-groups-jittered-flower" class="level2">
 <h2 class="anchored" data-anchor-id="composing-groups-jittered-flower">Composing Groups: Jittered Flower</h2>
 <p>Custom groups compose naturally – they chain with <code>&gt;&gt;</code>, accept each other’s outputs, and mix with operators just like built-in nodes. Let’s combine <code>Jitter</code> and <code>RadialArray</code> to build a flower-like structure with some organic randomness.</p>
-<div id="bec8edb0" class="cell" data-execution_count="9">
+<div id="86020f05" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"JitteredFlower"</span>) <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    petals <span class="op">=</span> tree.inputs.integer(<span class="st">"Petals"</span>, <span class="dv">20</span>, min_value<span class="op">=</span><span class="dv">3</span>, max_value<span class="op">=</span><span class="dv">24</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Radius"</span>, <span class="fl">0.5</span>, min_value<span class="op">=</span><span class="fl">0.1</span>)</span>
@@ -523,17 +597,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N7("Join Geometry"):::geometry-node
     N8("Realize Instances"):::geometry-node
     N9("Group Output"):::default-node
+    N8 --&gt;|"Geometry-&gt;Geometry"| N9
     N1 --&gt;|"Mesh-&gt;Geometry"| N2
+    N2 --&gt;|"Geometry-&gt;Geometry"| N3
     N0 --&gt;|"Petals-&gt;Count"| N3
     N0 --&gt;|"Radius-&gt;Radius"| N3
-    N2 --&gt;|"Geometry-&gt;Geometry"| N3
     N3 --&gt;|"Geometry-&gt;Geometry"| N4
-    N4 --&gt;|"Geometry-&gt;Instances"| N5
-    N6 --&gt;|"Mesh-&gt;Geometry"| N7
-    N5 --&gt;|"Instances-&gt;Geometry"| N7
-    N7 --&gt;|"Geometry-&gt;Geometry"| N8
-    N8 --&gt;|"Geometry-&gt;Geometry"| N9
     N0 --&gt;|"Jitter-&gt;Amount"| N4
+    N4 --&gt;|"Geometry-&gt;Instances"| N5
+    N5 --&gt;|"Instances-&gt;Geometry"| N7
+    N6 --&gt;|"Mesh-&gt;Geometry"| N7
+    N7 --&gt;|"Geometry-&gt;Geometry"| N8
 </pre>
 </div>
 <p></p></figure><p></p>

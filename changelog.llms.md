@@ -1,5 +1,50 @@
 # Changelog
 
+## v520.1.0 - 2026-06-15
+
+### Enhancements
+
+- **Nodes to code (`to_python`)** — `TreeBuilder.to_python()` (and the standalone `nodebpy.export.to_python()`) converts *any* node tree back into idiomatic `nodebpy` Python — interface sockets, properties, links, zones, frames and nested groups included. It recognises lifted operators (`Math` → `*`, `SeparateXYZ` → `.x`), socket methods, factory methods and zone item APIs, so generated code reads like hand-written `nodebpy`. Validated end-to-end against Blender’s full bundled **geometry, shader and compositor essentials** asset libraries, so it round-trips real-world trees, not only ones built with `nodebpy`. See [Nodes to Code](nodes-to-code.llms.md). Options:
+  - `snapshot_positions=True` — capture and restore each node’s authored `location` (top-level and inside nested groups) instead of auto-laying-out the rebuilt tree.
+  - `keep_reroutes=True` — preserve reroute nodes as `g.Reroute(...)` pass-throughs instead of collapsing each reroute chain into a direct link; pairs with `snapshot_positions` to reproduce the original wire routing.
+  - `top_level="class"` — emit every node group, *including the working tree*, as a `Custom*Group` subclass, for archiving a set of groups as plain reusable Python. Defaults to the `with TreeBuilder(...) as tree:` form.
+  - **Nested frames** are reconstructed as nested `with g.Frame():` blocks (including container frames that hold only sub-frames).
+  - `format=True` (default) runs the output through `ruff format` when the optional `ruff` package is installed (`pip install nodebpy[format]`), for tidier source; a no-op when `ruff` is unavailable.
+  - `strict=False` emits a `# TODO` placeholder for unsupported nodes; `register_emitter(bl_idname)` plugs in a custom generator for any node type.
+- **`NodeGroupBuilder.create_group()`** — classmethod that builds and returns a custom group’s node tree without an active `TreeBuilder` context (it opens its own), reusing an existing tree of the same name. Lets a group be pre-built and assigned directly to a node’s `node_tree`.
+- **`TreeBuilder.node_positions`** — a read/write `{node name: (x, y)}` mapping for snapshotting and restoring node locations, plus **`TreeBuilder.disable_arrange()`** to skip the auto-layout that otherwise runs on context exit.
+- **Bundle and closure item APIs** — `CombineBundle(items={name: source})` / `SeparateBundle(bundle, items={name: "TYPE"})`, `EvaluateClosure(closure, input_items=..., output_items=...)`, and a `ClosureZone` wrapper (`cz.input_item(...)`, `cz.output_item(...)`, `cz.closure`) for defining a closure’s body inline.
+- **Colour field evaluation** — `ColorSocket` gained the domain field-evaluation methods (`.point.at(i)`, `.point.evaluate()`, …) via `EvaluateAtIndex` / `EvaluateOnDomain`, matching the other socket types.
+- Socket methods for AlignRotationToVector for `VectorSocket` and `RotationSocket` (`align_rotation()` and `align_to_vector()`
+- **Grid socket operator methods** — chainable methods on the `*SocketGrid` types that build and wire up the matching grid node, so grid pipelines can be expressed fluently:
+  - All grids — `sample(position, interpolation)`, `sample_index(x, y, z)`, `field_to_grid()`, `clip(...)`, `dilate_erode(steps, connectivity, tiles)`, `prune(threshold, mode)`, `voxelize()`, `to_points()`
+  - Float, vector and integer grids — `mean(width, iterations)`, `median(width, iterations)`
+  - Float grids — `gradient()`, `laplacian()`, `sdf_fillet()`, `sdf_laplacian()`, `sdf_mean()`, `sdf_mean_curvature()`, `sdf_median()`, `sdf_offset()`, `to_mesh()`
+  - Vector grids — `curl()`, `divergence()`
+
+``` py
+grid = g.CubeGridTopology() >> g.FieldToGrid.boolean()
+density = grid.capture_float(g.NoiseTexture().o.fac)
+flow = density.dilate_erode(1).laplacian().gradient().divergence()
+```
+
+### Fixes
+
+- Grid `mean()` and `median()` now pass the correct `data_type` (Blender’s `VALUE` float type is mapped to `FLOAT`), fixing a crash when calling them on float grids
+- `INT_VECTOR` sockets (e.g. compositor Image Info “Dimensions”) are now link-compatible with regular `VECTOR` sockets, matching Blender’s implicit conversion.
+- Multi-input sockets (`JoinBundle`, …) accept an iterable of sources via their constructor, linking each in turn (as `JoinGeometry` already did).
+- Linking a node into a `Reroute` (or any other adaptive `__extend__` socket, such as `Viewer`) now works from any source type — the reroute adapts instead of rejecting the connection.
+
+### Breaking Changes
+
+- `g.SetHandleType()` now defaults to `left=True, right=True` (`mode = {'LEFT', 'RIGHT'}`), matching Blender’s native default for a freshly added node. Previously it defaulted to an empty `mode`, which set *no* handle types. The shared `left`/`right`/`mode` logic for `SetHandleType` and `HandleTypeSelection` was factored into a mixin; `SetHandleType` also gained a `mode` property for parity.
+
+## v520.0.1 - 2026-06-05
+
+### Fixes
+
+- Import and usage of the `arrange()` function properly handles the optional `netowrkx` dependency
+
 ## v520.0.0 - 2026-06-04
 
 ### Enhancements
@@ -15,7 +60,7 @@
   - `list_slice(start, stop, step)` — Python-style slicing, also driven through `[]` indexing and slicing (e.g. `list[::2]`, `list[-3:-1]`)
 
 ``` py
-indices = g.Index().o.index.to_list(10)
+indices = g.Index().o.index.to_list(10) # an IntegerSocketList of equal to `range(10)`
 evens = indices[::2]          # IntegerSocketList via GetListItem
 count = len(indices)          # IntegerSocket via ListLength
 first = indices.get(0)        # IntegerSocket

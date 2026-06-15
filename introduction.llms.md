@@ -78,11 +78,11 @@ graph LR
     N0("Group Input"):::default-node
     N1("Join Geometry"):::geometry-node
     N2("Group Output"):::default-node
-    N0 -->|"Geometry_4->Geometry"| N1
-    N0 -->|"Geometry_3->Geometry"| N1
-    N0 -->|"Geometry_2->Geometry"| N1
-    N0 -->|"Geometry_1->Geometry"| N1
     N0 -->|"Geometry_0->Geometry"| N1
+    N0 -->|"Geometry_1->Geometry"| N1
+    N0 -->|"Geometry_2->Geometry"| N1
+    N0 -->|"Geometry_3->Geometry"| N1
+    N0 -->|"Geometry_4->Geometry"| N1
     N1 -->|"Geometry->The Output Socket"| N2
 ```
 
@@ -103,21 +103,16 @@ graph LR
     N1("Random Value<br/><small>(-0.1,-0.1,-0.2)</small>"):::converter-node
     N2("Points"):::geometry-node
     N3("Group Output"):::default-node
-    N1 -->|"Value->Position"| N2
     N0 -->|"Count->Count"| N2
+    N1 -->|"Value->Position"| N2
     N2 -->|"Points->Geometry"| N3
 ```
 
 ``` python
 with g.tree() as tree:
     count = tree.inputs.integer("Count", 10)
-    output = tree.outputs.geometry()
-
-    (
-        count
-        >> g.Points(position=g.RandomValue.vector() * 0.5 * g.Position())
-        >> output
-    )
+    pos = g.RandomValue.vector() * 0.5 * g.Position()
+    g.Points(count, pos) >> tree.outputs.geometry()
 
 tree
 ```
@@ -134,8 +129,8 @@ graph LR
     N1 -->|"Value->Vector"| N2
     N2 -->|"Vector->Vector"| N4
     N3 -->|"Position->Vector"| N4
-    N4 -->|"Vector->Position"| N5
     N0 -->|"Count->Count"| N5
+    N4 -->|"Vector->Position"| N5
     N5 -->|"Points->Geometry"| N6
 ```
 
@@ -143,20 +138,24 @@ graph LR
 
 Zones like the repeat and simulation zone are initialized with their `SimulationZone()` and `RepeatZone()` constructors. You can add individvual `RepeatInput()` node and output, but they require additional setup to be actually linked. The repeat zone can be initialized with a repeat count, which can also be linked to from elsewhere.
 
-We can access the input and output nodes with `zone.input` and `zone.output`. The repeat zone as the `zone.i` which is the iteration number of the current zone. Simulation zone has the `zone.output.o_delta_time` which is the time between previous and current simulation loop.
+We can access the input and output nodes with `zone.input` and `zone.output`. The repeat zone has the `zone.iteration` which is the iteration number of the current zone. Simulation zone has the `zone.delta_time` which is the time between previous and current simulation loop.
 
-Both input and output nodes can automatically detect and capture links when you attempt to link into them with `>>`. The `zone.input.capture()` method also allows you to explicitly capture a link or a value, returning the output socket for further linking.
+Because of the complexity of zones, we have the `Item` helper which gives access to the input & output sockets on the input and output nodes (4 sockets total). For the Simulation and Repeat zones, we have the:
+
+| Code           | Socket                      |
+|----------------|-----------------------------|
+| `item.initial` | `zone.input.i["Geometry"]`  |
+| `item.current` | `zone.input.o["Geometry"]`  |
+| `item.next`    | `zone.output.i["Geometry"]` |
+| `item.result`  | `zone.output.o["Geometry"]` |
 
 ``` python
 with g.tree(arrange=None) as tree:
     zone = g.RepeatZone(10)
-    join = g.JoinGeometry()
-    # a geometry socket is added to the zone when we try to connect from the Join Geometry
-    # to the zone output, which is then available for the zone.input >> join
-    join >> zone.output >> g.SetPosition()
-    zone.input >> join
-    g.Points(zone.iteration, position=g.RandomValue.vector(seed=zone.iteration)) >> join
-
+    random_pos = g.RandomValue.vector(seed=zone.iteration)
+    geo = zone.item("Geometry", type="GEOMETRY")
+    g.JoinGeometry([geo.current, g.Points(10, random_pos)]) >> geo.next
+    geo.result >> tree.outputs.geometry()
 
 tree
 ```
@@ -165,17 +164,16 @@ tree
 graph LR
     N0("Repeat Input"):::default-node
     N1("Repeat Output"):::default-node
-    N2("Join Geometry"):::geometry-node
-    N3("Set Position"):::geometry-node
-    N4("Random Value"):::converter-node
-    N5("Points"):::geometry-node
-    N2 -->|"Geometry->Geometry"| N1
-    N1 -->|"Geometry->Geometry"| N3
-    N0 -->|"Geometry->Geometry"| N2
-    N0 -->|"Iteration->Seed"| N4
-    N0 -->|"Iteration->Count"| N5
-    N4 -->|"Value->Position"| N5
-    N5 -->|"Points->Geometry"| N2
+    N2("Random Value"):::converter-node
+    N3("Points"):::geometry-node
+    N4("Join Geometry"):::geometry-node
+    N5("Group Output"):::default-node
+    N4 -->|"Geometry->Geometry"| N1
+    N0 -->|"Iteration->Seed"| N2
+    N2 -->|"Value->Position"| N3
+    N0 -->|"Geometry->Geometry"| N4
+    N3 -->|"Points->Geometry"| N4
+    N1 -->|"Geometry->Geometry"| N5
 ```
 
 ``` python
@@ -202,8 +200,8 @@ graph LR
     N5("Vector Math<br/><small>(ADD)</small>"):::vector-node
     N0 -->|"Value->Value"| N2
     N1 -->|"Vector->Vector"| N2
-    N2 -->|"Value->Value"| N4
     N4 -->|"Value->Value"| N3
-    N2 -->|"Vector->Vector"| N5
     N5 -->|"Vector->Vector"| N3
+    N2 -->|"Value->Value"| N4
+    N2 -->|"Vector->Vector"| N5
 ```

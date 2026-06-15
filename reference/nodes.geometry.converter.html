@@ -79,7 +79,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-da754bb905dfff91d967e43b5e6004aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,6 +107,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script type="module">
+    // Re-highlight code blocks with Shiki (the TextMate-grammar engine VS Code
+    // uses) for richer tokens than Pandoc's skylighting: function calls,
+    // attribute access, keyword arguments, etc. Pandoc's highlighting is kept
+    // in the HTML as a no-JS fallback and replaced here on load.
+    //
+    // To change colors, swap "dracula" for any theme from
+    // https://shiki.style/themes, or add/edit `tokenColors` rules below
+    // (scope reference: https://macromates.com/manual/en/language_grammars).
+    import { codeToHtml, bundledThemes } from "https://esm.sh/shiki@3";
+
+    const dracula = (await bundledThemes["dracula-soft"]()).default;
+    const theme = {
+        ...dracula,
+        name: "dracula-nodebpy",
+        tokenColors: [
+            ...dracula.tokenColors,
+            // Dracula ships no rule for Python call expressions; color them like
+            // function definitions so g.Cube() / tree.inputs.integer() pop.
+            {
+                scope: "meta.function-call.generic.python",
+                settings: { foreground: "#50FA7B" },
+            },
+        ],
+    };
+
+    async function rehighlight(pre) {
+        const code = pre.querySelector("code");
+        const lang = [...pre.classList].find(
+            (c) => !["sourceCode", "code-with-copy"].includes(c),
+        );
+        if (!code || !lang) return;
+        try {
+            const html = await codeToHtml(code.textContent.replace(/\n$/, ""), {
+                lang,
+                theme,
+            });
+            const shikiPre = new DOMParser()
+                .parseFromString(html, "text/html")
+                .querySelector("pre");
+            code.innerHTML = shikiPre.querySelector("code").innerHTML;
+            pre.style.backgroundColor = shikiPre.style.backgroundColor;
+            pre.style.color = shikiPre.style.color;
+        } catch {
+            // Unknown language for Shiki — keep Pandoc's highlighting.
+        }
+    }
+
+    await Promise.all(
+        [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
+    );
+</script>
 
 
 </head>
@@ -119,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.0.0</span>
+    <span class="navbar-title">nodebpy 520.1.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -152,6 +204,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../node-api.html">
  <span class="dropdown-text">Node API Design</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../nodes-to-code.html">
+ <span class="dropdown-text">Nodes to Code</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../using.html">
@@ -257,12 +313,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Geometry Nodes</span></a>
+ <span class="menu-text">Export</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.to_python.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.to_python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.to_mermaid</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Geometry Nodes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.geometry.input.html" class="sidebar-item-text sidebar-link">
@@ -331,13 +410,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text">Zones in GN</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.geometry.zone.html" class="sidebar-item-text sidebar-link">
@@ -350,13 +429,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">Shader Nodes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.shader.color.html" class="sidebar-item-text sidebar-link">
@@ -427,13 +506,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
  <span class="menu-text">Compositor Nodes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../reference/nodes.compositor.color.html" class="sidebar-item-text sidebar-link">
@@ -946,7 +1025,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.AlignRotationToVector.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.AlignRotationToVector.node"><code>node</code></a></td>
@@ -966,11 +1045,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.AlignRotationToVector.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.AlignRotationToVector.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -1073,7 +1148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.AxesToRotation.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.AxesToRotation.node"><code>node</code></a></td>
@@ -1105,11 +1180,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.AxesToRotation.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.AxesToRotation.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -1201,7 +1272,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.AxisAngleToRotation.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.AxisAngleToRotation.node"><code>node</code></a></td>
@@ -1217,11 +1288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.AxisAngleToRotation.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.AxisAngleToRotation.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -1319,7 +1386,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.BitMath.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.BitMath.node"><code>node</code></a></td>
@@ -1339,11 +1406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.BitMath.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.BitMath.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -1501,7 +1564,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.Blackbody.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.Blackbody.node"><code>node</code></a></td>
@@ -1517,11 +1580,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.Blackbody.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.Blackbody.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -1608,7 +1667,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.BooleanMath.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.BooleanMath.node"><code>node</code></a></td>
@@ -1628,11 +1687,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.BooleanMath.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.BooleanMath.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -1828,7 +1883,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.Clamp.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.Clamp.node"><code>node</code></a></td>
@@ -1844,11 +1899,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.Clamp.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.Clamp.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -1976,7 +2027,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.node"><code>node</code></a></td>
@@ -1992,11 +2043,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -2077,7 +2124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ClusterByConnected.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ClusterByConnected.node"><code>node</code></a></td>
@@ -2093,11 +2140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ClusterByConnected.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.ClusterByConnected.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -2206,7 +2249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ClusterByDistance.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ClusterByDistance.node"><code>node</code></a></td>
@@ -2222,11 +2265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ClusterByDistance.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.ClusterByDistance.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -2283,7 +2322,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.CombineBundle" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.CombineBundle">CombineBundle</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>CombineBundle(define_signature<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>CombineBundle(items<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, define_signature<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Combine multiple socket values into one.</p>
 <section id="attributes-10" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-10">Attributes</h4>
@@ -2305,7 +2344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineBundle.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineBundle.node"><code>node</code></a></td>
@@ -2321,11 +2360,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineBundle.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.CombineBundle.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -2411,7 +2446,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineColor.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineColor.node"><code>node</code></a></td>
@@ -2427,11 +2462,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineColor.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.CombineColor.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -2674,7 +2705,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineMatrix.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineMatrix.node"><code>node</code></a></td>
@@ -2690,11 +2721,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineMatrix.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.CombineMatrix.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -2862,7 +2889,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineTransform.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineTransform.node"><code>node</code></a></td>
@@ -2878,11 +2905,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineTransform.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.CombineTransform.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -2985,7 +3008,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineXYZ.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineXYZ.node"><code>node</code></a></td>
@@ -3001,11 +3024,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.CombineXYZ.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.CombineXYZ.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -3096,7 +3115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.EulerToRotation.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.EulerToRotation.node"><code>node</code></a></td>
@@ -3112,11 +3131,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.EulerToRotation.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.EulerToRotation.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -3203,7 +3218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.FilterList.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.FilterList.node"><code>node</code></a></td>
@@ -3223,11 +3238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.FilterList.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.FilterList.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -3511,7 +3522,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.FindInString.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.FindInString.node"><code>node</code></a></td>
@@ -3527,11 +3538,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.FindInString.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.FindInString.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -3627,7 +3634,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.FloatToInteger.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.FloatToInteger.node"><code>node</code></a></td>
@@ -3647,11 +3654,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.FloatToInteger.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.FloatToInteger.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -3751,7 +3754,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.GetBundleItem.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.GetBundleItem.node"><code>node</code></a></td>
@@ -3775,11 +3778,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.GetBundleItem.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.GetBundleItem.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -4115,7 +4114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.GetListItem.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.GetListItem.node"><code>node</code></a></td>
@@ -4139,11 +4138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.GetListItem.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.GetListItem.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -4494,7 +4489,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.node"><code>node</code></a></td>
@@ -4510,11 +4505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -4625,7 +4616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.HashValue.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.HashValue.node"><code>node</code></a></td>
@@ -4641,11 +4632,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.HashValue.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.HashValue.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -4811,7 +4798,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ImplicitConversion.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ImplicitConversion.node"><code>node</code></a></td>
@@ -4827,11 +4814,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ImplicitConversion.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.ImplicitConversion.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -5093,7 +5076,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.IndexOfNearest.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.IndexOfNearest.node"><code>node</code></a></td>
@@ -5109,11 +5092,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.IndexOfNearest.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.IndexOfNearest.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -5216,7 +5195,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.IntegerMath.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.IntegerMath.node"><code>node</code></a></td>
@@ -5236,11 +5215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.IntegerMath.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.IntegerMath.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -5506,7 +5481,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.InvertMatrix.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.InvertMatrix.node"><code>node</code></a></td>
@@ -5522,11 +5497,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.InvertMatrix.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.InvertMatrix.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -5612,7 +5583,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.InvertRotation.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.InvertRotation.node"><code>node</code></a></td>
@@ -5628,11 +5599,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.InvertRotation.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.InvertRotation.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -5713,7 +5680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.JoinBundle.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.JoinBundle.node"><code>node</code></a></td>
@@ -5729,11 +5696,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.JoinBundle.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.JoinBundle.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -5818,7 +5781,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ListLength.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ListLength.node"><code>node</code></a></td>
@@ -5834,11 +5797,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ListLength.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.ListLength.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -6189,7 +6148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.MapRange.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MapRange.node"><code>node</code></a></td>
@@ -6205,11 +6164,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.MapRange.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.MapRange.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -6442,7 +6397,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MatchString.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.MatchString.node"><code>node</code></a></td>
@@ -6458,11 +6413,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MatchString.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.MatchString.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -6572,7 +6523,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.Math.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.Math.node"><code>node</code></a></td>
@@ -6592,13 +6543,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.Math.tree"><code>tree</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.Math.type"><code>type</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.Math.use_clamp"><code>use_clamp</code></a></td>
 <td></td>
 </tr>
@@ -7073,7 +7020,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MatrixDeterminant.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.MatrixDeterminant.node"><code>node</code></a></td>
@@ -7089,11 +7036,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MatrixDeterminant.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.MatrixDeterminant.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -7174,7 +7117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MatrixSVD.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.MatrixSVD.node"><code>node</code></a></td>
@@ -7190,11 +7133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MatrixSVD.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.MatrixSVD.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -7291,7 +7230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MultiplyMatrices.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.MultiplyMatrices.node"><code>node</code></a></td>
@@ -7307,11 +7246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.MultiplyMatrices.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.MultiplyMatrices.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -7447,7 +7382,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.PackUVIslands.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.PackUVIslands.node"><code>node</code></a></td>
@@ -7463,11 +7398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.PackUVIslands.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.PackUVIslands.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -7584,7 +7515,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ProjectPoint.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ProjectPoint.node"><code>node</code></a></td>
@@ -7600,11 +7531,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ProjectPoint.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.ProjectPoint.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -7708,7 +7635,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.QuaternionToRotation.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.QuaternionToRotation.node"><code>node</code></a></td>
@@ -7724,11 +7651,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.QuaternionToRotation.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.QuaternionToRotation.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -7860,7 +7783,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RandomValue.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RandomValue.node"><code>node</code></a></td>
@@ -7876,11 +7799,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RandomValue.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.RandomValue.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -8042,7 +7961,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ReplaceString.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ReplaceString.node"><code>node</code></a></td>
@@ -8058,11 +7977,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ReplaceString.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.ReplaceString.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -8153,7 +8068,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ReverseString.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ReverseString.node"><code>node</code></a></td>
@@ -8169,11 +8084,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ReverseString.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.ReverseString.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -8280,7 +8191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateEuler.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateEuler.node"><code>node</code></a></td>
@@ -8304,11 +8215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateEuler.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.RotateEuler.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -8441,7 +8348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateRotation.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateRotation.node"><code>node</code></a></td>
@@ -8461,11 +8368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateRotation.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.RotateRotation.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -8557,7 +8460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateVector.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateVector.node"><code>node</code></a></td>
@@ -8573,11 +8476,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotateVector.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.RotateVector.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -8663,7 +8562,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToAxisAngle.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToAxisAngle.node"><code>node</code></a></td>
@@ -8679,11 +8578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToAxisAngle.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.RotationToAxisAngle.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -8769,7 +8664,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToEuler.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToEuler.node"><code>node</code></a></td>
@@ -8785,11 +8680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToEuler.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.RotationToEuler.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -8870,7 +8761,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToQuaternion.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToQuaternion.node"><code>node</code></a></td>
@@ -8886,11 +8777,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.RotationToQuaternion.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.RotationToQuaternion.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -9043,7 +8930,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.node"><code>node</code></a></td>
@@ -9059,11 +8946,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -9140,7 +9023,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.SeparateBundle" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.SeparateBundle">SeparateBundle</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb250"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb250-1"><a href="#cb250-1" aria-hidden="true" tabindex="-1"></a>SeparateBundle(bundle<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, define_signature<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb250"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb250-1"><a href="#cb250-1" aria-hidden="true" tabindex="-1"></a>SeparateBundle(bundle<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, define_signature<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Split a bundle into multiple sockets.</p>
 <section id="parameters-48" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-48">Parameters</h4>
@@ -9183,7 +9066,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateBundle.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateBundle.node"><code>node</code></a></td>
@@ -9199,11 +9082,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateBundle.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.SeparateBundle.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -9271,7 +9150,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateColor.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateColor.node"><code>node</code></a></td>
@@ -9287,11 +9166,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateColor.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.SeparateColor.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -9427,7 +9302,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateMatrix.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateMatrix.node"><code>node</code></a></td>
@@ -9443,11 +9318,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateMatrix.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.SeparateMatrix.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -9603,7 +9474,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateTransform.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateTransform.node"><code>node</code></a></td>
@@ -9619,11 +9490,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateTransform.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.SeparateTransform.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -9714,7 +9581,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateXYZ.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateXYZ.node"><code>node</code></a></td>
@@ -9730,11 +9597,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SeparateXYZ.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.SeparateXYZ.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -9837,7 +9700,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SetStringCase.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SetStringCase.node"><code>node</code></a></td>
@@ -9853,11 +9716,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SetStringCase.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.SetStringCase.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -9955,7 +9814,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SliceString.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SliceString.node"><code>node</code></a></td>
@@ -9971,11 +9830,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SliceString.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.SliceString.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -10091,7 +9946,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SortList.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SortList.node"><code>node</code></a></td>
@@ -10111,11 +9966,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SortList.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.SortList.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -10392,7 +10243,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SplitString.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.SplitString.node"><code>node</code></a></td>
@@ -10408,11 +10259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.SplitString.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.SplitString.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -10517,7 +10364,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.StoreBundleItem.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.StoreBundleItem.node"><code>node</code></a></td>
@@ -10541,11 +10388,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.StoreBundleItem.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.StoreBundleItem.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -10865,7 +10708,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.StringLength.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.StringLength.node"><code>node</code></a></td>
@@ -10881,11 +10724,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.StringLength.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.StringLength.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -10976,7 +10815,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.StringToValue.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.StringToValue.node"><code>node</code></a></td>
@@ -10992,11 +10831,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.StringToValue.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.StringToValue.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -11124,7 +10959,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TagFilter.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.TagFilter.node"><code>node</code></a></td>
@@ -11140,11 +10975,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TagFilter.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.TagFilter.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -11236,7 +11067,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TransformDirection.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.TransformDirection.node"><code>node</code></a></td>
@@ -11252,11 +11083,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TransformDirection.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.TransformDirection.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -11348,7 +11175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TransformPoint.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.TransformPoint.node"><code>node</code></a></td>
@@ -11364,11 +11191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TransformPoint.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.TransformPoint.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -11454,7 +11277,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TransposeMatrix.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.TransposeMatrix.node"><code>node</code></a></td>
@@ -11470,11 +11293,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TransposeMatrix.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.TransposeMatrix.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -11579,7 +11398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TrimString.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.TrimString.node"><code>node</code></a></td>
@@ -11595,11 +11414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.TrimString.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.TrimString.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -11750,7 +11565,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.UVUnwrap.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.UVUnwrap.node"><code>node</code></a></td>
@@ -11766,11 +11581,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.UVUnwrap.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.converter.UVUnwrap.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -11903,7 +11714,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ValueToString.name"><code>name</code></a></td>
-<td></td>
+<td>The name of the node being wrapped by this instance.</td>
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ValueToString.node"><code>node</code></a></td>
@@ -11919,11 +11730,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ValueToString.tree"><code>tree</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.converter.ValueToString.type"><code>type</code></a></td>
-<td></td>
+<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>

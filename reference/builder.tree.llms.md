@@ -316,7 +316,7 @@ string(
 ``` python
 vector(
     name='Vector',
-    default_value=(0.0, 0.0, 0.0),
+    default_value=None,
     description='',
     *,
     dimensions=3,
@@ -633,7 +633,7 @@ string(
 ``` python
 vector(
     name='Vector',
-    default_value=(0.0, 0.0, 0.0),
+    default_value=None,
     description='',
     *,
     dimensions=3,
@@ -672,6 +672,7 @@ MaterialBuilder(
 | [`ignore_visibility`](#nodebpy.builder.tree.MaterialBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.builder.tree.MaterialBuilder.inputs) |  |
 | [`material`](#nodebpy.builder.tree.MaterialBuilder.material) |  |
+| [`node_positions`](#nodebpy.builder.tree.MaterialBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
 | [`nodes`](#nodebpy.builder.tree.MaterialBuilder.nodes) |  |
 | [`outputs`](#nodebpy.builder.tree.MaterialBuilder.outputs) |  |
 | [`tree`](#nodebpy.builder.tree.MaterialBuilder.tree) |  |
@@ -685,9 +686,12 @@ MaterialBuilder(
 | [arrange](#nodebpy.builder.tree.MaterialBuilder.arrange) |  |
 | [compositor](#nodebpy.builder.tree.MaterialBuilder.compositor) | Create a compositor node tree. |
 | [deactivate_tree](#nodebpy.builder.tree.MaterialBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
+| [disable_arrange](#nodebpy.builder.tree.MaterialBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.MaterialBuilder.geometry) | Create a geometry node tree. |
 | [link](#nodebpy.builder.tree.MaterialBuilder.link) |  |
 | [shader](#nodebpy.builder.tree.MaterialBuilder.shader) | Create a shader node tree. |
+| [to_mermaid](#nodebpy.builder.tree.MaterialBuilder.to_mermaid) | Generate a Mermaid diagram that represents this tree. |
+| [to_python](#nodebpy.builder.tree.MaterialBuilder.to_python) | Generate Python source that recreates this tree using nodebpy. |
 
 ##### activate_tree
 
@@ -731,6 +735,14 @@ deactivate_tree()
 
 Whatever tree was previously active is set to be the active one (or None if no previously active tree).
 
+##### disable_arrange
+
+``` python
+disable_arrange()
+```
+
+Disable the auto-layout that otherwise runs when this tree’s context exits, so explicitly assigned node locations are preserved.
+
 ##### geometry
 
 ``` python
@@ -764,6 +776,45 @@ shader(
 ```
 
 Create a shader node tree.
+
+##### to_mermaid
+
+``` python
+to_mermaid(fenced=True)
+```
+
+Generate a Mermaid diagram that represents this tree.
+
+This can be used for documentation or visualization purposes. The Mermaid syntax is supported by many tools, including GitHub and Jupyter notebooks.
+
+###### Arguments
+
+    fenced:
+        Whether to wrap the output in a fenced code block with mermaid syntax highlighting.
+
+###### Returns
+
+| Name | Type | Description |
+|----|----|----|
+|  | A string containing the Mermaid diagram syntax representing this node tree. |  |
+
+##### to_python
+
+``` python
+to_python(
+    min_chain_length=3,
+    strict=True,
+    max_inline_width=88,
+    snapshot_positions=False,
+    keep_reroutes=False,
+    top_level='with',
+    format=True,
+)
+```
+
+Generate Python source that recreates this tree using nodebpy.
+
+See :func:`nodebpy.codegen.to_python` for parameter details.
 
 ### OutputInterfaceContext
 
@@ -1065,7 +1116,7 @@ string(
 ``` python
 vector(
     name='Vector',
-    default_value=(0.0, 0.0, 0.0),
+    default_value=None,
     description='',
     *,
     dimensions=3,
@@ -1390,7 +1441,7 @@ string(
 ``` python
 vector(
     name='Vector',
-    default_value=(0.0, 0.0, 0.0),
+    default_value=None,
     description='',
     *,
     dimensions=3,
@@ -1433,6 +1484,7 @@ Supports geometry, shader, and compositor node trees.
 | [`fake_user`](#nodebpy.builder.tree.TreeBuilder.fake_user) |  |
 | [`ignore_visibility`](#nodebpy.builder.tree.TreeBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.builder.tree.TreeBuilder.inputs) |  |
+| [`node_positions`](#nodebpy.builder.tree.TreeBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
 | [`nodes`](#nodebpy.builder.tree.TreeBuilder.nodes) |  |
 | [`outputs`](#nodebpy.builder.tree.TreeBuilder.outputs) |  |
 | [`tree`](#nodebpy.builder.tree.TreeBuilder.tree) |  |
@@ -1446,9 +1498,12 @@ Supports geometry, shader, and compositor node trees.
 | [arrange](#nodebpy.builder.tree.TreeBuilder.arrange) |  |
 | [compositor](#nodebpy.builder.tree.TreeBuilder.compositor) | Create a compositor node tree. |
 | [deactivate_tree](#nodebpy.builder.tree.TreeBuilder.deactivate_tree) | Whatever tree was previously active is set to be the active one (or None if no previously active tree). |
+| [disable_arrange](#nodebpy.builder.tree.TreeBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.TreeBuilder.geometry) | Create a geometry node tree. |
 | [link](#nodebpy.builder.tree.TreeBuilder.link) |  |
 | [shader](#nodebpy.builder.tree.TreeBuilder.shader) | Create a shader node tree. |
+| [to_mermaid](#nodebpy.builder.tree.TreeBuilder.to_mermaid) | Generate a Mermaid diagram that represents this tree. |
+| [to_python](#nodebpy.builder.tree.TreeBuilder.to_python) | Generate Python source that recreates this tree using nodebpy. |
 
 ##### activate_tree
 
@@ -1492,6 +1547,14 @@ deactivate_tree()
 
 Whatever tree was previously active is set to be the active one (or None if no previously active tree).
 
+##### disable_arrange
+
+``` python
+disable_arrange()
+```
+
+Disable the auto-layout that otherwise runs when this tree’s context exits, so explicitly assigned node locations are preserved.
+
 ##### geometry
 
 ``` python
@@ -1525,3 +1588,42 @@ shader(
 ```
 
 Create a shader node tree.
+
+##### to_mermaid
+
+``` python
+to_mermaid(fenced=True)
+```
+
+Generate a Mermaid diagram that represents this tree.
+
+This can be used for documentation or visualization purposes. The Mermaid syntax is supported by many tools, including GitHub and Jupyter notebooks.
+
+###### Arguments
+
+    fenced:
+        Whether to wrap the output in a fenced code block with mermaid syntax highlighting.
+
+###### Returns
+
+| Name | Type | Description |
+|----|----|----|
+|  | A string containing the Mermaid diagram syntax representing this node tree. |  |
+
+##### to_python
+
+``` python
+to_python(
+    min_chain_length=3,
+    strict=True,
+    max_inline_width=88,
+    snapshot_positions=False,
+    keep_reroutes=False,
+    top_level='with',
+    format=True,
+)
+```
+
+Generate Python source that recreates this tree using nodebpy.
+
+See :func:`nodebpy.codegen.to_python` for parameter details.

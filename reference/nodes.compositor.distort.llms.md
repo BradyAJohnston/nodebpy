@@ -55,12 +55,11 @@ Plane warp transformation using explicit corner values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.CornerPin.i) |  |
-| [`name`](#nodebpy.nodes.compositor.distort.CornerPin.name) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.CornerPin.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.CornerPin.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.CornerPin.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.distort.CornerPin.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.distort.CornerPin.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.distort.CornerPin.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.CornerPin.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -103,15 +102,14 @@ Crops image to a smaller region, either making the cropped area transparent or r
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.distort.Crop.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.distort.Crop.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.distort.Crop.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.distort.Crop.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Crop.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.distort.Crop.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.distort.Crop.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.distort.Crop.i) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.Crop.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.distort.Crop.node) |  |
+| [`o`](#nodebpy.nodes.compositor.distort.Crop.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.distort.Crop.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.Crop.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -159,12 +157,11 @@ Displace pixel position using an offset vector
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.Displace.i) |  |
-| [`name`](#nodebpy.nodes.compositor.distort.Displace.name) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.Displace.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Displace.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Displace.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.distort.Displace.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.distort.Displace.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.distort.Displace.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.Displace.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -200,15 +197,14 @@ Flip an image along a defined axis
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.distort.Flip.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.distort.Flip.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.distort.Flip.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.distort.Flip.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Flip.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.distort.Flip.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.distort.Flip.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.distort.Flip.i) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.Flip.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.distort.Flip.node) |  |
+| [`o`](#nodebpy.nodes.compositor.distort.Flip.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.distort.Flip.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.Flip.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -255,12 +251,11 @@ Simulate distortion and dispersion from camera lenses
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.LensDistortion.i) |  |
-| [`name`](#nodebpy.nodes.compositor.distort.LensDistortion.name) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.LensDistortion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.LensDistortion.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.LensDistortion.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.distort.LensDistortion.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.distort.LensDistortion.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.distort.LensDistortion.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.LensDistortion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -328,15 +323,14 @@ Map a texture using UV coordinates, to apply a texture to objects in compositing
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.distort.MapUV.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.distort.MapUV.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.distort.MapUV.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.distort.MapUV.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.distort.MapUV.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.distort.MapUV.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.distort.MapUV.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.distort.MapUV.i) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.MapUV.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.distort.MapUV.node) |  |
+| [`o`](#nodebpy.nodes.compositor.distort.MapUV.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.distort.MapUV.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.MapUV.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -374,12 +368,11 @@ Remove lens distortion from footage, using motion tracking camera lens settings
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.MovieDistortion.i) |  |
-| [`name`](#nodebpy.nodes.compositor.distort.MovieDistortion.name) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.MovieDistortion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.MovieDistortion.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.MovieDistortion.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.distort.MovieDistortion.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.distort.MovieDistortion.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.distort.MovieDistortion.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.MovieDistortion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -447,14 +440,13 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.i) |  |
-| [`name`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.name) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.outputs) |  |
 | [`plane_track_name`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.plane_track_name) |  |
 | [`tracking_object`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tracking_object) |  |
-| [`tree`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -498,15 +490,14 @@ Rotate image by specified angle
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.distort.Rotate.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.distort.Rotate.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.distort.Rotate.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.distort.Rotate.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Rotate.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.distort.Rotate.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.distort.Rotate.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.distort.Rotate.i) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.Rotate.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.distort.Rotate.node) |  |
+| [`o`](#nodebpy.nodes.compositor.distort.Rotate.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.distort.Rotate.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.Rotate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -556,15 +547,14 @@ Change the size of the image
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.distort.Scale.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.distort.Scale.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.distort.Scale.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.distort.Scale.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Scale.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.distort.Scale.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.distort.Scale.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.distort.Scale.i) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.Scale.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.distort.Scale.node) |  |
+| [`o`](#nodebpy.nodes.compositor.distort.Scale.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.distort.Scale.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.Scale.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -682,12 +672,11 @@ Stabilize footage using 2D stabilization motion tracking settings
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.Stabilize2D.i) |  |
-| [`name`](#nodebpy.nodes.compositor.distort.Stabilize2D.name) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.Stabilize2D.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Stabilize2D.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Stabilize2D.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.distort.Stabilize2D.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.distort.Stabilize2D.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.distort.Stabilize2D.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.Stabilize2D.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -741,12 +730,11 @@ Scale, translate and rotate an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.Transform.i) |  |
-| [`name`](#nodebpy.nodes.compositor.distort.Transform.name) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.Transform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Transform.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Transform.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.distort.Transform.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.distort.Transform.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.distort.Transform.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.Transform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -798,12 +786,11 @@ Offset an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.distort.Translate.i) |  |
-| [`name`](#nodebpy.nodes.compositor.distort.Translate.name) |  |
+| [`name`](#nodebpy.nodes.compositor.distort.Translate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Translate.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Translate.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.distort.Translate.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.distort.Translate.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.distort.Translate.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.distort.Translate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

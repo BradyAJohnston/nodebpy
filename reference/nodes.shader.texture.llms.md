@@ -36,13 +36,12 @@ Sample an image file as an environment texture. Typically used to light the scen
 |----|----|
 | [`i`](#nodebpy.nodes.shader.texture.EnvironmentTexture.i) |  |
 | [`interpolation`](#nodebpy.nodes.shader.texture.EnvironmentTexture.interpolation) |  |
-| [`name`](#nodebpy.nodes.shader.texture.EnvironmentTexture.name) |  |
+| [`name`](#nodebpy.nodes.shader.texture.EnvironmentTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.EnvironmentTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.EnvironmentTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.texture.EnvironmentTexture.outputs) |  |
 | [`projection`](#nodebpy.nodes.shader.texture.EnvironmentTexture.projection) |  |
-| [`tree`](#nodebpy.nodes.shader.texture.EnvironmentTexture.tree) |  |
-| [`type`](#nodebpy.nodes.shader.texture.EnvironmentTexture.type) |  |
+| [`tree`](#nodebpy.nodes.shader.texture.EnvironmentTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -78,12 +77,11 @@ Match real world lights with IES files, which store the directional intensity di
 | [`filepath`](#nodebpy.nodes.shader.texture.IesTexture.filepath) |  |
 | [`i`](#nodebpy.nodes.shader.texture.IesTexture.i) |  |
 | [`mode`](#nodebpy.nodes.shader.texture.IesTexture.mode) |  |
-| [`name`](#nodebpy.nodes.shader.texture.IesTexture.name) |  |
+| [`name`](#nodebpy.nodes.shader.texture.IesTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.IesTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.IesTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.texture.IesTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.texture.IesTexture.tree) |  |
-| [`type`](#nodebpy.nodes.shader.texture.IesTexture.type) |  |
+| [`tree`](#nodebpy.nodes.shader.texture.IesTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -149,14 +147,13 @@ Sample an image file as a texture
 | [`extension`](#nodebpy.nodes.shader.texture.ImageTexture.extension) |  |
 | [`i`](#nodebpy.nodes.shader.texture.ImageTexture.i) |  |
 | [`interpolation`](#nodebpy.nodes.shader.texture.ImageTexture.interpolation) |  |
-| [`name`](#nodebpy.nodes.shader.texture.ImageTexture.name) |  |
+| [`name`](#nodebpy.nodes.shader.texture.ImageTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.ImageTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.ImageTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.texture.ImageTexture.outputs) |  |
 | [`projection`](#nodebpy.nodes.shader.texture.ImageTexture.projection) |  |
 | [`projection_blend`](#nodebpy.nodes.shader.texture.ImageTexture.projection_blend) |  |
-| [`tree`](#nodebpy.nodes.shader.texture.ImageTexture.tree) |  |
-| [`type`](#nodebpy.nodes.shader.texture.ImageTexture.type) |  |
+| [`tree`](#nodebpy.nodes.shader.texture.ImageTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -210,7 +207,7 @@ Generate a procedural sky texture
 | [`altitude`](#nodebpy.nodes.shader.texture.SkyTexture.altitude) |  |
 | [`ground_albedo`](#nodebpy.nodes.shader.texture.SkyTexture.ground_albedo) |  |
 | [`i`](#nodebpy.nodes.shader.texture.SkyTexture.i) |  |
-| [`name`](#nodebpy.nodes.shader.texture.SkyTexture.name) |  |
+| [`name`](#nodebpy.nodes.shader.texture.SkyTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.SkyTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.SkyTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.texture.SkyTexture.outputs) |  |
@@ -222,9 +219,8 @@ Generate a procedural sky texture
 | [`sun_intensity`](#nodebpy.nodes.shader.texture.SkyTexture.sun_intensity) |  |
 | [`sun_rotation`](#nodebpy.nodes.shader.texture.SkyTexture.sun_rotation) |  |
 | [`sun_size`](#nodebpy.nodes.shader.texture.SkyTexture.sun_size) |  |
-| [`tree`](#nodebpy.nodes.shader.texture.SkyTexture.tree) |  |
+| [`tree`](#nodebpy.nodes.shader.texture.SkyTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`turbidity`](#nodebpy.nodes.shader.texture.SkyTexture.turbidity) |  |
-| [`type`](#nodebpy.nodes.shader.texture.SkyTexture.type) |  |
 
 #### Methods
 

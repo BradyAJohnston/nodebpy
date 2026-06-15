@@ -26,12 +26,11 @@ Base class for all node wrappers.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.builder.node.BaseNode.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.builder.node.BaseNode.name) |  |
+| [`name`](#nodebpy.builder.node.BaseNode.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.builder.node.BaseNode.node) |  |
 | [`o`](#nodebpy.builder.node.BaseNode.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`outputs`](#nodebpy.builder.node.BaseNode.outputs) |  |
-| [`tree`](#nodebpy.builder.node.BaseNode.tree) |  |
-| [`type`](#nodebpy.builder.node.BaseNode.type) |  |
+| [`tree`](#nodebpy.builder.node.BaseNode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### CustomCompositorGroup
 
@@ -46,13 +45,28 @@ Node group in a Compositor node tree.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.builder.node.CustomCompositorGroup.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.builder.node.CustomCompositorGroup.name) |  |
+| [`name`](#nodebpy.builder.node.CustomCompositorGroup.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.builder.node.CustomCompositorGroup.node) |  |
 | [`node_tree`](#nodebpy.builder.node.CustomCompositorGroup.node_tree) |  |
 | [`o`](#nodebpy.builder.node.CustomCompositorGroup.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`outputs`](#nodebpy.builder.node.CustomCompositorGroup.outputs) |  |
-| [`tree`](#nodebpy.builder.node.CustomCompositorGroup.tree) |  |
-| [`type`](#nodebpy.builder.node.CustomCompositorGroup.type) |  |
+| [`tree`](#nodebpy.builder.node.CustomCompositorGroup.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [create_group](#nodebpy.builder.node.CustomCompositorGroup.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+
+##### create_group
+
+``` python
+create_group()
+```
+
+Build this group’s node tree and return it, reusing an existing tree of the same name.
+
+Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
 
 ### CustomGeometryGroup
 
@@ -67,13 +81,28 @@ Node group in a Geometry Nodes tree.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.builder.node.CustomGeometryGroup.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.builder.node.CustomGeometryGroup.name) |  |
+| [`name`](#nodebpy.builder.node.CustomGeometryGroup.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.builder.node.CustomGeometryGroup.node) |  |
 | [`node_tree`](#nodebpy.builder.node.CustomGeometryGroup.node_tree) |  |
 | [`o`](#nodebpy.builder.node.CustomGeometryGroup.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`outputs`](#nodebpy.builder.node.CustomGeometryGroup.outputs) |  |
-| [`tree`](#nodebpy.builder.node.CustomGeometryGroup.tree) |  |
-| [`type`](#nodebpy.builder.node.CustomGeometryGroup.type) |  |
+| [`tree`](#nodebpy.builder.node.CustomGeometryGroup.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [create_group](#nodebpy.builder.node.CustomGeometryGroup.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+
+##### create_group
+
+``` python
+create_group()
+```
+
+Build this group’s node tree and return it, reusing an existing tree of the same name.
+
+Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
 
 ### CustomShaderGroup
 
@@ -88,13 +117,28 @@ Node group in a Shader (Material) node tree.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.builder.node.CustomShaderGroup.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.builder.node.CustomShaderGroup.name) |  |
+| [`name`](#nodebpy.builder.node.CustomShaderGroup.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.builder.node.CustomShaderGroup.node) |  |
 | [`node_tree`](#nodebpy.builder.node.CustomShaderGroup.node_tree) |  |
 | [`o`](#nodebpy.builder.node.CustomShaderGroup.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`outputs`](#nodebpy.builder.node.CustomShaderGroup.outputs) |  |
-| [`tree`](#nodebpy.builder.node.CustomShaderGroup.tree) |  |
-| [`type`](#nodebpy.builder.node.CustomShaderGroup.type) |  |
+| [`tree`](#nodebpy.builder.node.CustomShaderGroup.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [create_group](#nodebpy.builder.node.CustomShaderGroup.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+
+##### create_group
+
+``` python
+create_group()
+```
+
+Build this group’s node tree and return it, reusing an existing tree of the same name.
+
+Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.
 
 ### DynamicInputsMixin
 
@@ -117,10 +161,25 @@ Subclasses implement :meth:`_build_group` with the node-graph logic. Subclass on
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.builder.node.NodeGroupBuilder.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.builder.node.NodeGroupBuilder.name) |  |
+| [`name`](#nodebpy.builder.node.NodeGroupBuilder.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.builder.node.NodeGroupBuilder.node) |  |
 | [`node_tree`](#nodebpy.builder.node.NodeGroupBuilder.node_tree) | The internal node tree for this group node. |
 | [`o`](#nodebpy.builder.node.NodeGroupBuilder.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`outputs`](#nodebpy.builder.node.NodeGroupBuilder.outputs) |  |
-| [`tree`](#nodebpy.builder.node.NodeGroupBuilder.tree) |  |
-| [`type`](#nodebpy.builder.node.NodeGroupBuilder.type) |  |
+| [`tree`](#nodebpy.builder.node.NodeGroupBuilder.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [create_group](#nodebpy.builder.node.NodeGroupBuilder.create_group) | Build this group’s node tree and return it, reusing an existing tree |
+
+##### create_group
+
+``` python
+create_group()
+```
+
+Build this group’s node tree and return it, reusing an existing tree of the same name.
+
+Unlike instantiating the class, this needs no active `TreeBuilder` context — it opens its own — so a group can be pre-built and reused directly (e.g. assigned to a node’s `node_tree`) instead of being created by constructing the class inside a tree.

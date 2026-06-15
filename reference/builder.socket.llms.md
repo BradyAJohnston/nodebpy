@@ -2,6 +2,12 @@
 
 `socket`
 
+Typed Python wrappers around Blender node sockets.
+
+These classes give each socket type (float, vector, color, …) a fluent, type-aware API and the operator overloads used when wiring node trees.
+
+Organization (top to bottom): \* Type variables and result types \* Base wrappers: `BaseSocket` and `Socket` \* Grid sockets and domain-bound field evaluation \* Per-type behaviour mixins (`_VectorMixin`, `_FloatMixin`, …) \* Structural mixins (lists, default values, type conversions) \* Concrete socket classes — the registry targets returned by `_wrap_socket` \* Registry registration (bl_idname -\> socket class)
+
 ## Classes
 
 | Name | Description |
@@ -25,7 +31,6 @@
 | [FontSocketList](#nodebpy.builder.socket.FontSocketList) | List of font sockets. |
 | [GeometrySocket](#nodebpy.builder.socket.GeometrySocket) | Runtime geometry socket wrapper. |
 | [GeometrySocketList](#nodebpy.builder.socket.GeometrySocketList) | List of geometry sockets. |
-| [GridSocketMixin](#nodebpy.builder.socket.GridSocketMixin) |  |
 | [ImageSocket](#nodebpy.builder.socket.ImageSocket) | Runtime image socket wrapper. |
 | [ImageSocketList](#nodebpy.builder.socket.ImageSocketList) | List of image sockets. |
 | [IntegerSocket](#nodebpy.builder.socket.IntegerSocket) | Runtime integer socket wrapper. |
@@ -109,7 +114,30 @@ Runtime boolean socket wrapper.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.BooleanSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [to_list](#nodebpy.builder.socket.BooleanSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### to_list
 
@@ -144,6 +172,106 @@ Runtime boolean grid socket wrapper.
 | [`tree`](#nodebpy.builder.socket.BooleanSocketGrid.tree) |  |
 | [`type`](#nodebpy.builder.socket.BooleanSocketGrid.type) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [clip](#nodebpy.builder.socket.BooleanSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
+| [dilate_erode](#nodebpy.builder.socket.BooleanSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
+| [enable_output](#nodebpy.builder.socket.BooleanSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [field_to_grid](#nodebpy.builder.socket.BooleanSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
+| [prune](#nodebpy.builder.socket.BooleanSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
+| [sample](#nodebpy.builder.socket.BooleanSocketGrid.sample) | Retrieve values from the specified volume grid. |
+| [sample_index](#nodebpy.builder.socket.BooleanSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
+| [to_points](#nodebpy.builder.socket.BooleanSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
+| [voxelize](#nodebpy.builder.socket.BooleanSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
+
+##### clip
+
+``` python
+clip(min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+```
+
+Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
+
+##### dilate_erode
+
+``` python
+dilate_erode(steps=1, connectivity='Face', tiles='Preserve')
+```
+
+Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
+##### field_to_grid
+
+``` python
+field_to_grid()
+```
+
+Create new grids by evaluating new values on an existing volume grid topology.
+
+##### prune
+
+``` python
+prune(threshold=0.1, mode=None)
+```
+
+Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes.
+
+##### sample
+
+``` python
+sample(position=None, interpolation='Trilinear')
+```
+
+Retrieve values from the specified volume grid.
+
+##### sample_index
+
+``` python
+sample_index(x=0, y=0, z=0)
+```
+
+Retrieve volume grid values at specific voxels.
+
+##### to_points
+
+``` python
+to_points()
+```
+
+Generate a point cloud from a volume grid’s active voxels.
+
+##### voxelize
+
+``` python
+voxelize()
+```
+
+Remove sparseness from a volume grid by making the active tiles into voxels.
+
 ### BooleanSocketList
 
 ``` python
@@ -171,12 +299,35 @@ List of boolean sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.BooleanSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.BooleanSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.BooleanSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.BooleanSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.BooleanSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.BooleanSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.BooleanSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -262,6 +413,34 @@ Runtime bundle socket wrapper.
 | [`tree`](#nodebpy.builder.socket.BundleSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.BundleSocket.type) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [enable_output](#nodebpy.builder.socket.BundleSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
 ### BundleSocketList
 
 ``` python
@@ -288,12 +467,35 @@ List of bundle sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.BundleSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.BundleSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.BundleSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.BundleSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.BundleSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.BundleSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.BundleSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -379,6 +581,34 @@ Runtime closure socket wrapper.
 | [`tree`](#nodebpy.builder.socket.ClosureSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.ClosureSocket.type) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [enable_output](#nodebpy.builder.socket.ClosureSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
 ### ClosureSocketList
 
 ``` python
@@ -405,12 +635,35 @@ List of closure sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.ClosureSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.ClosureSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.ClosureSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ClosureSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ClosureSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.ClosureSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ClosureSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -501,7 +754,30 @@ Runtime collection socket wrapper.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.CollectionSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [instances](#nodebpy.builder.socket.CollectionSocket.instances) | Import objects from the collection as instances. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### instances
 
@@ -555,12 +831,35 @@ List of collection sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.CollectionSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.CollectionSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.CollectionSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.CollectionSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.CollectionSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.CollectionSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.CollectionSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -639,15 +938,22 @@ Runtime color socket wrapper.
 | [`a`](#nodebpy.builder.socket.ColorSocket.a) |  |
 | [`b`](#nodebpy.builder.socket.ColorSocket.b) |  |
 | [`builder_node`](#nodebpy.builder.socket.ColorSocket.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`corner`](#nodebpy.builder.socket.ColorSocket.corner) | ColorSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`default_value`](#nodebpy.builder.socket.ColorSocket.default_value) |  |
+| [`edge`](#nodebpy.builder.socket.ColorSocket.edge) | ColorSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
+| [`face`](#nodebpy.builder.socket.ColorSocket.face) | ColorSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`g`](#nodebpy.builder.socket.ColorSocket.g) |  |
 | [`i`](#nodebpy.builder.socket.ColorSocket.i) |  |
+| [`instance`](#nodebpy.builder.socket.ColorSocket.instance) | ColorSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
+| [`layer`](#nodebpy.builder.socket.ColorSocket.layer) | ColorSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`links`](#nodebpy.builder.socket.ColorSocket.links) |  |
 | [`name`](#nodebpy.builder.socket.ColorSocket.name) |  |
 | [`node`](#nodebpy.builder.socket.ColorSocket.node) |  |
 | [`o`](#nodebpy.builder.socket.ColorSocket.o) |  |
+| [`point`](#nodebpy.builder.socket.ColorSocket.point) | BooleanSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`r`](#nodebpy.builder.socket.ColorSocket.r) |  |
 | [`socket`](#nodebpy.builder.socket.ColorSocket.socket) |  |
+| [`spline`](#nodebpy.builder.socket.ColorSocket.spline) | ColorSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`tree`](#nodebpy.builder.socket.ColorSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.ColorSocket.type) |  |
 
@@ -655,7 +961,30 @@ Runtime color socket wrapper.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.ColorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [to_list](#nodebpy.builder.socket.ColorSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### to_list
 
@@ -680,15 +1009,22 @@ List of color sockets.
 | [`a`](#nodebpy.builder.socket.ColorSocketList.a) |  |
 | [`b`](#nodebpy.builder.socket.ColorSocketList.b) |  |
 | [`builder_node`](#nodebpy.builder.socket.ColorSocketList.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
+| [`corner`](#nodebpy.builder.socket.ColorSocketList.corner) | ColorSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`default_value`](#nodebpy.builder.socket.ColorSocketList.default_value) |  |
+| [`edge`](#nodebpy.builder.socket.ColorSocketList.edge) | ColorSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
+| [`face`](#nodebpy.builder.socket.ColorSocketList.face) | ColorSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`g`](#nodebpy.builder.socket.ColorSocketList.g) |  |
 | [`i`](#nodebpy.builder.socket.ColorSocketList.i) |  |
+| [`instance`](#nodebpy.builder.socket.ColorSocketList.instance) | ColorSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
+| [`layer`](#nodebpy.builder.socket.ColorSocketList.layer) | ColorSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`links`](#nodebpy.builder.socket.ColorSocketList.links) |  |
 | [`name`](#nodebpy.builder.socket.ColorSocketList.name) |  |
 | [`node`](#nodebpy.builder.socket.ColorSocketList.node) |  |
 | [`o`](#nodebpy.builder.socket.ColorSocketList.o) |  |
+| [`point`](#nodebpy.builder.socket.ColorSocketList.point) | BooleanSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`r`](#nodebpy.builder.socket.ColorSocketList.r) |  |
 | [`socket`](#nodebpy.builder.socket.ColorSocketList.socket) |  |
+| [`spline`](#nodebpy.builder.socket.ColorSocketList.spline) | ColorSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`. |
 | [`tree`](#nodebpy.builder.socket.ColorSocketList.tree) |  |
 | [`type`](#nodebpy.builder.socket.ColorSocketList.type) |  |
 
@@ -696,6 +1032,7 @@ List of color sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.ColorSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.ColorSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.ColorSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ColorSocketList.list_length) | Get the length of the list. |
@@ -703,6 +1040,28 @@ List of color sockets.
 | [reverse](#nodebpy.builder.socket.ColorSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ColorSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [to_list](#nodebpy.builder.socket.ColorSocketList.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -811,6 +1170,7 @@ Runtime float socket wrapper.
 |----|----|
 | [ceil](#nodebpy.builder.socket.FloatSocket.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocket.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
+| [enable_output](#nodebpy.builder.socket.FloatSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [floor](#nodebpy.builder.socket.FloatSocket.floor) | Round down to the nearest integer. |
 | [map_range](#nodebpy.builder.socket.FloatSocket.map_range) | Remap the values on the float socket using the MapRange node. |
 | [modulo](#nodebpy.builder.socket.FloatSocket.modulo) | Floored modulo — remainder after dividing by *divisor*, always non-negative. |
@@ -841,6 +1201,28 @@ clamp(min=0.0, max=1.0)
 ```
 
 Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### floor
 
@@ -994,16 +1376,36 @@ Runtime float grid socket wrapper.
 |----|----|
 | [ceil](#nodebpy.builder.socket.FloatSocketGrid.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocketGrid.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
+| [clip](#nodebpy.builder.socket.FloatSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
+| [dilate_erode](#nodebpy.builder.socket.FloatSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
+| [enable_output](#nodebpy.builder.socket.FloatSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [field_to_grid](#nodebpy.builder.socket.FloatSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
 | [floor](#nodebpy.builder.socket.FloatSocketGrid.floor) | Round down to the nearest integer. |
+| [gradient](#nodebpy.builder.socket.FloatSocketGrid.gradient) | Calculate the direction and magnitude of the change in values of a scalar grid. |
+| [laplacian](#nodebpy.builder.socket.FloatSocketGrid.laplacian) | Compute the divergence of the gradient of the input grid. |
 | [map_range](#nodebpy.builder.socket.FloatSocketGrid.map_range) | Remap the values on the float socket using the MapRange node. |
+| [mean](#nodebpy.builder.socket.FloatSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
+| [median](#nodebpy.builder.socket.FloatSocketGrid.median) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [modulo](#nodebpy.builder.socket.FloatSocketGrid.modulo) | Floored modulo — remainder after dividing by *divisor*, always non-negative. |
 | [negate](#nodebpy.builder.socket.FloatSocketGrid.negate) | Negate the `FloatSocket` by multiplying the value by `-1`. |
 | [power](#nodebpy.builder.socket.FloatSocketGrid.power) | Raise this value to *exponent*. |
+| [prune](#nodebpy.builder.socket.FloatSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [round](#nodebpy.builder.socket.FloatSocketGrid.round) | Round to the nearest integer. |
+| [sample](#nodebpy.builder.socket.FloatSocketGrid.sample) | Retrieve values from the specified volume grid. |
+| [sample_index](#nodebpy.builder.socket.FloatSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
+| [sdf_fillet](#nodebpy.builder.socket.FloatSocketGrid.sdf_fillet) | Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces. |
+| [sdf_laplacian](#nodebpy.builder.socket.FloatSocketGrid.sdf_laplacian) | Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization. |
+| [sdf_mean](#nodebpy.builder.socket.FloatSocketGrid.sdf_mean) | Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field. |
+| [sdf_mean_curvature](#nodebpy.builder.socket.FloatSocketGrid.sdf_mean_curvature) | Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas. |
+| [sdf_median](#nodebpy.builder.socket.FloatSocketGrid.sdf_median) | Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field. |
+| [sdf_offset](#nodebpy.builder.socket.FloatSocketGrid.sdf_offset) | Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property. |
 | [sign](#nodebpy.builder.socket.FloatSocketGrid.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
 | [sqrt](#nodebpy.builder.socket.FloatSocketGrid.sqrt) | Return the square root of this value. |
 | [to_degrees](#nodebpy.builder.socket.FloatSocketGrid.to_degrees) | Convert radians to degrees. |
+| [to_mesh](#nodebpy.builder.socket.FloatSocketGrid.to_mesh) | Generate a mesh on the “surface” of a volume grid. |
+| [to_points](#nodebpy.builder.socket.FloatSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
 | [to_radians](#nodebpy.builder.socket.FloatSocketGrid.to_radians) | Convert degrees to radians. |
+| [voxelize](#nodebpy.builder.socket.FloatSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
 | [wrap](#nodebpy.builder.socket.FloatSocketGrid.wrap) | Wrap the value into the *\[min, max\]* range, repeating cyclically. |
 
 ##### ceil
@@ -1022,6 +1424,52 @@ clamp(min=0.0, max=1.0)
 
 Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`.
 
+##### clip
+
+``` python
+clip(min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+```
+
+Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
+
+##### dilate_erode
+
+``` python
+dilate_erode(steps=1, connectivity='Face', tiles='Preserve')
+```
+
+Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
+##### field_to_grid
+
+``` python
+field_to_grid()
+```
+
+Create new grids by evaluating new values on an existing volume grid topology.
+
 ##### floor
 
 ``` python
@@ -1029,6 +1477,22 @@ floor()
 ```
 
 Round down to the nearest integer.
+
+##### gradient
+
+``` python
+gradient()
+```
+
+Calculate the direction and magnitude of the change in values of a scalar grid.
+
+##### laplacian
+
+``` python
+laplacian()
+```
+
+Compute the divergence of the gradient of the input grid.
 
 ##### map_range
 
@@ -1046,6 +1510,22 @@ map_range(
 ```
 
 Remap the values on the float socket using the MapRange node.
+
+##### mean
+
+``` python
+mean(width=1, iterations=1)
+```
+
+Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
+##### median
+
+``` python
+median(width=1, iterations=1)
+```
+
+Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
 
 ##### modulo
 
@@ -1071,6 +1551,14 @@ power(exponent)
 
 Raise this value to *exponent*.
 
+##### prune
+
+``` python
+prune(threshold=0.1, mode=None)
+```
+
+Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes.
+
 ##### round
 
 ``` python
@@ -1078,6 +1566,70 @@ round()
 ```
 
 Round to the nearest integer.
+
+##### sample
+
+``` python
+sample(position=None, interpolation='Trilinear')
+```
+
+Retrieve values from the specified volume grid.
+
+##### sample_index
+
+``` python
+sample_index(x=0, y=0, z=0)
+```
+
+Retrieve volume grid values at specific voxels.
+
+##### sdf_fillet
+
+``` python
+sdf_fillet(iterations=1)
+```
+
+Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces.
+
+##### sdf_laplacian
+
+``` python
+sdf_laplacian(iterations=1)
+```
+
+Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization.
+
+##### sdf_mean
+
+``` python
+sdf_mean(width=1, iterations=1)
+```
+
+Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field.
+
+##### sdf_mean_curvature
+
+``` python
+sdf_mean_curvature(iterations=1)
+```
+
+Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas.
+
+##### sdf_median
+
+``` python
+sdf_median(width=1, iterations=1)
+```
+
+Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field.
+
+##### sdf_offset
+
+``` python
+sdf_offset(distance=0.1)
+```
+
+Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property.
 
 ##### sign
 
@@ -1103,6 +1655,22 @@ to_degrees()
 
 Convert radians to degrees.
 
+##### to_mesh
+
+``` python
+to_mesh(threshold=0.1, adaptivity=0.0)
+```
+
+Generate a mesh on the “surface” of a volume grid.
+
+##### to_points
+
+``` python
+to_points()
+```
+
+Generate a point cloud from a volume grid’s active voxels.
+
 ##### to_radians
 
 ``` python
@@ -1110,6 +1678,14 @@ to_radians()
 ```
 
 Convert degrees to radians.
+
+##### voxelize
+
+``` python
+voxelize()
+```
+
+Remove sparseness from a volume grid by making the active tiles into voxels.
 
 ##### wrap
 
@@ -1146,6 +1722,7 @@ FloatSocketList(socket)
 |----|----|
 | [ceil](#nodebpy.builder.socket.FloatSocketList.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocketList.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
+| [enable_output](#nodebpy.builder.socket.FloatSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.FloatSocketList.filter) | Filter the list based on the selection. |
 | [floor](#nodebpy.builder.socket.FloatSocketList.floor) | Round down to the nearest integer. |
 | [get](#nodebpy.builder.socket.FloatSocketList.get) | Get the item at the given index from the list. |
@@ -1181,6 +1758,28 @@ clamp(min=0.0, max=1.0)
 ```
 
 Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -1379,6 +1978,34 @@ Runtime font socket wrapper.
 | [`tree`](#nodebpy.builder.socket.FontSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.FontSocket.type) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [enable_output](#nodebpy.builder.socket.FontSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
 ### FontSocketList
 
 ``` python
@@ -1405,12 +2032,35 @@ List of font sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.FontSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.FontSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.FontSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.FontSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.FontSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.FontSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.FontSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -1500,7 +2150,30 @@ Runtime geometry socket wrapper.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.GeometrySocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [realize_instances](#nodebpy.builder.socket.GeometrySocket.realize_instances) |  |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### realize_instances
 
@@ -1534,6 +2207,7 @@ List of geometry sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.GeometrySocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.GeometrySocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.GeometrySocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.GeometrySocketList.list_length) | Get the length of the list. |
@@ -1541,6 +2215,28 @@ List of geometry sockets.
 | [realize_instances](#nodebpy.builder.socket.GeometrySocketList.realize_instances) |  |
 | [reverse](#nodebpy.builder.socket.GeometrySocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.GeometrySocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -1610,28 +2306,6 @@ Sort the list based on the weights. Optional `Group ID` and `Selection` can be p
 |------|------|------------------|
 |      | Self | The sorted list. |
 
-### GridSocketMixin
-
-``` python
-GridSocketMixin(socket)
-```
-
-#### Attributes
-
-| Name | Description |
-|----|----|
-| [`background_value`](#nodebpy.builder.socket.GridSocketMixin.background_value) |  |
-| [`builder_node`](#nodebpy.builder.socket.GridSocketMixin.builder_node) | The builder node that owns this socket, if accessed via .o/.i. |
-| [`i`](#nodebpy.builder.socket.GridSocketMixin.i) |  |
-| [`links`](#nodebpy.builder.socket.GridSocketMixin.links) |  |
-| [`name`](#nodebpy.builder.socket.GridSocketMixin.name) |  |
-| [`node`](#nodebpy.builder.socket.GridSocketMixin.node) |  |
-| [`o`](#nodebpy.builder.socket.GridSocketMixin.o) |  |
-| [`socket`](#nodebpy.builder.socket.GridSocketMixin.socket) |  |
-| [`transform`](#nodebpy.builder.socket.GridSocketMixin.transform) |  |
-| [`tree`](#nodebpy.builder.socket.GridSocketMixin.tree) |  |
-| [`type`](#nodebpy.builder.socket.GridSocketMixin.type) |  |
-
 ### ImageSocket
 
 ``` python
@@ -1654,6 +2328,34 @@ Runtime image socket wrapper.
 | [`socket`](#nodebpy.builder.socket.ImageSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.ImageSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.ImageSocket.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [enable_output](#nodebpy.builder.socket.ImageSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ### ImageSocketList
 
@@ -1681,12 +2383,35 @@ List of image sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.ImageSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.ImageSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.ImageSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ImageSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ImageSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.ImageSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ImageSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -1786,6 +2511,7 @@ Runtime integer socket wrapper.
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocket.abs) | Return the absolute value of the IntegerSocket. |
 | [clamp](#nodebpy.builder.socket.IntegerSocket.clamp) | Clamp the value to *\[min, max\]*. |
+| [enable_output](#nodebpy.builder.socket.IntegerSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [modulo](#nodebpy.builder.socket.IntegerSocket.modulo) | Remainder after dividing by *divisor* (always non-negative). |
 | [negate](#nodebpy.builder.socket.IntegerSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [sign](#nodebpy.builder.socket.IntegerSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
@@ -1807,6 +2533,28 @@ clamp(min=0, max=1)
 ```
 
 Clamp the value to *\[min, max\]*.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### modulo
 
@@ -1878,9 +2626,20 @@ Runtime integer grid socket wrapper.
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocketGrid.abs) | Return the absolute value of the IntegerSocket. |
 | [clamp](#nodebpy.builder.socket.IntegerSocketGrid.clamp) | Clamp the value to *\[min, max\]*. |
+| [clip](#nodebpy.builder.socket.IntegerSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
+| [dilate_erode](#nodebpy.builder.socket.IntegerSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
+| [enable_output](#nodebpy.builder.socket.IntegerSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [field_to_grid](#nodebpy.builder.socket.IntegerSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
+| [mean](#nodebpy.builder.socket.IntegerSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
+| [median](#nodebpy.builder.socket.IntegerSocketGrid.median) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [modulo](#nodebpy.builder.socket.IntegerSocketGrid.modulo) | Remainder after dividing by *divisor* (always non-negative). |
 | [negate](#nodebpy.builder.socket.IntegerSocketGrid.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
+| [prune](#nodebpy.builder.socket.IntegerSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
+| [sample](#nodebpy.builder.socket.IntegerSocketGrid.sample) | Retrieve values from the specified volume grid. |
+| [sample_index](#nodebpy.builder.socket.IntegerSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
 | [sign](#nodebpy.builder.socket.IntegerSocketGrid.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
+| [to_points](#nodebpy.builder.socket.IntegerSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
+| [voxelize](#nodebpy.builder.socket.IntegerSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
 
 ##### abs
 
@@ -1898,6 +2657,68 @@ clamp(min=0, max=1)
 
 Clamp the value to *\[min, max\]*.
 
+##### clip
+
+``` python
+clip(min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+```
+
+Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
+
+##### dilate_erode
+
+``` python
+dilate_erode(steps=1, connectivity='Face', tiles='Preserve')
+```
+
+Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
+##### field_to_grid
+
+``` python
+field_to_grid()
+```
+
+Create new grids by evaluating new values on an existing volume grid topology.
+
+##### mean
+
+``` python
+mean(width=1, iterations=1)
+```
+
+Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
+##### median
+
+``` python
+median(width=1, iterations=1)
+```
+
+Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
 ##### modulo
 
 ``` python
@@ -1914,6 +2735,30 @@ negate()
 
 Negate the IntegerSocket value. Positive becomes negative, negative becomes positive.
 
+##### prune
+
+``` python
+prune(threshold=0.1, mode=None)
+```
+
+Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes.
+
+##### sample
+
+``` python
+sample(position=None, interpolation='Trilinear')
+```
+
+Retrieve values from the specified volume grid.
+
+##### sample_index
+
+``` python
+sample_index(x=0, y=0, z=0)
+```
+
+Retrieve volume grid values at specific voxels.
+
 ##### sign
 
 ``` python
@@ -1921,6 +2766,22 @@ sign()
 ```
 
 Return the sign of the IntegerSocket, either `-1`, `0`, or `1`.
+
+##### to_points
+
+``` python
+to_points()
+```
+
+Generate a point cloud from a volume grid’s active voxels.
+
+##### voxelize
+
+``` python
+voxelize()
+```
+
+Remove sparseness from a volume grid by making the active tiles into voxels.
 
 ### IntegerSocketList
 
@@ -1950,6 +2811,7 @@ List of integer sockets.
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerSocketList.abs) | Return the absolute value of the IntegerSocket. |
 | [clamp](#nodebpy.builder.socket.IntegerSocketList.clamp) | Clamp the value to *\[min, max\]*. |
+| [enable_output](#nodebpy.builder.socket.IntegerSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.IntegerSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.IntegerSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.IntegerSocketList.list_length) | Get the length of the list. |
@@ -1976,6 +2838,28 @@ clamp(min=0, max=1)
 ```
 
 Clamp the value to *\[min, max\]*.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -2100,6 +2984,7 @@ Runtime integer vector socket wrapper.
 |----|----|
 | [abs](#nodebpy.builder.socket.IntegerVectorSocket.abs) | Return the absolute value of the IntegerSocket. |
 | [clamp](#nodebpy.builder.socket.IntegerVectorSocket.clamp) | Clamp the value to *\[min, max\]*. |
+| [enable_output](#nodebpy.builder.socket.IntegerVectorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [modulo](#nodebpy.builder.socket.IntegerVectorSocket.modulo) | Remainder after dividing by *divisor* (always non-negative). |
 | [negate](#nodebpy.builder.socket.IntegerVectorSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
 | [sign](#nodebpy.builder.socket.IntegerVectorSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
@@ -2119,6 +3004,28 @@ clamp(min=0, max=1)
 ```
 
 Clamp the value to *\[min, max\]*.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### modulo
 
@@ -2167,6 +3074,34 @@ Runtime material socket wrapper.
 | [`tree`](#nodebpy.builder.socket.MaterialSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.MaterialSocket.type) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [enable_output](#nodebpy.builder.socket.MaterialSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
 ### MaterialSocketList
 
 ``` python
@@ -2193,12 +3128,35 @@ List of material sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.MaterialSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.MaterialSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.MaterialSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.MaterialSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.MaterialSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.MaterialSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.MaterialSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -2299,6 +3257,7 @@ Runtime matrix socket wrapper.
 | Name | Description |
 |----|----|
 | [determinant](#nodebpy.builder.socket.MatrixSocket.determinant) | Compute the determinant of a matrix input and return as a `FloatSocket`. |
+| [enable_output](#nodebpy.builder.socket.MatrixSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [invert](#nodebpy.builder.socket.MatrixSocket.invert) | Invert the `MatrixSocet` and return a `MatrixSocket`. |
 | [svd](#nodebpy.builder.socket.MatrixSocket.svd) | Decompose the matrix via SVD. Returns `(u, s, v)`. |
 | [to_list](#nodebpy.builder.socket.MatrixSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
@@ -2312,6 +3271,28 @@ determinant()
 ```
 
 Compute the determinant of a matrix input and return as a `FloatSocket`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### invert
 
@@ -2385,6 +3366,7 @@ List of matrix sockets.
 | Name | Description |
 |----|----|
 | [determinant](#nodebpy.builder.socket.MatrixSocketList.determinant) | Compute the determinant of a matrix input and return as a `FloatSocket`. |
+| [enable_output](#nodebpy.builder.socket.MatrixSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.MatrixSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.MatrixSocketList.get) | Get the item at the given index from the list. |
 | [invert](#nodebpy.builder.socket.MatrixSocketList.invert) | Invert the `MatrixSocet` and return a `MatrixSocket`. |
@@ -2403,6 +3385,28 @@ determinant()
 ```
 
 Compute the determinant of a matrix input and return as a `FloatSocket`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -2527,7 +3531,30 @@ Runtime menu socket wrapper.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.MenuSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [to_list](#nodebpy.builder.socket.MenuSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### to_list
 
@@ -2563,12 +3590,35 @@ List of menu sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.MenuSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.MenuSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.MenuSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.MenuSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.MenuSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.MenuSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.MenuSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -2659,11 +3709,34 @@ Runtime object socket wrapper.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.ObjectSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [geometry](#nodebpy.builder.socket.ObjectSocket.geometry) | The object’s geometry, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [location](#nodebpy.builder.socket.ObjectSocket.location) | The object’s location, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [rotation](#nodebpy.builder.socket.ObjectSocket.rotation) | The object’s rotation, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [scale](#nodebpy.builder.socket.ObjectSocket.scale) | The object’s scale, optionally in relative space, via [`ObjectInfo`](~nodebpy.nodes.geometry.ObjectInfo). |
 | [transform](#nodebpy.builder.socket.ObjectSocket.transform) | The Object’s transform matrix, optionally in relative space. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### geometry
 
@@ -2794,12 +3867,35 @@ List of object sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.ObjectSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.ObjectSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.ObjectSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ObjectSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ObjectSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.ObjectSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ObjectSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -2960,12 +4056,50 @@ Runtime rotation socket wrapper.
 
 | Name | Description |
 |----|----|
+| [align_to_vector](#nodebpy.builder.socket.RotationSocket.align_to_vector) | Align the specified axis of this rotation to the given vector. Uses `AlignRotationToVector` with this socket as the rotation input. |
+| [enable_output](#nodebpy.builder.socket.RotationSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [invert](#nodebpy.builder.socket.RotationSocket.invert) | Invert the rotation of the socket. |
 | [rotate](#nodebpy.builder.socket.RotationSocket.rotate) | Rotate this rotation by the given rotation in the specified rotation space. |
 | [to_axis_angle](#nodebpy.builder.socket.RotationSocket.to_axis_angle) | Decompose the rotation into axis-angle components `(axis, angle)`. |
 | [to_euler](#nodebpy.builder.socket.RotationSocket.to_euler) | Convert the rotation to an XYZ euler rotation and return `VectorSocket`. |
 | [to_list](#nodebpy.builder.socket.RotationSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 | [to_quaternion](#nodebpy.builder.socket.RotationSocket.to_quaternion) | Decompose the rotation into quaternion components `(w, x, y, z)`. |
+
+##### align_to_vector
+
+``` python
+align_to_vector(
+    vector=(0.0, 0.0, 1.0),
+    factor=1.0,
+    *,
+    axis='Z',
+    pivot_axis='AUTO',
+)
+```
+
+Align the specified axis of this rotation to the given vector. Uses `AlignRotationToVector` with this socket as the rotation input.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### invert
 
@@ -3041,6 +4175,8 @@ List of rotation sockets.
 
 | Name | Description |
 |----|----|
+| [align_to_vector](#nodebpy.builder.socket.RotationSocketList.align_to_vector) | Align the specified axis of this rotation to the given vector. Uses `AlignRotationToVector` with this socket as the rotation input. |
+| [enable_output](#nodebpy.builder.socket.RotationSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.RotationSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.RotationSocketList.get) | Get the item at the given index from the list. |
 | [invert](#nodebpy.builder.socket.RotationSocketList.invert) | Invert the rotation of the socket. |
@@ -3052,6 +4188,42 @@ List of rotation sockets.
 | [to_axis_angle](#nodebpy.builder.socket.RotationSocketList.to_axis_angle) | Decompose the rotation into axis-angle components `(axis, angle)`. |
 | [to_euler](#nodebpy.builder.socket.RotationSocketList.to_euler) | Convert the rotation to an XYZ euler rotation and return `VectorSocket`. |
 | [to_quaternion](#nodebpy.builder.socket.RotationSocketList.to_quaternion) | Decompose the rotation into quaternion components `(w, x, y, z)`. |
+
+##### align_to_vector
+
+``` python
+align_to_vector(
+    vector=(0.0, 0.0, 1.0),
+    factor=1.0,
+    *,
+    axis='Z',
+    pivot_axis='AUTO',
+)
+```
+
+Align the specified axis of this rotation to the given vector. Uses `AlignRotationToVector` with this socket as the rotation input.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -3177,6 +4349,34 @@ Runtime shader socket wrapper.
 | [`tree`](#nodebpy.builder.socket.ShaderSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.ShaderSocket.type) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [enable_output](#nodebpy.builder.socket.ShaderSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
 ### ShaderSocketList
 
 ``` python
@@ -3203,12 +4403,35 @@ List of shader sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.ShaderSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.ShaderSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.ShaderSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.ShaderSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.ShaderSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.ShaderSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.ShaderSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -3300,6 +4523,34 @@ tree : TreeBuilder The tree this socket belongs to. socket : NodeSocket The unde
 | [`tree`](#nodebpy.builder.socket.Socket.tree) |  |
 | [`type`](#nodebpy.builder.socket.Socket.type) |  |
 
+#### Methods
+
+| Name | Description |
+|----|----|
+| [enable_output](#nodebpy.builder.socket.Socket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
 ### SoundSocket
 
 ``` python
@@ -3321,6 +4572,34 @@ Runtime sound socket wrapper.
 | [`socket`](#nodebpy.builder.socket.SoundSocket.socket) |  |
 | [`tree`](#nodebpy.builder.socket.SoundSocket.tree) |  |
 | [`type`](#nodebpy.builder.socket.SoundSocket.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [enable_output](#nodebpy.builder.socket.SoundSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ### SoundSocketList
 
@@ -3348,12 +4627,35 @@ List of sound sockets.
 
 | Name | Description |
 |----|----|
+| [enable_output](#nodebpy.builder.socket.SoundSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.SoundSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.SoundSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.SoundSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.SoundSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [reverse](#nodebpy.builder.socket.SoundSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sort](#nodebpy.builder.socket.SoundSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 
@@ -3445,6 +4747,7 @@ Runtime string socket wrapper.
 | Name | Description |
 |----|----|
 | [contains](#nodebpy.builder.socket.StringSocket.contains) | Create a MatchString[Contains](#nodebpy.builder.socket.StringSocket.contains), return the result as a `BooleanSocket`. |
+| [enable_output](#nodebpy.builder.socket.StringSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [ends_with](#nodebpy.builder.socket.StringSocket.ends_with) | Create a MatchString\[Ends With\], return the result as a `BooleanSocket`. |
 | [find](#nodebpy.builder.socket.StringSocket.find) | Find where in a string a pattern occurs. Returns `(first_found, count)`. |
 | [format](#nodebpy.builder.socket.StringSocket.format) | Format a given string with the key-value items. |
@@ -3466,6 +4769,28 @@ contains(search)
 ```
 
 Create a MatchString[Contains](#nodebpy.builder.socket.StringSocket.contains), return the result as a `BooleanSocket`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### ends_with
 
@@ -3596,6 +4921,7 @@ List of string sockets.
 | Name | Description |
 |----|----|
 | [contains](#nodebpy.builder.socket.StringSocketList.contains) | Create a MatchString[Contains](#nodebpy.builder.socket.StringSocket.contains), return the result as a `BooleanSocket`. |
+| [enable_output](#nodebpy.builder.socket.StringSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [ends_with](#nodebpy.builder.socket.StringSocketList.ends_with) | Create a MatchString\[Ends With\], return the result as a `BooleanSocket`. |
 | [filter](#nodebpy.builder.socket.StringSocketList.filter) | Filter the list based on the selection. |
 | [find](#nodebpy.builder.socket.StringSocketList.find) | Find where in a string a pattern occurs. Returns `(first_found, count)`. |
@@ -3619,6 +4945,28 @@ contains(search)
 ```
 
 Create a MatchString[Contains](#nodebpy.builder.socket.StringSocket.contains), return the result as a `BooleanSocket`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### ends_with
 
@@ -3791,9 +5139,11 @@ Runtime vector socket wrapper.
 
 | Name | Description |
 |----|----|
+| [align_rotation](#nodebpy.builder.socket.VectorSocket.align_rotation) | Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input. |
 | [cross](#nodebpy.builder.socket.VectorSocket.cross) |  |
 | [distance](#nodebpy.builder.socket.VectorSocket.distance) | Euclidean distance between this vector and *other*, as a `FloatSocket`. |
 | [dot](#nodebpy.builder.socket.VectorSocket.dot) | Dot product with another vector and return the result as a `FloatSocket`. |
+| [enable_output](#nodebpy.builder.socket.VectorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [length](#nodebpy.builder.socket.VectorSocket.length) | Get the length of this vector as a `FloatSocket` |
 | [map_range](#nodebpy.builder.socket.VectorSocket.map_range) |  |
 | [normalize](#nodebpy.builder.socket.VectorSocket.normalize) |  |
@@ -3803,6 +5153,14 @@ Runtime vector socket wrapper.
 | [scale](#nodebpy.builder.socket.VectorSocket.scale) |  |
 | [to_list](#nodebpy.builder.socket.VectorSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 | [transform](#nodebpy.builder.socket.VectorSocket.transform) |  |
+
+##### align_rotation
+
+``` python
+align_rotation(rotation=None, factor=1.0, *, axis='Z', pivot_axis='AUTO')
+```
+
+Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input.
 
 ##### cross
 
@@ -3825,6 +5183,28 @@ dot(vector=(0.0, 0.0, 1.0))
 ```
 
 Dot product with another vector and return the result as a `FloatSocket`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### length
 
@@ -3914,23 +5294,69 @@ Runtime vector grid socket wrapper.
 
 | Name | Description |
 |----|----|
+| [align_rotation](#nodebpy.builder.socket.VectorSocketGrid.align_rotation) | Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input. |
+| [clip](#nodebpy.builder.socket.VectorSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
 | [cross](#nodebpy.builder.socket.VectorSocketGrid.cross) |  |
+| [curl](#nodebpy.builder.socket.VectorSocketGrid.curl) | Calculate the magnitude and direction of circulation of a directional vector grid. |
+| [dilate_erode](#nodebpy.builder.socket.VectorSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
 | [distance](#nodebpy.builder.socket.VectorSocketGrid.distance) | Euclidean distance between this vector and *other*, as a `FloatSocket`. |
+| [divergence](#nodebpy.builder.socket.VectorSocketGrid.divergence) | Calculate the flow into and out of each point of a directional vector grid. |
 | [dot](#nodebpy.builder.socket.VectorSocketGrid.dot) | Dot product with another vector and return the result as a `FloatSocket`. |
+| [enable_output](#nodebpy.builder.socket.VectorSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [field_to_grid](#nodebpy.builder.socket.VectorSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
 | [length](#nodebpy.builder.socket.VectorSocketGrid.length) | Get the length of this vector as a `FloatSocket` |
 | [map_range](#nodebpy.builder.socket.VectorSocketGrid.map_range) |  |
+| [mean](#nodebpy.builder.socket.VectorSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
+| [median](#nodebpy.builder.socket.VectorSocketGrid.median) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [normalize](#nodebpy.builder.socket.VectorSocketGrid.normalize) |  |
 | [project](#nodebpy.builder.socket.VectorSocketGrid.project) |  |
+| [prune](#nodebpy.builder.socket.VectorSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [reflect](#nodebpy.builder.socket.VectorSocketGrid.reflect) |  |
 | [rotate](#nodebpy.builder.socket.VectorSocketGrid.rotate) |  |
+| [sample](#nodebpy.builder.socket.VectorSocketGrid.sample) | Retrieve values from the specified volume grid. |
+| [sample_index](#nodebpy.builder.socket.VectorSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
 | [scale](#nodebpy.builder.socket.VectorSocketGrid.scale) |  |
+| [to_points](#nodebpy.builder.socket.VectorSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
 | [transform](#nodebpy.builder.socket.VectorSocketGrid.transform) |  |
+| [voxelize](#nodebpy.builder.socket.VectorSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
+
+##### align_rotation
+
+``` python
+align_rotation(rotation=None, factor=1.0, *, axis='Z', pivot_axis='AUTO')
+```
+
+Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input.
+
+##### clip
+
+``` python
+clip(min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+```
+
+Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
 
 ##### cross
 
 ``` python
 cross(other)
 ```
+
+##### curl
+
+``` python
+curl()
+```
+
+Calculate the magnitude and direction of circulation of a directional vector grid.
+
+##### dilate_erode
+
+``` python
+dilate_erode(steps=1, connectivity='Face', tiles='Preserve')
+```
+
+Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.
 
 ##### distance
 
@@ -3940,6 +5366,14 @@ distance(other=(0.0, 0.0, 0.0))
 
 Euclidean distance between this vector and *other*, as a `FloatSocket`.
 
+##### divergence
+
+``` python
+divergence()
+```
+
+Calculate the flow into and out of each point of a directional vector grid.
+
 ##### dot
 
 ``` python
@@ -3947,6 +5381,36 @@ dot(vector=(0.0, 0.0, 1.0))
 ```
 
 Dot product with another vector and return the result as a `FloatSocket`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
+
+##### field_to_grid
+
+``` python
+field_to_grid()
+```
+
+Create new grids by evaluating new values on an existing volume grid topology.
 
 ##### length
 
@@ -3962,6 +5426,22 @@ Get the length of this vector as a `FloatSocket`
 map_range(*args, **kwargs)
 ```
 
+##### mean
+
+``` python
+mean(width=1, iterations=1)
+```
+
+Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
+##### median
+
+``` python
+median(width=1, iterations=1)
+```
+
+Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
+
 ##### normalize
 
 ``` python
@@ -3973,6 +5453,14 @@ normalize()
 ``` python
 project(other)
 ```
+
+##### prune
+
+``` python
+prune(threshold=0.1, mode=None)
+```
+
+Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes.
 
 ##### reflect
 
@@ -3986,17 +5474,49 @@ reflect(normal)
 rotate(rotation)
 ```
 
+##### sample
+
+``` python
+sample(position=None, interpolation='Trilinear')
+```
+
+Retrieve values from the specified volume grid.
+
+##### sample_index
+
+``` python
+sample_index(x=0, y=0, z=0)
+```
+
+Retrieve volume grid values at specific voxels.
+
 ##### scale
 
 ``` python
 scale(scale)
 ```
 
+##### to_points
+
+``` python
+to_points()
+```
+
+Generate a point cloud from a volume grid’s active voxels.
+
 ##### transform
 
 ``` python
 transform(matrix)
 ```
+
+##### voxelize
+
+``` python
+voxelize()
+```
+
+Remove sparseness from a volume grid by making the active tiles into voxels.
 
 ### VectorSocketList
 
@@ -4025,9 +5545,11 @@ VectorSocketList(socket)
 
 | Name | Description |
 |----|----|
+| [align_rotation](#nodebpy.builder.socket.VectorSocketList.align_rotation) | Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input. |
 | [cross](#nodebpy.builder.socket.VectorSocketList.cross) |  |
 | [distance](#nodebpy.builder.socket.VectorSocketList.distance) | Euclidean distance between this vector and *other*, as a `FloatSocket`. |
 | [dot](#nodebpy.builder.socket.VectorSocketList.dot) | Dot product with another vector and return the result as a `FloatSocket`. |
+| [enable_output](#nodebpy.builder.socket.VectorSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [filter](#nodebpy.builder.socket.VectorSocketList.filter) | Filter the list based on the selection. |
 | [get](#nodebpy.builder.socket.VectorSocketList.get) | Get the item at the given index from the list. |
 | [length](#nodebpy.builder.socket.VectorSocketList.length) | Get the length of this vector as a `FloatSocket` |
@@ -4042,6 +5564,14 @@ VectorSocketList(socket)
 | [scale](#nodebpy.builder.socket.VectorSocketList.scale) |  |
 | [sort](#nodebpy.builder.socket.VectorSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [transform](#nodebpy.builder.socket.VectorSocketList.transform) |  |
+
+##### align_rotation
+
+``` python
+align_rotation(rotation=None, factor=1.0, *, axis='Z', pivot_axis='AUTO')
+```
+
+Orient the given rotation along the current vector. Uses `AlignRotationToVector` with this socket as the vector input.
 
 ##### cross
 
@@ -4064,6 +5594,28 @@ dot(vector=(0.0, 0.0, 1.0))
 ```
 
 Dot product with another vector and return the result as a `FloatSocket`.
+
+##### enable_output
+
+``` python
+enable_output(enable=True)
+```
+
+Enable or disable the the output of this node group that is connected to this socket.
+
+If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.
+
+###### Parameters
+
+| Name | Type | Description | Default |
+|----|----|----|----|
+| enable | InputBoolean | Whether to enable or disable the output, by default True. | `True` |
+
+###### Returns
+
+| Name | Type | Description                                                      |
+|------|------|------------------------------------------------------------------|
+|      | Self | The output socket or input socket, depending on the socket type. |
 
 ##### filter
 

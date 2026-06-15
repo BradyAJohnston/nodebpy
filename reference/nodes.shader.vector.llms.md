@@ -42,16 +42,15 @@ Generate a perturbed normal from a height texture for bump mapping. Typically us
 
 #### Attributes
 
-| Name                                                   | Description |
-|--------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.vector.Bump.i)             |             |
-| [`invert`](#nodebpy.nodes.shader.vector.Bump.invert)   |             |
-| [`name`](#nodebpy.nodes.shader.vector.Bump.name)       |             |
-| [`node`](#nodebpy.nodes.shader.vector.Bump.node)       |             |
-| [`o`](#nodebpy.nodes.shader.vector.Bump.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.vector.Bump.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.vector.Bump.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.vector.Bump.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.vector.Bump.i) |  |
+| [`invert`](#nodebpy.nodes.shader.vector.Bump.invert) |  |
+| [`name`](#nodebpy.nodes.shader.vector.Bump.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.vector.Bump.node) |  |
+| [`o`](#nodebpy.nodes.shader.vector.Bump.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.vector.Bump.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.vector.Bump.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -98,13 +97,12 @@ Displace the surface along the surface normal
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.vector.Displacement.i) |  |
-| [`name`](#nodebpy.nodes.shader.vector.Displacement.name) |  |
+| [`name`](#nodebpy.nodes.shader.vector.Displacement.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.Displacement.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.Displacement.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.vector.Displacement.outputs) |  |
 | [`space`](#nodebpy.nodes.shader.vector.Displacement.space) |  |
-| [`tree`](#nodebpy.nodes.shader.vector.Displacement.tree) |  |
-| [`type`](#nodebpy.nodes.shader.vector.Displacement.type) |  |
+| [`tree`](#nodebpy.nodes.shader.vector.Displacement.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -150,12 +148,11 @@ Transform the input vector by applying translation, rotation, and scale
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.vector.Mapping.i) |  |
-| [`name`](#nodebpy.nodes.shader.vector.Mapping.name) |  |
+| [`name`](#nodebpy.nodes.shader.vector.Mapping.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.Mapping.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.Mapping.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.vector.Mapping.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.vector.Mapping.tree) |  |
-| [`type`](#nodebpy.nodes.shader.vector.Mapping.type) |  |
+| [`tree`](#nodebpy.nodes.shader.vector.Mapping.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`vector_type`](#nodebpy.nodes.shader.vector.Mapping.vector_type) |  |
 
 #### Methods
@@ -230,15 +227,14 @@ Generate a normal vector and a dot product
 
 #### Attributes
 
-| Name                                                     | Description |
-|----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.vector.Normal.i)             |             |
-| [`name`](#nodebpy.nodes.shader.vector.Normal.name)       |             |
-| [`node`](#nodebpy.nodes.shader.vector.Normal.node)       |             |
-| [`o`](#nodebpy.nodes.shader.vector.Normal.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.vector.Normal.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.vector.Normal.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.vector.Normal.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.vector.Normal.i) |  |
+| [`name`](#nodebpy.nodes.shader.vector.Normal.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.vector.Normal.node) |  |
+| [`o`](#nodebpy.nodes.shader.vector.Normal.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.vector.Normal.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.vector.Normal.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -283,13 +279,12 @@ Generate a perturbed normal from an RGB normal map image. Typically used for fak
 | [`base`](#nodebpy.nodes.shader.vector.NormalMap.base) |  |
 | [`convention`](#nodebpy.nodes.shader.vector.NormalMap.convention) |  |
 | [`i`](#nodebpy.nodes.shader.vector.NormalMap.i) |  |
-| [`name`](#nodebpy.nodes.shader.vector.NormalMap.name) |  |
+| [`name`](#nodebpy.nodes.shader.vector.NormalMap.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.NormalMap.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.NormalMap.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.vector.NormalMap.outputs) |  |
 | [`space`](#nodebpy.nodes.shader.vector.NormalMap.space) |  |
-| [`tree`](#nodebpy.nodes.shader.vector.NormalMap.tree) |  |
-| [`type`](#nodebpy.nodes.shader.vector.NormalMap.type) |  |
+| [`tree`](#nodebpy.nodes.shader.vector.NormalMap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`uv_map`](#nodebpy.nodes.shader.vector.NormalMap.uv_map) |  |
 
 **Inputs**
@@ -326,13 +321,12 @@ Displace the surface along an arbitrary direction
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.vector.VectorDisplacement.i) |  |
-| [`name`](#nodebpy.nodes.shader.vector.VectorDisplacement.name) |  |
+| [`name`](#nodebpy.nodes.shader.vector.VectorDisplacement.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.VectorDisplacement.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.VectorDisplacement.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.vector.VectorDisplacement.outputs) |  |
 | [`space`](#nodebpy.nodes.shader.vector.VectorDisplacement.space) |  |
-| [`tree`](#nodebpy.nodes.shader.vector.VectorDisplacement.tree) |  |
-| [`type`](#nodebpy.nodes.shader.vector.VectorDisplacement.type) |  |
+| [`tree`](#nodebpy.nodes.shader.vector.VectorDisplacement.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -375,12 +369,11 @@ Convert a vector, point, or normal between world, camera, and object coordinate 
 | [`convert_from`](#nodebpy.nodes.shader.vector.VectorTransform.convert_from) |  |
 | [`convert_to`](#nodebpy.nodes.shader.vector.VectorTransform.convert_to) |  |
 | [`i`](#nodebpy.nodes.shader.vector.VectorTransform.i) |  |
-| [`name`](#nodebpy.nodes.shader.vector.VectorTransform.name) |  |
+| [`name`](#nodebpy.nodes.shader.vector.VectorTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.VectorTransform.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.VectorTransform.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.vector.VectorTransform.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.vector.VectorTransform.tree) |  |
-| [`type`](#nodebpy.nodes.shader.vector.VectorTransform.type) |  |
+| [`tree`](#nodebpy.nodes.shader.vector.VectorTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`vector_type`](#nodebpy.nodes.shader.vector.VectorTransform.vector_type) |  |
 
 #### Methods

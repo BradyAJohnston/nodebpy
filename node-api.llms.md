@@ -45,9 +45,9 @@ graph LR
     N5("Set Position"):::geometry-node
     N1 -->|"Value->Value"| N4
     N2 -->|"Mesh->Geometry"| N5
+    N3 -->|"Vector->Position"| N5
     N4 -->|"Value->Offset"| N5
     N0 -->|"Position->Vector"| N3
-    N3 -->|"Vector->Position"| N5
 ```
 
 ### Outputs
@@ -77,8 +77,8 @@ graph LR
     N5("Group Output"):::default-node
     N0 -->|"Value->Value"| N3
     N1 -->|"Seconds->Value"| N3
-    N3 -->|"Value->Offset"| N4
     N2 -->|"Mesh->Geometry"| N4
+    N3 -->|"Value->Offset"| N4
     N4 -->|"Geometry->Geometry"| N5
 ```
 
@@ -145,28 +145,28 @@ graph LR
     N0 -->|"Position->Value"| N1
     N1 -->|"Mean->Vector"| N2
     N0 -->|"Position->Vector"| N2
-    N2 -->|"Vector->Vector"| N3
-    N3 -->|"X->Scale"| N4
-    N4 -->|"Vector->Value"| N7
-    N7 -->|"Mean->Vector"| N10
     N10 -->|"X->Column 1 Row 1"| N13
     N10 -->|"Y->Column 1 Row 2"| N13
     N10 -->|"Z->Column 1 Row 3"| N13
-    N3 -->|"Y->Scale"| N5
-    N5 -->|"Vector->Value"| N8
-    N8 -->|"Mean->Vector"| N11
     N11 -->|"X->Column 2 Row 1"| N13
     N11 -->|"Y->Column 2 Row 2"| N13
     N11 -->|"Z->Column 2 Row 3"| N13
-    N3 -->|"Z->Scale"| N6
-    N6 -->|"Vector->Value"| N9
-    N9 -->|"Mean->Vector"| N12
     N12 -->|"X->Column 3 Row 1"| N13
     N12 -->|"Y->Column 3 Row 2"| N13
     N12 -->|"Z->Column 3 Row 3"| N13
-    N2 -->|"Vector->Vector"| N5
+    N2 -->|"Vector->Vector"| N3
     N2 -->|"Vector->Vector"| N4
+    N3 -->|"X->Scale"| N4
+    N4 -->|"Vector->Value"| N7
+    N7 -->|"Mean->Vector"| N10
+    N2 -->|"Vector->Vector"| N5
+    N3 -->|"Y->Scale"| N5
+    N5 -->|"Vector->Value"| N8
+    N8 -->|"Mean->Vector"| N11
     N2 -->|"Vector->Vector"| N6
+    N3 -->|"Z->Scale"| N6
+    N6 -->|"Vector->Value"| N9
+    N9 -->|"Mean->Vector"| N12
 ```
 
 #### Vector Outputs
@@ -343,7 +343,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x7f6ddc5d2cf0>
+>     <nodebpy.builder.socket.BooleanSocket at 0x12eb9c590>
 >
 > ### Comparing Python Objects
 >

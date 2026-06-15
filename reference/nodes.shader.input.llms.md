@@ -75,14 +75,13 @@ Note: For Cycles, this may slow down renders significantly
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.AmbientOcclusion.i) |  |
 | [`inside`](#nodebpy.nodes.shader.input.AmbientOcclusion.inside) |  |
-| [`name`](#nodebpy.nodes.shader.input.AmbientOcclusion.name) |  |
+| [`name`](#nodebpy.nodes.shader.input.AmbientOcclusion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.AmbientOcclusion.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.AmbientOcclusion.o) |  |
 | [`only_local`](#nodebpy.nodes.shader.input.AmbientOcclusion.only_local) |  |
 | [`outputs`](#nodebpy.nodes.shader.input.AmbientOcclusion.outputs) |  |
 | [`samples`](#nodebpy.nodes.shader.input.AmbientOcclusion.samples) |  |
-| [`tree`](#nodebpy.nodes.shader.input.AmbientOcclusion.tree) |  |
-| [`type`](#nodebpy.nodes.shader.input.AmbientOcclusion.type) |  |
+| [`tree`](#nodebpy.nodes.shader.input.AmbientOcclusion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### Bevel
 
@@ -115,16 +114,15 @@ Note: only supported in Cycles, and may slow down renders
 
 #### Attributes
 
-| Name                                                   | Description |
-|--------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.Bevel.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.Bevel.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.Bevel.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.Bevel.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.Bevel.outputs) |             |
-| [`samples`](#nodebpy.nodes.shader.input.Bevel.samples) |             |
-| [`tree`](#nodebpy.nodes.shader.input.Bevel.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.Bevel.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.Bevel.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.Bevel.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.Bevel.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.Bevel.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.Bevel.outputs) |  |
+| [`samples`](#nodebpy.nodes.shader.input.Bevel.samples) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Bevel.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### CameraData
 
@@ -136,15 +134,14 @@ Retrieve information about the camera and how it relates to the current shading 
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.CameraData.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.CameraData.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.CameraData.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.CameraData.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.CameraData.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.CameraData.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.CameraData.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.CameraData.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.CameraData.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.CameraData.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.CameraData.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.CameraData.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.CameraData.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -164,15 +161,14 @@ A color picker
 
 #### Attributes
 
-| Name                                                   | Description |
-|--------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.Color.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.Color.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.Color.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.Color.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.Color.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.Color.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.Color.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.Color.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.Color.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.Color.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.Color.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.Color.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Color.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -194,12 +190,11 @@ Retrieve a color attribute, or the default fallback if none is specified
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.ColorAttribute.i) |  |
 | [`layer_name`](#nodebpy.nodes.shader.input.ColorAttribute.layer_name) |  |
-| [`name`](#nodebpy.nodes.shader.input.ColorAttribute.name) |  |
+| [`name`](#nodebpy.nodes.shader.input.ColorAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.ColorAttribute.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.ColorAttribute.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.input.ColorAttribute.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.input.ColorAttribute.tree) |  |
-| [`type`](#nodebpy.nodes.shader.input.ColorAttribute.type) |  |
+| [`tree`](#nodebpy.nodes.shader.input.ColorAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -218,15 +213,14 @@ Retrieve hair curve information
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.CurvesInfo.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.CurvesInfo.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.CurvesInfo.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.CurvesInfo.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.CurvesInfo.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.CurvesInfo.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.CurvesInfo.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.CurvesInfo.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.CurvesInfo.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.CurvesInfo.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.CurvesInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.CurvesInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.CurvesInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -270,15 +264,14 @@ Typically used for mixing reflections at grazing angles
 
 #### Attributes
 
-| Name                                                     | Description |
-|----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.Fresnel.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.Fresnel.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.Fresnel.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.Fresnel.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.Fresnel.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.Fresnel.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.Fresnel.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.Fresnel.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.Fresnel.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.Fresnel.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.Fresnel.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.Fresnel.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Fresnel.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### Geometry
 
@@ -290,15 +283,14 @@ Retrieve geometric information about the current shading point
 
 #### Attributes
 
-| Name                                                      | Description |
-|-----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.Geometry.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.Geometry.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.Geometry.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.Geometry.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.Geometry.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.Geometry.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.Geometry.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.Geometry.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.Geometry.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.Geometry.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.Geometry.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.Geometry.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Geometry.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -347,15 +339,14 @@ Typically used for layering shaders with the Mix Shader node
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.LayerWeight.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.LayerWeight.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.LayerWeight.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.LayerWeight.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.LayerWeight.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.LayerWeight.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.LayerWeight.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.LayerWeight.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.LayerWeight.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.LayerWeight.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.LayerWeight.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.LayerWeight.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.LayerWeight.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### LightPath
 
@@ -402,15 +393,14 @@ Typically used for non-physically-based tricks
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.LightPath.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.LightPath.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.LightPath.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.LightPath.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.LightPath.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.LightPath.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.LightPath.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.LightPath.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.LightPath.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.LightPath.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.LightPath.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.LightPath.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.LightPath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### ObjectInfo
 
@@ -422,15 +412,14 @@ Retrieve information about the object instance
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.ObjectInfo.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.ObjectInfo.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.ObjectInfo.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.ObjectInfo.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.ObjectInfo.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.ObjectInfo.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.ObjectInfo.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.ObjectInfo.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.ObjectInfo.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.ObjectInfo.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.ObjectInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.ObjectInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.ObjectInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -453,15 +442,14 @@ Retrieve the data of the particle that spawned the object instance, for example 
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.ParticleInfo.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.ParticleInfo.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.ParticleInfo.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.ParticleInfo.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.ParticleInfo.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.ParticleInfo.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.ParticleInfo.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.ParticleInfo.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.ParticleInfo.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.ParticleInfo.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.ParticleInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.ParticleInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.ParticleInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -486,15 +474,14 @@ Retrieve information about points in a point cloud
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.input.PointInfo.i)             |             |
-| [`name`](#nodebpy.nodes.shader.input.PointInfo.name)       |             |
-| [`node`](#nodebpy.nodes.shader.input.PointInfo.node)       |             |
-| [`o`](#nodebpy.nodes.shader.input.PointInfo.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.input.PointInfo.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.input.PointInfo.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.input.PointInfo.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.input.PointInfo.i) |  |
+| [`name`](#nodebpy.nodes.shader.input.PointInfo.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.input.PointInfo.node) |  |
+| [`o`](#nodebpy.nodes.shader.input.PointInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.input.PointInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.input.PointInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -525,13 +512,12 @@ Cast rays and retrieve information from the hit point
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.Raycast.i) |  |
-| [`name`](#nodebpy.nodes.shader.input.Raycast.name) |  |
+| [`name`](#nodebpy.nodes.shader.input.Raycast.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.Raycast.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Raycast.o) |  |
 | [`only_local`](#nodebpy.nodes.shader.input.Raycast.only_local) |  |
 | [`outputs`](#nodebpy.nodes.shader.input.Raycast.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.input.Raycast.tree) |  |
-| [`type`](#nodebpy.nodes.shader.input.Raycast.type) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Raycast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -566,12 +552,11 @@ Generate a tangent direction for the Anisotropic BSDF
 | [`axis`](#nodebpy.nodes.shader.input.Tangent.axis) |  |
 | [`direction_type`](#nodebpy.nodes.shader.input.Tangent.direction_type) |  |
 | [`i`](#nodebpy.nodes.shader.input.Tangent.i) |  |
-| [`name`](#nodebpy.nodes.shader.input.Tangent.name) |  |
+| [`name`](#nodebpy.nodes.shader.input.Tangent.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.Tangent.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Tangent.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.input.Tangent.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.input.Tangent.tree) |  |
-| [`type`](#nodebpy.nodes.shader.input.Tangent.type) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Tangent.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`uv_map`](#nodebpy.nodes.shader.input.Tangent.uv_map) |  |
 
 **Outputs**
@@ -613,12 +598,11 @@ Typically used as inputs for texture nodes
 |----|----|
 | [`from_instancer`](#nodebpy.nodes.shader.input.TextureCoordinate.from_instancer) |  |
 | [`i`](#nodebpy.nodes.shader.input.TextureCoordinate.i) |  |
-| [`name`](#nodebpy.nodes.shader.input.TextureCoordinate.name) |  |
+| [`name`](#nodebpy.nodes.shader.input.TextureCoordinate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.TextureCoordinate.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.TextureCoordinate.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.input.TextureCoordinate.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.input.TextureCoordinate.tree) |  |
-| [`type`](#nodebpy.nodes.shader.input.TextureCoordinate.type) |  |
+| [`tree`](#nodebpy.nodes.shader.input.TextureCoordinate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### UVAlongStroke
 
@@ -633,12 +617,11 @@ UV coordinates that map a texture along the stroke length
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.UVAlongStroke.i) |  |
-| [`name`](#nodebpy.nodes.shader.input.UVAlongStroke.name) |  |
+| [`name`](#nodebpy.nodes.shader.input.UVAlongStroke.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.UVAlongStroke.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.UVAlongStroke.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.input.UVAlongStroke.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.input.UVAlongStroke.tree) |  |
-| [`type`](#nodebpy.nodes.shader.input.UVAlongStroke.type) |  |
+| [`tree`](#nodebpy.nodes.shader.input.UVAlongStroke.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_tips`](#nodebpy.nodes.shader.input.UVAlongStroke.use_tips) |  |
 
 **Outputs**
@@ -661,12 +644,11 @@ Retrieve a UV map from the geometry, or the default fallback if none is specifie
 |----|----|
 | [`from_instancer`](#nodebpy.nodes.shader.input.UVMap.from_instancer) |  |
 | [`i`](#nodebpy.nodes.shader.input.UVMap.i) |  |
-| [`name`](#nodebpy.nodes.shader.input.UVMap.name) |  |
+| [`name`](#nodebpy.nodes.shader.input.UVMap.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.UVMap.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.UVMap.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.input.UVMap.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.input.UVMap.tree) |  |
-| [`type`](#nodebpy.nodes.shader.input.UVMap.type) |  |
+| [`tree`](#nodebpy.nodes.shader.input.UVMap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`uv_map`](#nodebpy.nodes.shader.input.UVMap.uv_map) |  |
 
 **Outputs**
@@ -705,10 +687,9 @@ Note: as meshes are triangulated before being processed by Cycles, topology will
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.input.Wireframe.i) |  |
-| [`name`](#nodebpy.nodes.shader.input.Wireframe.name) |  |
+| [`name`](#nodebpy.nodes.shader.input.Wireframe.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.input.Wireframe.node) |  |
 | [`o`](#nodebpy.nodes.shader.input.Wireframe.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.input.Wireframe.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.input.Wireframe.tree) |  |
-| [`type`](#nodebpy.nodes.shader.input.Wireframe.type) |  |
+| [`tree`](#nodebpy.nodes.shader.input.Wireframe.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_pixel_size`](#nodebpy.nodes.shader.input.Wireframe.use_pixel_size) |  |

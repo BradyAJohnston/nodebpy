@@ -57,14 +57,13 @@ Add the values of an evaluated field together and output the running total for e
 | [`i`](#nodebpy.nodes.geometry.manual.AccumulateField.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.AccumulateField.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.AccumulateField.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.AccumulateField.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.AccumulateField.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.AccumulateField.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.AccumulateField.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.AccumulateField.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.AccumulateField.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.AccumulateField.spline) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.AccumulateField.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.AccumulateField.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.AccumulateField.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Classes
 
@@ -139,19 +138,18 @@ Calculate statistics about a data set from a field evaluated on a geometry
 | [`i`](#nodebpy.nodes.geometry.manual.AttributeStatistic.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.AttributeStatistic.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.AttributeStatistic.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.AttributeStatistic.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.AttributeStatistic.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.AttributeStatistic.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.AttributeStatistic.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.AttributeStatistic.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.AttributeStatistic.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.AttributeStatistic.spline) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.AttributeStatistic.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.AttributeStatistic.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.AttributeStatistic.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### Bake
 
 ``` python
-Bake(*args, **kwargs)
+Bake(*args, items=None, **kwargs)
 ```
 
 Cache the incoming data so that it can be used without recomputation
@@ -163,17 +161,54 @@ TODO: properly handle Animation / Still bake opations and ability to bake to a f
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Bake.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.nodes.geometry.manual.Bake.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Bake.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Bake.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Bake.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`outputs`](#nodebpy.nodes.geometry.manual.Bake.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.Bake.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.Bake.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.geometry.manual.Bake.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.manual.Bake.add_items) | Add an item per mapping entry and return their handles by name. |
+| [capture](#nodebpy.nodes.geometry.manual.Bake.capture) | Add an item linked from `value` and return its output socket. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
 
 ### CaptureAttribute
 
 ``` python
-CaptureAttribute(geometry=None, items={}, *, domain='POINT')
+CaptureAttribute(geometry=None, selection=True, items=None, *, domain='POINT')
 ```
 
 Store the result of a field on a geometry and output the data as a node socket. Allows remembering or interpolating data as the geometry changes, such as positions before deformation
@@ -190,29 +225,50 @@ Store the result of a field on a geometry and output the data as a node socket. 
 | [`i`](#nodebpy.nodes.geometry.manual.CaptureAttribute.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.CaptureAttribute.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.CaptureAttribute.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.CaptureAttribute.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.CaptureAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.CaptureAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.CaptureAttribute.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.CaptureAttribute.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.CaptureAttribute.point) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.CaptureAttribute.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.CaptureAttribute.type) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
-| [capture](#nodebpy.nodes.geometry.manual.CaptureAttribute.capture) | Capture the value to store in the attribute |
+| [add_item](#nodebpy.nodes.geometry.manual.CaptureAttribute.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.manual.CaptureAttribute.add_items) | Add an item per mapping entry and return their handles by name. |
+| [capture](#nodebpy.nodes.geometry.manual.CaptureAttribute.capture) | Add an item linked from `value` and return its output socket. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
 
 ##### capture
 
 ``` python
-capture(value)
+capture(value, *, name=None)
 ```
 
-Capture the value to store in the attribute
+Add an item linked from `value` and return its output socket.
 
-Return the SocketLinker for the output socket
+The item is auto-named after the source socket unless `name` is given.
 
 ### ColorRamp
 
@@ -245,12 +301,11 @@ Map values to colors with the use of a gradient
 | [`hue_interpolation`](#nodebpy.nodes.geometry.manual.ColorRamp.hue_interpolation) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.ColorRamp.i) |  |
 | [`mode`](#nodebpy.nodes.geometry.manual.ColorRamp.mode) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.ColorRamp.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.ColorRamp.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.ColorRamp.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.ColorRamp.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.ColorRamp.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.ColorRamp.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.ColorRamp.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.ColorRamp.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -283,14 +338,13 @@ Perform a comparison operation on the two given inputs
 | [`i`](#nodebpy.nodes.geometry.manual.Compare.i) |  |
 | [`integer`](#nodebpy.nodes.geometry.manual.Compare.integer) |  |
 | [`mode`](#nodebpy.nodes.geometry.manual.Compare.mode) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.Compare.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Compare.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Compare.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Compare.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.manual.Compare.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.Compare.outputs) |  |
 | [`string`](#nodebpy.nodes.geometry.manual.Compare.string) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.Compare.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.Compare.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.Compare.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`vector`](#nodebpy.nodes.geometry.manual.Compare.vector) |  |
 
 ### EvaluateAtIndex
@@ -313,20 +367,21 @@ Retrieve data of other elements in the context’s geometry
 | [`i`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.spline) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateAtIndex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### EvaluateClosure
 
 ``` python
 EvaluateClosure(
     closure=None,
+    input_items=None,
+    output_items=None,
     *,
     active_input_index=0,
     active_output_index=0,
@@ -350,12 +405,11 @@ Execute a given closure
 | [`active_output_index`](#nodebpy.nodes.geometry.manual.EvaluateClosure.active_output_index) |  |
 | [`define_signature`](#nodebpy.nodes.geometry.manual.EvaluateClosure.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.EvaluateClosure.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.EvaluateClosure.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.EvaluateClosure.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.EvaluateClosure.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.EvaluateClosure.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateClosure.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.EvaluateClosure.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateClosure.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -395,14 +449,13 @@ Retrieve values from a field on a different domain besides the domain from the c
 | [`i`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.spline) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.EvaluateOnDomain.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### FieldAverage
 
@@ -424,14 +477,13 @@ Calculate the mean and median of a given field
 | [`i`](#nodebpy.nodes.geometry.manual.FieldAverage.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.FieldAverage.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.FieldAverage.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.FieldAverage.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FieldAverage.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldAverage.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldAverage.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.FieldAverage.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.FieldAverage.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.FieldAverage.spline) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.FieldAverage.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.FieldAverage.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.FieldAverage.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### FieldMinAndMax
 
@@ -453,19 +505,18 @@ Calculate the minimum and maximum of a given field
 | [`i`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.spline) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.FieldMinAndMax.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### FieldToGrid
 
 ``` python
-FieldToGrid(topology=None, items={}, *, data_type='FLOAT')
+FieldToGrid(topology=None, items=None, *, data_type='FLOAT')
 ```
 
 Create new grids by evaluating new values on an existing volume grid topology
@@ -482,19 +533,20 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.manual.FieldToGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.FieldToGrid.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.FieldToGrid.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FieldToGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldToGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldToGrid.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`outputs`](#nodebpy.nodes.geometry.manual.FieldToGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.FieldToGrid.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.FieldToGrid.type) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
+| [add_item](#nodebpy.nodes.geometry.manual.FieldToGrid.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.manual.FieldToGrid.add_items) | Add an item per mapping entry and return their handles by name. |
 | [boolean](#nodebpy.nodes.geometry.manual.FieldToGrid.boolean) | Data type for the topology grid |
-| [capture](#nodebpy.nodes.geometry.manual.FieldToGrid.capture) |  |
+| [capture](#nodebpy.nodes.geometry.manual.FieldToGrid.capture) | Add an item linked from `value` and return its output socket. |
 | [capture_boolean](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_boolean) |  |
 | [capture_float](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_float) |  |
 | [capture_integer](#nodebpy.nodes.geometry.manual.FieldToGrid.capture_integer) |  |
@@ -503,10 +555,30 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 | [integer](#nodebpy.nodes.geometry.manual.FieldToGrid.integer) | Data type for the topology grid |
 | [vector](#nodebpy.nodes.geometry.manual.FieldToGrid.vector) | Data type for the topology grid |
 
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+
 ##### boolean
 
 ``` python
-boolean(topology=None, items={})
+boolean(topology=None, items=None)
 ```
 
 Data type for the topology grid
@@ -514,8 +586,12 @@ Data type for the topology grid
 ##### capture
 
 ``` python
-capture(items)
+capture(value, *, name=None)
 ```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
 
 ##### capture_boolean
 
@@ -544,7 +620,7 @@ capture_vector(field=None, name=None)
 ##### float
 
 ``` python
-float(topology=None, items={})
+float(topology=None, items=None)
 ```
 
 Data type for the topology grid
@@ -552,7 +628,7 @@ Data type for the topology grid
 ##### integer
 
 ``` python
-integer(topology=None, items={})
+integer(topology=None, items=None)
 ```
 
 Data type for the topology grid
@@ -560,7 +636,7 @@ Data type for the topology grid
 ##### vector
 
 ``` python
-vector(topology=None, items={})
+vector(topology=None, items=None)
 ```
 
 Data type for the topology grid
@@ -568,7 +644,7 @@ Data type for the topology grid
 ### FieldToList
 
 ``` python
-FieldToList(count=1, fields={})
+FieldToList(count=1, items=None, *, fields=None)
 ```
 
 Create a list of values
@@ -584,19 +660,20 @@ Create a list of values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.FieldToList.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.FieldToList.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FieldToList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldToList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldToList.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.FieldToList.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.FieldToList.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.FieldToList.type) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
+| [add_item](#nodebpy.nodes.geometry.manual.FieldToList.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.manual.FieldToList.add_items) | Add an item per mapping entry and return their handles by name. |
 | [boolean](#nodebpy.nodes.geometry.manual.FieldToList.boolean) |  |
-| [capture](#nodebpy.nodes.geometry.manual.FieldToList.capture) |  |
+| [capture](#nodebpy.nodes.geometry.manual.FieldToList.capture) | Add an item linked from `value` and return its output socket. |
 | [color](#nodebpy.nodes.geometry.manual.FieldToList.color) |  |
 | [float](#nodebpy.nodes.geometry.manual.FieldToList.float) |  |
 | [integer](#nodebpy.nodes.geometry.manual.FieldToList.integer) |  |
@@ -605,6 +682,26 @@ Create a list of values
 | [rotation](#nodebpy.nodes.geometry.manual.FieldToList.rotation) |  |
 | [string](#nodebpy.nodes.geometry.manual.FieldToList.string) |  |
 | [vector](#nodebpy.nodes.geometry.manual.FieldToList.vector) |  |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
 
 ##### boolean
 
@@ -615,8 +712,12 @@ boolean(input=False, name=None)
 ##### capture
 
 ``` python
-capture(fields)
+capture(value, *, name=None)
 ```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
 
 ##### color
 
@@ -698,14 +799,13 @@ Calculate the standard deviation and variance of a given field
 | [`i`](#nodebpy.nodes.geometry.manual.FieldVariance.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.FieldVariance.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.FieldVariance.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.FieldVariance.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FieldVariance.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldVariance.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldVariance.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.FieldVariance.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.FieldVariance.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.FieldVariance.spline) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.FieldVariance.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.FieldVariance.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.FieldVariance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### Float
 
@@ -720,12 +820,11 @@ Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper o
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Float.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.nodes.geometry.manual.Float.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Float.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Float.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Float.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.Float.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.Float.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.Float.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.Float.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`value`](#nodebpy.nodes.geometry.manual.Float.value) | Input socket: Value |
 
 ### FloatCurve
@@ -749,13 +848,12 @@ Map an input float to a curve and outputs a float value
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.FloatCurve.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.FloatCurve.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FloatCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FloatCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FloatCurve.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.FloatCurve.outputs) |  |
 | [`points`](#nodebpy.nodes.geometry.manual.FloatCurve.points) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.FloatCurve.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.FloatCurve.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.FloatCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -773,7 +871,7 @@ Map an input float to a curve and outputs a float value
 ### FormatString
 
 ``` python
-FormatString(format='', items={})
+FormatString(format='', items=None)
 ```
 
 Insert values into a string using a Python and path template compatible formatting syntax
@@ -784,12 +882,49 @@ Insert values into a string using a Python and path template compatible formatti
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.FormatString.i) |  |
 | [`items`](#nodebpy.nodes.geometry.manual.FormatString.items) | Input sockets: |
-| [`name`](#nodebpy.nodes.geometry.manual.FormatString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.FormatString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FormatString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FormatString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.FormatString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.FormatString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.FormatString.type) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.geometry.manual.FormatString.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.manual.FormatString.add_items) | Add an item per mapping entry and return their handles by name. |
+| [capture](#nodebpy.nodes.geometry.manual.FormatString.capture) | Add an item linked from `value` and return its output socket. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
 
 ### Frame
 
@@ -803,14 +938,13 @@ Frame(label=None, shrink=True, text=None)
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Frame.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`label`](#nodebpy.nodes.geometry.manual.Frame.label) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.Frame.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Frame.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Frame.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Frame.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`outputs`](#nodebpy.nodes.geometry.manual.Frame.outputs) |  |
 | [`shrink`](#nodebpy.nodes.geometry.manual.Frame.shrink) |  |
 | [`text`](#nodebpy.nodes.geometry.manual.Frame.text) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.Frame.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.Frame.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.Frame.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### GeometryToInstance
 
@@ -825,12 +959,11 @@ Convert each input geometry into an instance, which can be much faster than the 
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.GeometryToInstance.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.GeometryToInstance.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.GeometryToInstance.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.GeometryToInstance.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.GeometryToInstance.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.GeometryToInstance.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.GeometryToInstance.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.GeometryToInstance.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.GeometryToInstance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -860,13 +993,12 @@ Provide a selection based on the handle types of Bézier control points
 | [`i`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`left`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.left) |  |
 | [`mode`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.mode) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.outputs) |  |
 | [`right`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.right) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.HandleTypeSelection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### IndexSwitch
 
@@ -882,19 +1014,21 @@ Node builder for the Index Switch node
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.manual.IndexSwitch.data_type) | Input socket: Data Type |
 | [`i`](#nodebpy.nodes.geometry.manual.IndexSwitch.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.IndexSwitch.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.IndexSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.IndexSwitch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.IndexSwitch.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.IndexSwitch.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.IndexSwitch.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.IndexSwitch.type) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
+| [add_item](#nodebpy.nodes.geometry.manual.IndexSwitch.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.manual.IndexSwitch.add_items) | Add an item per mapping entry and return their handles by name. |
 | [boolean](#nodebpy.nodes.geometry.manual.IndexSwitch.boolean) |  |
 | [bundle](#nodebpy.nodes.geometry.manual.IndexSwitch.bundle) |  |
+| [capture](#nodebpy.nodes.geometry.manual.IndexSwitch.capture) | Add an item linked from `value` and return its output socket. |
 | [closure](#nodebpy.nodes.geometry.manual.IndexSwitch.closure) |  |
 | [collection](#nodebpy.nodes.geometry.manual.IndexSwitch.collection) |  |
 | [color](#nodebpy.nodes.geometry.manual.IndexSwitch.color) |  |
@@ -910,6 +1044,26 @@ Node builder for the Index Switch node
 | [string](#nodebpy.nodes.geometry.manual.IndexSwitch.string) |  |
 | [vector](#nodebpy.nodes.geometry.manual.IndexSwitch.vector) |  |
 
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+
 ##### boolean
 
 ``` python
@@ -921,6 +1075,16 @@ boolean(index=0, items=())
 ``` python
 bundle(index=0, items=())
 ```
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
 
 ##### closure
 
@@ -1019,12 +1183,11 @@ Merge separately generated geometries into a single one
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.JoinGeometry.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.JoinGeometry.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.JoinGeometry.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.JoinGeometry.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.JoinGeometry.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.JoinGeometry.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.JoinGeometry.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.JoinGeometry.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.JoinGeometry.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### JoinStrings
 
@@ -1039,17 +1202,16 @@ Combine any number of input strings
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.JoinStrings.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.JoinStrings.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.JoinStrings.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.JoinStrings.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.JoinStrings.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.JoinStrings.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.JoinStrings.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.JoinStrings.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.JoinStrings.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### MenuSwitch
 
 ``` python
-MenuSwitch(menu=None, items={}, *, data_type='FLOAT')
+MenuSwitch(menu=None, items=None, *, data_type='FLOAT')
 ```
 
 Node builder for the Menu Switch node
@@ -1060,19 +1222,21 @@ Node builder for the Menu Switch node
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.manual.MenuSwitch.data_type) | Input socket: Data Type |
 | [`i`](#nodebpy.nodes.geometry.manual.MenuSwitch.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.MenuSwitch.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.MenuSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.MenuSwitch.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.MenuSwitch.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.MenuSwitch.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.MenuSwitch.type) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
+| [add_item](#nodebpy.nodes.geometry.manual.MenuSwitch.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.manual.MenuSwitch.add_items) | Add an item per mapping entry and return their handles by name. |
 | [boolean](#nodebpy.nodes.geometry.manual.MenuSwitch.boolean) |  |
 | [bundle](#nodebpy.nodes.geometry.manual.MenuSwitch.bundle) |  |
+| [capture](#nodebpy.nodes.geometry.manual.MenuSwitch.capture) | Add an item linked from `value` and return its output socket. |
 | [closure](#nodebpy.nodes.geometry.manual.MenuSwitch.closure) |  |
 | [collection](#nodebpy.nodes.geometry.manual.MenuSwitch.collection) |  |
 | [color](#nodebpy.nodes.geometry.manual.MenuSwitch.color) |  |
@@ -1089,58 +1253,88 @@ Node builder for the Menu Switch node
 | [string](#nodebpy.nodes.geometry.manual.MenuSwitch.string) |  |
 | [vector](#nodebpy.nodes.geometry.manual.MenuSwitch.vector) |  |
 
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+
 ##### boolean
 
 ``` python
-boolean(menu=None, items={})
+boolean(menu=None, items=None)
 ```
 
 ##### bundle
 
 ``` python
-bundle(menu=None, items={})
+bundle(menu=None, items=None)
 ```
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
 
 ##### closure
 
 ``` python
-closure(menu=None, items={})
+closure(menu=None, items=None)
 ```
 
 ##### collection
 
 ``` python
-collection(menu=None, items={})
+collection(menu=None, items=None)
 ```
 
 ##### color
 
 ``` python
-color(menu=None, items={})
+color(menu=None, items=None)
 ```
 
 ##### float
 
 ``` python
-float(menu=None, items={})
+float(menu=None, items=None)
 ```
 
 ##### geometry
 
 ``` python
-geometry(menu=None, items={})
+geometry(menu=None, items=None)
 ```
 
 ##### image
 
 ``` python
-image(menu=None, items={})
+image(menu=None, items=None)
 ```
 
 ##### integer
 
 ``` python
-integer(menu=None, items={})
+integer(menu=None, items=None)
 ```
 
 ##### is_selected
@@ -1168,43 +1362,43 @@ Cannot be used with the “Output” name as this refers to the output socket it
 ##### material
 
 ``` python
-material(menu=None, items={})
+material(menu=None, items=None)
 ```
 
 ##### matrix
 
 ``` python
-matrix(menu=None, items={})
+matrix(menu=None, items=None)
 ```
 
 ##### menu
 
 ``` python
-menu(menu=None, items={})
+menu(menu=None, items=None)
 ```
 
 ##### object
 
 ``` python
-object(menu=None, items={})
+object(menu=None, items=None)
 ```
 
 ##### rotation
 
 ``` python
-rotation(menu=None, items={})
+rotation(menu=None, items=None)
 ```
 
 ##### string
 
 ``` python
-string(menu=None, items={})
+string(menu=None, items=None)
 ```
 
 ##### vector
 
 ``` python
-vector(menu=None, items={})
+vector(menu=None, items=None)
 ```
 
 ### MeshBoolean
@@ -1228,14 +1422,13 @@ Cut, subtract, or join multiple mesh inputs
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.MeshBoolean.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.MeshBoolean.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.MeshBoolean.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.MeshBoolean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.MeshBoolean.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.manual.MeshBoolean.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.MeshBoolean.outputs) |  |
 | [`solver`](#nodebpy.nodes.geometry.manual.MeshBoolean.solver) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.MeshBoolean.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.MeshBoolean.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.MeshBoolean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1289,13 +1482,12 @@ Cut, subtract, or join multiple SDF volume grid inputs
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.i) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1332,8 +1524,8 @@ SetHandleType(
     curve=None,
     selection=True,
     *,
-    left=False,
-    right=False,
+    left=True,
+    right=True,
     handle_type='AUTO',
 )
 ```
@@ -1347,13 +1539,13 @@ Set the handle type for the control points of a Bézier curve
 | [`handle_type`](#nodebpy.nodes.geometry.manual.SetHandleType.handle_type) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.SetHandleType.i) |  |
 | [`left`](#nodebpy.nodes.geometry.manual.SetHandleType.left) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.SetHandleType.name) |  |
+| [`mode`](#nodebpy.nodes.geometry.manual.SetHandleType.mode) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.SetHandleType.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.SetHandleType.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.SetHandleType.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.SetHandleType.outputs) |  |
 | [`right`](#nodebpy.nodes.geometry.manual.SetHandleType.right) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.SetHandleType.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.SetHandleType.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.SetHandleType.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### StoreNamedAttribute
 
@@ -1392,14 +1584,13 @@ Store the result of a field on a geometry as an attribute with the specified nam
 | [`i`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.instance) |  |
 | [`layer`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.layer) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.spline) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1438,12 +1629,11 @@ Switch between two inputs
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Switch.i) |  |
 | [`input_type`](#nodebpy.nodes.geometry.manual.Switch.input_type) |  |
-| [`name`](#nodebpy.nodes.geometry.manual.Switch.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Switch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Switch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Switch.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.Switch.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.Switch.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.Switch.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.Switch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1639,10 +1829,9 @@ Input numerical values to other nodes in the tree
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.manual.Value.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.nodes.geometry.manual.Value.name) |  |
+| [`name`](#nodebpy.nodes.geometry.manual.Value.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Value.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Value.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.Value.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.manual.Value.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.manual.Value.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.manual.Value.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`value`](#nodebpy.nodes.geometry.manual.Value.value) | Input socket: Value |

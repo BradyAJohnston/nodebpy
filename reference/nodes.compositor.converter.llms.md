@@ -41,12 +41,11 @@ Convert to and from premultiplied (associated) alpha
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.AlphaConvert.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.AlphaConvert.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.AlphaConvert.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.AlphaConvert.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.AlphaConvert.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.AlphaConvert.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.AlphaConvert.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.AlphaConvert.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.AlphaConvert.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -115,12 +114,11 @@ Combine an image from its composite color channels
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.CombineColor.i) |  |
 | [`mode`](#nodebpy.nodes.compositor.converter.CombineColor.mode) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.CombineColor.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.CombineColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.CombineColor.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.CombineColor.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.CombineColor.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.CombineColor.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.CombineColor.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.CombineColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`ycc_mode`](#nodebpy.nodes.compositor.converter.CombineColor.ycc_mode) |  |
 
 #### Methods
@@ -208,12 +206,11 @@ Convert from scene linear to display color space, with a view transform and look
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -249,12 +246,11 @@ Create a matte from an object or material index pass
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.IDMask.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.IDMask.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.IDMask.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.IDMask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.IDMask.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.IDMask.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.IDMask.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.IDMask.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.IDMask.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -290,12 +286,11 @@ Implicitly convert the input value to a fixed socket type
 |----|----|
 | [`data_type`](#nodebpy.nodes.compositor.converter.ImplicitConversion.data_type) |  |
 | [`i`](#nodebpy.nodes.compositor.converter.ImplicitConversion.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.ImplicitConversion.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.ImplicitConversion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.ImplicitConversion.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.ImplicitConversion.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.ImplicitConversion.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.ImplicitConversion.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.ImplicitConversion.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.ImplicitConversion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -445,12 +440,11 @@ Choose between an arbitrary number of values with an index
 |----|----|
 | [`data_type`](#nodebpy.nodes.compositor.converter.IndexSwitch.data_type) |  |
 | [`i`](#nodebpy.nodes.compositor.converter.IndexSwitch.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.IndexSwitch.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.IndexSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.IndexSwitch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.IndexSwitch.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.IndexSwitch.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.IndexSwitch.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.IndexSwitch.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.IndexSwitch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -600,12 +594,11 @@ Compute average and standard deviation of pixel values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.Levels.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.Levels.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.Levels.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.Levels.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Levels.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.Levels.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.Levels.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.Levels.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.Levels.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -642,12 +635,11 @@ Convert RGB input into grayscale using luminance
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.RGBToBW.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.RGBToBW.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.RGBToBW.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.RGBToBW.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.RGBToBW.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.RGBToBW.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.RGBToBW.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.RGBToBW.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.RGBToBW.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -690,13 +682,12 @@ Converts values that are relative to the image size to be in terms of pixels
 |----|----|
 | [`data_type`](#nodebpy.nodes.compositor.converter.RelativeToPixel.data_type) |  |
 | [`i`](#nodebpy.nodes.compositor.converter.RelativeToPixel.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.RelativeToPixel.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.RelativeToPixel.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.RelativeToPixel.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.RelativeToPixel.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.RelativeToPixel.outputs) |  |
 | [`reference_dimension`](#nodebpy.nodes.compositor.converter.RelativeToPixel.reference_dimension) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.RelativeToPixel.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.RelativeToPixel.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.RelativeToPixel.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -756,12 +747,11 @@ Split an image into its composite color channels
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.SeparateColor.i) |  |
 | [`mode`](#nodebpy.nodes.compositor.converter.SeparateColor.mode) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.SeparateColor.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.SeparateColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.SeparateColor.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.SeparateColor.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.SeparateColor.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.SeparateColor.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.SeparateColor.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.SeparateColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`ycc_mode`](#nodebpy.nodes.compositor.converter.SeparateColor.ycc_mode) |  |
 
 #### Methods
@@ -850,12 +840,11 @@ Add an alpha channel to an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.SetAlpha.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.SetAlpha.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.SetAlpha.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.SetAlpha.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.SetAlpha.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.SetAlpha.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.SetAlpha.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.SetAlpha.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.SetAlpha.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -916,12 +905,11 @@ Combine two images for side-by-side display. Typically used in combination with 
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.Split.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.Split.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.Split.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.Split.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Split.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.Split.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.Split.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.Split.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.Split.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -959,12 +947,11 @@ Switch between two images using a checkbox
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.Switch.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.Switch.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.Switch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.Switch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Switch.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.Switch.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.Switch.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.Switch.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.Switch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1000,12 +987,11 @@ Combine the views (left and right) into a single stereo 3D output
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.converter.SwitchView.i) |  |
-| [`name`](#nodebpy.nodes.compositor.converter.SwitchView.name) |  |
+| [`name`](#nodebpy.nodes.compositor.converter.SwitchView.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.SwitchView.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.SwitchView.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.converter.SwitchView.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.converter.SwitchView.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.converter.SwitchView.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.converter.SwitchView.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

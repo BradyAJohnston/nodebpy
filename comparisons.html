@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Comapring the API – nodebpy 520.0.0</title>
+<title>Comapring the API – nodebpy 520.1.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,6 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./using.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -77,7 +78,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-da754bb905dfff91d967e43b5e6004aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -105,6 +106,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script type="module">
+    // Re-highlight code blocks with Shiki (the TextMate-grammar engine VS Code
+    // uses) for richer tokens than Pandoc's skylighting: function calls,
+    // attribute access, keyword arguments, etc. Pandoc's highlighting is kept
+    // in the HTML as a no-JS fallback and replaced here on load.
+    //
+    // To change colors, swap "dracula" for any theme from
+    // https://shiki.style/themes, or add/edit `tokenColors` rules below
+    // (scope reference: https://macromates.com/manual/en/language_grammars).
+    import { codeToHtml, bundledThemes } from "https://esm.sh/shiki@3";
+
+    const dracula = (await bundledThemes["dracula-soft"]()).default;
+    const theme = {
+        ...dracula,
+        name: "dracula-nodebpy",
+        tokenColors: [
+            ...dracula.tokenColors,
+            // Dracula ships no rule for Python call expressions; color them like
+            // function definitions so g.Cube() / tree.inputs.integer() pop.
+            {
+                scope: "meta.function-call.generic.python",
+                settings: { foreground: "#50FA7B" },
+            },
+        ],
+    };
+
+    async function rehighlight(pre) {
+        const code = pre.querySelector("code");
+        const lang = [...pre.classList].find(
+            (c) => !["sourceCode", "code-with-copy"].includes(c),
+        );
+        if (!code || !lang) return;
+        try {
+            const html = await codeToHtml(code.textContent.replace(/\n$/, ""), {
+                lang,
+                theme,
+            });
+            const shikiPre = new DOMParser()
+                .parseFromString(html, "text/html")
+                .querySelector("pre");
+            code.innerHTML = shikiPre.querySelector("code").innerHTML;
+            pre.style.backgroundColor = shikiPre.style.backgroundColor;
+            pre.style.color = shikiPre.style.color;
+        } catch {
+            // Unknown language for Shiki — keep Pandoc's highlighting.
+        }
+    }
+
+    await Promise.all(
+        [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
+    );
+</script>
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script>
 <script src="site_libs/quarto-diagram/mermaid-init.js"></script>
 <link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
@@ -112,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-sidebar floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -120,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.0.0</span>
+    <span class="navbar-title">nodebpy 520.1.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -155,6 +208,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Node API Design</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./nodes-to-code.html">
+ <span class="dropdown-text">Nodes to Code</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./using.html">
  <span class="dropdown-text">Using Nodebpy</span></a>
   </li>  
@@ -185,10 +242,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./comparisons.html">Comapring the API</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Writing Node Trees</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Math Operators</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./custom-node-groups.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Node Groups</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./node-api.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Node API Design</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nodes-to-code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nodes to Code</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using Nodebpy</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparisons.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Comapring the API</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -241,7 +357,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><code>geonodes</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="877dc3af" class="cell" data-execution_count="1">
+<div id="98bde9f4" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Hello World"</span>) <span class="im">as</span> tree:</span>
@@ -284,7 +400,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="2c090203" class="cell" data-execution_count="2">
+<div id="634102bd" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -293,23 +409,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <pre class="mermaid mermaid-js">graph LR
     N0("Group Input"):::default-node
-    N1("Position"):::input-node
-    N2("Separate XYZ"):::converter-node
-    N3("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
-    N4("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
-    N5("Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::converter-node
-    N6("Math&lt;br/&gt;&lt;small&gt;(SQRT)&lt;/small&gt;"):::converter-node
-    N7("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-    N8("Frame"):::default-node
-    N9("Frame"):::default-node
-    N10("Math&lt;br/&gt;&lt;small&gt;(SINE)&lt;/small&gt;"):::converter-node
-    N11("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-    N12("Math&lt;br/&gt;&lt;small&gt;(DIVIDE)&lt;/small&gt;"):::converter-node
-    N13("Grid"):::geometry-node
-    N14("Combine XYZ"):::converter-node
-    N15("Set Position"):::geometry-node
-    N16("Set Shade Smooth"):::geometry-node
-    N17("Group Output"):::default-node
+    subgraph F0["Computing the wave"]
+        N1("Position"):::input-node
+        N2("Separate XYZ"):::converter-node
+        N3("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
+        N4("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
+        N5("Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::converter-node
+        N6("Math&lt;br/&gt;&lt;small&gt;(SQRT)&lt;/small&gt;"):::converter-node
+        N7("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
+        N8("Math&lt;br/&gt;&lt;small&gt;(SINE)&lt;/small&gt;"):::converter-node
+        N9("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
+        N10("Math&lt;br/&gt;&lt;small&gt;(DIVIDE)&lt;/small&gt;"):::converter-node
+    end
+    subgraph F1["Point offset &amp; smooth"]
+        N11("Grid"):::geometry-node
+        N12("Combine XYZ"):::converter-node
+        N13("Set Position"):::geometry-node
+        N14("Set Shade Smooth"):::geometry-node
+    end
+    N15("Group Output"):::default-node
     N1 --&gt;|"Position-&gt;Vector"| N2
     N2 --&gt;|"X-&gt;Value"| N3
     N2 --&gt;|"Y-&gt;Value"| N4
@@ -318,16 +436,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N5 --&gt;|"Value-&gt;Value"| N6
     N6 --&gt;|"Value-&gt;Value"| N7
     N0 --&gt;|"Omega-&gt;Value"| N7
-    N7 --&gt;|"Value-&gt;Value"| N10
-    N10 --&gt;|"Value-&gt;Value"| N11
-    N11 --&gt;|"Value-&gt;Value"| N12
-    N12 --&gt;|"Value-&gt;Z"| N14
-    N14 --&gt;|"Vector-&gt;Offset"| N15
-    N13 --&gt;|"Mesh-&gt;Geometry"| N15
-    N15 --&gt;|"Geometry-&gt;Mesh"| N16
-    N16 --&gt;|"Mesh-&gt;Mesh"| N17
-    N0 --&gt;|"Height-&gt;Value"| N11
-    N6 --&gt;|"Value-&gt;Value"| N12
+    N7 --&gt;|"Value-&gt;Value"| N8
+    N0 --&gt;|"Height-&gt;Value"| N9
+    N8 --&gt;|"Value-&gt;Value"| N9
+    N9 --&gt;|"Value-&gt;Value"| N10
+    N6 --&gt;|"Value-&gt;Value"| N10
+    N10 --&gt;|"Value-&gt;Z"| N12
+    N11 --&gt;|"Mesh-&gt;Geometry"| N13
+    N12 --&gt;|"Vector-&gt;Offset"| N13
+    N13 --&gt;|"Geometry-&gt;Mesh"| N14
+    N14 --&gt;|"Mesh-&gt;Mesh"| N15
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -346,7 +464,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href=""><code>geometry-script</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div id="8c59e4fb" class="cell" data-execution_count="3">
+<div id="0931c2c9" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Repeat Grid"</span>) <span class="im">as</span> tree:</span>
@@ -375,7 +493,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="97431260" class="cell" data-execution_count="4">
+<div id="882ab9ba" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -393,8 +511,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N0 --&gt;|"Width-&gt;Vertices X"| N1
     N0 --&gt;|"Height-&gt;Vertices Y"| N1
     N1 --&gt;|"Mesh-&gt;Mesh"| N2
-    N0 --&gt;|"Geometry-&gt;Instance"| N3
     N2 --&gt;|"Points-&gt;Points"| N3
+    N0 --&gt;|"Geometry-&gt;Instance"| N3
     N3 --&gt;|"Instances-&gt;Instances"| N4
 </pre>
 </div>
@@ -411,16 +529,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href=""><code>geometry-script</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div id="a9ee00c8" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Primitive Shapes"</span>) <span class="im">as</span> tree:</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    (</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        g.JoinGeometry([g.Cube(), g.UVSphere(), g.Cylinder()])</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Result"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="1302e497" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Primitive Shapes"</span>) <span class="im">as</span> tree:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    join <span class="op">=</span>  g.JoinGeometry([g.Cube(), g.UVSphere(), g.Cylinder()])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    join <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Result"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div id="a873a7e2" class="cell" data-execution_count="6">
+<div id="49506040" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="at">@tree</span>(<span class="st">"Primitive Shapes"</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> primitive_shapes():</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> cube()</span>
@@ -430,7 +548,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="aed04717" class="cell" data-execution_count="7">
+<div id="7d57dafe" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="6">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -443,9 +561,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N2("Cylinder"):::geometry-node
     N3("Join Geometry"):::geometry-node
     N4("Group Output"):::default-node
-    N2 --&gt;|"Mesh-&gt;Geometry"| N3
-    N1 --&gt;|"Mesh-&gt;Geometry"| N3
     N0 --&gt;|"Mesh-&gt;Geometry"| N3
+    N1 --&gt;|"Mesh-&gt;Geometry"| N3
+    N2 --&gt;|"Mesh-&gt;Geometry"| N3
     N3 --&gt;|"Geometry-&gt;Result"| N4
 </pre>
 </div>
@@ -463,22 +581,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href=""><code>geometry-script</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div id="36011bd0" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Voxelise"</span>) <span class="im">as</span> tree:</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    resolution <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Resolution"</span>, <span class="fl">0.2</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    (</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        geo</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToVolume(interior_band_width<span class="op">=</span>resolution)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.DistributePointsInVolume(mode<span class="op">=</span><span class="st">"Grid"</span>, spacing<span class="op">=</span>resolution)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(instance<span class="op">=</span>g.Cube(size<span class="op">=</span>resolution))</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Result"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="3ed2a5d2" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Voxelise"</span>) <span class="im">as</span> tree:</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    resolution <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Resolution"</span>, <span class="fl">0.2</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    (</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        geo</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.MeshToVolume(interior_band_width<span class="op">=</span>resolution)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.DistributePointsInVolume(mode<span class="op">=</span><span class="st">"Grid"</span>, spacing<span class="op">=</span>resolution)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.InstanceOnPoints(instance<span class="op">=</span>g.Cube(size<span class="op">=</span>resolution))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Result"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<div id="e19d63cf" class="cell" data-execution_count="9">
+<div id="b1ae8913" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geometry_script <span class="im">import</span> <span class="op">*</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">@tree</span>(<span class="st">"Voxelize"</span>)</span>
@@ -496,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="b2646522" class="cell" data-execution_count="10">
+<div id="a7306425" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -510,14 +630,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N3("Cube"):::geometry-node
     N4("Instance on Points"):::geometry-node
     N5("Group Output"):::default-node
-    N0 --&gt;|"Resolution-&gt;Interior Band Width"| N1
     N0 --&gt;|"Geometry-&gt;Mesh"| N1
+    N0 --&gt;|"Resolution-&gt;Interior Band Width"| N1
     N1 --&gt;|"Volume-&gt;Volume"| N2
-    N3 --&gt;|"Mesh-&gt;Instance"| N4
-    N2 --&gt;|"Points-&gt;Points"| N4
-    N4 --&gt;|"Instances-&gt;Result"| N5
     N0 --&gt;|"Resolution-&gt;Spacing"| N2
     N0 --&gt;|"Resolution-&gt;Size"| N3
+    N2 --&gt;|"Points-&gt;Points"| N4
+    N3 --&gt;|"Mesh-&gt;Instance"| N4
+    N4 --&gt;|"Instances-&gt;Result"| N5
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -534,103 +654,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href=""><code>geometry-script</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
-<div id="94fc9f00" class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Voxelise"</span>) <span class="im">as</span> tree:</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    seed <span class="op">=</span> tree.inputs.integer(<span class="st">"Seed"</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    road_width <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Road Width"</span>, <span class="fl">0.25</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    size_x <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Size X"</span>, <span class="fl">5.0</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    size_y <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Size Y"</span>, <span class="fl">5.0</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    density <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Density"</span>, <span class="fl">10.0</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    building_size_min <span class="op">=</span> tree.inputs.vector(<span class="st">"Building Size Min"</span>, (<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>))</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    building_size_max <span class="op">=</span> tree.inputs.vector(<span class="st">"Building Size Max"</span>, (<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1.0</span>))</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    curve_mesh <span class="op">=</span> geo <span class="op">&gt;&gt;</span> g.CurveToMesh(</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        profile_curve<span class="op">=</span>g.CurveLine(</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>            start<span class="op">=</span>g.CombineXYZ(x<span class="op">=</span>road_width <span class="op">*</span> <span class="op">-</span><span class="fl">0.5</span>),</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>            end<span class="op">=</span>g.CombineXYZ(x<span class="op">=</span>road_width <span class="op">*</span> <span class="fl">0.5</span>),</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    building_points <span class="op">=</span> g.Grid(size_x, size_y) <span class="op">&gt;&gt;</span> g.DistributePointsOnFaces(</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        density<span class="op">=</span>density, seed<span class="op">=</span>seed</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    road_points <span class="op">=</span> geo <span class="op">&gt;&gt;</span> g.CurveToPoints(mode<span class="op">=</span><span class="st">"EVALUATED"</span>)</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    building_points <span class="op">=</span> g.DeleteGeometry.point(</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        building_points,</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        selection<span class="op">=</span>g.GeometryProximity(</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            target_element<span class="op">=</span><span class="st">"POINTS"</span>,</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>            target<span class="op">=</span>road_points,</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>            source_position<span class="op">=</span>g.Position().o.position,</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        ).o.distance</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span> road_width,</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    buildings <span class="op">=</span> building_points <span class="op">&gt;&gt;</span> g.InstanceOnPoints(</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        instance<span class="op">=</span>g.Cube() <span class="op">&gt;&gt;</span> g.TransformGeometry(translation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>)),</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>g.RandomValue.vector(</span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>            <span class="bu">min</span><span class="op">=</span>building_size_min, <span class="bu">max</span><span class="op">=</span>building_size_max, seed<span class="op">=</span>seed</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    g.JoinGeometry((curve_mesh, buildings)) <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Result"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ad9ab8cf" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Voxelise"</span>) <span class="im">as</span> tree:</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    seed <span class="op">=</span> tree.inputs.integer(<span class="st">"Seed"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    road_width <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Road Width"</span>, <span class="fl">0.25</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    size_x <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Size X"</span>, <span class="fl">5.0</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    size_y <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Size Y"</span>, <span class="fl">5.0</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    density <span class="op">=</span> tree.inputs.<span class="bu">float</span>(<span class="st">"Density"</span>, <span class="fl">10.0</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    building_size_min <span class="op">=</span> tree.inputs.vector(<span class="st">"Building Size Min"</span>, (<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    building_size_max <span class="op">=</span> tree.inputs.vector(<span class="st">"Building Size Max"</span>, (<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1.0</span>))</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    curve_mesh <span class="op">=</span> geo <span class="op">&gt;&gt;</span> g.CurveToMesh(</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        profile_curve<span class="op">=</span>g.CurveLine(</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>            start<span class="op">=</span>g.CombineXYZ(x<span class="op">=</span>road_width <span class="op">*</span> <span class="op">-</span><span class="fl">0.5</span>),</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>            end<span class="op">=</span>g.CombineXYZ(x<span class="op">=</span>road_width <span class="op">*</span> <span class="fl">0.5</span>),</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    building_points <span class="op">=</span> g.Grid(size_x, size_y) <span class="op">&gt;&gt;</span> g.DistributePointsOnFaces(</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        density<span class="op">=</span>density, seed<span class="op">=</span>seed</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    road_points <span class="op">=</span> geo <span class="op">&gt;&gt;</span> g.CurveToPoints(mode<span class="op">=</span><span class="st">"EVALUATED"</span>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    building_points <span class="op">=</span> g.DeleteGeometry.point(</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        building_points,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        selection<span class="op">=</span>g.GeometryProximity(</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>            target_element<span class="op">=</span><span class="st">"POINTS"</span>,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>            target<span class="op">=</span>road_points,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>            source_position<span class="op">=</span>g.Position().o.position,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        ).o.distance</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span> road_width,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    buildings <span class="op">=</span> building_points <span class="op">&gt;&gt;</span> g.InstanceOnPoints(</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        instance<span class="op">=</span>g.Cube() <span class="op">&gt;&gt;</span> g.TransformGeometry(translation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>)),</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>g.RandomValue.vector(</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>            <span class="bu">min</span><span class="op">=</span>building_size_min, <span class="bu">max</span><span class="op">=</span>building_size_max, seed<span class="op">=</span>seed</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    g.JoinGeometry((curve_mesh, buildings)) <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"Result"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
-<div id="fed3e736" class="cell" data-execution_count="12">
+<div id="7f0d66d3" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geometry_script <span class="im">import</span> <span class="op">*</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="at">@tree</span>(<span class="st">"City Builder"</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> city_builder(</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    geometry: Geometry,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    seed: Int,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    road_width: Float <span class="op">=</span> <span class="fl">0.25</span>,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    size_x: Float <span class="op">=</span> <span class="dv">5</span>,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    size_y: Float <span class="op">=</span> <span class="dv">5</span>,</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    density: Float <span class="op">=</span> <span class="dv">10</span>,</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    building_size_min: Vector <span class="op">=</span> (<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>),</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    building_size_max: Vector <span class="op">=</span> (<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>),</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>):</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Road mesh</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> geometry.curve_to_mesh(</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        profile_curve<span class="op">=</span>curve_line(</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            start<span class="op">=</span>combine_xyz(x<span class="op">=</span>road_width <span class="op">*</span> <span class="op">-</span><span class="fl">0.5</span>), end<span class="op">=</span>combine_xyz(x<span class="op">=</span>road_width <span class="op">*</span> <span class="fl">0.5</span>)</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Building points</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    building_points <span class="op">=</span> (</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        grid(size_x<span class="op">=</span>size_x, size_y<span class="op">=</span>size_y)</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        .distribute_points_on_faces(density<span class="op">=</span>density, seed<span class="op">=</span>seed)</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        .points</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    road_points <span class="op">=</span> geometry.curve_to_points(mode<span class="op">=</span>CurveToPoints.Mode.EVALUATED).points</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Delete points within the curve</span></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    building_points <span class="op">=</span> building_points.delete_geometry(</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        domain<span class="op">=</span>DeleteGeometry.Domain.POINT,</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>        selection<span class="op">=</span>geometry_proximity(</span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>            target_element<span class="op">=</span>GeometryProximity.TargetElement.POINTS,</span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>            target<span class="op">=</span>road_points,</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>            source_position<span class="op">=</span>position(),</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        ).distance</span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span> road_width,</span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Building instances</span></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> building_points.instance_on_points(</span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>        instance<span class="op">=</span>cube().transform(translation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>)),</span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>random_value(</span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>            data_type<span class="op">=</span>RandomValue.DataType.FLOAT_VECTOR,</span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>            <span class="bu">min</span><span class="op">=</span>building_size_min,</span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>            <span class="bu">max</span><span class="op">=</span>building_size_max,</span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>            seed<span class="op">=</span>seed,</span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="at">@tree</span>(<span class="st">"City Builder"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> city_builder(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    geometry: Geometry,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    seed: Int,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    road_width: Float <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    size_x: Float <span class="op">=</span> <span class="dv">5</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    size_y: Float <span class="op">=</span> <span class="dv">5</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    density: Float <span class="op">=</span> <span class="dv">10</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    building_size_min: Vector <span class="op">=</span> (<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    building_size_max: Vector <span class="op">=</span> (<span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Road mesh</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> geometry.curve_to_mesh(</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        profile_curve<span class="op">=</span>curve_line(</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>            start<span class="op">=</span>combine_xyz(x<span class="op">=</span>road_width <span class="op">*</span> <span class="op">-</span><span class="fl">0.5</span>), end<span class="op">=</span>combine_xyz(x<span class="op">=</span>road_width <span class="op">*</span> <span class="fl">0.5</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Building points</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    building_points <span class="op">=</span> (</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        grid(size_x<span class="op">=</span>size_x, size_y<span class="op">=</span>size_y)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        .distribute_points_on_faces(density<span class="op">=</span>density, seed<span class="op">=</span>seed)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        .points</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    road_points <span class="op">=</span> geometry.curve_to_points(mode<span class="op">=</span>CurveToPoints.Mode.EVALUATED).points</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Delete points within the curve</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    building_points <span class="op">=</span> building_points.delete_geometry(</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>        domain<span class="op">=</span>DeleteGeometry.Domain.POINT,</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        selection<span class="op">=</span>geometry_proximity(</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>            target_element<span class="op">=</span>GeometryProximity.TargetElement.POINTS,</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>            target<span class="op">=</span>road_points,</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>            source_position<span class="op">=</span>position(),</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>        ).distance</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span> road_width,</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Building instances</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> building_points.instance_on_points(</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>        instance<span class="op">=</span>cube().transform(translation<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>)),</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>        scale<span class="op">=</span>random_value(</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>            data_type<span class="op">=</span>RandomValue.DataType.FLOAT_VECTOR,</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>            <span class="bu">min</span><span class="op">=</span>building_size_min,</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>            <span class="bu">max</span><span class="op">=</span>building_size_max,</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>            seed<span class="op">=</span>seed,</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
 </div>
-<div id="4c5f5ccd" class="cell" data-execution_count="13">
+<div id="412f7976" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -664,30 +785,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     N2 --&gt;|"Value-&gt;X"| N8
     N7 --&gt;|"Vector-&gt;Start"| N11
     N8 --&gt;|"Vector-&gt;End"| N11
-    N11 --&gt;|"Curve-&gt;Profile Curve"| N14
     N0 --&gt;|"Geometry-&gt;Curve"| N14
+    N11 --&gt;|"Curve-&gt;Profile Curve"| N14
     N0 --&gt;|"Size X-&gt;Size X"| N5
     N0 --&gt;|"Size Y-&gt;Size Y"| N5
     N5 --&gt;|"Mesh-&gt;Mesh"| N10
+    N0 --&gt;|"Density-&gt;Density"| N10
+    N0 --&gt;|"Seed-&gt;Seed"| N10
     N0 --&gt;|"Geometry-&gt;Curve"| N3
     N3 --&gt;|"Points-&gt;Geometry"| N9
     N4 --&gt;|"Position-&gt;Sample Position"| N9
     N9 --&gt;|"Distance-&gt;A"| N12
+    N0 --&gt;|"Road Width-&gt;B"| N12
+    N10 --&gt;|"Points-&gt;Geometry"| N15
     N12 --&gt;|"Result-&gt;Selection"| N15
     N13 --&gt;|"Mesh-&gt;Geometry"| N16
     N0 --&gt;|"Building Size Min-&gt;Min"| N6
     N0 --&gt;|"Building Size Max-&gt;Max"| N6
     N0 --&gt;|"Seed-&gt;Seed"| N6
-    N16 --&gt;|"Geometry-&gt;Instance"| N17
     N15 --&gt;|"Geometry-&gt;Points"| N17
-    N17 --&gt;|"Instances-&gt;Geometry"| N18
-    N18 --&gt;|"Geometry-&gt;Result"| N19
-    N0 --&gt;|"Seed-&gt;Seed"| N10
-    N0 --&gt;|"Density-&gt;Density"| N10
-    N0 --&gt;|"Road Width-&gt;B"| N12
-    N10 --&gt;|"Points-&gt;Geometry"| N15
+    N16 --&gt;|"Geometry-&gt;Instance"| N17
     N6 --&gt;|"Value-&gt;Scale"| N17
     N14 --&gt;|"Mesh-&gt;Geometry"| N18
+    N17 --&gt;|"Instances-&gt;Geometry"| N18
+    N18 --&gt;|"Geometry-&gt;Result"| N19
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -1102,6 +1223,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./using.html" class="pagination-link" aria-label="Using Nodebpy">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using Nodebpy</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

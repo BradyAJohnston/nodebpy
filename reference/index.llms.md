@@ -5,11 +5,20 @@
 |  |  |
 |----|----|
 | [builder.tree](../reference/builder.tree.llms.md#nodebpy.builder.tree) |  |
-| [builder.socket](../reference/builder.socket.llms.md#nodebpy.builder.socket) |  |
+| [builder.socket](../reference/builder.socket.llms.md#nodebpy.builder.socket) | Typed Python wrappers around Blender node sockets. |
 | [builder.node](../reference/builder.node.llms.md#nodebpy.builder.node) |  |
 | [builder.accessor](../reference/builder.accessor.llms.md#nodebpy.builder.accessor) |  |
 | [TreeBuilder](../reference/TreeBuilder.llms.md#nodebpy.TreeBuilder) | Builder for creating Blender node trees with a clean Python API. |
 | [builder.BaseNode](../reference/builder.BaseNode.llms.md#nodebpy.builder.BaseNode) | Base class for all node wrappers. |
+
+## Export
+
+Exporting node trees to code.
+
+|  |  |
+|----|----|
+| [export.to_python](../reference/export.to_python.llms.md#nodebpy.export.to_python) | Generate Python code that recreates the given node tree using nodebpy. |
+| [export.to_mermaid](../reference/export.to_mermaid.llms.md#nodebpy.export.to_mermaid) | Generate a Mermaid diagram string from a node tree. |
 
 ## Geometry Nodes
 

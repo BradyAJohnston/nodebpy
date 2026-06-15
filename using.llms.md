@@ -27,18 +27,16 @@ If you use `nodebpy` in your add-on you likely support multiple versions of Blen
 
 Each version of `nodebpy` will target a specific Blender release, but you can import multiple versions if you vendor the package inside of your add-on.
 
-``` yaml
-YourAddon/
-├── lib/
-|   ├── __init__.py (empty)
-│   ├── nodebpy/
-│   │   ├── __init__.py
-│   │   ├── _520/
-│   │   │   ├── src/nodebpy (5.2.0)
-│   │   ├── _530/
-│   │   │   ├── src/nodebpy/ (5.3.0)
-└── ...
-```
+    YourAddon/
+    ├── lib/
+    |   ├── __init__.py (empty)
+    │   ├── nodebpy/
+    │   │   ├── __init__.py
+    │   │   ├── _520/
+    │   │   │   ├── src/nodebpy (5.2.0)
+    │   │   ├── _530/
+    │   │   │   ├── src/nodebpy/ (5.3.0)
+    └── ...
 
 ``` python
 import bpy
@@ -84,9 +82,9 @@ graph LR
     N3("Ico Sphere"):::geometry-node
     N4("Instance on Points"):::geometry-node
     N5("Group Output"):::default-node
-    N1 -->|"Value->Position"| N2
     N0 -->|"Count->Count"| N2
-    N3 -->|"Mesh->Instance"| N4
+    N1 -->|"Value->Position"| N2
     N2 -->|"Points->Points"| N4
+    N3 -->|"Mesh->Instance"| N4
     N4 -->|"Instances->Result"| N5
 ```

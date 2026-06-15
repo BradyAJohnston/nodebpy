@@ -38,16 +38,15 @@ Provide custom render passes for arbitrary shader node outputs
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`aov_name`](#nodebpy.nodes.shader.output.AovOutput.aov_name) |             |
-| [`i`](#nodebpy.nodes.shader.output.AovOutput.i)               |             |
-| [`name`](#nodebpy.nodes.shader.output.AovOutput.name)         |             |
-| [`node`](#nodebpy.nodes.shader.output.AovOutput.node)         |             |
-| [`o`](#nodebpy.nodes.shader.output.AovOutput.o)               |             |
-| [`outputs`](#nodebpy.nodes.shader.output.AovOutput.outputs)   |             |
-| [`tree`](#nodebpy.nodes.shader.output.AovOutput.tree)         |             |
-| [`type`](#nodebpy.nodes.shader.output.AovOutput.type)         |             |
+| Name | Description |
+|----|----|
+| [`aov_name`](#nodebpy.nodes.shader.output.AovOutput.aov_name) |  |
+| [`i`](#nodebpy.nodes.shader.output.AovOutput.i) |  |
+| [`name`](#nodebpy.nodes.shader.output.AovOutput.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.output.AovOutput.node) |  |
+| [`o`](#nodebpy.nodes.shader.output.AovOutput.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.output.AovOutput.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.output.AovOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### LightOutput
 
@@ -69,13 +68,12 @@ Output light information to a light object
 |----|----|
 | [`i`](#nodebpy.nodes.shader.output.LightOutput.i) |  |
 | [`is_active_output`](#nodebpy.nodes.shader.output.LightOutput.is_active_output) |  |
-| [`name`](#nodebpy.nodes.shader.output.LightOutput.name) |  |
+| [`name`](#nodebpy.nodes.shader.output.LightOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.LightOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.LightOutput.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.output.LightOutput.outputs) |  |
 | [`target`](#nodebpy.nodes.shader.output.LightOutput.target) |  |
-| [`tree`](#nodebpy.nodes.shader.output.LightOutput.tree) |  |
-| [`type`](#nodebpy.nodes.shader.output.LightOutput.type) |  |
+| [`tree`](#nodebpy.nodes.shader.output.LightOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -118,13 +116,12 @@ Control the mixing of texture information into the base color of line styles
 | [`blend_type`](#nodebpy.nodes.shader.output.LineStyleOutput.blend_type) |  |
 | [`i`](#nodebpy.nodes.shader.output.LineStyleOutput.i) |  |
 | [`is_active_output`](#nodebpy.nodes.shader.output.LineStyleOutput.is_active_output) |  |
-| [`name`](#nodebpy.nodes.shader.output.LineStyleOutput.name) |  |
+| [`name`](#nodebpy.nodes.shader.output.LineStyleOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.LineStyleOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.LineStyleOutput.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.output.LineStyleOutput.outputs) |  |
 | [`target`](#nodebpy.nodes.shader.output.LineStyleOutput.target) |  |
-| [`tree`](#nodebpy.nodes.shader.output.LineStyleOutput.tree) |  |
-| [`type`](#nodebpy.nodes.shader.output.LineStyleOutput.type) |  |
+| [`tree`](#nodebpy.nodes.shader.output.LineStyleOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_alpha`](#nodebpy.nodes.shader.output.LineStyleOutput.use_alpha) |  |
 | [`use_clamp`](#nodebpy.nodes.shader.output.LineStyleOutput.use_clamp) |  |
 
@@ -168,13 +165,12 @@ Output surface material information for use in rendering
 |----|----|
 | [`i`](#nodebpy.nodes.shader.output.MaterialOutput.i) |  |
 | [`is_active_output`](#nodebpy.nodes.shader.output.MaterialOutput.is_active_output) |  |
-| [`name`](#nodebpy.nodes.shader.output.MaterialOutput.name) |  |
+| [`name`](#nodebpy.nodes.shader.output.MaterialOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.MaterialOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.MaterialOutput.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.output.MaterialOutput.outputs) |  |
 | [`target`](#nodebpy.nodes.shader.output.MaterialOutput.target) |  |
-| [`tree`](#nodebpy.nodes.shader.output.MaterialOutput.tree) |  |
-| [`type`](#nodebpy.nodes.shader.output.MaterialOutput.type) |  |
+| [`tree`](#nodebpy.nodes.shader.output.MaterialOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -206,13 +202,12 @@ Output light color information to the scene’s World
 |----|----|
 | [`i`](#nodebpy.nodes.shader.output.WorldOutput.i) |  |
 | [`is_active_output`](#nodebpy.nodes.shader.output.WorldOutput.is_active_output) |  |
-| [`name`](#nodebpy.nodes.shader.output.WorldOutput.name) |  |
+| [`name`](#nodebpy.nodes.shader.output.WorldOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.WorldOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.WorldOutput.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.output.WorldOutput.outputs) |  |
 | [`target`](#nodebpy.nodes.shader.output.WorldOutput.target) |  |
-| [`tree`](#nodebpy.nodes.shader.output.WorldOutput.tree) |  |
-| [`type`](#nodebpy.nodes.shader.output.WorldOutput.type) |  |
+| [`tree`](#nodebpy.nodes.shader.output.WorldOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

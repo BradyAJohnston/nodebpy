@@ -33,12 +33,11 @@ Mix attribute values of neighboring elements
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.attribute.BlurAttribute.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.attribute.BlurAttribute.i) |  |
-| [`name`](#nodebpy.nodes.geometry.attribute.BlurAttribute.name) |  |
+| [`name`](#nodebpy.nodes.geometry.attribute.BlurAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.attribute.BlurAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.BlurAttribute.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.attribute.BlurAttribute.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.attribute.BlurAttribute.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.attribute.BlurAttribute.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.attribute.BlurAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -115,12 +114,11 @@ Retrieve the number of elements in a geometry for each attribute domain
 |----|----|
 | [`component`](#nodebpy.nodes.geometry.attribute.DomainSize.component) |  |
 | [`i`](#nodebpy.nodes.geometry.attribute.DomainSize.i) |  |
-| [`name`](#nodebpy.nodes.geometry.attribute.DomainSize.name) |  |
+| [`name`](#nodebpy.nodes.geometry.attribute.DomainSize.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.attribute.DomainSize.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.DomainSize.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.attribute.DomainSize.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.attribute.DomainSize.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.attribute.DomainSize.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.attribute.DomainSize.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -169,12 +167,11 @@ Retrieves attribute names as a list of strings
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.i) |  |
-| [`name`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.name) |  |
+| [`name`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -213,12 +210,11 @@ Delete an attribute with a specified name from a geometry. Typically used to opt
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.i) |  |
-| [`name`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.name) |  |
+| [`name`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

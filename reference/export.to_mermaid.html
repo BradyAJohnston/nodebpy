@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>builder.basenode – nodebpy {{&lt; var version &gt;}}</title>
+<title>export.to_mermaid – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/export.to_python.html" rel="next">
-<link href="../reference/TreeBuilder.html" rel="prev">
+<link href="../reference/nodes.geometry.input.html" rel="next">
+<link href="../reference/export.to_python.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -245,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.tree.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.BaseNode.html">builder.BaseNode</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/export.to_python.html">Export</a></li><li class="breadcrumb-item"><a href="../reference/export.to_mermaid.html">export.to_mermaid</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -304,7 +304,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/builder.BaseNode.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/builder.BaseNode.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">builder.BaseNode</span></a>
   </div>
 </li>
@@ -327,7 +327,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">export.to_mermaid</span></a>
   </div>
 </li>
@@ -591,56 +591,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.builder.BaseNode" id="toc-nodebpy.builder.BaseNode" class="nav-link active" data-scroll-target="#nodebpy.builder.BaseNode">builder.BaseNode</a>
+  <li><a href="#nodebpy.export.to_mermaid" id="toc-nodebpy.export.to_mermaid" class="nav-link active" data-scroll-target="#nodebpy.export.to_mermaid">export.to_mermaid</a>
   <ul class="collapse">
-  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
+  <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
+  <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.tree.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.BaseNode.html">builder.BaseNode</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/export.to_python.html">Export</a></li><li class="breadcrumb-item"><a href="../reference/export.to_mermaid.html">export.to_mermaid</a></li></ol></nav></header>
 
 
 
 
-<section id="nodebpy.builder.BaseNode" class="level1">
-<h1>builder.BaseNode</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>BaseNode(node<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Base class for all node wrappers.</p>
-<section id="attributes" class="level2">
-<h2 class="anchored" data-anchor-id="attributes">Attributes</h2>
+<section id="nodebpy.export.to_mermaid" class="level1">
+<h1>export.to_mermaid</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>to_mermaid(tree, fenced<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a Mermaid diagram string from a node tree.</p>
+<section id="arguments" class="level2 doc-section doc-section-arguments">
+<h2 class="doc-section doc-section-arguments anchored" data-anchor-id="arguments">Arguments</h2>
+<pre><code>tree:
+    TreeBuilder or Blender node tree
+fenced:
+    Whether to wrap the output in a fenced code block</code></pre>
+</section>
+<section id="returns" class="level2 doc-section doc-section-returns">
+<h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 78%">
+<col style="width: 14%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.builder.BaseNode.i"><code>i</code></a></td>
-<td>Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.builder.BaseNode.name"><code>name</code></a></td>
-<td>The name of the node being wrapped by this instance.</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.builder.BaseNode.node"><code>node</code></a></td>
 <td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.builder.BaseNode.o"><code>o</code></a></td>
-<td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.builder.BaseNode.outputs"><code>outputs</code></a></td>
+<td>A string containing the Mermaid diagram as a possibly fenced markdown code block</td>
 <td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.builder.BaseNode.tree"><code>tree</code></a></td>
-<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
 </tbody>
 </table>
@@ -1052,13 +1047,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/TreeBuilder.html" class="pagination-link" aria-label="TreeBuilder">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">TreeBuilder</span>
+      <a href="../reference/export.to_python.html" class="pagination-link" aria-label="export.to_python">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">export.to_python</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/export.to_python.html" class="pagination-link" aria-label="export.to_python">
-        <span class="nav-page-text">export.to_python</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/nodes.geometry.input.html" class="pagination-link" aria-label="nodes.geometry.input">
+        <span class="nav-page-text">nodes.geometry.input</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

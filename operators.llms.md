@@ -37,6 +37,7 @@ graph LR
     N8("Vector Math<br/><small>(SCALE)</small>"):::vector-node
     N9("Set Position"):::geometry-node
     N10("Group Output"):::default-node
+    N9 -->|"Geometry->Geometry"| N10
     N0 -->|"Value->Value"| N1
     N1 -->|"Value->Value"| N3
     N1 -->|"Value->Value"| N2
@@ -44,9 +45,8 @@ graph LR
     N4 -->|"Value->Position"| N7
     N5 -->|"Position->Vector"| N8
     N6 -->|"Value->Scale"| N8
-    N8 -->|"Vector->Offset"| N9
     N7 -->|"Points->Geometry"| N9
-    N9 -->|"Geometry->Geometry"| N10
+    N8 -->|"Vector->Offset"| N9
 ```
 
 All operators automatically select the right node type. With integers you get `IntegerMath`, with vectors you get `VectorMath`, and scalars are broadcast when mixed with vectors:
@@ -81,13 +81,13 @@ graph LR
     N6("Integer Math<br/><small>(DIVIDE_FLOOR)</small>"):::converter-node
     N7("Integer Math<br/><small>(MODULO)</small>"):::converter-node
     N8("Group Output"):::default-node
+    N4 -->|"Geometry->Geometry"| N8
     N5 -->|"Index->Value"| N6
     N5 -->|"Index->Value"| N7
     N0 -->|"Position->Vector"| N2
     N0 -->|"Position->Vector"| N3
-    N3 -->|"Vector->Offset"| N4
     N1 -->|"Mesh->Geometry"| N4
-    N4 -->|"Geometry->Geometry"| N8
+    N3 -->|"Vector->Offset"| N4
 ```
 
 ### Negation and Absolute Value
@@ -115,8 +115,8 @@ graph LR
     N5("Group Output"):::default-node
     N0 -->|"Position->Vector"| N1
     N1 -->|"Vector->Vector"| N3
-    N3 -->|"Vector->Offset"| N4
     N2 -->|"Mesh->Geometry"| N4
+    N3 -->|"Vector->Offset"| N4
     N4 -->|"Geometry->Geometry"| N5
 ```
 
@@ -152,12 +152,12 @@ graph LR
     N4("Compare<br/><small>(GREATER_THAN)</small>"):::converter-node
     N5("Set Position<br/><small>+(0,0,1)</small>"):::geometry-node
     N6("Group Output"):::default-node
+    N5 -->|"Geometry->Geometry"| N6
     N0 -->|"Position->Vector"| N1
     N1 -->|"Z->A"| N4
     N1 -->|"Z->A"| N3
-    N4 -->|"Result->Selection"| N5
     N2 -->|"Mesh->Geometry"| N5
-    N5 -->|"Geometry->Geometry"| N6
+    N4 -->|"Result->Selection"| N5
 ```
 
 ## Comparison into a Switch
@@ -226,15 +226,15 @@ graph LR
     N6("Boolean Math<br/><small>(AND)</small>"):::converter-node
     N7("Set Position<br/><small>+(1,0,0)</small>"):::geometry-node
     N8("Group Output"):::default-node
+    N7 -->|"Geometry->Geometry"| N8
     N0 -->|"Position->Vector"| N1
     N1 -->|"Z->A"| N3
     N1 -->|"Z->A"| N4
     N3 -->|"Result->Boolean"| N6
     N4 -->|"Result->Boolean"| N6
     N2 -->|"Mesh->Mesh"| N5
-    N6 -->|"Boolean->Selection"| N7
     N5 -->|"Points->Geometry"| N7
-    N7 -->|"Geometry->Geometry"| N8
+    N6 -->|"Boolean->Selection"| N7
 ```
 
 The `~` operator inverts a boolean:
@@ -268,8 +268,8 @@ graph LR
     N1 -->|"Value->A"| N3
     N3 -->|"Result->Boolean"| N5
     N2 -->|"Mesh->Mesh"| N4
-    N5 -->|"Boolean->Selection"| N6
     N4 -->|"Points->Geometry"| N6
+    N5 -->|"Boolean->Selection"| N6
     N6 -->|"Geometry->Geometry"| N7
 ```
 
@@ -300,8 +300,8 @@ graph LR
     N1 -->|"Transform->Matrix"| N3
     N2 -->|"Position->Vector"| N5
     N3 -->|"Matrix->Transform"| N5
-    N5 -->|"Vector->Position"| N6
     N4 -->|"Mesh->Geometry"| N6
+    N5 -->|"Vector->Position"| N6
 ```
 
 ## Putting It All Together
@@ -345,8 +345,8 @@ graph LR
     N2 -->|"Value->Value"| N3
     N3 -->|"Value->Value"| N4
     N4 -->|"Value->A"| N6
-    N6 -->|"Result->Selection"| N7
     N5 -->|"Mesh->Geometry"| N7
+    N6 -->|"Result->Selection"| N7
     N7 -->|"Geometry->Geometry"| N8
 ```
 
@@ -402,8 +402,8 @@ graph LR
     N8 -->|"Boolean->Boolean"| N11
     N9 -->|"Boolean->Boolean"| N11
     N7 -->|"Mesh->Mesh"| N10
-    N11 -->|"Boolean->Selection"| N13
     N10 -->|"Points->Geometry"| N13
+    N11 -->|"Boolean->Selection"| N13
     N13 -->|"Geometry->Geometry"| N15
 ```
 
@@ -460,11 +460,11 @@ graph LR
     N6 -->|"Value->Value"| N9
     N8 -->|"Value->X"| N11
     N9 -->|"Value->Y"| N11
-    N7 -->|"Value->Position"| N10
-    N11 -->|"Vector->Position"| N12
-    N10 -->|"Points->Geometry"| N12
-    N12 -->|"Geometry->Geometry"| N13
     N1 -->|"Z->Z"| N11
+    N7 -->|"Value->Position"| N10
+    N10 -->|"Points->Geometry"| N12
+    N11 -->|"Vector->Position"| N12
+    N12 -->|"Geometry->Geometry"| N13
 ```
 
 ## Operator Reference

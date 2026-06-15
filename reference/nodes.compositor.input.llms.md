@@ -41,12 +41,11 @@ Returns an image with the given size and constant color
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.BlankImage.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.BlankImage.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.BlankImage.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.BlankImage.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.BlankImage.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.BlankImage.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.BlankImage.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.BlankImage.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.BlankImage.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -90,12 +89,11 @@ Generate image with bokeh shape for use with the Bokeh Blur filter node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.BokehImage.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.BokehImage.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.BokehImage.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.BokehImage.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.BokehImage.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.BokehImage.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.BokehImage.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.BokehImage.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.BokehImage.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -123,15 +121,14 @@ A color picker
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.input.Color.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.input.Color.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.input.Color.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.input.Color.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.input.Color.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.input.Color.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.input.Color.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.Color.i) |  |
+| [`name`](#nodebpy.nodes.compositor.input.Color.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.input.Color.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.Color.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.Color.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.Color.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -158,12 +155,11 @@ Returns the coordinates of the pixels of an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.ImageCoordinates.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.ImageCoordinates.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.ImageCoordinates.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.ImageCoordinates.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.ImageCoordinates.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.ImageCoordinates.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.ImageCoordinates.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.ImageCoordinates.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.ImageCoordinates.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -198,12 +194,11 @@ Returns information about an image
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.ImageInfo.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.ImageInfo.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.ImageInfo.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.ImageInfo.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.ImageInfo.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.ImageInfo.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.ImageInfo.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.ImageInfo.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.ImageInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -251,15 +246,14 @@ Input mask from a mask data-block, created in the image editor
 
 #### Attributes
 
-| Name                                                      | Description |
-|-----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.input.Mask.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.input.Mask.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.input.Mask.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.input.Mask.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.input.Mask.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.input.Mask.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.input.Mask.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.Mask.i) |  |
+| [`name`](#nodebpy.nodes.compositor.input.Mask.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.input.Mask.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.Mask.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.Mask.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.Mask.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -292,12 +286,11 @@ Input image or movie from a movie clip data-block, typically used for motion tra
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.MovieClip.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.MovieClip.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.MovieClip.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.MovieClip.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.MovieClip.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.MovieClip.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.MovieClip.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.MovieClip.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.MovieClip.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -320,15 +313,14 @@ Input normalized normal values to other nodes in the tree
 
 #### Attributes
 
-| Name                                                        | Description |
-|-------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.compositor.input.Normal.i)             |             |
-| [`name`](#nodebpy.nodes.compositor.input.Normal.name)       |             |
-| [`node`](#nodebpy.nodes.compositor.input.Normal.node)       |             |
-| [`o`](#nodebpy.nodes.compositor.input.Normal.o)             |             |
-| [`outputs`](#nodebpy.nodes.compositor.input.Normal.outputs) |             |
-| [`tree`](#nodebpy.nodes.compositor.input.Normal.tree)       |             |
-| [`type`](#nodebpy.nodes.compositor.input.Normal.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.compositor.input.Normal.i) |  |
+| [`name`](#nodebpy.nodes.compositor.input.Normal.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.input.Normal.node) |  |
+| [`o`](#nodebpy.nodes.compositor.input.Normal.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.input.Normal.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.Normal.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -350,12 +342,11 @@ Input render passes from a scene render
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.RenderLayers.i) |  |
 | [`layer`](#nodebpy.nodes.compositor.input.RenderLayers.layer) |  |
-| [`name`](#nodebpy.nodes.compositor.input.RenderLayers.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.RenderLayers.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.RenderLayers.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.RenderLayers.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.RenderLayers.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.RenderLayers.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.RenderLayers.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.RenderLayers.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -377,12 +368,11 @@ Input the current scene time in seconds or frames
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.SceneTime.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.SceneTime.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.SceneTime.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.SceneTime.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.SceneTime.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.SceneTime.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.SceneTime.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.SceneTime.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.SceneTime.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -404,12 +394,11 @@ Returns information about the active strip of the modifier
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.SequencerStripInfo.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.SequencerStripInfo.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.SequencerStripInfo.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.SequencerStripInfo.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.SequencerStripInfo.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.SequencerStripInfo.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.SequencerStripInfo.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.SequencerStripInfo.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.SequencerStripInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -454,12 +443,11 @@ Generates an image containing the given paragraph of text
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.StringToImage.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.StringToImage.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.StringToImage.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.StringToImage.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.StringToImage.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.StringToImage.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.StringToImage.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.StringToImage.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.StringToImage.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -499,12 +487,11 @@ Generate a factor value (from 0.0 to 1.0) between scene start and end time, usin
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.TimeCurve.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.TimeCurve.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.TimeCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.TimeCurve.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.TimeCurve.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.TimeCurve.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.TimeCurve.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.TimeCurve.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.TimeCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -539,14 +526,13 @@ Provide information about motion tracking points, such as x and y values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.compositor.input.TrackPosition.i) |  |
-| [`name`](#nodebpy.nodes.compositor.input.TrackPosition.name) |  |
+| [`name`](#nodebpy.nodes.compositor.input.TrackPosition.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.input.TrackPosition.node) |  |
 | [`o`](#nodebpy.nodes.compositor.input.TrackPosition.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.input.TrackPosition.outputs) |  |
 | [`track_name`](#nodebpy.nodes.compositor.input.TrackPosition.track_name) |  |
 | [`tracking_object`](#nodebpy.nodes.compositor.input.TrackPosition.tracking_object) |  |
-| [`tree`](#nodebpy.nodes.compositor.input.TrackPosition.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.input.TrackPosition.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.input.TrackPosition.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

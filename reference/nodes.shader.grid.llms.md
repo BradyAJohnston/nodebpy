@@ -57,12 +57,11 @@ Combine all volume shading components into a single easy to use node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.grid.PrincipledVolume.i) |  |
-| [`name`](#nodebpy.nodes.shader.grid.PrincipledVolume.name) |  |
+| [`name`](#nodebpy.nodes.shader.grid.PrincipledVolume.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.grid.PrincipledVolume.node) |  |
 | [`o`](#nodebpy.nodes.shader.grid.PrincipledVolume.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.grid.PrincipledVolume.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.grid.PrincipledVolume.tree) |  |
-| [`type`](#nodebpy.nodes.shader.grid.PrincipledVolume.type) |  |
+| [`tree`](#nodebpy.nodes.shader.grid.PrincipledVolume.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -109,12 +108,11 @@ Absorb light as it passes through the volume
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.grid.VolumeAbsorption.i) |  |
-| [`name`](#nodebpy.nodes.shader.grid.VolumeAbsorption.name) |  |
+| [`name`](#nodebpy.nodes.shader.grid.VolumeAbsorption.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.grid.VolumeAbsorption.node) |  |
 | [`o`](#nodebpy.nodes.shader.grid.VolumeAbsorption.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.grid.VolumeAbsorption.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.grid.VolumeAbsorption.tree) |  |
-| [`type`](#nodebpy.nodes.shader.grid.VolumeAbsorption.type) |  |
+| [`tree`](#nodebpy.nodes.shader.grid.VolumeAbsorption.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -169,13 +167,12 @@ Model all three physical processes in a volume, represented by their coefficient
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.shader.grid.VolumeCoefficients.i) |  |
-| [`name`](#nodebpy.nodes.shader.grid.VolumeCoefficients.name) |  |
+| [`name`](#nodebpy.nodes.shader.grid.VolumeCoefficients.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.grid.VolumeCoefficients.node) |  |
 | [`o`](#nodebpy.nodes.shader.grid.VolumeCoefficients.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.grid.VolumeCoefficients.outputs) |  |
 | [`phase`](#nodebpy.nodes.shader.grid.VolumeCoefficients.phase) |  |
-| [`tree`](#nodebpy.nodes.shader.grid.VolumeCoefficients.tree) |  |
-| [`type`](#nodebpy.nodes.shader.grid.VolumeCoefficients.type) |  |
+| [`tree`](#nodebpy.nodes.shader.grid.VolumeCoefficients.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -207,15 +204,14 @@ Read volume data attributes from volume grids
 
 #### Attributes
 
-| Name                                                       | Description |
-|------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.grid.VolumeInfo.i)             |             |
-| [`name`](#nodebpy.nodes.shader.grid.VolumeInfo.name)       |             |
-| [`node`](#nodebpy.nodes.shader.grid.VolumeInfo.node)       |             |
-| [`o`](#nodebpy.nodes.shader.grid.VolumeInfo.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.grid.VolumeInfo.outputs) |             |
-| [`tree`](#nodebpy.nodes.shader.grid.VolumeInfo.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.grid.VolumeInfo.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.grid.VolumeInfo.i) |  |
+| [`name`](#nodebpy.nodes.shader.grid.VolumeInfo.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.grid.VolumeInfo.node) |  |
+| [`o`](#nodebpy.nodes.shader.grid.VolumeInfo.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.grid.VolumeInfo.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.grid.VolumeInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -260,16 +256,15 @@ Scatter light as it passes through the volume, often used to add fog to a scene
 
 #### Attributes
 
-| Name                                                          | Description |
-|---------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.shader.grid.VolumeScatter.i)             |             |
-| [`name`](#nodebpy.nodes.shader.grid.VolumeScatter.name)       |             |
-| [`node`](#nodebpy.nodes.shader.grid.VolumeScatter.node)       |             |
-| [`o`](#nodebpy.nodes.shader.grid.VolumeScatter.o)             |             |
-| [`outputs`](#nodebpy.nodes.shader.grid.VolumeScatter.outputs) |             |
-| [`phase`](#nodebpy.nodes.shader.grid.VolumeScatter.phase)     |             |
-| [`tree`](#nodebpy.nodes.shader.grid.VolumeScatter.tree)       |             |
-| [`type`](#nodebpy.nodes.shader.grid.VolumeScatter.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.shader.grid.VolumeScatter.i) |  |
+| [`name`](#nodebpy.nodes.shader.grid.VolumeScatter.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.grid.VolumeScatter.node) |  |
+| [`o`](#nodebpy.nodes.shader.grid.VolumeScatter.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.grid.VolumeScatter.outputs) |  |
+| [`phase`](#nodebpy.nodes.shader.grid.VolumeScatter.phase) |  |
+| [`tree`](#nodebpy.nodes.shader.grid.VolumeScatter.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

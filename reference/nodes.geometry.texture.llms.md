@@ -61,7 +61,7 @@ Generate a procedural texture producing bricks
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.BrickTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.BrickTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.BrickTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.BrickTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.BrickTexture.o) |  |
 | [`offset`](#nodebpy.nodes.geometry.texture.BrickTexture.offset) |  |
@@ -69,8 +69,7 @@ Generate a procedural texture producing bricks
 | [`outputs`](#nodebpy.nodes.geometry.texture.BrickTexture.outputs) |  |
 | [`squash`](#nodebpy.nodes.geometry.texture.BrickTexture.squash) |  |
 | [`squash_frequency`](#nodebpy.nodes.geometry.texture.BrickTexture.squash_frequency) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.BrickTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.BrickTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.BrickTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -116,12 +115,11 @@ Generate a checkerboard texture
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.CheckerTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.CheckerTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.CheckerTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.CheckerTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.CheckerTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.CheckerTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.CheckerTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.CheckerTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.CheckerTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -173,12 +171,11 @@ Generate Gabor noise
 |----|----|
 | [`gabor_type`](#nodebpy.nodes.geometry.texture.GaborTexture.gabor_type) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.GaborTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.GaborTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.GaborTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.GaborTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.GaborTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.GaborTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.GaborTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.GaborTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.GaborTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -254,12 +251,11 @@ Generate interpolated color and intensity values based on the input vector
 |----|----|
 | [`gradient_type`](#nodebpy.nodes.geometry.texture.GradientTexture.gradient_type) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.GradientTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.GradientTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.GradientTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.GradientTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.GradientTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.GradientTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.GradientTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.GradientTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.GradientTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -372,12 +368,11 @@ Sample values from an image texture
 | [`extension`](#nodebpy.nodes.geometry.texture.ImageTexture.extension) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.ImageTexture.i) |  |
 | [`interpolation`](#nodebpy.nodes.geometry.texture.ImageTexture.interpolation) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.ImageTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.ImageTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.ImageTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.ImageTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.ImageTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.ImageTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.ImageTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.ImageTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -415,13 +410,12 @@ Generate a psychedelic color texture
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.MagicTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.MagicTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.MagicTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.MagicTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.MagicTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.MagicTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.MagicTexture.tree) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.MagicTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`turbulence_depth`](#nodebpy.nodes.geometry.texture.MagicTexture.turbulence_depth) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.MagicTexture.type) |  |
 
 **Inputs**
 
@@ -479,15 +473,14 @@ Generate fractal Perlin noise
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.NoiseTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.NoiseTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.NoiseTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.NoiseTexture.node) |  |
 | [`noise_dimensions`](#nodebpy.nodes.geometry.texture.NoiseTexture.noise_dimensions) |  |
 | [`noise_type`](#nodebpy.nodes.geometry.texture.NoiseTexture.noise_type) |  |
 | [`normalize`](#nodebpy.nodes.geometry.texture.NoiseTexture.normalize) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.NoiseTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.NoiseTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.NoiseTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.NoiseTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.NoiseTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -644,13 +637,12 @@ Generate Worley noise based on the distance to random points. Typically used to 
 | [`distance`](#nodebpy.nodes.geometry.texture.VoronoiTexture.distance) |  |
 | [`feature`](#nodebpy.nodes.geometry.texture.VoronoiTexture.feature) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.VoronoiTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.VoronoiTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.VoronoiTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.VoronoiTexture.node) |  |
 | [`normalize`](#nodebpy.nodes.geometry.texture.VoronoiTexture.normalize) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.VoronoiTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.VoronoiTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.VoronoiTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.VoronoiTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.VoronoiTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`voronoi_dimensions`](#nodebpy.nodes.geometry.texture.VoronoiTexture.voronoi_dimensions) |  |
 
 **Inputs**
@@ -716,13 +708,12 @@ Generate procedural bands or rings with noise
 |----|----|
 | [`bands_direction`](#nodebpy.nodes.geometry.texture.WaveTexture.bands_direction) |  |
 | [`i`](#nodebpy.nodes.geometry.texture.WaveTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.WaveTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.WaveTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.WaveTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.WaveTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.WaveTexture.outputs) |  |
 | [`rings_direction`](#nodebpy.nodes.geometry.texture.WaveTexture.rings_direction) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.WaveTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.WaveTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.WaveTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`wave_profile`](#nodebpy.nodes.geometry.texture.WaveTexture.wave_profile) |  |
 | [`wave_type`](#nodebpy.nodes.geometry.texture.WaveTexture.wave_type) |  |
 
@@ -804,13 +795,12 @@ Calculate a random value or color based on an input seed
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.i) |  |
-| [`name`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.name) |  |
+| [`name`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.node) |  |
 | [`noise_dimensions`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.noise_dimensions) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

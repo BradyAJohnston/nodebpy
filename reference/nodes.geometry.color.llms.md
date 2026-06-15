@@ -26,15 +26,14 @@ Apply a gamma correction
 
 #### Attributes
 
-| Name                                                     | Description |
-|----------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.color.Gamma.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.color.Gamma.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.color.Gamma.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.color.Gamma.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.color.Gamma.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.color.Gamma.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.color.Gamma.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.color.Gamma.i) |  |
+| [`name`](#nodebpy.nodes.geometry.color.Gamma.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.color.Gamma.node) |  |
+| [`o`](#nodebpy.nodes.geometry.color.Gamma.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.color.Gamma.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.color.Gamma.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -66,15 +65,14 @@ Apply color corrections for each color channel
 
 #### Attributes
 
-| Name                                                         | Description |
-|--------------------------------------------------------------|-------------|
-| [`i`](#nodebpy.nodes.geometry.color.RGBCurves.i)             |             |
-| [`name`](#nodebpy.nodes.geometry.color.RGBCurves.name)       |             |
-| [`node`](#nodebpy.nodes.geometry.color.RGBCurves.node)       |             |
-| [`o`](#nodebpy.nodes.geometry.color.RGBCurves.o)             |             |
-| [`outputs`](#nodebpy.nodes.geometry.color.RGBCurves.outputs) |             |
-| [`tree`](#nodebpy.nodes.geometry.color.RGBCurves.tree)       |             |
-| [`type`](#nodebpy.nodes.geometry.color.RGBCurves.type)       |             |
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.color.RGBCurves.i) |  |
+| [`name`](#nodebpy.nodes.geometry.color.RGBCurves.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.color.RGBCurves.node) |  |
+| [`o`](#nodebpy.nodes.geometry.color.RGBCurves.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.color.RGBCurves.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.color.RGBCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

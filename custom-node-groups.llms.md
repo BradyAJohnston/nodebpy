@@ -97,8 +97,8 @@ graph LR
     N0("Ico Sphere"):::geometry-node
     N1("Jitter"):::geometry-node
     N2("Group Output"):::default-node
-    N0 -->|"Mesh->Geometry"| N1
     N1 -->|"Geometry->Geometry"| N2
+    N0 -->|"Mesh->Geometry"| N1
 ```
 
 ## Radial Array
@@ -221,17 +221,17 @@ graph LR
     N7("Join Geometry"):::geometry-node
     N8("Realize Instances"):::geometry-node
     N9("Group Output"):::default-node
+    N8 -->|"Geometry->Geometry"| N9
     N1 -->|"Mesh->Geometry"| N2
+    N2 -->|"Geometry->Geometry"| N3
     N0 -->|"Petals->Count"| N3
     N0 -->|"Radius->Radius"| N3
-    N2 -->|"Geometry->Geometry"| N3
     N3 -->|"Geometry->Geometry"| N4
-    N4 -->|"Geometry->Instances"| N5
-    N6 -->|"Mesh->Geometry"| N7
-    N5 -->|"Instances->Geometry"| N7
-    N7 -->|"Geometry->Geometry"| N8
-    N8 -->|"Geometry->Geometry"| N9
     N0 -->|"Jitter->Amount"| N4
+    N4 -->|"Geometry->Instances"| N5
+    N5 -->|"Instances->Geometry"| N7
+    N6 -->|"Mesh->Geometry"| N7
+    N7 -->|"Geometry->Geometry"| N8
 ```
 
 Each custom group appears as a single, named node in the tree – keeping the graph readable even as the logic grows.

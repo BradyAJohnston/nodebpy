@@ -29,12 +29,11 @@ Either pass through the input value or output the fallback value
 |----|----|
 | [`data_type`](#nodebpy.nodes.compositor.interface.EnableOutput.data_type) |  |
 | [`i`](#nodebpy.nodes.compositor.interface.EnableOutput.i) |  |
-| [`name`](#nodebpy.nodes.compositor.interface.EnableOutput.name) |  |
+| [`name`](#nodebpy.nodes.compositor.interface.EnableOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.interface.EnableOutput.node) |  |
 | [`o`](#nodebpy.nodes.compositor.interface.EnableOutput.o) |  |
 | [`outputs`](#nodebpy.nodes.compositor.interface.EnableOutput.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.interface.EnableOutput.tree) |  |
-| [`type`](#nodebpy.nodes.compositor.interface.EnableOutput.type) |  |
+| [`tree`](#nodebpy.nodes.compositor.interface.EnableOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 

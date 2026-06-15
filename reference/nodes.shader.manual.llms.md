@@ -24,12 +24,11 @@ Retrieve attributes attached to objects or geometry
 | [`attribute_name`](#nodebpy.nodes.shader.manual.Attribute.attribute_name) |  |
 | [`attribute_type`](#nodebpy.nodes.shader.manual.Attribute.attribute_type) |  |
 | [`i`](#nodebpy.nodes.shader.manual.Attribute.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`name`](#nodebpy.nodes.shader.manual.Attribute.name) |  |
+| [`name`](#nodebpy.nodes.shader.manual.Attribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.manual.Attribute.node) |  |
 | [`o`](#nodebpy.nodes.shader.manual.Attribute.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.manual.Attribute.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.manual.Attribute.tree) |  |
-| [`type`](#nodebpy.nodes.shader.manual.Attribute.type) |  |
+| [`tree`](#nodebpy.nodes.shader.manual.Attribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -75,7 +74,7 @@ Create Attribute with operation ‘View Layer’.
 ### MenuSwitch
 
 ``` python
-MenuSwitch(menu=None, items={}, *, data_type='FLOAT')
+MenuSwitch(menu=None, items=None, *, data_type='FLOAT')
 ```
 
 Node builder for the Menu Switch node (Shader tree)
@@ -86,19 +85,21 @@ Node builder for the Menu Switch node (Shader tree)
 |----|----|
 | [`data_type`](#nodebpy.nodes.shader.manual.MenuSwitch.data_type) | Input socket: Data Type |
 | [`i`](#nodebpy.nodes.shader.manual.MenuSwitch.i) |  |
-| [`name`](#nodebpy.nodes.shader.manual.MenuSwitch.name) |  |
+| [`name`](#nodebpy.nodes.shader.manual.MenuSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.shader.manual.MenuSwitch.o) |  |
 | [`outputs`](#nodebpy.nodes.shader.manual.MenuSwitch.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.manual.MenuSwitch.tree) |  |
-| [`type`](#nodebpy.nodes.shader.manual.MenuSwitch.type) |  |
 
 #### Methods
 
 | Name | Description |
 |----|----|
+| [add_item](#nodebpy.nodes.shader.manual.MenuSwitch.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.shader.manual.MenuSwitch.add_items) | Add an item per mapping entry and return their handles by name. |
 | [boolean](#nodebpy.nodes.shader.manual.MenuSwitch.boolean) |  |
 | [bundle](#nodebpy.nodes.shader.manual.MenuSwitch.bundle) |  |
+| [capture](#nodebpy.nodes.shader.manual.MenuSwitch.capture) | Add an item linked from `value` and return its output socket. |
 | [closure](#nodebpy.nodes.shader.manual.MenuSwitch.closure) |  |
 | [color](#nodebpy.nodes.shader.manual.MenuSwitch.color) |  |
 | [float](#nodebpy.nodes.shader.manual.MenuSwitch.float) |  |
@@ -107,6 +108,26 @@ Node builder for the Menu Switch node (Shader tree)
 | [menu](#nodebpy.nodes.shader.manual.MenuSwitch.menu) |  |
 | [shader](#nodebpy.nodes.shader.manual.MenuSwitch.shader) |  |
 | [vector](#nodebpy.nodes.shader.manual.MenuSwitch.vector) |  |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
 
 ##### boolean
 
@@ -119,6 +140,16 @@ boolean(menu=None, items={})
 ``` python
 bundle(menu=None, items={})
 ```
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
 
 ##### closure
 

@@ -104,13 +104,12 @@ Orient a rotation along the given direction
 |----|----|
 | [`axis`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.axis) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.outputs) |  |
 | [`pivot_axis`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.pivot_axis) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -152,7 +151,7 @@ Create a rotation from a primary and (ideally orthogonal) secondary axis
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.AxesToRotation.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.AxesToRotation.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.AxesToRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.AxesToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AxesToRotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.AxesToRotation.outputs) |  |
@@ -160,8 +159,7 @@ Create a rotation from a primary and (ideally orthogonal) secondary axis
 | [`primary_axis`](#nodebpy.nodes.geometry.converter.AxesToRotation.primary_axis) |  |
 | [`secondary`](#nodebpy.nodes.geometry.converter.AxesToRotation.secondary) |  |
 | [`secondary_axis`](#nodebpy.nodes.geometry.converter.AxesToRotation.secondary_axis) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.AxesToRotation.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.AxesToRotation.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.AxesToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -196,12 +194,11 @@ Build a rotation from an axis and a rotation around that axis
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -237,13 +234,12 @@ Perform bitwise operations on 32-bit integers
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.BitMath.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.BitMath.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.BitMath.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.BitMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.BitMath.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.converter.BitMath.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.BitMath.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.BitMath.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.BitMath.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.BitMath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -337,12 +333,11 @@ Convert a blackbody temperature to an RGB value
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.Blackbody.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.Blackbody.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.Blackbody.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.Blackbody.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Blackbody.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.Blackbody.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.Blackbody.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.Blackbody.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.Blackbody.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -376,13 +371,12 @@ Perform a logical operation on the given boolean inputs
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.BooleanMath.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.BooleanMath.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.BooleanMath.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.BooleanMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.BooleanMath.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.converter.BooleanMath.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.BooleanMath.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.BooleanMath.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.BooleanMath.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.BooleanMath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -505,12 +499,11 @@ Clamp a value between a minimum and a maximum
 |----|----|
 | [`clamp_type`](#nodebpy.nodes.geometry.converter.Clamp.clamp_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.Clamp.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.Clamp.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.Clamp.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.Clamp.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Clamp.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.Clamp.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.Clamp.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.Clamp.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.Clamp.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -569,12 +562,11 @@ Create a list of values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ClosureToList.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ClosureToList.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ClosureToList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ClosureToList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ClosureToList.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ClosureToList.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ClosureToList.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ClosureToList.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ClosureToList.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -604,12 +596,11 @@ Group mesh vertices connected by edges when they are within a specified distance
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ClusterByConnected.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ClusterByConnected.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ClusterByConnected.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ClusterByConnected.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ClusterByConnected.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ClusterByConnected.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ClusterByConnected.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ClusterByConnected.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ClusterByConnected.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -647,12 +638,11 @@ Group elements into integer IDs based on proximity of vector values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ClusterByDistance.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ClusterByDistance.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ClusterByDistance.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ClusterByDistance.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ClusterByDistance.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ClusterByDistance.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ClusterByDistance.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ClusterByDistance.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ClusterByDistance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -672,7 +662,7 @@ Group elements into integer IDs based on proximity of vector values
 ### CombineBundle
 
 ``` python
-CombineBundle(define_signature=False)
+CombineBundle(items=None, *, define_signature=False)
 ```
 
 Combine multiple socket values into one.
@@ -683,12 +673,11 @@ Combine multiple socket values into one.
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.converter.CombineBundle.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.CombineBundle.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.CombineBundle.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.CombineBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineBundle.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.CombineBundle.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.CombineBundle.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.CombineBundle.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.CombineBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Outputs**
 
@@ -719,12 +708,11 @@ Combine four channels into a single color, based on a particular color model
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.CombineColor.i) |  |
 | [`mode`](#nodebpy.nodes.geometry.converter.CombineColor.mode) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.CombineColor.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.CombineColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineColor.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineColor.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.CombineColor.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.CombineColor.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.CombineColor.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.CombineColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -824,12 +812,11 @@ Construct a 4x4 matrix from its individual values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.CombineMatrix.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.CombineMatrix.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.CombineMatrix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineMatrix.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.CombineMatrix.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.CombineMatrix.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.CombineMatrix.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.CombineMatrix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -879,12 +866,11 @@ Combine a translation vector, a rotation, and a scale vector into a transformati
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.CombineTransform.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.CombineTransform.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.CombineTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineTransform.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.CombineTransform.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.CombineTransform.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.CombineTransform.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.CombineTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -921,12 +907,11 @@ Create a vector from X, Y, and Z components
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.CombineXYZ.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.CombineXYZ.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.CombineXYZ.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineXYZ.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineXYZ.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.CombineXYZ.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.CombineXYZ.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.CombineXYZ.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.CombineXYZ.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -961,12 +946,11 @@ Build a rotation from separate angles around each axis
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.EulerToRotation.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.EulerToRotation.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.EulerToRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.EulerToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.EulerToRotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.EulerToRotation.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.EulerToRotation.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.EulerToRotation.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.EulerToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1000,13 +984,12 @@ Remove items from a list
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.FilterList.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.FilterList.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.FilterList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FilterList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FilterList.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.FilterList.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.FilterList.socket_type) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.FilterList.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.FilterList.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FilterList.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1210,12 +1193,11 @@ Find the number of times a given string occurs in another string and the positio
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.FindInString.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.FindInString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.FindInString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FindInString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FindInString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.FindInString.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.FindInString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.FindInString.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FindInString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1251,13 +1233,12 @@ Convert the given floating-point number to an integer, with a choice of methods
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.FloatToInteger.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.FloatToInteger.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.FloatToInteger.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FloatToInteger.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FloatToInteger.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.FloatToInteger.outputs) |  |
 | [`rounding_mode`](#nodebpy.nodes.geometry.converter.FloatToInteger.rounding_mode) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.FloatToInteger.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.FloatToInteger.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FloatToInteger.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1299,14 +1280,13 @@ Retrieve a bundle item by path.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.GetBundleItem.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.GetBundleItem.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.GetBundleItem.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.GetBundleItem.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.GetBundleItem.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.GetBundleItem.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.GetBundleItem.socket_type) |  |
 | [`structure_type`](#nodebpy.nodes.geometry.converter.GetBundleItem.structure_type) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.GetBundleItem.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.GetBundleItem.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.GetBundleItem.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1565,14 +1545,13 @@ Retrieve a value from a list
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.GetListItem.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.GetListItem.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.GetListItem.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.GetListItem.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.GetListItem.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.GetListItem.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.GetListItem.socket_type) |  |
 | [`structure_type`](#nodebpy.nodes.geometry.converter.GetListItem.structure_type) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.GetListItem.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.GetListItem.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.GetListItem.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1837,12 +1816,11 @@ Get paths to items in a nested bundle with a filter
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -1881,12 +1859,11 @@ Generate a randomized integer using the given input value as a seed
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.HashValue.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.HashValue.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.HashValue.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.HashValue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.HashValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.HashValue.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.HashValue.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.HashValue.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.HashValue.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.HashValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -1989,12 +1966,11 @@ Implicitly convert the input value to a fixed socket type
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.ImplicitConversion.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.ImplicitConversion.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ImplicitConversion.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ImplicitConversion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ImplicitConversion.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ImplicitConversion.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ImplicitConversion.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ImplicitConversion.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ImplicitConversion.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ImplicitConversion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -2195,12 +2171,11 @@ Find the nearest element in a group. Similar to the “Sample Nearest” node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.IndexOfNearest.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.IndexOfNearest.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.IndexOfNearest.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.IndexOfNearest.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.IndexOfNearest.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.IndexOfNearest.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.IndexOfNearest.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.IndexOfNearest.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.IndexOfNearest.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2237,13 +2212,12 @@ Perform various math operations on the given integer inputs
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.IntegerMath.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.IntegerMath.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.IntegerMath.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.IntegerMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.IntegerMath.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.converter.IntegerMath.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.IntegerMath.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.IntegerMath.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.IntegerMath.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.IntegerMath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -2445,12 +2419,11 @@ Compute the inverse of the given matrix, if one exists
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.InvertMatrix.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.InvertMatrix.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.InvertMatrix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.InvertMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.InvertMatrix.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.InvertMatrix.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.InvertMatrix.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.InvertMatrix.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.InvertMatrix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2484,12 +2457,11 @@ Compute the inverse of the given rotation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.InvertRotation.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.InvertRotation.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.InvertRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.InvertRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.InvertRotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.InvertRotation.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.InvertRotation.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.InvertRotation.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.InvertRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2522,12 +2494,11 @@ Join multiple bundles together
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.JoinBundle.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.JoinBundle.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.JoinBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.JoinBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.JoinBundle.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.JoinBundle.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.JoinBundle.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.JoinBundle.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.JoinBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2561,12 +2532,11 @@ Count how many items are in a given list
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.ListLength.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.ListLength.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ListLength.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ListLength.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ListLength.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ListLength.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ListLength.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ListLength.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ListLength.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ListLength.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -2797,12 +2767,11 @@ Remap a value from a range to a target range
 | [`data_type`](#nodebpy.nodes.geometry.converter.MapRange.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.MapRange.i) |  |
 | [`interpolation_type`](#nodebpy.nodes.geometry.converter.MapRange.interpolation_type) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.MapRange.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.MapRange.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MapRange.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MapRange.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.MapRange.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.MapRange.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.MapRange.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.MapRange.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -2915,12 +2884,11 @@ Check if a given string exists within another string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.MatchString.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.MatchString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.MatchString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MatchString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatchString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.MatchString.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.MatchString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.MatchString.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.MatchString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -2964,13 +2932,12 @@ Perform math operations
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.Math.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.Math.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.Math.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.Math.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Math.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.converter.Math.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.Math.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.Math.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.Math.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.Math.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_clamp`](#nodebpy.nodes.geometry.converter.Math.use_clamp) |  |
 
 #### Methods
@@ -3380,12 +3347,11 @@ Compute the determinant of the given matrix
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3418,12 +3384,11 @@ Compute the singular value decomposition of the 3x3 part of a matrix
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.MatrixSVD.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.MatrixSVD.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.MatrixSVD.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MatrixSVD.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatrixSVD.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.MatrixSVD.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.MatrixSVD.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.MatrixSVD.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.MatrixSVD.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3459,12 +3424,11 @@ Perform a matrix multiplication on two input matrices
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3512,12 +3476,11 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.PackUVIslands.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.PackUVIslands.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.PackUVIslands.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.PackUVIslands.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.PackUVIslands.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.PackUVIslands.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.PackUVIslands.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.PackUVIslands.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.PackUVIslands.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3557,12 +3520,11 @@ Project a point using a matrix, using location, rotation, scale, and perspective
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ProjectPoint.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ProjectPoint.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ProjectPoint.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ProjectPoint.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ProjectPoint.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ProjectPoint.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ProjectPoint.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ProjectPoint.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ProjectPoint.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3599,12 +3561,11 @@ Build a rotation from quaternion components
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3653,12 +3614,11 @@ Output a randomized value
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.RandomValue.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.RandomValue.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.RandomValue.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.RandomValue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RandomValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RandomValue.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.RandomValue.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.RandomValue.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.RandomValue.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.RandomValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -3738,12 +3698,11 @@ Replace a given string segment with another
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ReplaceString.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ReplaceString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ReplaceString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ReplaceString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ReplaceString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ReplaceString.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ReplaceString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ReplaceString.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ReplaceString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3778,12 +3737,11 @@ Reverse the order of the characters in a string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ReverseString.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ReverseString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ReverseString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ReverseString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ReverseString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ReverseString.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ReverseString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ReverseString.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ReverseString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3827,14 +3785,13 @@ Apply a secondary Euler rotation to a given Euler rotation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotateEuler.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.RotateEuler.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.RotateEuler.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateEuler.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateEuler.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.RotateEuler.outputs) |  |
 | [`rotation_type`](#nodebpy.nodes.geometry.converter.RotateEuler.rotation_type) |  |
 | [`space`](#nodebpy.nodes.geometry.converter.RotateEuler.space) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.RotateEuler.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.RotateEuler.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.RotateEuler.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -3894,13 +3851,12 @@ Apply a secondary rotation to a given rotation value
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotateRotation.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.RotateRotation.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.RotateRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateRotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.RotateRotation.outputs) |  |
 | [`rotation_space`](#nodebpy.nodes.geometry.converter.RotateRotation.rotation_space) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.RotateRotation.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.RotateRotation.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.RotateRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3935,12 +3891,11 @@ Apply a rotation to a given vector
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotateVector.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.RotateVector.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.RotateVector.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateVector.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateVector.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.RotateVector.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.RotateVector.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.RotateVector.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.RotateVector.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -3974,12 +3929,11 @@ Convert a rotation to axis angle components
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4013,12 +3967,11 @@ Convert a standard rotation value to an Euler rotation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotationToEuler.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.RotationToEuler.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.RotationToEuler.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToEuler.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToEuler.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.RotationToEuler.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.RotationToEuler.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.RotationToEuler.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.RotationToEuler.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4051,12 +4004,11 @@ Retrieve the quaternion components representing a rotation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4108,12 +4060,11 @@ Retrieve the amplitude from a sound data-block of a frequency range at a given t
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4137,7 +4088,7 @@ Retrieve the amplitude from a sound data-block of a frequency range at a given t
 ### SeparateBundle
 
 ``` python
-SeparateBundle(bundle=None, *, define_signature=False)
+SeparateBundle(bundle=None, items=None, *, define_signature=False)
 ```
 
 Split a bundle into multiple sockets.
@@ -4154,12 +4105,11 @@ Split a bundle into multiple sockets.
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.converter.SeparateBundle.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateBundle.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SeparateBundle.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SeparateBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateBundle.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SeparateBundle.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SeparateBundle.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SeparateBundle.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SeparateBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4187,12 +4137,11 @@ Split a color into separate channels, based on a particular color model
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateColor.i) |  |
 | [`mode`](#nodebpy.nodes.geometry.converter.SeparateColor.mode) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SeparateColor.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SeparateColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateColor.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateColor.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SeparateColor.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SeparateColor.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SeparateColor.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SeparateColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -4260,12 +4209,11 @@ Split a 4x4 matrix into its individual values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateMatrix.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SeparateMatrix.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SeparateMatrix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateMatrix.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SeparateMatrix.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SeparateMatrix.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SeparateMatrix.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SeparateMatrix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4313,12 +4261,11 @@ Split a transformation matrix into a translation vector, a rotation, and a scale
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateTransform.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SeparateTransform.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SeparateTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateTransform.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SeparateTransform.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SeparateTransform.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SeparateTransform.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SeparateTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4353,12 +4300,11 @@ Split a vector into its X, Y, and Z components
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateXYZ.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SeparateXYZ.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SeparateXYZ.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateXYZ.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateXYZ.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SeparateXYZ.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SeparateXYZ.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SeparateXYZ.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SeparateXYZ.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4394,12 +4340,11 @@ Convert the case of a string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SetStringCase.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SetStringCase.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SetStringCase.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SetStringCase.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SetStringCase.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SetStringCase.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SetStringCase.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SetStringCase.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SetStringCase.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4435,12 +4380,11 @@ Extract a string segment from a larger string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SliceString.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SliceString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SliceString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SliceString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SliceString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SliceString.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SliceString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SliceString.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SliceString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4485,13 +4429,12 @@ Sort a list based on weights
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SortList.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SortList.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SortList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SortList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SortList.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SortList.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.SortList.socket_type) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SortList.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SortList.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SortList.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -4695,12 +4638,11 @@ Split a string into a list using a separator
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.SplitString.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.SplitString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.SplitString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SplitString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SplitString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.SplitString.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.SplitString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.SplitString.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.SplitString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -4743,14 +4685,13 @@ Store a bundle item by path and data type.
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.StoreBundleItem.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.StoreBundleItem.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.StoreBundleItem.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.StoreBundleItem.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StoreBundleItem.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.StoreBundleItem.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.StoreBundleItem.socket_type) |  |
 | [`structure_type`](#nodebpy.nodes.geometry.converter.StoreBundleItem.structure_type) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.StoreBundleItem.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.StoreBundleItem.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.StoreBundleItem.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -5006,12 +4947,11 @@ Output the number of characters in the given string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.StringLength.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.StringLength.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.StringLength.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.StringLength.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StringLength.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.StringLength.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.StringLength.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.StringLength.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.StringLength.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -5046,12 +4986,11 @@ Derive a numeric value from a given string representation
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.StringToValue.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.StringToValue.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.StringToValue.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.StringToValue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.StringToValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StringToValue.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.StringToValue.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.StringToValue.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.StringToValue.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.StringToValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
@@ -5110,12 +5049,11 @@ Check if a filter string matches a list of tags
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.TagFilter.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.TagFilter.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.TagFilter.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TagFilter.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TagFilter.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.TagFilter.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.TagFilter.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.TagFilter.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.TagFilter.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -5150,12 +5088,11 @@ Apply a transformation matrix (excluding translation) to the given vector
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.TransformDirection.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.TransformDirection.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.TransformDirection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TransformDirection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransformDirection.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.TransformDirection.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.TransformDirection.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.TransformDirection.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.TransformDirection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -5190,12 +5127,11 @@ Apply a transformation matrix to the given vector
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.TransformPoint.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.TransformPoint.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.TransformPoint.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TransformPoint.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransformPoint.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.TransformPoint.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.TransformPoint.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.TransformPoint.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.TransformPoint.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -5229,12 +5165,11 @@ Flip a matrix over its diagonal, turning columns into rows and vice-versa
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.TransposeMatrix.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.TransposeMatrix.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.TransposeMatrix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TransposeMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransposeMatrix.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.TransposeMatrix.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.TransposeMatrix.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.TransposeMatrix.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.TransposeMatrix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -5271,12 +5206,11 @@ Remove characters from the beginning and end of a string
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.TrimString.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.TrimString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.TrimString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TrimString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TrimString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.TrimString.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.TrimString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.TrimString.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.TrimString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -5327,12 +5261,11 @@ Generate a UV map based on seam edges
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.UVUnwrap.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.UVUnwrap.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.UVUnwrap.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.UVUnwrap.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.UVUnwrap.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.UVUnwrap.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.UVUnwrap.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.UVUnwrap.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.UVUnwrap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -5375,12 +5308,11 @@ Generate a string representation of the given input value
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.converter.ValueToString.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.ValueToString.i) |  |
-| [`name`](#nodebpy.nodes.geometry.converter.ValueToString.name) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.ValueToString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ValueToString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ValueToString.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.ValueToString.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.ValueToString.tree) |  |
-| [`type`](#nodebpy.nodes.geometry.converter.ValueToString.type) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.ValueToString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
