@@ -15,6 +15,7 @@ from ...types import (
     InputMenu,
     InputString,
     InputVector,
+    InputAny,
 )
 
 from ...builder.socket import (
@@ -63,8 +64,8 @@ class BlurAttribute(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeBlurAttribute"
     node: bpy.types.GeometryNodeBlurAttribute
 
-    class _Inputs(SocketAccessor):
-        value: FloatSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
         """Value"""
         iterations: IntegerSocket
         """Iterations"""
@@ -78,13 +79,13 @@ class BlurAttribute(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
-        value: InputColor | InputFloat | InputInteger | InputVector = 0.0,
+        value: InputAny = 0.0,
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
         *,

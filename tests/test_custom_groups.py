@@ -77,7 +77,7 @@ class _DupNameGroup(CustomGeometryGroup):
 def test_named_links_resolve_same_name_by_type():
     """Same-named group inputs are matched to the value whose socket type
     agrees, via the _named_links path."""
-    with TreeBuilder() as tree:
+    with TreeBuilder():
         f = g.Value(0.5).o.value
         v = g.Position().o.position
         node = _DupNameGroup(_named_links=[("Amount", f), ("Amount", v)])

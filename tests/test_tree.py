@@ -3,7 +3,6 @@ import bpy
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.nodes.geometry.groups import PrincipalComponents
-from tests.test_usecases import test_PCA_asset
 
 
 def test_create_tree_and_save():

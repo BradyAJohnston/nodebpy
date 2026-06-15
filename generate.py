@@ -87,11 +87,8 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Field Min",
     ],
     manually_defined=(
-        "SetHandleType",
-        "HandleTypeSelection",
         "IndexSwitch",
         "MenuSwitch",
-        "Switch",
         "CaptureAttribute",
         "FieldToGrid",
         "FieldToList",
@@ -193,6 +190,166 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
 )
 
 ALL_CONFIGS = [GEOMETRY_CONFIG, SHADER_CONFIG, COMPOSITOR_CONFIG]
+
+
+# ---------------------------------------------------------------------------
+# Customization registry
+#
+# Mirrors codegen.register_emitter: instead of hand-writing whole node classes
+# in manual.py, a node keeps its auto-generated boilerplate (sockets, docstring,
+# property accessors, enum factory methods) and a registered NodeCustomization
+# layers behaviour on top — extra base mixins, suppressed members the mixin
+# replaces, and bespoke body source (e.g. a custom __init__). Keyed by bl_idname.
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class NodeCustomization:
+    """Declarative customization applied to a generated node class.
+
+    Attributes
+    ----------
+    bl_idname:
+        The Blender RNA name of the node this customization applies to.
+    bases:
+        Extra base classes, prepended before ``BaseNode`` in the class
+        definition (e.g. ``("_HandleModeMixin",)``). Listed first so their
+        methods win via MRO over the generated body.
+    imports:
+        Raw import lines added to the generated module header so ``bases`` and
+        ``extra_body`` resolve (e.g. ``"from .._mixins import _HandleModeMixin"``).
+    suppress:
+        Names of generated members to omit because a mixin or ``extra_body``
+        replaces them. May include property accessor names, enum factory method
+        names, and the special token ``"__init__"`` to drop the generated
+        constructor.
+    extra_body:
+        Source appended verbatim to the class body (already indented four
+        spaces). Used for a bespoke ``__init__`` or methods that reference the
+        node's own generated types.
+    """
+
+    bl_idname: str
+    bases: tuple[str, ...] = ()
+    imports: tuple[str, ...] = ()
+    suppress: frozenset[str] = field(default_factory=frozenset)
+    extra_body: str = ""
+
+
+_CUSTOMIZATIONS: dict[str, NodeCustomization] = {}
+
+
+def register_customization(custom: NodeCustomization) -> None:
+    """Register a :class:`NodeCustomization`, keyed by ``bl_idname``."""
+    _CUSTOMIZATIONS[custom.bl_idname] = custom
+
+
+# The Bézier handle nodes share an ENUM_FLAG ``mode`` set ({"LEFT", "RIGHT"})
+# that the generator renders as a broken ``mode: str`` parameter. _HandleModeMixin
+# replaces it with ergonomic ``left``/``right`` toggles; the bespoke __init__
+# exposes those instead of ``mode``.
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeCurveSetHandles",
+        bases=("_HandleModeMixin",),
+        imports=("from .._mixins import _HandleModeMixin",),
+        suppress=frozenset({"__init__", "mode"}),
+        extra_body="""    def __init__(
+        self,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        left: bool = True,
+        right: bool = True,
+        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
+    ):
+        super().__init__()
+        self.handle_type = handle_type
+        self.left = left
+        self.right = right
+        self._establish_links(Curve=curve, Selection=selection)""",
+    )
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeCurveHandleTypeSelection",
+        bases=("_HandleModeMixin",),
+        imports=("from .._mixins import _HandleModeMixin",),
+        suppress=frozenset({"__init__", "mode"}),
+        extra_body="""    def __init__(
+        self,
+        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
+        left: bool = True,
+        right: bool = True,
+    ):
+        super().__init__()
+        self.handle_type = handle_type
+        self.left = left
+        self.right = right""",
+    )
+)
+
+
+# Bundle pack/unpack nodes carry dynamic items the introspector can't see; the
+# bespoke __init__ adds them via the bundle_items collection (Combine infers the
+# type from a linked source through the __extend__ socket; Separate declares each
+# item by name + socket-type string). The generated define_signature accessor and
+# Outputs are kept.
+register_customization(
+    NodeCustomization(
+        bl_idname="NodeCombineBundle",
+        suppress=frozenset({"__init__"}),
+        extra_body='''    def __init__(
+        self,
+        items: "dict[str, InputLinkable] | None" = None,
+        *,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        self.define_signature = define_signature
+        for name, value in (items or {}).items():
+            self._add_bundle_item(name, value)
+
+    def _add_bundle_item(self, name: str, value: "InputLinkable | str") -> None:
+        """Add a named bundle item.
+
+        A socket-type string (``"GEOMETRY"``) declares an unlinked item; any
+        other value is linked in via the ``__extend__`` virtual socket, which
+        makes Blender create an item of the source socket\'s own type (then
+        renamed, since the item otherwise inherits the source socket\'s name)."""
+        if isinstance(value, str):
+            self.node.bundle_items.new(value, name)
+            return
+        extend = self.node.inputs[len(self.node.inputs) - 1]
+        self.tree.link(self._source_socket(value), extend)
+        # Re-fetch by index: the collection just grew, so any earlier item
+        # reference is stale (see bpy collection invalidation).
+        self.node.bundle_items[len(self.node.bundle_items) - 1].name = name''',
+    )
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="NodeSeparateBundle",
+        suppress=frozenset({"__init__"}),
+        extra_body="""    def __init__(
+        self,
+        bundle: InputBundle = None,
+        items: "dict[str, str] | None" = None,
+        *,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        self.define_signature = define_signature
+        # Items are output sockets pulled from the bundle; each is declared by
+        # name and socket-type string (the inverse of CombineBundle, where the
+        # type is inferred from a linked source).
+        for name, socket_type in (items or {}).items():
+            self.node.bundle_items.new(socket_type, name)
+        self._establish_links(Bundle=bundle)""",
+    )
+)
 
 
 # ---------------------------------------------------------------------------
@@ -409,7 +566,14 @@ class PropertyInfo:
         needs_ignore = (
             self.prop_type == "ENUM"
             and name
-            in ["data_type", "subsurface_method", "falloff", "socket_type", "layer"]
+            in [
+                "data_type",
+                "subsurface_method",
+                "falloff",
+                "socket_type",
+                "layer",
+                "input_type",
+            ]
         ) or (
             self.prop_type == "STRING"
             and self.identifier in ["layer", "view", "layer_name"]
@@ -561,6 +725,26 @@ class NodeInfo:
                         varying.add(s.identifier)
         return varying
 
+    @property
+    def varying_input_identifiers(self) -> set[str]:
+        """Input socket identifiers whose type changes across enum values.
+
+        Mirrors :attr:`varying_output_identifiers` for the input side so that
+        nodes like ``Switch`` (where ``false``/``true`` track the generic
+        output type) can be typed with the shared ``_S`` type variable.
+        """
+        default_types = {s.identifier: s.bl_socket_type for s in self.inputs}
+        varying = set()
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                for s in enum.sockets:
+                    if (
+                        s.identifier in default_types
+                        and s.bl_socket_type != default_types[s.identifier]
+                    ):
+                        varying.add(s.identifier)
+        return varying
+
     def output_class_for_enum(
         self, socket_identifier: str, enum_identifier: str
     ) -> str:
@@ -580,8 +764,16 @@ class NodeInfo:
                         return cls
         return "Socket"
 
-    def generate_enum_class_methods(self, config: TreeTypeConfig | None = None) -> str:
-        """Generate @classmethod convenience methods for enum operations."""
+    def generate_enum_class_methods(
+        self,
+        config: TreeTypeConfig | None = None,
+        suppress: frozenset[str] = frozenset(),
+    ) -> str:
+        """Generate @classmethod convenience methods for enum operations.
+
+        ``suppress`` names factory methods to omit (a registered customization
+        replaces them).
+        """
         methods = []
         cls_name = self.class_name_for_config(config) if config else self.class_name
 
@@ -676,6 +868,9 @@ class NodeInfo:
                     return_type = cls_name
                     call_expr = f"cls({call_params_str})"
 
+                if method_name in suppress:
+                    continue
+
                 method = f'''
     @classmethod
     def {method_name}(
@@ -740,6 +935,9 @@ class NodeInfo:
             docstring = f"Create {self.name} node with type '{item_value}'."
             if enum.description:
                 docstring += f" {enum.description}"
+
+            if method_name in suppress:
+                continue
 
             method = f'''
     @classmethod
@@ -1074,6 +1272,17 @@ def probe_node_tree_compatibility(node_type: type) -> list[str]:
 def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     """Generate Python class code for a node."""
     class_name = node_info.class_name_for_config(config)
+    custom = _CUSTOMIZATIONS.get(node_info.bl_idname)
+    suppress = custom.suppress if custom else frozenset()
+
+    # A node is generic when a single output socket changes type across enum
+    # values (the type flows through the _T/_S type variables). Any input that
+    # varies in lock-step (e.g. Switch's false/true) shares that _S, and its
+    # __init__ parameter accepts InputAny rather than a sprawling union.
+    varying_outputs = node_info.varying_output_identifiers
+    is_generic = len(varying_outputs) == 1
+    varying_inputs = node_info.varying_input_identifiers if is_generic else set()
+    inputs_generic = bool(varying_inputs)
 
     init_params = ["self"]
     establish_links_params = []
@@ -1101,9 +1310,13 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     for socket in node_info.inputs:
         param_name = get_socket_param_name(socket, sockets_use_same_name)
         variants = _socket_type_variants[socket.identifier]
-        type_hint = (
-            " | ".join(sorted(variants)) if len(variants) > 1 else socket.type_hint
-        )
+        if inputs_generic and socket.identifier in varying_inputs:
+            # Generic input — accepts any socket type (matches the _S annotation).
+            type_hint = "InputAny"
+        elif len(variants) > 1:
+            type_hint = " | ".join(sorted(variants))
+        else:
+            type_hint = socket.type_hint
 
         if "GRID" in socket.structure_type or "LIST" in socket.structure_type:
             default = "None"
@@ -1195,9 +1408,11 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
             establish_call = "        key_args = {}"
 
     property_accessors = [
-        prop.format_property_accessors() for prop in node_info.properties
+        prop.format_property_accessors()
+        for prop in node_info.properties
+        if prop.format_name() not in suppress
     ]
-    enum_methods = node_info.generate_enum_class_methods(config)
+    enum_methods = node_info.generate_enum_class_methods(config, suppress)
 
     # Add node type annotation — always use specific type so property access is typed
     # TODO: remove the ty: ignore as its only for unreleased bpy version and the new nodes
@@ -1241,20 +1456,32 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     docstring_body = "\n    ".join(doc_lines).rstrip()
 
+    # Inputs/Outputs inner classes are generic (parameterised by _S) when the
+    # node is generic; see the flags computed at the top of this function.
+    def _input_annotation(socket: SocketInfo) -> str:
+        if inputs_generic and socket.identifier in varying_inputs:
+            attr_name = normalize_name(socket.identifier)
+            doc = socket.description or socket.name
+            ann = f"        {attr_name}: _S"
+            if doc:
+                ann += f'\n        """{doc}"""'
+            return ann
+        return socket.format_accessor_annotation()
+
     # Build Inputs inner class
-    input_annotations = [
-        socket.format_accessor_annotation() for socket in node_info.inputs
-    ] + [socket.format_accessor_annotation() for socket in _extra_sockets]
+    input_annotations = [_input_annotation(socket) for socket in node_info.inputs] + [
+        _input_annotation(socket) for socket in _extra_sockets
+    ]
+    inputs_base = (
+        "(SocketAccessor, Generic[_S])" if inputs_generic else "(SocketAccessor)"
+    )
     if input_annotations:
-        inputs_class = "    class _Inputs(SocketAccessor):\n" + "\n".join(
+        inputs_class = f"    class _Inputs{inputs_base}:\n" + "\n".join(
             input_annotations
         )
     else:
-        inputs_class = "    class _Inputs(SocketAccessor):\n        pass"
+        inputs_class = f"    class _Inputs{inputs_base}:\n        pass"
 
-    # Build Outputs inner class — use Generic[_S] if any output varies with enum values.
-    varying_outputs = node_info.varying_output_identifiers
-    is_generic = len(varying_outputs) == 1
     output_annotations = []
     for socket in node_info.outputs:
         if is_generic and socket.identifier in varying_outputs:
@@ -1275,8 +1502,12 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     else:
         outputs_class = "    class _Outputs(SocketAccessor):\n        pass"
 
-    class_base = "(BaseNode, Generic[_T])" if is_generic else "(BaseNode)"
+    # Prepend any registered mixin bases (listed first so they win via MRO).
+    base_classes = list(custom.bases) if custom else []
+    generated_base = "BaseNode, Generic[_T]" if is_generic else "BaseNode"
+    class_base = "(" + ", ".join(base_classes + [generated_base]) + ")"
     o_return_type = "_Outputs[_T]" if is_generic else "_Outputs"
+    i_return_type = "_Inputs[_T]" if inputs_generic else "_Inputs"
 
     # When extra sockets exist, properties must be set before collecting socket IDs
     # so the node reflects the correct enum state when we filter key_args.
@@ -1284,6 +1515,18 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         init_body = f"\n{property_setting}\n{establish_call}"
     else:
         init_body = f"\n{establish_call}\n{property_setting}"
+
+    # A customization may drop the generated constructor (its mixin or
+    # extra_body provides one instead).
+    if "__init__" in suppress:
+        init_block = ""
+    else:
+        init_block = f"""    def __init__{init_signature}:
+        super().__init__(){init_body}
+        self._establish_links(**key_args)
+"""
+
+    extra_body = f"\n{custom.extra_body}\n" if custom and custom.extra_body else ""
 
     class_code = f'''class {class_name}{class_base}:
     """
@@ -1299,16 +1542,14 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     if TYPE_CHECKING:
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> {i_return_type}: ...
         @property
         def o(self) -> {o_return_type}: ...
 
-    def __init__{init_signature}:
-        super().__init__(){init_body}
-        self._establish_links(**key_args)
-
+{init_block}
 {enum_methods}
-{chr(10).join(property_accessors) if property_accessors else ""}'''
+{chr(10).join(property_accessors) if property_accessors else ""}
+{extra_body}'''
 
     return class_code.strip()
 
@@ -1398,12 +1639,25 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     ]
     lists = [s + "List" for s in sockets]
     all = sockets + grids + lists
-    inputs = [f"Input{x}".replace("Socket", "") for x in all]
+    # InputAny is the widened type used for generic input parameters; ruff prunes
+    # it from modules that don't use it.
+    inputs = [f"Input{x}".replace("Socket", "") for x in all] + ["InputAny"]
     typevars = ["_T", "_S"]
 
     lines.append(f"from ...types import (\n    {',\n'.join(inputs)},\n)")
 
     lines.append(f"from ...builder.socket import ({', '.join(all + typevars)})")
+
+    # Imports required by any registered customizations in this module
+    # (mixin bases referenced in the class definition / extra_body).
+    custom_imports: list[str] = []
+    for node in nodes:
+        custom = _CUSTOMIZATIONS.get(node.bl_idname)
+        if custom:
+            for imp in custom.imports:
+                if imp not in custom_imports:
+                    custom_imports.append(imp)
+    lines.extend(custom_imports)
 
     return "\n\n".join(lines) + "\n"
 

@@ -12,7 +12,6 @@ from nodebpy.builder import BooleanSocket, FloatSocket
 from nodebpy.nodes.geometry.groups import (
     ClipFieldToBox,
     GeometryPrincipalComponents,
-    PrincipalComponents,
 )
 
 

@@ -20,6 +20,7 @@ from ...types import (
     InputRotation,
     InputString,
     InputVector,
+    InputAny,
 )
 
 from ...builder.socket import (
@@ -40,6 +41,8 @@ from ...builder.socket import (
     _T,
     _S,
 )
+
+from .._mixins import _HandleModeMixin
 
 
 class Arc(BaseNode):
@@ -4480,10 +4483,10 @@ class Raycast(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeRaycast"
     node: bpy.types.GeometryNodeRaycast
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         target_geometry: GeometrySocket
         """Target Geometry"""
-        attribute: FloatSocket
+        attribute: _S
         """Attribute"""
         interpolation: MenuSocket
         """Interpolation"""
@@ -4509,20 +4512,14 @@ class Raycast(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
         target_geometry: InputGeometry = None,
-        attribute: InputBoolean
-        | InputColor
-        | InputFloat
-        | InputInteger
-        | InputMatrix
-        | InputRotation
-        | InputVector = 0.0,
+        attribute: InputAny = 0.0,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
         source_position: InputVector = None,
         ray_direction: InputVector = None,
@@ -5318,10 +5315,10 @@ class SampleNearestSurface(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeSampleNearestSurface"
     node: bpy.types.GeometryNodeSampleNearestSurface
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         mesh: GeometrySocket
         """Mesh"""
-        value: FloatSocket
+        value: _S
         """Value"""
         group_id: IntegerSocket
         """Group ID"""
@@ -5339,20 +5336,14 @@ class SampleNearestSurface(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
         mesh: InputGeometry = None,
-        value: InputBoolean
-        | InputColor
-        | InputFloat
-        | InputInteger
-        | InputMatrix
-        | InputRotation
-        | InputVector = 0.0,
+        value: InputAny = 0.0,
         group_id: InputInteger = 0,
         sample_position: InputVector = None,
         sample_group_id: InputInteger = 0,
@@ -5578,10 +5569,10 @@ class SampleUVSurface(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeSampleUVSurface"
     node: bpy.types.GeometryNodeSampleUVSurface
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         mesh: GeometrySocket
         """Mesh"""
-        value: FloatSocket
+        value: _S
         """Value"""
         source_uv_map: VectorSocket
         """UV Map"""
@@ -5597,20 +5588,14 @@ class SampleUVSurface(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
         mesh: InputGeometry = None,
-        value: InputBoolean
-        | InputColor
-        | InputFloat
-        | InputInteger
-        | InputMatrix
-        | InputRotation
-        | InputVector = 0.0,
+        value: InputAny = 0.0,
         source_uv_map: InputVector = None,
         sample_uv: InputVector = None,
         *,
@@ -6911,6 +6896,102 @@ class SetHandlePositions(BaseNode):
     @mode.setter
     def mode(self, value: Literal["LEFT", "RIGHT"]):
         self.node.mode = value
+
+
+class SetHandleType(_HandleModeMixin, BaseNode):
+    """
+    Set the handle type for the control points of a Bézier curve
+
+    Parameters
+    ----------
+    curve : InputGeometry
+        Curve
+    selection : InputBoolean
+        Selection
+
+    Inputs
+    ------
+    i.curve : GeometrySocket
+        Curve
+    i.selection : BooleanSocket
+        Selection
+
+    Outputs
+    -------
+    o.curve : GeometrySocket
+        Curve
+    """
+
+    _bl_idname = "GeometryNodeCurveSetHandles"
+    node: bpy.types.GeometryNodeCurveSetHandles
+
+    class _Inputs(SocketAccessor):
+        curve: GeometrySocket
+        """Curve"""
+        selection: BooleanSocket
+        """Selection"""
+
+    class _Outputs(SocketAccessor):
+        curve: GeometrySocket
+        """Curve"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    @classmethod
+    def free(
+        cls, curve: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetHandleType":
+        """Create Set Handle Type with operation 'Free'. The handle can be moved anywhere, and does not influence the point's other handle"""
+        return cls(handle_type="FREE", curve=curve, selection=selection)
+
+    @classmethod
+    def auto(
+        cls, curve: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetHandleType":
+        """Create Set Handle Type with operation 'Auto'. The location is automatically calculated to be smooth"""
+        return cls(handle_type="AUTO", curve=curve, selection=selection)
+
+    @classmethod
+    def vector(
+        cls, curve: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetHandleType":
+        """Create Set Handle Type with operation 'Vector'. The location is calculated to point to the next/previous control point"""
+        return cls(handle_type="VECTOR", curve=curve, selection=selection)
+
+    @classmethod
+    def align(
+        cls, curve: InputGeometry = None, selection: InputBoolean = True
+    ) -> "SetHandleType":
+        """Create Set Handle Type with operation 'Align'. The location is constrained to point in the opposite direction as the other handle"""
+        return cls(handle_type="ALIGN", curve=curve, selection=selection)
+
+    @property
+    def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
+        return self.node.handle_type
+
+    @handle_type.setter
+    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
+        self.node.handle_type = value
+
+    def __init__(
+        self,
+        curve: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        left: bool = True,
+        right: bool = True,
+        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
+    ):
+        super().__init__()
+        self.handle_type = handle_type
+        self.left = left
+        self.right = right
+        self._establish_links(Curve=curve, Selection=selection)
 
 
 class SetID(BaseNode):

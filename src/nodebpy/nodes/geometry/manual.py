@@ -38,7 +38,6 @@ from ...builder import (
     FloatSocket,
     FloatSocketGrid,
     FloatSocketList,
-    FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
@@ -55,7 +54,6 @@ from ...builder import (
     RotationSocket,
     RotationSocketList,
     SocketAccessor,
-    SoundSocket,
     StringSocket,
     StringSocketList,
     TreeBuilder,
@@ -76,7 +74,6 @@ from ...types import (
     InputColor,
     InputFloat,
     InputFloatGrid,
-    InputFont,
     InputGeometry,
     InputGrid,
     InputImage,
@@ -88,7 +85,6 @@ from ...types import (
     InputMenu,
     InputObject,
     InputRotation,
-    InputSound,
     InputString,
     InputVector,
     InputVectorGrid,
@@ -135,8 +131,6 @@ __all__ = (
     "GeometryToInstance",
     "SDFGridBoolean",
     #
-    "SetHandleType",
-    "HandleTypeSelection",
     "IndexSwitch",
     "MenuSwitch",
     "MeshBoolean",
@@ -163,7 +157,6 @@ __all__ = (
     "Float",
     "FloatCurve",
     "ColorRamp",
-    "Switch",
     "StoreNamedAttribute",
 )
 
@@ -175,285 +168,6 @@ def tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
 ) -> TreeBuilder[GeometryNodeTree]:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
-
-
-_SwitchDataTypes = Literal[
-    "FLOAT",
-    "INT",
-    "BOOLEAN",
-    "VECTOR",
-    "RGBA",
-    "ROTATION",
-    "MATRIX",
-    "STRING",
-    "MENU",
-    "OBJECT",
-    "IMAGE",
-    "GEOMETRY",
-    "COLLECTION",
-    "MATERIAL",
-    "BUNDLE",
-    "CLOSURE",
-    "FONT",
-    "SOUND",
-]
-
-
-class Switch(BaseNode, Generic[_T]):
-    """
-    Switch between two inputs
-
-    Parameters
-    ----------
-    switch : InputBoolean
-        Switch
-    false : InputFloat
-        False
-    true : InputFloat
-        True
-
-    Inputs
-    ------
-    i.switch : BooleanSocket
-        Switch
-    i.false : FloatSocket
-        False
-    i.true : FloatSocket
-        True
-
-    Outputs
-    -------
-    o.output : FloatSocket
-        Output
-    """
-
-    _bl_idname = "GeometryNodeSwitch"
-    node: bpy.types.GeometryNodeSwitch
-
-    class _Inputs(SocketAccessor, Generic[_S]):
-        switch: BooleanSocket
-        """Switch"""
-        false: _S
-        """False"""
-        true: _S
-        """True"""
-
-    class _Outputs(SocketAccessor, Generic[_S]):
-        output: _S
-        """Output"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs[_T]: ...
-        @property
-        def o(self) -> _Outputs[_T]: ...
-
-    def __init__(
-        self,
-        switch: InputBoolean = False,
-        false: InputAny = None,
-        true: InputAny = None,
-        *,
-        input_type: _SwitchDataTypes = "FLOAT",
-    ):
-        super().__init__()
-        key_args = {"Switch": switch, "False": false, "True": true}
-        self.input_type = input_type
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls,
-        switch: InputBoolean = False,
-        false: InputFloat = 0.0,
-        true: InputFloat = 0.0,
-    ) -> "Switch[FloatSocket]":
-        """Create Switch with operation 'Float'."""
-        return Switch(input_type="FLOAT", switch=switch, false=false, true=true)
-
-    @classmethod
-    def integer(
-        cls,
-        switch: InputBoolean = False,
-        false: InputInteger = 0,
-        true: InputInteger = 0,
-    ) -> "Switch[IntegerSocket]":
-        """Create Switch with operation 'Integer'."""
-        return Switch(input_type="INT", switch=switch, false=false, true=true)
-
-    @classmethod
-    def boolean(
-        cls,
-        switch: InputBoolean = False,
-        false: InputBoolean = False,
-        true: InputBoolean = False,
-    ) -> "Switch[BooleanSocket]":
-        """Create Switch with operation 'Boolean'."""
-        return Switch(input_type="BOOLEAN", switch=switch, false=false, true=true)
-
-    @classmethod
-    def vector(
-        cls,
-        switch: InputBoolean = False,
-        false: InputVector = None,
-        true: InputVector = None,
-    ) -> "Switch[VectorSocket]":
-        """Create Switch with operation 'Vector'."""
-        return Switch(input_type="VECTOR", switch=switch, false=false, true=true)
-
-    @classmethod
-    def color(
-        cls,
-        switch: InputBoolean = False,
-        false: InputColor = None,
-        true: InputColor = None,
-    ) -> "Switch[ColorSocket]":
-        """Create Switch with operation 'Color'."""
-        return Switch(input_type="RGBA", switch=switch, false=false, true=true)
-
-    @classmethod
-    def rotation(
-        cls,
-        switch: InputBoolean = False,
-        false: InputRotation = None,
-        true: InputRotation = None,
-    ) -> "Switch[RotationSocket]":
-        """Create Switch with operation 'Rotation'."""
-        return Switch(input_type="ROTATION", switch=switch, false=false, true=true)
-
-    @classmethod
-    def matrix(
-        cls,
-        switch: InputBoolean = False,
-        false: InputMatrix = None,
-        true: InputMatrix = None,
-    ) -> "Switch[MatrixSocket]":
-        """Create Switch with operation 'Matrix'."""
-        return Switch(input_type="MATRIX", switch=switch, false=false, true=true)
-
-    @classmethod
-    def string(
-        cls,
-        switch: InputBoolean = False,
-        false: InputString = "",
-        true: InputString = "",
-    ) -> "Switch[StringSocket]":
-        """Create Switch with operation 'String'."""
-        return Switch(input_type="STRING", switch=switch, false=false, true=true)
-
-    @classmethod
-    def menu(
-        cls,
-        switch: InputBoolean = False,
-        false: InputMenu = None,
-        true: InputMenu = None,
-    ) -> "Switch[MenuSocket]":
-        """Create Switch with operation 'Menu'."""
-        return Switch(input_type="MENU", switch=switch, false=false, true=true)
-
-    @classmethod
-    def object(
-        cls,
-        switch: InputBoolean = False,
-        false: InputObject = None,
-        true: InputObject = None,
-    ) -> "Switch[ObjectSocket]":
-        """Create Switch with operation 'Object'."""
-        return Switch(input_type="OBJECT", switch=switch, false=false, true=true)
-
-    @classmethod
-    def image(
-        cls,
-        switch: InputBoolean = False,
-        false: InputImage = None,
-        true: InputImage = None,
-    ) -> "Switch[ImageSocket]":
-        """Create Switch with operation 'Image'."""
-        return Switch(input_type="IMAGE", switch=switch, false=false, true=true)
-
-    @classmethod
-    def geometry(
-        cls,
-        switch: InputBoolean = False,
-        false: InputGeometry = None,
-        true: InputGeometry = None,
-    ) -> "Switch[GeometrySocket]":
-        """Create Switch with operation 'Geometry'."""
-        return Switch(input_type="GEOMETRY", switch=switch, false=false, true=true)
-
-    @classmethod
-    def collection(
-        cls,
-        switch: InputBoolean = False,
-        false: InputCollection = None,
-        true: InputCollection = None,
-    ) -> "Switch[CollectionSocket]":
-        """Create Switch with operation 'Collection'."""
-        return Switch(input_type="COLLECTION", switch=switch, false=false, true=true)
-
-    @classmethod
-    def material(
-        cls,
-        switch: InputBoolean = False,
-        false: InputMaterial = None,
-        true: InputMaterial = None,
-    ) -> "Switch[MaterialSocket]":
-        """Create Switch with operation 'Material'."""
-        return Switch(input_type="MATERIAL", switch=switch, false=false, true=true)
-
-    @classmethod
-    def bundle(
-        cls,
-        switch: InputBoolean = False,
-        false: InputBundle = None,
-        true: InputBundle = None,
-    ) -> "Switch[BundleSocket]":
-        """Create Switch with operation 'Bundle'."""
-        return Switch(input_type="BUNDLE", switch=switch, false=false, true=true)
-
-    @classmethod
-    def closure(
-        cls,
-        switch: InputBoolean = False,
-        false: InputClosure = None,
-        true: InputClosure = None,
-    ) -> "Switch[ClosureSocket]":
-        """Create Switch with operation 'Closure'."""
-        return Switch(input_type="CLOSURE", switch=switch, false=false, true=true)
-
-    @classmethod
-    def font(
-        cls,
-        switch: InputBoolean = False,
-        false: InputFont = None,
-        true: InputFont = None,
-    ) -> "Switch[FontSocket]":
-        """Create Switch with operation 'Font'."""
-        return Switch(input_type="FONT", switch=switch, false=false, true=true)
-
-    @classmethod
-    def sound(
-        cls,
-        switch: InputBoolean = False,
-        false: InputSound = None,
-        true: InputSound = None,
-    ) -> "Switch[SoundSocket]":
-        """Create Switch with operation 'Sound'."""
-        return Switch(input_type="SOUND", switch=switch, false=false, true=true)
-
-    @property
-    def input_type(
-        self,
-    ) -> _SwitchDataTypes:
-        return self.node.input_type  # ty: ignore[invalid-return-type]
-
-    @input_type.setter
-    def input_type(
-        self,
-        value: _SwitchDataTypes,
-    ):
-        self.node.input_type = value
 
 
 _ColorRampColorInterpolations = Literal[
@@ -1602,126 +1316,6 @@ class JoinGeometry(BaseNode):
         for source in reversed(list(geometry)):
             assert source
             self._link(*self._find_best_socket_pair(source, self))
-
-
-class _HandleModeMixin:
-    """Shared ``left``/``right``/``mode`` flags for the Bézier handle nodes
-    (``SetHandleType`` / ``HandleTypeSelection``), whose ``mode`` is an
-    ENUM_FLAG set drawn from ``{"LEFT", "RIGHT"}``. ``left``/``right`` are
-    ergonomic per-side toggles; ``mode`` exposes the raw set."""
-
-    if TYPE_CHECKING:
-        node: (
-            bpy.types.GeometryNodeCurveSetHandles
-            | bpy.types.GeometryNodeCurveHandleTypeSelection
-        )
-
-    @property
-    def left(self) -> bool:
-        return "LEFT" in self.node.mode
-
-    @left.setter
-    def left(self, value: bool):
-        self.node.mode = (
-            (self.node.mode | {"LEFT"}) if value else (self.node.mode - {"LEFT"})
-        )
-
-    @property
-    def right(self) -> bool:
-        return "RIGHT" in self.node.mode
-
-    @right.setter
-    def right(self, value: bool):
-        self.node.mode = (
-            (self.node.mode | {"RIGHT"}) if value else (self.node.mode - {"RIGHT"})
-        )
-
-    @property
-    def mode(self) -> set[Literal["LEFT", "RIGHT"]]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: set[Literal["LEFT", "RIGHT"]]):
-        self.node.mode = value
-
-
-class SetHandleType(_HandleModeMixin, BaseNode):
-    """Set the handle type for the control points of a Bézier curve"""
-
-    _bl_idname = "GeometryNodeCurveSetHandles"
-    node: bpy.types.GeometryNodeCurveSetHandles
-
-    class _Inputs(SocketAccessor):
-        curve: GeometrySocket
-        selection: BooleanSocket
-
-    class _Outputs(SocketAccessor):
-        curve: GeometrySocket
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        curve: InputGeometry = None,
-        selection: InputBoolean = True,
-        *,
-        left: bool = True,
-        right: bool = True,
-        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
-    ):
-        super().__init__()
-        key_args = {"Curve": curve, "Selection": selection}
-        self.handle_type = handle_type
-        self.left = left
-        self.right = right
-        self._establish_links(**key_args)
-
-    @property
-    def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
-        return self.node.handle_type
-
-    @handle_type.setter
-    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
-        self.node.handle_type = value
-
-
-class HandleTypeSelection(_HandleModeMixin, BaseNode):
-    """Provide a selection based on the handle types of Bézier control points"""
-
-    _bl_idname = "GeometryNodeCurveHandleTypeSelection"
-    node: bpy.types.GeometryNodeCurveHandleTypeSelection
-
-    class _Outputs(SocketAccessor):
-        selection: BooleanSocket
-
-    if TYPE_CHECKING:
-
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
-        left: bool = True,
-        right: bool = True,
-    ):
-        super().__init__()
-        self.handle_type = handle_type
-        self.left = left
-        self.right = right
-
-    @property
-    def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
-        return self.node.handle_type
-
-    @handle_type.setter
-    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
-        self.node.handle_type = value
 
 
 class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):

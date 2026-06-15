@@ -11,13 +11,13 @@ from ...types import (
     InputBundle,
     InputClosure,
     InputCollection,
-    InputLinkable,
     InputColor,
     InputFloat,
     InputFont,
     InputGeometry,
     InputImage,
     InputInteger,
+    InputLinkable,
     InputMaterial,
     InputMatrix,
     InputMenu,
@@ -26,6 +26,7 @@ from ...types import (
     InputSound,
     InputString,
     InputVector,
+    InputAny,
 )
 
 from ...builder.socket import (
@@ -846,6 +847,14 @@ class CombineBundle(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
+    @property
+    def define_signature(self) -> bool:
+        return self.node.define_signature
+
+    @define_signature.setter
+    def define_signature(self, value: bool):
+        self.node.define_signature = value
+
     def __init__(
         self,
         items: "dict[str, InputLinkable] | None" = None,
@@ -872,14 +881,6 @@ class CombineBundle(BaseNode):
         # Re-fetch by index: the collection just grew, so any earlier item
         # reference is stale (see bpy collection invalidation).
         self.node.bundle_items[len(self.node.bundle_items) - 1].name = name
-
-    @property
-    def define_signature(self) -> bool:
-        return self.node.define_signature
-
-    @define_signature.setter
-    def define_signature(self, value: bool):
-        self.node.define_signature = value
 
 
 class CombineColor(BaseNode):
@@ -2202,8 +2203,8 @@ class GetListItem(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeListGetItem"
     node: bpy.types.GeometryNodeListGetItem
 
-    class _Inputs(SocketAccessor):
-        list: FloatSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        list: _S
         """List"""
         index: IntegerSocket
         """Index"""
@@ -2215,30 +2216,13 @@ class GetListItem(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
-        list: InputBoolean
-        | InputBundle
-        | InputClosure
-        | InputCollection
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputGeometry
-        | InputImage
-        | InputInteger
-        | InputMaterial
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputSound
-        | InputString
-        | InputVector = 0.0,
+        list: InputAny = 0.0,
         index: InputInteger = 0,
         *,
         socket_type: Literal[
@@ -2745,8 +2729,8 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     _bl_idname = "NodeImplicitConversion"
     node: bpy.types.NodeImplicitConversion
 
-    class _Inputs(SocketAccessor):
-        value: ColorSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
         """Value"""
 
     class _Outputs(SocketAccessor, Generic[_S]):
@@ -2756,30 +2740,13 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
-        value: InputBoolean
-        | InputBundle
-        | InputClosure
-        | InputCollection
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputGeometry
-        | InputImage
-        | InputInteger
-        | InputMaterial
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputSound
-        | InputString
-        | InputVector = None,
+        value: InputAny = None,
         *,
         data_type: Literal[
             "FLOAT",
@@ -4884,10 +4851,10 @@ class RandomValue(BaseNode, Generic[_T]):
     _bl_idname = "FunctionNodeRandomValue"
     node: bpy.types.FunctionNodeRandomValue
 
-    class _Inputs(SocketAccessor):
-        min: FloatSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        min: _S
         """Min"""
-        max: FloatSocket
+        max: _S
         """Max"""
         id: IntegerSocket
         """ID"""
@@ -4903,14 +4870,14 @@ class RandomValue(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
-        min: InputFloat | InputInteger | InputVector = 0.0,
-        max: InputFloat | InputInteger | InputVector = 1.0,
+        min: InputAny = 0.0,
+        max: InputAny = 1.0,
         id: InputInteger = 0,
         seed: InputInteger = 0,
         probability: InputFloat = None,
@@ -5616,6 +5583,14 @@ class SeparateBundle(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
+    @property
+    def define_signature(self) -> bool:
+        return self.node.define_signature
+
+    @define_signature.setter
+    def define_signature(self, value: bool):
+        self.node.define_signature = value
+
     def __init__(
         self,
         bundle: InputBundle = None,
@@ -5631,14 +5606,6 @@ class SeparateBundle(BaseNode):
         for name, socket_type in (items or {}).items():
             self.node.bundle_items.new(socket_type, name)
         self._establish_links(Bundle=bundle)
-
-    @property
-    def define_signature(self) -> bool:
-        return self.node.define_signature
-
-    @define_signature.setter
-    def define_signature(self, value: bool):
-        self.node.define_signature = value
 
 
 class SeparateColor(BaseNode):
@@ -6089,8 +6056,8 @@ class SortList(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeSortList"
     node: bpy.types.GeometryNodeSortList  # ty: ignore[unresolved-attribute]
 
-    class _Inputs(SocketAccessor):
-        list: FloatSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        list: _S
         """List"""
         selection: BooleanSocket
         """Selection"""
@@ -6106,30 +6073,13 @@ class SortList(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
-        list: InputBoolean
-        | InputBundle
-        | InputClosure
-        | InputCollection
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputGeometry
-        | InputImage
-        | InputInteger
-        | InputMaterial
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputSound
-        | InputString
-        | InputVector = 0.0,
+        list: InputAny = 0.0,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
@@ -7067,6 +7017,320 @@ class StringToValue(BaseNode, Generic[_T]):
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT"]):
         self.node.data_type = value
+
+
+class Switch(BaseNode, Generic[_T]):
+    """
+    Switch between two inputs
+
+    Parameters
+    ----------
+    switch : InputBoolean
+        Switch
+    false : InputFloat
+        False
+    true : InputFloat
+        True
+
+    Inputs
+    ------
+    i.switch : BooleanSocket
+        Switch
+    i.false : FloatSocket
+        False
+    i.true : FloatSocket
+        True
+
+    Outputs
+    -------
+    o.output : FloatSocket
+        Output
+    """
+
+    _bl_idname = "GeometryNodeSwitch"
+    node: bpy.types.GeometryNodeSwitch
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        switch: BooleanSocket
+        """Switch"""
+        false: _S
+        """False"""
+        true: _S
+        """True"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        output: _S
+        """Output"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+        @property
+        def o(self) -> _Outputs[_T]: ...
+
+    def __init__(
+        self,
+        switch: InputBoolean = False,
+        false: InputAny = 0.0,
+        true: InputAny = 0.0,
+        *,
+        input_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Switch": switch, "False": false, "True": true}
+        self.input_type = input_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        switch: InputBoolean = False,
+        false: InputFloat = 0.0,
+        true: InputFloat = 0.0,
+    ) -> "Switch[FloatSocket]":
+        """Create Switch with operation 'Float'."""
+        return Switch(input_type="FLOAT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def integer(
+        cls,
+        switch: InputBoolean = False,
+        false: InputInteger = 0,
+        true: InputInteger = 0,
+    ) -> "Switch[IntegerSocket]":
+        """Create Switch with operation 'Integer'."""
+        return Switch(input_type="INT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def boolean(
+        cls,
+        switch: InputBoolean = False,
+        false: InputBoolean = False,
+        true: InputBoolean = False,
+    ) -> "Switch[BooleanSocket]":
+        """Create Switch with operation 'Boolean'."""
+        return Switch(input_type="BOOLEAN", switch=switch, false=false, true=true)
+
+    @classmethod
+    def vector(
+        cls,
+        switch: InputBoolean = False,
+        false: InputVector = None,
+        true: InputVector = None,
+    ) -> "Switch[VectorSocket]":
+        """Create Switch with operation 'Vector'."""
+        return Switch(input_type="VECTOR", switch=switch, false=false, true=true)
+
+    @classmethod
+    def color(
+        cls,
+        switch: InputBoolean = False,
+        false: InputColor = None,
+        true: InputColor = None,
+    ) -> "Switch[ColorSocket]":
+        """Create Switch with operation 'Color'."""
+        return Switch(input_type="RGBA", switch=switch, false=false, true=true)
+
+    @classmethod
+    def rotation(
+        cls,
+        switch: InputBoolean = False,
+        false: InputRotation = None,
+        true: InputRotation = None,
+    ) -> "Switch[RotationSocket]":
+        """Create Switch with operation 'Rotation'."""
+        return Switch(input_type="ROTATION", switch=switch, false=false, true=true)
+
+    @classmethod
+    def matrix(
+        cls,
+        switch: InputBoolean = False,
+        false: InputMatrix = None,
+        true: InputMatrix = None,
+    ) -> "Switch[MatrixSocket]":
+        """Create Switch with operation 'Matrix'."""
+        return Switch(input_type="MATRIX", switch=switch, false=false, true=true)
+
+    @classmethod
+    def string(
+        cls,
+        switch: InputBoolean = False,
+        false: InputString = "",
+        true: InputString = "",
+    ) -> "Switch[StringSocket]":
+        """Create Switch with operation 'String'."""
+        return Switch(input_type="STRING", switch=switch, false=false, true=true)
+
+    @classmethod
+    def menu(
+        cls,
+        switch: InputBoolean = False,
+        false: InputMenu = None,
+        true: InputMenu = None,
+    ) -> "Switch[MenuSocket]":
+        """Create Switch with operation 'Menu'."""
+        return Switch(input_type="MENU", switch=switch, false=false, true=true)
+
+    @classmethod
+    def object(
+        cls,
+        switch: InputBoolean = False,
+        false: InputObject = None,
+        true: InputObject = None,
+    ) -> "Switch[ObjectSocket]":
+        """Create Switch with operation 'Object'."""
+        return Switch(input_type="OBJECT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def image(
+        cls,
+        switch: InputBoolean = False,
+        false: InputImage = None,
+        true: InputImage = None,
+    ) -> "Switch[ImageSocket]":
+        """Create Switch with operation 'Image'."""
+        return Switch(input_type="IMAGE", switch=switch, false=false, true=true)
+
+    @classmethod
+    def geometry(
+        cls,
+        switch: InputBoolean = False,
+        false: InputGeometry = None,
+        true: InputGeometry = None,
+    ) -> "Switch[GeometrySocket]":
+        """Create Switch with operation 'Geometry'."""
+        return Switch(input_type="GEOMETRY", switch=switch, false=false, true=true)
+
+    @classmethod
+    def collection(
+        cls,
+        switch: InputBoolean = False,
+        false: InputCollection = None,
+        true: InputCollection = None,
+    ) -> "Switch[CollectionSocket]":
+        """Create Switch with operation 'Collection'."""
+        return Switch(input_type="COLLECTION", switch=switch, false=false, true=true)
+
+    @classmethod
+    def material(
+        cls,
+        switch: InputBoolean = False,
+        false: InputMaterial = None,
+        true: InputMaterial = None,
+    ) -> "Switch[MaterialSocket]":
+        """Create Switch with operation 'Material'."""
+        return Switch(input_type="MATERIAL", switch=switch, false=false, true=true)
+
+    @classmethod
+    def bundle(
+        cls,
+        switch: InputBoolean = False,
+        false: InputBundle = None,
+        true: InputBundle = None,
+    ) -> "Switch[BundleSocket]":
+        """Create Switch with operation 'Bundle'."""
+        return Switch(input_type="BUNDLE", switch=switch, false=false, true=true)
+
+    @classmethod
+    def closure(
+        cls,
+        switch: InputBoolean = False,
+        false: InputClosure = None,
+        true: InputClosure = None,
+    ) -> "Switch[ClosureSocket]":
+        """Create Switch with operation 'Closure'."""
+        return Switch(input_type="CLOSURE", switch=switch, false=false, true=true)
+
+    @classmethod
+    def font(
+        cls,
+        switch: InputBoolean = False,
+        false: InputFont = None,
+        true: InputFont = None,
+    ) -> "Switch[FontSocket]":
+        """Create Switch with operation 'Font'."""
+        return Switch(input_type="FONT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def sound(
+        cls,
+        switch: InputBoolean = False,
+        false: InputSound = None,
+        true: InputSound = None,
+    ) -> "Switch[SoundSocket]":
+        """Create Switch with operation 'Sound'."""
+        return Switch(input_type="SOUND", switch=switch, false=false, true=true)
+
+    @property
+    def input_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+        "SOUND",
+    ]:
+        return self.node.input_type  # ty: ignore[invalid-return-type]
+
+    @input_type.setter
+    def input_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ],
+    ):
+        self.node.input_type = value
 
 
 class TagFilter(BaseNode):

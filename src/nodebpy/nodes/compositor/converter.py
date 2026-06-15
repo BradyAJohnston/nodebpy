@@ -20,6 +20,7 @@ from ...types import (
     InputRotation,
     InputString,
     InputVector,
+    InputAny,
 )
 
 from ...builder.socket import (
@@ -389,8 +390,8 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     _bl_idname = "NodeImplicitConversion"
     node: bpy.types.NodeImplicitConversion
 
-    class _Inputs(SocketAccessor):
-        value: ColorSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
         """Value"""
 
     class _Outputs(SocketAccessor, Generic[_S]):
@@ -400,24 +401,13 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
-        value: InputBoolean
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputInteger
-        | InputIntegerVector
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputString
-        | InputVector = None,
+        value: InputAny = None,
         *,
         data_type: Literal[
             "FLOAT",
@@ -580,12 +570,12 @@ class IndexSwitch(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeIndexSwitch"
     node: bpy.types.GeometryNodeIndexSwitch
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         index: IntegerSocket
         """Index"""
-        item_0: ColorSocket
+        item_0: _S
         """0"""
-        item_1: ColorSocket
+        item_1: _S
         """1"""
         extend: Socket
 
@@ -596,37 +586,15 @@ class IndexSwitch(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
         index: InputInteger = 0,
-        item_0: InputBoolean
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputInteger
-        | InputIntegerVector
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputString
-        | InputVector = None,
-        item_1: InputBoolean
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputInteger
-        | InputIntegerVector
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputString
-        | InputVector = None,
+        item_0: InputAny = None,
+        item_1: InputAny = None,
         extend: InputLinkable = None,
         *,
         data_type: Literal[

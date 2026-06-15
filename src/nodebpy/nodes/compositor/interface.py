@@ -19,6 +19,7 @@ from ...types import (
     InputRotation,
     InputString,
     InputVector,
+    InputAny,
 )
 
 from ...builder.socket import (
@@ -65,10 +66,10 @@ class EnableOutput(BaseNode, Generic[_T]):
     _bl_idname = "NodeEnableOutput"
     node: bpy.types.NodeEnableOutput
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         enable: BooleanSocket
         """Enable"""
-        value: FloatSocket
+        value: _S
         """Value"""
 
     class _Outputs(SocketAccessor, Generic[_S]):
@@ -78,25 +79,14 @@ class EnableOutput(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
         enable: InputBoolean = False,
-        value: InputBoolean
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputInteger
-        | InputIntegerVector
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputString
-        | InputVector = 0.0,
+        value: InputAny = 0.0,
         *,
         data_type: Literal[
             "FLOAT",
