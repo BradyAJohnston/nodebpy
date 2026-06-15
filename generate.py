@@ -108,7 +108,6 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "ClosureInput",
         "ClosureOutput",
         "ClosureZone",
-        "FormatString",
         "JoinStrings",
         "Menu",
         "Collection",
@@ -367,6 +366,15 @@ register_customization(
         bl_idname="GeometryNodeFieldToList",
         bases=("_FieldToListMixin",),
         imports=("from .._mixins import _FieldToListMixin",),
+        suppress=frozenset({"__init__"}),
+    )
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="FunctionNodeFormatString",
+        bases=("_FormatStringMixin",),
+        imports=("from .._mixins import _FormatStringMixin",),
         suppress=frozenset({"__init__"}),
     )
 )

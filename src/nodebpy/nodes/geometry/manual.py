@@ -127,7 +127,6 @@ __all__ = (
     "SDFGridBoolean",
     "JoinStrings",
     "GeometryToInstance",
-    "FormatString",
     "JoinStrings",
     "Value",
     "AccumulateField",
@@ -1040,47 +1039,6 @@ class IntegerVector(BaseNode):
 
 
 ### === ###
-
-
-class FormatString(ItemsMixin, BaseNode):
-    """Insert values into a string using a Python and path template compatible formatting syntax"""
-
-    _bl_idname = "FunctionNodeFormatString"
-    node: bpy.types.FunctionNodeFormatString
-    _items_collection = "format_items"
-    _socket_data_types = ("VALUE", "INT", "STRING")
-    _type_map = {
-        "VALUE": "FLOAT",
-    }
-
-    class _Inputs(SocketAccessor):
-        format: StringSocket
-        input_socket: SocketLinker
-
-    class _Outputs(SocketAccessor):
-        string: StringSocket
-
-    if TYPE_CHECKING:
-
-        @property
-        def o(self) -> _Outputs: ...
-        @property
-        def i(self) -> _Inputs: ...
-
-    def __init__(
-        self,
-        format: InputString = "",
-        items: Mapping[str, InputString | InputInteger | InputFloat] | None = None,
-    ):
-        super().__init__()
-        key_args = {"Format": format}
-        key_args.update(self._add_inputs(**(items or {})))  # type: ignore
-        self._establish_links(**key_args)
-
-    @property
-    def items(self) -> dict[str, SocketLinker]:
-        """Input sockets:"""
-        return {socket.name: self.i._get(socket.name) for socket in self.node.inputs}
 
 
 class JoinStrings(BaseNode):

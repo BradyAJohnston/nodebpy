@@ -56,6 +56,8 @@ from ...builder.socket import (
 
 from .._mixins import _FieldToListMixin
 
+from .._mixins import _FormatStringMixin
+
 
 class AlignRotationToVector(BaseNode):
     """
@@ -1765,6 +1767,45 @@ class FloatToInteger(BaseNode):
     @rounding_mode.setter
     def rounding_mode(self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]):
         self.node.rounding_mode = value
+
+
+class FormatString(_FormatStringMixin, BaseNode):
+    """
+    Insert values into a string using a Python and path template compatible formatting syntax
+
+    Parameters
+    ----------
+    format : InputString
+        Format
+
+    Inputs
+    ------
+    i.format : StringSocket
+        Format
+
+    Outputs
+    -------
+    o.string : StringSocket
+        String
+    """
+
+    _bl_idname = "FunctionNodeFormatString"
+    node: bpy.types.FunctionNodeFormatString
+
+    class _Inputs(SocketAccessor):
+        format: StringSocket
+        """Format"""
+
+    class _Outputs(SocketAccessor):
+        string: StringSocket
+        """String"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
 
 
 class GetBundleItem(BaseNode, Generic[_T]):

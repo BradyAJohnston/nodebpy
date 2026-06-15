@@ -10,6 +10,7 @@ bespoke behaviour lives here.
 from __future__ import annotations
 
 import warnings
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Literal
 
 import bpy
@@ -59,6 +60,35 @@ class _BakeMixin(ItemsMixin):
         key_args = dict(items or {})
         key_args.update(kwargs)
         self._establish_links(**self._add_inputs(*args, **key_args))
+
+
+class _FormatStringMixin(ItemsMixin):
+    """Items constructor for the Format String node; ``items`` become the
+    interpolated values inserted into the format template."""
+
+    _items_collection = "format_items"
+    _socket_data_types = ("VALUE", "INT", "STRING")
+    _type_map = {"VALUE": "FLOAT"}
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> SocketAccessor: ...
+
+    def __init__(
+        self,
+        format: InputString = "",
+        items: Mapping[str, InputString | InputInteger | InputFloat] | None = None,
+    ):
+        super().__init__()
+        key_args = {"Format": format}
+        key_args.update(self._add_inputs(**(items or {})))  # type: ignore
+        self._establish_links(**key_args)
+
+    @property
+    def items(self) -> dict[str, SocketLinker]:
+        """Input sockets:"""
+        return {socket.name: self.i._get(socket.name) for socket in self.node.inputs}
 
 
 class _FieldToListMixin(ItemsMixin):
