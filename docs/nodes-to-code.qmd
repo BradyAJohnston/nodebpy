@@ -184,6 +184,35 @@ print(f"```python\n{code}\n```")
 `max_inline_width` (default 88) limits how long an expression may grow before it is bound to a variable instead of inlining into its consumer.
 Deeply nested graphs split into named steps rather than collapsing into one huge statement; pass `None` to disable the budget.
 
+### Node positions
+
+By default the generated code lets `nodebpy` lay the tree out automatically when it is built.
+Pass `snapshot_positions=True` to instead capture each node's authored `location` and restore it, so the rebuilt tree matches the original layout.
+The tree is built with `arrange=None` (auto-layout off) and a `tree.node_positions = {...}` mapping is appended:
+
+```{python}
+with TreeBuilder("Wave Deform", arrange=None) as tree:
+    geo = tree.inputs.geometry("Geometry")
+    out = tree.outputs.geometry("Geometry")
+    geo >> g.SetPosition(offset=g.CombineXYZ(z=g.Position().o.position.x)) >> out
+
+code = tree.to_python(snapshot_positions=True)
+```
+
+```{python}
+#| echo: false
+#| output: asis
+print(f"```python\n{code}\n```")
+```
+
+Positions are applied by name, so a node a rebuild does not recreate (a reroute) or renames is skipped rather than erroring.
+Positions inside nested groups are preserved too.
+
+### Reroutes
+
+Reroute nodes are pure wire-routing aids, so by default each reroute chain is collapsed into a direct link.
+Pass `keep_reroutes=True` to preserve them as `g.Reroute(...)` pass-throughs — useful together with `snapshot_positions` to reproduce the original wire routing exactly.
+
 ## Zones
 
 Simulation, repeat and for-each zones are reconstructed using the zone item API rather than as raw input/output node pairs:
@@ -203,6 +232,54 @@ code = tree.to_python()
 #| echo: false
 #| output: asis
 print(f"```python\n{code}\n```")
+```
+
+## Frames
+
+Frames are reconstructed as `with g.Frame("..."):` blocks, including frames nested inside other frames (and container frames that hold only sub-frames):
+
+```{python}
+with TreeBuilder("Framed") as tree:
+    geo = tree.inputs.geometry("Geometry")
+    with g.Frame("Deform"):
+        with g.Frame("Warp"):
+            warped = geo >> g.SetPosition(offset=(0.0, 0.0, 1.0))
+    warped >> g.SetShadeSmooth() >> tree.outputs.geometry("Out")
+
+code = tree.to_python()
+```
+
+```{python}
+#| echo: false
+#| output: asis
+print(f"```python\n{code}\n```")
+```
+
+## Archiving as Classes
+
+By default the top-level tree is emitted as a `with TreeBuilder(...) as tree:` block.
+Pass `top_level="class"` to instead emit *every* node group — including the one being exported — as a [`CustomGeometryGroup`](custom-node-groups.qmd) subclass.
+Each class builds its tree through `ClassName.create_group()`, making it a clean way to archive a set of node groups as plain, reusable Python:
+
+```{python}
+with TreeBuilder("Wave Deform") as tree:
+    geo = tree.inputs.geometry("Geometry")
+    out = tree.outputs.geometry("Geometry")
+    geo >> g.SetPosition(offset=g.CombineXYZ(z=g.Position().o.position.x)) >> out
+
+code = tree.to_python(top_level="class")
+```
+
+```{python}
+#| echo: false
+#| output: asis
+print(f"```python\n{code}\n```")
+```
+
+Build any of the resulting classes with `create_group()`, which returns the node tree without needing an active `TreeBuilder` context:
+
+``` python
+WaveDeform.create_group()   # -> bpy.types.GeometryNodeTree
 ```
 
 ## Unsupported Nodes
@@ -231,7 +308,7 @@ def _emit_shade_smooth(node, ctx):
 
 ## Round-Tripping
 
-The generated source always assigns the builder to a variable named `tree`, so it can be executed directly to rebuild the tree:
+In the default `with` form the generated source assigns the builder to a variable named `tree`, so it can be executed directly to rebuild the tree:
 
 ```{python}
 namespace = {}
@@ -240,4 +317,7 @@ rebuilt = namespace["tree"]
 rebuilt
 ```
 
+(With `top_level="class"` there is no `tree` variable — call the generated class's `create_group()` instead.)
+
 Because `to_python()` output is itself valid `nodebpy` code, converting a tree, running the result, and converting again produces identical source — handy for snapshotting node trees in tests or committing them to version control.
+The generator is validated against Blender's full bundled geometry, shader and compositor essentials asset libraries, so it handles real-world trees, not just ones built with `nodebpy`.
