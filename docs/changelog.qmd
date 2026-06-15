@@ -2,7 +2,7 @@
 title: Changelog
 ---
 
-## v520.0.1 - UNRELEASED
+## v520.1.0 - 2026-06-15
 
 ### Enhancements
 
