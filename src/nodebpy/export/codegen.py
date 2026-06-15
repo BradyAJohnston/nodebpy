@@ -729,89 +729,117 @@ def _topo_sort(node_tree, keep_reroutes: bool = False) -> list:
     return order
 
 
-def _frame_key(node) -> str | None:
-    """The frame a node's statement should be emitted under, or None."""
+def _frame_chain(node) -> list:
+    """The ``NodeFrame``\\ s enclosing ``node``, outermost first."""
+    chain = []
     parent = node.parent
-    if parent is None or parent.bl_idname != "NodeFrame":
-        return None
-    if parent.parent is not None:
-        return None  # nested frames are not expressible as with-blocks
-    return parent.name
+    while parent is not None and parent.bl_idname == "NodeFrame":
+        chain.append(parent)
+        parent = parent.parent
+    chain.reverse()
+    return chain
 
 
 def _frame_order(node_tree, ordered):
-    """Reorder ``ordered`` so each emittable frame's members are contiguous.
+    """Reorder ``ordered`` so nodes sharing a frame path emit contiguously and
+    nested frames stay grouped under their parent.
 
-    Frames become clusters in a cluster-level topological sort (each `with
-    g.Frame():` block creates one frame, so members must emit together).
-    A frame whose cluster sits on a cycle through outside nodes cannot be
-    contiguous — it falls back to flat, frameless emission.
+    Frames (including pure containers that hold only sub-frames) become nested
+    ``with g.Frame():`` blocks. At each nesting level the frame clusters are
+    cluster-topologically sorted; a frame whose cluster sits on a dependency
+    cycle is dropped (its members emit one level shallower, frameless at worst).
 
-    Returns ``(order, frame_of, frame_nodes)``: the new node order, node
-    name → frame key (or None), and frame key → bpy frame node.
+    Returns ``(order, frame_path_of, frame_nodes)``: the reordered nodes, a map
+    from node name to its tuple of enclosing frame names (outermost first), and
+    a map from frame name to its bpy frame node.
     """
-    frame_of = {n.name: _frame_key(n) for n in ordered}
-    frame_nodes: dict[str, Any] = {}
-    for n in ordered:
-        key = frame_of[n.name]
-        if key is not None:
-            frame_nodes[key] = n.parent
-    if not frame_nodes:
-        return ordered, frame_of, frame_nodes
+    chains = {n.name: _frame_chain(n) for n in ordered}
+    frame_nodes_all = {f.name: f for n in ordered for f in chains[n.name]}
+    if not frame_nodes_all:
+        return ordered, {n.name: () for n in ordered}, {}
 
-    in_order = {n.name for n in ordered}
+    node_by_name = {n.name: n for n in ordered}
+    in_order = set(node_by_name)
     edges = [
         (a.name, b.name)
         for a, b in _ordering_edges(node_tree)
         if a.name in in_order and b.name in in_order
     ]
-    while True:
-        key_of = {n.name: frame_of[n.name] or f"__{n.name}" for n in ordered}
-        clusters: dict[str, list] = {}
-        order_keys: list[str] = []
-        for n in ordered:
-            key = key_of[n.name]
+    dropped: set[str] = set()
+
+    def full_path(name) -> tuple[str, ...]:
+        return tuple(f.name for f in chains[name] if f.name not in dropped)
+
+    def order_level(names: list[str], depth: int):
+        """Order ``names`` (sharing a path prefix of length ``depth``) by their
+        frame at ``depth``. Returns ``(ordered_names, None)`` or, on a cycle,
+        ``(None, stuck_frame_name)``."""
+        # Cluster key: the frame name at this depth, or ("__node__", name) for a
+        # node not framed at this level (a unique, non-string key).
+        ckey: dict[str, Any] = {}
+        clusters: dict[Any, list[str]] = {}
+        order_keys: list[Any] = []
+        for name in names:
+            path = full_path(name)
+            key = path[depth] if len(path) > depth else ("__node__", name)
+            ckey[name] = key
             if key not in clusters:
                 clusters[key] = []
                 order_keys.append(key)
-            clusters[key].append(n)
-        adj: dict[str, set[str]] = {k: set() for k in order_keys}
+            clusters[key].append(name)
+
+        nameset = set(names)
+        adj: dict[Any, set] = {k: set() for k in order_keys}
         in_deg = dict.fromkeys(order_keys, 0)
         for a, b in edges:
-            ka, kb = key_of[a], key_of[b]
-            if ka != kb and kb not in adj[ka]:
-                adj[ka].add(kb)
-                in_deg[kb] += 1
+            if a in nameset and b in nameset:
+                ka, kb = ckey[a], ckey[b]
+                if ka != kb and kb not in adj[ka]:
+                    adj[ka].add(kb)
+                    in_deg[kb] += 1
 
-        # Kahn's algorithm preferring first-appearance order, so the
-        # emission order stays close to the plain topological sort.
+        # Kahn's algorithm preferring first-appearance order.
         pos = {k: i for i, k in enumerate(order_keys)}
         heap = [pos[k] for k in order_keys if in_deg[k] == 0]
         heapq.heapify(heap)
-        result: list[str] = []
+        result_keys: list[Any] = []
         while heap:
             k = order_keys[heapq.heappop(heap)]
-            result.append(k)
+            result_keys.append(k)
             for m in adj[k]:
                 in_deg[m] -= 1
                 if in_deg[m] == 0:
                     heapq.heappush(heap, pos[m])
-        if len(result) == len(order_keys):
-            order = [n for k in result for n in clusters[k]]
-            return order, frame_of, frame_nodes
+        if len(result_keys) != len(order_keys):
+            stuck = next(
+                (k for k in order_keys if in_deg[k] > 0 and not isinstance(k, tuple)),
+                None,
+            )
+            return None, stuck
 
-        # Contract-induced cycle: flatten the first still-blocked frame
-        # and retry (node graphs themselves are acyclic, so every cycle
-        # runs through at least one frame cluster).
-        stuck = next(
-            (k for k in order_keys if in_deg[k] > 0 and k in frame_nodes), None
-        )
+        out: list[str] = []
+        for key in result_keys:
+            if isinstance(key, tuple):  # a single unframed node at this level
+                out.append(clusters[key][0])
+                continue
+            sub, stuck = order_level(clusters[key], depth + 1)
+            if sub is None:
+                return None, stuck
+            out.extend(sub)
+        return out, None
+
+    while True:
+        result, stuck = order_level([n.name for n in ordered], 0)
+        if result is not None:
+            order = [node_by_name[name] for name in result]
+            frame_path_of = {name: full_path(name) for name in result}
+            frame_nodes = {
+                f: node for f, node in frame_nodes_all.items() if f not in dropped
+            }
+            return order, frame_path_of, frame_nodes
         if stuck is None:  # pragma: no cover - defensive
-            return ordered, dict.fromkeys(frame_of, None), {}
-        del frame_nodes[stuck]
-        for name, key in frame_of.items():
-            if key == stuck:
-                frame_of[name] = None
+            return ordered, {n.name: () for n in ordered}, {}
+        dropped.add(stuck)
 
 
 # ---------------------------------------------------------------------------
@@ -2949,22 +2977,22 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
         for n in _topo_sort(node_tree, collector.keep_reroutes)
         if n.bl_idname not in skip
     ]
-    ordered, frame_of, frame_nodes = _frame_order(node_tree, ordered)
+    ordered, frame_path_of, frame_nodes = _frame_order(node_tree, ordered)
 
     iface_lines = _emit_interface_lines(node_tree, ctx)
 
     chain_in = _chainable_links(ctx)
     gated_nodes = _gate_short_chains(ctx, chain_in, ordered, collector.min_chain_length)
 
-    # Body lines tagged with the emitting node's frame; with-blocks and
-    # indentation are applied after the loop (frame members are contiguous
-    # thanks to _frame_order).
-    tagged_body: list[tuple[str | None, str]] = []
+    # Body lines tagged with the emitting node's frame path (outermost frame
+    # first); nested with-blocks and indentation are applied after the loop
+    # (frame members are contiguous thanks to _frame_order).
+    tagged_body: list[tuple[tuple[str, ...], str]] = []
     consumed_out_links: set[int] = set()  # id() of tail-inlined _Link tuples
 
     for node in ordered:
         name = node.name
-        frame = frame_of.get(name)
+        frame = frame_path_of.get(name, ())
 
         # 1. Build the node's value:
         #    emitter → socket method → lift → factory/constructor.
@@ -3029,8 +3057,8 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
             len(out_links) == 1
             and not group_outs
             # Inlining would create this node at the consumer's statement —
-            # only allowed when both sit in the same frame.
-            and frame == frame_of.get(out_links[0].to_node.name)
+            # only allowed when both sit in the same frame path.
+            and frame == frame_path_of.get(out_links[0].to_node.name, ())
             # Budget: long expressions bind to a variable instead of growing
             # the consumer's statement; chain continuations stay inline.
             and (
@@ -3054,7 +3082,7 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
                 )
             source = _output_expr(val, node, link.from_socket)
             chain = BinOp(">>", source, out_ref.require_expr())
-            width = _MAX_LINE_WIDTH - (4 if frame is not None else 0)
+            width = _MAX_LINE_WIDTH - 4 * len(frame)
             tagged_body.extend(
                 (frame, line) for line in _stmt_lines(chain, width=width)
             )
@@ -3062,7 +3090,7 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
             continue
 
         var = _make_var(node.bl_label or "node", ctx.counter)
-        width = _MAX_LINE_WIDTH - (4 if frame is not None else 0)
+        width = _MAX_LINE_WIDTH - 4 * len(frame)
         tagged_body.extend(
             (frame, line)
             for line in _stmt_lines(val.require_expr(), assign=var, width=width)
@@ -3071,19 +3099,28 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
             Ref(var), is_socket=val.is_socket, socket_id=val.socket_id
         )
 
-    # 3. Wrap frame members in with-blocks.
+    # 3. Wrap frame members in nested with-blocks. Each line carries its frame
+    # path (outermost first); when the path changes, close the frames no longer
+    # shared and open the newly entered ones. ``line`` already has the base
+    # 4-space indent, so each frame level adds another 4.
     frame_alias = _TREE_ALIAS.get(node_tree.bl_idname, "g")
     body: list[str] = []
-    open_frame: str | None = None
-    for frame, line in tagged_body:
-        if frame != open_frame:
-            open_frame = frame
-            if frame is not None:
-                ctx.used_aliases.add(frame_alias)
-                frame_node = frame_nodes[frame]
-                label = _fmt(frame_node.label) if frame_node.label else ""
-                body.append(f"    with {frame_alias}.Frame({label}):")
-        body.append(f"    {line}" if frame is not None else line)
+    open_path: tuple[str, ...] = ()
+    for path, line in tagged_body:
+        common = 0
+        while (
+            common < len(open_path)
+            and common < len(path)
+            and open_path[common] == path[common]
+        ):
+            common += 1
+        for depth in range(common, len(path)):
+            ctx.used_aliases.add(frame_alias)
+            frame_node = frame_nodes[path[depth]]
+            label = _fmt(frame_node.label) if frame_node.label else ""
+            body.append(f"{'    ' * (depth + 1)}with {frame_alias}.Frame({label}):")
+        open_path = path
+        body.append(("    " * len(path)) + line)
 
     # 4. Remaining group-output connections.
     out_lines: list[str] = []

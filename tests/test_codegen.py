@@ -1898,6 +1898,40 @@ def test_frames_round_trip():
     assert 'with g.Frame("Shade"):' in code
 
 
+def test_nested_frames_round_trip():
+    """Frames nested inside other frames (and a pure-container frame holding
+    only sub-frames) re-emit as nested ``with g.Frame():`` blocks."""
+    with TreeBuilder("NestedFrames") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        with g.Frame("Outer"):
+            with g.Frame("Inner A"):
+                a = geo >> g.SetPosition(offset=(0.0, 0.0, 1.0))
+            with g.Frame("Inner B"):
+                b = a >> g.SetShadeSmooth()
+        b >> tree.outputs.geometry("Out")
+
+    def _frame_parents(node_tree):
+        return sorted(
+            (n.label, n.parent.label if n.parent else None)
+            for n in node_tree.nodes
+            if n.bl_idname == "NodeFrame"
+        )
+
+    orig_parents = _frame_parents(tree.tree)
+    code = _assert_roundtrip(tree)
+    assert 'with g.Frame("Outer"):' in code
+    assert 'with g.Frame("Inner A"):' in code
+    assert 'with g.Frame("Inner B"):' in code
+
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt = ns["tree"].tree
+    assert _frame_structure(rebuilt) == _frame_structure(tree.tree), code
+    # "Inner A"/"Inner B" must be re-parented under "Outer", not top-level.
+    assert _frame_parents(rebuilt) == orig_parents, code
+    assert ("Inner A", "Outer") in orig_parents
+
+
 def test_frame_interleaved_falls_back_flat():
     """A frame whose members must interleave with outside nodes cannot be
     one with-block — its nodes emit flat instead."""
