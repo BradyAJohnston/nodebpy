@@ -2,6 +2,7 @@
 """Tests for the geonodes-web-render HTML/payload export."""
 
 import json
+from unittest.mock import patch
 
 import bpy
 
@@ -110,3 +111,25 @@ def test_html_snippets_have_unique_container_ids():
         return html[start : html.index('"', start)]
 
     assert container_id(html_a) != container_id(html_b)
+
+
+def test_repr_html_returns_html_string():
+    """TreeBuilder._repr_html_ returns an HTML string containing the graph."""
+    with g.tree("ReprHtmlSuccess") as tree:
+        tree.inputs.geometry() >> g.SetPosition() >> tree.outputs.geometry()
+
+    html = tree._repr_html_()
+    assert html is not None
+    assert "mountGraphView" in html
+
+
+def test_repr_html_returns_none_on_failure(capsys):
+    """_repr_html_ catches exceptions and returns None so the Mermaid fallback takes over."""
+    with g.tree("ReprHtmlFail") as tree:
+        tree.inputs.geometry() >> tree.outputs.geometry()
+
+    with patch("nodebpy.web_render.to_web_render_html", side_effect=RuntimeError("boom")):
+        result = tree._repr_html_()
+
+    assert result is None
+    assert "Web render generation failed" in capsys.readouterr().out
