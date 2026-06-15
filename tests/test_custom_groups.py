@@ -49,6 +49,50 @@ class _SimpleCompositorGroup(CustomCompositorGroup):
         x >> tree.outputs.float("Result")
 
 
+def test_create_group_without_context():
+    """create_group() builds and returns the node tree with no active
+    TreeBuilder context."""
+    assert not TreeBuilder._tree_contexts  # no active context
+    ng = _SimpleGeomGroup.create_group()
+    assert isinstance(ng, GeometryNodeTree)
+    assert ng.name == "Test Simple Geometry Group"
+    assert ng.color_tag == "GEOMETRY"
+    assert {n.bl_idname for n in ng.nodes} >= {"NodeGroupInput", "NodeGroupOutput"}
+    assert not TreeBuilder._tree_contexts  # context cleaned up
+
+
+def test_create_group_reuses_existing():
+    """A second create_group() returns the same cached tree."""
+    first = _SimpleGeomGroup.create_group()
+    second = _SimpleGeomGroup.create_group()
+    assert first is second
+    assert len(bpy.data.node_groups) == 1
+
+
+def test_create_group_each_editor_type():
+    """create_group() builds the right tree type for each editor variant."""
+    assert isinstance(_SimpleGeomGroup.create_group(), GeometryNodeTree)
+    assert isinstance(_SimpleShaderGroup.create_group(), ShaderNodeTree)
+    assert isinstance(_SimpleCompositorGroup.create_group(), CompositorNodeTree)
+
+
+def test_create_group_assignable_to_node():
+    """A pre-built group can be assigned directly to a group node's node_tree."""
+    pre_built = _SimpleGeomGroup.create_group()
+    with TreeBuilder() as tb:
+        node = tb.tree.nodes.new("GeometryNodeGroup")
+        node.node_tree = pre_built
+    assert node.node_tree is pre_built
+
+
+def test_create_group_matches_instantiation():
+    """create_group() yields the same cached tree the constructor uses."""
+    pre_built = _SimpleGeomGroup.create_group()
+    with TreeBuilder():
+        node = _SimpleGeomGroup()
+    assert node.node.node_tree is pre_built
+
+
 def test_custom_group():
     with TreeBuilder() as tb:
         last_group = reduce(

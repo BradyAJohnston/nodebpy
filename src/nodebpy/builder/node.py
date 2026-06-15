@@ -360,6 +360,8 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
     """
 
     _name: str
+    # The inner node-tree bl_idname, set by each editor-specific subclass.
+    _tree_idname: Literal["GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"]
     _warning_propagation: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"] = (
         "ALL"
     )
@@ -407,21 +409,39 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
     def _build_group(self, tree: TreeBuilder) -> None:
         """Build the node group internals and interface."""
 
-    def _get_or_create_tree(self) -> _T:
-        existing = bpy.data.node_groups[self._name]
-        if existing.bl_idname == self.tree.tree.bl_idname:
+    @classmethod
+    def create_group(cls) -> _T:
+        """Build this group's node tree and return it, reusing an existing tree
+        of the same name.
+
+        Unlike instantiating the class, this needs no active ``TreeBuilder``
+        context — it opens its own — so a group can be pre-built and reused
+        directly (e.g. assigned to a node's ``node_tree``) instead of being
+        created by constructing the class inside a tree.
+        """
+        existing = bpy.data.node_groups.get(cls._name)
+        if existing is not None:
+            if existing.bl_idname != cls._tree_idname:
+                raise TypeError(
+                    f"Node group '{cls._name}' already exists as "
+                    f"{existing.bl_idname}, not {cls._tree_idname}. "
+                    f"Use a unique _name for this group."
+                )
             return cast(_T, existing)
-        raise TypeError(
-            f"Node group '{self._name}' already exists as "
-            f"{type(existing).__name__}, not {self._bl_idname}. "
-            f"Use a unique _name for this group."
-        )
+        # Only the inner tree is needed (no group *node*), so skip __init__,
+        # which would require an active context to create a node.
+        builder = cls.__new__(cls)
+        with TreeBuilder(cls._name, tree_type=cls._tree_idname) as tree:
+            builder._build_group(tree)
+        tree.tree.color_tag = cls._color_tag
+        return cast(_T, tree.tree)
 
 
 class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
     """Node group in a Geometry Nodes tree."""
 
     _bl_idname = "GeometryNodeGroup"
+    _tree_idname = "GeometryNodeTree"
     node: GeometryNodeGroup
 
     @property
@@ -430,23 +450,15 @@ class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self._get_or_create_group()
+        self.node.node_tree = self.create_group()
         self.node.warning_propagation = self._warning_propagation
-
-    def _get_or_create_group(self) -> GeometryNodeTree:
-        try:
-            return self._get_or_create_tree()
-        except KeyError:
-            with TreeBuilder.geometry(self._name) as tree:
-                self._build_group(tree)
-            tree.tree.color_tag = self._color_tag
-            return tree.tree
 
 
 class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
     """Node group in a Shader (Material) node tree."""
 
     _bl_idname = "ShaderNodeGroup"
+    _tree_idname = "ShaderNodeTree"
     node: ShaderNodeGroup
 
     @property
@@ -455,22 +467,14 @@ class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self._get_or_create_group()
-
-    def _get_or_create_group(self) -> ShaderNodeTree:
-        try:
-            return self._get_or_create_tree()
-        except KeyError:
-            with TreeBuilder.shader(self._name) as tree:
-                self._build_group(tree)
-            tree.tree.color_tag = self._color_tag
-            return tree.tree
+        self.node.node_tree = self.create_group()
 
 
 class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
     """Node group in a Compositor node tree."""
 
     _bl_idname = "CompositorNodeGroup"
+    _tree_idname = "CompositorNodeTree"
     node: CompositorNodeGroup
 
     @property
@@ -479,13 +483,4 @@ class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self._get_or_create_group()
-
-    def _get_or_create_group(self) -> CompositorNodeTree:
-        try:
-            return self._get_or_create_tree()
-        except KeyError:
-            with TreeBuilder.compositor(self._name) as tree:
-                self._build_group(tree)
-            tree.tree.color_tag = self._color_tag
-            return tree.tree
+        self.node.node_tree = self.create_group()
