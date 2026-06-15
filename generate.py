@@ -84,7 +84,6 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Simulation",
         "For Each",
         "GridBoolean",
-        "Field Min",
     ],
     manually_defined=(
         "IndexSwitch",
@@ -115,12 +114,6 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Object",
         "Value",
         "MeshBoolean",
-        "AccumulateField",
-        "EvaluateAtIndex",
-        "FieldAverage",
-        "FieldMinAndMax",
-        "EvaluateOnDomain",
-        "FieldVariance",
         "Compare",
         "Mix",
         "AttributeStatistic",
@@ -224,6 +217,10 @@ class NodeCustomization:
         Source appended verbatim to the class body (already indented four
         spaces). Used for a bespoke ``__init__`` or methods that reference the
         node's own generated types.
+    class_name:
+        Override the Python class name derived from the Blender display name,
+        when the public API name differs (e.g. ``FieldMinAndMax`` where Blender
+        calls the node "Field Min Max").
     """
 
     bl_idname: str
@@ -231,6 +228,7 @@ class NodeCustomization:
     imports: tuple[str, ...] = ()
     suppress: frozenset[str] = field(default_factory=frozenset)
     extra_body: str = ""
+    class_name: str | None = None
 
 
 _CUSTOMIZATIONS: dict[str, NodeCustomization] = {}
@@ -376,6 +374,299 @@ register_customization(
         bases=("_FormatStringMixin",),
         imports=("from .._mixins import _FormatStringMixin",),
         suppress=frozenset({"__init__"}),
+    )
+)
+
+
+# Generic field nodes: the generator now emits the full generic structure
+# (Generic[_T], _S-typed sockets, __init__, data_type/domain properties, and the
+# flat per-type/per-domain factories). Only the nested `<node>.<domain>.<dtype>()`
+# domain-factory helpers are bespoke (they self-reference the class for precise
+# return typing), so they live in extra_body; the colliding flat domain factories
+# the generator emits are suppressed.
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeAccumulateField",
+        imports=("from ...types import _AttributeDomains",),
+        suppress=frozenset(
+            {"point", "edge", "face", "corner", "spline", "instance", "layer"}
+        ),
+        extra_body="""    class AccumulateFieldDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self, value: InputFloat = None, index: InputInteger = 0
+        ) -> "AccumulateField[FloatSocket]":
+            return AccumulateField(value, index, domain=self._domain, data_type="FLOAT")
+
+        def integer(
+            self, value: InputInteger = None, index: InputInteger = 0
+        ) -> "AccumulateField[IntegerSocket]":
+            return AccumulateField(value, index, domain=self._domain, data_type="INT")
+
+        def vector(
+            self, value: InputVector = None, index: InputInteger = 0
+        ) -> "AccumulateField[VectorSocket]":
+            return AccumulateField(
+                value, index, domain=self._domain, data_type="FLOAT_VECTOR"
+            )
+
+        def transform(
+            self, value: InputMatrix = None, index: InputInteger = 0
+        ) -> "AccumulateField[MatrixSocket]":
+            return AccumulateField(
+                value, index, domain=self._domain, data_type="TRANSFORM"
+            )
+
+    point = AccumulateFieldDomainFactory("POINT")
+    edge = AccumulateFieldDomainFactory("EDGE")
+    face = AccumulateFieldDomainFactory("FACE")
+    corner = AccumulateFieldDomainFactory("CORNER")
+    spline = AccumulateFieldDomainFactory("CURVE")
+    instance = AccumulateFieldDomainFactory("INSTANCE")
+    layer = AccumulateFieldDomainFactory("LAYER")""",
+    )
+)
+
+_DOMAIN_SUPPRESS = frozenset(
+    {"point", "edge", "face", "corner", "spline", "instance", "layer"}
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeFieldAtIndex",  # EvaluateAtIndex
+        imports=("from ...types import _AttributeDomains",),
+        suppress=_DOMAIN_SUPPRESS,
+        extra_body="""    class _EvaluateAtIndexDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self, value: InputFloat = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[FloatSocket]":
+            return EvaluateAtIndex(value, index, domain=self._domain, data_type="FLOAT")
+
+        def integer(
+            self, value: InputInteger = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[IntegerSocket]":
+            return EvaluateAtIndex(value, index, domain=self._domain, data_type="INT")
+
+        def boolean(
+            self, value: InputBoolean = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[BooleanSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="BOOLEAN"
+            )
+
+        def vector(
+            self, value: InputVector = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[VectorSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="FLOAT_VECTOR"
+            )
+
+        def color(
+            self, value: InputColor = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[ColorSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="FLOAT_COLOR"
+            )
+
+        def quaternion(
+            self, value: InputRotation = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[RotationSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="QUATERNION"
+            )
+
+        def matrix(
+            self, value: InputMatrix = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[MatrixSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="FLOAT4X4"
+            )
+
+    point = _EvaluateAtIndexDomainFactory("POINT")
+    edge = _EvaluateAtIndexDomainFactory("EDGE")
+    face = _EvaluateAtIndexDomainFactory("FACE")
+    corner = _EvaluateAtIndexDomainFactory("CORNER")
+    spline = _EvaluateAtIndexDomainFactory("CURVE")
+    instance = _EvaluateAtIndexDomainFactory("INSTANCE")
+    layer = _EvaluateAtIndexDomainFactory("LAYER")""",
+    )
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeFieldAverage",
+        imports=("from ...types import _AttributeDomains",),
+        suppress=_DOMAIN_SUPPRESS,
+        extra_body='''    class _FieldAverageDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self,
+            value: InputFloat = 1.0,
+            group_index: InputInteger = 0,
+        ) -> "FieldAverage[FloatSocket]":
+            """Create FieldAverage for the "FLOAT" data type"""
+            return FieldAverage(
+                value, group_index, data_type="FLOAT", domain=self._domain
+            )
+
+        def vector(
+            self,
+            value: InputVector = (1.0, 1.0, 1.0),
+            group_index: InputInteger = 0,
+        ) -> "FieldAverage[VectorSocket]":
+            """Create FieldAverage for the "FLOAT_VECTOR" data type"""
+            return FieldAverage(
+                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+            )
+
+    point = _FieldAverageDomainFactory("POINT")
+    edge = _FieldAverageDomainFactory("EDGE")
+    face = _FieldAverageDomainFactory("FACE")
+    corner = _FieldAverageDomainFactory("CORNER")
+    spline = _FieldAverageDomainFactory("CURVE")
+    instance = _FieldAverageDomainFactory("INSTANCE")
+    layer = _FieldAverageDomainFactory("LAYER")''',
+    )
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeFieldMinAndMax",
+        class_name="FieldMinAndMax",  # Blender display name is "Field Min Max"
+        imports=("from ...types import _AttributeDomains",),
+        suppress=_DOMAIN_SUPPRESS,
+        extra_body='''    class _FieldMinAndMaxDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self,
+            value: InputFloat = 1.0,
+            group_index: InputInteger = 0,
+        ) -> "FieldMinAndMax[FloatSocket]":
+            """Create FieldMinMax for the "FLOAT" data type"""
+            return FieldMinAndMax(
+                value, group_index, data_type="FLOAT", domain=self._domain
+            )
+
+        def integer(
+            self,
+            value: InputInteger = 1,
+            group_index: InputInteger = 0,
+        ) -> "FieldMinAndMax[IntegerSocket]":
+            """Create FieldMinMax for the "INT" data type"""
+            return FieldMinAndMax(
+                value, group_index, data_type="INT", domain=self._domain
+            )
+
+        def vector(
+            self,
+            value: InputVector = (1.0, 1.0, 1.0),
+            group_index: InputInteger = 0,
+        ) -> "FieldMinAndMax[VectorSocket]":
+            """Create FieldMinMax for the "FLOAT_VECTOR" data type"""
+            return FieldMinAndMax(
+                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+            )
+
+    point = _FieldMinAndMaxDomainFactory("POINT")
+    edge = _FieldMinAndMaxDomainFactory("EDGE")
+    face = _FieldMinAndMaxDomainFactory("FACE")
+    corner = _FieldMinAndMaxDomainFactory("CORNER")
+    spline = _FieldMinAndMaxDomainFactory("CURVE")
+    instance = _FieldMinAndMaxDomainFactory("INSTANCE")
+    layer = _FieldMinAndMaxDomainFactory("LAYER")''',
+    )
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeFieldOnDomain",  # EvaluateOnDomain
+        imports=("from ...types import _AttributeDomains",),
+        suppress=_DOMAIN_SUPPRESS,
+        extra_body="""    class _EvaluateOnDomainDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(self, value: InputFloat = None) -> "EvaluateOnDomain[FloatSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT")
+
+        def integer(
+            self, value: InputInteger = None
+        ) -> "EvaluateOnDomain[IntegerSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="INT")
+
+        def boolean(
+            self, value: InputBoolean = None
+        ) -> "EvaluateOnDomain[BooleanSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="BOOLEAN")
+
+        def vector(self, value: InputVector = None) -> "EvaluateOnDomain[VectorSocket]":
+            return EvaluateOnDomain(
+                value, domain=self._domain, data_type="FLOAT_VECTOR"
+            )
+
+        def quaternion(
+            self, value: InputRotation = None
+        ) -> "EvaluateOnDomain[RotationSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="QUATERNION")
+
+        def matrix(self, value: InputMatrix = None) -> "EvaluateOnDomain[MatrixSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT4X4")
+
+    point = _EvaluateOnDomainDomainFactory("POINT")
+    edge = _EvaluateOnDomainDomainFactory("EDGE")
+    face = _EvaluateOnDomainDomainFactory("FACE")
+    corner = _EvaluateOnDomainDomainFactory("CORNER")
+    spline = _EvaluateOnDomainDomainFactory("CURVE")
+    instance = _EvaluateOnDomainDomainFactory("INSTANCE")
+    layer = _EvaluateOnDomainDomainFactory("LAYER")""",
+    )
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeFieldVariance",
+        imports=("from ...types import _AttributeDomains",),
+        suppress=_DOMAIN_SUPPRESS,
+        extra_body='''    class _FieldVarianceDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self,
+            value: InputFloat = None,
+            group_index: InputInteger = None,
+        ) -> "FieldVariance[FloatSocket]":
+            """Create FieldVariance for the "FLOAT" data type"""
+            return FieldVariance(
+                value, group_index, data_type="FLOAT", domain=self._domain
+            )
+
+        def vector(
+            self,
+            value: InputVector = None,
+            group_index: InputInteger = None,
+        ) -> "FieldVariance[VectorSocket]":
+            """Create FieldVariance for the "FLOAT_VECTOR" data type"""
+            return FieldVariance(
+                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+            )
+
+    point = _FieldVarianceDomainFactory("POINT")
+    edge = _FieldVarianceDomainFactory("EDGE")
+    face = _FieldVarianceDomainFactory("FACE")
+    corner = _FieldVarianceDomainFactory("CORNER")
+    spline = _FieldVarianceDomainFactory("CURVE")
+    instance = _FieldVarianceDomainFactory("INSTANCE")
+    layer = _FieldVarianceDomainFactory("LAYER")''',
     )
 )
 
@@ -649,6 +940,12 @@ class NodeInfo:
 
     def class_name_for_config(self, config: TreeTypeConfig) -> str:
         """Generate a Python class name using the given config's prefix strips."""
+        # A registered customization may pin the public API name when it differs
+        # from the Blender display name (e.g. FieldMinAndMax vs "Field Min Max").
+        custom = _CUSTOMIZATIONS.get(self.bl_idname)
+        if custom and custom.class_name:
+            return custom.class_name
+
         # Replace common separators with spaces
         class_name = self.name.replace("_", " ").replace("-", " ")
 
@@ -773,6 +1070,37 @@ class NodeInfo:
                         varying.add(s.identifier)
         return varying
 
+    def _varying_share_single_type(self, varying: set[str], *, outputs: bool) -> bool:
+        """True if, for every enum value, all the ``varying`` sockets on the
+        given side resolve to the same socket type — i.e. they can share one
+        ``_S`` type variable (as with AccumulateField's leading/trailing/total
+        all tracking the data_type)."""
+        if not varying:
+            return False
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                sockets = enum.output_sockets if outputs else enum.sockets
+                types = {s.bl_socket_type for s in sockets if s.identifier in varying}
+                if len(types) > 1:
+                    return False
+        return True
+
+    @property
+    def outputs_generic(self) -> bool:
+        """The output side is generic: ≥1 output varies and all varying outputs
+        share a single type per enum value (so a single ``_S`` suffices)."""
+        return self._varying_share_single_type(
+            self.varying_output_identifiers, outputs=True
+        )
+
+    @property
+    def inputs_generic(self) -> bool:
+        """The input side is generic: ≥1 input varies and all varying inputs
+        share a single type per enum value."""
+        return self._varying_share_single_type(
+            self.varying_input_identifiers, outputs=False
+        )
+
     def output_class_for_enum(
         self, socket_identifier: str, enum_identifier: str
     ) -> str:
@@ -786,6 +1114,25 @@ class NodeInfo:
                                 if key in s.bl_socket_type:
                                     return cls
         for s in self.outputs:
+            if s.identifier == socket_identifier:
+                for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                    if key in s.bl_socket_type:
+                        return cls
+        return "Socket"
+
+    def input_class_for_enum(self, socket_identifier: str, enum_identifier: str) -> str:
+        """Return the socket class name for a varying input given an enum
+        identifier (mirrors :meth:`output_class_for_enum` for input-generic
+        nodes like Compare)."""
+        for prop in self.properties:
+            for enum in prop.enum_items:
+                if enum.identifier == enum_identifier:
+                    for s in enum.sockets:
+                        if s.identifier == socket_identifier:
+                            for key, cls in _OUTPUT_SOCKET_CLASSES.items():
+                                if key in s.bl_socket_type:
+                                    return cls
+        for s in self.inputs:
             if s.identifier == socket_identifier:
                 for key, cls in _OUTPUT_SOCKET_CLASSES.items():
                     if key in s.bl_socket_type:
@@ -884,13 +1231,20 @@ class NodeInfo:
                 if enum.description:
                     docstring += f" {enum.description}"
 
-                varying = self.varying_output_identifiers
-                if len(varying) == 1:
-                    varying_id = next(iter(varying))
+                # Parameterise the return type when the node is generic. The
+                # output side wins when present (Switch/Mix/field nodes); else
+                # the input side drives it (Compare, whose output is Boolean).
+                if self.outputs_generic:
+                    varying_id = next(iter(self.varying_output_identifiers))
                     socket_cls = self.output_class_for_enum(varying_id, enum.identifier)
                     return_type = f"{cls_name}[{socket_cls}]"
                     # Use the class name directly (not cls) so the type checker
                     # can resolve the parameterized return type.
+                    call_expr = f"{cls_name}({call_params_str})"
+                elif self.inputs_generic:
+                    varying_id = next(iter(self.varying_input_identifiers))
+                    socket_cls = self.input_class_for_enum(varying_id, enum.identifier)
+                    return_type = f"{cls_name}[{socket_cls}]"
                     call_expr = f"{cls_name}({call_params_str})"
                 else:
                     return_type = cls_name
@@ -1303,14 +1657,19 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     custom = _CUSTOMIZATIONS.get(node_info.bl_idname)
     suppress = custom.suppress if custom else frozenset()
 
-    # A node is generic when a single output socket changes type across enum
-    # values (the type flows through the _T/_S type variables). Any input that
-    # varies in lock-step (e.g. Switch's false/true) shares that _S, and its
-    # __init__ parameter accepts InputAny rather than a sprawling union.
+    # A node is generic when its output and/or input sockets change type across
+    # enum values, with all varying sockets on a side sharing one type per value
+    # (so a single _S/_T suffices). The output side drives nodes like Switch/Mix
+    # and the multi-output field nodes (leading/trailing/total); the input side
+    # alone drives nodes like Compare whose output is a fixed Boolean. Varying
+    # inputs are typed _S and their __init__ params accept InputAny.
     varying_outputs = node_info.varying_output_identifiers
-    is_generic = len(varying_outputs) == 1
-    varying_inputs = node_info.varying_input_identifiers if is_generic else set()
-    inputs_generic = bool(varying_inputs)
+    varying_inputs = node_info.varying_input_identifiers
+    outputs_generic = node_info.outputs_generic
+    inputs_generic = node_info.inputs_generic
+    is_generic = outputs_generic or inputs_generic
+    if not inputs_generic:
+        varying_inputs = set()
 
     init_params = ["self"]
     establish_links_params = []
@@ -1512,7 +1871,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     output_annotations = []
     for socket in node_info.outputs:
-        if is_generic and socket.identifier in varying_outputs:
+        if outputs_generic and socket.identifier in varying_outputs:
             attr_name = normalize_name(socket.identifier)
             doc = socket.description or socket.name
             ann = f"        {attr_name}: _S"
@@ -1522,7 +1881,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         else:
             output_annotations.append(socket.format_accessor_annotation())
 
-    outputs_base = "(SocketAccessor, Generic[_S])" if is_generic else "(SocketAccessor)"
+    outputs_base = (
+        "(SocketAccessor, Generic[_S])" if outputs_generic else "(SocketAccessor)"
+    )
     if output_annotations:
         outputs_class = f"    class _Outputs{outputs_base}:\n" + "\n".join(
             output_annotations
@@ -1534,7 +1895,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     base_classes = list(custom.bases) if custom else []
     generated_base = "BaseNode, Generic[_T]" if is_generic else "BaseNode"
     class_base = "(" + ", ".join(base_classes + [generated_base]) + ")"
-    o_return_type = "_Outputs[_T]" if is_generic else "_Outputs"
+    o_return_type = "_Outputs[_T]" if outputs_generic else "_Outputs"
     i_return_type = "_Inputs[_T]" if inputs_generic else "_Inputs"
 
     # When extra sockets exist, properties must be set before collecting socket IDs
@@ -1672,9 +2033,23 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     inputs = [f"Input{x}".replace("Socket", "") for x in all] + ["InputAny"]
     typevars = ["_T", "_S"]
 
+    # The socket-name → Input*/…Socket mapping over-generates a few names that
+    # don't actually exist (e.g. "INT" → InputInt/IntSocket, "RGBA" →
+    # InputRgba/RgbaSocket; the real names are InputInteger/IntegerSocket and
+    # InputColor/ColorSocket). Drop the non-existent ones — they were only ever
+    # pruned later by ruff, but an unpruned stray import breaks the package on
+    # the next generation run's bootstrap import.
+    import nodebpy.builder.socket as _socket_mod
+    import nodebpy.types as _types_mod
+
+    inputs = [name for name in inputs if hasattr(_types_mod, name)]
+    socket_names = [name for name in all if hasattr(_socket_mod, name)]
+
     lines.append(f"from ...types import (\n    {',\n'.join(inputs)},\n)")
 
-    lines.append(f"from ...builder.socket import ({', '.join(all + typevars)})")
+    lines.append(
+        f"from ...builder.socket import ({', '.join(socket_names + typevars)})"
+    )
 
     # Imports required by any registered customizations in this module
     # (mixin bases referenced in the class definition / extra_body).

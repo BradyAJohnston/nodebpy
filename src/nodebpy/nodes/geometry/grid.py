@@ -2951,7 +2951,7 @@ class SetGridTransform(BaseNode, Generic[_T]):
         self.node.data_type = value
 
 
-class StoreNamedGrid(BaseNode):
+class StoreNamedGrid(BaseNode, Generic[_T]):
     """
     Store grid data in a volume geometry with the specified name
 
@@ -2982,12 +2982,12 @@ class StoreNamedGrid(BaseNode):
     _bl_idname = "GeometryNodeStoreNamedGrid"
     node: bpy.types.GeometryNodeStoreNamedGrid
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         volume: GeometrySocket
         """Volume"""
         name: StringSocket
         """Name"""
-        grid: FloatSocket
+        grid: _S
         """Grid"""
 
     class _Outputs(SocketAccessor):
@@ -2997,7 +2997,7 @@ class StoreNamedGrid(BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs: ...
 
@@ -3005,7 +3005,7 @@ class StoreNamedGrid(BaseNode):
         self,
         volume: InputGeometry = None,
         name: InputString = "",
-        grid: InputBoolean | InputFloat | InputInteger | InputVector = 0.0,
+        grid: InputAny = 0.0,
         *,
         data_type: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"] = "FLOAT",
     ):
@@ -3020,9 +3020,9 @@ class StoreNamedGrid(BaseNode):
         volume: InputGeometry = None,
         name: InputString = "",
         grid: InputBoolean = False,
-    ) -> "StoreNamedGrid":
+    ) -> "StoreNamedGrid[BooleanSocket]":
         """Create Store Named Grid with operation 'Boolean'. Boolean"""
-        return cls(data_type="BOOLEAN", volume=volume, name=name, grid=grid)
+        return StoreNamedGrid(data_type="BOOLEAN", volume=volume, name=name, grid=grid)
 
     @classmethod
     def float(
@@ -3030,9 +3030,9 @@ class StoreNamedGrid(BaseNode):
         volume: InputGeometry = None,
         name: InputString = "",
         grid: InputFloat = 0.0,
-    ) -> "StoreNamedGrid":
+    ) -> "StoreNamedGrid[FloatSocket]":
         """Create Store Named Grid with operation 'Float'. Single precision float"""
-        return cls(data_type="FLOAT", volume=volume, name=name, grid=grid)
+        return StoreNamedGrid(data_type="FLOAT", volume=volume, name=name, grid=grid)
 
     @classmethod
     def integer(
@@ -3040,9 +3040,9 @@ class StoreNamedGrid(BaseNode):
         volume: InputGeometry = None,
         name: InputString = "",
         grid: InputInteger = 0,
-    ) -> "StoreNamedGrid":
+    ) -> "StoreNamedGrid[IntegerSocket]":
         """Create Store Named Grid with operation 'Integer'. 32-bit integer"""
-        return cls(data_type="INT", volume=volume, name=name, grid=grid)
+        return StoreNamedGrid(data_type="INT", volume=volume, name=name, grid=grid)
 
     @classmethod
     def vector(
@@ -3050,9 +3050,11 @@ class StoreNamedGrid(BaseNode):
         volume: InputGeometry = None,
         name: InputString = "",
         grid: InputVector = None,
-    ) -> "StoreNamedGrid":
+    ) -> "StoreNamedGrid[VectorSocket]":
         """Create Store Named Grid with operation 'Vector'. 3D float vector"""
-        return cls(data_type="VECTOR_FLOAT", volume=volume, name=name, grid=grid)
+        return StoreNamedGrid(
+            data_type="VECTOR_FLOAT", volume=volume, name=name, grid=grid
+        )
 
     @property
     def data_type(self) -> Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]:

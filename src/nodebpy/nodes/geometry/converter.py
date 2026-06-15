@@ -48,15 +48,181 @@ from ...builder.socket import (
     SoundSocket,
     StringSocket,
     VectorSocket,
-    FloatSocketList,
     StringSocketList,
     _T,
     _S,
 )
 
+from ...types import _AttributeDomains
+
 from .._mixins import _FieldToListMixin
 
 from .._mixins import _FormatStringMixin
+
+
+class AccumulateField(BaseNode, Generic[_T]):
+    """
+    Add the values of an evaluated field together and output the running total for each element
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    group_index : InputInteger
+        Group ID
+
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.group_index : IntegerSocket
+        Group ID
+
+    Outputs
+    -------
+    o.leading : FloatSocket
+        Leading
+    o.trailing : FloatSocket
+        Trailing
+    o.total : FloatSocket
+        Total
+    """
+
+    _bl_idname = "GeometryNodeAccumulateField"
+    node: bpy.types.GeometryNodeAccumulateField
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+        group_index: IntegerSocket
+        """Group ID"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        leading: _S
+        """Leading"""
+        trailing: _S
+        """Trailing"""
+        total: _S
+        """Total"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+        @property
+        def o(self) -> _Outputs[_T]: ...
+
+    def __init__(
+        self,
+        value: InputAny = 1.0,
+        group_index: InputInteger = 0,
+        *,
+        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, value: InputFloat = 1.0, group_index: InputInteger = 0
+    ) -> "AccumulateField[FloatSocket]":
+        """Create Accumulate Field with operation 'Float'. Add floating point values"""
+        return AccumulateField(data_type="FLOAT", value=value, group_index=group_index)
+
+    @classmethod
+    def integer(
+        cls, value: InputInteger = 1, group_index: InputInteger = 0
+    ) -> "AccumulateField[IntegerSocket]":
+        """Create Accumulate Field with operation 'Integer'. Add integer values"""
+        return AccumulateField(data_type="INT", value=value, group_index=group_index)
+
+    @classmethod
+    def vector(
+        cls, value: InputVector = None, group_index: InputInteger = 0
+    ) -> "AccumulateField[VectorSocket]":
+        """Create Accumulate Field with operation 'Vector'. Add 3D vector values"""
+        return AccumulateField(
+            data_type="FLOAT_VECTOR", value=value, group_index=group_index
+        )
+
+    @classmethod
+    def transform(
+        cls, value: InputMatrix = None, group_index: InputInteger = 0
+    ) -> "AccumulateField[MatrixSocket]":
+        """Create Accumulate Field with operation 'Transform'. Multiply transformation matrices"""
+        return AccumulateField(
+            data_type="TRANSFORM", value=value, group_index=group_index
+        )
+
+    @classmethod
+    def face_corner(
+        cls, value: InputFloat = 1.0, group_index: InputInteger = 0
+    ) -> "AccumulateField[FloatSocket]":
+        """Create Accumulate Field with operation 'Face Corner'. Attribute on mesh face corner"""
+        return AccumulateField(domain="CORNER", value=value, group_index=group_index)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
+    ):
+        self.node.domain = value
+
+    class AccumulateFieldDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self, value: InputFloat = None, index: InputInteger = 0
+        ) -> "AccumulateField[FloatSocket]":
+            return AccumulateField(value, index, domain=self._domain, data_type="FLOAT")
+
+        def integer(
+            self, value: InputInteger = None, index: InputInteger = 0
+        ) -> "AccumulateField[IntegerSocket]":
+            return AccumulateField(value, index, domain=self._domain, data_type="INT")
+
+        def vector(
+            self, value: InputVector = None, index: InputInteger = 0
+        ) -> "AccumulateField[VectorSocket]":
+            return AccumulateField(
+                value, index, domain=self._domain, data_type="FLOAT_VECTOR"
+            )
+
+        def transform(
+            self, value: InputMatrix = None, index: InputInteger = 0
+        ) -> "AccumulateField[MatrixSocket]":
+            return AccumulateField(
+                value, index, domain=self._domain, data_type="TRANSFORM"
+            )
+
+    point = AccumulateFieldDomainFactory("POINT")
+    edge = AccumulateFieldDomainFactory("EDGE")
+    face = AccumulateFieldDomainFactory("FACE")
+    corner = AccumulateFieldDomainFactory("CORNER")
+    spline = AccumulateFieldDomainFactory("CURVE")
+    instance = AccumulateFieldDomainFactory("INSTANCE")
+    layer = AccumulateFieldDomainFactory("LAYER")
 
 
 class AlignRotationToVector(BaseNode):
@@ -1338,6 +1504,856 @@ class EulerToRotation(BaseNode):
         self._establish_links(**key_args)
 
 
+class EvaluateAtIndex(BaseNode, Generic[_T]):
+    """
+    Retrieve data of other elements in the context's geometry
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    index : InputInteger
+        Index
+
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.index : IntegerSocket
+        Index
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    """
+
+    _bl_idname = "GeometryNodeFieldAtIndex"
+    node: bpy.types.GeometryNodeFieldAtIndex
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+        index: IntegerSocket
+        """Index"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+        @property
+        def o(self) -> _Outputs[_T]: ...
+
+    def __init__(
+        self,
+        value: InputAny = 0.0,
+        index: InputInteger = 0,
+        *,
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+        ] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Index": index}
+        self.domain = domain
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def face_corner(
+        cls, value: InputFloat = 0.0, index: InputInteger = 0
+    ) -> "EvaluateAtIndex[FloatSocket]":
+        """Create Evaluate at Index with operation 'Face Corner'. Attribute on mesh face corner"""
+        return EvaluateAtIndex(domain="CORNER", value=value, index=index)
+
+    @classmethod
+    def float(
+        cls, value: InputFloat = 0.0, index: InputInteger = 0
+    ) -> "EvaluateAtIndex[FloatSocket]":
+        """Create Evaluate at Index with operation 'Float'. Floating-point value"""
+        return EvaluateAtIndex(data_type="FLOAT", value=value, index=index)
+
+    @classmethod
+    def integer(
+        cls, value: InputInteger = 0, index: InputInteger = 0
+    ) -> "EvaluateAtIndex[IntegerSocket]":
+        """Create Evaluate at Index with operation 'Integer'. 32-bit integer"""
+        return EvaluateAtIndex(data_type="INT", value=value, index=index)
+
+    @classmethod
+    def boolean(
+        cls, value: InputBoolean = False, index: InputInteger = 0
+    ) -> "EvaluateAtIndex[BooleanSocket]":
+        """Create Evaluate at Index with operation 'Boolean'. True or false"""
+        return EvaluateAtIndex(data_type="BOOLEAN", value=value, index=index)
+
+    @classmethod
+    def vector(
+        cls, value: InputVector = None, index: InputInteger = 0
+    ) -> "EvaluateAtIndex[VectorSocket]":
+        """Create Evaluate at Index with operation 'Vector'. 3D vector with floating-point values"""
+        return EvaluateAtIndex(data_type="FLOAT_VECTOR", value=value, index=index)
+
+    @classmethod
+    def color(
+        cls, value: InputColor = None, index: InputInteger = 0
+    ) -> "EvaluateAtIndex[ColorSocket]":
+        """Create Evaluate at Index with operation 'Color'. RGBA color with 32-bit floating-point values"""
+        return EvaluateAtIndex(data_type="FLOAT_COLOR", value=value, index=index)
+
+    @classmethod
+    def quaternion(
+        cls, value: InputRotation = None, index: InputInteger = 0
+    ) -> "EvaluateAtIndex[RotationSocket]":
+        """Create Evaluate at Index with operation 'Quaternion'. Floating point quaternion rotation"""
+        return EvaluateAtIndex(data_type="QUATERNION", value=value, index=index)
+
+    @classmethod
+    def input_4x4_matrix(
+        cls, value: InputMatrix = None, index: InputInteger = 0
+    ) -> "EvaluateAtIndex[MatrixSocket]":
+        """Create Evaluate at Index with operation '4x4 Matrix'. Floating point matrix"""
+        return EvaluateAtIndex(data_type="FLOAT4X4", value=value, index=index)
+
+    @property
+    def domain(
+        self,
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
+    ):
+        self.node.domain = value
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "FLOAT_VECTOR",
+        "FLOAT_COLOR",
+        "QUATERNION",
+        "FLOAT4X4",
+    ]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+        ],
+    ):
+        self.node.data_type = value
+
+    class _EvaluateAtIndexDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self, value: InputFloat = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[FloatSocket]":
+            return EvaluateAtIndex(value, index, domain=self._domain, data_type="FLOAT")
+
+        def integer(
+            self, value: InputInteger = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[IntegerSocket]":
+            return EvaluateAtIndex(value, index, domain=self._domain, data_type="INT")
+
+        def boolean(
+            self, value: InputBoolean = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[BooleanSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="BOOLEAN"
+            )
+
+        def vector(
+            self, value: InputVector = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[VectorSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="FLOAT_VECTOR"
+            )
+
+        def color(
+            self, value: InputColor = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[ColorSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="FLOAT_COLOR"
+            )
+
+        def quaternion(
+            self, value: InputRotation = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[RotationSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="QUATERNION"
+            )
+
+        def matrix(
+            self, value: InputMatrix = None, index: InputInteger = 0
+        ) -> "EvaluateAtIndex[MatrixSocket]":
+            return EvaluateAtIndex(
+                value, index, domain=self._domain, data_type="FLOAT4X4"
+            )
+
+    point = _EvaluateAtIndexDomainFactory("POINT")
+    edge = _EvaluateAtIndexDomainFactory("EDGE")
+    face = _EvaluateAtIndexDomainFactory("FACE")
+    corner = _EvaluateAtIndexDomainFactory("CORNER")
+    spline = _EvaluateAtIndexDomainFactory("CURVE")
+    instance = _EvaluateAtIndexDomainFactory("INSTANCE")
+    layer = _EvaluateAtIndexDomainFactory("LAYER")
+
+
+class EvaluateOnDomain(BaseNode, Generic[_T]):
+    """
+    Retrieve values from a field on a different domain besides the domain from the context
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    """
+
+    _bl_idname = "GeometryNodeFieldOnDomain"
+    node: bpy.types.GeometryNodeFieldOnDomain
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+        @property
+        def o(self) -> _Outputs[_T]: ...
+
+    def __init__(
+        self,
+        value: InputAny = 0.0,
+        *,
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+        ] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Value": value}
+        self.domain = domain
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def face_corner(cls, value: InputFloat = 0.0) -> "EvaluateOnDomain[FloatSocket]":
+        """Create Evaluate on Domain with operation 'Face Corner'. Attribute on mesh face corner"""
+        return EvaluateOnDomain(domain="CORNER", value=value)
+
+    @classmethod
+    def float(cls, value: InputFloat = 0.0) -> "EvaluateOnDomain[FloatSocket]":
+        """Create Evaluate on Domain with operation 'Float'. Floating-point value"""
+        return EvaluateOnDomain(data_type="FLOAT", value=value)
+
+    @classmethod
+    def integer(cls, value: InputInteger = 0) -> "EvaluateOnDomain[IntegerSocket]":
+        """Create Evaluate on Domain with operation 'Integer'. 32-bit integer"""
+        return EvaluateOnDomain(data_type="INT", value=value)
+
+    @classmethod
+    def boolean(cls, value: InputBoolean = False) -> "EvaluateOnDomain[BooleanSocket]":
+        """Create Evaluate on Domain with operation 'Boolean'. True or false"""
+        return EvaluateOnDomain(data_type="BOOLEAN", value=value)
+
+    @classmethod
+    def vector(cls, value: InputVector = None) -> "EvaluateOnDomain[VectorSocket]":
+        """Create Evaluate on Domain with operation 'Vector'. 3D vector with floating-point values"""
+        return EvaluateOnDomain(data_type="FLOAT_VECTOR", value=value)
+
+    @classmethod
+    def color(cls, value: InputColor = None) -> "EvaluateOnDomain[ColorSocket]":
+        """Create Evaluate on Domain with operation 'Color'. RGBA color with 32-bit floating-point values"""
+        return EvaluateOnDomain(data_type="FLOAT_COLOR", value=value)
+
+    @classmethod
+    def quaternion(
+        cls, value: InputRotation = None
+    ) -> "EvaluateOnDomain[RotationSocket]":
+        """Create Evaluate on Domain with operation 'Quaternion'. Floating point quaternion rotation"""
+        return EvaluateOnDomain(data_type="QUATERNION", value=value)
+
+    @classmethod
+    def input_4x4_matrix(
+        cls, value: InputMatrix = None
+    ) -> "EvaluateOnDomain[MatrixSocket]":
+        """Create Evaluate on Domain with operation '4x4 Matrix'. Floating point matrix"""
+        return EvaluateOnDomain(data_type="FLOAT4X4", value=value)
+
+    @property
+    def domain(
+        self,
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
+    ):
+        self.node.domain = value
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "FLOAT_VECTOR",
+        "FLOAT_COLOR",
+        "QUATERNION",
+        "FLOAT4X4",
+    ]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "FLOAT_VECTOR",
+            "FLOAT_COLOR",
+            "QUATERNION",
+            "FLOAT4X4",
+        ],
+    ):
+        self.node.data_type = value
+
+    class _EvaluateOnDomainDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(self, value: InputFloat = None) -> "EvaluateOnDomain[FloatSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT")
+
+        def integer(
+            self, value: InputInteger = None
+        ) -> "EvaluateOnDomain[IntegerSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="INT")
+
+        def boolean(
+            self, value: InputBoolean = None
+        ) -> "EvaluateOnDomain[BooleanSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="BOOLEAN")
+
+        def vector(self, value: InputVector = None) -> "EvaluateOnDomain[VectorSocket]":
+            return EvaluateOnDomain(
+                value, domain=self._domain, data_type="FLOAT_VECTOR"
+            )
+
+        def quaternion(
+            self, value: InputRotation = None
+        ) -> "EvaluateOnDomain[RotationSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="QUATERNION")
+
+        def matrix(self, value: InputMatrix = None) -> "EvaluateOnDomain[MatrixSocket]":
+            return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT4X4")
+
+    point = _EvaluateOnDomainDomainFactory("POINT")
+    edge = _EvaluateOnDomainDomainFactory("EDGE")
+    face = _EvaluateOnDomainDomainFactory("FACE")
+    corner = _EvaluateOnDomainDomainFactory("CORNER")
+    spline = _EvaluateOnDomainDomainFactory("CURVE")
+    instance = _EvaluateOnDomainDomainFactory("INSTANCE")
+    layer = _EvaluateOnDomainDomainFactory("LAYER")
+
+
+class FieldAverage(BaseNode, Generic[_T]):
+    """
+    Calculate the mean and median of a given field
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    group_index : InputInteger
+        Group ID
+
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.group_index : IntegerSocket
+        Group ID
+
+    Outputs
+    -------
+    o.mean : FloatSocket
+        Mean
+    o.median : FloatSocket
+        Median
+    """
+
+    _bl_idname = "GeometryNodeFieldAverage"
+    node: bpy.types.GeometryNodeFieldAverage
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+        group_index: IntegerSocket
+        """Group ID"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        mean: _S
+        """Mean"""
+        median: _S
+        """Median"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+        @property
+        def o(self) -> _Outputs[_T]: ...
+
+    def __init__(
+        self,
+        value: InputAny = 0.0,
+        group_index: InputInteger = 0,
+        *,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldAverage[FloatSocket]":
+        """Create Field Average with operation 'Float'. Floating-point value"""
+        return FieldAverage(data_type="FLOAT", value=value, group_index=group_index)
+
+    @classmethod
+    def vector(
+        cls, value: InputVector = None, group_index: InputInteger = 0
+    ) -> "FieldAverage[VectorSocket]":
+        """Create Field Average with operation 'Vector'. 3D vector with floating-point values"""
+        return FieldAverage(
+            data_type="FLOAT_VECTOR", value=value, group_index=group_index
+        )
+
+    @classmethod
+    def face_corner(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldAverage[FloatSocket]":
+        """Create Field Average with operation 'Face Corner'. Attribute on mesh face corner"""
+        return FieldAverage(domain="CORNER", value=value, group_index=group_index)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
+    ):
+        self.node.domain = value
+
+    class _FieldAverageDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self,
+            value: InputFloat = 1.0,
+            group_index: InputInteger = 0,
+        ) -> "FieldAverage[FloatSocket]":
+            """Create FieldAverage for the "FLOAT" data type"""
+            return FieldAverage(
+                value, group_index, data_type="FLOAT", domain=self._domain
+            )
+
+        def vector(
+            self,
+            value: InputVector = (1.0, 1.0, 1.0),
+            group_index: InputInteger = 0,
+        ) -> "FieldAverage[VectorSocket]":
+            """Create FieldAverage for the "FLOAT_VECTOR" data type"""
+            return FieldAverage(
+                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+            )
+
+    point = _FieldAverageDomainFactory("POINT")
+    edge = _FieldAverageDomainFactory("EDGE")
+    face = _FieldAverageDomainFactory("FACE")
+    corner = _FieldAverageDomainFactory("CORNER")
+    spline = _FieldAverageDomainFactory("CURVE")
+    instance = _FieldAverageDomainFactory("INSTANCE")
+    layer = _FieldAverageDomainFactory("LAYER")
+
+
+class FieldMinAndMax(BaseNode, Generic[_T]):
+    """
+    Calculate the minimum and maximum of a given field
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    group_index : InputInteger
+        Group ID
+
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.group_index : IntegerSocket
+        Group ID
+
+    Outputs
+    -------
+    o.min : FloatSocket
+        Min
+    o.max : FloatSocket
+        Max
+    """
+
+    _bl_idname = "GeometryNodeFieldMinAndMax"
+    node: bpy.types.GeometryNodeFieldMinAndMax
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+        group_index: IntegerSocket
+        """Group ID"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        min: _S
+        """Min"""
+        max: _S
+        """Max"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+        @property
+        def o(self) -> _Outputs[_T]: ...
+
+    def __init__(
+        self,
+        value: InputAny = 0.0,
+        group_index: InputInteger = 0,
+        *,
+        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinAndMax[FloatSocket]":
+        """Create Field Min & Max with operation 'Float'. Floating-point value"""
+        return FieldMinAndMax(data_type="FLOAT", value=value, group_index=group_index)
+
+    @classmethod
+    def integer(
+        cls, value: InputInteger = 0, group_index: InputInteger = 0
+    ) -> "FieldMinAndMax[IntegerSocket]":
+        """Create Field Min & Max with operation 'Integer'. 32-bit integer"""
+        return FieldMinAndMax(data_type="INT", value=value, group_index=group_index)
+
+    @classmethod
+    def vector(
+        cls, value: InputVector = None, group_index: InputInteger = 0
+    ) -> "FieldMinAndMax[VectorSocket]":
+        """Create Field Min & Max with operation 'Vector'. 3D vector with floating-point values"""
+        return FieldMinAndMax(
+            data_type="FLOAT_VECTOR", value=value, group_index=group_index
+        )
+
+    @classmethod
+    def face_corner(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldMinAndMax[FloatSocket]":
+        """Create Field Min & Max with operation 'Face Corner'. Attribute on mesh face corner"""
+        return FieldMinAndMax(domain="CORNER", value=value, group_index=group_index)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
+    ):
+        self.node.domain = value
+
+    class _FieldMinAndMaxDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self,
+            value: InputFloat = 1.0,
+            group_index: InputInteger = 0,
+        ) -> "FieldMinAndMax[FloatSocket]":
+            """Create FieldMinMax for the "FLOAT" data type"""
+            return FieldMinAndMax(
+                value, group_index, data_type="FLOAT", domain=self._domain
+            )
+
+        def integer(
+            self,
+            value: InputInteger = 1,
+            group_index: InputInteger = 0,
+        ) -> "FieldMinAndMax[IntegerSocket]":
+            """Create FieldMinMax for the "INT" data type"""
+            return FieldMinAndMax(
+                value, group_index, data_type="INT", domain=self._domain
+            )
+
+        def vector(
+            self,
+            value: InputVector = (1.0, 1.0, 1.0),
+            group_index: InputInteger = 0,
+        ) -> "FieldMinAndMax[VectorSocket]":
+            """Create FieldMinMax for the "FLOAT_VECTOR" data type"""
+            return FieldMinAndMax(
+                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+            )
+
+    point = _FieldMinAndMaxDomainFactory("POINT")
+    edge = _FieldMinAndMaxDomainFactory("EDGE")
+    face = _FieldMinAndMaxDomainFactory("FACE")
+    corner = _FieldMinAndMaxDomainFactory("CORNER")
+    spline = _FieldMinAndMaxDomainFactory("CURVE")
+    instance = _FieldMinAndMaxDomainFactory("INSTANCE")
+    layer = _FieldMinAndMaxDomainFactory("LAYER")
+
+
+class FieldVariance(BaseNode, Generic[_T]):
+    """
+    Calculate the standard deviation and variance of a given field
+
+    Parameters
+    ----------
+    value : InputFloat
+        Value
+    group_index : InputInteger
+        Group ID
+
+    Inputs
+    ------
+    i.value : FloatSocket
+        Value
+    i.group_index : IntegerSocket
+        Group ID
+
+    Outputs
+    -------
+    o.standard_deviation : FloatSocket
+        Standard Deviation
+    o.variance : FloatSocket
+        Variance
+    """
+
+    _bl_idname = "GeometryNodeFieldVariance"
+    node: bpy.types.GeometryNodeFieldVariance
+
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
+        """Value"""
+        group_index: IntegerSocket
+        """Group ID"""
+
+    class _Outputs(SocketAccessor, Generic[_S]):
+        standard_deviation: _S
+        """Standard Deviation"""
+        variance: _S
+        """Variance"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[_T]: ...
+        @property
+        def o(self) -> _Outputs[_T]: ...
+
+    def __init__(
+        self,
+        value: InputAny = 0.0,
+        group_index: InputInteger = 0,
+        *,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
+    ):
+        super().__init__()
+        key_args = {"Value": value, "Group Index": group_index}
+        self.data_type = data_type
+        self.domain = domain
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldVariance[FloatSocket]":
+        """Create Field Variance with operation 'Float'. Floating-point value"""
+        return FieldVariance(data_type="FLOAT", value=value, group_index=group_index)
+
+    @classmethod
+    def vector(
+        cls, value: InputVector = None, group_index: InputInteger = 0
+    ) -> "FieldVariance[VectorSocket]":
+        """Create Field Variance with operation 'Vector'. 3D vector with floating-point values"""
+        return FieldVariance(
+            data_type="FLOAT_VECTOR", value=value, group_index=group_index
+        )
+
+    @classmethod
+    def face_corner(
+        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+    ) -> "FieldVariance[FloatSocket]":
+        """Create Field Variance with operation 'Face Corner'. Attribute on mesh face corner"""
+        return FieldVariance(domain="CORNER", value=value, group_index=group_index)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+        self.node.data_type = value
+
+    @property
+    def domain(
+        self,
+    ) -> Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"]:
+        return self.node.domain
+
+    @domain.setter
+    def domain(
+        self,
+        value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
+    ):
+        self.node.domain = value
+
+    class _FieldVarianceDomainFactory:
+        def __init__(self, domain: _AttributeDomains):
+            self._domain = domain
+
+        def float(
+            self,
+            value: InputFloat = None,
+            group_index: InputInteger = None,
+        ) -> "FieldVariance[FloatSocket]":
+            """Create FieldVariance for the "FLOAT" data type"""
+            return FieldVariance(
+                value, group_index, data_type="FLOAT", domain=self._domain
+            )
+
+        def vector(
+            self,
+            value: InputVector = None,
+            group_index: InputInteger = None,
+        ) -> "FieldVariance[VectorSocket]":
+            """Create FieldVariance for the "FLOAT_VECTOR" data type"""
+            return FieldVariance(
+                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+            )
+
+    point = _FieldVarianceDomainFactory("POINT")
+    edge = _FieldVarianceDomainFactory("EDGE")
+    face = _FieldVarianceDomainFactory("FACE")
+    corner = _FieldVarianceDomainFactory("CORNER")
+    spline = _FieldVarianceDomainFactory("CURVE")
+    instance = _FieldVarianceDomainFactory("INSTANCE")
+    layer = _FieldVarianceDomainFactory("LAYER")
+
+
 class FieldToList(_FieldToListMixin, BaseNode):
     """
     Create a list of values
@@ -1371,7 +2387,7 @@ class FieldToList(_FieldToListMixin, BaseNode):
         def o(self) -> _Outputs: ...
 
 
-class FilterList(BaseNode):
+class FilterList(BaseNode, Generic[_T]):
     """
     Remove items from a list
 
@@ -1400,45 +2416,28 @@ class FilterList(BaseNode):
     _bl_idname = "GeometryNodeFilterList"
     node: bpy.types.GeometryNodeFilterList  # ty: ignore[unresolved-attribute]
 
-    class _Inputs(SocketAccessor):
-        list: FloatSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        list: _S
         """List"""
         selection: BooleanSocket
         """Selection"""
 
-    class _Outputs(SocketAccessor):
-        selection: FloatSocketList
+    class _Outputs(SocketAccessor, Generic[_S]):
+        selection: _S
         """Selection"""
-        inverted: FloatSocketList
+        inverted: _S
         """Inverted"""
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
-        list: InputBoolean
-        | InputBundle
-        | InputClosure
-        | InputCollection
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputGeometry
-        | InputImage
-        | InputInteger
-        | InputMaterial
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputSound
-        | InputString
-        | InputVector = 0.0,
+        list: InputAny = 0.0,
         selection: InputBoolean = True,
         *,
         socket_type: Literal[
@@ -1470,128 +2469,128 @@ class FilterList(BaseNode):
     @classmethod
     def float(
         cls, list: InputFloat = 0.0, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[FloatSocket]":
         """Create Filter List with operation 'Float'."""
-        return cls(socket_type="FLOAT", list=list, selection=selection)
+        return FilterList(socket_type="FLOAT", list=list, selection=selection)
 
     @classmethod
     def integer(
         cls, list: InputInteger = 0, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[IntegerSocket]":
         """Create Filter List with operation 'Integer'."""
-        return cls(socket_type="INT", list=list, selection=selection)
+        return FilterList(socket_type="INT", list=list, selection=selection)
 
     @classmethod
     def boolean(
         cls, list: InputBoolean = False, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[BooleanSocket]":
         """Create Filter List with operation 'Boolean'."""
-        return cls(socket_type="BOOLEAN", list=list, selection=selection)
+        return FilterList(socket_type="BOOLEAN", list=list, selection=selection)
 
     @classmethod
     def vector(
         cls, list: InputVector = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[VectorSocket]":
         """Create Filter List with operation 'Vector'."""
-        return cls(socket_type="VECTOR", list=list, selection=selection)
+        return FilterList(socket_type="VECTOR", list=list, selection=selection)
 
     @classmethod
     def color(
         cls, list: InputColor = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[ColorSocket]":
         """Create Filter List with operation 'Color'."""
-        return cls(socket_type="RGBA", list=list, selection=selection)
+        return FilterList(socket_type="RGBA", list=list, selection=selection)
 
     @classmethod
     def rotation(
         cls, list: InputRotation = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[RotationSocket]":
         """Create Filter List with operation 'Rotation'."""
-        return cls(socket_type="ROTATION", list=list, selection=selection)
+        return FilterList(socket_type="ROTATION", list=list, selection=selection)
 
     @classmethod
     def matrix(
         cls, list: InputMatrix = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[MatrixSocket]":
         """Create Filter List with operation 'Matrix'."""
-        return cls(socket_type="MATRIX", list=list, selection=selection)
+        return FilterList(socket_type="MATRIX", list=list, selection=selection)
 
     @classmethod
     def string(
         cls, list: InputString = "", selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[StringSocket]":
         """Create Filter List with operation 'String'."""
-        return cls(socket_type="STRING", list=list, selection=selection)
+        return FilterList(socket_type="STRING", list=list, selection=selection)
 
     @classmethod
     def menu(
         cls, list: InputMenu = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[MenuSocket]":
         """Create Filter List with operation 'Menu'."""
-        return cls(socket_type="MENU", list=list, selection=selection)
+        return FilterList(socket_type="MENU", list=list, selection=selection)
 
     @classmethod
     def object(
         cls, list: InputObject = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[ObjectSocket]":
         """Create Filter List with operation 'Object'."""
-        return cls(socket_type="OBJECT", list=list, selection=selection)
+        return FilterList(socket_type="OBJECT", list=list, selection=selection)
 
     @classmethod
     def image(
         cls, list: InputImage = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[ImageSocket]":
         """Create Filter List with operation 'Image'."""
-        return cls(socket_type="IMAGE", list=list, selection=selection)
+        return FilterList(socket_type="IMAGE", list=list, selection=selection)
 
     @classmethod
     def geometry(
         cls, list: InputGeometry = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[GeometrySocket]":
         """Create Filter List with operation 'Geometry'."""
-        return cls(socket_type="GEOMETRY", list=list, selection=selection)
+        return FilterList(socket_type="GEOMETRY", list=list, selection=selection)
 
     @classmethod
     def collection(
         cls, list: InputCollection = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[CollectionSocket]":
         """Create Filter List with operation 'Collection'."""
-        return cls(socket_type="COLLECTION", list=list, selection=selection)
+        return FilterList(socket_type="COLLECTION", list=list, selection=selection)
 
     @classmethod
     def material(
         cls, list: InputMaterial = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[MaterialSocket]":
         """Create Filter List with operation 'Material'."""
-        return cls(socket_type="MATERIAL", list=list, selection=selection)
+        return FilterList(socket_type="MATERIAL", list=list, selection=selection)
 
     @classmethod
     def bundle(
         cls, list: InputBundle = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[BundleSocket]":
         """Create Filter List with operation 'Bundle'."""
-        return cls(socket_type="BUNDLE", list=list, selection=selection)
+        return FilterList(socket_type="BUNDLE", list=list, selection=selection)
 
     @classmethod
     def closure(
         cls, list: InputClosure = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[ClosureSocket]":
         """Create Filter List with operation 'Closure'."""
-        return cls(socket_type="CLOSURE", list=list, selection=selection)
+        return FilterList(socket_type="CLOSURE", list=list, selection=selection)
 
     @classmethod
     def font(
         cls, list: InputFont = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[FontSocket]":
         """Create Filter List with operation 'Font'."""
-        return cls(socket_type="FONT", list=list, selection=selection)
+        return FilterList(socket_type="FONT", list=list, selection=selection)
 
     @classmethod
     def sound(
         cls, list: InputSound = None, selection: InputBoolean = True
-    ) -> "FilterList":
+    ) -> "FilterList[SoundSocket]":
         """Create Filter List with operation 'Sound'."""
-        return cls(socket_type="SOUND", list=list, selection=selection)
+        return FilterList(socket_type="SOUND", list=list, selection=selection)
 
     @property
     def socket_type(
@@ -2665,7 +3664,7 @@ class GetNestedBundlePaths(BaseNode):
         self._establish_links(**key_args)
 
 
-class HashValue(BaseNode):
+class HashValue(BaseNode, Generic[_T]):
     """
     Generate a randomized integer using the given input value as a seed
 
@@ -2692,8 +3691,8 @@ class HashValue(BaseNode):
     _bl_idname = "FunctionNodeHashValue"
     node: bpy.types.FunctionNodeHashValue
 
-    class _Inputs(SocketAccessor):
-        value: IntegerSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
         """Value"""
         seed: IntegerSocket
         """Seed"""
@@ -2705,19 +3704,13 @@ class HashValue(BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs: ...
 
     def __init__(
         self,
-        value: InputColor
-        | InputFloat
-        | InputInteger
-        | InputMatrix
-        | InputRotation
-        | InputString
-        | InputVector = 0,
+        value: InputAny = 0,
         seed: InputInteger = 0,
         *,
         data_type: Literal[
@@ -2730,41 +3723,53 @@ class HashValue(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, value: InputFloat = 0.0, seed: InputInteger = 0) -> "HashValue":
+    def float(
+        cls, value: InputFloat = 0.0, seed: InputInteger = 0
+    ) -> "HashValue[FloatSocket]":
         """Create Hash Value with operation 'Float'."""
-        return cls(data_type="FLOAT", value=value, seed=seed)
+        return HashValue(data_type="FLOAT", value=value, seed=seed)
 
     @classmethod
-    def integer(cls, value: InputInteger = 0, seed: InputInteger = 0) -> "HashValue":
+    def integer(
+        cls, value: InputInteger = 0, seed: InputInteger = 0
+    ) -> "HashValue[IntegerSocket]":
         """Create Hash Value with operation 'Integer'."""
-        return cls(data_type="INT", value=value, seed=seed)
+        return HashValue(data_type="INT", value=value, seed=seed)
 
     @classmethod
-    def vector(cls, value: InputVector = None, seed: InputInteger = 0) -> "HashValue":
+    def vector(
+        cls, value: InputVector = None, seed: InputInteger = 0
+    ) -> "HashValue[VectorSocket]":
         """Create Hash Value with operation 'Vector'."""
-        return cls(data_type="VECTOR", value=value, seed=seed)
+        return HashValue(data_type="VECTOR", value=value, seed=seed)
 
     @classmethod
-    def color(cls, value: InputColor = None, seed: InputInteger = 0) -> "HashValue":
+    def color(
+        cls, value: InputColor = None, seed: InputInteger = 0
+    ) -> "HashValue[ColorSocket]":
         """Create Hash Value with operation 'Color'."""
-        return cls(data_type="RGBA", value=value, seed=seed)
+        return HashValue(data_type="RGBA", value=value, seed=seed)
 
     @classmethod
     def rotation(
         cls, value: InputRotation = None, seed: InputInteger = 0
-    ) -> "HashValue":
+    ) -> "HashValue[RotationSocket]":
         """Create Hash Value with operation 'Rotation'."""
-        return cls(data_type="ROTATION", value=value, seed=seed)
+        return HashValue(data_type="ROTATION", value=value, seed=seed)
 
     @classmethod
-    def matrix(cls, value: InputMatrix = None, seed: InputInteger = 0) -> "HashValue":
+    def matrix(
+        cls, value: InputMatrix = None, seed: InputInteger = 0
+    ) -> "HashValue[MatrixSocket]":
         """Create Hash Value with operation 'Matrix'."""
-        return cls(data_type="MATRIX", value=value, seed=seed)
+        return HashValue(data_type="MATRIX", value=value, seed=seed)
 
     @classmethod
-    def string(cls, value: InputString = "", seed: InputInteger = 0) -> "HashValue":
+    def string(
+        cls, value: InputString = "", seed: InputInteger = 0
+    ) -> "HashValue[StringSocket]":
         """Create Hash Value with operation 'String'."""
-        return cls(data_type="STRING", value=value, seed=seed)
+        return HashValue(data_type="STRING", value=value, seed=seed)
 
     @property
     def data_type(
@@ -3460,7 +4465,7 @@ class JoinBundle(BaseNode):
         self._establish_links(**key_args)
 
 
-class ListLength(BaseNode):
+class ListLength(BaseNode, Generic[_T]):
     """
     Count how many items are in a given list
 
@@ -3483,8 +4488,8 @@ class ListLength(BaseNode):
     _bl_idname = "GeometryNodeListLength"
     node: bpy.types.GeometryNodeListLength
 
-    class _Inputs(SocketAccessor):
-        list: FloatSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        list: _S
         """List"""
 
     class _Outputs(SocketAccessor):
@@ -3494,30 +4499,13 @@ class ListLength(BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs: ...
 
     def __init__(
         self,
-        list: InputBoolean
-        | InputBundle
-        | InputClosure
-        | InputCollection
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputGeometry
-        | InputImage
-        | InputInteger
-        | InputMaterial
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputSound
-        | InputString
-        | InputVector = 0.0,
+        list: InputAny = 0.0,
         *,
         data_type: Literal[
             "FLOAT",
@@ -3546,94 +4534,94 @@ class ListLength(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, list: InputFloat = 0.0) -> "ListLength":
+    def float(cls, list: InputFloat = 0.0) -> "ListLength[FloatSocket]":
         """Create List Length with operation 'Float'."""
-        return cls(data_type="FLOAT", list=list)
+        return ListLength(data_type="FLOAT", list=list)
 
     @classmethod
-    def integer(cls, list: InputInteger = 0) -> "ListLength":
+    def integer(cls, list: InputInteger = 0) -> "ListLength[IntegerSocket]":
         """Create List Length with operation 'Integer'."""
-        return cls(data_type="INT", list=list)
+        return ListLength(data_type="INT", list=list)
 
     @classmethod
-    def boolean(cls, list: InputBoolean = False) -> "ListLength":
+    def boolean(cls, list: InputBoolean = False) -> "ListLength[BooleanSocket]":
         """Create List Length with operation 'Boolean'."""
-        return cls(data_type="BOOLEAN", list=list)
+        return ListLength(data_type="BOOLEAN", list=list)
 
     @classmethod
-    def vector(cls, list: InputVector = None) -> "ListLength":
+    def vector(cls, list: InputVector = None) -> "ListLength[VectorSocket]":
         """Create List Length with operation 'Vector'."""
-        return cls(data_type="VECTOR", list=list)
+        return ListLength(data_type="VECTOR", list=list)
 
     @classmethod
-    def color(cls, list: InputColor = None) -> "ListLength":
+    def color(cls, list: InputColor = None) -> "ListLength[ColorSocket]":
         """Create List Length with operation 'Color'."""
-        return cls(data_type="RGBA", list=list)
+        return ListLength(data_type="RGBA", list=list)
 
     @classmethod
-    def rotation(cls, list: InputRotation = None) -> "ListLength":
+    def rotation(cls, list: InputRotation = None) -> "ListLength[RotationSocket]":
         """Create List Length with operation 'Rotation'."""
-        return cls(data_type="ROTATION", list=list)
+        return ListLength(data_type="ROTATION", list=list)
 
     @classmethod
-    def matrix(cls, list: InputMatrix = None) -> "ListLength":
+    def matrix(cls, list: InputMatrix = None) -> "ListLength[MatrixSocket]":
         """Create List Length with operation 'Matrix'."""
-        return cls(data_type="MATRIX", list=list)
+        return ListLength(data_type="MATRIX", list=list)
 
     @classmethod
-    def string(cls, list: InputString = "") -> "ListLength":
+    def string(cls, list: InputString = "") -> "ListLength[StringSocket]":
         """Create List Length with operation 'String'."""
-        return cls(data_type="STRING", list=list)
+        return ListLength(data_type="STRING", list=list)
 
     @classmethod
-    def menu(cls, list: InputMenu = None) -> "ListLength":
+    def menu(cls, list: InputMenu = None) -> "ListLength[MenuSocket]":
         """Create List Length with operation 'Menu'."""
-        return cls(data_type="MENU", list=list)
+        return ListLength(data_type="MENU", list=list)
 
     @classmethod
-    def object(cls, list: InputObject = None) -> "ListLength":
+    def object(cls, list: InputObject = None) -> "ListLength[ObjectSocket]":
         """Create List Length with operation 'Object'."""
-        return cls(data_type="OBJECT", list=list)
+        return ListLength(data_type="OBJECT", list=list)
 
     @classmethod
-    def image(cls, list: InputImage = None) -> "ListLength":
+    def image(cls, list: InputImage = None) -> "ListLength[ImageSocket]":
         """Create List Length with operation 'Image'."""
-        return cls(data_type="IMAGE", list=list)
+        return ListLength(data_type="IMAGE", list=list)
 
     @classmethod
-    def geometry(cls, list: InputGeometry = None) -> "ListLength":
+    def geometry(cls, list: InputGeometry = None) -> "ListLength[GeometrySocket]":
         """Create List Length with operation 'Geometry'."""
-        return cls(data_type="GEOMETRY", list=list)
+        return ListLength(data_type="GEOMETRY", list=list)
 
     @classmethod
-    def collection(cls, list: InputCollection = None) -> "ListLength":
+    def collection(cls, list: InputCollection = None) -> "ListLength[CollectionSocket]":
         """Create List Length with operation 'Collection'."""
-        return cls(data_type="COLLECTION", list=list)
+        return ListLength(data_type="COLLECTION", list=list)
 
     @classmethod
-    def material(cls, list: InputMaterial = None) -> "ListLength":
+    def material(cls, list: InputMaterial = None) -> "ListLength[MaterialSocket]":
         """Create List Length with operation 'Material'."""
-        return cls(data_type="MATERIAL", list=list)
+        return ListLength(data_type="MATERIAL", list=list)
 
     @classmethod
-    def bundle(cls, list: InputBundle = None) -> "ListLength":
+    def bundle(cls, list: InputBundle = None) -> "ListLength[BundleSocket]":
         """Create List Length with operation 'Bundle'."""
-        return cls(data_type="BUNDLE", list=list)
+        return ListLength(data_type="BUNDLE", list=list)
 
     @classmethod
-    def closure(cls, list: InputClosure = None) -> "ListLength":
+    def closure(cls, list: InputClosure = None) -> "ListLength[ClosureSocket]":
         """Create List Length with operation 'Closure'."""
-        return cls(data_type="CLOSURE", list=list)
+        return ListLength(data_type="CLOSURE", list=list)
 
     @classmethod
-    def font(cls, list: InputFont = None) -> "ListLength":
+    def font(cls, list: InputFont = None) -> "ListLength[FontSocket]":
         """Create List Length with operation 'Font'."""
-        return cls(data_type="FONT", list=list)
+        return ListLength(data_type="FONT", list=list)
 
     @classmethod
-    def sound(cls, list: InputSound = None) -> "ListLength":
+    def sound(cls, list: InputSound = None) -> "ListLength[SoundSocket]":
         """Create List Length with operation 'Sound'."""
-        return cls(data_type="SOUND", list=list)
+        return ListLength(data_type="SOUND", list=list)
 
     @property
     def data_type(
@@ -6604,7 +7592,7 @@ class SplitString(BaseNode):
         self._establish_links(**key_args)
 
 
-class StoreBundleItem(BaseNode):
+class StoreBundleItem(BaseNode, Generic[_T]):
     """
     Store a bundle item by path and data type.
 
@@ -6635,12 +7623,12 @@ class StoreBundleItem(BaseNode):
     _bl_idname = "NodeStoreBundleItem"
     node: bpy.types.NodeStoreBundleItem
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         bundle: BundleSocket
         """Bundle"""
         path: StringSocket
         """Path"""
-        item: FloatSocket
+        item: _S
         """Item"""
 
     class _Outputs(SocketAccessor):
@@ -6650,7 +7638,7 @@ class StoreBundleItem(BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs: ...
 
@@ -6658,24 +7646,7 @@ class StoreBundleItem(BaseNode):
         self,
         bundle: InputBundle = None,
         path: InputString = "",
-        item: InputBoolean
-        | InputBundle
-        | InputClosure
-        | InputCollection
-        | InputColor
-        | InputFloat
-        | InputFont
-        | InputGeometry
-        | InputImage
-        | InputInteger
-        | InputMaterial
-        | InputMatrix
-        | InputMenu
-        | InputObject
-        | InputRotation
-        | InputSound
-        | InputString
-        | InputVector = 0.0,
+        item: InputAny = 0.0,
         *,
         socket_type: Literal[
             "FLOAT",
@@ -6710,16 +7681,16 @@ class StoreBundleItem(BaseNode):
     @classmethod
     def float(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Float'."""
-        return cls(socket_type="FLOAT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(socket_type="FLOAT", bundle=bundle, path=path, item=item)
 
     @classmethod
     def integer(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputInteger = 0
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[IntegerSocket]":
         """Create Store Bundle Item with operation 'Integer'."""
-        return cls(socket_type="INT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(socket_type="INT", bundle=bundle, path=path, item=item)
 
     @classmethod
     def boolean(
@@ -6727,9 +7698,11 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputBoolean = False,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[BooleanSocket]":
         """Create Store Bundle Item with operation 'Boolean'."""
-        return cls(socket_type="BOOLEAN", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="BOOLEAN", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def vector(
@@ -6737,16 +7710,18 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputVector = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[VectorSocket]":
         """Create Store Bundle Item with operation 'Vector'."""
-        return cls(socket_type="VECTOR", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="VECTOR", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def color(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputColor = None
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[ColorSocket]":
         """Create Store Bundle Item with operation 'Color'."""
-        return cls(socket_type="RGBA", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(socket_type="RGBA", bundle=bundle, path=path, item=item)
 
     @classmethod
     def rotation(
@@ -6754,9 +7729,11 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputRotation = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[RotationSocket]":
         """Create Store Bundle Item with operation 'Rotation'."""
-        return cls(socket_type="ROTATION", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="ROTATION", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def matrix(
@@ -6764,23 +7741,27 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputMatrix = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[MatrixSocket]":
         """Create Store Bundle Item with operation 'Matrix'."""
-        return cls(socket_type="MATRIX", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="MATRIX", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def string(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputString = ""
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[StringSocket]":
         """Create Store Bundle Item with operation 'String'."""
-        return cls(socket_type="STRING", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="STRING", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def menu(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputMenu = None
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[MenuSocket]":
         """Create Store Bundle Item with operation 'Menu'."""
-        return cls(socket_type="MENU", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(socket_type="MENU", bundle=bundle, path=path, item=item)
 
     @classmethod
     def object(
@@ -6788,16 +7769,18 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputObject = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[ObjectSocket]":
         """Create Store Bundle Item with operation 'Object'."""
-        return cls(socket_type="OBJECT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="OBJECT", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def image(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputImage = None
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[ImageSocket]":
         """Create Store Bundle Item with operation 'Image'."""
-        return cls(socket_type="IMAGE", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(socket_type="IMAGE", bundle=bundle, path=path, item=item)
 
     @classmethod
     def geometry(
@@ -6805,9 +7788,11 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputGeometry = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[GeometrySocket]":
         """Create Store Bundle Item with operation 'Geometry'."""
-        return cls(socket_type="GEOMETRY", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="GEOMETRY", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def collection(
@@ -6815,9 +7800,11 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputCollection = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[CollectionSocket]":
         """Create Store Bundle Item with operation 'Collection'."""
-        return cls(socket_type="COLLECTION", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="COLLECTION", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def material(
@@ -6825,9 +7812,11 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputMaterial = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[MaterialSocket]":
         """Create Store Bundle Item with operation 'Material'."""
-        return cls(socket_type="MATERIAL", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="MATERIAL", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def bundle(
@@ -6835,9 +7824,11 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputBundle = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[BundleSocket]":
         """Create Store Bundle Item with operation 'Bundle'."""
-        return cls(socket_type="BUNDLE", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="BUNDLE", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def closure(
@@ -6845,65 +7836,79 @@ class StoreBundleItem(BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputClosure = None,
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[ClosureSocket]":
         """Create Store Bundle Item with operation 'Closure'."""
-        return cls(socket_type="CLOSURE", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="CLOSURE", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def font(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFont = None
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[FontSocket]":
         """Create Store Bundle Item with operation 'Font'."""
-        return cls(socket_type="FONT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(socket_type="FONT", bundle=bundle, path=path, item=item)
 
     @classmethod
     def sound(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputSound = None
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[SoundSocket]":
         """Create Store Bundle Item with operation 'Sound'."""
-        return cls(socket_type="SOUND", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(socket_type="SOUND", bundle=bundle, path=path, item=item)
 
     @classmethod
     def auto(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
-        return cls(structure_type="AUTO", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            structure_type="AUTO", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def dynamic(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
-        return cls(structure_type="DYNAMIC", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            structure_type="DYNAMIC", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def field(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Field'. Socket expects a field"""
-        return cls(structure_type="FIELD", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            structure_type="FIELD", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def grid(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Grid'. Socket expects a grid"""
-        return cls(structure_type="GRID", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            structure_type="GRID", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def list(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'List'. Socket expects a list"""
-        return cls(structure_type="LIST", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            structure_type="LIST", bundle=bundle, path=path, item=item
+        )
 
     @classmethod
     def single(
         cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
-    ) -> "StoreBundleItem":
+    ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Single'. Socket expects a single value"""
-        return cls(structure_type="SINGLE", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            structure_type="SINGLE", bundle=bundle, path=path, item=item
+        )
 
     @property
     def socket_type(
@@ -7800,7 +8805,7 @@ class UVUnwrap(BaseNode):
         self._establish_links(**key_args)
 
 
-class ValueToString(BaseNode):
+class ValueToString(BaseNode, Generic[_T]):
     """
     Generate a string representation of the given input value
 
@@ -7835,8 +8840,8 @@ class ValueToString(BaseNode):
     _bl_idname = "FunctionNodeValueToString"
     node: bpy.types.FunctionNodeValueToString
 
-    class _Inputs(SocketAccessor):
-        value: FloatSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
         """Value"""
         decimals: IntegerSocket
         """Decimals"""
@@ -7852,13 +8857,13 @@ class ValueToString(BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs: ...
 
     def __init__(
         self,
-        value: InputFloat | InputInteger = 0.0,
+        value: InputAny = 0.0,
         decimals: InputInteger = 0,
         base: InputInteger = 10,
         padding: InputInteger = 0,
@@ -7878,16 +8883,16 @@ class ValueToString(BaseNode):
     @classmethod
     def float(
         cls, value: InputFloat = 0.0, decimals: InputInteger = 0
-    ) -> "ValueToString":
+    ) -> "ValueToString[FloatSocket]":
         """Create Value to String with operation 'Float'. Floating-point value"""
-        return cls(data_type="FLOAT", value=value, decimals=decimals)
+        return ValueToString(data_type="FLOAT", value=value, decimals=decimals)
 
     @classmethod
     def integer(
         cls, value: InputInteger = 0, base: InputInteger = 10, padding: InputInteger = 0
-    ) -> "ValueToString":
+    ) -> "ValueToString[IntegerSocket]":
         """Create Value to String with operation 'Integer'. 32-bit integer"""
-        return cls(data_type="INT", value=value, base=base, padding=padding)
+        return ValueToString(data_type="INT", value=value, base=base, padding=padding)
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT"]:

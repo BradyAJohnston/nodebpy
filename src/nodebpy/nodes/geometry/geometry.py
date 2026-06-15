@@ -7720,7 +7720,7 @@ class SetPosition(BaseNode):
         self._establish_links(**key_args)
 
 
-class SetSelection(BaseNode):
+class SetSelection(BaseNode, Generic[_T]):
     """
     Set selection of the edited geometry, for tool execution
 
@@ -7747,10 +7747,10 @@ class SetSelection(BaseNode):
     _bl_idname = "GeometryNodeToolSetSelection"
     node: bpy.types.GeometryNodeToolSetSelection
 
-    class _Inputs(SocketAccessor):
+    class _Inputs(SocketAccessor, Generic[_S]):
         geometry: GeometrySocket
         """Geometry"""
-        selection: BooleanSocket
+        selection: _S
         """Selection"""
 
     class _Outputs(SocketAccessor):
@@ -7760,14 +7760,14 @@ class SetSelection(BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs: ...
 
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean | InputFloat = True,
+        selection: InputAny = True,
         *,
         domain: Literal["POINT", "EDGE", "FACE", "CURVE"] = "POINT",
         selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
@@ -7781,44 +7781,48 @@ class SetSelection(BaseNode):
     @classmethod
     def point(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
-    ) -> "SetSelection":
+    ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Point'. Attribute on point"""
-        return cls(domain="POINT", geometry=geometry, selection=selection)
+        return SetSelection(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
-    ) -> "SetSelection":
+    ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Edge'. Attribute on mesh edge"""
-        return cls(domain="EDGE", geometry=geometry, selection=selection)
+        return SetSelection(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
-    ) -> "SetSelection":
+    ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Face'. Attribute on mesh faces"""
-        return cls(domain="FACE", geometry=geometry, selection=selection)
+        return SetSelection(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
-    ) -> "SetSelection":
+    ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Spline'. Attribute on spline"""
-        return cls(domain="CURVE", geometry=geometry, selection=selection)
+        return SetSelection(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def boolean(
         cls, geometry: InputGeometry = None, selection: InputBoolean = True
-    ) -> "SetSelection":
+    ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Boolean'. Store true or false selection values in edit mode"""
-        return cls(selection_type="BOOLEAN", geometry=geometry, selection=selection)
+        return SetSelection(
+            selection_type="BOOLEAN", geometry=geometry, selection=selection
+        )
 
     @classmethod
     def float(
         cls, geometry: InputGeometry = None, selection: InputFloat = 1.0
-    ) -> "SetSelection":
+    ) -> "SetSelection[FloatSocket]":
         """Create Set Selection with operation 'Float'. Store floating point selection values. For mesh geometry, stored inverted as the sculpt mode mask"""
-        return cls(selection_type="FLOAT", geometry=geometry, selection=selection)
+        return SetSelection(
+            selection_type="FLOAT", geometry=geometry, selection=selection
+        )
 
     @property
     def domain(self) -> Literal["POINT", "EDGE", "FACE", "CURVE"]:
