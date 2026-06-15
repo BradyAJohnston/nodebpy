@@ -12,6 +12,7 @@ more than one tree in the same process to exercise the real bug.
 """
 
 import sys
+import warnings
 
 import pytest
 
@@ -62,7 +63,9 @@ def test_fallback_without_networkx(no_networkx):
 
     # Second tree: this is where the stale namespace path used to raise
     # KeyError: 'nodebpy.lib.nodearrange', escaping `except ImportError`.
-    second = _build("SecondNoNX")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        second = _build("SecondNoNX")
 
     # The tree should still have been built and arranged (simple fallback).
     assert len(second.tree.nodes) > 0

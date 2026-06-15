@@ -98,9 +98,11 @@ def test_socket_selection():
 class TestMathOperators:
     @pytest.mark.parametrize(
         "operator,input",
-        itertools.product(
-            ["+", "-", "*", "/"],
-            [g.Vector, g.Value],
+        list(
+            itertools.product(
+                ["+", "-", "*", "/"],
+                [g.Vector, g.Value],
+            )
         ),
     )
     def test_math_operators(self, operator, input):
@@ -185,8 +187,11 @@ def test_field_to_grid():
     with TreeBuilder() as tree:
         nt = g.NoiseTexture()
         ftg = g.FieldToGrid(g.CubeGridTopology().o.topology)
-        pos, vec, fac = ftg.capture(
-            {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
+        pos, vec, fac = (
+            item.output
+            for item in ftg.add_items(
+                {"position": g.Position(), "vec": nt.o.color, "fac": nt.o.fac}
+            ).values()
         )
         assert len(ftg.o) == 4
         assert isinstance(pos, VectorSocketGrid)
@@ -208,6 +213,28 @@ def test_field_variance():
         assert var.domain == "EDGE"
         var.domain = "POINT"
         assert var.domain == "POINT"
+
+
+def test_color_socket_domain_field_evaluation():
+    """ColorSocket exposes the per-domain field-evaluation accessors, each
+    building a colour EvaluateAtIndex node."""
+    from nodebpy.builder import ColorSocket
+
+    with g.tree():
+        col = g.NamedAttribute.color("c").o.attribute
+        assert isinstance(col, ColorSocket)
+        for domain in (
+            "point",
+            "edge",
+            "face",
+            "corner",
+            "spline",
+            "instance",
+            "layer",
+        ):
+            result = getattr(col, domain).at(0)
+            assert isinstance(result, ColorSocket)
+            assert result.builder_node.node.data_type == "FLOAT_COLOR"
 
 
 def test_geometry_to_instance():
@@ -301,9 +328,17 @@ def test_sdf_grid_boolean():
 
 @pytest.mark.parametrize(
     "domain,output",
-    zip(
-        ["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"],
-        ["Point Count", "Point Count", "Point Count", "Instance Count", "Layer Count"],
+    list(
+        zip(
+            ["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"],
+            [
+                "Point Count",
+                "Point Count",
+                "Point Count",
+                "Instance Count",
+                "Layer Count",
+            ],
+        )
     ),
 )
 def test_domain_size(domain, output):
@@ -353,34 +388,34 @@ def test_bake():
 def test_simulation(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        input, output = g.SimulationZone({"cube": cube})
-        pos_math = input.capture(g.Position()) * g.Position()
-        _ = pos_math >> output
-        _ = (
-            input
-            >> g.SetPosition(
-                offset=input.o.delta_time * g.Vector((0, 0, 0.1)) * pos_math
-            )
-            >> output
-        )
-        _ = output >> g.SetPosition(position=output.o["Position"])
-    assert len(output.node.inputs["Skip"].links) == 0
-    assert len(tree) == 13
+        sim = g.SimulationZone({"cube": cube})
+        pos = sim.item("Position", g.Position())
+        (pos.current + 0.1) >> pos.next
+        offset = sim.delta_time * g.Vector((0, 0, 0.1)) * pos.current
+        sim.input >> g.SetPosition(offset=offset) >> sim.output
+        sim.output >> g.SetPosition(position=sim.output.o["Position"])
+    assert len(sim.output.node.inputs["Skip"].links) == 0
+    assert len(tree) == 11
     assert snapshot == tree._repr_markdown_()
 
 
 def test_repeat(snapshot):
     with TreeBuilder() as tree:
         cube = g.Cube()
-        for i, input, output in g.RepeatZone(10, {"cube": cube}):
-            pos_math = input.capture(g.Position()) * g.Position()
-            _ = pos_math >> output
-            _ = (
-                input
-                >> g.SetPosition(offset=i * g.Vector((0, 0, 0.1)) * pos_math)
-                >> output
-            )
-            _ = output >> g.SetPosition(position=output.o["Position"])
+        zone = g.RepeatZone(10, {"cube": cube})
+        input, output = zone
+        assert input.node == zone[0].node
+        assert output.node == zone[1].node
+        with pytest.raises(IndexError):
+            zone[2]
+        pos_math = input.capture(g.Position()) * g.Position()
+        _ = pos_math >> output
+        _ = (
+            input
+            >> g.SetPosition(offset=zone.iteration * g.Vector((0, 0, 0.1)) * pos_math)
+            >> output
+        )
+        _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(tree) == 13
     assert len(input.items) == 2
     assert snapshot == tree._repr_markdown_()
@@ -464,6 +499,20 @@ def test_menu_switch_menu_connection():
     assert switch.i["Menu"].links[0].from_node.bl_idname == g.Switch._bl_idname
     assert switch.i["Menu"].links[0].from_node.input_type == "MENU"
     assert switch.i["Menu"].socket.default_value == "cube"
+
+
+def test_menu_switch_menu_items_empty_default_deferred():
+    """A MENU-typed MenuSwitch with string item values defers them to
+    ``_menu_defaults`` (they can't be set until items are known), and empty
+    string defaults are skipped when the defaults are applied on context exit."""
+    with TreeBuilder("MenuOfMenus", arrange=None) as tree:
+        switch = g.MenuSwitch.menu(items={"a": "", "b": ""})
+        # the item menu sockets defer their (empty) string defaults
+        assert len(tree._menu_defaults) == 2
+        assert all(md.default == "" for md in tree._menu_defaults)
+    # exiting the context applies the defaults; the empty strings are skipped
+    # without error, and the enum items still exist
+    assert len(switch.node.enum_items) == 2
 
 
 def test_multi_menu():
@@ -611,6 +660,97 @@ def test_foreachgeometryelement_zone():
     assert len(zone.output.items_generated) == 3
     assert zone.output.items_generated[1].socket_type == "VECTOR"
     assert zone.output.items_generated[2].socket_type == "GEOMETRY"
+
+
+def test_zone_capture_names_and_domains():
+    with TreeBuilder():
+        zone = g.ForEachGeometryElementZone(g.Cube(), domain="FACE")
+        pos = zone.input.capture(g.Position(), name="MyPos")
+        gen = zone.output.capture_generated(pos, name="MyGen", domain="FACE")
+        assert zone.input.items[0].name == "MyPos"
+        assert pos.name == "MyPos"
+        assert zone.output.items_generated[1].name == "MyGen"
+        assert zone.output.items_generated[1].domain == "FACE"
+        assert gen.name == "MyGen"
+
+        rzone = g.RepeatZone(3)
+        val = rzone.input.capture(g.Value(), name="Counter")
+        assert rzone.input.items[0].name == "Counter"
+        assert rzone.input.items[0].socket_type == "FLOAT"
+        assert val.name == "Counter"
+        input, output = rzone
+        assert input is rzone.input
+        assert output is rzone.output
+        with pytest.raises(IndexError):
+            rzone[2]
+
+
+def test_zone_item_handles():
+    with TreeBuilder():
+        zone = g.RepeatZone(10)
+        value = zone.item("value", initial=1.0)
+        _ = (value.current + 1.0) >> value.next
+        assert zone.output.items[0].name == "value"
+        assert zone.output.items[0].socket_type == "FLOAT"
+        assert value.initial.socket.default_value == pytest.approx(1.0)
+        assert value.current.socket.links[0].to_node.bl_idname == "ShaderNodeMath"
+        assert value.next.socket.links[0].from_node.bl_idname == "ShaderNodeMath"
+        assert value.result.socket.name == "value"
+
+        # adding more items must not invalidate existing handles
+        geo = zone.item("geo", type="GEOMETRY")
+        vec = zone.item("vec", (1.0, 2.0, 3.0))
+        assert value.name == "value"
+        assert geo.socket_type == "GEOMETRY"
+        assert len(geo.initial.socket.links) == 0
+        assert vec.socket_type == "VECTOR"
+        assert tuple(vec.initial.socket.default_value) == (1.0, 2.0, 3.0)
+
+        with pytest.raises(TypeError):
+            zone.item("nope")
+
+
+def test_zone_items_declaration():
+    with TreeBuilder():
+        zone = g.SimulationZone({"geo": "GEOMETRY", "fac": g.Value()})
+        assert [i.socket_type for i in zone.output.items] == ["GEOMETRY", "FLOAT"]
+        assert len(zone.input.node.inputs[0].links) == 0
+        assert len(zone.input.node.inputs[1].links) == 1
+
+    with TreeBuilder():
+        cap = g.CaptureAttribute(
+            g.Cube(), items={"Pos": g.Position(), "Mask": "BOOLEAN"}
+        )
+        assert [i.data_type for i in cap.node.capture_items] == [
+            "FLOAT_VECTOR",
+            "BOOLEAN",
+        ]
+        assert len(cap.node.inputs["Pos"].links) == 1
+        assert len(cap.node.inputs["Mask"].links) == 0
+
+
+def test_foreach_item_handles():
+    with TreeBuilder():
+        zone = g.ForEachGeometryElementZone(g.Cube())
+        pos = zone.item("Pos", g.Position())
+        assert (
+            pos.input.socket.links[0].from_node.bl_idname == "GeometryNodeInputPosition"
+        )
+        out = zone.main_item("Out", pos.output)
+        assert out.input.socket.links[0].from_socket == pos.output.socket
+        gen = zone.generated_item("Gen", g.Cone(), domain="FACE")
+        assert gen.socket_type == "GEOMETRY"
+        assert zone.output.items_generated[1].name == "Gen"
+        unlinked = zone.generated_item("Mask", type="BOOLEAN", domain="FACE")
+        assert zone.output.items_generated[2].domain == "FACE"
+        defaulted = zone.generated_item("Weight", 0.5)
+        assert zone.output.items_generated[3].socket_type == "FLOAT"
+        assert defaulted.input.socket.default_value == pytest.approx(0.5)
+        with pytest.raises(TypeError):
+            zone.generated_item("nope")
+        assert zone.output.domain == "POINT"
+        assert len(unlinked.input.socket.links) == 0
+        assert gen.name == "Gen"
 
 
 def test_boolean_math_methods():
@@ -1594,8 +1734,11 @@ def test_vector_dimensions():
 def test_field_to_list():
     with g.tree():
         ftl = g.FieldToList(10)
-        pos, idx, num = ftl.capture(
-            {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
+        pos, idx, num = (
+            item.output
+            for item in ftl.add_items(
+                {"pos": g.Position().o.position, "idx": g.Index(), "num": g.Float(0.0)}
+            ).values()
         )
         assert len(ftl.node.list_items) == 3
         assert isinstance(pos, VectorSocketList)
@@ -1615,6 +1758,14 @@ def test_field_to_list():
         assert isinstance(pos.get(1), VectorSocket)
 
 
+def test_field_to_list_fields_deprecated():
+    with g.tree():
+        with pytest.warns(DeprecationWarning):
+            ftl = g.FieldToList(5, fields={"x": g.Value()})
+        assert len(ftl.node.list_items) == 1
+        assert ftl.node.list_items[0].name == "x"
+
+
 def test_grid_methods():
     with g.tree():
         grid = g.CubeGridTopology().o.topology
@@ -1622,10 +1773,10 @@ def test_grid_methods():
         assert isinstance(trans, MatrixSocket)
         assert trans.node.bl_idname == g.GridInfo._bl_idname
 
-        grid = cast(FloatSocketGrid, g.FieldToGrid().capture({"test": g.Float()})[0])
+        grid = cast(FloatSocketGrid, g.FieldToGrid().capture(g.Float(), name="test"))
         value = grid.background_value
 
-        list = g.FieldToList(10).capture({"test": g.Vector()})[0]
+        list = g.FieldToList(10).capture(g.Vector(), name="test")
         assert isinstance(list, VectorSocketList)
 
         assert isinstance(value, FloatSocket)
@@ -1785,7 +1936,7 @@ def test_field_to_grid_capture_typed(snapshot):
         end >> tree.outputs.float("Grid", structure_type="GRID")
         back >> tree.outputs.integer("Background", structure_type="SINGLE")
 
-    assert snapshot == tree
+    assert snapshot == tree.to_mermaid()
 
 
 def test_grid_socket_methods():

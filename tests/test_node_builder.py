@@ -880,6 +880,30 @@ class TestSocketAccessor:
             with pytest.raises(RuntimeError, match="ambiguous"):
                 accessor._index("Value")
 
+    def test_index_ambiguous_normalized_name_raises(self):
+        """index() raises when a normalized name matches more than one socket.
+
+        The display names differ ('AB CD' vs 'ab cd') so neither the raw key nor
+        its denormalized form ('Ab Cd') matches directly; lookup falls through to
+        the normalized-name comparison, where both collapse to 'ab_cd'.
+        """
+
+        class _FakeSocket:
+            def __init__(self, identifier, name):
+                self.identifier = identifier
+                self.name = name
+                self.node = g.Value().node
+
+        with TreeBuilder("AmbiguousNormalizedName", arrange=None):
+            fake_sockets = [
+                _FakeSocket("unique_id_1", "AB CD"),
+                _FakeSocket("unique_id_2", "ab cd"),
+            ]
+            accessor = SocketAccessor(fake_sockets, "input")
+
+            with pytest.raises(RuntimeError, match="ambiguous"):
+                accessor._index("ab_cd")
+
 
 class TestIntegerSocketLinker:
     """Tests for IntegerSocketLinker dispatch, including the _is_integer_socket helper."""

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, ClassVar, Generic, Literal, Self, TypeVar, cast
 
 import bpy
@@ -14,7 +15,6 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
-from ..arrange import arrange_tree
 from ..types import (
     SOCKET_COMPATIBILITY,
     FloatInterfaceSubtypes,
@@ -25,6 +25,7 @@ from ..types import (
     _SocketShapeStructureType,
 )
 from ._utils import SocketError, _allow_innactive_sockets
+from .arrange import arrange_tree
 from .socket import (
     BooleanSocket,
     BundleSocket,
@@ -126,7 +127,12 @@ class SocketContext:
                 interface_socket.socket_type == "NodeSocketMenu"
                 and key == "default_value"
             ):
-                self.builder._menu_defaults[interface_socket.identifier] = value
+                self.builder._menu_defaults.append(
+                    _MenuDefault(interface_socket, value)
+                )
+            elif key == "default_attribute":
+                # the bpy property is named default_attribute_name
+                interface_socket.default_attribute_name = value
             else:
                 setattr(interface_socket, key, value)
 
@@ -245,7 +251,8 @@ class SocketContext:
         name: str = "Vector",
         default_value: tuple[float, float]  # ty: ignore[invalid-type-form]
         | tuple[float, float, float]  # ty: ignore[invalid-type-form]
-        | tuple[float, float, float, float] = (0.0, 0.0, 0.0),  # ty: ignore[invalid-type-form]
+        | tuple[float, float, float, float]  # ty: ignore[invalid-type-form]
+        | None = None,
         description: str = "",
         *,
         dimensions: Literal[2, 3, 4] = 3,
@@ -262,14 +269,18 @@ class SocketContext:
         ] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
     ) -> "VectorSocket":
-        assert len(default_value) == dimensions, (
-            "Default value length must match dimensions"
+        values: tuple[float, ...] = (
+            (0.0,) * dimensions if default_value is None else tuple(default_value)
         )
+        assert len(values) == dimensions, "Default value length must match dimensions"
         iface = self._add_socket("NodeSocketVector", name, description)
+        # The interface socket's default_value RNA is a fixed 3-float array
+        # regardless of `dimensions`; pad (or truncate) to length 3 to assign.
+        rna_default = (values + (0.0, 0.0, 0.0))[:3]
         self._set_props(
             iface,
             dimensions=dimensions,
-            default_value=default_value,
+            default_value=rna_default,
             min_value=min_value,
             max_value=max_value,
             optional_label=optional_label,
@@ -589,6 +600,12 @@ class OutputInterfaceContext(DirectionalContext):
 _TreeT = TypeVar("_TreeT", bound=NodeTree)
 
 
+@dataclass
+class _MenuDefault:
+    item: bpy.types.NodeSocketMenu | bpy.types.NodeTreeInterfaceSocketMenu
+    default: str
+
+
 class TreeBuilder(Generic[_TreeT]):
     """Builder for creating Blender node trees with a clean Python API.
 
@@ -616,7 +633,7 @@ class TreeBuilder(Generic[_TreeT]):
         else:
             self.tree = tree  # type: ignore
 
-        self._menu_defaults: dict[str, str] = {}
+        self._menu_defaults: list[_MenuDefault] = []
         self.inputs = InputInterfaceContext(self)
         self.outputs = OutputInterfaceContext(self)
         self._arrange = arrange
@@ -699,6 +716,52 @@ class TreeBuilder(Generic[_TreeT]):
     def fake_user(self, value: bool) -> None:
         self.tree.use_fake_user = value
 
+    def to_python(
+        self,
+        min_chain_length: int = 3,
+        strict: bool = True,
+        max_inline_width: int | None = 88,
+        snapshot_positions: bool = False,
+        keep_reroutes: bool = False,
+        top_level: Literal["with", "class"] = "with",
+        format: bool = True,
+    ) -> str:
+        """Generate Python source that recreates this tree using nodebpy.
+
+        See :func:`nodebpy.codegen.to_python` for parameter details.
+        """
+        from ..export import to_python
+
+        return to_python(
+            self,
+            min_chain_length=min_chain_length,
+            strict=strict,
+            max_inline_width=max_inline_width,
+            snapshot_positions=snapshot_positions,
+            keep_reroutes=keep_reroutes,
+            top_level=top_level,
+            format=format,
+        )
+
+    def to_mermaid(self, fenced: bool = True) -> str:
+        """Generate a Mermaid diagram that represents this tree.
+
+        This can be used for documentation or visualization purposes.
+        The Mermaid syntax is supported by many tools, including GitHub and Jupyter notebooks.
+
+        Arguments
+        ---------
+            fenced:
+                Whether to wrap the output in a fenced code block with mermaid syntax highlighting.
+
+        Returns
+        -------
+            A string containing the Mermaid diagram syntax representing this node tree.
+        """
+        from ..export import to_mermaid
+
+        return to_mermaid(self, fenced=fenced)
+
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""
         TreeBuilder._tree_contexts.append(self)
@@ -718,16 +781,32 @@ class TreeBuilder(Generic[_TreeT]):
         self.deactivate_tree()
 
     def _apply_input_defaults(self) -> None:
-        for key, value in self._menu_defaults.items():
-            for item in self.tree.interface.items_tree:  # type: ignore
-                if not hasattr(item, "identifier"):
-                    continue
-                if item.identifier == key:
-                    if hasattr(item, "default_value"):
-                        item.default_value = value  # type: ignore
+        for value in self._menu_defaults:
+            if value.default == "":
+                continue
+            value.item.default_value = value.default
 
     def __len__(self) -> int:
         return len(self.nodes)
+
+    def disable_arrange(self) -> None:
+        """Disable the auto-layout that otherwise runs when this tree's context
+        exits, so explicitly assigned node locations are preserved."""
+        self._arrange = None
+
+    @property
+    def node_positions(self) -> dict[str, tuple[float, float]]:
+        """A ``{node name: (x, y)}`` snapshot of every node's location."""
+        return {node.name: tuple(node.location) for node in self.tree.nodes}
+
+    @node_positions.setter
+    def node_positions(self, positions: dict[str, tuple[float, float]]) -> None:
+        """Apply ``{node name: (x, y)}`` locations. Names absent from the tree
+        (e.g. a reroute a rebuild dropped) are skipped."""
+        for name, location in positions.items():
+            node = self.tree.nodes.get(name)
+            if node is not None:
+                node.location = location
 
     def arrange(self):
         if self._arrange == "sugiyama":
@@ -758,7 +837,7 @@ class TreeBuilder(Generic[_TreeT]):
         when it's the return value of a cell.
         """
         try:
-            from ..diagram import to_mermaid
+            from ..export import to_mermaid
 
             return to_mermaid(self)
         except Exception as e:
@@ -818,10 +897,16 @@ class TreeBuilder(Generic[_TreeT]):
                     not _allow_innactive_sockets(socket.node)
                     and (getattr(socket.node, "data_type", None) != socket.type)
                 ):
-                    message = f"Socket {socket1.name} from node {socket1.node.name} is inactive."
-                    message += f" It is linked to socket {socket2.name} from node {socket2.node.name}."
-                    message += " This link will be created by Blender but ignored when evaluated."
-                    message += f"Socket type: {socket.bl_idname}"
+                    other = socket2 if socket is socket1 else socket1
+                    assert other.node is not None
+                    direction = "input" if socket.is_output is False else "output"
+                    message = (
+                        f"Socket '{socket.name}' ({direction}) on node "
+                        f"'{socket.node.name}' ({socket.node.bl_idname}) is inactive, "
+                        f"so the link from '{other.name}' on '{other.node.name}' will "
+                        "be created by Blender but ignored when evaluated. "
+                        f"Socket type: {socket.bl_idname}."
+                    )
                     raise RuntimeError(message)
 
         return link

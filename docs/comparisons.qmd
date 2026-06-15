@@ -118,11 +118,11 @@ tree
 #### `nodebpy`
 
 ```{python}
+from nodebpy import geometry as g
+
 with g.tree("Primitive Shapes") as tree:
-    (
-        g.JoinGeometry([g.Cube(), g.UVSphere(), g.Cylinder()])
-        >> tree.outputs.geometry("Result")
-    )
+    join =  g.JoinGeometry([g.Cube(), g.UVSphere(), g.Cylinder()])
+    join >> tree.outputs.geometry("Result")
 ```
 
 #### `geometry-script`
@@ -154,6 +154,8 @@ Example script found [here](https://carson-katri.github.io/geometry-script/tutor
 #### `nodebpy`
 
 ```{python}
+from nodebpy import geometry as g
+
 with g.tree("Voxelise") as tree:
     geo = tree.inputs.geometry("Geometry")
     resolution = tree.inputs.float("Resolution", 0.2)
@@ -204,6 +206,8 @@ Example script found [here](https://carson-katri.github.io/geometry-script/tutor
 #### `nodebpy`
 
 ```{python}
+from nodebpy import geometry as g
+
 with g.tree("Voxelise") as tree:
     geo = tree.inputs.geometry("Geometry")
     seed = tree.inputs.integer("Seed")
@@ -251,7 +255,6 @@ with g.tree("Voxelise") as tree:
 ```{python}
 # | eval: false
 from geometry_script import *
-
 
 @tree("City Builder")
 def city_builder(

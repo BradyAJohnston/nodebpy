@@ -51,6 +51,13 @@ def _find_socket_from_name(
 ) -> NodeSocket:
     ids = [socket.identifier for socket in collection]
     names = [socket.name for socket in collection]
+    # An exact identifier match wins (aligning with SocketAccessor's
+    # identifier-first strategy). Item sockets may share a name with another
+    # socket — e.g. a CaptureAttribute item named "Value" alongside the item
+    # whose identifier is "Value" — so the unambiguous identifier must take
+    # precedence over a name match before the name-normalising passes below.
+    if name in ids:
+        return collection[ids.index(name)]
     for format in [name, name.title(), name.replace("_", " ").title()]:
         try:
             return collection[names.index(format)]
@@ -62,6 +69,22 @@ def _find_socket_from_name(
     raise ValueError(
         f"Socket '{name}' not found in collection names or ids, available names: {names}, available ids: {ids}"
     )
+
+
+def _value_socket_type(value: Any) -> str | None:
+    """The Blender socket ``type`` an input value carries, when knowable —
+    used to disambiguate same-named target sockets. ``None`` for plain
+    defaults and multi-output nodes (resolution then falls back to order)."""
+    if isinstance(value, _SocketLike):
+        return value.socket.type
+    if isinstance(value, NodeSocket):
+        return value.type
+    if isinstance(value, Node):
+        return value.outputs[0].type if value.outputs else None
+    if isinstance(value, _NodeLike):
+        default = getattr(value, "_default_output_socket", None)
+        return default.type if default is not None else None
+    return None
 
 
 class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
@@ -150,47 +173,96 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     def _set_input_default_value(self, input: NodeSocket, value: Any) -> None:
         """Set the default value for an input socket, handling type conversions."""
         assert hasattr(input, "default_value")
-        if (
-            hasattr(input, "type")
-            and input.type == "VECTOR"
-            and isinstance(value, (int, float))
-        ):
+        stype = getattr(input, "type", None)
+        if stype == "VECTOR" and isinstance(value, (int, float)):
             input.default_value = [value] * len(input.default_value)  # type: ignore
+        elif stype == "INT" and isinstance(value, float):
+            input.default_value = int(value)  # type: ignore
         else:
             input.default_value = value  # type: ignore
 
     def _establish_links(self, **kwargs: InputAny):
         for name, value in kwargs.items():
-            # TODO: don't like these manual overrides for particular nodes, but best I can do for now
-            if value is None or (
-                "GridPrune" in self._bl_idname
-                and name == "Threshold"
-                and getattr(self.node, "data_type", None) == "BOOLEAN"
+            self._apply_input(name, value)
+
+    def _apply_input(self, target: "str | NodeSocket", value: InputAny):
+        """Link or default-set ``value`` onto an input.
+
+        ``target`` is a socket name/identifier (resolved against
+        ``self.node.inputs``) or an already-resolved input socket — the latter
+        lets callers address one of several same-named sockets unambiguously.
+        """
+        named = isinstance(target, str)
+        # TODO: don't like these manual overrides for particular nodes, but best I can do for now
+        if value is None or (
+            named
+            and "GridPrune" in self._bl_idname
+            and target == "Threshold"
+            and getattr(self.node, "data_type", None) == "BOOLEAN"
+        ):
+            return
+        if isinstance(value, Node):
+            node = BaseNode.__new__(BaseNode)
+            node.node = value
+            value = node
+
+        if value is ...:
+            if named:
+                self._placeholder_inputs.append(target)
+            return
+
+        elif isinstance(value, _SocketLike):
+            self._link_from(value.socket, target)
+        elif isinstance(value, NodeSocket):
+            self._link_from(value, target)
+        elif isinstance(value, _NodeLike):
+            target_type = target.type if not named else self.i._get(target).type
+            self._link_from(value.o._best_match(target_type), target)  # type: ignore
+        else:
+            # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
+            # but this needs to be a more generic solution for sockets which aren't available
+            # https://github.com/BradyAJohnston/nodebpy/issues/90
+            if "BooleanMath" in self._bl_idname and value is False:
+                return
+            socket = (
+                _find_socket_from_name(self.node.inputs, target) if named else target
+            )
+            # A multi-input socket (JoinGeometry, JoinBundle, …) fed an iterable
+            # links each source; reversed so the tuple order reproduces creation
+            # order, as JoinGeometry's own constructor does. A vector/colour
+            # default tuple is not multi-input, so it falls through unchanged.
+            if isinstance(value, (list, tuple)) and getattr(
+                socket, "is_multi_input", False
             ):
-                continue
-            if isinstance(value, Node):
-                node = BaseNode.__new__(BaseNode)
-                node.node = value
-                value = node
+                for source in reversed(list(value)):
+                    self._apply_input(socket, cast("InputAny", source))
+                return
+            self._set_input_default_value(socket, value)
 
-            if value is ...:
-                self._placeholder_inputs.append(name)
-                continue
-
-            elif isinstance(value, _SocketLike):
-                self._link_from(value.socket, name)
-            elif isinstance(value, NodeSocket):
-                self._link_from(value, name)
-            elif isinstance(value, _NodeLike):
-                self._link_from(value.o._best_match(self.i._get(name).type), name)  # type: ignore
-            else:
-                # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
-                # but this needs to be a more generic solution for sockets which aren't available
-                # https://github.com/BradyAJohnston/nodebpy/issues/90
-                if "BooleanMath" in self._bl_idname and value is False:
-                    continue
-                socket = _find_socket_from_name(self.node.inputs, name)
-                self._set_input_default_value(socket, value)
+    def _establish_named_links(self, pairs: "list[tuple[str, InputAny]]"):
+        """Link inputs that share a socket name (so the name alone is
+        ambiguous), resolving each to a distinct socket by name plus a type
+        match, falling back to interface order. Used for group nodes whose
+        interface declares several inputs with the same name."""
+        used: set[str] = set()
+        for name, value in pairs:
+            candidates = [
+                s
+                for s in self.node.inputs
+                if s.name == name
+                and s.identifier not in used
+                and not s.identifier.startswith("__extend__")
+            ]
+            if not candidates:
+                raise ValueError(
+                    f"no remaining input socket named {name!r} on {self._bl_idname}"
+                )
+            value_type = _value_socket_type(value)
+            socket = next(
+                (s for s in candidates if s.type == value_type), candidates[0]
+            )
+            used.add(socket.identifier)
+            self._apply_input(socket, value)
 
     @property
     def o(self) -> SocketAccessor:
@@ -208,12 +280,14 @@ class DynamicInputsMixin(ABC):
     _type_map: dict[str, str] = {}
 
     def _match_compatible_data(
-        self, sockets: Iterable[NodeSocket]
+        self, sockets: Iterable[NodeSocket], types: tuple[str, ...] | None = None
     ) -> tuple[NodeSocket, str]:
+        if types is None:
+            types = self._socket_data_types
         possible = []
         for socket in sockets:
             compatible = SOCKET_COMPATIBILITY.get(socket.type, ())
-            for type in self._socket_data_types:
+            for type in types:
                 if type in compatible:
                     possible.append((socket, type, compatible.index(type)))
 
@@ -237,6 +311,22 @@ class DynamicInputsMixin(ABC):
     @abstractmethod
     def _add_socket(self, name: str, *args: Any, **kwargs: Any) -> NodeSocket: ...
 
+    def _declared_item_type(self, value: Any) -> str | None:
+        """Subclasses may interpret ``value`` as an explicit socket-type
+        declaration (an unlinked item); ``None`` means treat it as a link
+        source."""
+        return None
+
+    def _add_unlinked_input(self, name: str, value: Any) -> bool:
+        """Create the socket for a non-linkable value (a socket-type
+        declaration; subclasses extend this for plain default values).
+        Returns True when the value was handled."""
+        declared = self._declared_item_type(value)
+        if declared is not None:
+            self._add_socket(name=name, type=declared)
+            return True
+        return False
+
     def _add_inputs(self, *args, **kwargs) -> dict[str, NodeSocket]:
         """Dictionary with {new_socket.name: from_linkable} for link creation"""
         new_sockets = {}
@@ -245,13 +335,18 @@ class DynamicInputsMixin(ABC):
             items[arg._default_output_socket.name] = arg
         items.update(kwargs)
         for key, source in items.items():
+            if self._add_unlinked_input(key, source):
+                continue
             socket_source, type = self._match_compatible_data(
                 source.o._available if hasattr(source, "o") else [source]
             )
             if type in self._type_map:
                 type = self._type_map[type]
             socket = self._add_socket(name=key, type=type)
-            new_sockets[socket.name] = socket_source
+            # Key by identifier, not name: an item may share a name with a
+            # built-in socket (e.g. a CaptureAttribute item named "Selection"),
+            # and _establish_links resolves identifiers unambiguously.
+            new_sockets[socket.identifier] = socket_source
 
         return new_sockets
 
@@ -265,6 +360,8 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
     """
 
     _name: str
+    # The inner node-tree bl_idname, set by each editor-specific subclass.
+    _tree_idname: Literal["GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"]
     _warning_propagation: Literal["ALL", "ERRORS_AND_WARNINGS", "ERRORS", "NONE"] = (
         "ALL"
     )
@@ -284,7 +381,12 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
         super().__init__()
         self._setup_node_group()
         self.node.show_options = False
+        # Inputs whose interface name is shared by several sockets can't be
+        # keyed in the kwargs dict; they arrive as ``(name, value)`` pairs.
+        named_links = kwargs.pop("_named_links", None)
         self._establish_links(**kwargs)
+        if named_links:
+            self._establish_named_links(named_links)
 
     @property
     @abstractmethod
@@ -307,21 +409,39 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
     def _build_group(self, tree: TreeBuilder) -> None:
         """Build the node group internals and interface."""
 
-    def _get_or_create_tree(self) -> _T:
-        existing = bpy.data.node_groups[self._name]
-        if existing.bl_idname == self.tree.tree.bl_idname:
+    @classmethod
+    def create_group(cls) -> _T:
+        """Build this group's node tree and return it, reusing an existing tree
+        of the same name.
+
+        Unlike instantiating the class, this needs no active ``TreeBuilder``
+        context — it opens its own — so a group can be pre-built and reused
+        directly (e.g. assigned to a node's ``node_tree``) instead of being
+        created by constructing the class inside a tree.
+        """
+        existing = bpy.data.node_groups.get(cls._name)
+        if existing is not None:
+            if existing.bl_idname != cls._tree_idname:
+                raise TypeError(
+                    f"Node group '{cls._name}' already exists as "
+                    f"{existing.bl_idname}, not {cls._tree_idname}. "
+                    f"Use a unique _name for this group."
+                )
             return cast(_T, existing)
-        raise TypeError(
-            f"Node group '{self._name}' already exists as "
-            f"{type(existing).__name__}, not {self._bl_idname}. "
-            f"Use a unique _name for this group."
-        )
+        # Only the inner tree is needed (no group *node*), so skip __init__,
+        # which would require an active context to create a node.
+        builder = cls.__new__(cls)
+        with TreeBuilder(cls._name, tree_type=cls._tree_idname) as tree:
+            builder._build_group(tree)
+        tree.tree.color_tag = cls._color_tag
+        return cast(_T, tree.tree)
 
 
 class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
     """Node group in a Geometry Nodes tree."""
 
     _bl_idname = "GeometryNodeGroup"
+    _tree_idname = "GeometryNodeTree"
     node: GeometryNodeGroup
 
     @property
@@ -330,23 +450,15 @@ class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self._get_or_create_group()
+        self.node.node_tree = self.create_group()
         self.node.warning_propagation = self._warning_propagation
-
-    def _get_or_create_group(self) -> GeometryNodeTree:
-        try:
-            return self._get_or_create_tree()
-        except KeyError:
-            with TreeBuilder.geometry(self._name) as tree:
-                self._build_group(tree)
-            tree.tree.color_tag = self._color_tag
-            return tree.tree
 
 
 class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
     """Node group in a Shader (Material) node tree."""
 
     _bl_idname = "ShaderNodeGroup"
+    _tree_idname = "ShaderNodeTree"
     node: ShaderNodeGroup
 
     @property
@@ -355,22 +467,14 @@ class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self._get_or_create_group()
-
-    def _get_or_create_group(self) -> ShaderNodeTree:
-        try:
-            return self._get_or_create_tree()
-        except KeyError:
-            with TreeBuilder.shader(self._name) as tree:
-                self._build_group(tree)
-            tree.tree.color_tag = self._color_tag
-            return tree.tree
+        self.node.node_tree = self.create_group()
 
 
 class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
     """Node group in a Compositor node tree."""
 
     _bl_idname = "CompositorNodeGroup"
+    _tree_idname = "CompositorNodeTree"
     node: CompositorNodeGroup
 
     @property
@@ -379,13 +483,4 @@ class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self._get_or_create_group()
-
-    def _get_or_create_group(self) -> CompositorNodeTree:
-        try:
-            return self._get_or_create_tree()
-        except KeyError:
-            with TreeBuilder.compositor(self._name) as tree:
-                self._build_group(tree)
-            tree.tree.color_tag = self._color_tag
-            return tree.tree
+        self.node.node_tree = self.create_group()

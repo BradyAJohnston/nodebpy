@@ -9,12 +9,12 @@
       N3("Transform Geometry<br/><small>(2,0,0)</small>"):::geometry-node
       N4("Join Geometry"):::geometry-node
       N5("Group Output"):::default-node
-      N0 -->|"Scale->Scale"| N3
-      N0 -->|"Scale->Scale"| N2
+      N4 -->|"Geometry->Geometry"| N5
       N0 -->|"Geometry->Mesh"| N1
       N1 -->|"Mesh->Geometry"| N3
+      N0 -->|"Scale->Scale"| N3
       N0 -->|"Geometry->Geometry"| N2
-      N4 -->|"Geometry->Geometry"| N5
+      N0 -->|"Scale->Scale"| N2
       N3 -->|"Geometry->Geometry"| N4
       N2 -->|"Geometry->Geometry"| N4
   ```
@@ -28,9 +28,9 @@
       N1("Set Position<br/><small>+(0.5,0.5,0.5)</small>"):::geometry-node
       N2("Transform Geometry<br/><small>(1,2,3)</small>"):::geometry-node
       N3("Group Output"):::default-node
+      N2 -->|"Geometry->Geometry"| N3
       N0 -->|"Geometry->Geometry"| N1
       N1 -->|"Geometry->Geometry"| N2
-      N2 -->|"Geometry->Geometry"| N3
   ```
   '''
 # ---
@@ -43,12 +43,12 @@
       N2("Math<br/><small>(ADD)</small>"):::converter-node
       N3("Set Position"):::geometry-node
       N4("Group Output"):::default-node
-      N0 -->|"Value->Value"| N1
-      N1 -->|"Value->Value"| N2
-      N2 -->|"Value->Offset"| N3
-      N0 -->|"Geometry->Geometry"| N3
       N3 -->|"Geometry->Geometry"| N4
       N2 -->|"Value->Result"| N4
+      N0 -->|"Value->Value"| N1
+      N1 -->|"Value->Value"| N2
+      N0 -->|"Geometry->Geometry"| N3
+      N2 -->|"Value->Offset"| N3
   ```
   '''
 # ---

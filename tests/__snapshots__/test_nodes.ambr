@@ -1,22 +1,40 @@
 # serializer version: 1
 # name: test_field_to_grid_capture_typed
-  TreeBuilder(
-    collapse=False,
-    fake_user=False,
-    ignore_visibility=False,
-    inputs=InputInterfaceContext(
-      builder=...,
-      interface=bpy.data.node_groups['Geometry Node Group']...NodeTreeInterface,
-      tree=bpy.data.node_groups['Geometry Node Group'],
-    ),
-    nodes=bpy.data.node_groups['Geometry Node Group'].nodes,
-    outputs=OutputInterfaceContext(
-      builder=...,
-      interface=bpy.data.node_groups['Geometry Node Group']...NodeTreeInterface,
-      tree=bpy.data.node_groups['Geometry Node Group'],
-    ),
-    tree=bpy.data.node_groups['Geometry Node Group'],
-  )
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Cube Grid Topology<br/><small>(-1,-1,-1)</small>"):::geometry-node
+      N1("Value"):::input-node
+      N2("Boolean"):::input-node
+      N3("Vector"):::input-node
+      N4("Integer"):::input-node
+      N5("Noise Texture<br/><small>×5</small>"):::texture-node
+      N6("Field to Grid"):::geometry-node
+      N7("Grid Dilate & Erode"):::geometry-node
+      N8("Grid Laplacian"):::geometry-node
+      N9("Grid Dilate & Erode"):::geometry-node
+      N10("Grid Gradient"):::geometry-node
+      N11("Voxelize Grid"):::geometry-node
+      N12("Grid Divergence"):::geometry-node
+      N13("Grid Info"):::input-node
+      N14("Group Output"):::default-node
+      N0 -->|"Topology->Topology"| N6
+      N1 -->|"Value->Float"| N6
+      N2 -->|"Boolean->Boolean"| N6
+      N3 -->|"Vector->Vector"| N6
+      N4 -->|"Integer->idx"| N6
+      N5 -->|"Factor->Float.001"| N6
+      N6 -->|"idx->Grid"| N9
+      N9 -->|"Grid->Grid"| N11
+      N11 -->|"Grid->Grid"| N13
+      N6 -->|"Float.001->Grid"| N7
+      N7 -->|"Grid->Grid"| N8
+      N8 -->|"Laplacian->Grid"| N10
+      N10 -->|"Gradient->Grid"| N12
+      N12 -->|"Divergence->Grid"| N14
+      N13 -->|"Background Value->Background"| N14
+  ```
+  '''
 # ---
 # name: test_get_named_grid
   '''
@@ -32,9 +50,9 @@
       N1 -->|"Volume->Volume"| N3
       N0 -->|"Position->Vector"| N2
       N2 -->|"Vector->Vector"| N5
+      N3 -->|"Grid->Topology"| N6
       N4 -->|"Position->Position"| N6
       N5 -->|"Vector->value"| N6
-      N3 -->|"Grid->Topology"| N6
   ```
   '''
 # ---
@@ -55,18 +73,18 @@
       N10("Set Position"):::geometry-node
       N0 -->|"Mesh->cube"| N3
       N1 -->|"Position->Position"| N3
+      N8 -->|"Geometry->cube"| N9
+      N6 -->|"Vector->Position"| N9
       N3 -->|"Position->Vector"| N6
       N4 -->|"Position->Vector"| N6
       N2 -->|"Vector->Vector"| N5
       N3 -->|"Iteration->Scale"| N5
       N5 -->|"Vector->Vector"| N7
       N6 -->|"Vector->Vector"| N7
-      N7 -->|"Vector->Offset"| N8
       N3 -->|"cube->Geometry"| N8
-      N8 -->|"Geometry->cube"| N9
-      N9 -->|"Position->Position"| N10
+      N7 -->|"Vector->Offset"| N8
       N9 -->|"cube->Geometry"| N10
-      N6 -->|"Vector->Position"| N9
+      N9 -->|"Position->Position"| N10
   ```
   '''
 # ---
@@ -80,11 +98,11 @@
       N3("Join Geometry"):::geometry-node
       N4("Repeat Output"):::default-node
       N3 -->|"Geometry->Geometry"| N4
+      N2 -->|"Points->Geometry"| N3
+      N0 -->|"Geometry->Geometry"| N3
       N0 -->|"Iteration->Seed"| N1
       N0 -->|"Iteration->Count"| N2
       N1 -->|"Value->Position"| N2
-      N2 -->|"Points->Geometry"| N3
-      N0 -->|"Geometry->Geometry"| N3
   ```
   '''
 # ---
@@ -96,27 +114,25 @@
       N1("Position"):::input-node
       N2("Vector"):::input-node
       N3("Simulation Input"):::default-node
-      N4("Position"):::input-node
-      N5("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-      N6("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
-      N7("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
-      N8("Set Position"):::geometry-node
-      N9("Simulation Output"):::default-node
-      N10("Set Position"):::geometry-node
+      N4("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+      N5("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
+      N6("Set Position"):::geometry-node
+      N7("Vector Math<br/><small>(ADD)</small><br/><small>(0.1,0.1,0.1)</small>"):::vector-node
+      N8("Simulation Output"):::default-node
+      N9("Set Position"):::geometry-node
       N0 -->|"Mesh->cube"| N3
       N1 -->|"Position->Position"| N3
-      N3 -->|"Position->Vector"| N6
-      N4 -->|"Position->Vector"| N6
-      N2 -->|"Vector->Vector"| N5
-      N3 -->|"Delta Time->Scale"| N5
-      N5 -->|"Vector->Vector"| N7
-      N6 -->|"Vector->Vector"| N7
-      N7 -->|"Vector->Offset"| N8
-      N3 -->|"cube->Geometry"| N8
-      N8 -->|"Geometry->cube"| N9
-      N9 -->|"Position->Position"| N10
-      N9 -->|"cube->Geometry"| N10
-      N6 -->|"Vector->Position"| N9
+      N6 -->|"Geometry->cube"| N8
+      N7 -->|"Vector->Position"| N8
+      N3 -->|"Position->Vector"| N7
+      N2 -->|"Vector->Vector"| N4
+      N3 -->|"Delta Time->Scale"| N4
+      N4 -->|"Vector->Vector"| N5
+      N3 -->|"Position->Vector"| N5
+      N3 -->|"cube->Geometry"| N6
+      N5 -->|"Vector->Offset"| N6
+      N8 -->|"cube->Geometry"| N9
+      N8 -->|"Position->Position"| N9
   ```
   '''
 # ---
@@ -133,15 +149,15 @@
       N6("Join Geometry"):::geometry-node
       N7("Repeat Output"):::default-node
       N8("Group Output"):::default-node
+      N7 -->|"Geometry->Geometry"| N8
       N0 -->|"Geometry->Geometry"| N1
+      N6 -->|"Geometry->Geometry"| N7
+      N1 -->|"Iteration->Index"| N5
       N2 -->|"Mesh->0"| N5
       N3 -->|"Mesh->1"| N5
       N4 -->|"Mesh->2"| N5
-      N1 -->|"Iteration->Index"| N5
-      N5 -->|"Output->Geometry"| N6
-      N6 -->|"Geometry->Geometry"| N7
-      N7 -->|"Geometry->Geometry"| N8
       N1 -->|"Geometry->Geometry"| N6
+      N5 -->|"Output->Geometry"| N6
   ```
   '''
 # ---

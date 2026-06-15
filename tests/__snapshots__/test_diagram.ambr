@@ -68,111 +68,111 @@
       N20 -->|"Boolean->Boolean"| N37
       N28 -->|"Boolean->Boolean"| N37
       N37 -->|"Boolean->Out 0"| N53
+      N38 -->|"Boolean->Out 1"| N53
+      N39 -->|"Boolean->Out 2"| N53
+      N40 -->|"Boolean->Out 3"| N53
+      N41 -->|"Boolean->Out 4"| N53
+      N42 -->|"Boolean->Out 5"| N53
+      N43 -->|"Boolean->Out 6"| N53
+      N44 -->|"Boolean->Out 7"| N53
+      N45 -->|"Boolean->Out 8"| N53
+      N46 -->|"Boolean->Out 9"| N53
+      N47 -->|"Boolean->Out 10"| N53
+      N48 -->|"Boolean->Out 11"| N53
+      N49 -->|"Boolean->Out 12"| N53
+      N50 -->|"Boolean->Out 13"| N53
+      N51 -->|"Boolean->Out 14"| N53
+      N52 -->|"Boolean->Out 15"| N53
       N1 -->|"Boolean->Boolean"| N4
       N2 -->|"Boolean->Boolean"| N4
       N4 -->|"Boolean->Boolean"| N21
       N11 -->|"Boolean->Boolean"| N21
       N21 -->|"Boolean->Boolean"| N38
       N0 -->|"Bit 3->Boolean"| N38
-      N38 -->|"Boolean->Out 1"| N53
       N1 -->|"Boolean->Boolean"| N5
       N2 -->|"Boolean->Boolean"| N5
       N5 -->|"Boolean->Boolean"| N22
       N0 -->|"Bit 2->Boolean"| N22
       N22 -->|"Boolean->Boolean"| N39
       N28 -->|"Boolean->Boolean"| N39
-      N39 -->|"Boolean->Out 2"| N53
       N1 -->|"Boolean->Boolean"| N6
       N2 -->|"Boolean->Boolean"| N6
       N6 -->|"Boolean->Boolean"| N23
       N0 -->|"Bit 2->Boolean"| N23
       N23 -->|"Boolean->Boolean"| N40
       N0 -->|"Bit 3->Boolean"| N40
-      N40 -->|"Boolean->Out 3"| N53
       N1 -->|"Boolean->Boolean"| N7
       N0 -->|"Bit 1->Boolean"| N7
       N7 -->|"Boolean->Boolean"| N24
       N11 -->|"Boolean->Boolean"| N24
       N24 -->|"Boolean->Boolean"| N41
       N28 -->|"Boolean->Boolean"| N41
-      N41 -->|"Boolean->Out 4"| N53
       N1 -->|"Boolean->Boolean"| N8
       N0 -->|"Bit 1->Boolean"| N8
       N8 -->|"Boolean->Boolean"| N25
       N11 -->|"Boolean->Boolean"| N25
       N25 -->|"Boolean->Boolean"| N42
       N0 -->|"Bit 3->Boolean"| N42
-      N42 -->|"Boolean->Out 5"| N53
       N1 -->|"Boolean->Boolean"| N9
       N0 -->|"Bit 1->Boolean"| N9
       N9 -->|"Boolean->Boolean"| N26
       N0 -->|"Bit 2->Boolean"| N26
       N26 -->|"Boolean->Boolean"| N43
       N28 -->|"Boolean->Boolean"| N43
-      N43 -->|"Boolean->Out 6"| N53
       N1 -->|"Boolean->Boolean"| N10
       N0 -->|"Bit 1->Boolean"| N10
       N10 -->|"Boolean->Boolean"| N27
       N0 -->|"Bit 2->Boolean"| N27
       N27 -->|"Boolean->Boolean"| N44
       N0 -->|"Bit 3->Boolean"| N44
-      N44 -->|"Boolean->Out 7"| N53
       N0 -->|"Bit 0->Boolean"| N12
       N2 -->|"Boolean->Boolean"| N12
       N12 -->|"Boolean->Boolean"| N29
       N11 -->|"Boolean->Boolean"| N29
       N29 -->|"Boolean->Boolean"| N45
       N28 -->|"Boolean->Boolean"| N45
-      N45 -->|"Boolean->Out 8"| N53
       N0 -->|"Bit 0->Boolean"| N13
       N2 -->|"Boolean->Boolean"| N13
       N13 -->|"Boolean->Boolean"| N30
       N11 -->|"Boolean->Boolean"| N30
       N30 -->|"Boolean->Boolean"| N46
       N0 -->|"Bit 3->Boolean"| N46
-      N46 -->|"Boolean->Out 9"| N53
       N0 -->|"Bit 0->Boolean"| N14
       N2 -->|"Boolean->Boolean"| N14
       N14 -->|"Boolean->Boolean"| N31
       N0 -->|"Bit 2->Boolean"| N31
       N31 -->|"Boolean->Boolean"| N47
       N28 -->|"Boolean->Boolean"| N47
-      N47 -->|"Boolean->Out 10"| N53
       N0 -->|"Bit 0->Boolean"| N15
       N2 -->|"Boolean->Boolean"| N15
       N15 -->|"Boolean->Boolean"| N32
       N0 -->|"Bit 2->Boolean"| N32
       N32 -->|"Boolean->Boolean"| N48
       N0 -->|"Bit 3->Boolean"| N48
-      N48 -->|"Boolean->Out 11"| N53
       N0 -->|"Bit 0->Boolean"| N16
       N0 -->|"Bit 1->Boolean"| N16
       N16 -->|"Boolean->Boolean"| N33
       N11 -->|"Boolean->Boolean"| N33
       N33 -->|"Boolean->Boolean"| N49
       N28 -->|"Boolean->Boolean"| N49
-      N49 -->|"Boolean->Out 12"| N53
       N0 -->|"Bit 0->Boolean"| N17
       N0 -->|"Bit 1->Boolean"| N17
       N17 -->|"Boolean->Boolean"| N34
       N11 -->|"Boolean->Boolean"| N34
       N34 -->|"Boolean->Boolean"| N50
       N0 -->|"Bit 3->Boolean"| N50
-      N50 -->|"Boolean->Out 13"| N53
       N0 -->|"Bit 0->Boolean"| N18
       N0 -->|"Bit 1->Boolean"| N18
       N18 -->|"Boolean->Boolean"| N35
       N0 -->|"Bit 2->Boolean"| N35
       N35 -->|"Boolean->Boolean"| N51
       N28 -->|"Boolean->Boolean"| N51
-      N51 -->|"Boolean->Out 14"| N53
       N0 -->|"Bit 0->Boolean"| N19
       N0 -->|"Bit 1->Boolean"| N19
       N19 -->|"Boolean->Boolean"| N36
       N0 -->|"Bit 2->Boolean"| N36
       N36 -->|"Boolean->Boolean"| N52
       N0 -->|"Bit 3->Boolean"| N52
-      N52 -->|"Boolean->Out 15"| N53
   ```
   '''
 # ---
@@ -218,9 +218,9 @@
           N2("Transform Geometry"):::geometry-node
       end
       N3("Group Output"):::default-node
+      N2 -->|"Geometry->Geometry"| N3
       N0 -->|"Geometry->Geometry"| N1
       N1 -->|"Geometry->Geometry"| N2
-      N2 -->|"Geometry->Geometry"| N3
   ```
   '''
 # ---
@@ -232,10 +232,10 @@
       N1("Subdivision Surface"):::geometry-node
       N2("Join Geometry"):::geometry-node
       N3("Group Output"):::default-node
-      N0 -->|"Geometry->Mesh"| N1
-      N1 -->|"Mesh->Geometry"| N2
       N2 -->|"Geometry->Geometry"| N3
+      N0 -->|"Geometry->Mesh"| N1
       N0 -->|"Geometry->Geometry"| N2
+      N1 -->|"Mesh->Geometry"| N2
   ```
   '''
 # ---
@@ -247,9 +247,9 @@
       N1("Math<br/><small>(MULTIPLY)</small>"):::converter-node
       N2("Math<br/><small>(ADD)</small>"):::converter-node
       N3("Group Output"):::default-node
+      N2 -->|"Value->Result"| N3
       N0 -->|"Value->Value"| N1
       N1 -->|"Value->Value"| N2
-      N2 -->|"Value->Result"| N3
   ```
   '''
 # ---
@@ -265,9 +265,9 @@
           end
       end
       N3("Group Output"):::default-node
+      N2 -->|"Geometry->Geometry"| N3
       N0 -->|"Geometry->Geometry"| N1
       N1 -->|"Geometry->Geometry"| N2
-      N2 -->|"Geometry->Geometry"| N3
   ```
   '''
 # ---
@@ -280,8 +280,8 @@
       N2("Distribute Points on Faces<br/><small>seed:7</small>"):::geometry-node
       N3("Noise Texture<br/><small>×3</small>"):::texture-node
       N4("Group Output"):::default-node
-      N0 -->|"Geometry->Geometry"| N1
       N1 -->|"Geometry->Geometry"| N4
+      N0 -->|"Geometry->Geometry"| N1
   ```
   '''
 # ---
@@ -307,8 +307,8 @@
       N3 -->|"Value->B"| N5
       N5 -->|"Result->Switch"| N6
       N3 -->|"Value->False"| N6
-      N6 -->|"Output->Other Vertex"| N7
       N4 -->|"Value->True"| N6
+      N6 -->|"Output->Other Vertex"| N7
   ```
   '''
 # ---
@@ -320,8 +320,8 @@
       N1("Set Position"):::geometry-node
       N2("Join Geometry"):::geometry-node
       N3("Group Output"):::default-node
-      N0 -->|"Geometry->Geometry"| N1
       N2 -->|"Geometry->Geometry"| N3
+      N0 -->|"Geometry->Geometry"| N1
       N1 -->|"Geometry->Geometry"| N2
   ```
   '''
@@ -333,8 +333,8 @@
       N0("Group Input"):::default-node
       N1("Set Position"):::geometry-node
       N2("Group Output"):::default-node
-      N0 -->|"Geometry->Geometry"| N1
       N1 -->|"Geometry->Geometry"| N2
+      N0 -->|"Geometry->Geometry"| N1
   ```
   '''
 # ---
@@ -347,12 +347,12 @@
       N2("Transform Geometry"):::geometry-node
       N3("Join Geometry"):::geometry-node
       N4("Group Output"):::default-node
-      N0 -->|"Scale->Scale"| N1
-      N0 -->|"Scale->Scale"| N2
       N0 -->|"Geometry->Geometry"| N1
+      N0 -->|"Scale->Scale"| N1
       N0 -->|"Geometry->Geometry"| N2
-      N2 -->|"Geometry->Geometry"| N3
+      N0 -->|"Scale->Scale"| N2
       N1 -->|"Geometry->Geometry"| N3
+      N2 -->|"Geometry->Geometry"| N3
       N3 -->|"Geometry->Geometry"| N4
   ```
   '''
@@ -365,9 +365,9 @@
       N1("Set Position"):::geometry-node
       N2("Transform Geometry"):::geometry-node
       N3("Group Output"):::default-node
+      N2 -->|"Geometry->Geometry"| N3
       N0 -->|"Geometry->Geometry"| N1
       N1 -->|"Geometry->Geometry"| N2
-      N2 -->|"Geometry->Geometry"| N3
   ```
   '''
 # ---

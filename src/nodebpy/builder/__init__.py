@@ -1,5 +1,6 @@
 from ._utils import SocketError, denormalize_name, normalize_name
 from .accessor import SocketAccessor
+from .items import Item, ItemsMixin
 from .mixins import LinkingMixin, OperatorMixin
 from .node import (
     BaseNode,
@@ -75,6 +76,8 @@ __all__ = [
     "OperatorMixin",
     "LinkingMixin",
     "DynamicInputsMixin",
+    "Item",
+    "ItemsMixin",
     # Node groups
     "NodeGroupBuilder",
     "CustomCompositorGroup",

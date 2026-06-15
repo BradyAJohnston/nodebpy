@@ -67,7 +67,7 @@ def get_top(node: Node, y_loc: float | None = None) -> float:
 
 
 def get_bottom(node: Node, y_loc: float | None = None) -> float:
-    from ...arrange import calculate_node_dimensions
+    from ...builder.arrange import calculate_node_dimensions
 
     if y_loc is None:
         y_loc = abs_loc(node).y
