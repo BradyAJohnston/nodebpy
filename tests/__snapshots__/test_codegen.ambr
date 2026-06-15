@@ -1,4 +1,20 @@
 # serializer version: 1
+# name: test_codegen_list_methods
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("Geometry Node Group") as tree:
+      filtered = tree.outputs.vector("Filtered")
+  
+      (
+          g.FieldToList(count=10, items={"VECTOR": (0.0, 0.0, 0.0)}).o.vector.filter(
+              g.RandomValue.boolean(0.5)
+          )
+          >> filtered
+      )
+  
+  '''
+# ---
 # name: test_snapshot_chain_simple
   '''
   from nodebpy import geometry as g, TreeBuilder

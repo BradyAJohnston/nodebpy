@@ -1882,7 +1882,7 @@ class _ListMixin(Socket, Generic[_T]):
         """Get the length of the list."""
         from ..nodes.geometry import ListLength
 
-        return ListLength(self.socket, data_type=self.socket.type).o.length  # ty: ignore[invalid-argument-type]
+        return ListLength(self.socket, data_type=self._socket_dtype).o.length  # ty: ignore[invalid-argument-type]
 
     @overload
     def get(self, index: InputIntegerList) -> Self: ...

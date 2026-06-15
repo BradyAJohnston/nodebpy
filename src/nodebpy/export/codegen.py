@@ -1544,6 +1544,10 @@ class SocketMethodSpec:
     always_args: int = 0  # leading params the method signature requires —
     # emitted even when unlinked at the default value (skipping them would
     # render a call with missing positional arguments).
+    receiver_list_prop: str | None = None  # for list methods: the receiver must
+    # be a LIST whose element type matches this prop (``socket_type`` /
+    # ``data_type``), inverting _socket_dtype's VALUE↔FLOAT swap, so the rebuilt
+    # method re-derives the same prop from the receiver socket.
 
 
 @dataclass(frozen=True)
@@ -1718,6 +1722,28 @@ def _int_math_unary_spec(operation: str, method: str) -> SocketMethodSpec:
     )
 
 
+def _list_spec(
+    method: str,
+    output: str,
+    *params: tuple[str, str],
+    type_prop: str = "socket_type",
+    always_args: int = 0,
+) -> SocketMethodSpec:
+    """A list socket method — ``lst.list_length()`` / ``lst.filter(sel)`` /
+    ``lst.sort(weight)``. The element-type prop (``socket_type`` /
+    ``data_type``) is re-derived from the receiver list, so it is consumed and
+    gated by ``receiver_list_prop`` rather than emitted as a kwarg."""
+    return SocketMethodSpec(
+        receiver="List",
+        method=method,
+        output=output,
+        params=tuple(params),
+        consumed_props=(type_prop,),
+        receiver_list_prop=type_prop,
+        always_args=always_args,
+    )
+
+
 def _mix_spec(data_type: str, attr: str, suffix: str) -> SocketMethodSpec:
     """``factor.mix.float(a, b)`` — the receiver is always the uniform float
     factor; non-uniform vector mixes have ``Factor_Vector`` linked instead
@@ -1840,6 +1866,22 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
     ],
     "FunctionNodeIntegerMath": [
         _int_math_unary_spec("SIGN", "sign"),
+    ],
+    "GeometryNodeListLength": [
+        _list_spec("list_length", "Length", type_prop="data_type"),
+    ],
+    "GeometryNodeFilterList": [
+        _list_spec("filter", "Selection", ("Selection", "selection")),
+    ],
+    "GeometryNodeSortList": [
+        _list_spec(
+            "sort",
+            "List",
+            ("Sort Weight", "sort_weight"),
+            ("Group ID", "group_id"),
+            ("Selection", "selection"),
+            always_args=1,
+        ),
     ],
     "ShaderNodeClamp": [
         SocketMethodSpec(
@@ -2009,6 +2051,19 @@ def _input_socket_by_identifier(node, identifier: str):
     return None
 
 
+def _list_receiver_ok(node, link, type_prop: str) -> bool:
+    """Whether ``link`` feeds a list method faithfully: the source must be a
+    LIST whose element type matches ``node``'s ``socket_type`` / ``data_type``.
+
+    The builder sets that prop from ``_socket_dtype`` (``VALUE`` → ``FLOAT``,
+    else unchanged), so the rebuilt method re-derives the same prop only when
+    the receiver element type inverts back to it."""
+    if getattr(link.from_socket, "inferred_structure_type", None) != "LIST":
+        return False
+    prop = getattr(node, type_prop, None)
+    return prop is not None and prop.replace("FLOAT", "VALUE") == link.from_socket.type
+
+
 def _match_socket_method(
     ctx: EmitContext, node
 ) -> tuple[SocketMethodSpec, str, str] | None:
@@ -2036,6 +2091,10 @@ def _match_socket_method(
         if (
             expected_type is not None
             and receiver_link.from_socket.type != expected_type
+        ):
+            continue
+        if spec.receiver_list_prop is not None and not _list_receiver_ok(
+            node, receiver_link, spec.receiver_list_prop
         ):
             continue
         if not all(
@@ -3359,6 +3418,27 @@ def _emit_geometry_to_instance(node, ctx: EmitContext) -> Expr | _Val | None:
     entries.sort(key=lambda e: e[0], reverse=True)
     ctx.used_aliases.add("g")
     return Call("g.GeometryToInstance", args=[expr for _, expr in entries])
+
+
+@register_emitter("GeometryNodeListGetItem")
+def _emit_list_get_item(node, ctx: EmitContext) -> _Val | None:
+    """``lst[index]`` — list item access. Falls back to the constructor unless
+    the receiver is a list whose element type matches ``socket_type`` (so the
+    rebuilt subscript re-derives the same node)."""
+    list_link = ctx.input_link(node, "List")
+    if list_link is None or not _list_receiver_ok(node, list_link, "socket_type"):
+        return None
+    found = _find_cls(node.bl_idname)
+    if found is not None and set(_non_default_props(node, found[1])) - {"socket_type"}:
+        return None
+    receiver = ctx.socket_expr(list_link)
+    index_link = ctx.input_link(node, "Index")
+    if index_link is not None:
+        index: Expr = ctx.upstream_expr(index_link)
+    else:
+        socket = _input_socket_by_identifier(node, "Index")
+        index = Lit(socket.default_value if socket is not None else 0)
+    return _Val(Subscript(receiver, index), is_socket=True, socket_id="Value")
 
 
 # data_type → MenuSwitch/IndexSwitch factory classmethod name.

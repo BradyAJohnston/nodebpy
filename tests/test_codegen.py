@@ -434,7 +434,7 @@ def test_keep_reroutes_with_snapshot_positions():
     code = to_python(tree, keep_reroutes=True, snapshot_positions=True)
     assert "g.Reroute(" in code
     assert "arrange=None" in code
-    assert 'tree.node_positions = {' in code
+    assert "tree.node_positions = {" in code
     assert f'"{reroute.name}": (360.0, 120.0)' in code  # reroute position kept
 
 
@@ -1251,7 +1251,9 @@ def test_snapshot_keep_reroutes_block(snapshot):
         tree.tree.links.new(reroute.outputs[0], out.socket)
     for i, node in enumerate(tree.tree.nodes):
         node.location = (i * 90.0, i * 30.0)
-    assert snapshot == to_python(tree, keep_reroutes=True, snapshot_positions=True, format=False)
+    assert snapshot == to_python(
+        tree, keep_reroutes=True, snapshot_positions=True, format=False
+    )
 
 
 def test_snapshot_chain_simple(snapshot):
@@ -2273,3 +2275,13 @@ def test_roundtrip_mn_assets(name):
     if builder is None:
         pytest.skip(f"unsupported tree type {group.bl_idname}")
     _assert_roundtrip(builder(group))
+
+
+def test_codegen_list_methods(snapshot):
+    with g.tree() as tree:
+        lst = g.FieldToList(10).vector()
+        lst.filter(g.RandomValue.boolean()) >> tree.outputs.vector("Filtered")
+
+    string = tree.to_python()
+    assert ".filter(" in string
+    assert snapshot == string
