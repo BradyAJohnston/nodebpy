@@ -330,6 +330,16 @@ class LinkingMixin:
         if possible_combos:
             return sorted(possible_combos, key=lambda x: x[0])[0][1]
 
+        # A node with a virtual ``__extend__`` input (Viewer, …) accepts any
+        # source: linking to it makes Blender create a typed socket. Fall back
+        # to it when nothing else matched, pairing with the source's first
+        # available output.
+        extend = next(
+            (i for i in inputs if i.identifier.startswith("__extend__")), None
+        )
+        if extend is not None and outputs:
+            return extend, outputs[0]
+
         src_name = getattr(getattr(source, "node", None), "name", repr(source))
         tgt_name = getattr(getattr(target, "node", None), "name", repr(target))
         raise SocketError(

@@ -9,10 +9,14 @@ import bpy
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.builder import BooleanSocket, FloatSocket
-from nodebpy.nodes.geometry.groups import ClipFieldToBox, PrincipalComponents
+from nodebpy.nodes.geometry.groups import (
+    ClipFieldToBox,
+    GeometryPrincipalComponents,
+    PrincipalComponents,
+)
 
 
-def import_channel() -> bpy.types.GeometryNodeTree:
+def import_channel() -> TreeBuilder:
     with g.tree("Channel Import", arrange="simple") as tree:
         base_path = tree.inputs.string("base_path", subtype="FILE_PATH")
         time = tree.inputs.integer("Time")
@@ -39,10 +43,10 @@ def import_channel() -> bpy.types.GeometryNodeTree:
         )
         _ = sng >> tree.outputs.geometry("Volume")
 
-    return tree.tree
+    return tree
 
 
-def test_decoder_8bit():
+def build_decoder_8bit() -> TreeBuilder:
     # this should actually be 8 bits but it takes a bit longer to run through
     # (~20 seconds) so for testing we can keep it much smaller. It's a nice
     # clean implementation and good example of the code in action.
@@ -55,6 +59,11 @@ def test_decoder_8bit():
             terms = [b if on else nb for b, nb, on in zip(bits, not_bits, combo)]
             reduce(and_, terms) >> tree.outputs.boolean(f"Out {i}")
 
+    return tree
+
+
+def test_decoder_8bit():
+    tree = build_decoder_8bit()
     assert len(tree) == 54
     assert len(tree.inputs) == 4
     assert len(tree.outputs) == 16
@@ -70,14 +79,18 @@ def test_import_channel():
     assert len(tree.nodes) == 11
 
 
-def test_PCA_asset():
+def build_principal_components() -> TreeBuilder:
     with g.tree():
-        pca = PrincipalComponents()
+        pca = GeometryPrincipalComponents()
+    return TreeBuilder(pca.node_tree)
 
-    assert len(pca.node_tree.nodes) == 35
+
+def test_PCA_asset():
+    tree = build_principal_components()
+    assert len(tree.nodes) == 11
 
 
-def test_surface_hello_world():
+def build_surface_hello_world() -> TreeBuilder:
     with g.tree("Hello World") as tree:
         height = tree.inputs.float("Height", 3.0)
         omega = tree.inputs.float("Omega", 2.0)
@@ -97,10 +110,14 @@ def test_surface_hello_world():
 
         mesh >> tree.outputs.geometry("Mesh")
 
-    assert len(tree) == 22
+    return tree
 
 
-def test_eulers_number():
+def test_surface_hello_world():
+    assert len(build_surface_hello_world()) == 22
+
+
+def build_eulers_number() -> TreeBuilder:
     with g.tree("Euler's Number") as tree:
         tau = g.Float(math.tau)
         e = g.Float(math.e)
@@ -125,6 +142,19 @@ def test_eulers_number():
         )
 
     assert isinstance(zone.input.i.value, FloatSocket)
+    return tree
+
+
+def test_eulers_number():
+    build_eulers_number()
+
+
+def build_gridverts_nodebpy() -> TreeBuilder:
+    return TestCompareMiNCleanGridVerts().method_nodebpy_gridverts()
+
+
+def build_gridverts_api() -> TreeBuilder:
+    return TestCompareMiNCleanGridVerts().method_api_gridverts()
 
 
 class CompareGenerationMethods:
@@ -176,7 +206,7 @@ class TestCompareMiNCleanGridVerts(CompareGenerationMethods):
     def method_api_gridverts(self) -> TreeBuilder:
         node_group = bpy.data.node_groups.get("_grid_verts")
         if node_group:
-            return node_group
+            return TreeBuilder.geometry(node_group)
 
         node_group = bpy.data.node_groups.new(
             type="GeometryNodeTree", name="_grid_verts"
@@ -291,199 +321,199 @@ class TestCompareMiNCleanGridVerts(CompareGenerationMethods):
         return TreeBuilder.geometry(node_group)
 
 
-def test_import_microscopy_meshes():
+def _set_common_socket_defaults(socket):
+    socket.attribute_domain = "POINT"
+    if hasattr(socket, "default_input"):
+        socket.default_input = "VALUE"
+    if hasattr(socket, "structure_type"):
+        socket.structure_type = "AUTO"
+
+
+def _new_input(interface, name, socket_type, default=None):
+    socket = interface.new_socket(name=name, in_out="INPUT", socket_type=socket_type)
+    _set_common_socket_defaults(socket)
+    if default is not None:
+        socket.default_value = default
+    return socket
+
+
+def _new_output(interface, name, socket_type, default=None):
+    socket = interface.new_socket(name=name, in_out="OUTPUT", socket_type=socket_type)
+    _set_common_socket_defaults(socket)
+    if default is not None:
+        socket.default_value = default
+    return socket
+
+
+def build_import_microscopy_meshes_api() -> TreeBuilder:
     GROUP_NAME = "Import Microscopy Meshes"
+    node_group = bpy.data.node_groups.get(GROUP_NAME)
+    if node_group:
+        return TreeBuilder.geometry(node_group)
 
-    def _set_common_socket_defaults(socket):
-        socket.attribute_domain = "POINT"
-        if hasattr(socket, "default_input"):
-            socket.default_input = "VALUE"
-        if hasattr(socket, "structure_type"):
-            socket.structure_type = "AUTO"
+    node_group = bpy.data.node_groups.new(type="GeometryNodeTree", name=GROUP_NAME)
+    node_group.color_tag = "NONE"
+    node_group.description = ""
+    node_group.default_group_node_width = 140
+    node_group.is_modifier = True
+    node_group.show_modifier_manage_panel = True
 
-    def _new_input(interface, name, socket_type, default=None):
-        socket = interface.new_socket(
-            name=name, in_out="INPUT", socket_type=socket_type
-        )
-        _set_common_socket_defaults(socket)
-        if default is not None:
-            socket.default_value = default
-        return socket
+    links = node_group.links
+    nodes = node_group.nodes
+    interface = node_group.interface
 
-    def _new_output(interface, name, socket_type):
-        socket = interface.new_socket(
-            name=name, in_out="OUTPUT", socket_type=socket_type
-        )
-        _set_common_socket_defaults(socket)
-        return socket
+    _new_output(interface, "Geometry", "NodeSocketGeometry")
 
-    def import_microscopy_meshes_node_group():
-        node_group = bpy.data.node_groups.get(GROUP_NAME)
-        if node_group:
-            return node_group
+    _new_input(interface, "Include", "NodeSocketBool", False)
+    _new_input(interface, "template_str", "NodeSocketString", "")
+    _new_input(interface, "cache_dir", "NodeSocketString", "")
+    _new_input(interface, "dataset_hash", "NodeSocketString", "")
+    _new_input(interface, "scale", "NodeSocketInt", 0)
+    _new_input(interface, "resolution", "NodeSocketInt", 0)
+    _new_input(interface, "channel_ix", "NodeSocketInt", 0)
+    _new_input(interface, "Frame", "NodeSocketInt", 0)
+    _new_input(interface, "original_path", "NodeSocketString", "")
+    _new_input(interface, "Channel Affine Matrix", "NodeSocketMatrix")
 
-        node_group = bpy.data.node_groups.new(type="GeometryNodeTree", name=GROUP_NAME)
-        node_group.color_tag = "NONE"
-        node_group.description = ""
-        node_group.default_group_node_width = 140
-        node_group.is_modifier = True
-        node_group.show_modifier_manage_panel = True
+    group_input = nodes.new("NodeGroupInput")
+    group_input.name = "Group Input"
+    group_input.location = (-760, 80)
+    group_input.width = 150
 
-        links = node_group.links
-        nodes = node_group.nodes
-        interface = node_group.interface
+    group_output = nodes.new("NodeGroupOutput")
+    group_output.name = "Group Output"
+    group_output.location = (2010, -150)
+    group_output.is_active_output = True
 
-        _new_output(interface, "Geometry", "NodeSocketGeometry")
+    format_string = nodes.new("FunctionNodeFormatString")
+    format_string.name = "Format String"
+    format_string.location = (-575, -15)
+    format_string.width = 410
+    format_string.format_items.clear()
+    for item_type, name in (
+        ("STRING", "cache_dir"),
+        ("STRING", "dataset_hash"),
+        ("INT", "scale"),
+        ("INT", "resolution"),
+        ("INT", "channel_ix"),
+        ("INT", "t"),
+    ):
+        format_string.format_items.new(item_type, name)
 
-        _new_input(interface, "Include", "NodeSocketBool", False)
-        _new_input(interface, "template_str", "NodeSocketString", "")
-        _new_input(interface, "cache_dir", "NodeSocketString", "")
-        _new_input(interface, "dataset_hash", "NodeSocketString", "")
-        _new_input(interface, "scale", "NodeSocketInt", 0)
-        _new_input(interface, "resolution", "NodeSocketInt", 0)
-        _new_input(interface, "channel_ix", "NodeSocketInt", 0)
-        _new_input(interface, "Frame", "NodeSocketInt", 0)
-        _new_input(interface, "original_path", "NodeSocketString", "")
-        _new_input(interface, "Channel Affine Matrix", "NodeSocketMatrix")
+    links.new(group_input.outputs["template_str"], format_string.inputs["Format"])
+    links.new(group_input.outputs["cache_dir"], format_string.inputs["cache_dir"])
+    links.new(group_input.outputs["dataset_hash"], format_string.inputs["dataset_hash"])
+    links.new(group_input.outputs["scale"], format_string.inputs["scale"])
+    links.new(group_input.outputs["resolution"], format_string.inputs["resolution"])
+    links.new(group_input.outputs["channel_ix"], format_string.inputs["channel_ix"])
+    links.new(group_input.outputs["Frame"], format_string.inputs["t"])
 
-        group_input = nodes.new("NodeGroupInput")
-        group_input.name = "Group Input"
-        group_input.location = (-760, 80)
-        group_input.width = 150
+    obj_suffix = nodes.new("FunctionNodeInputString")
+    obj_suffix.name = "OBJ Suffix"
+    obj_suffix.location = (-130, -150)
+    obj_suffix.string = ".obj"
 
-        group_output = nodes.new("NodeGroupOutput")
-        group_output.name = "Group Output"
-        group_output.location = (2010, -150)
-        group_output.is_active_output = True
+    obj_path = nodes.new("GeometryNodeStringJoin")
+    obj_path.name = "OBJ Path"
+    obj_path.location = (60, -125)
+    obj_path.inputs["Delimiter"].default_value = ""
+    links.new(obj_suffix.outputs["String"], obj_path.inputs["Strings"])
+    links.new(format_string.outputs["String"], obj_path.inputs["Strings"])
 
-        format_string = nodes.new("FunctionNodeFormatString")
-        format_string.name = "Format String"
-        format_string.location = (-575, -15)
-        format_string.width = 410
-        format_string.format_items.clear()
-        for item_type, name in (
-            ("STRING", "cache_dir"),
-            ("STRING", "dataset_hash"),
-            ("INT", "scale"),
-            ("INT", "resolution"),
-            ("INT", "channel_ix"),
-            ("INT", "t"),
-        ):
-            format_string.format_items.new(item_type, name)
+    import_obj = nodes.new("GeometryNodeImportOBJ")
+    import_obj.name = "Import OBJ"
+    import_obj.location = (275, -140)
+    links.new(obj_path.outputs["String"], import_obj.inputs["Path"])
 
-        links.new(group_input.outputs["template_str"], format_string.inputs["Format"])
-        links.new(group_input.outputs["cache_dir"], format_string.inputs["cache_dir"])
-        links.new(
-            group_input.outputs["dataset_hash"], format_string.inputs["dataset_hash"]
-        )
-        links.new(group_input.outputs["scale"], format_string.inputs["scale"])
-        links.new(group_input.outputs["resolution"], format_string.inputs["resolution"])
-        links.new(group_input.outputs["channel_ix"], format_string.inputs["channel_ix"])
-        links.new(group_input.outputs["Frame"], format_string.inputs["t"])
+    csv_suffix = nodes.new("FunctionNodeInputString")
+    csv_suffix.name = "CSV Suffix"
+    csv_suffix.location = (-130, -240)
+    csv_suffix.string = ".csv"
 
-        obj_suffix = nodes.new("FunctionNodeInputString")
-        obj_suffix.name = "OBJ Suffix"
-        obj_suffix.location = (-130, -150)
-        obj_suffix.string = ".obj"
+    csv_path = nodes.new("GeometryNodeStringJoin")
+    csv_path.name = "CSV Path"
+    csv_path.location = (60, -215)
+    csv_path.inputs["Delimiter"].default_value = ""
+    links.new(csv_suffix.outputs["String"], csv_path.inputs["Strings"])
+    links.new(format_string.outputs["String"], csv_path.inputs["Strings"])
 
-        obj_path = nodes.new("GeometryNodeStringJoin")
-        obj_path.name = "OBJ Path"
-        obj_path.location = (60, -125)
-        obj_path.inputs["Delimiter"].default_value = ""
-        links.new(obj_suffix.outputs["String"], obj_path.inputs["Strings"])
-        links.new(format_string.outputs["String"], obj_path.inputs["Strings"])
+    import_csv = nodes.new("GeometryNodeImportCSV")
+    import_csv.name = "Import CSV"
+    import_csv.location = (275, -230)
+    import_csv.inputs["Delimiter"].default_value = ","
+    links.new(csv_path.outputs["String"], import_csv.inputs["Path"])
 
-        import_obj = nodes.new("GeometryNodeImportOBJ")
-        import_obj.name = "Import OBJ"
-        import_obj.location = (275, -140)
-        links.new(obj_path.outputs["String"], import_obj.inputs["Path"])
+    foreach_in = nodes.new("GeometryNodeForeachGeometryElementInput")
+    foreach_in.name = "For Each Mesh Island"
+    foreach_in.location = (710, -110)
+    foreach_in.inputs["Selection"].default_value = True
+    links.new(import_obj.outputs["Instances"], foreach_in.inputs[0])
 
-        csv_suffix = nodes.new("FunctionNodeInputString")
-        csv_suffix.name = "CSV Suffix"
-        csv_suffix.location = (-130, -240)
-        csv_suffix.string = ".csv"
+    foreach_out = nodes.new("GeometryNodeForeachGeometryElementOutput")
+    foreach_out.name = "Store Object IDs"
+    foreach_out.location = (1620, -105)
+    foreach_out.domain = "INSTANCE"
+    foreach_out.generation_items.clear()
+    foreach_out.generation_items.new("GEOMETRY", "Geometry")
+    foreach_out.generation_items[0].domain = "POINT"
+    foreach_out.input_items.clear()
+    foreach_out.main_items.clear()
+    foreach_in.pair_with_output(foreach_out)
 
-        csv_path = nodes.new("GeometryNodeStringJoin")
-        csv_path.name = "CSV Path"
-        csv_path.location = (60, -215)
-        csv_path.inputs["Delimiter"].default_value = ""
-        links.new(csv_suffix.outputs["String"], csv_path.inputs["Strings"])
-        links.new(format_string.outputs["String"], csv_path.inputs["Strings"])
+    named_oid = nodes.new("GeometryNodeInputNamedAttribute")
+    named_oid.name = "CSV oid"
+    named_oid.location = (960, -245)
+    named_oid.data_type = "INT"
+    named_oid.inputs["Name"].default_value = "oid"
 
-        import_csv = nodes.new("GeometryNodeImportCSV")
-        import_csv.name = "Import CSV"
-        import_csv.location = (275, -230)
-        import_csv.inputs["Delimiter"].default_value = ","
-        links.new(csv_path.outputs["String"], import_csv.inputs["Path"])
+    sample_oid = nodes.new("GeometryNodeSampleIndex")
+    sample_oid.name = "Sample oid"
+    sample_oid.location = (1175, -235)
+    sample_oid.clamp = False
+    sample_oid.data_type = "INT"
+    sample_oid.domain = "POINT"
+    links.new(import_csv.outputs["Point Cloud"], sample_oid.inputs[0])
+    links.new(named_oid.outputs["Attribute"], sample_oid.inputs[1])
+    links.new(foreach_in.outputs["Index"], sample_oid.inputs[2])
 
-        foreach_in = nodes.new("GeometryNodeForeachGeometryElementInput")
-        foreach_in.name = "For Each Mesh Island"
-        foreach_in.location = (710, -110)
-        foreach_in.inputs["Selection"].default_value = True
-        links.new(import_obj.outputs["Instances"], foreach_in.inputs[0])
+    store_oid = nodes.new("GeometryNodeStoreNamedAttribute")
+    store_oid.name = "Store oid"
+    store_oid.location = (1430, -110)
+    store_oid.data_type = "INT"
+    store_oid.domain = "POINT"
+    store_oid.inputs["Selection"].default_value = True
+    store_oid.inputs["Name"].default_value = "oid"
+    links.new(foreach_in.outputs["Element"], store_oid.inputs[0])
+    links.new(sample_oid.outputs["Value"], store_oid.inputs[3])
+    links.new(store_oid.outputs["Geometry"], foreach_out.inputs[1])
 
-        foreach_out = nodes.new("GeometryNodeForeachGeometryElementOutput")
-        foreach_out.name = "Store Object IDs"
-        foreach_out.location = (1620, -105)
-        foreach_out.domain = "INSTANCE"
-        foreach_out.generation_items.clear()
-        foreach_out.generation_items.new("GEOMETRY", "Geometry")
-        foreach_out.generation_items[0].domain = "POINT"
-        foreach_out.input_items.clear()
-        foreach_out.main_items.clear()
-        foreach_in.pair_with_output(foreach_out)
+    transform_geometry = nodes.new("GeometryNodeTransform")
+    transform_geometry.name = "Apply Channel Affine"
+    transform_geometry.location = (1810, -105)
+    transform_geometry.inputs[1].default_value = "Matrix"
+    links.new(foreach_out.outputs[2], transform_geometry.inputs["Geometry"])
+    links.new(
+        group_input.outputs["Channel Affine Matrix"],
+        transform_geometry.inputs["Transform"],
+    )
+    include_switch = cast(bpy.types.GeometryNodeSwitch, nodes.new("GeometryNodeSwitch"))
+    include_switch.name = "Include Switch"
+    include_switch.location = (2030, -150)
+    include_switch.input_type = "GEOMETRY"
+    links.new(group_input.outputs["Include"], include_switch.inputs["Switch"])
+    links.new(transform_geometry.outputs["Geometry"], include_switch.inputs["True"])
+    links.new(include_switch.outputs["Output"], group_output.inputs["Geometry"])
+    group_output.location = (2210, -150)
 
-        named_oid = nodes.new("GeometryNodeInputNamedAttribute")
-        named_oid.name = "CSV oid"
-        named_oid.location = (960, -245)
-        named_oid.data_type = "INT"
-        named_oid.inputs["Name"].default_value = "oid"
-
-        sample_oid = nodes.new("GeometryNodeSampleIndex")
-        sample_oid.name = "Sample oid"
-        sample_oid.location = (1175, -235)
-        sample_oid.clamp = False
-        sample_oid.data_type = "INT"
-        sample_oid.domain = "POINT"
-        links.new(import_csv.outputs["Point Cloud"], sample_oid.inputs[0])
-        links.new(named_oid.outputs["Attribute"], sample_oid.inputs[1])
-        links.new(foreach_in.outputs["Index"], sample_oid.inputs[2])
-
-        store_oid = nodes.new("GeometryNodeStoreNamedAttribute")
-        store_oid.name = "Store oid"
-        store_oid.location = (1430, -110)
-        store_oid.data_type = "INT"
-        store_oid.domain = "POINT"
-        store_oid.inputs["Selection"].default_value = True
-        store_oid.inputs["Name"].default_value = "oid"
-        links.new(foreach_in.outputs["Element"], store_oid.inputs[0])
-        links.new(sample_oid.outputs["Value"], store_oid.inputs[3])
-        links.new(store_oid.outputs["Geometry"], foreach_out.inputs[1])
-
-        transform_geometry = nodes.new("GeometryNodeTransform")
-        transform_geometry.name = "Apply Channel Affine"
-        transform_geometry.location = (1810, -105)
-        transform_geometry.inputs[1].default_value = "Matrix"
-        links.new(foreach_out.outputs[2], transform_geometry.inputs["Geometry"])
-        links.new(
-            group_input.outputs["Channel Affine Matrix"],
-            transform_geometry.inputs["Transform"],
-        )
-        include_switch = cast(
-            bpy.types.GeometryNodeSwitch, nodes.new("GeometryNodeSwitch")
-        )
-        include_switch.name = "Include Switch"
-        include_switch.location = (2030, -150)
-        include_switch.input_type = "GEOMETRY"
-        links.new(group_input.outputs["Include"], include_switch.inputs["Switch"])
-        links.new(transform_geometry.outputs["Geometry"], include_switch.inputs["True"])
-        links.new(include_switch.outputs["Output"], group_output.inputs["Geometry"])
-        group_output.location = (2210, -150)
-
-        return node_group
+    return TreeBuilder.geometry(node_group)
 
 
-def test_import_microscopy_meshes_node_group(snapshot):
+def test_import_microscopy_meshes():
+    tree = build_import_microscopy_meshes_api()
+    assert len(tree.nodes) == 16
+
+
+def build_import_microscopy_meshes() -> TreeBuilder:
     with g.tree("Import Microscopy Meshes") as tree:
         include = tree.inputs.boolean("Include")
         template_str = tree.inputs.string("template_str")
@@ -523,10 +553,14 @@ def test_import_microscopy_meshes_node_group(snapshot):
             >> g.Switch.geometry(include, None, ...)
             >> tree.outputs.geometry()
         )
-    assert snapshot == tree._repr_markdown_()
+    return tree
 
 
-def test_import_microscopy_volume_nodebpy_node_group(snapshot):
+def test_import_microscopy_meshes_node_group(snapshot):
+    assert snapshot == build_import_microscopy_meshes()._repr_markdown_()
+
+
+def build_import_microscopy_volume() -> TreeBuilder:
     with g.tree() as tree:
         grid_name = tree.inputs.string("Grid Name")
         normalized = tree.inputs.boolean("Normalized", True)
@@ -567,40 +601,18 @@ def test_import_microscopy_volume_nodebpy_node_group(snapshot):
             >> tree.outputs.float("Grid", structure_type="GRID")
         )
 
-    assert snapshot == tree._repr_markdown_()
+    return tree
 
 
-def test_import_microscopy_volume_node_group():
+def test_import_microscopy_volume_nodebpy_node_group(snapshot):
+    assert snapshot == build_import_microscopy_volume()._repr_markdown_()
+
+
+def build_import_microscopy_volume_api() -> TreeBuilder:
     GROUP_NAME = "Import Microscopy Volume"
-
-    def _set_common_socket_defaults(socket):
-        socket.attribute_domain = "POINT"
-        if hasattr(socket, "default_input"):
-            socket.default_input = "VALUE"
-        if hasattr(socket, "structure_type"):
-            socket.structure_type = "AUTO"
-
-    def _new_input(interface, name, socket_type, default=None):
-        socket = interface.new_socket(
-            name=name, in_out="INPUT", socket_type=socket_type
-        )
-        _set_common_socket_defaults(socket)
-        if default is not None:
-            socket.default_value = default
-        return socket
-
-    def _new_output(interface, name, socket_type, default=None):
-        socket = interface.new_socket(
-            name=name, in_out="OUTPUT", socket_type=socket_type
-        )
-        _set_common_socket_defaults(socket)
-        if default is not None:
-            socket.default_value = default
-        return socket
-
     node_group = bpy.data.node_groups.get(GROUP_NAME)
     if node_group:
-        return node_group
+        return TreeBuilder.geometry(node_group)
 
     node_group = bpy.data.node_groups.new(type="GeometryNodeTree", name=GROUP_NAME)
     node_group.color_tag = "NONE"
@@ -774,10 +786,15 @@ def test_import_microscopy_volume_node_group():
     links.new(store_transformed_grid.outputs["Volume"], group_output.inputs["Volume"])
     links.new(set_grid_transform.outputs["Grid"], group_output.inputs["Grid"])
 
-    # return node_group
+    return TreeBuilder.geometry(node_group)
 
 
-def test_bundle_path_filter(snapshot):
+def test_import_microscopy_volume_node_group():
+    tree = build_import_microscopy_volume_api()
+    assert len(tree.nodes) == 14
+
+
+def build_bundle_path_filter() -> TreeBuilder:
     with g.tree() as tree:
         path = tree.inputs.string("Self Path")
         other = tree.inputs.string("Other Path")
@@ -794,10 +811,14 @@ def test_bundle_path_filter(snapshot):
             >> tree.outputs.boolean("Selected")
         )
 
-    assert snapshot == tree._repr_markdown_()
+    return tree
 
 
-def test_style_density_iso():
+def test_bundle_path_filter(snapshot):
+    assert snapshot == build_bundle_path_filter()._repr_markdown_()
+
+
+def build_style_density_iso() -> TreeBuilder:
     with g.tree("Style Density ISO Surface") as tree:
         volume = tree.inputs.geometry("Volume")
         visible = tree.inputs.boolean("Visible", True)
@@ -847,8 +868,14 @@ def test_style_density_iso():
 
         geom >> tree.outputs.geometry("Geometry")
 
+    return tree
 
-def test_accumulate_along_spline(snapshot):
+
+def test_style_density_iso():
+    build_style_density_iso()
+
+
+def build_accumulate_along_spline() -> TreeBuilder:
     with g.tree("Accumulate Along Spline") as tree:
         id = g.CurveOfPoint().o.curve_index
         pos = g.Position() + id
@@ -870,14 +897,21 @@ def test_accumulate_along_spline(snapshot):
             >> tree.outputs.geometry("Curve")
         )
 
-    assert snapshot == tree._repr_markdown_()
+    return tree
+
+
+def test_accumulate_along_spline(snapshot):
+    assert snapshot == build_accumulate_along_spline()._repr_markdown_()
+
+
+def build_clip_field_to_box() -> TreeBuilder:
+    with g.tree():
+        node = ClipFieldToBox()
+    return TreeBuilder(node.node_tree)
 
 
 def test_ClipFieldToBox(snapshot):
-    with g.tree():
-        node = ClipFieldToBox()
-
-    assert snapshot == TreeBuilder(node.node_tree)._repr_markdown_()
+    assert snapshot == build_clip_field_to_box()._repr_markdown_()
 
 
 def test_mask_grid(snapshot):
@@ -982,7 +1016,19 @@ def _build_microscopy_grid_to_points(tree):
     delete.o.geometry >> geometry
 
 
-def test_geometryscript_city_builder(snapshot):
+def build_mask_grid() -> TreeBuilder:
+    with g.tree() as tree:
+        _build_mask_grid(tree)
+    return tree
+
+
+def build_microscopy_grid_to_points() -> TreeBuilder:
+    with g.tree() as tree:
+        _build_microscopy_grid_to_points(tree)
+    return tree
+
+
+def build_city_builder() -> TreeBuilder:
     with g.tree("Voxelise") as tree:
         geo = tree.inputs.geometry("Geometry")
         seed = tree.inputs.integer("Seed")
@@ -1023,10 +1069,14 @@ def test_geometryscript_city_builder(snapshot):
 
         g.JoinGeometry((curve_mesh, buildings)) >> tree.outputs.geometry("Result")
 
-    assert snapshot == tree._repr_markdown_()
+    return tree
 
 
-def test_active_grid_positions(snapshot):
+def test_geometryscript_city_builder(snapshot):
+    assert snapshot == build_city_builder()._repr_markdown_()
+
+
+def build_active_grid_positions() -> TreeBuilder:
     with g.tree("Active Grid Positions", arrange="simple") as tree:
         tree.tree.show_modifier_manage_panel = True
 
@@ -1044,4 +1094,33 @@ def test_active_grid_positions(snapshot):
             >> points_output
         )
 
-    assert snapshot == tree._repr_markdown_()
+    return tree
+
+
+def test_active_grid_positions(snapshot):
+    assert snapshot == build_active_grid_positions()._repr_markdown_()
+
+
+# Every tree built in this module, for the parametrised codegen round-trip
+# test in test_codegen.py.
+ROUNDTRIP_BUILDERS = [
+    import_channel,
+    build_decoder_8bit,
+    build_principal_components,
+    build_surface_hello_world,
+    build_eulers_number,
+    build_gridverts_nodebpy,
+    build_gridverts_api,
+    build_import_microscopy_meshes,
+    build_import_microscopy_meshes_api,
+    build_import_microscopy_volume,
+    build_import_microscopy_volume_api,
+    build_bundle_path_filter,
+    build_style_density_iso,
+    build_accumulate_along_spline,
+    build_clip_field_to_box,
+    build_mask_grid,
+    build_microscopy_grid_to_points,
+    build_city_builder,
+    build_active_grid_positions,
+]

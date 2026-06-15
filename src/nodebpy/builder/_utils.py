@@ -52,6 +52,12 @@ def _allow_innactive_sockets(node: bpy.types.Node) -> bool:
         "ShaderNodeMixShader",
         # "ShaderNodeMix",
         "GeometryNodeSwitch",
+        # Group inputs that are only used behind an internal switch poll as
+        # inactive until the group is evaluated — including the input we are
+        # about to link, which would itself activate the socket.
+        "GeometryNodeGroup",
+        "ShaderNodeGroup",
+        "CompositorNodeGroup",
     )
 
 

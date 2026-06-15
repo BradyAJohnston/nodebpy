@@ -313,6 +313,18 @@ class TestBooleanOperators:
         assert result.node.operation == "NOT"
         assert len(result.node.inputs[0].links) == 1
 
+    def test_socket_boolean_ops_return_sockets(self):
+        """Every boolean operator on a socket returns a BooleanSocket (so
+        socket methods like .switch chain), not the BooleanMath node."""
+        from nodebpy.builder import BooleanSocket
+
+        with TreeBuilder("BoolSockets") as tree:
+            a = tree.inputs.boolean("A")
+            b = tree.inputs.boolean("B")
+            for result in (a & b, a | b, a ^ b, ~a):
+                assert isinstance(result, BooleanSocket), type(result)
+                assert hasattr(result, "switch")
+
     def test_and_with_literal(self):
         with TreeBuilder("TestAndLiteral"):
             result = g.Boolean(True) & True
@@ -341,9 +353,11 @@ class TestParameterizedOperators:
 
     @pytest.mark.parametrize(
         "operator,input_cls",
-        itertools.product(
-            ["**", "%"],
-            [g.Vector, g.Value],
+        list(
+            itertools.product(
+                ["**", "%"],
+                [g.Vector, g.Value],
+            )
         ),
     )
     def test_binary_operators_with_types(self, operator, input_cls):

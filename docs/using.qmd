@@ -33,7 +33,7 @@ If you use `nodebpy` in your add-on you likely support multiple versions of Blen
 
 Each version of `nodebpy` will target a specific Blender release, but you can import multiple versions if you vendor the package inside of your add-on.
 
-```yaml
+```
 YourAddon/
 ├── lib/
 |   ├── __init__.py (empty)

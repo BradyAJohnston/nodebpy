@@ -18,6 +18,7 @@ website:
           - operators.qmd
           - custom-node-groups.qmd
           - node-api.qmd
+          - nodes-to-code.qmd
           - using.qmd
           - comparisons.qmd
       - href: reference/
@@ -36,6 +37,9 @@ website:
         - operators.qmd
         - custom-node-groups.qmd
         - node-api.qmd
+        - nodes-to-code.qmd
+        - using.qmd
+        - comparisons.qmd
 
 # tell quarto to read the generated sidebar
 metadata-files:
@@ -47,6 +51,7 @@ format:
     theme:
       - darkly
       - nodebpy.scss
+    include-in-header: shiki.html
     # highlight-style:
     #   dark: dracula.theme
 

@@ -48,6 +48,7 @@ class SocketAccessor:
         if isinstance(key, int):
             return key
         ids = [s.identifier for s in self._collection]
+        names = [s.name for s in self._collection]
         denorm = denormalize_name(key)
         for candidate in (key, denorm):
             if candidate in ids:
@@ -56,16 +57,27 @@ class SocketAccessor:
         normalized_ids = [normalize_name(id) for id in ids]
         if key in normalized_ids:
             return normalized_ids.index(key)
-        names = [s.name for s in self._collection]
-        for key in (key, denorm):
-            if key in names:
-                if names.count(key) > 1:
+        for candidate in (key, denorm):
+            if candidate in names:
+                if names.count(candidate) > 1:
                     raise RuntimeError(
-                        f"{self._direction.title()} name '{key}' is ambiguous on "
-                        f"{self._node.bl_idname} (appears {names.count(key)} times). "
-                        f"Use the socket identifier instead."
+                        f"{self._direction.title()} name '{candidate}' is ambiguous "
+                        f"on {self._node.bl_idname} (appears {names.count(candidate)} "
+                        f"times). Use the socket identifier instead."
                     )
-                return names.index(key)
+                return names.index(candidate)
+        # Normalized name match: 'flip_and_cyclic' matches name 'Flip and Cyclic'
+        # (denormalize_name can't recover the original capitalisation of small
+        # connector words like "and"/"to").
+        normalized_names = [normalize_name(n) for n in names]
+        if key in normalized_names:
+            if normalized_names.count(key) > 1:
+                raise RuntimeError(
+                    f"{self._direction.title()} name '{key}' is ambiguous on "
+                    f"{self._node.bl_idname} (appears {normalized_names.count(key)} "
+                    f"times). Use the socket identifier instead."
+                )
+            return normalized_names.index(key)
         raise RuntimeError(
             f"{self._direction.title()} '{key}' not found on "
             f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"

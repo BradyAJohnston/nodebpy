@@ -499,7 +499,14 @@ class _GridSocketMixin(Socket, Generic[_T]):
         from ..nodes.geometry import GridInfo
 
         self._assert_output("transform / background_value")
-        return GridInfo(self.socket, data_type=self._socket_dtype)  # ty: ignore[invalid-argument-type, invalid-return-type]
+        # Reuse one GridInfo per grid socket (cannot go through
+        # _find_or_create_linked — data_type must match the grid type).
+        for link in self.socket.links or ():
+            assert link.to_node
+            if link.to_node.bl_idname == GridInfo._bl_idname:
+                return GridInfo._from_node(link.to_node)
+        dtype = self.socket.type.replace("VALUE", "FLOAT")
+        return GridInfo(self.socket, data_type=dtype)  # ty: ignore[invalid-argument-type, invalid-return-type]
 
     @property
     def transform(
@@ -1141,6 +1148,50 @@ class _ColorMixin(BaseSocket):
                 raise TypeError("Shader CombineColor node doesn't have an alpha input")
             return node.i.alpha
 
+    @property
+    def default_value(self) -> list[float]:
+        return list(self.socket.default_value)
+
+    @default_value.setter
+    def default_value(self, value: list[float]) -> None:
+        self.socket.default_value = value
+
+    @property
+    def point(self) -> "_EvaluateField[ColorSocket]":
+        """BooleanSocket `point` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+
+        return _EvaluateField(self.socket, "color", "point")
+
+    @property
+    def edge(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `edge` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "edge")
+
+    @property
+    def face(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `face` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "face")
+
+    @property
+    def corner(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `corner` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "corner")
+
+    @property
+    def spline(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `spline` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "spline")
+
+    @property
+    def instance(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `instance` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "instance")
+
+    @property
+    def layer(self) -> "_EvaluateField[ColorSocket]":
+        """ColorSocket `layer` domain-bound methods from `EvaluateAtIndex`, `EvaluateOnDomain`."""
+        return _EvaluateField(self.socket, "color", "layer")
+
     @overload
     def __getitem__(self, key: slice) -> "list[FloatSocket]": ...
     @overload
@@ -1286,6 +1337,18 @@ class _BooleanMixin(BaseSocket):
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_and(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
+
+    def __xor__(self, other: Any) -> Self:
+        self._assert_output("^")
+        from ..nodes.geometry.converter import BooleanMath
+
+        return BooleanMath.not_equal(self.socket, other).o.boolean  # ty: ignore[invalid-return-type]
+
+    def __invert__(self) -> Self:
+        self._assert_output("~")
+        from ..nodes.geometry.converter import BooleanMath
+
+        return BooleanMath.l_not(self.socket).o.boolean  # ty: ignore[invalid-return-type]
 
     @property
     def switch(self) -> "_BooleanSwitchSocketFactory":
@@ -1819,7 +1882,7 @@ class _ListMixin(Socket, Generic[_T]):
         """Get the length of the list."""
         from ..nodes.geometry import ListLength
 
-        return ListLength(self.socket, data_type=self.socket.type).o.length  # ty: ignore[invalid-argument-type]
+        return ListLength(self.socket, data_type=self._socket_dtype).o.length  # ty: ignore[invalid-argument-type]
 
     @overload
     def get(self, index: InputIntegerList) -> Self: ...
@@ -2140,14 +2203,6 @@ class VectorSocketGrid(
 # -- Color --
 class ColorSocket(_ColorMixin, _ToListMixin["ColorSocketList"], Socket):
     """Runtime color socket wrapper."""
-
-    @property
-    def default_value(self) -> list[float]:
-        return list(self.socket.default_value)
-
-    @default_value.setter
-    def default_value(self, value: list[float]) -> None:
-        self.socket.default_value = value
 
 
 class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):

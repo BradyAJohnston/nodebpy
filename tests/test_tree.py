@@ -2,6 +2,8 @@ import bpy
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
+from nodebpy.nodes.geometry.groups import PrincipalComponents
+from tests.test_usecases import test_PCA_asset
 
 
 def test_create_tree_and_save():
@@ -126,3 +128,12 @@ def test_panel_context_clears_after_exit():
         outside = next(i for i in items if getattr(i, "name", None) == "Outside")
         assert inside.parent == panel
         assert outside.parent != panel
+
+
+def test_string_generators(snapshot):
+    with g.tree():
+        tree = TreeBuilder(PrincipalComponents().node_tree)
+
+    assert snapshot == tree.to_python(format=False)
+    assert snapshot == tree.to_mermaid()
+    assert snapshot == tree.to_mermaid(fenced=False)
