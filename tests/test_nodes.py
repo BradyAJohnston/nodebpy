@@ -501,6 +501,20 @@ def test_menu_switch_menu_connection():
     assert switch.i["Menu"].socket.default_value == "cube"
 
 
+def test_menu_switch_menu_items_empty_default_deferred():
+    """A MENU-typed MenuSwitch with string item values defers them to
+    ``_menu_defaults`` (they can't be set until items are known), and empty
+    string defaults are skipped when the defaults are applied on context exit."""
+    with TreeBuilder("MenuOfMenus", arrange=None) as tree:
+        switch = g.MenuSwitch.menu(items={"a": "", "b": ""})
+        # the item menu sockets defer their (empty) string defaults
+        assert len(tree._menu_defaults) == 2
+        assert all(md.default == "" for md in tree._menu_defaults)
+    # exiting the context applies the defaults; the empty strings are skipped
+    # without error, and the enum items still exist
+    assert len(switch.node.enum_items) == 2
+
+
 def test_multi_menu():
     with TreeBuilder() as tree:
         items = (g.Cube(), g.IcoSphere(), g.Grid())

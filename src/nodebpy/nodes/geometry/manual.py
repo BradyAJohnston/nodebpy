@@ -1945,8 +1945,9 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
             try:
                 menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
                 menu_socket.default_value = self.node.enum_items[0].name
-            except TypeError:
-                # the socket is a NodeSocketMenu, but the default_value is not settable
+            except TypeError:  # pragma: no cover - rare Blender enum-refresh quirk
+                # the socket is a NodeSocketMenu whose enum hasn't refreshed yet, so
+                # the default_value isn't settable here; defer it to context exit.
                 self.tree._menu_defaults.append(
                     _MenuDefault(self.node.inputs["Menu"], self.node.enum_items[0].name)
                 )
