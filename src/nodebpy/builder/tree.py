@@ -723,6 +723,7 @@ class TreeBuilder(Generic[_TreeT]):
         max_inline_width: int | None = 88,
         snapshot_positions: bool = False,
         keep_reroutes: bool = False,
+        top_level: Literal["with", "class"] = "with",
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -737,6 +738,7 @@ class TreeBuilder(Generic[_TreeT]):
             max_inline_width=max_inline_width,
             snapshot_positions=snapshot_positions,
             keep_reroutes=keep_reroutes,
+            top_level=top_level,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:

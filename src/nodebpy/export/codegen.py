@@ -27,7 +27,7 @@ import keyword
 import re
 import textwrap
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, NamedTuple
+from typing import TYPE_CHECKING, Any, Callable, Literal, NamedTuple
 
 from bpy.types import FunctionNodeCompare, NodeTree
 
@@ -2653,6 +2653,7 @@ def to_python(
     max_inline_width: int | None = 88,
     snapshot_positions: bool = False,
     keep_reroutes: bool = False,
+    top_level: Literal["with", "class"] = "with",
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -2686,6 +2687,13 @@ def to_python(
             If True, preserve reroute nodes as ``g.Reroute(...)`` pass-throughs
             instead of collapsing each reroute chain into a direct link. Useful
             with ``snapshot_positions`` to reproduce the original wire routing.
+        top_level: "with" | "class"
+            How the top-level tree is rendered. ``"with"`` (default) emits a
+            ``with TreeBuilder(...) as tree:`` block. ``"class"`` emits the
+            top-level tree as a ``Custom*Group`` subclass too — so every node
+            group, including the one being exported, becomes a class. Build any
+            of them with ``ClassName.create_group()``; useful for archiving a
+            set of node groups as plain, reusable Python.
 
     Returns
     -------
@@ -2701,17 +2709,30 @@ def to_python(
         snapshot_positions=snapshot_positions,
         keep_reroutes=keep_reroutes,
     )
-    emission = _emit_tree(node_tree, collector)
 
-    # 5. Assemble the module: imports, any nested group classes, then the tree,
-    #    each top-level block separated by two blank lines (PEP 8).
-    used_aliases = emission.used_aliases | collector.used_aliases
+    # In "class" mode the top-level tree is registered as a Custom*Group class
+    # too (alongside any nested groups); in "with" mode it stays a `with` block.
+    emission: _TreeEmission | None = None
+    if top_level == "class":
+        collector.register(node_tree)
+        used_aliases = collector.used_aliases
+    else:
+        emission = _emit_tree(node_tree, collector)
+        used_aliases = emission.used_aliases | collector.used_aliases
+
+    # 5. Assemble the module: imports, group classes, then the tree block (only
+    #    in "with" mode), each top-level block separated by two blank lines.
     import_parts = [
         f"{_ALIAS_MODULES[alias]} as {alias}"
         for alias in ("g", "s", "c")
         if alias in used_aliases
     ]
-    lines = ["from nodebpy import " + ", ".join(import_parts + ["TreeBuilder"])]
+    # TreeBuilder is only referenced by the `with` block; class bodies use the
+    # ``tree`` parameter of ``_build_group`` instead.
+    import_names = import_parts + (["TreeBuilder"] if top_level == "with" else [])
+    lines: list[str] = []
+    if import_names:
+        lines.append("from nodebpy import " + ", ".join(import_names))
     if collector.bases_used:
         lines.append(
             "from nodebpy.builder import " + ", ".join(sorted(collector.bases_used))
@@ -2719,22 +2740,25 @@ def to_python(
     # Group classes are top-level defs: two blank lines around each (PEP 8).
     for class_def in collector.class_defs:
         lines.extend(["", "", class_def])
-    lines.append("")  # one blank line before the tree block
-    if collector.class_defs:
-        lines.append("")  # ...two, when a class def precedes it
 
-    constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
-    ctor_args = [_fmt(node_tree.name)]
-    # Auto-layout dissolves reroutes and overwrites locations, so disable it for
-    # either option.
-    if snapshot_positions or keep_reroutes:
-        ctor_args.append("arrange=None")
-    lines.append(f"with {constructor}({', '.join(ctor_args)}) as tree:")
-    lines.extend(_assemble_tree_body(emission))
+    if top_level == "with":
+        assert emission is not None
+        lines.append("")  # one blank line before the tree block
+        if collector.class_defs:
+            lines.append("")  # ...two, when a class def precedes it
 
-    if snapshot_positions:
-        lines.append("")
-        lines.extend(_node_positions_lines(node_tree, indent=""))
+        constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
+        ctor_args = [_fmt(node_tree.name)]
+        # Auto-layout dissolves reroutes and overwrites locations, so disable it
+        # for either option.
+        if snapshot_positions or keep_reroutes:
+            ctor_args.append("arrange=None")
+        lines.append(f"with {constructor}({', '.join(ctor_args)}) as tree:")
+        lines.extend(_assemble_tree_body(emission))
+
+        if snapshot_positions:
+            lines.append("")
+            lines.extend(_node_positions_lines(node_tree, indent=""))
 
     # Datablock defaults (a Material/Object/Image socket value) render via
     # ``repr()`` as ``bpy.data.<collection>['name']``, so the module needs a

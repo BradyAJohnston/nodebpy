@@ -269,6 +269,77 @@ def test_default_does_not_snapshot_positions():
     assert "_node_positions" not in code
 
 
+def test_top_level_class_emits_class_not_with_block():
+    """top_level='class' renders the working tree as a Custom*Group subclass
+    (no ``with`` block / TreeBuilder import); the default stays the ``with``
+    form."""
+    with TreeBuilder("ArchiveMe") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        g.SetPosition(geometry=geo) >> tree.outputs.geometry("Geometry")
+
+    assert "with TreeBuilder(" in to_python(tree)  # default unchanged
+
+    code = to_python(tree, top_level="class")
+    assert "class ArchiveMe(CustomGeometryGroup):" in code
+    assert "def _build_group(self, tree):" in code
+    assert "with TreeBuilder(" not in code
+    assert "TreeBuilder" not in code  # not imported when unused
+
+
+def test_top_level_class_round_trips_via_create_group():
+    """The emitted top-level class rebuilds the tree (and any nested group)
+    through create_group()."""
+    import bpy
+
+    from nodebpy.builder import CustomGeometryGroup
+    from nodebpy.export.codegen import _class_name
+
+    class _ArchiveInner(CustomGeometryGroup):
+        _name = "ArchiveInner"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            g.SetPosition(geometry=geo) >> tree.outputs.geometry("Geometry")
+
+    with TreeBuilder("ArchiveOuter") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        _ArchiveInner(**{"Geometry": geo}) >> tree.outputs.geometry("Geometry")
+    orig_top = _structure(tree.tree)
+    orig_inner = _structure(
+        next(n.node_tree for n in tree.tree.nodes if n.bl_idname == "GeometryNodeGroup")
+    )
+
+    code = to_python(tree, top_level="class")
+    for t in list(bpy.data.node_groups):  # force fresh builds
+        t.name = "_orig_" + t.name
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt = ns[_class_name("ArchiveOuter")].create_group()
+
+    assert _structure(rebuilt) == orig_top, code
+    rebuilt_inner = next(
+        n.node_tree for n in rebuilt.nodes if n.bl_idname == "GeometryNodeGroup"
+    )
+    assert _structure(rebuilt_inner) == orig_inner, code
+
+
+def test_snapshot_top_level_class(snapshot):
+    """The class-per-group archive form for a tree with a nested group."""
+    from nodebpy.builder import CustomGeometryGroup
+
+    class _SnapClassInner(CustomGeometryGroup):
+        _name = "SnapClassInner"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            g.SetPosition(geometry=geo) >> tree.outputs.geometry("Geometry")
+
+    with TreeBuilder("SnapClassOuter") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        _SnapClassInner(**{"Geometry": geo}) >> tree.outputs.geometry("Geometry")
+    assert snapshot == to_python(tree, top_level="class")
+
+
 def _tree_with_reroute(name):
     """A tree whose Set Position output reaches the group output through a
     reroute node."""

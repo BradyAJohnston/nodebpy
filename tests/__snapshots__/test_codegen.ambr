@@ -177,6 +177,32 @@
       position = g.Position()
   '''
 # ---
+# name: test_snapshot_top_level_class
+  '''
+  from nodebpy import geometry as g
+  from nodebpy.builder import CustomGeometryGroup
+  
+  
+  class SnapClassInner(CustomGeometryGroup):
+      _name = "SnapClassInner"
+  
+      def _build_group(self, tree):
+          geometry = tree.inputs.geometry("Geometry")
+          geometry_1 = tree.outputs.geometry("Geometry")
+  
+          geometry >> g.SetPosition() >> geometry_1
+  
+  
+  class SnapClassOuter(CustomGeometryGroup):
+      _name = "SnapClassOuter"
+  
+      def _build_group(self, tree):
+          geometry = tree.inputs.geometry("Geometry")
+          geometry_1 = tree.outputs.geometry("Geometry")
+  
+          SnapClassInner(**{"Geometry": geometry}) >> geometry_1
+  '''
+# ---
 # name: test_snapshot_with_properties
   '''
   from nodebpy import TreeBuilder
