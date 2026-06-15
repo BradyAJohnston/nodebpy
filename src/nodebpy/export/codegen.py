@@ -1689,6 +1689,35 @@ def _matrix_spec(method: str, output: str) -> SocketMethodSpec:
     )
 
 
+def _math_unary_spec(operation: str, method: str) -> SocketMethodSpec:
+    """A unary ``ShaderNodeMath`` op rendered as a float socket method —
+    ``value.sqrt()`` / ``value.sign()``. ``receiver_socket_type="VALUE"`` keeps
+    the round-trip faithful: the method only re-derives a float Math node when
+    the receiver is itself a float socket."""
+    return SocketMethodSpec(
+        receiver="Value",
+        method=method,
+        output="Value",
+        require=(("operation", operation),),
+        consumed_props=("operation",),
+        receiver_socket_type="VALUE",
+    )
+
+
+def _int_math_unary_spec(operation: str, method: str) -> SocketMethodSpec:
+    """A unary ``FunctionNodeIntegerMath`` op rendered as an integer socket
+    method — ``value.sign()``. ``ABSOLUTE``/``NEGATE`` stay as the ``abs(x)`` /
+    ``-x`` lifts and so are deliberately absent here."""
+    return SocketMethodSpec(
+        receiver="Value",
+        method=method,
+        output="Value",
+        require=(("operation", operation),),
+        consumed_props=("operation",),
+        receiver_socket_type="INT",
+    )
+
+
 def _mix_spec(data_type: str, attr: str, suffix: str) -> SocketMethodSpec:
     """``factor.mix.float(a, b)`` — the receiver is always the uniform float
     factor; non-uniform vector mixes have ``Factor_Vector`` linked instead
@@ -1799,6 +1828,18 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             params=(("Transform", "matrix"),),
             receiver_socket_type="VECTOR",
         ),
+    ],
+    "ShaderNodeMath": [
+        _math_unary_spec("SQRT", "sqrt"),
+        _math_unary_spec("FLOOR", "floor"),
+        _math_unary_spec("CEIL", "ceil"),
+        _math_unary_spec("ROUND", "round"),
+        _math_unary_spec("RADIANS", "to_radians"),
+        _math_unary_spec("DEGREES", "to_degrees"),
+        _math_unary_spec("SIGN", "sign"),
+    ],
+    "FunctionNodeIntegerMath": [
+        _int_math_unary_spec("SIGN", "sign"),
     ],
     "ShaderNodeClamp": [
         SocketMethodSpec(
