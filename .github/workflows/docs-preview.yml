@@ -1,0 +1,59 @@
+name: docs-preview (fork)
+
+# Renders the docs and deploys them to this fork's GitHub Pages on every push to
+# main, so the nodebpy + geonodes-web-render interactive graph embeds can be
+# previewed. Gated to the fork via the `if:` below, so it never runs upstream.
+#
+# One-time setup: on the fork, Settings → Pages → Source: "GitHub Actions".
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    if: github.repository == 'kolibril13/nodebpy'
+    runs-on: macos-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      # bpy comes from the dailybpy index; tree-clipper + ipykernel are dev deps.
+      - name: Install dependencies
+        run: |
+          uv sync --all-extras --extra-index-url https://bradyajohnston.github.io/dailybpy --refresh --upgrade
+          uv pip install -e .
+
+      - name: Build reference and render site
+        run: |
+          cd docs
+          uv run quartodoc build
+          uv run quartodoc interlinks
+          cd ..
+          uv run quarto render docs
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
