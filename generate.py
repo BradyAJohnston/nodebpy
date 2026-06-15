@@ -91,10 +91,8 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "MenuSwitch",
         "CaptureAttribute",
         "FieldToGrid",
-        "FieldToList",
         "JoinGeometry",
         "SDFGridBoolean",
-        "Bake",
         "JoinStrings",
         "GeometryToInstance",
         "RepeatInput",
@@ -348,6 +346,28 @@ register_customization(
         for name, socket_type in (items or {}).items():
             self.node.bundle_items.new(socket_type, name)
         self._establish_links(Bundle=bundle)""",
+    )
+)
+
+
+# Items-based nodes: the generated boilerplate (sockets, docstring, property
+# accessors) is kept; a mixin in _mixins.py supplies the variadic items
+# constructor and item helpers.
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeBake",
+        bases=("_BakeMixin",),
+        imports=("from .._mixins import _BakeMixin",),
+        suppress=frozenset({"__init__"}),
+    )
+)
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeFieldToList",
+        bases=("_FieldToListMixin",),
+        imports=("from .._mixins import _FieldToListMixin",),
+        suppress=frozenset({"__init__"}),
     )
 )
 

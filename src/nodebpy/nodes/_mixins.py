@@ -9,9 +9,171 @@ bespoke behaviour lives here.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+import warnings
+from typing import TYPE_CHECKING, Any, Literal
 
 import bpy
+from mathutils import Euler
+
+from ..builder import (
+    BooleanSocketList,
+    ColorSocketList,
+    FloatSocketList,
+    IntegerSocketList,
+    ItemsMixin,
+    MatrixSocketList,
+    MenuSocketList,
+    RotationSocketList,
+    SocketAccessor,
+    StringSocketList,
+    VectorSocketList,
+)
+from ..builder import BaseNode
+from ..builder import Socket as SocketLinker
+from ..types import (
+    InputBoolean,
+    InputColor,
+    InputFloat,
+    InputInteger,
+    InputLinkable,
+    InputMatrix,
+    InputRotation,
+    InputString,
+    InputVector,
+    _BakedDataTypeValues,
+)
+
+
+class _BakeMixin(ItemsMixin):
+    """Variadic items constructor for the Bake node. Items may be passed
+    positionally (``*args``), as a ``name -> value`` mapping, or as keyword
+    arguments; all are funnelled through :meth:`ItemsMixin._add_inputs`."""
+
+    _items_collection = "bake_items"
+    _socket_data_types = _BakedDataTypeValues
+
+    def __init__(
+        self, *args, items: dict[str, InputLinkable | str] | None = None, **kwargs
+    ):
+        super().__init__()
+        key_args = dict(items or {})
+        key_args.update(kwargs)
+        self._establish_links(**self._add_inputs(*args, **key_args))
+
+
+class _FieldToListMixin(ItemsMixin):
+    """Items constructor + per-type ``float``/``integer``/… helpers for the
+    Field to List node, which gathers field values into typed socket lists."""
+
+    _items_collection = "list_items"
+    _socket_data_types = (
+        "VALUE",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+    )
+    _type_map = {"VALUE": "FLOAT"}
+
+    if TYPE_CHECKING:
+        # i/o are declared on the generated subclass; restate them here so the
+        # item helpers below type-check against the mixin in isolation.
+        @property
+        def i(self) -> SocketAccessor: ...
+        @property
+        def o(self) -> SocketAccessor: ...
+
+    def __init__(
+        self,
+        count: InputInteger = 1,
+        items: dict[str, InputLinkable | str] | None = None,
+        *,
+        fields: dict[str, InputLinkable | str] | None = None,
+    ):
+        super().__init__()
+        if fields is not None:
+            warnings.warn(
+                "'fields' is deprecated, use 'items'", DeprecationWarning, stacklevel=2
+            )
+            items = fields
+        key_args = {"Count": count}
+        key_args.update(self._add_inputs(**(items or {})))
+        self._establish_links(**key_args)
+
+    def _declare_item(
+        self,
+        type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+        ],
+        name: str | None = None,
+        default: Any | None = None,
+    ) -> bpy.types.NodeSocket:
+        item = self._new_item(name if name else type, type)
+
+        input_socket = self.i[item.name]
+        if isinstance(default, (BaseNode, SocketLinker)):
+            self._establish_links(**{item.name: default})
+        else:
+            input_socket.default_value = default
+
+        return self.o[item.name].socket
+
+    def float(
+        self, input: InputFloat = 0.0, name: str | None = None
+    ) -> FloatSocketList:
+        return FloatSocketList(self._declare_item("FLOAT", name, input))
+
+    def integer(
+        self, input: InputInteger = 0, name: str | None = None
+    ) -> IntegerSocketList:
+        return IntegerSocketList(self._declare_item("INT", name, input))
+
+    def boolean(
+        self, input: InputBoolean = False, name: str | None = None
+    ) -> BooleanSocketList:
+        return BooleanSocketList(self._declare_item("BOOLEAN", name, input))
+
+    def vector(
+        self, input: InputVector = (0, 0, 0), name: str | None = None
+    ) -> VectorSocketList:
+        return VectorSocketList(self._declare_item("VECTOR", name, input))
+
+    def color(
+        self, input: InputColor = (0, 0, 0, 1), name: str | None = None
+    ) -> ColorSocketList:
+        return ColorSocketList(self._declare_item("RGBA", name, input))
+
+    def rotation(
+        self, input: InputRotation = Euler((0, 0, 0)), name: str | None = None
+    ) -> RotationSocketList:
+        return RotationSocketList(self._declare_item("ROTATION", name, input))
+
+    def matrix(
+        self, input: InputMatrix = None, name: str | None = None
+    ) -> MatrixSocketList:
+        return MatrixSocketList(self._declare_item("MATRIX", name, input))
+
+    def string(
+        self, input: InputString = "", name: str | None = None
+    ) -> StringSocketList:
+        return StringSocketList(self._declare_item("STRING", name, input))
+
+    def menu(
+        self, input: InputString = None, name: str | None = None
+    ) -> MenuSocketList:
+        return MenuSocketList(self._declare_item("MENU", name, input))
 
 
 class _HandleModeMixin:

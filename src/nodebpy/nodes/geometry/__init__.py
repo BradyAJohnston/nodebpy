@@ -5,10 +5,8 @@ from .manual import (
     MenuSwitch,
     CaptureAttribute,
     FieldToGrid,
-    FieldToList,
     JoinGeometry,
     SDFGridBoolean,
-    Bake,
     GeometryToInstance,
     RepeatInput,
     RepeatOutput,
@@ -67,6 +65,7 @@ from .converter import (
     CombineTransform,
     CombineXYZ,
     EulerToRotation,
+    FieldToList,
     FilterList,
     FindInString,
     FloatToInteger,
@@ -211,6 +210,7 @@ from .attribute import (
 )
 from .geometry import (
     Arc,
+    Bake,
     BoundingBox,
     BezierSegment,
     Cone,

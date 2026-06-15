@@ -42,6 +42,8 @@ from ...builder.socket import (
     _S,
 )
 
+from .._mixins import _BakeMixin
+
 from .._mixins import _HandleModeMixin
 
 
@@ -231,6 +233,28 @@ class Arc(BaseNode):
     @mode.setter
     def mode(self, value: Literal["POINTS", "RADIUS"]):
         self.node.mode = value
+
+
+class Bake(_BakeMixin, BaseNode):
+    """
+    Cache the incoming data so that it can be used without recomputation
+    """
+
+    _bl_idname = "GeometryNodeBake"
+    node: bpy.types.GeometryNodeBake
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
 
 
 class BoundingBox(BaseNode):

@@ -1,8 +1,6 @@
-import warnings
 from collections.abc import Mapping
 from typing import (
     TYPE_CHECKING,
-    Any,
     Generic,
     Iterable,
     Literal,
@@ -21,7 +19,6 @@ from bpy.types import (
     NodeSocket,
     NodeSocketString,
 )
-from mathutils import Euler
 
 from nodebpy.builder.tree import _MenuDefault
 
@@ -29,37 +26,28 @@ from ...builder import (
     BaseNode,
     BooleanSocket,
     BooleanSocketGrid,
-    BooleanSocketList,
     BundleSocket,
     ClosureSocket,
     CollectionSocket,
     ColorSocket,
-    ColorSocketList,
     FloatSocket,
     FloatSocketGrid,
-    FloatSocketList,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
     IntegerSocketGrid,
-    IntegerSocketList,
     IntegerVectorSocket,
     ItemsMixin,
     MaterialSocket,
     MatrixSocket,
-    MatrixSocketList,
     MenuSocket,
-    MenuSocketList,
     ObjectSocket,
     RotationSocket,
-    RotationSocketList,
     SocketAccessor,
     StringSocket,
-    StringSocketList,
     TreeBuilder,
     VectorSocket,
     VectorSocketGrid,
-    VectorSocketList,
 )
 from ...builder import Socket as SocketLinker
 from ...builder.socket import BaseSocket
@@ -90,7 +78,6 @@ from ...types import (
     InputVectorGrid,
     _AccumulateFieldDataTypes,
     _AttributeDomains,
-    _BakedDataTypeValues,
     _EvaluateAtIndexDataTypes,
     _GridDataTypes,
     _is_default_value,
@@ -136,10 +123,8 @@ __all__ = (
     "MeshBoolean",
     "CaptureAttribute",
     "FieldToGrid",
-    "FieldToList",
     "JoinGeometry",
     "SDFGridBoolean",
-    "Bake",
     "JoinStrings",
     "GeometryToInstance",
     "FormatString",
@@ -782,26 +767,6 @@ class Frame(BaseNode):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         TreeBuilder._frame_contexts.pop()
-
-
-class Bake(ItemsMixin, BaseNode):
-    """Cache the incoming data so that it can be used without recomputation
-
-    TODO: properly handle Animation / Still bake opations and ability to bake to a file
-    """
-
-    _bl_idname = "GeometryNodeBake"
-    node: bpy.types.GeometryNodeBake
-    _items_collection = "bake_items"
-    _socket_data_types = _BakedDataTypeValues
-
-    def __init__(
-        self, *args, items: dict[str, InputLinkable | str] | None = None, **kwargs
-    ):
-        super().__init__()
-        key_args = dict(items or {})
-        key_args.update(kwargs)
-        self._establish_links(**self._add_inputs(*args, **key_args))
 
 
 class GeometryToInstance(BaseNode):
@@ -1830,140 +1795,6 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         value: _AttributeDomains,
     ):
         self.node.domain = value
-
-
-class FieldToList(ItemsMixin, BaseNode):
-    """
-    Create a list of values
-
-    Parameters
-    ----------
-    count : InputInteger
-        Count
-
-    Inputs
-    ------
-    i.count : IntegerSocket
-        Count
-    """
-
-    _bl_idname = "GeometryNodeFieldToList"
-    node: bpy.types.GeometryNodeFieldToList
-    _items_collection = "list_items"
-    _socket_data_types = (
-        "VALUE",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-    )
-    _type_map = {"VALUE": "FLOAT"}
-
-    class _Inputs(SocketAccessor):
-        count: IntegerSocket
-        """Count"""
-
-    class _Outputs(SocketAccessor):
-        pass
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        count: InputInteger = 1,
-        items: dict[str, InputLinkable | str] | None = None,
-        *,
-        fields: dict[str, InputLinkable | str] | None = None,
-    ):
-        super().__init__()
-        if fields is not None:
-            warnings.warn(
-                "'fields' is deprecated, use 'items'", DeprecationWarning, stacklevel=2
-            )
-            items = fields
-        key_args = {"Count": count}
-        key_args.update(self._add_inputs(**(items or {})))
-        self._establish_links(**key_args)
-
-    def _declare_item(
-        self,
-        type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-        ],
-        name: str | None = None,
-        default: Any | None = None,
-    ) -> bpy.types.NodeSocket:
-        item = self._new_item(name if name else type, type)
-
-        input_socket = self.i[item.name]
-        if isinstance(default, (BaseNode, SocketLinker)):
-            self._establish_links(**{item.name: default})
-        else:
-            input_socket.default_value = default
-
-        return self.o[item.name].socket
-
-    def float(
-        self, input: InputFloat = 0.0, name: str | None = None
-    ) -> FloatSocketList:
-        return FloatSocketList(self._declare_item("FLOAT", name, input))
-
-    def integer(
-        self, input: InputInteger = 0, name: str | None = None
-    ) -> IntegerSocketList:
-        return IntegerSocketList(self._declare_item("INT", name, input))
-
-    def boolean(
-        self, input: InputBoolean = False, name: str | None = None
-    ) -> BooleanSocketList:
-        return BooleanSocketList(self._declare_item("BOOLEAN", name, input))
-
-    def vector(
-        self, input: InputVector = (0, 0, 0), name: str | None = None
-    ) -> VectorSocketList:
-        return VectorSocketList(self._declare_item("VECTOR", name, input))
-
-    def color(
-        self, input: InputColor = (0, 0, 0, 1), name: str | None = None
-    ) -> ColorSocketList:
-        return ColorSocketList(self._declare_item("RGBA", name, input))
-
-    def rotation(
-        self, input: InputRotation = Euler((0, 0, 0)), name: str | None = None
-    ) -> RotationSocketList:
-        return RotationSocketList(self._declare_item("ROTATION", name, input))
-
-    def matrix(
-        self, input: InputMatrix = None, name: str | None = None
-    ) -> MatrixSocketList:
-        return MatrixSocketList(self._declare_item("MATRIX", name, input))
-
-    def string(
-        self, input: InputString = "", name: str | None = None
-    ) -> StringSocketList:
-        return StringSocketList(self._declare_item("STRING", name, input))
-
-    def menu(
-        self, input: InputString = None, name: str | None = None
-    ) -> MenuSocketList:
-        return MenuSocketList(self._declare_item("MENU", name, input))
 
 
 class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):

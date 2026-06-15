@@ -54,6 +54,8 @@ from ...builder.socket import (
     _S,
 )
 
+from .._mixins import _FieldToListMixin
+
 
 class AlignRotationToVector(BaseNode):
     """
@@ -1332,6 +1334,39 @@ class EulerToRotation(BaseNode):
         key_args = {"Euler": euler}
 
         self._establish_links(**key_args)
+
+
+class FieldToList(_FieldToListMixin, BaseNode):
+    """
+    Create a list of values
+
+    Parameters
+    ----------
+    count : InputInteger
+        Count
+
+    Inputs
+    ------
+    i.count : IntegerSocket
+        Count
+    """
+
+    _bl_idname = "GeometryNodeFieldToList"
+    node: bpy.types.GeometryNodeFieldToList
+
+    class _Inputs(SocketAccessor):
+        count: IntegerSocket
+        """Count"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
 
 
 class FilterList(BaseNode):
