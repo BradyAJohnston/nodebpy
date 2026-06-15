@@ -134,6 +134,6 @@ def test_string_generators(snapshot):
     with g.tree():
         tree = TreeBuilder(PrincipalComponents().node_tree)
 
-    assert snapshot == tree.to_python()
+    assert snapshot == tree.to_python(format=False)
     assert snapshot == tree.to_mermaid()
     assert snapshot == tree.to_mermaid(fenced=False)

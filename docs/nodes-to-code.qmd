@@ -213,6 +213,11 @@ Positions inside nested groups are preserved too.
 Reroute nodes are pure wire-routing aids, so by default each reroute chain is collapsed into a direct link.
 Pass `keep_reroutes=True` to preserve them as `g.Reroute(...)` pass-throughs — useful together with `snapshot_positions` to reproduce the original wire routing exactly.
 
+### Formatting
+
+When the optional [`ruff`](https://docs.astral.sh/ruff/) package is installed (`pip install nodebpy[format]`), the generated source is run through `ruff format` for tidier output — for example wrapping long lines the generator left on one line.
+This is on by default; pass `format=False` to get the raw generator output, and it is a no-op when `ruff` is not installed.
+
 ## Zones
 
 Simulation, repeat and for-each zones are reconstructed using the zone item API rather than as raw input/output node pairs:

@@ -2674,6 +2674,33 @@ def _emit_interface_lines(node_tree, ctx: EmitContext) -> list[str]:
 # ---------------------------------------------------------------------------
 
 
+def _format_with_ruff(code: str) -> str:
+    """Format ``code`` with ruff if the optional ``ruff`` package is installed,
+    otherwise return it unchanged.
+
+    Uses the binary bundled with the ``ruff`` Python package (via
+    ``ruff.find_ruff_bin``), so it works wherever the package is importable —
+    no dependency on a ``ruff`` executable being on ``PATH``.
+    """
+    try:
+        from ruff import find_ruff_bin
+    except ImportError:
+        return code
+    import subprocess
+
+    try:
+        result = subprocess.run(
+            [find_ruff_bin(), "format", "-"],
+            input=code,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return code
+    return result.stdout or code
+
+
 def to_python(
     tree: NodeTree | "TreeBuilder",
     min_chain_length: int = 3,
@@ -2682,6 +2709,7 @@ def to_python(
     snapshot_positions: bool = False,
     keep_reroutes: bool = False,
     top_level: Literal["with", "class"] = "with",
+    format: bool = True,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -2722,6 +2750,10 @@ def to_python(
             group, including the one being exported, becomes a class. Build any
             of them with ``ClassName.create_group()``; useful for archiving a
             set of node groups as plain, reusable Python.
+        format: bool
+            If True (default) and the optional ``ruff`` package is installed,
+            the generated source is run through ``ruff format`` for tidier
+            output. A no-op when ``ruff`` is unavailable.
 
     Returns
     -------
@@ -2793,7 +2825,8 @@ def to_python(
     # bare ``import bpy`` to resolve them on rebuild.
     if any("bpy.data." in line for line in lines):
         lines.insert(0, "import bpy")
-    return "\n".join(lines)
+    code = "\n".join(lines)
+    return _format_with_ruff(code) if format else code
 
 
 def _node_positions_lines(node_tree, indent: str) -> list[str]:

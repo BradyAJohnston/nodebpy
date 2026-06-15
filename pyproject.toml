@@ -19,6 +19,10 @@ networkx = [
 bpy = [
     "bpy==5.2.*",
 ]
+# Used by `to_python(format=True)` to tidy generated source via `ruff format`.
+format = [
+    "ruff>=0.14.11",
+]
 
 [build-system]
 requires = ["uv_build>=0.8.15,<0.9.0"]

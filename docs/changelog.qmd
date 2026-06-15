@@ -11,6 +11,7 @@ title: Changelog
     - `keep_reroutes=True` — preserve reroute nodes as `g.Reroute(...)` pass-throughs instead of collapsing each reroute chain into a direct link; pairs with `snapshot_positions` to reproduce the original wire routing.
     - `top_level="class"` — emit every node group, *including the working tree*, as a `Custom*Group` subclass, for archiving a set of groups as plain reusable Python. Defaults to the `with TreeBuilder(...) as tree:` form.
     - **Nested frames** are reconstructed as nested `with g.Frame():` blocks (including container frames that hold only sub-frames).
+    - `format=True` (default) runs the output through `ruff format` when the optional `ruff` package is installed (`pip install nodebpy[format]`), for tidier source; a no-op when `ruff` is unavailable.
     - `strict=False` emits a `# TODO` placeholder for unsupported nodes; `register_emitter(bl_idname)` plugs in a custom generator for any node type.
 - **`NodeGroupBuilder.create_group()`** — classmethod that builds and returns a custom group's node tree without an active `TreeBuilder` context (it opens its own), reusing an existing tree of the same name. Lets a group be pre-built and assigned directly to a node's `node_tree`.
 - **`TreeBuilder.node_positions`** — a read/write `{node name: (x, y)}` mapping for snapshotting and restoring node locations, plus **`TreeBuilder.disable_arrange()`** to skip the auto-layout that otherwise runs on context exit.

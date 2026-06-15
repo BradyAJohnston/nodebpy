@@ -68,7 +68,9 @@ def _structure(node_tree):
 
 def _assert_roundtrip(tree):
     """Exec the generated code and assert the rebuilt tree is structurally equal."""
-    code = to_python(tree)
+    # format=False keeps this testing the generator's own output (and avoids a
+    # ruff subprocess per round-trip); ruff formatting is covered separately.
+    code = to_python(tree, format=False)
     ns: dict = {}
     # exec(code, ns)  # noqa: S102
     try:
@@ -264,9 +266,46 @@ def test_default_does_not_snapshot_positions():
     """Without the flag, no positions block and no arrange override appear."""
     with TreeBuilder("NoSnapshot") as tree:
         g.Position()
-    code = to_python(tree)
+    code = to_python(tree, format=False)
     assert "arrange=None" not in code
     assert "_node_positions" not in code
+
+
+def test_format_with_ruff_tidies_output():
+    """format=True (the default) runs the output through ruff when installed,
+    tidying long lines the generator left unwrapped; format=False returns the
+    raw generator output. The formatted result is still valid, runnable code."""
+    import ast
+
+    pytest.importorskip("ruff")
+    with TreeBuilder("Formatted") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        amp = tree.inputs.float("Amplitude", 0.5)
+        out = tree.outputs.geometry("Geometry")
+        height = g.Math.sine(g.Position().o.position.x) * amp
+        (
+            geo
+            >> g.SetPosition(offset=g.CombineXYZ(z=height))
+            >> g.SetShadeSmooth()
+            >> g.TransformGeometry()
+            >> out
+        )
+
+    raw = tree.to_python(format=False)
+    formatted = tree.to_python(format=True)
+    assert tree.to_python() == formatted  # format=True is the default
+
+    assert formatted != raw  # ruff reformatted something
+    # the generator left at least one over-long line; ruff wrapped it.
+    assert max(len(line) for line in raw.splitlines()) > 88
+    assert max(len(line) for line in formatted.splitlines()) < max(
+        len(line) for line in raw.splitlines()
+    )
+
+    ast.parse(formatted)  # still valid Python
+    ns: dict = {}
+    exec(formatted, ns)  # noqa: S102 — still runnable
+    assert ns["tree"] is not None
 
 
 def test_top_level_class_emits_class_not_with_block():
@@ -337,7 +376,7 @@ def test_snapshot_top_level_class(snapshot):
     with TreeBuilder("SnapClassOuter") as tree:
         geo = tree.inputs.geometry("Geometry")
         _SnapClassInner(**{"Geometry": geo}) >> tree.outputs.geometry("Geometry")
-    assert snapshot == to_python(tree, top_level="class")
+    assert snapshot == to_python(tree, top_level="class", format=False)
 
 
 def _tree_with_reroute(name):
@@ -1124,21 +1163,21 @@ def test_imports_no_alias_for_empty_tree():
 def test_snapshot_single_node(snapshot):
     with TreeBuilder("SnapshotSingle") as tree:
         g.Position()
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 def test_snapshot_simple(snapshot):
     with TreeBuilder("SnapshotSimple") as tree:
         geo_in = tree.inputs.geometry()
         g.SetPosition(geo_in) >> tree.outputs.geometry()
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 def test_snapshot_with_properties(snapshot):
     with TreeBuilder("SnapshotProps") as tree:
         val = tree.inputs.float("Value", 1.0)
         g.Math(val, 2.0, operation="MULTIPLY") >> tree.outputs.float("Result")
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 def test_snapshot_fanout(snapshot):
@@ -1148,7 +1187,7 @@ def test_snapshot_fanout(snapshot):
         noise = g.NoiseTexture()
         g.SetPosition(geo_in, offset=noise) >> tree.outputs.geometry("Out1")
         g.SetPosition(geo_in, offset=noise) >> tree.outputs.geometry("Out2")
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 def test_snapshot_positions_block(snapshot):
@@ -1159,7 +1198,7 @@ def test_snapshot_positions_block(snapshot):
         g.SetPosition(geo_in, offset=g.Position()) >> tree.outputs.geometry("Geometry")
     for i, node in enumerate(tree.tree.nodes):
         node.location = (i * 100.0, i * 40.0)
-    assert snapshot == to_python(tree, snapshot_positions=True)
+    assert snapshot == to_python(tree, snapshot_positions=True, format=False)
 
 
 def test_snapshot_positions_nested_group_block(snapshot):
@@ -1183,7 +1222,7 @@ def test_snapshot_positions_nested_group_block(snapshot):
         node.location = (i * 120.0, i * 50.0)
     for i, node in enumerate(bpy.data.node_groups["SnapInner"].nodes):
         node.location = (i * 200.0, i * 60.0)
-    assert snapshot == to_python(tree, snapshot_positions=True)
+    assert snapshot == to_python(tree, snapshot_positions=True, format=False)
 
 
 def test_snapshot_keep_reroutes_block(snapshot):
@@ -1198,7 +1237,7 @@ def test_snapshot_keep_reroutes_block(snapshot):
         tree.tree.links.new(reroute.outputs[0], out.socket)
     for i, node in enumerate(tree.tree.nodes):
         node.location = (i * 90.0, i * 30.0)
-    assert snapshot == to_python(tree, keep_reroutes=True, snapshot_positions=True)
+    assert snapshot == to_python(tree, keep_reroutes=True, snapshot_positions=True, format=False)
 
 
 def test_snapshot_chain_simple(snapshot):
@@ -1206,7 +1245,7 @@ def test_snapshot_chain_simple(snapshot):
     with TreeBuilder("ChainSnap") as tree:
         geo_in = tree.inputs.geometry()
         geo_in >> g.SetPosition() >> g.TransformGeometry() >> tree.outputs.geometry()
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 def test_snapshot_chain_with_extra_kwargs(snapshot):
@@ -1220,7 +1259,7 @@ def test_snapshot_chain_with_extra_kwargs(snapshot):
             >> g.TransformGeometry()
             >> tree.outputs.geometry()
         )
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 def test_snapshot_math_single(snapshot):
@@ -1228,7 +1267,7 @@ def test_snapshot_math_single(snapshot):
     with TreeBuilder("MathSingle") as tree:
         val = tree.inputs.float("Value", 1.0)
         g.Math(val, 2.0, operation="MULTIPLY") >> tree.outputs.float("Result")
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 def test_snapshot_math_chain(snapshot):
@@ -1236,7 +1275,7 @@ def test_snapshot_math_chain(snapshot):
     with TreeBuilder("MathChain") as tree:
         val = tree.inputs.float("Value", 1.0)
         (val * 2.0 + 1.0) >> tree.outputs.float("Result")
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 def test_snapshot_math_offset(snapshot):
@@ -1245,7 +1284,7 @@ def test_snapshot_math_offset(snapshot):
         geo_in = tree.inputs.geometry()
         val = tree.inputs.float("Scale", 1.0)
         geo_in >> g.SetPosition(offset=val * 2.0) >> tree.outputs.geometry()
-    assert snapshot == to_python(tree)
+    assert snapshot == to_python(tree, format=False)
 
 
 # ---------------------------------------------------------------------------
@@ -1961,7 +2000,8 @@ def test_long_expressions_split_into_variables():
     assert all(len(line) <= 110 for line in body), code
     assert any(line.strip().startswith("math = ") for line in body), code
 
-    unbudgeted = to_python(tree, max_inline_width=None)
+    # format=False so ruff doesn't re-wrap the long line we're asserting on.
+    unbudgeted = to_python(tree, max_inline_width=None, format=False)
     assert any(len(line) > 110 for line in unbudgeted.splitlines())
 
 
