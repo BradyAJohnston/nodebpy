@@ -43,6 +43,29 @@
       set_position_1 >> out2
   '''
 # ---
+# name: test_snapshot_keep_reroutes_block
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("KeepReroute", arrange=None) as tree:
+      geometry = tree.inputs.geometry("Geometry")
+      geometry_1 = tree.outputs.geometry("Geometry")
+  
+      (
+          g.Reroute(input=g.SetPosition(geometry=geometry, offset=g.Position()).o.geometry)
+          >> geometry_1
+      )
+  
+  # Restore authored node positions.
+  tree.node_positions = {
+      "Group Input": (0.0, 0.0),
+      "Group Output": (90.0, 30.0),
+      "Position": (180.0, 60.0),
+      "Set Position": (270.0, 90.0),
+      "Reroute": (360.0, 120.0),
+  }
+  '''
+# ---
 # name: test_snapshot_math_chain
   '''
   from nodebpy import TreeBuilder

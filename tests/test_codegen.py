@@ -269,6 +269,51 @@ def test_default_does_not_snapshot_positions():
     assert "_node_positions" not in code
 
 
+def _tree_with_reroute(name):
+    """A tree whose Set Position output reaches the group output through a
+    reroute node."""
+    with TreeBuilder(name, arrange=None) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        out = tree.outputs.geometry("Geometry")
+        sp = g.SetPosition(geometry=geo, offset=g.Position())
+        reroute = tree.tree.nodes.new("NodeReroute")
+        tree.tree.links.new(sp.node.outputs[0], reroute.inputs[0])
+        tree.tree.links.new(reroute.outputs[0], out.socket)
+    return tree
+
+
+def test_keep_reroutes_emits_reroute_call():
+    """keep_reroutes emits ``g.Reroute(...)`` (with auto-layout disabled, which
+    would otherwise dissolve the reroute); the default collapses it instead."""
+    tree = _tree_with_reroute("RerouteKeep")
+    assert any(n.bl_idname == "NodeReroute" for n in tree.tree.nodes)
+
+    assert "g.Reroute" not in to_python(tree)  # collapsed by default
+
+    code = to_python(tree, keep_reroutes=True)
+    assert "g.Reroute(" in code
+    assert "arrange=None" in code  # layout off, so the reroute survives a rebuild
+
+
+def test_keep_reroutes_with_snapshot_positions():
+    """keep_reroutes + snapshot_positions emits the reroute node and includes
+    its own location in the positions block.
+
+    (Asserts on the generated source rather than exec-rebuilding: linking a
+    fresh ``g.Reroute`` mutates the node's adaptive sockets, which intermittently
+    segfaults the in-process Blender under full-suite memory pressure. The
+    exact rebuilt output is locked by ``test_snapshot_keep_reroutes_block``.)"""
+    tree = _tree_with_reroute("ReroutePos")
+    reroute = next(n for n in tree.tree.nodes if n.bl_idname == "NodeReroute")
+    reroute.location = (360.0, 120.0)
+
+    code = to_python(tree, keep_reroutes=True, snapshot_positions=True)
+    assert "g.Reroute(" in code
+    assert "arrange=None" in code
+    assert 'tree.node_positions = {' in code
+    assert f'"{reroute.name}": (360.0, 120.0)' in code  # reroute position kept
+
+
 def test_snapshot_positions_nested_group_round_trip():
     """snapshot_positions restores locations inside nested group classes too:
     the generated ``_build_group`` disables its own auto-layout and applies a
@@ -1068,6 +1113,21 @@ def test_snapshot_positions_nested_group_block(snapshot):
     for i, node in enumerate(bpy.data.node_groups["SnapInner"].nodes):
         node.location = (i * 200.0, i * 60.0)
     assert snapshot == to_python(tree, snapshot_positions=True)
+
+
+def test_snapshot_keep_reroutes_block(snapshot):
+    """keep_reroutes emits the reroute as ``g.Reroute(input=...)`` instead of
+    collapsing it; shown alongside snapshot_positions."""
+    with TreeBuilder("KeepReroute", arrange=None) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        out = tree.outputs.geometry("Geometry")
+        sp = g.SetPosition(geometry=geo, offset=g.Position())
+        reroute = tree.tree.nodes.new("NodeReroute")
+        tree.tree.links.new(sp.node.outputs[0], reroute.inputs[0])
+        tree.tree.links.new(reroute.outputs[0], out.socket)
+    for i, node in enumerate(tree.tree.nodes):
+        node.location = (i * 90.0, i * 30.0)
+    assert snapshot == to_python(tree, keep_reroutes=True, snapshot_positions=True)
 
 
 def test_snapshot_chain_simple(snapshot):

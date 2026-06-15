@@ -648,20 +648,25 @@ def _canonical_links(node_tree, links: list[_Link]) -> list[_Link]:
     )
 
 
-def _effective_links(node_tree) -> list[_Link]:
+def _effective_links(node_tree, keep_reroutes: bool = False) -> list[_Link]:
     """All links with reroutes collapsed; reroute-internal segments dropped.
 
-    Returned in canonical (structural) order — see :func:`_canonical_links`.
+    With ``keep_reroutes`` the reroute chain is left intact — every raw link is
+    kept (reroutes become ordinary pass-through nodes). Returned in canonical
+    (structural) order — see :func:`_canonical_links`.
     """
     links: list[_Link] = []
     for link in node_tree.links:
-        if link.to_node.bl_idname == "NodeReroute":
+        if not keep_reroutes and link.to_node.bl_idname == "NodeReroute":
             continue
-        from_node, from_socket = _trace_reroute(
-            link.from_node, link.from_socket, node_tree
-        )
-        if from_node.bl_idname == "NodeReroute":
-            continue  # dangling reroute with no real source
+        if keep_reroutes:
+            from_node, from_socket = link.from_node, link.from_socket
+        else:
+            from_node, from_socket = _trace_reroute(
+                link.from_node, link.from_socket, node_tree
+            )
+            if from_node.bl_idname == "NodeReroute":
+                continue  # dangling reroute with no real source
         links.append(
             _Link(
                 from_node,
@@ -674,12 +679,12 @@ def _effective_links(node_tree) -> list[_Link]:
     return _canonical_links(node_tree, links)
 
 
-def _ordering_edges(node_tree):
+def _ordering_edges(node_tree, keep_reroutes: bool = False):
     """(from, to) node pairs that must hold in emission order: effective
     links (canonical order, reroutes collapsed) plus a synthetic edge from
     each zone input node to its paired output, so the zone wrapper is
     declared before the output side is emitted."""
-    for link in _effective_links(node_tree):
+    for link in _effective_links(node_tree, keep_reroutes):
         if link.from_node != link.to_node:
             yield link.from_node, link.to_node
     for node in node_tree.nodes:
@@ -688,7 +693,7 @@ def _ordering_edges(node_tree):
             yield node, paired
 
 
-def _topo_sort(node_tree) -> list:
+def _topo_sort(node_tree, keep_reroutes: bool = False) -> list:
     """Return nodes in topological order (dependencies first)."""
     try:
         import networkx as nx
@@ -696,7 +701,7 @@ def _topo_sort(node_tree) -> list:
         G: nx.DiGraph = nx.DiGraph()
         for node in node_tree.nodes:
             G.add_node(node)
-        for from_node, to_node in _ordering_edges(node_tree):
+        for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
             G.add_edge(from_node, to_node)
         return list(nx.topological_sort(G))
     except ImportError:
@@ -708,7 +713,7 @@ def _topo_sort(node_tree) -> list:
     node_by_name = {n.name: n for n in nodes}
     in_deg: dict[str, int] = {n.name: 0 for n in nodes}
     adj: dict[str, list[str]] = {n.name: [] for n in nodes}
-    for from_node, to_node in _ordering_edges(node_tree):
+    for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
         fn, tn = from_node.name, to_node.name
         adj[fn].append(tn)
         in_deg[tn] += 1
@@ -2647,6 +2652,7 @@ def to_python(
     strict: bool = True,
     max_inline_width: int | None = 88,
     snapshot_positions: bool = False,
+    keep_reroutes: bool = False,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -2672,9 +2678,14 @@ def to_python(
         snapshot_positions: bool
             If True, build the tree with ``arrange=None`` (no auto-layout) and
             append a block that restores each node's authored ``location`` by
-            name. Nodes a rebuild doesn't recreate (reroutes) or names a rebuild
-            assigns differently (duplicate-type nodes created in another order)
-            are skipped via ``tree.tree.nodes.get(name)``.
+            name. Nodes a rebuild doesn't recreate (reroutes — unless
+            ``keep_reroutes``) or names a rebuild assigns differently
+            (duplicate-type nodes created in another order) are skipped via
+            ``tree.tree.nodes.get(name)``.
+        keep_reroutes: bool
+            If True, preserve reroute nodes as ``g.Reroute(...)`` pass-throughs
+            instead of collapsing each reroute chain into a direct link. Useful
+            with ``snapshot_positions`` to reproduce the original wire routing.
 
     Returns
     -------
@@ -2688,6 +2699,7 @@ def to_python(
         strict=strict,
         max_inline_width=max_inline_width,
         snapshot_positions=snapshot_positions,
+        keep_reroutes=keep_reroutes,
     )
     emission = _emit_tree(node_tree, collector)
 
@@ -2713,7 +2725,9 @@ def to_python(
 
     constructor = _TREE_CONSTRUCTORS.get(node_tree.bl_idname, "TreeBuilder")
     ctor_args = [_fmt(node_tree.name)]
-    if snapshot_positions:
+    # Auto-layout dissolves reroutes and overwrites locations, so disable it for
+    # either option.
+    if snapshot_positions or keep_reroutes:
         ctor_args.append("arrange=None")
     lines.append(f"with {constructor}({', '.join(ctor_args)}) as tree:")
     lines.extend(_assemble_tree_body(emission))
@@ -2814,6 +2828,7 @@ class _GroupCollector:
     strict: bool
     max_inline_width: int | None
     snapshot_positions: bool = False
+    keep_reroutes: bool = False
     class_defs: list[str] = field(default_factory=list)
     names_by_tree: dict[str, str] = field(default_factory=dict)
     used_names: set[str] = field(default_factory=set)
@@ -2834,7 +2849,12 @@ class _GroupCollector:
         self.bases_used.add(base)
         self.class_defs.append(
             _render_group_class(
-                class_name, node_tree, base, emission, self.snapshot_positions
+                class_name,
+                node_tree,
+                base,
+                emission,
+                self.snapshot_positions,
+                self.keep_reroutes,
             )
         )
         return class_name
@@ -2865,6 +2885,7 @@ def _render_group_class(
     base: str,
     emission: "_TreeEmission",
     snapshot_positions: bool = False,
+    keep_reroutes: bool = False,
 ) -> str:
     """A ``class X(CustomGroup): _name = ...; def _build_group(self, tree): ...``
     block, with the tree body re-indented one level deeper."""
@@ -2874,16 +2895,13 @@ def _render_group_class(
         header.append(f"    _color_tag = {_fmt(color)}")
     header.extend(["", "    def _build_group(self, tree):"])
     inner = _assemble_tree_body(emission)
+    # Either option needs auto-layout off (it dissolves reroutes and overwrites
+    # locations); the disable line goes at the body's "in-block" 4-space indent,
+    # which the re-indent below lifts to the method-body depth.
+    if snapshot_positions or keep_reroutes:
+        inner = ["    tree.disable_arrange()", ""] + inner
     if snapshot_positions:
-        # Disable this group's auto-layout before building, then restore the
-        # authored positions after — at the body's "in-block" 4-space indent,
-        # which the re-indent below lifts to the method-body depth.
-        inner = (
-            ["    tree.disable_arrange()", ""]
-            + inner
-            + [""]
-            + _node_positions_lines(node_tree, indent="    ")
-        )
+        inner = inner + [""] + _node_positions_lines(node_tree, indent="    ")
     body = [("    " + line) if line else "" for line in inner]
     return "\n".join(header + body)
 
@@ -2891,7 +2909,7 @@ def _render_group_class(
 def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
     """Generate the interface/body/output lines for one tree. Nested group
     nodes register their classes on ``collector`` as a side effect."""
-    links = _effective_links(node_tree)
+    links = _effective_links(node_tree, collector.keep_reroutes)
     incoming: dict[str, list[_Link]] = {}
     outgoing: dict[str, list[_Link]] = {}
     for link in links:
@@ -2899,7 +2917,14 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
         outgoing.setdefault(link.from_node.name, []).append(link)
 
     ctx = EmitContext(node_tree, links, incoming, outgoing, collector=collector)
-    ordered = [n for n in _topo_sort(node_tree) if n.bl_idname not in _SKIP_BL_IDNAMES]
+    skip = _SKIP_BL_IDNAMES
+    if collector.keep_reroutes:
+        skip = skip - {"NodeReroute"}  # reroutes emit as ordinary nodes
+    ordered = [
+        n
+        for n in _topo_sort(node_tree, collector.keep_reroutes)
+        if n.bl_idname not in skip
+    ]
     ordered, frame_of, frame_nodes = _frame_order(node_tree, ordered)
 
     iface_lines = _emit_interface_lines(node_tree, ctx)
@@ -3428,6 +3453,20 @@ def _emit_set_handle_type(node, ctx: EmitContext) -> Expr | _Val | None:
     if "RIGHT" not in node.mode:
         call.kwargs["right"] = Lit(False)
     return call
+
+
+@register_emitter("NodeReroute")
+def _emit_reroute(node, ctx: EmitContext) -> Expr | _Val | None:
+    """A reroute (only kept in the graph under ``keep_reroutes``) is a
+    pass-through: emit ``g.Reroute(input=<socket>)``. The source is forced to a
+    socket expression so the runtime links it directly — ``tree.link`` skips
+    type-compat for reroutes — rather than the colour-typed ``input=`` kwarg
+    best-matching against the reroute's default socket and failing."""
+    ctx.used_aliases.add("g")
+    link = ctx.input_link(node, node.inputs[0].identifier)
+    if link is None:
+        return Call("g.Reroute")
+    return Call("g.Reroute", kwargs={"input": ctx.socket_expr(link)})
 
 
 @register_emitter("GeometryNodeViewer")
