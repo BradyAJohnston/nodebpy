@@ -98,9 +98,11 @@ def test_socket_selection():
 class TestMathOperators:
     @pytest.mark.parametrize(
         "operator,input",
-        itertools.product(
-            ["+", "-", "*", "/"],
-            [g.Vector, g.Value],
+        list(
+            itertools.product(
+                ["+", "-", "*", "/"],
+                [g.Vector, g.Value],
+            )
         ),
     )
     def test_math_operators(self, operator, input):
@@ -213,6 +215,28 @@ def test_field_variance():
         assert var.domain == "POINT"
 
 
+def test_color_socket_domain_field_evaluation():
+    """ColorSocket exposes the per-domain field-evaluation accessors, each
+    building a colour EvaluateAtIndex node."""
+    from nodebpy.builder import ColorSocket
+
+    with g.tree():
+        col = g.NamedAttribute.color("c").o.attribute
+        assert isinstance(col, ColorSocket)
+        for domain in (
+            "point",
+            "edge",
+            "face",
+            "corner",
+            "spline",
+            "instance",
+            "layer",
+        ):
+            result = getattr(col, domain).at(0)
+            assert isinstance(result, ColorSocket)
+            assert result.builder_node.node.data_type == "FLOAT_COLOR"
+
+
 def test_geometry_to_instance():
     with TreeBuilder() as tree:
         inputs = [g.Cube(), g.UVSphere(), g.IcoSphere(), g.Cone()]
@@ -304,9 +328,17 @@ def test_sdf_grid_boolean():
 
 @pytest.mark.parametrize(
     "domain,output",
-    zip(
-        ["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"],
-        ["Point Count", "Point Count", "Point Count", "Instance Count", "Layer Count"],
+    list(
+        zip(
+            ["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"],
+            [
+                "Point Count",
+                "Point Count",
+                "Point Count",
+                "Instance Count",
+                "Layer Count",
+            ],
+        )
     ),
 )
 def test_domain_size(domain, output):

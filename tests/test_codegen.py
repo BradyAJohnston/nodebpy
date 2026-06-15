@@ -236,6 +236,20 @@ def test_round_trip_executes():
     assert len(new_tree.tree.nodes) == original_node_count
 
 
+def test_node_positions_property_get_and_set():
+    """TreeBuilder.node_positions reads every node's location and, on assign,
+    applies a mapping by name (skipping names not in the tree)."""
+    with TreeBuilder("Positions", arrange=None) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        g.SetPosition(geometry=geo) >> tree.outputs.geometry("Geometry")
+    snapshot = tree.node_positions  # getter
+    assert isinstance(snapshot, dict)
+    assert "Set Position" in snapshot
+
+    tree.node_positions = {"Set Position": (123.0, 45.0), "Does Not Exist": (9, 9)}
+    assert tuple(tree.tree.nodes["Set Position"].location) == (123.0, 45.0)
+
+
 def test_snapshot_positions_round_trip():
     """``snapshot_positions=True`` disables auto-layout and restores each
     node's authored location by name on rebuild."""

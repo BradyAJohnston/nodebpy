@@ -353,9 +353,11 @@ class TestParameterizedOperators:
 
     @pytest.mark.parametrize(
         "operator,input_cls",
-        itertools.product(
-            ["**", "%"],
-            [g.Vector, g.Value],
+        list(
+            itertools.product(
+                ["**", "%"],
+                [g.Vector, g.Value],
+            )
         ),
     )
     def test_binary_operators_with_types(self, operator, input_cls):

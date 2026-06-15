@@ -49,6 +49,55 @@ class _SimpleCompositorGroup(CustomCompositorGroup):
         x >> tree.outputs.float("Result")
 
 
+def test_value_socket_type_branches():
+    """_value_socket_type reports the socket type for each linkable kind and
+    None for a plain default."""
+    from nodebpy.builder.node import _value_socket_type
+
+    with TreeBuilder():
+        pos = g.Position()
+        assert _value_socket_type(pos.o.position) == "VECTOR"  # Socket wrapper
+        assert _value_socket_type(pos.node.outputs[0]) == "VECTOR"  # bpy NodeSocket
+        assert _value_socket_type(pos.node) == "VECTOR"  # bpy Node
+        assert _value_socket_type(pos) == "VECTOR"  # BaseNode (_NodeLike)
+        assert _value_socket_type(1.0) is None  # plain default
+
+
+class _DupNameGroup(CustomGeometryGroup):
+    """A group with two inputs that share a name but differ in type."""
+
+    _name = "Dup Name Group"
+
+    def _build_group(self, tree):
+        tree.inputs.float("Amount")
+        tree.inputs.vector("Amount")
+        tree.outputs.geometry("Geometry")
+
+
+def test_named_links_resolve_same_name_by_type():
+    """Same-named group inputs are matched to the value whose socket type
+    agrees, via the _named_links path."""
+    with TreeBuilder() as tree:
+        f = g.Value(0.5).o.value
+        v = g.Position().o.position
+        node = _DupNameGroup(_named_links=[("Amount", f), ("Amount", v)])
+        amount_inputs = [s for s in node.node.inputs if s.name == "Amount"]
+        assert len(amount_inputs) == 2
+        assert all(s.is_linked for s in amount_inputs)
+        # the float value landed on the VALUE socket, the vector on the VECTOR one
+        by_type = {s.type: s.links[0].from_socket.type for s in amount_inputs}
+        assert by_type["VALUE"] == "VALUE"
+        assert by_type["VECTOR"] == "VECTOR"
+
+
+def test_named_links_errors_when_sockets_exhausted():
+    """More values than matching sockets raises a clear error."""
+    with TreeBuilder():
+        a = g.Value(1.0).o.value
+        with pytest.raises(ValueError, match="no remaining input socket named"):
+            _DupNameGroup(_named_links=[("Amount", a), ("Amount", a), ("Amount", a)])
+
+
 def test_create_group_without_context():
     """create_group() builds and returns the node tree with no active
     TreeBuilder context."""
