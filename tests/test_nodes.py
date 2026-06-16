@@ -1246,6 +1246,9 @@ def test_bundle_item():
         sep.define_signature = True
         assert sep.define_signature
 
+        with pytest.raises(TypeError):
+            g.CombineBundle({"pos": float})
+
 
 def test_uv_normal_map():
     with s.tree():
