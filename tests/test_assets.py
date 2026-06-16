@@ -90,9 +90,12 @@ def test_generated_asset_chains():
 # -- Library resolution --------------------------------------------------------
 
 
-def test_package_library_path_is_anchor_relative():
-    lib = PackageLibrary("/pkg/sub/module.py", "../data/assets.blend")
-    assert lib.path() == str(Path("/pkg/data/assets.blend"))
+def test_package_library_path_is_anchor_relative(tmp_path):
+    # Resolved relative to the anchor's directory (use a real path so the
+    # comparison is drive/platform-agnostic — .resolve() adds a drive on Windows).
+    anchor = tmp_path / "sub" / "module.py"
+    lib = PackageLibrary(str(anchor), "../data/assets.blend")
+    assert lib.path() == str((tmp_path / "data" / "assets.blend").resolve())
 
 
 def test_bundled_library_path_under_datafiles():
