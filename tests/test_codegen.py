@@ -2347,6 +2347,25 @@ def test_axes_to_rotation_socket_property_collision():
     assert rebuilt_axes.secondary_axis == "Y"
 
 
+def test_property_rna_name_unreadable_getter_returns_none():
+    """A proxy ``@property`` whose getter source can't be retrieved (here
+    compiled from a string, so it has no source file) falls through to ``None``
+    instead of raising — covers the defensive ``getsource`` guard."""
+    from nodebpy.export.codegen import _property_rna_name
+
+    ns: dict = {}
+    exec(  # noqa: S102 — getter has no source file, so getsource() raises OSError
+        "class C:\n"
+        "    @property\n"
+        "    def primary(self):\n"
+        "        return self.node.primary_axis\n",
+        ns,
+    )
+    # ``primary`` isn't itself a bpy prop, so resolution falls to the getter,
+    # whose source is unavailable → the except branch returns None.
+    assert _property_rna_name(ns["C"], "primary", {"primary_axis"}) is None
+
+
 def test_duplicate_separators_on_one_source_stay_explicit():
     """Several separator nodes sharing a source socket must not all dissolve to
     the component accessor — ``_find_or_create_linked`` would collapse them into
