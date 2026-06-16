@@ -1,5 +1,5 @@
 ---
-title: "Using Nodebpy"
+title: "Using `nodebpy`"
 subtitle: Using `nodebpy` inside of your own add-ons & projects.
 ---
 

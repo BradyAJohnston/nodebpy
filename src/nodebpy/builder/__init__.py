@@ -1,5 +1,14 @@
 from ._utils import SocketError, denormalize_name, normalize_name
 from .accessor import SocketAccessor
+from .asset import (
+    AssetCompositorGroup,
+    AssetGeometryGroup,
+    AssetLibrary,
+    AssetShaderGroup,
+    BundledLibrary,
+    PackageLibrary,
+    asset_group_base,
+)
 from .items import Item, ItemsMixin
 from .mixins import LinkingMixin, OperatorMixin
 from .node import (
@@ -83,7 +92,14 @@ __all__ = [
     "CustomCompositorGroup",
     "CustomGeometryGroup",
     "CustomShaderGroup",
-    "CustomShaderGroup",
+    # Asset-backed node groups
+    "AssetLibrary",
+    "BundledLibrary",
+    "PackageLibrary",
+    "AssetGeometryGroup",
+    "AssetShaderGroup",
+    "AssetCompositorGroup",
+    "asset_group_base",
     # Runtime socket types
     "FloatSocket",
     "FloatSocketGrid",

@@ -158,6 +158,12 @@ from .grid import (
     VolumeInfo,
     VolumeScatter,
 )
+from .assets import (
+    CombineCylindrical,
+    CombineSpherical,
+    SeparateCylindrical,
+    SeparateSpherical,
+)
 
 __all__ = (
     "AddShader",
@@ -181,6 +187,8 @@ __all__ = (
     "ColorRamp",
     "CombineBundle",
     "CombineColor",
+    "CombineCylindrical",
+    "CombineSpherical",
     "CombineXYZ",
     "CurvesInfo",
     "DiffuseBSDF",
@@ -248,6 +256,8 @@ __all__ = (
     "Script",
     "SeparateBundle",
     "SeparateColor",
+    "SeparateCylindrical",
+    "SeparateSpherical",
     "SeparateXYZ",
     "ShaderToRGB",
     "SheenBSDF",
