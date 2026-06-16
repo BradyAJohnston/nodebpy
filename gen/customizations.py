@@ -202,116 +202,104 @@ register_customization(
 # domain-factory helpers are bespoke (they self-reference the class for precise
 # return typing), so they live in extra_body; the colliding flat domain factories
 # the generator emits are suppressed.
+
+# Blender data_type enum value -> (factory method name, socket class used for
+# the parameterised return type / the matching Input* parameter type).
+_DATA_TYPE: dict[str, tuple[str, str]] = {
+    "FLOAT": ("float", "FloatSocket"),
+    "INT": ("integer", "IntegerSocket"),
+    "BOOLEAN": ("boolean", "BooleanSocket"),
+    "FLOAT_VECTOR": ("vector", "VectorSocket"),
+    "FLOAT_COLOR": ("color", "ColorSocket"),
+    "QUATERNION": ("quaternion", "RotationSocket"),
+    "FLOAT4X4": ("matrix", "MatrixSocket"),
+    "TRANSFORM": ("transform", "MatrixSocket"),
+}
+
+# Factory attribute name -> Blender domain enum value.
+_DOMAINS: dict[str, str] = {
+    "point": "POINT",
+    "edge": "EDGE",
+    "face": "FACE",
+    "corner": "CORNER",
+    "spline": "CURVE",
+    "instance": "INSTANCE",
+    "layer": "LAYER",
+}
+
+# The generator emits flat per-domain (point/edge/…) and per-data-type
+# (float/integer/…) classmethods for these nodes' enums; the nested
+# `<node>.<domain>.<dtype>()` factory below is the real (and only) public API,
+# so suppress both sets of flat factories.
+_SUPPRESS_METHODS = frozenset(_DOMAINS) | {method for method, _ in _DATA_TYPE.values()}
+
+
+def _domain_factory_typed(
+    node_name: str,
+    data_types: list[str],
+    index: str | None = "group_index",
+) -> str:
+    """Build a nested ``<node>.<domain>.<dtype>()`` factory as class-body source.
+
+    ``data_types`` are Blender ``data_type`` enum values; ``index`` names the
+    optional per-element index parameter (``None`` if the node has none). Each
+    method returns the parameterised node type (e.g. ``AccumulateField[FloatSocket]``)
+    for precise typing — which is why they self-reference the class and are built
+    here rather than in a shared mixin.
+    """
+    factory = f"_{node_name}DomainFactory"
+    idx_param = f", {index}: InputInteger = 0" if index else ""
+    idx_arg = f", {index}" if index else ""
+
+    lines = [
+        f"    class {factory}:",
+        "        def __init__(self, domain: _AttributeDomains):",
+        "            self._domain = domain",
+    ]
+    for dtype in data_types:
+        method, socket = _DATA_TYPE[dtype]
+        input_type = "Input" + socket.replace("Socket", "")
+        lines += [
+            "",
+            f'        def {method}(self, value: {input_type} = None{idx_param}) -> "{node_name}[{socket}]":',
+            f'            """Create \'{node_name}\' on this domain with \'{dtype}\' data type."""',
+            f'            return {node_name}(value{idx_arg}, domain=self._domain, data_type="{dtype}")',
+        ]
+    lines.append("")
+    lines += [f'    {attr} = {factory}("{dom}")' for attr, dom in _DOMAINS.items()]
+    return "\n".join(lines)
+
+
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeAccumulateField",
         imports=("from ...types import _AttributeDomains",),
-        suppress=frozenset(
-            {"point", "edge", "face", "corner", "spline", "instance", "layer"}
+        suppress=_SUPPRESS_METHODS,
+        extra_body=_domain_factory_typed(
+            "AccumulateField", ["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
         ),
-        extra_body="""    class AccumulateFieldDomainFactory:
-        def __init__(self, domain: _AttributeDomains):
-            self._domain = domain
-
-        def float(
-            self, value: InputFloat = None, index: InputInteger = 0
-        ) -> "AccumulateField[FloatSocket]":
-            return AccumulateField(value, index, domain=self._domain, data_type="FLOAT")
-
-        def integer(
-            self, value: InputInteger = None, index: InputInteger = 0
-        ) -> "AccumulateField[IntegerSocket]":
-            return AccumulateField(value, index, domain=self._domain, data_type="INT")
-
-        def vector(
-            self, value: InputVector = None, index: InputInteger = 0
-        ) -> "AccumulateField[VectorSocket]":
-            return AccumulateField(
-                value, index, domain=self._domain, data_type="FLOAT_VECTOR"
-            )
-
-        def transform(
-            self, value: InputMatrix = None, index: InputInteger = 0
-        ) -> "AccumulateField[MatrixSocket]":
-            return AccumulateField(
-                value, index, domain=self._domain, data_type="TRANSFORM"
-            )
-
-    point = AccumulateFieldDomainFactory("POINT")
-    edge = AccumulateFieldDomainFactory("EDGE")
-    face = AccumulateFieldDomainFactory("FACE")
-    corner = AccumulateFieldDomainFactory("CORNER")
-    spline = AccumulateFieldDomainFactory("CURVE")
-    instance = AccumulateFieldDomainFactory("INSTANCE")
-    layer = AccumulateFieldDomainFactory("LAYER")""",
     )
 )
 
-_DOMAIN_SUPPRESS = frozenset(
-    {"point", "edge", "face", "corner", "spline", "instance", "layer"}
-)
 
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldAtIndex",  # EvaluateAtIndex
         imports=("from ...types import _AttributeDomains",),
-        suppress=_DOMAIN_SUPPRESS,
-        extra_body="""    class _EvaluateAtIndexDomainFactory:
-        def __init__(self, domain: _AttributeDomains):
-            self._domain = domain
-
-        def float(
-            self, value: InputFloat = None, index: InputInteger = 0
-        ) -> "EvaluateAtIndex[FloatSocket]":
-            return EvaluateAtIndex(value, index, domain=self._domain, data_type="FLOAT")
-
-        def integer(
-            self, value: InputInteger = None, index: InputInteger = 0
-        ) -> "EvaluateAtIndex[IntegerSocket]":
-            return EvaluateAtIndex(value, index, domain=self._domain, data_type="INT")
-
-        def boolean(
-            self, value: InputBoolean = None, index: InputInteger = 0
-        ) -> "EvaluateAtIndex[BooleanSocket]":
-            return EvaluateAtIndex(
-                value, index, domain=self._domain, data_type="BOOLEAN"
-            )
-
-        def vector(
-            self, value: InputVector = None, index: InputInteger = 0
-        ) -> "EvaluateAtIndex[VectorSocket]":
-            return EvaluateAtIndex(
-                value, index, domain=self._domain, data_type="FLOAT_VECTOR"
-            )
-
-        def color(
-            self, value: InputColor = None, index: InputInteger = 0
-        ) -> "EvaluateAtIndex[ColorSocket]":
-            return EvaluateAtIndex(
-                value, index, domain=self._domain, data_type="FLOAT_COLOR"
-            )
-
-        def quaternion(
-            self, value: InputRotation = None, index: InputInteger = 0
-        ) -> "EvaluateAtIndex[RotationSocket]":
-            return EvaluateAtIndex(
-                value, index, domain=self._domain, data_type="QUATERNION"
-            )
-
-        def matrix(
-            self, value: InputMatrix = None, index: InputInteger = 0
-        ) -> "EvaluateAtIndex[MatrixSocket]":
-            return EvaluateAtIndex(
-                value, index, domain=self._domain, data_type="FLOAT4X4"
-            )
-
-    point = _EvaluateAtIndexDomainFactory("POINT")
-    edge = _EvaluateAtIndexDomainFactory("EDGE")
-    face = _EvaluateAtIndexDomainFactory("FACE")
-    corner = _EvaluateAtIndexDomainFactory("CORNER")
-    spline = _EvaluateAtIndexDomainFactory("CURVE")
-    instance = _EvaluateAtIndexDomainFactory("INSTANCE")
-    layer = _EvaluateAtIndexDomainFactory("LAYER")""",
+        suppress=_SUPPRESS_METHODS,
+        extra_body=_domain_factory_typed(
+            "EvaluateAtIndex",
+            [
+                "FLOAT",
+                "INT",
+                "BOOLEAN",
+                "FLOAT_VECTOR",
+                "FLOAT_COLOR",
+                "QUATERNION",
+                "FLOAT4X4",
+            ],
+            "index",
+        ),
     )
 )
 
@@ -319,88 +307,20 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldAverage",
         imports=("from ...types import _AttributeDomains",),
-        suppress=_DOMAIN_SUPPRESS,
-        extra_body='''    class _FieldAverageDomainFactory:
-        def __init__(self, domain: _AttributeDomains):
-            self._domain = domain
-
-        def float(
-            self,
-            value: InputFloat = 1.0,
-            group_index: InputInteger = 0,
-        ) -> "FieldAverage[FloatSocket]":
-            """Create FieldAverage for the "FLOAT" data type"""
-            return FieldAverage(
-                value, group_index, data_type="FLOAT", domain=self._domain
-            )
-
-        def vector(
-            self,
-            value: InputVector = (1.0, 1.0, 1.0),
-            group_index: InputInteger = 0,
-        ) -> "FieldAverage[VectorSocket]":
-            """Create FieldAverage for the "FLOAT_VECTOR" data type"""
-            return FieldAverage(
-                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
-            )
-
-    point = _FieldAverageDomainFactory("POINT")
-    edge = _FieldAverageDomainFactory("EDGE")
-    face = _FieldAverageDomainFactory("FACE")
-    corner = _FieldAverageDomainFactory("CORNER")
-    spline = _FieldAverageDomainFactory("CURVE")
-    instance = _FieldAverageDomainFactory("INSTANCE")
-    layer = _FieldAverageDomainFactory("LAYER")''',
+        suppress=_SUPPRESS_METHODS,
+        extra_body=_domain_factory_typed("FieldAverage", ["FLOAT", "FLOAT_VECTOR"]),
     )
 )
 
 register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldMinAndMax",
-        class_name="FieldMinAndMax",  # Blender display name is "Field Min Max"
+        class_name="FieldMinAndMax",  # Blender display name is "Field Min & Max"
         imports=("from ...types import _AttributeDomains",),
-        suppress=_DOMAIN_SUPPRESS,
-        extra_body='''    class _FieldMinAndMaxDomainFactory:
-        def __init__(self, domain: _AttributeDomains):
-            self._domain = domain
-
-        def float(
-            self,
-            value: InputFloat = 1.0,
-            group_index: InputInteger = 0,
-        ) -> "FieldMinAndMax[FloatSocket]":
-            """Create FieldMinMax for the "FLOAT" data type"""
-            return FieldMinAndMax(
-                value, group_index, data_type="FLOAT", domain=self._domain
-            )
-
-        def integer(
-            self,
-            value: InputInteger = 1,
-            group_index: InputInteger = 0,
-        ) -> "FieldMinAndMax[IntegerSocket]":
-            """Create FieldMinMax for the "INT" data type"""
-            return FieldMinAndMax(
-                value, group_index, data_type="INT", domain=self._domain
-            )
-
-        def vector(
-            self,
-            value: InputVector = (1.0, 1.0, 1.0),
-            group_index: InputInteger = 0,
-        ) -> "FieldMinAndMax[VectorSocket]":
-            """Create FieldMinMax for the "FLOAT_VECTOR" data type"""
-            return FieldMinAndMax(
-                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
-            )
-
-    point = _FieldMinAndMaxDomainFactory("POINT")
-    edge = _FieldMinAndMaxDomainFactory("EDGE")
-    face = _FieldMinAndMaxDomainFactory("FACE")
-    corner = _FieldMinAndMaxDomainFactory("CORNER")
-    spline = _FieldMinAndMaxDomainFactory("CURVE")
-    instance = _FieldMinAndMaxDomainFactory("INSTANCE")
-    layer = _FieldMinAndMaxDomainFactory("LAYER")''',
+        suppress=_SUPPRESS_METHODS,
+        extra_body=_domain_factory_typed(
+            "FieldMinAndMax", ["FLOAT", "INT", "FLOAT_VECTOR"]
+        ),
     )
 )
 
@@ -408,44 +328,20 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldOnDomain",  # EvaluateOnDomain
         imports=("from ...types import _AttributeDomains",),
-        suppress=_DOMAIN_SUPPRESS,
-        extra_body="""    class _EvaluateOnDomainDomainFactory:
-        def __init__(self, domain: _AttributeDomains):
-            self._domain = domain
-
-        def float(self, value: InputFloat = None) -> "EvaluateOnDomain[FloatSocket]":
-            return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT")
-
-        def integer(
-            self, value: InputInteger = None
-        ) -> "EvaluateOnDomain[IntegerSocket]":
-            return EvaluateOnDomain(value, domain=self._domain, data_type="INT")
-
-        def boolean(
-            self, value: InputBoolean = None
-        ) -> "EvaluateOnDomain[BooleanSocket]":
-            return EvaluateOnDomain(value, domain=self._domain, data_type="BOOLEAN")
-
-        def vector(self, value: InputVector = None) -> "EvaluateOnDomain[VectorSocket]":
-            return EvaluateOnDomain(
-                value, domain=self._domain, data_type="FLOAT_VECTOR"
-            )
-
-        def quaternion(
-            self, value: InputRotation = None
-        ) -> "EvaluateOnDomain[RotationSocket]":
-            return EvaluateOnDomain(value, domain=self._domain, data_type="QUATERNION")
-
-        def matrix(self, value: InputMatrix = None) -> "EvaluateOnDomain[MatrixSocket]":
-            return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT4X4")
-
-    point = _EvaluateOnDomainDomainFactory("POINT")
-    edge = _EvaluateOnDomainDomainFactory("EDGE")
-    face = _EvaluateOnDomainDomainFactory("FACE")
-    corner = _EvaluateOnDomainDomainFactory("CORNER")
-    spline = _EvaluateOnDomainDomainFactory("CURVE")
-    instance = _EvaluateOnDomainDomainFactory("INSTANCE")
-    layer = _EvaluateOnDomainDomainFactory("LAYER")""",
+        suppress=_SUPPRESS_METHODS,
+        extra_body=_domain_factory_typed(
+            "EvaluateOnDomain",
+            [
+                "FLOAT",
+                "INT",
+                "BOOLEAN",
+                "FLOAT_VECTOR",
+                "FLOAT_COLOR",
+                "QUATERNION",
+                "FLOAT4X4",
+            ],
+            index=None,
+        ),
     )
 )
 
@@ -453,37 +349,7 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldVariance",
         imports=("from ...types import _AttributeDomains",),
-        suppress=_DOMAIN_SUPPRESS,
-        extra_body='''    class _FieldVarianceDomainFactory:
-        def __init__(self, domain: _AttributeDomains):
-            self._domain = domain
-
-        def float(
-            self,
-            value: InputFloat = None,
-            group_index: InputInteger = None,
-        ) -> "FieldVariance[FloatSocket]":
-            """Create FieldVariance for the "FLOAT" data type"""
-            return FieldVariance(
-                value, group_index, data_type="FLOAT", domain=self._domain
-            )
-
-        def vector(
-            self,
-            value: InputVector = None,
-            group_index: InputInteger = None,
-        ) -> "FieldVariance[VectorSocket]":
-            """Create FieldVariance for the "FLOAT_VECTOR" data type"""
-            return FieldVariance(
-                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
-            )
-
-    point = _FieldVarianceDomainFactory("POINT")
-    edge = _FieldVarianceDomainFactory("EDGE")
-    face = _FieldVarianceDomainFactory("FACE")
-    corner = _FieldVarianceDomainFactory("CORNER")
-    spline = _FieldVarianceDomainFactory("CURVE")
-    instance = _FieldVarianceDomainFactory("INSTANCE")
-    layer = _FieldVarianceDomainFactory("LAYER")''',
+        suppress=_SUPPRESS_METHODS,
+        extra_body=_domain_factory_typed("FieldVariance", ["FLOAT", "FLOAT_VECTOR"]),
     )
 )

@@ -129,38 +129,6 @@ class AccumulateField(BaseNode, Generic[_T]):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(
-        cls, value: InputFloat = 1.0, group_index: InputInteger = 0
-    ) -> "AccumulateField[FloatSocket]":
-        """Create Accumulate Field with operation 'Float'. Add floating point values"""
-        return AccumulateField(data_type="FLOAT", value=value, group_index=group_index)
-
-    @classmethod
-    def integer(
-        cls, value: InputInteger = 1, group_index: InputInteger = 0
-    ) -> "AccumulateField[IntegerSocket]":
-        """Create Accumulate Field with operation 'Integer'. Add integer values"""
-        return AccumulateField(data_type="INT", value=value, group_index=group_index)
-
-    @classmethod
-    def vector(
-        cls, value: InputVector = None, group_index: InputInteger = 0
-    ) -> "AccumulateField[VectorSocket]":
-        """Create Accumulate Field with operation 'Vector'. Add 3D vector values"""
-        return AccumulateField(
-            data_type="FLOAT_VECTOR", value=value, group_index=group_index
-        )
-
-    @classmethod
-    def transform(
-        cls, value: InputMatrix = None, group_index: InputInteger = 0
-    ) -> "AccumulateField[MatrixSocket]":
-        """Create Accumulate Field with operation 'Transform'. Multiply transformation matrices"""
-        return AccumulateField(
-            data_type="TRANSFORM", value=value, group_index=group_index
-        )
-
-    @classmethod
     def face_corner(
         cls, value: InputFloat = 1.0, group_index: InputInteger = 0
     ) -> "AccumulateField[FloatSocket]":
@@ -188,41 +156,49 @@ class AccumulateField(BaseNode, Generic[_T]):
     ):
         self.node.domain = value
 
-    class AccumulateFieldDomainFactory:
+    class _AccumulateFieldDomainFactory:
         def __init__(self, domain: _AttributeDomains):
             self._domain = domain
 
         def float(
-            self, value: InputFloat = None, index: InputInteger = 0
+            self, value: InputFloat = None, group_index: InputInteger = 0
         ) -> "AccumulateField[FloatSocket]":
-            return AccumulateField(value, index, domain=self._domain, data_type="FLOAT")
+            """Create 'AccumulateField' on this domain with 'FLOAT' data type."""
+            return AccumulateField(
+                value, group_index, domain=self._domain, data_type="FLOAT"
+            )
 
         def integer(
-            self, value: InputInteger = None, index: InputInteger = 0
+            self, value: InputInteger = None, group_index: InputInteger = 0
         ) -> "AccumulateField[IntegerSocket]":
-            return AccumulateField(value, index, domain=self._domain, data_type="INT")
+            """Create 'AccumulateField' on this domain with 'INT' data type."""
+            return AccumulateField(
+                value, group_index, domain=self._domain, data_type="INT"
+            )
 
         def vector(
-            self, value: InputVector = None, index: InputInteger = 0
+            self, value: InputVector = None, group_index: InputInteger = 0
         ) -> "AccumulateField[VectorSocket]":
+            """Create 'AccumulateField' on this domain with 'FLOAT_VECTOR' data type."""
             return AccumulateField(
-                value, index, domain=self._domain, data_type="FLOAT_VECTOR"
+                value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
         def transform(
-            self, value: InputMatrix = None, index: InputInteger = 0
+            self, value: InputMatrix = None, group_index: InputInteger = 0
         ) -> "AccumulateField[MatrixSocket]":
+            """Create 'AccumulateField' on this domain with 'TRANSFORM' data type."""
             return AccumulateField(
-                value, index, domain=self._domain, data_type="TRANSFORM"
+                value, group_index, domain=self._domain, data_type="TRANSFORM"
             )
 
-    point = AccumulateFieldDomainFactory("POINT")
-    edge = AccumulateFieldDomainFactory("EDGE")
-    face = AccumulateFieldDomainFactory("FACE")
-    corner = AccumulateFieldDomainFactory("CORNER")
-    spline = AccumulateFieldDomainFactory("CURVE")
-    instance = AccumulateFieldDomainFactory("INSTANCE")
-    layer = AccumulateFieldDomainFactory("LAYER")
+    point = _AccumulateFieldDomainFactory("POINT")
+    edge = _AccumulateFieldDomainFactory("EDGE")
+    face = _AccumulateFieldDomainFactory("FACE")
+    corner = _AccumulateFieldDomainFactory("CORNER")
+    spline = _AccumulateFieldDomainFactory("CURVE")
+    instance = _AccumulateFieldDomainFactory("INSTANCE")
+    layer = _AccumulateFieldDomainFactory("LAYER")
 
 
 class AlignRotationToVector(BaseNode):
@@ -1580,48 +1556,6 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
         return EvaluateAtIndex(domain="CORNER", value=value, index=index)
 
     @classmethod
-    def float(
-        cls, value: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "EvaluateAtIndex[FloatSocket]":
-        """Create Evaluate at Index with operation 'Float'. Floating-point value"""
-        return EvaluateAtIndex(data_type="FLOAT", value=value, index=index)
-
-    @classmethod
-    def integer(
-        cls, value: InputInteger = 0, index: InputInteger = 0
-    ) -> "EvaluateAtIndex[IntegerSocket]":
-        """Create Evaluate at Index with operation 'Integer'. 32-bit integer"""
-        return EvaluateAtIndex(data_type="INT", value=value, index=index)
-
-    @classmethod
-    def boolean(
-        cls, value: InputBoolean = False, index: InputInteger = 0
-    ) -> "EvaluateAtIndex[BooleanSocket]":
-        """Create Evaluate at Index with operation 'Boolean'. True or false"""
-        return EvaluateAtIndex(data_type="BOOLEAN", value=value, index=index)
-
-    @classmethod
-    def vector(
-        cls, value: InputVector = None, index: InputInteger = 0
-    ) -> "EvaluateAtIndex[VectorSocket]":
-        """Create Evaluate at Index with operation 'Vector'. 3D vector with floating-point values"""
-        return EvaluateAtIndex(data_type="FLOAT_VECTOR", value=value, index=index)
-
-    @classmethod
-    def color(
-        cls, value: InputColor = None, index: InputInteger = 0
-    ) -> "EvaluateAtIndex[ColorSocket]":
-        """Create Evaluate at Index with operation 'Color'. RGBA color with 32-bit floating-point values"""
-        return EvaluateAtIndex(data_type="FLOAT_COLOR", value=value, index=index)
-
-    @classmethod
-    def quaternion(
-        cls, value: InputRotation = None, index: InputInteger = 0
-    ) -> "EvaluateAtIndex[RotationSocket]":
-        """Create Evaluate at Index with operation 'Quaternion'. Floating point quaternion rotation"""
-        return EvaluateAtIndex(data_type="QUATERNION", value=value, index=index)
-
-    @classmethod
     def input_4x4_matrix(
         cls, value: InputMatrix = None, index: InputInteger = 0
     ) -> "EvaluateAtIndex[MatrixSocket]":
@@ -1677,16 +1611,19 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
         def float(
             self, value: InputFloat = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[FloatSocket]":
+            """Create 'EvaluateAtIndex' on this domain with 'FLOAT' data type."""
             return EvaluateAtIndex(value, index, domain=self._domain, data_type="FLOAT")
 
         def integer(
             self, value: InputInteger = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[IntegerSocket]":
+            """Create 'EvaluateAtIndex' on this domain with 'INT' data type."""
             return EvaluateAtIndex(value, index, domain=self._domain, data_type="INT")
 
         def boolean(
             self, value: InputBoolean = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[BooleanSocket]":
+            """Create 'EvaluateAtIndex' on this domain with 'BOOLEAN' data type."""
             return EvaluateAtIndex(
                 value, index, domain=self._domain, data_type="BOOLEAN"
             )
@@ -1694,6 +1631,7 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
         def vector(
             self, value: InputVector = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[VectorSocket]":
+            """Create 'EvaluateAtIndex' on this domain with 'FLOAT_VECTOR' data type."""
             return EvaluateAtIndex(
                 value, index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
@@ -1701,6 +1639,7 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
         def color(
             self, value: InputColor = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[ColorSocket]":
+            """Create 'EvaluateAtIndex' on this domain with 'FLOAT_COLOR' data type."""
             return EvaluateAtIndex(
                 value, index, domain=self._domain, data_type="FLOAT_COLOR"
             )
@@ -1708,6 +1647,7 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
         def quaternion(
             self, value: InputRotation = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[RotationSocket]":
+            """Create 'EvaluateAtIndex' on this domain with 'QUATERNION' data type."""
             return EvaluateAtIndex(
                 value, index, domain=self._domain, data_type="QUATERNION"
             )
@@ -1715,6 +1655,7 @@ class EvaluateAtIndex(BaseNode, Generic[_T]):
         def matrix(
             self, value: InputMatrix = None, index: InputInteger = 0
         ) -> "EvaluateAtIndex[MatrixSocket]":
+            """Create 'EvaluateAtIndex' on this domain with 'FLOAT4X4' data type."""
             return EvaluateAtIndex(
                 value, index, domain=self._domain, data_type="FLOAT4X4"
             )
@@ -1795,38 +1736,6 @@ class EvaluateOnDomain(BaseNode, Generic[_T]):
         return EvaluateOnDomain(domain="CORNER", value=value)
 
     @classmethod
-    def float(cls, value: InputFloat = 0.0) -> "EvaluateOnDomain[FloatSocket]":
-        """Create Evaluate on Domain with operation 'Float'. Floating-point value"""
-        return EvaluateOnDomain(data_type="FLOAT", value=value)
-
-    @classmethod
-    def integer(cls, value: InputInteger = 0) -> "EvaluateOnDomain[IntegerSocket]":
-        """Create Evaluate on Domain with operation 'Integer'. 32-bit integer"""
-        return EvaluateOnDomain(data_type="INT", value=value)
-
-    @classmethod
-    def boolean(cls, value: InputBoolean = False) -> "EvaluateOnDomain[BooleanSocket]":
-        """Create Evaluate on Domain with operation 'Boolean'. True or false"""
-        return EvaluateOnDomain(data_type="BOOLEAN", value=value)
-
-    @classmethod
-    def vector(cls, value: InputVector = None) -> "EvaluateOnDomain[VectorSocket]":
-        """Create Evaluate on Domain with operation 'Vector'. 3D vector with floating-point values"""
-        return EvaluateOnDomain(data_type="FLOAT_VECTOR", value=value)
-
-    @classmethod
-    def color(cls, value: InputColor = None) -> "EvaluateOnDomain[ColorSocket]":
-        """Create Evaluate on Domain with operation 'Color'. RGBA color with 32-bit floating-point values"""
-        return EvaluateOnDomain(data_type="FLOAT_COLOR", value=value)
-
-    @classmethod
-    def quaternion(
-        cls, value: InputRotation = None
-    ) -> "EvaluateOnDomain[RotationSocket]":
-        """Create Evaluate on Domain with operation 'Quaternion'. Floating point quaternion rotation"""
-        return EvaluateOnDomain(data_type="QUATERNION", value=value)
-
-    @classmethod
     def input_4x4_matrix(
         cls, value: InputMatrix = None
     ) -> "EvaluateOnDomain[MatrixSocket]":
@@ -1880,29 +1789,39 @@ class EvaluateOnDomain(BaseNode, Generic[_T]):
             self._domain = domain
 
         def float(self, value: InputFloat = None) -> "EvaluateOnDomain[FloatSocket]":
+            """Create 'EvaluateOnDomain' on this domain with 'FLOAT' data type."""
             return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT")
 
         def integer(
             self, value: InputInteger = None
         ) -> "EvaluateOnDomain[IntegerSocket]":
+            """Create 'EvaluateOnDomain' on this domain with 'INT' data type."""
             return EvaluateOnDomain(value, domain=self._domain, data_type="INT")
 
         def boolean(
             self, value: InputBoolean = None
         ) -> "EvaluateOnDomain[BooleanSocket]":
+            """Create 'EvaluateOnDomain' on this domain with 'BOOLEAN' data type."""
             return EvaluateOnDomain(value, domain=self._domain, data_type="BOOLEAN")
 
         def vector(self, value: InputVector = None) -> "EvaluateOnDomain[VectorSocket]":
+            """Create 'EvaluateOnDomain' on this domain with 'FLOAT_VECTOR' data type."""
             return EvaluateOnDomain(
                 value, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
+        def color(self, value: InputColor = None) -> "EvaluateOnDomain[ColorSocket]":
+            """Create 'EvaluateOnDomain' on this domain with 'FLOAT_COLOR' data type."""
+            return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT_COLOR")
+
         def quaternion(
             self, value: InputRotation = None
         ) -> "EvaluateOnDomain[RotationSocket]":
+            """Create 'EvaluateOnDomain' on this domain with 'QUATERNION' data type."""
             return EvaluateOnDomain(value, domain=self._domain, data_type="QUATERNION")
 
         def matrix(self, value: InputMatrix = None) -> "EvaluateOnDomain[MatrixSocket]":
+            """Create 'EvaluateOnDomain' on this domain with 'FLOAT4X4' data type."""
             return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT4X4")
 
     point = _EvaluateOnDomainDomainFactory("POINT")
@@ -1979,22 +1898,6 @@ class FieldAverage(BaseNode, Generic[_T]):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
-    ) -> "FieldAverage[FloatSocket]":
-        """Create Field Average with operation 'Float'. Floating-point value"""
-        return FieldAverage(data_type="FLOAT", value=value, group_index=group_index)
-
-    @classmethod
-    def vector(
-        cls, value: InputVector = None, group_index: InputInteger = 0
-    ) -> "FieldAverage[VectorSocket]":
-        """Create Field Average with operation 'Vector'. 3D vector with floating-point values"""
-        return FieldAverage(
-            data_type="FLOAT_VECTOR", value=value, group_index=group_index
-        )
-
-    @classmethod
     def face_corner(
         cls, value: InputFloat = 0.0, group_index: InputInteger = 0
     ) -> "FieldAverage[FloatSocket]":
@@ -2027,23 +1930,19 @@ class FieldAverage(BaseNode, Generic[_T]):
             self._domain = domain
 
         def float(
-            self,
-            value: InputFloat = 1.0,
-            group_index: InputInteger = 0,
+            self, value: InputFloat = None, group_index: InputInteger = 0
         ) -> "FieldAverage[FloatSocket]":
-            """Create FieldAverage for the "FLOAT" data type"""
+            """Create 'FieldAverage' on this domain with 'FLOAT' data type."""
             return FieldAverage(
-                value, group_index, data_type="FLOAT", domain=self._domain
+                value, group_index, domain=self._domain, data_type="FLOAT"
             )
 
         def vector(
-            self,
-            value: InputVector = (1.0, 1.0, 1.0),
-            group_index: InputInteger = 0,
+            self, value: InputVector = None, group_index: InputInteger = 0
         ) -> "FieldAverage[VectorSocket]":
-            """Create FieldAverage for the "FLOAT_VECTOR" data type"""
+            """Create 'FieldAverage' on this domain with 'FLOAT_VECTOR' data type."""
             return FieldAverage(
-                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+                value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
     point = _FieldAverageDomainFactory("POINT")
@@ -2120,29 +2019,6 @@ class FieldMinAndMax(BaseNode, Generic[_T]):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
-    ) -> "FieldMinAndMax[FloatSocket]":
-        """Create Field Min & Max with operation 'Float'. Floating-point value"""
-        return FieldMinAndMax(data_type="FLOAT", value=value, group_index=group_index)
-
-    @classmethod
-    def integer(
-        cls, value: InputInteger = 0, group_index: InputInteger = 0
-    ) -> "FieldMinAndMax[IntegerSocket]":
-        """Create Field Min & Max with operation 'Integer'. 32-bit integer"""
-        return FieldMinAndMax(data_type="INT", value=value, group_index=group_index)
-
-    @classmethod
-    def vector(
-        cls, value: InputVector = None, group_index: InputInteger = 0
-    ) -> "FieldMinAndMax[VectorSocket]":
-        """Create Field Min & Max with operation 'Vector'. 3D vector with floating-point values"""
-        return FieldMinAndMax(
-            data_type="FLOAT_VECTOR", value=value, group_index=group_index
-        )
-
-    @classmethod
     def face_corner(
         cls, value: InputFloat = 0.0, group_index: InputInteger = 0
     ) -> "FieldMinAndMax[FloatSocket]":
@@ -2175,33 +2051,27 @@ class FieldMinAndMax(BaseNode, Generic[_T]):
             self._domain = domain
 
         def float(
-            self,
-            value: InputFloat = 1.0,
-            group_index: InputInteger = 0,
+            self, value: InputFloat = None, group_index: InputInteger = 0
         ) -> "FieldMinAndMax[FloatSocket]":
-            """Create FieldMinMax for the "FLOAT" data type"""
+            """Create 'FieldMinAndMax' on this domain with 'FLOAT' data type."""
             return FieldMinAndMax(
-                value, group_index, data_type="FLOAT", domain=self._domain
+                value, group_index, domain=self._domain, data_type="FLOAT"
             )
 
         def integer(
-            self,
-            value: InputInteger = 1,
-            group_index: InputInteger = 0,
+            self, value: InputInteger = None, group_index: InputInteger = 0
         ) -> "FieldMinAndMax[IntegerSocket]":
-            """Create FieldMinMax for the "INT" data type"""
+            """Create 'FieldMinAndMax' on this domain with 'INT' data type."""
             return FieldMinAndMax(
-                value, group_index, data_type="INT", domain=self._domain
+                value, group_index, domain=self._domain, data_type="INT"
             )
 
         def vector(
-            self,
-            value: InputVector = (1.0, 1.0, 1.0),
-            group_index: InputInteger = 0,
+            self, value: InputVector = None, group_index: InputInteger = 0
         ) -> "FieldMinAndMax[VectorSocket]":
-            """Create FieldMinMax for the "FLOAT_VECTOR" data type"""
+            """Create 'FieldMinAndMax' on this domain with 'FLOAT_VECTOR' data type."""
             return FieldMinAndMax(
-                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+                value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
     point = _FieldMinAndMaxDomainFactory("POINT")
@@ -2278,22 +2148,6 @@ class FieldVariance(BaseNode, Generic[_T]):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
-    ) -> "FieldVariance[FloatSocket]":
-        """Create Field Variance with operation 'Float'. Floating-point value"""
-        return FieldVariance(data_type="FLOAT", value=value, group_index=group_index)
-
-    @classmethod
-    def vector(
-        cls, value: InputVector = None, group_index: InputInteger = 0
-    ) -> "FieldVariance[VectorSocket]":
-        """Create Field Variance with operation 'Vector'. 3D vector with floating-point values"""
-        return FieldVariance(
-            data_type="FLOAT_VECTOR", value=value, group_index=group_index
-        )
-
-    @classmethod
     def face_corner(
         cls, value: InputFloat = 0.0, group_index: InputInteger = 0
     ) -> "FieldVariance[FloatSocket]":
@@ -2326,23 +2180,19 @@ class FieldVariance(BaseNode, Generic[_T]):
             self._domain = domain
 
         def float(
-            self,
-            value: InputFloat = None,
-            group_index: InputInteger = None,
+            self, value: InputFloat = None, group_index: InputInteger = 0
         ) -> "FieldVariance[FloatSocket]":
-            """Create FieldVariance for the "FLOAT" data type"""
+            """Create 'FieldVariance' on this domain with 'FLOAT' data type."""
             return FieldVariance(
-                value, group_index, data_type="FLOAT", domain=self._domain
+                value, group_index, domain=self._domain, data_type="FLOAT"
             )
 
         def vector(
-            self,
-            value: InputVector = None,
-            group_index: InputInteger = None,
+            self, value: InputVector = None, group_index: InputInteger = 0
         ) -> "FieldVariance[VectorSocket]":
-            """Create FieldVariance for the "FLOAT_VECTOR" data type"""
+            """Create 'FieldVariance' on this domain with 'FLOAT_VECTOR' data type."""
             return FieldVariance(
-                value, group_index, data_type="FLOAT_VECTOR", domain=self._domain
+                value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
     point = _FieldVarianceDomainFactory("POINT")
