@@ -135,11 +135,16 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     for param_name, socket in establish_links_params:
         link_mappings.append(f'"{socket.identifier}": {param_name}')
 
-    # Build property setting calls
+    # Build property setting calls. Use ``format_name()`` (not the raw bpy
+    # identifier) so the assignment goes through the property setter under the
+    # same name as the constructor param — these differ when a property is
+    # renamed to avoid colliding with a same-named socket (AxesToRotation's
+    # ``primary_axis`` enum becomes ``primary`` because the Vector socket owns
+    # ``primary_axis``).
     property_calls = []
     for prop in node_info.properties:
-        param_name = normalize_name(prop.identifier)
-        property_calls.append(f"""        self.{prop.identifier} = {param_name}""")
+        param_name = prop.format_name()
+        property_calls.append(f"""        self.{param_name} = {param_name}""")
 
     property_setting = "\n".join(property_calls)
 

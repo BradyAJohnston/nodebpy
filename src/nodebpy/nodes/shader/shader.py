@@ -1156,7 +1156,7 @@ class PrincipledBSDF(BaseNode):
         diffuse_roughness: InputFloat = 0.0,
         subsurface_weight: InputFloat = 0.0,
         subsurface_radius: InputVector = None,
-        subsurface_scale: InputFloat = 0.005,
+        subsurface_scale: InputFloat = 0.05,
         subsurface_ior: InputFloat = 1.4,
         subsurface_anisotropy: InputFloat = 0.0,
         specular_ior_level: InputFloat = 0.5,
@@ -1909,7 +1909,7 @@ class SubsurfaceScattering(BaseNode):
     def __init__(
         self,
         color: InputColor = None,
-        scale: InputFloat = 0.005,
+        scale: InputFloat = 0.05,
         radius: InputVector = None,
         ior: InputFloat = 1.4,
         roughness: InputFloat = 1.0,
