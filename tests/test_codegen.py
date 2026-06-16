@@ -2341,9 +2341,7 @@ def test_axes_to_rotation_socket_property_collision():
     ns: dict = {}
     exec(code, ns)  # noqa: S102
     rebuilt_axes = next(
-        n
-        for n in ns["tree"].tree.nodes
-        if n.bl_idname == "FunctionNodeAxesToRotation"
+        n for n in ns["tree"].tree.nodes if n.bl_idname == "FunctionNodeAxesToRotation"
     )
     assert rebuilt_axes.primary_axis == "X"
     assert rebuilt_axes.secondary_axis == "Y"
