@@ -2287,9 +2287,7 @@ def test_links_into_inactive_sockets_are_dropped():
         mix.o.result_color >> tree.outputs.color("Result")
 
     mix_links = [
-        link
-        for link in tree.tree.links
-        if link.to_node.bl_idname == "ShaderNodeMix"
+        link for link in tree.tree.links if link.to_node.bl_idname == "ShaderNodeMix"
     ]
     # The raw tree carries the inactive float A/B links...
     assert any(not link.to_socket.enabled for link in mix_links)
@@ -2323,17 +2321,32 @@ def test_axes_to_rotation_socket_property_collision():
     assert "secondary_axis=" not in code
     assert "g.AxesToRotation(primary_axis=v)" in code
 
-    # A non-default enum resolves through the property getter to the bpy
-    # ``primary_axis`` identifier and emits under the renamed ``primary`` param.
+    # A non-default enum is applied by the constructor (the renamed ``primary``
+    # param writes the bpy ``primary_axis`` property), emitted under that param,
+    # and round-trips back onto the rebuilt node.
     with TreeBuilder("AxesRotProp") as tree:
         vec = tree.inputs.vector("V")
-        node = g.AxesToRotation(primary_axis=vec)
-        node.node.primary_axis = "X"
+        node = g.AxesToRotation(primary_axis=vec, primary="X", secondary="Y")
+        # the constructor must actually write the enum to the node
+        assert node.node.primary_axis == "X"
+        assert node.node.secondary_axis == "Y"
         node.o.rotation >> tree.outputs.rotation("R")
-        assert _non_default_props(node.node, g.AxesToRotation) == {"primary": "X"}
-    assert 'g.AxesToRotation(primary_axis=v, primary="X")' in to_python(
-        tree, format=False
+        assert _non_default_props(node.node, g.AxesToRotation) == {
+            "primary": "X",
+            "secondary": "Y",
+        }
+
+    code = _assert_roundtrip(tree)
+    assert 'g.AxesToRotation(primary_axis=v, primary="X", secondary="Y")' in code
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt_axes = next(
+        n
+        for n in ns["tree"].tree.nodes
+        if n.bl_idname == "FunctionNodeAxesToRotation"
     )
+    assert rebuilt_axes.primary_axis == "X"
+    assert rebuilt_axes.secondary_axis == "Y"
 
 
 def test_duplicate_separators_on_one_source_stay_explicit():
