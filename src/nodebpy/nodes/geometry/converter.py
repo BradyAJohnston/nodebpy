@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Generic, Literal
 
 import bpy
 
-from ...builder import BaseNode, SocketAccessor
+from ...builder import BaseNode, SocketAccessor, Socket
 
 from ...types import (
     InputBoolean,
@@ -17,7 +17,6 @@ from ...types import (
     InputGeometry,
     InputImage,
     InputInteger,
-    InputLinkable,
     InputMaterial,
     InputMatrix,
     InputMenu,
@@ -54,6 +53,8 @@ from ...builder.socket import (
 )
 
 from ...types import _AttributeDomains
+
+from ...builder.items import _infer_value_type
 
 from .._mixins import _FieldToListMixin
 
@@ -1003,30 +1004,38 @@ class CombineBundle(BaseNode):
 
     def __init__(
         self,
-        items: "dict[str, InputLinkable] | None" = None,
+        items: "dict[str, InputAny] | None" = None,
         *,
         define_signature: bool = False,
     ):
         super().__init__()
-        self.define_signature = define_signature
         for name, value in (items or {}).items():
             self._add_bundle_item(name, value)
+        self.define_signature = define_signature
 
-    def _add_bundle_item(self, name: str, value: "InputLinkable | str") -> None:
-        """Add a named bundle item.
+    def _add_bundle_item(self, name: str, value: InputAny) -> None:
+        """Add a named bundle item from a value of any supported kind.
 
-        A socket-type string (``"GEOMETRY"``) declares an unlinked item; any
-        other value is linked in via the ``__extend__`` virtual socket, which
-        makes Blender create an item of the source socket's own type (then
-        renamed, since the item otherwise inherits the source socket's name)."""
+        - a socket-type string (``"GEOMETRY"``) declares an empty item;
+        - a socket / node source is linked in via the ``__extend__`` virtual
+          socket (Blender makes an item of the source's own type, then renamed);
+        - any other value declares an item of the inferred type and sets its
+          default.
+        """
         if isinstance(value, str):
             self.node.bundle_items.new(value, name)
-            return
-        extend = self.node.inputs[len(self.node.inputs) - 1]
-        self.tree.link(self._source_socket(value), extend)
-        # Re-fetch by index: the collection just grew, so any earlier item
-        # reference is stale (see bpy collection invalidation).
-        self.node.bundle_items[len(self.node.bundle_items) - 1].name = name
+        elif isinstance(value, (BaseNode, Socket, bpy.types.NodeSocket)):
+            extend = self.node.inputs[len(self.node.inputs) - 1]
+            self.tree.link(self._source_socket(value), extend)
+            # Re-fetch by index: the collection just grew, so any earlier item
+            # reference is stale (see bpy collection invalidation).
+            self.node.bundle_items[len(self.node.bundle_items) - 1].name = name
+        else:
+            socket_type = _infer_value_type(value)
+            if socket_type is None:
+                raise TypeError(f"Unsupported bundle item {name!r}: {value!r}")
+            self.node.bundle_items.new(socket_type, name)
+            self.node.inputs[name].default_value = value
 
 
 class CombineColor(BaseNode):
