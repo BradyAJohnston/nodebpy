@@ -6,6 +6,7 @@
 
 | Name | Description |
 |----|----|
+| [AccumulateField](#nodebpy.nodes.geometry.converter.AccumulateField) | Add the values of an evaluated field together and output the running total for each element |
 | [AlignRotationToVector](#nodebpy.nodes.geometry.converter.AlignRotationToVector) | Orient a rotation along the given direction |
 | [AxesToRotation](#nodebpy.nodes.geometry.converter.AxesToRotation) | Create a rotation from a primary and (ideally orthogonal) secondary axis |
 | [AxisAngleToRotation](#nodebpy.nodes.geometry.converter.AxisAngleToRotation) | Build a rotation from an axis and a rotation around that axis |
@@ -22,9 +23,16 @@
 | [CombineTransform](#nodebpy.nodes.geometry.converter.CombineTransform) | Combine a translation vector, a rotation, and a scale vector into a transformation matrix |
 | [CombineXYZ](#nodebpy.nodes.geometry.converter.CombineXYZ) | Create a vector from X, Y, and Z components |
 | [EulerToRotation](#nodebpy.nodes.geometry.converter.EulerToRotation) | Build a rotation from separate angles around each axis |
+| [EvaluateAtIndex](#nodebpy.nodes.geometry.converter.EvaluateAtIndex) | Retrieve data of other elements in the context’s geometry |
+| [EvaluateOnDomain](#nodebpy.nodes.geometry.converter.EvaluateOnDomain) | Retrieve values from a field on a different domain besides the domain from the context |
+| [FieldAverage](#nodebpy.nodes.geometry.converter.FieldAverage) | Calculate the mean and median of a given field |
+| [FieldMinAndMax](#nodebpy.nodes.geometry.converter.FieldMinAndMax) | Calculate the minimum and maximum of a given field |
+| [FieldToList](#nodebpy.nodes.geometry.converter.FieldToList) | Create a list of values |
+| [FieldVariance](#nodebpy.nodes.geometry.converter.FieldVariance) | Calculate the standard deviation and variance of a given field |
 | [FilterList](#nodebpy.nodes.geometry.converter.FilterList) | Remove items from a list |
 | [FindInString](#nodebpy.nodes.geometry.converter.FindInString) | Find the number of times a given string occurs in another string and the position of the first match |
 | [FloatToInteger](#nodebpy.nodes.geometry.converter.FloatToInteger) | Convert the given floating-point number to an integer, with a choice of methods |
+| [FormatString](#nodebpy.nodes.geometry.converter.FormatString) | Insert values into a string using a Python and path template compatible formatting syntax |
 | [GetBundleItem](#nodebpy.nodes.geometry.converter.GetBundleItem) | Retrieve a bundle item by path. |
 | [GetListItem](#nodebpy.nodes.geometry.converter.GetListItem) | Retrieve a value from a list |
 | [GetNestedBundlePaths](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths) | Get paths to items in a nested bundle with a filter |
@@ -67,6 +75,7 @@
 | [StoreBundleItem](#nodebpy.nodes.geometry.converter.StoreBundleItem) | Store a bundle item by path and data type. |
 | [StringLength](#nodebpy.nodes.geometry.converter.StringLength) | Output the number of characters in the given string |
 | [StringToValue](#nodebpy.nodes.geometry.converter.StringToValue) | Derive a numeric value from a given string representation |
+| [Switch](#nodebpy.nodes.geometry.converter.Switch) | Switch between two inputs |
 | [TagFilter](#nodebpy.nodes.geometry.converter.TagFilter) | Check if a filter string matches a list of tags |
 | [TransformDirection](#nodebpy.nodes.geometry.converter.TransformDirection) | Apply a transformation matrix (excluding translation) to the given vector |
 | [TransformPoint](#nodebpy.nodes.geometry.converter.TransformPoint) | Apply a transformation matrix to the given vector |
@@ -74,6 +83,70 @@
 | [TrimString](#nodebpy.nodes.geometry.converter.TrimString) | Remove characters from the beginning and end of a string |
 | [UVUnwrap](#nodebpy.nodes.geometry.converter.UVUnwrap) | Generate a UV map based on seam edges |
 | [ValueToString](#nodebpy.nodes.geometry.converter.ValueToString) | Generate a string representation of the given input value |
+
+### AccumulateField
+
+``` python
+AccumulateField(value=1.0, group_index=0, *, data_type='FLOAT', domain='POINT')
+```
+
+Add the values of an evaluated field together and output the running total for each element
+
+#### Parameters
+
+| Name        | Type         | Description | Default |
+|-------------|--------------|-------------|---------|
+| value       | InputFloat   | Value       | `1.0`   |
+| group_index | InputInteger | Group ID    | `0`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`corner`](#nodebpy.nodes.geometry.converter.AccumulateField.corner) |  |
+| [`data_type`](#nodebpy.nodes.geometry.converter.AccumulateField.data_type) |  |
+| [`domain`](#nodebpy.nodes.geometry.converter.AccumulateField.domain) |  |
+| [`edge`](#nodebpy.nodes.geometry.converter.AccumulateField.edge) |  |
+| [`face`](#nodebpy.nodes.geometry.converter.AccumulateField.face) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.AccumulateField.i) |  |
+| [`instance`](#nodebpy.nodes.geometry.converter.AccumulateField.instance) |  |
+| [`layer`](#nodebpy.nodes.geometry.converter.AccumulateField.layer) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.AccumulateField.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.AccumulateField.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.AccumulateField.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.AccumulateField.outputs) |  |
+| [`point`](#nodebpy.nodes.geometry.converter.AccumulateField.point) |  |
+| [`spline`](#nodebpy.nodes.geometry.converter.AccumulateField.spline) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.AccumulateField.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [face_corner](#nodebpy.nodes.geometry.converter.AccumulateField.face_corner) | Create Accumulate Field with operation ‘Face Corner’. Attribute on mesh face corner |
+
+##### face_corner
+
+``` python
+face_corner(value=1.0, group_index=0)
+```
+
+Create Accumulate Field with operation ‘Face Corner’. Attribute on mesh face corner
+
+**Inputs**
+
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `i.value`       | `FloatSocket`   | Value       |
+| `i.group_index` | `IntegerSocket` | Group ID    |
+
+**Outputs**
+
+| Attribute    | Type          | Description |
+|--------------|---------------|-------------|
+| `o.leading`  | `FloatSocket` | Leading     |
+| `o.trailing` | `FloatSocket` | Trailing    |
+| `o.total`    | `FloatSocket` | Total       |
 
 ### AlignRotationToVector
 
@@ -156,9 +229,7 @@ Create a rotation from a primary and (ideally orthogonal) secondary axis
 | [`o`](#nodebpy.nodes.geometry.converter.AxesToRotation.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.AxesToRotation.outputs) |  |
 | [`primary`](#nodebpy.nodes.geometry.converter.AxesToRotation.primary) |  |
-| [`primary_axis`](#nodebpy.nodes.geometry.converter.AxesToRotation.primary_axis) |  |
 | [`secondary`](#nodebpy.nodes.geometry.converter.AxesToRotation.secondary) |  |
-| [`secondary_axis`](#nodebpy.nodes.geometry.converter.AxesToRotation.secondary_axis) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.AxesToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -964,6 +1035,467 @@ Build a rotation from separate angles around each axis
 |--------------|------------------|-------------|
 | `o.rotation` | `RotationSocket` | Rotation    |
 
+### EvaluateAtIndex
+
+``` python
+EvaluateAtIndex(value=0.0, index=0, *, domain='POINT', data_type='FLOAT')
+```
+
+Retrieve data of other elements in the context’s geometry
+
+#### Parameters
+
+| Name  | Type         | Description | Default |
+|-------|--------------|-------------|---------|
+| value | InputFloat   | Value       | `0.0`   |
+| index | InputInteger | Index       | `0`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`corner`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.corner) |  |
+| [`data_type`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.data_type) |  |
+| [`domain`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.domain) |  |
+| [`edge`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.edge) |  |
+| [`face`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.face) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.i) |  |
+| [`instance`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.instance) |  |
+| [`layer`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.layer) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.outputs) |  |
+| [`point`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.point) |  |
+| [`spline`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.spline) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [face_corner](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.face_corner) | Create Evaluate at Index with operation ‘Face Corner’. Attribute on mesh face corner |
+| [input_4x4_matrix](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.input_4x4_matrix) | Create Evaluate at Index with operation ‘4x4 Matrix’. Floating point matrix |
+
+##### face_corner
+
+``` python
+face_corner(value=0.0, index=0)
+```
+
+Create Evaluate at Index with operation ‘Face Corner’. Attribute on mesh face corner
+
+##### input_4x4_matrix
+
+``` python
+input_4x4_matrix(value=None, index=0)
+```
+
+Create Evaluate at Index with operation ‘4x4 Matrix’. Floating point matrix
+
+**Inputs**
+
+| Attribute | Type            | Description |
+|-----------|-----------------|-------------|
+| `i.value` | `FloatSocket`   | Value       |
+| `i.index` | `IntegerSocket` | Index       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.value` | `FloatSocket` | Value       |
+
+### EvaluateOnDomain
+
+``` python
+EvaluateOnDomain(value=0.0, *, domain='POINT', data_type='FLOAT')
+```
+
+Retrieve values from a field on a different domain besides the domain from the context
+
+#### Parameters
+
+| Name  | Type       | Description | Default |
+|-------|------------|-------------|---------|
+| value | InputFloat | Value       | `0.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`corner`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.corner) |  |
+| [`data_type`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.data_type) |  |
+| [`domain`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.domain) |  |
+| [`edge`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.edge) |  |
+| [`face`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.face) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.i) |  |
+| [`instance`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.instance) |  |
+| [`layer`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.layer) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.outputs) |  |
+| [`point`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.point) |  |
+| [`spline`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.spline) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [face_corner](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.face_corner) | Create Evaluate on Domain with operation ‘Face Corner’. Attribute on mesh face corner |
+| [input_4x4_matrix](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.input_4x4_matrix) | Create Evaluate on Domain with operation ‘4x4 Matrix’. Floating point matrix |
+
+##### face_corner
+
+``` python
+face_corner(value=0.0)
+```
+
+Create Evaluate on Domain with operation ‘Face Corner’. Attribute on mesh face corner
+
+##### input_4x4_matrix
+
+``` python
+input_4x4_matrix(value=None)
+```
+
+Create Evaluate on Domain with operation ‘4x4 Matrix’. Floating point matrix
+
+**Inputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `i.value` | `FloatSocket` | Value       |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.value` | `FloatSocket` | Value       |
+
+### FieldAverage
+
+``` python
+FieldAverage(value=0.0, group_index=0, *, data_type='FLOAT', domain='POINT')
+```
+
+Calculate the mean and median of a given field
+
+#### Parameters
+
+| Name        | Type         | Description | Default |
+|-------------|--------------|-------------|---------|
+| value       | InputFloat   | Value       | `0.0`   |
+| group_index | InputInteger | Group ID    | `0`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`corner`](#nodebpy.nodes.geometry.converter.FieldAverage.corner) |  |
+| [`data_type`](#nodebpy.nodes.geometry.converter.FieldAverage.data_type) |  |
+| [`domain`](#nodebpy.nodes.geometry.converter.FieldAverage.domain) |  |
+| [`edge`](#nodebpy.nodes.geometry.converter.FieldAverage.edge) |  |
+| [`face`](#nodebpy.nodes.geometry.converter.FieldAverage.face) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.FieldAverage.i) |  |
+| [`instance`](#nodebpy.nodes.geometry.converter.FieldAverage.instance) |  |
+| [`layer`](#nodebpy.nodes.geometry.converter.FieldAverage.layer) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.FieldAverage.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.FieldAverage.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.FieldAverage.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.FieldAverage.outputs) |  |
+| [`point`](#nodebpy.nodes.geometry.converter.FieldAverage.point) |  |
+| [`spline`](#nodebpy.nodes.geometry.converter.FieldAverage.spline) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FieldAverage.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [face_corner](#nodebpy.nodes.geometry.converter.FieldAverage.face_corner) | Create Field Average with operation ‘Face Corner’. Attribute on mesh face corner |
+
+##### face_corner
+
+``` python
+face_corner(value=0.0, group_index=0)
+```
+
+Create Field Average with operation ‘Face Corner’. Attribute on mesh face corner
+
+**Inputs**
+
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `i.value`       | `FloatSocket`   | Value       |
+| `i.group_index` | `IntegerSocket` | Group ID    |
+
+**Outputs**
+
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.mean`   | `FloatSocket` | Mean        |
+| `o.median` | `FloatSocket` | Median      |
+
+### FieldMinAndMax
+
+``` python
+FieldMinAndMax(value=0.0, group_index=0, *, data_type='FLOAT', domain='POINT')
+```
+
+Calculate the minimum and maximum of a given field
+
+#### Parameters
+
+| Name        | Type         | Description | Default |
+|-------------|--------------|-------------|---------|
+| value       | InputFloat   | Value       | `0.0`   |
+| group_index | InputInteger | Group ID    | `0`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`corner`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.corner) |  |
+| [`data_type`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.data_type) |  |
+| [`domain`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.domain) |  |
+| [`edge`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.edge) |  |
+| [`face`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.face) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.i) |  |
+| [`instance`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.instance) |  |
+| [`layer`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.layer) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.outputs) |  |
+| [`point`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.point) |  |
+| [`spline`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.spline) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [face_corner](#nodebpy.nodes.geometry.converter.FieldMinAndMax.face_corner) | Create Field Min & Max with operation ‘Face Corner’. Attribute on mesh face corner |
+
+##### face_corner
+
+``` python
+face_corner(value=0.0, group_index=0)
+```
+
+Create Field Min & Max with operation ‘Face Corner’. Attribute on mesh face corner
+
+**Inputs**
+
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `i.value`       | `FloatSocket`   | Value       |
+| `i.group_index` | `IntegerSocket` | Group ID    |
+
+**Outputs**
+
+| Attribute | Type          | Description |
+|-----------|---------------|-------------|
+| `o.min`   | `FloatSocket` | Min         |
+| `o.max`   | `FloatSocket` | Max         |
+
+### FieldToList
+
+``` python
+FieldToList(count=1, items=None, *, fields=None)
+```
+
+Create a list of values
+
+#### Parameters
+
+| Name  | Type         | Description | Default |
+|-------|--------------|-------------|---------|
+| count | InputInteger | Count       | `1`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.FieldToList.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.FieldToList.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.FieldToList.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.FieldToList.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.FieldToList.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FieldToList.tree) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.geometry.converter.FieldToList.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.converter.FieldToList.add_items) | Add an item per mapping entry and return their handles by name. |
+| [boolean](#nodebpy.nodes.geometry.converter.FieldToList.boolean) |  |
+| [capture](#nodebpy.nodes.geometry.converter.FieldToList.capture) | Add an item linked from `value` and return its output socket. |
+| [color](#nodebpy.nodes.geometry.converter.FieldToList.color) |  |
+| [float](#nodebpy.nodes.geometry.converter.FieldToList.float) |  |
+| [integer](#nodebpy.nodes.geometry.converter.FieldToList.integer) |  |
+| [matrix](#nodebpy.nodes.geometry.converter.FieldToList.matrix) |  |
+| [menu](#nodebpy.nodes.geometry.converter.FieldToList.menu) |  |
+| [rotation](#nodebpy.nodes.geometry.converter.FieldToList.rotation) |  |
+| [string](#nodebpy.nodes.geometry.converter.FieldToList.string) |  |
+| [vector](#nodebpy.nodes.geometry.converter.FieldToList.vector) |  |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+
+##### boolean
+
+``` python
+boolean(input=False, name=None)
+```
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
+
+##### color
+
+``` python
+color(input=(0, 0, 0, 1), name=None)
+```
+
+##### float
+
+``` python
+float(input=0.0, name=None)
+```
+
+##### integer
+
+``` python
+integer(input=0, name=None)
+```
+
+##### matrix
+
+``` python
+matrix(input=None, name=None)
+```
+
+##### menu
+
+``` python
+menu(input=None, name=None)
+```
+
+##### rotation
+
+``` python
+rotation(input=Euler((0, 0, 0)), name=None)
+```
+
+##### string
+
+``` python
+string(input='', name=None)
+```
+
+##### vector
+
+``` python
+vector(input=(0, 0, 0), name=None)
+```
+
+**Inputs**
+
+| Attribute | Type            | Description |
+|-----------|-----------------|-------------|
+| `i.count` | `IntegerSocket` | Count       |
+
+### FieldVariance
+
+``` python
+FieldVariance(value=0.0, group_index=0, *, data_type='FLOAT', domain='POINT')
+```
+
+Calculate the standard deviation and variance of a given field
+
+#### Parameters
+
+| Name        | Type         | Description | Default |
+|-------------|--------------|-------------|---------|
+| value       | InputFloat   | Value       | `0.0`   |
+| group_index | InputInteger | Group ID    | `0`     |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`corner`](#nodebpy.nodes.geometry.converter.FieldVariance.corner) |  |
+| [`data_type`](#nodebpy.nodes.geometry.converter.FieldVariance.data_type) |  |
+| [`domain`](#nodebpy.nodes.geometry.converter.FieldVariance.domain) |  |
+| [`edge`](#nodebpy.nodes.geometry.converter.FieldVariance.edge) |  |
+| [`face`](#nodebpy.nodes.geometry.converter.FieldVariance.face) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.FieldVariance.i) |  |
+| [`instance`](#nodebpy.nodes.geometry.converter.FieldVariance.instance) |  |
+| [`layer`](#nodebpy.nodes.geometry.converter.FieldVariance.layer) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.FieldVariance.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.FieldVariance.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.FieldVariance.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.FieldVariance.outputs) |  |
+| [`point`](#nodebpy.nodes.geometry.converter.FieldVariance.point) |  |
+| [`spline`](#nodebpy.nodes.geometry.converter.FieldVariance.spline) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FieldVariance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [face_corner](#nodebpy.nodes.geometry.converter.FieldVariance.face_corner) | Create Field Variance with operation ‘Face Corner’. Attribute on mesh face corner |
+
+##### face_corner
+
+``` python
+face_corner(value=0.0, group_index=0)
+```
+
+Create Field Variance with operation ‘Face Corner’. Attribute on mesh face corner
+
+**Inputs**
+
+| Attribute       | Type            | Description |
+|-----------------|-----------------|-------------|
+| `i.value`       | `FloatSocket`   | Value       |
+| `i.group_index` | `IntegerSocket` | Group ID    |
+
+**Outputs**
+
+| Attribute              | Type          | Description        |
+|------------------------|---------------|--------------------|
+| `o.standard_deviation` | `FloatSocket` | Standard Deviation |
+| `o.variance`           | `FloatSocket` | Variance           |
+
 ### FilterList
 
 ``` python
@@ -1251,6 +1783,82 @@ Convert the given floating-point number to an integer, with a choice of methods
 | Attribute   | Type            | Description |
 |-------------|-----------------|-------------|
 | `o.integer` | `IntegerSocket` | Integer     |
+
+### FormatString
+
+``` python
+FormatString(format='', items=None)
+```
+
+Insert values into a string using a Python and path template compatible formatting syntax
+
+#### Parameters
+
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| format | InputString | Format      | `''`    |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.FormatString.i) |  |
+| [`items`](#nodebpy.nodes.geometry.converter.FormatString.items) | Input sockets: |
+| [`name`](#nodebpy.nodes.geometry.converter.FormatString.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.FormatString.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.FormatString.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.FormatString.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.FormatString.tree) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.geometry.converter.FormatString.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.converter.FormatString.add_items) | Add an item per mapping entry and return their handles by name. |
+| [capture](#nodebpy.nodes.geometry.converter.FormatString.capture) | Add an item linked from `value` and return its output socket. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
+
+**Inputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `i.format` | `StringSocket` | Format      |
+
+**Outputs**
+
+| Attribute  | Type           | Description |
+|------------|----------------|-------------|
+| `o.string` | `StringSocket` | String      |
 
 ### GetBundleItem
 
@@ -5028,6 +5636,215 @@ Create String to Value with operation ‘Integer’. 32-bit integer
 |------------|-----------------|-------------|
 | `o.value`  | `FloatSocket`   | Value       |
 | `o.length` | `IntegerSocket` | Length      |
+
+### Switch
+
+``` python
+Switch(switch=False, false=0.0, true=0.0, *, input_type='FLOAT')
+```
+
+Switch between two inputs
+
+#### Parameters
+
+| Name   | Type         | Description | Default |
+|--------|--------------|-------------|---------|
+| switch | InputBoolean | Switch      | `False` |
+| false  | InputFloat   | False       | `0.0`   |
+| true   | InputFloat   | True        | `0.0`   |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.converter.Switch.i) |  |
+| [`input_type`](#nodebpy.nodes.geometry.converter.Switch.input_type) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.Switch.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.Switch.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.Switch.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.converter.Switch.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.Switch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [boolean](#nodebpy.nodes.geometry.converter.Switch.boolean) | Create Switch with operation ‘Boolean’. |
+| [bundle](#nodebpy.nodes.geometry.converter.Switch.bundle) | Create Switch with operation ‘Bundle’. |
+| [closure](#nodebpy.nodes.geometry.converter.Switch.closure) | Create Switch with operation ‘Closure’. |
+| [collection](#nodebpy.nodes.geometry.converter.Switch.collection) | Create Switch with operation ‘Collection’. |
+| [color](#nodebpy.nodes.geometry.converter.Switch.color) | Create Switch with operation ‘Color’. |
+| [float](#nodebpy.nodes.geometry.converter.Switch.float) | Create Switch with operation ‘Float’. |
+| [font](#nodebpy.nodes.geometry.converter.Switch.font) | Create Switch with operation ‘Font’. |
+| [geometry](#nodebpy.nodes.geometry.converter.Switch.geometry) | Create Switch with operation ‘Geometry’. |
+| [image](#nodebpy.nodes.geometry.converter.Switch.image) | Create Switch with operation ‘Image’. |
+| [integer](#nodebpy.nodes.geometry.converter.Switch.integer) | Create Switch with operation ‘Integer’. |
+| [material](#nodebpy.nodes.geometry.converter.Switch.material) | Create Switch with operation ‘Material’. |
+| [matrix](#nodebpy.nodes.geometry.converter.Switch.matrix) | Create Switch with operation ‘Matrix’. |
+| [menu](#nodebpy.nodes.geometry.converter.Switch.menu) | Create Switch with operation ‘Menu’. |
+| [object](#nodebpy.nodes.geometry.converter.Switch.object) | Create Switch with operation ‘Object’. |
+| [rotation](#nodebpy.nodes.geometry.converter.Switch.rotation) | Create Switch with operation ‘Rotation’. |
+| [sound](#nodebpy.nodes.geometry.converter.Switch.sound) | Create Switch with operation ‘Sound’. |
+| [string](#nodebpy.nodes.geometry.converter.Switch.string) | Create Switch with operation ‘String’. |
+| [vector](#nodebpy.nodes.geometry.converter.Switch.vector) | Create Switch with operation ‘Vector’. |
+
+##### boolean
+
+``` python
+boolean(switch=False, false=False, true=False)
+```
+
+Create Switch with operation ‘Boolean’.
+
+##### bundle
+
+``` python
+bundle(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Bundle’.
+
+##### closure
+
+``` python
+closure(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Closure’.
+
+##### collection
+
+``` python
+collection(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Collection’.
+
+##### color
+
+``` python
+color(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Color’.
+
+##### float
+
+``` python
+float(switch=False, false=0.0, true=0.0)
+```
+
+Create Switch with operation ‘Float’.
+
+##### font
+
+``` python
+font(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Font’.
+
+##### geometry
+
+``` python
+geometry(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Geometry’.
+
+##### image
+
+``` python
+image(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Image’.
+
+##### integer
+
+``` python
+integer(switch=False, false=0, true=0)
+```
+
+Create Switch with operation ‘Integer’.
+
+##### material
+
+``` python
+material(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Material’.
+
+##### matrix
+
+``` python
+matrix(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Matrix’.
+
+##### menu
+
+``` python
+menu(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Menu’.
+
+##### object
+
+``` python
+object(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Object’.
+
+##### rotation
+
+``` python
+rotation(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Rotation’.
+
+##### sound
+
+``` python
+sound(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Sound’.
+
+##### string
+
+``` python
+string(switch=False, false='', true='')
+```
+
+Create Switch with operation ‘String’.
+
+##### vector
+
+``` python
+vector(switch=False, false=None, true=None)
+```
+
+Create Switch with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute  | Type            | Description |
+|------------|-----------------|-------------|
+| `i.switch` | `BooleanSocket` | Switch      |
+| `i.false`  | `FloatSocket`   | False       |
+| `i.true`   | `FloatSocket`   | True        |
+
+**Outputs**
+
+| Attribute  | Type          | Description |
+|------------|---------------|-------------|
+| `o.output` | `FloatSocket` | Output      |
 
 ### TagFilter
 

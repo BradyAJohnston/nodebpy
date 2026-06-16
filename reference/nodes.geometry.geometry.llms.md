@@ -7,6 +7,7 @@
 | Name | Description |
 |----|----|
 | [Arc](#nodebpy.nodes.geometry.geometry.Arc) | Generate a poly spline arc |
+| [Bake](#nodebpy.nodes.geometry.geometry.Bake) | Cache the incoming data so that it can be used without recomputation |
 | [BezierSegment](#nodebpy.nodes.geometry.geometry.BezierSegment) | Generate a 2D Bézier spline from the given control points and handles |
 | [BoundingBox](#nodebpy.nodes.geometry.geometry.BoundingBox) | Calculate the limits of a geometry’s positions and generate a box mesh with those dimensions |
 | [Cone](#nodebpy.nodes.geometry.geometry.Cone) | Generate a cone mesh |
@@ -76,6 +77,7 @@
 | [SetGreasePencilDepth](#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth) | Set the Grease Pencil depth order to use |
 | [SetGreasePencilSoftness](#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness) | Set softness attribute on Grease Pencil geometry |
 | [SetHandlePositions](#nodebpy.nodes.geometry.geometry.SetHandlePositions) | Set the positions for the handles of Bézier curves |
+| [SetHandleType](#nodebpy.nodes.geometry.geometry.SetHandleType) | Set the handle type for the control points of a Bézier curve |
 | [SetID](#nodebpy.nodes.geometry.geometry.SetID) | Set the id attribute on the input geometry, mainly used internally for randomizing |
 | [SetInstanceTransform](#nodebpy.nodes.geometry.geometry.SetInstanceTransform) | Set the transformation matrix of every instance |
 | [SetMaterial](#nodebpy.nodes.geometry.geometry.SetMaterial) | Assign a material to geometry elements |
@@ -216,6 +218,63 @@ Create Arc with operation ‘Radius’. Define radius with a float
 | `o.center` | `VectorSocket`   | Center      |
 | `o.normal` | `VectorSocket`   | Normal      |
 | `o.radius` | `FloatSocket`    | Radius      |
+
+### Bake
+
+``` python
+Bake(*args, items=None, **kwargs)
+```
+
+Cache the incoming data so that it can be used without recomputation
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`i`](#nodebpy.nodes.geometry.geometry.Bake.i) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.Bake.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.geometry.Bake.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.Bake.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.Bake.outputs) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.Bake.tree) |  |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [add_item](#nodebpy.nodes.geometry.geometry.Bake.add_item) | Add a single item and return its handle. |
+| [add_items](#nodebpy.nodes.geometry.geometry.Bake.add_items) | Add an item per mapping entry and return their handles by name. |
+| [capture](#nodebpy.nodes.geometry.geometry.Bake.capture) | Add an item linked from `value` and return its output socket. |
+
+##### add_item
+
+``` python
+add_item(name, value=None, *, type=None)
+```
+
+Add a single item and return its handle.
+
+`value` may be a linkable (linked to the item’s input) or a plain default value; otherwise `type` (a socket-type string such as `"FLOAT"`) declares the item unlinked.
+
+##### add_items
+
+``` python
+add_items(items)
+```
+
+Add an item per mapping entry and return their handles by name.
+
+Values may be linkables (linked to the new item’s input) or socket-type strings such as `"FLOAT"` (declare an unlinked item).
+
+##### capture
+
+``` python
+capture(value, *, name=None)
+```
+
+Add an item linked from `value` and return its output socket.
+
+The item is auto-named after the source socket unless `name` is given.
 
 ### BezierSegment
 
@@ -4497,6 +4556,97 @@ Create Set Handle Positions with operation ‘Right’. Use the right handles
 | `i.selection` | `BooleanSocket`  | Selection   |
 | `i.position`  | `VectorSocket`   | Position    |
 | `i.offset`    | `VectorSocket`   | Offset      |
+
+**Outputs**
+
+| Attribute | Type             | Description |
+|-----------|------------------|-------------|
+| `o.curve` | `GeometrySocket` | Curve       |
+
+### SetHandleType
+
+``` python
+SetHandleType(
+    curve=None,
+    selection=True,
+    *,
+    left=True,
+    right=True,
+    handle_type='AUTO',
+)
+```
+
+Set the handle type for the control points of a Bézier curve
+
+#### Parameters
+
+| Name      | Type          | Description | Default |
+|-----------|---------------|-------------|---------|
+| curve     | InputGeometry | Curve       | `None`  |
+| selection | InputBoolean  | Selection   | `True`  |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`handle_type`](#nodebpy.nodes.geometry.geometry.SetHandleType.handle_type) |  |
+| [`i`](#nodebpy.nodes.geometry.geometry.SetHandleType.i) |  |
+| [`left`](#nodebpy.nodes.geometry.geometry.SetHandleType.left) |  |
+| [`mode`](#nodebpy.nodes.geometry.geometry.SetHandleType.mode) |  |
+| [`name`](#nodebpy.nodes.geometry.geometry.SetHandleType.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.geometry.SetHandleType.node) |  |
+| [`o`](#nodebpy.nodes.geometry.geometry.SetHandleType.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.geometry.SetHandleType.outputs) |  |
+| [`right`](#nodebpy.nodes.geometry.geometry.SetHandleType.right) |  |
+| [`tree`](#nodebpy.nodes.geometry.geometry.SetHandleType.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [align](#nodebpy.nodes.geometry.geometry.SetHandleType.align) | Create Set Handle Type with operation ‘Align’. The location is constrained to point in the opposite direction as the other handle |
+| [auto](#nodebpy.nodes.geometry.geometry.SetHandleType.auto) | Create Set Handle Type with operation ‘Auto’. The location is automatically calculated to be smooth |
+| [free](#nodebpy.nodes.geometry.geometry.SetHandleType.free) | Create Set Handle Type with operation ‘Free’. The handle can be moved anywhere, and does not influence the point’s other handle |
+| [vector](#nodebpy.nodes.geometry.geometry.SetHandleType.vector) | Create Set Handle Type with operation ‘Vector’. The location is calculated to point to the next/previous control point |
+
+##### align
+
+``` python
+align(curve=None, selection=True)
+```
+
+Create Set Handle Type with operation ‘Align’. The location is constrained to point in the opposite direction as the other handle
+
+##### auto
+
+``` python
+auto(curve=None, selection=True)
+```
+
+Create Set Handle Type with operation ‘Auto’. The location is automatically calculated to be smooth
+
+##### free
+
+``` python
+free(curve=None, selection=True)
+```
+
+Create Set Handle Type with operation ‘Free’. The handle can be moved anywhere, and does not influence the point’s other handle
+
+##### vector
+
+``` python
+vector(curve=None, selection=True)
+```
+
+Create Set Handle Type with operation ‘Vector’. The location is calculated to point to the next/previous control point
+
+**Inputs**
+
+| Attribute     | Type             | Description |
+|---------------|------------------|-------------|
+| `i.curve`     | `GeometrySocket` | Curve       |
+| `i.selection` | `BooleanSocket`  | Selection   |
 
 **Outputs**
 

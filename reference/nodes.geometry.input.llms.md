@@ -36,6 +36,7 @@
 | [FaceOfCorner](#nodebpy.nodes.geometry.input.FaceOfCorner) | Retrieve the face each face corner is part of |
 | [FaceSet](#nodebpy.nodes.geometry.input.FaceSet) | Each face’s sculpt face set value |
 | [Font](#nodebpy.nodes.geometry.input.Font) | Output a font |
+| [HandleTypeSelection](#nodebpy.nodes.geometry.input.HandleTypeSelection) | Provide a selection based on the handle types of Bézier control points |
 | [ID](#nodebpy.nodes.geometry.input.ID) | Retrieve a stable random identifier value from the “id” attribute on the point domain, or the index if the attribute does not exist |
 | [Image](#nodebpy.nodes.geometry.input.Image) | Input an image data-block |
 | [ImageInfo](#nodebpy.nodes.geometry.input.ImageInfo) | Retrieve information about an image |
@@ -1137,6 +1138,76 @@ Output a font
 | Attribute | Type         | Description |
 |-----------|--------------|-------------|
 | `o.font`  | `FontSocket` | Font        |
+
+### HandleTypeSelection
+
+``` python
+HandleTypeSelection(handle_type='AUTO', left=True, right=True)
+```
+
+Provide a selection based on the handle types of Bézier control points
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`handle_type`](#nodebpy.nodes.geometry.input.HandleTypeSelection.handle_type) |  |
+| [`i`](#nodebpy.nodes.geometry.input.HandleTypeSelection.i) |  |
+| [`left`](#nodebpy.nodes.geometry.input.HandleTypeSelection.left) |  |
+| [`mode`](#nodebpy.nodes.geometry.input.HandleTypeSelection.mode) |  |
+| [`name`](#nodebpy.nodes.geometry.input.HandleTypeSelection.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.input.HandleTypeSelection.node) |  |
+| [`o`](#nodebpy.nodes.geometry.input.HandleTypeSelection.o) |  |
+| [`outputs`](#nodebpy.nodes.geometry.input.HandleTypeSelection.outputs) |  |
+| [`right`](#nodebpy.nodes.geometry.input.HandleTypeSelection.right) |  |
+| [`tree`](#nodebpy.nodes.geometry.input.HandleTypeSelection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [align](#nodebpy.nodes.geometry.input.HandleTypeSelection.align) | Create Handle Type Selection with operation ‘Align’. The location is constrained to point in the opposite direction as the other handle |
+| [auto](#nodebpy.nodes.geometry.input.HandleTypeSelection.auto) | Create Handle Type Selection with operation ‘Auto’. The location is automatically calculated to be smooth |
+| [free](#nodebpy.nodes.geometry.input.HandleTypeSelection.free) | Create Handle Type Selection with operation ‘Free’. The handle can be moved anywhere, and does not influence the point’s other handle |
+| [vector](#nodebpy.nodes.geometry.input.HandleTypeSelection.vector) | Create Handle Type Selection with operation ‘Vector’. The location is calculated to point to the next/previous control point |
+
+##### align
+
+``` python
+align()
+```
+
+Create Handle Type Selection with operation ‘Align’. The location is constrained to point in the opposite direction as the other handle
+
+##### auto
+
+``` python
+auto()
+```
+
+Create Handle Type Selection with operation ‘Auto’. The location is automatically calculated to be smooth
+
+##### free
+
+``` python
+free()
+```
+
+Create Handle Type Selection with operation ‘Free’. The handle can be moved anywhere, and does not influence the point’s other handle
+
+##### vector
+
+``` python
+vector()
+```
+
+Create Handle Type Selection with operation ‘Vector’. The location is calculated to point to the next/previous control point
+
+**Outputs**
+
+| Attribute     | Type            | Description |
+|---------------|-----------------|-------------|
+| `o.selection` | `BooleanSocket` | Selection   |
 
 ### ID
 

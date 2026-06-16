@@ -1,5 +1,38 @@
 # Changelog
 
+## v520.2.0 - 2026-06-16
+
+### Enhancements
+
+- **Asset node-group APIs** — generate typed `nodebpy` classes for node-group assets, so an asset reads, links and type-checks like any other node. Unlike a `Custom*Group` (which *builds* its tree), an asset class *appends* the asset’s node group from a `.blend` at runtime and points a Group node at it.
+  - Blender’s bundled essentials are generated into `nodebpy.nodes.{geometry,shader,compositor}` and exported alongside the built-in nodes, so they’re used exactly like any other node:
+
+  ``` py
+  from nodebpy import geometry as g
+
+  mesh = g.SmoothByAngle(mesh=g.Cube(), angle=0.6).o.mesh  # an asset, fully typed
+  g.Array(geometry=mesh, count=4)
+  ```
+
+  - `nodebpy.assets.generate_asset_api(library, output_path)` generates the same typed classes for **your own** assets — point it at a `.blend` shipped in your package via `PackageLibrary(__file__, "…/assets.blend")` (or `BundledLibrary("…")` for a Blender-bundled library) and import the result like any other node module.
+  - New runtime bases `AssetGeometryGroup` / `AssetShaderGroup` / `AssetCompositorGroup` (parallel to the `Custom*Group` builders) back these classes; library resolution is handled by `BundledLibrary` / `PackageLibrary`.
+
+## Fixes
+
+- Fixed a bug where `AxesToRotation` silently did not set the `primary` and `secondary` when instantiating a new node
+
+## v520.1.1 - 2026-06-15
+
+### Internal
+
+- **Code generator refactor** — the generator gained a `register_customization` registry (mirroring `codegen.register_emitter`), so node classes that previously had to be hand-written in full inside `manual.py` are now auto-generated, with small reusable mixins or bespoke `__init__`/factory bodies layered on at generation time. The Bézier handle nodes, `Switch`, the bundle pack/unpack nodes, the items nodes (`Bake`, `FieldToList`, `FormatString`), and the field-evaluation nodes (`AccumulateField`, `EvaluateAtIndex`, `FieldAverage`, `FieldMinAndMax`, `EvaluateOnDomain`, `FieldVariance`) were moved off the hand-written path. No public API changes.
+- **Generator reorganised into a `gen/` package** — the monolithic `generate.py` was split into focused modules (`config`, `customizations`, `model`, `introspect`, `emit`, `writers`), kept outside `src/` so it never ships in the wheel. Run with `python -m gen` (or `python -m gen --only geometry` to regenerate a single tree). The skip / hand-written / generate decision is now a single `Disposition` derived from the same class-name logic used for generation, introspection is cached so each node is only inspected once, and the generator loads the dependency-free `types` leaf standalone so it can run even when the generated tree is mid-refactor.
+- The code generator now infers generic typing more completely — generic *input* sockets that track a node’s data type, and nodes whose output type is fixed while the inputs vary — tightening the type hints on `HashValue`, `ListLength`, `ValueToString`, `FilterList`, `StoreBundleItem`, `SetSelection`, and `StoreNamedGrid`.
+
+### Fixes
+
+- `CombineBundle` / `SeparateBundle` item construction is now part of the generated output, fixing a latent issue where their custom constructors were silently overwritten whenever the node classes were regenerated.
+
 ## v520.1.0 - 2026-06-15
 
 ### Enhancements
@@ -49,7 +82,7 @@ flow = density.dilate_erode(1).laplacian().gradient().divergence()
 
 ### Enhancements
 
-- Added `leading()`, `trailling()` and `total()` methods from `AccumulateField` node onto relevant sockets. Added to `Float`, `Vector`, `Integer` and `Matrix` sockets.
+- Added `leading()`, `trailling()` and `total()` methods from [`AccumulateField`](reference/nodes.geometry.converter.llms.md#nodebpy.nodes.geometry.converter.AccumulateField) node onto relevant sockets. Added to `Float`, `Vector`, `Integer` and `Matrix` sockets.
 - **Blender 5.2 support** — generated nodes updated to include the nodes for Blender 5.2.
 - **List socket subtypes** — new `*SocketList` socket types matching Blender 5.2’s list sockets, added for every base socket type (`FloatSocketList`, `IntegerSocketList`, `VectorSocketList`, `ColorSocketList`, `BooleanSocketList`, `RotationSocketList`, `MatrixSocketList`, `StringSocketList`, `MenuSocketList`, `GeometrySocketList`, `ObjectSocketList`, `MaterialSocketList`, `CollectionSocketList`, `ImageSocketList`, and more). List sockets carry methods for working with the list:
   - `list_length()` — number of elements, also available via `len()`

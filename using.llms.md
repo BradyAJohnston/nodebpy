@@ -1,4 +1,4 @@
-# Using Nodebpy
+# Using `nodebpy`
 
 Using `nodebpy` inside of your own add-ons & projects.
 

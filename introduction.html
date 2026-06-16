@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Writing Node Trees – nodebpy 520.1.0</title>
+<title>Writing Node Trees – nodebpy 520.2.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -78,7 +78,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-da754bb905dfff91d967e43b5e6004aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -173,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.1.0</span>
+    <span class="navbar-title">nodebpy 520.2.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -196,6 +196,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Writing Node Trees</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./operators.html">
  <span class="dropdown-text">Math Operators</span></a>
   </li>  
@@ -204,8 +208,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./node-api.html">
- <span class="dropdown-text">Node API Design</span></a>
+    <a class="dropdown-item" href="./assets.html">
+ <span class="dropdown-text">Asset Node Groups</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./nodes-to-code.html">
@@ -213,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="./using.html">
- <span class="dropdown-text">Using Nodebpy</span></a>
+ <span class="dropdown-text">Using <code>nodebpy</code></span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./comparisons.html">
@@ -279,6 +283,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./assets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Asset Node Groups</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./node-api.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Node API Design</span></a>
   </div>
@@ -292,7 +302,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./using.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using Nodebpy</span></a>
+ <span class="menu-text">Using <code>nodebpy</code></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -339,14 +349,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="42422dd7" class="cell" data-execution_count="1">
+<div id="3089c29a" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="adding-nodes" class="level2">
 <h2 class="anchored" data-anchor-id="adding-nodes">Adding Nodes</h2>
 <p>Adding nodes must be done inside of a context. We enter a context using the <code>with</code> keyword. While inside of this context, whenever you call a node class (<code>g.SetPosition()</code>) a node of that type will be added to the current tree.</p>
 <p>This first example creates a new tree and adds two new nodes, linking the <code>Set Position</code> node into the <code>Transform Geometry</code> node. The output and input sockets for each are inferred based on simple heuristics around socket type and order.</p>
-<div id="1fa7860c" class="cell" data-execution_count="2">
+<div id="e5002c16" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"NewTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    g.SetPosition() <span class="op">&gt;&gt;</span> g.TransformGeometry()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -375,7 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Individual Socket Access</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Using Arguments to Class</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="d6bb1f8f" class="cell" data-execution_count="3">
+<div id="3793c724" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"AnotherTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.SetPosition()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -384,7 +394,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="416cb62c" class="cell" data-execution_count="4">
+<div id="3bd8d0b7" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"AnotherAnotherTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    g.SetPosition(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        offset <span class="op">=</span> g.Vector(),</span>
@@ -394,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="7b05152f" class="cell" data-execution_count="5">
+<div id="ad2d7e92" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -422,7 +432,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="node-input-sockets">Node Input Sockets</h2>
 <p>The socket interface nodes define what values / sockets are available as inputs for the node tree.</p>
 <p>We define them in a similar way to the socekts themselves, using context with the <code>tree.inputs</code> and <code>tree.outputs</code> and adding sockets with the <code>s.SocketGeometry()</code>.</p>
-<div id="c7dda026" class="cell" data-execution_count="6">
+<div id="798ba031" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"NewTree"</span>) <span class="im">as</span> tree:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    geom_inputs <span class="op">=</span> [tree.inputs.geometry(<span class="ss">f"Geometry_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span>) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>)]</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    g.JoinGeometry(geom_inputs) <span class="op">&gt;&gt;</span> tree.outputs.geometry(<span class="st">"The Output Socket"</span>)</span>
@@ -452,7 +462,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="0e9a32f0" class="cell" data-execution_count="7">
+<div id="63405d2c" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    (</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        tree.inputs.integer(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
@@ -483,7 +493,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="340ebbbf" class="cell" data-execution_count="8">
+<div id="a5a16738" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    count <span class="op">=</span> tree.inputs.integer(<span class="st">"Count"</span>, <span class="dv">10</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> g.RandomValue.vector() <span class="op">*</span> <span class="fl">0.5</span> <span class="op">*</span> g.Position()</span>
@@ -550,7 +560,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="0fb5d4c5" class="cell" data-execution_count="9">
+<div id="370c07d5" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(arrange<span class="op">=</span><span class="va">None</span>) <span class="im">as</span> tree:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    zone <span class="op">=</span> g.RepeatZone(<span class="dv">10</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    random_pos <span class="op">=</span> g.RandomValue.vector(seed<span class="op">=</span>zone.iteration)</span>
@@ -586,7 +596,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="69532217" class="cell" data-execution_count="10">
+<div id="359f40f3" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(arrange<span class="op">=</span><span class="va">None</span>) <span class="im">as</span> tree:</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this initializes the zone with two socket inputs for each of the values</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># we manually specify the socket names</span></span>

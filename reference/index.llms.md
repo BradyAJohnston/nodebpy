@@ -11,6 +11,17 @@
 | [TreeBuilder](../reference/TreeBuilder.llms.md#nodebpy.TreeBuilder) | Builder for creating Blender node trees with a clean Python API. |
 | [builder.BaseNode](../reference/builder.BaseNode.llms.md#nodebpy.builder.BaseNode) | Base class for all node wrappers. |
 
+## Assets
+
+Generating classes from pre-build assets
+
+|  |  |
+|----|----|
+| [assets.generate_asset_api](../reference/assets.generate_asset_api.llms.md#nodebpy.assets.generate_asset_api) | Generate typed asset classes for `libraries` into `output_path`. |
+| [assets.AssetLibrary](../reference/assets.AssetLibrary.llms.md#nodebpy.assets.AssetLibrary) | Locates a `.blend` asset library on disk at runtime. |
+| [assets.BundledLibrary](../reference/assets.BundledLibrary.llms.md#nodebpy.assets.BundledLibrary) | A node-group asset library shipped with Blender itself, under the system |
+| [assets.PackageLibrary](../reference/assets.PackageLibrary.llms.md#nodebpy.assets.PackageLibrary) | A `.blend` shipped inside a Python package, located relative to a module |
+
 ## Export
 
 Exporting node trees to code.

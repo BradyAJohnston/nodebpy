@@ -583,7 +583,7 @@ PrincipledBSDF(
     diffuse_roughness=0.0,
     subsurface_weight=0.0,
     subsurface_radius=None,
-    subsurface_scale=0.005,
+    subsurface_scale=0.05,
     subsurface_ior=1.4,
     subsurface_anisotropy=0.0,
     specular_ior_level=0.5,
@@ -627,7 +627,7 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 | diffuse_roughness     | InputFloat   | Diffuse Roughness     | `0.0`   |
 | subsurface_weight     | InputFloat   | Subsurface Weight     | `0.0`   |
 | subsurface_radius     | InputVector  | Subsurface Radius     | `None`  |
-| subsurface_scale      | InputFloat   | Subsurface Scale      | `0.005` |
+| subsurface_scale      | InputFloat   | Subsurface Scale      | `0.05`  |
 | subsurface_ior        | InputFloat   | Subsurface IOR        | `1.4`   |
 | subsurface_anisotropy | InputFloat   | Subsurface Anisotropy | `0.0`   |
 | specular_ior_level    | InputFloat   | Specular IOR Level    | `0.5`   |
@@ -1024,7 +1024,7 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 ``` python
 SubsurfaceScattering(
     color=None,
-    scale=0.005,
+    scale=0.05,
     radius=None,
     ior=1.4,
     roughness=1.0,

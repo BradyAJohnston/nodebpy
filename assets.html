@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>builder.accessor – nodebpy {{&lt; var version &gt;}}</title>
+<title>Asset Node Groups – nodebpy 520.2.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -61,25 +61,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../reference/TreeBuilder.html" rel="next">
-<link href="../reference/builder.node.html" rel="prev">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./node-api.html" rel="next">
+<link href="./custom-node-groups.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -159,6 +159,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
     );
 </script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -170,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">nodebpy 520.2.0</span>
     </a>
   </div>
@@ -181,7 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -190,45 +193,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-documentation">    
         <li>
-    <a class="dropdown-item" href="../introduction.html">
+    <a class="dropdown-item" href="./introduction.html">
  <span class="dropdown-text">Writing Node Trees</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../node-api.html">
+    <a class="dropdown-item" href="./node-api.html">
  <span class="dropdown-text">Node API Design</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../operators.html">
+    <a class="dropdown-item" href="./operators.html">
  <span class="dropdown-text">Math Operators</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../custom-node-groups.html">
+    <a class="dropdown-item" href="./custom-node-groups.html">
  <span class="dropdown-text">Custom Node Groups</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../assets.html">
+    <a class="dropdown-item" href="./assets.html">
  <span class="dropdown-text">Asset Node Groups</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../nodes-to-code.html">
+    <a class="dropdown-item" href="./nodes-to-code.html">
  <span class="dropdown-text">Nodes to Code</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../using.html">
+    <a class="dropdown-item" href="./using.html">
  <span class="dropdown-text">Using <code>nodebpy</code></span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../comparisons.html">
+    <a class="dropdown-item" href="./comparisons.html">
  <span class="dropdown-text">Comapring the API</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="../reference/"> 
+    <a class="nav-link" href="./reference/"> 
 <span class="menu-text">Reference</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../changelog.html"> 
+    <a class="nav-link" href="./changelog.html"> 
 <span class="menu-text">Changelog</span></a>
   </li>  
 </ul>
@@ -249,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.tree.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.accessor.html">builder.accessor</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./assets.html">Asset Node Groups</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -263,363 +266,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Function reference</span></a>
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Writing Node Trees</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Interface</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/builder.tree.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">builder.tree</span></a>
+  <a href="./operators.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Math Operators</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/builder.socket.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">builder.socket</span></a>
+  <a href="./custom-node-groups.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Node Groups</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/builder.node.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">builder.node</span></a>
+  <a href="./assets.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Asset Node Groups</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/builder.accessor.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">builder.accessor</span></a>
+  <a href="./node-api.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Node API Design</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/TreeBuilder.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">TreeBuilder</span></a>
+  <a href="./nodes-to-code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nodes to Code</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/builder.BaseNode.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">builder.BaseNode</span></a>
+  <a href="./using.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Using <code>nodebpy</code></span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Assets</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/assets.generate_asset_api.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">assets.generate_asset_api</span></a>
+  <a href="./comparisons.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Comapring the API</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/assets.AssetLibrary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">assets.AssetLibrary</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/assets.BundledLibrary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">assets.BundledLibrary</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/assets.PackageLibrary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">assets.PackageLibrary</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Export</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/export.to_python.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">export.to_python</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">export.to_mermaid</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Geometry Nodes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.input.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.input</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.attribute.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.attribute</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.color.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.color</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.converter.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.converter</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.texture.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.texture</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.grid.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.grid</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.groups.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.groups</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.geometry.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.geometry</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.attribute.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.attribute</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.vector.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.vector</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.manual.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.manual</span></a>
-  </div>
-</li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text">Zones in GN</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.geometry.zone.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.geometry.zone</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Shader Nodes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.color.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.color</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.converter.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.converter</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.grid.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.grid</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.group.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.group</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.input.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.input</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.manual.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.manual</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.output.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.output</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.script.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.script</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.shader.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.shader</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.texture.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.texture</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.shader.vector.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.shader.vector</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">Compositor Nodes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.color.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.color</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.converter.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.converter</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.distort.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.distort</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.filter.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.filter</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.group.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.group</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.input.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.input</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.interface.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.interface</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.manual.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.manual</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.matte.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.matte</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.output.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.output</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.vector.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">nodes.compositor.vector</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
     </ul>
     </div>
 </nav>
@@ -630,50 +322,129 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.builder.accessor" id="toc-nodebpy.builder.accessor" class="nav-link active" data-scroll-target="#nodebpy.builder.accessor">builder.accessor</a>
-  <ul class="collapse">
-  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
-  <ul class="collapse">
-  <li><a href="#nodebpy.builder.accessor.SocketAccessor" id="toc-nodebpy.builder.accessor.SocketAccessor" class="nav-link" data-scroll-target="#nodebpy.builder.accessor.SocketAccessor">SocketAccessor</a></li>
-  </ul></li>
-  </ul></li>
+  <li><a href="#using-the-bundled-essentials" id="toc-using-the-bundled-essentials" class="nav-link active" data-scroll-target="#using-the-bundled-essentials">Using the bundled essentials</a></li>
+  <li><a href="#generating-an-api-for-your-own-assets" id="toc-generating-an-api-for-your-own-assets" class="nav-link" data-scroll-target="#generating-an-api-for-your-own-assets">Generating an API for your own assets</a></li>
+  <li><a href="#how-resolution-works" id="toc-how-resolution-works" class="nav-link" data-scroll-target="#how-resolution-works">How resolution works</a></li>
+  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/builder.tree.html">Interface</a></li><li class="breadcrumb-item"><a href="../reference/builder.accessor.html">builder.accessor</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Asset Node Groups</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<section id="nodebpy.builder.accessor" class="level1">
-<h1>builder.accessor</h1>
-<p><code>accessor</code></p>
-<section id="classes" class="level2">
-<h2 class="anchored" data-anchor-id="classes">Classes</h2>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Blender ships node-group <em>assets</em> (the bundled “essentials” libraries), and many add-ons distribute their own. <code>nodebpy</code> can generate typed Python classes for these assets so they read, link and type-check <strong>exactly like any built-in node</strong> — the only difference is that instantiating one <em>appends</em> the asset’s node group from its <code>.blend</code> at runtime (and points a Group node at it) instead of building the tree from scratch.</p>
+<p>This is the asset counterpart to <a href="./custom-node-groups.html">Custom Node Groups</a>: a custom group <em>builds</em> its tree in <code>_build_group</code>; an asset group <em>appends</em> a pre-authored one.</p>
+<section id="using-the-bundled-essentials" class="level2">
+<h2 class="anchored" data-anchor-id="using-the-bundled-essentials">Using the bundled essentials</h2>
+<p>The classes for Blender’s bundled essentials libraries are generated into <code>nodebpy.nodes.{geometry,shader,compositor}</code> and exported alongside the built-in nodes, so you reach them straight off the editor module:</p>
+<div id="ce8b81ac" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Assets"</span>) <span class="im">as</span> tree:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    mesh <span class="op">=</span> g.SmoothByAngle(mesh<span class="op">=</span>g.Cube(), angle<span class="op">=</span><span class="fl">0.6</span>).o.mesh</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> g.Array(geometry<span class="op">=</span>mesh, count<span class="op">=</span><span class="dv">4</span>) <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="1">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph LR
+    N0("Cube"):::geometry-node
+    N1("Smooth by Angle"):::geometry-node
+    N2("Array&lt;br/&gt;&lt;small&gt;(1,0,0) +(1,0,0)&lt;/small&gt;"):::geometry-node
+    N3("Group Output"):::default-node
+    N0 --&gt;|"Mesh-&gt;Mesh"| N1
+    N1 --&gt;|"Mesh-&gt;Geometry"| N2
+    N2 --&gt;|"Geometry-&gt;Geometry"| N3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Each asset is a normal node: typed inputs/outputs (<code>g.SmoothByAngle().o.mesh</code> is a <code>GeometrySocket</code>), <code>&gt;&gt;</code> chaining, IDE autocomplete, and the usual operators. The underlying node group is appended once and reused on subsequent uses.</p>
+</section>
+<section id="generating-an-api-for-your-own-assets" class="level2">
+<h2 class="anchored" data-anchor-id="generating-an-api-for-your-own-assets">Generating an API for your own assets</h2>
+<p><code>generate_asset_api</code> introspects a <code>.blend</code> asset library and writes a module of typed classes. Point it at your library and a destination <code>.py</code> file:</p>
+<div id="25aa88b6" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy.assets <span class="im">import</span> generate_asset_api, PackageLibrary</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>generate_asset_api(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    PackageLibrary(<span class="va">__file__</span>, <span class="st">"data/my_assets.blend"</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"my_addon/nodes/assets.py"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>PackageLibrary(anchor, relative)</code> locates a <code>.blend</code> shipped inside your own package (resolved relative to <code>anchor</code>, usually <code>__file__</code>); use <code>BundledLibrary("…")</code> for a library that ships with Blender. You can pass a list of libraries to merge several into one module, and <code>names={...}</code> to restrict generation to specific node groups.</p>
+<p>The generated module imports from <code>nodebpy</code> and looks like any other node module, so import and use it directly:</p>
+<div id="a9b6fa54" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> my_addon.nodes <span class="im">import</span> assets <span class="im">as</span> a</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> a.tree(<span class="st">"Demo"</span>) <span class="im">as</span> tree:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> a.MyAsset(value<span class="op">=</span><span class="fl">2.0</span>) <span class="op">&gt;&gt;</span> tree.outputs.geometry()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Re-run <code>generate_asset_api</code> whenever the <code>.blend</code> changes — the classes are regenerated from the assets’ current interfaces.</p>
+</section>
+<section id="how-resolution-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-resolution-works">How resolution works</h2>
+<p>Generated classes carry the library reference, not a hard-coded path, and the group is located on demand:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 59%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Name</th>
-<th>Description</th>
+<th style="text-align: left;">Library</th>
+<th style="text-align: left;">Resolves to</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.builder.accessor.SocketAccessor">SocketAccessor</a></td>
-<td>Unified accessor for a node’s input or output socket collection.</td>
+<td style="text-align: left;"><code>BundledLibrary("geometry_nodes_essentials.blend")</code></td>
+<td style="text-align: left;">Blender’s system datafiles (<code>…/datafiles/assets/nodes/…</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>PackageLibrary(__file__, "data/my_assets.blend")</code></td>
+<td style="text-align: left;">a path relative to the generated module’s file</td>
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.builder.accessor.SocketAccessor" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.builder.accessor.SocketAccessor">SocketAccessor</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>SocketAccessor(collection, direction, <span class="op">*</span>, builder<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Unified accessor for a node’s input or output socket collection.</p>
-<p>Supports identifier/name lookup, dict-style <code>[]</code> access, availability filtering, and type-compatible matching — replacing the former pairs of <code>_input_idx</code>/<code>_output_idx</code>, <code>_input</code>/<code>_output</code>, <code>_available_inputs</code>/<code>_available_outputs</code>, and <code>_best_output_socket</code>.</p>
+<p>Because asset names can collide across editors (a geometry <strong>and</strong> a compositor “Combine Spherical” both exist), an appended group is reused only when its tree type matches; otherwise the correct one is appended fresh.</p>
+</section>
+<section id="notes" class="level2">
+<h2 class="anchored" data-anchor-id="notes">Notes</h2>
+<ul>
+<li>The generator is a normal runtime tool — call <code>generate_asset_api</code> in a build step, a test, or once by hand; commit the generated module like the rest of your source.</li>
+<li>Inputs with non-scalar defaults (vectors, colours) take <code>None</code> in the generated signature; the appended group keeps its own socket defaults.</li>
+<li><code>nodebpy</code>’s own bundled-essentials modules are regenerated by <code>python -m nodebpy.assets</code> (wired into <code>make generate</code>).</li>
+</ul>
 
 
-</section>
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1079,13 +850,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/builder.node.html" class="pagination-link" aria-label="builder.node">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">builder.node</span>
+      <a href="./custom-node-groups.html" class="pagination-link" aria-label="Custom Node Groups">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Custom Node Groups</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/TreeBuilder.html" class="pagination-link" aria-label="TreeBuilder">
-        <span class="nav-page-text">TreeBuilder</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./node-api.html" class="pagination-link" aria-label="Node API Design">
+        <span class="nav-page-text">Node API Design</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
