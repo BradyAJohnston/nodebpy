@@ -27,7 +27,7 @@ from nodebpy import geometry as g
 from nodebpy import shader as s
 from nodebpy.builder import BaseNode as BaseNode
 from nodebpy.builder import ColorSocket as ColorSocketLinker
-from nodebpy.builder import SocketAccessor, SocketError
+from nodebpy.builder import NodeGroupBuilder, SocketAccessor, SocketError
 
 
 class TestTreeBuilder:
@@ -530,13 +530,19 @@ def test_nested_trees():
 
 
 def _collect_node_classes(module):
-    """Collect BaseNode subclass names from a module."""
+    """Collect built-in BaseNode subclass names from a module.
+
+    Node *groups* (NodeGroupBuilder subclasses, including the generated asset
+    classes) are excluded — they append/build a tree rather than being plain
+    nodes, so they don't fit this generic instantiate-every-node sweep and are
+    covered by their own tests (e.g. test_assets.py)."""
     return [
         name
         for name in dir(module)
         if re.match(r"^[A-Z][a-zA-Z0-9]+$", name)
         and inspect.isclass(cls := getattr(module, name))
         and issubclass(cls, BaseNode)
+        and not issubclass(cls, NodeGroupBuilder)
     ]
 
 

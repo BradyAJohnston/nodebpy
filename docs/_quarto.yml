@@ -15,9 +15,10 @@ website:
       - text: Documentation
         menu:
           - introduction.qmd
+          - node-api.qmd
           - operators.qmd
           - custom-node-groups.qmd
-          - node-api.qmd
+          - assets.qmd
           - nodes-to-code.qmd
           - using.qmd
           - comparisons.qmd
@@ -36,6 +37,7 @@ website:
         - introduction.qmd
         - operators.qmd
         - custom-node-groups.qmd
+        - assets.qmd
         - node-api.qmd
         - nodes-to-code.qmd
         - using.qmd

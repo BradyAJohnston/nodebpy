@@ -2,6 +2,23 @@
 title: Changelog
 ---
 
+## v520.2.0 - 2026-06-16
+
+### Enhancements
+
+- **Asset node-group APIs** — generate typed `nodebpy` classes for node-group assets, so an asset reads, links and type-checks like any other node. Unlike a `Custom*Group` (which *builds* its tree), an asset class *appends* the asset's node group from a `.blend` at runtime and points a Group node at it.
+    - Blender's bundled essentials are generated into `nodebpy.nodes.{geometry,shader,compositor}` and exported alongside the built-in nodes, so they're used exactly like any other node:
+
+    ```py
+    from nodebpy import geometry as g
+
+    mesh = g.SmoothByAngle(mesh=g.Cube(), angle=0.6).o.mesh  # an asset, fully typed
+    g.Array(geometry=mesh, count=4)
+    ```
+
+    - `nodebpy.assets.generate_asset_api(library, output_path)` generates the same typed classes for **your own** assets — point it at a `.blend` shipped in your package via `PackageLibrary(__file__, "…/assets.blend")` (or `BundledLibrary("…")` for a Blender-bundled library) and import the result like any other node module.
+    - New runtime bases `AssetGeometryGroup` / `AssetShaderGroup` / `AssetCompositorGroup` (parallel to the `Custom*Group` builders) back these classes; library resolution is handled by `BundledLibrary` / `PackageLibrary`.
+
 ## v520.1.1 - 2026-06-15
 
 ### Internal

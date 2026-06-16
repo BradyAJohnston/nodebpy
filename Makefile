@@ -1,5 +1,5 @@
 generate:
-	 uv run python -m gen && uv run ruff format && uv run ruff check --fix && uv run ty check --fix src && uv run ruff format
+	 uv run python -m nodebpy.assets && uv run python -m gen && uv run ruff format && uv run ruff check --fix && uv run ty check --fix src && uv run ruff format
 
 test:
 	uv run pytest -n 4
