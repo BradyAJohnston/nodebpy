@@ -2,6 +2,18 @@
 title: Changelog
 ---
 
+## v520.1.1 - 2026-06-15
+
+### Internal
+
+- **Code generator refactor** — the generator gained a `register_customization` registry (mirroring `codegen.register_emitter`), so node classes that previously had to be hand-written in full inside `manual.py` are now auto-generated, with small reusable mixins or bespoke `__init__`/factory bodies layered on at generation time. The Bézier handle nodes, `Switch`, the bundle pack/unpack nodes, the items nodes (`Bake`, `FieldToList`, `FormatString`), and the field-evaluation nodes (`AccumulateField`, `EvaluateAtIndex`, `FieldAverage`, `FieldMinAndMax`, `EvaluateOnDomain`, `FieldVariance`) were moved off the hand-written path. No public API changes.
+- **Generator reorganised into a `gen/` package** — the monolithic `generate.py` was split into focused modules (`config`, `customizations`, `model`, `introspect`, `emit`, `writers`), kept outside `src/` so it never ships in the wheel. Run with `python -m gen` (or `python -m gen --only geometry` to regenerate a single tree). The skip / hand-written / generate decision is now a single `Disposition` derived from the same class-name logic used for generation, introspection is cached so each node is only inspected once, and the generator loads the dependency-free `types` leaf standalone so it can run even when the generated tree is mid-refactor.
+- The code generator now infers generic typing more completely — generic *input* sockets that track a node's data type, and nodes whose output type is fixed while the inputs vary — tightening the type hints on `HashValue`, `ListLength`, `ValueToString`, `FilterList`, `StoreBundleItem`, `SetSelection`, and `StoreNamedGrid`.
+
+### Fixes
+
+- `CombineBundle` / `SeparateBundle` item construction is now part of the generated output, fixing a latent issue where their custom constructors were silently overwritten whenever the node classes were regenerated.
+
 ## v520.1.0 - 2026-06-15
 
 ### Enhancements

@@ -22,6 +22,7 @@ from ..geometry.converter import (
     CombineXYZ,
     EulerToRotation,
     FindInString,
+    FormatString,
     InvertMatrix,
     InvertRotation,
     MapRange,
@@ -70,7 +71,6 @@ from ..geometry.interface import (
 from ..geometry.manual import (
     ColorRamp,
     FloatCurve,
-    FormatString,
     IntegerVector,
     Menu,
     Mix,

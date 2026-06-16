@@ -2,10 +2,10 @@
 set -e
 
 echo "→ ruff format"
-uv run ruff format src/ generate.py
+uv run ruff format src/ gen/
 
 echo "→ ruff check --fix"
-uv run ruff check --fix src/ generate.py
+uv run ruff check --fix src/ gen/
 
 echo "→ ty check --fix"
 uv run ty check --fix src/

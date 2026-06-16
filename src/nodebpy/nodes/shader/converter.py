@@ -17,6 +17,7 @@ from ...types import (
     InputRotation,
     InputShader,
     InputVector,
+    InputAny,
 )
 
 from ...builder.socket import (
@@ -151,8 +152,8 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     _bl_idname = "NodeImplicitConversion"
     node: bpy.types.NodeImplicitConversion
 
-    class _Inputs(SocketAccessor):
-        value: ColorSocket
+    class _Inputs(SocketAccessor, Generic[_S]):
+        value: _S
         """Value"""
 
     class _Outputs(SocketAccessor, Generic[_S]):
@@ -162,21 +163,13 @@ class ImplicitConversion(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[_T]: ...
         @property
         def o(self) -> _Outputs[_T]: ...
 
     def __init__(
         self,
-        value: InputBoolean
-        | InputBundle
-        | InputClosure
-        | InputColor
-        | InputFloat
-        | InputInteger
-        | InputMenu
-        | InputShader
-        | InputVector = None,
+        value: InputAny = None,
         *,
         data_type: Literal[
             "FLOAT",

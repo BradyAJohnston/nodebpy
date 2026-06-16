@@ -1,5 +1,3 @@
-from typing import NamedTuple
-
 import pytest
 from mathutils import Euler
 
@@ -7,7 +5,7 @@ from nodebpy.nodes import geometry as g
 
 
 def test_dynamic_inputs():
-    with g.tree() as tree:
+    with g.tree():
         ftg = g.FieldToGrid()
         inferred_flaot_item = ftg.add_item("float", 1.0)
         assert inferred_flaot_item.name == "float"

@@ -41,6 +41,8 @@ from ...builder.socket import (
     _S,
 )
 
+from .._mixins import _HandleModeMixin
+
 
 class Cursor3D(BaseNode):
     """
@@ -1570,6 +1572,73 @@ class Font(BaseNode):
         key_args = {}
 
         self._establish_links(**key_args)
+
+
+class HandleTypeSelection(_HandleModeMixin, BaseNode):
+    """
+    Provide a selection based on the handle types of Bézier control points
+
+    Outputs
+    -------
+    o.selection : BooleanSocket
+        Selection
+    """
+
+    _bl_idname = "GeometryNodeCurveHandleTypeSelection"
+    node: bpy.types.GeometryNodeCurveHandleTypeSelection
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        selection: BooleanSocket
+        """Selection"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    @classmethod
+    def free(cls) -> "HandleTypeSelection":
+        """Create Handle Type Selection with operation 'Free'. The handle can be moved anywhere, and does not influence the point's other handle"""
+        return cls(handle_type="FREE")
+
+    @classmethod
+    def auto(cls) -> "HandleTypeSelection":
+        """Create Handle Type Selection with operation 'Auto'. The location is automatically calculated to be smooth"""
+        return cls(handle_type="AUTO")
+
+    @classmethod
+    def vector(cls) -> "HandleTypeSelection":
+        """Create Handle Type Selection with operation 'Vector'. The location is calculated to point to the next/previous control point"""
+        return cls(handle_type="VECTOR")
+
+    @classmethod
+    def align(cls) -> "HandleTypeSelection":
+        """Create Handle Type Selection with operation 'Align'. The location is constrained to point in the opposite direction as the other handle"""
+        return cls(handle_type="ALIGN")
+
+    @property
+    def handle_type(self) -> Literal["FREE", "AUTO", "VECTOR", "ALIGN"]:
+        return self.node.handle_type
+
+    @handle_type.setter
+    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
+        self.node.handle_type = value
+
+    def __init__(
+        self,
+        handle_type: Literal["FREE", "AUTO", "VECTOR", "ALIGN"] = "AUTO",
+        left: bool = True,
+        right: bool = True,
+    ):
+        super().__init__()
+        self.handle_type = handle_type
+        self.left = left
+        self.right = right
 
 
 class ID(BaseNode):
