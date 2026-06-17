@@ -1770,7 +1770,7 @@ def _matrix_spec(method: str, output: str) -> SocketMethodSpec:
     )
 
 
-def _math_unary_spec(operation: str, method: str) -> SocketMethodSpec:
+def _math_unary_spec(operation: str, method: str, *args: str) -> SocketMethodSpec:
     """A unary ``ShaderNodeMath`` op rendered as a float socket method —
     ``value.sqrt()`` / ``value.sign()``. ``receiver_socket_type="VALUE"`` keeps
     the round-trip faithful: the method only re-derives a float Math node when
@@ -1779,6 +1779,7 @@ def _math_unary_spec(operation: str, method: str) -> SocketMethodSpec:
         receiver="Value",
         method=method,
         output="Value",
+        params=tuple((f"Value_{int(i + 1)}", arg) for i, arg in enumerate(args)),
         require=(("operation", operation),),
         consumed_props=("operation",),
         receiver_socket_type="VALUE",
@@ -1933,13 +1934,38 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
         ),
     ],
     "ShaderNodeMath": [
-        _math_unary_spec("SQRT", "sqrt"),
-        _math_unary_spec("FLOOR", "floor"),
-        _math_unary_spec("CEIL", "ceil"),
-        _math_unary_spec("ROUND", "round"),
-        _math_unary_spec("RADIANS", "to_radians"),
-        _math_unary_spec("DEGREES", "to_degrees"),
-        _math_unary_spec("SIGN", "sign"),
+        _math_unary_spec(*args)
+        for args in [
+            ("MINIMUM", "min"),
+            ("MAXIMUM", "max"),
+            ("SINE", "sin"),
+            ("COSINE", "cos"),
+            ("TANGENT", "tan"),
+            ("ARCSINE", "asin"),
+            ("ARCCOSINE", "acos"),
+            ("ARCTANGENT", "atan"),
+            ("HYPERBOLIC_SINE", "sinh"),
+            ("HYPERBOLIC_COSINE", "cosh"),
+            ("HYPERBOLIC_TANGENT", "tanh"),
+            ("EXPONENTIAL", "exp"),
+            ("TRUNC", "truncate"),
+            ("FRACT", "fraction"),
+            ("ABSOLUTE", "abs"),
+            ("SQRT", "sqrt"),
+            ("FLOOR", "floor"),
+            ("CEIL", "ceil"),
+            ("ROUND", "round"),
+            ("RADIANS", "to_radians"),
+            ("DEGREES", "to_degrees"),
+            ("SIGN", "sign"),
+            ("MULTIPLY_ADD", "mul_add", "multiplier", "addend"),
+            ("WRAP", "wrap", "min", "max"),
+            ("MODULO", "modulo", "divisor"),
+            ("PINGPONG", "pingpong", "value"),
+            ("LOGARITHM", "log", "base"),
+            ("POWER", "power", "exponent"),
+            ("ARCTAN2", "atan2", "value"),
+        ]
     ],
     "FunctionNodeIntegerMath": [
         _int_math_unary_spec("SIGN", "sign"),
