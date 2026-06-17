@@ -2,6 +2,11 @@
 title: Changelog
 ---
 
+## v520.3.0 - UNRELEASED
+
+### Fixes
+- Changed `nodebpy` absolute imports to relative inside the package, and potentially relative / dynamic import for asset generation. Absolute imports would fail when the package is vendored. Does change the behaviour of the node class generation for the imports.
+
 ## v520.2.0 - 2026-06-16
 
 ### Enhancements
@@ -103,10 +108,6 @@ string.uppercase()   # StringSocket via SetStringCase
 string.lowercase()   # StringSocket via SetStringCase
 string.reverse()     # StringSocket via ReverseString
 ```
-
-### Fixed
-
-### Breaking Changes
 
 ## v0.18.0 - 2026-05-20
 
