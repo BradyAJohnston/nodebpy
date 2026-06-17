@@ -1786,7 +1786,7 @@ def _math_unary_spec(operation: str, method: str, *args: str) -> SocketMethodSpe
     )
 
 
-def _int_math_unary_spec(operation: str, method: str) -> SocketMethodSpec:
+def _int_math_unary_spec(operation: str, method: str, *args: str) -> SocketMethodSpec:
     """A unary ``FunctionNodeIntegerMath`` op rendered as an integer socket
     method — ``value.sign()``. ``ABSOLUTE``/``NEGATE`` stay as the ``abs(x)`` /
     ``-x`` lifts and so are deliberately absent here."""
@@ -1794,6 +1794,7 @@ def _int_math_unary_spec(operation: str, method: str) -> SocketMethodSpec:
         receiver="Value",
         method=method,
         output="Value",
+        params=tuple((f"Value_{int(i + 1)}", arg) for i, arg in enumerate(args)),
         require=(("operation", operation),),
         consumed_props=("operation",),
         receiver_socket_type="INT",
@@ -1948,7 +1949,7 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             ("EXPONENTIAL", "exp"),
             ("TRUNC", "truncate"),
             ("FRACT", "fraction"),
-            ("ABSOLUTE", "abs"),
+            # ("ABSOLUTE", "abs"), # should isntead be handled by stdlib `abs(int)`
             ("SQRT", "sqrt"),
             ("FLOOR", "floor"),
             ("CEIL", "ceil"),
@@ -1967,7 +1968,13 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
         ]
     ],
     "FunctionNodeIntegerMath": [
-        _int_math_unary_spec("SIGN", "sign"),
+        _int_math_unary_spec(*args)
+        for args in (
+            ("SIGN", "sign"),
+            # ("ABSOLUTE", "abs"),
+            ("MULTIPLY_ADD", "mul_add", "multiplier", "addend"),
+            ("MODULO", "modulo", "divisor"),
+        )
     ],
     "GeometryNodeListLength": [
         _list_spec("list_length", "Length", type_prop="data_type"),
