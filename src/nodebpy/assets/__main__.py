@@ -9,10 +9,11 @@ available alongside the built-in nodes (e.g. ``g.SmoothByAngle()``). Run *before
 
 from __future__ import annotations
 
+import argparse
 import os
 from pathlib import Path
 
-from ..builder import BundledLibrary
+from ..builder import BundledLibrary, PackageLibrary
 from ._codegen import generate_asset_api
 
 # Bundled libraries shipped with Blender, grouped by output module. Each library
@@ -46,14 +47,47 @@ def generate_essentials(
             print(f"  {tree}: no bundled libraries present, skipping")
             continue
         names = generate_asset_api(
-            libraries, Path(nodes_dir) / tree / "assets.py", nodebpy_pkg=nodebpy_pkg
+            libraries,
+            Path(nodes_dir) / tree / "assets.py",
+            nodebpy_pkg=nodebpy_pkg,
         )
         written[tree] = names
         print(f"  nodes/{tree}/assets.py: {len(names)} asset classes")
     return written
 
 
-def main() -> None:  # pragma: no cover - CLI wrapper over generate_essentials
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--blend-file",
+        "-b",
+        type=Path,
+        help="Optional custom .blend asset library to generate from.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        "-o",
+        type=Path,
+        help="Directory to output the assets.py",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:  # pragma: no cover - CLI wrapper
+    args = parse_args()
+    output_dir = (
+        args.output_dir
+        if args.output_dir
+        else Path(__file__).parent.parent / "nodes" / "custom" / "assets.py"
+    )
+
+    if args.blend_file is not None:
+        generate_asset_api(
+            [PackageLibrary(".", args.blend_file)],
+            output_dir,
+        )
+        return
+
     generate_essentials(Path(__file__).parent.parent / "nodes")
 
 
