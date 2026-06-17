@@ -23,12 +23,61 @@
   ```{mermaid}
   graph LR
       N0("Value"):::input-node
-      N1("Math<br/><small>(SIGN)</small>"):::converter-node
-      N2("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-      N3("Value to String"):::converter-node
-      N0 -->|"Value->Value"| N1
-      N0 -->|"Value->Value"| N2
+      N1("Math<br/><small>(SNAP)</small>"):::converter-node
+      N2("Math<br/><small>(EXPONENT)</small>"):::converter-node
+      N3("Math<br/><small>(ARCSINE)</small>"):::converter-node
+      N4("Math<br/><small>(POWER)</small>"):::converter-node
+      N5("Math<br/><small>(RADIANS)</small>"):::converter-node
+      N6("Math<br/><small>(ARCTANGENT)</small>"):::converter-node
+      N7("Math<br/><small>(DEGREES)</small>"):::converter-node
+      N8("Math<br/><small>(MINIMUM)</small>"):::converter-node
+      N9("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N10("Math<br/><small>(TRUNC)</small>"):::converter-node
+      N11("Math<br/><small>(SQRT)</small>"):::converter-node
+      N12("Math<br/><small>(COSH)</small>"):::converter-node
+      N13("Math<br/><small>(SIGN)</small>"):::converter-node
+      N14("Math<br/><small>(MULTIPLY_ADD)</small>"):::converter-node
+      N15("Value to String"):::converter-node
+      N16("Math<br/><small>(COSINE)</small>"):::converter-node
+      N17("Math<br/><small>(MAXIMUM)</small>"):::converter-node
+      N18("Math<br/><small>(LOGARITHM)</small>"):::converter-node
+      N19("Math<br/><small>(ABSOLUTE)</small>"):::converter-node
+      N20("Math<br/><small>(TANH)</small>"):::converter-node
+      N21("Math<br/><small>(TANGENT)</small>"):::converter-node
+      N22("Math<br/><small>(SINE)</small>"):::converter-node
+      N23("Math<br/><small>(PINGPONG)</small>"):::converter-node
+      N24("Math<br/><small>(ARCTAN2)</small>"):::converter-node
+      N25("Math<br/><small>(SINH)</small>"):::converter-node
+      N26("Math<br/><small>(FRACT)</small>"):::converter-node
+      N27("Math<br/><small>(ARCCOSINE)</small>"):::converter-node
+      N28("Value"):::input-node
+      N0 -->|"Value->Value"| N9
+      N0 -->|"Value->Value"| N15
+      N0 -->|"Value->Value"| N13
+      N0 -->|"Value->Value"| N8
+      N0 -->|"Value->Value"| N17
+      N0 -->|"Value->Value"| N22
+      N0 -->|"Value->Value"| N16
+      N0 -->|"Value->Value"| N21
       N0 -->|"Value->Value"| N3
+      N0 -->|"Value->Value"| N27
+      N0 -->|"Value->Value"| N6
+      N0 -->|"Value->Value"| N25
+      N0 -->|"Value->Value"| N12
+      N0 -->|"Value->Value"| N20
+      N0 -->|"Value->Value"| N24
+      N0 -->|"Value->Value"| N11
+      N0 -->|"Value->Value"| N4
+      N0 -->|"Value->Value"| N18
+      N0 -->|"Value->Value"| N2
+      N0 -->|"Value->Value"| N7
+      N0 -->|"Value->Value"| N5
+      N0 -->|"Value->Value"| N14
+      N0 -->|"Value->Value"| N23
+      N0 -->|"Value->Value"| N1
+      N0 -->|"Value->Value"| N10
+      N0 -->|"Value->Value"| N26
+      N0 -->|"Value->Value"| N19
   ```
   '''
 # ---

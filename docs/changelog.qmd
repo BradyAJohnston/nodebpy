@@ -2,6 +2,14 @@
 title: Changelog
 ---
 
+## v520.2.1 - UNRELEASED
+
+### Enhancements
+- Additional socket methods on `FloatSocket` and `IntegerSocket`.
+
+### Fixes
+- `FloatGridSocket.to_mesh()` method didn't link any of the input arguments, this now properly links and is tested against
+
 ## v520.2.0 - 2026-06-16
 
 ### Enhancements

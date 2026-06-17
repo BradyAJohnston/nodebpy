@@ -875,6 +875,12 @@ def test_boolean_socket_switches():
             assert sock.node.input_type == name
 
 
+def _assert_integer_method(result, operation):
+    node = cast(g.IntegerMath, result.builder_node)
+    assert isinstance(node, g.IntegerMath)
+    assert node.operation == operation
+
+
 def test_integer_socket_methods():
     with g.tree():
         val = g.Integer().o.integer
@@ -897,26 +903,70 @@ def test_integer_socket_methods():
         assert isinstance(node, g.ValueToString)
         assert node.data_type == "INT"
 
+        for method, operation in [
+            ("sign", "SIGN"),
+            ("negate", "NEGATE"),
+            ("abs", "ABSOLUTE"),
+            ("mul_add", "MULTIPLY_ADD"),
+            ("power", "POWER"),
+        ]:
+            result = getattr(val, method)()
+            _assert_integer_method(result, operation)
+
+
+def _assert_method(result, expected_operation):
+    assert result.node.bl_idname == g.Math._bl_idname
+    assert result.node.operation == expected_operation
+
 
 def test_float_socket_methods(snapshot):
     with g.tree() as tree:
         val = g.Float().o.value
-
-        result = val.sign()
-        assert result.node.bl_idname == g.Math._bl_idname
-        assert result.node.operation == "SIGN"
+        b = g.Float().o.value
 
         result = val.negate()
-        assert result.node.bl_idname == g.Math._bl_idname
-        assert result.node.operation == "MULTIPLY"
+        _assert_method(result, "MULTIPLY")
         assert result.node.inputs[1].default_value == pytest.approx(-1.0)
         assert result.node.inputs[0].links[0].from_node == val.node
-        assert len(val.links) == 2
+        assert len(val.links) == 1
 
         string = val.to_string(3)
         assert string.builder_node.i.decimals.default_value == 3
         assert isinstance(string.builder_node, g.ValueToString)
-        assert snapshot == tree._repr_markdown_()
+
+        for method, operation in [
+            ("sign", "SIGN"),
+            ("min", "MINIMUM"),
+            ("max", "MAXIMUM"),
+            ("sin", "SINE"),
+            ("cos", "COSINE"),
+            ("tan", "TANGENT"),
+            ("asin", "ARCSINE"),
+            ("acos", "ARCCOSINE"),
+            ("atan", "ARCTANGENT"),
+            ("sinh", "SINH"),
+            ("cosh", "COSH"),
+            ("tanh", "TANH"),
+            ("atan2", "ARCTAN2"),
+            # ("asinh", "ARCSINH"),
+            # ("acosh", "ARCCOSH"),
+            # ("atanh", "ARCTANH"),
+            ("sqrt", "SQRT"),
+            ("power", "POWER"),
+            ("log", "LOGARITHM"),
+            ("exp", "EXPONENT"),
+            ("to_degrees", "DEGREES"),
+            ("to_radians", "RADIANS"),
+            ("mul_add", "MULTIPLY_ADD"),
+            ("ping_pong", "PINGPONG"),
+            ("snap", "SNAP"),
+            ("truncate", "TRUNC"),
+            ("fraction", "FRACT"),
+            ("abs", "ABSOLUTE"),
+        ]:
+            _assert_method(getattr(val, method)(), operation)
+
+    assert snapshot == tree.to_mermaid()
 
 
 def test_vector_socket_methods(snapshot):

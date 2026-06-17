@@ -472,7 +472,9 @@ class _FloatGridOperatorMixin(Socket):
         """Generate a mesh on the "surface" of a volume grid."""
         from ..nodes.geometry import GridToMesh
 
-        return GridToMesh(self.socket).o.mesh
+        return GridToMesh(
+            self.socket, threshold=threshold, adaptivity=adaptivity
+        ).o.mesh
 
 
 class _VectorGridOperatorMixin(Socket):
@@ -1504,15 +1506,90 @@ class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
 
         return Clamp.min_max(self.socket, min, max).o.result  # ty: ignore[invalid-return-type]
 
+    def min(self, value: InputFloat = 0.0) -> Self:
+        """Create Math with operation 'Minimum'. The minimum from self and value"""
+        self._assert_output("min")
+        return self._math.minimum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
+    def max(self, value: InputFloat = 1.0) -> Self:
+        """Create Math with operation 'Maximum'. The maximum from self and value"""
+        self._assert_output("max")
+        return self._math.maximum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
+    def sin(self) -> Self:
+        "Create a Math node with operation 'Sine'. The sine of self"
+        self._assert_output("sin")
+        return self._math.sine(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def cos(self) -> Self:
+        "Create a Math node with operation 'Cosine'. The cosine of self"
+        self._assert_output("cos")
+        return self._math.cosine(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def tan(self) -> Self:
+        "Create a Math node with operation 'Tangent'. The tangent of self"
+        self._assert_output("tan")
+        return self._math.tangent(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def asin(self) -> Self:
+        "Create a Math node with operation 'ArcSine'. The arcsine of self"
+        self._assert_output("asin")
+        return self._math.arcsine(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def acos(self) -> Self:
+        "Create a Math node with operation 'ArcCosine'. The arccosine of self"
+        self._assert_output("acos")
+        return self._math.arccosine(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def atan(self) -> Self:
+        "Create a Math node with operation 'ArcTangent'. The arctangent of self"
+        self._assert_output("atan")
+        return self._math.arctangent(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def sinh(self) -> Self:
+        "Create a Math node with operation 'Hyperbolic Sine'. The hyperbolic sine of self"
+        self._assert_output("sinh")
+        return self._math.hyperbolic_sine(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def cosh(self) -> Self:
+        "Create a Math node with operation 'Hyperbolic Cosine'. The hyperbolic cosine of self"
+        self._assert_output("cosh")
+        return self._math.hyperbolic_cosine(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def tanh(self) -> Self:
+        "Create a Math node with operation 'Hyperbolic Tangent'. The hyperbolic tangent of self"
+        self._assert_output("tanh")
+        return self._math.hyperbolic_tangent(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def exp(self) -> Self:
+        "Create a Math node with operation 'Exponent'. The exponent of self"
+        self._assert_output("exp")
+        return self._math.exponent(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def snap(self, increment: InputFloat = 0.5) -> Self:
+        "Create a Math node with operation 'Snap'. The snap of self"
+        self._assert_output("snap")
+        return self._math.snap(self.socket, increment).o.value  # ty: ignore[invalid-return-type]
+
+    def atan2(self, value: InputFloat = 0.5) -> Self:
+        "Create a Math node with operation 'ArcTan2'. The arctangent of self"
+        self._assert_output("atan2")
+        return self._math.arctan2(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
     def sqrt(self) -> Self:
         """Return the square root of this value."""
         self._assert_output("sqrt")
         return self._math.square_root(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def power(self, exponent: InputFloat) -> Self:
+    def power(self, exponent: InputFloat = 2.0) -> Self:
         """Raise this value to *exponent*."""
         self._assert_output("power")
         return self._math.power(self.socket, exponent).o.value  # ty: ignore[invalid-return-type]
+
+    def log(self, base: InputFloat = 2.0) -> Self:
+        """Return the logarithm of this value to *base*."""
+        self._assert_output("log")
+        return self._math.logarithm(self.socket, base).o.value  # ty: ignore[invalid-return-type]
 
     def floor(self) -> Self:
         """Round down to the nearest integer."""
@@ -1524,15 +1601,35 @@ class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
         self._assert_output("ceil")
         return self._math.ceil(self.socket).o.value  # ty: ignore[invalid-return-type]
 
+    def truncate(self) -> Self:
+        """The integer part of of the value, removing fractional digits"""
+        self._assert_output("truncate")
+        return self._math.truncate(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def fraction(self) -> Self:
+        """The fractional part of the vlaue"""
+        self._assert_output("fraction")
+        return self._math.fraction(self.socket).o.value  # ty: ignore[invalid-return-type]
+
     def round(self) -> Self:
         """Round to the nearest integer."""
         self._assert_output("round")
         return self._math.round(self.socket).o.value  # ty: ignore[invalid-return-type]
 
+    def ping_pong(self, value: InputFloat = 1.0) -> Self:
+        """Wrap around the range [0, value] using a ping-pong pattern."""
+        self._assert_output("ping_pong")
+        return self._math.ping_pong(self.socket, value).o.value  # ty: ignore[invalid-return-type]
+
     def modulo(self, divisor: InputFloat) -> Self:
         """Floored modulo — remainder after dividing by *divisor*, always non-negative."""
         self._assert_output("modulo")
         return self._math.floored_modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
+
+    def abs(self) -> Self:
+        """Absolute value of the input"""
+        self._assert_output("abs")
+        return self._math.absolute(self.socket).o.value  # ty: ignore[invalid-return-type]
 
     def wrap(self, min: InputFloat, max: InputFloat) -> Self:
         """Wrap the value into the *[min, max]* range, repeating cyclically."""
@@ -1540,6 +1637,11 @@ class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
         # the wrap method has different order of arguments with max being first
         # compared to other nodes that are defined.
         return self._math.wrap(self.socket, value_001=max, value_002=min).o.value  # ty: ignore[invalid-return-type]
+
+    def mul_add(self, multiplier: InputFloat = 0.5, addend: InputFloat = 0.5) -> Self:
+        "Multiply and then add a value. More efficient as it is a single CPU instruction."
+        self._assert_output("mul_add")
+        return self._math.multiply_add(self.socket, multiplier, addend).o.value  # ty: ignore[invalid-return-type]
 
     def to_radians(self) -> Self:
         """Convert degrees to radians."""
@@ -1601,6 +1703,16 @@ class _IntegerMixin(BaseSocket, Generic[_FloatResult]):
         """Negate the IntegerSocket value. Positive becomes negative, negative becomes positive."""
         self._assert_output("negate")
         return self._imath.negate(self.socket).o.value  # ty: ignore[invalid-return-type]
+
+    def mul_add(self, multiplier: InputInteger = 0, addend: InputInteger = 0) -> Self:
+        "Multiply and then add a value. More efficient as it is a single CPU instruction."
+        self._assert_output("mul_add")
+        return self._imath.multiply_add(self.socket, multiplier, addend).o.value  # ty: ignore[invalid-return-type]
+
+    def power(self, exponent: InputInteger = 2) -> Self:
+        """Raise this value to *exponent*."""
+        self._assert_output("power")
+        return self._imath.power(self.socket, exponent).o.value  # ty: ignore[invalid-return-type]
 
     @staticmethod
     def _is_integer_socket(value: Any) -> bool:
