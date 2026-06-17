@@ -338,8 +338,8 @@ class AxesToRotation(BaseNode):
     ):
         super().__init__()
         key_args = {"Primary Axis": primary_axis, "Secondary Axis": secondary_axis}
-        self.primary_axis = primary_axis
-        self.secondary_axis = secondary_axis
+        self.primary = primary
+        self.secondary = secondary
         self._establish_links(**key_args)
 
     @property

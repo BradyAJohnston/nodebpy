@@ -651,6 +651,9 @@ def _canonical_links(node_tree, links: list[_Link]) -> list[_Link]:
 def _effective_links(node_tree, keep_reroutes: bool = False) -> list[_Link]:
     """All links with reroutes collapsed; reroute-internal segments dropped.
 
+    Links Blender keeps but ignores during evaluation (into sockets hidden by a
+    mode/``data_type`` switch) are excluded — see :func:`_is_ignored_link`.
+
     With ``keep_reroutes`` the reroute chain is left intact — every raw link is
     kept (reroutes become ordinary pass-through nodes). Returned in canonical
     (structural) order — see :func:`_canonical_links`.
@@ -658,6 +661,8 @@ def _effective_links(node_tree, keep_reroutes: bool = False) -> list[_Link]:
     links: list[_Link] = []
     for link in node_tree.links:
         if not keep_reroutes and link.to_node.bl_idname == "NodeReroute":
+            continue
+        if _is_ignored_link(link):
             continue
         if keep_reroutes:
             from_node, from_socket = link.from_node, link.from_socket
@@ -677,6 +682,34 @@ def _effective_links(node_tree, keep_reroutes: bool = False) -> list[_Link]:
             )
         )
     return _canonical_links(node_tree, links)
+
+
+def _is_ignored_link(link) -> bool:
+    """True when Blender keeps this link but ignores it during evaluation.
+
+    Switching a node's mode/``data_type`` (e.g. a Mix node wired for every type,
+    then set to ``RGBA``) hides the now-irrelevant sockets but leaves their links
+    in place. Such links don't participate in evaluation, and ``TreeBuilder.link``
+    refuses to recreate them (its visibility/type guards reject the inactive,
+    often type-mismatched socket), so they aren't *effective* and must be dropped
+    consistently from emission, ordering, and structural comparison. Mirrors the
+    visibility guard in :meth:`TreeBuilder.link`.
+    """
+    from ..builder._utils import _allow_innactive_sockets
+
+    for socket, node in (
+        (link.from_socket, link.from_node),
+        (link.to_socket, link.to_node),
+    ):
+        if node.bl_idname == "NodeReroute":
+            continue  # collapsed away on rebuild — its sockets never link
+        if (
+            getattr(socket, "is_inactive", False)
+            and not _allow_innactive_sockets(node)
+            and getattr(node, "data_type", None) != socket.type
+        ):
+            return True
+    return False
 
 
 def _ordering_edges(node_tree, keep_reroutes: bool = False):
@@ -1179,8 +1212,10 @@ def _output_expr(
         key = _normalize(from_socket.name)
     # A name that isn't a valid Python identifier (``"Physics (Experimental)"``
     # → ``physics_(experimental)``) can't be an attribute — read it by the raw
-    # socket name via subscript, which the accessor resolves by name.
-    if not key.isidentifier():
+    # socket name via subscript, which the accessor resolves by name. A Python
+    # keyword (``"From"`` → ``from``) is a valid identifier but illegal as an
+    # attribute, so it takes the same path.
+    if not key.isidentifier() or keyword.iskeyword(key):
         return Subscript(Attr(val.expr, "o"), Lit(from_socket.name))
     return Attr(val.expr, f"o.{key}")
 
@@ -1212,6 +1247,40 @@ def _base_node_props() -> set[str]:
     return _BASE_NODE_PROPS
 
 
+def _property_rna_name(cls: type, name: str, rna_props) -> str | None:
+    """The bpy property a constructor property-param controls, or ``None``.
+
+    Usually the param name *is* the property identifier (``data_type``). Some
+    classes expose a property under a different name to avoid colliding with a
+    same-named input socket — AxesToRotation's ``primary`` proxies the
+    ``primary_axis`` enum because ``primary_axis`` is already the Vector socket.
+    For those, follow the ``@property`` getter's ``return self.node.<attr>``.
+    """
+    if rna_props is not None and name in rna_props:
+        return name
+    attr = inspect.getattr_static(cls, name, None)
+    if not isinstance(attr, property) or attr.fget is None:
+        return None
+    try:
+        body = ast.parse(textwrap.dedent(inspect.getsource(attr.fget)))
+    except (OSError, TypeError, SyntaxError):
+        return None
+    for sub in ast.walk(body):
+        # return self.node.<attr>
+        if (
+            isinstance(sub, ast.Return)
+            and isinstance(sub.value, ast.Attribute)
+            and isinstance(sub.value.value, ast.Attribute)
+            and sub.value.value.attr == "node"
+            and isinstance(sub.value.value.value, ast.Name)
+            and sub.value.value.value.id == "self"
+        ):
+            rna = sub.value.attr
+            if rna_props is not None and rna in rna_props:
+                return rna
+    return None
+
+
 def _non_default_props(node, cls: type) -> dict[str, Any]:
     """Constructor property values that differ from their defaults.
 
@@ -1234,18 +1303,26 @@ def _non_default_props(node, cls: type) -> dict[str, Any]:
             inspect.Parameter.KEYWORD_ONLY,
         ):
             continue
-        # A constructor param represents a node setting only if it names an
-        # actual bpy property. This excludes nodebpy-only convenience params
-        # such as FloatCurve's ``items`` (curve points), whose ``getattr`` would
-        # otherwise resolve to the unrelated ``bpy_struct.items`` dict method.
-        if rna_props is None or name not in rna_props:
-            continue
-        if name in _base_node_props():
-            continue
         if param.default is inspect.Parameter.empty:
             continue
+        # A param that names an input socket is a socket argument, not a
+        # property — even when its name happens to match a bpy property.
+        # AxesToRotation's ``primary_axis`` is the Vector socket; the enum of
+        # the same bpy name rides on the separate ``primary`` param instead.
+        if _input_socket_by_kwarg(node, name) is not None:
+            continue
+        # A constructor param represents a node setting only if it (or the
+        # property it proxies) names an actual bpy property. This excludes
+        # nodebpy-only convenience params such as FloatCurve's ``items`` (curve
+        # points), whose ``getattr`` would otherwise resolve to the unrelated
+        # ``bpy_struct.items`` dict method.
+        rna_name = _property_rna_name(cls, name, rna_props)
+        if rna_name is None:
+            continue
+        if rna_name in _base_node_props():
+            continue
         try:
-            current = getattr(node, name)
+            current = getattr(node, rna_name)
         except AttributeError:
             continue
         if current != param.default:
@@ -2203,6 +2280,21 @@ def _dissolve_val(ctx: EmitContext, node, spec: DissolveSpec) -> _Val | None:
         return None
     links = ctx.incoming.get(node.name, ())
     if len(links) != 1 or links[0].to_socket.identifier != spec.receiver:
+        return None
+    # ``_find_or_create_linked`` reuses one separator per (source socket, node
+    # type), so dissolving several separators that share a source socket would
+    # collapse them into a single rebuilt node. When the source feeds more than
+    # one separator of this type, keep them all as explicit constructor calls so
+    # the node count round-trips.
+    source = links[0].from_socket
+    siblings = sum(
+        1
+        for out in ctx.outgoing.get(links[0].from_node.name, ())
+        if out.from_socket.identifier == source.identifier
+        and out.to_node.bl_idname == node.bl_idname
+        and out.to_socket.identifier == spec.receiver
+    )
+    if siblings > 1:
         return None
     expected_type = spec.receiver_socket_type
     if expected_type == "{data_type}":

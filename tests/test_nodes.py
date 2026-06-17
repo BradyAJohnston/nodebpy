@@ -1993,7 +1993,15 @@ def test_grid_socket_methods():
         assert isinstance(fgrid.sdf_mean_curvature(), FloatSocketGrid)
         assert isinstance(fgrid.sdf_median(), FloatSocketGrid)
         assert isinstance(fgrid.sdf_offset(), FloatSocketGrid)
-        assert isinstance(fgrid.to_mesh(), GeometrySocket)
+
+        to_mesh = fgrid.to_mesh(threshold=g.Value(2.0), adaptivity=g.Value(0.0))
+        assert isinstance(to_mesh, GeometrySocket)
+        node = to_mesh.builder_node
+        assert isinstance(node, g.GridToMesh)
+        assert node.i.adaptivity.links
+        assert node.i.threshold.links
+        assert node.i.adaptivity.links[0].from_node.bl_idname == g.Value._bl_idname
+        assert node.i.threshold.links[0].from_node.bl_idname == g.Value._bl_idname
 
         # _VectorGridOperatorMixin (vector grids only)
         assert isinstance(vgrid.curl(), VectorSocketGrid)

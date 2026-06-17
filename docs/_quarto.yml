@@ -93,6 +93,13 @@ quartodoc:
         - builder.accessor
         - TreeBuilder
         - builder.BaseNode
+    - title: Assets
+      desc: Generating classes from pre-build assets
+      contents:
+        - assets.generate_asset_api
+        - assets.AssetLibrary
+        - assets.BundledLibrary
+        - assets.PackageLibrary
     - title: Export
       desc: Exporting node trees to code.
       contents:
@@ -111,11 +118,8 @@ quartodoc:
         - nodes.geometry.groups
         - nodes.geometry.geometry
         - nodes.geometry.attribute
-        ####################
         - nodes.geometry.vector
         - nodes.geometry.manual
-    - subtitle: Zones in GN
-      contents:
         - nodes.geometry.zone
 
     - title: Shader Nodes

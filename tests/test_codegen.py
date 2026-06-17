@@ -2250,6 +2250,153 @@ def test_roundtrip_bundled_asset(path, name):
     _assert_roundtrip(builder(group))
 
 
+# ---------------------------------------------------------------------------
+# Regression tests for round-trip bugs first surfaced by MolecularNodes assets,
+# reproduced here with hand-built trees so they run without the MN library.
+# ---------------------------------------------------------------------------
+
+
+def test_keyword_named_output_uses_subscript_accessor():
+    """An output socket whose name normalizes to a Python keyword (``From`` →
+    ``from``) must be read via subscript, not attribute access — ``x.o.from``
+    is a SyntaxError. (MN asset: "Sample Mixed Color".)"""
+    from nodebpy.builder import CustomGeometryGroup
+
+    class _KeywordOut(CustomGeometryGroup):
+        _name = "KeywordOutGrp"
+
+        def _build_group(self, tree):
+            v = tree.inputs.float("Value")
+            v >> tree.outputs.float("Value")
+            v >> tree.outputs.integer("From")
+
+    with TreeBuilder("KeywordOutTree") as tree:
+        v = tree.inputs.float("Value")
+        grp = _KeywordOut(**{"Value": v})
+        grp.o["From"] >> tree.outputs.integer("Result")
+
+    code = _assert_roundtrip(tree)
+    assert '.o["From"]' in code
+    assert ".o.from" not in code
+
+
+def test_links_into_inactive_sockets_are_dropped():
+    """Links Blender keeps but ignores at evaluation (into sockets hidden by a
+    ``data_type`` switch — here a Mix node set to RGBA still carries float A/B
+    links) are not effective: they're excluded from emission and structural
+    comparison so the tree round-trips. (MN asset: "Index Mix Color".)"""
+    from nodebpy.export.codegen import _effective_links
+
+    with TreeBuilder("InactiveMix", ignore_visibility=True) as tree:
+        col = tree.inputs.color("Color")
+        fac = tree.inputs.float("Fac")
+        mix = g.Mix(
+            data_type="RGBA",
+            factor_float=fac,
+            a_color=col,
+            b_color=col,
+            a_float=fac,
+            b_float=fac,
+        )
+        mix.o.result_color >> tree.outputs.color("Result")
+
+    mix_links = [
+        link for link in tree.tree.links if link.to_node.bl_idname == "ShaderNodeMix"
+    ]
+    # The raw tree carries the inactive float A/B links...
+    assert any(not link.to_socket.enabled for link in mix_links)
+    # ...but they are not "effective" and so are filtered out.
+    effective = [
+        link
+        for link in _effective_links(tree.tree)
+        if link.to_node.bl_idname == "ShaderNodeMix"
+    ]
+    assert effective and all(link.to_socket.enabled for link in effective)
+
+    code = _assert_roundtrip(tree)
+    assert "a_float" not in code and "b_float" not in code
+
+
+def test_axes_to_rotation_socket_property_collision():
+    """A constructor param that names an input socket (AxesToRotation's
+    ``primary_axis`` Vector socket) must not be mistaken for the same-named bpy
+    enum property; the enum rides on the renamed ``primary`` param instead.
+    (MN asset: "Plexus".)"""
+    from nodebpy.export.codegen import _non_default_props
+
+    with TreeBuilder("AxesRot") as tree:
+        vec = tree.inputs.vector("V")
+        node = g.AxesToRotation(primary_axis=vec)
+        node.o.rotation >> tree.outputs.rotation("R")
+        # Defaults: nothing emitted, and never the socket-named ``*_axis``.
+        assert _non_default_props(node.node, g.AxesToRotation) == {}
+
+    code = _assert_roundtrip(tree)
+    assert "secondary_axis=" not in code
+    assert "g.AxesToRotation(primary_axis=v)" in code
+
+    # A non-default enum is applied by the constructor (the renamed ``primary``
+    # param writes the bpy ``primary_axis`` property), emitted under that param,
+    # and round-trips back onto the rebuilt node.
+    with TreeBuilder("AxesRotProp") as tree:
+        vec = tree.inputs.vector("V")
+        node = g.AxesToRotation(primary_axis=vec, primary="X", secondary="Y")
+        # the constructor must actually write the enum to the node
+        assert node.node.primary_axis == "X"
+        assert node.node.secondary_axis == "Y"
+        node.o.rotation >> tree.outputs.rotation("R")
+        assert _non_default_props(node.node, g.AxesToRotation) == {
+            "primary": "X",
+            "secondary": "Y",
+        }
+
+    code = _assert_roundtrip(tree)
+    assert 'g.AxesToRotation(primary_axis=v, primary="X", secondary="Y")' in code
+    ns: dict = {}
+    exec(code, ns)  # noqa: S102
+    rebuilt_axes = next(
+        n for n in ns["tree"].tree.nodes if n.bl_idname == "FunctionNodeAxesToRotation"
+    )
+    assert rebuilt_axes.primary_axis == "X"
+    assert rebuilt_axes.secondary_axis == "Y"
+
+
+def test_property_rna_name_unreadable_getter_returns_none():
+    """A proxy ``@property`` whose getter source can't be retrieved (here
+    compiled from a string, so it has no source file) falls through to ``None``
+    instead of raising — covers the defensive ``getsource`` guard."""
+    from nodebpy.export.codegen import _property_rna_name
+
+    ns: dict = {}
+    exec(  # noqa: S102 — getter has no source file, so getsource() raises OSError
+        "class C:\n"
+        "    @property\n"
+        "    def primary(self):\n"
+        "        return self.node.primary_axis\n",
+        ns,
+    )
+    # ``primary`` isn't itself a bpy prop, so resolution falls to the getter,
+    # whose source is unavailable → the except branch returns None.
+    assert _property_rna_name(ns["C"], "primary", {"primary_axis"}) is None
+
+
+def test_duplicate_separators_on_one_source_stay_explicit():
+    """Several separator nodes sharing a source socket must not all dissolve to
+    the component accessor — ``_find_or_create_linked`` would collapse them into
+    one node. They stay as explicit constructor calls so the count round-trips.
+    (MN asset: "Color Mix Intermediate".)"""
+    with TreeBuilder("DupSeparate") as tree:
+        col = tree.inputs.color("Color")
+        s1 = g.SeparateColor(color=col)
+        s2 = g.SeparateColor(color=col)
+        g.CombineColor(red=s1.o.red, green=s2.o.green) >> tree.outputs.color("Result")
+
+    code = _assert_roundtrip(tree)
+    assert code.count("g.SeparateColor(color=color)") == 2
+    # not dissolved to the accessor sugar
+    assert "color.r" not in code and "color.g" not in code
+
+
 MN_FILE_PATH = (
     Path.cwd().parent / "MolecularNodes/molecularnodes/assets/node_data_file.blend"
 )
