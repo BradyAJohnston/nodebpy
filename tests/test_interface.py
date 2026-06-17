@@ -959,6 +959,10 @@ def test_float_socket_methods(snapshot):
             ("to_radians", "RADIANS"),
             ("mul_add", "MULTIPLY_ADD"),
             ("ping_pong", "PINGPONG"),
+            ("snap", "SNAP"),
+            ("truncate", "TRUNC"),
+            ("fraction", "FRACT"),
+            ("abs", "ABSOLUTE"),
         ]:
             _assert_method(getattr(val, method)(), operation)
 
