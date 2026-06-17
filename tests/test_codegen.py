@@ -322,6 +322,20 @@ def test_format_with_ruff_tidies_output():
     assert ns["tree"] is not None
 
 
+def test_nodebpy_pkg_rewrites_import_anchor():
+    """nodebpy_pkg rewrites every nodebpy import anchor so vendored copies are
+    reachable with a relative path; the same anchor is used for both the
+    top-level and ``.builder`` imports."""
+    with TreeBuilder("Vendored") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        g.SetPosition(geometry=geo) >> tree.outputs.geometry("Geometry")
+
+    code = to_python(tree, top_level="class", nodebpy_pkg="..vendor.nodebpy")
+    assert "from ..vendor.nodebpy import" in code
+    assert "from ..vendor.nodebpy.builder import" in code
+    assert "from nodebpy" not in code
+
+
 def test_top_level_class_emits_class_not_with_block():
     """top_level='class' renders the working tree as a Custom*Group subclass
     (no ``with`` block / TreeBuilder import); the default stays the ``with``

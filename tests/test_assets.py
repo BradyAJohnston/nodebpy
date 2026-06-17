@@ -157,6 +157,19 @@ def test_generate_with_package_library(tmp_path):
     assert "PackageLibrary(__file__, " in source
 
 
+@_needs_essentials
+def test_generate_with_vendored_nodebpy_pkg(tmp_path):
+    """nodebpy_pkg rewrites the import anchor so a vendored copy can be reached
+    with a relative path instead of the absolute ``nodebpy`` package."""
+    out = tmp_path / "generated.py"
+    generate_asset_api(
+        _ESSENTIALS, out, names={"Smooth by Angle"}, nodebpy_pkg="..vendor.nodebpy"
+    )
+    source = out.read_text()
+    assert "from ..vendor.nodebpy.builder import" in source
+    assert "from nodebpy.builder import" not in source
+
+
 def test_generate_empty_library_writes_empty_all(tmp_path):
     out = tmp_path / "generated.py"
     names = generate_asset_api(_ESSENTIALS, out, names={"___no_such_group___"})

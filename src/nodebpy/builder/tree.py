@@ -725,6 +725,7 @@ class TreeBuilder(Generic[_TreeT]):
         keep_reroutes: bool = False,
         top_level: Literal["with", "class"] = "with",
         format: bool = True,
+        nodebpy_pkg: str = "nodebpy",
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -741,6 +742,7 @@ class TreeBuilder(Generic[_TreeT]):
             keep_reroutes=keep_reroutes,
             top_level=top_level,
             format=format,
+            nodebpy_pkg=nodebpy_pkg,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:

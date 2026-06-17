@@ -29,7 +29,9 @@ _ESSENTIALS: dict[str, tuple[str, ...]] = {
 }
 
 
-def generate_essentials(nodes_dir: Path) -> dict[str, list[str]]:
+def generate_essentials(
+    nodes_dir: Path, nodebpy_pkg: str = ".."
+) -> dict[str, list[str]]:
     """Generate the bundled-essentials asset modules into
     ``<nodes_dir>/<tree>/assets.py``; returns the class names written per tree
     (libraries not present in this Blender install are skipped)."""
@@ -43,7 +45,9 @@ def generate_essentials(nodes_dir: Path) -> dict[str, list[str]]:
         if not libraries:  # pragma: no cover - depends on the Blender install
             print(f"  {tree}: no bundled libraries present, skipping")
             continue
-        names = generate_asset_api(libraries, Path(nodes_dir) / tree / "assets.py")
+        names = generate_asset_api(
+            libraries, Path(nodes_dir) / tree / "assets.py", nodebpy_pkg=nodebpy_pkg
+        )
         written[tree] = names
         print(f"  nodes/{tree}/assets.py: {len(names)} asset classes")
     return written
