@@ -613,12 +613,12 @@ def test_math_no_lift_when_unlinked():
 
 
 def test_math_non_liftable_stays_as_call():
-    """Non-liftable operation (SINE) stays a call — via the factory shortcut."""
-    with TreeBuilder("MathSine") as tree:
+    """Non-liftable operation (INVERSE_SQUARE_ROOT) stays a call — via the factory shortcut."""
+    with TreeBuilder("MathInverseSquareRoot") as tree:
         val = tree.inputs.float("Value", 1.0)
-        g.Math(val, operation="SINE") >> tree.outputs.float("Result")
+        g.Math.inverse_square_root(val) >> tree.outputs.float("Result")
     code = to_python(tree)
-    assert "g.Math.sine(value)" in code
+    assert "g.Math.inverse_square_root(value)" in code
 
 
 def test_math_fanout_assigns_variable():

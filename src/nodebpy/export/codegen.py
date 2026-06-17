@@ -1936,8 +1936,6 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
     "ShaderNodeMath": [
         _math_unary_spec(*args)
         for args in [
-            ("MINIMUM", "min"),
-            ("MAXIMUM", "max"),
             ("SINE", "sin"),
             ("COSINE", "cos"),
             ("TANGENT", "tan"),
@@ -1958,12 +1956,13 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             ("RADIANS", "to_radians"),
             ("DEGREES", "to_degrees"),
             ("SIGN", "sign"),
+            ("MINIMUM", "min", "value_001"),
+            ("MAXIMUM", "max", "value_001"),
             ("MULTIPLY_ADD", "mul_add", "multiplier", "addend"),
             ("WRAP", "wrap", "min", "max"),
             ("MODULO", "modulo", "divisor"),
-            ("PINGPONG", "pingpong", "value"),
+            ("PINGPONG", "ping_pong", "value"),
             ("LOGARITHM", "log", "base"),
-            ("POWER", "power", "exponent"),
             ("ARCTAN2", "atan2", "value"),
         ]
     ],
