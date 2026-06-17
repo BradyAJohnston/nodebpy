@@ -2035,6 +2035,94 @@ def test_grid_info_accessors_dissolve():
     assert "GridInfo" not in code
 
 
+def _named_grid(tree, dtype="density"):
+    vol = tree.inputs.geometry("Volume")
+    return g.GetNamedGrid(vol, dtype).o.grid
+
+
+def test_grid_numeric_methods_lift():
+    """Mean / median lift to grid socket methods; data_type re-derived."""
+    with TreeBuilder("GridNumeric") as tree:
+        grid = _named_grid(tree)
+        grid.mean(width=2, iterations=3) >> tree.outputs.float(
+            "M", structure_type="GRID"
+        )
+        grid.median() >> tree.outputs.float("Md", structure_type="GRID")
+    code = _assert_roundtrip(tree)
+    assert ".mean(" in code
+    assert ".median()" in code
+    assert "g.GridMean(" not in code
+
+
+def test_grid_float_operator_methods_lift():
+    """Float-grid operators (gradient / sdf_* / to_mesh) lift to socket methods."""
+    with TreeBuilder("GridFloatOps") as tree:
+        grid = _named_grid(tree)
+        grid.gradient() >> tree.outputs.vector("G", structure_type="GRID")
+        grid.laplacian() >> tree.outputs.float("L", structure_type="GRID")
+        grid.sdf_offset(distance=0.5) >> tree.outputs.float("O", structure_type="GRID")
+        grid.sdf_mean(width=2) >> tree.outputs.float("SM", structure_type="GRID")
+        grid.to_mesh(threshold=0.2) >> tree.outputs.geometry("Mesh")
+    code = _assert_roundtrip(tree)
+    assert ".gradient()" in code
+    assert ".laplacian()" in code
+    assert ".sdf_offset(" in code
+    assert ".to_mesh(" in code
+
+
+def test_grid_vector_operator_methods_lift():
+    """Vector-grid operators (curl / divergence) lift to socket methods."""
+    with TreeBuilder("GridVecOps") as tree:
+        grid = g.GetNamedGrid.vector(tree.inputs.geometry("Volume"), "vel").o.grid
+        grid.curl() >> tree.outputs.vector("C", structure_type="GRID")
+        grid.divergence() >> tree.outputs.float("D", structure_type="GRID")
+    code = _assert_roundtrip(tree)
+    assert ".curl()" in code
+    assert ".divergence()" in code
+
+
+def test_grid_common_methods_lift():
+    """Methods shared by every grid type (sample / clip / prune / …) lift."""
+    with TreeBuilder("GridCommon") as tree:
+        grid = _named_grid(tree)
+        grid.sample(interpolation="Nearest Neighbor") >> tree.outputs.float("S")
+        grid.sample_index(x=1, y=2, z=3) >> tree.outputs.float("SI")
+        grid.clip(max_x=10) >> tree.outputs.float("Cl", structure_type="GRID")
+        grid.dilate_erode(steps=2) >> tree.outputs.float("DE", structure_type="GRID")
+        grid.prune(threshold=0.05, mode="SDF") >> tree.outputs.float(
+            "P", structure_type="GRID"
+        )
+        grid.voxelize() >> tree.outputs.float("V", structure_type="GRID")
+    code = _assert_roundtrip(tree)
+    for snippet in (
+        ".sample(",
+        ".sample_index(",
+        ".clip(",
+        ".dilate_erode(",
+        ".prune(",
+        ".voxelize()",
+    ):
+        assert snippet in code, snippet
+
+
+def test_grid_method_defers_when_rebuild_loses_structure():
+    """A grid whose GRID structure is only *propagated* (an EvaluateClosure
+    output) is lost on rebuild — the rebuilt output item carries no GRID
+    structure — so codegen must fall back to the constructor rather than emit a
+    method the rebuilt (non-grid) wrapper would lack. The closure output's
+    structure is set directly on the node, mirroring an authored-in-Blender
+    grid that nodebpy's closure API does not yet round-trip."""
+    with TreeBuilder("GridDeferred") as tree:
+        closure = tree.inputs.closure("Make Grid")
+        evaluated = g.EvaluateClosure(closure, output_items={"Grid": "FLOAT"})
+        evaluated.node.output_items[0].structure_type = "GRID"
+        g.GridToMesh(grid=evaluated.o.grid) >> tree.outputs.geometry("Mesh")
+    assert evaluated.o.grid.socket.inferred_structure_type == "GRID"
+    code = _assert_roundtrip(tree)
+    assert "g.GridToMesh(" in code
+    assert ".to_mesh(" not in code
+
+
 # ---------------------------------------------------------------------------
 # Parametrised round-trip over every tree built in test_usecases.py
 # ---------------------------------------------------------------------------

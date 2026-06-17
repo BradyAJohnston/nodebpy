@@ -528,6 +528,45 @@ def _get_blender_socket_defaults(tree_idname: str, bl_idname: str) -> dict[str, 
     return defaults
 
 
+_NODE_OUTPUT_STRUCTURE: dict[tuple[str, str, str], str | None] = {}
+
+
+def _fresh_output_structure(
+    tree_idname: str, bl_idname: str, output_id: str
+) -> str | None:
+    """``inferred_structure_type`` of a freshly created node's output socket.
+
+    Returns ``None`` when a fresh node has no socket with that identifier.
+    A grid socket method lifts to a call on the grid *wrapper*, which the
+    rebuilt receiver only exposes when its source node reproduces the GRID
+    structure on its own (GetNamedGrid, the grid operators, …). Sources whose
+    structure is *propagated* or *dynamic* — EvaluateClosure, switches, group
+    inputs — report GRID in the authored tree but lose it on a fresh rebuild,
+    so the method would be missing; codegen falls back to the constructor for
+    them. Probed on a scratch tree, never the user's.
+    """
+    key = (tree_idname, bl_idname, output_id)
+    if key in _NODE_OUTPUT_STRUCTURE:
+        return _NODE_OUTPUT_STRUCTURE[key]
+    result: str | None = None
+    try:
+        import bpy
+
+        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)
+        try:
+            node = probe_tree.nodes.new(bl_idname)
+            for s in node.outputs:
+                if s.identifier == output_id:
+                    result = getattr(s, "inferred_structure_type", None)
+                    break
+        finally:
+            bpy.data.node_groups.remove(probe_tree)
+    except Exception:
+        pass
+    _NODE_OUTPUT_STRUCTURE[key] = result
+    return result
+
+
 _IFACE_DEFAULTS: dict[tuple[str, str], dict[str, object]] = {}
 
 
@@ -1625,6 +1664,9 @@ class SocketMethodSpec:
     # be a LIST whose element type matches this prop (``socket_type`` /
     # ``data_type``), inverting _socket_dtype's VALUE↔FLOAT swap, so the rebuilt
     # method re-derives the same prop from the receiver socket.
+    receiver_structure: str | None = None  # required inferred_structure_type of
+    # the from-socket (grid methods live on the ``*SocketGrid`` wrappers only, so
+    # the receiver must be a GRID, not a plain field of the same socket type).
 
 
 @dataclass(frozen=True)
@@ -1836,6 +1878,32 @@ def _mix_spec(data_type: str, attr: str, suffix: str) -> SocketMethodSpec:
         consumed_props=("data_type",),
         receiver_socket_type="VALUE",
         always_args=2,
+    )
+
+
+def _grid_spec(
+    method: str,
+    output: str,
+    *params: tuple[str, str],
+    receiver_socket_type: str = "{data_type}",
+    data_type: bool = True,
+    always_args: int = 0,
+) -> SocketMethodSpec:
+    """A grid socket method — ``grid.mean()`` / ``grid.gradient()`` /
+    ``grid.sample(pos)``. The receiver must be a GRID-structured socket (the
+    methods live only on the ``*SocketGrid`` wrappers). Data-type-carrying grid
+    nodes re-derive ``data_type`` from the receiver's element type, so it is
+    consumed and gated by ``receiver_socket_type="{data_type}"`` rather than
+    emitted; the scalar/vector-only nodes pin a fixed ``VALUE`` / ``VECTOR``."""
+    return SocketMethodSpec(
+        receiver="Grid",
+        method=method,
+        output=output,
+        params=tuple(params),
+        consumed_props=("data_type",) if data_type else (),
+        receiver_socket_type=receiver_socket_type,
+        receiver_structure="GRID",
+        always_args=always_args,
     )
 
 
@@ -2074,6 +2142,140 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
         _mix_spec("RGBA", "color", "Color"),
         _mix_spec("ROTATION", "rotation", "Rotation"),
     ],
+    # Grid socket methods — numeric grids (Float / Integer / Vector) -------
+    "GeometryNodeGridMean": [
+        _grid_spec("mean", "Grid", ("Width", "width"), ("Iterations", "iterations")),
+    ],
+    "GeometryNodeGridMedian": [
+        _grid_spec("median", "Grid", ("Width", "width"), ("Iterations", "iterations")),
+    ],
+    # Float-grid operators -------------------------------------------------
+    "GeometryNodeGridGradient": [
+        _grid_spec(
+            "gradient", "Gradient", receiver_socket_type="VALUE", data_type=False
+        ),
+    ],
+    "GeometryNodeGridLaplacian": [
+        _grid_spec(
+            "laplacian", "Laplacian", receiver_socket_type="VALUE", data_type=False
+        ),
+    ],
+    "GeometryNodeSDFGridFillet": [
+        _grid_spec(
+            "sdf_fillet",
+            "Grid",
+            ("Iterations", "iterations"),
+            receiver_socket_type="VALUE",
+            data_type=False,
+        ),
+    ],
+    "GeometryNodeSDFGridLaplacian": [
+        _grid_spec(
+            "sdf_laplacian",
+            "Grid",
+            ("Iterations", "iterations"),
+            receiver_socket_type="VALUE",
+            data_type=False,
+        ),
+    ],
+    "GeometryNodeSDFGridMean": [
+        _grid_spec(
+            "sdf_mean",
+            "Grid",
+            ("Width", "width"),
+            ("Iterations", "iterations"),
+            receiver_socket_type="VALUE",
+            data_type=False,
+        ),
+    ],
+    "GeometryNodeSDFGridMeanCurvature": [
+        _grid_spec(
+            "sdf_mean_curvature",
+            "Grid",
+            ("Iterations", "iterations"),
+            receiver_socket_type="VALUE",
+            data_type=False,
+        ),
+    ],
+    "GeometryNodeSDFGridMedian": [
+        _grid_spec(
+            "sdf_median",
+            "Grid",
+            ("Width", "width"),
+            ("Iterations", "iterations"),
+            receiver_socket_type="VALUE",
+            data_type=False,
+        ),
+    ],
+    "GeometryNodeSDFGridOffset": [
+        _grid_spec(
+            "sdf_offset",
+            "Grid",
+            ("Distance", "distance"),
+            receiver_socket_type="VALUE",
+            data_type=False,
+        ),
+    ],
+    "GeometryNodeGridToMesh": [
+        _grid_spec(
+            "to_mesh",
+            "Mesh",
+            ("Threshold", "threshold"),
+            ("Adaptivity", "adaptivity"),
+            receiver_socket_type="VALUE",
+            data_type=False,
+        ),
+    ],
+    # Vector-grid operators ------------------------------------------------
+    "GeometryNodeGridCurl": [
+        _grid_spec("curl", "Curl", receiver_socket_type="VECTOR", data_type=False),
+    ],
+    "GeometryNodeGridDivergence": [
+        _grid_spec(
+            "divergence", "Divergence", receiver_socket_type="VECTOR", data_type=False
+        ),
+    ],
+    # Methods on every grid type ------------------------------------------
+    "GeometryNodeSampleGrid": [
+        _grid_spec(
+            "sample",
+            "Value",
+            ("Position", "position"),
+            ("Interpolation", "interpolation"),
+        ),
+    ],
+    "GeometryNodeSampleGridIndex": [
+        _grid_spec("sample_index", "Value", ("X", "x"), ("Y", "y"), ("Z", "z")),
+    ],
+    "GeometryNodeGridClip": [
+        _grid_spec(
+            "clip",
+            "Grid",
+            ("Min X", "min_x"),
+            ("Min Y", "min_y"),
+            ("Min Z", "min_z"),
+            ("Max X", "max_x"),
+            ("Max Y", "max_y"),
+            ("Max Z", "max_z"),
+        ),
+    ],
+    "GeometryNodeGridDilateAndErode": [
+        _grid_spec(
+            "dilate_erode",
+            "Grid",
+            ("Steps", "steps"),
+            ("Connectivity", "connectivity"),
+            ("Tiles", "tiles"),
+        ),
+    ],
+    "GeometryNodeGridPrune": [
+        _grid_spec(
+            "prune", "Grid", ("Threshold", "threshold"), ("Mode", "mode"), always_args=1
+        ),
+    ],
+    "GeometryNodeGridVoxelize": [
+        _grid_spec("voxelize", "Grid"),
+    ],
 }
 
 _DISSOLVE_SPECS: dict[str, DissolveSpec] = {
@@ -2173,6 +2375,25 @@ def _list_receiver_ok(node, link, type_prop: str) -> bool:
     return prop is not None and prop.replace("FLOAT", "VALUE") == link.from_socket.type
 
 
+def _receiver_reproduces_structure(ctx: EmitContext, link, structure: str) -> bool:
+    """Whether ``link``'s source carries ``structure`` (GRID) both in the
+    authored tree and on a fresh rebuild of the source node.
+
+    The authored socket must already report the structure, and a freshly
+    created node of the same type must reproduce it on the same output — see
+    :func:`_fresh_output_structure` for why the rebuild check is needed."""
+    if getattr(link.from_socket, "inferred_structure_type", None) != structure:
+        return False
+    return (
+        _fresh_output_structure(
+            ctx.node_tree.bl_idname,
+            link.from_node.bl_idname,
+            link.from_socket.identifier,
+        )
+        == structure
+    )
+
+
 def _match_socket_method(
     ctx: EmitContext, node
 ) -> tuple[SocketMethodSpec, str, str] | None:
@@ -2200,6 +2421,10 @@ def _match_socket_method(
         if (
             expected_type is not None
             and receiver_link.from_socket.type != expected_type
+        ):
+            continue
+        if spec.receiver_structure is not None and not _receiver_reproduces_structure(
+            ctx, receiver_link, spec.receiver_structure
         ):
             continue
         if spec.receiver_list_prop is not None and not _list_receiver_ok(
@@ -2335,10 +2560,8 @@ def _dissolve_val(ctx: EmitContext, node, spec: DissolveSpec) -> _Val | None:
             return None
     if expected_type is not None and links[0].from_socket.type != expected_type:
         return None
-    if (
-        spec.receiver_structure is not None
-        and getattr(links[0].from_socket, "inferred_structure_type", None)
-        != spec.receiver_structure
+    if spec.receiver_structure is not None and not _receiver_reproduces_structure(
+        ctx, links[0], spec.receiver_structure
     ):
         return None
     found = _find_cls(node.bl_idname)
