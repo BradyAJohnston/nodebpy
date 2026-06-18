@@ -1617,7 +1617,7 @@ class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
         return self._math.round(self.socket).o.value  # ty: ignore[invalid-return-type]
 
     def ping_pong(self, value: InputFloat = 1.0) -> Self:
-        """Wrap around the range [0, value] using a ping-pong pattern."""
+        """Input ping-pongs between 0 and *value*."""
         self._assert_output("ping_pong")
         return self._math.ping_pong(self.socket, value).o.value  # ty: ignore[invalid-return-type]
 
@@ -1631,7 +1631,7 @@ class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
         self._assert_output("abs")
         return self._math.absolute(self.socket).o.value  # ty: ignore[invalid-return-type]
 
-    def wrap(self, min: InputFloat, max: InputFloat) -> Self:
+    def wrap(self, min: InputFloat = 0.0, max: InputFloat = 1.0) -> Self:
         """Wrap the value into the *[min, max]* range, repeating cyclically."""
         self._assert_output("wrap")
         # the wrap method has different order of arguments with max being first
@@ -1639,7 +1639,7 @@ class _FloatMixin(BaseSocket, Generic[_IntegerResult]):
         return self._math.wrap(self.socket, value_001=max, value_002=min).o.value  # ty: ignore[invalid-return-type]
 
     def mul_add(self, multiplier: InputFloat = 0.5, addend: InputFloat = 0.5) -> Self:
-        "Multiply and then add a value. More efficient as it is a single CPU instruction."
+        """Multiply and then add a value. More efficient as it is a single CPU instruction."""
         self._assert_output("mul_add")
         return self._math.multiply_add(self.socket, multiplier, addend).o.value  # ty: ignore[invalid-return-type]
 
