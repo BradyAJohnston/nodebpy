@@ -4,8 +4,12 @@ title: Changelog
 
 ## v520.3.0 - UNRELEASED
 
+### Enhancements
+- Additional socket methods on `FloatSocket` and `IntegerSocket`.
+
 ### Fixes
 - Changed `nodebpy` absolute imports to relative inside the package, and potentially relative / dynamic import for asset generation. Absolute imports would fail when the package is vendored. Does change the behaviour of the node class generation for the imports.
+- `FloatGridSocket.to_mesh()` method didn't link any of the input arguments, this now properly links and is tested against
 
 ## v520.2.0 - 2026-06-16
 
