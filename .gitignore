@@ -16,3 +16,12 @@ tests/blend_files/*.blend1
 /docs/_build
 /docs/reference
 docs/objects.json
+
+# Great Docs build directory (ephemeral, do not commit)
+great-docs/
+
+# Great Docs versioned-build artifacts
+_great_docs_build/
+.great-docs-build/
+.great-docs-cache/
+.great-docs/
