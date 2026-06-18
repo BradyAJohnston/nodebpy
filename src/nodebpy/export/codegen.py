@@ -27,12 +27,14 @@ import keyword
 import re
 import textwrap
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, Literal, NamedTuple
+from typing import TYPE_CHECKING, Any, Callable, Literal, NamedTuple, TypeVar
 
 from bpy.types import FunctionNodeCompare, NodeTree
 
 if TYPE_CHECKING:
     from ..builder.tree import TreeBuilder
+
+_T = TypeVar("_T")
 
 
 class CodegenError(Exception):
@@ -497,6 +499,23 @@ def _find_cls(bl_idname: str) -> tuple[str, type] | None:
 # Blender socket defaults — probed on a scratch tree, never the user's tree
 # ---------------------------------------------------------------------------
 
+
+def _with_probe_tree(tree_idname: str, fn: Callable[[Any], _T], default: _T) -> _T:
+    """Run ``fn`` against a throwaway node tree of ``tree_idname`` and return its
+    result, removing the tree afterward. Returns ``default`` if Blender is
+    unavailable or anything goes wrong. The probe tree is never the user's."""
+    try:
+        import bpy
+
+        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)
+        try:
+            return fn(probe_tree)
+        finally:
+            bpy.data.node_groups.remove(probe_tree)
+    except Exception:
+        return default
+
+
 _BLENDER_SOCKET_DEFAULTS: dict[tuple[str, str], dict[str, object]] = {}
 
 
@@ -505,25 +524,21 @@ def _get_blender_socket_defaults(tree_idname: str, bl_idname: str) -> dict[str, 
     key = (tree_idname, bl_idname)
     if key in _BLENDER_SOCKET_DEFAULTS:
         return _BLENDER_SOCKET_DEFAULTS[key]
-    defaults: dict[str, object] = {}
-    try:
-        import bpy
 
-        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)
-        try:
-            node = probe_tree.nodes.new(bl_idname)
-            for s in node.inputs:
-                if not hasattr(s, "default_value"):
-                    continue
-                val = s.default_value
-                try:
-                    defaults[s.identifier] = tuple(val)
-                except TypeError:
-                    defaults[s.identifier] = val
-        finally:
-            bpy.data.node_groups.remove(probe_tree)
-    except Exception:
-        pass
+    def probe(probe_tree) -> dict[str, object]:
+        defaults: dict[str, object] = {}
+        node = probe_tree.nodes.new(bl_idname)
+        for s in node.inputs:
+            if not hasattr(s, "default_value"):
+                continue
+            val = s.default_value
+            try:
+                defaults[s.identifier] = tuple(val)
+            except TypeError:
+                defaults[s.identifier] = val
+        return defaults
+
+    defaults = _with_probe_tree(tree_idname, probe, {})
     _BLENDER_SOCKET_DEFAULTS[key] = defaults
     return defaults
 
@@ -548,21 +563,15 @@ def _fresh_output_structure(
     key = (tree_idname, bl_idname, output_id)
     if key in _NODE_OUTPUT_STRUCTURE:
         return _NODE_OUTPUT_STRUCTURE[key]
-    result: str | None = None
-    try:
-        import bpy
 
-        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)
-        try:
-            node = probe_tree.nodes.new(bl_idname)
-            for s in node.outputs:
-                if s.identifier == output_id:
-                    result = getattr(s, "inferred_structure_type", None)
-                    break
-        finally:
-            bpy.data.node_groups.remove(probe_tree)
-    except Exception:
-        pass
+    def probe(probe_tree) -> str | None:
+        node = probe_tree.nodes.new(bl_idname)
+        for s in node.outputs:
+            if s.identifier == output_id:
+                return getattr(s, "inferred_structure_type", None)
+        return None
+
+    result = _with_probe_tree(tree_idname, probe, None)
     _NODE_OUTPUT_STRUCTURE[key] = result
     return result
 
@@ -575,32 +584,28 @@ def _get_interface_defaults(tree_idname: str, socket_type: str) -> dict[str, obj
     key = (tree_idname, socket_type)
     if key in _IFACE_DEFAULTS:
         return _IFACE_DEFAULTS[key]
-    defaults: dict[str, object] = {}
-    try:
-        import bpy
 
-        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)
-        try:
-            socket = probe_tree.interface.new_socket(
-                "probe", in_out="INPUT", socket_type=socket_type
-            )
-            for prop in socket.bl_rna.properties:
-                if prop.is_readonly:
-                    continue
+    def probe(probe_tree) -> dict[str, object]:
+        defaults: dict[str, object] = {}
+        socket = probe_tree.interface.new_socket(
+            "probe", in_out="INPUT", socket_type=socket_type
+        )
+        for prop in socket.bl_rna.properties:
+            if prop.is_readonly:
+                continue
+            try:
+                value = getattr(socket, prop.identifier)
+            except Exception:
+                continue
+            if not isinstance(value, str):
                 try:
-                    value = getattr(socket, prop.identifier)
-                except Exception:
-                    continue
-                if not isinstance(value, str):
-                    try:
-                        value = tuple(value)
-                    except TypeError:
-                        pass
-                defaults[prop.identifier] = value
-        finally:
-            bpy.data.node_groups.remove(probe_tree)
-    except Exception:
-        pass
+                    value = tuple(value)
+                except TypeError:
+                    pass
+            defaults[prop.identifier] = value
+        return defaults
+
+    defaults = _with_probe_tree(tree_idname, probe, {})
     _IFACE_DEFAULTS[key] = defaults
     return defaults
 
