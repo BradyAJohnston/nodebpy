@@ -88,6 +88,23 @@ def _assert_roundtrip(tree):
 # ---------------------------------------------------------------------------
 
 
+def test_with_probe_tree_returns_default_on_failure():
+    """A probe whose body raises (here: an invalid tree idname) yields the
+    supplied default instead of propagating, and a successful probe returns its
+    result."""
+    from nodebpy.export.codegen import _with_probe_tree
+
+    sentinel = object()
+    assert (
+        _with_probe_tree("NotARealTreeType", lambda tree: "unused", sentinel)
+        is sentinel
+    )
+    assert (
+        _with_probe_tree("GeometryNodeTree", lambda tree: tree.bl_idname, None)
+        == "GeometryNodeTree"
+    )
+
+
 def test_single_node():
     """Minimal: one node, no links. Validates registry lookup and var naming."""
     with TreeBuilder("SingleNode") as tree:
