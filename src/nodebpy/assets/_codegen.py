@@ -194,7 +194,11 @@ def _library_source(library: AssetLibrary) -> str:
     from ..builder import PackageLibrary
 
     if isinstance(library, PackageLibrary):
-        return f"PackageLibrary(__file__, {library.relative!r})"
+        # Emit a plain forward-slash string literal (never ``PosixPath(...)``),
+        # so the generated module imports cleanly and stays cross-platform even
+        # when ``relative`` was passed as a ``Path``.
+        relative = Path(library.relative).as_posix()
+        return f"PackageLibrary(__file__, {relative!r})"
     raise TypeError(f"Cannot serialise asset library: {library!r}")
 
 

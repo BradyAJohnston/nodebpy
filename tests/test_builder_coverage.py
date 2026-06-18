@@ -26,11 +26,33 @@ from nodebpy.builder._utils import SocketError, normalize_name
         ("Hello World", "hello_world"),
         ("hello_world", "hello_world"),
         ("My Socket Name", "my_socket_name"),
+        # Punctuation/symbols collapse to underscores so the result is a valid
+        # Python identifier (these come from real asset sockets, e.g. "BA⟂(BC)").
+        ("BA⟂(BC)", "ba_bc"),
+        ("Café", "cafe"),
+        ("Mix A/B", "mix_a_b"),
+        # A name that would normalise to a Python keyword gets a trailing _.
+        ("And", "and_"),
+        ("Class", "class_"),
+        # A leading digit is not a valid identifier start.
+        ("2D Vector", "_2d_vector"),
     ],
-    ids=["spaces", "already_underscored", "multi_word"],
+    ids=[
+        "spaces",
+        "already_underscored",
+        "multi_word",
+        "symbols",
+        "accent",
+        "slash",
+        "keyword",
+        "keyword_class",
+        "leading_digit",
+    ],
 )
 def test_normalize_name(name, expected):
     assert normalize_name(name) == expected
+    # Whatever we return must be usable as an attribute/parameter name.
+    assert normalize_name(name).isidentifier()
 
 
 # ---------------------------------------------------------------------------

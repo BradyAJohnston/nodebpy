@@ -1254,11 +1254,11 @@ def _output_expr(
         key = _normalize(from_socket.identifier)
     else:
         key = _normalize(from_socket.name)
-    # A name that isn't a valid Python identifier (``"Physics (Experimental)"``
-    # → ``physics_(experimental)``) can't be an attribute — read it by the raw
-    # socket name via subscript, which the accessor resolves by name. A Python
-    # keyword (``"From"`` → ``from``) is a valid identifier but illegal as an
-    # attribute, so it takes the same path.
+    # ``normalize_name`` already folds non-identifier characters to underscores
+    # and suffixes keywords (``"From"`` → ``from_``), so ``key`` is normally a
+    # safe attribute. This guards the residual cases (e.g. a bare ``"_"``) by
+    # falling back to the raw socket name via subscript, which the accessor
+    # resolves by name.
     if not key.isidentifier() or keyword.iskeyword(key):
         return Subscript(Attr(val.expr, "o"), Lit(from_socket.name))
     return Attr(val.expr, f"o.{key}")

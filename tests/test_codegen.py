@@ -2361,10 +2361,11 @@ def test_roundtrip_bundled_asset(path, name):
 # ---------------------------------------------------------------------------
 
 
-def test_keyword_named_output_uses_subscript_accessor():
-    """An output socket whose name normalizes to a Python keyword (``From`` →
-    ``from``) must be read via subscript, not attribute access — ``x.o.from``
-    is a SyntaxError. (MN asset: "Sample Mixed Color".)"""
+def test_keyword_named_output_uses_suffixed_attribute():
+    """An output socket whose name would normalize to a Python keyword (``From``
+    → ``from``) is read via the suffixed attribute ``.o.from_`` — ``normalize_name``
+    appends the underscore so the accessor resolves it and ``.o.from`` (a
+    SyntaxError) is never emitted. (MN asset: "Sample Mixed Color".)"""
     from nodebpy.builder import CustomGeometryGroup
 
     class _KeywordOut(CustomGeometryGroup):
@@ -2381,8 +2382,8 @@ def test_keyword_named_output_uses_subscript_accessor():
         grp.o["From"] >> tree.outputs.integer("Result")
 
     code = _assert_roundtrip(tree)
-    assert '.o["From"]' in code
-    assert ".o.from" not in code
+    assert ".o.from_" in code
+    assert ".o.from " not in code
 
 
 def test_links_into_inactive_sockets_are_dropped():

@@ -65,26 +65,44 @@ def parse_args() -> argparse.Namespace:
         help="Optional custom .blend asset library to generate from.",
     )
     parser.add_argument(
+        "--output",
         "--output-dir",
         "-o",
+        dest="output",
         type=Path,
-        help="Directory to output the assets.py",
+        help="Path of the assets.py module to write.",
+    )
+    parser.add_argument(
+        "--nodebpy-pkg",
+        default="nodebpy",
+        help=(
+            "Import anchor for nodebpy in the generated module. Defaults to the "
+            "absolute 'nodebpy'. When nodebpy is vendored inside another package, "
+            "pass the path that reaches it relative to the generated module's "
+            "package — e.g. '..lib.nodebpy'."
+        ),
     )
     return parser.parse_args()
 
 
 def main() -> None:  # pragma: no cover - CLI wrapper
     args = parse_args()
-    output_dir = (
-        args.output_dir
-        if args.output_dir
+    output = (
+        args.output
+        if args.output
         else Path(__file__).parent.parent / "nodes" / "custom" / "assets.py"
     )
 
     if args.blend_file is not None:
+        # PackageLibrary resolves ``relative`` against the generated module's
+        # directory (``__file__``), so express the .blend relative to the output
+        # module — not the CWD the command happened to run from.
+        blend = args.blend_file.resolve()
+        relative = Path(os.path.relpath(blend, output.resolve().parent)).as_posix()
         generate_asset_api(
-            [PackageLibrary(".", args.blend_file)],
-            output_dir,
+            [PackageLibrary(str(output), relative)],
+            output,
+            nodebpy_pkg=args.nodebpy_pkg,
         )
         return
 
