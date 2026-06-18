@@ -922,7 +922,6 @@ def _assert_method(result, expected_operation):
 def test_float_socket_methods(snapshot):
     with g.tree() as tree:
         val = g.Float().o.value
-        b = g.Float().o.value
 
         result = val.negate()
         _assert_method(result, "MULTIPLY")

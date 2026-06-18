@@ -50,7 +50,6 @@
       N25("Math<br/><small>(SINH)</small>"):::converter-node
       N26("Math<br/><small>(FRACT)</small>"):::converter-node
       N27("Math<br/><small>(ARCCOSINE)</small>"):::converter-node
-      N28("Value"):::input-node
       N0 -->|"Value->Value"| N9
       N0 -->|"Value->Value"| N15
       N0 -->|"Value->Value"| N13

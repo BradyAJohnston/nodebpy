@@ -1254,11 +1254,11 @@ def _output_expr(
         key = _normalize(from_socket.identifier)
     else:
         key = _normalize(from_socket.name)
-    # A name that isn't a valid Python identifier (``"Physics (Experimental)"``
-    # → ``physics_(experimental)``) can't be an attribute — read it by the raw
-    # socket name via subscript, which the accessor resolves by name. A Python
-    # keyword (``"From"`` → ``from``) is a valid identifier but illegal as an
-    # attribute, so it takes the same path.
+    # ``normalize_name`` already folds non-identifier characters to underscores
+    # and suffixes keywords (``"From"`` → ``from_``), so ``key`` is normally a
+    # safe attribute. This guards the residual cases (e.g. a bare ``"_"``) by
+    # falling back to the raw socket name via subscript, which the accessor
+    # resolves by name.
     if not key.isidentifier() or keyword.iskeyword(key):
         return Subscript(Attr(val.expr, "o"), Lit(from_socket.name))
     return Attr(val.expr, f"o.{key}")
@@ -3162,6 +3162,7 @@ def to_python(
     keep_reroutes: bool = False,
     top_level: Literal["with", "class"] = "with",
     format: bool = True,
+    nodebpy_pkg: str = "nodebpy",
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -3206,6 +3207,12 @@ def to_python(
             If True (default) and the optional ``ruff`` package is installed,
             the generated source is run through ``ruff format`` for tidier
             output. A no-op when ``ruff`` is unavailable.
+        nodebpy_pkg: str
+            Import anchor for nodebpy in the generated source. Defaults to the
+            absolute ``"nodebpy"``. When nodebpy is vendored inside another
+            package, pass the path that reaches it *relative to the generated
+            module's package* — e.g. ``"..vendor.nodebpy"`` — so the emitted
+            imports stay relative to the install/vendor location.
 
     Returns
     -------
@@ -3244,10 +3251,11 @@ def to_python(
     import_names = import_parts + (["TreeBuilder"] if top_level == "with" else [])
     lines: list[str] = []
     if import_names:
-        lines.append("from nodebpy import " + ", ".join(import_names))
+        lines.append(f"from {nodebpy_pkg} import " + ", ".join(import_names))
     if collector.bases_used:
         lines.append(
-            "from nodebpy.builder import " + ", ".join(sorted(collector.bases_used))
+            f"from {nodebpy_pkg}.builder import "
+            + ", ".join(sorted(collector.bases_used))
         )
     # Group classes are top-level defs: two blank lines around each (PEP 8).
     for class_def in collector.class_defs:

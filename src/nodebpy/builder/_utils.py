@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import keyword
+import re
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import bpy
@@ -34,9 +36,21 @@ GEO_NODE_NAMES = (
 )
 
 
+_NON_IDENTIFIER = re.compile(r"[^0-9a-z]+")
+
+
 def normalize_name(name: str) -> str:
-    """Convert 'Geometry' or 'My Socket' to 'geometry' or 'my_socket'."""
-    return name.lower().replace(" ", "_").replace("é", "e")
+    """Convert 'Geometry' or 'My Socket' to a valid lower-case Python identifier
+    ('geometry', 'my_socket'). Spaces, punctuation and other non-identifier
+    characters (e.g. the '⟂'/'(' in 'BA⟂(BC)') collapse to underscores so the
+    result is always usable as an attribute or parameter name."""
+    text = name.lower().replace("é", "e")
+    cleaned = _NON_IDENTIFIER.sub("_", text).strip("_")
+    if cleaned and cleaned[0].isdigit():
+        cleaned = "_" + cleaned
+    if keyword.iskeyword(cleaned):
+        cleaned += "_"
+    return cleaned or "_"
 
 
 def denormalize_name(attr_name: str) -> str:

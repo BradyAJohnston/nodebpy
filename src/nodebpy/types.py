@@ -36,7 +36,8 @@ from bpy.types import (
 from mathutils import Euler
 
 if typing.TYPE_CHECKING:
-    from nodebpy.builder import (
+    from .builder import (
+        BaseNode,
         BooleanSocket,
         BooleanSocketGrid,
         BooleanSocketList,
@@ -81,8 +82,6 @@ if typing.TYPE_CHECKING:
         VectorSocketGrid,
         VectorSocketList,
     )
-
-    from .builder import BaseNode as BaseNode
     from .builder import Socket as SocketLinker
     from .nodes.geometry.converter import CombineMatrix, CombineTransform
 

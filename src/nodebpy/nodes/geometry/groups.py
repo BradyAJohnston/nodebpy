@@ -1,21 +1,20 @@
 from typing import TYPE_CHECKING
 
-from nodebpy import TreeBuilder
-from nodebpy.types import (
-    InputBoolean,
-    InputGeometry,
-    InputInteger,
-    InputObject,
-    InputVector,
-)
-
 from ...builder import (
     CustomGeometryGroup,
     IntegerSocket,
     IntegerSocketList,
     RotationSocket,
     SocketAccessor,
+    TreeBuilder,
     VectorSocket,
+)
+from ...types import (
+    InputBoolean,
+    InputGeometry,
+    InputInteger,
+    InputObject,
+    InputVector,
 )
 from . import (
     AxesToRotation,

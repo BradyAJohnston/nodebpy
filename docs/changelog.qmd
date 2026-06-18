@@ -2,12 +2,13 @@
 title: Changelog
 ---
 
-## v520.2.1 - UNRELEASED
+## v520.3.0 - UNRELEASED
 
 ### Enhancements
 - Additional socket methods on `FloatSocket` and `IntegerSocket`.
 
 ### Fixes
+- Changed `nodebpy` absolute imports to relative inside the package, and potentially relative / dynamic import for asset generation. Absolute imports would fail when the package is vendored. Does change the behaviour of the node class generation for the imports.
 - `FloatGridSocket.to_mesh()` method didn't link any of the input arguments, this now properly links and is tested against
 
 ## v520.2.0 - 2026-06-16
@@ -27,8 +28,9 @@ title: Changelog
     - `nodebpy.assets.generate_asset_api(library, output_path)` generates the same typed classes for **your own** assets — point it at a `.blend` shipped in your package via `PackageLibrary(__file__, "…/assets.blend")` (or `BundledLibrary("…")` for a Blender-bundled library) and import the result like any other node module.
     - New runtime bases `AssetGeometryGroup` / `AssetShaderGroup` / `AssetCompositorGroup` (parallel to the `Custom*Group` builders) back these classes; library resolution is handled by `BundledLibrary` / `PackageLibrary`.
 
-## Fixes
+### Fixes
 - Fixed a bug where `AxesToRotation` silently did not set the `primary` and `secondary` when instantiating a new node
+
 
 ## v520.1.1 - 2026-06-15
 
@@ -114,10 +116,6 @@ string.uppercase()   # StringSocket via SetStringCase
 string.lowercase()   # StringSocket via SetStringCase
 string.reverse()     # StringSocket via ReverseString
 ```
-
-### Fixed
-
-### Breaking Changes
 
 ## v0.18.0 - 2026-05-20
 

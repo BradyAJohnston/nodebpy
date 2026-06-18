@@ -157,6 +157,30 @@ def test_generate_with_package_library(tmp_path):
     assert "PackageLibrary(__file__, " in source
 
 
+def test_library_source_renders_path_as_plain_string():
+    """A PackageLibrary built with a ``Path`` relative must render as a plain
+    forward-slash string literal — never ``PosixPath('…')``, which the generated
+    module doesn't import (and which isn't cross-platform)."""
+    lib = PackageLibrary(__file__, Path("assets") / "data.blend")
+    source = _codegen._library_source(lib)
+    assert source == "PackageLibrary(__file__, 'assets/data.blend')"
+    assert "PosixPath" not in source
+    assert "WindowsPath" not in source
+
+
+@_needs_essentials
+def test_generate_with_vendored_nodebpy_pkg(tmp_path):
+    """nodebpy_pkg rewrites the import anchor so a vendored copy can be reached
+    with a relative path instead of the absolute ``nodebpy`` package."""
+    out = tmp_path / "generated.py"
+    generate_asset_api(
+        _ESSENTIALS, out, names={"Smooth by Angle"}, nodebpy_pkg="..vendor.nodebpy"
+    )
+    source = out.read_text()
+    assert "from ..vendor.nodebpy.builder import" in source
+    assert "from nodebpy.builder import" not in source
+
+
 def test_generate_empty_library_writes_empty_all(tmp_path):
     out = tmp_path / "generated.py"
     names = generate_asset_api(_ESSENTIALS, out, names={"___no_such_group___"})

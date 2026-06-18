@@ -20,8 +20,6 @@ from bpy.types import (
     NodeSocketString,
 )
 
-from nodebpy.builder.tree import _MenuDefault
-
 from ...builder import (
     BaseNode,
     BooleanSocket,
@@ -51,6 +49,7 @@ from ...builder import (
 )
 from ...builder import Socket as SocketLinker
 from ...builder.socket import BaseSocket
+from ...builder.tree import _MenuDefault
 from ...types import (
     SOCKET_TYPES,
     InputAny,
