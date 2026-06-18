@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Changelog – nodebpy 520.2.0</title>
+<title>Changelog – nodebpy 520.3.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -169,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.2.0</span>
+    <span class="navbar-title">nodebpy 520.3.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -252,31 +252,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#v520.2.0---2026-06-16" id="toc-v520.2.0---2026-06-16" class="nav-link active" data-scroll-target="#v520.2.0---2026-06-16">v520.2.0 - 2026-06-16</a>
+  <li><a href="#v520.3.0---2026-06-18" id="toc-v520.3.0---2026-06-18" class="nav-link active" data-scroll-target="#v520.3.0---2026-06-18">v520.3.0 - 2026-06-18</a>
   <ul class="collapse">
   <li><a href="#enhancements" id="toc-enhancements" class="nav-link" data-scroll-target="#enhancements">Enhancements</a></li>
-  </ul></li>
   <li><a href="#fixes" id="toc-fixes" class="nav-link" data-scroll-target="#fixes">Fixes</a></li>
+  </ul></li>
+  <li><a href="#v520.2.0---2026-06-16" id="toc-v520.2.0---2026-06-16" class="nav-link" data-scroll-target="#v520.2.0---2026-06-16">v520.2.0 - 2026-06-16</a>
+  <ul class="collapse">
+  <li><a href="#enhancements-1" id="toc-enhancements-1" class="nav-link" data-scroll-target="#enhancements-1">Enhancements</a></li>
+  <li><a href="#fixes-1" id="toc-fixes-1" class="nav-link" data-scroll-target="#fixes-1">Fixes</a></li>
+  </ul></li>
   <li><a href="#v520.1.1---2026-06-15" id="toc-v520.1.1---2026-06-15" class="nav-link" data-scroll-target="#v520.1.1---2026-06-15">v520.1.1 - 2026-06-15</a>
   <ul class="collapse">
   <li><a href="#internal" id="toc-internal" class="nav-link" data-scroll-target="#internal">Internal</a></li>
-  <li><a href="#fixes-1" id="toc-fixes-1" class="nav-link" data-scroll-target="#fixes-1">Fixes</a></li>
+  <li><a href="#fixes-2" id="toc-fixes-2" class="nav-link" data-scroll-target="#fixes-2">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.1.0---2026-06-15" id="toc-v520.1.0---2026-06-15" class="nav-link" data-scroll-target="#v520.1.0---2026-06-15">v520.1.0 - 2026-06-15</a>
   <ul class="collapse">
-  <li><a href="#enhancements-1" id="toc-enhancements-1" class="nav-link" data-scroll-target="#enhancements-1">Enhancements</a></li>
-  <li><a href="#fixes-2" id="toc-fixes-2" class="nav-link" data-scroll-target="#fixes-2">Fixes</a></li>
+  <li><a href="#enhancements-2" id="toc-enhancements-2" class="nav-link" data-scroll-target="#enhancements-2">Enhancements</a></li>
+  <li><a href="#fixes-3" id="toc-fixes-3" class="nav-link" data-scroll-target="#fixes-3">Fixes</a></li>
   <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking Changes</a></li>
   </ul></li>
   <li><a href="#v520.0.1---2026-06-05" id="toc-v520.0.1---2026-06-05" class="nav-link" data-scroll-target="#v520.0.1---2026-06-05">v520.0.1 - 2026-06-05</a>
   <ul class="collapse">
-  <li><a href="#fixes-3" id="toc-fixes-3" class="nav-link" data-scroll-target="#fixes-3">Fixes</a></li>
+  <li><a href="#fixes-4" id="toc-fixes-4" class="nav-link" data-scroll-target="#fixes-4">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.0.0---2026-06-04" id="toc-v520.0.0---2026-06-04" class="nav-link" data-scroll-target="#v520.0.0---2026-06-04">v520.0.0 - 2026-06-04</a>
   <ul class="collapse">
-  <li><a href="#enhancements-2" id="toc-enhancements-2" class="nav-link" data-scroll-target="#enhancements-2">Enhancements</a></li>
-  <li><a href="#fixed" id="toc-fixed" class="nav-link" data-scroll-target="#fixed">Fixed</a></li>
-  <li><a href="#breaking-changes-1" id="toc-breaking-changes-1" class="nav-link" data-scroll-target="#breaking-changes-1">Breaking Changes</a></li>
+  <li><a href="#enhancements-3" id="toc-enhancements-3" class="nav-link" data-scroll-target="#enhancements-3">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.18.0---2026-05-20" id="toc-v0.18.0---2026-05-20" class="nav-link" data-scroll-target="#v0.18.0---2026-05-20">v0.18.0 - 2026-05-20</a>
   <ul class="collapse">
@@ -284,33 +287,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#v0.17.0---2026-05-13" id="toc-v0.17.0---2026-05-13" class="nav-link" data-scroll-target="#v0.17.0---2026-05-13">v0.17.0 - 2026-05-13</a>
   <ul class="collapse">
-  <li><a href="#enhancements-3" id="toc-enhancements-3" class="nav-link" data-scroll-target="#enhancements-3">Enhancements</a></li>
-  <li><a href="#breaking-changes-2" id="toc-breaking-changes-2" class="nav-link" data-scroll-target="#breaking-changes-2">Breaking Changes</a></li>
+  <li><a href="#enhancements-4" id="toc-enhancements-4" class="nav-link" data-scroll-target="#enhancements-4">Enhancements</a></li>
+  <li><a href="#breaking-changes-1" id="toc-breaking-changes-1" class="nav-link" data-scroll-target="#breaking-changes-1">Breaking Changes</a></li>
   </ul></li>
   <li><a href="#v0.16.0---2026-05-05" id="toc-v0.16.0---2026-05-05" class="nav-link" data-scroll-target="#v0.16.0---2026-05-05">v0.16.0 - 2026-05-05</a>
   <ul class="collapse">
-  <li><a href="#enhancements-4" id="toc-enhancements-4" class="nav-link" data-scroll-target="#enhancements-4">Enhancements</a></li>
-  <li><a href="#breaking-changes-3" id="toc-breaking-changes-3" class="nav-link" data-scroll-target="#breaking-changes-3">Breaking Changes</a></li>
+  <li><a href="#enhancements-5" id="toc-enhancements-5" class="nav-link" data-scroll-target="#enhancements-5">Enhancements</a></li>
+  <li><a href="#breaking-changes-2" id="toc-breaking-changes-2" class="nav-link" data-scroll-target="#breaking-changes-2">Breaking Changes</a></li>
   <li><a href="#bug-fixes" id="toc-bug-fixes" class="nav-link" data-scroll-target="#bug-fixes">Bug Fixes</a></li>
   </ul></li>
   <li><a href="#v0.15.0---2026-04-30" id="toc-v0.15.0---2026-04-30" class="nav-link" data-scroll-target="#v0.15.0---2026-04-30">v0.15.0 - 2026-04-30</a>
   <ul class="collapse">
-  <li><a href="#enhancements-5" id="toc-enhancements-5" class="nav-link" data-scroll-target="#enhancements-5">Enhancements</a></li>
+  <li><a href="#enhancements-6" id="toc-enhancements-6" class="nav-link" data-scroll-target="#enhancements-6">Enhancements</a></li>
   <li><a href="#bug-fixes-1" id="toc-bug-fixes-1" class="nav-link" data-scroll-target="#bug-fixes-1">Bug Fixes</a></li>
   </ul></li>
   <li><a href="#v0.14.0---2026-04-29" id="toc-v0.14.0---2026-04-29" class="nav-link" data-scroll-target="#v0.14.0---2026-04-29">v0.14.0 - 2026-04-29</a>
   <ul class="collapse">
-  <li><a href="#enhancements-6" id="toc-enhancements-6" class="nav-link" data-scroll-target="#enhancements-6">Enhancements</a></li>
+  <li><a href="#enhancements-7" id="toc-enhancements-7" class="nav-link" data-scroll-target="#enhancements-7">Enhancements</a></li>
   <li><a href="#bug-fixes-2" id="toc-bug-fixes-2" class="nav-link" data-scroll-target="#bug-fixes-2">Bug Fixes</a></li>
   </ul></li>
   <li><a href="#v0.13.0---2026-04-28" id="toc-v0.13.0---2026-04-28" class="nav-link" data-scroll-target="#v0.13.0---2026-04-28">v0.13.0 - 2026-04-28</a>
   <ul class="collapse">
-  <li><a href="#enhancements-7" id="toc-enhancements-7" class="nav-link" data-scroll-target="#enhancements-7">Enhancements</a></li>
+  <li><a href="#enhancements-8" id="toc-enhancements-8" class="nav-link" data-scroll-target="#enhancements-8">Enhancements</a></li>
   <li><a href="#bug-fixes-3" id="toc-bug-fixes-3" class="nav-link" data-scroll-target="#bug-fixes-3">Bug Fixes</a></li>
   </ul></li>
   <li><a href="#v0.12.0---2026-04-25" id="toc-v0.12.0---2026-04-25" class="nav-link" data-scroll-target="#v0.12.0---2026-04-25">v0.12.0 - 2026-04-25</a>
   <ul class="collapse">
-  <li><a href="#enhancements-8" id="toc-enhancements-8" class="nav-link" data-scroll-target="#enhancements-8">Enhancements</a></li>
+  <li><a href="#enhancements-9" id="toc-enhancements-9" class="nav-link" data-scroll-target="#enhancements-9">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.11.1---2026-04-24" id="toc-v0.11.1---2026-04-24" class="nav-link" data-scroll-target="#v0.11.1---2026-04-24">v0.11.1 - 2026-04-24</a>
   <ul class="collapse">
@@ -318,12 +321,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#v0.11.0-2026-04-24" id="toc-v0.11.0-2026-04-24" class="nav-link" data-scroll-target="#v0.11.0-2026-04-24">v0.11.0 — 2026-04-24</a>
   <ul class="collapse">
-  <li><a href="#enhancements-9" id="toc-enhancements-9" class="nav-link" data-scroll-target="#enhancements-9">Enhancements</a></li>
+  <li><a href="#enhancements-10" id="toc-enhancements-10" class="nav-link" data-scroll-target="#enhancements-10">Enhancements</a></li>
   <li><a href="#bug-fixes-5" id="toc-bug-fixes-5" class="nav-link" data-scroll-target="#bug-fixes-5">Bug Fixes</a></li>
   </ul></li>
   <li><a href="#v0.10.2---2026-04-21" id="toc-v0.10.2---2026-04-21" class="nav-link" data-scroll-target="#v0.10.2---2026-04-21">v0.10.2 - 2026-04-21</a>
   <ul class="collapse">
-  <li><a href="#enhancements-10" id="toc-enhancements-10" class="nav-link" data-scroll-target="#enhancements-10">Enhancements</a></li>
+  <li><a href="#enhancements-11" id="toc-enhancements-11" class="nav-link" data-scroll-target="#enhancements-11">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.10.1-2026-04-20" id="toc-v0.10.1-2026-04-20" class="nav-link" data-scroll-target="#v0.10.1-2026-04-20">v0.10.1 — 2026-04-20</a>
   <ul class="collapse">
@@ -331,30 +334,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#v0.10.0-2026-04-19" id="toc-v0.10.0-2026-04-19" class="nav-link" data-scroll-target="#v0.10.0-2026-04-19">v0.10.0 — 2026-04-19</a>
   <ul class="collapse">
-  <li><a href="#enhancements-11" id="toc-enhancements-11" class="nav-link" data-scroll-target="#enhancements-11">Enhancements</a></li>
+  <li><a href="#enhancements-12" id="toc-enhancements-12" class="nav-link" data-scroll-target="#enhancements-12">Enhancements</a></li>
   <li><a href="#other-changes" id="toc-other-changes" class="nav-link" data-scroll-target="#other-changes">Other changes</a></li>
   </ul></li>
   <li><a href="#v0.9.1-2026-03-27" id="toc-v0.9.1-2026-03-27" class="nav-link" data-scroll-target="#v0.9.1-2026-03-27">v0.9.1 — 2026-03-27</a>
   <ul class="collapse">
-  <li><a href="#enhancements-12" id="toc-enhancements-12" class="nav-link" data-scroll-target="#enhancements-12">Enhancements</a></li>
+  <li><a href="#enhancements-13" id="toc-enhancements-13" class="nav-link" data-scroll-target="#enhancements-13">Enhancements</a></li>
   <li><a href="#other-changes-1" id="toc-other-changes-1" class="nav-link" data-scroll-target="#other-changes-1">Other changes</a></li>
   </ul></li>
   <li><a href="#v0.8.0-2026-03-16" id="toc-v0.8.0-2026-03-16" class="nav-link" data-scroll-target="#v0.8.0-2026-03-16">v0.8.0 — 2026-03-16</a>
   <ul class="collapse">
-  <li><a href="#enhancements-13" id="toc-enhancements-13" class="nav-link" data-scroll-target="#enhancements-13">Enhancements</a></li>
+  <li><a href="#enhancements-14" id="toc-enhancements-14" class="nav-link" data-scroll-target="#enhancements-14">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.7.2-2026-03-15" id="toc-v0.7.2-2026-03-15" class="nav-link" data-scroll-target="#v0.7.2-2026-03-15">v0.7.2 — 2026-03-15</a>
   <ul class="collapse">
-  <li><a href="#enhancements-14" id="toc-enhancements-14" class="nav-link" data-scroll-target="#enhancements-14">Enhancements</a></li>
+  <li><a href="#enhancements-15" id="toc-enhancements-15" class="nav-link" data-scroll-target="#enhancements-15">Enhancements</a></li>
   <li><a href="#bug-fixes-7" id="toc-bug-fixes-7" class="nav-link" data-scroll-target="#bug-fixes-7">Bug fixes</a></li>
   </ul></li>
   <li><a href="#v0.7.1-2026-03-14" id="toc-v0.7.1-2026-03-14" class="nav-link" data-scroll-target="#v0.7.1-2026-03-14">v0.7.1 — 2026-03-14</a>
   <ul class="collapse">
-  <li><a href="#enhancements-15" id="toc-enhancements-15" class="nav-link" data-scroll-target="#enhancements-15">Enhancements</a></li>
+  <li><a href="#enhancements-16" id="toc-enhancements-16" class="nav-link" data-scroll-target="#enhancements-16">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.7.0-2026-03-13" id="toc-v0.7.0-2026-03-13" class="nav-link" data-scroll-target="#v0.7.0-2026-03-13">v0.7.0 — 2026-03-13</a>
   <ul class="collapse">
-  <li><a href="#enhancements-16" id="toc-enhancements-16" class="nav-link" data-scroll-target="#enhancements-16">Enhancements</a></li>
+  <li><a href="#enhancements-17" id="toc-enhancements-17" class="nav-link" data-scroll-target="#enhancements-17">Enhancements</a></li>
   </ul></li>
   <li><a href="#v0.6.0-2026-03-13" id="toc-v0.6.0-2026-03-13" class="nav-link" data-scroll-target="#v0.6.0-2026-03-13">v0.6.0 — 2026-03-13</a>
   <ul class="collapse">
@@ -363,7 +366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#v0.5.0-2026-03-13" id="toc-v0.5.0-2026-03-13" class="nav-link" data-scroll-target="#v0.5.0-2026-03-13">v0.5.0 — 2026-03-13</a>
   <ul class="collapse">
-  <li><a href="#enhancements-17" id="toc-enhancements-17" class="nav-link" data-scroll-target="#enhancements-17">Enhancements</a></li>
+  <li><a href="#enhancements-18" id="toc-enhancements-18" class="nav-link" data-scroll-target="#enhancements-18">Enhancements</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -390,10 +393,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="v520.2.0---2026-06-16" class="level2">
-<h2 class="anchored" data-anchor-id="v520.2.0---2026-06-16">v520.2.0 - 2026-06-16</h2>
+<section id="v520.3.0---2026-06-18" class="level2">
+<h2 class="anchored" data-anchor-id="v520.3.0---2026-06-18">v520.3.0 - 2026-06-18</h2>
 <section id="enhancements" class="level3">
 <h3 class="anchored" data-anchor-id="enhancements">Enhancements</h3>
+<ul>
+<li>Additional socket methods on <code>FloatSocket</code> and <code>IntegerSocket</code>.</li>
+</ul>
+</section>
+<section id="fixes" class="level3">
+<h3 class="anchored" data-anchor-id="fixes">Fixes</h3>
+<ul>
+<li>Changed <code>nodebpy</code> absolute imports to relative inside the package, and potentially relative / dynamic import for asset generation. Absolute imports would fail when the package is vendored. Does change the behaviour of the node class generation for the imports.</li>
+<li><code>FloatGridSocket.to_mesh()</code> method didn’t link any of the input arguments, this now properly links and is tested against</li>
+</ul>
+</section>
+</section>
+<section id="v520.2.0---2026-06-16" class="level2">
+<h2 class="anchored" data-anchor-id="v520.2.0---2026-06-16">v520.2.0 - 2026-06-16</h2>
+<section id="enhancements-1" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-1">Enhancements</h3>
 <ul>
 <li><strong>Asset node-group APIs</strong> — generate typed <code>nodebpy</code> classes for node-group assets, so an asset reads, links and type-checks like any other node. Unlike a <code>Custom*Group</code> (which <em>builds</em> its tree), an asset class <em>appends</em> the asset’s node group from a <code>.blend</code> at runtime and points a Group node at it.
 <ul>
@@ -409,12 +428,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ul>
 </section>
-</section>
-<section id="fixes" class="level2">
-<h2 class="anchored" data-anchor-id="fixes">Fixes</h2>
+<section id="fixes-1" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-1">Fixes</h3>
 <ul>
 <li>Fixed a bug where <code>AxesToRotation</code> silently did not set the <code>primary</code> and <code>secondary</code> when instantiating a new node</li>
 </ul>
+</section>
 </section>
 <section id="v520.1.1---2026-06-15" class="level2">
 <h2 class="anchored" data-anchor-id="v520.1.1---2026-06-15">v520.1.1 - 2026-06-15</h2>
@@ -426,8 +445,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The code generator now infers generic typing more completely — generic <em>input</em> sockets that track a node’s data type, and nodes whose output type is fixed while the inputs vary — tightening the type hints on <code>HashValue</code>, <code>ListLength</code>, <code>ValueToString</code>, <code>FilterList</code>, <code>StoreBundleItem</code>, <code>SetSelection</code>, and <code>StoreNamedGrid</code>.</li>
 </ul>
 </section>
-<section id="fixes-1" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-1">Fixes</h3>
+<section id="fixes-2" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-2">Fixes</h3>
 <ul>
 <li><code>CombineBundle</code> / <code>SeparateBundle</code> item construction is now part of the generated output, fixing a latent issue where their custom constructors were silently overwritten whenever the node classes were regenerated.</li>
 </ul>
@@ -435,8 +454,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v520.1.0---2026-06-15" class="level2">
 <h2 class="anchored" data-anchor-id="v520.1.0---2026-06-15">v520.1.0 - 2026-06-15</h2>
-<section id="enhancements-1" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-1">Enhancements</h3>
+<section id="enhancements-2" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-2">Enhancements</h3>
 <ul>
 <li><strong>Nodes to code (<code>to_python</code>)</strong> — <code>TreeBuilder.to_python()</code> (and the standalone <code>nodebpy.export.to_python()</code>) converts <em>any</em> node tree back into idiomatic <code>nodebpy</code> Python — interface sockets, properties, links, zones, frames and nested groups included. It recognises lifted operators (<code>Math</code> → <code>*</code>, <code>SeparateXYZ</code> → <code>.x</code>), socket methods, factory methods and zone item APIs, so generated code reads like hand-written <code>nodebpy</code>. Validated end-to-end against Blender’s full bundled <strong>geometry, shader and compositor essentials</strong> asset libraries, so it round-trips real-world trees, not only ones built with <code>nodebpy</code>. See <a href="./nodes-to-code.html">Nodes to Code</a>. Options:
 <ul>
@@ -464,8 +483,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>density <span class="op">=</span> grid.capture_float(g.NoiseTexture().o.fac)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>flow <span class="op">=</span> density.dilate_erode(<span class="dv">1</span>).laplacian().gradient().divergence()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="fixes-2" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-2">Fixes</h3>
+<section id="fixes-3" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-3">Fixes</h3>
 <ul>
 <li>Grid <code>mean()</code> and <code>median()</code> now pass the correct <code>data_type</code> (Blender’s <code>VALUE</code> float type is mapped to <code>FLOAT</code>), fixing a crash when calling them on float grids</li>
 <li><code>INT_VECTOR</code> sockets (e.g.&nbsp;compositor Image Info “Dimensions”) are now link-compatible with regular <code>VECTOR</code> sockets, matching Blender’s implicit conversion.</li>
@@ -482,8 +501,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v520.0.1---2026-06-05" class="level2">
 <h2 class="anchored" data-anchor-id="v520.0.1---2026-06-05">v520.0.1 - 2026-06-05</h2>
-<section id="fixes-3" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-3">Fixes</h3>
+<section id="fixes-4" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-4">Fixes</h3>
 <ul>
 <li>Import and usage of the <code>arrange()</code> function properly handles the optional <code>netowrkx</code> dependency</li>
 </ul>
@@ -491,8 +510,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v520.0.0---2026-06-04" class="level2">
 <h2 class="anchored" data-anchor-id="v520.0.0---2026-06-04">v520.0.0 - 2026-06-04</h2>
-<section id="enhancements-2" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-2">Enhancements</h3>
+<section id="enhancements-3" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-3">Enhancements</h3>
 <ul>
 <li>Added <code>leading()</code>, <code>trailling()</code> and <code>total()</code> methods from <a href="./reference/nodes.geometry.converter.html#nodebpy.nodes.geometry.converter.AccumulateField"><code>AccumulateField</code></a> node onto relevant sockets. Added to <code>Float</code>, <code>Vector</code>, <code>Integer</code> and <code>Matrix</code> sockets.</li>
 <li><strong>Blender 5.2 support</strong> — generated nodes updated to include the nodes for Blender 5.2.</li>
@@ -519,12 +538,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>string.uppercase()   <span class="co"># StringSocket via SetStringCase</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>string.lowercase()   <span class="co"># StringSocket via SetStringCase</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>string.reverse()     <span class="co"># StringSocket via ReverseString</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="fixed" class="level3">
-<h3 class="anchored" data-anchor-id="fixed">Fixed</h3>
-</section>
-<section id="breaking-changes-1" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-1">Breaking Changes</h3>
 </section>
 </section>
 <section id="v0.18.0---2026-05-20" class="level2">
@@ -555,8 +568,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.17.0---2026-05-13" class="level2">
 <h2 class="anchored" data-anchor-id="v0.17.0---2026-05-13">v0.17.0 - 2026-05-13</h2>
-<section id="enhancements-3" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-3">Enhancements</h3>
+<section id="enhancements-4" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-4">Enhancements</h3>
 <ul>
 <li>New methods on <code>VectorSocket</code> for applying transforms:
 <ul>
@@ -624,8 +637,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>fac.mix.vector((<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), (<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)) <span class="co"># VectorSocket</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>fac.mix.color(color_a, color_b)  <span class="co"># ColorSocket</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="breaking-changes-2" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-2">Breaking Changes</h3>
+<section id="breaking-changes-1" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-1">Breaking Changes</h3>
 <ul>
 <li><code>RotationSocket.euler()</code> renamed to <code>RotationSocket.to_euler()</code> for consistency with the new <code>to_quaternion()</code> and <code>to_axis_angle()</code> methods.</li>
 <li><code>RotationSocket.w</code>, <code>.x</code>, <code>.y</code>, <code>.z</code> component properties removed. Use <code>to_quaternion()</code> instead.</li>
@@ -649,8 +662,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.16.0---2026-05-05" class="level2">
 <h2 class="anchored" data-anchor-id="v0.16.0---2026-05-05">v0.16.0 - 2026-05-05</h2>
-<section id="enhancements-4" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-4">Enhancements</h3>
+<section id="enhancements-5" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-5">Enhancements</h3>
 <ul>
 <li>Input <code>VectorSocket</code> now properly has the <code>x</code>, <code>y</code>, <code>z</code> attributes through <code>CombineXYZ</code> node.</li>
 <li>Socket methods added for strings. Methods added are: <code>length()</code>, <code>starts_with()</code>, <code>ends_with()</code>, <code>contains()</code>, <code>slice()</code>, <code>format()</code>, <code>replace()</code>, <code>find()</code>, <code>join()</code></li>
@@ -711,8 +724,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ul>
 </section>
-<section id="breaking-changes-3" class="level3">
-<h3 class="anchored" data-anchor-id="breaking-changes-3">Breaking Changes</h3>
+<section id="breaking-changes-2" class="level3">
+<h3 class="anchored" data-anchor-id="breaking-changes-2">Breaking Changes</h3>
 <ul>
 <li><code>Compare.switch(false, true)</code> with automatic type inference has been removed. Use the explicit typed factory methods on <code>BooleanSocket.switch</code> instead.</li>
 </ul>
@@ -748,8 +761,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.15.0---2026-04-30" class="level2">
 <h2 class="anchored" data-anchor-id="v0.15.0---2026-04-30">v0.15.0 - 2026-04-30</h2>
-<section id="enhancements-5" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-5">Enhancements</h3>
+<section id="enhancements-6" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-6">Enhancements</h3>
 <ul>
 <li>Boolean sockets have a <code>switch</code> method which creates a <code>Switch</code> node with the socket as the input. Allows for quick chaining.</li>
 </ul>
@@ -784,8 +797,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.14.0---2026-04-29" class="level2">
 <h2 class="anchored" data-anchor-id="v0.14.0---2026-04-29">v0.14.0 - 2026-04-29</h2>
-<section id="enhancements-6" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-6">Enhancements</h3>
+<section id="enhancements-7" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-7">Enhancements</h3>
 <ul>
 <li>Nodes which previously took <code>*args</code> and <code>**kwargs</code> have been updated to use keyword-only arguments instead. This is a hard breaking change but makes the code more readable and less error-prone. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/69"><code>#69</code></a>)
 <ul>
@@ -810,8 +823,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.13.0---2026-04-28" class="level2">
 <h2 class="anchored" data-anchor-id="v0.13.0---2026-04-28">v0.13.0 - 2026-04-28</h2>
-<section id="enhancements-7" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-7">Enhancements</h3>
+<section id="enhancements-8" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-8">Enhancements</h3>
 <ul>
 <li>Support adding of closure nodes (<code>EvaluateClosure</code> and the <code>ClosureInput</code> / <code>ClosureOutput</code> nodes). Convenience <code>ClosureZone</code> class is added similar to the repeat, simulation and for-each-element zones. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/60"><code>#60</code></a>)</li>
 <li>Iteration output for the <code>RepeatZone</code> has change <code>.i</code> -&gt; <code>.iteration</code> to not confuse with input / output socket access (<a href="https://github.com/BradyAJohnston/nodebpy/pull/60"><code>#60</code></a>)</li>
@@ -828,8 +841,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.12.0---2026-04-25" class="level2">
 <h2 class="anchored" data-anchor-id="v0.12.0---2026-04-25">v0.12.0 - 2026-04-25</h2>
-<section id="enhancements-8" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-8">Enhancements</h3>
+<section id="enhancements-9" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-9">Enhancements</h3>
 <ul>
 <li>Support custom node groups for each node tree via <code>CustomGeometryGroup</code>, <code>CustomShaderGroup</code>, <code>CustomCompositorGroup</code> (<a href="https://github.com/BradyAJohnston/nodebpy/pull/53"><code>#53</code></a>)</li>
 </ul>
@@ -846,8 +859,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.11.0-2026-04-24" class="level2">
 <h2 class="anchored" data-anchor-id="v0.11.0-2026-04-24">v0.11.0 — 2026-04-24</h2>
-<section id="enhancements-9" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-9">Enhancements</h3>
+<section id="enhancements-10" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-10">Enhancements</h3>
 <ul>
 <li>Refactor the mermaid diagram generation. Change <code>screenshot.py</code> -&gt; <code>diagram.py</code> and added test coverage.</li>
 <li><strong>Socket iteration and indexing</strong> — <code>VectorSocket</code>, <code>ColorSocket</code>, and <code>MatrixSocket</code> now support <code>__getitem__</code>, <code>__iter__</code>, and <code>__len__</code> on both output and input sockets. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/48">#48</a>) Output sockets decompose via <code>SeparateXYZ</code>/<code>SeparateColor</code>/<code>SeparateMatrix</code> (node reuse on repeated access); input sockets auto-wire a <code>CombineXYZ</code>/<code>CombineColor</code>/<code>CombineMatrix</code> and return the component input socket.</li>
@@ -879,8 +892,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.10.2---2026-04-21" class="level2">
 <h2 class="anchored" data-anchor-id="v0.10.2---2026-04-21">v0.10.2 - 2026-04-21</h2>
-<section id="enhancements-10" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-10">Enhancements</h3>
+<section id="enhancements-11" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-11">Enhancements</h3>
 <ul>
 <li>Added changelog to the documentation to better track and explain changes in the project.</li>
 <li>Support <code>len(tree.inputs)</code> and <code>len(tree.outputs)</code> to get the number of inputs and outputs in the tree. (<a href="https://github.com/BradyAJohnston/nodebpy/pull/43">#43</a>)</li>
@@ -900,8 +913,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="v0.10.0-2026-04-19" class="level2">
 <h2 class="anchored" data-anchor-id="v0.10.0-2026-04-19">v0.10.0 — 2026-04-19</h2>
 <p>The biggest release yet. The headline change is a new typed socket accessor API — <code>node.i.x</code> / <code>node.o.x</code> — that replaces the old <code>node.o_position</code>-style properties and brings full IDE auto-complete and type narrowing to socket access.</p>
-<section id="enhancements-11" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-11">Enhancements</h3>
+<section id="enhancements-12" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-12">Enhancements</h3>
 <section id="node.i-node.o-socket-accessors-39" class="level4">
 <h4 class="anchored" data-anchor-id="node.i-node.o-socket-accessors-39"><code>node.i</code> / <code>node.o</code> socket accessors (<a href="https://github.com/BradyAJohnston/nodebpy/pull/39">#39</a>)</h4>
 <p>Sockets are now accessed through <code>.i</code> (inputs) and <code>.o</code> (outputs) accessor objects. Attribute names are the normalised socket identifier, so spaces become underscores and the first letter is lowercased.</p>
@@ -971,8 +984,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.9.1-2026-03-27" class="level2">
 <h2 class="anchored" data-anchor-id="v0.9.1-2026-03-27">v0.9.1 — 2026-03-27</h2>
-<section id="enhancements-12" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-12">Enhancements</h3>
+<section id="enhancements-13" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-13">Enhancements</h3>
 <section id="comparison-operators-28" class="level4">
 <h4 class="anchored" data-anchor-id="comparison-operators-28"><code>==</code> / <code>!=</code> comparison operators (<a href="https://github.com/BradyAJohnston/nodebpy/pull/28">#28</a>)</h4>
 <p><code>BaseNode</code> objects now support Python equality operators, returning a <code>Compare</code> node. Chain <code>.switch()</code> to immediately branch on the result:</p>
@@ -994,8 +1007,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.8.0-2026-03-16" class="level2">
 <h2 class="anchored" data-anchor-id="v0.8.0-2026-03-16">v0.8.0 — 2026-03-16</h2>
-<section id="enhancements-13" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-13">Enhancements</h3>
+<section id="enhancements-14" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-14">Enhancements</h3>
 <section id="networkx-is-now-an-optional-dependency-24" class="level4">
 <h4 class="anchored" data-anchor-id="networkx-is-now-an-optional-dependency-24"><code>networkx</code> is now an optional dependency (<a href="https://github.com/BradyAJohnston/nodebpy/pull/24">#24</a>)</h4>
 <p><code>nodebpy</code> now has no hard dependencies outside of <code>bpy</code>, making it easier to vendor into add-ons. A built-in simple arranger is used when <code>networkx</code> is absent; the Sugiyama layout remains the default when it is installed.</p>
@@ -1005,8 +1018,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.7.2-2026-03-15" class="level2">
 <h2 class="anchored" data-anchor-id="v0.7.2-2026-03-15">v0.7.2 — 2026-03-15</h2>
-<section id="enhancements-14" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-14">Enhancements</h3>
+<section id="enhancements-15" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-15">Enhancements</h3>
 <section id="matrix-vector-creates-a-transformpoint-node-22" class="level4">
 <h4 class="anchored" data-anchor-id="matrix-vector-creates-a-transformpoint-node-22"><code>matrix @ vector</code> creates a <code>TransformPoint</code> node (<a href="https://github.com/BradyAJohnston/nodebpy/pull/22">#22</a>)</h4>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>matrix <span class="op">@</span> g.Position()  <span class="co"># → TransformPoint node</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1022,8 +1035,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.7.1-2026-03-14" class="level2">
 <h2 class="anchored" data-anchor-id="v0.7.1-2026-03-14">v0.7.1 — 2026-03-14</h2>
-<section id="enhancements-15" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-15">Enhancements</h3>
+<section id="enhancements-16" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-16">Enhancements</h3>
 <section id="color-shader-linking-21" class="level4">
 <h4 class="anchored" data-anchor-id="color-shader-linking-21"><code>Color &gt;&gt; Shader</code> linking (<a href="https://github.com/BradyAJohnston/nodebpy/pull/21">#21</a>)</h4>
 <p>Piping a color socket into a shader input is now handled automatically, matching the way Blender promotes color connections in the node editor.</p>
@@ -1033,8 +1046,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.7.0-2026-03-13" class="level2">
 <h2 class="anchored" data-anchor-id="v0.7.0-2026-03-13">v0.7.0 — 2026-03-13</h2>
-<section id="enhancements-16" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-16">Enhancements</h3>
+<section id="enhancements-17" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-17">Enhancements</h3>
 <section id="panels-for-tree-interfaces-20" class="level4">
 <h4 class="anchored" data-anchor-id="panels-for-tree-interfaces-20">Panels for tree interfaces (<a href="https://github.com/BradyAJohnston/nodebpy/pull/20">#20</a>)</h4>
 <p>Group interface sockets can be organised into named panels:</p>
@@ -1064,8 +1077,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v0.5.0-2026-03-13" class="level2">
 <h2 class="anchored" data-anchor-id="v0.5.0-2026-03-13">v0.5.0 — 2026-03-13</h2>
-<section id="enhancements-17" class="level3">
-<h3 class="anchored" data-anchor-id="enhancements-17">Enhancements</h3>
+<section id="enhancements-18" class="level3">
+<h3 class="anchored" data-anchor-id="enhancements-18">Enhancements</h3>
 <section id="compositor-and-material-shader-node-editors-12" class="level4">
 <h4 class="anchored" data-anchor-id="compositor-and-material-shader-node-editors-12">Compositor and Material (Shader) node editors (<a href="https://github.com/BradyAJohnston/nodebpy/pull/12">#12</a>)</h4>
 <p><code>nodebpy</code> now supports building Compositor and Shader/Material node trees in addition to Geometry Nodes.</p>

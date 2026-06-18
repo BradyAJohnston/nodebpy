@@ -48,11 +48,6 @@ Nodes use in Geometry Nodes trees.
 | [nodes.geometry.attribute](../reference/nodes.geometry.attribute.llms.md#nodebpy.nodes.geometry.attribute) |  |
 | [nodes.geometry.vector](../reference/nodes.geometry.vector.llms.md#nodebpy.nodes.geometry.vector) |  |
 | [nodes.geometry.manual](../reference/nodes.geometry.manual.llms.md#nodebpy.nodes.geometry.manual) |  |
-
-### Zones in GN
-
-|  |  |
-|----|----|
 | [nodes.geometry.zone](../reference/nodes.geometry.zone.llms.md#nodebpy.nodes.geometry.zone) |  |
 
 ## Shader Nodes

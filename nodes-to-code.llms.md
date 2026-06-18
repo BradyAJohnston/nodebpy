@@ -238,9 +238,7 @@ with TreeBuilder("Wave Deform") as tree:
     (
         geometry
         >> g.SetPosition(
-            offset=g.CombineXYZ(
-                z=g.Math.sine(g.Position().o.position.x).o.value * amplitude
-            )
+            offset=g.CombineXYZ(z=g.Position().o.position.x.sin() * amplitude)
         )
         >> geometry_1
     )
@@ -268,9 +266,7 @@ with TreeBuilder("Wave Deform") as tree:
 
     set_position = g.SetPosition(
         geometry=geometry,
-        offset=g.CombineXYZ(
-            z=g.Math.sine(g.Position().o.position.x).o.value * amplitude
-        ),
+        offset=g.CombineXYZ(z=g.Position().o.position.x.sin() * amplitude),
     )
 
     set_position >> geometry_1

@@ -1168,23 +1168,83 @@ Runtime float socket wrapper.
 
 | Name | Description |
 |----|----|
+| [abs](#nodebpy.builder.socket.FloatSocket.abs) | Absolute value of the input |
+| [acos](#nodebpy.builder.socket.FloatSocket.acos) | Create a Math node with operation ‘ArcCosine’. The arccosine of self |
+| [asin](#nodebpy.builder.socket.FloatSocket.asin) | Create a Math node with operation ‘ArcSine’. The arcsine of self |
+| [atan](#nodebpy.builder.socket.FloatSocket.atan) | Create a Math node with operation ‘ArcTangent’. The arctangent of self |
+| [atan2](#nodebpy.builder.socket.FloatSocket.atan2) | Create a Math node with operation ‘ArcTan2’. The arctangent of self |
 | [ceil](#nodebpy.builder.socket.FloatSocket.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocket.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
+| [cos](#nodebpy.builder.socket.FloatSocket.cos) | Create a Math node with operation ‘Cosine’. The cosine of self |
+| [cosh](#nodebpy.builder.socket.FloatSocket.cosh) | Create a Math node with operation ‘Hyperbolic Cosine’. The hyperbolic cosine of self |
 | [enable_output](#nodebpy.builder.socket.FloatSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [exp](#nodebpy.builder.socket.FloatSocket.exp) | Create a Math node with operation ‘Exponent’. The exponent of self |
 | [floor](#nodebpy.builder.socket.FloatSocket.floor) | Round down to the nearest integer. |
+| [fraction](#nodebpy.builder.socket.FloatSocket.fraction) | The fractional part of the vlaue |
+| [log](#nodebpy.builder.socket.FloatSocket.log) | Return the logarithm of this value to *base*. |
 | [map_range](#nodebpy.builder.socket.FloatSocket.map_range) | Remap the values on the float socket using the MapRange node. |
+| [max](#nodebpy.builder.socket.FloatSocket.max) | Create Math with operation ‘Maximum’. The maximum from self and value |
+| [min](#nodebpy.builder.socket.FloatSocket.min) | Create Math with operation ‘Minimum’. The minimum from self and value |
 | [modulo](#nodebpy.builder.socket.FloatSocket.modulo) | Floored modulo — remainder after dividing by *divisor*, always non-negative. |
+| [mul_add](#nodebpy.builder.socket.FloatSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.FloatSocket.negate) | Negate the `FloatSocket` by multiplying the value by `-1`. |
+| [ping_pong](#nodebpy.builder.socket.FloatSocket.ping_pong) | Input ping-pongs between 0 and *value*. |
 | [power](#nodebpy.builder.socket.FloatSocket.power) | Raise this value to *exponent*. |
 | [round](#nodebpy.builder.socket.FloatSocket.round) | Round to the nearest integer. |
 | [sign](#nodebpy.builder.socket.FloatSocket.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
+| [sin](#nodebpy.builder.socket.FloatSocket.sin) | Create a Math node with operation ‘Sine’. The sine of self |
+| [sinh](#nodebpy.builder.socket.FloatSocket.sinh) | Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self |
+| [snap](#nodebpy.builder.socket.FloatSocket.snap) | Create a Math node with operation ‘Snap’. The snap of self |
 | [sqrt](#nodebpy.builder.socket.FloatSocket.sqrt) | Return the square root of this value. |
+| [tan](#nodebpy.builder.socket.FloatSocket.tan) | Create a Math node with operation ‘Tangent’. The tangent of self |
+| [tanh](#nodebpy.builder.socket.FloatSocket.tanh) | Create a Math node with operation ‘Hyperbolic Tangent’. The hyperbolic tangent of self |
 | [to_degrees](#nodebpy.builder.socket.FloatSocket.to_degrees) | Convert radians to degrees. |
 | [to_integer](#nodebpy.builder.socket.FloatSocket.to_integer) | Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part. |
 | [to_list](#nodebpy.builder.socket.FloatSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 | [to_radians](#nodebpy.builder.socket.FloatSocket.to_radians) | Convert degrees to radians. |
 | [to_string](#nodebpy.builder.socket.FloatSocket.to_string) | Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places |
+| [truncate](#nodebpy.builder.socket.FloatSocket.truncate) | The integer part of of the value, removing fractional digits |
 | [wrap](#nodebpy.builder.socket.FloatSocket.wrap) | Wrap the value into the *\[min, max\]* range, repeating cyclically. |
+
+##### abs
+
+``` python
+abs()
+```
+
+Absolute value of the input
+
+##### acos
+
+``` python
+acos()
+```
+
+Create a Math node with operation ‘ArcCosine’. The arccosine of self
+
+##### asin
+
+``` python
+asin()
+```
+
+Create a Math node with operation ‘ArcSine’. The arcsine of self
+
+##### atan
+
+``` python
+atan()
+```
+
+Create a Math node with operation ‘ArcTangent’. The arctangent of self
+
+##### atan2
+
+``` python
+atan2(value=0.5)
+```
+
+Create a Math node with operation ‘ArcTan2’. The arctangent of self
 
 ##### ceil
 
@@ -1201,6 +1261,22 @@ clamp(min=0.0, max=1.0)
 ```
 
 Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`.
+
+##### cos
+
+``` python
+cos()
+```
+
+Create a Math node with operation ‘Cosine’. The cosine of self
+
+##### cosh
+
+``` python
+cosh()
+```
+
+Create a Math node with operation ‘Hyperbolic Cosine’. The hyperbolic cosine of self
 
 ##### enable_output
 
@@ -1224,6 +1300,14 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### exp
+
+``` python
+exp()
+```
+
+Create a Math node with operation ‘Exponent’. The exponent of self
+
 ##### floor
 
 ``` python
@@ -1231,6 +1315,22 @@ floor()
 ```
 
 Round down to the nearest integer.
+
+##### fraction
+
+``` python
+fraction()
+```
+
+The fractional part of the vlaue
+
+##### log
+
+``` python
+log(base=2.0)
+```
+
+Return the logarithm of this value to *base*.
 
 ##### map_range
 
@@ -1249,6 +1349,22 @@ map_range(
 
 Remap the values on the float socket using the MapRange node.
 
+##### max
+
+``` python
+max(value=1.0)
+```
+
+Create Math with operation ‘Maximum’. The maximum from self and value
+
+##### min
+
+``` python
+min(value=0.0)
+```
+
+Create Math with operation ‘Minimum’. The minimum from self and value
+
 ##### modulo
 
 ``` python
@@ -1256,6 +1372,14 @@ modulo(divisor)
 ```
 
 Floored modulo — remainder after dividing by *divisor*, always non-negative.
+
+##### mul_add
+
+``` python
+mul_add(multiplier=0.5, addend=0.5)
+```
+
+Multiply and then add a value. More efficient as it is a single CPU instruction.
 
 ##### negate
 
@@ -1265,10 +1389,18 @@ negate()
 
 Negate the `FloatSocket` by multiplying the value by `-1`.
 
+##### ping_pong
+
+``` python
+ping_pong(value=1.0)
+```
+
+Input ping-pongs between 0 and *value*.
+
 ##### power
 
 ``` python
-power(exponent)
+power(exponent=2.0)
 ```
 
 Raise this value to *exponent*.
@@ -1289,6 +1421,30 @@ sign()
 
 Return the sign of the FloatSocket, eithe `-1`, `0` or `1`.
 
+##### sin
+
+``` python
+sin()
+```
+
+Create a Math node with operation ‘Sine’. The sine of self
+
+##### sinh
+
+``` python
+sinh()
+```
+
+Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self
+
+##### snap
+
+``` python
+snap(increment=0.5)
+```
+
+Create a Math node with operation ‘Snap’. The snap of self
+
 ##### sqrt
 
 ``` python
@@ -1296,6 +1452,22 @@ sqrt()
 ```
 
 Return the square root of this value.
+
+##### tan
+
+``` python
+tan()
+```
+
+Create a Math node with operation ‘Tangent’. The tangent of self
+
+##### tanh
+
+``` python
+tanh()
+```
+
+Create a Math node with operation ‘Hyperbolic Tangent’. The hyperbolic tangent of self
 
 ##### to_degrees
 
@@ -1337,10 +1509,18 @@ to_string(decimals=0)
 
 Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places
 
+##### truncate
+
+``` python
+truncate()
+```
+
+The integer part of of the value, removing fractional digits
+
 ##### wrap
 
 ``` python
-wrap(min, max)
+wrap(min=0.0, max=1.0)
 ```
 
 Wrap the value into the *\[min, max\]* range, repeating cyclically.
@@ -1374,20 +1554,34 @@ Runtime float grid socket wrapper.
 
 | Name | Description |
 |----|----|
+| [abs](#nodebpy.builder.socket.FloatSocketGrid.abs) | Absolute value of the input |
+| [acos](#nodebpy.builder.socket.FloatSocketGrid.acos) | Create a Math node with operation ‘ArcCosine’. The arccosine of self |
+| [asin](#nodebpy.builder.socket.FloatSocketGrid.asin) | Create a Math node with operation ‘ArcSine’. The arcsine of self |
+| [atan](#nodebpy.builder.socket.FloatSocketGrid.atan) | Create a Math node with operation ‘ArcTangent’. The arctangent of self |
+| [atan2](#nodebpy.builder.socket.FloatSocketGrid.atan2) | Create a Math node with operation ‘ArcTan2’. The arctangent of self |
 | [ceil](#nodebpy.builder.socket.FloatSocketGrid.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocketGrid.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
 | [clip](#nodebpy.builder.socket.FloatSocketGrid.clip) | Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value. |
+| [cos](#nodebpy.builder.socket.FloatSocketGrid.cos) | Create a Math node with operation ‘Cosine’. The cosine of self |
+| [cosh](#nodebpy.builder.socket.FloatSocketGrid.cosh) | Create a Math node with operation ‘Hyperbolic Cosine’. The hyperbolic cosine of self |
 | [dilate_erode](#nodebpy.builder.socket.FloatSocketGrid.dilate_erode) | Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values. |
 | [enable_output](#nodebpy.builder.socket.FloatSocketGrid.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [exp](#nodebpy.builder.socket.FloatSocketGrid.exp) | Create a Math node with operation ‘Exponent’. The exponent of self |
 | [field_to_grid](#nodebpy.builder.socket.FloatSocketGrid.field_to_grid) | Create new grids by evaluating new values on an existing volume grid topology. |
 | [floor](#nodebpy.builder.socket.FloatSocketGrid.floor) | Round down to the nearest integer. |
+| [fraction](#nodebpy.builder.socket.FloatSocketGrid.fraction) | The fractional part of the vlaue |
 | [gradient](#nodebpy.builder.socket.FloatSocketGrid.gradient) | Calculate the direction and magnitude of the change in values of a scalar grid. |
 | [laplacian](#nodebpy.builder.socket.FloatSocketGrid.laplacian) | Compute the divergence of the gradient of the input grid. |
+| [log](#nodebpy.builder.socket.FloatSocketGrid.log) | Return the logarithm of this value to *base*. |
 | [map_range](#nodebpy.builder.socket.FloatSocketGrid.map_range) | Remap the values on the float socket using the MapRange node. |
+| [max](#nodebpy.builder.socket.FloatSocketGrid.max) | Create Math with operation ‘Maximum’. The maximum from self and value |
 | [mean](#nodebpy.builder.socket.FloatSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [median](#nodebpy.builder.socket.FloatSocketGrid.median) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
+| [min](#nodebpy.builder.socket.FloatSocketGrid.min) | Create Math with operation ‘Minimum’. The minimum from self and value |
 | [modulo](#nodebpy.builder.socket.FloatSocketGrid.modulo) | Floored modulo — remainder after dividing by *divisor*, always non-negative. |
+| [mul_add](#nodebpy.builder.socket.FloatSocketGrid.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.FloatSocketGrid.negate) | Negate the `FloatSocket` by multiplying the value by `-1`. |
+| [ping_pong](#nodebpy.builder.socket.FloatSocketGrid.ping_pong) | Input ping-pongs between 0 and *value*. |
 | [power](#nodebpy.builder.socket.FloatSocketGrid.power) | Raise this value to *exponent*. |
 | [prune](#nodebpy.builder.socket.FloatSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [round](#nodebpy.builder.socket.FloatSocketGrid.round) | Round to the nearest integer. |
@@ -1400,13 +1594,59 @@ Runtime float grid socket wrapper.
 | [sdf_median](#nodebpy.builder.socket.FloatSocketGrid.sdf_median) | Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field. |
 | [sdf_offset](#nodebpy.builder.socket.FloatSocketGrid.sdf_offset) | Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property. |
 | [sign](#nodebpy.builder.socket.FloatSocketGrid.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
+| [sin](#nodebpy.builder.socket.FloatSocketGrid.sin) | Create a Math node with operation ‘Sine’. The sine of self |
+| [sinh](#nodebpy.builder.socket.FloatSocketGrid.sinh) | Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self |
+| [snap](#nodebpy.builder.socket.FloatSocketGrid.snap) | Create a Math node with operation ‘Snap’. The snap of self |
 | [sqrt](#nodebpy.builder.socket.FloatSocketGrid.sqrt) | Return the square root of this value. |
+| [tan](#nodebpy.builder.socket.FloatSocketGrid.tan) | Create a Math node with operation ‘Tangent’. The tangent of self |
+| [tanh](#nodebpy.builder.socket.FloatSocketGrid.tanh) | Create a Math node with operation ‘Hyperbolic Tangent’. The hyperbolic tangent of self |
 | [to_degrees](#nodebpy.builder.socket.FloatSocketGrid.to_degrees) | Convert radians to degrees. |
 | [to_mesh](#nodebpy.builder.socket.FloatSocketGrid.to_mesh) | Generate a mesh on the “surface” of a volume grid. |
 | [to_points](#nodebpy.builder.socket.FloatSocketGrid.to_points) | Generate a point cloud from a volume grid’s active voxels. |
 | [to_radians](#nodebpy.builder.socket.FloatSocketGrid.to_radians) | Convert degrees to radians. |
+| [truncate](#nodebpy.builder.socket.FloatSocketGrid.truncate) | The integer part of of the value, removing fractional digits |
 | [voxelize](#nodebpy.builder.socket.FloatSocketGrid.voxelize) | Remove sparseness from a volume grid by making the active tiles into voxels. |
 | [wrap](#nodebpy.builder.socket.FloatSocketGrid.wrap) | Wrap the value into the *\[min, max\]* range, repeating cyclically. |
+
+##### abs
+
+``` python
+abs()
+```
+
+Absolute value of the input
+
+##### acos
+
+``` python
+acos()
+```
+
+Create a Math node with operation ‘ArcCosine’. The arccosine of self
+
+##### asin
+
+``` python
+asin()
+```
+
+Create a Math node with operation ‘ArcSine’. The arcsine of self
+
+##### atan
+
+``` python
+atan()
+```
+
+Create a Math node with operation ‘ArcTangent’. The arctangent of self
+
+##### atan2
+
+``` python
+atan2(value=0.5)
+```
+
+Create a Math node with operation ‘ArcTan2’. The arctangent of self
 
 ##### ceil
 
@@ -1431,6 +1671,22 @@ clip(min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
 ```
 
 Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.
+
+##### cos
+
+``` python
+cos()
+```
+
+Create a Math node with operation ‘Cosine’. The cosine of self
+
+##### cosh
+
+``` python
+cosh()
+```
+
+Create a Math node with operation ‘Hyperbolic Cosine’. The hyperbolic cosine of self
 
 ##### dilate_erode
 
@@ -1462,6 +1718,14 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### exp
+
+``` python
+exp()
+```
+
+Create a Math node with operation ‘Exponent’. The exponent of self
+
 ##### field_to_grid
 
 ``` python
@@ -1478,6 +1742,14 @@ floor()
 
 Round down to the nearest integer.
 
+##### fraction
+
+``` python
+fraction()
+```
+
+The fractional part of the vlaue
+
 ##### gradient
 
 ``` python
@@ -1493,6 +1765,14 @@ laplacian()
 ```
 
 Compute the divergence of the gradient of the input grid.
+
+##### log
+
+``` python
+log(base=2.0)
+```
+
+Return the logarithm of this value to *base*.
 
 ##### map_range
 
@@ -1511,6 +1791,14 @@ map_range(
 
 Remap the values on the float socket using the MapRange node.
 
+##### max
+
+``` python
+max(value=1.0)
+```
+
+Create Math with operation ‘Maximum’. The maximum from self and value
+
 ##### mean
 
 ``` python
@@ -1527,6 +1815,14 @@ median(width=1, iterations=1)
 
 Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
 
+##### min
+
+``` python
+min(value=0.0)
+```
+
+Create Math with operation ‘Minimum’. The minimum from self and value
+
 ##### modulo
 
 ``` python
@@ -1534,6 +1830,14 @@ modulo(divisor)
 ```
 
 Floored modulo — remainder after dividing by *divisor*, always non-negative.
+
+##### mul_add
+
+``` python
+mul_add(multiplier=0.5, addend=0.5)
+```
+
+Multiply and then add a value. More efficient as it is a single CPU instruction.
 
 ##### negate
 
@@ -1543,10 +1847,18 @@ negate()
 
 Negate the `FloatSocket` by multiplying the value by `-1`.
 
+##### ping_pong
+
+``` python
+ping_pong(value=1.0)
+```
+
+Input ping-pongs between 0 and *value*.
+
 ##### power
 
 ``` python
-power(exponent)
+power(exponent=2.0)
 ```
 
 Raise this value to *exponent*.
@@ -1639,6 +1951,30 @@ sign()
 
 Return the sign of the FloatSocket, eithe `-1`, `0` or `1`.
 
+##### sin
+
+``` python
+sin()
+```
+
+Create a Math node with operation ‘Sine’. The sine of self
+
+##### sinh
+
+``` python
+sinh()
+```
+
+Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self
+
+##### snap
+
+``` python
+snap(increment=0.5)
+```
+
+Create a Math node with operation ‘Snap’. The snap of self
+
 ##### sqrt
 
 ``` python
@@ -1646,6 +1982,22 @@ sqrt()
 ```
 
 Return the square root of this value.
+
+##### tan
+
+``` python
+tan()
+```
+
+Create a Math node with operation ‘Tangent’. The tangent of self
+
+##### tanh
+
+``` python
+tanh()
+```
+
+Create a Math node with operation ‘Hyperbolic Tangent’. The hyperbolic tangent of self
 
 ##### to_degrees
 
@@ -1679,6 +2031,14 @@ to_radians()
 
 Convert degrees to radians.
 
+##### truncate
+
+``` python
+truncate()
+```
+
+The integer part of of the value, removing fractional digits
+
 ##### voxelize
 
 ``` python
@@ -1690,7 +2050,7 @@ Remove sparseness from a volume grid by making the active tiles into voxels.
 ##### wrap
 
 ``` python
-wrap(min, max)
+wrap(min=0.0, max=1.0)
 ```
 
 Wrap the value into the *\[min, max\]* range, repeating cyclically.
@@ -1720,28 +2080,88 @@ FloatSocketList(socket)
 
 | Name | Description |
 |----|----|
+| [abs](#nodebpy.builder.socket.FloatSocketList.abs) | Absolute value of the input |
+| [acos](#nodebpy.builder.socket.FloatSocketList.acos) | Create a Math node with operation ‘ArcCosine’. The arccosine of self |
+| [asin](#nodebpy.builder.socket.FloatSocketList.asin) | Create a Math node with operation ‘ArcSine’. The arcsine of self |
+| [atan](#nodebpy.builder.socket.FloatSocketList.atan) | Create a Math node with operation ‘ArcTangent’. The arctangent of self |
+| [atan2](#nodebpy.builder.socket.FloatSocketList.atan2) | Create a Math node with operation ‘ArcTan2’. The arctangent of self |
 | [ceil](#nodebpy.builder.socket.FloatSocketList.ceil) | Round up to the nearest integer. |
 | [clamp](#nodebpy.builder.socket.FloatSocketList.clamp) | Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`. |
+| [cos](#nodebpy.builder.socket.FloatSocketList.cos) | Create a Math node with operation ‘Cosine’. The cosine of self |
+| [cosh](#nodebpy.builder.socket.FloatSocketList.cosh) | Create a Math node with operation ‘Hyperbolic Cosine’. The hyperbolic cosine of self |
 | [enable_output](#nodebpy.builder.socket.FloatSocketList.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
+| [exp](#nodebpy.builder.socket.FloatSocketList.exp) | Create a Math node with operation ‘Exponent’. The exponent of self |
 | [filter](#nodebpy.builder.socket.FloatSocketList.filter) | Filter the list based on the selection. |
 | [floor](#nodebpy.builder.socket.FloatSocketList.floor) | Round down to the nearest integer. |
+| [fraction](#nodebpy.builder.socket.FloatSocketList.fraction) | The fractional part of the vlaue |
 | [get](#nodebpy.builder.socket.FloatSocketList.get) | Get the item at the given index from the list. |
 | [list_length](#nodebpy.builder.socket.FloatSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.FloatSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
+| [log](#nodebpy.builder.socket.FloatSocketList.log) | Return the logarithm of this value to *base*. |
 | [map_range](#nodebpy.builder.socket.FloatSocketList.map_range) | Remap the values on the float socket using the MapRange node. |
+| [max](#nodebpy.builder.socket.FloatSocketList.max) | Create Math with operation ‘Maximum’. The maximum from self and value |
+| [min](#nodebpy.builder.socket.FloatSocketList.min) | Create Math with operation ‘Minimum’. The minimum from self and value |
 | [modulo](#nodebpy.builder.socket.FloatSocketList.modulo) | Floored modulo — remainder after dividing by *divisor*, always non-negative. |
+| [mul_add](#nodebpy.builder.socket.FloatSocketList.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.FloatSocketList.negate) | Negate the `FloatSocket` by multiplying the value by `-1`. |
+| [ping_pong](#nodebpy.builder.socket.FloatSocketList.ping_pong) | Input ping-pongs between 0 and *value*. |
 | [power](#nodebpy.builder.socket.FloatSocketList.power) | Raise this value to *exponent*. |
 | [reverse](#nodebpy.builder.socket.FloatSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [round](#nodebpy.builder.socket.FloatSocketList.round) | Round to the nearest integer. |
 | [sign](#nodebpy.builder.socket.FloatSocketList.sign) | Return the sign of the FloatSocket, eithe `-1`, `0` or `1`. |
+| [sin](#nodebpy.builder.socket.FloatSocketList.sin) | Create a Math node with operation ‘Sine’. The sine of self |
+| [sinh](#nodebpy.builder.socket.FloatSocketList.sinh) | Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self |
+| [snap](#nodebpy.builder.socket.FloatSocketList.snap) | Create a Math node with operation ‘Snap’. The snap of self |
 | [sort](#nodebpy.builder.socket.FloatSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [sqrt](#nodebpy.builder.socket.FloatSocketList.sqrt) | Return the square root of this value. |
+| [tan](#nodebpy.builder.socket.FloatSocketList.tan) | Create a Math node with operation ‘Tangent’. The tangent of self |
+| [tanh](#nodebpy.builder.socket.FloatSocketList.tanh) | Create a Math node with operation ‘Hyperbolic Tangent’. The hyperbolic tangent of self |
 | [to_degrees](#nodebpy.builder.socket.FloatSocketList.to_degrees) | Convert radians to degrees. |
 | [to_integer](#nodebpy.builder.socket.FloatSocketList.to_integer) | Convert the `FloatSocket` to an `IntegerSocket` by truncating the decimal part. |
 | [to_radians](#nodebpy.builder.socket.FloatSocketList.to_radians) | Convert degrees to radians. |
 | [to_string](#nodebpy.builder.socket.FloatSocketList.to_string) | Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places |
+| [truncate](#nodebpy.builder.socket.FloatSocketList.truncate) | The integer part of of the value, removing fractional digits |
 | [wrap](#nodebpy.builder.socket.FloatSocketList.wrap) | Wrap the value into the *\[min, max\]* range, repeating cyclically. |
+
+##### abs
+
+``` python
+abs()
+```
+
+Absolute value of the input
+
+##### acos
+
+``` python
+acos()
+```
+
+Create a Math node with operation ‘ArcCosine’. The arccosine of self
+
+##### asin
+
+``` python
+asin()
+```
+
+Create a Math node with operation ‘ArcSine’. The arcsine of self
+
+##### atan
+
+``` python
+atan()
+```
+
+Create a Math node with operation ‘ArcTangent’. The arctangent of self
+
+##### atan2
+
+``` python
+atan2(value=0.5)
+```
+
+Create a Math node with operation ‘ArcTan2’. The arctangent of self
 
 ##### ceil
 
@@ -1758,6 +2178,22 @@ clamp(min=0.0, max=1.0)
 ```
 
 Clamp the value to *\[min, max\]*. Defaults to the unit interval `[0, 1]`.
+
+##### cos
+
+``` python
+cos()
+```
+
+Create a Math node with operation ‘Cosine’. The cosine of self
+
+##### cosh
+
+``` python
+cosh()
+```
+
+Create a Math node with operation ‘Hyperbolic Cosine’. The hyperbolic cosine of self
 
 ##### enable_output
 
@@ -1781,6 +2217,14 @@ If called on an output socket, the output of the EnableOutput node is returned. 
 |------|------|------------------------------------------------------------------|
 |      | Self | The output socket or input socket, depending on the socket type. |
 
+##### exp
+
+``` python
+exp()
+```
+
+Create a Math node with operation ‘Exponent’. The exponent of self
+
 ##### filter
 
 ``` python
@@ -1796,6 +2240,14 @@ floor()
 ```
 
 Round down to the nearest integer.
+
+##### fraction
+
+``` python
+fraction()
+```
+
+The fractional part of the vlaue
 
 ##### get
 
@@ -1821,6 +2273,14 @@ list_slice(start=0, stop=None, step=1)
 
 Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.
 
+##### log
+
+``` python
+log(base=2.0)
+```
+
+Return the logarithm of this value to *base*.
+
 ##### map_range
 
 ``` python
@@ -1838,6 +2298,22 @@ map_range(
 
 Remap the values on the float socket using the MapRange node.
 
+##### max
+
+``` python
+max(value=1.0)
+```
+
+Create Math with operation ‘Maximum’. The maximum from self and value
+
+##### min
+
+``` python
+min(value=0.0)
+```
+
+Create Math with operation ‘Minimum’. The minimum from self and value
+
 ##### modulo
 
 ``` python
@@ -1845,6 +2321,14 @@ modulo(divisor)
 ```
 
 Floored modulo — remainder after dividing by *divisor*, always non-negative.
+
+##### mul_add
+
+``` python
+mul_add(multiplier=0.5, addend=0.5)
+```
+
+Multiply and then add a value. More efficient as it is a single CPU instruction.
 
 ##### negate
 
@@ -1854,10 +2338,18 @@ negate()
 
 Negate the `FloatSocket` by multiplying the value by `-1`.
 
+##### ping_pong
+
+``` python
+ping_pong(value=1.0)
+```
+
+Input ping-pongs between 0 and *value*.
+
 ##### power
 
 ``` python
-power(exponent)
+power(exponent=2.0)
 ```
 
 Raise this value to *exponent*.
@@ -1885,6 +2377,30 @@ sign()
 ```
 
 Return the sign of the FloatSocket, eithe `-1`, `0` or `1`.
+
+##### sin
+
+``` python
+sin()
+```
+
+Create a Math node with operation ‘Sine’. The sine of self
+
+##### sinh
+
+``` python
+sinh()
+```
+
+Create a Math node with operation ‘Hyperbolic Sine’. The hyperbolic sine of self
+
+##### snap
+
+``` python
+snap(increment=0.5)
+```
+
+Create a Math node with operation ‘Snap’. The snap of self
 
 ##### sort
 
@@ -1915,6 +2431,22 @@ sqrt()
 ```
 
 Return the square root of this value.
+
+##### tan
+
+``` python
+tan()
+```
+
+Create a Math node with operation ‘Tangent’. The tangent of self
+
+##### tanh
+
+``` python
+tanh()
+```
+
+Create a Math node with operation ‘Hyperbolic Tangent’. The hyperbolic tangent of self
 
 ##### to_degrees
 
@@ -1948,10 +2480,18 @@ to_string(decimals=0)
 
 Convert the `FloatSocket` to a `StringSocket` wtih the given number of decimal places
 
+##### truncate
+
+``` python
+truncate()
+```
+
+The integer part of of the value, removing fractional digits
+
 ##### wrap
 
 ``` python
-wrap(min, max)
+wrap(min=0.0, max=1.0)
 ```
 
 Wrap the value into the *\[min, max\]* range, repeating cyclically.
@@ -2513,7 +3053,9 @@ Runtime integer socket wrapper.
 | [clamp](#nodebpy.builder.socket.IntegerSocket.clamp) | Clamp the value to *\[min, max\]*. |
 | [enable_output](#nodebpy.builder.socket.IntegerSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [modulo](#nodebpy.builder.socket.IntegerSocket.modulo) | Remainder after dividing by *divisor* (always non-negative). |
+| [mul_add](#nodebpy.builder.socket.IntegerSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
+| [power](#nodebpy.builder.socket.IntegerSocket.power) | Raise this value to *exponent*. |
 | [sign](#nodebpy.builder.socket.IntegerSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
 | [to_list](#nodebpy.builder.socket.IntegerSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
 | [to_string](#nodebpy.builder.socket.IntegerSocket.to_string) | Convert the `IntegerSocket` to a `StringSocket`. |
@@ -2564,6 +3106,14 @@ modulo(divisor)
 
 Remainder after dividing by *divisor* (always non-negative).
 
+##### mul_add
+
+``` python
+mul_add(multiplier=0, addend=0)
+```
+
+Multiply and then add a value. More efficient as it is a single CPU instruction.
+
 ##### negate
 
 ``` python
@@ -2571,6 +3121,14 @@ negate()
 ```
 
 Negate the IntegerSocket value. Positive becomes negative, negative becomes positive.
+
+##### power
+
+``` python
+power(exponent=2)
+```
+
+Raise this value to *exponent*.
 
 ##### sign
 
@@ -2633,7 +3191,9 @@ Runtime integer grid socket wrapper.
 | [mean](#nodebpy.builder.socket.IntegerSocketGrid.mean) | Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [median](#nodebpy.builder.socket.IntegerSocketGrid.median) | Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value. |
 | [modulo](#nodebpy.builder.socket.IntegerSocketGrid.modulo) | Remainder after dividing by *divisor* (always non-negative). |
+| [mul_add](#nodebpy.builder.socket.IntegerSocketGrid.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocketGrid.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
+| [power](#nodebpy.builder.socket.IntegerSocketGrid.power) | Raise this value to *exponent*. |
 | [prune](#nodebpy.builder.socket.IntegerSocketGrid.prune) | Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes. |
 | [sample](#nodebpy.builder.socket.IntegerSocketGrid.sample) | Retrieve values from the specified volume grid. |
 | [sample_index](#nodebpy.builder.socket.IntegerSocketGrid.sample_index) | Retrieve volume grid values at specific voxels. |
@@ -2727,6 +3287,14 @@ modulo(divisor)
 
 Remainder after dividing by *divisor* (always non-negative).
 
+##### mul_add
+
+``` python
+mul_add(multiplier=0, addend=0)
+```
+
+Multiply and then add a value. More efficient as it is a single CPU instruction.
+
 ##### negate
 
 ``` python
@@ -2734,6 +3302,14 @@ negate()
 ```
 
 Negate the IntegerSocket value. Positive becomes negative, negative becomes positive.
+
+##### power
+
+``` python
+power(exponent=2)
+```
+
+Raise this value to *exponent*.
 
 ##### prune
 
@@ -2817,7 +3393,9 @@ List of integer sockets.
 | [list_length](#nodebpy.builder.socket.IntegerSocketList.list_length) | Get the length of the list. |
 | [list_slice](#nodebpy.builder.socket.IntegerSocketList.list_slice) | Slice the list using start, stop, and step indices. Behaves like Python’s slice notation. |
 | [modulo](#nodebpy.builder.socket.IntegerSocketList.modulo) | Remainder after dividing by *divisor* (always non-negative). |
+| [mul_add](#nodebpy.builder.socket.IntegerSocketList.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerSocketList.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
+| [power](#nodebpy.builder.socket.IntegerSocketList.power) | Raise this value to *exponent*. |
 | [reverse](#nodebpy.builder.socket.IntegerSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sign](#nodebpy.builder.socket.IntegerSocketList.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
 | [sort](#nodebpy.builder.socket.IntegerSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
@@ -2901,6 +3479,14 @@ modulo(divisor)
 
 Remainder after dividing by *divisor* (always non-negative).
 
+##### mul_add
+
+``` python
+mul_add(multiplier=0, addend=0)
+```
+
+Multiply and then add a value. More efficient as it is a single CPU instruction.
+
 ##### negate
 
 ``` python
@@ -2908,6 +3494,14 @@ negate()
 ```
 
 Negate the IntegerSocket value. Positive becomes negative, negative becomes positive.
+
+##### power
+
+``` python
+power(exponent=2)
+```
+
+Raise this value to *exponent*.
 
 ##### reverse
 
@@ -2986,7 +3580,9 @@ Runtime integer vector socket wrapper.
 | [clamp](#nodebpy.builder.socket.IntegerVectorSocket.clamp) | Clamp the value to *\[min, max\]*. |
 | [enable_output](#nodebpy.builder.socket.IntegerVectorSocket.enable_output) | Enable or disable the the output of this node group that is connected to this socket. |
 | [modulo](#nodebpy.builder.socket.IntegerVectorSocket.modulo) | Remainder after dividing by *divisor* (always non-negative). |
+| [mul_add](#nodebpy.builder.socket.IntegerVectorSocket.mul_add) | Multiply and then add a value. More efficient as it is a single CPU instruction. |
 | [negate](#nodebpy.builder.socket.IntegerVectorSocket.negate) | Negate the IntegerSocket value. Positive becomes negative, negative becomes positive. |
+| [power](#nodebpy.builder.socket.IntegerVectorSocket.power) | Raise this value to *exponent*. |
 | [sign](#nodebpy.builder.socket.IntegerVectorSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
 
 ##### abs
@@ -3035,6 +3631,14 @@ modulo(divisor)
 
 Remainder after dividing by *divisor* (always non-negative).
 
+##### mul_add
+
+``` python
+mul_add(multiplier=0, addend=0)
+```
+
+Multiply and then add a value. More efficient as it is a single CPU instruction.
+
 ##### negate
 
 ``` python
@@ -3042,6 +3646,14 @@ negate()
 ```
 
 Negate the IntegerSocket value. Positive becomes negative, negative becomes positive.
+
+##### power
+
+``` python
+power(exponent=2)
+```
+
+Raise this value to *exponent*.
 
 ##### sign
 

@@ -1,11 +1,11 @@
-# nodebpy 520.2.0
+# nodebpy 520.3.0
 
 ## Pages
 
-- [Changelog](changelog.llms.md)
-- [Asset Node Groups](assets.llms.md)
+- [Using `nodebpy`](using.llms.md)
+- [Nodes to Code](nodes-to-code.llms.md)
 - [Writing Node Trees](introduction.llms.md)
-- [Math Operators](operators.llms.md)
+- [Asset Node Groups](assets.llms.md)
 - [index](index.llms.md)
 - [export.to_mermaid](reference/export.to_mermaid.llms.md)
 - [assets.PackageLibrary](reference/assets.PackageLibrary.llms.md)
@@ -54,7 +54,7 @@
 - [assets.BundledLibrary](reference/assets.BundledLibrary.llms.md)
 - [export.to_python](reference/export.to_python.llms.md)
 - [Custom Node Groups](custom-node-groups.llms.md)
-- [Node API Design](node-api.llms.md)
+- [Changelog](changelog.llms.md)
 - [Comapring the API](comparisons.llms.md)
-- [Nodes to Code](nodes-to-code.llms.md)
-- [Using `nodebpy`](using.llms.md)
+- [Node API Design](node-api.llms.md)
+- [Math Operators](operators.llms.md)
