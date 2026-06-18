@@ -2,7 +2,7 @@
 title: Changelog
 ---
 
-## v520.3.0 - UNRELEASED
+## v520.3.0 - 2026-06-18
 
 ### Enhancements
 - Additional socket methods on `FloatSocket` and `IntegerSocket`.
