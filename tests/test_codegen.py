@@ -339,6 +339,20 @@ def test_format_with_ruff_tidies_output():
     assert ns["tree"] is not None
 
 
+def test_nodebpy_pkg_rewrites_import_anchor():
+    """nodebpy_pkg rewrites every nodebpy import anchor so vendored copies are
+    reachable with a relative path; the same anchor is used for both the
+    top-level and ``.builder`` imports."""
+    with TreeBuilder("Vendored") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        g.SetPosition(geometry=geo) >> tree.outputs.geometry("Geometry")
+
+    code = to_python(tree, top_level="class", nodebpy_pkg="..vendor.nodebpy")
+    assert "from ..vendor.nodebpy import" in code
+    assert "from ..vendor.nodebpy.builder import" in code
+    assert "from nodebpy" not in code
+
+
 def test_top_level_class_emits_class_not_with_block():
     """top_level='class' renders the working tree as a Custom*Group subclass
     (no ``with`` block / TreeBuilder import); the default stays the ``with``
@@ -2347,10 +2361,11 @@ def test_roundtrip_bundled_asset(path, name):
 # ---------------------------------------------------------------------------
 
 
-def test_keyword_named_output_uses_subscript_accessor():
-    """An output socket whose name normalizes to a Python keyword (``From`` →
-    ``from``) must be read via subscript, not attribute access — ``x.o.from``
-    is a SyntaxError. (MN asset: "Sample Mixed Color".)"""
+def test_keyword_named_output_uses_suffixed_attribute():
+    """An output socket whose name would normalize to a Python keyword (``From``
+    → ``from``) is read via the suffixed attribute ``.o.from_`` — ``normalize_name``
+    appends the underscore so the accessor resolves it and ``.o.from`` (a
+    SyntaxError) is never emitted. (MN asset: "Sample Mixed Color".)"""
     from nodebpy.builder import CustomGeometryGroup
 
     class _KeywordOut(CustomGeometryGroup):
@@ -2367,8 +2382,8 @@ def test_keyword_named_output_uses_subscript_accessor():
         grp.o["From"] >> tree.outputs.integer("Result")
 
     code = _assert_roundtrip(tree)
-    assert '.o["From"]' in code
-    assert ".o.from" not in code
+    assert ".o.from_" in code
+    assert ".o.from " not in code
 
 
 def test_links_into_inactive_sockets_are_dropped():
