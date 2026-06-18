@@ -1795,7 +1795,7 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
         linkable = {k: v for k, v in items.items() if not _is_default_value(v)}
         defaults = {k: v for k, v in items.items() if _is_default_value(v)}
 
-        key_args.update(self._add_inputs(**linkable))  # ty: ignore[no-matching-overload]
+        key_args.update(self._add_inputs(**linkable))
         for name, value in defaults.items():
             socket = self._add_socket(name=name, type="FLOAT")
             if value is not None:
