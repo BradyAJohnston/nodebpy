@@ -2,7 +2,7 @@
 title: Changelog
 ---
 
-## v520.4.0 - UNRELEASED
+## v520.4.0 - 2026-06-19
 
 ### Enhancements
 - Chaining nodes with `>>` node supports `None` in a chain. Allows for optional insertion of a node given a condition.
