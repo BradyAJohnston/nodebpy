@@ -436,6 +436,23 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
         tree.tree.color_tag = cls._color_tag
         return cast(_T, tree.tree)
 
+    @classmethod
+    def create_asset(cls, *, description: str | None = None) -> _T:
+        """Build this group's node tree and mark it as a Blender asset.
+
+        Builds via :meth:`create_group`, then calls ``asset_mark()`` so the
+        tree shows up in the asset browser, and sets ``use_fake_user`` so it
+        survives a save even with no node referencing it. Used by the
+        ``nodebpy build`` CLI to regenerate an asset library ``.blend``.
+        """
+        tree = cls.create_group()
+        tree.asset_mark()
+        tree.use_fake_user = True
+        if description is not None:
+            assert tree.asset_data is not None
+            tree.asset_data.description = description
+        return tree
+
 
 class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
     """Node group in a Geometry Nodes tree."""
