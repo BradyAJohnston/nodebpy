@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Asset Node Groups – nodebpy 520.3.0</title>
+<title>Asset Node Groups – nodebpy 520.4.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -79,7 +79,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-da754bb905dfff91d967e43b5e6004aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.3.0</span>
+    <span class="navbar-title">nodebpy 520.4.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -356,7 +356,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="using-the-bundled-essentials" class="level2">
 <h2 class="anchored" data-anchor-id="using-the-bundled-essentials">Using the bundled essentials</h2>
 <p>The classes for Blender’s bundled essentials libraries are generated into <code>nodebpy.nodes.{geometry,shader,compositor}</code> and exported alongside the built-in nodes, so you reach them straight off the editor module:</p>
-<div id="e6c4f025" class="cell" data-execution_count="1">
+<div id="b65c6e73" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Assets"</span>) <span class="im">as</span> tree:</span>
@@ -391,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="generating-an-api-for-your-own-assets" class="level2">
 <h2 class="anchored" data-anchor-id="generating-an-api-for-your-own-assets">Generating an API for your own assets</h2>
 <p><code>generate_asset_api</code> introspects a <code>.blend</code> asset library and writes a module of typed classes. Point it at your library and a destination <code>.py</code> file:</p>
-<div id="a8ae2509" class="cell" data-execution_count="2">
+<div id="81888e03" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy.assets <span class="im">import</span> generate_asset_api, PackageLibrary</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>generate_asset_api(</span>
@@ -401,7 +401,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><code>PackageLibrary(anchor, relative)</code> locates a <code>.blend</code> shipped inside your own package (resolved relative to <code>anchor</code>, usually <code>__file__</code>); use <code>BundledLibrary("…")</code> for a library that ships with Blender. You can pass a list of libraries to merge several into one module, and <code>names={...}</code> to restrict generation to specific node groups.</p>
 <p>The generated module imports from <code>nodebpy</code> and looks like any other node module, so import and use it directly:</p>
-<div id="a800fda2" class="cell" data-execution_count="3">
+<div id="3a7500d0" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> my_addon.nodes <span class="im">import</span> assets <span class="im">as</span> a</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> a.tree(<span class="st">"Demo"</span>) <span class="im">as</span> tree:</span>

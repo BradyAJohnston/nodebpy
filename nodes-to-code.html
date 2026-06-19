@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Nodes to Code – nodebpy 520.3.0</title>
+<title>Nodes to Code – nodebpy 520.4.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -79,7 +79,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-da754bb905dfff91d967e43b5e6004aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.3.0</span>
+    <span class="navbar-title">nodebpy 520.4.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -369,7 +369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="simple-example" class="level2">
 <h2 class="anchored" data-anchor-id="simple-example">Simple Example</h2>
 <p>Here we build a tree with the raw <code>bpy</code> API, standing in for a tree that already exists in a <code>.blend</code> file:</p>
-<div id="080c952f" class="cell" data-execution_count="1">
+<div id="1b8a5018" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> bpy</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>nt <span class="op">=</span> bpy.data.node_groups.new(<span class="st">"Scatter"</span>, <span class="st">"GeometryNodeTree"</span>)</span>
@@ -396,7 +396,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>bpy.data.node_groups['Scatter']...NodeLink</code></pre>
 </div>
 </div>
-<div id="d930e327" class="cell" data-execution_count="2">
+<div id="9aefb8ed" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -425,7 +425,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Pass the <code>bpy</code> node tree to <code>to_python()</code>:</p>
-<div id="fc719068" class="cell" data-execution_count="3">
+<div id="be71a60b" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy.export <span class="im">import</span> to_python</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>code <span class="op">=</span> to_python(nt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -525,7 +525,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    combine_xyz_2 <span class="op">&gt;&gt;</span> shortest_axis</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="01d41831" class="cell" data-execution_count="6">
+<div id="241496bb" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
@@ -578,7 +578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="from-a-treebuilder" class="level2">
 <h2 class="anchored" data-anchor-id="from-a-treebuilder">From a <code>TreeBuilder</code></h2>
 <p>Trees built with <code>nodebpy</code> have a <code>to_python()</code> method directly. The generator recognises lifted operators, so math written with Python syntax comes back out the same way:</p>
-<div id="c8a7fa86" class="cell" data-execution_count="7">
+<div id="883bc960" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -612,7 +612,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="chain-length" class="level3">
 <h3 class="anchored" data-anchor-id="chain-length">Chain length</h3>
 <p>Linear runs of nodes are emitted as <code>&gt;&gt;</code> pipelines when they have at least <code>min_chain_length</code> items (default 3, counting interface endpoints). Raising the threshold produces flat assignments instead:</p>
-<div id="2f0f94ba" class="cell" data-execution_count="9">
+<div id="cf997292" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>code <span class="op">=</span> tree.to_python(min_chain_length<span class="op">=</span><span class="dv">99</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g, TreeBuilder</span>
@@ -636,7 +636,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="node-positions" class="level3">
 <h3 class="anchored" data-anchor-id="node-positions">Node positions</h3>
 <p>By default the generated code lets <code>nodebpy</code> lay the tree out automatically when it is built. Pass <code>snapshot_positions=True</code> to instead capture each node’s authored <code>location</code> and restore it, so the rebuilt tree matches the original layout. The tree is built with <code>arrange=None</code> (auto-layout off) and a <code>tree.node_positions = {...}</code> mapping is appended:</p>
-<div id="70998879" class="cell" data-execution_count="11">
+<div id="8ef7bb49" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Wave Deform"</span>, arrange<span class="op">=</span><span class="va">None</span>) <span class="im">as</span> tree:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry(<span class="st">"Geometry"</span>)</span>
@@ -679,7 +679,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="zones" class="level2">
 <h2 class="anchored" data-anchor-id="zones">Zones</h2>
 <p>Simulation, repeat and for-each zones are reconstructed using the zone item API rather than as raw input/output node pairs:</p>
-<div id="37c68ad6" class="cell" data-execution_count="13">
+<div id="d1af1a85" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Stack"</span>) <span class="im">as</span> tree:</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry(<span class="st">"Geometry"</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    zone <span class="op">=</span> g.RepeatZone(<span class="dv">5</span>)</span>
@@ -706,7 +706,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="frames" class="level2">
 <h2 class="anchored" data-anchor-id="frames">Frames</h2>
 <p>Frames are reconstructed as <code>with g.Frame("..."):</code> blocks, including frames nested inside other frames (and container frames that hold only sub-frames):</p>
-<div id="3191ea49" class="cell" data-execution_count="15">
+<div id="498fd300" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Framed"</span>) <span class="im">as</span> tree:</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> g.Frame(<span class="st">"Deform"</span>):</span>
@@ -730,7 +730,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="archiving-as-classes" class="level2">
 <h2 class="anchored" data-anchor-id="archiving-as-classes">Archiving as Classes</h2>
 <p>By default the top-level tree is emitted as a <code>with TreeBuilder(...) as tree:</code> block. Pass <code>top_level="class"</code> to instead emit <em>every</em> node group — including the one being exported — as a <a href="./custom-node-groups.html"><code>CustomGeometryGroup</code></a> subclass. Each class builds its tree through <code>ClassName.create_group()</code>, making it a clean way to archive a set of node groups as plain, reusable Python:</p>
-<div id="8ab1456d" class="cell" data-execution_count="17">
+<div id="bc7a7b6e" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Wave Deform"</span>) <span class="im">as</span> tree:</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry(<span class="st">"Geometry"</span>)</span>
@@ -775,7 +775,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="round-tripping" class="level2">
 <h2 class="anchored" data-anchor-id="round-tripping">Round-Tripping</h2>
 <p>In the default <code>with</code> form the generated source assigns the builder to a variable named <code>tree</code>, so it can be executed directly to rebuild the tree:</p>
-<div id="7b2937f6" class="cell" data-execution_count="19">
+<div id="65ad350f" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>namespace <span class="op">=</span> {}</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span>(tree.to_python(), namespace)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>rebuilt <span class="op">=</span> namespace[<span class="st">"tree"</span>]</span>
