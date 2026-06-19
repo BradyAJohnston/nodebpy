@@ -507,7 +507,7 @@ def _with_probe_tree(tree_idname: str, fn: Callable[[Any], _T], default: _T) -> 
     try:
         import bpy
 
-        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)
+        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)  # ty: ignore[invalid-argument-type]
         try:
             return fn(probe_tree)
         finally:

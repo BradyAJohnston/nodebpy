@@ -453,7 +453,7 @@ def sort_reduced_free_columns(
 
         def pos(v: Node | Cluster) -> int:
             w = non_cluster_descendant(H.free_LT, v) if v.type == Kind.CLUSTER else v
-            return H.free_col.index(cast(Node, w))
+            return H.free_col.index(w)
 
         for H in crossing_reduction_graphs:
             H.reduced_free_col.sort(key=pos)

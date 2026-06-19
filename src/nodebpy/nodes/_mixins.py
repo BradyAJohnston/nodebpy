@@ -82,7 +82,7 @@ class _FormatStringMixin(ItemsMixin):
     ):
         super().__init__()
         key_args = {"Format": format}
-        key_args.update(self._add_inputs(**(items or {})))  # type: ignore
+        key_args.update(self._add_inputs(**(items or {})))
         self._establish_links(**key_args)
 
     @property

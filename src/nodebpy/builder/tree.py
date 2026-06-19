@@ -629,7 +629,7 @@ class TreeBuilder(Generic[_TreeT]):
         ignore_visibility: bool = False,
     ):
         if isinstance(tree, str):
-            self.tree = bpy.data.node_groups.new(tree, tree_type)  # type: ignore[assignment]
+            self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
         else:
             self.tree = tree  # type: ignore
 
