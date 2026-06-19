@@ -65,8 +65,8 @@ class SliceToIndices(CustomGeometryGroup):
 
     def _build_group(self, tree: TreeBuilder) -> None:
         start = tree.inputs.integer("Start")
-        stop = tree.inputs.integer("Stop")
-        step = tree.inputs.integer("Step")
+        stop = tree.inputs.integer("Stop", 10)
+        step = tree.inputs.integer("Step", 1)
 
         range = stop - start
         length = IntegerMath.divide_ceiling(range, step).o.value.abs()

@@ -1,5 +1,6 @@
 from . import builder, export, nodes, types
 from .builder import TreeBuilder
+from .cli import main
 from .nodes import compositor, geometry, shader
 
 __all__ = [
@@ -11,4 +12,5 @@ __all__ = [
     "types",
     "builder",
     "TreeBuilder",
+    "main",
 ]
