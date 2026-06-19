@@ -1023,7 +1023,7 @@ class CombineBundle(BaseNode):
           default.
         """
         if isinstance(value, str):
-            self.node.bundle_items.new(value, name)
+            self.node.bundle_items.new(value, name)  # ty: ignore[invalid-argument-type]
         elif isinstance(value, (BaseNode, Socket, bpy.types.NodeSocket)):
             extend = self.node.inputs[len(self.node.inputs) - 1]
             self.tree.link(self._source_socket(value), extend)
@@ -1034,7 +1034,7 @@ class CombineBundle(BaseNode):
             socket_type = _infer_value_type(value)
             if socket_type is None:
                 raise TypeError(f"Unsupported bundle item {name!r}: {value!r}")
-            self.node.bundle_items.new(socket_type, name)
+            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
             self.node.inputs[name].default_value = value
 
 
@@ -6527,7 +6527,7 @@ class SeparateBundle(BaseNode):
         # name and socket-type string (the inverse of CombineBundle, where the
         # type is inferred from a linked source).
         for name, socket_type in (items or {}).items():
-            self.node.bundle_items.new(socket_type, name)
+            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
         self._establish_links(Bundle=bundle)
 
 

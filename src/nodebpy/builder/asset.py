@@ -93,7 +93,7 @@ class _AssetGroupMixin:
         path = cls._library.path()
         if not os.path.exists(path):
             raise FileNotFoundError(f"Asset library not found: {path}")
-        with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, dst):
+        with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, dst):  # ty: ignore[invalid-context-manager]
             if cls._asset_name not in src.node_groups:
                 raise KeyError(f"Node group {cls._asset_name!r} not found in {path}")
             dst.node_groups = [cls._asset_name]

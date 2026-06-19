@@ -684,7 +684,7 @@ class EvaluateClosure(BaseNode):
         # one unlinked. This mirrors CombineBundle (inputs) / SeparateBundle
         # (outputs).
         for name, socket_type in (output_items or {}).items():
-            self.node.output_items.new(socket_type, name)
+            self.node.output_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
         for name, value in (input_items or {}).items():
             self._add_input_item(name, value)
         self.active_input_index = active_input_index
@@ -693,7 +693,7 @@ class EvaluateClosure(BaseNode):
 
     def _add_input_item(self, name: str, value: "InputLinkable | str") -> None:
         if isinstance(value, str):
-            self.node.input_items.new(value, name)
+            self.node.input_items.new(value, name)  # ty: ignore[invalid-argument-type]
             return
         extend = self.node.inputs[len(self.node.inputs) - 1]  # input __extend__
         self.tree.link(self._source_socket(value), extend)
@@ -1795,7 +1795,7 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
         linkable = {k: v for k, v in items.items() if not _is_default_value(v)}
         defaults = {k: v for k, v in items.items() if _is_default_value(v)}
 
-        key_args.update(self._add_inputs(**linkable))  # ty: ignore[no-matching-overload]
+        key_args.update(self._add_inputs(**linkable))
         for name, value in defaults.items():
             socket = self._add_socket(name=name, type="FLOAT")
             if value is not None:
