@@ -2,6 +2,24 @@
 title: Changelog
 ---
 
+## v520.4.0 - UNRELEASED
+
+### Enhancements
+- Chaining nodes with `>>` node supports `None` in a chain. Allows for optional insertion of a node given a condition.
+```py
+from nodebpy import geometry as g
+
+transform = False
+
+with g.tree():
+    (
+        g.Cube()
+        >> g.Array(count=4)
+        >> (g.TransformGeometry(translation=(1, 1, 1)) if transform else None)
+        >> g.SetPosition()
+    )
+```
+
 ## v520.3.0 - 2026-06-18
 
 ### Enhancements

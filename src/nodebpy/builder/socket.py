@@ -677,7 +677,6 @@ class _AccumulateField(_EvaluateField[_T]):
     def _accumulate(
         self, output: Literal["leading", "trailing", "total"], group_index: InputInteger
     ) -> "_T":
-
         from ..nodes.geometry import AccumulateField
 
         node = getattr(

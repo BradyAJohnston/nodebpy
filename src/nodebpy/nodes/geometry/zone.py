@@ -599,12 +599,12 @@ class ClosureZone(_ZonePair):
         ``"VECTOR"``, …); the item collection lives on the output node and
         drives the matching output socket on the input node.
         """
-        self.output.node.input_items.new(type, name)
+        self.output.node.input_items.new(type, name)  # ty: ignore[invalid-argument-type]
         return _wrap_socket(self.input.node.outputs[-2])
 
     def output_item(self, name: str, type: str = "GEOMETRY") -> SocketLinker:
         """Declare a closure output and return the target to feed with ``>>``."""
-        self.output.node.output_items.new(type, name)
+        self.output.node.output_items.new(type, name)  # ty: ignore[invalid-argument-type]
         return _wrap_socket(self.output.node.inputs[-2])
 
     @property

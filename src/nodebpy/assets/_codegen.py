@@ -144,7 +144,7 @@ def _introspect(library: AssetLibrary, names: set[str] | None) -> list[_AssetCla
     path = library.path()
     library_source = _library_source(library)
 
-    with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, _):
+    with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, _):  # ty: ignore[invalid-context-manager]
         available = list(src.node_groups)
     wanted = [n for n in available if names is None or n in names]
 
@@ -155,7 +155,7 @@ def _introspect(library: AssetLibrary, names: set[str] | None) -> list[_AssetCla
         # compositor "Combine Spherical" both exist) and we'd introspect the
         # wrong one. Blender renames the appended copy on a clash; that's fine,
         # we only read its interface (the emitted _asset_name uses the original).
-        with bpy.data.libraries.load(path, link=False, assets_only=True) as (
+        with bpy.data.libraries.load(path, link=False, assets_only=True) as (  # ty: ignore[invalid-context-manager]
             src,
             dst,
         ):
@@ -170,7 +170,7 @@ def _introspect(library: AssetLibrary, names: set[str] | None) -> list[_AssetCla
                 "CompositorNodeTree": "CompositorNodeGroup",
             }[group.bl_idname]
             node = host.nodes.new(node_type)
-            node.node_tree = group
+            node.node_tree = group  # ty: ignore[unresolved-attribute]
             classes.append(
                 _AssetClass(
                     class_name=_class_name(name),

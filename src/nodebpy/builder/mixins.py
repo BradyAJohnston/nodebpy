@@ -367,7 +367,11 @@ class LinkingMixin:
         else:
             self._link(source, input)
 
-    def __rshift__(self, other: _RShiftT) -> _RShiftT:
+    @overload
+    def __rshift__(self, other: None) -> Self: ...
+    @overload
+    def __rshift__(self, other: _RShiftT) -> _RShiftT: ...
+    def __rshift__(self, other: _RShiftT | None) -> _RShiftT | Self:
         """Chain nodes using >> operator. Links output to input.
 
         Usage:
@@ -377,8 +381,14 @@ class LinkingMixin:
         If the target node has an ellipsis placeholder (...), links to that specific input.
         Otherwise, finds the best compatible socket pair based on type compatibility.
 
-        Returns the right-hand node to enable continued chaining.
+        Returns the right-hand node to enable continued chaining. A ``None``
+        target is a no-op passthrough — nothing is linked and ``self`` is
+        returned so an optional node can be conditionally skipped::
+
+            src >> SetPosition() >> (Transform() if trans else None) >> out
         """
+        if other is None:
+            return self
         if isinstance(other, _SocketLike):
             source = self._default_output_socket
             target = other.socket
