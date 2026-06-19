@@ -7,9 +7,7 @@ from pathlib import Path
 import pytest
 
 from nodebpy import TreeBuilder
-from nodebpy import geometry as g
-from nodebpy.assets import BundledLibrary, PackageLibrary, generate_asset_api
-from nodebpy.assets import _codegen
+from nodebpy.assets import BundledLibrary, PackageLibrary, _codegen, generate_asset_api
 from nodebpy.assets.__main__ import generate_essentials
 from nodebpy.builder import BaseNode, asset_group_base
 from nodebpy.nodes import compositor as nc
@@ -62,8 +60,8 @@ def test_every_generated_asset_instantiates(module, builder):
 
 @_needs_essentials
 def test_generated_asset_appends_and_links():
-    with g.tree("t"):
-        node = ng.SmoothByAngle(mesh=g.Cube(), angle=0.5)
+    with ng.tree("t"):
+        node = ng.SmoothByAngle(mesh=ng.Cube(), angle=0.5)
         assert node.node.node_tree is not None
         assert node.node.node_tree.name == "Smooth by Angle"
         assert node.o.mesh is not None
@@ -73,7 +71,7 @@ def test_generated_asset_appends_and_links():
 @_needs_essentials
 def test_generated_asset_reuses_appended_group():
     """A second instance reuses the already-appended group (same tree object)."""
-    with g.tree("t"):
+    with ng.tree("t"):
         first = ng.SmoothByAngle()
         second = ng.SmoothByAngle()
         assert first.node.node_tree is second.node.node_tree
@@ -81,8 +79,8 @@ def test_generated_asset_reuses_appended_group():
 
 @_needs_essentials
 def test_generated_asset_chains():
-    with g.tree("t"):
-        mesh = ng.SmoothByAngle(mesh=g.Cube()).o.mesh
+    with ng.tree("t"):
+        mesh = ng.SmoothByAngle(mesh=ng.Cube()).o.mesh
         arr = ng.Array(geometry=mesh, count=4)
         assert arr.o.geometry is not None
 
@@ -117,7 +115,7 @@ def test_create_group_missing_library():
         _name = _asset_name = "Nope"
         _library = BundledLibrary("does_not_exist.blend")
 
-    with g.tree("t"), pytest.raises(FileNotFoundError):
+    with ng.tree("t"), pytest.raises(FileNotFoundError):
         Missing()
 
 
@@ -127,7 +125,7 @@ def test_create_group_unknown_asset_name():
         _name = _asset_name = "No Such Group In Library"
         _library = _ESSENTIALS
 
-    with g.tree("t"), pytest.raises(KeyError):
+    with ng.tree("t"), pytest.raises(KeyError):
         Unknown()
 
 
