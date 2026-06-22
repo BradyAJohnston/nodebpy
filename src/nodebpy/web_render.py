@@ -107,6 +107,6 @@ def to_web_render_html(
         f"}}\n"
         f'import {{ mountGraphView }} from "{module_url}";\n'
         f'mountGraphView(document.getElementById("{container_id}"), '
-        f"{{ payload: {payload_js} }});\n"
+        f"{{ payload: {payload_js}, showCopyButton: false }});\n"
         f"</script>"
     )
