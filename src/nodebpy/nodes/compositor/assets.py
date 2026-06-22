@@ -144,8 +144,8 @@ class FilmGrain(AssetCompositorGroup):
         """Factor"""
         preset: MenuSocket
         """Preset"""
-        animated_: BooleanSocket
-        """Animated """
+        animated: BooleanSocket
+        """Animated"""
 
     class _Outputs(SocketAccessor):
         result: ColorSocket
@@ -162,15 +162,15 @@ class FilmGrain(AssetCompositorGroup):
         self,
         input: InputColor = None,
         factor: InputFloat = 1.0,
-        preset: InputMenu = "Super 8mm",
-        animated_: InputBoolean = False,
+        preset: InputMenu = "Super 8 mm",
+        animated: InputBoolean = False,
     ):
         super().__init__(
             **{
                 "Socket_1": input,
                 "Socket_7": factor,
                 "Socket_64": preset,
-                "Socket_10": animated_,
+                "Socket_10": animated,
             }
         )
 

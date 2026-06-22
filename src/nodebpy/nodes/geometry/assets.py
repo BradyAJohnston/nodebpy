@@ -200,7 +200,7 @@ class AttachmentInfo(AssetGeometryGroup):
         attachment_uv: VectorSocket
         """Attachment UV"""
         attachment_is_valid: BooleanSocket
-        """Attachment is Valid"""
+        """Attachment Is Valid"""
         surface_normal: VectorSocket
         """Surface Normal"""
 
@@ -2137,8 +2137,8 @@ class ProjectWithDepth(AssetGeometryGroup):
         """Projection"""
         transform: MatrixSocket
         """Transform"""
-        cip_start: FloatSocket
-        """Cip Start"""
+        clip_start: FloatSocket
+        """Clip Start"""
         clip_end: FloatSocket
         """Clip End"""
 
@@ -2159,7 +2159,7 @@ class ProjectWithDepth(AssetGeometryGroup):
         depth: InputFloat = 1.0,
         projection: InputMatrix = None,
         transform: InputMatrix = None,
-        cip_start: InputFloat = 0.1,
+        clip_start: InputFloat = 0.1,
         clip_end: InputFloat = 100.0,
     ):
         super().__init__(
@@ -2168,7 +2168,7 @@ class ProjectWithDepth(AssetGeometryGroup):
                 "Socket_2": depth,
                 "Socket_5": projection,
                 "Socket_6": transform,
-                "Socket_0": cip_start,
+                "Socket_0": clip_start,
                 "Socket_1": clip_end,
             }
         )
