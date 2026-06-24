@@ -106,7 +106,7 @@ Because of the complexity of zones, we have the `Item` helper which gives access
 
 
 ```{python}
-with g.tree(arrange=None) as tree:
+with g.tree() as tree:
     zone = g.RepeatZone(10)
     random_pos = g.RandomValue.vector(seed=zone.iteration)
     geo = zone.item("Geometry", type="GEOMETRY")
@@ -118,7 +118,7 @@ tree
 
 
 ```{python}
-with g.tree(arrange=None) as tree:
+with g.tree() as tree:
     # this initializes the zone with two socket inputs for each of the values
     # we manually specify the socket names
     zone = g.SimulationZone({"Value": g.Value(), "Vector": g.Vector()})
@@ -126,7 +126,7 @@ with g.tree(arrange=None) as tree:
 
     # this should automatically pick the vector input socket because we are
     # explicity about the VectorMath and it will be the most compatible
-    zone.input >> g.VectorMath.add((1.2, 1.2, 1.2)) >> zone.output
+    zone.input >> g.VectorMath.add(..., (0.2, 0.4, 0.6)) >> zone.output
 
 tree
 ```
