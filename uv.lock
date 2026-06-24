@@ -1210,6 +1210,7 @@ networkx = [
 dev = [
     { name = "fake-bpy-module" },
     { name = "griffe" },
+    { name = "ipykernel" },
     { name = "ipython" },
     { name = "jsondiff" },
     { name = "networkx" },
@@ -1220,6 +1221,7 @@ dev = [
     { name = "quartodoc" },
     { name = "ruff" },
     { name = "syrupy" },
+    { name = "tree-clipper" },
     { name = "ty" },
 ]
 
@@ -1235,6 +1237,7 @@ provides-extras = ["networkx", "bpy", "format"]
 dev = [
     { name = "fake-bpy-module", specifier = ">=20260501" },
     { name = "griffe", specifier = "<2.0.0" },
+    { name = "ipykernel", specifier = ">=6.0.0" },
     { name = "ipython", specifier = ">=8.0.0" },
     { name = "jsondiff", specifier = ">=2.2.1" },
     { name = "networkx", specifier = ">=3.6.1" },
@@ -1245,6 +1248,7 @@ dev = [
     { name = "quartodoc", specifier = ">=0.11.1" },
     { name = "ruff", specifier = ">=0.14.11" },
     { name = "syrupy", specifier = ">=5.0.0" },
+    { name = "tree-clipper", specifier = ">=0.1.6" },
     { name = "ty", specifier = "==0.0.51" },
 ]
 
@@ -2094,6 +2098,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/57/a9/a2584b8313b89f94869ddb3c4074617a691de1812a614d2d50e32ca5a7a6/traitlets-5.15.1.tar.gz", hash = "sha256:7b1c07854fe25acb39e009bae49f11b79ff6cbb2f27999104e9110e7a6b53722", size = 163344, upload-time = "2026-06-03T12:26:06.181Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/96/8d/1080ee4c231f361b6ce4470d556c8c435b67c7e0753aaa641497ee92f88b/traitlets-5.15.1-py3-none-any.whl", hash = "sha256:770a53705f84b81ac107e83a1b3328ff2dae16094d8fc3cfc004e4b22dfd8e92", size = 85858, upload-time = "2026-06-03T12:26:04.395Z" },
+]
+
+[[package]]
+name = "tree-clipper"
+version = "0.1.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/40/91/712c496935cb719a2dbb457e8581d6195d33a403b88b77aa66c35c82b877/tree_clipper-0.1.6.tar.gz", hash = "sha256:3aa5b543da7534eaa98cbf931d274e7d9d7aeb63dd2d53fdf8233d272effe803", size = 37406, upload-time = "2026-02-26T01:59:46.316Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/61/1d/dab36efbc37366ff2af0922f245100833efe9941cc939e33e89c31ebb376/tree_clipper-0.1.6-py3-none-any.whl", hash = "sha256:5ab586f8d23b736c8b36870203c6a9124f0d9f099298bfbe5e7cc9c2314a5e34", size = 42934, upload-time = "2026-02-26T01:59:45.103Z" },
 ]
 
 [[package]]
