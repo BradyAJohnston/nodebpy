@@ -17,7 +17,7 @@ with g.tree("NewTree") as tree:
 tree
 ```
 
-These nodes can be saved as variables for re-use later in the node tree as well. After instantiating a class you can specify the input and output sockets using the `i_*` and `o_*` properties on the class.
+These nodes can be saved as variables for re-use later in the node tree as well. After instantiating a class you can access the input and output sockets through the `.i` and `.o` accessors on the class.
 
 These two approaches are equivalent:
 
@@ -41,11 +41,11 @@ with g.tree("AnotherAnotherTree") as tree:
     )
 ```
 
-## Node Input Sockets
+## Interface Sockets
 
-The socket interface nodes define what values / sockets are available as inputs for the node tree.
+The tree’s interface defines what sockets are available as inputs and outputs of the node tree.
 
-We define them in a similar way to the socekts themselves, using context with the `tree.inputs` and `tree.outputs` and adding sockets with the `s.SocketGeometry()`.
+We declare them with `tree.inputs` and `tree.outputs` — for example `tree.inputs.geometry()` or `tree.outputs.float("Result")` — which add the interface socket and return it for linking with other nodes.
 
 ``` python
 with g.tree("NewTree") as tree:
@@ -77,9 +77,9 @@ tree
 
 ## Zones
 
-Zones like the repeat and simulation zone are initialized with their `SimulationZone()` and `RepeatZone()` constructors. You can add individvual `RepeatInput()` node and output, but they require additional setup to be actually linked. The repeat zone can be initialized with a repeat count, which can also be linked to from elsewhere.
+Zones like the repeat and simulation zone are initialized with their `SimulationZone()` and `RepeatZone()` constructors. You can add individual `RepeatInput()` and output nodes, but they require additional setup to be actually linked. The repeat zone can be initialized with a repeat count, which can also be linked to from elsewhere.
 
-We can access the input and output nodes with `zone.input` and `zone.output`. The repeat zone has the `zone.iteration` which is the iteration number of the current zone. Simulation zone has the `zone.delta_time` which is the time between previous and current simulation loop.
+We can access the input and output nodes with `zone.input` and `zone.output`. The repeat zone has `zone.iteration`, which is the iteration number of the current zone. The simulation zone has `zone.delta_time`, which is the time between the previous and current simulation loop.
 
 Because of the complexity of zones, we have the `Item` helper which gives access to the input & output sockets on the input and output nodes (4 sockets total). For the Simulation and Repeat zones, we have the:
 
@@ -109,7 +109,7 @@ with g.tree() as tree:
     zone.input.o["Value"] + 10 >> zone.output
 
     # this should automatically pick the vector input socket because we are
-    # explicity about the VectorMath and it will be the most compatible
+    # explicit about the VectorMath and it will be the most compatible
     zone.input >> g.VectorMath.add(..., (0.2, 0.4, 0.6)) >> zone.output
 
 tree

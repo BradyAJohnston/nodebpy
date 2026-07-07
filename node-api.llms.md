@@ -169,7 +169,7 @@ For nodes that have `mode`, `domain`, `data_type` and `operation` as potential e
 > g.Compare.float.less_than()       # .data_type.operation
 > ```
 
-Because sockets are the only positional for the node constructors, enum values like `data_typa` have to be specified with as key word arguments to the constructor. All enum options are type-hinted with `Literal[]` so IDE auto-complete and type hinting will work, but the convenience class methods enable a cleaner way of writing the nodes. For the example below both methods do work, but the second is cleaner to write and flows better with what the node is doing; ‘On the edge domain, evaluate a float attribute’.
+Because sockets are the only positional arguments for the node constructors, enum values like `data_type` have to be specified as keyword arguments to the constructor. All enum options are type-hinted with `Literal[]` so IDE auto-complete and type hinting will work, but the convenience class methods enable a cleaner way of writing the nodes. For the example below both methods do work, but the second is cleaner to write and flows better with what the node is doing; ‘On the edge domain, evaluate a float attribute’.
 
 ``` python
 with g.tree():
@@ -191,7 +191,7 @@ If the items being compared are nodes or sockets, regular boolean comparison wit
 a = g.Integer(0)
 b = g.Integer(2)
 
-g.Compare(A_INT = a, A_INT = b, data_type = "INT", operation="EQUAL")
+g.Compare(A=a, B=b, data_type="INT", operation="EQUAL")
 
 g.Compare.integer.equal(a, b)
 
@@ -217,13 +217,13 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x1497816a0>
+>     <nodebpy.builder.socket.BooleanSocket at 0x12fe856a0>
 >
 > ### Comparing Python Objects
 >
 > If the comparison was of just regular python values, then the result at runtime will just be boolean `True` and *not* a `Compare` node. This means the value *won’t* change during node tree evaluation, and will only be evaluated a single time in node tree construction.
 >
-> The result below will *always* output a `Cone` geoemtry because the input will always be `True`.
+> The result below will *always* output a `Cone` geometry because the input will always be `True`.
 >
 > ``` python
 > with g.tree():

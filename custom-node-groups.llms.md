@@ -11,27 +11,26 @@ from nodebpy.types import (
 )
 ```
 
-Custom node groups let you encapsulate reusable logic into a single node. With `NodeGroupBuilder`, you define a Python class that:
+Custom node groups let you encapsulate reusable logic into a single node. By subclassing `CustomGeometryGroup`, you define a Python class that:
 
-1.  **Declares inputs and outputs** as class-level descriptors.
-2.  **Implements the internal graph** in a `_build_group` classmethod.
-3.  **Works like any other node** – full IDE autocomplete, type hints, `>>` chaining, and operator support.
+1.  **Names the group** with `_name`.
+2.  **Exposes its inputs** through an ordinary `__init__`.
+3.  **Implements the internal graph** in a `_build_group` method.
 
-The group’s node tree is built once on first use and cached in `bpy.data.node_groups`, so creating many instances of the same group is cheap.
+The result works like any other node – full IDE autocomplete, type hints, `>>` chaining, and operator support. The group’s node tree is built once on first use and cached in `bpy.data.node_groups`, so creating many instances of the same group is cheap.
 
 ## Anatomy of a Custom Node Group
-
-A custom node group class has four parts:
 
 ``` python
 class MyNode(CustomGeometryGroup):
     _name = "My Node"  # 1. Name
 
-    def __init__(self, value: float = 0.0):  # 3. Constructor
+    def __init__(self, value: float = 0.0):  # 2. Constructor
         super().__init__(value=value)
 
-    def _build_group(self, tree):  # 4. Graph logic
-        return (value + g.Value(1.0)) >> tree.ouptuts.float()
+    def _build_group(self, tree):  # 3. Graph logic
+        value = tree.inputs.float("Value")
+        _ = value + 1.0 >> tree.outputs.float("Result")
 ```
 
 ### 1. `_name`
@@ -183,7 +182,7 @@ Each custom group appears as a single, named node in the tree – keeping the gr
 
 ## Class Options
 
-`NodeGroupBuilder` supports a few class-level options:
+`CustomGeometryGroup` (via its `NodeGroupBuilder` base class) supports a few class-level options:
 
 | Attribute | Type | Default | Description |
 |:---|:---|:---|:---|

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Nodes to Code – nodebpy 520.5.1</title>
+<title>Nodes to Code – nodebpy 520.5.2</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -61,7 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -69,7 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./using.html" rel="next">
-<link href="./node-api.html" rel="prev">
+<link href="./assets.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -159,9 +159,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
     );
 </script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.5.1</span>
+    <span class="navbar-title">nodebpy 520.5.2</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -197,12 +197,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Writing Node Trees</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./node-api.html">
- <span class="dropdown-text">Node API Design</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="./operators.html">
  <span class="dropdown-text">Math Operators</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./custom-node-groups.html">
@@ -222,7 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="./comparisons.html">
- <span class="dropdown-text">Comapring the API</span></a>
+ <span class="dropdown-text">Comparing the API</span></a>
   </li>  
     </ul>
   </li>
@@ -278,6 +278,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./node-api.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Node API Design</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./custom-node-groups.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Custom Node Groups</span></a>
   </div>
@@ -286,12 +292,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./assets.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Asset Node Groups</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./node-api.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Node API Design</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -309,7 +309,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./comparisons.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Comapring the API</span></a>
+ <span class="menu-text">Comparing the API</span></a>
   </div>
 </li>
     </ul>
@@ -369,7 +369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="simple-example" class="level2">
 <h2 class="anchored" data-anchor-id="simple-example">Simple Example</h2>
 <p>Here we build a tree with the raw <code>bpy</code> API, standing in for a tree that already exists in a <code>.blend</code> file:</p>
-<div id="f5d80de6" class="cell" data-execution_count="1">
+<div id="9042197b" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> bpy</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>nt <span class="op">=</span> bpy.data.node_groups.new(<span class="st">"Scatter"</span>, <span class="st">"GeometryNodeTree"</span>)</span>
@@ -386,46 +386,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>sphere <span class="op">=</span> nt.nodes.new(<span class="st">"GeometryNodeMeshIcoSphere"</span>)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>real <span class="op">=</span> nt.nodes.new(<span class="st">"GeometryNodeRealizeInstances"</span>)</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>nt.links.new(n_in.outputs[<span class="st">"Geometry"</span>], dist.inputs[<span class="st">"Mesh"</span>])</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>nt.links.new(n_in.outputs[<span class="st">"Count"</span>], dist.inputs[<span class="st">"Density"</span>])</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>nt.links.new(dist.outputs[<span class="st">"Points"</span>], inst.inputs[<span class="st">"Points"</span>])</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>nt.links.new(sphere.outputs[<span class="st">"Mesh"</span>], inst.inputs[<span class="st">"Instance"</span>])</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>nt.links.new(inst.outputs[<span class="st">"Instances"</span>], real.inputs[<span class="st">"Geometry"</span>])</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>nt.links.new(real.outputs[<span class="st">"Geometry"</span>], n_out.inputs[<span class="st">"Geometry"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, node <span class="kw">in</span> <span class="bu">enumerate</span>([n_in, dist, inst, real, n_out]):</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    node.location <span class="op">=</span> (i <span class="op">*</span> <span class="dv">250</span>, <span class="dv">0</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>sphere.location <span class="op">=</span> (<span class="dv">250</span>, <span class="op">-</span><span class="dv">320</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>nt.links.new(n_in.outputs[<span class="st">"Geometry"</span>], dist.inputs[<span class="st">"Mesh"</span>])</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>nt.links.new(n_in.outputs[<span class="st">"Count"</span>], dist.inputs[<span class="st">"Density"</span>])</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>nt.links.new(dist.outputs[<span class="st">"Points"</span>], inst.inputs[<span class="st">"Points"</span>])</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>nt.links.new(sphere.outputs[<span class="st">"Mesh"</span>], inst.inputs[<span class="st">"Instance"</span>])</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>nt.links.new(inst.outputs[<span class="st">"Instances"</span>], real.inputs[<span class="st">"Geometry"</span>])</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>nt.links.new(real.outputs[<span class="st">"Geometry"</span>], n_out.inputs[<span class="st">"Geometry"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>bpy.data.node_groups['Scatter']...NodeLink</code></pre>
 </div>
 </div>
-<div id="4ea1060d" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Group Input"):::default-node
-    N1("Distribute Points on Faces"):::geometry-node
-    N2("Instance on Points"):::geometry-node
-    N3("Ico Sphere"):::geometry-node
-    N4("Realize Instances"):::geometry-node
-    N5("Group Output"):::default-node
-    N4 --&gt;|"Geometry-&gt;Geometry"| N5
-    N0 --&gt;|"Geometry-&gt;Mesh"| N1
-    N0 --&gt;|"Count-&gt;Density"| N1
-    N1 --&gt;|"Points-&gt;Points"| N2
-    N3 --&gt;|"Mesh-&gt;Instance"| N2
-    N2 --&gt;|"Instances-&gt;Geometry"| N4
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<div id="11b4eabd" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div id="gnwr-e643ebf846aa48329337dd70f6ae1565" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-e643ebf846aa48329337dd70f6ae1565"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
 </div>
 </div>
 <p>Pass the <code>bpy</code> node tree to <code>to_python()</code>:</p>
-<div id="acfb151b" class="cell" data-execution_count="3">
+<div id="5497792d" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy.export <span class="im">import</span> to_python</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>code <span class="op">=</span> to_python(nt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -444,11 +436,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> g.RealizeInstances()</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;&gt;</span> geometry_1</span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Twenty lines of <code>bpy</code> plumbing become a single <code>&gt;&gt;</code> pipeline. The generated source is self-contained — running it recreates the tree.</p>
+<p>All that <code>bpy</code> plumbing becomes a single <code>&gt;&gt;</code> pipeline. The generated source is self-contained — running it recreates the tree.</p>
 </section>
 <section id="complex-example" class="level2">
 <h2 class="anchored" data-anchor-id="complex-example">Complex Example</h2>
-<p>This is a new node group asset in Blender 5.2 to do PCA on the positions of points. Two examples of this node group below, with the generated and the human-curated / written versions below. More through and elegance can be put into the human-written version, but the generated version can be improved with time.</p>
+<p>This is a new node group asset in Blender 5.2 to do PCA on the positions of points. The generated and the human-written versions of this node group are shown below. More thought and elegance can be put into the human-written version, but the generated version can be improved with time.</p>
 <p><img src="images/node-screenshot-pca.png" class="img-fluid"></p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Generated</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Human-written</a></li></ul>
@@ -525,10 +517,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    combine_xyz_2 <span class="op">&gt;&gt;</span> shortest_axis</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="d80fb495" class="cell" data-execution_count="6">
+<div id="a211d7dd" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree():</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree() <span class="im">as</span> tree:</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    position <span class="op">=</span> tree.inputs.vector(<span class="st">"Position"</span>, default_input<span class="op">=</span><span class="st">"POSITION"</span>)</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    group_id <span class="op">=</span> tree.inputs.integer(</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Group ID"</span>,</span>
@@ -578,7 +570,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="from-a-treebuilder" class="level2">
 <h2 class="anchored" data-anchor-id="from-a-treebuilder">From a <code>TreeBuilder</code></h2>
 <p>Trees built with <code>nodebpy</code> have a <code>to_python()</code> method directly. The generator recognises lifted operators, so math written with Python syntax comes back out the same way:</p>
-<div id="8a221932" class="cell" data-execution_count="7">
+<div id="d4708805" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> TreeBuilder</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -612,7 +604,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="chain-length" class="level3">
 <h3 class="anchored" data-anchor-id="chain-length">Chain length</h3>
 <p>Linear runs of nodes are emitted as <code>&gt;&gt;</code> pipelines when they have at least <code>min_chain_length</code> items (default 3, counting interface endpoints). Raising the threshold produces flat assignments instead:</p>
-<div id="bce0e7cc" class="cell" data-execution_count="9">
+<div id="f10f0bf9" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>code <span class="op">=</span> tree.to_python(min_chain_length<span class="op">=</span><span class="dv">99</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g, TreeBuilder</span>
@@ -636,7 +628,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="node-positions" class="level3">
 <h3 class="anchored" data-anchor-id="node-positions">Node positions</h3>
 <p>By default the generated code lets <code>nodebpy</code> lay the tree out automatically when it is built. Pass <code>snapshot_positions=True</code> to instead capture each node’s authored <code>location</code> and restore it, so the rebuilt tree matches the original layout. The tree is built with <code>arrange=None</code> (auto-layout off) and a <code>tree.node_positions = {...}</code> mapping is appended:</p>
-<div id="58d05c30" class="cell" data-execution_count="11">
+<div id="899b7689" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Wave Deform"</span>, arrange<span class="op">=</span><span class="va">None</span>) <span class="im">as</span> tree:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry(<span class="st">"Geometry"</span>)</span>
@@ -679,7 +671,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="zones" class="level2">
 <h2 class="anchored" data-anchor-id="zones">Zones</h2>
 <p>Simulation, repeat and for-each zones are reconstructed using the zone item API rather than as raw input/output node pairs:</p>
-<div id="663a39d4" class="cell" data-execution_count="13">
+<div id="b0504ad9" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Stack"</span>) <span class="im">as</span> tree:</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry(<span class="st">"Geometry"</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    zone <span class="op">=</span> g.RepeatZone(<span class="dv">5</span>)</span>
@@ -706,7 +698,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="frames" class="level2">
 <h2 class="anchored" data-anchor-id="frames">Frames</h2>
 <p>Frames are reconstructed as <code>with g.Frame("..."):</code> blocks, including frames nested inside other frames (and container frames that hold only sub-frames):</p>
-<div id="205d4cd4" class="cell" data-execution_count="15">
+<div id="6133a15a" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Framed"</span>) <span class="im">as</span> tree:</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> g.Frame(<span class="st">"Deform"</span>):</span>
@@ -730,7 +722,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="archiving-as-classes" class="level2">
 <h2 class="anchored" data-anchor-id="archiving-as-classes">Archiving as Classes</h2>
 <p>By default the top-level tree is emitted as a <code>with TreeBuilder(...) as tree:</code> block. Pass <code>top_level="class"</code> to instead emit <em>every</em> node group — including the one being exported — as a <a href="./custom-node-groups.html"><code>CustomGeometryGroup</code></a> subclass. Each class builds its tree through <code>ClassName.create_group()</code>, making it a clean way to archive a set of node groups as plain, reusable Python:</p>
-<div id="ef8405a5" class="cell" data-execution_count="17">
+<div id="5ab2538e" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> TreeBuilder(<span class="st">"Wave Deform"</span>) <span class="im">as</span> tree:</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    geo <span class="op">=</span> tree.inputs.geometry(<span class="st">"Geometry"</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> tree.outputs.geometry(<span class="st">"Geometry"</span>)</span>
@@ -775,35 +767,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="round-tripping" class="level2">
 <h2 class="anchored" data-anchor-id="round-tripping">Round-Tripping</h2>
 <p>In the default <code>with</code> form the generated source assigns the builder to a variable named <code>tree</code>, so it can be executed directly to rebuild the tree:</p>
-<div id="43bc0c52" class="cell" data-execution_count="19">
+<div id="0dc769c6" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>namespace <span class="op">=</span> {}</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span>(tree.to_python(), namespace)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>rebuilt <span class="op">=</span> namespace[<span class="st">"tree"</span>]</span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>rebuilt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="19">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Group Input"):::default-node
-    N1("Position"):::input-node
-    N2("Separate XYZ"):::converter-node
-    N3("Combine XYZ"):::converter-node
-    N4("Set Position"):::geometry-node
-    N5("Group Output"):::default-node
-    N4 --&gt;|"Geometry-&gt;Geometry"| N5
-    N1 --&gt;|"Position-&gt;Vector"| N2
-    N2 --&gt;|"X-&gt;Z"| N3
-    N0 --&gt;|"Geometry-&gt;Geometry"| N4
-    N3 --&gt;|"Vector-&gt;Offset"| N4
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div id="gnwr-46d136469e814bed8239bf5fbea59ce0" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-46d136469e814bed8239bf5fbea59ce0"), { payload: "TreeClipper::H4sIACDwTGoC/+1abVPiOhT+K0w/r0xfAHW/ucrsOBepI+hdd8fJhPYAubZJJ011vY7//SZpCwFKFV33sg5+UDx5ac6T8zznkObRGkVAQ+DoDnhKGLU+N6x2023ajd5w0PgCAlufGpbgACiISJIs9rSbTrOjOlAWAlK9Umn+8WiRUP61ZUOI5QyfG48WxTGoIX/jO2icwJjxuGnbnhqcpYDG+BaQ/MBlnzGOUijs8FNwvNxAUsQzKkgMqJi/bBF4YvwXsIhxlNusvt/vqqeFMMZZJNCEsyxBeuH3JBRT2cdp6SVDGnCSiMJHNWYUqSUUQwgVwMc4UO4InukFGabCecd0HgeC3IEcGcLPAhgiIE41ZPMxrjlGdzDQ9KrQ/AosBsEfrOp1pyy4BYHEQ6J796WzA20yx02JhOAORxkY0GkjoShmIRmTBfTl1gUggaNINkTh4r4QmiYQCMQykWRisS3BFCIk2GQSmY+K8IOMqhQiOY5UzBoDzWQcyNEhmHamXcURivAIIqMhn8owYCE4GWVChguLMdHwnPun/aEZD/NOJbgaQbnDgcg4zEA8uhz65jhCc0etq6PepY4wCRvLTf7l8PxSP0Xt5myKgX/8V3doPT19Kne+tdvcP25zT/u1e3vz9KQ2WEtjOud4e1UX5EeaRVEpCgbnO2bniAW42P8fdlNqSFvK9I3CuGhAeJSySDq50sMQOGW2pkAmU+WEY+eGWcgphWucaq/17uXga7TuMaeETlDCWYIn5VKso16vFPEgSwWLkZbdZRnO19Sx9w/lz4Hdah129jsSjJfZbsydL0Q3nbJ7lMdJumRNONwRuF8KeTPscpRmQaUGCZlrZCyYYa1wMPZuv1Kfb/Q255wwOh/UifnhK/i+5AJQLHN3OPc8IvQWRSQmCqOWfdguHaugV6UsJDK2J+TfmJkJtQjrr13/rDu8uNZrI2kieY3SKc4be6cytRpq5lRm/m106/hyMPTPKp06Pr047nVzIuclAAlLV5TWaqrMmJJgDlQUTDahcNZRuGU/T+KlPhvS2M9lesfjZR47tYWW4703OZ3/j5mtj8fMFeV12jU6Xc3jOVUWiJyXNkX1Pqt6lPsmpmuz9F7B371akq/0ejHNz1lK9LN2FF+h+Ea52qlN1k5ltjbB3zbyXHWPh/5FJXlOTo/O/P6JWeSWM+c1Y/nrpjLzlTKomKOTnwnDuiTo2msZ4r6IIe5rGTIAuSYsoPHt+vuOJSsscZ26uHfdqri/kmuW3m9bGqwJ+SJfvDziV/TB9Wpxqkyq37ZSGMqvsRuAJJExudyucvb6gzrbqXL2+4dytkLkB1McAtcHSoV+FvK5VuD3aw8q9p4/qdhc2o9ZPCJ0p+xrlL22onEP302xnO1isGe/m1xtm6fOu2mVs0VCtZKbvfq3Jt771jC/sXLfuIxZo+mFcD4j6V5rnaS7Lzi4cl95cDUA0dh9q12r6l67NtY7H/fgytuv8m1Qvlf6rc4Vg+t8++L7ve5Rf9Nv4EsnS97Bex88/Eqff9Ghw9z7yiLFH49TEH/S18/NT1xWclzLruN9y/mIb5OeOXySmaLm6OmZwUN17UK9O6aUiTKRFAe+ynET+tryorV4MJAqFIiBorQopTfBGnOZofJ39+XZomBzg+ua1wJab5xeH02Y03uOOX37jdPr6mph+kNz+s4bp1/GxuuYs++/cXZNG3N6xysDR44VjJnXDvILTtJmRJRVPGX1FkVuBcRG/yxeVigbICRV5jTIoqSqIcGELtkVl1AM6bTCHGT8DirsCZPTBBHLwqVrVveYCDRmXF3yCm4rRk44YNkvARqQaLlwKRFAMaZ4AvldkFk6U6WTrGyAU6yMjwrgNACa34p4evoPUIjPUIQmAAA=", showCopyButton: false, allowSelection: false });
+</script>
 </div>
 </div>
 <p>(With <code>top_level="class"</code> there is no <code>tree</code> variable — call the generated class’s <code>create_group()</code> instead.)</p>
@@ -886,7 +867,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1215,8 +1196,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./node-api.html" class="pagination-link" aria-label="Node API Design">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Node API Design</span>
+      <a href="./assets.html" class="pagination-link" aria-label="Asset Node Groups">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Asset Node Groups</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

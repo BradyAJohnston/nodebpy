@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.5.1</span>
+    <span class="navbar-title">nodebpy 520.5.2</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -197,12 +197,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Writing Node Trees</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./node-api.html">
- <span class="dropdown-text">Node API Design</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="./operators.html">
  <span class="dropdown-text">Math Operators</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./node-api.html">
+ <span class="dropdown-text">Node API Design</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./custom-node-groups.html">
@@ -222,7 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="./comparisons.html">
- <span class="dropdown-text">Comapring the API</span></a>
+ <span class="dropdown-text">Comparing the API</span></a>
   </li>  
     </ul>
   </li>
@@ -278,6 +278,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./node-api.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Node API Design</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./custom-node-groups.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Custom Node Groups</span></a>
   </div>
@@ -286,12 +292,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./assets.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Asset Node Groups</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./node-api.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Node API Design</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -309,7 +309,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./comparisons.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Comapring the API</span></a>
+ <span class="menu-text">Comparing the API</span></a>
   </div>
 </li>
     </ul>
@@ -391,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">ImportError</span>(<span class="ss">f"Unsupported Blender version: </span><span class="sc">{</span>_v<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This way you can import the correct version of <code>nodebpy</code> based on the Blender version at runtime.</p>
-<p>It’s up to your own usual versioning code to ensure that code used is compatible with the right Blender versions, but you should be able to just impotr from <code>.lib.nodebpy</code> like regularly using the package.</p>
+<p>It’s up to your own usual versioning code to ensure that code used is compatible with the right Blender versions, but you should be able to just import from <code>.lib.nodebpy</code> like regularly using the package.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bpy.types <span class="im">import</span> GeometryNodeTree</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> .lib.nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -408,9 +408,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>default_tree()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="ef35d5f1" class="cell" data-execution_count="1">
+<div id="c8fee116" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display" data-execution_count="1">
-<div id="gnwr-56152b2ff8564262934fd3cdcfd3640d" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<div id="gnwr-94c918d271ad428cb915892d7a13d638" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
 <script type="module">
 if (!document.getElementById("gnwr-stylesheet")) {
   const link = document.createElement("link");
@@ -420,7 +420,7 @@ if (!document.getElementById("gnwr-stylesheet")) {
   document.head.appendChild(link);
 }
 import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
-mountGraphView(document.getElementById("gnwr-56152b2ff8564262934fd3cdcfd3640d"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+mountGraphView(document.getElementById("gnwr-94c918d271ad428cb915892d7a13d638"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
 </script>
 </div>
 </div>
@@ -502,7 +502,7 @@ mountGraphView(document.getElementById("gnwr-56152b2ff8564262934fd3cdcfd3640d"),
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -836,8 +836,8 @@ mountGraphView(document.getElementById("gnwr-56152b2ff8564262934fd3cdcfd3640d"),
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./comparisons.html" class="pagination-link" aria-label="Comapring the API">
-        <span class="nav-page-text">Comapring the API</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./comparisons.html" class="pagination-link" aria-label="Comparing the API">
+        <span class="nav-page-text">Comparing the API</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

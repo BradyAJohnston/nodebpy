@@ -27,6 +27,10 @@ inst = nt.nodes.new("GeometryNodeInstanceOnPoints")
 sphere = nt.nodes.new("GeometryNodeMeshIcoSphere")
 real = nt.nodes.new("GeometryNodeRealizeInstances")
 
+for i, node in enumerate([n_in, dist, inst, real, n_out]):
+    node.location = (i * 250, 0)
+sphere.location = (250, -320)
+
 nt.links.new(n_in.outputs["Geometry"], dist.inputs["Mesh"])
 nt.links.new(n_in.outputs["Count"], dist.inputs["Density"])
 nt.links.new(dist.outputs["Points"], inst.inputs["Points"])
@@ -36,22 +40,6 @@ nt.links.new(real.outputs["Geometry"], n_out.inputs["Geometry"])
 ```
 
     bpy.data.node_groups['Scatter']...NodeLink
-
-``` mermaid
-graph LR
-    N0("Group Input"):::default-node
-    N1("Distribute Points on Faces"):::geometry-node
-    N2("Instance on Points"):::geometry-node
-    N3("Ico Sphere"):::geometry-node
-    N4("Realize Instances"):::geometry-node
-    N5("Group Output"):::default-node
-    N4 -->|"Geometry->Geometry"| N5
-    N0 -->|"Geometry->Mesh"| N1
-    N0 -->|"Count->Density"| N1
-    N1 -->|"Points->Points"| N2
-    N3 -->|"Mesh->Instance"| N2
-    N2 -->|"Instances->Geometry"| N4
-```
 
 Pass the `bpy` node tree to `to_python()`:
 
@@ -78,11 +66,11 @@ with TreeBuilder("Scatter") as tree:
     )
 ```
 
-Twenty lines of `bpy` plumbing become a single `>>` pipeline. The generated source is self-contained — running it recreates the tree.
+All that `bpy` plumbing becomes a single `>>` pipeline. The generated source is self-contained — running it recreates the tree.
 
 ## Complex Example
 
-This is a new node group asset in Blender 5.2 to do PCA on the positions of points. Two examples of this node group below, with the generated and the human-curated / written versions below. More through and elegance can be put into the human-written version, but the generated version can be improved with time.
+This is a new node group asset in Blender 5.2 to do PCA on the positions of points. The generated and the human-written versions of this node group are shown below. More thought and elegance can be put into the human-written version, but the generated version can be improved with time.
 
 ![](images/node-screenshot-pca.png)
 
@@ -165,7 +153,7 @@ with TreeBuilder("Principal Components") as tree:
 ``` python
 from nodebpy import geometry as g
 
-with g.tree():
+with g.tree() as tree:
     position = tree.inputs.vector("Position", default_input="POSITION")
     group_id = tree.inputs.integer(
         "Group ID",
@@ -451,21 +439,6 @@ namespace = {}
 exec(tree.to_python(), namespace)
 rebuilt = namespace["tree"]
 rebuilt
-```
-
-``` mermaid
-graph LR
-    N0("Group Input"):::default-node
-    N1("Position"):::input-node
-    N2("Separate XYZ"):::converter-node
-    N3("Combine XYZ"):::converter-node
-    N4("Set Position"):::geometry-node
-    N5("Group Output"):::default-node
-    N4 -->|"Geometry->Geometry"| N5
-    N1 -->|"Position->Vector"| N2
-    N2 -->|"X->Z"| N3
-    N0 -->|"Geometry->Geometry"| N4
-    N3 -->|"Vector->Offset"| N4
 ```
 
 (With `top_level="class"` there is no `tree` variable — call the generated class’s `create_group()` instead.)

@@ -1,6 +1,25 @@
-# Comapring the API
+# Comparing the API
 
 How does the API compare to other existing solutions?
+
+Several other notable projects have also attempted interfacing with node trees via code. They mostly fit into two categories: either storing & retrieving node trees via code (`.json` or the `bpy` API), or authoring node trees with a custom API and syntax. `nodebpy` mostly fits into the latter category.
+
+### Storing node trees as code
+
+Converting node trees to Python API calls or `.json` gives a robust storage method, but this approach falls down in human authorability / readability. These projects are great for storage but less useful when wanting to write node trees from scratch:
+
+- [NodeToPython](https://github.com/BrendanParmer/NodeToPython)
+- [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) (used by this project for running some tests and web rendering)
+
+### Authoring node trees with code
+
+Two previous projects have made similar approaches to authoring node trees. [`geometry-script`](https://github.com/carson-katri/geometry-script) also auto-generated most of its type hinting, code and docs. It uses the approach of method chaining with the `.` operator, but obfuscates some of the non-linear way of building node trees.
+
+[`geonodes`](https://github.com/al1brn/geonodes) uses a similar context system for creating and authoring node trees, but doesn’t expose each individual node as its own class the way `nodebpy` does.
+
+I personally found both of their APIs to *not quite* fit how I wanted to work, leading to the creation of `nodebpy`. In comparison, this project is also the only one distributed on PyPI and installable via `pip` for easier use in other projects.
+
+The sections below reproduce examples from each project’s own documentation side-by-side with the `nodebpy` equivalent.
 
 ## `geonodes`
 
