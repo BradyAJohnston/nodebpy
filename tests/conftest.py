@@ -1,7 +1,13 @@
+import sys
 from pathlib import Path
 
 import bpy
 import pytest
+
+# Importing bpy puts Blender's extensions site-packages ahead of the repo on
+# sys.path; if nodebpy is installed there (e.g. as a MolecularNodes wheel) it
+# would shadow the code under test. Force the repo's src back to the front.
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from nodebpy import TreeBuilder, shader
 from nodebpy import compositor as c
@@ -80,8 +86,10 @@ def clean_and_save(request):
         bpy.context.scene.compositing_node_group = tree.tree
 
     # save a .blendfile for inspection with the current tests' nodes and also
-    # named after the current test function
-    name = request.node.name
+    # named after the current test function. Prefix the module so same-named
+    # tests in different files (e.g. test_nodes) don't race on one file
+    # under pytest-xdist.
+    name = f"{request.module.__name__}.{request.node.name}"
     for key, value in (
         ("/", "divide"),
         ("+", "plus"),
