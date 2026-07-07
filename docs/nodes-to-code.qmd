@@ -195,19 +195,31 @@ By default the generated code lets `nodebpy` lay the tree out automatically when
 Pass `snapshot_positions=True` to instead capture each node's authored `location` and restore it, so the rebuilt tree matches the original layout.
 The tree is built with `arrange=None` (auto-layout off) and a `tree.node_positions = {...}` mapping is appended:
 
+::: {.panel-tabset}
+## Hand-written
+
 ```{python}
-with TreeBuilder("Wave Deform", arrange=None) as tree:
+with TreeBuilder("Wave Deform") as tree:
     geo = tree.inputs.geometry("Geometry")
     out = tree.outputs.geometry("Geometry")
     geo >> g.SetPosition(offset=g.CombineXYZ(z=g.Position().o.position.x)) >> out
-
-code = tree.to_python(snapshot_positions=True)
 ```
+
+## Generated code
+````{python}
+code = tree.to_python(snapshot_positions=True)
+````
 
 ```{python}
 #| echo: false
 #| output: asis
 print(f"```python\n{code}\n```")
+```
+:::
+
+```{python}
+#| echo: false
+tree
 ```
 
 Positions are applied by name, so a node a rebuild does not recreate (a reroute) or renames is skipped rather than erroring.
