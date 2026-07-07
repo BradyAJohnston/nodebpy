@@ -268,12 +268,18 @@ with TreeBuilder("Wave Deform") as tree:
 
 By default the generated code lets `nodebpy` lay the tree out automatically when it is built. Pass `snapshot_positions=True` to instead capture each node’s authored `location` and restore it, so the rebuilt tree matches the original layout. The tree is built with `arrange=None` (auto-layout off) and a `tree.node_positions = {...}` mapping is appended:
 
+## Hand-written
+
 ``` python
-with TreeBuilder("Wave Deform", arrange=None) as tree:
+with TreeBuilder("Wave Deform") as tree:
     geo = tree.inputs.geometry("Geometry")
     out = tree.outputs.geometry("Geometry")
     geo >> g.SetPosition(offset=g.CombineXYZ(z=g.Position().o.position.x)) >> out
+```
 
+## Generated code
+
+``` python
 code = tree.to_python(snapshot_positions=True)
 ```
 
@@ -292,12 +298,12 @@ with TreeBuilder("Wave Deform.001", arrange=None) as tree:
 
 # Restore authored node positions.
 tree.node_positions = {
-    "Group Input": (0.0, 0.0),
-    "Group Output": (0.0, 0.0),
-    "Position": (0.0, 0.0),
-    "Separate XYZ": (0.0, 0.0),
-    "Combine XYZ": (0.0, 0.0),
-    "Set Position": (0.0, 0.0),
+    "Group Input": (0.0, 52.0),
+    "Group Output": (400.0, 52.0),
+    "Position": (-400.0, -52.0),
+    "Separate XYZ": (-200.0, -52.0),
+    "Combine XYZ": (0.0, -52.0),
+    "Set Position": (200.0, 52.0),
 }
 ```
 
