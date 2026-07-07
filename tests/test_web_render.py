@@ -8,7 +8,7 @@ import bpy
 
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.web_render import (
+from nodebpy.export.web_render import (
     DEFAULT_CDN,
     DEFAULT_VERSION,
     to_tree_clipper_payload,
@@ -128,7 +128,7 @@ def test_repr_html_returns_none_on_failure(capsys):
     with g.tree("ReprHtmlFail") as tree:
         tree.inputs.geometry() >> tree.outputs.geometry()
 
-    with patch("nodebpy.web_render.to_web_render_html", side_effect=RuntimeError("boom")):
+    with patch("nodebpy.export.to_web_render_html", side_effect=RuntimeError("boom")):
         result = tree._repr_html_()
 
     assert result is None
