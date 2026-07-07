@@ -31,6 +31,7 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "ipython>=8.0.0",
+    "ipykernel>=6.0.0",
     "networkx>=3.6.1",
     "fake-bpy-module>=20260501",
     "jsondiff>=2.2.1",
@@ -38,6 +39,7 @@ dev = [
     "pytest-cov>=7.0.0",
     "quarto-cli>=1.9",
     "quartodoc>=0.11.1",
+    "tree-clipper>=0.1.6",
     "ruff>=0.14.11",
     "syrupy>=5.0.0",
     "pytest-xdist>=3.8.0",
