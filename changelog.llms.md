@@ -1,5 +1,11 @@
 # Changelog
 
+## v520.5.0 - 2026-06-16
+
+### Enhancements
+
+- Changed the linking of asset node groups for the `_AssetGroupMixin` to be ‘linked & packed’ by default
+
 ## v520.4.0 - 2026-06-19
 
 ### Enhancements

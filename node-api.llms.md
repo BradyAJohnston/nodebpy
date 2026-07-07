@@ -35,21 +35,6 @@ with g.tree() as tree:
 tree
 ```
 
-``` mermaid
-graph LR
-    N0("Position"):::input-node
-    N1("Random Value"):::converter-node
-    N2("Cube"):::geometry-node
-    N3("Vector Math<br/><small>(SCALE)</small><br/><small>×0.5</small>"):::vector-node
-    N4("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-    N5("Set Position"):::geometry-node
-    N1 -->|"Value->Value"| N4
-    N2 -->|"Mesh->Geometry"| N5
-    N3 -->|"Vector->Position"| N5
-    N4 -->|"Value->Offset"| N5
-    N0 -->|"Position->Vector"| N3
-```
-
 ### Outputs
 
 Selection of outputs is done automatically to best match the data types of the inputs. You can be specific with the output though, with outputs available behind the `outputs` / `o` accessor.
@@ -67,21 +52,6 @@ with g.tree() as tree:
 tree
 ```
 
-``` mermaid
-graph LR
-    N0("Random Value"):::converter-node
-    N1("Scene Time"):::input-node
-    N2("Cube"):::geometry-node
-    N3("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-    N4("Set Position"):::geometry-node
-    N5("Group Output"):::default-node
-    N0 -->|"Value->Value"| N3
-    N1 -->|"Seconds->Value"| N3
-    N2 -->|"Mesh->Geometry"| N4
-    N3 -->|"Value->Offset"| N4
-    N4 -->|"Geometry->Geometry"| N5
-```
-
 ### Slicing Inputs and Outputs
 
 You can use slicing to access individual or multiple components of input and output sockets.
@@ -95,19 +65,6 @@ with g.tree() as tree:
     sep.o[1] >> comb2.i[2]
 
 tree
-```
-
-``` mermaid
-graph LR
-    N0("Position"):::input-node
-    N1("Separate XYZ"):::converter-node
-    N2("Combine XYZ"):::converter-node
-    N3("Combine XYZ"):::converter-node
-    N0 -->|"Position->Vector"| N1
-    N1 -->|"X->X"| N3
-    N1 -->|"Y->Y"| N3
-    N1 -->|"Z->Z"| N3
-    N1 -->|"Y->Z"| N2
 ```
 
 We can replicate part of a PCA analysis, getting the mean difference of the position field, scaling and combining into a matrix.
@@ -126,49 +83,6 @@ with g.tree() as tree:
 tree
 ```
 
-``` mermaid
-graph LR
-    N0("Position"):::input-node
-    N1("Field Average"):::converter-node
-    N2("Vector Math<br/><small>(SUBTRACT)</small>"):::vector-node
-    N3("Separate XYZ"):::converter-node
-    N4("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-    N5("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-    N6("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-    N7("Field Average"):::converter-node
-    N8("Field Average"):::converter-node
-    N9("Field Average"):::converter-node
-    N10("Separate XYZ"):::converter-node
-    N11("Separate XYZ"):::converter-node
-    N12("Separate XYZ"):::converter-node
-    N13("Combine Matrix"):::converter-node
-    N0 -->|"Position->Value"| N1
-    N1 -->|"Mean->Vector"| N2
-    N0 -->|"Position->Vector"| N2
-    N10 -->|"X->Column 1 Row 1"| N13
-    N10 -->|"Y->Column 1 Row 2"| N13
-    N10 -->|"Z->Column 1 Row 3"| N13
-    N11 -->|"X->Column 2 Row 1"| N13
-    N11 -->|"Y->Column 2 Row 2"| N13
-    N11 -->|"Z->Column 2 Row 3"| N13
-    N12 -->|"X->Column 3 Row 1"| N13
-    N12 -->|"Y->Column 3 Row 2"| N13
-    N12 -->|"Z->Column 3 Row 3"| N13
-    N2 -->|"Vector->Vector"| N3
-    N2 -->|"Vector->Vector"| N4
-    N3 -->|"X->Scale"| N4
-    N4 -->|"Vector->Value"| N7
-    N7 -->|"Mean->Vector"| N10
-    N2 -->|"Vector->Vector"| N5
-    N3 -->|"Y->Scale"| N5
-    N5 -->|"Vector->Value"| N8
-    N8 -->|"Mean->Vector"| N11
-    N2 -->|"Vector->Vector"| N6
-    N3 -->|"Z->Scale"| N6
-    N6 -->|"Vector->Value"| N9
-    N9 -->|"Mean->Vector"| N12
-```
-
 #### Vector Outputs
 
 Some output attributes have convenience methods for simpler chaining. Vector outputs can access the `x/y/z/` components quickly, which internally adds the `SeparateXYZ` required. The same SeparateXYZ node is re-used across different outputs.
@@ -180,18 +94,6 @@ with g.tree() as tree:
     _ = g.SetPosition(g.Cube(), position=pos.x, offset=pos.y)
 
 tree
-```
-
-``` mermaid
-graph LR
-    N0("Position"):::input-node
-    N1("Cube"):::geometry-node
-    N2("Separate XYZ"):::converter-node
-    N3("Set Position"):::geometry-node
-    N0 -->|"Position->Vector"| N2
-    N1 -->|"Mesh->Geometry"| N3
-    N2 -->|"X->Position"| N3
-    N2 -->|"Y->Offset"| N3
 ```
 
 #### Other Accessors
@@ -212,19 +114,6 @@ with g.tree() as tree:
 tree
 ```
 
-``` mermaid
-graph LR
-    N0("Combine Matrix"):::converter-node
-    N1("Separate Transform"):::converter-node
-    N2("Vector Math<br/><small>(SCALE)</small><br/><small>×0.5</small>"):::vector-node
-    N3("Rotate Rotation"):::converter-node
-    N4("Vector Math<br/><small>(ADD)</small><br/><small>(0.5,0.5,0.5)</small>"):::vector-node
-    N0 -->|"Matrix->Transform"| N1
-    N1 -->|"Translation->Vector"| N2
-    N1 -->|"Rotation->Rotation"| N3
-    N1 -->|"Scale->Vector"| N4
-```
-
 ##### Color
 
 Color sockets have `r` `g` `b` `a` properties.
@@ -237,21 +126,6 @@ with g.tree() as tree:
     col.b * 0.3
     col.a - 0.3
 tree
-```
-
-``` mermaid
-graph LR
-    N0("Combine Color"):::converter-node
-    N1("Separate Color"):::converter-node
-    N2("Math<br/><small>(ADD)</small>"):::converter-node
-    N3("Math<br/><small>(ADD)</small>"):::converter-node
-    N4("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-    N5("Math<br/><small>(SUBTRACT)</small>"):::converter-node
-    N0 -->|"Color->Color"| N1
-    N1 -->|"Red->Value"| N2
-    N1 -->|"Green->Value"| N3
-    N1 -->|"Blue->Value"| N4
-    N1 -->|"Alpha->Value"| N5
 ```
 
 ## Enum Options
@@ -343,7 +217,7 @@ a == b
 > comp
 > ```
 >
->     <nodebpy.builder.socket.BooleanSocket at 0x138b1cc20>
+>     <nodebpy.builder.socket.BooleanSocket at 0x1497816a0>
 >
 > ### Comparing Python Objects
 >

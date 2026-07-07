@@ -18,17 +18,6 @@ with g.tree("Assets") as tree:
 tree
 ```
 
-``` mermaid
-graph LR
-    N0("Cube"):::geometry-node
-    N1("Smooth by Angle"):::geometry-node
-    N2("Array<br/><small>(1,0,0) +(1,0,0)</small>"):::geometry-node
-    N3("Group Output"):::default-node
-    N0 -->|"Mesh->Mesh"| N1
-    N1 -->|"Mesh->Geometry"| N2
-    N2 -->|"Geometry->Geometry"| N3
-```
-
 Each asset is a normal node: typed inputs/outputs (`g.SmoothByAngle().o.mesh` is a `GeometrySocket`), `>>` chaining, IDE autocomplete, and the usual operators. The underlying node group is appended once and reused on subsequent uses.
 
 ## Generating an API for your own assets

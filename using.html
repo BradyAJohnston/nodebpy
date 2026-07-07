@@ -61,7 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -159,9 +159,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
     );
 </script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.4.0</span>
+    <span class="navbar-title">nodebpy 520.5.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -408,31 +408,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>default_tree()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="ddda8b5e" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="1">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Group Input"):::default-node
-    N1("Random Value"):::converter-node
-    N2("Points"):::geometry-node
-    N3("Ico Sphere"):::geometry-node
-    N4("Instance on Points"):::geometry-node
-    N5("Group Output"):::default-node
-    N0 --&gt;|"Count-&gt;Count"| N2
-    N1 --&gt;|"Value-&gt;Position"| N2
-    N2 --&gt;|"Points-&gt;Points"| N4
-    N3 --&gt;|"Mesh-&gt;Instance"| N4
-    N4 --&gt;|"Instances-&gt;Result"| N5
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<div id="ef35d5f1" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div id="gnwr-56152b2ff8564262934fd3cdcfd3640d" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-56152b2ff8564262934fd3cdcfd3640d"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
 </div>
 </div>
 
@@ -513,7 +502,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

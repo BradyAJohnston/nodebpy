@@ -54,48 +54,6 @@ with GeoNodes("Hello World"):
     grid.out()
 ```
 
-``` mermaid
-graph LR
-    N0("Group Input"):::default-node
-    subgraph F0["Computing the wave"]
-        N1("Position"):::input-node
-        N2("Separate XYZ"):::converter-node
-        N3("Math<br/><small>(POWER)</small>"):::converter-node
-        N4("Math<br/><small>(POWER)</small>"):::converter-node
-        N5("Math<br/><small>(ADD)</small>"):::converter-node
-        N6("Math<br/><small>(SQRT)</small>"):::converter-node
-        N7("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-        N8("Math<br/><small>(SINE)</small>"):::converter-node
-        N9("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-        N10("Math<br/><small>(DIVIDE)</small>"):::converter-node
-    end
-    subgraph F1["Point offset & smooth"]
-        N11("Grid"):::geometry-node
-        N12("Combine XYZ"):::converter-node
-        N13("Set Position"):::geometry-node
-        N14("Set Shade Smooth"):::geometry-node
-    end
-    N15("Group Output"):::default-node
-    N1 -->|"Position->Vector"| N2
-    N2 -->|"X->Value"| N3
-    N2 -->|"Y->Value"| N4
-    N3 -->|"Value->Value"| N5
-    N4 -->|"Value->Value"| N5
-    N5 -->|"Value->Value"| N6
-    N6 -->|"Value->Value"| N7
-    N0 -->|"Omega->Value"| N7
-    N7 -->|"Value->Value"| N8
-    N0 -->|"Height->Value"| N9
-    N8 -->|"Value->Value"| N9
-    N9 -->|"Value->Value"| N10
-    N6 -->|"Value->Value"| N10
-    N10 -->|"Value->Z"| N12
-    N11 -->|"Mesh->Geometry"| N13
-    N12 -->|"Vector->Offset"| N13
-    N13 -->|"Geometry->Mesh"| N14
-    N14 -->|"Mesh->Mesh"| N15
-```
-
 ## `geometry-script`
 
 ### README Demo
@@ -132,23 +90,6 @@ def repeat_grid(geometry: Geometry, width: Int, height: Int):
     return g.instance_on_points(instance=geometry)
 ```
 
-``` mermaid
-graph LR
-    N0("Group Input"):::default-node
-    N1("Grid"):::geometry-node
-    N2("Mesh to Points"):::geometry-node
-    N3("Instance on Points"):::geometry-node
-    N4("Group Output"):::default-node
-    N0 -->|"Width->Size X"| N1
-    N0 -->|"Height->Size Y"| N1
-    N0 -->|"Width->Vertices X"| N1
-    N0 -->|"Height->Vertices Y"| N1
-    N1 -->|"Mesh->Mesh"| N2
-    N2 -->|"Points->Points"| N3
-    N0 -->|"Geometry->Instance"| N3
-    N3 -->|"Instances->Instances"| N4
-```
-
 ### Primitive Shapes
 
 ## `nodebpy`
@@ -169,19 +110,6 @@ def primitive_shapes():
     yield cube()
     yield uv_sphere()
     yield cylinder().mesh
-```
-
-``` mermaid
-graph LR
-    N0("Cube"):::geometry-node
-    N1("UV Sphere"):::geometry-node
-    N2("Cylinder"):::geometry-node
-    N3("Join Geometry"):::geometry-node
-    N4("Group Output"):::default-node
-    N0 -->|"Mesh->Geometry"| N3
-    N1 -->|"Mesh->Geometry"| N3
-    N2 -->|"Mesh->Geometry"| N3
-    N3 -->|"Geometry->Result"| N4
 ```
 
 ### Voxelise
@@ -222,24 +150,6 @@ def voxelize(geometry: Geometry, resolution: Float = 0.2):
     ).instance_on_points(
         instance=cube(size=resolution)
     )
-```
-
-``` mermaid
-graph LR
-    N0("Group Input"):::default-node
-    N1("Mesh to Volume"):::geometry-node
-    N2("Distribute Points in Volume"):::geometry-node
-    N3("Cube"):::geometry-node
-    N4("Instance on Points"):::geometry-node
-    N5("Group Output"):::default-node
-    N0 -->|"Geometry->Mesh"| N1
-    N0 -->|"Resolution->Interior Band Width"| N1
-    N1 -->|"Volume->Volume"| N2
-    N0 -->|"Resolution->Spacing"| N2
-    N0 -->|"Resolution->Size"| N3
-    N2 -->|"Points->Points"| N4
-    N3 -->|"Mesh->Instance"| N4
-    N4 -->|"Instances->Result"| N5
 ```
 
 ### City Builder
@@ -342,58 +252,4 @@ def city_builder(
             seed=seed,
         ),
     )
-```
-
-``` mermaid
-graph LR
-    N0("Group Input"):::default-node
-    N1("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-    N2("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-    N3("Curve to Points"):::geometry-node
-    N4("Position"):::input-node
-    N5("Grid"):::geometry-node
-    N6("Random Value"):::converter-node
-    N7("Combine XYZ"):::converter-node
-    N8("Combine XYZ"):::converter-node
-    N9("Geometry Proximity"):::geometry-node
-    N10("Distribute Points on Faces"):::geometry-node
-    N11("Curve Line<br/><small>(0,0,1)</small>"):::geometry-node
-    N12("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
-    N13("Cube"):::geometry-node
-    N14("Curve to Mesh"):::geometry-node
-    N15("Delete Geometry"):::geometry-node
-    N16("Transform Geometry<br/><small>(0,0,0.5)</small>"):::geometry-node
-    N17("Instance on Points"):::geometry-node
-    N18("Join Geometry"):::geometry-node
-    N19("Group Output"):::default-node
-    N0 -->|"Road Width->Value"| N1
-    N1 -->|"Value->X"| N7
-    N0 -->|"Road Width->Value"| N2
-    N2 -->|"Value->X"| N8
-    N7 -->|"Vector->Start"| N11
-    N8 -->|"Vector->End"| N11
-    N0 -->|"Geometry->Curve"| N14
-    N11 -->|"Curve->Profile Curve"| N14
-    N0 -->|"Size X->Size X"| N5
-    N0 -->|"Size Y->Size Y"| N5
-    N5 -->|"Mesh->Mesh"| N10
-    N0 -->|"Density->Density"| N10
-    N0 -->|"Seed->Seed"| N10
-    N0 -->|"Geometry->Curve"| N3
-    N3 -->|"Points->Geometry"| N9
-    N4 -->|"Position->Sample Position"| N9
-    N9 -->|"Distance->A"| N12
-    N0 -->|"Road Width->B"| N12
-    N10 -->|"Points->Geometry"| N15
-    N12 -->|"Result->Selection"| N15
-    N13 -->|"Mesh->Geometry"| N16
-    N0 -->|"Building Size Min->Min"| N6
-    N0 -->|"Building Size Max->Max"| N6
-    N0 -->|"Seed->Seed"| N6
-    N15 -->|"Geometry->Points"| N17
-    N16 -->|"Geometry->Instance"| N17
-    N6 -->|"Value->Scale"| N17
-    N14 -->|"Mesh->Geometry"| N18
-    N17 -->|"Instances->Geometry"| N18
-    N18 -->|"Geometry->Result"| N19
 ```

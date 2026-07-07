@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Comapring the API – nodebpy 520.4.0</title>
+<title>Comapring the API – nodebpy 520.5.1</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -61,7 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -158,9 +158,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         [...document.querySelectorAll("pre.sourceCode")].map(rehighlight),
     );
 </script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -173,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.4.0</span>
+    <span class="navbar-title">nodebpy 520.5.1</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -367,7 +367,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><code>geonodes</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="56b0593d" class="cell" data-execution_count="1">
+<div id="88786026" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Hello World"</span>) <span class="im">as</span> tree:</span>
@@ -410,58 +410,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="361da946" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Group Input"):::default-node
-    subgraph F0["Computing the wave"]
-        N1("Position"):::input-node
-        N2("Separate XYZ"):::converter-node
-        N3("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
-        N4("Math&lt;br/&gt;&lt;small&gt;(POWER)&lt;/small&gt;"):::converter-node
-        N5("Math&lt;br/&gt;&lt;small&gt;(ADD)&lt;/small&gt;"):::converter-node
-        N6("Math&lt;br/&gt;&lt;small&gt;(SQRT)&lt;/small&gt;"):::converter-node
-        N7("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-        N8("Math&lt;br/&gt;&lt;small&gt;(SINE)&lt;/small&gt;"):::converter-node
-        N9("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-        N10("Math&lt;br/&gt;&lt;small&gt;(DIVIDE)&lt;/small&gt;"):::converter-node
-    end
-    subgraph F1["Point offset &amp; smooth"]
-        N11("Grid"):::geometry-node
-        N12("Combine XYZ"):::converter-node
-        N13("Set Position"):::geometry-node
-        N14("Set Shade Smooth"):::geometry-node
-    end
-    N15("Group Output"):::default-node
-    N1 --&gt;|"Position-&gt;Vector"| N2
-    N2 --&gt;|"X-&gt;Value"| N3
-    N2 --&gt;|"Y-&gt;Value"| N4
-    N3 --&gt;|"Value-&gt;Value"| N5
-    N4 --&gt;|"Value-&gt;Value"| N5
-    N5 --&gt;|"Value-&gt;Value"| N6
-    N6 --&gt;|"Value-&gt;Value"| N7
-    N0 --&gt;|"Omega-&gt;Value"| N7
-    N7 --&gt;|"Value-&gt;Value"| N8
-    N0 --&gt;|"Height-&gt;Value"| N9
-    N8 --&gt;|"Value-&gt;Value"| N9
-    N9 --&gt;|"Value-&gt;Value"| N10
-    N6 --&gt;|"Value-&gt;Value"| N10
-    N10 --&gt;|"Value-&gt;Z"| N12
-    N11 --&gt;|"Mesh-&gt;Geometry"| N13
-    N12 --&gt;|"Vector-&gt;Offset"| N13
-    N13 --&gt;|"Geometry-&gt;Mesh"| N14
-    N14 --&gt;|"Mesh-&gt;Mesh"| N15
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<div id="146853f4" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div id="gnwr-449c8d5495b34cb495afe5232e003483" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-449c8d5495b34cb495afe5232e003483"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
 </div>
 </div>
 </section>
@@ -474,7 +436,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href=""><code>geometry-script</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div id="d5fd5c1b" class="cell" data-execution_count="3">
+<div id="8fe519e4" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Repeat Grid"</span>) <span class="im">as</span> tree:</span>
@@ -503,33 +465,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="a5ee48e9" class="cell" data-execution_count="4">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Group Input"):::default-node
-    N1("Grid"):::geometry-node
-    N2("Mesh to Points"):::geometry-node
-    N3("Instance on Points"):::geometry-node
-    N4("Group Output"):::default-node
-    N0 --&gt;|"Width-&gt;Size X"| N1
-    N0 --&gt;|"Height-&gt;Size Y"| N1
-    N0 --&gt;|"Width-&gt;Vertices X"| N1
-    N0 --&gt;|"Height-&gt;Vertices Y"| N1
-    N1 --&gt;|"Mesh-&gt;Mesh"| N2
-    N2 --&gt;|"Points-&gt;Points"| N3
-    N0 --&gt;|"Geometry-&gt;Instance"| N3
-    N3 --&gt;|"Instances-&gt;Instances"| N4
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<div id="1bf44f62" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div id="gnwr-c60489a774284e658f5f2ef83ee2c79f" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-c60489a774284e658f5f2ef83ee2c79f"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
 </div>
 </div>
 </section>
@@ -539,7 +488,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href=""><code>geometry-script</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div id="cdbb12df" class="cell" data-execution_count="5">
+<div id="7a5794e8" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Primitive Shapes"</span>) <span class="im">as</span> tree:</span>
@@ -548,7 +497,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div id="a8051c78" class="cell" data-execution_count="6">
+<div id="b59479e7" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="at">@tree</span>(<span class="st">"Primitive Shapes"</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> primitive_shapes():</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> cube()</span>
@@ -558,29 +507,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="0074aeb1" class="cell" data-execution_count="7">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="6">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Cube"):::geometry-node
-    N1("UV Sphere"):::geometry-node
-    N2("Cylinder"):::geometry-node
-    N3("Join Geometry"):::geometry-node
-    N4("Group Output"):::default-node
-    N0 --&gt;|"Mesh-&gt;Geometry"| N3
-    N1 --&gt;|"Mesh-&gt;Geometry"| N3
-    N2 --&gt;|"Mesh-&gt;Geometry"| N3
-    N3 --&gt;|"Geometry-&gt;Result"| N4
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<div id="cdf19836" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div id="gnwr-071dfe282ab244a095dbee9d99a367cb" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-071dfe282ab244a095dbee9d99a367cb"), { payload: "TreeClipper::H4sIAFbkTGoC/+1abW/iOBD+Kyifb1FiUiD7rUt7Ve8orApUt1dVlkkG8NXEkeO0263639fOCxgwaXtX6bqo/UBh/PqM55mZxPPoTBnEEQh8ByKlPHY+N5yjJmq6jf541PgCkji/NRwpAHDIaJJs9nSbXrOtO8Q8Aqx7pUp8/ejQSP13VUNE1AyfG49OTJagh3wVdEklvYPGaEES1V91ylLAM3ILWH0RqtOMsBRKOXyXgmw30BSLLJZ0CbhcoGqRZG78CjnjAhcyZzAcnOrVIpiRjEk8FzxLcL7zexrJherj+fmeIQ0FTWQJUo+ZMr2FcgiNJYgZCTUeKbJ8Q4aoRO+Z6EmoIauREXwvNUMlLNNcZ+sxyByTdzDU2bKp8xJShcWx7zrl4S1ILB+SvO9AQR3lojPgS5DiQXdaUKWAO8IyMBSXC2mMlzyiM7qh+xkXISi1xVg1sGjzVGicJhBKzDOZZHKzLSExMCz5fM7MpRh5UEaVAlPjqGXWJcSZsgI1OgJTznOohGFGpsCMhmIqQ0CkFHSaSWUsfElorp6vw/PB2LSGdadKtbkG1fmGMhOwUuLxZDw0x9G4AOpcHfcnuX0ptfFCNJyMv07yVfRZrqYYDXt/no6dp6ebJ/VXsiddW4G/aznqa5wxVpmNYRVHZmfGQ1IawPUnD7lNZWgoQM1OEATdTidAQbvbObrRWi97YjJNOVOwnx9ikER3chZA5wuN03MLQaW4XjYFJz/Z4mByTd4TEdN4jhPBEzKvdukc9/uVBwizVPIlzjm7zWG9O7fZdvWugq7r+0G701bQXya7Ma2iZGy64Pe4sKF0S5oIuKNwv0UH0yQLfa0MTg+SylEpOzFNXluGcaztOnJ3bOQe0R+wh9pbO4KYKEcerYEwGt9ipl1t6YryTVpoZKV/omx4Tn8suelZS+u9Ou2Nh5f5tmiaKPbiVDty3dQ/3/Sw1bTXnraP6uNG23wJu2uDfQVC0hDSxl/vDnzlNF6KHBlYg1qs3w4Kq+fWgv37EMDmduwUkc6guefV8dxDNsVcQLp4C5X4bnD0llo5Ox1enI4vv+1XjXnm1gRlctW4IMl7BFfjyE7Ojy+GgxOrL8tjXfVxU5mBShBpVGGu0iudcOmjrQJiQgTEsozlpub854L4J9RqItd1PYTcjtvy0PNB3D7kxUFcndsoWYD4iOS7kdw7qqV42xrLYa4yWZn+8p6vteHnrXnLpTKPXx+o1zaBWjOVSxLR7P0hXT2KvBxr090f0II6a0fuwQY05H0ENHtAm1ytY8O+oIbQ80Ht30S1/xbWeg9Mv4QRH1FtJ6qhVi3P/bqM/rCiGjqyP41H0DiYMO6ZeK0Zy++UsQPF2zn8YL4Ga81cTiCRiwPAimoSF1SbuLQON3FpWROXMX+XWcuX4bB/ejx4bdqST2NiRvt89iGDtr5y+cKlSlQOGbb/kZjvedNkpLcbibm+uFPxfH0XeDYcbLiMvfdI3de+gOq+xeunPziNG+Y15UeyvhHbWrW3SS1rgmOq81eMb3vCfKtbq4rgcFWx1xVo9pgQ9z2j++4+1qNX0x69Ce/PdIVFY1iUD3zQfpv2fu3lko9eXSLy/+X6r8pofWui8x7Z25uMxsMLK6je+WWvX+PIfN96uBaua47nTFkTZTva0xSXRUerWhwN/1nXMdYFSbpoJo65rChWzqkVZ+639hrE34xQqdYiNU5BSTQHNkp9lJ3SoqIGp1xIvCojmwnF6qKcqXp0k9wQdExb6bzRwt7Owqh+4e4bLYx2Fs6vjfcvHLx64S2FBlvT+6v7bTVWcm7WVxW1fkpmWJBTrrJbLlZIlRVO/9msyqoaIKI2cRpmLLE1JITGW3LNPbzUT+674jATd2CRJypEypDxLNoqOLwnVOIZF7reMby1jJwLIKpfAnFI2bYLrzSAlyQmcyiK3tbc0+7ouwQREy181ApOQ4iL6q+np58UxgkHjykAAA==", showCopyButton: false, allowSelection: false });
+</script>
 </div>
 </div>
 </section>
@@ -591,7 +531,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href=""><code>geometry-script</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div id="77c516b2" class="cell" data-execution_count="8">
+<div id="03e96237" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Voxelise"</span>) <span class="im">as</span> tree:</span>
@@ -608,7 +548,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<div id="9a4c1a25" class="cell" data-execution_count="9">
+<div id="807e8085" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geometry_script <span class="im">import</span> <span class="op">*</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">@tree</span>(<span class="st">"Voxelize"</span>)</span>
@@ -626,34 +566,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="f3a8550f" class="cell" data-execution_count="10">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Group Input"):::default-node
-    N1("Mesh to Volume"):::geometry-node
-    N2("Distribute Points in Volume"):::geometry-node
-    N3("Cube"):::geometry-node
-    N4("Instance on Points"):::geometry-node
-    N5("Group Output"):::default-node
-    N0 --&gt;|"Geometry-&gt;Mesh"| N1
-    N0 --&gt;|"Resolution-&gt;Interior Band Width"| N1
-    N1 --&gt;|"Volume-&gt;Volume"| N2
-    N0 --&gt;|"Resolution-&gt;Spacing"| N2
-    N0 --&gt;|"Resolution-&gt;Size"| N3
-    N2 --&gt;|"Points-&gt;Points"| N4
-    N3 --&gt;|"Mesh-&gt;Instance"| N4
-    N4 --&gt;|"Instances-&gt;Result"| N5
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<div id="35d8f66e" class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div id="gnwr-d2de0cd67c0242c3bb10f85ea3298070" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-d2de0cd67c0242c3bb10f85ea3298070"), { payload: "TreeClipper::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", showCopyButton: false, allowSelection: false });
+</script>
 </div>
 </div>
 </section>
@@ -664,7 +590,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href=""><code>nodebpy</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href=""><code>geometry-script</code></a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
-<div id="1c7da58c" class="cell" data-execution_count="11">
+<div id="5a45c2db" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nodebpy <span class="im">import</span> geometry <span class="im">as</span> g</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> g.tree(<span class="st">"Voxelise"</span>) <span class="im">as</span> tree:</span>
@@ -710,7 +636,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
-<div id="628d2fdd" class="cell" data-execution_count="12">
+<div id="923f3652" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geometry_script <span class="im">import</span> <span class="op">*</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="at">@tree</span>(<span class="st">"City Builder"</span>)</span>
@@ -761,70 +687,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="5d3f09e9" class="cell" data-execution_count="13">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">graph LR
-    N0("Group Input"):::default-node
-    N1("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-    N2("Math&lt;br/&gt;&lt;small&gt;(MULTIPLY)&lt;/small&gt;"):::converter-node
-    N3("Curve to Points"):::geometry-node
-    N4("Position"):::input-node
-    N5("Grid"):::geometry-node
-    N6("Random Value"):::converter-node
-    N7("Combine XYZ"):::converter-node
-    N8("Combine XYZ"):::converter-node
-    N9("Geometry Proximity"):::geometry-node
-    N10("Distribute Points on Faces"):::geometry-node
-    N11("Curve Line&lt;br/&gt;&lt;small&gt;(0,0,1)&lt;/small&gt;"):::geometry-node
-    N12("Compare&lt;br/&gt;&lt;small&gt;(LESS_THAN)&lt;/small&gt;"):::converter-node
-    N13("Cube"):::geometry-node
-    N14("Curve to Mesh"):::geometry-node
-    N15("Delete Geometry"):::geometry-node
-    N16("Transform Geometry&lt;br/&gt;&lt;small&gt;(0,0,0.5)&lt;/small&gt;"):::geometry-node
-    N17("Instance on Points"):::geometry-node
-    N18("Join Geometry"):::geometry-node
-    N19("Group Output"):::default-node
-    N0 --&gt;|"Road Width-&gt;Value"| N1
-    N1 --&gt;|"Value-&gt;X"| N7
-    N0 --&gt;|"Road Width-&gt;Value"| N2
-    N2 --&gt;|"Value-&gt;X"| N8
-    N7 --&gt;|"Vector-&gt;Start"| N11
-    N8 --&gt;|"Vector-&gt;End"| N11
-    N0 --&gt;|"Geometry-&gt;Curve"| N14
-    N11 --&gt;|"Curve-&gt;Profile Curve"| N14
-    N0 --&gt;|"Size X-&gt;Size X"| N5
-    N0 --&gt;|"Size Y-&gt;Size Y"| N5
-    N5 --&gt;|"Mesh-&gt;Mesh"| N10
-    N0 --&gt;|"Density-&gt;Density"| N10
-    N0 --&gt;|"Seed-&gt;Seed"| N10
-    N0 --&gt;|"Geometry-&gt;Curve"| N3
-    N3 --&gt;|"Points-&gt;Geometry"| N9
-    N4 --&gt;|"Position-&gt;Sample Position"| N9
-    N9 --&gt;|"Distance-&gt;A"| N12
-    N0 --&gt;|"Road Width-&gt;B"| N12
-    N10 --&gt;|"Points-&gt;Geometry"| N15
-    N12 --&gt;|"Result-&gt;Selection"| N15
-    N13 --&gt;|"Mesh-&gt;Geometry"| N16
-    N0 --&gt;|"Building Size Min-&gt;Min"| N6
-    N0 --&gt;|"Building Size Max-&gt;Max"| N6
-    N0 --&gt;|"Seed-&gt;Seed"| N6
-    N15 --&gt;|"Geometry-&gt;Points"| N17
-    N16 --&gt;|"Geometry-&gt;Instance"| N17
-    N6 --&gt;|"Value-&gt;Scale"| N17
-    N14 --&gt;|"Mesh-&gt;Geometry"| N18
-    N17 --&gt;|"Instances-&gt;Geometry"| N18
-    N18 --&gt;|"Geometry-&gt;Result"| N19
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<div id="b3f930d9" class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div id="gnwr-e1743da17aef440583a1f8db812c22ea" style="height: 480px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+<script type="module">
+if (!document.getElementById("gnwr-stylesheet")) {
+  const link = document.createElement("link");
+  link.id = "gnwr-stylesheet";
+  link.rel = "stylesheet";
+  link.href = "https://esm.sh/geonodes-web-render@0.3/dist/embed.css";
+  document.head.appendChild(link);
+}
+import { mountGraphView } from "https://esm.sh/geonodes-web-render@0.3/embed";
+mountGraphView(document.getElementById("gnwr-e1743da17aef440583a1f8db812c22ea"), { payload: "TreeClipper::H4sIAFbkTGoC/+1dbXObuBb+K558vRsPEu/7LU3Svb7XiTOJ07vdTodRbMXhFoMHcJpup/99hQBHAqGCsRuHkA9tIpDgSM951dHh+9Gdh/05Dp1HHEZu4B/9PjjSh3CoDMbTm8E7HKOj3wZHcYixM/Pc1Yq/UxmCoZHc4Adz7CR3RaT50/cjd07+V8iFOSIj/D74fuSjJU66fAiesOdGeKgoIOm5jrBzj75gh/wSkhvukRfhrB0/xSEqXnAjJ1z7sbvETjZ4fiVGC+avWeAFoZO2HV1OLs+Tp83xPVp7sbMIg/XKoW/91Z3HD+QeoNH3xdEsdFdxRmDS585LXiHr4voxDu/RLKElDtf0hZimjHLAUo5msfuISc85fspmxY3xMqLz9dwHsn3oDcxUqqKpvMYRoeVI/NZRMPuCYyf+tqL3XhJSb2jTHzhY4jj8ltz04JIJeETeGjMTRxtd31kGc/fe5eb+PghnmEyb75AL3pxfFdePVngWO8E6Xq1j/toK+dhz4mCx8NhHeegbAVSEPdLPFYy6xP6aoID0nmO2PaCkIs/x0B32mAvpUEwDiuPQvVvHBCzBErl0eq4mo8spi4bnm/KppTNI1ncWr0O8mcST2+mE7ef6KaFHH07GtxRfZNqCtGlyO726pU9J1nIzxM3k9L/n06MfP37L110TLS27SP3iHtziji7rra0uWtsbTMhtuK4jP+6X9OWWNBl9fbdZloIyyRckkexLMmL+9zEEmqlZqqFZyRX0tLmyuWAyYDGEMj5A88H/qIpqCJn3XoB60Bw+aIZQL+JGHWoKtKCqGYZq6dCyDPwvtYgh8U0Mnkyh8HH/xoM/eyx1Ekv6UNkPlKxKKH3sodRDqQmUbBGUzrAfufG3HkudxBJQ9gUmIAwxvFu73tz1FwMqoS7IZDXE1Qcy90HYA+vggOUuE0ER+FEeEikg7ZMyBEr6AzRbAcAA8LdBRSPMGqFtKVCFUPu8J5CCGiBFTz1I3w5I1QyOwIaKDS3bSPAoaARDZbeg/PzjR4JMGq+NmHglLAcsya/+2vPyaCUTjARcNNILZigD7KdjW1GHimnYigZtwzKJZ6MbxpA0QGgopgaBZSUE5X0cdBcFHlmyJp2ZgC3VKw/YXTzEVBukDZsgWhKxHYzo8lKYpiijsPiKQp9wn7MKgxVa5AQcnYzHeVB6to7iYOnQMHIxrJyuInkpm/xYiqbZhmnoySLWafvMQjwLIkcPwVcnZYio0LoK8aOLvxZ4m+WvdAI33JN0ivFTAnqWf5N5YNdcEwacP1N8pNzP3q3LwtPA2CKIWaAC++jOo/IhI95z/S+O5y7dZJo0xdZz2gSiRCgCV4RtFu7fy4DdI8i49Y/zycX59Dp1X9xoRWSYEz2g9OJ4RFiZleBmwzjei5KWi0UhVaIIBEuptVUQ6kXp3Yjt+hQPOZrtxoGSV00vVBp786+bXtDc5TxQgs9GJxeTy7MaNMM2jtHLUn9+Op1cC8k/HV2fjoUr/olq/vyfz+xMqG2s707NhHCn8RAJP729mU4uZIRTSzbdm3fnOSmJb0Rtvo3Jt0Ih9uPMkmWnQq+0YKFtF41Q1a5rwdbsXNuCvUCpyu1NV84YhYbMGIVCa+0Dxd8OwA5+jaiv5nBlqLNQtrpN7XGBXHtn5G7CF4e3uhVOmKpIc4TAXpHw66wc2eQoQsl/84DmOEzkfy4xOclPY0043IjKi9vxdHQ1/riRlx5arvJXZMCmwupAB9heS9TrW1tJnAbLO9cnzsrHv3pdUdIVqirlGaFN9GdH9ATrEajCXKSPXaRUGIz6qzuUVmkHU4p0sZ2w2UTopvMj1RWZ4MzkZpWvoNoNfAVVMzlJbupNnAVx70beQp5W3WsBjjc0qeWkgbfkMWjwTVGrvmGHQdOksNd7h2G3DoNm1HcYmqiKmp23cRl6hSFWGFJjSrPeitug2W/FbdCVt+k26ECGdB32bsNWboNemSQDgDG0oUoINxUVwEaxo5p96yuCdfiIB2NCTq8DSjpAl1pPuvhwV4zC+PBkRjVXVO2hV+8j6sL4yrk/7xjZoEC2cFvpzA3TrMcDdCZ2Sr3Q4hljf9E8Kegl/agqyoFMQ9oyOWAI7QYqWF9r4ptA/eW5fFQBJrRdhckLuo84Vx5FB2oZUCrTPN0bNp3OAFWqUYVaUb3VTh+t2behaoyDwQWO+k34snY0pAULDHWvXAFeLBfUEO4YXYXBvevhQRcIFNs1M+S9pvCgJFMOcG6fIbRm3rueNzhFq+jgSH43mYzPTy4bKbcsTFWh3gxpqMMQKv5cJnZVu02DnMIq/85osi10DEw4JLrJNFUb6qZF1FOTfaGK7g0OQrjzXoOVNJgp3RQywX7Twg/B4H2uFQD3mxN+WMSKt4RwGLszHB3g6jY90aGyxGpSYj92gdgKxWZKzyyZRtcU2/OaC0MVtx8GF2j1yoK2EjuuTtSWVezJ0uaasEqrm1b9DbxjTdFrK/W6vTc63fqJTj9zo+y46+AqcP04GgT+4D0iPN1r+rKml0ZwLGWfkuDlPDlLbMHk57R/KXFZ5209G4kYSEZmiYbiMG0UI3+21aGnQwxX8luXlio54bbN6aaDjNAWaNb2fKrvAAIVBYp12SoT0b/FluxLLnTtEI1l7PP4NXjhs9cVxqsljcpYwqhMagi8evPVEuacXAbhEnkdNl+fS2Qp4kP4MdqV2t71DFxPpifT0eRy3yb8s9GbQn3ibyze4vbTfHOrQ7o/BHP6nieXZ+nB0sTq9fACzb45fgqscjafDRqE+ICut8j8Fvduvlf1LAF6D4ATp7Z0t8ru6m6VLbSSToO1Hx+eqVClPKUmEkus3o0cBWmVh1Ips0oLwpaekrbNDlsQttA8miJ/gf34TZgQb9yEIlzS21DS/c1nTq9K3DlPJNTJ9PyMK4WlNDGKjttte7bb9bwKiGOcLXZvDfHV3BTYqPibIj1EDRRxTgwz/29zx4HWoWGnoWrbASh6/X2HJp5Gzc71Mwky6gZXYfCUrM23nrsE3GXI2cXcd7XEl3M4gCI0vbJSnGeHtuewhcvBlQ5UxLUD0XLlJftyuxOAuyR6x3XFgLgKdzYJr23lJYeoKj0tAKRnqACAHdKP20FEle3Kdeq0MUO00CwaRYMPyHMPsnSsbAu2mmwuvbTSGOIshqLPEaNwgWOHqO5l2i44NgCAXv9IXQMjqW7nJqerE/p6y6hsGQG5ZSQutHzSwdPGQFxp+V3njxsDIM3FAeLqxNJPXXZKZL5f+zQ7JztpnAsSaXmK8fnNjTP9d/YWZO42Xyp4P56cUDtnE9QZn1+cX3IfKQSwwXmsBnK1bufacvWMyK+YWJSMo9TLV565IJQzl9phz1Nc37ib6W5VwhXKP9MAO/mdhp8lDVCxwRJZFfHOJEXxGzMcyMz6NuixptYOf9fu3SAn4K43QUUi0pKzSOXXIDpR3gBkZ/tLB/yBqnT8VAzkqAUdPxbDUwul1P7VBWqrVKK8ADAQVwDuxDEgIK75258Dih5y5Vi5Iaca9X2iJnq+du+Nnjd+ouenIfKj+yBc9o6RROvLiyMDcXXkjjhGqtCkuUiM3kMj7OL88raR4KfB1sDHSS4LS7MmtGYor3jol7uDv6JGl85Zc+KSxrvMfwK/LPmpeYkyIK5xfKBFTHZqxovrHW+UxOFx/Mn0evTnz937smEnL24MxNWNOx7r4Na50riRlCkWZOFZRuGgcqMcPmHv2kGMazKpwXKwqUndmzUFHpCbNeI6xTv68B845IQDcd3iHX3o7wAor1YA4jrGHUnAYcgEr/5Q6FapRrp8h0ff3ecOXnW5ZnYbNVUimzkonRQsbZg62WtxeNOqdKZO/PftAwK1e9fWmSM/q3UQ+P15wErNqct3ysRFjnd3POoFwwG6+QbLggBxAeOcV177kgqtnSt39mVwsBRuua7FQ9pAXH95IwRH5D2fupZ2bnQourPd+T6jGwEeGfFFE7/KIjTkG1zigsU5f0QdDYTk9E38ioOOHJgqE4tNy9i6IHnNvrXtuv8QQvo9HolJZ8iTiw2zuwFBgVSQp7kY9huMjiYcVJkHxgoEvjIwKxDsFgLB3rFASI9WTejS9/KgLA9M+akscc3j3WWav6A/IK5wfIhcfXp7M00rMlUFgKpFnKlJDrFzQiBhfsotz8xSjAK5kYNmyfdMnPRBAhfSrD6krSpqqb5r/RhQ/e7VGyWYkBf3eySkOZh9wXFh8W9o4ygt/lKCBjN5RVhEZPI87FDZQjFgPDdugAJMk8OJ1QgnitYKJ8LuP8NJ/9XPn2HlvReg9mixRWixOF/eAtUZ5eXQcH2w1O5dAyuwx4oMK6xN2QYutHZxGS4qBxetiXABWivhIu5eAzBqD5i9CxdaD7iMFoNDi1ldV0ZvA5a6vWtgReuxsn+sWEKs2CxWbKU65VkpqhLL0GomBdXtXAMpeo8UGVKev8rcBiq06m0JKjaskXuG6QOQ7+cbEZuHJD4k67rZ8pg1X7aUuGaPtGLGZkJJSzJbrOd5H5JVTieHQjvxMYPnBshZ6Hyl0C3Gp8eH2PFVjRvf2PX7a4Ab32w5Pk2O5Ma3uPGttvNTfH9d58a3W45Ps2C48Vm1B/nqj1uMTzcV2fENjRsftF1fozi+yo0P245vF8Y3ATe+2nJ8WJwfE3Ljt+Vfszg/nM8EFX3X82/z89+WfymDsuMDxeQe0JaB05qL/BNs7gltWTit2cQ9AfA0tGViUEIRgBybgbZsnJ7u456gWtwT2jIyLAoioPEPaMvJsLQKGrfOoC0rgxJUdU5WgNa6uKRsgM7PUWtuhkbpCZw+AM35ebn2Yje1isiwYWJxJVkYAklSgpjBsQlozepGUZgDXtoCa+cQMPnpa8vpEJQewIEYKru2l4h3zD2gLZ9b5QdwawBba2y9xOg2x4ewPaMXl5mLFUDY3uguynOLE+ewNZ9bJT63OEkC29vdJV4D/BNac7NVWmfI2R6wNTfbJZ1k8Fi1dyQNQdlutkTCMHUcybBxEHjMqD7xGmkb41EeZS8QzN17F7Mue9pKnNK7/6c+d/ECnrui5mi29laiCyvk+oX2ZFvSWSaH/8vNM/o5kHL7KkkwmnnBmp2wJPTwFbmxcx+EzsxzZ18EPRchRuS+FfZnrld0/fMZcJbIR4vkbX0a98gKACU7tU8xDn366ZrvyQRHM+xj6mX/+PEPlG+Y2tnBAAA=", showCopyButton: false, allowSelection: false });
+</script>
 </div>
 </div>
 
@@ -906,7 +782,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

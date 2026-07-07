@@ -77,11 +77,6 @@ with g.tree("JitterInternal") as tree:
 tree
 ```
 
-``` mermaid
-graph LR
-    N0("Jitter"):::geometry-node
-```
-
 Now use it like any built-in node – apply it to an ico sphere:
 
 ``` python
@@ -90,15 +85,6 @@ with g.tree("JitterDemo") as tree:
     _ = g.IcoSphere(subdivisions=4) >> Jitter(amount=0.15) >> out
 
 tree
-```
-
-``` mermaid
-graph LR
-    N0("Ico Sphere"):::geometry-node
-    N1("Jitter"):::geometry-node
-    N2("Group Output"):::default-node
-    N1 -->|"Geometry->Geometry"| N2
-    N0 -->|"Mesh->Geometry"| N1
 ```
 
 ## Radial Array
@@ -152,11 +138,6 @@ with g.tree("RadialInternal") as tree:
 tree
 ```
 
-``` mermaid
-graph LR
-    N0("Radial Array"):::geometry-node
-```
-
 ``` python
 with g.tree("RadialDemo") as tree:
     petal = g.Cone(vertices=4, radius_bottom=0.3, depth=0.8)
@@ -168,17 +149,6 @@ with g.tree("RadialDemo") as tree:
     )
 
 tree
-```
-
-``` mermaid
-graph LR
-    N0("Cone"):::geometry-node
-    N1("Radial Array"):::geometry-node
-    N2("Realize Instances"):::geometry-node
-    N3("Group Output"):::default-node
-    N0 -->|"Mesh->Geometry"| N1
-    N1 -->|"Geometry->Geometry"| N2
-    N2 -->|"Geometry->Geometry"| N3
 ```
 
 ## Composing Groups: Jittered Flower
@@ -207,31 +177,6 @@ with g.tree("JitteredFlower") as tree:
     _ = g.JoinGeometry([ring, center]) >> g.RealizeInstances() >> out
 
 tree
-```
-
-``` mermaid
-graph LR
-    N0("Group Input"):::default-node
-    N1("Cube<br/><small>(0.8,0.2,0.1)</small>"):::geometry-node
-    N2("Transform Geometry<br/><small>(0.2,0,0)</small>"):::geometry-node
-    N3("Radial Array"):::geometry-node
-    N4("Jitter"):::geometry-node
-    N5("Rotate Instances<br/><small>(0,-0.4,0)</small>"):::geometry-node
-    N6("Ico Sphere"):::geometry-node
-    N7("Join Geometry"):::geometry-node
-    N8("Realize Instances"):::geometry-node
-    N9("Group Output"):::default-node
-    N8 -->|"Geometry->Geometry"| N9
-    N1 -->|"Mesh->Geometry"| N2
-    N2 -->|"Geometry->Geometry"| N3
-    N0 -->|"Petals->Count"| N3
-    N0 -->|"Radius->Radius"| N3
-    N3 -->|"Geometry->Geometry"| N4
-    N0 -->|"Jitter->Amount"| N4
-    N4 -->|"Geometry->Instances"| N5
-    N5 -->|"Instances->Geometry"| N7
-    N6 -->|"Mesh->Geometry"| N7
-    N7 -->|"Geometry->Geometry"| N8
 ```
 
 Each custom group appears as a single, named node in the tree – keeping the graph readable even as the logic grows.

@@ -73,18 +73,3 @@ def default_tree(count: int = 10) -> GeometryNodeTree:
 
 default_tree()
 ```
-
-``` mermaid
-graph LR
-    N0("Group Input"):::default-node
-    N1("Random Value"):::converter-node
-    N2("Points"):::geometry-node
-    N3("Ico Sphere"):::geometry-node
-    N4("Instance on Points"):::geometry-node
-    N5("Group Output"):::default-node
-    N0 -->|"Count->Count"| N2
-    N1 -->|"Value->Position"| N2
-    N2 -->|"Points->Points"| N4
-    N3 -->|"Mesh->Instance"| N4
-    N4 -->|"Instances->Result"| N5
-```
