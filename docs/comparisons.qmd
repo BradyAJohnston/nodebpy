@@ -10,7 +10,7 @@ Several other notable projects have also attempted interfacing with node trees v
 Converting node trees to Python API calls or `.json` gives a robust storage method, but this approach falls down in human authorability / readability. These projects are great for storage but less useful when wanting to write node trees from scratch:
 
 - [NodeToPython](https://github.com/BrendanParmer/NodeToPython)
-- [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) (used by this project for running tests & snapshots)
+- [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) (used by this project for running some tests and web rendering)
 
 ### Authoring node trees with code
 

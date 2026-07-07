@@ -54,9 +54,9 @@ Guides and the full node reference live at [bradyajohnston.github.io/nodebpy](ht
 - [Custom node groups](https://bradyajohnston.github.io/nodebpy/custom-node-groups.html) and [asset node groups](https://bradyajohnston.github.io/nodebpy/assets.html) — reusable groups as Python classes
 - [Nodes to code](https://bradyajohnston.github.io/nodebpy/nodes-to-code.html) — turn existing trees back into `nodebpy` code
 - [Using `nodebpy` in your add-on](https://bradyajohnston.github.io/nodebpy/using.html) — installation, bundling and the Blender-tracking versioning scheme
-- [Comparisons](https://bradyajohnston.github.io/nodebpy/comparisons.html) — how the API relates to `geometry-script`, `geonodes`, NodeToPython and friends
+- [Comparisons](https://bradyajohnston.github.io/nodebpy/comparisons.html) — how the API relates to [`geometry-script`](https://github.com/carson-katri/geometry-script), [`geonodes`](https://github.com/al1brn/geonodes), [NodeToPython](https://github.com/BrendanParmer/NodeToPython) and [TreeClipper](https://github.com/Algebraic-UG/tree_clipper)
 
-Like [`databpy`](https://github.com/BradyAJohnston/databpy), this project started as an internal tool inside [`molecularnodes`](https://github.com/BradyAJohnston/molecularnodes) before being broken out into its own robustly typed and tested package.
+Like [`databpy`](https://github.com/BradyAJohnston/databpy), this project started as an internal tool inside [`molecularnodes`](https://github.com/BradyAJohnston/MolecularNodes) before being broken out into its own robustly typed and tested package.
 
 ## Contributing
 
