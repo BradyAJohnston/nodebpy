@@ -1057,20 +1057,25 @@ class EmitContext:
         self.used_aliases.add(alias)
 
         by_socket: dict[str, list[tuple[int, Expr]]] = {}
+        multi_inputs: set[str] = set()
         for link in self.incoming.get(node.name, ()):
             if skip_input_id and link.to_socket.identifier == skip_input_id:
                 continue
-            by_socket.setdefault(_normalize(link.to_socket.identifier), []).append(
+            name = _normalize(link.to_socket.identifier)
+            if getattr(link.to_socket, "is_multi_input", False):
+                multi_inputs.add(name)
+            by_socket.setdefault(name, []).append(
                 (link.sort_id, self.upstream_expr(link))
             )
         socket_kwargs: dict[str, Expr] = {}
         for name, entries in by_socket.items():
-            if len(entries) == 1:
+            if len(entries) == 1 and name not in multi_inputs:
                 socket_kwargs[name] = entries[0][1]
             else:
-                # Multiple links on one multi-input socket become a tuple in
-                # creation order (descending sort_id) so the rebuilt tree
-                # gets the same multi-input ordering.
+                # Links on a multi-input socket become a tuple in creation
+                # order (descending sort_id) so the rebuilt tree gets the same
+                # multi-input ordering — even a single link, since manual
+                # classes (JoinGeometry, MeshBoolean, …) expect an iterable.
                 entries.sort(key=lambda e: e[0], reverse=True)
                 socket_kwargs[name] = TupleExpr([e[1] for e in entries])
 
@@ -1817,7 +1822,9 @@ def _matrix_spec(method: str, output: str) -> SocketMethodSpec:
     )
 
 
-def _math_unary_spec(operation: str, method: str, *args: str) -> SocketMethodSpec:
+def _math_unary_spec(
+    operation: str, method: str, *args: str, always_args: int = 0
+) -> SocketMethodSpec:
     """A unary ``ShaderNodeMath`` op rendered as a float socket method —
     ``value.sqrt()`` / ``value.sign()``. ``receiver_socket_type="VALUE"`` keeps
     the round-trip faithful: the method only re-derives a float Math node when
@@ -1826,14 +1833,17 @@ def _math_unary_spec(operation: str, method: str, *args: str) -> SocketMethodSpe
         receiver="Value",
         method=method,
         output="Value",
-        params=tuple((f"Value_{int(i + 1)}", arg) for i, arg in enumerate(args)),
+        params=tuple((f"Value_{i + 1:03d}", arg) for i, arg in enumerate(args)),
         require=(("operation", operation),),
         consumed_props=("operation",),
         receiver_socket_type="VALUE",
+        always_args=always_args,
     )
 
 
-def _int_math_unary_spec(operation: str, method: str, *args: str) -> SocketMethodSpec:
+def _int_math_unary_spec(
+    operation: str, method: str, *args: str, always_args: int = 0
+) -> SocketMethodSpec:
     """A unary ``FunctionNodeIntegerMath`` op rendered as an integer socket
     method — ``value.sign()``. ``ABSOLUTE``/``NEGATE`` stay as the ``abs(x)`` /
     ``-x`` lifts and so are deliberately absent here."""
@@ -1841,10 +1851,11 @@ def _int_math_unary_spec(operation: str, method: str, *args: str) -> SocketMetho
         receiver="Value",
         method=method,
         output="Value",
-        params=tuple((f"Value_{int(i + 1)}", arg) for i, arg in enumerate(args)),
+        params=tuple((f"Value_{i + 1:03d}", arg) for i, arg in enumerate(args)),
         require=(("operation", operation),),
         consumed_props=("operation",),
         receiver_socket_type="INT",
+        always_args=always_args,
     )
 
 
@@ -2033,12 +2044,26 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             ("MINIMUM", "min", "value_001"),
             ("MAXIMUM", "max", "value_001"),
             ("MULTIPLY_ADD", "mul_add", "multiplier", "addend"),
-            ("WRAP", "wrap", "min", "max"),
-            ("MODULO", "modulo", "divisor"),
             ("PINGPONG", "ping_pong", "value"),
             ("LOGARITHM", "log", "base"),
             ("ARCTAN2", "atan2", "value"),
         ]
+    ]
+    # No float modulo lift: the float mixin's modulo() builds FLOORED_MODULO,
+    # which the % operator lift already covers, and plain MODULO has no
+    # faithful method equivalent so it stays a factory call.
+    + [
+        # wrap()'s node sockets are swapped relative to the signature: the
+        # node's Value_001 is Max, Value_002 is Min.
+        SocketMethodSpec(
+            receiver="Value",
+            method="wrap",
+            output="Value",
+            params=(("Value_002", "min"), ("Value_001", "max")),
+            require=(("operation", "WRAP"),),
+            consumed_props=("operation",),
+            receiver_socket_type="VALUE",
+        ),
     ],
     "FunctionNodeIntegerMath": [
         _int_math_unary_spec(*args)
@@ -2046,9 +2071,9 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             ("SIGN", "sign"),
             # ("ABSOLUTE", "abs"),
             ("MULTIPLY_ADD", "mul_add", "multiplier", "addend"),
-            ("MODULO", "modulo", "divisor"),
         )
-    ],
+    ]
+    + [_int_math_unary_spec("MODULO", "modulo", "divisor", always_args=1)],
     "GeometryNodeListLength": [
         _list_spec("list_length", "Length", type_prop="data_type"),
     ],
