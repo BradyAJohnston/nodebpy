@@ -4,9 +4,11 @@
 Tests](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml/badge.svg)](https://github.com/BradyAJohnston/nodebpy/actions/workflows/tests.yml)
 [![](https://codecov.io/gh/BradyAJohnston/nodebpy/graph/badge.svg?token=buThDQZUED)](https://codecov.io/gh/BradyAJohnston/nodebpy)
 
-A package to build node trees in blender more elegantly with python code. Geometry Nodes, Shader Nodes and Compositor nodes are all fully supported. Look at the [documentation](https://bradyajohnston.github.io/nodebpy) for more examples.
+Build node trees in Blender more elegantly with Python code. Geometry Nodes, Shader Nodes and Compositor nodes are all fully supported, with type hints and IDE auto-completion throughout.
 
-## Creating Nodes With Code
+```bash
+pip install nodebpy
+```
 
 > A text-based version of nodes should bring the convenience of writing code with IDE auto-completion, type hinting, with overall compactness and readability, while staying as close as possible to what building a node tree via the GUI feels like.
 
@@ -36,108 +38,26 @@ with g.tree("AnotherTree", collapse=True) as tree:
 
 ![](docs/images/paste-1.png)
 
-Nodes are created by instantiating their classes. The node tree they are added to is determined by the context the code is executed in (while inside `with g.tree():`). The interface for the node tree is created with `tree.inputs` and `tree.inputs`, adding the sockets and returning the input or output socket for linking with other nodes.
+- Every node is a typed class named after the node it creates — 'Random Value' becomes `g.RandomValue()` — and node subtypes are class methods: `g.RandomValue.vector()`.
+- Trees are built inside a `with g.tree(...):` context; instantiating a node class adds it to the current tree, and the tree's interface is declared with `tree.inputs.*` / `tree.outputs.*`.
+- Nodes are linked with the `>>` operator, which picks the most compatible socket pair automatically (much like Node Wrangler's <kbd>Alt</kbd> + <kbd>Right Click</kbd> drag) — or address sockets explicitly through the `.i.*` / `.o.*` accessors.
+- Python's arithmetic, comparison and boolean operators create the matching `Math` / `VectorMath` / `Compare` / `BooleanMath` nodes: `g.Value(1.0) * 2 + (0, 0, 1)`.
+- Existing node trees — including ones wired up by hand in the GUI — can be exported back to `nodebpy` source with `to_python()`.
 
-Nodes are linked by overloading the `>>` operator, to link from the previous node on the left to the input on the right. Suitable socket pairs are automatically selected or explicitly supplied.
+## Documentation
 
-The layout / arrangement of the node tree is not important to Blender's evaluation of it - but an automatic layout algorithm is potentially applied upon exiting the node tree context.
+Guides and the full node reference live at [bradyajohnston.github.io/nodebpy](https://bradyajohnston.github.io/nodebpy):
 
-### `nodebpy` and the `>>` operator
+- [Writing node trees](https://bradyajohnston.github.io/nodebpy/introduction.html) — adding, linking and organising nodes
+- [Math operators](https://bradyajohnston.github.io/nodebpy/operators.html) — arithmetic, comparison and boolean expressions as nodes
+- [Node API design](https://bradyajohnston.github.io/nodebpy/node-api.html) — sockets, accessors, enum options and class methods
+- [Custom node groups](https://bradyajohnston.github.io/nodebpy/custom-node-groups.html) and [asset node groups](https://bradyajohnston.github.io/nodebpy/assets.html) — reusable groups as Python classes
+- [Nodes to code](https://bradyajohnston.github.io/nodebpy/nodes-to-code.html) — turn existing trees back into `nodebpy` code
+- [Using `nodebpy` in your add-on](https://bradyajohnston.github.io/nodebpy/using.html) — installation, bundling and the Blender-tracking versioning scheme
+- [Comparisons](https://bradyajohnston.github.io/nodebpy/comparisons.html) — how the API relates to [`geometry-script`](https://github.com/carson-katri/geometry-script), [`geonodes`](https://github.com/al1brn/geonodes), [NodeToPython](https://github.com/BrendanParmer/NodeToPython) and [TreeClipper](https://github.com/Algebraic-UG/tree_clipper)
 
-In `nodebpy` we use the `>>` operator to link from one node or socket into another.
-This should feel and behave much like the <kbd>Alt</kbd> + <kbd>Right Click</kbd> drag between nodes in [Node Wrangler](https://docs.blender.org/manual/en/latest/addons/node/node_wrangler.html). It will use some smart logic to match the most compatible sockets between the nodes, but if you ever want to be explicit you do so. The input and output sockets of a node are accessible as properties via the `i.*` and `o.*` prefixes, or you can use the `...` placeholder to specify the particular input to be user, or pass in the previous node as a named argument.
+Like [`databpy`](https://github.com/BradyAJohnston/databpy), this project started as an internal tool inside [`molecularnodes`](https://github.com/BradyAJohnston/MolecularNodes) before being broken out into its own robustly typed and tested package.
 
-```py
-# vector output will be linked into the first vector input (position)
-g.Vector() >> g.SetPosition()
-# vector output will be linked into the offset input
-g.Vector() >> g.SetPosition(offset=...)
-g.SetPosition(offset=g.Vector())
-```
+## Contributing
 
-The `>>` operator will always look for the _most_ compatible sockets first (matching data types) before looking for other compatible but not identical socket data types to link.
-If a compatible match can't be found an error _will_ be thrown.
-
-### Contexts
-
-What node tree or node tree interface we are currently editing is determined based on contexts.
-Instantiating a node class outside of a tree context will throw an error. The easiest way to enter and exit a tree context is to use the `with` statement.
-
-Each time you instantiate a node class, a new node will be created and added to the current tree.
-If these nodes are given as arguments to other nodes or used with the `>>` operator, they will be automatically linked to the appropriate sockets.
-
-## Nodes
-
-Documentation for all of the nodes can be found in the [API Reference](https://bradyajohnston.github.io/nodebpy/reference/). This is mostly built automatically from the existing Blender node classes.
-
-Every node has all of it's input sockets and enum options exposed as arguments to the class constructor. Input sockets are prefixed with `.i.*` and output sockets are prefixed with `.o.*`. Properties that aren't exposed as sockets are available as class properties. Many properties are also available as class methods for convenience when constructing.
-
-The basic math operators also automatically add relevant nodes with their operations and values set.
-
-```py
-# operation is exposed as a property
-math = g.Math(1.0, 2.0, operation='ADD')
-math.operation = "SUBTRACT"
-
-# operation can be chose as a class method
-math = g.Math.subtract(1.0, 2.0)
-math = g.Value(1.0) - 2.0
-math = g.Math.add(1.0, 2.0)
-math = g.Value(1.0) + 2.0
-# the 3.0 + 2.0 is evaluated as regular python code first,
-# so the result with be a Math.add(g.Value(1.0), 5.0)
-math = g.Value(1.0) 3.0 + 2.0
-
-# these are equivalent, the g.Math.multiply is automatically added
-g.Value(1.0) * 2
-g.Math.multiply(g.Value(1.0), 2.0)
-```
-
-# Design Considerations
-
-The top priority of `nodebpy` has been type hinting and IDE auto-complete.
-Typical tooling that supports autoring regular python code should also support the authoring of node trees.
-Much like [`databpy`](https://github.com/BradyAJohnston/databpy), this started as an internal tool used inside of [`molecularnodes`](https://github.com/BradyAJohnston/molecularnodes) but has since been broken out into it's own separate project.
-This projects is robustly typed and tested, with the intent that it can be used internally for multiple other add-ons and projects.
-
-- Node classes are named after nodes 'Random Value' -> `RandomValue()`
-- Node 'subtypes' and methods should be accessible via dot (`.`) for easier IDE auto-complete and authoring:
-  - `RandomValue(data_type="FLOAT_VECTOR")` -> `RandomValue.vector()`
-- Node properties are available on the top level, with inputs and outputs available behind `.i.*` and `.o.*` accessors
-- Inputs and outputs from a node are prefixed with `i.*` and `o.*`:
-  - `AccumulateField().o.total` returns the output `Total` socket
-  - `AccumulateField().i.value` returns the input `Value` socket
-
-## Building
-
-Most of the code for classes are generated automatically with the `generate.py` script.
-Some nodes are manually specified in the `src/nodebpy/nodes/geometry/manual.py` if they require special handling.
-
-Run the build & format script as such:
-
-```bash
-uv run generate.py && uvx ruff format && uvx ruff check --fix && uvx ty check --fix src
-```
-
-## Other Projects
-
-There are several other notable projects which have also attempted interfacing with node trees via code. They mostly fit into two categories of either storing & retrieving node trees via code (`.json` or the `bpy` API), or authoring of node trees with custom API and syntax. This project mostly fits in to the latter category.
-
-
-
-### Storing node trees as code:
-Converting node trees to the python API calls or `.json` is great to have a robust storage method, but this approach falls down in human authorability / readability. These projects are great for storage but less useful when wanting to write / generate node trees froms scratch.
-
-  - [NodeToPython](https://github.com/BrendanParmer/NodeToPython)
-  - [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) (used by this project for running tests & snapshots)
-
-### Authoring node trees with code:
-Two previous projects have made similar approaches to authoring node trees. `geometry-script` also auto-generated most of it's type hinting, code and docs. It uses the approach of method chaining with the `.` operator, but obfuscates some of the non-linear way of building node trees.
-
-The other project `geonodes` uses a similar context system for creating and authoring node trees, but doesn't use the same method of exposing each individual node as it's own class that `nodebpy` does.
-
-I personally found both of their APIs to _not quite_ fit how I wanted to work, leading to the creation of `nodebpy`.
-In comparison, this project is also the only one that is also distributed on `PyPi` and insallable via `pip` for easier use in other projects.
-
-  - [geometry-script](https://github.com/carson-katri/geometry-script),
-  - [geonodes](https://github.com/al1brn/geonodes)
+Development setup, running the tests and regenerating the node classes (most of `src/nodebpy/nodes/` is auto-generated by the `gen/` package) are covered in [CONTRIBUTING.md](CONTRIBUTING.md).

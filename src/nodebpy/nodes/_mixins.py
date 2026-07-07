@@ -1,8 +1,8 @@
 """Hand-written mixins attached to auto-generated node classes.
 
 These hold reusable behaviour that the code generator cannot derive on its own
-(ergonomic flag accessors, items helpers, …). ``generate.py`` wires them onto
-the generated classes via :class:`~generate.NodeCustomization`, so the bulky
+(ergonomic flag accessors, items helpers, …). The ``gen`` package wires them
+onto the generated classes via :class:`~gen.NodeCustomization`, so the bulky
 boilerplate (sockets, docstrings, property accessors) stays generated while the
 bespoke behaviour lives here.
 """

@@ -13,7 +13,6 @@ format:
 	uv run ruff format
 
 docs:
-	cd docs
-	uv run quartodoc build
-	uv run quartodoc interlinks
-	uv run quarto render
+	cd docs && uv run quartodoc build
+	cd docs && uv run quartodoc interlinks
+	cd docs && uv run quarto render

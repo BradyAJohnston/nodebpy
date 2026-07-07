@@ -1389,7 +1389,7 @@ def _non_default_props(node, cls: type) -> dict[str, Any]:
 # (``Compare.float.less_than``). Parsing those bodies at runtime yields a
 # reverse table from node state to factory path, so generated code uses the
 # same idiomatic spellings users write — with no separate table to keep in
-# sync with generate.py. Factories whose bodies are not statically analysable
+# sync with the generator. Factories whose bodies are not statically analysable
 # (positional args, helper indirection, **kwargs) are simply skipped and the
 # node falls back to the plain constructor.
 # ---------------------------------------------------------------------------

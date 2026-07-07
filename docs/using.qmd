@@ -62,7 +62,7 @@ else:
 
 This way you can import the correct version of `nodebpy` based on the Blender version at runtime.
 
-It's up to your own usual versioning code to ensure that code used is compatible with the right Blender versions, but you should be able to just impotr from `.lib.nodebpy` like regularly using the package.
+It's up to your own usual versioning code to ensure that code used is compatible with the right Blender versions, but you should be able to just import from `.lib.nodebpy` like regularly using the package.
 
 ```{.python}
 from bpy.types import GeometryNodeTree

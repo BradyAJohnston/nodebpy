@@ -15,6 +15,7 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
+
 from ..types import (
     SOCKET_COMPATIBILITY,
     FloatInterfaceSubtypes,
@@ -856,7 +857,7 @@ class TreeBuilder(Generic[_TreeT]):
         Mermaid ``_repr_markdown_`` fallback take over.
         """
         try:
-            from ..web_render import to_web_render_html
+            from ..export import to_web_render_html
 
             return to_web_render_html(self)
         except Exception as e:
