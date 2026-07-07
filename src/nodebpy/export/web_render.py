@@ -19,7 +19,7 @@ import uuid
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .builder.tree import TreeBuilder
+    from ..builder.tree import TreeBuilder
 
 #: geonodes-web-render version served from the CDN. A semver range (`"0.3"`)
 #: lets esm.sh serve the latest matching patch, so web-render bug fixes ship to
