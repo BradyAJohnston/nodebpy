@@ -178,6 +178,25 @@ def test_unlinked_non_default_input():
     assert "3.14" in code
 
 
+def test_value_output_default_round_trips():
+    """Value stores its constructor value on its output socket, not an input."""
+    with TreeBuilder("ValueOutputDefault") as tree:
+        out = tree.outputs.geometry("Geometry")
+        size = g.Value(0.05)
+        g.Grid(size_x=size, size_y=size, vertices_x=4, vertices_y=4) >> out
+
+    code = to_python(tree, format=False)
+    assert "g.Value(0.05)" in code
+
+    namespace: dict = {}
+    exec(code, namespace)  # noqa: S102
+    rebuilt: TreeBuilder = namespace["tree"]
+    value_node = next(
+        node for node in rebuilt.tree.nodes if node.bl_idname == "ShaderNodeValue"
+    )
+    assert value_node.outputs[0].default_value == pytest.approx(0.05)
+
+
 def test_fanout_assigns_variable():
     """Every node gets a named variable (Phase 1 rule)."""
     with TreeBuilder("FanOut") as tree:
