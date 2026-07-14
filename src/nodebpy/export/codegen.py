@@ -3665,6 +3665,22 @@ def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
 # ---------------------------------------------------------------------------
 
 
+@register_emitter("ShaderNodeValue")
+def _emit_value(node, ctx: EmitContext) -> Call:
+    """Preserve the Value node's output-backed constructor argument.
+
+    Unlike ordinary node inputs, ``ShaderNodeValue`` stores its editable value
+    directly on its output socket. The generic constructor path only examines
+    input sockets, so a non-zero value needs to be supplied explicitly.
+    """
+    call = ctx.constructor(node)
+    if node.outputs:
+        value = node.outputs[0].default_value
+        if not _eq(value, 0.0):
+            call.args.append(Lit(value))
+    return call
+
+
 _COMPARE_LIFT = {
     "LESS_THAN": "<",
     "GREATER_THAN": ">",
