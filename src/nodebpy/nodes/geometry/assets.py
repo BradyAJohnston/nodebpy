@@ -2720,51 +2720,6 @@ class SeparateSpherical(AssetGeometryGroup):
         super().__init__(**{"Input_7": vector})
 
 
-class SetAttachmentSurface(AssetGeometryGroup):
-    """Set Attachment Surface"""
-
-    _name = "Set Attachment Surface"
-    _asset_name = "Set Attachment Surface"
-    _library = BundledLibrary("procedural_hair_node_assets.blend")
-
-    class _Inputs(SocketAccessor):
-        geometry: GeometrySocket
-        """Geometry"""
-        mode: MenuSocket
-        """Mode"""
-        surface_object: ObjectSocket
-        """Surface Object"""
-        surface_uv_map: VectorSocket
-        """Surface UV Map"""
-
-    class _Outputs(SocketAccessor):
-        geometry: GeometrySocket
-        """Geometry"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        geometry: InputGeometry = None,
-        mode: InputMenu = "Object",
-        surface_object: InputObject = None,
-        surface_uv_map: InputVector = None,
-    ):
-        super().__init__(
-            **{
-                "Socket_0": geometry,
-                "Socket_6": mode,
-                "Socket_4": surface_object,
-                "Socket_5": surface_uv_map,
-            }
-        )
-
-
 class SetEffector(AssetGeometryGroup):
     """Add effector information to the geometry bundle."""
 
@@ -3327,7 +3282,6 @@ __all__ = (
     "ScreenTo3DSpace",
     "SeparateCylindrical",
     "SeparateSpherical",
-    "SetAttachmentSurface",
     "SetEffector",
     "SetHairCurveProfile",
     "ShrinkwrapHairCurves",
