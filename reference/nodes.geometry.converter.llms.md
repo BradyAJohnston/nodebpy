@@ -2834,8 +2834,8 @@ Perform various math operations on the given integer inputs
 | [absolute](#nodebpy.nodes.geometry.converter.IntegerMath.absolute) | Create Integer Math with operation ‘Absolute’. Non-negative value of A, abs(A) |
 | [add](#nodebpy.nodes.geometry.converter.IntegerMath.add) | Create Integer Math with operation ‘Add’. A + B |
 | [divide](#nodebpy.nodes.geometry.converter.IntegerMath.divide) | Create Integer Math with operation ‘Divide’. A / B |
-| [divide_ceiling](#nodebpy.nodes.geometry.converter.IntegerMath.divide_ceiling) | Create Integer Math with operation ‘Divide Ceiling’. Divide and ceil result, the smallest integer greater than or equal A |
-| [divide_floor](#nodebpy.nodes.geometry.converter.IntegerMath.divide_floor) | Create Integer Math with operation ‘Divide Floor’. Divide and floor result, the largest integer smaller than or equal A |
+| [divide_ceiling](#nodebpy.nodes.geometry.converter.IntegerMath.divide_ceiling) | Create Integer Math with operation ‘Divide Ceiling’. Divide and ceil to the smallest integer greater than or equal to the result |
+| [divide_floor](#nodebpy.nodes.geometry.converter.IntegerMath.divide_floor) | Create Integer Math with operation ‘Divide Floor’. Divide and floor to the largest integer smaller than or equal to the result |
 | [divide_round](#nodebpy.nodes.geometry.converter.IntegerMath.divide_round) | Create Integer Math with operation ‘Divide Round’. Divide and round result toward zero |
 | [floored_modulo](#nodebpy.nodes.geometry.converter.IntegerMath.floored_modulo) | Create Integer Math with operation ‘Floored Modulo’. Modulo that is periodic for both negative and positive operands |
 | [greatest_common_divisor](#nodebpy.nodes.geometry.converter.IntegerMath.greatest_common_divisor) | Create Integer Math with operation ‘Greatest Common Divisor’. The largest positive integer that divides into each of the values A and B, e.g. GCD(8,12) = 4 |
@@ -2880,7 +2880,7 @@ Create Integer Math with operation ‘Divide’. A / B
 divide_ceiling(value=0, value_001=0)
 ```
 
-Create Integer Math with operation ‘Divide Ceiling’. Divide and ceil result, the smallest integer greater than or equal A
+Create Integer Math with operation ‘Divide Ceiling’. Divide and ceil to the smallest integer greater than or equal to the result
 
 ##### divide_floor
 
@@ -2888,7 +2888,7 @@ Create Integer Math with operation ‘Divide Ceiling’. Divide and ceil result,
 divide_floor(value=0, value_001=0)
 ```
 
-Create Integer Math with operation ‘Divide Floor’. Divide and floor result, the largest integer smaller than or equal A
+Create Integer Math with operation ‘Divide Floor’. Divide and floor to the largest integer smaller than or equal to the result
 
 ##### divide_round
 

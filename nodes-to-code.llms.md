@@ -41,6 +41,22 @@ nt.links.new(real.outputs["Geometry"], n_out.inputs["Geometry"])
 
     bpy.data.node_groups['Scatter']...NodeLink
 
+``` mermaid
+graph LR
+    N0("Group Input"):::default-node
+    N1("Distribute Points on Faces"):::geometry-node
+    N2("Ico Sphere"):::geometry-node
+    N3("Instance on Points"):::geometry-node
+    N4("Realize Instances"):::geometry-node
+    N5("Group Output"):::default-node
+    N4 -->|"Geometry->Geometry"| N5
+    N0 -->|"Geometry->Mesh"| N1
+    N0 -->|"Count->Density"| N1
+    N1 -->|"Points->Points"| N3
+    N2 -->|"Mesh->Instance"| N3
+    N3 -->|"Instances->Geometry"| N4
+```
+
 Pass the `bpy` node tree to `to_python()`:
 
 ``` python
@@ -307,6 +323,21 @@ tree.node_positions = {
 }
 ```
 
+``` mermaid
+graph LR
+    N0("Group Input"):::default-node
+    N1("Position"):::input-node
+    N2("Separate XYZ"):::converter-node
+    N3("Combine XYZ"):::converter-node
+    N4("Set Position"):::geometry-node
+    N5("Group Output"):::default-node
+    N4 -->|"Geometry->Geometry"| N5
+    N1 -->|"Position->Vector"| N2
+    N2 -->|"X->Z"| N3
+    N0 -->|"Geometry->Geometry"| N4
+    N3 -->|"Vector->Offset"| N4
+```
+
 Positions are applied by name, so a node a rebuild does not recreate (a reroute) or renames is skipped rather than erroring. Positions inside nested groups are preserved too.
 
 ### Reroutes
@@ -445,6 +476,21 @@ namespace = {}
 exec(tree.to_python(), namespace)
 rebuilt = namespace["tree"]
 rebuilt
+```
+
+``` mermaid
+graph LR
+    N0("Group Input"):::default-node
+    N1("Position"):::input-node
+    N2("Separate XYZ"):::converter-node
+    N3("Combine XYZ"):::converter-node
+    N4("Set Position"):::geometry-node
+    N5("Group Output"):::default-node
+    N4 -->|"Geometry->Geometry"| N5
+    N1 -->|"Position->Vector"| N2
+    N2 -->|"X->Z"| N3
+    N0 -->|"Geometry->Geometry"| N4
+    N3 -->|"Vector->Offset"| N4
 ```
 
 (With `top_level="class"` there is no `tree` variable — call the generated class’s `create_group()` instead.)
