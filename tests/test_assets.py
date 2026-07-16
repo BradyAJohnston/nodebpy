@@ -7,7 +7,13 @@ from pathlib import Path
 import pytest
 
 from nodebpy import TreeBuilder
-from nodebpy.assets import BundledLibrary, PackageLibrary, _codegen, generate_asset_api
+from nodebpy.assets import (
+    BundledLibrary,
+    PackageLibrary,
+    _codegen,
+    generate_asset_api,
+    generate_asset_modules,
+)
 from nodebpy.assets.__main__ import generate_essentials
 from nodebpy.builder import BaseNode, asset_group_base
 from nodebpy.nodes import compositor as nc
@@ -153,6 +159,25 @@ def test_generate_with_package_library(tmp_path):
     generate_asset_api(lib, out, names={"Smooth by Angle"})
     source = out.read_text()
     assert "PackageLibrary(__file__, " in source
+
+
+@_needs_essentials
+def test_generate_modules_split_by_tree(tmp_path):
+    """Mixed-tree-type libraries are split into one module per tree type, and
+    tree types with no assets get no file."""
+    libraries = [_ESSENTIALS]
+    shader = BundledLibrary("shading_nodes_essentials.blend")
+    if os.path.exists(shader.path()):
+        libraries.append(shader)
+    written = generate_asset_modules(libraries, tmp_path)
+    assert written["geometry"]
+    assert (tmp_path / "geometry.py").exists()
+    assert "__all__" in (tmp_path / "geometry.py").read_text()
+    if len(libraries) == 2:
+        assert written["shader"]
+        assert (tmp_path / "shader.py").exists()
+    assert "compositor" not in written
+    assert not (tmp_path / "compositor.py").exists()
 
 
 def test_library_source_renders_path_as_plain_string():

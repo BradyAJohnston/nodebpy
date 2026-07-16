@@ -97,6 +97,7 @@ quartodoc:
       desc: Generating classes from pre-build assets
       contents:
         - assets.generate_asset_api
+        - assets.generate_asset_modules
         - assets.AssetLibrary
         - assets.BundledLibrary
         - assets.PackageLibrary

@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 
 from ..builder import BundledLibrary, PackageLibrary
-from ._codegen import generate_asset_api
+from ._codegen import generate_asset_api, generate_asset_modules
 
 # Bundled libraries shipped with Blender, grouped by output module. Each library
 # holds node groups of a single tree type.
@@ -70,7 +70,11 @@ def parse_args() -> argparse.Namespace:
         "-o",
         dest="output",
         type=Path,
-        help="Path of the assets.py module to write.",
+        help=(
+            "Where to write the generated module(s). A .py path writes a single "
+            "module; a directory writes one module per tree type "
+            "(geometry.py / shader.py / compositor.py)."
+        ),
     )
     parser.add_argument(
         "--nodebpy-pkg",
@@ -98,6 +102,16 @@ def main() -> None:  # pragma: no cover - CLI wrapper
         # directory (``__file__``), so express the .blend relative to the output
         # module — not the CWD the command happened to run from.
         blend = args.blend_file.resolve()
+        if output.suffix != ".py":
+            # Directory output: one module per tree type.
+            out_dir = output.resolve()
+            relative = Path(os.path.relpath(blend, out_dir)).as_posix()
+            generate_asset_modules(
+                [PackageLibrary(str(out_dir / "_anchor.py"), relative)],
+                output,
+                nodebpy_pkg=args.nodebpy_pkg,
+            )
+            return
         relative = Path(os.path.relpath(blend, output.resolve().parent)).as_posix()
         generate_asset_api(
             [PackageLibrary(str(output), relative)],
