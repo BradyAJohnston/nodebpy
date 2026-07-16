@@ -18,6 +18,7 @@ Generating classes from pre-build assets
 |  |  |
 |----|----|
 | [assets.generate_asset_api](../reference/assets.generate_asset_api.llms.md#nodebpy.assets.generate_asset_api) | Generate typed asset classes for `libraries` into `output_path`. |
+| [assets.generate_asset_modules](../reference/assets.generate_asset_modules.llms.md#nodebpy.assets.generate_asset_modules) | Generate typed asset classes for `libraries`, split into one module per |
 | [assets.AssetLibrary](../reference/assets.AssetLibrary.llms.md#nodebpy.assets.AssetLibrary) | Locates a `.blend` asset library on disk at runtime. |
 | [assets.BundledLibrary](../reference/assets.BundledLibrary.llms.md#nodebpy.assets.BundledLibrary) | A node-group asset library shipped with Blender itself, under the system |
 | [assets.PackageLibrary](../reference/assets.PackageLibrary.llms.md#nodebpy.assets.PackageLibrary) | A `.blend` shipped inside a Python package, located relative to a module |

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>nodes.compositor.interface – nodebpy {{&lt; var version &gt;}}</title>
+<title>assets.generate_asset_modules – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/nodes.compositor.manual.html" rel="next">
-<link href="../reference/nodes.compositor.input.html" rel="prev">
+<link href="../reference/assets.AssetLibrary.html" rel="next">
+<link href="../reference/assets.generate_asset_api.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -249,7 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.compositor.color.html">Compositor Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.compositor.interface.html">nodes.compositor.interface</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/assets.generate_asset_api.html">Assets</a></li><li class="breadcrumb-item"><a href="../reference/assets.generate_asset_modules.html">assets.generate_asset_modules</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -331,7 +331,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/assets.generate_asset_modules.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/assets.generate_asset_modules.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">assets.generate_asset_modules</span></a>
   </div>
 </li>
@@ -585,7 +585,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/nodes.compositor.interface.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/nodes.compositor.interface.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">nodes.compositor.interface</span></a>
   </div>
 </li>
@@ -625,277 +625,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.nodes.compositor.interface" id="toc-nodebpy.nodes.compositor.interface" class="nav-link active" data-scroll-target="#nodebpy.nodes.compositor.interface">nodes.compositor.interface</a>
-  <ul class="collapse">
-  <li><a href="#classes" id="toc-classes" class="nav-link" data-scroll-target="#classes">Classes</a>
-  <ul class="collapse">
-  <li><a href="#nodebpy.nodes.compositor.interface.EnableOutput" id="toc-nodebpy.nodes.compositor.interface.EnableOutput" class="nav-link" data-scroll-target="#nodebpy.nodes.compositor.interface.EnableOutput">EnableOutput</a></li>
-  </ul></li>
-  </ul></li>
+  <li><a href="#nodebpy.assets.generate_asset_modules" id="toc-nodebpy.assets.generate_asset_modules" class="nav-link active" data-scroll-target="#nodebpy.assets.generate_asset_modules">assets.generate_asset_modules</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/nodes.compositor.color.html">Compositor Nodes</a></li><li class="breadcrumb-item"><a href="../reference/nodes.compositor.interface.html">nodes.compositor.interface</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/assets.generate_asset_api.html">Assets</a></li><li class="breadcrumb-item"><a href="../reference/assets.generate_asset_modules.html">assets.generate_asset_modules</a></li></ol></nav></header>
 
 
 
 
-<section id="nodebpy.nodes.compositor.interface" class="level1">
-<h1>nodes.compositor.interface</h1>
-<p><code>interface</code></p>
-<section id="classes" class="level2">
-<h2 class="anchored" data-anchor-id="classes">Classes</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput">EnableOutput</a></td>
-<td>Either pass through the input value or output the fallback value</td>
-</tr>
-</tbody>
-</table>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput" class="level3">
-<h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput">EnableOutput</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>EnableOutput(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Either pass through the input value or output the fallback value</p>
-<section id="parameters" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>enable</td>
-<td>InputBoolean</td>
-<td>Enable</td>
-<td><code>False</code></td>
-</tr>
-<tr class="even">
-<td>value</td>
-<td>InputFloat</td>
-<td>Value</td>
-<td><code>0.0</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="attributes" class="level4">
-<h4 class="anchored" data-anchor-id="attributes">Attributes</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.data_type"><code>data_type</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.i"><code>i</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.name"><code>name</code></a></td>
-<td>The name of the node being wrapped by this instance.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.node"><code>node</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.o"><code>o</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.tree"><code>tree</code></a></td>
-<td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="methods" class="level4">
-<h4 class="anchored" data-anchor-id="methods">Methods</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.boolean">boolean</a></td>
-<td>Create Enable Output with operation ‘Boolean’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.color">color</a></td>
-<td>Create Enable Output with operation ‘Color’.</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.float">float</a></td>
-<td>Create Enable Output with operation ‘Float’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.font">font</a></td>
-<td>Create Enable Output with operation ‘Font’.</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.integer">integer</a></td>
-<td>Create Enable Output with operation ‘Integer’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.integer_vector">integer_vector</a></td>
-<td>Create Enable Output with operation ‘Integer Vector’.</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.matrix">matrix</a></td>
-<td>Create Enable Output with operation ‘Matrix’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.menu">menu</a></td>
-<td>Create Enable Output with operation ‘Menu’.</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.object">object</a></td>
-<td>Create Enable Output with operation ‘Object’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.rotation">rotation</a></td>
-<td>Create Enable Output with operation ‘Rotation’.</td>
-</tr>
-<tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.string">string</a></td>
-<td>Create Enable Output with operation ‘String’.</td>
-</tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.compositor.interface.EnableOutput.vector">vector</a></td>
-<td>Create Enable Output with operation ‘Vector’.</td>
-</tr>
-</tbody>
-</table>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.boolean" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>boolean(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Boolean’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.color" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.color">color</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>color(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Color’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.float" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Float’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.font" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.font">font</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>font(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Font’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.integer" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>integer(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Integer’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.integer_vector" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.integer_vector">integer_vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>integer_vector(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Integer Vector’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.matrix" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.matrix">matrix</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>matrix(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Matrix’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.menu" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.menu">menu</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>menu(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Menu’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.object" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.object">object</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">object</span>(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Object’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.rotation" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.rotation">rotation</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rotation(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Rotation’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.string" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>string(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘String’.</p>
-</section>
-<section id="nodebpy.nodes.compositor.interface.EnableOutput.vector" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.interface.EnableOutput.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>vector(enable<span class="op">=</span><span class="va">False</span>, value<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create Enable Output with operation ‘Vector’.</p>
-<p><strong>Inputs</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Attribute</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>i.enable</code></td>
-<td><code>BooleanSocket</code></td>
-<td>Enable</td>
-</tr>
-<tr class="even">
-<td><code>i.value</code></td>
-<td><code>FloatSocket</code></td>
-<td>Value</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Outputs</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Attribute</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>o.value</code></td>
-<td><code>FloatSocket</code></td>
-<td>Value</td>
-</tr>
-</tbody>
-</table>
+<section id="nodebpy.assets.generate_asset_modules" class="level1">
+<h1>assets.generate_asset_modules</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>generate_asset_modules(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    libraries,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    output_dir,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    names<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    nodebpy_pkg<span class="op">=</span><span class="st">'nodebpy'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate typed asset classes for <code>libraries</code>, split into one module per tree type inside <code>output_dir</code>.</p>
+<p>Writes <code>geometry.py</code>, <code>shader.py</code> and/or <code>compositor.py</code> — one module for each tree type that has assets in the libraries (no file for the others). Asset names repeat across editors (a geometry <em>and</em> a compositor “Combine Spherical” both exist), so splitting keeps the generated class names collision-free where a single :func:<code>generate_asset_api</code> module would silently shadow one with the other.</p>
+<p>Parameters are as for :func:<code>generate_asset_api</code>, except <code>output_dir</code> is the directory to write the modules into (created if needed).</p>
+<p>Returns a mapping of module name (<code>"geometry"</code> / <code>"shader"</code> / <code>"compositor"</code>) to the class names written to it.</p>
 
 
-</section>
-</section>
-</section>
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1301,13 +1055,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/nodes.compositor.input.html" class="pagination-link" aria-label="nodes.compositor.input">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">nodes.compositor.input</span>
+      <a href="../reference/assets.generate_asset_api.html" class="pagination-link" aria-label="assets.generate_asset_api">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">assets.generate_asset_api</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/nodes.compositor.manual.html" class="pagination-link" aria-label="nodes.compositor.manual">
-        <span class="nav-page-text">nodes.compositor.manual</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/assets.AssetLibrary.html" class="pagination-link" aria-label="assets.AssetLibrary">
+        <span class="nav-page-text">assets.AssetLibrary</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
