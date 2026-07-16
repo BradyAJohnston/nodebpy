@@ -50,6 +50,14 @@ _SOCKET_TYPES: dict[str, tuple[str, str]] = {
 }
 
 
+# Tree type → module name used when splitting generated output per tree type.
+_TREE_MODULES: dict[str, str] = {
+    "GeometryNodeTree": "geometry",
+    "ShaderNodeTree": "shader",
+    "CompositorNodeTree": "compositor",
+}
+
+
 def _socket_types(bl_socket_type: str) -> tuple[str, str]:
     for key, value in _SOCKET_TYPES.items():
         if key in bl_socket_type:
@@ -329,3 +337,47 @@ def generate_asset_api(
         _render_module(classes, nodebpy_pkg=nodebpy_pkg), encoding="utf-8"
     )
     return [c.class_name for c in classes]
+
+
+def generate_asset_modules(
+    libraries: AssetLibrary | Sequence[AssetLibrary],
+    output_dir: str | Path,
+    *,
+    names: set[str] | None = None,
+    nodebpy_pkg: str = "nodebpy",
+) -> dict[str, list[str]]:
+    """Generate typed asset classes for ``libraries``, split into one module per
+    tree type inside ``output_dir``.
+
+    Writes ``geometry.py``, ``shader.py`` and/or ``compositor.py`` — one module
+    for each tree type that has assets in the libraries (no file for the
+    others). Asset names repeat across editors (a geometry *and* a compositor
+    "Combine Spherical" both exist), so splitting keeps the generated class
+    names collision-free where a single :func:`generate_asset_api` module would
+    silently shadow one with the other.
+
+    Parameters are as for :func:`generate_asset_api`, except ``output_dir`` is
+    the directory to write the modules into (created if needed).
+
+    Returns a mapping of module name (``"geometry"`` / ``"shader"`` /
+    ``"compositor"``) to the class names written to it.
+    """
+    if isinstance(libraries, AssetLibrary):
+        libraries = [libraries]
+
+    classes: list[_AssetClass] = []
+    for library in libraries:
+        classes.extend(_introspect(library, names))
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    written: dict[str, list[str]] = {}
+    for tree_idname, module in _TREE_MODULES.items():
+        tree_classes = [c for c in classes if c.tree_idname == tree_idname]
+        if not tree_classes:
+            continue
+        (output_dir / f"{module}.py").write_text(
+            _render_module(tree_classes, nodebpy_pkg=nodebpy_pkg), encoding="utf-8"
+        )
+        written[module] = [c.class_name for c in tree_classes]
+    return written
