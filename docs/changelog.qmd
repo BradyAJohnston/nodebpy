@@ -2,7 +2,38 @@
 title: Changelog
 ---
 
-## v520.5.0 - 2026-06-16
+## v520.7.0 - 2026-07-16
+
+### Enhancements
+- **Per-tree-type asset modules** — `nodebpy.assets.generate_asset_modules(libraries, output_dir)` splits the generated asset classes into one module per tree type (`geometry.py` / `shader.py` / `compositor.py`), writing only the tree types that have assets. Asset names repeat across editors (a geometry *and* a compositor "Combine Spherical" both exist), so splitting keeps the generated class names collision-free where a single `generate_asset_api` module would silently shadow one with the other. The CLI splits the same way when the output is a directory:
+
+```sh
+python -m nodebpy.assets -b my_assets.blend -o my_addon/nodes/
+```
+
+## v520.6.0 - 2026-07-15
+
+### Enhancements
+- **Blender 5.2 stable** — `bpy` now tracks the final 5.2 release (CI no longer installs daily builds); the node classes and bundled-essentials asset APIs were regenerated against it. The `SetAttachmentSurface` asset was removed upstream and is no longer generated.
+
+### Fixes
+- `to_python` export now preserves a `Value` node's number. The editable value lives on the node's *output* socket, which the generic constructor path never examined, so non-default values were silently dropped from the generated code.
+
+## v520.5.2 - 2026-07-07
+
+### Internal
+- Documentation cleanup.
+
+## v520.5.1 - 2026-07-07
+
+### Enhancements
+- **Interactive graphs in docs / notebooks** — a `TreeBuilder` now displays as an interactive, Blender-styled, pan-and-zoomable node graph in Jupyter and Quarto (via `_repr_html_`, backed by the new `nodebpy.web_render` module using `tree_clipper` and the `geonodes-web-render` web component). Falls back to the existing Mermaid diagram when rendering isn't available.
+
+### Fixes
+- `to_python` export: a single link into a multi-input socket is now emitted as a one-element tuple, since the manual classes (`JoinGeometry`, `MeshBoolean`, …) expect an iterable — previously such trees didn't round-trip. Unary float/integer math socket methods also emit Blender's zero-padded socket identifiers (`Value_001`).
+- Regenerated the bundled asset APIs with upstream label fixes — e.g. `cip_start` → `clip_start`, `animated_` → `animated`, and the "Super 8 mm" film-grain preset spelling.
+
+## v520.5.0 - 2026-06-19
 
 ### Enhancements
 - Changed the linking of asset node groups for the `_AssetGroupMixin` to be 'linked & packed' by default

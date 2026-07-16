@@ -54,6 +54,24 @@ package (resolved relative to `anchor`, usually `__file__`); use
 of libraries to merge several into one module, and `names={...}` to restrict
 generation to specific node groups.
 
+If your libraries mix tree types, use `generate_asset_modules` instead — it
+takes a directory and writes one module per tree type (`geometry.py`,
+`shader.py`, `compositor.py`), skipping tree types with no assets:
+
+```{python}
+# | eval: false
+from nodebpy.assets import generate_asset_modules, PackageLibrary
+
+generate_asset_modules(
+    PackageLibrary(__file__, "data/my_assets.blend"),
+    "my_addon/nodes/",
+)
+```
+
+Because asset names repeat across editors, splitting also keeps the generated
+class names collision-free where a single mixed module would silently shadow
+one tree type's class with another's.
+
 The generated module imports from `nodebpy` and looks like any other node
 module, so import and use it directly:
 
