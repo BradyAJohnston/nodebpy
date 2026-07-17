@@ -169,7 +169,7 @@
   # Restore authored node positions.
   tree.node_positions = {
       "Group Input": (0.0, 0.0),
-      "Group": (120.0, 50.0),
+      "SnapInner": (120.0, 50.0),
       "Group Output": (240.0, 100.0),
   }
   '''

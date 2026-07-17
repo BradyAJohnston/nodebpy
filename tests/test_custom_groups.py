@@ -216,6 +216,35 @@ def test_group_reuses_existing_node_group():
     assert a.node is not b.node
 
 
+# --- Node naming ---
+
+
+def test_group_node_named_after_tree():
+    """The group node is named after its node tree, not Blender's default
+    'Group', matching how assets added from the Add menu are named."""
+    with TreeBuilder():
+        geom = _SimpleGeomGroup()
+    assert geom.node.name == "Test Simple Geometry Group"
+
+    with TreeBuilder.shader():
+        shader = _SimpleShaderGroup()
+    assert shader.node.name == "Test Simple Shader Group"
+
+    with TreeBuilder.compositor():
+        comp = _SimpleCompositorGroup()
+    assert comp.node.name == "Test Simple Compositor Group"
+
+
+def test_group_node_name_deduplicated():
+    """Repeated instances in one tree get Blender's .001-style suffixes."""
+    with TreeBuilder():
+        a = _SimpleGeomGroup()
+        b = _SimpleGeomGroup()
+
+    assert a.node.name == "Test Simple Geometry Group"
+    assert b.node.name == "Test Simple Geometry Group.001"
+
+
 # ---------------------------------------------------------------------------
 # ShaderNodeGroup
 # ---------------------------------------------------------------------------
