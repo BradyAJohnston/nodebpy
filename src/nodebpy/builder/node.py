@@ -387,6 +387,10 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
         self._establish_links(**kwargs)
         if named_links:
             self._establish_named_links(named_links)
+        # Name the node after its tree (Blender deduplicates with a
+        # ``.001``-style suffix), matching how group assets added from the
+        # Add menu are named, instead of Blender's default ``Group``.
+        self.node.name = self.node_tree.name
 
     @property
     @abstractmethod
