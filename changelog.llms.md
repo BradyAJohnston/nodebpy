@@ -1,5 +1,11 @@
 # Changelog
 
+## v520.8.0 - 2026-07-17
+
+### Enhancements
+
+- **Group nodes are named after their tree** — adding a custom node group (`CustomGeometryGroup` / `CustomShaderGroup` / `CustomCompositorGroup`, including asset-backed groups) now names the group *node* after its node tree (e.g. `Smooth by Angle`, `Smooth by Angle.001`) instead of Blender’s default `Group` / `Group.001`, matching how group assets are named when added from the Add menu.
+
 ## v520.7.0 - 2026-07-16
 
 ### Enhancements
