@@ -70,6 +70,7 @@ def test_generated_asset_appends_and_links():
         node = ng.SmoothByAngle(mesh=ng.Cube(), angle=0.5)
         assert node.node.node_tree is not None
         assert node.node.node_tree.name == "Smooth by Angle"
+        assert node.node.name == "Smooth by Angle"
         assert node.o.mesh is not None
         assert any(socket.is_linked for socket in node.node.inputs)
 
