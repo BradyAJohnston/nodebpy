@@ -95,6 +95,39 @@ def _format_default(socket: bpy.types.NodeSocket) -> str:
     return "None"
 
 
+def _clean_doc(text: str) -> str:
+    """Make ``text`` safe to drop inside a ``\"\"\"…\"\"\"`` docstring."""
+    text = " ".join(text.split())
+    text = text.replace('"""', "'''")
+    return text.rstrip("\\").rstrip()
+
+
+def _quote(text: str) -> str:
+    """``text`` as a double-quoted Python string literal."""
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def _menu_items(socket) -> tuple[str, ...]:
+    """The items a menu socket accepts, in order.
+
+    A menu socket's items come from the Menu Switch node that defines them and
+    aren't readable from the socket's RNA enum, but assigning an impossible
+    value makes Blender list them in the ``TypeError`` — the same trick as
+    ``gen.introspect._collect_socket_menu_items`` (duplicated rather than
+    imported, since ``gen`` is a build tool and isn't shipped with the package).
+    """
+    if getattr(socket, "type", "") != "MENU" or not socket.default_value:
+        return ()
+    try:
+        socket.default_value = "X" * 100
+    except TypeError as error:
+        _, _, listed = str(error).partition("not found in ")
+        items = (item.strip("()'\" ") for item in listed.split(", "))
+        return tuple(item for item in items if item)
+    # A menu that accepted the impossible value tells us nothing about its items.
+    return ()
+
+
 @dataclass
 class _Socket:
     name: str
@@ -103,6 +136,27 @@ class _Socket:
     input_type: str  # e.g. "InputGeometry"
     default: str  # source for the default value
     attr: str  # normalized accessor/param name
+    description: str = ""  # interface tooltip, if the asset author set one
+    menu_items: tuple[str, ...] = ()  # menu sockets only: the selectable items
+
+    @property
+    def doc(self) -> str:
+        """Documentation line for this socket — its tooltip, else its name."""
+        return _clean_doc(self.description or self.name)
+
+    @property
+    def param_type(self) -> str:
+        """Type hint for the ``__init__`` parameter.
+
+        A menu socket is narrowed to its own items so editors offer them for
+        completion, while still accepting a linked ``MenuSocket``.
+        """
+        if not self.menu_items:
+            return self.input_type
+        # Double-quoted to match the formatted source (ruff reformats the code
+        # but not the docstring copy of the same annotation).
+        literals = ", ".join(_quote(item) for item in self.menu_items)
+        return f"{self.input_type} | Literal[{literals}]"
 
 
 @dataclass
@@ -116,7 +170,17 @@ class _AssetClass:
     outputs: list[_Socket]
 
 
-def _collect(sockets) -> list[_Socket]:
+def _collect(
+    sockets,
+    descriptions: dict[str, str] | None = None,
+    menus: bool = False,
+) -> list[_Socket]:
+    """Introspect ``sockets`` into records.
+
+    ``menus`` resolves menu sockets to their items — only worth doing for the
+    group's *inputs*, whose parameters are typed from them.
+    """
+    descriptions = descriptions or {}
     raw = [
         s
         for s in sockets
@@ -129,6 +193,7 @@ def _collect(sockets) -> list[_Socket]:
     out: list[_Socket] = []
     for s in raw:
         socket_class, input_type = _socket_types(type(s).__name__)
+        menu_items = _menu_items(s) if menus else ()
         norm_name = normalize_name(s.name)
         attr = (
             norm_name if name_counts[norm_name] == 1 else normalize_name(s.identifier)
@@ -141,6 +206,8 @@ def _collect(sockets) -> list[_Socket]:
                 input_type=input_type,
                 default=_format_default(s),
                 attr=attr,
+                description=descriptions.get(s.identifier, ""),
+                menu_items=menu_items,
             )
         )
     return out
@@ -179,6 +246,14 @@ def _introspect(library: AssetLibrary, names: set[str] | None) -> list[_AssetCla
             }[group.bl_idname]
             node = host.nodes.new(node_type)
             node.node_tree = group  # ty: ignore[unresolved-attribute]
+            # Tooltips live on the tree *interface* items, not on the node's
+            # sockets — collect them by identifier so the generated docstrings
+            # can use the asset author's own wording.
+            descriptions = {
+                item.identifier: item.description or ""
+                for item in group.interface.items_tree
+                if item.item_type == "SOCKET"
+            }
             classes.append(
                 _AssetClass(
                     class_name=_class_name(name),
@@ -186,8 +261,8 @@ def _introspect(library: AssetLibrary, names: set[str] | None) -> list[_AssetCla
                     description=(group.description or name).strip(),
                     library_source=library_source,
                     tree_idname=group.bl_idname,
-                    inputs=_collect(node.inputs),
-                    outputs=_collect(node.outputs),
+                    inputs=_collect(node.inputs, descriptions, menus=True),
+                    outputs=_collect(node.outputs, descriptions),
                 )
             )
         finally:
@@ -210,24 +285,49 @@ def _library_source(library: AssetLibrary) -> str:
     raise TypeError(f"Cannot serialise asset library: {library!r}")
 
 
-def _accessor(sockets: list[_Socket], kind: str) -> str:
+def _accessor(sockets: list[_Socket], kind: str, docstrings: bool) -> str:
     if not sockets:
         return f"    class {kind}(SocketAccessor):\n        pass"
     lines = [f"    class {kind}(SocketAccessor):"]
     for s in sockets:
         lines.append(f"        {s.attr}: {s.socket_class}")
-        doc = s.name
+        doc = s.doc if docstrings else _clean_doc(s.name)
         if doc and doc != s.attr:
             lines.append(f'        """{doc}"""')
     return "\n".join(lines)
 
 
-def _render_class(cls: _AssetClass) -> str:
-    base = asset_group_base(cls.tree_idname).__name__
-    inputs_cls = _accessor(cls.inputs, "_Inputs")
-    outputs_cls = _accessor(cls.outputs, "_Outputs")
+def _class_docstring(cls: _AssetClass) -> str:
+    """A numpy-style docstring for ``cls``, matching the built-in node classes."""
+    lines = [_clean_doc(cls.description), ""]
+    if cls.inputs:
+        lines += ["Parameters", "----------"]
+        for s in cls.inputs:
+            lines += [f"{s.attr} : {s.param_type}", f"    {s.doc}"]
+        lines.append("")
+        lines += ["Inputs", "------"]
+        for s in cls.inputs:
+            lines += [f"i.{s.attr} : {s.socket_class}", f"    {s.doc}"]
+        lines.append("")
+    if cls.outputs:
+        lines += ["Outputs", "-------"]
+        for s in cls.outputs:
+            lines += [f"o.{s.attr} : {s.socket_class}", f"    {s.doc}"]
+    # Indent to the class body, leaving blank separator lines truly blank so the
+    # module needs no formatter pass to be clean.
+    body = "\n".join(f"    {line}" if line else "" for line in lines).strip("\n")
+    return f'"""\n{body}\n    """'
 
-    params = [f"{s.attr}: {s.input_type} = {s.default}" for s in cls.inputs]
+
+def _render_class(cls: _AssetClass, docstrings: bool = False) -> str:
+    base = asset_group_base(cls.tree_idname).__name__
+    docstring = (
+        _class_docstring(cls) if docstrings else f'"""{_clean_doc(cls.description)}"""'
+    )
+    inputs_cls = _accessor(cls.inputs, "_Inputs", docstrings)
+    outputs_cls = _accessor(cls.outputs, "_Outputs", docstrings)
+
+    params = [f"{s.attr}: {s.param_type} = {s.default}" for s in cls.inputs]
     signature = (
         "(\n        self,\n        " + ",\n        ".join(params) + ",\n    )"
         if params
@@ -235,8 +335,8 @@ def _render_class(cls: _AssetClass) -> str:
     )
     key_args = ", ".join(f'"{s.identifier}": {s.attr}' for s in cls.inputs)
 
-    return f'''class {cls.class_name}({base}):
-    """{cls.description}"""
+    return f"""class {cls.class_name}({base}):
+    {docstring}
 
     _name = {cls.asset_name!r}
     _asset_name = {cls.asset_name!r}
@@ -254,10 +354,14 @@ def _render_class(cls: _AssetClass) -> str:
 
     def __init__{signature}:
         super().__init__(**{{{key_args}}})
-'''
+"""
 
 
-def _render_module(classes: list[_AssetClass], nodebpy_pkg: str = "nodebpy") -> str:
+def _render_module(
+    classes: list[_AssetClass],
+    nodebpy_pkg: str = "nodebpy",
+    docstrings: bool = False,
+) -> str:
     socket_classes = sorted(
         {s.socket_class for c in classes for s in c.inputs + c.outputs}
     )
@@ -276,9 +380,13 @@ def _render_module(classes: list[_AssetClass], nodebpy_pkg: str = "nodebpy") -> 
         set(bases) | set(libraries) | {"SocketAccessor"} | set(socket_classes)
     )
 
+    typing_imports = ["TYPE_CHECKING"]
+    if any(s.menu_items for c in classes for s in c.inputs):
+        typing_imports.append("Literal")
+
     lines = [
         "# Auto-generated by nodebpy.assets.generate_asset_api — do not edit manually.",
-        "from typing import TYPE_CHECKING",
+        f"from typing import {', '.join(typing_imports)}",
         "",
         f"from {nodebpy_pkg}.builder import (\n    {',\n    '.join(builder_imports)},\n)",
         f"from {nodebpy_pkg}.types import (\n    {',\n    '.join(input_types)},\n)"
@@ -287,7 +395,7 @@ def _render_module(classes: list[_AssetClass], nodebpy_pkg: str = "nodebpy") -> 
     ]
     header = "\n".join(line for line in lines if line) + "\n\n\n"
     ordered = sorted(classes, key=lambda c: c.class_name)
-    body = "\n\n".join(_render_class(c) for c in ordered)
+    body = "\n\n".join(_render_class(c, docstrings) for c in ordered)
     all_names = ",\n    ".join(f'"{c.class_name}"' for c in ordered)
     footer = (
         f"\n\n__all__ = (\n    {all_names},\n)\n" if ordered else "\n__all__ = ()\n"
@@ -301,6 +409,7 @@ def generate_asset_api(
     *,
     names: set[str] | None = None,
     nodebpy_pkg: str = "nodebpy",
+    docstrings: bool = True,
 ) -> list[str]:
     """Generate typed asset classes for ``libraries`` into ``output_path``.
 
@@ -321,6 +430,11 @@ def generate_asset_api(
         pass the path that reaches it *relative to the generated module's
         package* — e.g. ``"..vendor.nodebpy"`` — so the emitted imports stay
         relative to the install/vendor location.
+    docstrings:
+        Emit numpy-style class docstrings (description, ``Parameters``,
+        ``Inputs``, ``Outputs``) using the asset's own socket tooltips, so
+        editors show documentation alongside the type hints. Defaults to
+        ``True``; pass ``False`` for a terser module.
 
     Returns the list of generated class names.
     """
@@ -334,7 +448,8 @@ def generate_asset_api(
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
-        _render_module(classes, nodebpy_pkg=nodebpy_pkg), encoding="utf-8"
+        _render_module(classes, nodebpy_pkg=nodebpy_pkg, docstrings=docstrings),
+        encoding="utf-8",
     )
     return [c.class_name for c in classes]
 

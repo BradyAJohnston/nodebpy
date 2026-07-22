@@ -205,6 +205,97 @@ def test_generate_with_vendored_nodebpy_pkg(tmp_path):
     assert "from nodebpy.builder import" not in source
 
 
+@_needs_essentials
+def test_generate_emits_numpy_docstrings(tmp_path):
+    """Docstrings are on by default: a numpy-style class docstring plus the
+    asset's own socket tooltips, so editors show docs beside the type hints."""
+    out = tmp_path / "generated.py"
+    generate_asset_api(_ESSENTIALS, out, names={"Smooth by Angle"})
+    source = out.read_text()
+    assert "Parameters\n    ----------" in source
+    assert "Inputs\n    ------" in source
+    assert "Outputs\n    -------" in source
+    assert "mesh : InputGeometry" in source
+    assert "i.angle : FloatSocket" in source
+    assert "o.mesh : GeometrySocket" in source
+    # The tooltip authored on the group interface, not just the socket name.
+    assert "Maximum face angle for smooth edges" in source
+
+
+@_needs_essentials
+def test_generate_without_docstrings_stays_terse(tmp_path):
+    out = tmp_path / "generated.py"
+    generate_asset_api(_ESSENTIALS, out, names={"Smooth by Angle"}, docstrings=False)
+    source = out.read_text()
+    assert '"""Smooth by Angle"""' in source
+    assert "Parameters" not in source
+    assert "Maximum face angle for smooth edges" not in source
+    # Accessor annotations still carry the socket's display name.
+    assert '"""Mesh"""' in source
+
+
+@_needs_essentials
+def test_generated_docstrings_are_importable_and_readable(tmp_path):
+    """The emitted module must import cleanly and expose the docstrings."""
+    out = tmp_path / "generated_docs.py"
+    generate_asset_api(_ESSENTIALS, out, names={"Smooth by Angle"})
+    namespace: dict = {}
+    exec(compile(out.read_text(), str(out), "exec"), namespace)
+    doc = namespace["SmoothByAngle"].__doc__
+    assert doc.lstrip().startswith("Smooth by Angle")
+    assert "Maximum face angle for smooth edges" in doc
+
+
+@_needs_essentials
+def test_generate_types_menu_sockets_as_literals(tmp_path):
+    """A menu socket's items are emitted as a ``Literal`` so editors can
+    complete them."""
+    out = tmp_path / "generated.py"
+    generate_asset_api(_ESSENTIALS, out, names={"Array"})
+    source = out.read_text()
+    assert "from typing import TYPE_CHECKING, Literal" in source
+    literal = 'InputMenu | Literal["Line", "Circle", "Curve", "Transform"]'
+    assert f"shape: {literal} = 'Line'" in source
+    # The narrowed type is documented alongside the parameter, too.
+    assert f"shape : {literal}" in source
+
+
+@_needs_essentials
+def test_every_menu_socket_resolves_its_items(tmp_path):
+    """Every menu input across the essentials resolves to its items."""
+    classes = _codegen._introspect(_ESSENTIALS, None)
+    menus = [s for c in classes for s in c.inputs if s.socket_class == "MenuSocket"]
+    assert menus, "expected menu sockets in the geometry essentials"
+    unresolved = [s.name for s in menus if not s.menu_items]
+    assert not unresolved, f"menu items not found for {unresolved}"
+
+
+@_needs_essentials
+def test_menu_items_leave_the_socket_default_untouched():
+    """Probing for the items assigns an impossible value; the rejected
+    assignment must not disturb the socket's real default."""
+    with ng.tree("t"):
+        node = ng.Array()
+        socket = next(s for s in node.node.inputs if s.type == "MENU")
+        before = socket.default_value
+        assert _codegen._menu_items(socket)
+        assert socket.default_value == before
+
+
+def test_menu_items_ignore_non_menu_sockets():
+    class _NotAMenu:
+        type = "GEOMETRY"
+        default_value = ""
+
+    assert _codegen._menu_items(_NotAMenu()) == ()
+
+
+def test_clean_doc_escapes_docstring_terminator():
+    assert _codegen._clean_doc('a """quoted""" tip') == "a '''quoted''' tip"
+    assert _codegen._clean_doc("multi\nline\ttip") == "multi line tip"
+    assert _codegen._clean_doc("trailing backslash \\") == "trailing backslash"
+
+
 def test_generate_empty_library_writes_empty_all(tmp_path):
     out = tmp_path / "generated.py"
     names = generate_asset_api(_ESSENTIALS, out, names={"___no_such_group___"})
