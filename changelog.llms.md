@@ -48,6 +48,8 @@ python -m nodebpy.assets -b my_assets.blend -o my_addon/nodes/
 ### Enhancements
 
 - Changed the linking of asset node groups for the `_AssetGroupMixin` to be ‘linked & packed’ by default
+- Generated asset classes now carry numpy-style docstrings (description, `Parameters`, `Inputs`, `Outputs`) built from the asset’s own socket tooltips, so editors show documentation alongside the type hints. Pass `docstrings=False` to `generate_asset_api` (or `--no-docstrings` to `python -m nodebpy.assets`) for the terser output.
+- Menu sockets on generated asset classes are typed with the items they actually offer — `shape: InputMenu | Literal["Line", "Circle", "Curve", "Transform"]` — matching how menu sockets are already typed on the built-in nodes.
 
 ## v520.4.0 - 2026-06-19
 

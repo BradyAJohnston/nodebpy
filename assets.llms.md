@@ -46,7 +46,19 @@ generate_asset_modules(
 )
 ```
 
-Because asset names repeat across editors, splitting also keeps the generated class names collision-free where a single mixed module would silently shadow one tree type’s class with another’s.
+Because asset names repeat across editors, splitting also keeps the generated class names collision-free where a single mixed module would silently shadow one tree type’s class with another’s. ======= \### Docstrings and menu types
+
+By default the generated classes carry numpy-style docstrings built from the asset’s own interface — the group description, then `Parameters`, `Inputs` and `Outputs` sections using each socket’s tooltip — so editors show documentation next to the type hints. Menu sockets are narrowed to the items they actually offer:
+
+``` python
+def __init__(
+    self,
+    geometry: InputGeometry = None,
+    shape: InputMenu | Literal["Line", "Circle", "Curve", "Transform"] = "Line",
+    ...
+```
+
+Pass `docstrings=False` (or `--no-docstrings` on the command line) for a terser module without the class docstrings.
 
 The generated module imports from `nodebpy` and looks like any other node module, so import and use it directly:
 

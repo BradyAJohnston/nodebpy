@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Changelog – nodebpy 520.8.0</title>
+<title>Changelog – nodebpy 520.9.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-da754bb905dfff91d967e43b5e6004aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -169,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.8.0</span>
+    <span class="navbar-title">nodebpy 520.9.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -488,6 +488,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="enhancements-4">Enhancements</h3>
 <ul>
 <li>Changed the linking of asset node groups for the <code>_AssetGroupMixin</code> to be ‘linked &amp; packed’ by default</li>
+<li>Generated asset classes now carry numpy-style docstrings (description, <code>Parameters</code>, <code>Inputs</code>, <code>Outputs</code>) built from the asset’s own socket tooltips, so editors show documentation alongside the type hints. Pass <code>docstrings=False</code> to <code>generate_asset_api</code> (or <code>--no-docstrings</code> to <code>python -m nodebpy.assets</code>) for the terser output.</li>
+<li>Menu sockets on generated asset classes are typed with the items they actually offer — <code>shape: InputMenu | Literal["Line", "Circle", "Curve", "Transform"]</code> — matching how menu sockets are already typed on the built-in nodes.</li>
 </ul>
 </section>
 </section>
