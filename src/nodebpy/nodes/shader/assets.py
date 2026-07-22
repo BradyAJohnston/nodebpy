@@ -14,7 +14,32 @@ from ...types import (
 
 
 class CombineCylindrical(AssetShaderGroup):
-    """Combine Cylindrical"""
+    """
+    Combine Cylindrical
+
+    Parameters
+    ----------
+    r : InputFloat
+        Radius - Length of the vector
+    phi : InputFloat
+        Azimuth - Angle around the up axis
+    z : InputFloat
+        Distance from the ground plane
+
+    Inputs
+    ------
+    i.r : FloatSocket
+        Radius - Length of the vector
+    i.phi : FloatSocket
+        Azimuth - Angle around the up axis
+    i.z : FloatSocket
+        Distance from the ground plane
+
+    Outputs
+    -------
+    o.vector : VectorSocket
+        Vector
+    """
 
     _name = "Combine Cylindrical"
     _asset_name = "Combine Cylindrical"
@@ -22,11 +47,11 @@ class CombineCylindrical(AssetShaderGroup):
 
     class _Inputs(SocketAccessor):
         r: FloatSocket
-        """R"""
+        """Radius - Length of the vector"""
         phi: FloatSocket
-        """Phi"""
+        """Azimuth - Angle around the up axis"""
         z: FloatSocket
-        """Z"""
+        """Distance from the ground plane"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
@@ -49,7 +74,32 @@ class CombineCylindrical(AssetShaderGroup):
 
 
 class CombineSpherical(AssetShaderGroup):
-    """Combine Spherical"""
+    """
+    Combine Spherical
+
+    Parameters
+    ----------
+    r : InputFloat
+        Radius - Length of the vector
+    phi : InputFloat
+        Azimuth - Angle around the up axis
+    theta : InputFloat
+        Zenith - Angle from the ground plane
+
+    Inputs
+    ------
+    i.r : FloatSocket
+        Radius - Length of the vector
+    i.phi : FloatSocket
+        Azimuth - Angle around the up axis
+    i.theta : FloatSocket
+        Zenith - Angle from the ground plane
+
+    Outputs
+    -------
+    o.vector : VectorSocket
+        Vector
+    """
 
     _name = "Combine Spherical"
     _asset_name = "Combine Spherical"
@@ -57,11 +107,11 @@ class CombineSpherical(AssetShaderGroup):
 
     class _Inputs(SocketAccessor):
         r: FloatSocket
-        """R"""
+        """Radius - Length of the vector"""
         phi: FloatSocket
-        """Phi"""
+        """Azimuth - Angle around the up axis"""
         theta: FloatSocket
-        """Theta"""
+        """Zenith - Angle from the ground plane"""
 
     class _Outputs(SocketAccessor):
         vector: VectorSocket
@@ -84,7 +134,28 @@ class CombineSpherical(AssetShaderGroup):
 
 
 class SeparateCylindrical(AssetShaderGroup):
-    """Separate Cylindrical"""
+    """
+    Separate Cylindrical
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+
+    Outputs
+    -------
+    o.r : FloatSocket
+        Radius - Length of the vector
+    o.phi : FloatSocket
+        Azimuth - Angle around the up axis
+    o.z : FloatSocket
+        Distance from the ground plane
+    """
 
     _name = "Separate Cylindrical"
     _asset_name = "Separate Cylindrical"
@@ -96,11 +167,11 @@ class SeparateCylindrical(AssetShaderGroup):
 
     class _Outputs(SocketAccessor):
         r: FloatSocket
-        """R"""
+        """Radius - Length of the vector"""
         phi: FloatSocket
-        """Phi"""
+        """Azimuth - Angle around the up axis"""
         z: FloatSocket
-        """Z"""
+        """Distance from the ground plane"""
 
     if TYPE_CHECKING:
 
@@ -117,7 +188,28 @@ class SeparateCylindrical(AssetShaderGroup):
 
 
 class SeparateSpherical(AssetShaderGroup):
-    """Separate Spherical"""
+    """
+    Separate Spherical
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+
+    Outputs
+    -------
+    o.r : FloatSocket
+        Radius - Length of the vector
+    o.phi : FloatSocket
+        Azimuth - Angle around the up axis
+    o.theta : FloatSocket
+        Zenith - Angle from the ground plane
+    """
 
     _name = "Separate Spherical"
     _asset_name = "Separate Spherical"
@@ -129,11 +221,11 @@ class SeparateSpherical(AssetShaderGroup):
 
     class _Outputs(SocketAccessor):
         r: FloatSocket
-        """R"""
+        """Radius - Length of the vector"""
         phi: FloatSocket
-        """Phi"""
+        """Azimuth - Angle around the up axis"""
         theta: FloatSocket
-        """Theta"""
+        """Zenith - Angle from the ground plane"""
 
     if TYPE_CHECKING:
 

@@ -31,7 +31,7 @@ _ESSENTIALS: dict[str, tuple[str, ...]] = {
 
 
 def generate_essentials(
-    nodes_dir: Path, nodebpy_pkg: str = ".."
+    nodes_dir: Path, nodebpy_pkg: str = "..", docstrings: bool = True
 ) -> dict[str, list[str]]:
     """Generate the bundled-essentials asset modules into
     ``<nodes_dir>/<tree>/assets.py``; returns the class names written per tree
@@ -50,6 +50,7 @@ def generate_essentials(
             libraries,
             Path(nodes_dir) / tree / "assets.py",
             nodebpy_pkg=nodebpy_pkg,
+            docstrings=docstrings,
         )
         written[tree] = names
         print(f"  nodes/{tree}/assets.py: {len(names)} asset classes")
@@ -86,6 +87,15 @@ def parse_args() -> argparse.Namespace:
             "package — e.g. '..lib.nodebpy'."
         ),
     )
+    parser.add_argument(
+        "--no-docstrings",
+        dest="docstrings",
+        action="store_false",
+        help=(
+            "Skip the numpy-style class docstrings (description, Parameters, "
+            "Inputs, Outputs) and emit a terser module."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -117,10 +127,13 @@ def main() -> None:  # pragma: no cover - CLI wrapper
             [PackageLibrary(str(output), relative)],
             output,
             nodebpy_pkg=args.nodebpy_pkg,
+            docstrings=args.docstrings,
         )
         return
 
-    generate_essentials(Path(__file__).parent.parent / "nodes")
+    generate_essentials(
+        Path(__file__).parent.parent / "nodes", docstrings=args.docstrings
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover
