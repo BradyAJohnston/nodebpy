@@ -2571,3 +2571,34 @@ def test_codegen_list_methods(snapshot):
     string = tree.to_python()
     assert ".filter(" in string
     assert snapshot == string
+
+
+def test_codegen_input_detection():
+    """The asset codegen exposes *every* interface input in the generated
+    ``__init__``, including inputs that Blender's socket-usage inference marks
+    inactive for the current node options (here: a Menu Switch pinned to
+    "Option 1" deactivates the "Option 2" group input on any instance)."""
+    from nodebpy.assets._codegen import _introspect_group, _render_class
+
+    with g.tree("MenuInputDetection") as tree:
+        (
+            g.MenuSwitch.geometry(
+                menu="Option 1",
+                items={
+                    "Option 1": tree.inputs.geometry("Option 1"),
+                    "Option 2": tree.inputs.geometry("Option 2"),
+                },
+            )
+            >> tree.outputs.geometry()
+        )
+
+    cls = _introspect_group(
+        tree.tree, "MenuInputDetection", 'BundledLibrary("x.blend")'
+    )
+    assert [s.name for s in cls.inputs] == ["Option 1", "Option 2"]
+
+    code = _render_class(cls)
+    assert "option_1: InputGeometry = None" in code
+    assert "option_2: InputGeometry = None" in code
+    for socket in cls.inputs:  # __init__ forwards every input by identifier
+        assert f'"{socket.identifier}": {socket.attr}' in code
