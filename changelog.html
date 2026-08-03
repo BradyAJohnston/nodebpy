@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Changelog – nodebpy 520.10.0</title>
+<title>Changelog – nodebpy 520.11.0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -169,7 +169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">nodebpy 520.10.0</span>
+    <span class="navbar-title">nodebpy 520.11.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -252,9 +252,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#v520.10.0---2026-08-03" id="toc-v520.10.0---2026-08-03" class="nav-link active" data-scroll-target="#v520.10.0---2026-08-03">v520.10.0 - 2026-08-03</a>
+  <li><a href="#v520.11.0---2026-08-03" id="toc-v520.11.0---2026-08-03" class="nav-link active" data-scroll-target="#v520.11.0---2026-08-03">v520.11.0 - 2026-08-03</a>
   <ul class="collapse">
   <li><a href="#fixes" id="toc-fixes" class="nav-link" data-scroll-target="#fixes">Fixes</a></li>
+  </ul></li>
+  <li><a href="#v520.10.0---2026-08-03" id="toc-v520.10.0---2026-08-03" class="nav-link" data-scroll-target="#v520.10.0---2026-08-03">v520.10.0 - 2026-08-03</a>
+  <ul class="collapse">
+  <li><a href="#fixes-1" id="toc-fixes-1" class="nav-link" data-scroll-target="#fixes-1">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.9.0---2026-07-22" id="toc-v520.9.0---2026-07-22" class="nav-link" data-scroll-target="#v520.9.0---2026-07-22">v520.9.0 - 2026-07-22</a>
   <ul class="collapse">
@@ -271,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#v520.6.0---2026-07-15" id="toc-v520.6.0---2026-07-15" class="nav-link" data-scroll-target="#v520.6.0---2026-07-15">v520.6.0 - 2026-07-15</a>
   <ul class="collapse">
   <li><a href="#enhancements-3" id="toc-enhancements-3" class="nav-link" data-scroll-target="#enhancements-3">Enhancements</a></li>
-  <li><a href="#fixes-1" id="toc-fixes-1" class="nav-link" data-scroll-target="#fixes-1">Fixes</a></li>
+  <li><a href="#fixes-2" id="toc-fixes-2" class="nav-link" data-scroll-target="#fixes-2">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.5.2---2026-07-07" id="toc-v520.5.2---2026-07-07" class="nav-link" data-scroll-target="#v520.5.2---2026-07-07">v520.5.2 - 2026-07-07</a>
   <ul class="collapse">
@@ -280,7 +284,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#v520.5.1---2026-07-07" id="toc-v520.5.1---2026-07-07" class="nav-link" data-scroll-target="#v520.5.1---2026-07-07">v520.5.1 - 2026-07-07</a>
   <ul class="collapse">
   <li><a href="#enhancements-4" id="toc-enhancements-4" class="nav-link" data-scroll-target="#enhancements-4">Enhancements</a></li>
-  <li><a href="#fixes-2" id="toc-fixes-2" class="nav-link" data-scroll-target="#fixes-2">Fixes</a></li>
+  <li><a href="#fixes-3" id="toc-fixes-3" class="nav-link" data-scroll-target="#fixes-3">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.5.0---2026-06-19" id="toc-v520.5.0---2026-06-19" class="nav-link" data-scroll-target="#v520.5.0---2026-06-19">v520.5.0 - 2026-06-19</a>
   <ul class="collapse">
@@ -293,27 +297,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#v520.3.0---2026-06-18" id="toc-v520.3.0---2026-06-18" class="nav-link" data-scroll-target="#v520.3.0---2026-06-18">v520.3.0 - 2026-06-18</a>
   <ul class="collapse">
   <li><a href="#enhancements-7" id="toc-enhancements-7" class="nav-link" data-scroll-target="#enhancements-7">Enhancements</a></li>
-  <li><a href="#fixes-3" id="toc-fixes-3" class="nav-link" data-scroll-target="#fixes-3">Fixes</a></li>
+  <li><a href="#fixes-4" id="toc-fixes-4" class="nav-link" data-scroll-target="#fixes-4">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.2.0---2026-06-16" id="toc-v520.2.0---2026-06-16" class="nav-link" data-scroll-target="#v520.2.0---2026-06-16">v520.2.0 - 2026-06-16</a>
   <ul class="collapse">
   <li><a href="#enhancements-8" id="toc-enhancements-8" class="nav-link" data-scroll-target="#enhancements-8">Enhancements</a></li>
-  <li><a href="#fixes-4" id="toc-fixes-4" class="nav-link" data-scroll-target="#fixes-4">Fixes</a></li>
+  <li><a href="#fixes-5" id="toc-fixes-5" class="nav-link" data-scroll-target="#fixes-5">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.1.1---2026-06-15" id="toc-v520.1.1---2026-06-15" class="nav-link" data-scroll-target="#v520.1.1---2026-06-15">v520.1.1 - 2026-06-15</a>
   <ul class="collapse">
   <li><a href="#internal-1" id="toc-internal-1" class="nav-link" data-scroll-target="#internal-1">Internal</a></li>
-  <li><a href="#fixes-5" id="toc-fixes-5" class="nav-link" data-scroll-target="#fixes-5">Fixes</a></li>
+  <li><a href="#fixes-6" id="toc-fixes-6" class="nav-link" data-scroll-target="#fixes-6">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.1.0---2026-06-15" id="toc-v520.1.0---2026-06-15" class="nav-link" data-scroll-target="#v520.1.0---2026-06-15">v520.1.0 - 2026-06-15</a>
   <ul class="collapse">
   <li><a href="#enhancements-9" id="toc-enhancements-9" class="nav-link" data-scroll-target="#enhancements-9">Enhancements</a></li>
-  <li><a href="#fixes-6" id="toc-fixes-6" class="nav-link" data-scroll-target="#fixes-6">Fixes</a></li>
+  <li><a href="#fixes-7" id="toc-fixes-7" class="nav-link" data-scroll-target="#fixes-7">Fixes</a></li>
   <li><a href="#breaking-changes" id="toc-breaking-changes" class="nav-link" data-scroll-target="#breaking-changes">Breaking Changes</a></li>
   </ul></li>
   <li><a href="#v520.0.1---2026-06-05" id="toc-v520.0.1---2026-06-05" class="nav-link" data-scroll-target="#v520.0.1---2026-06-05">v520.0.1 - 2026-06-05</a>
   <ul class="collapse">
-  <li><a href="#fixes-7" id="toc-fixes-7" class="nav-link" data-scroll-target="#fixes-7">Fixes</a></li>
+  <li><a href="#fixes-8" id="toc-fixes-8" class="nav-link" data-scroll-target="#fixes-8">Fixes</a></li>
   </ul></li>
   <li><a href="#v520.0.0---2026-06-04" id="toc-v520.0.0---2026-06-04" class="nav-link" data-scroll-target="#v520.0.0---2026-06-04">v520.0.0 - 2026-06-04</a>
   <ul class="collapse">
@@ -431,10 +435,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="v520.10.0---2026-08-03" class="level2">
-<h2 class="anchored" data-anchor-id="v520.10.0---2026-08-03">v520.10.0 - 2026-08-03</h2>
+<section id="v520.11.0---2026-08-03" class="level2">
+<h2 class="anchored" data-anchor-id="v520.11.0---2026-08-03">v520.11.0 - 2026-08-03</h2>
 <section id="fixes" class="level3">
 <h3 class="anchored" data-anchor-id="fixes">Fixes</h3>
+<ul>
+<li>Breaking change that fixes the geneartion of class names like <code>BrighnessContrast</code> which previously were being generated as <code>Brightnesscontrast</code> without capitalization.</li>
+</ul>
+</section>
+</section>
+<section id="v520.10.0---2026-08-03" class="level2">
+<h2 class="anchored" data-anchor-id="v520.10.0---2026-08-03">v520.10.0 - 2026-08-03</h2>
+<section id="fixes-1" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-1">Fixes</h3>
 <ul>
 <li><strong>Asset generation exposes every interface input</strong> — introspecting an asset node group skipped inputs that Blender’s socket-usage inference marks inactive under the group’s current node options (e.g.&nbsp;a Menu Switch selection deactivating the inputs of the branches not taken), so those parameters were silently missing from the generated <code>__init__</code>. All interface inputs are now generated; the bundled essentials APIs were regenerated and pick up the previously hidden menu-gated inputs (e.g.&nbsp;the compositor <code>ChromaticAberration</code> gains <code>axis</code>, <code>center</code>, <code>samples</code> and <code>fit</code>).</li>
 </ul>
@@ -477,8 +490,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Blender 5.2 stable</strong> — <code>bpy</code> now tracks the final 5.2 release (CI no longer installs daily builds); the node classes and bundled-essentials asset APIs were regenerated against it. The <code>SetAttachmentSurface</code> asset was removed upstream and is no longer generated.</li>
 </ul>
 </section>
-<section id="fixes-1" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-1">Fixes</h3>
+<section id="fixes-2" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-2">Fixes</h3>
 <ul>
 <li><code>to_python</code> export now preserves a <code>Value</code> node’s number. The editable value lives on the node’s <em>output</em> socket, which the generic constructor path never examined, so non-default values were silently dropped from the generated code.</li>
 </ul>
@@ -501,8 +514,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Interactive graphs in docs / notebooks</strong> — a <code>TreeBuilder</code> now displays as an interactive, Blender-styled, pan-and-zoomable node graph in Jupyter and Quarto (via <code>_repr_html_</code>, backed by the new <code>nodebpy.web_render</code> module using <code>tree_clipper</code> and the <code>geonodes-web-render</code> web component). Falls back to the existing Mermaid diagram when rendering isn’t available.</li>
 </ul>
 </section>
-<section id="fixes-2" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-2">Fixes</h3>
+<section id="fixes-3" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-3">Fixes</h3>
 <ul>
 <li><code>to_python</code> export: a single link into a multi-input socket is now emitted as a one-element tuple, since the manual classes (<code>JoinGeometry</code>, <code>MeshBoolean</code>, …) expect an iterable — previously such trees didn’t round-trip. Unary float/integer math socket methods also emit Blender’s zero-padded socket identifiers (<code>Value_001</code>).</li>
 <li>Regenerated the bundled asset APIs with upstream label fixes — e.g.&nbsp;<code>cip_start</code> → <code>clip_start</code>, <code>animated_</code> → <code>animated</code>, and the “Super 8 mm” film-grain preset spelling.</li>
@@ -546,8 +559,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Additional socket methods on <code>FloatSocket</code> and <code>IntegerSocket</code>.</li>
 </ul>
 </section>
-<section id="fixes-3" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-3">Fixes</h3>
+<section id="fixes-4" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-4">Fixes</h3>
 <ul>
 <li>Changed <code>nodebpy</code> absolute imports to relative inside the package, and potentially relative / dynamic import for asset generation. Absolute imports would fail when the package is vendored. Does change the behaviour of the node class generation for the imports.</li>
 <li><code>FloatGridSocket.to_mesh()</code> method didn’t link any of the input arguments, this now properly links and is tested against</li>
@@ -573,8 +586,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ul>
 </section>
-<section id="fixes-4" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-4">Fixes</h3>
+<section id="fixes-5" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-5">Fixes</h3>
 <ul>
 <li>Fixed a bug where <code>AxesToRotation</code> silently did not set the <code>primary</code> and <code>secondary</code> when instantiating a new node</li>
 </ul>
@@ -590,8 +603,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The code generator now infers generic typing more completely — generic <em>input</em> sockets that track a node’s data type, and nodes whose output type is fixed while the inputs vary — tightening the type hints on <code>HashValue</code>, <code>ListLength</code>, <code>ValueToString</code>, <code>FilterList</code>, <code>StoreBundleItem</code>, <code>SetSelection</code>, and <code>StoreNamedGrid</code>.</li>
 </ul>
 </section>
-<section id="fixes-5" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-5">Fixes</h3>
+<section id="fixes-6" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-6">Fixes</h3>
 <ul>
 <li><code>CombineBundle</code> / <code>SeparateBundle</code> item construction is now part of the generated output, fixing a latent issue where their custom constructors were silently overwritten whenever the node classes were regenerated.</li>
 </ul>
@@ -628,8 +641,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>density <span class="op">=</span> grid.capture_float(g.NoiseTexture().o.fac)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>flow <span class="op">=</span> density.dilate_erode(<span class="dv">1</span>).laplacian().gradient().divergence()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="fixes-6" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-6">Fixes</h3>
+<section id="fixes-7" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-7">Fixes</h3>
 <ul>
 <li>Grid <code>mean()</code> and <code>median()</code> now pass the correct <code>data_type</code> (Blender’s <code>VALUE</code> float type is mapped to <code>FLOAT</code>), fixing a crash when calling them on float grids</li>
 <li><code>INT_VECTOR</code> sockets (e.g.&nbsp;compositor Image Info “Dimensions”) are now link-compatible with regular <code>VECTOR</code> sockets, matching Blender’s implicit conversion.</li>
@@ -646,8 +659,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="v520.0.1---2026-06-05" class="level2">
 <h2 class="anchored" data-anchor-id="v520.0.1---2026-06-05">v520.0.1 - 2026-06-05</h2>
-<section id="fixes-7" class="level3">
-<h3 class="anchored" data-anchor-id="fixes-7">Fixes</h3>
+<section id="fixes-8" class="level3">
+<h3 class="anchored" data-anchor-id="fixes-8">Fixes</h3>
 <ul>
 <li>Import and usage of the <code>arrange()</code> function properly handles the optional <code>netowrkx</code> dependency</li>
 </ul>

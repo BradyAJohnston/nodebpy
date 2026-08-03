@@ -1,5 +1,11 @@
 # Changelog
 
+## v520.11.0 - 2026-08-03
+
+### Fixes
+
+- Breaking change that fixes the geneartion of class names like `BrighnessContrast` which previously were being generated as `Brightnesscontrast` without capitalization.
+
 ## v520.10.0 - 2026-08-03
 
 ### Fixes

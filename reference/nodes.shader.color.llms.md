@@ -6,15 +6,15 @@
 
 | Name | Description |
 |----|----|
-| [Brightnesscontrast](#nodebpy.nodes.shader.color.Brightnesscontrast) | Control the brightness and contrast of the input color |
-| [Huesaturationvalue](#nodebpy.nodes.shader.color.Huesaturationvalue) | Apply a color transformation in the HSV color model |
+| [BrightnessContrast](#nodebpy.nodes.shader.color.BrightnessContrast) | Control the brightness and contrast of the input color |
+| [HueSaturationValue](#nodebpy.nodes.shader.color.HueSaturationValue) | Apply a color transformation in the HSV color model |
 | [InvertColor](#nodebpy.nodes.shader.color.InvertColor) | Invert a color, producing a negative |
 | [LightFalloff](#nodebpy.nodes.shader.color.LightFalloff) | Manipulate how light intensity decreases over distance. Typically used for non-physically-based effects; in reality light always falls off quadratically |
 
-### Brightnesscontrast
+### BrightnessContrast
 
 ``` python
-Brightnesscontrast(color=None, bright=0.0, contrast=0.0)
+BrightnessContrast(color=None, bright=0.0, contrast=0.0)
 ```
 
 Control the brightness and contrast of the input color
@@ -31,12 +31,12 @@ Control the brightness and contrast of the input color
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.shader.color.Brightnesscontrast.i) |  |
-| [`name`](#nodebpy.nodes.shader.color.Brightnesscontrast.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.shader.color.Brightnesscontrast.node) |  |
-| [`o`](#nodebpy.nodes.shader.color.Brightnesscontrast.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.color.Brightnesscontrast.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.color.Brightnesscontrast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`i`](#nodebpy.nodes.shader.color.BrightnessContrast.i) |  |
+| [`name`](#nodebpy.nodes.shader.color.BrightnessContrast.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.color.BrightnessContrast.node) |  |
+| [`o`](#nodebpy.nodes.shader.color.BrightnessContrast.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.color.BrightnessContrast.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.color.BrightnessContrast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -52,10 +52,10 @@ Control the brightness and contrast of the input color
 |-----------|---------------|-------------|
 | `o.color` | `ColorSocket` | Color       |
 
-### Huesaturationvalue
+### HueSaturationValue
 
 ``` python
-Huesaturationvalue(hue=0.5, saturation=1.0, value=1.0, fac=1.0, color=None)
+HueSaturationValue(hue=0.5, saturation=1.0, value=1.0, fac=1.0, color=None)
 ```
 
 Apply a color transformation in the HSV color model
@@ -74,12 +74,12 @@ Apply a color transformation in the HSV color model
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.shader.color.Huesaturationvalue.i) |  |
-| [`name`](#nodebpy.nodes.shader.color.Huesaturationvalue.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.shader.color.Huesaturationvalue.node) |  |
-| [`o`](#nodebpy.nodes.shader.color.Huesaturationvalue.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.color.Huesaturationvalue.outputs) |  |
-| [`tree`](#nodebpy.nodes.shader.color.Huesaturationvalue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`i`](#nodebpy.nodes.shader.color.HueSaturationValue.i) |  |
+| [`name`](#nodebpy.nodes.shader.color.HueSaturationValue.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.shader.color.HueSaturationValue.node) |  |
+| [`o`](#nodebpy.nodes.shader.color.HueSaturationValue.o) |  |
+| [`outputs`](#nodebpy.nodes.shader.color.HueSaturationValue.outputs) |  |
+| [`tree`](#nodebpy.nodes.shader.color.HueSaturationValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

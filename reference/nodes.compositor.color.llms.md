@@ -7,13 +7,13 @@
 | Name | Description |
 |----|----|
 | [AlphaOver](#nodebpy.nodes.compositor.color.AlphaOver) | Overlay a foreground image onto a background image |
-| [Brightnesscontrast](#nodebpy.nodes.compositor.color.Brightnesscontrast) | Adjust brightness and contrast |
+| [BrightnessContrast](#nodebpy.nodes.compositor.color.BrightnessContrast) | Adjust brightness and contrast |
 | [ColorBalance](#nodebpy.nodes.compositor.color.ColorBalance) | Adjust color and values |
 | [ColorCorrection](#nodebpy.nodes.compositor.color.ColorCorrection) | Adjust the color of an image, separately in several tonal ranges (highlights, midtones and shadows) |
 | [DepthCombine](#nodebpy.nodes.compositor.color.DepthCombine) | Combine two images using depth maps |
 | [Exposure](#nodebpy.nodes.compositor.color.Exposure) | Adjust brightness using a camera exposure parameter |
 | [HueCorrect](#nodebpy.nodes.compositor.color.HueCorrect) | Adjust hue, saturation, and value with a curve |
-| [Huesaturationvalue](#nodebpy.nodes.compositor.color.Huesaturationvalue) | Apply a color transformation in the HSV color model |
+| [HueSaturationValue](#nodebpy.nodes.compositor.color.HueSaturationValue) | Apply a color transformation in the HSV color model |
 | [InvertColor](#nodebpy.nodes.compositor.color.InvertColor) | Invert colors, producing a negative |
 | [Posterize](#nodebpy.nodes.compositor.color.Posterize) | Reduce number of colors in an image, converting smooth gradients into sharp transitions |
 | [RGBCurves](#nodebpy.nodes.compositor.color.RGBCurves) | Perform level adjustments on each color channel of an image |
@@ -102,10 +102,10 @@ Create Alpha Over node with type ‘Over’.
 |-----------|---------------|-------------|
 | `o.image` | `ColorSocket` | Image       |
 
-### Brightnesscontrast
+### BrightnessContrast
 
 ``` python
-Brightnesscontrast(image=None, bright=0.0, contrast=0.0)
+BrightnessContrast(image=None, bright=0.0, contrast=0.0)
 ```
 
 Adjust brightness and contrast
@@ -122,12 +122,12 @@ Adjust brightness and contrast
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.compositor.color.Brightnesscontrast.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.Brightnesscontrast.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.compositor.color.Brightnesscontrast.node) |  |
-| [`o`](#nodebpy.nodes.compositor.color.Brightnesscontrast.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.Brightnesscontrast.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.Brightnesscontrast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`i`](#nodebpy.nodes.compositor.color.BrightnessContrast.i) |  |
+| [`name`](#nodebpy.nodes.compositor.color.BrightnessContrast.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.color.BrightnessContrast.node) |  |
+| [`o`](#nodebpy.nodes.compositor.color.BrightnessContrast.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.color.BrightnessContrast.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.BrightnessContrast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 
@@ -548,10 +548,10 @@ Adjust hue, saturation, and value with a curve
 |-----------|---------------|-------------|
 | `o.image` | `ColorSocket` | Image       |
 
-### Huesaturationvalue
+### HueSaturationValue
 
 ``` python
-Huesaturationvalue(image=None, hue=0.5, saturation=1.0, value=1.0, fac=1.0)
+HueSaturationValue(image=None, hue=0.5, saturation=1.0, value=1.0, fac=1.0)
 ```
 
 Apply a color transformation in the HSV color model
@@ -570,12 +570,12 @@ Apply a color transformation in the HSV color model
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.compositor.color.Huesaturationvalue.i) |  |
-| [`name`](#nodebpy.nodes.compositor.color.Huesaturationvalue.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.compositor.color.Huesaturationvalue.node) |  |
-| [`o`](#nodebpy.nodes.compositor.color.Huesaturationvalue.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.Huesaturationvalue.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.color.Huesaturationvalue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`i`](#nodebpy.nodes.compositor.color.HueSaturationValue.i) |  |
+| [`name`](#nodebpy.nodes.compositor.color.HueSaturationValue.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.color.HueSaturationValue.node) |  |
+| [`o`](#nodebpy.nodes.compositor.color.HueSaturationValue.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.color.HueSaturationValue.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.color.HueSaturationValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
 

@@ -14,7 +14,7 @@
 | [Defocus](#nodebpy.nodes.compositor.filter.Defocus) | Apply depth of field in 2D, using a Z depth map or mask |
 | [Denoise](#nodebpy.nodes.compositor.filter.Denoise) | Denoise renders from Cycles and other ray tracing renderers |
 | [Despeckle](#nodebpy.nodes.compositor.filter.Despeckle) | Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched |
-| [Dilateerode](#nodebpy.nodes.compositor.filter.Dilateerode) | Expand and shrink masks |
+| [DilateErode](#nodebpy.nodes.compositor.filter.DilateErode) | Expand and shrink masks |
 | [DirectionalBlur](#nodebpy.nodes.compositor.filter.DirectionalBlur) | Blur an image along a direction |
 | [Filter](#nodebpy.nodes.compositor.filter.Filter) | Apply common image enhancement filters |
 | [Glare](#nodebpy.nodes.compositor.filter.Glare) | Add lens flares, fog and glows around bright parts of the image |
@@ -491,10 +491,10 @@ Smooth areas of an image in which noise is noticeable, while leaving complex are
 |-----------|---------------|-------------|
 | `o.image` | `ColorSocket` | Image       |
 
-### Dilateerode
+### DilateErode
 
 ``` python
-Dilateerode(mask=0.0, size=0, type='Steps', falloff_size=0.0, falloff='Smooth')
+DilateErode(mask=0.0, size=0, type='Steps', falloff_size=0.0, falloff='Smooth')
 ```
 
 Expand and shrink masks
@@ -513,21 +513,21 @@ Expand and shrink masks
 
 | Name | Description |
 |----|----|
-| [`i`](#nodebpy.nodes.compositor.filter.Dilateerode.i) |  |
-| [`name`](#nodebpy.nodes.compositor.filter.Dilateerode.name) | The name of the node being wrapped by this instance. |
-| [`node`](#nodebpy.nodes.compositor.filter.Dilateerode.node) |  |
-| [`o`](#nodebpy.nodes.compositor.filter.Dilateerode.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Dilateerode.outputs) |  |
-| [`tree`](#nodebpy.nodes.compositor.filter.Dilateerode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`i`](#nodebpy.nodes.compositor.filter.DilateErode.i) |  |
+| [`name`](#nodebpy.nodes.compositor.filter.DilateErode.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.compositor.filter.DilateErode.node) |  |
+| [`o`](#nodebpy.nodes.compositor.filter.DilateErode.o) |  |
+| [`outputs`](#nodebpy.nodes.compositor.filter.DilateErode.outputs) |  |
+| [`tree`](#nodebpy.nodes.compositor.filter.DilateErode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
 | Name | Description |
 |----|----|
-| [distance](#nodebpy.nodes.compositor.filter.Dilateerode.distance) | Create Dilate/Erode node with type ‘Distance’. |
-| [feather](#nodebpy.nodes.compositor.filter.Dilateerode.feather) | Create Dilate/Erode node with type ‘Feather’. |
-| [steps](#nodebpy.nodes.compositor.filter.Dilateerode.steps) | Create Dilate/Erode node with type ‘Steps’. |
-| [threshold](#nodebpy.nodes.compositor.filter.Dilateerode.threshold) | Create Dilate/Erode node with type ‘Threshold’. |
+| [distance](#nodebpy.nodes.compositor.filter.DilateErode.distance) | Create Dilate/Erode node with type ‘Distance’. |
+| [feather](#nodebpy.nodes.compositor.filter.DilateErode.feather) | Create Dilate/Erode node with type ‘Feather’. |
+| [steps](#nodebpy.nodes.compositor.filter.DilateErode.steps) | Create Dilate/Erode node with type ‘Steps’. |
+| [threshold](#nodebpy.nodes.compositor.filter.DilateErode.threshold) | Create Dilate/Erode node with type ‘Threshold’. |
 
 ##### distance
 
