@@ -27,7 +27,7 @@ def test_initial_compositor(snapshot):
             outline_comp = (
                 (depth_line + normal_line)
                 >> c.AntiAliasing()
-                >> c.Dilateerode.distance(size=outline_size - 1.0)
+                >> c.DilateErode.distance(size=outline_size - 1.0)
                 >> c.AntiAliasing()
             )
 

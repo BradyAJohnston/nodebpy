@@ -17,7 +17,7 @@ from ...builder.socket import (
 )
 
 
-class Brightnesscontrast(BaseNode):
+class BrightnessContrast(BaseNode):
     """
     Control the brightness and contrast of the input color
 
@@ -79,7 +79,7 @@ class Brightnesscontrast(BaseNode):
         self._establish_links(**key_args)
 
 
-class Huesaturationvalue(BaseNode):
+class HueSaturationValue(BaseNode):
     """
     Apply a color transformation in the HSV color model
 
