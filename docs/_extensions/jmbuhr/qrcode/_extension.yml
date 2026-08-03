@@ -1,0 +1,6 @@
+title: Qrcode
+author: Jannik Buhr
+version: 0.0.1
+contributes:
+  shortcodes:
+    - qrcode.lua
