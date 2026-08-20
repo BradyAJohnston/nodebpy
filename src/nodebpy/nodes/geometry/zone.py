@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, Union, cast
+from typing import TYPE_CHECKING, TypeVar, Union, cast
 
 import bpy
 from bpy.types import (
@@ -17,12 +17,23 @@ if TYPE_CHECKING:
 from ...builder import BaseNode as BaseNode
 from ...builder import (
     BooleanSocket,
+    BundleSocket,
     ClosureSocket,
+    CollectionSocket,
+    ColorSocket,
     FloatSocket,
     GeometrySocket,
+    ImageSocket,
     IntegerSocket,
     Item,
     ItemsMixin,
+    MaterialSocket,
+    MatrixSocket,
+    MenuSocket,
+    ObjectSocket,
+    RotationSocket,
+    StringSocket,
+    VectorSocket,
 )
 from ...builder import Socket as SocketLinker
 from ...builder._registry import _wrap_socket
@@ -32,12 +43,28 @@ from ...builder.items import _infer_value_type
 from ...types import (
     InputAny,
     InputBoolean,
+    InputBundle,
+    InputClosure,
+    InputCollection,
+    InputColor,
+    InputFloat,
     InputGeometry,
+    InputImage,
     InputInteger,
     InputLinkable,
+    InputMaterial,
+    InputMatrix,
+    InputMenu,
+    InputObject,
+    InputRotation,
+    InputString,
+    InputVector,
     _AttributeDomains,
     _is_default_value,
+    _SocketShapeStructureType,
 )
+
+_SocketT = TypeVar("_SocketT", bound=SocketLinker, default=SocketLinker)
 
 
 def _socket_for_item(
@@ -55,11 +82,6 @@ class BaseZone(ItemsMixin, BaseNode, ABC):
     # zone sockets can share names across fixed sockets and item collections,
     # so item sockets are found by identifier prefix instead of by name
     _item_identifier_prefix = "Item_"
-
-    @property
-    def items(self):
-        """The bpy item collection driving this zone's sockets."""
-        return self._items
 
     def _item_socket(self, item, *, output: bool = False) -> bpy.types.NodeSocket:
         return _socket_for_item(
@@ -93,30 +115,38 @@ class BaseZoneOutput(BaseZone, ABC):
     node: bpy.types.GeometryNodeSimulationOutput | bpy.types.GeometryNodeRepeatOutput
 
 
-class ZoneItem(Item):
-    """Handle for a simulation/repeat state item (four sockets per item)."""
+class ZoneItem(Item[_SocketT]):
+    """Handle for a simulation/repeat state item (four sockets per item).
+
+    The type parameter is the socket class every role returns; the typed
+    factories on ``zone.items`` (:class:`_StateZoneItems`) produce
+    parameterised handles such as ``ZoneItem[GeometrySocket]``.
+    """
 
     def __init__(self, input_node: BaseZoneInput, output_node: BaseZoneOutput, item):
         super().__init__(output_node, item)
         self._input_node = input_node
 
     @property
-    def initial(self) -> SocketLinker:
+    def initial(self) -> _SocketT:
         """Input-node input socket — set the item's starting value."""
-        return _wrap_socket(self._input_node._item_socket(self._item))
+        return cast("_SocketT", _wrap_socket(self._input_node._item_socket(self._item)))
 
     @property
-    def current(self) -> SocketLinker:
+    def current(self) -> _SocketT:
         """Input-node output socket — read the item inside the zone body."""
-        return _wrap_socket(self._input_node._item_socket(self._item, output=True))
+        return cast(
+            "_SocketT",
+            _wrap_socket(self._input_node._item_socket(self._item, output=True)),
+        )
 
     @property
-    def next(self) -> SocketLinker:
+    def next(self) -> _SocketT:
         """Output-node input socket — write the item's per-iteration result."""
         return self.input
 
     @property
-    def result(self) -> SocketLinker:
+    def result(self) -> _SocketT:
         """Output-node output socket — read the item after the zone."""
         return self.output
 
@@ -130,6 +160,11 @@ class _ZonePair:
 
     input: BaseNode
     output: BaseNode
+
+    def _pair(self) -> None:
+        """Pair the two nodes. Must run before any linking — sockets on an
+        unpaired zone node are inactive."""
+        self.input.node.pair_with_output(self.output.node)  # ty: ignore[unresolved-attribute]
 
     def __getitem__(self, index: int):
         match index:
@@ -149,6 +184,11 @@ class _StateZone(_ZonePair):
 
     input: BaseZoneInput
     output: BaseZoneOutput
+
+    def _init_items(self, items: dict[str, InputAny] | None) -> None:
+        self.output._items.clear()
+        for name, value in (items or {}).items():
+            self.item(name, value)
 
     def item(
         self,
@@ -187,6 +227,120 @@ class _StateZone(_ZonePair):
             if initial is not None:
                 handle.initial.socket.default_value = initial  # ty: ignore[unresolved-attribute]
         return handle
+
+
+class _StateZoneItems:
+    """Typed per-datatype item factories for simulation/repeat zones.
+
+    Each method declares one state item and returns its
+    :class:`ZoneItem` handle parameterised with the matching socket
+    class, so ``initial``/``current``/``next``/``result`` are statically
+    typed. ``initial`` may be a linkable (linked as the starting value)
+    or a plain default value; omit it to declare the item unlinked.
+    """
+
+    def __init__(self, zone: _StateZone):
+        self._zone = zone
+
+    def _declare(self, name: str, initial: InputAny, type: str) -> ZoneItem:
+        if isinstance(initial, bpy.types.ID):
+            # datablocks (Object, Image, …) are socket defaults, not linkables
+            handle = self._zone.item(name, type=type)
+            handle.initial.socket.default_value = initial  # ty: ignore[unresolved-attribute]
+            return handle
+        return self._zone.item(name, initial, type=type)
+
+    def float(
+        self, name: str = "Value", initial: InputFloat = None
+    ) -> "ZoneItem[FloatSocket]":
+        return cast("ZoneItem[FloatSocket]", self._declare(name, initial, "FLOAT"))
+
+    def integer(
+        self, name: str = "Integer", initial: InputInteger = None
+    ) -> "ZoneItem[IntegerSocket]":
+        return cast("ZoneItem[IntegerSocket]", self._declare(name, initial, "INT"))
+
+    def boolean(
+        self, name: str = "Boolean", initial: InputBoolean = None
+    ) -> "ZoneItem[BooleanSocket]":
+        return cast("ZoneItem[BooleanSocket]", self._declare(name, initial, "BOOLEAN"))
+
+    def vector(
+        self, name: str = "Vector", initial: InputVector = None
+    ) -> "ZoneItem[VectorSocket]":
+        return cast("ZoneItem[VectorSocket]", self._declare(name, initial, "VECTOR"))
+
+    def color(
+        self, name: str = "Color", initial: InputColor = None
+    ) -> "ZoneItem[ColorSocket]":
+        return cast("ZoneItem[ColorSocket]", self._declare(name, initial, "RGBA"))
+
+    def rotation(
+        self, name: str = "Rotation", initial: InputRotation = None
+    ) -> "ZoneItem[RotationSocket]":
+        return cast(
+            "ZoneItem[RotationSocket]", self._declare(name, initial, "ROTATION")
+        )
+
+    def matrix(
+        self, name: str = "Matrix", initial: InputMatrix = None
+    ) -> "ZoneItem[MatrixSocket]":
+        return cast("ZoneItem[MatrixSocket]", self._declare(name, initial, "MATRIX"))
+
+    def string(
+        self, name: str = "String", initial: InputString = None
+    ) -> "ZoneItem[StringSocket]":
+        return cast("ZoneItem[StringSocket]", self._declare(name, initial, "STRING"))
+
+    def geometry(
+        self, name: str = "Geometry", initial: InputGeometry = None
+    ) -> "ZoneItem[GeometrySocket]":
+        return cast(
+            "ZoneItem[GeometrySocket]", self._declare(name, initial, "GEOMETRY")
+        )
+
+    def bundle(
+        self, name: str = "Bundle", initial: InputBundle = None
+    ) -> "ZoneItem[BundleSocket]":
+        return cast("ZoneItem[BundleSocket]", self._declare(name, initial, "BUNDLE"))
+
+
+class _SimulationZoneItems(_StateZoneItems):
+    """Typed item factories for the simulation zone's state items."""
+
+
+class _RepeatZoneItems(_StateZoneItems):
+    """Typed item factories for the repeat zone's state items, including
+    the datablock and closure types only the repeat zone supports."""
+
+    def object(
+        self, name: str = "Object", initial: InputObject = None
+    ) -> "ZoneItem[ObjectSocket]":
+        return cast("ZoneItem[ObjectSocket]", self._declare(name, initial, "OBJECT"))
+
+    def image(
+        self, name: str = "Image", initial: InputImage = None
+    ) -> "ZoneItem[ImageSocket]":
+        return cast("ZoneItem[ImageSocket]", self._declare(name, initial, "IMAGE"))
+
+    def collection(
+        self, name: str = "Collection", initial: InputCollection = None
+    ) -> "ZoneItem[CollectionSocket]":
+        return cast(
+            "ZoneItem[CollectionSocket]", self._declare(name, initial, "COLLECTION")
+        )
+
+    def material(
+        self, name: str = "Material", initial: InputMaterial = None
+    ) -> "ZoneItem[MaterialSocket]":
+        return cast(
+            "ZoneItem[MaterialSocket]", self._declare(name, initial, "MATERIAL")
+        )
+
+    def closure(
+        self, name: str = "Closure", initial: InputClosure = None
+    ) -> "ZoneItem[ClosureSocket]":
+        return cast("ZoneItem[ClosureSocket]", self._declare(name, initial, "CLOSURE"))
 
 
 class BaseSimulationZone(BaseZone):
@@ -245,11 +399,13 @@ class SimulationZone(_StateZone):
     def __init__(self, items: dict[str, InputAny] | None = None):
         self.input = SimulationInput()
         self.output = SimulationOutput()
-        self.input.node.pair_with_output(self.output.node)
+        self._pair()
+        self._init_items(items)
 
-        self.output.node.state_items.clear()
-        for name, value in (items or {}).items():
-            self.item(name, value)
+    @property
+    def items(self) -> _SimulationZoneItems:
+        """Typed item factories — declare state items with static types."""
+        return _SimulationZoneItems(self)
 
     @property
     def delta_time(self) -> FloatSocket:
@@ -286,7 +442,7 @@ class RepeatInput(BaseRepeatZone, BaseZoneInput):
     node: bpy.types.GeometryNodeRepeatInput
 
     class _Outputs(SocketAccessor):
-        iteration: SocketLinker
+        iteration: IntegerSocket
         """The current iteration index."""
 
     if TYPE_CHECKING:
@@ -318,18 +474,211 @@ class RepeatZone(_StateZone):
     ):
         self.input = RepeatInput()
         self.output = RepeatOutput()
-        self.input.node.pair_with_output(self.output.node)
-        # linked after pairing — sockets on an unpaired zone node are inactive
+        self._pair()
         self.input._establish_links(Iterations=iterations)
-
-        self.output.node.repeat_items.clear()
-        for name, value in (items or {}).items():
-            self.item(name, value)
+        self._init_items(items)
 
     @property
-    def iteration(self) -> SocketLinker:
+    def items(self) -> _RepeatZoneItems:
+        """Typed item factories — declare state items with static types."""
+        return _RepeatZoneItems(self)
+
+    @property
+    def iteration(self) -> IntegerSocket:
         """The current iteration index."""
         return self.input.o.iteration
+
+
+class _ForEachInputItems:
+    """Typed factories for the for-each zone's input items — per-element
+    fields made available inside the zone body. Each returns an
+    :class:`Item` handle: ``input`` feeds the field, ``output`` reads the
+    per-element value in the body."""
+
+    def __init__(self, zone: "ForEachGeometryElementZone"):
+        self._zone = zone
+
+    def _declare(self, name: str, value: InputAny, type: str) -> Item:
+        return self._zone.input.add_item(name, value, type=type)
+
+    def float(
+        self, name: str = "Value", value: InputFloat = None
+    ) -> "Item[FloatSocket]":
+        return cast("Item[FloatSocket]", self._declare(name, value, "FLOAT"))
+
+    def integer(
+        self, name: str = "Integer", value: InputInteger = None
+    ) -> "Item[IntegerSocket]":
+        return cast("Item[IntegerSocket]", self._declare(name, value, "INT"))
+
+    def boolean(
+        self, name: str = "Boolean", value: InputBoolean = None
+    ) -> "Item[BooleanSocket]":
+        return cast("Item[BooleanSocket]", self._declare(name, value, "BOOLEAN"))
+
+    def vector(
+        self, name: str = "Vector", value: InputVector = None
+    ) -> "Item[VectorSocket]":
+        return cast("Item[VectorSocket]", self._declare(name, value, "VECTOR"))
+
+    def color(
+        self, name: str = "Color", value: InputColor = None
+    ) -> "Item[ColorSocket]":
+        return cast("Item[ColorSocket]", self._declare(name, value, "RGBA"))
+
+    def rotation(
+        self, name: str = "Rotation", value: InputRotation = None
+    ) -> "Item[RotationSocket]":
+        return cast("Item[RotationSocket]", self._declare(name, value, "ROTATION"))
+
+    def matrix(
+        self, name: str = "Matrix", value: InputMatrix = None
+    ) -> "Item[MatrixSocket]":
+        return cast("Item[MatrixSocket]", self._declare(name, value, "MATRIX"))
+
+    def menu(self, name: str = "Menu", value: InputMenu = None) -> "Item[MenuSocket]":
+        return cast("Item[MenuSocket]", self._declare(name, value, "MENU"))
+
+
+class _ForEachMainItems:
+    """Typed factories for the for-each zone's main items — per-element
+    results written back onto the input geometry. ``input`` is the
+    ``>>`` target inside the body, ``output`` the combined result."""
+
+    def __init__(self, zone: "ForEachGeometryElementZone"):
+        self._zone = zone
+
+    def _declare(self, name: str, value: InputAny, type: str) -> Item:
+        return self._zone.output.add_item(name, value, type=type)
+
+    def float(
+        self, name: str = "Value", value: InputFloat = None
+    ) -> "Item[FloatSocket]":
+        return cast("Item[FloatSocket]", self._declare(name, value, "FLOAT"))
+
+    def integer(
+        self, name: str = "Integer", value: InputInteger = None
+    ) -> "Item[IntegerSocket]":
+        return cast("Item[IntegerSocket]", self._declare(name, value, "INT"))
+
+    def boolean(
+        self, name: str = "Boolean", value: InputBoolean = None
+    ) -> "Item[BooleanSocket]":
+        return cast("Item[BooleanSocket]", self._declare(name, value, "BOOLEAN"))
+
+    def vector(
+        self, name: str = "Vector", value: InputVector = None
+    ) -> "Item[VectorSocket]":
+        return cast("Item[VectorSocket]", self._declare(name, value, "VECTOR"))
+
+    def color(
+        self, name: str = "Color", value: InputColor = None
+    ) -> "Item[ColorSocket]":
+        return cast("Item[ColorSocket]", self._declare(name, value, "RGBA"))
+
+    def rotation(
+        self, name: str = "Rotation", value: InputRotation = None
+    ) -> "Item[RotationSocket]":
+        return cast("Item[RotationSocket]", self._declare(name, value, "ROTATION"))
+
+    def matrix(
+        self, name: str = "Matrix", value: InputMatrix = None
+    ) -> "Item[MatrixSocket]":
+        return cast("Item[MatrixSocket]", self._declare(name, value, "MATRIX"))
+
+
+class _ForEachGeneratedItems:
+    """Typed factories for the for-each zone's generation items — values
+    stored on the generated geometry, evaluated on ``domain``. ``input``
+    is the ``>>`` target inside the body, ``output`` the stored result."""
+
+    def __init__(self, zone: "ForEachGeometryElementZone"):
+        self._zone = zone
+
+    def _declare(
+        self, name: str, value: InputAny, type: str, domain: _AttributeDomains
+    ) -> Item:
+        return self._zone.output.add_generated_item(
+            name, value, type=type, domain=domain
+        )
+
+    def float(
+        self,
+        name: str = "Value",
+        value: InputFloat = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ) -> "Item[FloatSocket]":
+        return cast("Item[FloatSocket]", self._declare(name, value, "FLOAT", domain))
+
+    def integer(
+        self,
+        name: str = "Integer",
+        value: InputInteger = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ) -> "Item[IntegerSocket]":
+        return cast("Item[IntegerSocket]", self._declare(name, value, "INT", domain))
+
+    def boolean(
+        self,
+        name: str = "Boolean",
+        value: InputBoolean = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ) -> "Item[BooleanSocket]":
+        return cast(
+            "Item[BooleanSocket]", self._declare(name, value, "BOOLEAN", domain)
+        )
+
+    def vector(
+        self,
+        name: str = "Vector",
+        value: InputVector = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ) -> "Item[VectorSocket]":
+        return cast("Item[VectorSocket]", self._declare(name, value, "VECTOR", domain))
+
+    def color(
+        self,
+        name: str = "Color",
+        value: InputColor = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ) -> "Item[ColorSocket]":
+        return cast("Item[ColorSocket]", self._declare(name, value, "RGBA", domain))
+
+    def rotation(
+        self,
+        name: str = "Rotation",
+        value: InputRotation = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ) -> "Item[RotationSocket]":
+        return cast(
+            "Item[RotationSocket]", self._declare(name, value, "ROTATION", domain)
+        )
+
+    def matrix(
+        self,
+        name: str = "Matrix",
+        value: InputMatrix = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ) -> "Item[MatrixSocket]":
+        return cast("Item[MatrixSocket]", self._declare(name, value, "MATRIX", domain))
+
+    def geometry(
+        self,
+        name: str = "Geometry",
+        value: InputGeometry = None,
+        *,
+        domain: _AttributeDomains = "POINT",
+    ) -> "Item[GeometrySocket]":
+        return cast(
+            "Item[GeometrySocket]", self._declare(name, value, "GEOMETRY", domain)
+        )
 
 
 class ForEachGeometryElementZone(_ZonePair):
@@ -345,18 +694,41 @@ class ForEachGeometryElementZone(_ZonePair):
     ):
         self.input = ForEachGeometryElementInput()
         self.output = ForEachGeometryElementOutput()
-        self.input.node.pair_with_output(self.output.node)
+        self._pair()
         self.output.domain = domain
         self.input._establish_links(Geometry=geometry, Selection=selection)
 
     @property
-    def index(self) -> SocketLinker:
+    def inputs(self) -> _ForEachInputItems:
+        """Typed factories for per-element input items."""
+        return _ForEachInputItems(self)
+
+    @property
+    def main(self) -> _ForEachMainItems:
+        """Typed factories for main (per-element result) items."""
+        return _ForEachMainItems(self)
+
+    @property
+    def generated(self) -> _ForEachGeneratedItems:
+        """Typed factories for generation items."""
+        return _ForEachGeneratedItems(self)
+
+    @property
+    def index(self) -> IntegerSocket:
         return self.input.o.index
 
     @property
-    def generation(self) -> Item:
+    def element(self) -> GeometrySocket:
+        """The current element as geometry, read inside the zone body."""
+        return self.input.o.element
+
+    @property
+    def generation(self) -> "Item[GeometrySocket]":
         """Handle for the default generation item (the generated geometry)."""
-        return _GenerationItem(self.output, self.output.items_generated[0])
+        return cast(
+            "Item[GeometrySocket]",
+            _GenerationItem(self.output, self.output.items_generated[0]),
+        )
 
     def item(
         self, name: str, value: InputLinkable = None, *, type: str | None = None
@@ -488,7 +860,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     def add_generated_item(
         self,
         name: str,
-        value: InputLinkable = None,
+        value: InputAny = None,
         *,
         type: str | None = None,
         domain: _AttributeDomains = "POINT",
@@ -501,7 +873,9 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         source = None
         if value is not None and not _is_default_value(value):
             source, inferred, _ = self._resolve_capture(
-                value, name=name, types=self._generation_data_types
+                cast("InputLinkable", value),
+                name=name,
+                types=self._generation_data_types,
             )
             type = type or inferred
         elif type is None:
@@ -546,7 +920,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         self.node.domain = value
 
 
-class _GenerationItem(Item):
+class _GenerationItem(Item[_SocketT]):
     """Handle for a ForEach generation item; its sockets carry the
     ``Generation_`` identifier prefix rather than the owner's default."""
 
@@ -557,27 +931,205 @@ class _GenerationItem(Item):
         return self._owner.items_generated
 
     @property
-    def input(self) -> SocketLinker:
-        return _wrap_socket(
-            _socket_for_item(
-                self._owner.node,
-                self._owner.items_generated,
-                "Generation_",
-                self._item,
-            )
+    def input(self) -> _SocketT:
+        return cast(
+            "_SocketT",
+            _wrap_socket(
+                _socket_for_item(
+                    self._owner.node,
+                    self._owner.items_generated,
+                    "Generation_",
+                    self._item,
+                )
+            ),
         )
 
     @property
-    def output(self) -> SocketLinker:
-        return _wrap_socket(
-            _socket_for_item(
-                self._owner.node,
-                self._owner.items_generated,
-                "Generation_",
-                self._item,
-                output=True,
-            )
+    def output(self) -> _SocketT:
+        return cast(
+            "_SocketT",
+            _wrap_socket(
+                _socket_for_item(
+                    self._owner.node,
+                    self._owner.items_generated,
+                    "Generation_",
+                    self._item,
+                    output=True,
+                )
+            ),
         )
+
+
+class _ClosureZoneItems:
+    """Typed per-datatype item factories for the closure zone.
+
+    Both item collections live on the output node; each factory declares
+    one item and returns the single socket that matters for its side —
+    subclasses resolve which node socket that is. Sockets are found by
+    identifier prefix and collection position, never by list position.
+    """
+
+    def __init__(self, zone: "ClosureZone"):
+        self._zone = zone
+
+    def _declare(
+        self, name: str, type: str, structure_type: _SocketShapeStructureType
+    ) -> SocketLinker:
+        raise NotImplementedError
+
+    def float(
+        self,
+        name: str = "Value",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> FloatSocket:
+        return cast("FloatSocket", self._declare(name, "FLOAT", structure_type))
+
+    def integer(
+        self,
+        name: str = "Integer",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> IntegerSocket:
+        return cast("IntegerSocket", self._declare(name, "INT", structure_type))
+
+    def boolean(
+        self,
+        name: str = "Boolean",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> BooleanSocket:
+        return cast("BooleanSocket", self._declare(name, "BOOLEAN", structure_type))
+
+    def vector(
+        self,
+        name: str = "Vector",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> VectorSocket:
+        return cast("VectorSocket", self._declare(name, "VECTOR", structure_type))
+
+    def color(
+        self,
+        name: str = "Color",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ColorSocket:
+        return cast("ColorSocket", self._declare(name, "RGBA", structure_type))
+
+    def rotation(
+        self,
+        name: str = "Rotation",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> RotationSocket:
+        return cast("RotationSocket", self._declare(name, "ROTATION", structure_type))
+
+    def matrix(
+        self,
+        name: str = "Matrix",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> MatrixSocket:
+        return cast("MatrixSocket", self._declare(name, "MATRIX", structure_type))
+
+    def string(
+        self,
+        name: str = "String",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> StringSocket:
+        return cast("StringSocket", self._declare(name, "STRING", structure_type))
+
+    def geometry(
+        self,
+        name: str = "Geometry",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> GeometrySocket:
+        return cast("GeometrySocket", self._declare(name, "GEOMETRY", structure_type))
+
+    def object(
+        self,
+        name: str = "Object",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ObjectSocket:
+        return cast("ObjectSocket", self._declare(name, "OBJECT", structure_type))
+
+    def image(
+        self,
+        name: str = "Image",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ImageSocket:
+        return cast("ImageSocket", self._declare(name, "IMAGE", structure_type))
+
+    def collection(
+        self,
+        name: str = "Collection",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> CollectionSocket:
+        return cast(
+            "CollectionSocket", self._declare(name, "COLLECTION", structure_type)
+        )
+
+    def material(
+        self,
+        name: str = "Material",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> MaterialSocket:
+        return cast("MaterialSocket", self._declare(name, "MATERIAL", structure_type))
+
+    def bundle(
+        self,
+        name: str = "Bundle",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> BundleSocket:
+        return cast("BundleSocket", self._declare(name, "BUNDLE", structure_type))
+
+    def closure(
+        self,
+        name: str = "Closure",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ClosureSocket:
+        return cast("ClosureSocket", self._declare(name, "CLOSURE", structure_type))
+
+
+class _ClosureInputItems(_ClosureZoneItems):
+    """Typed factories for closure inputs; each declares an input item and
+    returns the socket read inside the closure body."""
+
+    def _declare(
+        self, name: str, type: str, structure_type: _SocketShapeStructureType
+    ) -> SocketLinker:
+        zone = self._zone
+        items = zone.output.node.input_items
+        item = items.new(type, name)  # ty: ignore[invalid-argument-type]
+        if structure_type != "AUTO":
+            item.structure_type = structure_type
+        return _wrap_socket(
+            _socket_for_item(zone.input.node, items, "Item_", item, output=True)
+        )
+
+
+class _ClosureOutputItems(_ClosureZoneItems):
+    """Typed factories for closure outputs; each declares an output item
+    and returns the target to feed with ``>>``."""
+
+    def _declare(
+        self, name: str, type: str, structure_type: _SocketShapeStructureType
+    ) -> SocketLinker:
+        zone = self._zone
+        items = zone.output.node.output_items
+        item = items.new(type, name)  # ty: ignore[invalid-argument-type]
+        if structure_type != "AUTO":
+            item.structure_type = structure_type
+        return _wrap_socket(_socket_for_item(zone.output.node, items, "Item_", item))
 
 
 class ClosureZone(_ZonePair):
@@ -589,23 +1141,35 @@ class ClosureZone(_ZonePair):
     ):
         self.input = ClosureInput()
         self.output = ClosureOutput()
-        self.input.node.pair_with_output(self.output.node)
+        self._pair()
         self.input._establish_links()
+
+    @property
+    def inputs(self) -> _ClosureInputItems:
+        """Typed factories for the closure's input items."""
+        return _ClosureInputItems(self)
+
+    @property
+    def outputs(self) -> _ClosureOutputItems:
+        """Typed factories for the closure's output items."""
+        return _ClosureOutputItems(self)
 
     def input_item(self, name: str, type: str = "GEOMETRY") -> SocketLinker:
         """Declare a closure input and return the socket to read in the body.
 
         ``type`` is a socket-type string (``"GEOMETRY"``, ``"MATRIX"``,
-        ``"VECTOR"``, …); the item collection lives on the output node and
-        drives the matching output socket on the input node.
+        ``"VECTOR"``, …); the typed factories on :attr:`inputs` are the
+        static-typed equivalent.
         """
-        self.output.node.input_items.new(type, name)  # ty: ignore[invalid-argument-type]
-        return _wrap_socket(self.input.node.outputs[-2])
+        return _ClosureInputItems(self)._declare(name, type, "AUTO")
 
     def output_item(self, name: str, type: str = "GEOMETRY") -> SocketLinker:
-        """Declare a closure output and return the target to feed with ``>>``."""
-        self.output.node.output_items.new(type, name)  # ty: ignore[invalid-argument-type]
-        return _wrap_socket(self.output.node.inputs[-2])
+        """Declare a closure output and return the target to feed with ``>>``.
+
+        The typed factories on :attr:`outputs` are the static-typed
+        equivalent.
+        """
+        return _ClosureOutputItems(self)._declare(name, type, "AUTO")
 
     @property
     def closure(self) -> ClosureSocket:

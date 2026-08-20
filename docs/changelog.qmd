@@ -2,6 +2,17 @@
 title: Changelog
 ---
 
+## v520.12.0 - 2026-08-20
+
+### Enhancements
+- **Typed zone item factories** — simulation and repeat zones gain a `zone.items` namespace with one factory method per data type (`zone.items.geometry()`, `zone.items.float()`, …). Each declares a state item and returns a `ZoneItem` handle whose `initial` / `current` / `next` / `result` role sockets are statically typed to the matching socket class, so editors autocomplete and type-check the zone body. An optional second argument links a linkable as the item's starting value or sets a plain default. The repeat factory additionally offers the datablock and closure types only the repeat zone supports (`object`, `image`, `collection`, `material`, `closure`), so invalid simulation item types are caught statically.
+- The for-each zone gains the same typed factories for its three item collections: `zone.inputs` (per-element fields), `zone.main` (per-element results) and `zone.generated` (values stored on the generated geometry, with `domain=`), plus a typed `zone.element` shortcut for the current element geometry.
+- The closure zone gains `zone.inputs` / `zone.outputs` typed factories that declare signature items (with optional `structure_type=`) and return the body-side socket directly. Item sockets are now resolved by identifier prefix and collection position instead of fragile positional indexing, and `Item.input`/`Item.output` and `zone.iteration` / `zone.index` are properly typed.
+- `to_python` export now emits the typed factories (`repeat_zone.items.float("value", 1.0)` instead of `repeat_zone.item("value", 1.0, type=...)`), making generated zone code self-documenting and removing the type-inference drift checks. This also fixes a latent round-trip hazard where a string item whose default spelled a socket-type name (e.g. `"GEOMETRY"`) would be re-declared as an item of that type instead of a string default.
+
+### Breaking
+- The raw bpy item collection is no longer exposed as `.items` on zone input/output builder nodes (it collided with the new typed factory namespace); the string-typed `zone.item(...)`, `zone.main_item(...)`, `zone.generated_item(...)` and `zone.input_item(...)` / `zone.output_item(...)` fallbacks are unchanged.
+
 ## v520.11.0 - 2026-08-03
 
 ### Fixes

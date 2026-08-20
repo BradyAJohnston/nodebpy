@@ -417,7 +417,7 @@ def test_repeat(snapshot):
         )
         _ = output >> g.SetPosition(position=output.o["Position"])
     assert len(tree) == 13
-    assert len(input.items) == 2
+    assert len(input._items) == 2
     assert snapshot == tree._repr_markdown_()
 
     with TreeBuilder() as tree:
@@ -541,7 +541,7 @@ def test_switch_repeatzone(snapshot):
         join = g.JoinGeometry([zone.input, switch])
         join >> zone.output >> output
 
-    assert len(zone.output.items) == 1
+    assert len(zone.output._items) == 1
     assert zone.output.i["Geometry"].socket.links[0].from_node == join.node
     assert snapshot == tree._repr_markdown_()
 
@@ -646,10 +646,10 @@ def test_foreachgeometryelement_zone():
     with pytest.raises(IndexError):
         zone[2]
 
-    assert all([i.socket_type == "VECTOR" for i in zone.input.items])
-    assert len(zone.input.items) == 2
-    assert len(zone.output.items) == 1
-    assert zone.output.items[0].socket_type == "VECTOR"
+    assert all([i.socket_type == "VECTOR" for i in zone.input._items])
+    assert len(zone.input._items) == 2
+    assert len(zone.output._items) == 1
+    assert zone.output._items[0].socket_type == "VECTOR"
     assert zone.output.node.inputs["Geometry"].links[0].from_node == transformed.node
     assert zone.input.node == input.node
     assert zone.output.node == output.node
@@ -667,7 +667,7 @@ def test_zone_capture_names_and_domains():
         zone = g.ForEachGeometryElementZone(g.Cube(), domain="FACE")
         pos = zone.input.capture(g.Position(), name="MyPos")
         gen = zone.output.capture_generated(pos, name="MyGen", domain="FACE")
-        assert zone.input.items[0].name == "MyPos"
+        assert zone.input._items[0].name == "MyPos"
         assert pos.name == "MyPos"
         assert zone.output.items_generated[1].name == "MyGen"
         assert zone.output.items_generated[1].domain == "FACE"
@@ -675,8 +675,8 @@ def test_zone_capture_names_and_domains():
 
         rzone = g.RepeatZone(3)
         val = rzone.input.capture(g.Value(), name="Counter")
-        assert rzone.input.items[0].name == "Counter"
-        assert rzone.input.items[0].socket_type == "FLOAT"
+        assert rzone.input._items[0].name == "Counter"
+        assert rzone.input._items[0].socket_type == "FLOAT"
         assert val.name == "Counter"
         input, output = rzone
         assert input is rzone.input
@@ -690,8 +690,8 @@ def test_zone_item_handles():
         zone = g.RepeatZone(10)
         value = zone.item("value", initial=1.0)
         _ = (value.current + 1.0) >> value.next
-        assert zone.output.items[0].name == "value"
-        assert zone.output.items[0].socket_type == "FLOAT"
+        assert zone.output._items[0].name == "value"
+        assert zone.output._items[0].socket_type == "FLOAT"
         assert value.initial.socket.default_value == pytest.approx(1.0)
         assert value.current.socket.links[0].to_node.bl_idname == "ShaderNodeMath"
         assert value.next.socket.links[0].from_node.bl_idname == "ShaderNodeMath"
@@ -713,7 +713,7 @@ def test_zone_item_handles():
 def test_zone_items_declaration():
     with TreeBuilder():
         zone = g.SimulationZone({"geo": "GEOMETRY", "fac": g.Value()})
-        assert [i.socket_type for i in zone.output.items] == ["GEOMETRY", "FLOAT"]
+        assert [i.socket_type for i in zone.output._items] == ["GEOMETRY", "FLOAT"]
         assert len(zone.input.node.inputs[0].links) == 0
         assert len(zone.input.node.inputs[1].links) == 1
 
@@ -751,6 +751,160 @@ def test_foreach_item_handles():
         assert zone.output.domain == "POINT"
         assert len(unlinked.input.socket.links) == 0
         assert gen.name == "Gen"
+
+
+def test_state_zone_typed_items():
+    with TreeBuilder():
+        zone = g.RepeatZone(5)
+        geo = zone.items.geometry(initial=g.Cube())
+        val = zone.items.float("Value", 0.5)
+        vec = zone.items.vector("Direction")
+
+        assert geo.socket_type == "GEOMETRY"
+        assert geo.name == "Geometry"
+        assert len(geo.initial.socket.links) == 1
+        assert isinstance(geo.current, GeometrySocket)
+        assert isinstance(geo.next, GeometrySocket)
+        assert isinstance(geo.result, GeometrySocket)
+        assert val.initial.socket.default_value == pytest.approx(0.5)
+        assert isinstance(val.current, FloatSocket)
+        assert vec.socket_type == "VECTOR"
+        assert len(vec.initial.socket.links) == 0
+
+        _ = (val.current + 1.0) >> val.next
+        assert val.next.socket.links[0].from_node.bl_idname == "ShaderNodeMath"
+
+        # a string default that spells a socket-type name stays a default
+        label = zone.items.string("Label", "GEOMETRY")
+        assert label.socket_type == "STRING"
+        assert label.initial.socket.default_value == "GEOMETRY"
+
+        # repeat-only item types
+        for handle, expected in [
+            (zone.items.object(), "OBJECT"),
+            (zone.items.image(), "IMAGE"),
+            (zone.items.collection(), "COLLECTION"),
+            (zone.items.material(), "MATERIAL"),
+            (zone.items.closure(), "CLOSURE"),
+            (zone.items.integer(), "INT"),
+            (zone.items.boolean(), "BOOLEAN"),
+            (zone.items.color(), "RGBA"),
+            (zone.items.rotation(), "ROTATION"),
+            (zone.items.matrix(), "MATRIX"),
+            (zone.items.bundle(), "BUNDLE"),
+        ]:
+            assert handle.socket_type == expected
+
+        # datablock initial values become socket defaults, not links
+        material = bpy.data.materials.new("TestZoneMaterial")
+        mat = zone.items.material("Mat", material)
+        assert mat.initial.socket.default_value == material
+        assert len(mat.initial.socket.links) == 0
+
+
+def test_simulation_zone_typed_items():
+    with TreeBuilder():
+        sim = g.SimulationZone()
+        flag = sim.items.boolean("Flag", True)
+        geo = sim.items.geometry()
+        assert flag.initial.socket.default_value is True
+        assert geo.socket_type == "GEOMETRY"
+        assert [i.socket_type for i in sim.output._items] == ["BOOLEAN", "GEOMETRY"]
+        # the simulation factory does not offer repeat-only datablock types
+        assert not hasattr(sim.items, "object")
+        assert not hasattr(sim.items, "closure")
+
+
+def test_foreach_zone_typed_items():
+    with TreeBuilder():
+        zone = g.ForEachGeometryElementZone(g.Cube())
+        assert isinstance(zone.index, IntegerSocket)
+        assert isinstance(zone.element, GeometrySocket)
+
+        pos = zone.inputs.vector("Pos", g.Position())
+        sel = zone.inputs.boolean("Sel")
+        assert pos.socket_type == "VECTOR"
+        assert isinstance(pos.output, VectorSocket)
+        assert (
+            pos.input.socket.links[0].from_node.bl_idname == "GeometryNodeInputPosition"
+        )
+        assert sel.socket_type == "BOOLEAN"
+
+        out = zone.main.float("Out", 0.25)
+        assert out.socket_type == "FLOAT"
+        assert isinstance(out.output, FloatSocket)
+        assert out.input.socket.default_value == pytest.approx(0.25)
+
+        gen = zone.generated.vector("GenV", pos.output, domain="FACE")
+        assert gen.socket_type == "VECTOR"
+        assert isinstance(gen.output, VectorSocket)
+        assert zone.output.items_generated[1].domain == "FACE"
+        gen_geo = zone.generated.geometry("Gen2", g.Cone())
+        assert gen_geo.socket_type == "GEOMETRY"
+
+
+def test_closure_zone_typed_items():
+    with TreeBuilder():
+        cz = g.ClosureZone()
+        geo = cz.inputs.geometry("Geo")
+        fac = cz.inputs.float("Fac")
+        out = cz.outputs.geometry("Out")
+
+        assert isinstance(geo, GeometrySocket)
+        assert isinstance(fac, FloatSocket)
+        assert isinstance(out, GeometrySocket)
+        assert [i.name for i in cz.output.node.input_items] == ["Geo", "Fac"]
+        assert [i.name for i in cz.output.node.output_items] == ["Out"]
+
+        # the returned sockets are the body-side sockets, found robustly
+        assert geo.socket.identifier.startswith("Item_")
+        assert geo.socket == cz.input.node.outputs["Geo"]
+        assert out.socket == cz.output.node.inputs["Out"]
+
+        _ = g.SetPosition(geo, offset=g.CombineXYZ(z=fac)) >> out
+        assert len(cz.output.node.inputs["Out"].links) == 1
+
+        field = cz.inputs.vector("Field", structure_type="FIELD")
+        assert cz.output.node.input_items[2].structure_type == "FIELD"
+        assert field.socket == cz.input.node.outputs["Field"]
+
+    with TreeBuilder():
+        cz = g.ClosureZone()
+        for factory, expected in [
+            (cz.inputs.float, "FLOAT"),
+            (cz.inputs.integer, "INT"),
+            (cz.inputs.boolean, "BOOLEAN"),
+            (cz.inputs.vector, "VECTOR"),
+            (cz.inputs.color, "RGBA"),
+            (cz.inputs.rotation, "ROTATION"),
+            (cz.inputs.matrix, "MATRIX"),
+            (cz.inputs.string, "STRING"),
+            (cz.inputs.geometry, "GEOMETRY"),
+            (cz.inputs.object, "OBJECT"),
+            (cz.inputs.image, "IMAGE"),
+            (cz.inputs.collection, "COLLECTION"),
+            (cz.inputs.material, "MATERIAL"),
+            (cz.inputs.bundle, "BUNDLE"),
+            (cz.inputs.closure, "CLOSURE"),
+        ]:
+            factory()
+        assert [i.socket_type for i in cz.output.node.input_items] == [
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "GEOMETRY",
+            "OBJECT",
+            "IMAGE",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+        ]
 
 
 def test_boolean_math_methods():

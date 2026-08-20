@@ -1376,7 +1376,7 @@ def test_repeat_zone_emits_handle_form():
         cube.result >> out
     code = to_python(tree)
     assert "g.RepeatZone(10)" in code
-    assert 'value = repeat_zone.item("value", 1.0)' in code
+    assert 'value = repeat_zone.items.float("value", 1.0)' in code
     assert ">> value.next" in code
     assert "cube.result >> geometry" in code
 
@@ -1433,8 +1433,8 @@ def test_zone_unreferenced_item_declared_without_variable():
         zone = g.RepeatZone(3)
         zone.item("spare", type="VECTOR")
     code = _assert_roundtrip(tree)
-    assert 'repeat_zone.item("spare", type="VECTOR")' in code
-    assert "= repeat_zone.item(" not in code
+    assert 'repeat_zone.items.vector("spare")' in code
+    assert "= repeat_zone.items." not in code
 
 
 def test_unpaired_zone_input_raises():
@@ -1693,8 +1693,8 @@ def test_closure_zone_round_trip():
         ev.o["Force"] >> tree.outputs.vector("Out")
     code = _assert_roundtrip(tree)
     assert "g.ClosureZone()" in code
-    assert '.input_item("Geometry", "GEOMETRY")' in code
-    assert '.output_item("Force", "VECTOR")' in code
+    assert '.inputs.geometry("Geometry")' in code
+    assert '.outputs.vector("Force")' in code
     assert ".closure" in code
     assert "item_0" not in code  # no raw Item_N socket kwargs
 

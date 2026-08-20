@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Mapping, cast
+from typing import TYPE_CHECKING, Any, Generic, Mapping, TypeVar, cast
 
 from bpy.types import Node, NodeSocket
 from mathutils import Euler
@@ -35,12 +35,16 @@ def _infer_value_type(value: Any) -> str | None:
             return None
 
 
-class Item:
+_SocketT = TypeVar("_SocketT", bound=Socket, default=Socket)
+
+
+class Item(Generic[_SocketT]):
     """Handle for one item of an items-driven node.
 
     Names the item's socket *roles* rather than socket plumbing: ``input``
     is the node's input socket for the item, ``output`` the matching
-    output socket.
+    output socket. The type parameter is the socket class both roles
+    return; the untyped default is plain :class:`Socket`.
 
     Holds the item's collection index rather than the bpy item itself —
     bpy collection item references are invalidated when the collection
@@ -75,14 +79,16 @@ class Item:
         return getattr(item, "socket_type", None) or item.data_type
 
     @property
-    def input(self) -> Socket:
+    def input(self) -> _SocketT:
         """The node's input socket for this item."""
-        return _wrap_socket(self._owner._item_socket(self._item))
+        return cast("_SocketT", _wrap_socket(self._owner._item_socket(self._item)))
 
     @property
-    def output(self) -> Socket:
+    def output(self) -> _SocketT:
         """The node's output socket for this item."""
-        return _wrap_socket(self._owner._item_socket(self._item, output=True))
+        return cast(
+            "_SocketT", _wrap_socket(self._owner._item_socket(self._item, output=True))
+        )
 
 
 class ItemsMixin(DynamicInputsMixin):
