@@ -319,13 +319,13 @@ When the optional [`ruff`](https://docs.astral.sh/ruff/) package is installed (`
 
 ## Zones
 
-Simulation, repeat and for-each zones are reconstructed using the zone item API rather than as raw input/output node pairs:
+Simulation, repeat and for-each zones are reconstructed using the typed zone item factories rather than as raw input/output node pairs:
 
 ``` python
 with TreeBuilder("Stack") as tree:
     out = tree.outputs.geometry("Geometry")
     zone = g.RepeatZone(5)
-    geo = zone.item("Geometry", g.Cube())
+    geo = zone.items.geometry("Geometry", g.Cube())
     (geo.current >> g.TransformGeometry(translation=(0, 0, 1.1))) >> geo.next
     geo.result >> out
 
@@ -339,7 +339,7 @@ with TreeBuilder("Stack") as tree:
     geometry = tree.outputs.geometry("Geometry")
 
     repeat_zone = g.RepeatZone(5)
-    geometry_1 = repeat_zone.item("Geometry", g.Cube().o.mesh)
+    geometry_1 = repeat_zone.items.geometry("Geometry", g.Cube().o.mesh)
     (
         g.TransformGeometry(geometry=geometry_1.current, translation=(0.0, 0.0, 1.1))
         >> geometry_1.next

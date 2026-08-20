@@ -36,7 +36,6 @@ BaseRepeatZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`items`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -92,7 +91,6 @@ BaseSimulationZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`items`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -148,7 +146,6 @@ BaseZone(node=None)
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZone.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`items`](#nodebpy.nodes.geometry.zone.BaseZone.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -206,7 +203,6 @@ Base class for zone input nodes
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZoneInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`items`](#nodebpy.nodes.geometry.zone.BaseZoneInput.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZoneInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZoneInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZoneInput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -265,7 +261,6 @@ Base class for zone output nodes
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`items`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -398,7 +393,9 @@ ClosureZone()
 |----|----|
 | [`closure`](#nodebpy.nodes.geometry.zone.ClosureZone.closure) | The closure produced by the zone. |
 | [`input`](#nodebpy.nodes.geometry.zone.ClosureZone.input) |  |
+| [`inputs`](#nodebpy.nodes.geometry.zone.ClosureZone.inputs) | Typed factories for the closure’s input items. |
 | [`output`](#nodebpy.nodes.geometry.zone.ClosureZone.output) |  |
+| [`outputs`](#nodebpy.nodes.geometry.zone.ClosureZone.outputs) | Typed factories for the closure’s output items. |
 
 #### Methods
 
@@ -415,7 +412,7 @@ input_item(name, type='GEOMETRY')
 
 Declare a closure input and return the socket to read in the body.
 
-`type` is a socket-type string (`"GEOMETRY"`, `"MATRIX"`, `"VECTOR"`, …); the item collection lives on the output node and drives the matching output socket on the input node.
+`type` is a socket-type string (`"GEOMETRY"`, `"MATRIX"`, `"VECTOR"`, …); the typed factories on :attr:`inputs` are the static-typed equivalent.
 
 ##### output_item
 
@@ -424,6 +421,8 @@ output_item(name, type='GEOMETRY')
 ```
 
 Declare a closure output and return the target to feed with `>>`.
+
+The typed factories on :attr:`outputs` are the static-typed equivalent.
 
 ### ForEachGeometryElementInput
 
@@ -438,7 +437,6 @@ For Each Geometry Element Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.i) |  |
-| [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.o) |  |
@@ -498,7 +496,6 @@ For Each Geometry Element Output node
 |----|----|
 | [`domain`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.domain) |  |
 | [`i`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.i) |  |
-| [`items`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items) | The bpy item collection driving this zone’s sockets. |
 | [`items_generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.items_generated) |  |
 | [`name`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.node) |  |
@@ -574,9 +571,13 @@ ForEachGeometryElementZone(geometry=None, selection=True, *, domain='POINT')
 
 | Name | Description |
 |----|----|
+| [`element`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.element) | The current element as geometry, read inside the zone body. |
+| [`generated`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generated) | Typed factories for generation items. |
 | [`generation`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.generation) | Handle for the default generation item (the generated geometry). |
 | [`index`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.index) |  |
 | [`input`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.input) |  |
+| [`inputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.inputs) | Typed factories for per-element input items. |
+| [`main`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.main) | Typed factories for main (per-element result) items. |
 | [`output`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementZone.output) |  |
 
 #### Methods
@@ -624,7 +625,6 @@ Repeat Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.RepeatInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`items`](#nodebpy.nodes.geometry.zone.RepeatInput.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.RepeatInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.RepeatInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.RepeatInput.o) |  |
@@ -683,7 +683,6 @@ Repeat Output node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.RepeatOutput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`items`](#nodebpy.nodes.geometry.zone.RepeatOutput.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.RepeatOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.RepeatOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.RepeatOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -739,6 +738,7 @@ RepeatZone(iterations=1, items=None)
 | Name | Description |
 |----|----|
 | [`input`](#nodebpy.nodes.geometry.zone.RepeatZone.input) |  |
+| [`items`](#nodebpy.nodes.geometry.zone.RepeatZone.items) | Typed item factories — declare state items with static types. |
 | [`iteration`](#nodebpy.nodes.geometry.zone.RepeatZone.iteration) | The current iteration index. |
 | [`output`](#nodebpy.nodes.geometry.zone.RepeatZone.output) |  |
 
@@ -771,7 +771,6 @@ Simulation Input node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.SimulationInput.i) | Input socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`items`](#nodebpy.nodes.geometry.zone.SimulationInput.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.SimulationInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.SimulationInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.SimulationInput.o) |  |
@@ -830,7 +829,6 @@ Simulation Output node
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.zone.SimulationOutput.i) |  |
-| [`items`](#nodebpy.nodes.geometry.zone.SimulationOutput.items) | The bpy item collection driving this zone’s sockets. |
 | [`name`](#nodebpy.nodes.geometry.zone.SimulationOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.SimulationOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.SimulationOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
@@ -887,6 +885,7 @@ SimulationZone(items=None)
 |----|----|
 | [`delta_time`](#nodebpy.nodes.geometry.zone.SimulationZone.delta_time) |  |
 | [`input`](#nodebpy.nodes.geometry.zone.SimulationZone.input) |  |
+| [`items`](#nodebpy.nodes.geometry.zone.SimulationZone.items) | Typed item factories — declare state items with static types. |
 | [`output`](#nodebpy.nodes.geometry.zone.SimulationZone.output) |  |
 
 #### Methods
@@ -912,6 +911,8 @@ ZoneItem(input_node, output_node, item)
 ```
 
 Handle for a simulation/repeat state item (four sockets per item).
+
+The type parameter is the socket class every role returns; the typed factories on `zone.items` (:class:`_StateZoneItems`) produce parameterised handles such as `ZoneItem[GeometrySocket]`.
 
 #### Attributes
 

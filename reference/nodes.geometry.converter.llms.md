@@ -744,11 +744,12 @@ Combine multiple socket values into one.
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.converter.CombineBundle.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.CombineBundle.i) |  |
+| [`items`](#nodebpy.nodes.geometry.converter.CombineBundle.items) | Typed item factories — declare bundle items with static types. |
 | [`name`](#nodebpy.nodes.geometry.converter.CombineBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineBundle.o) |  |
 | [`outputs`](#nodebpy.nodes.geometry.converter.CombineBundle.outputs) |  |
-| [`tree`](#nodebpy.nodes.geometry.converter.CombineBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+| [`tree`](#nodebpy.nodes.geometry.converter.CombineBundle.tree) |  |
 
 **Outputs**
 
@@ -4713,6 +4714,7 @@ Split a bundle into multiple sockets.
 |----|----|
 | [`define_signature`](#nodebpy.nodes.geometry.converter.SeparateBundle.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.converter.SeparateBundle.i) |  |
+| [`items`](#nodebpy.nodes.geometry.converter.SeparateBundle.items) | Typed item factories — declare bundle items with static types. |
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateBundle.o) |  |

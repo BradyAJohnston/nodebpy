@@ -80,6 +80,7 @@ Store the result of a field on a geometry and output the data as a node socket. 
 | [`face`](#nodebpy.nodes.geometry.manual.CaptureAttribute.face) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.CaptureAttribute.i) |  |
 | [`instance`](#nodebpy.nodes.geometry.manual.CaptureAttribute.instance) |  |
+| [`items`](#nodebpy.nodes.geometry.manual.CaptureAttribute.items) | Typed item factories — declare capture items with static types. |
 | [`layer`](#nodebpy.nodes.geometry.manual.CaptureAttribute.layer) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.CaptureAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.CaptureAttribute.node) |  |
@@ -233,10 +234,11 @@ Execute a given closure
 | [`active_output_index`](#nodebpy.nodes.geometry.manual.EvaluateClosure.active_output_index) |  |
 | [`define_signature`](#nodebpy.nodes.geometry.manual.EvaluateClosure.define_signature) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.EvaluateClosure.i) |  |
+| [`inputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.inputs) | Typed item factories — declare closure-call inputs with static |
 | [`name`](#nodebpy.nodes.geometry.manual.EvaluateClosure.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.EvaluateClosure.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.EvaluateClosure.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.outputs) |  |
+| [`outputs`](#nodebpy.nodes.geometry.manual.EvaluateClosure.outputs) | Typed item factories — declare closure-call outputs with static |
 | [`tree`](#nodebpy.nodes.geometry.manual.EvaluateClosure.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -277,6 +279,7 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 |----|----|
 | [`data_type`](#nodebpy.nodes.geometry.manual.FieldToGrid.data_type) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.FieldToGrid.i) |  |
+| [`items`](#nodebpy.nodes.geometry.manual.FieldToGrid.items) | Typed item factories — declare field→grid items with static |
 | [`name`](#nodebpy.nodes.geometry.manual.FieldToGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldToGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldToGrid.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |

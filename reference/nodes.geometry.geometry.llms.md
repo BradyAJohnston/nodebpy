@@ -232,6 +232,7 @@ Cache the incoming data so that it can be used without recomputation
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.geometry.Bake.i) |  |
+| [`items`](#nodebpy.nodes.geometry.geometry.Bake.items) | Typed item factories — declare bake items with static types. |
 | [`name`](#nodebpy.nodes.geometry.geometry.Bake.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Bake.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Bake.o) |  |

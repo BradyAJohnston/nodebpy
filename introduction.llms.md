@@ -81,7 +81,7 @@ Zones like the repeat and simulation zone are initialized with their `Simulation
 
 We can access the input and output nodes with `zone.input` and `zone.output`. The repeat zone has `zone.iteration`, which is the iteration number of the current zone. The simulation zone has `zone.delta_time`, which is the time between the previous and current simulation loop.
 
-Because of the complexity of zones, we have the `Item` helper which gives access to the input & output sockets on the input and output nodes (4 sockets total). For the Simulation and Repeat zones, we have the:
+Because of the complexity of zones, we have the `ZoneItem` helper which gives access to the input & output sockets on the input and output nodes (4 sockets total). For the Simulation and Repeat zones, we have the:
 
 | Code           | Socket                      |
 |----------------|-----------------------------|
@@ -90,16 +90,22 @@ Because of the complexity of zones, we have the `Item` helper which gives access
 | `item.next`    | `zone.output.i["Geometry"]` |
 | `item.result`  | `zone.output.o["Geometry"]` |
 
+State items are declared through the typed factories on `zone.items` — one method per data type (`zone.items.geometry()`, `zone.items.float()`, `zone.items.vector()`, …). Each returns a `ZoneItem` handle whose four role sockets are statically typed to the matching socket class, so editors can autocomplete and type-check the zone body. Pass a linkable as the second argument (or `initial=`) to link it as the item’s starting value, a plain value to set the socket default, or nothing to declare the item unlinked:
+
 ``` python
 with g.tree() as tree:
     zone = g.RepeatZone(10)
     random_pos = g.RandomValue.vector(seed=zone.iteration)
-    geo = zone.item("Geometry", type="GEOMETRY")
+    geo = zone.items.geometry()
     g.JoinGeometry([geo.current, g.Points(10, random_pos)]) >> geo.next
     geo.result >> tree.outputs.geometry()
 
 tree
 ```
+
+The repeat zone additionally offers datablock item types the simulation zone does not support (`zone.items.object()`, `zone.items.image()`, `zone.items.collection()`, `zone.items.material()` and `zone.items.closure()`). The string-typed `zone.item(name, initial, type=...)` form remains available when the data type is only known at runtime.
+
+The for-each zone has the same style of typed factories for its three item collections — `zone.inputs` (per-element fields read inside the body), `zone.main` (per-element results written back onto the input geometry) and `zone.generated` (values stored on the generated geometry, with a `domain=` option). The closure zone declares its signature through `zone.inputs` and `zone.outputs`, which return the body-side socket directly.
 
 ``` python
 with g.tree() as tree:
@@ -111,6 +117,30 @@ with g.tree() as tree:
     # this should automatically pick the vector input socket because we are
     # explicit about the VectorMath and it will be the most compatible
     zone.input >> g.VectorMath.add(..., (0.2, 0.4, 0.6)) >> zone.output
+
+tree
+```
+
+## Item Nodes
+
+Several regular nodes are also driven by dynamic item collections — Capture Attribute, Bake, Field to Grid, Combine/Separate Bundle and Evaluate Closure. They all offer the same typed per-datatype factories as the zones, alongside their `items={...}` dict constructors:
+
+- `CaptureAttribute(...).items.vector("Pos", g.Position())` returns an `Item` handle — `item.input` is the field being captured, `item.output` the captured result.
+- `Bake().items.geometry("Geo", source)` works the same way for bake items.
+- `FieldToGrid.float(topology).items.float("Density", field)` returns a dual-typed `GridItem` — `item.field` is the field input socket and `item.grid` the evaluated grid output, each with its own socket class.
+- `CombineBundle().items.float("a", 0.5)` and `SeparateBundle(bundle).items.float("a")` declare bundle items and return the typed socket directly (the input to feed, or the output to read).
+- `EvaluateClosure(closure).inputs.geometry("Geo", source)` and `.outputs.vector("Force")` declare the closure-call signature; the outputs factory returns the typed result socket.
+
+The bundle and closure factories also accept `structure_type=` for non-`"AUTO"` socket shapes.
+
+``` python
+with g.tree() as tree:
+    cap = g.CaptureAttribute.face(g.Cube())
+    pos = cap.items.vector("Pos", g.Position())
+    (
+        g.StoreNamedAttribute.face.vector(cap.o.geometry, name="pos", value=pos.output)
+        >> tree.outputs.geometry()
+    )
 
 tree
 ```

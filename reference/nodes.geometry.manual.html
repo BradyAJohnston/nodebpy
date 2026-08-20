@@ -171,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.11.0</span>
+    <span class="navbar-title">nodebpy 520.13.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -874,30 +874,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.items"><code>items</code></a></td>
+<td>Typed item factories — declare capture items with static types.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.layer"><code>layer</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.point"><code>point</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.CaptureAttribute.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -1229,22 +1233,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateClosure.inputs"><code>inputs</code></a></td>
+<td>Typed item factories — declare closure-call inputs with static</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.EvaluateClosure.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.EvaluateClosure.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.EvaluateClosure.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
-<td><a href="#nodebpy.nodes.geometry.manual.EvaluateClosure.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.EvaluateClosure.outputs"><code>outputs</code></a></td>
+<td>Typed item factories — declare closure-call outputs with static</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.EvaluateClosure.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1318,22 +1326,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.items"><code>items</code></a></td>
+<td>Typed item factories — declare field→grid items with static</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.o"><code>o</code></a></td>
 <td>Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.manual.FieldToGrid.tree"><code>tree</code></a></td>
 <td></td>
 </tr>
@@ -2831,7 +2843,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/BradyAJohnston\.github\.io\/nodebpy\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
