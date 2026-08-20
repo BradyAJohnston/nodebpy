@@ -51,6 +51,26 @@ The documentation is a [Quarto](https://quarto.org) site under `docs/`, with the
 make docs
 ```
 
+### A note on `bpy` shadowing the repo package
+
+Importing the pip `bpy` module prepends Blender's user extension site-packages
+(`~/.config/blender/<ver>/extensions/.local/...`) to `sys.path`. If a Blender
+extension bundles its own `nodebpy` wheel (MolecularNodes does), any process
+that imports `bpy` *before* `nodebpy` will silently import that bundled copy
+instead of the code in this repo — typically surfacing as `AttributeError`s
+for APIs that exist in your working tree but not in the released wheel.
+
+Two places already guard against this: `tests/conftest.py` re-inserts the
+repo's `src/` at the front of `sys.path`, and `docs/_environment` points
+`BLENDER_USER_EXTENSIONS` / `BLENDER_USER_SCRIPTS` at nonexistent stubs so
+Quarto's render kernels never see the extension packages. For ad-hoc scripts,
+either import `nodebpy` before `bpy` or run with the same environment
+variables:
+
+```sh
+BLENDER_USER_EXTENSIONS=/nonexistent uv run python my_script.py
+```
+
 ## CI
 
 Two GitHub Actions workflows run on every push and pull request:

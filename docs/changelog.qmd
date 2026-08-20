@@ -2,6 +2,28 @@
 title: Changelog
 ---
 
+## v520.13.0 - 2026-08-20
+
+### Enhancements
+- **Typed item factories for item-driven nodes** — the typed per-datatype factories introduced for zones now cover the other items-driven nodes. `CaptureAttribute(...).items.vector("Pos", field)` and `Bake().items.geometry("Geo", source)` declare items and return statically typed two-role `Item` handles; `FieldToGrid.float(topology).items.float("Density", field)` returns a dual-typed `GridItem` whose `field` input and `grid` output each carry their own socket class.
+- `CombineBundle().items.float("a", 0.5)` / `SeparateBundle(bundle).items.float("a")` and `EvaluateClosure(closure).inputs.geometry("Geo", source)` / `.outputs.vector("Force")` declare bundle and closure-call items with static types, returning the relevant typed socket directly. All bundle/closure item factories accept `structure_type=`; menu items gained factories throughout (including the closure zone's `zone.inputs.menu()`).
+- The factory surface is shared infrastructure in `nodebpy.builder.items` (`_FieldItemFactory`, `_SocketItemFactory`, `_SocketValueItemFactory`), so new items-driven nodes can adopt it declaratively; the Combine/Separate Bundle constructors moved from generator-inlined source into real mixins in `nodes/_mixins.py`.
+- `to_python` export emits the typed factories for these nodes (statement form with handle variables for consumed items) instead of the `items={...}` dicts. This makes generated code typed and self-documenting, and fixes real losses in the dict form: unlinked bundle/closure item *defaults* were silently dropped, non-`"AUTO"` `structure_type` was never emitted, and an unlinked capture/bake item whose default couldn't round-trip type inference (e.g. a color item, or a string default spelling a socket-type name) was re-declared with the wrong type. The dict constructors remain supported as the string-typed fallback, and emission falls back to them for item types without a typed factory.
+
+### Fixes
+- `EvaluateClosure`'s `define_signature`, `active_input_index` and `active_output_index` constructor parameters now actually reach the Blender node — previously they only set attributes on the Python wrapper, so `EvaluateClosure(define_signature=True)` silently did nothing. All three are also exposed as node-backed properties.
+
+## v520.12.0 - 2026-08-20
+
+### Enhancements
+- **Typed zone item factories** — simulation and repeat zones gain a `zone.items` namespace with one factory method per data type (`zone.items.geometry()`, `zone.items.float()`, …). Each declares a state item and returns a `ZoneItem` handle whose `initial` / `current` / `next` / `result` role sockets are statically typed to the matching socket class, so editors autocomplete and type-check the zone body. An optional second argument links a linkable as the item's starting value or sets a plain default. The repeat factory additionally offers the datablock and closure types only the repeat zone supports (`object`, `image`, `collection`, `material`, `closure`), so invalid simulation item types are caught statically.
+- The for-each zone gains the same typed factories for its three item collections: `zone.inputs` (per-element fields), `zone.main` (per-element results) and `zone.generated` (values stored on the generated geometry, with `domain=`), plus a typed `zone.element` shortcut for the current element geometry.
+- The closure zone gains `zone.inputs` / `zone.outputs` typed factories that declare signature items (with optional `structure_type=`) and return the body-side socket directly. Item sockets are now resolved by identifier prefix and collection position instead of fragile positional indexing, and `Item.input`/`Item.output` and `zone.iteration` / `zone.index` are properly typed.
+- `to_python` export now emits the typed factories (`repeat_zone.items.float("value", 1.0)` instead of `repeat_zone.item("value", 1.0, type=...)`), making generated zone code self-documenting and removing the type-inference drift checks. This also fixes a latent round-trip hazard where a string item whose default spelled a socket-type name (e.g. `"GEOMETRY"`) would be re-declared as an item of that type instead of a string default.
+
+### Breaking
+- The raw bpy item collection is no longer exposed as `.items` on zone input/output builder nodes (it collided with the new typed factory namespace); the string-typed `zone.item(...)`, `zone.main_item(...)`, `zone.generated_item(...)` and `zone.input_item(...)` / `zone.output_item(...)` fallbacks are unchanged.
+
 ## v520.11.0 - 2026-08-03
 
 ### Fixes

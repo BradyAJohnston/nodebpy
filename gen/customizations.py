@@ -104,72 +104,24 @@ register_customization(
 )
 
 
-# Bundle pack/unpack nodes carry dynamic items the introspector can't see; the
-# bespoke __init__ adds them via the bundle_items collection (Combine infers the
-# type from a linked source through the __extend__ socket; Separate declares each
-# item by name + socket-type string). The generated define_signature accessor and
-# Outputs are kept.
+# Bundle pack/unpack nodes carry dynamic items the introspector can't see;
+# mixins in _mixins.py supply the items constructors and the typed item
+# factories. The generated define_signature accessor and Outputs are kept.
 register_customization(
     NodeCustomization(
         bl_idname="NodeCombineBundle",
-        imports=("from ...builder.items import _infer_value_type",),
+        bases=("_CombineBundleMixin",),
+        imports=("from .._mixins import _CombineBundleMixin",),
         suppress=frozenset({"__init__"}),
-        extra_body='''    def __init__(
-        self,
-        items: "dict[str, InputAny] | None" = None,
-        *,
-        define_signature: bool = False,
-    ):
-        super().__init__()
-        for name, value in (items or {}).items():
-            self._add_bundle_item(name, value)
-        self.define_signature = define_signature
-
-    def _add_bundle_item(self, name: str, value: InputAny) -> None:
-        """Add a named bundle item from a value of any supported kind.
-
-        - a socket-type string (``"GEOMETRY"``) declares an empty item;
-        - a socket / node source is linked in via the ``__extend__`` virtual
-          socket (Blender makes an item of the source\'s own type, then renamed);
-        - any other value declares an item of the inferred type and sets its
-          default.
-        """
-        if isinstance(value, str):
-            self.node.bundle_items.new(value, name)  # ty: ignore[invalid-argument-type]
-        elif isinstance(value, (BaseNode, Socket, bpy.types.NodeSocket)):
-            extend = self.node.inputs[len(self.node.inputs) - 1]
-            self.tree.link(self._source_socket(value), extend)
-            # Re-fetch by index: the collection just grew, so any earlier item
-            # reference is stale (see bpy collection invalidation).
-            self.node.bundle_items[len(self.node.bundle_items) - 1].name = name
-        else:
-            socket_type = _infer_value_type(value)
-            if socket_type is None:
-                raise TypeError(f"Unsupported bundle item {name!r}: {value!r}")
-            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
-            self.node.inputs[name].default_value = value''',
     )
 )
 
 register_customization(
     NodeCustomization(
         bl_idname="NodeSeparateBundle",
+        bases=("_SeparateBundleMixin",),
+        imports=("from .._mixins import _SeparateBundleMixin",),
         suppress=frozenset({"__init__"}),
-        extra_body="""    def __init__(
-        self,
-        bundle: InputBundle = None,
-        items: "dict[str, str] | None" = None,
-        *,
-        define_signature: bool = False,
-    ):
-        super().__init__()
-        self.define_signature = define_signature
-        # Items are output sockets pulled from the bundle; each is declared by
-        # name and socket-type string (the inverse of CombineBundle, where the
-        # type is inferred from a linked source).
-        for name, socket_type in (items or {}).items():
-            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
-        self._establish_links(Bundle=bundle)""",
     )
 )
 
