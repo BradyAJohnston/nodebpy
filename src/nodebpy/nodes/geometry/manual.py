@@ -48,6 +48,16 @@ from ...builder import (
     VectorSocketGrid,
 )
 from ...builder import Socket as SocketLinker
+from ...builder._registry import _wrap_socket
+from ...builder.items import (
+    GridItem,
+    _apply_item_value,
+    _FieldItemFactory,
+    _socket_for_item,
+    _SocketItemFactory,
+    _SocketValueItemFactory,
+    _TypedItemFactory,
+)
 from ...builder.socket import BaseSocket
 from ...builder.tree import _MenuDefault
 from ...types import (
@@ -78,6 +88,7 @@ from ...types import (
     _AttributeDomains,
     _GridDataTypes,
     _is_default_value,
+    _SocketShapeStructureType,
 )
 from .zone import (
     ClosureInput,
@@ -634,6 +645,46 @@ class StoreNamedAttribute(BaseNode, Generic[_T]):
         self.node.domain = value
 
 
+class _EvaluateClosureInputs(_SocketValueItemFactory):
+    """Typed factories declaring closure-call inputs; each returns the
+    node's typed input socket, linked from ``value`` when one is given."""
+
+    _owner: "EvaluateClosure"
+
+    def _declare(
+        self,
+        name: str,
+        value: InputAny,
+        type: str,
+        structure_type: _SocketShapeStructureType,
+    ) -> SocketLinker:
+        node = self._owner.node
+        item = node.input_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        if structure_type != "AUTO":
+            item.structure_type = structure_type
+        socket = _socket_for_item(node, node.input_items, "Item_", item)
+        _apply_item_value(self._owner, socket, value)
+        return _wrap_socket(socket)
+
+
+class _EvaluateClosureOutputs(_SocketItemFactory):
+    """Typed factories declaring closure-call outputs; each returns the
+    node's typed output socket carrying the result."""
+
+    _owner: "EvaluateClosure"
+
+    def _declare(
+        self, name: str, type: str, structure_type: _SocketShapeStructureType
+    ) -> SocketLinker:
+        node = self._owner.node
+        item = node.output_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        if structure_type != "AUTO":
+            item.structure_type = structure_type
+        return _wrap_socket(
+            _socket_for_item(node, node.output_items, "Item_", item, output=True)
+        )
+
+
 class EvaluateClosure(BaseNode):
     """
     Execute a given closure
@@ -699,6 +750,18 @@ class EvaluateClosure(BaseNode):
         self.tree.link(self._source_socket(value), extend)
         # Re-fetch by index: the collection just grew (stale refs segfault).
         self.node.input_items[len(self.node.input_items) - 1].name = name
+
+    @property
+    def inputs(self) -> _EvaluateClosureInputs:
+        """Typed item factories — declare closure-call inputs with static
+        types."""
+        return _EvaluateClosureInputs(self)
+
+    @property
+    def outputs(self) -> _EvaluateClosureOutputs:
+        """Typed item factories — declare closure-call outputs with static
+        types."""
+        return _EvaluateClosureOutputs(self)
 
     def sync_signature(self, node: ClosureOutput | ClosureZone) -> None:
         if isinstance(node, ClosureZone):
@@ -1733,6 +1796,11 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         self._establish_links(**key_args)
 
     @property
+    def items(self) -> _FieldItemFactory:
+        """Typed item factories — declare capture items with static types."""
+        return _FieldItemFactory(self)
+
+    @property
     def domain(
         self,
     ) -> _AttributeDomains:
@@ -1744,6 +1812,50 @@ class CaptureAttribute(ItemsMixin, BaseNode):
         value: _AttributeDomains,
     ):
         self.node.domain = value
+
+
+class _FieldToGridItems(_TypedItemFactory):
+    """Typed factories for Field to Grid items; each declares one
+    field→grid item and returns its dual-typed :class:`GridItem` handle
+    (``field`` is the field input socket, ``grid`` the grid output)."""
+
+    _owner: "FieldToGrid"
+
+    def _declare(self, name: str, value: InputAny, type: str) -> GridItem:
+        handle = self._owner.add_item(name, value, type=type)
+        return GridItem(self._owner, handle._item)
+
+    def float(
+        self, name: str = "Value", value: InputFloat = None
+    ) -> "GridItem[FloatSocket, FloatSocketGrid]":
+        return cast(
+            "GridItem[FloatSocket, FloatSocketGrid]",
+            self._declare(name, value, "FLOAT"),
+        )
+
+    def integer(
+        self, name: str = "Integer", value: InputInteger = None
+    ) -> "GridItem[IntegerSocket, IntegerSocketGrid]":
+        return cast(
+            "GridItem[IntegerSocket, IntegerSocketGrid]",
+            self._declare(name, value, "INT"),
+        )
+
+    def vector(
+        self, name: str = "Vector", value: InputVector = None
+    ) -> "GridItem[VectorSocket, VectorSocketGrid]":
+        return cast(
+            "GridItem[VectorSocket, VectorSocketGrid]",
+            self._declare(name, value, "VECTOR"),
+        )
+
+    def boolean(
+        self, name: str = "Boolean", value: InputBoolean = None
+    ) -> "GridItem[BooleanSocket, BooleanSocketGrid]":
+        return cast(
+            "GridItem[BooleanSocket, BooleanSocketGrid]",
+            self._declare(name, value, "BOOLEAN"),
+        )
 
 
 class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
@@ -1830,6 +1942,12 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
     ) -> "FieldToGrid[BooleanSocketGrid]":
         """Data type for the topology grid"""
         return FieldToGrid(topology, items, data_type="BOOLEAN")
+
+    @property
+    def items(self) -> _FieldToGridItems:
+        """Typed item factories — declare field→grid items with static
+        types."""
+        return _FieldToGridItems(self)
 
     @property
     def data_type(

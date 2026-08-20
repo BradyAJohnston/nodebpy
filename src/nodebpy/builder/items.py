@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Generic, Mapping, TypeVar, cast
 
-from bpy.types import Node, NodeSocket
+from bpy.types import ID, Node, NodeSocket
 from mathutils import Euler
 
 from ..types import _is_default_value
@@ -12,8 +12,68 @@ from .node import DynamicInputsMixin
 from .socket import Socket
 
 if TYPE_CHECKING:
-    from ..types import InputLinkable
+    from ..types import (
+        InputAny,
+        InputBoolean,
+        InputBundle,
+        InputClosure,
+        InputCollection,
+        InputColor,
+        InputFloat,
+        InputGeometry,
+        InputImage,
+        InputInteger,
+        InputLinkable,
+        InputMaterial,
+        InputMatrix,
+        InputMenu,
+        InputObject,
+        InputRotation,
+        InputString,
+        InputVector,
+        _SocketShapeStructureType,
+    )
+    from .socket import (
+        BooleanSocket,
+        BundleSocket,
+        ClosureSocket,
+        CollectionSocket,
+        ColorSocket,
+        FloatSocket,
+        GeometrySocket,
+        ImageSocket,
+        IntegerSocket,
+        MaterialSocket,
+        MatrixSocket,
+        MenuSocket,
+        ObjectSocket,
+        RotationSocket,
+        StringSocket,
+        VectorSocket,
+    )
     from .tree import TreeBuilder
+
+
+def _socket_for_item(
+    node: Node, items, prefix: str, item, *, output: bool = False
+) -> NodeSocket:
+    """Find the node socket belonging to ``item`` by identifier prefix and
+    collection position; item names are not unique across a node's fixed
+    sockets and item collections."""
+    index = next(i for i, candidate in enumerate(items) if candidate == item)
+    sockets = node.outputs if output else node.inputs
+    return [s for s in sockets if s.identifier.startswith(prefix)][index]
+
+
+def _apply_item_value(owner, socket: NodeSocket, value: Any) -> None:
+    """Link ``value`` into ``socket`` (linkables) or set it as the socket
+    default (plain values and datablocks); ``None`` leaves it untouched."""
+    if value is None:
+        return
+    if _is_default_value(value) or isinstance(value, ID):
+        socket.default_value = value  # ty: ignore[unresolved-attribute]
+    else:
+        owner.tree.link(owner._source_socket(value), socket)
 
 
 def _infer_value_type(value: Any) -> str | None:
@@ -251,3 +311,398 @@ class ItemsMixin(DynamicInputsMixin):
             else:
                 handles[key] = self.add_item(key, cast("InputLinkable", value))
         return handles
+
+
+_FieldT = TypeVar("_FieldT", bound=Socket, default=Socket)
+_GridT = TypeVar("_GridT", bound=Socket, default=Socket)
+
+
+class GridItem(Item[Socket], Generic[_FieldT, _GridT]):
+    """Handle for a field→grid item whose two roles carry different socket
+    classes: ``field`` is the node's field input socket, ``grid`` the
+    matching grid output socket."""
+
+    @property
+    def field(self) -> _FieldT:
+        """The node's field input socket for this item."""
+        return cast("_FieldT", self.input)
+
+    @property
+    def grid(self) -> _GridT:
+        """The node's grid output socket for this item."""
+        return cast("_GridT", self.output)
+
+
+class _TypedItemFactory:
+    """Base for per-datatype typed item factories.
+
+    Holds the owning builder object; subclasses implement ``_declare`` and
+    expose one factory method per socket type so declarations carry static
+    socket types.
+    """
+
+    def __init__(self, owner: Any):
+        self._owner = owner
+
+
+class _FieldItemFactory(_TypedItemFactory):
+    """Typed factories for the seven field data types, returning two-role
+    :class:`Item` handles. The default ``_declare`` targets an
+    :class:`ItemsMixin` owner's :meth:`~ItemsMixin.add_item`."""
+
+    _owner: ItemsMixin
+
+    def _declare(self, name: str, value: InputAny, type: str) -> Item:
+        return self._owner.add_item(name, value, type=type)
+
+    def float(self, name: str = "Value", value: InputFloat = None) -> Item[FloatSocket]:
+        return cast("Item[FloatSocket]", self._declare(name, value, "FLOAT"))
+
+    def integer(
+        self, name: str = "Integer", value: InputInteger = None
+    ) -> Item[IntegerSocket]:
+        return cast("Item[IntegerSocket]", self._declare(name, value, "INT"))
+
+    def boolean(
+        self, name: str = "Boolean", value: InputBoolean = None
+    ) -> Item[BooleanSocket]:
+        return cast("Item[BooleanSocket]", self._declare(name, value, "BOOLEAN"))
+
+    def vector(
+        self, name: str = "Vector", value: InputVector = None
+    ) -> Item[VectorSocket]:
+        return cast("Item[VectorSocket]", self._declare(name, value, "VECTOR"))
+
+    def color(self, name: str = "Color", value: InputColor = None) -> Item[ColorSocket]:
+        return cast("Item[ColorSocket]", self._declare(name, value, "RGBA"))
+
+    def rotation(
+        self, name: str = "Rotation", value: InputRotation = None
+    ) -> Item[RotationSocket]:
+        return cast("Item[RotationSocket]", self._declare(name, value, "ROTATION"))
+
+    def matrix(
+        self, name: str = "Matrix", value: InputMatrix = None
+    ) -> Item[MatrixSocket]:
+        return cast("Item[MatrixSocket]", self._declare(name, value, "MATRIX"))
+
+
+class _SocketItemFactory(_TypedItemFactory):
+    """Typed factories that declare one item per call and return the single
+    node socket the item drives; subclasses implement ``_declare``."""
+
+    def _declare(
+        self, name: str, type: str, structure_type: _SocketShapeStructureType
+    ) -> Socket:
+        raise NotImplementedError
+
+    def float(
+        self,
+        name: str = "Value",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> FloatSocket:
+        return cast("FloatSocket", self._declare(name, "FLOAT", structure_type))
+
+    def integer(
+        self,
+        name: str = "Integer",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> IntegerSocket:
+        return cast("IntegerSocket", self._declare(name, "INT", structure_type))
+
+    def boolean(
+        self,
+        name: str = "Boolean",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> BooleanSocket:
+        return cast("BooleanSocket", self._declare(name, "BOOLEAN", structure_type))
+
+    def vector(
+        self,
+        name: str = "Vector",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> VectorSocket:
+        return cast("VectorSocket", self._declare(name, "VECTOR", structure_type))
+
+    def color(
+        self,
+        name: str = "Color",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ColorSocket:
+        return cast("ColorSocket", self._declare(name, "RGBA", structure_type))
+
+    def rotation(
+        self,
+        name: str = "Rotation",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> RotationSocket:
+        return cast("RotationSocket", self._declare(name, "ROTATION", structure_type))
+
+    def matrix(
+        self,
+        name: str = "Matrix",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> MatrixSocket:
+        return cast("MatrixSocket", self._declare(name, "MATRIX", structure_type))
+
+    def string(
+        self,
+        name: str = "String",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> StringSocket:
+        return cast("StringSocket", self._declare(name, "STRING", structure_type))
+
+    def menu(
+        self,
+        name: str = "Menu",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> MenuSocket:
+        return cast("MenuSocket", self._declare(name, "MENU", structure_type))
+
+    def geometry(
+        self,
+        name: str = "Geometry",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> GeometrySocket:
+        return cast("GeometrySocket", self._declare(name, "GEOMETRY", structure_type))
+
+    def object(
+        self,
+        name: str = "Object",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ObjectSocket:
+        return cast("ObjectSocket", self._declare(name, "OBJECT", structure_type))
+
+    def image(
+        self,
+        name: str = "Image",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ImageSocket:
+        return cast("ImageSocket", self._declare(name, "IMAGE", structure_type))
+
+    def collection(
+        self,
+        name: str = "Collection",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> CollectionSocket:
+        return cast(
+            "CollectionSocket", self._declare(name, "COLLECTION", structure_type)
+        )
+
+    def material(
+        self,
+        name: str = "Material",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> MaterialSocket:
+        return cast("MaterialSocket", self._declare(name, "MATERIAL", structure_type))
+
+    def bundle(
+        self,
+        name: str = "Bundle",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> BundleSocket:
+        return cast("BundleSocket", self._declare(name, "BUNDLE", structure_type))
+
+    def closure(
+        self,
+        name: str = "Closure",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ClosureSocket:
+        return cast("ClosureSocket", self._declare(name, "CLOSURE", structure_type))
+
+
+class _SocketValueItemFactory(_TypedItemFactory):
+    """Like :class:`_SocketItemFactory` but each declaration may take a
+    ``value`` — a linkable linked into the new socket, or a plain default;
+    subclasses implement ``_declare``."""
+
+    def _declare(
+        self,
+        name: str,
+        value: InputAny,
+        type: str,
+        structure_type: _SocketShapeStructureType,
+    ) -> Socket:
+        raise NotImplementedError
+
+    def float(
+        self,
+        name: str = "Value",
+        value: InputFloat = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> FloatSocket:
+        return cast("FloatSocket", self._declare(name, value, "FLOAT", structure_type))
+
+    def integer(
+        self,
+        name: str = "Integer",
+        value: InputInteger = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> IntegerSocket:
+        return cast("IntegerSocket", self._declare(name, value, "INT", structure_type))
+
+    def boolean(
+        self,
+        name: str = "Boolean",
+        value: InputBoolean = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> BooleanSocket:
+        return cast(
+            "BooleanSocket", self._declare(name, value, "BOOLEAN", structure_type)
+        )
+
+    def vector(
+        self,
+        name: str = "Vector",
+        value: InputVector = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> VectorSocket:
+        return cast(
+            "VectorSocket", self._declare(name, value, "VECTOR", structure_type)
+        )
+
+    def color(
+        self,
+        name: str = "Color",
+        value: InputColor = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ColorSocket:
+        return cast("ColorSocket", self._declare(name, value, "RGBA", structure_type))
+
+    def rotation(
+        self,
+        name: str = "Rotation",
+        value: InputRotation = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> RotationSocket:
+        return cast(
+            "RotationSocket", self._declare(name, value, "ROTATION", structure_type)
+        )
+
+    def matrix(
+        self,
+        name: str = "Matrix",
+        value: InputMatrix = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> MatrixSocket:
+        return cast(
+            "MatrixSocket", self._declare(name, value, "MATRIX", structure_type)
+        )
+
+    def string(
+        self,
+        name: str = "String",
+        value: InputString = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> StringSocket:
+        return cast(
+            "StringSocket", self._declare(name, value, "STRING", structure_type)
+        )
+
+    def menu(
+        self,
+        name: str = "Menu",
+        value: InputMenu = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> MenuSocket:
+        return cast("MenuSocket", self._declare(name, value, "MENU", structure_type))
+
+    def geometry(
+        self,
+        name: str = "Geometry",
+        value: InputGeometry = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> GeometrySocket:
+        return cast(
+            "GeometrySocket", self._declare(name, value, "GEOMETRY", structure_type)
+        )
+
+    def object(
+        self,
+        name: str = "Object",
+        value: InputObject = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ObjectSocket:
+        return cast(
+            "ObjectSocket", self._declare(name, value, "OBJECT", structure_type)
+        )
+
+    def image(
+        self,
+        name: str = "Image",
+        value: InputImage = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ImageSocket:
+        return cast("ImageSocket", self._declare(name, value, "IMAGE", structure_type))
+
+    def collection(
+        self,
+        name: str = "Collection",
+        value: InputCollection = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> CollectionSocket:
+        return cast(
+            "CollectionSocket", self._declare(name, value, "COLLECTION", structure_type)
+        )
+
+    def material(
+        self,
+        name: str = "Material",
+        value: InputMaterial = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> MaterialSocket:
+        return cast(
+            "MaterialSocket", self._declare(name, value, "MATERIAL", structure_type)
+        )
+
+    def bundle(
+        self,
+        name: str = "Bundle",
+        value: InputBundle = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> BundleSocket:
+        return cast(
+            "BundleSocket", self._declare(name, value, "BUNDLE", structure_type)
+        )
+
+    def closure(
+        self,
+        name: str = "Closure",
+        value: InputClosure = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> ClosureSocket:
+        return cast(
+            "ClosureSocket", self._declare(name, value, "CLOSURE", structure_type)
+        )

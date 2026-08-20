@@ -135,3 +135,27 @@ with g.tree() as tree:
 
 tree
 ```
+
+## Item Nodes
+
+Several regular nodes are also driven by dynamic item collections — Capture Attribute, Bake, Field to Grid, Combine/Separate Bundle and Evaluate Closure. They all offer the same typed per-datatype factories as the zones, alongside their `items={...}` dict constructors:
+
+- `CaptureAttribute(...).items.vector("Pos", g.Position())` returns an `Item` handle — `item.input` is the field being captured, `item.output` the captured result.
+- `Bake().items.geometry("Geo", source)` works the same way for bake items.
+- `FieldToGrid.float(topology).items.float("Density", field)` returns a dual-typed `GridItem` — `item.field` is the field input socket and `item.grid` the evaluated grid output, each with its own socket class.
+- `CombineBundle().items.float("a", 0.5)` and `SeparateBundle(bundle).items.float("a")` declare bundle items and return the typed socket directly (the input to feed, or the output to read).
+- `EvaluateClosure(closure).inputs.geometry("Geo", source)` and `.outputs.vector("Force")` declare the closure-call signature; the outputs factory returns the typed result socket.
+
+The bundle and closure factories also accept `structure_type=` for non-`"AUTO"` socket shapes.
+
+```{python}
+with g.tree() as tree:
+    cap = g.CaptureAttribute.face(g.Cube())
+    pos = cap.items.vector("Pos", g.Position())
+    (
+        g.StoreNamedAttribute.face.vector(cap.o.geometry, name="pos", value=pos.output)
+        >> tree.outputs.geometry()
+    )
+
+tree
+```

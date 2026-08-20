@@ -1572,8 +1572,8 @@ def test_index_switch_emits_factory_tuple():
 
 
 def test_capture_attribute_emits_items_dict():
-    """CaptureAttribute round-trips as the domain factory with an items dict;
-    the captured output is read by item name."""
+    """CaptureAttribute round-trips as the domain factory plus typed
+    ``.items.<type>(...)`` declarations; consumed items bind handles."""
     with TreeBuilder("CaptureRT") as tree:
         geo = tree.inputs.geometry("Geo")
         cap = g.CaptureAttribute.point(geo, items={"Pos": g.Position()})
@@ -1582,24 +1582,25 @@ def test_capture_attribute_emits_items_dict():
             cap.o.geometry, name="captured", value=cap.o["Pos"]
         ) >> tree.outputs.geometry("Stored")
     code = _assert_roundtrip(tree)
-    assert 'g.CaptureAttribute.point(geometry=geo, items={"Pos":' in code
-    assert "capture_attribute.o.pos" in code
+    assert "g.CaptureAttribute.point(geometry=geo)" in code
+    assert 'pos = capture.items.vector("Pos", g.Position())' in code
+    assert "pos.output" in code
 
 
 def test_multi_word_output_accessor_round_trips():
-    """An output read by a multi-word name emits ``.o.flip_and_cyclic``; the
-    accessor must resolve that back to the socket named "Flip and Cyclic"
-    (denormalize can't recover the lowercase connector "and")."""
+    """An item with a multi-word name round-trips through the typed factory
+    declaration with the exact name preserved."""
     with TreeBuilder("MultiWord") as tree:
         geo = tree.inputs.geometry("Geo")
         cap = g.CaptureAttribute.point(geo, items={"Flip and Cyclic": g.Position()})
         cap.o["Flip and Cyclic"] >> tree.outputs.vector("V")
     code = _assert_roundtrip(tree)
-    assert ".o.flip_and_cyclic" in code
+    assert 'capture.items.vector("Flip and Cyclic", g.Position())' in code
 
 
 def test_field_to_grid_emits_items_dict():
-    """FieldToGrid round-trips as the data-type factory with an items dict."""
+    """FieldToGrid round-trips as the data-type factory plus typed item
+    declarations; consumed items are read through ``.grid``."""
     with TreeBuilder("FieldGridRT") as tree:
         grid = tree.inputs.float("Grid", structure_type="GRID")
         mask = g.FieldToGrid.boolean(
@@ -1607,14 +1608,15 @@ def test_field_to_grid_emits_items_dict():
         )
         mask.o["Mask"] >> tree.outputs.boolean("Out", structure_type="GRID")
     code = _assert_roundtrip(tree)
-    assert "g.FieldToGrid.boolean(" in code
-    assert '"Mask":' in code
+    assert "g.FieldToGrid.boolean(topology=grid)" in code
+    assert 'mask = field_to_grid.items.boolean("Mask", ' in code
+    assert "mask.grid" in code
     assert "field_0" not in code
 
 
 def test_bake_emits_items_dict():
-    """Bake has no fixed inputs or type property: every socket is an item, so
-    it round-trips as g.Bake(items={...}) read back by item name."""
+    """Bake has no fixed inputs or type property: every socket is an item,
+    declared through the typed factories and read via handles."""
     with TreeBuilder("BakeRT") as tree:
         geo = tree.inputs.geometry("Geo")
         bake = g.Bake(items={"Geometry": geo, "Factor": 1.5})
@@ -1623,7 +1625,9 @@ def test_bake_emits_items_dict():
             bake.o["Geometry"], name="f", value=bake.o["Factor"]
         ) >> tree.outputs.geometry("Stored")
     code = _assert_roundtrip(tree)
-    assert 'g.Bake(items={"Geometry": geo, "Factor": 1.5})' in code
+    assert "g.Bake()" in code
+    assert 'geometry = bake.items.geometry("Geometry", geo)' in code
+    assert 'factor = bake.items.float("Factor", 1.5)' in code
     assert "item_0" not in code  # not the raw Item_N socket kwargs
 
 
@@ -1640,8 +1644,8 @@ def test_field_to_list_emits_constructor_items_dict():
 
 
 def test_combine_and_separate_bundle_round_trip():
-    """CombineBundle bundles named sources; SeparateBundle pulls them back out
-    by name and socket type. Both emit the items-dict form."""
+    """CombineBundle bundles named sources; SeparateBundle pulls them back
+    out by name. Both emit typed ``.items.<type>(...)`` declarations."""
     with TreeBuilder("BundleRT") as tree:
         geo = tree.inputs.geometry("Geo")
         val = tree.inputs.float("Val")
@@ -1652,15 +1656,18 @@ def test_combine_and_separate_bundle_round_trip():
         parts.o["Geometry"] >> tree.outputs.geometry("Out")
         parts.o["Factor"] >> tree.outputs.float("F")
     code = _assert_roundtrip(tree)
-    assert 'g.CombineBundle(items={"Geometry": geo, "Factor": val})' in code
-    assert "g.SeparateBundle(" in code
-    assert '"Geometry": "GEOMETRY"' in code
+    assert "g.CombineBundle()" in code
+    assert 'combine_bundle.items.geometry("Geometry", geo)' in code
+    assert 'combine_bundle.items.float("Factor", val)' in code
+    assert "g.SeparateBundle(combine_bundle.o.bundle)" in code
+    assert 'geometry = separate_bundle.items.geometry("Geometry")' in code
     assert "item_0" not in code  # not the raw Item_N socket kwargs
 
 
 def test_evaluate_closure_round_trip():
-    """EvaluateClosure feeds linked values into a closure (input_items) and
-    declares its results by type (output_items), read back via .o[name]."""
+    """EvaluateClosure feeds linked values into a closure via typed
+    ``.inputs.<type>(...)`` lines and reads results through the handles
+    bound by ``.outputs.<type>(...)``."""
     with TreeBuilder("ClosureRT") as tree:
         fn = tree.inputs.closure("Fn")
         geo = tree.inputs.geometry("Geo")
@@ -1672,9 +1679,36 @@ def test_evaluate_closure_round_trip():
         )
         ev.o["Geometry"] >> tree.outputs.geometry("Out")
     code = _assert_roundtrip(tree)
-    assert "g.EvaluateClosure(fn, input_items={" in code
-    assert 'output_items={"Geometry": "GEOMETRY"}' in code
+    assert "g.EvaluateClosure(fn)" in code
+    assert 'evaluate_closure.inputs.geometry("Geometry", geo)' in code
+    assert 'evaluate_closure.inputs.float("Strength", strength)' in code
+    assert 'geometry = evaluate_closure.outputs.geometry("Geometry")' in code
     assert "item_0" not in code
+
+
+def test_bundle_structure_type_and_defaults_round_trip():
+    """Typed bundle emission preserves what the dict form dropped: unlinked
+    item defaults and non-AUTO structure types."""
+    with TreeBuilder("BundleStructRT") as tree:
+        cb = g.CombineBundle()
+        cb.items.float("a", 0.5)
+        cb.items.vector("Field", structure_type="FIELD")
+        sb = g.SeparateBundle(cb.o.bundle)
+        sb.items.float("a") >> tree.outputs.float("Out")
+    code = _assert_roundtrip(tree)
+    assert 'combine_bundle.items.float("a", 0.5)' in code
+    assert 'combine_bundle.items.vector("Field", structure_type="FIELD")' in code
+
+
+def test_capture_color_item_round_trips():
+    """A color capture item with a default must re-declare as RGBA — the
+    typed factory pins the type where dict inference would drift to VECTOR."""
+    with TreeBuilder("CaptureColorRT") as tree:
+        cap = g.CaptureAttribute(g.Cube())
+        cap.items.color("Col")
+        cap.o.geometry >> tree.outputs.geometry("Out")
+    code = _assert_roundtrip(tree)
+    assert 'capture.items.color("Col"' in code
 
 
 def test_closure_zone_round_trip():

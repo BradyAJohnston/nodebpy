@@ -907,6 +907,128 @@ def test_closure_zone_typed_items():
         ]
 
 
+def test_capture_attribute_typed_items():
+    with TreeBuilder():
+        cap = g.CaptureAttribute.face(g.Cube())
+        pos = cap.items.vector("Pos", g.Position())
+        mask = cap.items.boolean("Mask")
+        fac = cap.items.float("Fac", 0.5)
+
+        assert isinstance(pos.output, VectorSocket)
+        assert (
+            pos.input.socket.links[0].from_node.bl_idname == "GeometryNodeInputPosition"
+        )
+        assert len(mask.input.socket.links) == 0
+        assert fac.input.socket.default_value == pytest.approx(0.5)
+        assert [i.data_type for i in cap.node.capture_items] == [
+            "FLOAT_VECTOR",
+            "BOOLEAN",
+            "FLOAT",
+        ]
+
+
+def test_bake_typed_items():
+    with TreeBuilder():
+        bake = g.Bake()
+        geo = bake.items.geometry("Geo", g.Cube())
+        val = bake.items.float("Val", 0.5)
+        label = bake.items.string("Label", "GEOMETRY")
+        bake.items.bundle()
+
+        assert isinstance(geo.output, GeometrySocket)
+        assert geo.input.socket.links[0].from_node.bl_idname == "GeometryNodeMeshCube"
+        assert val.input.socket.default_value == pytest.approx(0.5)
+        # a string default that spells a socket-type name stays a default
+        assert label.input.socket.default_value == "GEOMETRY"
+        assert [i.socket_type for i in bake.node.bake_items] == [
+            "GEOMETRY",
+            "FLOAT",
+            "STRING",
+            "BUNDLE",
+        ]
+
+
+def test_field_to_grid_typed_items():
+    with TreeBuilder():
+        ftg = g.FieldToGrid.float()
+        density = ftg.items.float("Density", 0.5)
+        direction = ftg.items.vector("Dir", g.Position())
+        ftg.items.boolean("Mask")
+        ftg.items.integer("Idx")
+
+        assert isinstance(density.grid, FloatSocketGrid)
+        assert isinstance(density.field, FloatSocket)
+        assert density.field.socket.default_value == pytest.approx(0.5)
+        assert isinstance(direction.grid, VectorSocketGrid)
+        assert (
+            direction.field.socket.links[0].from_node.bl_idname
+            == "GeometryNodeInputPosition"
+        )
+        assert [i.data_type for i in ftg.node.grid_items] == [
+            "FLOAT",
+            "VECTOR",
+            "BOOLEAN",
+            "INT",
+        ]
+
+
+def test_evaluate_closure_typed_items():
+    with TreeBuilder():
+        cz = g.ClosureZone()
+        geo_in = cz.inputs.geometry("Geometry")
+        g.SetPosition(geo_in) >> cz.outputs.geometry("Geometry")
+
+        ev = g.EvaluateClosure(cz.closure)
+        geo = ev.inputs.geometry("Geometry", g.Cube())
+        fac = ev.inputs.float("Fac", 0.5)
+        out = ev.outputs.geometry("Geometry")
+
+        assert isinstance(geo, GeometrySocket)
+        assert isinstance(out, GeometrySocket)
+        assert geo.socket.links[0].from_node.bl_idname == "GeometryNodeMeshCube"
+        assert fac.socket.default_value == pytest.approx(0.5)
+        assert [i.name for i in ev.node.input_items] == ["Geometry", "Fac"]
+        assert [i.name for i in ev.node.output_items] == ["Geometry"]
+
+        field = ev.inputs.vector("Field", structure_type="FIELD")
+        assert ev.node.input_items[2].structure_type == "FIELD"
+        assert field.socket == ev.node.inputs["Field"]
+
+
+def test_bundle_typed_items():
+    with TreeBuilder():
+        cb = g.CombineBundle()
+        a = cb.items.float("a", 0.5)
+        geo = cb.items.geometry("geo", g.Cube())
+        cb.items.menu("mode")
+        field = cb.items.vector("Field", structure_type="FIELD")
+
+        assert isinstance(a, FloatSocket)
+        assert a.socket.default_value == pytest.approx(0.5)
+        assert geo.socket.links[0].from_node.bl_idname == "GeometryNodeMeshCube"
+        assert [i.socket_type for i in cb.node.bundle_items] == [
+            "FLOAT",
+            "GEOMETRY",
+            "MENU",
+            "VECTOR",
+        ]
+        assert cb.node.bundle_items[3].structure_type == "FIELD"
+        assert field.socket == cb.node.inputs["Field"]
+
+        sb = g.SeparateBundle(cb.o.bundle)
+        fa = sb.items.float("a")
+        sg = sb.items.geometry("geo")
+        assert isinstance(fa, FloatSocket)
+        assert isinstance(sg, GeometrySocket)
+        assert fa.socket == sb.node.outputs["a"]
+
+        # the dict constructors remain the string-typed fallback
+        cb2 = g.CombineBundle({"x": 1.0, "g": "GEOMETRY"})
+        assert [i.socket_type for i in cb2.node.bundle_items] == ["FLOAT", "GEOMETRY"]
+        sb2 = g.SeparateBundle(cb2.o.bundle, {"x": "FLOAT"})
+        assert [i.socket_type for i in sb2.node.bundle_items] == ["FLOAT"]
+
+
 def test_boolean_math_methods():
     with TreeBuilder(arrange="simple", collapse=True) as tree:
         _ = (

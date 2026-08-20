@@ -39,7 +39,7 @@ from ...builder import Socket as SocketLinker
 from ...builder._registry import _wrap_socket
 from ...builder._utils import _SocketLike
 from ...builder.accessor import SocketAccessor
-from ...builder.items import _infer_value_type
+from ...builder.items import _infer_value_type, _socket_for_item, _SocketItemFactory
 from ...types import (
     InputAny,
     InputBoolean,
@@ -65,17 +65,6 @@ from ...types import (
 )
 
 _SocketT = TypeVar("_SocketT", bound=SocketLinker, default=SocketLinker)
-
-
-def _socket_for_item(
-    node: bpy.types.Node, items, prefix: str, item, *, output: bool = False
-) -> bpy.types.NodeSocket:
-    """Find the node socket belonging to ``item`` by identifier prefix and
-    collection position; item names are not unique across a zone node's
-    fixed sockets and item collections."""
-    index = next(i for i, candidate in enumerate(items) if candidate == item)
-    sockets = node.outputs if output else node.inputs
-    return [s for s in sockets if s.identifier.startswith(prefix)][index]
 
 
 class BaseZone(ItemsMixin, BaseNode, ABC):
@@ -960,154 +949,20 @@ class _GenerationItem(Item[_SocketT]):
         )
 
 
-class _ClosureZoneItems:
-    """Typed per-datatype item factories for the closure zone.
+class _ClosureInputItems(_SocketItemFactory):
+    """Typed factories for closure inputs; each declares an input item and
+    returns the socket read inside the closure body.
 
-    Both item collections live on the output node; each factory declares
-    one item and returns the single socket that matters for its side —
-    subclasses resolve which node socket that is. Sockets are found by
+    Both item collections live on the output node. Sockets are found by
     identifier prefix and collection position, never by list position.
     """
 
-    def __init__(self, zone: "ClosureZone"):
-        self._zone = zone
+    _owner: "ClosureZone"
 
     def _declare(
         self, name: str, type: str, structure_type: _SocketShapeStructureType
     ) -> SocketLinker:
-        raise NotImplementedError
-
-    def float(
-        self,
-        name: str = "Value",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> FloatSocket:
-        return cast("FloatSocket", self._declare(name, "FLOAT", structure_type))
-
-    def integer(
-        self,
-        name: str = "Integer",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> IntegerSocket:
-        return cast("IntegerSocket", self._declare(name, "INT", structure_type))
-
-    def boolean(
-        self,
-        name: str = "Boolean",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> BooleanSocket:
-        return cast("BooleanSocket", self._declare(name, "BOOLEAN", structure_type))
-
-    def vector(
-        self,
-        name: str = "Vector",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> VectorSocket:
-        return cast("VectorSocket", self._declare(name, "VECTOR", structure_type))
-
-    def color(
-        self,
-        name: str = "Color",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ColorSocket:
-        return cast("ColorSocket", self._declare(name, "RGBA", structure_type))
-
-    def rotation(
-        self,
-        name: str = "Rotation",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> RotationSocket:
-        return cast("RotationSocket", self._declare(name, "ROTATION", structure_type))
-
-    def matrix(
-        self,
-        name: str = "Matrix",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MatrixSocket:
-        return cast("MatrixSocket", self._declare(name, "MATRIX", structure_type))
-
-    def string(
-        self,
-        name: str = "String",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> StringSocket:
-        return cast("StringSocket", self._declare(name, "STRING", structure_type))
-
-    def geometry(
-        self,
-        name: str = "Geometry",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> GeometrySocket:
-        return cast("GeometrySocket", self._declare(name, "GEOMETRY", structure_type))
-
-    def object(
-        self,
-        name: str = "Object",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ObjectSocket:
-        return cast("ObjectSocket", self._declare(name, "OBJECT", structure_type))
-
-    def image(
-        self,
-        name: str = "Image",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ImageSocket:
-        return cast("ImageSocket", self._declare(name, "IMAGE", structure_type))
-
-    def collection(
-        self,
-        name: str = "Collection",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> CollectionSocket:
-        return cast(
-            "CollectionSocket", self._declare(name, "COLLECTION", structure_type)
-        )
-
-    def material(
-        self,
-        name: str = "Material",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MaterialSocket:
-        return cast("MaterialSocket", self._declare(name, "MATERIAL", structure_type))
-
-    def bundle(
-        self,
-        name: str = "Bundle",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> BundleSocket:
-        return cast("BundleSocket", self._declare(name, "BUNDLE", structure_type))
-
-    def closure(
-        self,
-        name: str = "Closure",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ClosureSocket:
-        return cast("ClosureSocket", self._declare(name, "CLOSURE", structure_type))
-
-
-class _ClosureInputItems(_ClosureZoneItems):
-    """Typed factories for closure inputs; each declares an input item and
-    returns the socket read inside the closure body."""
-
-    def _declare(
-        self, name: str, type: str, structure_type: _SocketShapeStructureType
-    ) -> SocketLinker:
-        zone = self._zone
+        zone = self._owner
         items = zone.output.node.input_items
         item = items.new(type, name)  # ty: ignore[invalid-argument-type]
         if structure_type != "AUTO":
@@ -1117,14 +972,16 @@ class _ClosureInputItems(_ClosureZoneItems):
         )
 
 
-class _ClosureOutputItems(_ClosureZoneItems):
+class _ClosureOutputItems(_SocketItemFactory):
     """Typed factories for closure outputs; each declares an output item
     and returns the target to feed with ``>>``."""
+
+    _owner: "ClosureZone"
 
     def _declare(
         self, name: str, type: str, structure_type: _SocketShapeStructureType
     ) -> SocketLinker:
-        zone = self._zone
+        zone = self._owner
         items = zone.output.node.output_items
         item = items.new(type, name)  # ty: ignore[invalid-argument-type]
         if structure_type != "AUTO":
