@@ -907,6 +907,113 @@ def test_closure_zone_typed_items():
         ]
 
 
+def test_foreach_zone_typed_items_all_types():
+    with TreeBuilder():
+        zone = g.ForEachGeometryElementZone(g.Cube())
+        input_pairs = [
+            (zone.inputs.float, "FLOAT"),
+            (zone.inputs.integer, "INT"),
+            (zone.inputs.boolean, "BOOLEAN"),
+            (zone.inputs.vector, "VECTOR"),
+            (zone.inputs.color, "RGBA"),
+            (zone.inputs.rotation, "ROTATION"),
+            (zone.inputs.matrix, "MATRIX"),
+            (zone.inputs.menu, "MENU"),
+        ]
+        for i, (factory, expected) in enumerate(input_pairs):
+            assert factory(f"in_{i}").socket_type == expected
+        main_pairs = [
+            (zone.main.float, "FLOAT"),
+            (zone.main.integer, "INT"),
+            (zone.main.boolean, "BOOLEAN"),
+            (zone.main.vector, "VECTOR"),
+            (zone.main.color, "RGBA"),
+            (zone.main.rotation, "ROTATION"),
+            (zone.main.matrix, "MATRIX"),
+        ]
+        for i, (factory, expected) in enumerate(main_pairs):
+            assert factory(f"main_{i}").socket_type == expected
+        generated_pairs = [
+            (zone.generated.float, "FLOAT"),
+            (zone.generated.integer, "INT"),
+            (zone.generated.boolean, "BOOLEAN"),
+            (zone.generated.vector, "VECTOR"),
+            (zone.generated.color, "RGBA"),
+            (zone.generated.rotation, "ROTATION"),
+            (zone.generated.matrix, "MATRIX"),
+            (zone.generated.geometry, "GEOMETRY"),
+        ]
+        for i, (factory, expected) in enumerate(generated_pairs):
+            assert factory(f"gen_{i}", domain="FACE").socket_type == expected
+        assert len(zone.input._items) == len(input_pairs)
+        assert len(zone.output._items) == len(main_pairs)
+        # the default Geometry generation item plus the declared ones
+        assert len(zone.output.items_generated) == len(generated_pairs) + 1
+
+
+def test_evaluate_closure_typed_items_all_types():
+    with TreeBuilder():
+        ev = g.EvaluateClosure()
+        pairs = [
+            (ev.inputs.float, "FLOAT"),
+            (ev.inputs.integer, "INT"),
+            (ev.inputs.boolean, "BOOLEAN"),
+            (ev.inputs.vector, "VECTOR"),
+            (ev.inputs.color, "RGBA"),
+            (ev.inputs.rotation, "ROTATION"),
+            (ev.inputs.matrix, "MATRIX"),
+            (ev.inputs.string, "STRING"),
+            (ev.inputs.menu, "MENU"),
+            (ev.inputs.geometry, "GEOMETRY"),
+            (ev.inputs.object, "OBJECT"),
+            (ev.inputs.image, "IMAGE"),
+            (ev.inputs.collection, "COLLECTION"),
+            (ev.inputs.material, "MATERIAL"),
+            (ev.inputs.bundle, "BUNDLE"),
+            (ev.inputs.closure, "CLOSURE"),
+        ]
+        for factory, _ in pairs:
+            factory()
+        assert [i.socket_type for i in ev.node.input_items] == [t for _, t in pairs]
+        # declare-only factories offer menu as well
+        ev.outputs.menu("MenuOut")
+        assert ev.node.output_items[0].socket_type == "MENU"
+
+
+def test_evaluate_closure_node_properties():
+    """The constructor's define_signature and active index parameters must
+    reach the bpy node, not just the wrapper instance."""
+    with TreeBuilder():
+        ev = g.EvaluateClosure(
+            output_items={"A": "FLOAT", "B": "FLOAT", "C": "FLOAT"},
+            define_signature=True,
+            active_output_index=1,
+        )
+        assert ev.node.define_signature is True
+        assert ev.define_signature is True
+        assert ev.node.active_output_index == 1
+        assert ev.node.active_input_index == 0
+        ev.active_input_index = 0
+        ev.define_signature = False
+        assert ev.node.define_signature is False
+        assert ev.active_output_index == 1
+        assert ev.active_input_index == 0
+
+        # string-typed input items declare unlinked
+        ev2 = g.EvaluateClosure(input_items={"X": "FLOAT"})
+        assert ev2.node.input_items[0].socket_type == "FLOAT"
+        assert len(ev2.node.inputs["X"].links) == 0
+
+
+def test_typed_item_factory_declare_hooks():
+    from nodebpy.builder.items import _SocketItemFactory, _SocketValueItemFactory
+
+    with pytest.raises(NotImplementedError):
+        _SocketItemFactory(None)._declare("x", "FLOAT", "AUTO")
+    with pytest.raises(NotImplementedError):
+        _SocketValueItemFactory(None)._declare("x", None, "FLOAT", "AUTO")
+
+
 def test_capture_attribute_typed_items():
     with TreeBuilder():
         cap = g.CaptureAttribute.face(g.Cube())
@@ -1018,9 +1125,12 @@ def test_bundle_typed_items():
         sb = g.SeparateBundle(cb.o.bundle)
         fa = sb.items.float("a")
         sg = sb.items.geometry("geo")
+        sfield = sb.items.vector("Field", structure_type="FIELD")
         assert isinstance(fa, FloatSocket)
         assert isinstance(sg, GeometrySocket)
         assert fa.socket == sb.node.outputs["a"]
+        assert sb.node.bundle_items[2].structure_type == "FIELD"
+        assert sfield.socket == sb.node.outputs["Field"]
 
         # the dict constructors remain the string-typed fallback
         cb2 = g.CombineBundle({"x": 1.0, "g": "GEOMETRY"})

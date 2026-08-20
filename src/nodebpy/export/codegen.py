@@ -4088,7 +4088,7 @@ def _emit_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
     fixed_inputs, item_inputs = in_sockets[:split], in_sockets[split:]
 
     kwargs = _items_fixed_kwargs(node, ctx, spec, fixed_inputs)
-    if kwargs is None:
+    if kwargs is None:  # pragma: no cover - FieldToList's fixed input is authorable
         return None
 
     items: dict[str, Expr] = {}
@@ -4098,7 +4098,7 @@ def _emit_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
             items[socket.name] = ctx.upstream_expr(link)
         elif hasattr(socket, "default_value"):
             items[socket.name] = Lit(socket.default_value)
-        else:
+        else:  # pragma: no cover - every FieldToList item socket has a default
             items[socket.name] = Lit(
                 getattr(item, "socket_type", None) or getattr(item, "data_type", "")
             )
@@ -4138,7 +4138,7 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
     item_outputs = out_sockets[len(out_sockets) - len(items) :]
 
     kwargs = _items_fixed_kwargs(node, ctx, spec, fixed_inputs)
-    if kwargs is None:
+    if kwargs is None:  # pragma: no cover - every spec'd fixed input is authorable
         return None
 
     ctx.used_aliases.add(alias)

@@ -752,6 +752,30 @@ class EvaluateClosure(BaseNode):
         self.node.input_items[len(self.node.input_items) - 1].name = name
 
     @property
+    def define_signature(self) -> bool:
+        return self.node.define_signature
+
+    @define_signature.setter
+    def define_signature(self, value: bool):
+        self.node.define_signature = value
+
+    @property
+    def active_input_index(self) -> int:
+        return cast("int", self.node.active_input_index)
+
+    @active_input_index.setter
+    def active_input_index(self, value: int):
+        self.node.active_input_index = value
+
+    @property
+    def active_output_index(self) -> int:
+        return cast("int", self.node.active_output_index)
+
+    @active_output_index.setter
+    def active_output_index(self, value: int):
+        self.node.active_output_index = value
+
+    @property
     def inputs(self) -> _EvaluateClosureInputs:
         """Typed item factories — declare closure-call inputs with static
         types."""

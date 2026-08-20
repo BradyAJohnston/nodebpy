@@ -1711,6 +1711,76 @@ def test_capture_color_item_round_trips():
     assert 'capture.items.color("Col"' in code
 
 
+def test_bundle_define_signature_round_trip():
+    """define_signature survives as a constructor kwarg on both bundle nodes,
+    and an item whose output is never read declares without a variable."""
+    with TreeBuilder("BundleSigRT") as tree:
+        cb = g.CombineBundle(define_signature=True)
+        cb.items.float("a", 0.5)
+        sb = g.SeparateBundle(cb.o.bundle, define_signature=True)
+        sb.items.float("a") >> tree.outputs.float("Out")
+        sb.items.integer("unused")
+    code = _assert_roundtrip(tree)
+    assert code.count("define_signature=True") == 2
+    assert 'separate_bundle.items.integer("unused")' in code
+    assert '= separate_bundle.items.integer("unused")' not in code
+
+
+def test_bundle_and_closure_dict_fallback(monkeypatch):
+    """An item type without a typed factory method falls back to the dict /
+    string-typed emission forms (simulated by unmapping FLOAT)."""
+    import nodebpy.export.codegen as cg
+
+    with TreeBuilder("FallbackRT") as tree:
+        val = tree.inputs.float("Val")
+        cz = g.ClosureZone()
+        cz.input_item("F", "FLOAT") >> cz.output_item("G", "FLOAT")
+        cb = g.CombineBundle({"a": val}, define_signature=True)
+        sb = g.SeparateBundle(cb.o.bundle, {"a": "FLOAT"}, define_signature=True)
+        ev = g.EvaluateClosure(
+            cz.closure,
+            input_items={"X": val},
+            output_items={"Y": "FLOAT"},
+            define_signature=True,
+        )
+        sb.o["a"] >> tree.outputs.float("Out")
+        ev.o["Y"] >> tree.outputs.float("Out2")
+    monkeypatch.delitem(cg._SWITCH_METHOD, "FLOAT")
+    code = _assert_roundtrip(tree)
+    assert 'g.CombineBundle(items={"a": val}, define_signature=True)' in code
+    assert '"a": "FLOAT"' in code
+    assert 'input_items={"X": val}' in code
+    assert 'output_items={"Y": "FLOAT"}' in code
+    assert '.input_item("F", "FLOAT")' in code
+    assert '.output_item("G", "FLOAT")' in code
+    assert code.count("define_signature=True") == 3
+
+
+def test_typed_items_node_falls_through_without_factory(monkeypatch):
+    """A typed-items node whose item type has no factory method falls through
+    to the generic constructor path instead of raising."""
+    import nodebpy.export.codegen as cg
+
+    with TreeBuilder("BakeFallback") as tree:
+        bake = g.Bake()
+        bake.items.float("Val", 1.5)
+    monkeypatch.delitem(cg._SWITCH_METHOD, "FLOAT")
+    code = to_python(tree, format=False)
+    assert "g.Bake" in code
+    assert ".items.float" not in code
+
+
+def test_items_emitters_skip_foreign_nodes():
+    """The items-node emitters return None for nodes they have no spec for,
+    before touching the emit context."""
+    from nodebpy.export.codegen import _emit_items_node, _emit_typed_items_node
+
+    with TreeBuilder("Foreign"):
+        math = g.Math.add(1.0, 2.0)
+    assert _emit_items_node(math.node, None) is None
+    assert _emit_typed_items_node(math.node, None) is None
+
+
 def test_closure_zone_round_trip():
     """A ClosureZone defines a closure body: input_item reads feed the body,
     output_item targets collect results, and .closure produces the closure."""
