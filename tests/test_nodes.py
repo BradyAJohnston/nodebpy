@@ -868,6 +868,10 @@ def test_closure_zone_typed_items():
         assert cz.output.node.input_items[2].structure_type == "FIELD"
         assert field.socket == cz.input.node.outputs["Field"]
 
+        field_out = cz.outputs.vector("FieldOut", structure_type="FIELD")
+        assert cz.output.node.output_items[1].structure_type == "FIELD"
+        assert field_out.socket == cz.output.node.inputs["FieldOut"]
+
     with TreeBuilder():
         cz = g.ClosureZone()
         for factory, expected in [
