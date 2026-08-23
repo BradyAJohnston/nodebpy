@@ -49,24 +49,72 @@ class Array(AssetGeometryGroup):
         Geometry that is duplicated
     shape : InputMenu | Literal["Line", "Circle", "Curve", "Transform"]
         Method used for arranging the duplicates
+    count_method : InputMenu | Literal["Count", "Distance"]
+        Method to choose the number of duplicates
     count : InputInteger
         The number of copies to generate
+    distance : InputFloat
+        The distance along the curve between copies
+    angular_distance : InputFloat
+        The angle along the circle arc between copies
+    per_curve : InputBoolean
+        Specify the number of copies for each curve separately
     offset_method : InputMenu | Literal["Relative", "Offset", "Endpoint"]
         Method to interpret the offset parameters
+    transform_reference : InputMenu | Literal["Inputs", "Object"]
+        Define the transform locally or with an object's transform
+    translation : InputVector
+        Translation accumulated for each copy
     offset : InputVector
         Amount to move each copy relative to its bounding box size
     rotation : InputRotation
         Rotation accumulated for each copy
     scale : InputVector
         Scale accumulated for each copy
+    central_axis : InputMenu | Literal["X", "Y", "Z"]
+        The up direction for the circle shape
+    circle_segment : InputMenu | Literal["Full", "Arc"]
+        Whether the copies should fan out in a full circle or an arc
+    sweep_angle : InputFloat
+        Total angle used to fan out the copies in a circular arc
+    radius : InputFloat
+        Distance of the instances from the origin
+    transform_object : InputObject
+        Reference object to define the accumulated transform
+    curve_object : InputObject
+        Reference curve object for array
+    relative_space : InputBoolean
+        Use relative space for the input geometry so the transforms of both inputs in relation are considered
     realize_instances : InputBoolean
         Turn the output into a single geometry rather than instances (required by many other modifiers)
+    align_rotation : InputBoolean
+        Rotate copies based on the array shape
+    local_rotation : InputRotation
+        Local rotation of the instances to tune the rotation alignment
     randomize : InputBoolean
         Randomize transforms between all copies
+    randomize_offset : InputVector
+        Offset the copies randomly
+    randomize_rotation : InputVector
+        Rotate the copies randomly
+    randomize_scale_axes : InputMenu | Literal["Uniform", "Axes"]
+        Whether to apply random scale uniformly or per axis
+    socket_19 : InputVector
+        Scale the copies randomly per axis
+    socket_44 : InputFloat
+        Scale the copies randomly
+    randomize_flipping : InputVector
+        Flip a fraction of copies along individual axes
+    exclude_first : InputBoolean
+        Exclude the first (original) copy from randomization
+    exclude_last : InputBoolean
+        Exclude the last copy from randomization
     seed : InputInteger
         Base value to control random variation in a reproducible way
     merge : InputBoolean
         Merge overlapping points by their distance. (Realize Instances must be enabled).
+    merge_distance : InputFloat
+        Distance below which points will be merged
 
     Inputs
     ------
@@ -74,24 +122,72 @@ class Array(AssetGeometryGroup):
         Geometry that is duplicated
     i.shape : MenuSocket
         Method used for arranging the duplicates
+    i.count_method : MenuSocket
+        Method to choose the number of duplicates
     i.count : IntegerSocket
         The number of copies to generate
+    i.distance : FloatSocket
+        The distance along the curve between copies
+    i.angular_distance : FloatSocket
+        The angle along the circle arc between copies
+    i.per_curve : BooleanSocket
+        Specify the number of copies for each curve separately
     i.offset_method : MenuSocket
         Method to interpret the offset parameters
+    i.transform_reference : MenuSocket
+        Define the transform locally or with an object's transform
+    i.translation : VectorSocket
+        Translation accumulated for each copy
     i.offset : VectorSocket
         Amount to move each copy relative to its bounding box size
     i.rotation : RotationSocket
         Rotation accumulated for each copy
     i.scale : VectorSocket
         Scale accumulated for each copy
+    i.central_axis : MenuSocket
+        The up direction for the circle shape
+    i.circle_segment : MenuSocket
+        Whether the copies should fan out in a full circle or an arc
+    i.sweep_angle : FloatSocket
+        Total angle used to fan out the copies in a circular arc
+    i.radius : FloatSocket
+        Distance of the instances from the origin
+    i.transform_object : ObjectSocket
+        Reference object to define the accumulated transform
+    i.curve_object : ObjectSocket
+        Reference curve object for array
+    i.relative_space : BooleanSocket
+        Use relative space for the input geometry so the transforms of both inputs in relation are considered
     i.realize_instances : BooleanSocket
         Turn the output into a single geometry rather than instances (required by many other modifiers)
+    i.align_rotation : BooleanSocket
+        Rotate copies based on the array shape
+    i.local_rotation : RotationSocket
+        Local rotation of the instances to tune the rotation alignment
     i.randomize : BooleanSocket
         Randomize transforms between all copies
+    i.randomize_offset : VectorSocket
+        Offset the copies randomly
+    i.randomize_rotation : VectorSocket
+        Rotate the copies randomly
+    i.randomize_scale_axes : MenuSocket
+        Whether to apply random scale uniformly or per axis
+    i.socket_19 : VectorSocket
+        Scale the copies randomly per axis
+    i.socket_44 : FloatSocket
+        Scale the copies randomly
+    i.randomize_flipping : VectorSocket
+        Flip a fraction of copies along individual axes
+    i.exclude_first : BooleanSocket
+        Exclude the first (original) copy from randomization
+    i.exclude_last : BooleanSocket
+        Exclude the last copy from randomization
     i.seed : IntegerSocket
         Base value to control random variation in a reproducible way
     i.merge : BooleanSocket
         Merge overlapping points by their distance. (Realize Instances must be enabled).
+    i.merge_distance : FloatSocket
+        Distance below which points will be merged
 
     Outputs
     -------
@@ -108,24 +204,72 @@ class Array(AssetGeometryGroup):
         """Geometry that is duplicated"""
         shape: MenuSocket
         """Method used for arranging the duplicates"""
+        count_method: MenuSocket
+        """Method to choose the number of duplicates"""
         count: IntegerSocket
         """The number of copies to generate"""
+        distance: FloatSocket
+        """The distance along the curve between copies"""
+        angular_distance: FloatSocket
+        """The angle along the circle arc between copies"""
+        per_curve: BooleanSocket
+        """Specify the number of copies for each curve separately"""
         offset_method: MenuSocket
         """Method to interpret the offset parameters"""
+        transform_reference: MenuSocket
+        """Define the transform locally or with an object's transform"""
+        translation: VectorSocket
+        """Translation accumulated for each copy"""
         offset: VectorSocket
         """Amount to move each copy relative to its bounding box size"""
         rotation: RotationSocket
         """Rotation accumulated for each copy"""
         scale: VectorSocket
         """Scale accumulated for each copy"""
+        central_axis: MenuSocket
+        """The up direction for the circle shape"""
+        circle_segment: MenuSocket
+        """Whether the copies should fan out in a full circle or an arc"""
+        sweep_angle: FloatSocket
+        """Total angle used to fan out the copies in a circular arc"""
+        radius: FloatSocket
+        """Distance of the instances from the origin"""
+        transform_object: ObjectSocket
+        """Reference object to define the accumulated transform"""
+        curve_object: ObjectSocket
+        """Reference curve object for array"""
+        relative_space: BooleanSocket
+        """Use relative space for the input geometry so the transforms of both inputs in relation are considered"""
         realize_instances: BooleanSocket
         """Turn the output into a single geometry rather than instances (required by many other modifiers)"""
+        align_rotation: BooleanSocket
+        """Rotate copies based on the array shape"""
+        local_rotation: RotationSocket
+        """Local rotation of the instances to tune the rotation alignment"""
         randomize: BooleanSocket
         """Randomize transforms between all copies"""
+        randomize_offset: VectorSocket
+        """Offset the copies randomly"""
+        randomize_rotation: VectorSocket
+        """Rotate the copies randomly"""
+        randomize_scale_axes: MenuSocket
+        """Whether to apply random scale uniformly or per axis"""
+        socket_19: VectorSocket
+        """Scale the copies randomly per axis"""
+        socket_44: FloatSocket
+        """Scale the copies randomly"""
+        randomize_flipping: VectorSocket
+        """Flip a fraction of copies along individual axes"""
+        exclude_first: BooleanSocket
+        """Exclude the first (original) copy from randomization"""
+        exclude_last: BooleanSocket
+        """Exclude the last copy from randomization"""
         seed: IntegerSocket
         """Base value to control random variation in a reproducible way"""
         merge: BooleanSocket
         """Merge overlapping points by their distance. (Realize Instances must be enabled)."""
+        merge_distance: FloatSocket
+        """Distance below which points will be merged"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
@@ -142,30 +286,78 @@ class Array(AssetGeometryGroup):
         self,
         geometry: InputGeometry = None,
         shape: InputMenu | Literal["Line", "Circle", "Curve", "Transform"] = "Line",
+        count_method: InputMenu | Literal["Count", "Distance"] = "Count",
         count: InputInteger = 3,
+        distance: InputFloat = 1.0,
+        angular_distance: InputFloat = 0.785398,
+        per_curve: InputBoolean = True,
         offset_method: InputMenu
         | Literal["Relative", "Offset", "Endpoint"] = "Relative",
+        transform_reference: InputMenu | Literal["Inputs", "Object"] = "Inputs",
+        translation: InputVector = None,
         offset: InputVector = None,
         rotation: InputRotation = None,
         scale: InputVector = None,
+        central_axis: InputMenu | Literal["X", "Y", "Z"] = "Z",
+        circle_segment: InputMenu | Literal["Full", "Arc"] = "Full",
+        sweep_angle: InputFloat = 3.141593,
+        radius: InputFloat = 0.0,
+        transform_object: InputObject = None,
+        curve_object: InputObject = None,
+        relative_space: InputBoolean = True,
         realize_instances: InputBoolean = True,
+        align_rotation: InputBoolean = True,
+        local_rotation: InputRotation = None,
         randomize: InputBoolean = False,
+        randomize_offset: InputVector = None,
+        randomize_rotation: InputVector = None,
+        randomize_scale_axes: InputMenu | Literal["Uniform", "Axes"] = "Uniform",
+        socket_19: InputVector = None,
+        socket_44: InputFloat = 0.0,
+        randomize_flipping: InputVector = None,
+        exclude_first: InputBoolean = True,
+        exclude_last: InputBoolean = False,
         seed: InputInteger = 0,
         merge: InputBoolean = False,
+        merge_distance: InputFloat = 0.001,
     ):
         super().__init__(
             **{
                 "Socket_7": geometry,
                 "Socket_2": shape,
+                "Socket_33": count_method,
                 "Socket_5": count,
+                "Socket_34": distance,
+                "Socket_37": angular_distance,
+                "Socket_35": per_curve,
                 "Socket_14": offset_method,
+                "Socket_25": transform_reference,
+                "Socket_8": translation,
                 "Socket_21": offset,
                 "Socket_9": rotation,
                 "Socket_10": scale,
+                "Socket_11": central_axis,
+                "Socket_29": circle_segment,
+                "Socket_28": sweep_angle,
+                "Socket_6": radius,
+                "Socket_24": transform_object,
+                "Socket_27": curve_object,
+                "Socket_26": relative_space,
                 "Socket_38": realize_instances,
+                "Socket_12": align_rotation,
+                "Socket_50": local_rotation,
                 "Socket_17": randomize,
+                "Socket_42": randomize_offset,
+                "Socket_15": randomize_rotation,
+                "Socket_43": randomize_scale_axes,
+                "Socket_19": socket_19,
+                "Socket_44": socket_44,
+                "Socket_45": randomize_flipping,
+                "Socket_22": exclude_first,
+                "Socket_46": exclude_last,
                 "Socket_18": seed,
                 "Socket_31": merge,
+                "Socket_32": merge_distance,
             }
         )
 
@@ -180,6 +372,8 @@ class AttachHairCurvesToSurface(AssetGeometryGroup):
         Input geometry (may include geometry other than curves)
     surface_source : InputMenu | Literal["Attached", "Input", "Object"]
         Select the input source for the surface geometry.
+    surface_geometry : InputGeometry
+        Surface geometry to attach hair curves to
     surface_object : InputObject
         Surface Object to attach to
     surface_uv_map : InputVector
@@ -201,6 +395,8 @@ class AttachHairCurvesToSurface(AssetGeometryGroup):
         Input geometry (may include geometry other than curves)
     i.surface_source : MenuSocket
         Select the input source for the surface geometry.
+    i.surface_geometry : GeometrySocket
+        Surface geometry to attach hair curves to
     i.surface_object : ObjectSocket
         Surface Object to attach to
     i.surface_uv_map : VectorSocket
@@ -235,6 +431,8 @@ class AttachHairCurvesToSurface(AssetGeometryGroup):
         """Input geometry (may include geometry other than curves)"""
         surface_source: MenuSocket
         """Select the input source for the surface geometry."""
+        surface_geometry: GeometrySocket
+        """Surface geometry to attach hair curves to"""
         surface_object: ObjectSocket
         """Surface Object to attach to"""
         surface_uv_map: VectorSocket
@@ -269,6 +467,7 @@ class AttachHairCurvesToSurface(AssetGeometryGroup):
         self,
         geometry: InputGeometry = None,
         surface_source: InputMenu | Literal["Attached", "Input", "Object"] = "Object",
+        surface_geometry: InputGeometry = None,
         surface_object: InputObject = None,
         surface_uv_map: InputVector = None,
         resting_surface: InputBoolean = False,
@@ -281,6 +480,7 @@ class AttachHairCurvesToSurface(AssetGeometryGroup):
             **{
                 "Input_0": geometry,
                 "Socket_2": surface_source,
+                "Input_3": surface_geometry,
                 "Input_4": surface_object,
                 "Input_2": surface_uv_map,
                 "Input_6": resting_surface,
@@ -523,8 +723,16 @@ class BraidHairCurves(AssetGeometryGroup):
         Length of the flare at the end of the braid
     flare_opening : InputFloat
         Opening radius of the flare at the tip of the braid
-    hair_tie : InputBoolean
+    socket_2 : InputBoolean
         Hair Tie
+    hair_tie_input_type : InputMenu | Literal["Object", "Geometry"]
+        Select the input type for the hair tie geometry.
+    input_17 : InputGeometry
+        Geometry used for the hair tie instance (priority)
+    input_16 : InputObject
+        Object used for the hair tie instance
+    hair_tie_scale : InputFloat
+        Scale of the hair tie instance
     guide_index : InputInteger
         Guide index map to use. This input has priority.
     guide_distance : InputFloat
@@ -564,8 +772,16 @@ class BraidHairCurves(AssetGeometryGroup):
         Length of the flare at the end of the braid
     i.flare_opening : FloatSocket
         Opening radius of the flare at the tip of the braid
-    i.hair_tie : BooleanSocket
+    i.socket_2 : BooleanSocket
         Hair Tie
+    i.hair_tie_input_type : MenuSocket
+        Select the input type for the hair tie geometry.
+    i.input_17 : GeometrySocket
+        Geometry used for the hair tie instance (priority)
+    i.input_16 : ObjectSocket
+        Object used for the hair tie instance
+    i.hair_tie_scale : FloatSocket
+        Scale of the hair tie instance
     i.guide_index : IntegerSocket
         Guide index map to use. This input has priority.
     i.guide_distance : FloatSocket
@@ -620,8 +836,16 @@ class BraidHairCurves(AssetGeometryGroup):
         """Length of the flare at the end of the braid"""
         flare_opening: FloatSocket
         """Opening radius of the flare at the tip of the braid"""
-        hair_tie: BooleanSocket
+        socket_2: BooleanSocket
         """Hair Tie"""
+        hair_tie_input_type: MenuSocket
+        """Select the input type for the hair tie geometry."""
+        input_17: GeometrySocket
+        """Geometry used for the hair tie instance (priority)"""
+        input_16: ObjectSocket
+        """Object used for the hair tie instance"""
+        hair_tie_scale: FloatSocket
+        """Scale of the hair tie instance"""
         guide_index: IntegerSocket
         """Guide index map to use. This input has priority."""
         guide_distance: FloatSocket
@@ -664,7 +888,11 @@ class BraidHairCurves(AssetGeometryGroup):
         shape_asymmetry: InputFloat = 0.0,
         flare_length: InputFloat = 0.0,
         flare_opening: InputFloat = 0.0,
-        hair_tie: InputBoolean = False,
+        socket_2: InputBoolean = False,
+        hair_tie_input_type: InputMenu | Literal["Object", "Geometry"] = "Object",
+        input_17: InputGeometry = None,
+        input_16: InputObject = None,
+        hair_tie_scale: InputFloat = 1.0,
         guide_index: InputInteger = -987654,
         guide_distance: InputFloat = 0.1,
         guide_mask: InputFloat = 1.0,
@@ -686,7 +914,11 @@ class BraidHairCurves(AssetGeometryGroup):
                 "Input_12": shape_asymmetry,
                 "Input_15": flare_length,
                 "Input_21": flare_opening,
-                "Socket_2": hair_tie,
+                "Socket_2": socket_2,
+                "Socket_0": hair_tie_input_type,
+                "Input_17": input_17,
+                "Input_16": input_16,
+                "Input_18": hair_tie_scale,
                 "Input_25": guide_index,
                 "Input_4": guide_distance,
                 "Input_22": guide_mask,
@@ -784,6 +1016,14 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
         Direction and strength of the gravity.
     tearing : InputBoolean
         Enable dynamic tearing of the mesh.
+    tearing_mode : InputMenu | Literal["All", "Custom", "Voronoi"]
+        How to choose which edges are allowed to tear.
+    tearing_edge_group : InputBoolean
+        Selection of edges which are allowed to tear.
+    tearing_threshold : InputFloat
+        The higher the value, the stronger the stress required to tear an edge.
+    tearing_voronoi_scale : InputFloat
+        Scale of Voronoi patches whose boundaries can tear.
     effectors_collection : InputCollection
         A collection containing effectors for the simulation. This includes e.g. forces, colliders and custom effectors.
     cloth_tags : InputString
@@ -825,6 +1065,14 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
         Direction and strength of the gravity.
     i.tearing : BooleanSocket
         Enable dynamic tearing of the mesh.
+    i.tearing_mode : MenuSocket
+        How to choose which edges are allowed to tear.
+    i.tearing_edge_group : BooleanSocket
+        Selection of edges which are allowed to tear.
+    i.tearing_threshold : FloatSocket
+        The higher the value, the stronger the stress required to tear an edge.
+    i.tearing_voronoi_scale : FloatSocket
+        Scale of Voronoi patches whose boundaries can tear.
     i.effectors_collection : CollectionSocket
         A collection containing effectors for the simulation. This includes e.g. forces, colliders and custom effectors.
     i.cloth_tags : StringSocket
@@ -877,6 +1125,14 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
         """Direction and strength of the gravity."""
         tearing: BooleanSocket
         """Enable dynamic tearing of the mesh."""
+        tearing_mode: MenuSocket
+        """How to choose which edges are allowed to tear."""
+        tearing_edge_group: BooleanSocket
+        """Selection of edges which are allowed to tear."""
+        tearing_threshold: FloatSocket
+        """The higher the value, the stronger the stress required to tear an edge."""
+        tearing_voronoi_scale: FloatSocket
+        """Scale of Voronoi patches whose boundaries can tear."""
         effectors_collection: CollectionSocket
         """A collection containing effectors for the simulation. This includes e.g. forces, colliders and custom effectors."""
         cloth_tags: StringSocket
@@ -916,6 +1172,10 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
         socket_5: InputBoolean = True,
         socket_3: InputVector = None,
         tearing: InputBoolean = False,
+        tearing_mode: InputMenu | Literal["All", "Custom", "Voronoi"] = "All",
+        tearing_edge_group: InputBoolean = True,
+        tearing_threshold: InputFloat = 1.2,
+        tearing_voronoi_scale: InputFloat = 0.5,
         effectors_collection: InputCollection = None,
         cloth_tags: InputString = "",
         extra_sim_attributes: InputString = "",
@@ -938,6 +1198,10 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
                 "Socket_5": socket_5,
                 "Socket_3": socket_3,
                 "Socket_11": tearing,
+                "Socket_17": tearing_mode,
+                "Socket_13": tearing_edge_group,
+                "Socket_12": tearing_threshold,
+                "Socket_18": tearing_voronoi_scale,
                 "Socket_7": effectors_collection,
                 "Socket_20": cloth_tags,
                 "Socket_22": extra_sim_attributes,
@@ -966,6 +1230,8 @@ class ClumpHairCurves(AssetGeometryGroup):
         Falloff distance for the clumping effect (0 means no falloff)
     distance_threshold : InputFloat
         Distance threshold for the falloff around the guide
+    seed : InputInteger
+        Random seed for the operation
     preserve_length : InputBoolean
         Preserve each curve's length during deformation
     guide_index : InputInteger
@@ -993,6 +1259,8 @@ class ClumpHairCurves(AssetGeometryGroup):
         Falloff distance for the clumping effect (0 means no falloff)
     i.distance_threshold : FloatSocket
         Distance threshold for the falloff around the guide
+    i.seed : IntegerSocket
+        Random seed for the operation
     i.preserve_length : BooleanSocket
         Preserve each curve's length during deformation
     i.guide_index : IntegerSocket
@@ -1031,6 +1299,8 @@ class ClumpHairCurves(AssetGeometryGroup):
         """Falloff distance for the clumping effect (0 means no falloff)"""
         distance_threshold: FloatSocket
         """Distance threshold for the falloff around the guide"""
+        seed: IntegerSocket
+        """Random seed for the operation"""
         preserve_length: BooleanSocket
         """Preserve each curve's length during deformation"""
         guide_index: IntegerSocket
@@ -1064,6 +1334,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         clump_offset: InputFloat = 0.0,
         distance_falloff: InputFloat = 0.0,
         distance_threshold: InputFloat = 0.0,
+        seed: InputInteger = 0,
         preserve_length: InputBoolean = False,
         guide_index: InputInteger = -987654,
         guide_distance: InputFloat = 0.1,
@@ -1079,6 +1350,7 @@ class ClumpHairCurves(AssetGeometryGroup):
                 "Input_13": clump_offset,
                 "Input_12": distance_falloff,
                 "Input_11": distance_threshold,
+                "Input_14": seed,
                 "Input_15": preserve_length,
                 "Input_16": guide_index,
                 "Input_9": guide_distance,
@@ -1770,6 +2042,12 @@ class CurveToTube(AssetGeometryGroup):
         Distance factor multiplied with the curve's radius attribute to define the resulting tube radius
     profile_mode : InputMenu | Literal["Round", "Custom"]
         Method used to define the profile shape
+    profile_input : InputMenu | Literal["Object", "Geometry"]
+        How the profile geometry input should be exposed
+    profile_object : InputObject
+        Shape defining a section of the tube, using the XY plane
+    profile_geometry : InputGeometry
+        Shape defining a section of the tube, using the XY plane
     profile_resolution : InputInteger
         Number of points on the profile circle. Also defines the round cap resolution.
     shade_smooth : InputBoolean
@@ -1778,12 +2056,36 @@ class CurveToTube(AssetGeometryGroup):
         Resample the input curve before meshing
     resample_mode : InputMenu | Literal["Evaluated", "Auto", "Count", "Length"]
         How to specify the number of samples
+    resample_count : InputInteger
+        Number of sample points on the curve
+    resample_length : InputFloat
+        Distance between two sample points along the curve
+    resample_scale : InputFloat
+        Scale factor applied on the automatically derived resample length
     caps : InputBoolean
         Fill the holes at the tube ends with cap geometry
     caps_type : InputMenu | Literal["Flat", "Round", "Custom"]
         Method used to build the start and end geometry
+    caps_input : InputMenu | Literal["Object", "Geometry"]
+        How the cap geometry input should be exposed
+    socket_21 : InputObject
+        Geometry to add to the start of each curve
+    socket_22 : InputObject
+        Geometry to add to the end of each curve
+    socket_23 : InputGeometry
+        Geometry to add to the start of each curve
+    socket_24 : InputGeometry
+        Geometry to add to the end of each curve
+    caps_resolution : InputInteger
+        Amount of edge loops the round caps are generated with
     caps_smooth : InputBoolean
         Make border edges between the caps and the tube shape smooth instead of sharp
+    caps_merge : InputBoolean
+        Combine the cap geometry with the base mesh (realizing instances and merging vertices)
+    caps_align_normals : InputBoolean
+        Build custom normals on the caps for more continuous shading borders with the tube shape
+    caps_extrapolate_radius : InputBoolean
+        Adjust the shape of the cap to follow the change in radius towards the curve ends
     uv_map : InputBoolean
         Generate UV attribute data on the curve geometry
     uv_map_name : InputString
@@ -1792,6 +2094,8 @@ class CurveToTube(AssetGeometryGroup):
         Method to generate the map's X coordinate along the main curve
     uv_map_parameter_v : InputMenu | Literal["Factor", "Length", "Index"]
         Method to generate the map's Y coordinate along the profile curve
+    consider_curve_radius : InputBoolean
+        Consider the main curve's radius attribute as a factor when mapping the V component by the profile curve's length parameter
 
     Inputs
     ------
@@ -1801,6 +2105,12 @@ class CurveToTube(AssetGeometryGroup):
         Distance factor multiplied with the curve's radius attribute to define the resulting tube radius
     i.profile_mode : MenuSocket
         Method used to define the profile shape
+    i.profile_input : MenuSocket
+        How the profile geometry input should be exposed
+    i.profile_object : ObjectSocket
+        Shape defining a section of the tube, using the XY plane
+    i.profile_geometry : GeometrySocket
+        Shape defining a section of the tube, using the XY plane
     i.profile_resolution : IntegerSocket
         Number of points on the profile circle. Also defines the round cap resolution.
     i.shade_smooth : BooleanSocket
@@ -1809,12 +2119,36 @@ class CurveToTube(AssetGeometryGroup):
         Resample the input curve before meshing
     i.resample_mode : MenuSocket
         How to specify the number of samples
+    i.resample_count : IntegerSocket
+        Number of sample points on the curve
+    i.resample_length : FloatSocket
+        Distance between two sample points along the curve
+    i.resample_scale : FloatSocket
+        Scale factor applied on the automatically derived resample length
     i.caps : BooleanSocket
         Fill the holes at the tube ends with cap geometry
     i.caps_type : MenuSocket
         Method used to build the start and end geometry
+    i.caps_input : MenuSocket
+        How the cap geometry input should be exposed
+    i.socket_21 : ObjectSocket
+        Geometry to add to the start of each curve
+    i.socket_22 : ObjectSocket
+        Geometry to add to the end of each curve
+    i.socket_23 : GeometrySocket
+        Geometry to add to the start of each curve
+    i.socket_24 : GeometrySocket
+        Geometry to add to the end of each curve
+    i.caps_resolution : IntegerSocket
+        Amount of edge loops the round caps are generated with
     i.caps_smooth : BooleanSocket
         Make border edges between the caps and the tube shape smooth instead of sharp
+    i.caps_merge : BooleanSocket
+        Combine the cap geometry with the base mesh (realizing instances and merging vertices)
+    i.caps_align_normals : BooleanSocket
+        Build custom normals on the caps for more continuous shading borders with the tube shape
+    i.caps_extrapolate_radius : BooleanSocket
+        Adjust the shape of the cap to follow the change in radius towards the curve ends
     i.uv_map : BooleanSocket
         Generate UV attribute data on the curve geometry
     i.uv_map_name : StringSocket
@@ -1823,6 +2157,8 @@ class CurveToTube(AssetGeometryGroup):
         Method to generate the map's X coordinate along the main curve
     i.uv_map_parameter_v : MenuSocket
         Method to generate the map's Y coordinate along the profile curve
+    i.consider_curve_radius : BooleanSocket
+        Consider the main curve's radius attribute as a factor when mapping the V component by the profile curve's length parameter
 
     Outputs
     -------
@@ -1841,6 +2177,12 @@ class CurveToTube(AssetGeometryGroup):
         """Distance factor multiplied with the curve's radius attribute to define the resulting tube radius"""
         profile_mode: MenuSocket
         """Method used to define the profile shape"""
+        profile_input: MenuSocket
+        """How the profile geometry input should be exposed"""
+        profile_object: ObjectSocket
+        """Shape defining a section of the tube, using the XY plane"""
+        profile_geometry: GeometrySocket
+        """Shape defining a section of the tube, using the XY plane"""
         profile_resolution: IntegerSocket
         """Number of points on the profile circle. Also defines the round cap resolution."""
         shade_smooth: BooleanSocket
@@ -1849,12 +2191,36 @@ class CurveToTube(AssetGeometryGroup):
         """Resample the input curve before meshing"""
         resample_mode: MenuSocket
         """How to specify the number of samples"""
+        resample_count: IntegerSocket
+        """Number of sample points on the curve"""
+        resample_length: FloatSocket
+        """Distance between two sample points along the curve"""
+        resample_scale: FloatSocket
+        """Scale factor applied on the automatically derived resample length"""
         caps: BooleanSocket
         """Fill the holes at the tube ends with cap geometry"""
         caps_type: MenuSocket
         """Method used to build the start and end geometry"""
+        caps_input: MenuSocket
+        """How the cap geometry input should be exposed"""
+        socket_21: ObjectSocket
+        """Geometry to add to the start of each curve"""
+        socket_22: ObjectSocket
+        """Geometry to add to the end of each curve"""
+        socket_23: GeometrySocket
+        """Geometry to add to the start of each curve"""
+        socket_24: GeometrySocket
+        """Geometry to add to the end of each curve"""
+        caps_resolution: IntegerSocket
+        """Amount of edge loops the round caps are generated with"""
         caps_smooth: BooleanSocket
         """Make border edges between the caps and the tube shape smooth instead of sharp"""
+        caps_merge: BooleanSocket
+        """Combine the cap geometry with the base mesh (realizing instances and merging vertices)"""
+        caps_align_normals: BooleanSocket
+        """Build custom normals on the caps for more continuous shading borders with the tube shape"""
+        caps_extrapolate_radius: BooleanSocket
+        """Adjust the shape of the cap to follow the change in radius towards the curve ends"""
         uv_map: BooleanSocket
         """Generate UV attribute data on the curve geometry"""
         uv_map_name: StringSocket
@@ -1863,6 +2229,8 @@ class CurveToTube(AssetGeometryGroup):
         """Method to generate the map's X coordinate along the main curve"""
         uv_map_parameter_v: MenuSocket
         """Method to generate the map's Y coordinate along the profile curve"""
+        consider_curve_radius: BooleanSocket
+        """Consider the main curve's radius attribute as a factor when mapping the V component by the profile curve's length parameter"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
@@ -1880,35 +2248,67 @@ class CurveToTube(AssetGeometryGroup):
         curve: InputGeometry = None,
         scale: InputFloat = 0.1,
         profile_mode: InputMenu | Literal["Round", "Custom"] = "Round",
+        profile_input: InputMenu | Literal["Object", "Geometry"] = "Object",
+        profile_object: InputObject = None,
+        profile_geometry: InputGeometry = None,
         profile_resolution: InputInteger = 8,
         shade_smooth: InputBoolean = True,
         resample: InputBoolean = True,
         resample_mode: InputMenu
         | Literal["Evaluated", "Auto", "Count", "Length"] = "Evaluated",
+        resample_count: InputInteger = 10,
+        resample_length: InputFloat = 0.1,
+        resample_scale: InputFloat = 1.0,
         caps: InputBoolean = True,
         caps_type: InputMenu | Literal["Flat", "Round", "Custom"] = "Flat",
+        caps_input: InputMenu | Literal["Object", "Geometry"] = "Object",
+        socket_21: InputObject = None,
+        socket_22: InputObject = None,
+        socket_23: InputGeometry = None,
+        socket_24: InputGeometry = None,
+        caps_resolution: InputInteger = 12,
         caps_smooth: InputBoolean = False,
+        caps_merge: InputBoolean = True,
+        caps_align_normals: InputBoolean = False,
+        caps_extrapolate_radius: InputBoolean = True,
         uv_map: InputBoolean = True,
         uv_map_name: InputString = "UVMap",
         uv_map_parameter_u: InputMenu | Literal["Factor", "Length", "Index"] = "Length",
         uv_map_parameter_v: InputMenu | Literal["Factor", "Length", "Index"] = "Factor",
+        consider_curve_radius: InputBoolean = True,
     ):
         super().__init__(
             **{
                 "Socket_0": curve,
                 "Socket_5": scale,
                 "Socket_4": profile_mode,
+                "Socket_26": profile_input,
+                "Socket_3": profile_object,
+                "Socket_27": profile_geometry,
                 "Socket_2": profile_resolution,
                 "Socket_11": shade_smooth,
                 "Socket_36": resample,
                 "Socket_32": resample_mode,
+                "Socket_33": resample_count,
+                "Socket_37": resample_length,
+                "Socket_38": resample_scale,
                 "Socket_39": caps,
                 "Socket_10": caps_type,
+                "Socket_25": caps_input,
+                "Socket_21": socket_21,
+                "Socket_22": socket_22,
+                "Socket_23": socket_23,
+                "Socket_24": socket_24,
+                "Socket_28": caps_resolution,
                 "Socket_15": caps_smooth,
+                "Socket_13": caps_merge,
+                "Socket_14": caps_align_normals,
+                "Socket_30": caps_extrapolate_radius,
                 "Socket_31": uv_map,
                 "Socket_17": uv_map_name,
                 "Socket_19": uv_map_parameter_u,
                 "Socket_20": uv_map_parameter_v,
+                "Socket_29": consider_curve_radius,
             }
         )
 
@@ -1921,10 +2321,14 @@ class CustomEffector(AssetGeometryGroup):
     ----------
     type : InputMenu | Literal["Geometry", "World"]
         The type of effector to create.
-    stage : InputMenu | Literal["Default", "Pre-Simulation", "Pre-Solve", "Post-Solve", "Custom"]
+    socket_1 : InputMenu | Literal["Default", "Pre-Simulation", "Pre-Solve", "Post-Solve", "Custom"]
         At which stage the custom effector should be evaluated.
+    socket_2 : InputString
+        Custom stage name.
     geometry_effector : InputClosure
         Closure effecting one geometry at a time.
+    world_effector : InputClosure
+        Closure modifying an entire (simulation) world at once.
     filter : InputString
         Comma-separated list of tags this effector should apply to.
 
@@ -1932,10 +2336,14 @@ class CustomEffector(AssetGeometryGroup):
     ------
     i.type : MenuSocket
         The type of effector to create.
-    i.stage : MenuSocket
+    i.socket_1 : MenuSocket
         At which stage the custom effector should be evaluated.
+    i.socket_2 : StringSocket
+        Custom stage name.
     i.geometry_effector : ClosureSocket
         Closure effecting one geometry at a time.
+    i.world_effector : ClosureSocket
+        Closure modifying an entire (simulation) world at once.
     i.filter : StringSocket
         Comma-separated list of tags this effector should apply to.
 
@@ -1952,10 +2360,14 @@ class CustomEffector(AssetGeometryGroup):
     class _Inputs(SocketAccessor):
         type: MenuSocket
         """The type of effector to create."""
-        stage: MenuSocket
+        socket_1: MenuSocket
         """At which stage the custom effector should be evaluated."""
+        socket_2: StringSocket
+        """Custom stage name."""
         geometry_effector: ClosureSocket
         """Closure effecting one geometry at a time."""
+        world_effector: ClosureSocket
+        """Closure modifying an entire (simulation) world at once."""
         filter: StringSocket
         """Comma-separated list of tags this effector should apply to."""
 
@@ -1973,18 +2385,22 @@ class CustomEffector(AssetGeometryGroup):
     def __init__(
         self,
         type: InputMenu | Literal["Geometry", "World"] = "Geometry",
-        stage: InputMenu
+        socket_1: InputMenu
         | Literal[
             "Default", "Pre-Simulation", "Pre-Solve", "Post-Solve", "Custom"
         ] = "Default",
+        socket_2: InputString = "",
         geometry_effector: InputClosure = None,
+        world_effector: InputClosure = None,
         filter: InputString = "",
     ):
         super().__init__(
             **{
                 "Socket_7": type,
-                "Socket_1": stage,
+                "Socket_1": socket_1,
+                "Socket_2": socket_2,
                 "Socket_5": geometry_effector,
+                "Socket_6": world_effector,
                 "Socket_3": filter,
             }
         )
@@ -1998,14 +2414,24 @@ class CustomForce(AssetGeometryGroup):
     ----------
     mode : InputMenu | Literal["Field", "Closure"]
         How the force field is defined.
+    closure : InputClosure
+        The closure computing the force at each point of the input geometry.
     selection : InputBoolean
         Selection of points this force is applied to.
     force : InputVector
         The actual force vector.
-    geometry_space : InputMenu | Literal["Custom Space", "World Space", "Object Space"]
+    socket_6 : InputMenu | Literal["Custom Space", "World Space", "Object Space"]
         The space the geometry is transformed to before the field is evaluated.
-    force_space : InputMenu | Literal["Custom Space", "World Space", "Object Space"]
+    socket_8 : InputMatrix
+        Custom geometry space.
+    socket_14 : InputObject
+        Object to take the geometry space from.
+    socket_7 : InputMenu | Literal["Custom Space", "World Space", "Object Space"]
         The space the provided force vector is in.
+    socket_11 : InputMatrix
+        Custom force space.
+    socket_15 : InputObject
+        Object to take the force space from.
     filter : InputString
         Comma-separated list of tags this effector should be applied to.
 
@@ -2013,14 +2439,24 @@ class CustomForce(AssetGeometryGroup):
     ------
     i.mode : MenuSocket
         How the force field is defined.
+    i.closure : ClosureSocket
+        The closure computing the force at each point of the input geometry.
     i.selection : BooleanSocket
         Selection of points this force is applied to.
     i.force : VectorSocket
         The actual force vector.
-    i.geometry_space : MenuSocket
+    i.socket_6 : MenuSocket
         The space the geometry is transformed to before the field is evaluated.
-    i.force_space : MenuSocket
+    i.socket_8 : MatrixSocket
+        Custom geometry space.
+    i.socket_14 : ObjectSocket
+        Object to take the geometry space from.
+    i.socket_7 : MenuSocket
         The space the provided force vector is in.
+    i.socket_11 : MatrixSocket
+        Custom force space.
+    i.socket_15 : ObjectSocket
+        Object to take the force space from.
     i.filter : StringSocket
         Comma-separated list of tags this effector should be applied to.
 
@@ -2037,14 +2473,24 @@ class CustomForce(AssetGeometryGroup):
     class _Inputs(SocketAccessor):
         mode: MenuSocket
         """How the force field is defined."""
+        closure: ClosureSocket
+        """The closure computing the force at each point of the input geometry."""
         selection: BooleanSocket
         """Selection of points this force is applied to."""
         force: VectorSocket
         """The actual force vector."""
-        geometry_space: MenuSocket
+        socket_6: MenuSocket
         """The space the geometry is transformed to before the field is evaluated."""
-        force_space: MenuSocket
+        socket_8: MatrixSocket
+        """Custom geometry space."""
+        socket_14: ObjectSocket
+        """Object to take the geometry space from."""
+        socket_7: MenuSocket
         """The space the provided force vector is in."""
+        socket_11: MatrixSocket
+        """Custom force space."""
+        socket_15: ObjectSocket
+        """Object to take the force space from."""
         filter: StringSocket
         """Comma-separated list of tags this effector should be applied to."""
 
@@ -2062,21 +2508,31 @@ class CustomForce(AssetGeometryGroup):
     def __init__(
         self,
         mode: InputMenu | Literal["Field", "Closure"] = "Field",
+        closure: InputClosure = None,
         selection: InputBoolean = True,
         force: InputVector = None,
-        geometry_space: InputMenu
+        socket_6: InputMenu
         | Literal["Custom Space", "World Space", "Object Space"] = "World Space",
-        force_space: InputMenu
+        socket_8: InputMatrix = None,
+        socket_14: InputObject = None,
+        socket_7: InputMenu
         | Literal["Custom Space", "World Space", "Object Space"] = "World Space",
+        socket_11: InputMatrix = None,
+        socket_15: InputObject = None,
         filter: InputString = "",
     ):
         super().__init__(
             **{
                 "Socket_4": mode,
+                "Socket_5": closure,
                 "Socket_9": selection,
                 "Socket_10": force,
-                "Socket_6": geometry_space,
-                "Socket_7": force_space,
+                "Socket_6": socket_6,
+                "Socket_8": socket_8,
+                "Socket_14": socket_14,
+                "Socket_7": socket_7,
+                "Socket_11": socket_11,
+                "Socket_15": socket_15,
                 "Socket_1": filter,
             }
         )
@@ -2096,6 +2552,8 @@ class DisplaceGeometry(AssetGeometryGroup):
         Factor that the displacement is multiplied with
     offset_method : InputMenu | Literal["Normal", "Vector"]
         Input method for how to generate the displacement vector
+    offset_vector : InputVector
+        Displacement offset vector
     offset_distance : InputFloat
         Distance of the displacement offset in normal direction
     substeps : InputInteger
@@ -2113,6 +2571,8 @@ class DisplaceGeometry(AssetGeometryGroup):
         Factor that the displacement is multiplied with
     i.offset_method : MenuSocket
         Input method for how to generate the displacement vector
+    i.offset_vector : VectorSocket
+        Displacement offset vector
     i.offset_distance : FloatSocket
         Distance of the displacement offset in normal direction
     i.substeps : IntegerSocket
@@ -2139,6 +2599,8 @@ class DisplaceGeometry(AssetGeometryGroup):
         """Factor that the displacement is multiplied with"""
         offset_method: MenuSocket
         """Input method for how to generate the displacement vector"""
+        offset_vector: VectorSocket
+        """Displacement offset vector"""
         offset_distance: FloatSocket
         """Distance of the displacement offset in normal direction"""
         substeps: IntegerSocket
@@ -2163,6 +2625,7 @@ class DisplaceGeometry(AssetGeometryGroup):
         selection: InputBoolean = True,
         strength: InputFloat = 1.0,
         offset_method: InputMenu | Literal["Normal", "Vector"] = "Normal",
+        offset_vector: InputVector = None,
         offset_distance: InputFloat = 1.0,
         substeps: InputInteger = 1,
         post_substep_process: InputClosure = None,
@@ -2173,6 +2636,7 @@ class DisplaceGeometry(AssetGeometryGroup):
                 "Socket_2": selection,
                 "Socket_4": strength,
                 "Socket_20": offset_method,
+                "Socket_3": offset_vector,
                 "Socket_6": offset_distance,
                 "Socket_5": substeps,
                 "Socket_19": post_substep_process,
@@ -2198,6 +2662,16 @@ class DisplaceHairCurves(AssetGeometryGroup):
         Vector for displacement
     surface_normal : InputBoolean
         Surface Normal
+    surface_input_type : InputMenu | Literal["Object", "Geometry"]
+        Select the input type for the surface geometry.
+    input_5 : InputGeometry
+        Surface geometry used to sample the normal for displacement
+    input_4 : InputObject
+        Surface object used to sample the normal for displacement
+    surface_uv_map : InputVector
+        Surface UV map used to sample the normal for displacement
+    surface_normal_distance : InputFloat
+        Amount of displacemement along the surface normal
 
     Inputs
     ------
@@ -2213,6 +2687,16 @@ class DisplaceHairCurves(AssetGeometryGroup):
         Vector for displacement
     i.surface_normal : BooleanSocket
         Surface Normal
+    i.surface_input_type : MenuSocket
+        Select the input type for the surface geometry.
+    i.input_5 : GeometrySocket
+        Surface geometry used to sample the normal for displacement
+    i.input_4 : ObjectSocket
+        Surface object used to sample the normal for displacement
+    i.surface_uv_map : VectorSocket
+        Surface UV map used to sample the normal for displacement
+    i.surface_normal_distance : FloatSocket
+        Amount of displacemement along the surface normal
 
     Outputs
     -------
@@ -2237,6 +2721,16 @@ class DisplaceHairCurves(AssetGeometryGroup):
         """Vector for displacement"""
         surface_normal: BooleanSocket
         """Surface Normal"""
+        surface_input_type: MenuSocket
+        """Select the input type for the surface geometry."""
+        input_5: GeometrySocket
+        """Surface geometry used to sample the normal for displacement"""
+        input_4: ObjectSocket
+        """Surface object used to sample the normal for displacement"""
+        surface_uv_map: VectorSocket
+        """Surface UV map used to sample the normal for displacement"""
+        surface_normal_distance: FloatSocket
+        """Amount of displacemement along the surface normal"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
@@ -2257,6 +2751,11 @@ class DisplaceHairCurves(AssetGeometryGroup):
         object_space: InputObject = None,
         displace_vector: InputVector = None,
         surface_normal: InputBoolean = False,
+        surface_input_type: InputMenu | Literal["Object", "Geometry"] = "Object",
+        input_5: InputGeometry = None,
+        input_4: InputObject = None,
+        surface_uv_map: InputVector = None,
+        surface_normal_distance: InputFloat = 0.0,
     ):
         super().__init__(
             **{
@@ -2266,6 +2765,11 @@ class DisplaceHairCurves(AssetGeometryGroup):
                 "Input_2": object_space,
                 "Input_9": displace_vector,
                 "Socket_2": surface_normal,
+                "Socket_0": surface_input_type,
+                "Input_5": input_5,
+                "Input_4": input_4,
+                "Input_6": surface_uv_map,
+                "Input_7": surface_normal_distance,
             }
         )
 
@@ -2560,6 +3064,10 @@ class GenerateHairCurves(AssetGeometryGroup):
         Surface geometry or hair geometry with existing surface attachment for reference
     surface_source : InputMenu | Literal["Attached", "Input", "Object"]
         Surface Source
+    surface : InputObject
+        Surface object for generation (needs matching transforms)
+    surface_uv_map : InputVector
+        Surface UV map used for attachment
     resting_surface : InputBoolean
         Use the surface's resting state to preserve stability under deformation
     attach_to_surface : InputBoolean
@@ -2589,6 +3097,10 @@ class GenerateHairCurves(AssetGeometryGroup):
         Surface geometry or hair geometry with existing surface attachment for reference
     i.surface_source : MenuSocket
         Surface Source
+    i.surface : ObjectSocket
+        Surface object for generation (needs matching transforms)
+    i.surface_uv_map : VectorSocket
+        Surface UV map used for attachment
     i.resting_surface : BooleanSocket
         Use the surface's resting state to preserve stability under deformation
     i.attach_to_surface : BooleanSocket
@@ -2631,6 +3143,10 @@ class GenerateHairCurves(AssetGeometryGroup):
         """Surface geometry or hair geometry with existing surface attachment for reference"""
         surface_source: MenuSocket
         """Surface Source"""
+        surface: ObjectSocket
+        """Surface object for generation (needs matching transforms)"""
+        surface_uv_map: VectorSocket
+        """Surface UV map used for attachment"""
         resting_surface: BooleanSocket
         """Use the surface's resting state to preserve stability under deformation"""
         attach_to_surface: BooleanSocket
@@ -2673,6 +3189,8 @@ class GenerateHairCurves(AssetGeometryGroup):
         self,
         hair_surface: InputGeometry = None,
         surface_source: InputMenu | Literal["Attached", "Input", "Object"] = "Attached",
+        surface: InputObject = None,
+        surface_uv_map: InputVector = None,
         resting_surface: InputBoolean = True,
         attach_to_surface: InputBoolean = True,
         hair_length: InputFloat = 1.0,
@@ -2689,6 +3207,8 @@ class GenerateHairCurves(AssetGeometryGroup):
             **{
                 "Input_23": hair_surface,
                 "Socket_3": surface_source,
+                "Input_2": surface,
+                "Input_18": surface_uv_map,
                 "Input_12": resting_surface,
                 "Socket_2": attach_to_surface,
                 "Input_20": hair_length,
@@ -2716,6 +3236,8 @@ class GeometryInput(AssetGeometryGroup):
         How the geometry input should be exposed
     object : InputObject
         Object to use as the input geometry
+    collection : InputCollection
+        Collection to use as the input geometry
     relative_space : InputBoolean
         Transform the input relative to the main geometry
     as_instance : InputBoolean
@@ -2731,6 +3253,8 @@ class GeometryInput(AssetGeometryGroup):
         How the geometry input should be exposed
     i.object : ObjectSocket
         Object to use as the input geometry
+    i.collection : CollectionSocket
+        Collection to use as the input geometry
     i.relative_space : BooleanSocket
         Transform the input relative to the main geometry
     i.as_instance : BooleanSocket
@@ -2755,6 +3279,8 @@ class GeometryInput(AssetGeometryGroup):
         """How the geometry input should be exposed"""
         object: ObjectSocket
         """Object to use as the input geometry"""
+        collection: CollectionSocket
+        """Collection to use as the input geometry"""
         relative_space: BooleanSocket
         """Transform the input relative to the main geometry"""
         as_instance: BooleanSocket
@@ -2778,6 +3304,7 @@ class GeometryInput(AssetGeometryGroup):
         geometry: InputGeometry = None,
         input_type: InputMenu | Literal["Object", "Collection"] = "Object",
         object: InputObject = None,
+        collection: InputCollection = None,
         relative_space: InputBoolean = False,
         as_instance: InputBoolean = True,
         replace_original: InputBoolean = False,
@@ -2787,6 +3314,7 @@ class GeometryInput(AssetGeometryGroup):
                 "Socket_7": geometry,
                 "Socket_6": input_type,
                 "Socket_2": object,
+                "Socket_3": collection,
                 "Socket_4": relative_space,
                 "Socket_5": as_instance,
                 "Socket_1": replace_original,
@@ -3003,6 +3531,54 @@ class HairDynamics(AssetGeometryGroup):
         Input hair curves.
     mode : InputMenu | Literal["Animation", "Physics (Experimental"]
         Either use proper simulation or just animation based on surface deformation.
+    substeps : InputInteger
+        Number of simulation steps per frame.
+    constraint_steps : InputInteger
+        Number of steps done to solve constraints in each substep.
+    time_scale : InputFloat
+        Multiplied to the delta time in each time step.
+    simulation_to_world : InputMatrix
+        Custom simulation space (by default, simulation space is world space).
+    mass : InputFloat
+        Mass assigned to each point in the simulation.
+    friction : InputFloat
+        Friction coefficient for each vertex.
+    stretchiness : InputFloat
+        Higher values make the hair more stretchy.
+    bendiness : InputFloat
+        Higher values allow the hair to bend more.
+    root_bendiness : InputFloat
+        Higher values allow the root points (which are attached to the surface) to rotate more.
+    randomness : InputBoolean
+        Add variation to the structural constraints.
+    randomness_stretchiness : InputFloat
+        How much to randomize the stretchiness.
+    randomness_bendiness : InputFloat
+        How much to randomize the bendiness.
+    randomness_root_bendiness : InputFloat
+        How much to randomize the root bendiness.
+    linear : InputFloat
+        Simulation stability increases with more linear damping.
+    angular : InputFloat
+        Simulation stability increases with more angular damping.
+    surface_collision : InputBoolean
+        Collide with the surface mesh the hair is attached to.
+    deforming : InputBoolean
+        The surface mesh is deforming.
+    edge_contacts : InputBoolean
+        Take edge contacts into account for more accurate collision avoidance.
+    surface_friction : InputFloat
+        Friction coefficient of the surface.
+    socket_22 : InputBoolean
+        Use gravity in the simulation.
+    socket_24 : InputVector
+        Direction and strength of the gravity.
+    effectors_collection : InputCollection
+        A collection containing effectors for the simulation. This includes e.g. forces, colliders and custom effectors.
+    hair_tags : InputString
+        Comma-separated list of tags which can be used to apply only a subset of effectors to this cloth.
+    effectors : InputBundle
+        Additional effectors for the simulation.
 
     Inputs
     ------
@@ -3010,6 +3586,54 @@ class HairDynamics(AssetGeometryGroup):
         Input hair curves.
     i.mode : MenuSocket
         Either use proper simulation or just animation based on surface deformation.
+    i.substeps : IntegerSocket
+        Number of simulation steps per frame.
+    i.constraint_steps : IntegerSocket
+        Number of steps done to solve constraints in each substep.
+    i.time_scale : FloatSocket
+        Multiplied to the delta time in each time step.
+    i.simulation_to_world : MatrixSocket
+        Custom simulation space (by default, simulation space is world space).
+    i.mass : FloatSocket
+        Mass assigned to each point in the simulation.
+    i.friction : FloatSocket
+        Friction coefficient for each vertex.
+    i.stretchiness : FloatSocket
+        Higher values make the hair more stretchy.
+    i.bendiness : FloatSocket
+        Higher values allow the hair to bend more.
+    i.root_bendiness : FloatSocket
+        Higher values allow the root points (which are attached to the surface) to rotate more.
+    i.randomness : BooleanSocket
+        Add variation to the structural constraints.
+    i.randomness_stretchiness : FloatSocket
+        How much to randomize the stretchiness.
+    i.randomness_bendiness : FloatSocket
+        How much to randomize the bendiness.
+    i.randomness_root_bendiness : FloatSocket
+        How much to randomize the root bendiness.
+    i.linear : FloatSocket
+        Simulation stability increases with more linear damping.
+    i.angular : FloatSocket
+        Simulation stability increases with more angular damping.
+    i.surface_collision : BooleanSocket
+        Collide with the surface mesh the hair is attached to.
+    i.deforming : BooleanSocket
+        The surface mesh is deforming.
+    i.edge_contacts : BooleanSocket
+        Take edge contacts into account for more accurate collision avoidance.
+    i.surface_friction : FloatSocket
+        Friction coefficient of the surface.
+    i.socket_22 : BooleanSocket
+        Use gravity in the simulation.
+    i.socket_24 : VectorSocket
+        Direction and strength of the gravity.
+    i.effectors_collection : CollectionSocket
+        A collection containing effectors for the simulation. This includes e.g. forces, colliders and custom effectors.
+    i.hair_tags : StringSocket
+        Comma-separated list of tags which can be used to apply only a subset of effectors to this cloth.
+    i.effectors : BundleSocket
+        Additional effectors for the simulation.
 
     Outputs
     -------
@@ -3028,6 +3652,54 @@ class HairDynamics(AssetGeometryGroup):
         """Input hair curves."""
         mode: MenuSocket
         """Either use proper simulation or just animation based on surface deformation."""
+        substeps: IntegerSocket
+        """Number of simulation steps per frame."""
+        constraint_steps: IntegerSocket
+        """Number of steps done to solve constraints in each substep."""
+        time_scale: FloatSocket
+        """Multiplied to the delta time in each time step."""
+        simulation_to_world: MatrixSocket
+        """Custom simulation space (by default, simulation space is world space)."""
+        mass: FloatSocket
+        """Mass assigned to each point in the simulation."""
+        friction: FloatSocket
+        """Friction coefficient for each vertex."""
+        stretchiness: FloatSocket
+        """Higher values make the hair more stretchy."""
+        bendiness: FloatSocket
+        """Higher values allow the hair to bend more."""
+        root_bendiness: FloatSocket
+        """Higher values allow the root points (which are attached to the surface) to rotate more."""
+        randomness: BooleanSocket
+        """Add variation to the structural constraints."""
+        randomness_stretchiness: FloatSocket
+        """How much to randomize the stretchiness."""
+        randomness_bendiness: FloatSocket
+        """How much to randomize the bendiness."""
+        randomness_root_bendiness: FloatSocket
+        """How much to randomize the root bendiness."""
+        linear: FloatSocket
+        """Simulation stability increases with more linear damping."""
+        angular: FloatSocket
+        """Simulation stability increases with more angular damping."""
+        surface_collision: BooleanSocket
+        """Collide with the surface mesh the hair is attached to."""
+        deforming: BooleanSocket
+        """The surface mesh is deforming."""
+        edge_contacts: BooleanSocket
+        """Take edge contacts into account for more accurate collision avoidance."""
+        surface_friction: FloatSocket
+        """Friction coefficient of the surface."""
+        socket_22: BooleanSocket
+        """Use gravity in the simulation."""
+        socket_24: VectorSocket
+        """Direction and strength of the gravity."""
+        effectors_collection: CollectionSocket
+        """A collection containing effectors for the simulation. This includes e.g. forces, colliders and custom effectors."""
+        hair_tags: StringSocket
+        """Comma-separated list of tags which can be used to apply only a subset of effectors to this cloth."""
+        effectors: BundleSocket
+        """Additional effectors for the simulation."""
 
     class _Outputs(SocketAccessor):
         hair: GeometrySocket
@@ -3046,8 +3718,61 @@ class HairDynamics(AssetGeometryGroup):
         self,
         hair: InputGeometry = None,
         mode: InputMenu | Literal["Animation", "Physics (Experimental"] = "Animation",
+        substeps: InputInteger = 10,
+        constraint_steps: InputInteger = 15,
+        time_scale: InputFloat = 1.0,
+        simulation_to_world: InputMatrix = None,
+        mass: InputFloat = 0.01,
+        friction: InputFloat = 0.1,
+        stretchiness: InputFloat = 0.0,
+        bendiness: InputFloat = 0.5,
+        root_bendiness: InputFloat = 0.2,
+        randomness: InputBoolean = False,
+        randomness_stretchiness: InputFloat = 0.5,
+        randomness_bendiness: InputFloat = 0.5,
+        randomness_root_bendiness: InputFloat = 0.5,
+        linear: InputFloat = 3.0,
+        angular: InputFloat = 3.0,
+        surface_collision: InputBoolean = False,
+        deforming: InputBoolean = True,
+        edge_contacts: InputBoolean = False,
+        surface_friction: InputFloat = 0.2,
+        socket_22: InputBoolean = True,
+        socket_24: InputVector = None,
+        effectors_collection: InputCollection = None,
+        hair_tags: InputString = "",
+        effectors: InputBundle = None,
     ):
-        super().__init__(**{"Socket_3": hair, "Socket_44": mode})
+        super().__init__(
+            **{
+                "Socket_3": hair,
+                "Socket_44": mode,
+                "Socket_6": substeps,
+                "Socket_10": constraint_steps,
+                "Socket_45": time_scale,
+                "Socket_37": simulation_to_world,
+                "Socket_36": mass,
+                "Socket_34": friction,
+                "Socket_19": stretchiness,
+                "Socket_20": bendiness,
+                "Socket_35": root_bendiness,
+                "Socket_43": randomness,
+                "Socket_41": randomness_stretchiness,
+                "Socket_42": randomness_bendiness,
+                "Socket_39": randomness_root_bendiness,
+                "Socket_13": linear,
+                "Socket_14": angular,
+                "Socket_15": surface_collision,
+                "Socket_18": deforming,
+                "Socket_38": edge_contacts,
+                "Socket_17": surface_friction,
+                "Socket_22": socket_22,
+                "Socket_24": socket_24,
+                "Socket_27": effectors_collection,
+                "Socket_32": hair_tags,
+                "Socket_11": effectors,
+            }
+        )
 
 
 class InstanceOnElements(AssetGeometryGroup):
@@ -3066,20 +3791,44 @@ class InstanceOnElements(AssetGeometryGroup):
         How the instance geometry input should be exposed
     instance_type : InputMenu | Literal["Object", "Collection"]
         How the instance geometry data-block should be exposed
+    collection : InputCollection
+        Instance geometry collection
     object : InputObject
         Instance geometry object
+    instance : InputGeometry
+        Instance geometry input
     realize_instances : InputBoolean
         Turn the output into a single geometry rather than instances (required by many other modifiers)
     keep_surface : InputBoolean
         Keep the original input geometry and join it with the instance geometry
     seed : InputInteger
         Base value to control random variation in a reproducible way
+    pick_instance : InputBoolean
+        Choose child instances for each element instead of instancing the entire geometry
+    reset_transform : InputBoolean
+        Reset the transforms of each individual child instance
+    socket_13 : InputMenu | Literal["Random", "Sequence", "Input"]
+        Method how the child instance is chosen per element
+    socket_15 : InputInteger
+        Which child instance to pick per element by index
     surface_offset : InputFloat
         Distance to offset each instance along the normal of the input geometry
     align_rotation : InputBoolean
         Rotate instances based on the shape of the input geometry
     scale : InputVector
         Scale the instances on each local axis
+    scale_by_face_area : InputBoolean
+        Scale the instances based on the face area of the input geometry
+    scale_by_face_area_multiplier : InputFloat
+        Multiply the instance scale with a factor to calibrate the considered face area
+    corner_offset_method : InputMenu | Literal["Face Center", "Corner Center"]
+        Method to define the direction of the offset along the corner
+    corner_offset_factor : InputFloat
+        Move the instances towards the face center
+    corner_offset_distance : InputFloat
+        Distance to offset the instances from the face corner
+    even_edge_distance : InputBoolean
+        Adjust the offset distance to keep an even perpendicular distance to edges
 
     Inputs
     ------
@@ -3093,20 +3842,44 @@ class InstanceOnElements(AssetGeometryGroup):
         How the instance geometry input should be exposed
     i.instance_type : MenuSocket
         How the instance geometry data-block should be exposed
+    i.collection : CollectionSocket
+        Instance geometry collection
     i.object : ObjectSocket
         Instance geometry object
+    i.instance : GeometrySocket
+        Instance geometry input
     i.realize_instances : BooleanSocket
         Turn the output into a single geometry rather than instances (required by many other modifiers)
     i.keep_surface : BooleanSocket
         Keep the original input geometry and join it with the instance geometry
     i.seed : IntegerSocket
         Base value to control random variation in a reproducible way
+    i.pick_instance : BooleanSocket
+        Choose child instances for each element instead of instancing the entire geometry
+    i.reset_transform : BooleanSocket
+        Reset the transforms of each individual child instance
+    i.socket_13 : MenuSocket
+        Method how the child instance is chosen per element
+    i.socket_15 : IntegerSocket
+        Which child instance to pick per element by index
     i.surface_offset : FloatSocket
         Distance to offset each instance along the normal of the input geometry
     i.align_rotation : BooleanSocket
         Rotate instances based on the shape of the input geometry
     i.scale : VectorSocket
         Scale the instances on each local axis
+    i.scale_by_face_area : BooleanSocket
+        Scale the instances based on the face area of the input geometry
+    i.scale_by_face_area_multiplier : FloatSocket
+        Multiply the instance scale with a factor to calibrate the considered face area
+    i.corner_offset_method : MenuSocket
+        Method to define the direction of the offset along the corner
+    i.corner_offset_factor : FloatSocket
+        Move the instances towards the face center
+    i.corner_offset_distance : FloatSocket
+        Distance to offset the instances from the face corner
+    i.even_edge_distance : BooleanSocket
+        Adjust the offset distance to keep an even perpendicular distance to edges
 
     Outputs
     -------
@@ -3129,20 +3902,44 @@ class InstanceOnElements(AssetGeometryGroup):
         """How the instance geometry input should be exposed"""
         instance_type: MenuSocket
         """How the instance geometry data-block should be exposed"""
+        collection: CollectionSocket
+        """Instance geometry collection"""
         object: ObjectSocket
         """Instance geometry object"""
+        instance: GeometrySocket
+        """Instance geometry input"""
         realize_instances: BooleanSocket
         """Turn the output into a single geometry rather than instances (required by many other modifiers)"""
         keep_surface: BooleanSocket
         """Keep the original input geometry and join it with the instance geometry"""
         seed: IntegerSocket
         """Base value to control random variation in a reproducible way"""
+        pick_instance: BooleanSocket
+        """Choose child instances for each element instead of instancing the entire geometry"""
+        reset_transform: BooleanSocket
+        """Reset the transforms of each individual child instance"""
+        socket_13: MenuSocket
+        """Method how the child instance is chosen per element"""
+        socket_15: IntegerSocket
+        """Which child instance to pick per element by index"""
         surface_offset: FloatSocket
         """Distance to offset each instance along the normal of the input geometry"""
         align_rotation: BooleanSocket
         """Rotate instances based on the shape of the input geometry"""
         scale: VectorSocket
         """Scale the instances on each local axis"""
+        scale_by_face_area: BooleanSocket
+        """Scale the instances based on the face area of the input geometry"""
+        scale_by_face_area_multiplier: FloatSocket
+        """Multiply the instance scale with a factor to calibrate the considered face area"""
+        corner_offset_method: MenuSocket
+        """Method to define the direction of the offset along the corner"""
+        corner_offset_factor: FloatSocket
+        """Move the instances towards the face center"""
+        corner_offset_distance: FloatSocket
+        """Distance to offset the instances from the face corner"""
+        even_edge_distance: BooleanSocket
+        """Adjust the offset distance to keep an even perpendicular distance to edges"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
@@ -3163,13 +3960,26 @@ class InstanceOnElements(AssetGeometryGroup):
         mask: InputFloat = 1.0,
         input_type: InputMenu | Literal["Data-Block", "Geometry"] = "Data-Block",
         instance_type: InputMenu | Literal["Object", "Collection"] = "Object",
+        collection: InputCollection = None,
         object: InputObject = None,
+        instance: InputGeometry = None,
         realize_instances: InputBoolean = False,
         keep_surface: InputBoolean = True,
         seed: InputInteger = 0,
+        pick_instance: InputBoolean = False,
+        reset_transform: InputBoolean = True,
+        socket_13: InputMenu | Literal["Random", "Sequence", "Input"] = "Random",
+        socket_15: InputInteger = 0,
         surface_offset: InputFloat = 0.0,
         align_rotation: InputBoolean = True,
         scale: InputVector = None,
+        scale_by_face_area: InputBoolean = False,
+        scale_by_face_area_multiplier: InputFloat = 1.0,
+        corner_offset_method: InputMenu
+        | Literal["Face Center", "Corner Center"] = "Face Center",
+        corner_offset_factor: InputFloat = 0.1,
+        corner_offset_distance: InputFloat = 0.1,
+        even_edge_distance: InputBoolean = True,
     ):
         super().__init__(
             **{
@@ -3178,13 +3988,25 @@ class InstanceOnElements(AssetGeometryGroup):
                 "Socket_16": mask,
                 "Socket_20": input_type,
                 "Socket_9": instance_type,
+                "Socket_10": collection,
                 "Socket_2": object,
+                "Socket_21": instance,
                 "Socket_17": realize_instances,
                 "Socket_18": keep_surface,
                 "Socket_14": seed,
+                "Socket_22": pick_instance,
+                "Socket_29": reset_transform,
+                "Socket_13": socket_13,
+                "Socket_15": socket_15,
                 "Socket_6": surface_offset,
                 "Socket_7": align_rotation,
                 "Socket_4": scale,
+                "Socket_11": scale_by_face_area,
+                "Socket_12": scale_by_face_area_multiplier,
+                "Socket_24": corner_offset_method,
+                "Socket_19": corner_offset_factor,
+                "Socket_25": corner_offset_distance,
+                "Socket_26": even_edge_distance,
             }
         )
 
@@ -3785,7 +4607,9 @@ class RandomizeTransforms(AssetGeometryGroup):
         Rotate the instances randomly
     scale_axes : InputMenu | Literal["Uniform", "Axes"]
         Whether to apply random scale uniformly or per axis
-    scale : InputFloat
+    socket_4 : InputVector
+        Scale the instances randomly per axis
+    socket_8 : InputFloat
         Scale the instances randomly
     flipping : InputVector
         Flip a fraction of instances along individual axes
@@ -3806,7 +4630,9 @@ class RandomizeTransforms(AssetGeometryGroup):
         Rotate the instances randomly
     i.scale_axes : MenuSocket
         Whether to apply random scale uniformly or per axis
-    i.scale : FloatSocket
+    i.socket_4 : VectorSocket
+        Scale the instances randomly per axis
+    i.socket_8 : FloatSocket
         Scale the instances randomly
     i.flipping : VectorSocket
         Flip a fraction of instances along individual axes
@@ -3836,7 +4662,9 @@ class RandomizeTransforms(AssetGeometryGroup):
         """Rotate the instances randomly"""
         scale_axes: MenuSocket
         """Whether to apply random scale uniformly or per axis"""
-        scale: FloatSocket
+        socket_4: VectorSocket
+        """Scale the instances randomly per axis"""
+        socket_8: FloatSocket
         """Scale the instances randomly"""
         flipping: VectorSocket
         """Flip a fraction of instances along individual axes"""
@@ -3862,7 +4690,8 @@ class RandomizeTransforms(AssetGeometryGroup):
         offset: InputVector = None,
         rotation: InputVector = None,
         scale_axes: InputMenu | Literal["Uniform", "Axes"] = "Uniform",
-        scale: InputFloat = 0.0,
+        socket_4: InputVector = None,
+        socket_8: InputFloat = 0.0,
         flipping: InputVector = None,
         seed: InputInteger = 0,
     ):
@@ -3874,7 +4703,8 @@ class RandomizeTransforms(AssetGeometryGroup):
                 "Socket_6": offset,
                 "Socket_3": rotation,
                 "Socket_7": scale_axes,
-                "Socket_8": scale,
+                "Socket_4": socket_4,
+                "Socket_8": socket_8,
                 "Socket_9": flipping,
                 "Socket_5": seed,
             }
@@ -4283,10 +5113,14 @@ class ScatterOnSurface(AssetGeometryGroup):
         Method to define the number of scattered instances
     distribution_method : InputMenu | Literal["Random", "Poisson Disk"]
         Method to use for scattering points
+    amount : InputInteger
+        Exact number of scattered instances before masking
     density : InputFloat
         Amount of scattered instances per unit squared
     distribution_mask : InputFloat
         Mask to multiply the density by
+    minimum_distance : InputFloat
+        Minimum allowed distance between the centers of two scattered instances. Increase value for a more locally even distribution.
     keep_surface : InputBoolean
         Keep the original input geometry and join it with the scattered geometry
     scatter_on_instances : InputBoolean
@@ -4299,10 +5133,20 @@ class ScatterOnSurface(AssetGeometryGroup):
         How the instance geometry data-block should be exposed
     object : InputObject
         Object providing the instance geometry used for scattering
+    collection : InputCollection
+        Collection providing the instance geometry used for scattering
+    instance : InputGeometry
+        Geometry that is instanced on the scattered points
     viewport_visibility : InputFloat
         Amount of scattered instances shown in the viewport
     realize_instances : InputBoolean
         Turn the output into a single geometry rather than instances (required by many other modifiers)
+    pick_instance : InputBoolean
+        Choose child instances for each element instead of instancing the entire geometry
+    reset_transform : InputBoolean
+        Reset the transforms of each individual child instance
+    instance_seed : InputInteger
+        Base value to control random instance variation in a reproducible way
     surface_offset : InputFloat
         Distance to offset each instance along the normal of the surface geometry
     align_rotation : InputBoolean
@@ -4313,8 +5157,26 @@ class ScatterOnSurface(AssetGeometryGroup):
         Scale of the instances on each local axis
     randomize : InputBoolean
         Randomize transforms between all scattered instances
+    randomize_offset : InputVector
+        Offset the instances randomly
+    randomize_rotation : InputVector
+        Rotate the instances randomly
+    randomize_scale_axes : InputMenu | Literal["Uniform", "Axes"]
+        Whether to apply random scale uniformly or per axis
+    socket_36 : InputVector
+        Scale the instances down randomly per axis
+    socket_41 : InputFloat
+        Scale the instances down randomly
+    randomize_flipping : InputVector
+        Flip a fraction of instances along individual axes
+    randomize_seed : InputInteger
+        Base value to control random variation in a reproducible way
     masking : InputBoolean
         Additional masking applied after the initial scattering of instances
+    image_mask : InputImage
+        Grayscale image texture used to remove scattered instances
+    uv_map : InputVector
+        Texture coordinates used to map the image on the surface
 
     Inputs
     ------
@@ -4326,10 +5188,14 @@ class ScatterOnSurface(AssetGeometryGroup):
         Method to define the number of scattered instances
     i.distribution_method : MenuSocket
         Method to use for scattering points
+    i.amount : IntegerSocket
+        Exact number of scattered instances before masking
     i.density : FloatSocket
         Amount of scattered instances per unit squared
     i.distribution_mask : FloatSocket
         Mask to multiply the density by
+    i.minimum_distance : FloatSocket
+        Minimum allowed distance between the centers of two scattered instances. Increase value for a more locally even distribution.
     i.keep_surface : BooleanSocket
         Keep the original input geometry and join it with the scattered geometry
     i.scatter_on_instances : BooleanSocket
@@ -4342,10 +5208,20 @@ class ScatterOnSurface(AssetGeometryGroup):
         How the instance geometry data-block should be exposed
     i.object : ObjectSocket
         Object providing the instance geometry used for scattering
+    i.collection : CollectionSocket
+        Collection providing the instance geometry used for scattering
+    i.instance : GeometrySocket
+        Geometry that is instanced on the scattered points
     i.viewport_visibility : FloatSocket
         Amount of scattered instances shown in the viewport
     i.realize_instances : BooleanSocket
         Turn the output into a single geometry rather than instances (required by many other modifiers)
+    i.pick_instance : BooleanSocket
+        Choose child instances for each element instead of instancing the entire geometry
+    i.reset_transform : BooleanSocket
+        Reset the transforms of each individual child instance
+    i.instance_seed : IntegerSocket
+        Base value to control random instance variation in a reproducible way
     i.surface_offset : FloatSocket
         Distance to offset each instance along the normal of the surface geometry
     i.align_rotation : BooleanSocket
@@ -4356,8 +5232,26 @@ class ScatterOnSurface(AssetGeometryGroup):
         Scale of the instances on each local axis
     i.randomize : BooleanSocket
         Randomize transforms between all scattered instances
+    i.randomize_offset : VectorSocket
+        Offset the instances randomly
+    i.randomize_rotation : VectorSocket
+        Rotate the instances randomly
+    i.randomize_scale_axes : MenuSocket
+        Whether to apply random scale uniformly or per axis
+    i.socket_36 : VectorSocket
+        Scale the instances down randomly per axis
+    i.socket_41 : FloatSocket
+        Scale the instances down randomly
+    i.randomize_flipping : VectorSocket
+        Flip a fraction of instances along individual axes
+    i.randomize_seed : IntegerSocket
+        Base value to control random variation in a reproducible way
     i.masking : BooleanSocket
         Additional masking applied after the initial scattering of instances
+    i.image_mask : ImageSocket
+        Grayscale image texture used to remove scattered instances
+    i.uv_map : VectorSocket
+        Texture coordinates used to map the image on the surface
 
     Outputs
     -------
@@ -4378,10 +5272,14 @@ class ScatterOnSurface(AssetGeometryGroup):
         """Method to define the number of scattered instances"""
         distribution_method: MenuSocket
         """Method to use for scattering points"""
+        amount: IntegerSocket
+        """Exact number of scattered instances before masking"""
         density: FloatSocket
         """Amount of scattered instances per unit squared"""
         distribution_mask: FloatSocket
         """Mask to multiply the density by"""
+        minimum_distance: FloatSocket
+        """Minimum allowed distance between the centers of two scattered instances. Increase value for a more locally even distribution."""
         keep_surface: BooleanSocket
         """Keep the original input geometry and join it with the scattered geometry"""
         scatter_on_instances: BooleanSocket
@@ -4394,10 +5292,20 @@ class ScatterOnSurface(AssetGeometryGroup):
         """How the instance geometry data-block should be exposed"""
         object: ObjectSocket
         """Object providing the instance geometry used for scattering"""
+        collection: CollectionSocket
+        """Collection providing the instance geometry used for scattering"""
+        instance: GeometrySocket
+        """Geometry that is instanced on the scattered points"""
         viewport_visibility: FloatSocket
         """Amount of scattered instances shown in the viewport"""
         realize_instances: BooleanSocket
         """Turn the output into a single geometry rather than instances (required by many other modifiers)"""
+        pick_instance: BooleanSocket
+        """Choose child instances for each element instead of instancing the entire geometry"""
+        reset_transform: BooleanSocket
+        """Reset the transforms of each individual child instance"""
+        instance_seed: IntegerSocket
+        """Base value to control random instance variation in a reproducible way"""
         surface_offset: FloatSocket
         """Distance to offset each instance along the normal of the surface geometry"""
         align_rotation: BooleanSocket
@@ -4408,8 +5316,26 @@ class ScatterOnSurface(AssetGeometryGroup):
         """Scale of the instances on each local axis"""
         randomize: BooleanSocket
         """Randomize transforms between all scattered instances"""
+        randomize_offset: VectorSocket
+        """Offset the instances randomly"""
+        randomize_rotation: VectorSocket
+        """Rotate the instances randomly"""
+        randomize_scale_axes: MenuSocket
+        """Whether to apply random scale uniformly or per axis"""
+        socket_36: VectorSocket
+        """Scale the instances down randomly per axis"""
+        socket_41: FloatSocket
+        """Scale the instances down randomly"""
+        randomize_flipping: VectorSocket
+        """Flip a fraction of instances along individual axes"""
+        randomize_seed: IntegerSocket
+        """Base value to control random variation in a reproducible way"""
         masking: BooleanSocket
         """Additional masking applied after the initial scattering of instances"""
+        image_mask: ImageSocket
+        """Grayscale image texture used to remove scattered instances"""
+        uv_map: VectorSocket
+        """Texture coordinates used to map the image on the surface"""
 
     class _Outputs(SocketAccessor):
         instances: GeometrySocket
@@ -4428,22 +5354,38 @@ class ScatterOnSurface(AssetGeometryGroup):
         selection: InputBoolean = True,
         density_method: InputMenu | Literal["Density", "Amount"] = "Density",
         distribution_method: InputMenu | Literal["Random", "Poisson Disk"] = "Random",
+        amount: InputInteger = 1000,
         density: InputFloat = 1.0,
         distribution_mask: InputFloat = 1.0,
+        minimum_distance: InputFloat = 0.0,
         keep_surface: InputBoolean = True,
         scatter_on_instances: InputBoolean = False,
         seed: InputInteger = 0,
         input_type: InputMenu | Literal["Data-Block", "Geometry"] = "Data-Block",
         instance_type: InputMenu | Literal["Object", "Collection"] = "Object",
         object: InputObject = None,
+        collection: InputCollection = None,
+        instance: InputGeometry = None,
         viewport_visibility: InputFloat = 1.0,
         realize_instances: InputBoolean = False,
+        pick_instance: InputBoolean = False,
+        reset_transform: InputBoolean = True,
+        instance_seed: InputInteger = 0,
         surface_offset: InputFloat = 0.0,
         align_rotation: InputBoolean = True,
         alignment_axis: InputMenu | Literal["X", "Y", "Z"] = "Z",
         scale: InputVector = None,
         randomize: InputBoolean = False,
+        randomize_offset: InputVector = None,
+        randomize_rotation: InputVector = None,
+        randomize_scale_axes: InputMenu | Literal["Uniform", "Axes"] = "Uniform",
+        socket_36: InputVector = None,
+        socket_41: InputFloat = 0.0,
+        randomize_flipping: InputVector = None,
+        randomize_seed: InputInteger = 0,
         masking: InputBoolean = False,
+        image_mask: InputImage = None,
+        uv_map: InputVector = None,
     ):
         super().__init__(
             **{
@@ -4451,22 +5393,38 @@ class ScatterOnSurface(AssetGeometryGroup):
                 "Socket_1": selection,
                 "Socket_30": density_method,
                 "Socket_12": distribution_method,
+                "Socket_31": amount,
                 "Socket_27": density,
                 "Socket_2": distribution_mask,
+                "Socket_13": minimum_distance,
                 "Socket_25": keep_surface,
                 "Socket_46": scatter_on_instances,
                 "Socket_4": seed,
                 "Socket_19": input_type,
                 "Socket_6": instance_type,
                 "Socket_8": object,
+                "Socket_7": collection,
+                "Socket_3": instance,
                 "Socket_33": viewport_visibility,
                 "Socket_26": realize_instances,
+                "Socket_17": pick_instance,
+                "Socket_43": reset_transform,
+                "Socket_16": instance_seed,
                 "Socket_44": surface_offset,
                 "Socket_18": align_rotation,
                 "Socket_34": alignment_axis,
                 "Socket_5": scale,
                 "Socket_39": randomize,
+                "Socket_40": randomize_offset,
+                "Socket_35": randomize_rotation,
+                "Socket_37": randomize_scale_axes,
+                "Socket_36": socket_36,
+                "Socket_41": socket_41,
+                "Socket_42": randomize_flipping,
+                "Socket_45": randomize_seed,
                 "Socket_29": masking,
+                "Socket_10": image_mask,
+                "Socket_11": uv_map,
             }
         )
 
@@ -4803,8 +5761,10 @@ class ShrinkwrapHairCurves(AssetGeometryGroup):
         Input geometry (may include geometry other than curves)
     surface_input_type : InputMenu | Literal["Object", "Geometry"]
         Select the input type for the surface geometry.
-    surface : InputObject
+    input_2 : InputObject
         Surface object used for shrinkwrap
+    input_3 : InputGeometry
+        Surface geometry used for shrinkwrap
     factor : InputFloat
         Factor
     offset_distance : InputFloat
@@ -4822,8 +5782,10 @@ class ShrinkwrapHairCurves(AssetGeometryGroup):
         Input geometry (may include geometry other than curves)
     i.surface_input_type : MenuSocket
         Select the input type for the surface geometry.
-    i.surface : ObjectSocket
+    i.input_2 : ObjectSocket
         Surface object used for shrinkwrap
+    i.input_3 : GeometrySocket
+        Surface geometry used for shrinkwrap
     i.factor : FloatSocket
         Factor
     i.offset_distance : FloatSocket
@@ -4850,8 +5812,10 @@ class ShrinkwrapHairCurves(AssetGeometryGroup):
         """Input geometry (may include geometry other than curves)"""
         surface_input_type: MenuSocket
         """Select the input type for the surface geometry."""
-        surface: ObjectSocket
+        input_2: ObjectSocket
         """Surface object used for shrinkwrap"""
+        input_3: GeometrySocket
+        """Surface geometry used for shrinkwrap"""
         factor: FloatSocket
         """Factor"""
         offset_distance: FloatSocket
@@ -4878,7 +5842,8 @@ class ShrinkwrapHairCurves(AssetGeometryGroup):
         self,
         geometry: InputGeometry = None,
         surface_input_type: InputMenu | Literal["Object", "Geometry"] = "Object",
-        surface: InputObject = None,
+        input_2: InputObject = None,
+        input_3: InputGeometry = None,
         factor: InputFloat = 1.0,
         offset_distance: InputFloat = 0.0,
         above_surface: InputFloat = 0.5,
@@ -4889,7 +5854,8 @@ class ShrinkwrapHairCurves(AssetGeometryGroup):
             **{
                 "Input_0": geometry,
                 "Socket_0": surface_input_type,
-                "Input_2": surface,
+                "Input_2": input_2,
+                "Input_3": input_3,
                 "Input_5": factor,
                 "Input_4": offset_distance,
                 "Input_8": above_surface,

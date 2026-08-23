@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Generic, Literal
 
 import bpy
 
-from ...builder import BaseNode, SocketAccessor, Socket
+from ...builder import BaseNode, SocketAccessor
 
 from ...types import (
     InputBoolean,
@@ -54,7 +54,8 @@ from ...builder.socket import (
 
 from ...types import _AttributeDomains
 
-from ...builder.items import _infer_value_type
+from .._mixins import _CombineBundleMixin
+from .._mixins import _SeparateBundleMixin
 
 from .._mixins import _FieldToListMixin
 
@@ -967,7 +968,7 @@ class ClusterByDistance(BaseNode):
         self._establish_links(**key_args)
 
 
-class CombineBundle(BaseNode):
+class CombineBundle(_CombineBundleMixin, BaseNode):
     """
     Combine multiple socket values into one.
 
@@ -1001,41 +1002,6 @@ class CombineBundle(BaseNode):
     @define_signature.setter
     def define_signature(self, value: bool):
         self.node.define_signature = value
-
-    def __init__(
-        self,
-        items: "dict[str, InputAny] | None" = None,
-        *,
-        define_signature: bool = False,
-    ):
-        super().__init__()
-        for name, value in (items or {}).items():
-            self._add_bundle_item(name, value)
-        self.define_signature = define_signature
-
-    def _add_bundle_item(self, name: str, value: InputAny) -> None:
-        """Add a named bundle item from a value of any supported kind.
-
-        - a socket-type string (``"GEOMETRY"``) declares an empty item;
-        - a socket / node source is linked in via the ``__extend__`` virtual
-          socket (Blender makes an item of the source's own type, then renamed);
-        - any other value declares an item of the inferred type and sets its
-          default.
-        """
-        if isinstance(value, str):
-            self.node.bundle_items.new(value, name)  # ty: ignore[invalid-argument-type]
-        elif isinstance(value, (BaseNode, Socket, bpy.types.NodeSocket)):
-            extend = self.node.inputs[len(self.node.inputs) - 1]
-            self.tree.link(self._source_socket(value), extend)
-            # Re-fetch by index: the collection just grew, so any earlier item
-            # reference is stale (see bpy collection invalidation).
-            self.node.bundle_items[len(self.node.bundle_items) - 1].name = name
-        else:
-            socket_type = _infer_value_type(value)
-            if socket_type is None:
-                raise TypeError(f"Unsupported bundle item {name!r}: {value!r}")
-            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
-            self.node.inputs[name].default_value = value
 
 
 class CombineColor(BaseNode):
@@ -6474,7 +6440,7 @@ class SampleSoundFrequencies(BaseNode):
         self._establish_links(**key_args)
 
 
-class SeparateBundle(BaseNode):
+class SeparateBundle(_SeparateBundleMixin, BaseNode):
     """
     Split a bundle into multiple sockets.
 
@@ -6513,22 +6479,6 @@ class SeparateBundle(BaseNode):
     @define_signature.setter
     def define_signature(self, value: bool):
         self.node.define_signature = value
-
-    def __init__(
-        self,
-        bundle: InputBundle = None,
-        items: "dict[str, str] | None" = None,
-        *,
-        define_signature: bool = False,
-    ):
-        super().__init__()
-        self.define_signature = define_signature
-        # Items are output sockets pulled from the bundle; each is declared by
-        # name and socket-type string (the inverse of CombineBundle, where the
-        # type is inferred from a linked source).
-        for name, socket_type in (items or {}).items():
-            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
-        self._establish_links(Bundle=bundle)
 
 
 class SeparateColor(BaseNode):

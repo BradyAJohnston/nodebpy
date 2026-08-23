@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import warnings
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import bpy
 from mathutils import Euler
@@ -31,10 +31,23 @@ from ..builder import (
 )
 from ..builder import BaseNode
 from ..builder import Socket as SocketLinker
+from ..builder._registry import _wrap_socket
+from ..builder.items import (
+    Item,
+    _apply_item_value,
+    _FieldItemFactory,
+    _infer_value_type,
+    _socket_for_item,
+    _SocketItemFactory,
+    _SocketValueItemFactory,
+)
 from ..types import (
+    InputAny,
     InputBoolean,
+    InputBundle,
     InputColor,
     InputFloat,
+    InputGeometry,
     InputInteger,
     InputLinkable,
     InputMatrix,
@@ -42,7 +55,34 @@ from ..types import (
     InputString,
     InputVector,
     _BakedDataTypeValues,
+    _SocketShapeStructureType,
 )
+
+if TYPE_CHECKING:
+    from ..builder import BundleSocket, GeometrySocket, StringSocket
+    from ..builder.tree import TreeBuilder
+
+
+class _BakeItems(_FieldItemFactory):
+    """Typed item factories for the Bake node — the field types plus the
+    geometry-ish types bake items additionally support."""
+
+    _owner: "_BakeMixin"
+
+    def string(
+        self, name: str = "String", value: InputString = None
+    ) -> Item[StringSocket]:
+        return cast("Item[StringSocket]", self._declare(name, value, "STRING"))
+
+    def geometry(
+        self, name: str = "Geometry", value: InputGeometry = None
+    ) -> Item[GeometrySocket]:
+        return cast("Item[GeometrySocket]", self._declare(name, value, "GEOMETRY"))
+
+    def bundle(
+        self, name: str = "Bundle", value: InputBundle = None
+    ) -> Item[BundleSocket]:
+        return cast("Item[BundleSocket]", self._declare(name, value, "BUNDLE"))
 
 
 class _BakeMixin(ItemsMixin):
@@ -60,6 +100,134 @@ class _BakeMixin(ItemsMixin):
         key_args = dict(items or {})
         key_args.update(kwargs)
         self._establish_links(**self._add_inputs(*args, **key_args))
+
+    @property
+    def items(self) -> _BakeItems:
+        """Typed item factories — declare bake items with static types."""
+        return _BakeItems(self)
+
+
+class _CombineBundleItems(_SocketValueItemFactory):
+    """Typed factories for Combine Bundle items; each declares one bundle
+    item and returns its typed input socket, linked from ``value`` when one
+    is given."""
+
+    _owner: "_CombineBundleMixin"
+
+    def _declare(
+        self,
+        name: str,
+        value: InputAny,
+        type: str,
+        structure_type: _SocketShapeStructureType,
+    ) -> SocketLinker:
+        node = self._owner.node
+        item = node.bundle_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        if structure_type != "AUTO":
+            item.structure_type = structure_type
+        socket = _socket_for_item(node, node.bundle_items, "Item_", item)
+        _apply_item_value(self._owner, socket, value)
+        return _wrap_socket(socket)
+
+
+class _CombineBundleMixin:
+    """Items constructor + typed item factories for the Combine Bundle
+    node, whose inputs are all dynamic bundle items."""
+
+    if TYPE_CHECKING:
+        node: bpy.types.NodeCombineBundle
+        tree: TreeBuilder
+
+        def _source_socket(self, node) -> bpy.types.NodeSocket: ...
+
+    def __init__(
+        self,
+        items: dict[str, InputAny] | None = None,
+        *,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        for name, value in (items or {}).items():
+            self._add_bundle_item(name, value)
+        self.node.define_signature = define_signature
+
+    @property
+    def items(self) -> _CombineBundleItems:
+        """Typed item factories — declare bundle items with static types."""
+        return _CombineBundleItems(self)
+
+    def _add_bundle_item(self, name: str, value: InputAny) -> None:
+        """Add a named bundle item from a value of any supported kind.
+
+        - a socket-type string (``"GEOMETRY"``) declares an empty item;
+        - a socket / node source is linked in via the ``__extend__`` virtual
+          socket (Blender makes an item of the source's own type, then renamed);
+        - any other value declares an item of the inferred type and sets its
+          default.
+        """
+        if isinstance(value, str):
+            self.node.bundle_items.new(value, name)  # ty: ignore[invalid-argument-type]
+        elif isinstance(value, (BaseNode, SocketLinker, bpy.types.NodeSocket)):
+            extend = self.node.inputs[len(self.node.inputs) - 1]
+            self.tree.link(self._source_socket(value), extend)
+            # Re-fetch by index: the collection just grew, so any earlier item
+            # reference is stale (see bpy collection invalidation).
+            self.node.bundle_items[len(self.node.bundle_items) - 1].name = name
+        else:
+            socket_type = _infer_value_type(value)
+            if socket_type is None:
+                raise TypeError(f"Unsupported bundle item {name!r}: {value!r}")
+            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
+            self.node.inputs[name].default_value = value
+
+
+class _SeparateBundleItems(_SocketItemFactory):
+    """Typed factories for Separate Bundle items; each declares one bundle
+    item and returns its typed output socket."""
+
+    _owner: "_SeparateBundleMixin"
+
+    def _declare(
+        self, name: str, type: str, structure_type: _SocketShapeStructureType
+    ) -> SocketLinker:
+        node = self._owner.node
+        item = node.bundle_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        if structure_type != "AUTO":
+            item.structure_type = structure_type
+        return _wrap_socket(
+            _socket_for_item(node, node.bundle_items, "Item_", item, output=True)
+        )
+
+
+class _SeparateBundleMixin:
+    """Items constructor + typed item factories for the Separate Bundle
+    node, whose outputs are all dynamic bundle items."""
+
+    if TYPE_CHECKING:
+        node: bpy.types.NodeSeparateBundle
+
+        def _establish_links(self, **kwargs: Any) -> None: ...
+
+    def __init__(
+        self,
+        bundle: InputBundle = None,
+        items: dict[str, str] | None = None,
+        *,
+        define_signature: bool = False,
+    ):
+        super().__init__()
+        self.node.define_signature = define_signature
+        # Items are output sockets pulled from the bundle; each is declared by
+        # name and socket-type string (the inverse of CombineBundle, where the
+        # type is inferred from a linked source).
+        for name, socket_type in (items or {}).items():
+            self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
+        self._establish_links(Bundle=bundle)
+
+    @property
+    def items(self) -> _SeparateBundleItems:
+        """Typed item factories — declare bundle items with static types."""
+        return _SeparateBundleItems(self)
 
 
 class _FormatStringMixin(ItemsMixin):

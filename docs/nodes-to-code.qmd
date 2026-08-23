@@ -237,13 +237,13 @@ This is on by default; pass `format=False` to get the raw generator output, and 
 
 ## Zones
 
-Simulation, repeat and for-each zones are reconstructed using the zone item API rather than as raw input/output node pairs:
+Simulation, repeat and for-each zones are reconstructed using the typed zone item factories rather than as raw input/output node pairs:
 
 ```{python}
 with TreeBuilder("Stack") as tree:
     out = tree.outputs.geometry("Geometry")
     zone = g.RepeatZone(5)
-    geo = zone.item("Geometry", g.Cube())
+    geo = zone.items.geometry("Geometry", g.Cube())
     (geo.current >> g.TransformGeometry(translation=(0, 0, 1.1))) >> geo.next
     geo.result >> out
 

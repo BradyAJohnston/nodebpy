@@ -156,7 +156,7 @@ class AlphaOver(BaseNode):
         )
 
 
-class Brightnesscontrast(BaseNode):
+class BrightnessContrast(BaseNode):
     """
     Adjust brightness and contrast
 
@@ -968,7 +968,7 @@ class HueCorrect(BaseNode):
         self._establish_links(**key_args)
 
 
-class Huesaturationvalue(BaseNode):
+class HueSaturationValue(BaseNode):
     """
     Apply a color transformation in the HSV color model
 

@@ -181,11 +181,10 @@ def _collect(
     group's *inputs*, whose parameters are typed from them.
     """
     descriptions = descriptions or {}
-    raw = [
-        s
-        for s in sockets
-        if s.identifier != "__extend__" and not getattr(s, "is_inactive", False)
-    ]
+    # Keep inactive sockets: socket-usage inference deactivates inputs that the
+    # current node options (e.g. a menu selection) leave unused, but a caller
+    # may set those options differently, so the API must expose every input.
+    raw = [s for s in sockets if s.identifier != "__extend__"]
     # The accessor resolves attribute names by identifier first, then name, so a
     # group socket's readable name works as the attr/param when it's unambiguous;
     # fall back to the opaque-but-unique identifier only on a name collision.
@@ -213,6 +212,43 @@ def _collect(
     return out
 
 
+def _introspect_group(group, name: str, library_source: str) -> _AssetClass:
+    """Introspect the node group ``group`` (a ``bpy.types.NodeTree``) into an
+    :class:`_AssetClass` record by instantiating it on a throwaway host node.
+
+    ``group`` is deliberately unannotated: the stubs type interface items and
+    ``node_groups.new`` too narrowly for the runtime attributes used here.
+    """
+    host = bpy.data.node_groups.new("_introspect_host", group.bl_idname)
+    try:
+        node_type = {
+            "GeometryNodeTree": "GeometryNodeGroup",
+            "ShaderNodeTree": "ShaderNodeGroup",
+            "CompositorNodeTree": "CompositorNodeGroup",
+        }[group.bl_idname]
+        node = host.nodes.new(node_type)
+        node.node_tree = group  # ty: ignore[unresolved-attribute]
+        # Tooltips live on the tree *interface* items, not on the node's
+        # sockets — collect them by identifier so the generated docstrings
+        # can use the asset author's own wording.
+        descriptions = {
+            item.identifier: item.description or ""
+            for item in group.interface.items_tree
+            if item.item_type == "SOCKET"
+        }
+        return _AssetClass(
+            class_name=_class_name(name),
+            asset_name=name,
+            description=(group.description or name).strip(),
+            library_source=library_source,
+            tree_idname=group.bl_idname,
+            inputs=_collect(node.inputs, descriptions, menus=True),
+            outputs=_collect(node.outputs, descriptions),
+        )
+    finally:
+        bpy.data.node_groups.remove(host)
+
+
 def _introspect(library: AssetLibrary, names: set[str] | None) -> list[_AssetClass]:
     """Append each requested group from the library and introspect its
     interface into :class:`_AssetClass` records."""
@@ -236,37 +272,7 @@ def _introspect(library: AssetLibrary, names: set[str] | None) -> list[_AssetCla
         ):
             dst.node_groups = [name]
         group = dst.node_groups[0]
-
-        host = bpy.data.node_groups.new("_introspect_host", group.bl_idname)
-        try:
-            node_type = {
-                "GeometryNodeTree": "GeometryNodeGroup",
-                "ShaderNodeTree": "ShaderNodeGroup",
-                "CompositorNodeTree": "CompositorNodeGroup",
-            }[group.bl_idname]
-            node = host.nodes.new(node_type)
-            node.node_tree = group  # ty: ignore[unresolved-attribute]
-            # Tooltips live on the tree *interface* items, not on the node's
-            # sockets — collect them by identifier so the generated docstrings
-            # can use the asset author's own wording.
-            descriptions = {
-                item.identifier: item.description or ""
-                for item in group.interface.items_tree
-                if item.item_type == "SOCKET"
-            }
-            classes.append(
-                _AssetClass(
-                    class_name=_class_name(name),
-                    asset_name=name,
-                    description=(group.description or name).strip(),
-                    library_source=library_source,
-                    tree_idname=group.bl_idname,
-                    inputs=_collect(node.inputs, descriptions, menus=True),
-                    outputs=_collect(node.outputs, descriptions),
-                )
-            )
-        finally:
-            bpy.data.node_groups.remove(host)
+        classes.append(_introspect_group(group, name, library_source))
     return classes
 
 

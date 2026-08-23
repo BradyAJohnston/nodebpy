@@ -78,7 +78,7 @@ def class_name_for(display_name: str, bl_idname: str, config: TreeTypeConfig) ->
     if custom and custom.class_name:
         return custom.class_name
 
-    class_name = display_name.replace("_", " ").replace("-", " ")
+    class_name = display_name.replace("_", " ").replace("-", " ").replace("/", " ")
     class_name = "".join(c if c.isalnum() or c.isspace() else "" for c in class_name)
     class_name = class_name.title().replace(" ", "")
 
