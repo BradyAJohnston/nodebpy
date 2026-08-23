@@ -6,7 +6,7 @@ from collections import deque
 from collections.abc import Hashable, Iterable
 from dataclasses import dataclass, field
 from math import inf
-from typing import TypeVar, cast
+from typing import cast
 
 import networkx as nx
 
@@ -36,17 +36,14 @@ class NodeStack:
     stack_sockets_to_originals: dict[Socket, Socket] = field(default_factory=dict)
 
 
-T = TypeVar("T", bound=Hashable)
-
-
 # Adapted from NetworkX, to make it deterministic:
 # https://github.com/networkx/networkx/blob/36e8a1ee85ca0ab4195a486451ca7d72153e2e00/networkx/algorithms/bipartite/matching.py#L59
-def deterministic_hopcroft_karp_matching(
+def deterministic_hopcroft_karp_matching[T: Hashable](
     G: nx.Graph[T], top_nodes: Iterable[T]
 ) -> dict[T, T]:
     def bfs() -> bool:
-        for u in pair_U:
-            if pair_U[u] is None:
+        for u, paired in pair_U.items():
+            if paired is None:
                 dist[u] = 0
                 Q.append(u)
             else:
@@ -120,7 +117,7 @@ _WEIGHT = "weight"
 def minimum_feedback_arc_set(G: nx.MultiDiGraph[Node]) -> set[MultiEdge]:
     G_ = G.copy()
     while not nx.is_directed_acyclic_graph(G_):
-        C = tuple((G_.subgraph(next(nx.simple_cycles(G_))).edges))
+        C = tuple(G_.subgraph(next(nx.simple_cycles(G_))).edges)
         min_weight = min([G.edges[e][_WEIGHT] for e in C])
         for u, v, k in C:
             d = G.edges[u, v, k]
@@ -129,7 +126,7 @@ def minimum_feedback_arc_set(G: nx.MultiDiGraph[Node]) -> set[MultiEdge]:
                 G_.remove_edge(u, v, k)
 
     for u, v, k in G.edges:
-        if (u, v, k) in G_.edges:
+        if G_.has_edge(u, v, k):
             continue
 
         G_.add_edge(u, v, k)
@@ -145,7 +142,7 @@ def edges_preventing_acyclic_contraction(
 ) -> list[Edge]:
     G_ = G.copy()
     for u, v, k, d in tuple(G_.edges(data=True, keys=True)):
-        if (u, v, k) in K.edges:
+        if K.has_edge(u, v, k):
             d[_WEIGHT] = 1
             G_.remove_edge(u, v, k)
             G_.add_edge(v, u, k, **d)
@@ -163,7 +160,7 @@ def relabel_sockets(
     y: float,
 ) -> None:
     assert is_real(v)
-    external_edges = [  #
+    external_edges = [
         (u, w, d)
         for u, w, d in edges(v, data=True)
         if opposite(v, (u, w)) not in node_stack.path
@@ -193,7 +190,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     G = CG.G
     T = CG.T
 
-    collapsed_math_nodes = [  # yapf: disable
+    collapsed_math_nodes = [
         v
         for v in G
         if is_real(v)
@@ -209,7 +206,8 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     for u, a in H.adj.copy().items():
         for v, d in a.items():
             if len(d) > 1:
-                H.remove_edges_from([(u, v, k) for k in d])
+                for k in tuple(d):
+                    H.remove_edge(u, v, k)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

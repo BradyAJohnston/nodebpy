@@ -169,12 +169,7 @@ InputVectorGrid = typing.Union[NodeSocketVector, "VectorSocketGrid", None]
 InputIntegerGrid = typing.Union[NodeSocketInt, "IntegerSocketGrid", None]
 InputBooleanGrid = typing.Union[NodeSocketBool, "BooleanSocketGrid", None]
 
-InputGrid = typing.Union[
-    InputFloatGrid,
-    InputVectorGrid,
-    InputIntegerGrid,
-    InputBooleanGrid,
-]
+InputGrid = InputFloatGrid | InputVectorGrid | InputIntegerGrid | InputBooleanGrid
 
 InputFloatList = typing.Union[NodeSocketFloat, "FloatSocketList", None]
 InputVectorList = typing.Union[NodeSocketVector, "VectorSocketList", None]
@@ -196,50 +191,50 @@ InputShaderList = typing.Union[NodeSocketShader, "ShaderSocketList", None]
 InputFontList = typing.Union[NodeSocketFont, "FontSocketList", None]
 InputSoundList = typing.Union[NodeSocketSound, "SoundSocketList", None]
 
-InputList = typing.Union[
-    InputFloatList,
-    InputVectorList,
-    InputColorList,
-    InputIntegerList,
-    InputBooleanList,
-    InputRotationList,
-    InputMatrixList,
-    InputStringList,
-    InputMenuList,
-    InputObjectList,
-    InputGeometryList,
-    InputCollectionList,
-    InputImageList,
-    InputMaterialList,
-    InputBundleList,
-    InputClosureList,
-    InputShaderList,
-    InputFontList,
-    InputSoundList,
-]
+InputList = (
+    InputFloatList
+    | InputVectorList
+    | InputColorList
+    | InputIntegerList
+    | InputBooleanList
+    | InputRotationList
+    | InputMatrixList
+    | InputStringList
+    | InputMenuList
+    | InputObjectList
+    | InputGeometryList
+    | InputCollectionList
+    | InputImageList
+    | InputMaterialList
+    | InputBundleList
+    | InputClosureList
+    | InputShaderList
+    | InputFontList
+    | InputSoundList
+)
 
-InputAny = typing.Union[
-    InputFloat,
-    InputInteger,
-    InputString,
-    InputColor,
-    InputIntegerVector,
-    InputGeometry,
-    InputObject,
-    InputMaterial,
-    InputImage,
-    InputCollection,
-    InputMatrix,
-    InputVector,
-    InputBoolean,
-    InputMenu,
-    InputRotation,
-    InputFont,
-    InputBundle,
-    InputClosure,
-    InputShader,
-    InputSound,
-]
+InputAny = (
+    InputFloat
+    | InputInteger
+    | InputString
+    | InputColor
+    | InputIntegerVector
+    | InputGeometry
+    | InputObject
+    | InputMaterial
+    | InputImage
+    | InputCollection
+    | InputMatrix
+    | InputVector
+    | InputBoolean
+    | InputMenu
+    | InputRotation
+    | InputFont
+    | InputBundle
+    | InputClosure
+    | InputShader
+    | InputSound
+)
 
 _AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
 

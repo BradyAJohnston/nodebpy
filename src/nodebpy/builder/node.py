@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from typing import (
     TYPE_CHECKING,
     Any,
-    Generic,
-    Iterable,
+    ClassVar,
     Literal,
     Protocol,
     Self,
-    TypeVar,
     cast,
 )
 
@@ -32,9 +31,10 @@ from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
 from .tree import TreeBuilder
 
-_T = TypeVar("_T", bound=bpy.types.NodeTree)
-
 if TYPE_CHECKING:
+    from types import EllipsisType
+
+    from .socket import Socket
 
     class _DynamicTarget(Protocol):
         """Structural type for a node that supports dynamic socket addition."""
@@ -185,7 +185,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         for name, value in kwargs.items():
             self._apply_input(name, value)
 
-    def _apply_input(self, target: "str | NodeSocket", value: InputAny):
+    def _apply_input(self, target: str | NodeSocket, value: InputAny):
         """Link or default-set ``value`` onto an input.
 
         ``target`` is a socket name/identifier (resolved against
@@ -239,7 +239,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                 return
             self._set_input_default_value(socket, value)
 
-    def _establish_named_links(self, pairs: "list[tuple[str, InputAny]]"):
+    def _establish_named_links(self, pairs: list[tuple[str, InputAny]]):
         """Link inputs that share a socket name (so the name alone is
         ambiguous), resolving each to a distinct socket by name plus a type
         match, falling back to interface order. Used for group nodes whose
@@ -277,7 +277,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
 
 class DynamicInputsMixin(ABC):
     _socket_data_types: tuple[str, ...]
-    _type_map: dict[str, str] = {}
+    _type_map: ClassVar[dict[str, str]] = {}
 
     def _match_compatible_data(
         self, sockets: Iterable[NodeSocket], types: tuple[str, ...] | None = None
@@ -299,13 +299,15 @@ class DynamicInputsMixin(ABC):
         raise SocketError("No compatible socket found")
 
     def _find_best_socket_pair(
-        self, source: BaseNode | NodeSocket, target: BaseNode | NodeSocket
+        self,
+        source: BaseNode | Socket | NodeSocket | EllipsisType | LinkingMixin,
+        target: BaseNode | Socket | NodeSocket | EllipsisType | LinkingMixin,
     ) -> tuple[NodeSocket, NodeSocket]:
         try:
             return super()._find_best_socket_pair(source, target)  # type: ignore
         except SocketError:
             dyn = cast("_DynamicTarget", target)
-            target_name, source_socket = list(dyn._add_inputs(source).items())[0]
+            target_name, source_socket = next(iter(dyn._add_inputs(source).items()))
             return (source_socket, dyn.i[target_name].socket)
 
     @abstractmethod
@@ -351,7 +353,7 @@ class DynamicInputsMixin(ABC):
         return new_sockets
 
 
-class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
+class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
     """Base class for custom node groups.
 
     Subclasses implement :meth:`_build_group` with the node-graph logic.
@@ -394,7 +396,7 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
 
     @property
     @abstractmethod
-    def node_tree(self) -> _T:
+    def node_tree(self) -> T:
         """The internal node tree for this group node."""
         ...
 
@@ -414,7 +416,7 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
         """Build the node group internals and interface."""
 
     @classmethod
-    def create_group(cls) -> _T:
+    def create_group(cls) -> T:
         """Build this group's node tree and return it, reusing an existing tree
         of the same name.
 
@@ -431,14 +433,14 @@ class NodeGroupBuilder(BaseNode, ABC, Generic[_T]):
                     f"{existing.bl_idname}, not {cls._tree_idname}. "
                     f"Use a unique _name for this group."
                 )
-            return cast(_T, existing)
+            return cast(T, existing)
         # Only the inner tree is needed (no group *node*), so skip __init__,
         # which would require an active context to create a node.
         builder = cls.__new__(cls)
         with TreeBuilder(cls._name, tree_type=cls._tree_idname) as tree:
             builder._build_group(tree)
         tree.tree.color_tag = cls._color_tag
-        return cast(_T, tree.tree)
+        return cast(T, tree.tree)
 
 
 class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):

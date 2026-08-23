@@ -7,7 +7,7 @@ methods that render their own fragments of the generated source.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 import bpy
 
@@ -129,8 +129,8 @@ class EnumInfo:
     identifier: str
     name: str
     description: str = ""
-    sockets: list[SocketInfo] = field(default_factory=lambda: list())
-    output_sockets: list[SocketInfo] = field(default_factory=lambda: list())
+    sockets: list[SocketInfo] = field(default_factory=list)
+    output_sockets: list[SocketInfo] = field(default_factory=list)
 
 
 @dataclass
@@ -141,8 +141,11 @@ class PropertyInfo:
     name: str
     prop_type: Literal["ENUM", "BOOLEAN", "INT", "FLOAT", "STRING", "COLOR", "VECTOR"]
     subtype: str | None = None
-    enum_items: list[EnumInfo] = field(default_factory=lambda: list())
+    enum_items: list[EnumInfo] = field(default_factory=list)
     default: Any = None
+    # Every identifier the RNA enum declares (the stubs type the property with
+    # this full set); ``enum_items`` holds only the values usable on this node.
+    enum_all: list[str] = field(default_factory=list)
 
     def enum_values_to_literal(self) -> str:
         if not self.enum_items:
@@ -197,7 +200,7 @@ class PropertyInfo:
             case _:
                 raise ValueError(f"Unsupported property type: {self.prop_type}")
 
-        return "{}: {} = {}".format(self.format_name(), self.type_hint(), default)
+        return f"{self.format_name()}: {self.type_hint()} = {default}"
 
     @property
     def _mathutils_type(self) -> str | None:
@@ -225,23 +228,22 @@ class PropertyInfo:
             getter_type = scalar_type
             setter_type = scalar_type
 
-        # bpy stubs occasionally have wrong types for specific properties
+        # A dynamic enum (no probeable items, e.g. view-layer names) is typed
+        # ``str`` while the stubs declare a placeholder Literal — the setter
+        # assignment needs an ignore. Otherwise the getter narrows to the
+        # values usable on this node; when that is a strict subset of the full
+        # RNA enum the stubs declare, the narrowed return type needs an ignore.
+        dynamic_enum = (
+            self.prop_type == "ENUM" and bool(self.enum_all) and not self.enum_items
+        )
         needs_ignore = (
             self.prop_type == "ENUM"
-            and name
-            in [
-                "data_type",
-                "subsurface_method",
-                "falloff",
-                "socket_type",
-                "layer",
-                "input_type",
-            ]
-        ) or (
-            self.prop_type == "STRING"
-            and self.identifier in ["layer", "view", "layer_name"]
+            and bool(self.enum_items)
+            and bool(self.enum_all)
+            and {item.identifier for item in self.enum_items} != set(self.enum_all)
         )
         ignore = "  # ty: ignore[invalid-return-type]" if needs_ignore else ""
+        setter_ignore = "  # ty: ignore[invalid-assignment]" if dynamic_enum else ""
         return f"""    @property
 
     def {name}(self) -> {getter_type}:
@@ -249,7 +251,7 @@ class PropertyInfo:
 
     @{name}.setter
     def {name}(self, value: {setter_type}):
-        self.node.{self.identifier} = value{" # ty: ignore[invalid-assignment]" if name == "layer" else ""}
+        self.node.{self.identifier} = value{setter_ignore}
 """
 
 
@@ -273,7 +275,7 @@ class NodeInfo:
     @property
     def node_docs_url(self) -> str | None:
         "Find adn returl the URL for the online Blender documentation for this node"
-        return bpy.types.WM_OT_doc_view_manual._lookup_rna_url(
+        return cast(Any, bpy.types.WM_OT_doc_view_manual)._lookup_rna_url(
             f"bpy.types.{self.bl_idname}", verbose=False
         )
 
@@ -502,7 +504,7 @@ class NodeInfo:
                     socket_name = get_socket_param_name(socket, sockets_use_same_name)
                     suffixes_to_remove = ["_float", "_vector"]
                     param_name = socket_name
-                    if socket_name.startswith("min") or socket_name.startswith("max"):
+                    if socket_name.startswith(("min", "max")):
                         suffixes_to_remove += ["_001", "_002"]
                     for suffix in suffixes_to_remove:
                         param_name = param_name.replace(suffix, "")
@@ -596,7 +598,7 @@ class NodeInfo:
                 socket_name = get_socket_param_name(socket, sockets_use_same_name)
                 suffixes_to_remove = ["_float", "_vector"]
                 param_name = socket_name
-                if socket_name.startswith("min") or socket_name.startswith("max"):
+                if socket_name.startswith(("min", "max")):
                     suffixes_to_remove += ["_001", "_002"]
                 for suffix in suffixes_to_remove:
                     param_name = param_name.replace(suffix, "")

@@ -5,13 +5,9 @@ from typing import TYPE_CHECKING
 import bpy
 
 from ...builder import BaseNode, SocketAccessor
-
+from ...builder.socket import FloatSocket
 from ...types import (
     InputFloat,
-)
-
-from ...builder.socket import (
-    FloatSocket,
 )
 
 
