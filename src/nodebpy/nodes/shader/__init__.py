@@ -118,8 +118,8 @@ from .input import (
     Wireframe,
 )
 from .color import (
-    Brightnesscontrast,
-    Huesaturationvalue,
+    BrightnessContrast,
+    HueSaturationValue,
     InvertColor,
     LightFalloff,
 )
@@ -175,7 +175,7 @@ __all__ = (
     "Blackbody",
     "Boolean",
     "BrickTexture",
-    "Brightnesscontrast",
+    "BrightnessContrast",
     "Bump",
     "CameraData",
     "CheckerTexture",
@@ -211,7 +211,7 @@ __all__ = (
     "GroupOutput",
     "HairBSDF",
     "Holdout",
-    "Huesaturationvalue",
+    "HueSaturationValue",
     "IesTexture",
     "ImageTexture",
     "ImplicitConversion",

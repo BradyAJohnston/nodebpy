@@ -856,7 +856,7 @@ class Despeckle(BaseNode):
         self._establish_links(**key_args)
 
 
-class Dilateerode(BaseNode):
+class DilateErode(BaseNode):
     """
     Expand and shrink masks
 
@@ -942,7 +942,7 @@ class Dilateerode(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def steps(cls, mask: InputFloat = 0.0, size: InputInteger = 0) -> "Dilateerode":
+    def steps(cls, mask: InputFloat = 0.0, size: InputInteger = 0) -> "DilateErode":
         """Create Dilate/Erode node with type 'Steps'."""
         return cls(mask=mask, size=size, type="Steps")
 
@@ -952,12 +952,12 @@ class Dilateerode(BaseNode):
         mask: InputFloat = 0.0,
         size: InputInteger = 0,
         falloff_size: InputFloat = 0.0,
-    ) -> "Dilateerode":
+    ) -> "DilateErode":
         """Create Dilate/Erode node with type 'Threshold'."""
         return cls(mask=mask, size=size, falloff_size=falloff_size, type="Threshold")
 
     @classmethod
-    def distance(cls, mask: InputFloat = 0.0, size: InputInteger = 0) -> "Dilateerode":
+    def distance(cls, mask: InputFloat = 0.0, size: InputInteger = 0) -> "DilateErode":
         """Create Dilate/Erode node with type 'Distance'."""
         return cls(mask=mask, size=size, type="Distance")
 
@@ -970,7 +970,7 @@ class Dilateerode(BaseNode):
         | Literal[
             "Smooth", "Sphere", "Root", "Inverse Square", "Sharp", "Linear"
         ] = "Smooth",
-    ) -> "Dilateerode":
+    ) -> "DilateErode":
         """Create Dilate/Erode node with type 'Feather'."""
         return cls(mask=mask, size=size, falloff=falloff, type="Feather")
 

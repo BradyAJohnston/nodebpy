@@ -35,8 +35,16 @@ class ChromaticAberration(AssetCompositorGroup):
         Image
     type : InputMenu | Literal["Offset", "Scale", "Directional Blur", "Lens Dispersion"]
         Different styles of aberrations
+    axis : InputMenu | Literal["Vertical", "Horizontal"]
+        Direction of the aberration effect
     factor : InputFloat
         The intensity of the aberration effect
+    center : InputVector
+        The position the transformations pivot around, in normalized coordinates. 0 means the lower left corner and 1 means the upper right corner of the image.
+    samples : InputInteger
+        The number of samples used to compute the blur. The more samples the smoother the result, at the expense of more compute time. The actual number of samples is two to the power of this input, so it increases exponentially.
+    fit : InputBoolean
+        Scale the image such that it fits entirely in the frame, leaving no empty spaces at the corners
 
     Inputs
     ------
@@ -44,8 +52,16 @@ class ChromaticAberration(AssetCompositorGroup):
         Image
     i.type : MenuSocket
         Different styles of aberrations
+    i.axis : MenuSocket
+        Direction of the aberration effect
     i.factor : FloatSocket
         The intensity of the aberration effect
+    i.center : VectorSocket
+        The position the transformations pivot around, in normalized coordinates. 0 means the lower left corner and 1 means the upper right corner of the image.
+    i.samples : IntegerSocket
+        The number of samples used to compute the blur. The more samples the smoother the result, at the expense of more compute time. The actual number of samples is two to the power of this input, so it increases exponentially.
+    i.fit : BooleanSocket
+        Scale the image such that it fits entirely in the frame, leaving no empty spaces at the corners
 
     Outputs
     -------
@@ -62,8 +78,16 @@ class ChromaticAberration(AssetCompositorGroup):
         """Image"""
         type: MenuSocket
         """Different styles of aberrations"""
+        axis: MenuSocket
+        """Direction of the aberration effect"""
         factor: FloatSocket
         """The intensity of the aberration effect"""
+        center: VectorSocket
+        """The position the transformations pivot around, in normalized coordinates. 0 means the lower left corner and 1 means the upper right corner of the image."""
+        samples: IntegerSocket
+        """The number of samples used to compute the blur. The more samples the smoother the result, at the expense of more compute time. The actual number of samples is two to the power of this input, so it increases exponentially."""
+        fit: BooleanSocket
+        """Scale the image such that it fits entirely in the frame, leaving no empty spaces at the corners"""
 
     class _Outputs(SocketAccessor):
         image: ColorSocket
@@ -81,9 +105,23 @@ class ChromaticAberration(AssetCompositorGroup):
         image: InputColor = None,
         type: InputMenu
         | Literal["Offset", "Scale", "Directional Blur", "Lens Dispersion"] = "Scale",
+        axis: InputMenu | Literal["Vertical", "Horizontal"] = "Horizontal",
         factor: InputFloat = 0.2,
+        center: InputVector = None,
+        samples: InputInteger = 3,
+        fit: InputBoolean = False,
     ):
-        super().__init__(**{"Socket_1": image, "Socket_6": type, "Socket_2": factor})
+        super().__init__(
+            **{
+                "Socket_1": image,
+                "Socket_6": type,
+                "Socket_8": axis,
+                "Socket_2": factor,
+                "Socket_3": center,
+                "Socket_4": samples,
+                "Socket_7": fit,
+            }
+        )
 
 
 class CombineCylindrical(AssetCompositorGroup):
@@ -218,8 +256,28 @@ class FilmGrain(AssetCompositorGroup):
         Amount of mixing between the effect and original image
     preset : InputMenu | Literal["8 mm Caffenol", "8 mm Home Movie", "Super 8 mm", "16 mm Broadcast", "16 mm Indie Cinema", "35 mm Portra 400", "Super 35 mm", "70 mm Cinema", "Custom"]
         Preset
+    film_gauge : InputMenu | Literal["8 mm", "16 mm", "35 mm", "70 mm"]
+        Film Gauge
+    style : InputMenu | Literal["Xpro Sharp", "Cinematic Gritty", "Home Movie", "Studio Broadcast", "Pro Photography", "Cinematic Soft", "Custom Style"]
+        Style
     animated : InputBoolean
         Should the noise change frame to frame
+    iso : InputInteger
+        ISO
+    softness : InputFloat
+        Halation-style softening: edges "bleed" and become smoother, adds bloom and noise that is somewhat pattern-aware
+    acutance : InputFloat
+        Sharpens large details and adds a halo around objects
+    coarseness : InputFloat
+        Emulsion roughness, also adds grain clamping
+    patchiness : InputFloat
+        Smoothness of the film substrate. High values contribute to a stroboscope effect when animating.
+    saturation : InputFloat
+        Noise colorfulness
+    luma_bias : InputFloat
+        Luma bias
+    texture_scale : InputFloat
+        Texture Scale
 
     Inputs
     ------
@@ -229,8 +287,28 @@ class FilmGrain(AssetCompositorGroup):
         Amount of mixing between the effect and original image
     i.preset : MenuSocket
         Preset
+    i.film_gauge : MenuSocket
+        Film Gauge
+    i.style : MenuSocket
+        Style
     i.animated : BooleanSocket
         Should the noise change frame to frame
+    i.iso : IntegerSocket
+        ISO
+    i.softness : FloatSocket
+        Halation-style softening: edges "bleed" and become smoother, adds bloom and noise that is somewhat pattern-aware
+    i.acutance : FloatSocket
+        Sharpens large details and adds a halo around objects
+    i.coarseness : FloatSocket
+        Emulsion roughness, also adds grain clamping
+    i.patchiness : FloatSocket
+        Smoothness of the film substrate. High values contribute to a stroboscope effect when animating.
+    i.saturation : FloatSocket
+        Noise colorfulness
+    i.luma_bias : FloatSocket
+        Luma bias
+    i.texture_scale : FloatSocket
+        Texture Scale
 
     Outputs
     -------
@@ -249,8 +327,28 @@ class FilmGrain(AssetCompositorGroup):
         """Amount of mixing between the effect and original image"""
         preset: MenuSocket
         """Preset"""
+        film_gauge: MenuSocket
+        """Film Gauge"""
+        style: MenuSocket
+        """Style"""
         animated: BooleanSocket
         """Should the noise change frame to frame"""
+        iso: IntegerSocket
+        """ISO"""
+        softness: FloatSocket
+        """Halation-style softening: edges "bleed" and become smoother, adds bloom and noise that is somewhat pattern-aware"""
+        acutance: FloatSocket
+        """Sharpens large details and adds a halo around objects"""
+        coarseness: FloatSocket
+        """Emulsion roughness, also adds grain clamping"""
+        patchiness: FloatSocket
+        """Smoothness of the film substrate. High values contribute to a stroboscope effect when animating."""
+        saturation: FloatSocket
+        """Noise colorfulness"""
+        luma_bias: FloatSocket
+        """Luma bias"""
+        texture_scale: FloatSocket
+        """Texture Scale"""
 
     class _Outputs(SocketAccessor):
         result: ColorSocket
@@ -279,14 +377,43 @@ class FilmGrain(AssetCompositorGroup):
             "70 mm Cinema",
             "Custom",
         ] = "Super 8 mm",
+        film_gauge: InputMenu | Literal["8 mm", "16 mm", "35 mm", "70 mm"] = "16 mm",
+        style: InputMenu
+        | Literal[
+            "Xpro Sharp",
+            "Cinematic Gritty",
+            "Home Movie",
+            "Studio Broadcast",
+            "Pro Photography",
+            "Cinematic Soft",
+            "Custom Style",
+        ] = "Studio Broadcast",
         animated: InputBoolean = False,
+        iso: InputInteger = 400,
+        softness: InputFloat = 0.5,
+        acutance: InputFloat = 0.5,
+        coarseness: InputFloat = 0.5,
+        patchiness: InputFloat = 0.5,
+        saturation: InputFloat = 0.5,
+        luma_bias: InputFloat = 0.5,
+        texture_scale: InputFloat = 0.5,
     ):
         super().__init__(
             **{
                 "Socket_1": input,
                 "Socket_7": factor,
                 "Socket_64": preset,
+                "Socket_46": film_gauge,
+                "Socket_47": style,
                 "Socket_10": animated,
+                "Socket_56": iso,
+                "Socket_52": softness,
+                "Socket_70": acutance,
+                "Socket_53": coarseness,
+                "Socket_54": patchiness,
+                "Socket_55": saturation,
+                "Socket_65": luma_bias,
+                "Socket_73": texture_scale,
             }
         )
 
@@ -395,6 +522,8 @@ class Retime(AssetCompositorGroup):
         Multiply the current scene frame by this factor
     cyclic : InputBoolean
         Restart from start frame when Cycle Length is reached
+    cycle_length : InputInteger
+        Number of frames to cycle through. Not affected by Speed.
 
     Inputs
     ------
@@ -406,6 +535,8 @@ class Retime(AssetCompositorGroup):
         Multiply the current scene frame by this factor
     i.cyclic : BooleanSocket
         Restart from start frame when Cycle Length is reached
+    i.cycle_length : IntegerSocket
+        Number of frames to cycle through. Not affected by Speed.
 
     Outputs
     -------
@@ -426,6 +557,8 @@ class Retime(AssetCompositorGroup):
         """Multiply the current scene frame by this factor"""
         cyclic: BooleanSocket
         """Restart from start frame when Cycle Length is reached"""
+        cycle_length: IntegerSocket
+        """Number of frames to cycle through. Not affected by Speed."""
 
     class _Outputs(SocketAccessor):
         frame: IntegerSocket
@@ -444,6 +577,7 @@ class Retime(AssetCompositorGroup):
         step: InputInteger = 1,
         speed: InputFloat = 1.0,
         cyclic: InputBoolean = False,
+        cycle_length: InputInteger = 10,
     ):
         super().__init__(
             **{
@@ -451,6 +585,7 @@ class Retime(AssetCompositorGroup):
                 "Socket_13": step,
                 "Socket_14": speed,
                 "Socket_11": cyclic,
+                "Socket_3": cycle_length,
             }
         )
 
