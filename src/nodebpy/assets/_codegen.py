@@ -449,7 +449,10 @@ def generate_asset_api(
         editors show documentation alongside the type hints. Defaults to
         ``True``; pass ``False`` for a terser module.
 
-    Returns the list of generated class names.
+    Returns
+    -------
+    list[str]
+        The list of generated class names.
     """
     if isinstance(libraries, AssetLibrary):
         libraries = [libraries]
