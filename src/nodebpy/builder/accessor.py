@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator, Literal, overload
+from collections.abc import Iterator
+from typing import TYPE_CHECKING, Literal, cast, overload
 
 import bpy
 from bpy.types import NodeSocket
@@ -84,10 +85,10 @@ class SocketAccessor:
         )
 
     @overload
-    def _get(self, key: slice) -> "list[Socket]": ...
+    def _get(self, key: slice) -> list[Socket]: ...
     @overload
-    def _get(self, key: str | int) -> "Socket": ...
-    def _get(self, key: str | int | slice) -> "Socket | list[Socket]":
+    def _get(self, key: str | int) -> Socket: ...
+    def _get(self, key: str | int | slice) -> Socket | list[Socket]:
         """Get a Socket for a socket by identifier, name, or index."""
         if isinstance(key, slice):
             sockets = [
@@ -104,10 +105,10 @@ class SocketAccessor:
         return socket
 
     @overload
-    def __getitem__(self, key: slice) -> "list[Socket]": ...
+    def __getitem__(self, key: slice) -> list[Socket]: ...
     @overload
-    def __getitem__(self, key: str | int) -> "Socket": ...
-    def __getitem__(self, key: str | int | slice) -> "Socket | list[Socket]":
+    def __getitem__(self, key: str | int) -> Socket: ...
+    def __getitem__(self, key: str | int | slice) -> Socket | list[Socket]:
         """Access by identifier, name, or integer index."""
         return self._get(key)
 
@@ -122,7 +123,9 @@ class SocketAccessor:
         for s in self._collection:
             assert s.node is not None
             return s.node
-        return self._collection.data  # empty collection fallback
+        return cast(
+            "bpy.types.Node", self._collection.data
+        )  # empty collection fallback
 
     @property
     def _ignore_visibility(self) -> bool:
@@ -191,7 +194,7 @@ class SocketAccessor:
             f"{socket_type} on {self._node.name}"
         )
 
-    def _values(self) -> "list[Socket]":
+    def _values(self) -> list[Socket]:
         """All visible sockets as Sockets.
 
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
@@ -199,7 +202,7 @@ class SocketAccessor:
         """
         return [_wrap_socket(s) for s in self._visible_sockets()]
 
-    def _items(self) -> "list[tuple[str, Socket]]":
+    def _items(self) -> list[tuple[str, Socket]]:
         """All visible sockets as (name, Socket) pairs.
 
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
@@ -214,10 +217,10 @@ class SocketAccessor:
     def __len__(self) -> int:
         return len(self._items())
 
-    def __iter__(self) -> Iterator["Socket"]:
+    def __iter__(self) -> Iterator[Socket]:
         return iter(self._values())
 
-    def __getattr__(self, name: str) -> "Socket":
+    def __getattr__(self, name: str) -> Socket:
         """Dynamic socket access by normalised attribute name.
 
         Converts ``node.o.base_color`` to ``self._get("Base Color")``.

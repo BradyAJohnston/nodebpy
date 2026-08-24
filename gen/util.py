@@ -53,9 +53,7 @@ def format_python_value(value: Any) -> str:
         return "None"
     elif isinstance(value, str):
         return f'"{value}"' if value != "" else '""'
-    elif isinstance(value, bool):
-        return str(value)
-    elif isinstance(value, int):
+    elif isinstance(value, (bool, int)):
         return str(value)
     elif isinstance(value, VectorFont):
         return "None"
@@ -69,5 +67,5 @@ def format_python_value(value: Any) -> str:
     else:
         try:
             return f'"{value}"'
-        except Exception:
+        except Exception:  # noqa: BLE001
             return "None"

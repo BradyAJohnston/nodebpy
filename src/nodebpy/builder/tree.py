@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar, Generic, Literal, Self, TypeVar, cast
+from typing import Any, ClassVar, Literal, Self, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -14,7 +14,6 @@ from bpy.types import (
     NodeTree,
     ShaderNodeTree,
 )
-
 
 from ..types import (
     SOCKET_COMPATIBILITY,
@@ -56,7 +55,7 @@ class PanelContext:
 
     def __init__(
         self,
-        socket_context: "SocketContext",
+        socket_context: SocketContext,
         name: str,
         *,
         default_closed: bool = False,
@@ -80,7 +79,7 @@ class PanelContext:
 class SocketContext:
     _direction: Literal["INPUT", "OUTPUT"] | None
 
-    def __init__(self, tree_builder: "TreeBuilder"):
+    def __init__(self, tree_builder: TreeBuilder):
         self.builder = tree_builder
         self._active_panel: bpy.types.NodeTreeInterfacePanel | None = None
 
@@ -115,6 +114,7 @@ class SocketContext:
         if self._active_panel is not None:
             kwargs["parent"] = self._active_panel
         interface_socket = self.interface.new_socket(**kwargs)
+        assert interface_socket is not None
         interface_socket.description = description
         return interface_socket
 
@@ -166,7 +166,7 @@ class SocketContext:
         subtype: FloatInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "FloatSocket":
+    ) -> FloatSocket:
         iface = self._add_socket("NodeSocketFloat", name, description)
         self._set_props(
             iface,
@@ -199,7 +199,7 @@ class SocketContext:
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "IntegerSocket":
+    ) -> IntegerSocket:
         iface = self._add_socket("NodeSocketInt", name, description)
         self._set_props(
             iface,
@@ -231,7 +231,7 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         is_panel_toggle: bool = False,
-    ) -> "BooleanSocket":
+    ) -> BooleanSocket:
         iface = self._add_socket("NodeSocketBool", name, description)
         self._set_props(
             iface,
@@ -269,7 +269,7 @@ class SocketContext:
             "VALUE", "NORMAL", "POSITION", "HANDLE_LEFT", "HANDLE_RIGHT"
         ] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
-    ) -> "VectorSocket":
+    ) -> VectorSocket:
         values: tuple[float, ...] = (
             (0.0,) * dimensions if default_value is None else tuple(default_value)
         )
@@ -307,7 +307,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "ColorSocket":
+    ) -> ColorSocket:
         assert len(default_value) == 4, "Default color must be RGBA tuple"
         iface = self._add_socket("NodeSocketColor", name, description)
         self._set_props(
@@ -334,7 +334,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "RotationSocket":
+    ) -> RotationSocket:
         iface = self._add_socket("NodeSocketRotation", name, description)
         self._set_props(
             iface,
@@ -360,7 +360,7 @@ class SocketContext:
         default_input: Literal["VALUE", "INSTANCE_TRANSFORM"] = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
-    ) -> "MatrixSocket":
+    ) -> MatrixSocket:
         iface = self._add_socket("NodeSocketMatrix", name, description)
         self._set_props(
             iface,
@@ -384,7 +384,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         subtype: StringInterfaceSubtypes = "NONE",
-    ) -> "StringSocket":
+    ) -> StringSocket:
         iface = self._add_socket("NodeSocketString", name, description)
         self._set_props(
             iface,
@@ -407,7 +407,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> "MenuSocket":
+    ) -> MenuSocket:
         iface = self._add_socket("NodeSocketMenu", name, description)
         self._set_props(
             iface,
@@ -429,7 +429,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "ObjectSocket":
+    ) -> ObjectSocket:
         iface = self._add_socket("NodeSocketObject", name, description)
         self._set_props(
             iface,
@@ -448,7 +448,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "GeometrySocket":
+    ) -> GeometrySocket:
         iface = self._add_socket("NodeSocketGeometry", name, description)
         self._set_props(
             iface,
@@ -467,7 +467,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "CollectionSocket":
+    ) -> CollectionSocket:
         iface = self._add_socket("NodeSocketCollection", name, description)
         self._set_props(
             iface,
@@ -487,7 +487,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "ImageSocket":
+    ) -> ImageSocket:
         iface = self._add_socket("NodeSocketImage", name, description)
         self._set_props(
             iface,
@@ -507,7 +507,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "MaterialSocket":
+    ) -> MaterialSocket:
         iface = self._add_socket("NodeSocketMaterial", name, description)
         self._set_props(
             iface,
@@ -526,7 +526,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "BundleSocket":
+    ) -> BundleSocket:
         iface = self._add_socket("NodeSocketBundle", name, description)
         self._set_props(
             iface,
@@ -544,7 +544,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "ClosureSocket":
+    ) -> ClosureSocket:
         iface = self._add_socket("NodeSocketClosure", name, description)
         self._set_props(
             iface,
@@ -562,7 +562,7 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
-    ) -> "ShaderSocket":
+    ) -> ShaderSocket:
         iface = self._add_socket("NodeSocketShader", name, description)
         self._set_props(
             iface,
@@ -575,12 +575,12 @@ class SocketContext:
     def __len__(self) -> int:
         assert self.tree.interface is not None
         return len(
-            list(
+            [
                 item
                 for item in self.tree.interface.items_tree
                 if isinstance(item, bpy.types.NodeTreeInterfaceSocket)
                 and item.in_out == self._direction
-            )
+            ]
         )
 
 
@@ -598,24 +598,21 @@ class OutputInterfaceContext(DirectionalContext):
     _direction = "OUTPUT"
 
 
-_TreeT = TypeVar("_TreeT", bound=NodeTree)
-
-
 @dataclass
 class _MenuDefault:
     item: bpy.types.NodeSocketMenu | bpy.types.NodeTreeInterfaceSocketMenu
     default: str
 
 
-class TreeBuilder(Generic[_TreeT]):
+class TreeBuilder[TreeT: NodeTree]:
     """Builder for creating Blender node trees with a clean Python API.
 
     Supports geometry, shader, and compositor node trees.
     """
 
-    tree: _TreeT
-    _tree_contexts: ClassVar["list[TreeBuilder]"] = []
-    _frame_contexts: ClassVar["list[NodeFrame]"] = []
+    tree: TreeT
+    _tree_contexts: ClassVar[list[TreeBuilder]] = []
+    _frame_contexts: ClassVar[list[NodeFrame]] = []
 
     def __init__(
         self,
@@ -650,7 +647,7 @@ class TreeBuilder(Generic[_TreeT]):
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder[GeometryNodeTree]":
+    ) -> TreeBuilder[GeometryNodeTree]:
         """Create a geometry node tree."""
         return cast(
             "TreeBuilder[GeometryNodeTree]",
@@ -671,7 +668,7 @@ class TreeBuilder(Generic[_TreeT]):
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder[ShaderNodeTree]":
+    ) -> TreeBuilder[ShaderNodeTree]:
         """Create a shader node tree."""
         return cast(
             "TreeBuilder[ShaderNodeTree]",
@@ -692,7 +689,7 @@ class TreeBuilder(Generic[_TreeT]):
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
-    ) -> "TreeBuilder[CompositorNodeTree]":
+    ) -> TreeBuilder[CompositorNodeTree]:
         """Create a compositor node tree."""
         return cast(
             "TreeBuilder[CompositorNodeTree]",
@@ -800,7 +797,9 @@ class TreeBuilder(Generic[_TreeT]):
     @property
     def node_positions(self) -> dict[str, tuple[float, float]]:
         """A ``{node name: (x, y)}`` snapshot of every node's location."""
-        return {node.name: tuple(node.location) for node in self.tree.nodes}
+        return {
+            node.name: (node.location.x, node.location.y) for node in self.tree.nodes
+        }
 
     @node_positions.setter
     def node_positions(self, positions: dict[str, tuple[float, float]]) -> None:
@@ -843,7 +842,7 @@ class TreeBuilder(Generic[_TreeT]):
             from ..export import to_mermaid
 
             return to_mermaid(self)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Mermaid diagram generation failed: {e}")
             return None
 
@@ -860,7 +859,7 @@ class TreeBuilder(Generic[_TreeT]):
             from ..export import to_web_render_html
 
             return to_web_render_html(self)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Web render generation failed: {e}")
             return None
 
@@ -869,14 +868,18 @@ class TreeBuilder(Generic[_TreeT]):
         try:
             return self.tree.nodes["Group Input"]
         except KeyError:
-            return self.tree.nodes.new("NodeGroupInput")
+            node = self.tree.nodes.new("NodeGroupInput")
+            assert node is not None
+            return node
 
     def _output_node(self) -> Node:
         """Get or create the Group Output node."""
         try:
             return self.tree.nodes["Group Output"]
         except KeyError:
-            return self.tree.nodes.new("NodeGroupOutput")
+            node = self.tree.nodes.new("NodeGroupOutput")
+            assert node is not None
+            return node
 
     def link(self, socket1: NodeSocket, socket2: NodeSocket) -> bpy.types.NodeLink:
         # Unwrap Socket wrappers to raw NodeSocket
@@ -900,6 +903,7 @@ class TreeBuilder(Generic[_TreeT]):
             )
 
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
+        assert link is not None
 
         if (
             any(socket.is_inactive for socket in [socket1, socket2])
@@ -933,6 +937,7 @@ class TreeBuilder(Generic[_TreeT]):
 
     def add(self, name: str) -> Node:
         node = self.tree.nodes.new(name)
+        assert node is not None
         node.hide = self.collapse
         if self._frame_contexts:
             node.parent = self._frame_contexts[-1]
@@ -949,7 +954,9 @@ class MaterialBuilder(TreeBuilder):
         fake_user: bool = False,
         ignore_visibility: bool = False,
     ):
-        self.material = bpy.data.materials.new(name)
+        material = bpy.data.materials.new(name)
+        assert material is not None
+        self.material = material
         self.material.use_fake_user = fake_user
         assert self.material.node_tree
         super().__init__(

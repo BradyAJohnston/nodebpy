@@ -77,7 +77,7 @@ def _allow_innactive_sockets(node: bpy.types.Node) -> bool:
 
 def _resolve_promotion(
     self_socket: NodeSocket, other: Any, reverse: bool
-) -> "tuple[NodeSocket, Any, bool]":
+) -> tuple[NodeSocket, Any, bool]:
     """Determine the dominant socket for operator dispatch.
 
     When both operands have a socket type, the higher-precedence type wins.
@@ -114,7 +114,7 @@ class _SocketLike(Protocol):
     socket: NodeSocket
 
 
-def _output_socket_type(value: Any) -> "SOCKET_TYPES | None":
+def _output_socket_type(value: Any) -> SOCKET_TYPES | None:
     """The Blender socket ``type`` of *value*'s default output socket.
 
     Resolves a raw ``NodeSocket`` or any socket/node wrapper to the type string

@@ -6,6 +6,7 @@ import enum
 import importlib.util
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, cast
 
 from .customizations import _CUSTOMIZATIONS
 
@@ -132,7 +133,7 @@ class TreeTypeConfig:
         they can never disagree.
         """
         name = node_type.__name__
-        rna_name = node_type.bl_rna.name
+        rna_name = cast(Any, node_type).bl_rna.name
         # MANUAL wins over SKIP: some nodes match a skip substring *and* are
         # hand-written + re-exported (e.g. "Simulation" is skipped, but the
         # SimulationInput/Output/Zone classes live in zone.py). Matched via the
@@ -180,7 +181,6 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "ClosureInput",
         "ClosureOutput",
         "ClosureZone",
-        "JoinStrings",
         "Menu",
         "Collection",
         "Material",

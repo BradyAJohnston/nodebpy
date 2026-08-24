@@ -72,7 +72,7 @@ def dissolve_reroute_edges(G: nx.DiGraph[Node], path: list[Node]) -> None:
 
 
 def remove_reroutes(CG: ClusterGraph) -> None:
-    reroute_clusters = {  #
+    reroute_clusters = {
         c for c in CG.S if all(v.type != Kind.CLUSTER and v.is_reroute for v in CG.T[c])
     }
     for path in get_reroute_paths(CG, is_safe_to_remove):
@@ -137,6 +137,7 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
 
 def add_reroute(v: Node) -> None:
     reroute = get_ntree().nodes.new(type="NodeReroute")
+    assert reroute is not None
     assert v.cluster
     reroute.parent = v.cluster.node
     config.selected.append(reroute)
@@ -170,12 +171,16 @@ def restore_multi_input_orders(G: nx.MultiDiGraph[Node]) -> None:
         assert multi_input
 
         as_links = {
-            link.from_socket: link for link in links if link.to_socket == multi_input
+            link.from_socket: link
+            for link in links
+            if link.to_socket == multi_input and link.from_socket is not None
         }
 
         for output in {s.bpy for s in H.pred[socket]} - as_links.keys():
             assert output
-            as_links[output] = links.new(output, multi_input)
+            new_link = links.new(output, multi_input)
+            assert new_link is not None
+            as_links[output] = new_link
 
         if len(as_links) != len(
             {link.multi_input_sort_id for link in as_links.values()}
@@ -184,7 +189,9 @@ def restore_multi_input_orders(G: nx.MultiDiGraph[Node]) -> None:
                 links.remove(link)
 
             for output in as_links:
-                as_links[output] = links.new(output, multi_input)
+                new_link = links.new(output, multi_input)
+                assert new_link is not None
+                as_links[output] = new_link
 
         SH = H.subgraph(
             {i[0] for i in sort_ids} | {socket} | {v for v in H if v.owner.is_reroute}

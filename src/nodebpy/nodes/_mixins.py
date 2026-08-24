@@ -11,12 +11,13 @@ from __future__ import annotations
 
 import warnings
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, cast
 
 import bpy
 from mathutils import Euler
 
 from ..builder import (
+    BaseNode,
     BooleanSocketList,
     ColorSocketList,
     FloatSocketList,
@@ -29,7 +30,6 @@ from ..builder import (
     StringSocketList,
     VectorSocketList,
 )
-from ..builder import BaseNode
 from ..builder import Socket as SocketLinker
 from ..builder._registry import _wrap_socket
 from ..builder.items import (
@@ -67,7 +67,7 @@ class _BakeItems(_FieldItemFactory):
     """Typed item factories for the Bake node — the field types plus the
     geometry-ish types bake items additionally support."""
 
-    _owner: "_BakeMixin"
+    _owner: _BakeMixin
 
     def string(
         self, name: str = "String", value: InputString = None
@@ -112,7 +112,7 @@ class _CombineBundleItems(_SocketValueItemFactory):
     item and returns its typed input socket, linked from ``value`` when one
     is given."""
 
-    _owner: "_CombineBundleMixin"
+    _owner: _CombineBundleMixin
 
     def _declare(
         self,
@@ -123,6 +123,7 @@ class _CombineBundleItems(_SocketValueItemFactory):
     ) -> SocketLinker:
         node = self._owner.node
         item = node.bundle_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         if structure_type != "AUTO":
             item.structure_type = structure_type
         socket = _socket_for_item(node, node.bundle_items, "Item_", item)
@@ -178,20 +179,21 @@ class _CombineBundleMixin:
             if socket_type is None:
                 raise TypeError(f"Unsupported bundle item {name!r}: {value!r}")
             self.node.bundle_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
-            self.node.inputs[name].default_value = value
+            cast(Any, self.node.inputs[name]).default_value = value
 
 
 class _SeparateBundleItems(_SocketItemFactory):
     """Typed factories for Separate Bundle items; each declares one bundle
     item and returns its typed output socket."""
 
-    _owner: "_SeparateBundleMixin"
+    _owner: _SeparateBundleMixin
 
     def _declare(
         self, name: str, type: str, structure_type: _SocketShapeStructureType
     ) -> SocketLinker:
         node = self._owner.node
         item = node.bundle_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         if structure_type != "AUTO":
             item.structure_type = structure_type
         return _wrap_socket(
@@ -236,7 +238,7 @@ class _FormatStringMixin(ItemsMixin):
 
     _items_collection = "format_items"
     _socket_data_types = ("VALUE", "INT", "STRING")
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     if TYPE_CHECKING:
 
@@ -275,7 +277,7 @@ class _FieldToListMixin(ItemsMixin):
         "STRING",
         "MENU",
     )
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     if TYPE_CHECKING:
         # i/o are declared on the generated subclass; restate them here so the
@@ -354,8 +356,10 @@ class _FieldToListMixin(ItemsMixin):
         return ColorSocketList(self._declare_item("RGBA", name, input))
 
     def rotation(
-        self, input: InputRotation = Euler((0, 0, 0)), name: str | None = None
+        self, input: InputRotation = None, name: str | None = None
     ) -> RotationSocketList:
+        if input is None:
+            input = Euler((0, 0, 0))
         return RotationSocketList(self._declare_item("ROTATION", name, input))
 
     def matrix(

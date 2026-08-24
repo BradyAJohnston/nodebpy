@@ -3,23 +3,20 @@
 from typing import TYPE_CHECKING, Literal
 
 import bpy
-
 from mathutils import Color
 
 from ...builder import BaseNode, SocketAccessor
-
-from ...types import (
-    InputBoolean,
-    InputColor,
-    InputFloat,
-    InputMenu,
-)
-
 from ...builder.socket import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
     MenuSocket,
+)
+from ...types import (
+    InputBoolean,
+    InputColor,
+    InputFloat,
+    InputMenu,
 )
 
 

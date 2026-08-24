@@ -198,9 +198,9 @@ def test_wrong_attribute_access():
         node = OtherVertex()
 
         with pytest.raises(AttributeError):
-            node.wrong_attribute_name
+            _ = node.wrong_attribute_name
         with pytest.raises(AttributeError):
-            node.o.wrong_attribute_name
+            _ = node.o.wrong_attribute_name
 
 
 # --- Group caching ---
@@ -336,9 +336,8 @@ def test_type_mismatch_geometry_vs_shader_raises():
     with TreeBuilder():
         _ConflictGeom()
 
-    with TreeBuilder.shader():
-        with pytest.raises(TypeError, match="already exists"):
-            _ConflictShader()
+    with TreeBuilder.shader(), pytest.raises(TypeError, match="already exists"):
+        _ConflictShader()
 
 
 def test_type_mismatch_shader_vs_compositor_raises():
@@ -359,9 +358,8 @@ def test_type_mismatch_shader_vs_compositor_raises():
     with TreeBuilder.shader():
         _ConflictShader()
 
-    with TreeBuilder.compositor():
-        with pytest.raises(TypeError, match="already exists"):
-            _ConflictCompositor()
+    with TreeBuilder.compositor(), pytest.raises(TypeError, match="already exists"):
+        _ConflictCompositor()
 
 
 def test_same_name_same_type_does_not_raise():
@@ -443,9 +441,8 @@ def test_group_already_exists_wrong_type():
     with g.tree():
         _GeomGroup()
 
-    with c.tree():
-        with pytest.raises(TypeError):
-            _CompGroup()
+    with c.tree(), pytest.raises(TypeError):
+        _CompGroup()
 
 
 class TestCustomShaderGroup:

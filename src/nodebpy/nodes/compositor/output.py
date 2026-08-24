@@ -5,13 +5,11 @@ from typing import TYPE_CHECKING
 import bpy
 
 from ...builder import BaseNode, SocketAccessor
-
-from ...types import (
-    InputColor,
-)
-
 from ...builder.socket import (
     ColorSocket,
+)
+from ...types import (
+    InputColor,
 )
 
 

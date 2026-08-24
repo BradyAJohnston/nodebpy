@@ -12,9 +12,9 @@ from ..builder import AssetLibrary, BundledLibrary, PackageLibrary
 from ._codegen import generate_asset_api, generate_asset_modules
 
 __all__ = [
-    "generate_asset_api",
-    "generate_asset_modules",
     "AssetLibrary",
     "BundledLibrary",
     "PackageLibrary",
+    "generate_asset_api",
+    "generate_asset_modules",
 ]

@@ -26,15 +26,14 @@ import json
 import keyword
 import re
 import textwrap
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, Literal, NamedTuple, TypeVar
+from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 from bpy.types import FunctionNodeCompare, NodeTree
 
 if TYPE_CHECKING:
     from ..builder.tree import TreeBuilder
-
-_T = TypeVar("_T")
 
 
 class CodegenError(Exception):
@@ -78,7 +77,7 @@ class Expr:
         raise NotImplementedError
 
     @staticmethod
-    def _child(child: "Expr", parens: bool) -> str:
+    def _child(child: Expr, parens: bool) -> str:
         text = child.render()
         return f"({text})" if parens else text
 
@@ -382,7 +381,7 @@ def _eq(a: Any, b: Any) -> bool:
         if isinstance(a, (int, float)) and isinstance(b, (int, float)):
             return float(a) == float(b)
         return a == b
-    except Exception:
+    except Exception:  # noqa: BLE001
         return False
 
 
@@ -500,7 +499,7 @@ def _find_cls(bl_idname: str) -> tuple[str, type] | None:
 # ---------------------------------------------------------------------------
 
 
-def _with_probe_tree(tree_idname: str, fn: Callable[[Any], _T], default: _T) -> _T:
+def _with_probe_tree[T](tree_idname: str, fn: Callable[[Any], T], default: T) -> T:
     """Run ``fn`` against a throwaway node tree of ``tree_idname`` and return its
     result, removing the tree afterward. Returns ``default`` if Blender is
     unavailable or anything goes wrong. The probe tree is never the user's."""
@@ -508,11 +507,12 @@ def _with_probe_tree(tree_idname: str, fn: Callable[[Any], _T], default: _T) -> 
         import bpy
 
         probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)  # ty: ignore[invalid-argument-type]
+        assert probe_tree is not None
         try:
             return fn(probe_tree)
         finally:
             bpy.data.node_groups.remove(probe_tree)
-    except Exception:
+    except Exception:  # noqa: BLE001
         return default
 
 
@@ -595,7 +595,7 @@ def _get_interface_defaults(tree_idname: str, socket_type: str) -> dict[str, obj
                 continue
             try:
                 value = getattr(socket, prop.identifier)
-            except Exception:
+            except Exception:  # noqa: BLE001, S112
                 continue
             if not isinstance(value, str):
                 try:
@@ -961,8 +961,8 @@ class EmitContext:
     counter: dict[str, int] = field(default_factory=dict)
     used_aliases: set[str] = field(default_factory=set)
     pending_lines: list[str] = field(default_factory=list)
-    zones: dict[str, "_ZoneState"] = field(default_factory=dict)
-    collector: "_GroupCollector | None" = None
+    zones: dict[str, _ZoneState] = field(default_factory=dict)
+    collector: _GroupCollector | None = None
     # Statements emitted after the body — menu interface defaults whose enum is
     # only populated once the consuming MenuSwitch has been created and linked.
     iface_deferred: list[str] = field(default_factory=list)
@@ -1141,7 +1141,7 @@ class EmitContext:
                 continue
             try:
                 val = socket.default_value
-            except Exception:
+            except Exception:  # noqa: BLE001, S112
                 continue
 
             default: object = inspect.Parameter.empty
@@ -1294,7 +1294,7 @@ def _base_node_props() -> set[str]:
             import bpy
 
             _BASE_NODE_PROPS = set(bpy.types.Node.bl_rna.properties.keys())
-        except Exception:
+        except Exception:  # noqa: BLE001
             _BASE_NODE_PROPS = set()
     return _BASE_NODE_PROPS
 
@@ -2783,7 +2783,7 @@ class _LiftPlan(NamedTuple):
     sockets: tuple
 
 
-def _linked_src_types(ctx: "EmitContext", node) -> dict[str, str]:
+def _linked_src_types(ctx: EmitContext, node) -> dict[str, str]:
     """Input socket identifier → the type of the socket feeding it."""
     return {
         link.to_socket.identifier: link.from_socket.type
@@ -2856,14 +2856,17 @@ def _lift_plan(
         if pair is not None:
             lhs_s, rhs_s = pair
             pair_ids = {lhs_s.identifier, rhs_s.identifier}
-            if linked_ids and linked_ids <= pair_ids:
-                if all(
+            if (
+                linked_ids
+                and linked_ids <= pair_ids
+                and all(
                     s.identifier in linked_ids or hasattr(s, "default_value")
                     for s in pair
-                ):
-                    if not _operator_dispatch_ok(node, pair, linked_ids, src_types):
-                        return None
-                    return _LiftPlan("binary", binary[operation], pair)
+                )
+            ):
+                if not _operator_dispatch_ok(node, pair, linked_ids, src_types):
+                    return None
+                return _LiftPlan("binary", binary[operation], pair)
 
     inputs = list(node.inputs)
     if inputs:
@@ -2941,12 +2944,11 @@ def _chainable_links(ctx: EmitContext) -> dict[str, _Link]:
             continue  # custom emitters manage their own inputs
         if link.from_socket.type not in _CHAIN_SOCKET_TYPES:
             continue
-        if from_node.bl_idname != "NodeGroupInput":
-            if not (
-                from_node.outputs
-                and from_node.outputs[0].identifier == link.from_socket.identifier
-            ):
-                continue
+        if from_node.bl_idname != "NodeGroupInput" and not (
+            from_node.outputs
+            and from_node.outputs[0].identifier == link.from_socket.identifier
+        ):
+            continue
         if not (
             to_node.inputs and to_node.inputs[0].identifier == link.to_socket.identifier
         ):
@@ -3182,7 +3184,7 @@ def _format_with_ruff(code: str) -> str:
 
 
 def to_python(
-    tree: NodeTree | "TreeBuilder",
+    tree: NodeTree | TreeBuilder,
     min_chain_length: int = 3,
     strict: bool = True,
     max_inline_width: int | None = 88,
@@ -3334,7 +3336,7 @@ def _node_positions_lines(node_tree, indent: str) -> list[str]:
     return lines
 
 
-def _assemble_tree_body(emission: "_TreeEmission") -> list[str]:
+def _assemble_tree_body(emission: _TreeEmission) -> list[str]:
     """The indented lines inside a ``with ... as tree:`` block (or, re-indented,
     a ``_build_group`` method)."""
     iface_lines, body, out_lines = (
@@ -3456,7 +3458,7 @@ def _render_group_class(
     class_name: str,
     node_tree,
     base: str,
-    emission: "_TreeEmission",
+    emission: _TreeEmission,
     snapshot_positions: bool = False,
     keep_reroutes: bool = False,
 ) -> str:
@@ -3479,7 +3481,7 @@ def _render_group_class(
     return "\n".join(header + body)
 
 
-def _emit_tree(node_tree, collector: "_GroupCollector") -> "_TreeEmission":
+def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
     """Generate the interface/body/output lines for one tree. Nested group
     nodes register their classes on ``collector`` as a side effect."""
     links = _effective_links(node_tree, collector.keep_reroutes)
@@ -4534,7 +4536,7 @@ def _significant_default(socket) -> Any | None:
         return None
     try:
         value = socket.default_value
-    except Exception:
+    except Exception:  # noqa: BLE001
         return None
     if isinstance(value, str):
         return value or None

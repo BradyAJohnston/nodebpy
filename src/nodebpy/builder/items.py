@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generic, Mapping, TypeVar, cast
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 
 from bpy.types import ID, Node, NodeSocket
 from mathutils import Euler

@@ -508,7 +508,7 @@ def test_socket_accessor():
         pos = g.Position()
 
         with pytest.raises(AttributeError, match="_some_name"):
-            pos.o._some_name
+            _ = pos.o._some_name
 
     assert pos.i._node == pos.node
 
@@ -611,7 +611,7 @@ def test_vector_socket_input_indexing_reuse():
     assert combine_node.inputs[0].links[0].from_node == a.node
     assert combine_node.inputs[2].links
     assert combine_node.inputs[2].links[0].from_node == b.node
-    assert set_pos2.i.position.links[0].from_node.bl_idname == g.CombineXYZ._bl_idname  # ty: ignore[unresolved-attribute]
+    assert set_pos2.i.position.links[0].from_node.bl_idname == g.CombineXYZ._bl_idname
 
 
 def test_vector_socket_output_iteration():
@@ -669,11 +669,11 @@ def test_color_socket_input_shader():
             s.Value(i) >> axis
 
         with pytest.raises(TypeError):
-            sep.i.color.a
+            _ = sep.i.color.a
 
         comb = s.CombineColor()
         with pytest.raises(TypeError):
-            comb.o.color.a
+            _ = comb.o.color.a
 
         assert len(comb.o.color) == 3
         assert sep.i.color[2].name == "Blue"
@@ -806,7 +806,7 @@ def test_matrix_socket_output_len():
         assert len(mat.o.transform.links) == 2
 
         rot = g.Rotation()
-        rot.o.rotation.invert().node.bl_idname == g.InvertRotation._bl_idname
+        assert rot.o.rotation.invert().node.bl_idname == g.InvertRotation._bl_idname
 
 
 def test_socket_default_values():

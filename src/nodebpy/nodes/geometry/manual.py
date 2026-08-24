@@ -1,10 +1,8 @@
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from typing import (
     TYPE_CHECKING,
-    Generic,
-    Iterable,
+    ClassVar,
     Literal,
-    TypeVar,
     cast,
 )
 
@@ -106,44 +104,37 @@ from .zone import (
     _sync_closure_items,
 )
 
-_T = TypeVar("_T", bound=BaseSocket)
-_S = TypeVar("_S")
-
 __all__ = (
-    "RepeatInput",
-    "RepeatOutput",
-    "RepeatZone",
-    "SimulationInput",
-    "SimulationOutput",
-    "SimulationZone",
-    "ForEachGeometryElementInput",
-    "ForEachGeometryElementOutput",
-    "ForEachGeometryElementZone",
-    "EvaluateClosure",
+    "AttributeStatistic",
+    "CaptureAttribute",
     "ClosureInput",
     "ClosureOutput",
     "ClosureZone",
-    "GeometryToInstance",
-    "SDFGridBoolean",
-    #
-    "IndexSwitch",
-    "MenuSwitch",
-    "MeshBoolean",
-    "CaptureAttribute",
-    "FieldToGrid",
-    "JoinGeometry",
-    "SDFGridBoolean",
-    "JoinStrings",
-    "GeometryToInstance",
-    "JoinStrings",
-    "Value",
+    "ColorRamp",
     "Compare",
-    "AttributeStatistic",
-    "Frame",
+    "EvaluateClosure",
+    "FieldToGrid",
     "Float",
     "FloatCurve",
-    "ColorRamp",
+    "ForEachGeometryElementInput",
+    "ForEachGeometryElementOutput",
+    "ForEachGeometryElementZone",
+    "Frame",
+    "GeometryToInstance",
+    "IndexSwitch",
+    "JoinGeometry",
+    "JoinStrings",
+    "MenuSwitch",
+    "MeshBoolean",
+    "RepeatInput",
+    "RepeatOutput",
+    "RepeatZone",
+    "SDFGridBoolean",
+    "SimulationInput",
+    "SimulationOutput",
+    "SimulationZone",
     "StoreNamedAttribute",
+    "Value",
 )
 
 
@@ -225,6 +216,7 @@ class ColorRamp(BaseNode):
                 point = self.elements[i]
             else:
                 point = self.elements.new(0.0)
+            assert point is not None
             point.position = item[0]
             point.color = item[1]
 
@@ -333,6 +325,7 @@ class FloatCurve(BaseNode):
                 point.location = item[:2]
             else:
                 point = self.points.new(*item[:2])
+            assert point is not None
             if len(item) > 2:
                 point.handle_type = item[2]  # ty: ignore[index-out-of-bounds]
 
@@ -359,7 +352,7 @@ _NamedAttributeDataTypes = Literal[
 ]
 
 
-class StoreNamedAttribute(BaseNode, Generic[_T]):
+class StoreNamedAttribute[T: BaseSocket](BaseNode):
     """
     Store the result of a field on a geometry as an attribute with the specified name
 
@@ -576,14 +569,14 @@ class StoreNamedAttribute(BaseNode, Generic[_T]):
     instance = _StoreNamedAttributeDomainFactory("INSTANCE")
     layer = _StoreNamedAttributeDomainFactory("LAYER")
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         geometry: GeometrySocket
         """Geometry"""
         selection: BooleanSocket
         """Selection"""
         name: StringSocket
         """Name"""
-        value: _S
+        value: S
         """Value"""
 
     class _Outputs(SocketAccessor):
@@ -660,6 +653,7 @@ class _EvaluateClosureInputs(_SocketValueItemFactory):
     ) -> SocketLinker:
         node = self._owner.node
         item = node.input_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         if structure_type != "AUTO":
             item.structure_type = structure_type
         socket = _socket_for_item(node, node.input_items, "Item_", item)
@@ -678,6 +672,7 @@ class _EvaluateClosureOutputs(_SocketItemFactory):
     ) -> SocketLinker:
         node = self._owner.node
         item = node.output_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         if structure_type != "AUTO":
             item.structure_type = structure_type
         return _wrap_socket(
@@ -796,7 +791,7 @@ class EvaluateClosure(BaseNode):
 
 
 class Frame(BaseNode):
-    """ """
+    """Frame for visually grouping nodes in the editor."""
 
     _bl_idname = "NodeFrame"
     node: bpy.types.NodeFrame
@@ -1007,10 +1002,12 @@ class Value(BaseNode):
     def value(self) -> float:
         """Input socket: Value"""
 
+        assert self.node.outputs is not None
         return self.node.outputs[0].default_value
 
     @value.setter
     def value(self, value: float):
+        assert self.node.outputs is not None
         self.node.outputs[0].default_value = value
 
 
@@ -1090,7 +1087,7 @@ class IntegerVector(BaseNode):
 
     def __init__(
         self,
-        vector: list[int] = [0, 0, 0],
+        vector: tuple[int, int, int] | list[int] = (0, 0, 0),
         vector_dimensions: Literal[2, 3] = 3,
     ):
         super().__init__()
@@ -1104,7 +1101,7 @@ class IntegerVector(BaseNode):
         return list(self.node.vector)
 
     @vector.setter
-    def vector(self, value: list[int]):
+    def vector(self, value: tuple[int, int, int] | list[int]):
         self.node.vector = value
 
     @property
@@ -1319,7 +1316,7 @@ class JoinGeometry(BaseNode):
             self._link(*self._find_best_socket_pair(source, self))
 
 
-class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
+class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
     """Node builder for the Index Switch node"""
 
     _bl_idname = "GeometryNodeIndexSwitch"
@@ -1425,15 +1422,15 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
     class _Inputs(SocketAccessor):
         index: IntegerSocket
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        output: _S
+    class _Outputs[S](SocketAccessor):
+        output: S
 
     if TYPE_CHECKING:
 
         @property
         def i(self) -> _Inputs: ...
         @property
-        def o(self) -> "_Outputs[_T]": ...
+        def o(self) -> "_Outputs[T]": ...
 
     def __init__(
         self,
@@ -1464,6 +1461,7 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
         if output:
             raise ValueError("Index switch items do not have output sockets")
         identifier = f"Item_{item.identifier}"
+        assert self.node.inputs is not None
         for socket in self.node.inputs:
             if socket.identifier == identifier:
                 return socket
@@ -1499,7 +1497,7 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
         self.node.data_type = value
 
 
-class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
+class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
     """Base class for MenuSwitch nodes across all tree types."""
 
     _bl_idname = "GeometryNodeMenuSwitch"
@@ -1509,8 +1507,8 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
     class _Inputs(SocketAccessor):
         menu: MenuSocket
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        output: _S
+    class _Outputs[S](SocketAccessor):
+        output: S
 
     if TYPE_CHECKING:
 
@@ -1518,7 +1516,7 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         def i(self) -> "_Inputs": ...
 
         @property
-        def o(self) -> "_Outputs[_T]": ...
+        def o(self) -> "_Outputs[T]": ...
 
     def __init__(
         self,
@@ -1537,8 +1535,9 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         # the selection to the first item
 
         if self.node.enum_items and not isinstance(menu, str):
+            assert self.node.inputs is not None
             try:
-                menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
+                menu_socket = self.node.inputs["Menu"]
                 menu_socket.default_value = self.node.enum_items[0].name
             except TypeError:  # pragma: no cover - rare Blender enum-refresh quirk
                 # the socket is a NodeSocketMenu whose enum hasn't refreshed yet, so
@@ -1606,7 +1605,7 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         self.node.data_type = value
 
 
-class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
+class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     """Node builder for the Menu Switch node"""
 
     @classmethod
@@ -1760,7 +1759,7 @@ class CaptureAttribute(ItemsMixin, BaseNode):
     # capture_items.new(socket_type=...) takes the *socket* type spelling
     # (VECTOR/RGBA/ROTATION/MATRIX), not the data_type spelling
     # (FLOAT_VECTOR/FLOAT_COLOR/QUATERNION/FLOAT4X4); only VALUE differs (FLOAT).
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     class _DomainFactory:
         def __init__(self, domain: _AttributeDomains):
@@ -1882,7 +1881,7 @@ class _FieldToGridItems(_TypedItemFactory):
         )
 
 
-class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
+class FieldToGrid[T: BaseSocket](ItemsMixin, BaseNode):
     """Create new grids by evaluating new values on an existing volume grid topology
 
 
@@ -1904,17 +1903,17 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
     node: bpy.types.GeometryNodeFieldToGrid
     _items_collection = "grid_items"
     _socket_data_types = ("VALUE", "INT", "VECTOR", "BOOLEAN")
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
     _default_input_id = "Topology"
 
     if TYPE_CHECKING:
 
-        class _Inputs(SocketAccessor, Generic[_S]):
-            topology: _S
+        class _Inputs[S](SocketAccessor):
+            topology: S
             """The grid which contains the topology to evaluate the different fields on."""
 
         @property
-        def i(self) -> _Inputs[_T]: ...
+        def i(self) -> _Inputs[T]: ...
 
     def __init__(
         self,
@@ -2124,7 +2123,7 @@ _CompareVectorModes = Literal[
 ]
 
 
-class Compare(BaseNode, Generic[_T]):
+class Compare[T: BaseSocket](BaseNode):
     """Perform a comparison operation on the two given inputs"""
 
     _bl_idname = "FunctionNodeCompare"
@@ -2358,10 +2357,10 @@ class Compare(BaseNode, Generic[_T]):
     color = _ColorFactory()
     string = _StringFactory()
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         _bpy_node: "bpy.types.FunctionNodeCompare"
-        a: _S
-        b: _S
+        a: S
+        b: S
         c: FloatSocket
         epsilon: FloatSocket
         angle: FloatSocket
@@ -2379,7 +2378,7 @@ class Compare(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property  # type: ignore[override]
-        def i(self) -> "_Inputs[_T]": ...
+        def i(self) -> "_Inputs[T]": ...
 
         @property
         def o(self) -> _Outputs: ...
@@ -2727,7 +2726,7 @@ class Mix(BaseNode):
         self.node.clamp_result = value
 
 
-class AttributeStatistic(BaseNode, Generic[_T]):
+class AttributeStatistic[T: BaseSocket](BaseNode):
     """Calculate statistics about a data set from a field evaluated on a geometry"""
 
     _bl_idname = "GeometryNodeAttributeStatistic"
@@ -2776,30 +2775,30 @@ class AttributeStatistic(BaseNode, Generic[_T]):
     instance = _AttributeStatisticDomainFactor("INSTANCE")
     layer = _AttributeStatisticDomainFactor("LAYER")
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         geometry: GeometrySocket
         """The geometry whose attribute to analyze."""
         selection: BooleanSocket
         """Limits which elements are included in the statistics."""
-        attribute: _S
+        attribute: S
         """The field to calculate statistics for."""
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        mean: _S
+    class _Outputs[S](SocketAccessor):
+        mean: S
         """The arithmetic mean."""
-        median: _S
+        median: S
         """The median value."""
-        sum: _S
+        sum: S
         """The sum of all values."""
-        min: _S
+        min: S
         """The minimum value."""
-        max: _S
+        max: S
         """The maximum value."""
-        range: _S
+        range: S
         """The range (max - min)."""
-        standard_deviation: _S
+        standard_deviation: S
         """The standard deviation."""
-        variance: _S
+        variance: S
         """The variance."""
 
     if TYPE_CHECKING:
@@ -2880,7 +2879,7 @@ _SampleCurveDataTypes = Literal[
 ]
 
 
-class SampleCurve(BaseNode, Generic[_T]):
+class SampleCurve[T: BaseSocket](BaseNode):
     """
     Retrieve data from a point on a curve at a certain distance from its start
 
@@ -3210,10 +3209,10 @@ class SampleCurve(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeSampleCurve"
     node: bpy.types.GeometryNodeSampleCurve
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         curves: GeometrySocket
         """Curves"""
-        value: _S
+        value: S
         """Value"""
         factor: FloatSocket
         """Factor"""
@@ -3222,8 +3221,8 @@ class SampleCurve(BaseNode, Generic[_T]):
         curve_index: IntegerSocket
         """Curve Index"""
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        value: _S
+    class _Outputs[S](SocketAccessor):
+        value: S
         """Value"""
         position: VectorSocket
         """Position"""
@@ -3294,7 +3293,7 @@ class SampleCurve(BaseNode, Generic[_T]):
         self.node.data_type = value
 
 
-class SampleIndex(BaseNode, Generic[_T]):
+class SampleIndex[T: BaseSocket](BaseNode):
     """
     Retrieve values from specific geometry elements
 
@@ -3466,16 +3465,16 @@ class SampleIndex(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeSampleIndex"
     node: bpy.types.GeometryNodeSampleIndex
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         geometry: GeometrySocket
         """Geometry"""
-        value: _S
+        value: S
         """Value"""
         index: IntegerSocket
         """Index"""
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        value: _S
+    class _Outputs[S](SocketAccessor):
+        value: S
         """Value"""
 
     if TYPE_CHECKING:

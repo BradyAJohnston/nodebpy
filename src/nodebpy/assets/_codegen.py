@@ -17,6 +17,7 @@ from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import cast
 
 import bpy
 
@@ -220,6 +221,7 @@ def _introspect_group(group, name: str, library_source: str) -> _AssetClass:
     ``node_groups.new`` too narrowly for the runtime attributes used here.
     """
     host = bpy.data.node_groups.new("_introspect_host", group.bl_idname)
+    assert host is not None
     try:
         node_type = {
             "GeometryNodeTree": "GeometryNodeGroup",
@@ -227,7 +229,12 @@ def _introspect_group(group, name: str, library_source: str) -> _AssetClass:
             "CompositorNodeTree": "CompositorNodeGroup",
         }[group.bl_idname]
         node = host.nodes.new(node_type)
-        node.node_tree = group  # ty: ignore[unresolved-attribute]
+        assert node is not None
+        node = cast(
+            "bpy.types.GeometryNodeGroup | bpy.types.ShaderNodeGroup | bpy.types.CompositorNodeGroup",
+            node,
+        )
+        node.node_tree = group
         # Tooltips live on the tree *interface* items, not on the node's
         # sockets — collect them by identifier so the generated docstrings
         # can use the asset author's own wording.
