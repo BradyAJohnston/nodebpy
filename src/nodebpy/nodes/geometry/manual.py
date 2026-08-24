@@ -28,6 +28,7 @@ from ...builder import (
     ColorSocket,
     FloatSocket,
     FloatSocketGrid,
+    FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
@@ -40,6 +41,7 @@ from ...builder import (
     ObjectSocket,
     RotationSocket,
     SocketAccessor,
+    SoundSocket,
     StringSocket,
     TreeBuilder,
     VectorSocket,
@@ -69,6 +71,7 @@ from ...types import (
     InputColor,
     InputFloat,
     InputFloatGrid,
+    InputFont,
     InputGeometry,
     InputGrid,
     InputImage,
@@ -80,6 +83,7 @@ from ...types import (
     InputMenu,
     InputObject,
     InputRotation,
+    InputSound,
     InputString,
     InputVector,
     InputVectorGrid,
@@ -2114,8 +2118,13 @@ _CompareDataTypes = Literal[
     "INT",
     "VECTOR",
     "RGBA",
-    "ROTATION",
     "STRING",
+    "OBJECT",
+    "IMAGE",
+    "COLLECTION",
+    "MATERIAL",
+    "FONT",
+    "SOUND",
 ]
 
 _CompareVectorModes = Literal[
@@ -2351,11 +2360,89 @@ class Compare[T: BaseSocket](BaseNode):
         ) -> "Compare[StringSocket]":
             return Compare(operation="NOT_EQUAL", data_type="STRING", A=a, B=b)
 
+    class _ObjectFactory:
+        @staticmethod
+        def equal(
+            a: InputObject = None, b: InputObject = None
+        ) -> "Compare[ObjectSocket]":
+            return Compare(operation="EQUAL", data_type="OBJECT", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputObject = None, b: InputObject = None
+        ) -> "Compare[ObjectSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="OBJECT", A=a, B=b)
+
+    class _ImageFactory:
+        @staticmethod
+        def equal(a: InputImage = None, b: InputImage = None) -> "Compare[ImageSocket]":
+            return Compare(operation="EQUAL", data_type="IMAGE", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputImage = None, b: InputImage = None
+        ) -> "Compare[ImageSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="IMAGE", A=a, B=b)
+
+    class _CollectionFactory:
+        @staticmethod
+        def equal(
+            a: InputCollection = None, b: InputCollection = None
+        ) -> "Compare[CollectionSocket]":
+            return Compare(operation="EQUAL", data_type="COLLECTION", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputCollection = None, b: InputCollection = None
+        ) -> "Compare[CollectionSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="COLLECTION", A=a, B=b)
+
+    class _MaterialFactory:
+        @staticmethod
+        def equal(
+            a: InputMaterial = None, b: InputMaterial = None
+        ) -> "Compare[MaterialSocket]":
+            return Compare(operation="EQUAL", data_type="MATERIAL", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputMaterial = None, b: InputMaterial = None
+        ) -> "Compare[MaterialSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="MATERIAL", A=a, B=b)
+
+    class _FontFactory:
+        @staticmethod
+        def equal(a: InputFont = None, b: InputFont = None) -> "Compare[FontSocket]":
+            return Compare(operation="EQUAL", data_type="FONT", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputFont = None, b: InputFont = None
+        ) -> "Compare[FontSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="FONT", A=a, B=b)
+
+    class _SoundFactory:
+        @staticmethod
+        def equal(a: InputSound = None, b: InputSound = None) -> "Compare[SoundSocket]":
+            return Compare(operation="EQUAL", data_type="SOUND", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputSound = None, b: InputSound = None
+        ) -> "Compare[SoundSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="SOUND", A=a, B=b)
+
     float = _FloatFactory()
     integer = _IntegerFactory()
     vector = _VectorFactory()
     color = _ColorFactory()
     string = _StringFactory()
+    object = _ObjectFactory()
+    image = _ImageFactory()
+    collection = _CollectionFactory()
+    material = _MaterialFactory()
+    font = _FontFactory()
+    sound = _SoundFactory()
 
     class _Inputs[S](SocketAccessor):
         _bpy_node: "bpy.types.FunctionNodeCompare"
