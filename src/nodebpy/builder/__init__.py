@@ -77,7 +77,6 @@ from .tree import (
 __all__ = [
     "AssetCompositorGroup",
     "AssetGeometryGroup",
-    # Asset-backed node groups
     "AssetLibrary",
     "AssetShaderGroup",
     "BaseNode",
@@ -97,7 +96,6 @@ __all__ = [
     "CustomGeometryGroup",
     "CustomShaderGroup",
     "DynamicInputsMixin",
-    # Runtime socket types
     "FloatSocket",
     "FloatSocketGrid",
     "FloatSocketList",
@@ -122,11 +120,9 @@ __all__ = [
     "MatrixSocketList",
     "MenuSocket",
     "MenuSocketList",
-    # Node groups
     "NodeGroupBuilder",
     "ObjectSocket",
     "ObjectSocketList",
-    # Mixins
     "OperatorMixin",
     "OutputInterfaceContext",
     "PackageLibrary",
@@ -137,15 +133,12 @@ __all__ = [
     "ShaderSocketList",
     "Socket",
     "SocketAccessor",
-    # Tree context
     "SocketContext",
-    # Utilities
     "SocketError",
     "SoundSocket",
     "SoundSocketList",
     "StringSocket",
     "StringSocketList",
-    # Core
     "TreeBuilder",
     "VectorSocket",
     "VectorSocketGrid",
