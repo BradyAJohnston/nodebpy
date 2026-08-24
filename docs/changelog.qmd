@@ -2,6 +2,17 @@
 title: Changelog
 ---
 
+## v520.14.0 - 2026-08-23
+
+### Enhancements
+- **ty 0.0.74 / ruff 0.16 migration** — the whole repository now passes `ty check` under the current ty release. The socket class hierarchy was made Liskov-compliant without suppressions, `types-networkx` types the arrange library's graphs, and code touching the newer bpy stubs (which mark most collections and pointers as optional) narrows explicitly at each call site. Test files relax only the bpy-stub noise rules via `[[tool.ty.overrides]]` in `pyproject.toml`.
+- The full `ruff check` rule set now passes: remaining findings were fixed individually (collapsed conditionals, `contextlib.suppress`, iterator idioms, a mutable `Euler`/list argument default, sorted `__all__`), with the deliberate catch-all exception handlers in probing/repr-fallback code marked `noqa` explicitly.
+- **PEP 695 generics** — every generic class and function now uses native type-parameter syntax (`class SampleGrid[T](BaseNode)` instead of `Generic[_T]`), including the generator's emitted node classes; the shared module-level `TypeVar`s are gone, with the socket result-type constraints carried onto each class's own parameters. The generator also now computes stub-narrowing ignores from the actual enum subsets instead of a hard-coded property-name list, and drops the blanket `node:` annotation ignore the current stubs no longer need.
+
+### Fixes
+- Comparison operators on vector and integer sockets were annotated as returning a `Compare[...]` node builder; at runtime they have returned the result *socket* since v520.x — the annotations now say `BooleanSocket`, so `(a < b).x`-style code type-checks against what actually happens.
+- `vector.__rmatmul__` gained its missing `MatrixSocket` overload, and matrix `__rmatmul__` accepts raw sockets and numpy arrays in its signature (the runtime always did).
+
 ## v520.13.0 - 2026-08-20
 
 ### Enhancements

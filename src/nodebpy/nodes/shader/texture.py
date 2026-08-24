@@ -3,20 +3,17 @@
 from typing import TYPE_CHECKING, Literal
 
 import bpy
-
 from mathutils import Vector
 
 from ...builder import BaseNode, SocketAccessor
-
-from ...types import (
-    InputFloat,
-    InputVector,
-)
-
 from ...builder.socket import (
     ColorSocket,
     FloatSocket,
     VectorSocket,
+)
+from ...types import (
+    InputFloat,
+    InputVector,
 )
 
 

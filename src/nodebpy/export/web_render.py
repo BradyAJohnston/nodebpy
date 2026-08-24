@@ -30,7 +30,7 @@ DEFAULT_VERSION = "0.3"
 DEFAULT_CDN = "https://esm.sh"
 
 
-def to_tree_clipper_payload(builder: "TreeBuilder", *, compress: bool = True) -> str:
+def to_tree_clipper_payload(builder: TreeBuilder, *, compress: bool = True) -> str:
     """Export *builder*'s node tree to a Tree Clipper payload.
 
     With ``compress=True`` (the default) the result is the ``TreeClipper::`` +
@@ -73,7 +73,7 @@ def to_tree_clipper_payload(builder: "TreeBuilder", *, compress: bool = True) ->
 
 
 def to_web_render_html(
-    builder: "TreeBuilder",
+    builder: TreeBuilder,
     *,
     height: str = "480px",
     version: str = DEFAULT_VERSION,

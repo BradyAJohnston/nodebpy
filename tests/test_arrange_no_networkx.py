@@ -33,9 +33,7 @@ def no_networkx():
     saved = {
         k: v
         for k, v in sys.modules.items()
-        if k == blocked
-        or k.startswith(blocked + ".")
-        or k.startswith("nodebpy.lib.nodearrange")
+        if k == blocked or k.startswith((blocked + ".", "nodebpy.lib.nodearrange"))
     }
     for key in saved:
         del sys.modules[key]

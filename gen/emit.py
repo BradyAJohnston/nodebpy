@@ -5,8 +5,8 @@ from __future__ import annotations
 import typing
 
 from .config import (
-    SOCKET_TYPES,
     _OUTPUT_SOCKET_CLASSES,
+    SOCKET_TYPES,
     TreeTypeConfig,
     nodebpy_types,
 )
@@ -23,10 +23,10 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     # A node is generic when its output and/or input sockets change type across
     # enum values, with all varying sockets on a side sharing one type per value
-    # (so a single _S/_T suffices). The output side drives nodes like Switch/Mix
+    # (so a single S/T suffices). The output side drives nodes like Switch/Mix
     # and the multi-output field nodes (leading/trailing/total); the input side
     # alone drives nodes like Compare whose output is a fixed Boolean. Varying
-    # inputs are typed _S and their __init__ params accept InputAny.
+    # inputs are typed S and their __init__ params accept InputAny.
     varying_outputs = node_info.varying_output_identifiers
     varying_inputs = node_info.varying_input_identifiers
     outputs_generic = node_info.outputs_generic
@@ -62,7 +62,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         param_name = get_socket_param_name(socket, sockets_use_same_name)
         variants = _socket_type_variants[socket.identifier]
         if inputs_generic and socket.identifier in varying_inputs:
-            # Generic input — accepts any socket type (matches the _S annotation).
+            # Generic input — accepts any socket type (matches the S annotation).
             type_hint = "InputAny"
         elif len(variants) > 1:
             type_hint = " | ".join(sorted(variants))
@@ -118,9 +118,8 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     # Add properties as parameters
     _has_socket_params = len(node_info.inputs) > 0 or bool(_extra_sockets)
     for i, prop in enumerate(node_info.properties):
-        if i == 0:
-            if _has_socket_params:
-                init_params.append("*")
+        if i == 0 and _has_socket_params:
+            init_params.append("*")
 
         init_params.append(prop.format_property_argument())
 
@@ -154,6 +153,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         # only include sockets that actually exist in the current state.
         establish_call = (
             f"        _all_args = {{{', '.join(link_mappings)}}}\n"
+            f"        assert self.node.inputs is not None\n"
             f"        _socket_ids = {{s.identifier for s in self.node.inputs}}\n"
             f"        key_args = {{k: v for k, v in _all_args.items() if k in _socket_ids}}"
         )
@@ -171,10 +171,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     enum_methods = node_info.generate_enum_class_methods(config, suppress)
 
     # Add node type annotation — always use specific type so property access is typed
-    # TODO: remove the ty: ignore as its only for unreleased bpy version and the new nodes
-    node_type_annotation = (
-        f"bpy.types.{node_info.bl_idname}  # ty: ignore[unresolved-attribute]"
-    )
+    node_type_annotation = f"bpy.types.{node_info.bl_idname}"
 
     # Build numpy-style class docstring
     doc_lines = [node_info.description, ""]
@@ -212,13 +209,13 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     docstring_body = "\n    ".join(doc_lines).rstrip()
 
-    # Inputs/Outputs inner classes are generic (parameterised by _S) when the
+    # Inputs/Outputs inner classes are generic (parameterised by S) when the
     # node is generic; see the flags computed at the top of this function.
     def _input_annotation(socket: SocketInfo) -> str:
         if inputs_generic and socket.identifier in varying_inputs:
             attr_name = normalize_name(socket.identifier)
             doc = socket.description or socket.name
-            ann = f"        {attr_name}: _S"
+            ann = f"        {attr_name}: S"
             if doc:
                 ann += f'\n        """{doc}"""'
             return ann
@@ -228,9 +225,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     input_annotations = [_input_annotation(socket) for socket in node_info.inputs] + [
         _input_annotation(socket) for socket in _extra_sockets
     ]
-    inputs_base = (
-        "(SocketAccessor, Generic[_S])" if inputs_generic else "(SocketAccessor)"
-    )
+    inputs_base = "[S](SocketAccessor)" if inputs_generic else "(SocketAccessor)"
     if input_annotations:
         inputs_class = f"    class _Inputs{inputs_base}:\n" + "\n".join(
             input_annotations
@@ -243,16 +238,14 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         if outputs_generic and socket.identifier in varying_outputs:
             attr_name = normalize_name(socket.identifier)
             doc = socket.description or socket.name
-            ann = f"        {attr_name}: _S"
+            ann = f"        {attr_name}: S"
             if doc:
                 ann += f'\n        """{doc}"""'
             output_annotations.append(ann)
         else:
             output_annotations.append(socket.format_accessor_annotation())
 
-    outputs_base = (
-        "(SocketAccessor, Generic[_S])" if outputs_generic else "(SocketAccessor)"
-    )
+    outputs_base = "[S](SocketAccessor)" if outputs_generic else "(SocketAccessor)"
     if output_annotations:
         outputs_class = f"    class _Outputs{outputs_base}:\n" + "\n".join(
             output_annotations
@@ -262,10 +255,10 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     # Prepend any registered mixin bases (listed first so they win via MRO).
     base_classes = list(custom.bases) if custom else []
-    generated_base = "BaseNode, Generic[_T]" if is_generic else "BaseNode"
-    class_base = "(" + ", ".join(base_classes + [generated_base]) + ")"
-    o_return_type = "_Outputs[_T]" if outputs_generic else "_Outputs"
-    i_return_type = "_Inputs[_T]" if inputs_generic else "_Inputs"
+    type_params = "[T]" if is_generic else ""
+    class_base = type_params + "(" + ", ".join(base_classes + ["BaseNode"]) + ")"
+    o_return_type = "_Outputs[T]" if outputs_generic else "_Outputs"
+    i_return_type = "_Inputs[T]" if inputs_generic else "_Inputs"
 
     # When extra sockets exist, properties must be set before collecting socket IDs
     # so the node reflects the correct enum state when we filter key_args.
@@ -350,14 +343,8 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
             if mt:
                 mathutils_needed.add(mt)
 
-    has_generic_nodes = any(len(n.varying_output_identifiers) == 1 for n in nodes)
-
     lines = ["# Auto-generated by `python -m gen` — do not edit manually."]
-    typing_imports = (
-        ["TYPE_CHECKING", "Generic", "Literal"]
-        if has_generic_nodes
-        else ["TYPE_CHECKING", "Literal"]
-    )
+    typing_imports = ["TYPE_CHECKING", "Literal"]
     lines.append(f"from typing import {', '.join(typing_imports)}")
     lines.append("import bpy")
     if mathutils_needed:
@@ -387,7 +374,6 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
     # InputAny is the widened type used for generic input parameters; ruff prunes
     # it from modules that don't use it.
     inputs = [f"Input{x}".replace("Socket", "") for x in all] + ["InputAny"]
-    typevars = ["_T", "_S"]
 
     # The socket-name → Input*/…Socket mapping over-generates a few names that
     # don't actually exist (e.g. "INT" → InputInt/IntSocket, "RGBA" →
@@ -405,9 +391,7 @@ def generate_file_header(nodes: list[NodeInfo], config: TreeTypeConfig) -> str:
 
     lines.append(f"from ...types import (\n    {',\n'.join(inputs)},\n)")
 
-    lines.append(
-        f"from ...builder.socket import ({', '.join(socket_names + typevars)})"
-    )
+    lines.append(f"from ...builder.socket import ({', '.join(socket_names)})")
 
     # Imports required by any registered customizations in this module
     # (mixin bases referenced in the class definition / extra_body).

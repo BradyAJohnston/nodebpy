@@ -12,6 +12,7 @@ from __future__ import annotations
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import Any
 
 import bpy
 
@@ -122,19 +123,19 @@ _ASSET_GROUP_BASE = {
 }
 
 
-def asset_group_base(tree_idname: str) -> type:
+def asset_group_base(tree_idname: str) -> type[Any]:
     """The ``Asset*Group`` base class for a tree-type bl_idname."""
     return _ASSET_GROUP_BASE[tree_idname]
 
 
 __all__ = [
+    "AssetCompositorGroup",
+    "AssetGeometryGroup",
     "AssetLibrary",
+    "AssetNodeGroup",
+    "AssetShaderGroup",
     "BundledLibrary",
     "PackageLibrary",
-    "AssetNodeGroup",
-    "AssetGeometryGroup",
-    "AssetShaderGroup",
-    "AssetCompositorGroup",
     "asset_group_base",
 ]
 

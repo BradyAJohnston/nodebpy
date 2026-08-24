@@ -132,8 +132,8 @@ def test_format_string():
         )
 
         assert len(format.node.format_items) == 3
-        assert format.i[0].default_value == str_to_format  # type: ignore
-        i_string: StringSocket = format.i[1]  # ty: ignore[invalid-assignment]
+        assert format.i[0].default_value == str_to_format
+        i_string: StringSocket = format.i[1]
         assert i_string.name == "String"
         assert i_string.type == "STRING"
         assert i_string.default_value == ""
@@ -167,7 +167,7 @@ def test_field_to_grid():
     assert ftg.node.grid_items[5].name == "test"
     assert ftg.o["test"].socket.links[0].to_socket.node == math.node
     assert all(
-        [i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs]
+        i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs
     )
     for item, type in zip(
         ftg.node.grid_items, ["VECTOR", "FLOAT", "BOOLEAN", "INT", "VECTOR", "FLOAT"]
@@ -432,9 +432,9 @@ def test_repeat(snapshot):
             )
             >> join
         )
-    assert all(
-        [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
-    )
+    links = list(join.node.inputs[0].links)
+
+    assert all(link.from_socket.type == "GEOMETRY" for link in links)
     assert len(tree) == 7
     assert snapshot == tree._repr_markdown_()
 
@@ -563,7 +563,7 @@ def test_accumulate_field():
         cube = g.Cube()
         aatr = g.AxisAngleToRotation(angle=1.0)
         tran = g.AccumulateField.point.transform(
-            g.EvaluateAtIndex.point.quaternion(aatr, g.Index() - int(1))
+            g.EvaluateAtIndex.point.quaternion(aatr, g.Index() - 1)
         )
         _ = cube >> g.SetPosition(
             position=g.TransformPoint(g.Position(), tran.o.trailing),
@@ -646,7 +646,7 @@ def test_foreachgeometryelement_zone():
     with pytest.raises(IndexError):
         zone[2]
 
-    assert all([i.socket_type == "VECTOR" for i in zone.input._items])
+    assert all(i.socket_type == "VECTOR" for i in zone.input._items)
     assert len(zone.input._items) == 2
     assert len(zone.output._items) == 1
     assert zone.output._items[0].socket_type == "VECTOR"
@@ -1755,14 +1755,14 @@ def test_geometry_nodes():
         assert att.data_type == "FLOAT"
 
         rot = g.Rotation()
-        assert list(rot.rotation_euler) == [0.0, 0.0, 0.0]  # ty: ignore[invalid-argument-type]
+        assert list(rot.rotation_euler) == [0.0, 0.0, 0.0]
         rot.rotation_euler = (1.0, 2.0, 3.0)
-        assert list(rot.rotation_euler) == [1.0, 2.0, 3.0]  # ty: ignore[invalid-argument-type]
+        assert list(rot.rotation_euler) == [1.0, 2.0, 3.0]
 
         vec = g.Vector()
-        assert list(vec.vector) == [0.0, 0.0, 0.0]  # ty: ignore[invalid-argument-type]
+        assert list(vec.vector) == [0.0, 0.0, 0.0]
         vec.vector = (1.0, 2.0, 3.0)
-        assert list(vec.vector) == [1.0, 2.0, 3.0]  # ty: ignore[invalid-argument-type]
+        assert list(vec.vector) == [1.0, 2.0, 3.0]
 
         blur = g.BlurAttribute.integer()
         assert blur.data_type == "INT"
