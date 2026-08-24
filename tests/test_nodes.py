@@ -1418,6 +1418,26 @@ def test_compare_node_data_types():
         comp = g.Compare.color.not_equal()
         assert comp.operation == "NOT_EQUAL"
 
+        # --- datablocks (equal / not_equal only) ---
+        for factory, data_type in [
+            (g.Compare.object, "OBJECT"),
+            (g.Compare.image, "IMAGE"),
+            (g.Compare.collection, "COLLECTION"),
+            (g.Compare.material, "MATERIAL"),
+            (g.Compare.font, "FONT"),
+            (g.Compare.sound, "SOUND"),
+        ]:
+            comp = factory.equal()
+            assert comp.data_type == data_type
+            assert comp.operation == "EQUAL"
+            assert comp.i.a.socket.type == data_type
+            assert comp.i.b.socket.type == data_type
+            assert comp.o.result.socket.type == "BOOLEAN"
+
+            comp = factory.not_equal()
+            assert comp.data_type == data_type
+            assert comp.operation == "NOT_EQUAL"
+
 
 def test_manual_field_factories():
     with g.tree("FieldFactories"):
