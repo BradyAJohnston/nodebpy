@@ -1513,6 +1513,21 @@ def test_menu_switch_emits_factory_dict():
     assert "_MenuSwitchBase" not in code
 
 
+def test_menu_switch_shader_tree_roundtrip():
+    """A MenuSwitch in a shader tree emits the shader MenuSwitch class —
+    including the shader-only SHADER data type — never the private base."""
+    with TreeBuilder.shader("MenuShaderRT") as tree:
+        menu = tree.inputs.menu("Mode", "Glossy")
+        switch = s.MenuSwitch.shader(
+            menu, {"Glossy": s.GlossyBSDF(), "Diffuse": s.DiffuseBSDF()}
+        )
+        switch >> tree.outputs.shader("Surface")
+    code = _assert_roundtrip(tree)
+    assert "s.MenuSwitch.shader(" in code
+    assert '"Glossy":' in code and '"Diffuse":' in code
+    assert "_MenuSwitchBase" not in code
+
+
 def test_menu_switch_defaults_and_unlinked_items():
     """Unlinked items keep their default value (or None for linkable types);
     a non-first menu selection survives as an explicit argument."""

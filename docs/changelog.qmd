@@ -10,6 +10,7 @@ title: Changelog
 - **PEP 695 generics** — every generic class and function now uses native type-parameter syntax (`class SampleGrid[T](BaseNode)` instead of `Generic[_T]`), including the generator's emitted node classes; the shared module-level `TypeVar`s are gone, with the socket result-type constraints carried onto each class's own parameters. The generator also now computes stub-narrowing ignores from the actual enum subsets instead of a hard-coded property-name list, and drops the blanket `node:` annotation ignore the current stubs no longer need.
 
 ### Fixes
+- **MenuSwitch export in shader and compositor trees** — `to_python` emitted the private `g._MenuSwitchBase` constructor for a MenuSwitch outside a geometry tree (and for the shader-only `SHADER` data type), producing code that failed to import. The emitter now uses the tree-appropriate `MenuSwitch` class (`s.MenuSwitch.shader(...)`), and the codegen registry prefers a public class over a private base sharing its `bl_idname`.
 - Comparison operators on vector and integer sockets were annotated as returning a `Compare[...]` node builder; at runtime they have returned the result *socket* since v520.x — the annotations now say `BooleanSocket`, so `(a < b).x`-style code type-checks against what actually happens.
 - `vector.__rmatmul__` gained its missing `MatrixSocket` overload, and matrix `__rmatmul__` accepts raw sockets and numpy arrays in its signature (the runtime always did).
 
