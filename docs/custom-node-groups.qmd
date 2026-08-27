@@ -232,9 +232,9 @@ import bpy
 
 obj = bpy.data.objects["Cube"]
 modifier = obj.modifiers.new("Scatter", "NODES")
-modifier.node_group = scattered_spheres(count=128)
+modifier.node_group = scattered_spheres()
 ```
 
-Unlike `CustomGeometryGroup`, nothing is cached -- every call creates a fresh node group data-block (Blender will suffix repeated names with `.001`, `.002`, ...).
+Like `CustomGeometryGroup`, the group is built once and cached by name: if a node group with the decorator's name already exists in `bpy.data.node_groups`, calling the function returns it without rebuilding -- so repeated calls (or re-running the script) share one data-block instead of piling up `.001` copies. Note this means the function's arguments only take effect on the first call; to rebuild with different values, remove the existing group or use a different name.
 
 The decorators accept the same options as `TreeBuilder.geometry()` / `.shader()` / `.compositor()`: the tree `name`, `collapse` to collapse all nodes, the `arrange` algorithm, and `fake_user` to protect the group from being purged on save.
