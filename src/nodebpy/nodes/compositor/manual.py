@@ -1,6 +1,11 @@
-from typing import TYPE_CHECKING, Generic, Literal
+from typing import TYPE_CHECKING, Literal
 
-from bpy.types import CompositorNodeCryptomatteV2, CompositorNodeImage
+from bpy.types import (
+    CompositorNodeConvertColorSpace,
+    CompositorNodeCryptomatteV2,
+    CompositorNodeImage,
+    CompositorNodeTree,
+)
 
 from ...builder import (
     BaseNode,
@@ -14,6 +19,7 @@ from ...builder import (
     TreeBuilder,
     VectorSocket,
 )
+from ...builder.socket import BaseSocket
 from ...types import (
     Image,
     InputBoolean,
@@ -24,9 +30,9 @@ from ...types import (
     InputString,
     InputVector,
 )
-from ..geometry.manual import _T, Float, Frame, _MenuSwitchBase
+from ..geometry.manual import Float, Frame, _MenuSwitchBase
 
-__all__ = ["Frame", "MenuSwitch", "tree", "Float"]
+__all__ = ["Float", "Frame", "MenuSwitch", "tree"]
 
 
 def tree(
@@ -35,56 +41,56 @@ def tree(
     collapse: bool = False,
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
     fake_user: bool = False,
-) -> TreeBuilder:
+) -> TreeBuilder[CompositorNodeTree]:
     return TreeBuilder.compositor(
         name, collapse=collapse, arrange=arrange, fake_user=fake_user
     )
 
 
-class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
+class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     """Node builder for the Menu Switch node (Compositor tree)"""
 
     @classmethod
     def float(
-        cls, *args: InputFloat, menu: InputMenu = None, **kwargs: InputFloat
+        cls, menu: InputMenu = None, items: dict[str, InputFloat] | None = None
     ) -> "MenuSwitch[FloatSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="FLOAT", **kwargs)
+        return MenuSwitch(menu, items, data_type="FLOAT")
 
     @classmethod
     def integer(
-        cls, *args: InputInteger, menu: InputMenu = None, **kwargs: InputInteger
+        cls, menu: InputMenu = None, items: dict[str, InputInteger] | None = None
     ) -> "MenuSwitch[IntegerSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="INT", **kwargs)
+        return MenuSwitch(menu, items, data_type="INT")
 
     @classmethod
     def boolean(
-        cls, *args: InputBoolean, menu: InputMenu = None, **kwargs: InputBoolean
+        cls, menu: InputMenu = None, items: dict[str, InputBoolean] | None = None
     ) -> "MenuSwitch[BooleanSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="BOOLEAN", **kwargs)
+        return MenuSwitch(menu, items, data_type="BOOLEAN")
 
     @classmethod
     def vector(
-        cls, *args: InputVector, menu: InputMenu = None, **kwargs: InputVector
+        cls, menu: InputMenu = None, items: dict[str, InputVector] | None = None
     ) -> "MenuSwitch[VectorSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="VECTOR", **kwargs)
+        return MenuSwitch(menu, items, data_type="VECTOR")
 
     @classmethod
     def color(
-        cls, *args: InputColor, menu: InputMenu = None, **kwargs: InputColor
+        cls, menu: InputMenu = None, items: dict[str, InputColor] | None = None
     ) -> "MenuSwitch[ColorSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="RGBA", **kwargs)
+        return MenuSwitch(menu, items, data_type="RGBA")
 
     @classmethod
     def string(
-        cls, *args: InputString, menu: InputMenu = None, **kwargs: InputString
+        cls, menu: InputMenu = None, items: dict[str, InputString] | None = None
     ) -> "MenuSwitch[StringSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="STRING", **kwargs)
+        return MenuSwitch(menu, items, data_type="STRING")
 
     @classmethod
     def menu(
-        cls, *args: InputMenu, menu: InputMenu = None, **kwargs: InputMenu
+        cls, menu: InputMenu = None, items: dict[str, InputMenu] | None = None
     ) -> "MenuSwitch[MenuSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="MENU", **kwargs)
+        return MenuSwitch(menu, items, data_type="MENU")
 
 
 class Image(BaseNode):
@@ -197,7 +203,7 @@ class Image(BaseNode):
 
     @layer.setter
     def layer(self, value: str):
-        self.node.layer = value
+        self.node.layer = value  # type: ignore
 
     @property
     def has_layers(self) -> bool:
@@ -209,7 +215,7 @@ class Image(BaseNode):
 
     @view.setter
     def view(self, value: str):
-        self.node.view = value
+        self.node.view = value  # type: ignore
 
     @property
     def has_views(self) -> bool:
@@ -316,7 +322,7 @@ class Cryptomatte(BaseNode):
 
     @layer_name.setter
     def layer_name(self, value: str):
-        self.node.layer_name = value
+        self.node.layer_name = value  # type: ignore
 
     @property
     def frame_duration(self) -> int:
@@ -364,7 +370,7 @@ class Cryptomatte(BaseNode):
 
     @layer.setter
     def layer(self, value: str):
-        self.node.layer = value
+        self.node.layer = value  # type: ignore
 
     @property
     def has_layers(self) -> bool:
@@ -376,8 +382,115 @@ class Cryptomatte(BaseNode):
 
     @view.setter
     def view(self, value: str):
-        self.node.view = value
+        self.node.view = value  # type: ignore
 
     @property
     def has_views(self) -> bool:
         return self.node.has_views
+
+
+_ColorSpaces = Literal[
+    "ACES 1.3 sRGB",
+    "ACES 2.0 sRGB",
+    "ACES2065-1",
+    "ACEScc",
+    "ACEScct",
+    "ACEScg",
+    "AgX Base sRGB",
+    "AgX Log",
+    "Display P3",
+    "Filmic Log",
+    "Filmic sRGB",
+    "Khronos PBR Neutral sRGB",
+    "Linear CIE-XYZ D65",
+    "Linear CIE-XYZ E",
+    "Linear DCI-P3 D65",
+    "Linear FilmLight E-Gamut",
+    "Linear Rec.2020",
+    "Linear Rec.709",
+    "Non-Color",
+    "Rec.1886",
+    "Rec.2020",
+    "Rec.2100-HLG",
+    "Rec.2100-PQ",
+    "sRGB",
+    "scene_linear",
+]
+
+
+class ConvertColorspace(BaseNode):
+    """
+    Convert between color spaces
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+
+    Outputs
+    -------
+    o.image : ColorSocket
+        Image
+    """
+
+    _bl_idname = "CompositorNodeConvertColorSpace"
+    node: CompositorNodeConvertColorSpace
+
+    class _Inputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    class _Outputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        image: InputColor = None,
+        *,
+        from_color_space: _ColorSpaces = "scene_linear",
+        to_color_space: _ColorSpaces = "scene_linear",
+    ):
+        super().__init__()
+        key_args = {"Image": image}
+        self.from_color_space = from_color_space
+        self.to_color_space = to_color_space
+        self._establish_links(**key_args)
+
+    @property
+    def from_color_space(
+        self,
+    ) -> _ColorSpaces:
+        return self.node.from_color_space  # ty: ignore[invalid-return-type]
+
+    @from_color_space.setter
+    def from_color_space(
+        self,
+        value: _ColorSpaces,
+    ):
+        self.node.from_color_space = value  # ty: ignore[invalid-assignment]
+
+    @property
+    def to_color_space(
+        self,
+    ) -> _ColorSpaces:
+        return self.node.to_color_space  # ty: ignore[invalid-return-type]
+
+    @to_color_space.setter
+    def to_color_space(
+        self,
+        value: _ColorSpaces,
+    ):
+        self.node.to_color_space = value  # ty: ignore[invalid-assignment]

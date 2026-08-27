@@ -1,0 +1,8 @@
+# Importing the pip `bpy` module prepends Blender's user extension
+# site-packages to sys.path; a nodebpy bundled by an extension (e.g.
+# MolecularNodes) would then shadow the repo's own package in any doc cell
+# that imports bpy before nodebpy. Point the user extension/script paths at
+# nonexistent stubs so bpy skips them during doc renders (tests get the same
+# protection from tests/conftest.py).
+BLENDER_USER_EXTENSIONS=_bpy_user_extensions_stub
+BLENDER_USER_SCRIPTS=_bpy_user_scripts_stub

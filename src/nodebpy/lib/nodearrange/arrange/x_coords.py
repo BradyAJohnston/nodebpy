@@ -45,12 +45,12 @@ def frame_padding_of_col(
     ST2 = T.subgraph(chain(clusters2, *[nx.ancestors(T, c) for c in clusters2])).copy()
 
     for *e, d in ST1.edges(data=True):
-        d["weight"] = int(e not in ST2.edges)  # type: ignore
+        d["weight"] = int(not ST2.has_edge(*e))
 
     for *e, d in ST2.edges(data=True):
-        d["weight"] = int(e not in ST1.edges)  # type: ignore
+        d["weight"] = int(not ST1.has_edge(*e))
 
-    dist = nx.dag_longest_path_length(ST1) + nx.dag_longest_path_length(ST2)  # type: ignore
+    dist = nx.dag_longest_path_length(ST1) + nx.dag_longest_path_length(ST2)
     return frame_padding() * dist
 
 
@@ -157,10 +157,7 @@ def node_overlaps_edge(
         (v.x, v.y - v.height),
         (v.x + v.width, v.y - v.height),
     )
-    if intersect_line_line_2d(*edge_line, *bottom_line):
-        return True
-
-    return False
+    return bool(intersect_line_line_2d(*edge_line, *bottom_line))
 
 
 def route_edges(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:

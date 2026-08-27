@@ -49,6 +49,99 @@ class _SimpleCompositorGroup(CustomCompositorGroup):
         x >> tree.outputs.float("Result")
 
 
+def test_value_socket_type_branches():
+    """_value_socket_type reports the socket type for each linkable kind and
+    None for a plain default."""
+    from nodebpy.builder.node import _value_socket_type
+
+    with TreeBuilder():
+        pos = g.Position()
+        assert _value_socket_type(pos.o.position) == "VECTOR"  # Socket wrapper
+        assert _value_socket_type(pos.node.outputs[0]) == "VECTOR"  # bpy NodeSocket
+        assert _value_socket_type(pos.node) == "VECTOR"  # bpy Node
+        assert _value_socket_type(pos) == "VECTOR"  # BaseNode (_NodeLike)
+        assert _value_socket_type(1.0) is None  # plain default
+
+
+class _DupNameGroup(CustomGeometryGroup):
+    """A group with two inputs that share a name but differ in type."""
+
+    _name = "Dup Name Group"
+
+    def _build_group(self, tree):
+        tree.inputs.float("Amount")
+        tree.inputs.vector("Amount")
+        tree.outputs.geometry("Geometry")
+
+
+def test_named_links_resolve_same_name_by_type():
+    """Same-named group inputs are matched to the value whose socket type
+    agrees, via the _named_links path."""
+    with TreeBuilder():
+        f = g.Value(0.5).o.value
+        v = g.Position().o.position
+        node = _DupNameGroup(_named_links=[("Amount", f), ("Amount", v)])
+        amount_inputs = [s for s in node.node.inputs if s.name == "Amount"]
+        assert len(amount_inputs) == 2
+        assert all(s.is_linked for s in amount_inputs)
+        # the float value landed on the VALUE socket, the vector on the VECTOR one
+        by_type = {s.type: s.links[0].from_socket.type for s in amount_inputs}
+        assert by_type["VALUE"] == "VALUE"
+        assert by_type["VECTOR"] == "VECTOR"
+
+
+def test_named_links_errors_when_sockets_exhausted():
+    """More values than matching sockets raises a clear error."""
+    with TreeBuilder():
+        a = g.Value(1.0).o.value
+        with pytest.raises(ValueError, match="no remaining input socket named"):
+            _DupNameGroup(_named_links=[("Amount", a), ("Amount", a), ("Amount", a)])
+
+
+def test_create_group_without_context():
+    """create_group() builds and returns the node tree with no active
+    TreeBuilder context."""
+    assert not TreeBuilder._tree_contexts  # no active context
+    ng = _SimpleGeomGroup.create_group()
+    assert isinstance(ng, GeometryNodeTree)
+    assert ng.name == "Test Simple Geometry Group"
+    assert ng.color_tag == "GEOMETRY"
+    assert {n.bl_idname for n in ng.nodes} >= {"NodeGroupInput", "NodeGroupOutput"}
+    assert not TreeBuilder._tree_contexts  # context cleaned up
+
+
+def test_create_group_reuses_existing():
+    """A second create_group() returns the same cached tree."""
+    first = _SimpleGeomGroup.create_group()
+    second = _SimpleGeomGroup.create_group()
+    assert first is second
+    assert len(bpy.data.node_groups) == 1
+
+
+def test_create_group_each_editor_type():
+    """create_group() builds the right tree type for each editor variant."""
+    assert isinstance(_SimpleGeomGroup.create_group(), GeometryNodeTree)
+    assert isinstance(_SimpleShaderGroup.create_group(), ShaderNodeTree)
+    assert isinstance(_SimpleCompositorGroup.create_group(), CompositorNodeTree)
+
+
+def test_create_group_assignable_to_node():
+    """A pre-built group can be assigned directly to a group node's node_tree."""
+    pre_built = _SimpleGeomGroup.create_group()
+    with TreeBuilder() as tb:
+        node = tb.tree.nodes.new("GeometryNodeGroup")
+        node.node_tree = pre_built
+    assert node.node_tree is pre_built
+
+
+def test_create_group_matches_instantiation():
+    """create_group() yields the same cached tree the constructor uses."""
+    pre_built = _SimpleGeomGroup.create_group()
+    with TreeBuilder():
+        node = _SimpleGeomGroup()
+    assert node.node.node_tree is pre_built
+
+
 def test_custom_group():
     with TreeBuilder() as tb:
         last_group = reduce(
@@ -87,7 +180,7 @@ def test_i_prefix_returns_socket_linker():
         linker = node.i.vertex_index
 
     assert isinstance(linker, Socket)
-    assert linker.socket_name == "Vertex Index"
+    assert linker.socket.name == "Vertex Index"
 
 
 def test_o_prefix_returns_socket_linker():
@@ -105,9 +198,9 @@ def test_wrong_attribute_access():
         node = OtherVertex()
 
         with pytest.raises(AttributeError):
-            node.wrong_attribute_name
+            _ = node.wrong_attribute_name
         with pytest.raises(AttributeError):
-            node.o.wrong_attribute_name
+            _ = node.o.wrong_attribute_name
 
 
 # --- Group caching ---
@@ -121,6 +214,35 @@ def test_group_reuses_existing_node_group():
 
     assert a.node.node_tree is b.node.node_tree
     assert a.node is not b.node
+
+
+# --- Node naming ---
+
+
+def test_group_node_named_after_tree():
+    """The group node is named after its node tree, not Blender's default
+    'Group', matching how assets added from the Add menu are named."""
+    with TreeBuilder():
+        geom = _SimpleGeomGroup()
+    assert geom.node.name == "Test Simple Geometry Group"
+
+    with TreeBuilder.shader():
+        shader = _SimpleShaderGroup()
+    assert shader.node.name == "Test Simple Shader Group"
+
+    with TreeBuilder.compositor():
+        comp = _SimpleCompositorGroup()
+    assert comp.node.name == "Test Simple Compositor Group"
+
+
+def test_group_node_name_deduplicated():
+    """Repeated instances in one tree get Blender's .001-style suffixes."""
+    with TreeBuilder():
+        a = _SimpleGeomGroup()
+        b = _SimpleGeomGroup()
+
+    assert a.node.name == "Test Simple Geometry Group"
+    assert b.node.name == "Test Simple Geometry Group.001"
 
 
 # ---------------------------------------------------------------------------
@@ -214,9 +336,8 @@ def test_type_mismatch_geometry_vs_shader_raises():
     with TreeBuilder():
         _ConflictGeom()
 
-    with TreeBuilder.shader():
-        with pytest.raises(TypeError, match="already exists"):
-            _ConflictShader()
+    with TreeBuilder.shader(), pytest.raises(TypeError, match="already exists"):
+        _ConflictShader()
 
 
 def test_type_mismatch_shader_vs_compositor_raises():
@@ -237,9 +358,8 @@ def test_type_mismatch_shader_vs_compositor_raises():
     with TreeBuilder.shader():
         _ConflictShader()
 
-    with TreeBuilder.compositor():
-        with pytest.raises(TypeError, match="already exists"):
-            _ConflictCompositor()
+    with TreeBuilder.compositor(), pytest.raises(TypeError, match="already exists"):
+        _ConflictCompositor()
 
 
 def test_same_name_same_type_does_not_raise():
@@ -321,9 +441,8 @@ def test_group_already_exists_wrong_type():
     with g.tree():
         _GeomGroup()
 
-    with c.tree():
-        with pytest.raises(TypeError):
-            _CompGroup()
+    with c.tree(), pytest.raises(TypeError):
+        _CompGroup()
 
 
 class TestCustomShaderGroup:
@@ -379,9 +498,7 @@ class TestMenuDefaultValue:
         def _build_group(self, tree: TreeBuilder):
             (
                 tree.inputs.menu("Letter", "B")
-                >> g.MenuSwitch.string(
-                    **{letter: letter for letter in "ABCDEFG"}, menu=...
-                )
+                >> g.MenuSwitch.string(..., {letter: letter for letter in "ABCDEFG"})
                 >> tree.outputs.string()
             )
 
@@ -392,7 +509,5 @@ class TestMenuDefaultValue:
             node = self.SimpleMenuGroup("C")
             assert node.i.letter.default_value == "C"
 
-            ms = g.MenuSwitch.string(
-                **{letter: letter for letter in "ABCDEFG"}, menu=...
-            )
+            ms = g.MenuSwitch.string(..., {letter: letter for letter in "ABCDEFG"})
             assert ms.i.menu.default_value == "A"

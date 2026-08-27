@@ -7,7 +7,7 @@ from operator import and_
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy.diagram import to_mermaid
+from nodebpy.export.diagram import to_mermaid
 from nodebpy.nodes.geometry.groups import OffsetVector, OtherVertex
 
 
@@ -26,7 +26,7 @@ def test_diagram_join_geometry(snapshot):
     with TreeBuilder("DiagramJoin") as tree:
         geo_in = tree.inputs.geometry()
         geo_out = tree.outputs.geometry()
-        g.JoinGeometry(geo_in, geo_in >> g.SubdivisionSurface()) >> geo_out
+        g.JoinGeometry([geo_in, geo_in >> g.SubdivisionSurface()]) >> geo_out
 
     assert snapshot == to_mermaid(tree)
 
@@ -50,7 +50,7 @@ def test_diagram_shared_input(snapshot):
         t2 = g.TransformGeometry(scale=scale)
         geo_in >> t1
         geo_in >> t2
-        g.JoinGeometry(t1, t2) >> tree.outputs.geometry()
+        g.JoinGeometry([t1, t2]) >> tree.outputs.geometry()
 
     assert snapshot == to_mermaid(tree)
 
@@ -58,7 +58,7 @@ def test_diagram_shared_input(snapshot):
 def test_diagram_custom_node_group(snapshot):
     with g.tree() as tree:
         items = [OtherVertex() for _ in range(10)]
-        switch = g.IndexSwitch.integer(*items)
+        switch = g.IndexSwitch.integer(items=items)
         switch >> OffsetVector() >> tree.outputs.vector("Vector")
 
     assert snapshot == to_mermaid(tree)
@@ -125,6 +125,33 @@ def test_diagram_reroute_dedup(snapshot):
         nt.links.new(set_pos.node.outputs["Geometry"], r2.inputs[0])
         nt.links.new(r1.outputs[0], join.node.inputs["Geometry"])
         nt.links.new(r2.outputs[0], join.node.inputs["Geometry"])
+
+    assert snapshot == to_mermaid(tree)
+
+
+def test_diagram_frame(snapshot):
+    """Nodes inside a Frame render as a Mermaid subgraph."""
+    with TreeBuilder("DiagramFrame") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_out = tree.outputs.geometry()
+        with g.Frame("Transform"):
+            set_pos = g.SetPosition()
+            transform = g.TransformGeometry()
+        geo_in >> set_pos >> transform >> geo_out
+
+    assert snapshot == to_mermaid(tree)
+
+
+def test_diagram_nested_frames(snapshot):
+    """Frames nested inside frames produce nested subgraphs."""
+    with TreeBuilder("DiagramNestedFrame") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_out = tree.outputs.geometry()
+        with g.Frame("Outer"):
+            set_pos = g.SetPosition()
+            with g.Frame("Inner"):
+                transform = g.TransformGeometry()
+        geo_in >> set_pos >> transform >> geo_out
 
     assert snapshot == to_mermaid(tree)
 

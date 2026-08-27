@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, overload
+from collections.abc import Iterator
+from typing import TYPE_CHECKING, Literal, cast, overload
 
 import bpy
 from bpy.types import NodeSocket
 
-from ._registry import _get_socket_linker
+from ._registry import _wrap_socket
 from ._utils import (
     SocketError,
     _allow_innactive_sockets,
@@ -14,6 +15,7 @@ from ._utils import (
 )
 
 if TYPE_CHECKING:
+    from .node import BaseNode
     from .socket import Socket
 
 
@@ -30,9 +32,12 @@ class SocketAccessor:
         self,
         collection: bpy.types.NodeInputs | bpy.types.NodeOutputs | list[NodeSocket],
         direction: Literal["input", "output"],
+        *,
+        builder: BaseNode | None = None,
     ):
         self._direction = direction
         self._collection = collection
+        self._builder = builder
 
     def _index(self, key: str | int) -> int:
         """Find socket index by identifier, falling back to name.
@@ -44,6 +49,7 @@ class SocketAccessor:
         if isinstance(key, int):
             return key
         ids = [s.identifier for s in self._collection]
+        names = [s.name for s in self._collection]
         denorm = denormalize_name(key)
         for candidate in (key, denorm):
             if candidate in ids:
@@ -52,39 +58,57 @@ class SocketAccessor:
         normalized_ids = [normalize_name(id) for id in ids]
         if key in normalized_ids:
             return normalized_ids.index(key)
-        names = [s.name for s in self._collection]
-        for key in (key, denorm):
-            if key in names:
-                if names.count(key) > 1:
+        for candidate in (key, denorm):
+            if candidate in names:
+                if names.count(candidate) > 1:
                     raise RuntimeError(
-                        f"{self._direction.title()} name '{key}' is ambiguous on "
-                        f"{self._node.bl_idname} (appears {names.count(key)} times). "
-                        f"Use the socket identifier instead."
+                        f"{self._direction.title()} name '{candidate}' is ambiguous "
+                        f"on {self._node.bl_idname} (appears {names.count(candidate)} "
+                        f"times). Use the socket identifier instead."
                     )
-                return names.index(key)
+                return names.index(candidate)
+        # Normalized name match: 'flip_and_cyclic' matches name 'Flip and Cyclic'
+        # (denormalize_name can't recover the original capitalisation of small
+        # connector words like "and"/"to").
+        normalized_names = [normalize_name(n) for n in names]
+        if key in normalized_names:
+            if normalized_names.count(key) > 1:
+                raise RuntimeError(
+                    f"{self._direction.title()} name '{key}' is ambiguous on "
+                    f"{self._node.bl_idname} (appears {normalized_names.count(key)} "
+                    f"times). Use the socket identifier instead."
+                )
+            return normalized_names.index(key)
         raise RuntimeError(
             f"{self._direction.title()} '{key}' not found on "
             f"{self._node.bl_idname}. Available sockets (id: name): {list(zip(ids, names))}"
         )
 
     @overload
-    def _get(self, key: slice) -> "list[Socket]": ...
+    def _get(self, key: slice) -> list[Socket]: ...
     @overload
-    def _get(self, key: str | int) -> "Socket": ...
-    def _get(self, key: str | int | slice) -> "Socket | list[Socket]":
+    def _get(self, key: str | int) -> Socket: ...
+    def _get(self, key: str | int | slice) -> Socket | list[Socket]:
         """Get a Socket for a socket by identifier, name, or index."""
         if isinstance(key, slice):
-            return [
-                _get_socket_linker(self._collection[i])
+            sockets = [
+                _wrap_socket(self._collection[i])
                 for i in range(*key.indices(len(self._collection)))
             ]
-        return _get_socket_linker(self._collection[self._index(key)])
+            if self._builder is not None:
+                for s in sockets:
+                    s._builder_node = self._builder
+            return sockets
+        socket = _wrap_socket(self._collection[self._index(key)])
+        if self._builder is not None:
+            socket._builder_node = self._builder
+        return socket
 
     @overload
-    def __getitem__(self, key: slice) -> "list[Socket]": ...
+    def __getitem__(self, key: slice) -> list[Socket]: ...
     @overload
-    def __getitem__(self, key: str | int) -> "Socket": ...
-    def __getitem__(self, key: str | int | slice) -> "Socket | list[Socket]":
+    def __getitem__(self, key: str | int) -> Socket: ...
+    def __getitem__(self, key: str | int | slice) -> Socket | list[Socket]:
         """Access by identifier, name, or integer index."""
         return self._get(key)
 
@@ -92,12 +116,16 @@ class SocketAccessor:
     def _node(self) -> bpy.types.Node:
         """The node this accessor is associated with."""
         if isinstance(self._collection, list):
+            assert self._collection[0].node is not None
             return self._collection[0].node
         # bpy NodeInputs/NodeOutputs.id_data returns the NodeTree (top-level ID),
         # not the Node. Retrieve the node via the first socket instead.
         for s in self._collection:
+            assert s.node is not None
             return s.node
-        return self._collection.data  # empty collection fallback
+        return cast(
+            "bpy.types.Node", self._collection.data
+        )  # empty collection fallback
 
     @property
     def _ignore_visibility(self) -> bool:
@@ -166,21 +194,21 @@ class SocketAccessor:
             f"{socket_type} on {self._node.name}"
         )
 
-    def _values(self) -> "list[Socket]":
+    def _values(self) -> list[Socket]:
         """All visible sockets as Sockets.
 
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
         see ``_visible_sockets`` for rationale.
         """
-        return [_get_socket_linker(s) for s in self._visible_sockets()]
+        return [_wrap_socket(s) for s in self._visible_sockets()]
 
-    def _items(self) -> "list[tuple[str, Socket]]":
+    def _items(self) -> list[tuple[str, Socket]]:
         """All visible sockets as (name, Socket) pairs.
 
         Uses node-level visibility rules regardless of ``ignore_visibility`` —
         see ``_visible_sockets`` for rationale.
         """
-        return [(s.name, _get_socket_linker(s)) for s in self._visible_sockets()]
+        return [(s.name, _wrap_socket(s)) for s in self._visible_sockets()]
 
     def _keys(self) -> list[str]:
         """All visible socket names."""
@@ -189,10 +217,10 @@ class SocketAccessor:
     def __len__(self) -> int:
         return len(self._items())
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Socket]:
         return iter(self._values())
 
-    def __getattr__(self, name: str) -> "Socket":
+    def __getattr__(self, name: str) -> Socket:
         """Dynamic socket access by normalised attribute name.
 
         Converts ``node.o.base_color`` to ``self._get("Base Color")``.

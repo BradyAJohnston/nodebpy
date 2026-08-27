@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 import networkx as nx
 
 from ..utils import group_by
-from .graph import Kind, MultiEdge, Node, opposite
+from .graph import Cluster, Kind, MultiEdge, Node, opposite
 
 if TYPE_CHECKING:
     from .sugiyama import ClusterGraph
@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 def get_nesting_graph(CG: ClusterGraph) -> nx.MultiDiGraph[Node]:
     H = CG.G.copy()
     for u, v in CG.T.edges:
-        if u.type == Kind.CLUSTER:
-            if v.type != Kind.CLUSTER:
+        if isinstance(u, Cluster):
+            if not isinstance(v, Cluster):
                 H.add_edges_from(((u.left, v), (v, u.right)))
             else:
                 H.add_edges_from(((u.left, v.left), (v.right, u.right)))
@@ -65,7 +65,7 @@ def tight_tree(
 
         u, w, _ = e
         other = u if v != u else w
-        if e in T.edges:
+        if T.has_edge(*e):
             tight_tree(H, T, other, visited)
         elif other not in T and get_slack(e) == 0:
             T.add_edge(*e)
@@ -116,7 +116,7 @@ def compute_cut_values(H: nx.MultiDiGraph[Node], T: nx.MultiDiGraph[Node]) -> No
                     continue
 
                 weight = H.edges[e]["weight"]
-                if e in T.edges:
+                if T.has_edge(*e):
                     if u == e[0] or w == e[1]:
                         d["cut_value"] -= T.edges[e]["cut_value"] - weight
                     else:
@@ -132,7 +132,7 @@ def compute_cut_values(H: nx.MultiDiGraph[Node], T: nx.MultiDiGraph[Node]) -> No
 
 
 def feasible_tree(H: nx.MultiDiGraph[Node]) -> nx.MultiDiGraph[Node]:
-    generations = nx.topological_generations(nx.reverse_view(H))  # type: ignore
+    generations = nx.topological_generations(H.reverse(copy=False))
     for i, col in enumerate(reversed(tuple(generations))):
         for v in col:
             v.rank = i
@@ -254,7 +254,8 @@ def compute_ranks(CG: ClusterGraph) -> None:
             c.nesting_level = i
 
     H = get_nesting_graph(CG)
-    nx.set_edge_attributes(H, 1, "weight")  # type: ignore
+    for *_, d in H.edges(data=True):
+        d["weight"] = 1
 
     T = feasible_tree(H)
     i = 0

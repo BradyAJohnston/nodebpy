@@ -66,6 +66,7 @@ def get_multidigraph() -> nx.MultiDiGraph[Node]:
     for u in G:
         for i, from_output in enumerate(u.node.outputs):
             for to_input in config.linked_sockets[from_output]:
+                assert to_input.node is not None
                 if not to_input.node.select:
                     continue
 
@@ -217,7 +218,7 @@ def sugiyama_layout(ntree: NodeTree) -> None:
     if not locs:
         return
 
-    old_center = Vector(map(fmean, zip(*locs)))
+    old_center = Vector(list(map(fmean, zip(*locs))))
 
     precompute_links(ntree)
     CG = ClusterGraph(get_multidigraph())

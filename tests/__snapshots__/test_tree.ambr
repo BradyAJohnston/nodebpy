@@ -1,0 +1,216 @@
+# serializer version: 1
+# name: test_string_generators
+  '''
+  from nodebpy import geometry as g, TreeBuilder
+  
+  with TreeBuilder("Principal Components") as tree:
+      position = tree.inputs.vector("Position", (0.0, 0.0, 0.0), default_input="POSITION")
+      group_id = tree.inputs.integer("Group ID", 0, description="An index used to group values together for multiple separate operations", hide_value=True)
+      group_center = tree.outputs.vector("Group Center")
+      principal_components = tree.outputs.vector("Principal Components", description="Variance of the data along each principal axis")
+      rotation = tree.outputs.rotation("Rotation", description="Rotation that defines the principal component basis")
+      with tree.outputs.panel("Principal Axes", default_closed=True):
+          longest_axis = tree.outputs.vector("Longest Axis")
+          intermediate_axis = tree.outputs.vector("Intermediate Axis")
+          shortest_axis = tree.outputs.vector("Shortest Axis")
+  
+      with g.Frame("Centroid"):
+          field_average = position.point.mean(group_id)
+      with g.Frame("Covariance Matrix"):
+          vector_math = position - field_average
+          mean = (vector_math * vector_math.x).point.mean(group_id)
+          mean_1 = (vector_math * vector_math.y).point.mean(group_id)
+          mean_2 = (vector_math * vector_math.z).point.mean(group_id)
+          combine_matrix = g.CombineMatrix(column_1_row_1=mean.x, column_1_row_2=mean.y, column_1_row_3=mean.z, column_2_row_1=mean_1.x, column_2_row_2=mean_1.y, column_2_row_3=mean_1.z, column_3_row_1=mean_2.x, column_3_row_2=mean_2.y, column_3_row_3=mean_2.z)
+      with g.Frame("SVD"):
+          matrix_svd = combine_matrix.o.matrix.svd()
+          separate_matrix = g.SeparateMatrix(matrix=matrix_svd.u)
+          combine_xyz = g.CombineXYZ(x=separate_matrix, y=separate_matrix.o.column_1_row_2, z=separate_matrix.o.column_1_row_3)
+          combine_xyz_1 = g.CombineXYZ(x=separate_matrix.o.column_2_row_1, y=separate_matrix.o.column_2_row_2, z=separate_matrix.o.column_2_row_3)
+          combine_xyz_2 = g.CombineXYZ(x=separate_matrix.o.column_3_row_1, y=separate_matrix.o.column_3_row_2, z=separate_matrix.o.column_3_row_3)
+          axes_to_rotation = g.AxesToRotation(primary_axis=combine_xyz, secondary_axis=combine_xyz_2)
+          combine_xyz_1.o.vector * matrix_svd.u.determinant().sign() >> intermediate_axis
+  
+      field_average >> group_center
+      matrix_svd.s >> principal_components
+      axes_to_rotation >> rotation
+      combine_xyz >> longest_axis
+      combine_xyz_2 >> shortest_axis
+  '''
+# ---
+# name: test_string_generators.1
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      subgraph F0["Centroid"]
+          N1("Field Average"):::converter-node
+      end
+      subgraph F1["Covariance Matrix"]
+          N2("Vector Math<br/><small>(SUBTRACT)</small>"):::vector-node
+          N3("Separate XYZ"):::converter-node
+          N4("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+          N5("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+          N6("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+          N7("Field Average"):::converter-node
+          N8("Field Average"):::converter-node
+          N9("Field Average"):::converter-node
+          N10("Separate XYZ"):::converter-node
+          N11("Separate XYZ"):::converter-node
+          N12("Separate XYZ"):::converter-node
+          N13("Combine Matrix"):::converter-node
+      end
+      subgraph F2["SVD"]
+          N14("Matrix SVD"):::converter-node
+          N15("Separate Matrix"):::converter-node
+          N16("Combine XYZ"):::converter-node
+          N17("Matrix Determinant"):::converter-node
+          N18("Combine XYZ"):::converter-node
+          N19("Combine XYZ"):::converter-node
+          N20("Axes to Rotation"):::converter-node
+          N21("Math<br/><small>(SIGN)</small>"):::converter-node
+          N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+      end
+      N23("Group Output"):::default-node
+      N1 -->|"Mean->Group Center"| N23
+      N14 -->|"S->Principal Components"| N23
+      N20 -->|"Rotation->Rotation"| N23
+      N16 -->|"Vector->Longest Axis"| N23
+      N22 -->|"Vector->Intermediate Axis"| N23
+      N19 -->|"Vector->Shortest Axis"| N23
+      N0 -->|"Position->Value"| N1
+      N0 -->|"Group ID->Group ID"| N1
+      N0 -->|"Position->Vector"| N2
+      N1 -->|"Mean->Vector"| N2
+      N10 -->|"X->Column 1 Row 1"| N13
+      N10 -->|"Y->Column 1 Row 2"| N13
+      N10 -->|"Z->Column 1 Row 3"| N13
+      N11 -->|"X->Column 2 Row 1"| N13
+      N11 -->|"Y->Column 2 Row 2"| N13
+      N11 -->|"Z->Column 2 Row 3"| N13
+      N12 -->|"X->Column 3 Row 1"| N13
+      N12 -->|"Y->Column 3 Row 2"| N13
+      N12 -->|"Z->Column 3 Row 3"| N13
+      N2 -->|"Vector->Vector"| N3
+      N2 -->|"Vector->Vector"| N4
+      N3 -->|"X->Scale"| N4
+      N4 -->|"Vector->Value"| N7
+      N0 -->|"Group ID->Group ID"| N7
+      N7 -->|"Mean->Vector"| N10
+      N2 -->|"Vector->Vector"| N5
+      N3 -->|"Y->Scale"| N5
+      N5 -->|"Vector->Value"| N8
+      N0 -->|"Group ID->Group ID"| N8
+      N8 -->|"Mean->Vector"| N11
+      N2 -->|"Vector->Vector"| N6
+      N3 -->|"Z->Scale"| N6
+      N6 -->|"Vector->Value"| N9
+      N0 -->|"Group ID->Group ID"| N9
+      N9 -->|"Mean->Vector"| N12
+      N13 -->|"Matrix->Matrix"| N14
+      N14 -->|"U->Matrix"| N15
+      N15 -->|"Column 1 Row 1->X"| N16
+      N15 -->|"Column 1 Row 2->Y"| N16
+      N15 -->|"Column 1 Row 3->Z"| N16
+      N15 -->|"Column 2 Row 1->X"| N18
+      N15 -->|"Column 2 Row 2->Y"| N18
+      N15 -->|"Column 2 Row 3->Z"| N18
+      N15 -->|"Column 3 Row 1->X"| N19
+      N15 -->|"Column 3 Row 2->Y"| N19
+      N15 -->|"Column 3 Row 3->Z"| N19
+      N16 -->|"Vector->Primary Axis"| N20
+      N19 -->|"Vector->Secondary Axis"| N20
+      N14 -->|"U->Matrix"| N17
+      N17 -->|"Determinant->Value"| N21
+      N18 -->|"Vector->Vector"| N22
+      N21 -->|"Value->Scale"| N22
+  ```
+  '''
+# ---
+# name: test_string_generators.2
+  '''
+  graph LR
+      N0("Group Input"):::default-node
+      subgraph F0["Centroid"]
+          N1("Field Average"):::converter-node
+      end
+      subgraph F1["Covariance Matrix"]
+          N2("Vector Math<br/><small>(SUBTRACT)</small>"):::vector-node
+          N3("Separate XYZ"):::converter-node
+          N4("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+          N5("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+          N6("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+          N7("Field Average"):::converter-node
+          N8("Field Average"):::converter-node
+          N9("Field Average"):::converter-node
+          N10("Separate XYZ"):::converter-node
+          N11("Separate XYZ"):::converter-node
+          N12("Separate XYZ"):::converter-node
+          N13("Combine Matrix"):::converter-node
+      end
+      subgraph F2["SVD"]
+          N14("Matrix SVD"):::converter-node
+          N15("Separate Matrix"):::converter-node
+          N16("Combine XYZ"):::converter-node
+          N17("Matrix Determinant"):::converter-node
+          N18("Combine XYZ"):::converter-node
+          N19("Combine XYZ"):::converter-node
+          N20("Axes to Rotation"):::converter-node
+          N21("Math<br/><small>(SIGN)</small>"):::converter-node
+          N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
+      end
+      N23("Group Output"):::default-node
+      N1 -->|"Mean->Group Center"| N23
+      N14 -->|"S->Principal Components"| N23
+      N20 -->|"Rotation->Rotation"| N23
+      N16 -->|"Vector->Longest Axis"| N23
+      N22 -->|"Vector->Intermediate Axis"| N23
+      N19 -->|"Vector->Shortest Axis"| N23
+      N0 -->|"Position->Value"| N1
+      N0 -->|"Group ID->Group ID"| N1
+      N0 -->|"Position->Vector"| N2
+      N1 -->|"Mean->Vector"| N2
+      N10 -->|"X->Column 1 Row 1"| N13
+      N10 -->|"Y->Column 1 Row 2"| N13
+      N10 -->|"Z->Column 1 Row 3"| N13
+      N11 -->|"X->Column 2 Row 1"| N13
+      N11 -->|"Y->Column 2 Row 2"| N13
+      N11 -->|"Z->Column 2 Row 3"| N13
+      N12 -->|"X->Column 3 Row 1"| N13
+      N12 -->|"Y->Column 3 Row 2"| N13
+      N12 -->|"Z->Column 3 Row 3"| N13
+      N2 -->|"Vector->Vector"| N3
+      N2 -->|"Vector->Vector"| N4
+      N3 -->|"X->Scale"| N4
+      N4 -->|"Vector->Value"| N7
+      N0 -->|"Group ID->Group ID"| N7
+      N7 -->|"Mean->Vector"| N10
+      N2 -->|"Vector->Vector"| N5
+      N3 -->|"Y->Scale"| N5
+      N5 -->|"Vector->Value"| N8
+      N0 -->|"Group ID->Group ID"| N8
+      N8 -->|"Mean->Vector"| N11
+      N2 -->|"Vector->Vector"| N6
+      N3 -->|"Z->Scale"| N6
+      N6 -->|"Vector->Value"| N9
+      N0 -->|"Group ID->Group ID"| N9
+      N9 -->|"Mean->Vector"| N12
+      N13 -->|"Matrix->Matrix"| N14
+      N14 -->|"U->Matrix"| N15
+      N15 -->|"Column 1 Row 1->X"| N16
+      N15 -->|"Column 1 Row 2->Y"| N16
+      N15 -->|"Column 1 Row 3->Z"| N16
+      N15 -->|"Column 2 Row 1->X"| N18
+      N15 -->|"Column 2 Row 2->Y"| N18
+      N15 -->|"Column 2 Row 3->Z"| N18
+      N15 -->|"Column 3 Row 1->X"| N19
+      N15 -->|"Column 3 Row 2->Y"| N19
+      N15 -->|"Column 3 Row 3->Z"| N19
+      N16 -->|"Vector->Primary Axis"| N20
+      N19 -->|"Vector->Secondary Axis"| N20
+      N14 -->|"U->Matrix"| N17
+      N17 -->|"Determinant->Value"| N21
+      N18 -->|"Vector->Vector"| N22
+      N21 -->|"Value->Scale"| N22
+  '''
+# ---

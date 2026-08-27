@@ -13,7 +13,7 @@ from nodebpy.builder import (
     IntegerSocket,
     VectorSocket,
 )
-from nodebpy.builder._utils import normalize_name
+from nodebpy.builder._utils import SocketError, normalize_name
 
 # ---------------------------------------------------------------------------
 # _utils.py
@@ -26,11 +26,33 @@ from nodebpy.builder._utils import normalize_name
         ("Hello World", "hello_world"),
         ("hello_world", "hello_world"),
         ("My Socket Name", "my_socket_name"),
+        # Punctuation/symbols collapse to underscores so the result is a valid
+        # Python identifier (these come from real asset sockets, e.g. "BA⟂(BC)").
+        ("BA⟂(BC)", "ba_bc"),
+        ("Café", "cafe"),
+        ("Mix A/B", "mix_a_b"),
+        # A name that would normalise to a Python keyword gets a trailing _.
+        ("And", "and_"),
+        ("Class", "class_"),
+        # A leading digit is not a valid identifier start.
+        ("2D Vector", "_2d_vector"),
     ],
-    ids=["spaces", "already_underscored", "multi_word"],
+    ids=[
+        "spaces",
+        "already_underscored",
+        "multi_word",
+        "symbols",
+        "accent",
+        "slash",
+        "keyword",
+        "keyword_class",
+        "leading_digit",
+    ],
 )
 def test_normalize_name(name, expected):
     assert normalize_name(name) == expected
+    # Whatever we return must be usable as an attribute/parameter name.
+    assert normalize_name(name).isidentifier()
 
 
 # ---------------------------------------------------------------------------
@@ -66,21 +88,6 @@ def test_interface_socket_creation(method, kwargs):
     tree = TreeBuilder(f"Test_{method}")
     s = getattr(tree.inputs, method)(**kwargs)
     assert s is not None
-
-
-def test_interface_socket_default_value_getter():
-    """reading default_value on a socket that supports it."""
-    tree = TreeBuilder("FloatDefGetTest")
-    f = tree.inputs.float("Value", 3.14)
-    assert f.default_value == pytest.approx(3.14)
-
-
-def test_interface_socket_default_value_setter():
-    """setting default_value on a socket that supports it."""
-    tree = TreeBuilder("FloatDefSetTest")
-    f = tree.inputs.float("Value", 1.0)
-    f.default_value = 2.5
-    assert f.default_value == pytest.approx(2.5)
 
 
 def test_menu_socket_default_triggers_apply_defaults():
@@ -126,7 +133,7 @@ def test_repr_markdown_returns_str_or_none():
 
 def test_repr_markdown_exception_path(monkeypatch):
     """exception path when diagram generation raises."""
-    import nodebpy.diagram as diagram_mod
+    import nodebpy.export as diagram_mod
 
     monkeypatch.setattr(
         diagram_mod,
@@ -220,14 +227,14 @@ def test_vector_multiply_dispatch(other, expected_op):
     with TreeBuilder("VecMul"):
         pos = g.Position()
         result = pos * other
-    assert result.operation == expected_op
+    assert result.node.operation == expected_op
 
 
 def test_vector_multiply_by_scalar_node():
     """VectorSocket * scalar-type node uses VectorMath.scale."""
     with TreeBuilder("VecMulScalar"):
         result = g.Position() * g.Value()
-    assert result.operation == "SCALE"
+    assert result.node.operation == "SCALE"
 
 
 @pytest.mark.parametrize(
@@ -274,7 +281,7 @@ def test_boolean_mixin_operators(op, expected_op):
         raw_sock = g.RandomValue.boolean(0.5).node.outputs[0]
         bool_sock = BooleanSocket(raw_sock)
         result = (bool_sock | True) if op == "or" else (bool_sock & True)
-    assert result.operation == expected_op
+    assert result.node.operation == expected_op
 
 
 def test_color_separate_in_compositor_tree():
@@ -287,23 +294,6 @@ def test_color_separate_in_compositor_tree():
 
         r = ColorSocket(raw_sock).r
     assert r is not None
-
-
-@pytest.mark.parametrize("component", ["w", "x", "y", "z"])
-def test_rotation_socket_properties(component):
-    """_RotationMixin .w/.x/.y/.z via RotationToQuaternion."""
-    with TreeBuilder("RotProp"):
-        rot_sock = g.AxisAngleToRotation(angle=1.0).o._get("Rotation")
-        assert getattr(rot_sock, component) is not None
-
-
-def test_rotation_socket_cached_link():
-    """_RotationMixin second access reuses existing RotationToQuaternion node."""
-    with TreeBuilder("RotCached"):
-        rot_sock = g.AxisAngleToRotation(angle=1.0).o._get("Rotation")
-        x1 = rot_sock.x
-        x2 = rot_sock.x
-    assert x1 is not None and x2 is not None
 
 
 @pytest.mark.parametrize("component", ["translation", "rotation", "scale"])
@@ -334,8 +324,8 @@ def test_rmatmul_numpy_matrix_times_vector():
     import numpy as np
 
     with TreeBuilder("RMatMul"):
-        result = np.eye(4) @ g.Position()
-    assert result._bl_idname == g.TransformPoint._bl_idname
+        result = g.CombineMatrix(*np.eye(4).ravel()).o.matrix @ g.Position()
+    assert result.node.bl_idname == g.TransformPoint._bl_idname
 
 
 def test_target_socket_accepts_base_node():
@@ -394,15 +384,28 @@ def test_find_best_socket_pair_raw_node_socket_target():
 
 def test_find_best_socket_pair_bad_source_raises():
     """non-outputs, non-NodeSocket source raises TypeError."""
-    with TreeBuilder("PairBadSrc"):
-        with pytest.raises(TypeError):
-            g.Position()._find_best_socket_pair(42, g.Position())
+    with TreeBuilder("PairBadSrc"), pytest.raises(TypeError):
+        g.Position()._find_best_socket_pair(42, g.Position())
+
+
+def test_find_best_socket_pair_bad_target_raises():
+    """non-inputs, non-NodeSocket target raises TypeError."""
+    with TreeBuilder("PairBadTgt"), pytest.raises(TypeError):
+        g.Position()._find_best_socket_pair(g.Position(), 42)
+
+
+def test_find_best_socket_pair_no_compatible_sockets_raises():
+    """SocketError is raised when source and target have no compatible socket pair."""
+    with TreeBuilder("PairIncompat"), pytest.raises(SocketError):
+        # Position outputs Vector; BooleanMath.l_and has only Boolean inputs —
+        # no compatible pair exists so _find_best_socket_pair raises SocketError.
+        g.Position() >> g.Switch.geometry(False, ...)
 
 
 def test_rshift_fallback_path():
     """__rshift__ falls back to other._find_best_socket_pair on SocketError."""
     with TreeBuilder("RShiftFallback"):
-        zone = g.SimulationZone(g.Value())
+        zone = g.SimulationZone({"Value": g.Value()})
         _ = g.AxisAngleToRotation(angle=1.0) >> zone.output
 
 
@@ -414,3 +417,64 @@ def test_rshift_to_socket_wrapper():
     with tree:
         _ = in_geo >> out_geo
     assert len(tree.tree.links) >= 1
+
+
+def test_find_best_socket_pair_compatible_type_fallback():
+    """When no exact type match exists, the best compatible socket pair is used.
+
+    Value outputs FLOAT/VALUE; IntegerMath only has INT inputs. No exact match
+    exists, so _find_best_socket_pair falls back to the compatible INT input.
+    """
+    with TreeBuilder("CompatPair"):
+        src = g.Value()
+        tgt = g.IntegerMath.add()
+        tgt_input, src_output = src._find_best_socket_pair(src, tgt)
+    assert tgt_input.type == "INT"
+    assert src_output.type == "VALUE"
+
+
+def test_link_from_unknown_socket_name_raises():
+    """_link_from with a name absent from the node inputs raises ValueError."""
+    with TreeBuilder("LinkFromBadName"), pytest.raises(ValueError):
+        g.Position()._link_from(g.Index(), "NoSuchSocket")
+
+
+def test_dynamic_inputs_incompatible_source_raises():
+    """Adding a source with no compatible grid type raises SocketError.
+
+    FieldToGrid only accepts VALUE/INT/VECTOR/BOOLEAN data; a String source has
+    no compatible grid type so _match_compatible_data raises SocketError.
+    """
+    with TreeBuilder("DynIncompat"), pytest.raises(SocketError):
+        g.FieldToGrid(items={"x": g.String("x")})
+
+
+def test_default_value_on_output_socket_raises():
+    """default_value is input-only; accessing it on an output socket raises."""
+    with TreeBuilder("DefValOutput"):
+        out = g.Value().o._get("Value")
+        with pytest.raises(RuntimeError):
+            _ = out.default_value
+
+
+def test_vector_socket_rmatmul():
+    """matrix @ vector via VectorSocket.__rmatmul__ builds a TransformPoint."""
+    with TreeBuilder("VecRMatMul"):
+        vec = g.Position().o.position
+        mat = g.CombineTransform().o.transform
+        result = vec.__rmatmul__(mat)
+    assert result.node.bl_idname == g.TransformPoint._bl_idname
+
+
+def test_node_rmatmul_branches():
+    """_ArithmeticMixin.__rmatmul__ routes vector nodes to TransformPoint and
+    matrix nodes to MultiplyMatrices."""
+    import numpy as np
+
+    with TreeBuilder("NodeRMatMul"):
+        mat = g.CombineMatrix(*np.eye(4).ravel())
+        transformed = g.Position().__rmatmul__(mat)
+        assert transformed.node.bl_idname == g.TransformPoint._bl_idname
+
+        multiplied = g.CombineMatrix(*np.eye(4).ravel()).__rmatmul__(mat.o.matrix)
+        assert multiplied.node.bl_idname == g.MultiplyMatrices._bl_idname

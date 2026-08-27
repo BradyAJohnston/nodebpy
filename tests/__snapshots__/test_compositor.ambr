@@ -1,0 +1,63 @@
+# serializer version: 1
+# name: test_initial_compositor
+  '''
+  ```{mermaid}
+  graph LR
+      N0("Group Input"):::default-node
+      subgraph F0["Ambient Occlusion"]
+          N1("Math<br/><small>(SUBTRACT)</small>"):::converter-node
+          N5("Math<br/><small>(POWER)</small>"):::converter-node
+          N8("Kuwahara"):::default-node
+          N10("Mix<br/><small>(0.5,0.5,0.5)</small>"):::default-node
+      end
+      subgraph F1["Outline"]
+          N2("Filter"):::default-node
+          N3("Filter"):::default-node
+          N4("Math<br/><small>(DIVIDE)</small>"):::converter-node
+          N6("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
+          N7("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
+          N9("Math<br/><small>(ADD)</small>"):::converter-node
+          N11("Anti-Aliasing"):::default-node
+          N12("Math<br/><small>(SUBTRACT)</small>"):::converter-node
+          N13("Dilate/Erode"):::default-node
+          N14("Anti-Aliasing"):::default-node
+      end
+      subgraph F2["Final Composit"]
+          N15("Alpha Over"):::default-node
+          N16("Menu Switch"):::converter-node
+          N17("Alpha Over"):::default-node
+          N18("Menu Switch"):::converter-node
+      end
+      N19("Group Output"):::default-node
+      N18 -->|"Output->Image"| N19
+      N0 -->|"AO->Value"| N1
+      N1 -->|"Value->Value"| N5
+      N5 -->|"Value->Image"| N8
+      N8 -->|"Image->Factor"| N10
+      N0 -->|"Image->A"| N10
+      N0 -->|"Depth->Image"| N2
+      N0 -->|"Socket Depth->Value"| N4
+      N2 -->|"Image->Value"| N6
+      N4 -->|"Value->Value"| N6
+      N0 -->|"Normal->Image"| N3
+      N3 -->|"Image->Value"| N7
+      N6 -->|"Value->Value"| N9
+      N7 -->|"Value->Value"| N9
+      N9 -->|"Value->Image"| N11
+      N0 -->|"Outline Size->Value"| N12
+      N11 -->|"Image->Mask"| N13
+      N12 -->|"Value->Size"| N13
+      N13 -->|"Mask->Image"| N14
+      N14 -->|"Image->Background"| N15
+      N0 -->|"Outline Color->Foreground"| N15
+      N0 -->|"Outline->Menu"| N16
+      N10 -->|"Result->None"| N16
+      N15 -->|"Image->Outline"| N16
+      N0 -->|"Background Color->Background"| N17
+      N16 -->|"Output->Foreground"| N17
+      N0 -->|"Background->Menu"| N18
+      N16 -->|"Output->Output"| N18
+      N17 -->|"Image->Image"| N18
+  ```
+  '''
+# ---

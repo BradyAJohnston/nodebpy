@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import cast
 
 from plum import dispatch
 from quartodoc import MdRenderer, layout
@@ -97,7 +97,7 @@ class Renderer(MdRenderer):
 
         # Temporarily swap out parsed sections so super() never sees Inputs/Outputs
         cls.docstring.parsed = filtered
-        result = super().render(el)
+        result = cast(str, super().render(el))
         cls.docstring.parsed = original_parsed
 
         if socket_tables:
@@ -107,14 +107,17 @@ class Renderer(MdRenderer):
 
         return result
 
+    # plum's @dispatch registers this as an extra overload rather than a true
+    # override — quartodoc's documented extension idiom, invisible to ty.
     @dispatch
-    def summarize(
-        self, el: layout.DocAttribute, path: Optional[str] = None, shorten: bool = False
+    def summarize(  # ty: ignore[invalid-method-override]
+        self, el: layout.DocAttribute, path: str | None = None, shorten: bool = False
     ):
         name = el.name
         if path is None:
             link = f"[`{name}`](#{el.anchor})"
         else:
             link = f"[`{name}`]({path}.qmd#{el.anchor})"
-        description = self.summarize(el.obj)
+        # plum dispatches this call to the base MdRenderer overload for objects
+        description = self.summarize(el.obj)  # ty: ignore[invalid-argument-type]
         return self._summary_row(link, description)

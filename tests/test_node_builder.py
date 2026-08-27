@@ -25,9 +25,8 @@ from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import BaseNode as BaseNode
+from nodebpy.builder import BaseNode, NodeGroupBuilder, SocketAccessor, SocketError
 from nodebpy.builder import ColorSocket as ColorSocketLinker
-from nodebpy.builder import SocketAccessor, SocketError
 
 
 class TestTreeBuilder:
@@ -150,6 +149,28 @@ class TestOperatorChaining:
 
         # Check that links were created
         assert len(tree.tree.links) >= 3
+
+    @pytest.mark.parametrize("trans", [True, False])
+    def test_optional_none_node_skipped(self, trans):
+        """A ``None`` in the chain is a no-op passthrough."""
+        tree = TreeBuilder("OptionalNoneChain")
+        i_geo = tree.inputs.geometry()
+        o_geo = tree.outputs.geometry()
+
+        with tree:
+            _ = (
+                i_geo
+                >> g.SetPosition()
+                >> (g.TransformGeometry(translation=(0, 0, 1)) if trans else None)
+                >> o_geo
+            )
+
+        node_types = [n.bl_idname for n in tree.tree.nodes]
+        assert ("GeometryNodeTransform" in node_types) == trans
+        # When skipped, SetPosition links straight to the output, so the
+        # optional node neither adds itself nor breaks the chain.
+        expected_links = 3 if trans else 2
+        assert len(tree.tree.links) == expected_links
 
 
 class TestExamples:
@@ -409,7 +430,7 @@ def test_mix_node():
 def test_warning_innactive_socket():
     "Raises an error because we want to not let a user silently link sockets that won't do anything"
     with TreeBuilder():
-        pos = g.Position()
+        pos = g.Position().o.position
         # this works because by default we link to the currently active vector sockets
         g.Mix(a_vector=pos, data_type="VECTOR")
         # this now fails because we try to link to the innactive float sockets
@@ -445,7 +466,7 @@ def test_readme_tree():
 def test_auto_selection():
     with TreeBuilder(arrange=None) as tree:
         # this initializes the zone with two socket inputs for each of the values
-        zone = g.SimulationZone(g.Value(), g.Vector())
+        zone = g.SimulationZone({"Value": g.Value(), "Vector": g.Vector()})
 
         # this explicitly grabs the "Value" socket (which got it's name from the n.Value() node)
         # and adds 10 then attempts to plug it into the zone output (it will choose the float
@@ -512,7 +533,7 @@ def test_nested_trees():
                 group,
             )
 
-            _ = g.JoinGeometry(*items) >> tree2.outputs.geometry("Output")
+            _ = g.JoinGeometry(items) >> tree2.outputs.geometry("Output")
 
         group = g.Group()
         group.node.node_tree = tree2.tree
@@ -530,13 +551,19 @@ def test_nested_trees():
 
 
 def _collect_node_classes(module):
-    """Collect BaseNode subclass names from a module."""
+    """Collect built-in BaseNode subclass names from a module.
+
+    Node *groups* (NodeGroupBuilder subclasses, including the generated asset
+    classes) are excluded — they append/build a tree rather than being plain
+    nodes, so they don't fit this generic instantiate-every-node sweep and are
+    covered by their own tests (e.g. test_assets.py)."""
     return [
         name
         for name in dir(module)
         if re.match(r"^[A-Z][a-zA-Z0-9]+$", name)
         and inspect.isclass(cls := getattr(module, name))
         and issubclass(cls, BaseNode)
+        and not issubclass(cls, NodeGroupBuilder)
     ]
 
 
@@ -587,7 +614,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                     else "MULTIPLY"
                 )
             elif isinstance(output.socket, NodeSocketBool):
-                if not tree_type == "GeometryNodeTree":
+                if tree_type != "GeometryNodeTree":
                     continue
                 result = output | True
                 assert result.node is not None
@@ -597,7 +624,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                 assert result.node.inputs[1].default_value
                 assert result.operation == "OR"
             elif isinstance(output.socket, NodeSocketMatrix):
-                if not tree_type == "GeometryNodeTree":
+                if tree_type != "GeometryNodeTree":
                     continue
                 result = output @ g.CombineTransform()
                 assert result.node is not None
@@ -683,7 +710,7 @@ def test_add_all_nodes(module, tree_type, class_names):
 
 def test_iter_outputs():
     with TreeBuilder("IndexSwitch"):
-        switch = g.IndexSwitch(*g.SeparateXYZ(g.Position()).o._values())
+        switch = g.IndexSwitch.float(items=g.SeparateXYZ(g.Position()).o._values())
 
     assert len(switch.node.outputs) == 1
     # 1 input for the index, another for the dynamic socket
@@ -694,7 +721,7 @@ def test_iter_outputs():
             _ = output >> tree.outputs.float(name)
 
     with TreeBuilder("MenuSwitch") as tree:
-        switch = g.MenuSwitch.float(**dict(g.SeparateXYZ().o._items()))
+        switch = g.MenuSwitch.float(items=dict(g.SeparateXYZ().o._items()))
 
     assert len(switch.i) == 5
 
@@ -790,13 +817,11 @@ class TestSocketAccessor:
             )
 
             assert all(
-                [
-                    a == b.name
-                    for a, b in zip(
-                        ["Geometry", "Selection", "Position", "Offset"],
-                        list(setpos.i),
-                    )
-                ]
+                a == b.name
+                for a, b in zip(
+                    ["Geometry", "Selection", "Position", "Offset"],
+                    list(setpos.i),
+                )
             )
 
     def test_ignore_visibility_outside_context_returns_false(self):
@@ -880,6 +905,30 @@ class TestSocketAccessor:
             with pytest.raises(RuntimeError, match="ambiguous"):
                 accessor._index("Value")
 
+    def test_index_ambiguous_normalized_name_raises(self):
+        """index() raises when a normalized name matches more than one socket.
+
+        The display names differ ('AB CD' vs 'ab cd') so neither the raw key nor
+        its denormalized form ('Ab Cd') matches directly; lookup falls through to
+        the normalized-name comparison, where both collapse to 'ab_cd'.
+        """
+
+        class _FakeSocket:
+            def __init__(self, identifier, name):
+                self.identifier = identifier
+                self.name = name
+                self.node = g.Value().node
+
+        with TreeBuilder("AmbiguousNormalizedName", arrange=None):
+            fake_sockets = [
+                _FakeSocket("unique_id_1", "AB CD"),
+                _FakeSocket("unique_id_2", "ab cd"),
+            ]
+            accessor = SocketAccessor(fake_sockets, "input")
+
+            with pytest.raises(RuntimeError, match="ambiguous"):
+                accessor._index("ab_cd")
+
 
 class TestIntegerSocketLinker:
     """Tests for IntegerSocketLinker dispatch, including the _is_integer_socket helper."""
@@ -897,7 +946,7 @@ class TestIntegerSocketLinker:
             # socket linker should use IntegerMath.add, not Math.add
             result = a.o.integer + b.o.integer
 
-        assert isinstance(result, g.IntegerMath)
+        assert isinstance(result.builder_node, g.IntegerMath)
         assert result.node.operation == "ADD"
 
     def test_integer_plus_node_builder_uses_integer_math(self):
@@ -912,7 +961,7 @@ class TestIntegerSocketLinker:
             # Use the BaseNode directly (not its output socket linker)
             result = a.o.integer + b
 
-        assert isinstance(result, g.IntegerMath)
+        assert isinstance(result.builder_node, g.IntegerMath)
         assert result.node.operation == "ADD"
 
     def test_integer_floordiv_non_integer_falls_back_to_math(self):
@@ -926,7 +975,7 @@ class TestIntegerSocketLinker:
             result = n.o.integer // 2.5
 
         # Should be the Math.floor wrapping a Math.divide — not IntegerMath
-        assert isinstance(result, g.Math)
+        assert isinstance(result.builder_node, g.Math)
         assert result.node.operation == "FLOOR"
 
     def test_integer_compare_in_shader_tree_falls_back(self):
@@ -994,7 +1043,7 @@ class TestEstablishLinksNameFallback:
 
         from numpy.testing import assert_allclose
 
-        assert_allclose(node.node.inputs["Translation"].default_value, (1.0, 2.0, 3.0))
+        assert_allclose(node.node.inputs["Translation"].default_value, (1.0, 2.0, 3.0))  # ty: ignore[no-matching-overload]
 
 
 class TestRShiftFallback:
