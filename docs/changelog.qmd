@@ -2,11 +2,475 @@
 title: Changelog
 ---
 
-## UNRELEASED
+## v520.14.0 - 2026-08-23
+
+### Enhancements
+- **Datablock comparisons** — the `Compare` node now covers the datablock types Blender 5.2 can compare in geometry trees: `g.Compare.object`, `.image`, `.collection`, `.material`, `.font` and `.sound` factories each offer `equal` / `not_equal` (the only operations Blender permits for datablocks) and return a typed `Compare[...]` whose `i.a` / `i.b` carry the matching socket class. `to_python` export emits the factory spellings automatically.
+- **ty 0.0.74 / ruff 0.16 migration** — the whole repository now passes `ty check` under the current ty release. The socket class hierarchy was made Liskov-compliant without suppressions, `types-networkx` types the arrange library's graphs, and code touching the newer bpy stubs (which mark most collections and pointers as optional) narrows explicitly at each call site. Test files relax only the bpy-stub noise rules via `[[tool.ty.overrides]]` in `pyproject.toml`.
+- The full `ruff check` rule set now passes: remaining findings were fixed individually (collapsed conditionals, `contextlib.suppress`, iterator idioms, a mutable `Euler`/list argument default, sorted `__all__`), with the deliberate catch-all exception handlers in probing/repr-fallback code marked `noqa` explicitly.
+- **PEP 695 generics** — every generic class and function now uses native type-parameter syntax (`class SampleGrid[T](BaseNode)` instead of `Generic[_T]`), including the generator's emitted node classes; the shared module-level `TypeVar`s are gone, with the socket result-type constraints carried onto each class's own parameters. The generator also now computes stub-narrowing ignores from the actual enum subsets instead of a hard-coded property-name list, and drops the blanket `node:` annotation ignore the current stubs no longer need.
+
+### Fixes
+- **MenuSwitch export in shader and compositor trees** — `to_python` emitted the private `g._MenuSwitchBase` constructor for a MenuSwitch outside a geometry tree (and for the shader-only `SHADER` data type), producing code that failed to import. The emitter now uses the tree-appropriate `MenuSwitch` class (`s.MenuSwitch.shader(...)`), and the codegen registry prefers a public class over a private base sharing its `bl_idname`.
+- Comparison operators on vector and integer sockets were annotated as returning a `Compare[...]` node builder; at runtime they have returned the result *socket* since v520.x — the annotations now say `BooleanSocket`, so `(a < b).x`-style code type-checks against what actually happens.
+- `vector.__rmatmul__` gained its missing `MatrixSocket` overload, and matrix `__rmatmul__` accepts raw sockets and numpy arrays in its signature (the runtime always did).
+
+## v520.13.0 - 2026-08-20
+
+### Enhancements
+- **Typed item factories for item-driven nodes** — the typed per-datatype factories introduced for zones now cover the other items-driven nodes. `CaptureAttribute(...).items.vector("Pos", field)` and `Bake().items.geometry("Geo", source)` declare items and return statically typed two-role `Item` handles; `FieldToGrid.float(topology).items.float("Density", field)` returns a dual-typed `GridItem` whose `field` input and `grid` output each carry their own socket class.
+- `CombineBundle().items.float("a", 0.5)` / `SeparateBundle(bundle).items.float("a")` and `EvaluateClosure(closure).inputs.geometry("Geo", source)` / `.outputs.vector("Force")` declare bundle and closure-call items with static types, returning the relevant typed socket directly. All bundle/closure item factories accept `structure_type=`; menu items gained factories throughout (including the closure zone's `zone.inputs.menu()`).
+- The factory surface is shared infrastructure in `nodebpy.builder.items` (`_FieldItemFactory`, `_SocketItemFactory`, `_SocketValueItemFactory`), so new items-driven nodes can adopt it declaratively; the Combine/Separate Bundle constructors moved from generator-inlined source into real mixins in `nodes/_mixins.py`.
+- `to_python` export emits the typed factories for these nodes (statement form with handle variables for consumed items) instead of the `items={...}` dicts. This makes generated code typed and self-documenting, and fixes real losses in the dict form: unlinked bundle/closure item *defaults* were silently dropped, non-`"AUTO"` `structure_type` was never emitted, and an unlinked capture/bake item whose default couldn't round-trip type inference (e.g. a color item, or a string default spelling a socket-type name) was re-declared with the wrong type. The dict constructors remain supported as the string-typed fallback, and emission falls back to them for item types without a typed factory.
+
+### Fixes
+- `EvaluateClosure`'s `define_signature`, `active_input_index` and `active_output_index` constructor parameters now actually reach the Blender node — previously they only set attributes on the Python wrapper, so `EvaluateClosure(define_signature=True)` silently did nothing. All three are also exposed as node-backed properties.
+
+## v520.12.0 - 2026-08-20
+
+### Enhancements
+- **Typed zone item factories** — simulation and repeat zones gain a `zone.items` namespace with one factory method per data type (`zone.items.geometry()`, `zone.items.float()`, …). Each declares a state item and returns a `ZoneItem` handle whose `initial` / `current` / `next` / `result` role sockets are statically typed to the matching socket class, so editors autocomplete and type-check the zone body. An optional second argument links a linkable as the item's starting value or sets a plain default. The repeat factory additionally offers the datablock and closure types only the repeat zone supports (`object`, `image`, `collection`, `material`, `closure`), so invalid simulation item types are caught statically.
+- The for-each zone gains the same typed factories for its three item collections: `zone.inputs` (per-element fields), `zone.main` (per-element results) and `zone.generated` (values stored on the generated geometry, with `domain=`), plus a typed `zone.element` shortcut for the current element geometry.
+- The closure zone gains `zone.inputs` / `zone.outputs` typed factories that declare signature items (with optional `structure_type=`) and return the body-side socket directly. Item sockets are now resolved by identifier prefix and collection position instead of fragile positional indexing, and `Item.input`/`Item.output` and `zone.iteration` / `zone.index` are properly typed.
+- `to_python` export now emits the typed factories (`repeat_zone.items.float("value", 1.0)` instead of `repeat_zone.item("value", 1.0, type=...)`), making generated zone code self-documenting and removing the type-inference drift checks. This also fixes a latent round-trip hazard where a string item whose default spelled a socket-type name (e.g. `"GEOMETRY"`) would be re-declared as an item of that type instead of a string default.
+
+### Breaking
+- The raw bpy item collection is no longer exposed as `.items` on zone input/output builder nodes (it collided with the new typed factory namespace); the string-typed `zone.item(...)`, `zone.main_item(...)`, `zone.generated_item(...)` and `zone.input_item(...)` / `zone.output_item(...)` fallbacks are unchanged.
+
+## v520.11.0 - 2026-08-03
+
+### Fixes
+- Breaking change that fixes the geneartion of class names like `BrighnessContrast` which previously were being generated as `Brightnesscontrast` without capitalization.
+
+## v520.10.0 - 2026-08-03
+
+### Fixes
+- **Asset generation exposes every interface input** — introspecting an asset node group skipped inputs that Blender's socket-usage inference marks inactive under the group's current node options (e.g. a Menu Switch selection deactivating the inputs of the branches not taken), so those parameters were silently missing from the generated `__init__`. All interface inputs are now generated; the bundled essentials APIs were regenerated and pick up the previously hidden menu-gated inputs (e.g. the compositor `ChromaticAberration` gains `axis`, `center`, `samples` and `fit`).
+
+## v520.9.0 - 2026-07-22
+
+### Enhancements
+- Generated asset classes now carry numpy-style docstrings (description, `Parameters`, `Inputs`, `Outputs`) built from the asset's own socket tooltips, so editors show documentation alongside the type hints. Pass `docstrings=False` to `generate_asset_api` (or `--no-docstrings` to `python -m nodebpy.assets`) for the terser output.
+- Menu sockets on generated asset classes are typed with the items they actually offer — `shape: InputMenu | Literal["Line", "Circle", "Curve", "Transform"]` — matching how menu sockets are already typed on the built-in nodes.
+
+## v520.8.0 - 2026-07-17
+
+### Enhancements
+- **Group nodes are named after their tree** — adding a custom node group (`CustomGeometryGroup` / `CustomShaderGroup` / `CustomCompositorGroup`, including asset-backed groups) now names the group *node* after its node tree (e.g. `Smooth by Angle`, `Smooth by Angle.001`) instead of Blender's default `Group` / `Group.001`, matching how group assets are named when added from the Add menu.
+
+## v520.7.0 - 2026-07-16
+
+### Enhancements
+- **Per-tree-type asset modules** — `nodebpy.assets.generate_asset_modules(libraries, output_dir)` splits the generated asset classes into one module per tree type (`geometry.py` / `shader.py` / `compositor.py`), writing only the tree types that have assets. Asset names repeat across editors (a geometry *and* a compositor "Combine Spherical" both exist), so splitting keeps the generated class names collision-free where a single `generate_asset_api` module would silently shadow one with the other. The CLI splits the same way when the output is a directory:
+
+```sh
+python -m nodebpy.assets -b my_assets.blend -o my_addon/nodes/
+```
+
+## v520.6.0 - 2026-07-15
+
+### Enhancements
+- **Blender 5.2 stable** — `bpy` now tracks the final 5.2 release (CI no longer installs daily builds); the node classes and bundled-essentials asset APIs were regenerated against it. The `SetAttachmentSurface` asset was removed upstream and is no longer generated.
+
+### Fixes
+- `to_python` export now preserves a `Value` node's number. The editable value lives on the node's *output* socket, which the generic constructor path never examined, so non-default values were silently dropped from the generated code.
+
+## v520.5.2 - 2026-07-07
+
+### Internal
+- Documentation cleanup.
+
+## v520.5.1 - 2026-07-07
+
+### Enhancements
+- **Interactive graphs in docs / notebooks** — a `TreeBuilder` now displays as an interactive, Blender-styled, pan-and-zoomable node graph in Jupyter and Quarto (via `_repr_html_`, backed by the new `nodebpy.web_render` module using `tree_clipper` and the `geonodes-web-render` web component). Falls back to the existing Mermaid diagram when rendering isn't available.
+
+### Fixes
+- `to_python` export: a single link into a multi-input socket is now emitted as a one-element tuple, since the manual classes (`JoinGeometry`, `MeshBoolean`, …) expect an iterable — previously such trees didn't round-trip. Unary float/integer math socket methods also emit Blender's zero-padded socket identifiers (`Value_001`).
+- Regenerated the bundled asset APIs with upstream label fixes — e.g. `cip_start` → `clip_start`, `animated_` → `animated`, and the "Super 8 mm" film-grain preset spelling.
+
+## v520.5.0 - 2026-06-19
+
+### Enhancements
+- Changed the linking of asset node groups for the `_AssetGroupMixin` to be 'linked & packed' by default
+
+## v520.4.0 - 2026-06-19
+
+### Enhancements
+- Chaining nodes with `>>` node supports `None` in a chain. Allows for optional insertion of a node given a condition.
+```py
+from nodebpy import geometry as g
+
+transform = False
+
+with g.tree():
+    (
+        g.Cube()
+        >> g.Array(count=4)
+        >> (g.TransformGeometry(translation=(1, 1, 1)) if transform else None)
+        >> g.SetPosition()
+    )
+```
+
+## v520.3.0 - 2026-06-18
+
+### Enhancements
+- Additional socket methods on `FloatSocket` and `IntegerSocket`.
+
+### Fixes
+- Changed `nodebpy` absolute imports to relative inside the package, and potentially relative / dynamic import for asset generation. Absolute imports would fail when the package is vendored. Does change the behaviour of the node class generation for the imports.
+- `FloatGridSocket.to_mesh()` method didn't link any of the input arguments, this now properly links and is tested against
+
+## v520.2.0 - 2026-06-16
 
 ### Enhancements
 
-- Tree interfaces are defined with `tree.inputs.geometry()` methods rather than using the old context-based `s.SocketGeometry()`. Both systems have been living side-by-side but this completely removed old system so is a hard breaking change. ([#67](https://github.com/BradyAJohnston/nodebpy/pull/67))
+- **Asset node-group APIs** — generate typed `nodebpy` classes for node-group assets, so an asset reads, links and type-checks like any other node. Unlike a `Custom*Group` (which *builds* its tree), an asset class *appends* the asset's node group from a `.blend` at runtime and points a Group node at it.
+    - Blender's bundled essentials are generated into `nodebpy.nodes.{geometry,shader,compositor}` and exported alongside the built-in nodes, so they're used exactly like any other node:
+
+    ```py
+    from nodebpy import geometry as g
+
+    mesh = g.SmoothByAngle(mesh=g.Cube(), angle=0.6).o.mesh  # an asset, fully typed
+    g.Array(geometry=mesh, count=4)
+    ```
+
+    - `nodebpy.assets.generate_asset_api(library, output_path)` generates the same typed classes for **your own** assets — point it at a `.blend` shipped in your package via `PackageLibrary(__file__, "…/assets.blend")` (or `BundledLibrary("…")` for a Blender-bundled library) and import the result like any other node module.
+    - New runtime bases `AssetGeometryGroup` / `AssetShaderGroup` / `AssetCompositorGroup` (parallel to the `Custom*Group` builders) back these classes; library resolution is handled by `BundledLibrary` / `PackageLibrary`.
+
+### Fixes
+- Fixed a bug where `AxesToRotation` silently did not set the `primary` and `secondary` when instantiating a new node
+
+
+## v520.1.1 - 2026-06-15
+
+### Internal
+
+- **Code generator refactor** — the generator gained a `register_customization` registry (mirroring `codegen.register_emitter`), so node classes that previously had to be hand-written in full inside `manual.py` are now auto-generated, with small reusable mixins or bespoke `__init__`/factory bodies layered on at generation time. The Bézier handle nodes, `Switch`, the bundle pack/unpack nodes, the items nodes (`Bake`, `FieldToList`, `FormatString`), and the field-evaluation nodes (`AccumulateField`, `EvaluateAtIndex`, `FieldAverage`, `FieldMinAndMax`, `EvaluateOnDomain`, `FieldVariance`) were moved off the hand-written path. No public API changes.
+- **Generator reorganised into a `gen/` package** — the monolithic `generate.py` was split into focused modules (`config`, `customizations`, `model`, `introspect`, `emit`, `writers`), kept outside `src/` so it never ships in the wheel. Run with `python -m gen` (or `python -m gen --only geometry` to regenerate a single tree). The skip / hand-written / generate decision is now a single `Disposition` derived from the same class-name logic used for generation, introspection is cached so each node is only inspected once, and the generator loads the dependency-free `types` leaf standalone so it can run even when the generated tree is mid-refactor.
+- The code generator now infers generic typing more completely — generic *input* sockets that track a node's data type, and nodes whose output type is fixed while the inputs vary — tightening the type hints on `HashValue`, `ListLength`, `ValueToString`, `FilterList`, `StoreBundleItem`, `SetSelection`, and `StoreNamedGrid`.
+
+### Fixes
+
+- `CombineBundle` / `SeparateBundle` item construction is now part of the generated output, fixing a latent issue where their custom constructors were silently overwritten whenever the node classes were regenerated.
+
+## v520.1.0 - 2026-06-15
+
+### Enhancements
+
+- **Nodes to code (`to_python`)** — `TreeBuilder.to_python()` (and the standalone `nodebpy.export.to_python()`) converts *any* node tree back into idiomatic `nodebpy` Python — interface sockets, properties, links, zones, frames and nested groups included. It recognises lifted operators (`Math` → `*`, `SeparateXYZ` → `.x`), socket methods, factory methods and zone item APIs, so generated code reads like hand-written `nodebpy`. Validated end-to-end against Blender's full bundled **geometry, shader and compositor essentials** asset libraries, so it round-trips real-world trees, not only ones built with `nodebpy`. See [Nodes to Code](nodes-to-code.qmd). Options:
+    - `snapshot_positions=True` — capture and restore each node's authored `location` (top-level and inside nested groups) instead of auto-laying-out the rebuilt tree.
+    - `keep_reroutes=True` — preserve reroute nodes as `g.Reroute(...)` pass-throughs instead of collapsing each reroute chain into a direct link; pairs with `snapshot_positions` to reproduce the original wire routing.
+    - `top_level="class"` — emit every node group, *including the working tree*, as a `Custom*Group` subclass, for archiving a set of groups as plain reusable Python. Defaults to the `with TreeBuilder(...) as tree:` form.
+    - **Nested frames** are reconstructed as nested `with g.Frame():` blocks (including container frames that hold only sub-frames).
+    - `format=True` (default) runs the output through `ruff format` when the optional `ruff` package is installed (`pip install nodebpy[format]`), for tidier source; a no-op when `ruff` is unavailable.
+    - `strict=False` emits a `# TODO` placeholder for unsupported nodes; `register_emitter(bl_idname)` plugs in a custom generator for any node type.
+- **`NodeGroupBuilder.create_group()`** — classmethod that builds and returns a custom group's node tree without an active `TreeBuilder` context (it opens its own), reusing an existing tree of the same name. Lets a group be pre-built and assigned directly to a node's `node_tree`.
+- **`TreeBuilder.node_positions`** — a read/write `{node name: (x, y)}` mapping for snapshotting and restoring node locations, plus **`TreeBuilder.disable_arrange()`** to skip the auto-layout that otherwise runs on context exit.
+- **Bundle and closure item APIs** — `CombineBundle(items={name: source})` / `SeparateBundle(bundle, items={name: "TYPE"})`, `EvaluateClosure(closure, input_items=..., output_items=...)`, and a `ClosureZone` wrapper (`cz.input_item(...)`, `cz.output_item(...)`, `cz.closure`) for defining a closure's body inline.
+- **Colour field evaluation** — `ColorSocket` gained the domain field-evaluation methods (`.point.at(i)`, `.point.evaluate()`, …) via `EvaluateAtIndex` / `EvaluateOnDomain`, matching the other socket types.
+- Socket methods for AlignRotationToVector for `VectorSocket` and `RotationSocket` (`align_rotation()` and `align_to_vector()`
+- **Grid socket operator methods** — chainable methods on the `*SocketGrid` types that build and wire up the matching grid node, so grid pipelines can be expressed fluently:
+    - All grids — `sample(position, interpolation)`, `sample_index(x, y, z)`, `field_to_grid()`, `clip(...)`, `dilate_erode(steps, connectivity, tiles)`, `prune(threshold, mode)`, `voxelize()`, `to_points()`
+    - Float, vector and integer grids — `mean(width, iterations)`, `median(width, iterations)`
+    - Float grids — `gradient()`, `laplacian()`, `sdf_fillet()`, `sdf_laplacian()`, `sdf_mean()`, `sdf_mean_curvature()`, `sdf_median()`, `sdf_offset()`, `to_mesh()`
+    - Vector grids — `curl()`, `divergence()`
+
+```py
+grid = g.CubeGridTopology() >> g.FieldToGrid.boolean()
+density = grid.capture_float(g.NoiseTexture().o.fac)
+flow = density.dilate_erode(1).laplacian().gradient().divergence()
+```
+
+### Fixes
+ - Grid `mean()` and `median()` now pass the correct `data_type` (Blender's `VALUE` float type is mapped to `FLOAT`), fixing a crash when calling them on float grids
+ - `INT_VECTOR` sockets (e.g. compositor Image Info "Dimensions") are now link-compatible with regular `VECTOR` sockets, matching Blender's implicit conversion.
+ - Multi-input sockets (`JoinBundle`, …) accept an iterable of sources via their constructor, linking each in turn (as `JoinGeometry` already did).
+ - Linking a node into a `Reroute` (or any other adaptive `__extend__` socket, such as `Viewer`) now works from any source type — the reroute adapts instead of rejecting the connection.
+
+### Breaking Changes
+ - `g.SetHandleType()` now defaults to `left=True, right=True` (`mode = {'LEFT', 'RIGHT'}`), matching Blender's native default for a freshly added node. Previously it defaulted to an empty `mode`, which set *no* handle types. The shared `left`/`right`/`mode` logic for `SetHandleType` and `HandleTypeSelection` was factored into a mixin; `SetHandleType` also gained a `mode` property for parity.
+
+## v520.0.1 - 2026-06-05
+
+### Fixes
+ - Import and usage of the `arrange()` function properly handles the optional `netowrkx` dependency
+
+## v520.0.0 - 2026-06-04
+
+### Enhancements
+- Added `leading()`, `trailling()` and `total()` methods from [`AccumulateField`](`~nodebpy.nodes.geometry.converter.AccumulateField`) node onto relevant sockets. Added to `Float`, `Vector`, `Integer` and `Matrix` sockets.
+- **Blender 5.2 support** — generated nodes updated to include the nodes for Blender 5.2.
+- **List socket subtypes** — new `*SocketList` socket types matching Blender 5.2's list sockets, added for every base socket type (`FloatSocketList`, `IntegerSocketList`, `VectorSocketList`, `ColorSocketList`, `BooleanSocketList`, `RotationSocketList`, `MatrixSocketList`, `StringSocketList`, `MenuSocketList`, `GeometrySocketList`, `ObjectSocketList`, `MaterialSocketList`, `CollectionSocketList`, `ImageSocketList`, and more). List sockets carry methods for working with the list:
+    - `list_length()` — number of elements, also available via `len()`
+    - `get(index)` — retrieve an element (or a sub-list when indexed with an `IntegerSocketList`) via `GetListItem`
+    - `filter(selection)` — keep elements where *selection* is true
+    - `sort(sort_weight, group_id=None, selection=None)` — sort via `SortList`
+    - `reverse()` — reverse the list
+    - `list_slice(start, stop, step)` — Python-style slicing, also driven through `[]` indexing and slicing (e.g. `list[::2]`, `list[-3:-1]`)
+
+```py
+indices = g.Index().o.index.to_list(10) # an IntegerSocketList of equal to `range(10)`
+evens = indices[::2]          # IntegerSocketList via GetListItem
+count = len(indices)          # IntegerSocket via ListLength
+first = indices.get(0)        # IntegerSocket
+```
+
+- **Grid socket subtypes** — new `*SocketGrid` socket types for volume grids (`FloatSocketGrid`, `IntegerSocketGrid`, `VectorSocketGrid`, `BooleanSocketGrid`), with `transform()`, `background_value()`, and component indexing.
+- **`to_list(count)`** — convert a field socket into a list socket via `FieldToList`. Available on `FloatSocket`, `IntegerSocket`, `VectorSocket`, `ColorSocket`, `BooleanSocket`, `RotationSocket`, `MatrixSocket`, `StringSocket`, and `MenuSocket`.
+- **New `StringSocket` methods** — `uppercase()` and `lowercase()` (via `SetStringCase`) and `reverse()` (via `ReverseString`).
+
+```py
+string = g.String("Example").o.string
+string.uppercase()   # StringSocket via SetStringCase
+string.lowercase()   # StringSocket via SetStringCase
+string.reverse()     # StringSocket via ReverseString
+```
+
+## v0.18.0 - 2026-05-20
+
+### Added
+- Pre-commit hooks for `ruff` and `ty` checks and auto-formatting.
+- `ty` type checking for the full `src/` directory for type safety
+- Convenience methods for `ObjectSocket` and `CollectionSocket`:
+    - `CollectionSocket`
+        - `instances(transform_space="ORIGINAL", separate_children=False, reset_children=False)` — import objects from the collection as instances, returns `GeometrySocket`
+    - `ObjectSocket`:
+        - `transform(transform_space="ORIGINAL")` — get the transform matrix, returns `MatrixSocket`
+        - `location(transform_space="ORIGINAL")` — get the location, returns `VectorSocket`
+        - `rotation(transform_space="ORIGINAL")` — get the rotation, returns `RotationSocket`
+        - `scale(transform_space="ORIGINAL")` — get the scale, returns `VectorSocket`
+        - `geometry(as_instance=False, transform_space="ORIGINAL")` — get the geometry, returns `GeometrySocket`
+- Added `is_selected()` method to `MenuSwitch` - returns the `BooleanSocket` for the named menu item that is true when the item is selected
+
+## v0.17.0 - 2026-05-13
+
+### Enhancements
+- New methods on `VectorSocket` for applying transforms:
+    - `rotate(rotation)` — apply a `RotationSocket` via `RotateVector`, returns `VectorSocket`
+    - `transform(matrix)` — apply a `MatrixSocket` via `TransformPoint`, returns `VectorSocket`
+- New methods on `RotationSocket`:
+    - `rotate(rotation, rotation_space="GLOBAL")` — compose rotations via `RotateRotation`, returns `RotationSocket`
+    - `to_euler()` — convert to XYZ euler angles, returns `VectorSocket` (renamed from `euler()`)
+    - `to_quaternion()` — decompose via `RotationToQuaternion`, returns a `Quaternion` named tuple with `.w`, `.x`, `.y`, `.z`
+    - `to_axis_angle()` — decompose via `RotationToAxisAngle`, returns an `AxisAngle` with `.axis` and `.angle`
+- `FloatSocket.mix` — factory property for creating typed `Mix` nodes driven by this socket as the factor. Supports `.float()`, `.vector()`, `.color()`, `.rotation()`.
+- `FloatSocket.map_range()` and `VectorSocket.map_range()` — remap a socket's values using `MapRange`. Supports `from_min`, `from_max`, `to_min`, `to_max`, `clamp`, `interpolation_type`, and `steps`.
+
+```py
+normalized = value.map_range(0.0, 100.0, 0.0, 1.0)
+remapped_vec = vec.map_range((0,0,0), (1,1,1), (-1,-1,-1), (1,1,1))
+```
+
+- New methods on `FloatSocket`:
+    - `clamp(min=0.0, max=1.0)` — clamp to range via `Clamp`
+    - `sqrt()` — square root
+    - `power(exponent)` — raise to a power
+    - `floor()` / `ceil()` / `round()` — rounding variants
+    - `modulo(divisor)` — floored modulo (always non-negative, consistent with Python `%`)
+    - `wrap(min, max)` — repeat cyclically within a range
+    - `to_radians()` / `to_degrees()` — angle unit conversion
+- New methods on `VectorSocket`:
+    - `cross(other)` — cross product, returns `VectorSocket`
+    - `distance(other)` — Euclidean distance, returns `FloatSocket`
+    - `project(other)` — project onto another vector
+    - `reflect(normal)` — reflect around a normal (*normal* does not need to be normalised)
+- New methods on `IntegerSocket`:
+    - `clamp(min=0, max=1)` — clamp to integer range
+    - `modulo(divisor)` — integer remainder (always non-negative)
+- New method on `MatrixSocket`:
+    - `transform_direction(direction)` — apply the matrix to a direction vector, ignoring translation. Use this instead of `transform()` for normals and tangents.
+
+- Domain factories on `FloatSocket`, `VectorSocket`, `IntegerSocket`, `BooleanSocket`, `RotationSocket`, and `MatrixSocket` — select a domain property, then call the operation. Each call returns a single typed socket.
+    - Domain properties: `.point`, `.edge`, `.face`, `.corner`, `.spline`, `.instance`, `.layer`
+    - All socket types: `.evaluate()` — re-evaluate on the domain via `EvaluateOnDomain`; `.at(i)` — retrieve at an index via `EvaluateAtIndex`
+    - Float/Vector additionally: `.min()`, `.max()`, `.mean()`, `.median()`, `.std_dev()`, `.variance()` (with optional `group_index`)
+    - Integer additionally: `.min()`, `.max()` (with optional `group_index`)
+
+```py
+# Field evaluation — works on all socket types
+position.face.evaluate()       # VectorSocket — position re-evaluated on face domain
+flag.point.at(3)         # BooleanSocket — flag value at point index 3
+rot.edge.evaluate()            # RotationSocket
+
+# Statistics — Float / Vector
+lo = position.point.min()
+mean = curvature.face.mean()
+std_dev = weight.point.std_dev(group_index)
+```
+
+```py
+fac = g.Value(0.5).o.value
+fac.mix.float(0.0, 1.0)          # FloatSocket
+fac.mix.vector((0,0,0), (1,1,1)) # VectorSocket
+fac.mix.color(color_a, color_b)  # ColorSocket
+```
+
+### Breaking Changes
+- `RotationSocket.euler()` renamed to `RotationSocket.to_euler()` for consistency with the new `to_quaternion()` and `to_axis_angle()` methods.
+- `RotationSocket.w`, `.x`, `.y`, `.z` component properties removed. Use `to_quaternion()` instead.
+- Multi-output socket methods (`to_quaternion()`, `to_axis_angle()`, `find()`, `svd()`) now return typed `NamedTuple` results. Both named access and positional unpacking are fully typed.
+
+```py
+# Named access
+rot.to_quaternion().w      # FloatSocket
+rot.to_axis_angle().angle  # FloatSocket
+string.find("/").first_found  # IntegerSocket
+mat.svd().u                # MatrixSocket
+
+# Positional unpacking — all variables are specifically typed
+w, x, y, z = rot.to_quaternion()
+axis, angle = rot.to_axis_angle()
+first, count = string.find("/")
+u, s, v = mat.svd()
+```
+
+- `FloatSocket.to_integer(rounding_mode="ROUND")` — convert to integer via `FloatToInteger`. Accepts `"ROUND"`, `"FLOOR"`, `"CEILING"`, or `"TRUNCATE"`.
+
+
+## v0.16.0 - 2026-05-05
+
+### Enhancements
+- Input `VectorSocket` now properly has the `x`, `y`, `z` attributes through `CombineXYZ` node.
+- Socket methods added for strings. Methods added are: `length()`, `starts_with()`, `ends_with()`, `contains()`, `slice()`, `format()`, `replace()`, `find()`, `join()`
+
+```py
+
+string = g.String("Example String").o.string
+
+string.length()      # return g.StringLength().o.length, same as len(string)
+string.starts_with() # return g.MatchString().o.result
+string.ends_with()   # return g.MatchString().o.result
+string.contains()    # return g.MatchString().o.result
+string.slice()       # return g.SliceString().o.string
+string.format()      # return g.FormatString().o.string
+string.replace()     # return g.ReplaceString().o.string
+string.find()        # return FindResult(first_found, count)
+string.join(x)       # return g.JoinStrings(x, delimeter=string)
+```
+
+String sockets can also be joined with `+` operator like python strings.
+
+These two are equivalent.
+
+```py
+
+string + "example"
+
+JoinStrings((string, g.String("example")), separator="").o.string
+
+```
+
+Float and integer sockets have `to_string()` methods:
+
+```py
+g.Float().o.value.to_string(3) # specify decimal places
+
+g.Integer().o.integer.to_string()
+```
+
+- Math, comparison, and unary operations on sockets now return the **output socket** of the created node rather than the node itself. This allows method chaining directly on the result.
+
+```py
+# Before: result was a Math / VectorMath / Compare node
+# After:  result is a FloatSocket / VectorSocket / BooleanSocket
+pos = g.Position().o.position
+scaled = pos * 2.0            # VectorSocket
+clamped = (scaled > 0.5)      # BooleanSocket
+mat = g.CombineTransform() @ g.CombineTransform()  # MatrixSocket
+vec = g.CombineTransform() @ g.Position()           # VectorSocket
+```
+
+  To access the underlying builder node from any socket returned by a math operation, use the `.builder_node` property:
+
+```py
+result = g.Value(2.0) ** 3.0   # FloatSocket
+result.builder_node             # the Math node
+result.builder_node.i.value_001 # input socket on that node
+```
+
+- Accessing `.o` or `.i` on any `BaseNode` now sets `.builder_node` on the returned socket, pointing back to that node.
+
+```py
+pos = g.Position().o.position
+pos.builder_node   # the Position node
+```
+
+- Added `svd()` method onto `MatrixSocket` which returns an `SVDResult` with `.u`, `.s`, `.v` properties.
+- Add `sign()` and `negate()` methods onto the `FloatSocket` for method chaining. Both return `FloatSocket`.
+- Remove `socket_name` property from `BaseSocket`, already accessible via `.socket.name`.
+- Added `.dot()`, `.length()` and `.normalize()` methods to `VectorSocket` which create the corresponding `DotProduct`, `VectorLength` and `Normalize` nodes.
+- Properties on sockets that aren't just accessing components of the socket are node methods. They still return sockets and not nodes.
+    - `RotationSocket.invert` -> `RotationSocket.invert()`
+    - `RotationSocket.euler` -> `RotationSocket.to_euler()`
+    - `MatrixSocket.invert` -> `MatrixSocket.invert()`
+    - `MatrixSocket.transpose` -> `MatrixSocket.transpose()`
+    - `MatrixSocket.determinant` -> `MatrixSocket.determinant()`
+
+### Breaking Changes
+- `Compare.switch(false, true)` with automatic type inference has been removed. Use the explicit typed factory methods on `BooleanSocket.switch` instead.
+
+```py
+# Before
+(val == 5).switch(g.Cube(), g.IcoSphere())
+
+# After
+(val == 5).switch.geometry(g.Cube(), g.IcoSphere())
+(val == 5).switch.float(0.0, 1.0)
+(val == 5).switch.integer(0, 1)
+```
+
+- Math operations no longer return nodes — code that accessed node properties directly on the result (e.g. `result.operation`, `result.data_type`, `result.i`) must now go through `result.node` or `result.builder_node`:
+
+```py
+result = g.Value(2.0) * 3.0
+
+# Before
+result.operation              # "MULTIPLY"
+result.i.value.default_value  # 2.0
+
+# After
+result.node.operation              # "MULTIPLY"
+result.builder_node.i.value.default_value  # 2.0
+```
+
+### Bug Fixes
+- The `ColorSocket` properly only indexes to length `3` inside of the shader as `SeparateXYZ` and `CombineXYZ` don't have alpha inputs or outputs.
+- Fixed bug in mixins that was resulting in node comparison creation when checking if a node / socket was `None` instead of using `is None` comparison.
+- `tree()` helper functions in `geometry`, `shader`, and `compositor` modules now return a typed `TreeBuilder[NodeTreeType]` for improved type-checker support.
+- Fixed `BaseNode._from_node()` to correctly wrap an existing node without creating and immediately discarding a temporary node.
+
+
+## v0.15.0 - 2026-04-30
+
+### Enhancements
+- Boolean sockets have a `switch` method which creates a `Switch` node with the socket as the input. Allows for quick chaining.
+```py
+b = tree.inputs.boolean()
+b.switch.float(0.1, 0.2)
+b.switch.geometry(g.Cube(), g.IcoSphere())
+```
+- Changes to some node methods to better align with naming inside of Geometry Nodes:
+    - `EvaluateAtIndex` & `EvaluateOnDomain`:
+        - `rotation` -> `quaternion`
+        - `transform` -> `matrix`
+    - `SampleIndex` & `SampelCurve`:
+        - `rotation` -> `quaternion`
+- Handle adding items for the `ColorRamp` and `FloatCurve` nodes to create mappins of `0..1` floats to values and colors.
+
+### Bug Fixes
+- The `*Socket` classes have been added to the types for checking.
+- Inputs and outputs properly listed on the `ForEachGeometryElement` nodes.
+- `JoinString` links in the intended order (by first reversing the iterator before linking which is required for multi-input sockets).
+- `StoreNamedAttribute` has the `domain` and `data_type` factor methods properly exposed for `StoreNamedAttribute.face.vector()`.
+
+## v0.14.0 - 2026-04-29
+
+### Enhancements
+
+- Nodes which previously took `*args` and `**kwargs` have been updated to use keyword-only arguments instead. This is a hard breaking change but makes the code more readable and less error-prone. ([`#69`](https://github.com/BradyAJohnston/nodebpy/pull/69))
+  - Affected nodes: `FieldToGrid`, `JoinGeometry`, `MenuSwitch`, `IndexSwitch`, `CaptureAttribute`, `JoinStrings`, `FormatString`, `SDFGridBoolean`, `MeshBoolean`, `RepeatZone`, `SimulationZone`
+- Tree interfaces are defined with `tree.inputs.geometry()` methods rather than using the old context-based `s.SocketGeometry()`. Both systems have been living side-by-side but this completely removed old system so is a hard breaking change. ([`#67`](https://github.com/BradyAJohnston/nodebpy/pull/67))
 
 ```py
 # old system

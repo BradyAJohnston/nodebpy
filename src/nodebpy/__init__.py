@@ -1,4 +1,4 @@
-from . import diagram, nodes
+from . import builder, export, nodes, types
 from .builder import (
     TreeBuilder,
     compositor_tree,
@@ -8,13 +8,15 @@ from .builder import (
 from .nodes import compositor, geometry, shader
 
 __all__ = [
-    "nodes",
-    "compositor",
-    "geometry",
-    "shader",
-    "diagram",
     "TreeBuilder",
-    "geometry_tree",
-    "shader_tree",
+    "builder",
+    "compositor",
     "compositor_tree",
+    "export",
+    "geometry",
+    "geometry_tree",
+    "nodes",
+    "shader",
+    "shader_tree",
+    "types",
 ]

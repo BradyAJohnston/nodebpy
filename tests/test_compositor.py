@@ -1,7 +1,7 @@
 from nodebpy import compositor as c
 
 
-def test_initial_compositor():
+def test_initial_compositor(snapshot):
     with c.tree("comp", fake_user=True) as t:
         image = t.inputs.color("Image")
         depth = t.inputs.float("Depth")
@@ -19,40 +19,43 @@ def test_initial_compositor():
         output_color = t.outputs.color("Image")
 
         with c.Frame("Ambient Occlusion"):
-            ao_factor = (1 - ao) ** 0.94 >> c.Kuwahara(..., size=4.0)
+            ao_factor = (1 - ao) ** 0.94 >> c.Kuwahara(size=4.0)
             active_image = c.Mix.color(ao_factor, image)
         with c.Frame("Outline"):
-            depth_line = c.Filter.sobel(depth) > (outline_depth / 100)
-            normal_line = c.Filter.sobel(normal) > 1.5
+            depth_line = depth >> c.Filter.sobel() > (outline_depth / 100)
+            normal_line = normal >> c.Filter.sobel() > 1.5
             outline_comp = (
                 (depth_line + normal_line)
                 >> c.AntiAliasing()
-                >> c.Dilateerode.distance(size=outline_size - 1.0)
+                >> c.DilateErode.distance(size=outline_size - 1.0)
                 >> c.AntiAliasing()
             )
 
         with c.Frame("Final Composit"):
             outline_switch = c.MenuSwitch.color(
-                **{
+                outline_menu,
+                {
                     "None": active_image,
                     "Outline": c.AlphaOver(outline_comp, outline_color),
                 },
-                menu=outline_menu,
             )
 
             _ = (
                 c.MenuSwitch.color(
-                    outline_switch,
-                    c.AlphaOver(background_color, outline_switch),
-                    menu=background_menu,
+                    background_menu,
+                    {
+                        "Output": outline_switch,
+                        "Image": c.AlphaOver(background_color, outline_switch),
+                    },
                 )
                 >> output_color
             )
+    assert snapshot == t._repr_markdown_()
 
 
 def test_compositor_menu_switch():
     with c.tree() as tree:
-        menu = c.MenuSwitch.string(*[str(x) for x in range(10)])
+        menu = c.MenuSwitch.string(items={str(x): str(x) for x in range(10)})
         menu >> tree.outputs.string()
 
     assert len(menu.node.enum_items) == 10
@@ -60,7 +63,7 @@ def test_compositor_menu_switch():
 
     with c.tree() as tree:
         menu = c.MenuSwitch.float(
-            **{f"Input_{i}": float(value) for i, value in enumerate(range(10))}
+            items={f"Input_{i}": float(value) for i, value in enumerate(range(10))}
         )
         menu >> tree.outputs.float()
 
@@ -71,7 +74,7 @@ def test_compositor_menu_switch():
 
     with c.tree() as tree:
         menu = c.MenuSwitch.float(
-            **{f"Input_{i}": c.Value(value) for i, value in enumerate(range(10))}
+            items={f"Input_{i}": c.Value(value) for i, value in enumerate(range(10))}
         )
         menu >> tree.outputs.float()
 
@@ -90,3 +93,61 @@ def test_nodes():
         assert idx.data_type == "VECTOR"
         idx.data_type = "FLOAT"
         assert idx.data_type == "FLOAT"
+
+
+def test_enable_output_data_type_setter():
+    with c.tree():
+        node = c.EnableOutput()
+        assert node.data_type == "FLOAT"
+        node.data_type = "INT"
+        assert node.data_type == "INT"
+
+
+def test_image_node_properties():
+    with c.tree():
+        img = c.Image()
+        # has_layers / has_views are readable regardless of scene render layers
+        assert isinstance(img.has_layers, bool)
+        assert isinstance(img.has_views, bool)
+
+
+def test_cryptomatte_layer_name():
+    with c.tree():
+        # layer_name is a plain string property (unlike layer/view which are render enums)
+        crypto = c.Cryptomatte(layer_name="ViewLayer.CryptoObject")
+        assert crypto.layer_name == "ViewLayer.CryptoObject"
+        crypto.layer_name = "ViewLayer.CryptoMaterial"
+        assert crypto.layer_name == "ViewLayer.CryptoMaterial"
+
+
+def test_convert_colorspace_properties():
+    with c.tree():
+        node = c.ConvertColorspace(
+            from_color_space="sRGB", to_color_space="scene_linear"
+        )
+        assert node.from_color_space == "sRGB"
+        assert node.to_color_space == "scene_linear"
+        node.from_color_space = "scene_linear"
+        node.to_color_space = "sRGB"
+        assert node.from_color_space == "scene_linear"
+        assert node.to_color_space == "sRGB"
+
+
+def test_simple_compositor_nodes():
+    with c.tree():
+        mix = c.Mix.float()
+        assert mix.data_type == "FLOAT"
+        mix.data_type = "VECTOR"
+        assert mix.data_type == "VECTOR"
+
+
+def test_compositor_file_output():
+    with c.tree():
+        f = c.FileOutput()
+
+        assert not f.save_as_render
+        f.save_as_render = True
+        assert f.save_as_render
+        assert not f.use_file_extension
+        f.use_file_extension = True
+        assert f.use_file_extension

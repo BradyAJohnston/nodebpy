@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter, deque
+from typing import Any, cast
 
 import bpy
 
@@ -114,10 +115,12 @@ def calculate_node_dimensions(
     enabled_outputs = sum(1 for s in node.outputs if s.enabled)
 
     # count properties specific to this node type (not inherited)
+    # ``bl_rna`` exists on bpy classes via their metaclass, invisible to type
+    # checkers looking at plain ``type``.
     inherited_ids = {
         prop.identifier
         for base in type(node).__bases__
-        for prop in base.bl_rna.properties
+        for prop in cast(Any, base).bl_rna.properties
     }
     node_property_count = sum(
         1 for prop in node.bl_rna.properties if prop.identifier not in inherited_ids
@@ -143,6 +146,7 @@ def calculate_node_dimensions(
 
 def _socket_index(socket: bpy.types.NodeSocket) -> int:
     """Return the index of a socket among its node's enabled sockets."""
+    assert socket.node is not None
     collection = socket.node.inputs if not socket.is_output else socket.node.outputs
     idx = 0
     for s in collection:
@@ -208,6 +212,7 @@ def _reduce_crossings(
         # on the target node (input side).
         out_count = max(1, sum(1 for s in src.outputs if s.enabled))
         in_count = max(1, sum(1 for s in dst.inputs if s.enabled))
+        assert link.from_socket is not None and link.to_socket is not None
         src_frac = _socket_index(link.from_socket) / out_count
         dst_frac = _socket_index(link.to_socket) / in_count
 
@@ -273,8 +278,7 @@ def position_nodes_in_columns(
 
             width, height = calculate_node_dimensions(node, connection_counts, 1.0)
 
-            if width > col_width:
-                col_width = width
+            col_width = max(col_width, width)
 
             node.location = (x, y)
 
@@ -299,8 +303,10 @@ def position_reroutes(tree: bpy.types.NodeTree) -> None:
         targets: list[bpy.types.Node] = []
         for link in tree.links:
             if link.to_node == node:
+                assert link.from_node is not None
                 sources.append(link.from_node)
             if link.from_node == node:
+                assert link.to_node is not None
                 targets.append(link.to_node)
 
         neighbours = sources + targets

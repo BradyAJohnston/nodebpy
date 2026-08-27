@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, Generic, Literal
+from typing import TYPE_CHECKING, Literal
 
-from bpy.types import ShaderNodeAttribute
+from bpy.types import ShaderNodeAttribute, ShaderNodeTree
 
 from ...builder import (
     BaseNode,
@@ -17,6 +17,7 @@ from ...builder import (
     VectorSocket,
 )
 from ...builder.accessor import SocketAccessor
+from ...builder.socket import BaseSocket
 from ...types import (
     InputBoolean,
     InputBundle,
@@ -29,18 +30,18 @@ from ...types import (
     InputVector,
 )
 from ..geometry import Frame, RepeatInput, RepeatOutput, RepeatZone
-from ..geometry.manual import _T, Float, _MenuSwitchBase
+from ..geometry.manual import Float, _MenuSwitchBase
 
 __all__ = [
+    "Attribute",
+    "Float",
+    "Frame",
     "MenuSwitch",
     "RepeatInput",
     "RepeatOutput",
     "RepeatZone",
-    "Attribute",
-    "Frame",
-    "Float",
-    "tree",
     "material",
+    "tree",
 ]
 
 
@@ -50,7 +51,7 @@ def tree(
     collapse: bool = False,
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
     fake_user: bool = False,
-) -> TreeBuilder:
+) -> TreeBuilder[ShaderNodeTree]:
     return TreeBuilder.shader(
         name, collapse=collapse, arrange=arrange, fake_user=fake_user
     )
@@ -68,62 +69,62 @@ def material(
     )
 
 
-class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
+class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     """Node builder for the Menu Switch node (Shader tree)"""
 
     @classmethod
     def float(
-        cls, *args: InputFloat, menu: InputMenu = None, **kwargs: InputFloat
+        cls, menu: InputMenu = None, items: dict[str, InputFloat] | None = None
     ) -> "MenuSwitch[FloatSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="FLOAT", **kwargs)
+        return MenuSwitch(menu, items, data_type="FLOAT")
 
     @classmethod
     def integer(
-        cls, *args: InputInteger, menu: InputMenu = None, **kwargs: InputInteger
+        cls, menu: InputMenu = None, items: dict[str, InputInteger] | None = None
     ) -> "MenuSwitch[IntegerSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="INT", **kwargs)
+        return MenuSwitch(menu, items, data_type="INT")
 
     @classmethod
     def boolean(
-        cls, *args: InputBoolean, menu: InputMenu = None, **kwargs: InputBoolean
+        cls, menu: InputMenu = None, items: dict[str, InputBoolean] | None = None
     ) -> "MenuSwitch[BooleanSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="BOOLEAN", **kwargs)
+        return MenuSwitch(menu, items, data_type="BOOLEAN")
 
     @classmethod
     def vector(
-        cls, *args: InputVector, menu: InputMenu = None, **kwargs: InputVector
+        cls, menu: InputMenu = None, items: dict[str, InputVector] | None = None
     ) -> "MenuSwitch[VectorSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="VECTOR", **kwargs)
+        return MenuSwitch(menu, items, data_type="VECTOR")
 
     @classmethod
     def color(
-        cls, *args: InputColor, menu: InputMenu = None, **kwargs: InputColor
+        cls, menu: InputMenu = None, items: dict[str, InputColor] | None = None
     ) -> "MenuSwitch[ColorSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="RGBA", **kwargs)
+        return MenuSwitch(menu, items, data_type="RGBA")
 
     @classmethod
     def menu(
-        cls, *args: InputMenu, menu: InputMenu = None, **kwargs: InputMenu
+        cls, menu: InputMenu = None, items: dict[str, InputMenu] | None = None
     ) -> "MenuSwitch[MenuSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="MENU", **kwargs)
+        return MenuSwitch(menu, items, data_type="MENU")
 
     @classmethod
     def closure(
-        cls, *args: InputClosure, menu: InputMenu = None, **kwargs: InputClosure
+        cls, menu: InputMenu = None, items: dict[str, InputClosure] | None = None
     ) -> "MenuSwitch[ClosureSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="CLOSURE", **kwargs)
+        return MenuSwitch(menu, items, data_type="CLOSURE")
 
     @classmethod
     def bundle(
-        cls, *args: InputBundle, menu: InputMenu = None, **kwargs: InputBundle
+        cls, menu: InputMenu = None, items: dict[str, InputBundle] | None = None
     ) -> "MenuSwitch[BundleSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="BUNDLE", **kwargs)
+        return MenuSwitch(menu, items, data_type="BUNDLE")
 
     @classmethod
     def shader(
-        cls, *args: InputShader, menu: InputMenu = None, **kwargs: InputShader
+        cls, menu: InputMenu = None, items: dict[str, InputShader] | None = None
     ) -> "MenuSwitch[ShaderSocket]":
-        return MenuSwitch(*args, menu=menu, data_type="SHADER", **kwargs)
+        return MenuSwitch(menu, items, data_type="SHADER")
 
 
 class Attribute(BaseNode):

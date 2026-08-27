@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from functools import cached_property
 from itertools import chain, pairwise, product
 from math import inf
-from typing import Any, Literal, Sequence, TypeGuard
+from typing import Any, Literal, TypeGuard
 
 import networkx as nx
 from bpy.types import Node as BlenderNode
@@ -142,7 +142,7 @@ class Node:
 
 
 class _RealNode(Node):
-    node: BlenderNode  # type: ignore
+    node: BlenderNode
 
 
 def is_real(v: Node | Cluster) -> TypeGuard[_RealNode]:
@@ -157,7 +157,7 @@ Edge = tuple[Node, Node]
 MultiEdge = tuple[Node, Node, int]
 
 
-def opposite(v: Node, e: tuple[Node, Node] | tuple[Node, Node, ...]) -> Node:
+def opposite(v: Node, e: Edge | MultiEdge) -> Node:
     return e[0] if v != e[0] else e[1]
 
 
@@ -205,7 +205,7 @@ def lowest_common_cluster(
     edges: Iterable[tuple[Node, Node, Any]],
 ) -> dict[Edge, Cluster]:
     pairs = {(u, v) for u, v, _ in edges if u.cluster != v.cluster}
-    return dict(nx.tree_all_pairs_lowest_common_ancestor(T, pairs=pairs))
+    return dict(nx.tree_all_pairs_lowest_common_ancestor(T, pairs=iter(pairs)))
 
 
 def add_dummy_edge(G: nx.DiGraph[Node], u: Node, v: Node) -> None:
@@ -225,7 +225,7 @@ def add_dummy_nodes_to_edge(
             add_dummy_edge(G, *pair)
 
     u, v, _ = edge
-    d = G.edges[edge]  # type: ignore
+    d = G.edges[edge]
 
     w = dummy_nodes[0]
     if w not in G[u]:
@@ -333,7 +333,7 @@ class ClusterGraph:
     def __init__(self, G: nx.MultiDiGraph[Node]) -> None:
         self.G = G
         self.T = nx.DiGraph(chain(*map(get_nesting_relations, G)))
-        self.S = {v for v in self.T if v.type == Kind.CLUSTER}
+        self.S = {v for v in self.T if isinstance(v, Cluster)}
 
     def remove_nodes_from(self, nodes: Iterable[Node]) -> None:
         ntree = get_ntree()
@@ -391,6 +391,7 @@ class ClusterGraph:
 
             improve_cluster_assignment((u, v), dummy_nodes)
             for w in dummy_nodes:
+                assert w.cluster is not None
                 T.add_edge(w.cluster, w)
 
     def insert_dummy_nodes(self) -> None:
@@ -561,13 +562,13 @@ def get_reroute_paths(
             H.remove_edges_from(tuple(H.out_edges(v)))
 
     if preserve_reroute_clusters:
-        reroute_clusters = {  #
+        reroute_clusters = {
             c
             for c in CG.S
             if all(v.is_reroute for v in CG.T[c] if v.type != Kind.CLUSTER)
         }
         H.remove_edges_from(
-            [  #
+            [
                 (u, v)
                 for u, v in H.edges
                 if u.cluster != v.cluster and {u.cluster, v.cluster} & reroute_clusters
