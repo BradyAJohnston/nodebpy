@@ -1,4 +1,5 @@
 import bpy
+import pytest
 from bpy.types import (
     CompositorNodeTree,
     FunctionNodeInputInt,
@@ -160,10 +161,29 @@ def test_tree_decorator():
     assert node.integer == 100
     assert len(tree.nodes) == 3
 
-    # keyword arguments pass through to the decorated function
+    # calling again reuses the existing data-block instead of rebuilding,
+    # so the arguments of the second call are ignored
     other = new_group(count=42)
+    assert other == tree
     node = other.nodes["Integer"]  # ty: ignore
-    assert node.integer == 42
+    assert node.integer == 100
+
+
+def test_tree_decorator_name_clash():
+    from nodebpy import shader as s
+
+    @nb.shader_tree("Clashing Group Name")
+    def new_shader(tree: nb.TreeBuilder[ShaderNodeTree]):
+        _ = s.PrincipledBSDF() >> tree.outputs.shader()
+
+    new_shader()
+
+    @nb.geometry_tree("Clashing Group Name")
+    def new_group(tree: nb.TreeBuilder[GeometryNodeTree]):
+        pass
+
+    with pytest.raises(TypeError, match="already exists as ShaderNodeTree"):
+        new_group()
 
 
 def test_shader_tree_decorator():

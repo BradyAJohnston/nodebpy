@@ -970,6 +970,23 @@ class MaterialBuilder(TreeBuilder):
         )
 
 
+def _existing_group[TreeT: NodeTree](
+    name: NodeTree | str, tree_type: type[TreeT]
+) -> TreeT | None:
+    """Return the already-built node group of this name, erroring on a type clash."""
+    if not isinstance(name, str):
+        return None
+    existing = bpy.data.node_groups.get(name)
+    if existing is None:
+        return None
+    if not isinstance(existing, tree_type):
+        raise TypeError(
+            f"Node group '{name}' already exists as {existing.bl_idname}, "
+            f"not {tree_type.__name__}. Use a unique name."
+        )
+    return existing
+
+
 def geometry_tree(
     name: GeometryNodeTree | str = "Geometry Nodes",
     *,
@@ -977,13 +994,20 @@ def geometry_tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
     fake_user: bool = False,
 ):
-    """Decorator that runs the function inside a geometry node tree context and returns the built tree."""
+    """Decorator that runs the function inside a geometry node tree context and returns the built tree.
+
+    The tree is built once: subsequent calls return the existing node group of
+    the same name from ``bpy.data.node_groups`` without calling the function.
+    """
 
     def decorator[**P](
         fn: Callable[Concatenate[TreeBuilder[GeometryNodeTree], P], None],
     ) -> Callable[P, GeometryNodeTree]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> GeometryNodeTree:
+            existing = _existing_group(name, GeometryNodeTree)
+            if existing is not None:
+                return existing
             with TreeBuilder.geometry(
                 name, collapse=collapse, arrange=arrange, fake_user=fake_user
             ) as tree:
@@ -1002,13 +1026,20 @@ def shader_tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
     fake_user: bool = False,
 ):
-    """Decorator that runs the function inside a shader node tree context and returns the built tree."""
+    """Decorator that runs the function inside a shader node tree context and returns the built tree.
+
+    The tree is built once: subsequent calls return the existing node group of
+    the same name from ``bpy.data.node_groups`` without calling the function.
+    """
 
     def decorator[**P](
         fn: Callable[Concatenate[TreeBuilder[ShaderNodeTree], P], None],
     ) -> Callable[P, ShaderNodeTree]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> ShaderNodeTree:
+            existing = _existing_group(name, ShaderNodeTree)
+            if existing is not None:
+                return existing
             with TreeBuilder.shader(
                 name, collapse=collapse, arrange=arrange, fake_user=fake_user
             ) as tree:
@@ -1027,13 +1058,20 @@ def compositor_tree(
     arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
     fake_user: bool = False,
 ):
-    """Decorator that runs the function inside a compositor node tree context and returns the built tree."""
+    """Decorator that runs the function inside a compositor node tree context and returns the built tree.
+
+    The tree is built once: subsequent calls return the existing node group of
+    the same name from ``bpy.data.node_groups`` without calling the function.
+    """
 
     def decorator[**P](
         fn: Callable[Concatenate[TreeBuilder[CompositorNodeTree], P], None],
     ) -> Callable[P, CompositorNodeTree]:
         @wraps(fn)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> CompositorNodeTree:
+            existing = _existing_group(name, CompositorNodeTree)
+            if existing is not None:
+                return existing
             with TreeBuilder.compositor(
                 name, collapse=collapse, arrange=arrange, fake_user=fake_user
             ) as tree:
