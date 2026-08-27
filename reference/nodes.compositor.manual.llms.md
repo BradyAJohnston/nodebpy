@@ -40,6 +40,7 @@ Node builder for the Menu Switch node (Compositor tree)
 | [float](#nodebpy.nodes.compositor.manual.MenuSwitch.float) |  |
 | [integer](#nodebpy.nodes.compositor.manual.MenuSwitch.integer) |  |
 | [is_selected](#nodebpy.nodes.compositor.manual.MenuSwitch.is_selected) | Gets the boolean output socket that is True when the named menu item is selected. |
+| [item](#nodebpy.nodes.compositor.manual.MenuSwitch.item) | Declare a menu item and return its handle. |
 | [menu](#nodebpy.nodes.compositor.manual.MenuSwitch.menu) |  |
 | [string](#nodebpy.nodes.compositor.manual.MenuSwitch.string) |  |
 | [vector](#nodebpy.nodes.compositor.manual.MenuSwitch.vector) |  |
@@ -67,7 +68,7 @@ Values may be linkables (linked to the new item’s input) or socket-type string
 ##### boolean
 
 ``` python
-boolean(menu=None, items={})
+boolean(menu=None, items=None)
 ```
 
 ##### capture
@@ -83,19 +84,19 @@ The item is auto-named after the source socket unless `name` is given.
 ##### color
 
 ``` python
-color(menu=None, items={})
+color(menu=None, items=None)
 ```
 
 ##### float
 
 ``` python
-float(menu=None, items={})
+float(menu=None, items=None)
 ```
 
 ##### integer
 
 ``` python
-integer(menu=None, items={})
+integer(menu=None, items=None)
 ```
 
 ##### is_selected
@@ -120,22 +121,34 @@ Cannot be used with the “Output” name as this refers to the output socket it
 |----|----|----|
 |  | BooleanSocket | The boolean output socket that is True when the named menu item is selected. |
 
+##### item
+
+``` python
+item(name, value=None, *, description=None)
+```
+
+Declare a menu item and return its handle.
+
+`value` may be a linkable (linked into the item’s input socket), a plain default value, or a `(value, description)` pair; omit it to declare the item unlinked. `description` sets the tooltip Blender shows for the item in the menu.
+
+Unless the menu selection was set explicitly, declaring the first item also defaults the selection to it (as the constructor does).
+
 ##### menu
 
 ``` python
-menu(menu=None, items={})
+menu(menu=None, items=None)
 ```
 
 ##### string
 
 ``` python
-string(menu=None, items={})
+string(menu=None, items=None)
 ```
 
 ##### vector
 
 ``` python
-vector(menu=None, items={})
+vector(menu=None, items=None)
 ```
 
 ## Functions

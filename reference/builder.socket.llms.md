@@ -26,7 +26,7 @@ Organization (top to bottom): \* Type variables and result types \* Base wrapper
 | [ColorSocketList](#nodebpy.builder.socket.ColorSocketList) | List of color sockets. |
 | [FloatSocket](#nodebpy.builder.socket.FloatSocket) | Runtime float socket wrapper. |
 | [FloatSocketGrid](#nodebpy.builder.socket.FloatSocketGrid) | Runtime float grid socket wrapper. |
-| [FloatSocketList](#nodebpy.builder.socket.FloatSocketList) |  |
+| [FloatSocketList](#nodebpy.builder.socket.FloatSocketList) | List float sockets. |
 | [FontSocket](#nodebpy.builder.socket.FontSocket) | Runtime font socket wrapper. |
 | [FontSocketList](#nodebpy.builder.socket.FontSocketList) | List of font sockets. |
 | [GeometrySocket](#nodebpy.builder.socket.GeometrySocket) | Runtime geometry socket wrapper. |
@@ -60,7 +60,7 @@ Organization (top to bottom): \* Type variables and result types \* Base wrapper
 | [StringSocketList](#nodebpy.builder.socket.StringSocketList) | List of string sockets. |
 | [VectorSocket](#nodebpy.builder.socket.VectorSocket) | Runtime vector socket wrapper. |
 | [VectorSocketGrid](#nodebpy.builder.socket.VectorSocketGrid) | Runtime vector grid socket wrapper. |
-| [VectorSocketList](#nodebpy.builder.socket.VectorSocketList) |  |
+| [VectorSocketList](#nodebpy.builder.socket.VectorSocketList) | Class for list of vector sockets. |
 
 ### BaseSocket
 
@@ -2060,6 +2060,8 @@ Wrap the value into the *\[min, max\]* range, repeating cyclically.
 ``` python
 FloatSocketList(socket)
 ```
+
+List float sockets.
 
 #### Attributes
 
@@ -6135,6 +6137,8 @@ Remove sparseness from a volume grid by making the active tiles into voxels.
 ``` python
 VectorSocketList(socket)
 ```
+
+Class for list of vector sockets.
 
 #### Attributes
 

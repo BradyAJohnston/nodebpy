@@ -1,5 +1,24 @@
 # Changelog
 
+## v520.15.0 - 2026-08-27
+
+### Enhancements
+
+- **Menu Switch item descriptions** — enum items can now carry the tooltip Blender shows in the menu. A dict item value may be a `(value, description)` pair (`g.MenuSwitch.geometry(menu, {"Object": (obj, "Use the source object")})`), and the new `switch.item(name, value, description=...)` helper declares a single item and returns a `MenuItem` handle exposing the item’s `input` socket, its `is_selected` boolean output and its (settable) `description`. Declaring the first item via `item()` defaults the menu selection to it, matching the constructor, and a selection named before any items exist (`g.MenuSwitch.geometry("Mesh")`) is deferred until the tree is built. `to_python` export emits the pair form for described items, so descriptions now round-trip instead of being silently dropped.
+
+### Enhancements
+
+- **Datablock comparisons** — the `Compare` node now covers the datablock types Blender 5.2 can compare in geometry trees: `g.Compare.object`, `.image`, `.collection`, `.material`, `.font` and `.sound` factories each offer `equal` / `not_equal` (the only operations Blender permits for datablocks) and return a typed `Compare[...]` whose `i.a` / `i.b` carry the matching socket class. `to_python` export emits the factory spellings automatically.
+- **ty 0.0.74 / ruff 0.16 migration** — the whole repository now passes `ty check` under the current ty release. The socket class hierarchy was made Liskov-compliant without suppressions, `types-networkx` types the arrange library’s graphs, and code touching the newer bpy stubs (which mark most collections and pointers as optional) narrows explicitly at each call site. Test files relax only the bpy-stub noise rules via `[[tool.ty.overrides]]` in `pyproject.toml`.
+- The full `ruff check` rule set now passes: remaining findings were fixed individually (collapsed conditionals, `contextlib.suppress`, iterator idioms, a mutable `Euler`/list argument default, sorted `__all__`), with the deliberate catch-all exception handlers in probing/repr-fallback code marked `noqa` explicitly.
+- **PEP 695 generics** — every generic class and function now uses native type-parameter syntax (`class SampleGrid[T](BaseNode)` instead of `Generic[_T]`), including the generator’s emitted node classes; the shared module-level `TypeVar`s are gone, with the socket result-type constraints carried onto each class’s own parameters. The generator also now computes stub-narrowing ignores from the actual enum subsets instead of a hard-coded property-name list, and drops the blanket `node:` annotation ignore the current stubs no longer need.
+
+### Fixes
+
+- **MenuSwitch export in shader and compositor trees** — `to_python` emitted the private `g._MenuSwitchBase` constructor for a MenuSwitch outside a geometry tree (and for the shader-only `SHADER` data type), producing code that failed to import. The emitter now uses the tree-appropriate `MenuSwitch` class (`s.MenuSwitch.shader(...)`), and the codegen registry prefers a public class over a private base sharing its `bl_idname`.
+- Comparison operators on vector and integer sockets were annotated as returning a `Compare[...]` node builder; at runtime they have returned the result *socket* since v520.x — the annotations now say `BooleanSocket`, so `(a < b).x`-style code type-checks against what actually happens.
+- `vector.__rmatmul__` gained its missing `MatrixSocket` overload, and matrix `__rmatmul__` accepts raw sockets and numpy arrays in its signature (the runtime always did).
+
 ## v520.13.0 - 2026-08-20
 
 ### Enhancements

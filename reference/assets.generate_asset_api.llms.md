@@ -22,4 +22,9 @@ Generate typed asset classes for `libraries` into `output_path`.
 | names | set\[str\] \| None | Restrict generation to these asset (node-group) names; defaults to all. | `None` |
 | nodebpy_pkg | str | Import anchor for nodebpy in the generated module. Defaults to the absolute `"nodebpy"`. When nodebpy is vendored inside another package, pass the path that reaches it *relative to the generated module’s package* — e.g. `"..vendor.nodebpy"` — so the emitted imports stay relative to the install/vendor location. | `'nodebpy'` |
 | docstrings | bool | Emit numpy-style class docstrings (description, `Parameters`, `Inputs`, `Outputs`) using the asset’s own socket tooltips, so editors show documentation alongside the type hints. Defaults to `True`; pass `False` for a terser module. | `True` |
-| Returns |  |  | *required* |
+
+## Returns
+
+| Name | Type        | Description                        |
+|------|-------------|------------------------------------|
+|      | list\[str\] | The list of generated class names. |

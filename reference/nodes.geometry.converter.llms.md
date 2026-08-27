@@ -1413,7 +1413,7 @@ menu(input=None, name=None)
 ##### rotation
 
 ``` python
-rotation(input=Euler((0, 0, 0)), name=None)
+rotation(input=None, name=None)
 ```
 
 ##### string

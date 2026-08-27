@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,10 +79,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-328b4c1962c9a5575e7328ba9c647c56.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-58fa400742eb6ad1662038d04151022b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -171,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.13.0</span>
+    <span class="navbar-title">nodebpy 520.15.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -627,6 +630,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#nodebpy.export.to_python" id="toc-nodebpy.export.to_python" class="nav-link active" data-scroll-target="#nodebpy.export.to_python">export.to_python</a>
   <ul class="collapse">
+  <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
   </ul></li>
   </ul>
@@ -652,6 +656,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    nodebpy_pkg<span class="op">=</span><span class="st">'nodebpy'</span>,</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate Python code that recreates the given node tree using nodebpy.</p>
+<section id="parameters" class="level2 doc-section doc-section-parameters">
+<h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 86%">
+<col style="width: 2%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tree</td>
+<td>NodeTree | TreeBuilder</td>
+<td>The node tree to export.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>min_chain_length</td>
+<td>int</td>
+<td>Minimum number of items (including interface endpoints) for a linear pipeline to be expressed with <code>&gt;&gt;</code> syntax; shorter runs are emitted as flat assignments.</td>
+<td><code>3</code></td>
+</tr>
+<tr class="odd">
+<td>strict</td>
+<td>bool</td>
+<td>If True (default), raise :class:<code>CodegenError</code> for nodes that have no nodebpy class and no registered emitter. If False, emit a <code>var = None  # TODO</code> placeholder instead.</td>
+<td><code>True</code></td>
+</tr>
+<tr class="even">
+<td>max_inline_width</td>
+<td>int | None</td>
+<td>Longest rendered expression (in characters) that may inline into its consumer’s statement; longer values bind to a variable first, so deep graphs split into steps instead of collapsing into one huge statement. <code>&gt;&gt;</code> chain continuations are exempt — a pipeline stays one statement; statements longer than 88 columns wrap in parentheses with one <code>&gt;&gt;</code> segment per line. <code>None</code> disables the budget.</td>
+<td><code>88</code></td>
+</tr>
+<tr class="odd">
+<td>snapshot_positions</td>
+<td>bool</td>
+<td>If True, build the tree with <code>arrange=None</code> (no auto-layout) and append a block that restores each node’s authored <code>location</code> by name. Nodes a rebuild doesn’t recreate (reroutes — unless <code>keep_reroutes</code>) or names a rebuild assigns differently (duplicate-type nodes created in another order) are skipped via <code>tree.tree.nodes.get(name)</code>.</td>
+<td><code>False</code></td>
+</tr>
+<tr class="even">
+<td>keep_reroutes</td>
+<td>bool</td>
+<td>If True, preserve reroute nodes as <code>g.Reroute(...)</code> pass-throughs instead of collapsing each reroute chain into a direct link. Useful with <code>snapshot_positions</code> to reproduce the original wire routing.</td>
+<td><code>False</code></td>
+</tr>
+<tr class="odd">
+<td>top_level</td>
+<td>Literal['with', 'class']</td>
+<td>How the top-level tree is rendered. <code>"with"</code> (default) emits a <code>with TreeBuilder(...) as tree:</code> block. <code>"class"</code> emits the top-level tree as a <code>Custom*Group</code> subclass too — so every node group, including the one being exported, becomes a class. Build any of them with <code>ClassName.create_group()</code>; useful for archiving a set of node groups as plain, reusable Python.</td>
+<td><code>'with'</code></td>
+</tr>
+<tr class="even">
+<td>format</td>
+<td>bool</td>
+<td>If True (default) and the optional <code>ruff</code> package is installed, the generated source is run through <code>ruff format</code> for tidier output. A no-op when <code>ruff</code> is unavailable.</td>
+<td><code>True</code></td>
+</tr>
+<tr class="odd">
+<td>nodebpy_pkg</td>
+<td>str</td>
+<td>Import anchor for nodebpy in the generated source. Defaults to the absolute <code>"nodebpy"</code>. When nodebpy is vendored inside another package, pass the path that reaches it <em>relative to the generated module’s package</em> — e.g.&nbsp;<code>"..vendor.nodebpy"</code> — so the emitted imports stay relative to the install/vendor location.</td>
+<td><code>'nodebpy'</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="returns" class="level2 doc-section doc-section-returns">
 <h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">

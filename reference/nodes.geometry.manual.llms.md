@@ -14,7 +14,7 @@
 | [FieldToGrid](#nodebpy.nodes.geometry.manual.FieldToGrid) | Create new grids by evaluating new values on an existing volume grid topology |
 | [Float](#nodebpy.nodes.geometry.manual.Float) | Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper of the Value node. |
 | [FloatCurve](#nodebpy.nodes.geometry.manual.FloatCurve) | Map an input float to a curve and outputs a float value |
-| [Frame](#nodebpy.nodes.geometry.manual.Frame) |  |
+| [Frame](#nodebpy.nodes.geometry.manual.Frame) | Frame for visually grouping nodes in the editor. |
 | [GeometryToInstance](#nodebpy.nodes.geometry.manual.GeometryToInstance) | Convert each input geometry into an instance, which can be much faster |
 | [IndexSwitch](#nodebpy.nodes.geometry.manual.IndexSwitch) | Node builder for the Index Switch node |
 | [JoinGeometry](#nodebpy.nodes.geometry.manual.JoinGeometry) | Merge separately generated geometries into a single one |
@@ -189,17 +189,23 @@ Perform a comparison operation on the two given inputs
 
 | Name | Description |
 |----|----|
+| [`collection`](#nodebpy.nodes.geometry.manual.Compare.collection) |  |
 | [`color`](#nodebpy.nodes.geometry.manual.Compare.color) |  |
 | [`data_type`](#nodebpy.nodes.geometry.manual.Compare.data_type) |  |
 | [`float`](#nodebpy.nodes.geometry.manual.Compare.float) |  |
+| [`font`](#nodebpy.nodes.geometry.manual.Compare.font) |  |
 | [`i`](#nodebpy.nodes.geometry.manual.Compare.i) |  |
+| [`image`](#nodebpy.nodes.geometry.manual.Compare.image) |  |
 | [`integer`](#nodebpy.nodes.geometry.manual.Compare.integer) |  |
+| [`material`](#nodebpy.nodes.geometry.manual.Compare.material) |  |
 | [`mode`](#nodebpy.nodes.geometry.manual.Compare.mode) |  |
 | [`name`](#nodebpy.nodes.geometry.manual.Compare.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Compare.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Compare.o) |  |
+| [`object`](#nodebpy.nodes.geometry.manual.Compare.object) |  |
 | [`operation`](#nodebpy.nodes.geometry.manual.Compare.operation) |  |
 | [`outputs`](#nodebpy.nodes.geometry.manual.Compare.outputs) |  |
+| [`sound`](#nodebpy.nodes.geometry.manual.Compare.sound) |  |
 | [`string`](#nodebpy.nodes.geometry.manual.Compare.string) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.Compare.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`vector`](#nodebpy.nodes.geometry.manual.Compare.vector) |  |
@@ -454,6 +460,8 @@ Map an input float to a curve and outputs a float value
 ``` python
 Frame(label=None, shrink=True, text=None)
 ```
+
+Frame for visually grouping nodes in the editor.
 
 #### Attributes
 
@@ -745,6 +753,7 @@ Node builder for the Menu Switch node
 | [image](#nodebpy.nodes.geometry.manual.MenuSwitch.image) |  |
 | [integer](#nodebpy.nodes.geometry.manual.MenuSwitch.integer) |  |
 | [is_selected](#nodebpy.nodes.geometry.manual.MenuSwitch.is_selected) | Gets the boolean output socket that is True when the named menu item is selected. |
+| [item](#nodebpy.nodes.geometry.manual.MenuSwitch.item) | Declare a menu item and return its handle. |
 | [material](#nodebpy.nodes.geometry.manual.MenuSwitch.material) |  |
 | [matrix](#nodebpy.nodes.geometry.manual.MenuSwitch.matrix) |  |
 | [menu](#nodebpy.nodes.geometry.manual.MenuSwitch.menu) |  |
@@ -858,6 +867,18 @@ Cannot be used with the “Output” name as this refers to the output socket it
 | Name | Type | Description |
 |----|----|----|
 |  | BooleanSocket | The boolean output socket that is True when the named menu item is selected. |
+
+##### item
+
+``` python
+item(name, value=None, *, description=None)
+```
+
+Declare a menu item and return its handle.
+
+`value` may be a linkable (linked into the item’s input socket), a plain default value, or a `(value, description)` pair; omit it to declare the item unlinked. `description` sets the tooltip Blender shows for the item in the menu.
+
+Unless the menu selection was set explicitly, declaring the first item also defaults the selection to it (as the constructor does).
 
 ##### material
 
