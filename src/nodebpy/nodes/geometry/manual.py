@@ -129,7 +129,9 @@ __all__ = (
     "IndexSwitch",
     "JoinGeometry",
     "JoinStrings",
-    "MenuItems",
+    # "MenuItems" is deliberately not exported: quartodoc cannot document a
+    # PEP 695 `type` alias (griffe Kind.TYPE_ALIAS); import it from this
+    # module directly for annotations.
     "MenuSwitch",
     "MeshBoolean",
     "RepeatInput",
