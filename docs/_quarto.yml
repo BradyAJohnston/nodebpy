@@ -10,55 +10,57 @@ website:
 
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - text: Documentation
-        menu:
-          - introduction.qmd
-          - operators.qmd
-          - node-api.qmd
-          - custom-node-groups.qmd
-          - assets.qmd
-          - nodes-to-code.qmd
-          - using.qmd
-          - comparisons.qmd
-      - href: reference/
-        text: Reference
-      - href: changelog.qmd
-        text: Changelog
+    - href: index.qmd
+      text: Home
+    - text: Documentation
+      menu:
+      - introduction.qmd
+      - operators.qmd
+      - node-api.qmd
+      - custom-node-groups.qmd
+      - assets.qmd
+      - nodes-to-code.qmd
+      - using.qmd
+      - comparisons.qmd
+    - href: talk.qmd
+      text: BCON Talk
+    - href: reference/
+      text: Reference
+    - href: changelog.qmd
+      text: Changelog
     right:
-      - icon: github
-        href: https://github.com/BradyAJohnston/nodebpy
+    - icon: github
+      href: https://github.com/BradyAJohnston/nodebpy
 
   sidebar:
-    - id: docs
-      style: floating
-      contents:
-        - introduction.qmd
-        - operators.qmd
-        - node-api.qmd
-        - custom-node-groups.qmd
-        - assets.qmd
-        - nodes-to-code.qmd
-        - using.qmd
-        - comparisons.qmd
+  - id: docs
+    style: floating
+    contents:
+    - introduction.qmd
+    - operators.qmd
+    - node-api.qmd
+    - custom-node-groups.qmd
+    - assets.qmd
+    - nodes-to-code.qmd
+    - using.qmd
+    - comparisons.qmd
 
 # tell quarto to read the generated sidebar
 metadata-files:
-  - reference/_sidebar.yml
+- reference/_sidebar.yml
 
 format:
   html:
     toc: true
     theme:
-      - darkly
-      - nodebpy.scss
+    - darkly
+    - nodebpy.scss
     include-in-header: shiki.html
     # highlight-style:
     #   dark: dracula.theme
 
 filters:
-  - interlinks
+- interlinks
 
 interlinks:
   sources:
@@ -85,69 +87,69 @@ quartodoc:
     signature_name: short
 
   sections:
-    - title: Interface
-      contents:
-        - builder.tree
-        - builder.socket
-        - builder.node
-        - builder.accessor
-        - TreeBuilder
-        - builder.BaseNode
-    - title: Assets
-      desc: Generating classes from pre-build assets
-      contents:
-        - assets.generate_asset_api
-        - assets.generate_asset_modules
-        - assets.AssetLibrary
-        - assets.BundledLibrary
-        - assets.PackageLibrary
-    - title: Export
-      desc: Exporting node trees to code.
-      contents:
-        - export.to_python
-        - export.to_mermaid
+  - title: Interface
+    contents:
+    - builder.tree
+    - builder.socket
+    - builder.node
+    - builder.accessor
+    - TreeBuilder
+    - builder.BaseNode
+  - title: Assets
+    desc: Generating classes from pre-build assets
+    contents:
+    - assets.generate_asset_api
+    - assets.generate_asset_modules
+    - assets.AssetLibrary
+    - assets.BundledLibrary
+    - assets.PackageLibrary
+  - title: Export
+    desc: Exporting node trees to code.
+    contents:
+    - export.to_python
+    - export.to_mermaid
 
-    - title: Geometry Nodes
-      desc: Nodes use in Geometry Nodes trees.
-      contents:
-        - nodes.geometry.input
-        - nodes.geometry.attribute
-        - nodes.geometry.color
-        - nodes.geometry.converter
-        - nodes.geometry.texture
-        - nodes.geometry.grid
-        - nodes.geometry.groups
-        - nodes.geometry.geometry
-        - nodes.geometry.attribute
-        - nodes.geometry.vector
-        - nodes.geometry.manual
-        - nodes.geometry.zone
+  - title: Geometry Nodes
+    desc: Nodes use in Geometry Nodes trees.
+    contents:
+    - nodes.geometry.input
+    - nodes.geometry.attribute
+    - nodes.geometry.color
+    - nodes.geometry.converter
+    - nodes.geometry.texture
+    - nodes.geometry.grid
+    - nodes.geometry.groups
+    - nodes.geometry.geometry
+    - nodes.geometry.attribute
+    - nodes.geometry.vector
+    - nodes.geometry.manual
+    - nodes.geometry.zone
 
-    - title: Shader Nodes
-      desc: Nodes use in Material / Shader node trees
-      contents:
-        - nodes.shader.color
-        - nodes.shader.converter
-        - nodes.shader.grid
-        - nodes.shader.group
-        - nodes.shader.input
-        - nodes.shader.manual
-        - nodes.shader.output
-        - nodes.shader.script
-        - nodes.shader.shader
-        - nodes.shader.texture
-        - nodes.shader.vector
-    - title: Compositor Nodes
-      desc: Nodes for use in the compositor
-      contents:
-        - nodes.compositor.color
-        - nodes.compositor.converter
-        - nodes.compositor.distort
-        - nodes.compositor.filter
-        - nodes.compositor.group
-        - nodes.compositor.input
-        - nodes.compositor.interface
-        - nodes.compositor.manual
-        - nodes.compositor.matte
-        - nodes.compositor.output
-        - nodes.compositor.vector
+  - title: Shader Nodes
+    desc: Nodes use in Material / Shader node trees
+    contents:
+    - nodes.shader.color
+    - nodes.shader.converter
+    - nodes.shader.grid
+    - nodes.shader.group
+    - nodes.shader.input
+    - nodes.shader.manual
+    - nodes.shader.output
+    - nodes.shader.script
+    - nodes.shader.shader
+    - nodes.shader.texture
+    - nodes.shader.vector
+  - title: Compositor Nodes
+    desc: Nodes for use in the compositor
+    contents:
+    - nodes.compositor.color
+    - nodes.compositor.converter
+    - nodes.compositor.distort
+    - nodes.compositor.filter
+    - nodes.compositor.group
+    - nodes.compositor.input
+    - nodes.compositor.interface
+    - nodes.compositor.manual
+    - nodes.compositor.matte
+    - nodes.compositor.output
+    - nodes.compositor.vector

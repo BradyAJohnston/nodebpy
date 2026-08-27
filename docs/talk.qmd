@@ -1,6 +1,6 @@
 ---
-title: "`nodebpy`: Node Trees as Code"
-subtitle: "Geometry, Shader & Compositor nodes as typed Python"
+title: Write Your Nodes With Code
+subtitle: (using `nodebpy`)
 author: Brady Johnston
 date: 2026-07-28
 toc: true
@@ -22,6 +22,13 @@ execute:
 ---
 
 ::: {.content-visible unless-format="revealjs"}
+## Abstract
+
+I present an elegant new python scripting API for creating, editing and comparing node trees. Visual programming with nodes is excellent for iteration and great for artist-friendly workflows, but creating or tracking node trees with code has remained a verbose and difficult task. To address these problems, I created a new Python package `nodebpy` for authoring, versioning and interacting with node trees. Human-writeable code becomes nicely arranged node trees, and GUI-authored node trees become human-readable `.py` files easier collaboration and review. With shorter & more logical scripts, LLMs are also able to read and write node trees more reliably and with less token usage. I will show the design and thought process behind the creation of this pacakge, and how it is currently being used in different add-ons and how it could benefit others authoring add-ons, building pipelines and trying to version control node trees.
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
 
 This page is the written version of a talk about [`nodebpy`](https://github.com/BradyAJohnston/nodebpy), a Python package for building Blender node trees as code. The slides are embedded below, or available directly at [this link](slides.html).
 
@@ -41,12 +48,14 @@ This page is the written version of a talk about [`nodebpy`](https://github.com/
 
 # The Problem
 
-## Nodes are great. Writing them isn't.
+## Nodes are great. Writing them with code isn't
 
 ::: {.incremental}
-- Node trees are how Blender does procedural *everything* — geometry, materials, compositing
-- Add-ons ship them constantly: appended from bundled `.blend` files, or built with raw `bpy` calls
-- A `.blend` file is a binary blob: no diffs, no code review, no version control
+- Creating a 'runtime' node group requires a large amount of `bpy` code
+    - very difficult to read & reason over what the node tree will look like
+- More and more core assets are becoming node trees
+    - A `.blend` file is a binary blob
+    - : no diffs, no code review, minimal version control
 - The raw `bpy` API technically works…
 :::
 
@@ -56,10 +65,10 @@ Set up the two existing options: bundled .blend assets (opaque, un-diffable) or 
 
 ## The raw `bpy` API {.smaller}
 
-A scatter setup — distribute points on a mesh, instance spheres, realize:
+What does this node tree do?
 
 ```{python}
-#| code-line-numbers: "|1-8|10-15|17-19|21-26"
+#| code-line-numbers: "|1-8|10-15|17-19|21-26|"
 import bpy
 
 nt = bpy.data.node_groups.new("Scatter", "GeometryNodeTree")
@@ -88,37 +97,49 @@ nt.links.new(inst.outputs["Instances"], real.inputs["Geometry"])
 nt.links.new(real.outputs["Geometry"], n_out.inputs["Geometry"])
 ```
 
+## The node tree
+
+```{python}
+#| echo: false
+from nodebpy.builder import TreeBuilder
+
+TreeBuilder(nt)
+```
+
 ## What's wrong with that?
 
 ::: {.incremental}
-- Stringly-typed everything: `"GeometryNodeDistributePointsOnFaces"`, `"NodeSocketGeometry"`, `outputs["Geometry"]`
-- Three separate APIs to juggle: `nodes.new()`, `links.new()`, `interface.new_socket()`
-- No autocomplete, no type checking — a typo is a runtime error
-- Manual `node.location` bookkeeping just so a human can read the result
+- Verbose
+- Stringly-typed everything:
+    - `"GeometryNodeDistributePointsOnFaces"`, `"NodeSocketGeometry"`, `outputs["Geometry"]`
+- No autocomplete, minimal type checking, lots of typos = `RuntimeError`
 - The code reads in plumbing order, not data-flow order
 :::
 
 ## The same tree in `nodebpy`
 
 ```{python}
-#| output-location: column
-#| code-line-numbers: "|1|3-5|7-13|"
-from nodebpy import geometry as g
+#| code-line-numbers: "|1|3-5|8|9|10|11|12|"
+from nodebpy import geometry as g # shader as s, compositor as c
 
 with g.tree("Scatter2") as tree:
-    geo = tree.inputs.geometry("Geometry")
+    geo = tree.inputs.geometry()
     count = tree.inputs.integer("Count", 100)
 
-    _ = (
+    (
         geo
         >> g.DistributePointsOnFaces(density=count)
         >> g.InstanceOnPoints(instance=g.IcoSphere())
         >> g.RealizeInstances()
-        >> tree.outputs.geometry("Geometry")
+        >> tree.outputs.geometry()
     )
-
-tree
 ```
+
+::: {.incremental}
+- Every node is a class `g.RealizeInstances()`
+- `tree.interface` for input and output sockets
+- easily link nodes by overriding `>>` operator
+:::
 
 ::: {.content-visible unless-format="revealjs"}
 27 lines of plumbing become a single pipeline that reads in the same order the data flows. Sockets are matched automatically, layout is automatic, and every name here is a typed Python identifier your IDE can autocomplete and your type checker can verify.
@@ -138,6 +159,9 @@ pip install nodebpy
 # Where it came from
 
 ## Molecular Nodes
+
+- Add-on for importing molecular data animation inside of Blender
+
 
 ::: {.incremental}
 - MN builds and maintains a *lot* of geometry node groups
