@@ -51,6 +51,7 @@ from ...builder import Socket as SocketLinker
 from ...builder._registry import _wrap_socket
 from ...builder.items import (
     GridItem,
+    MenuItem,
     _apply_item_value,
     _FieldItemFactory,
     _socket_for_item,
@@ -128,6 +129,7 @@ __all__ = (
     "IndexSwitch",
     "JoinGeometry",
     "JoinStrings",
+    "MenuItems",
     "MenuSwitch",
     "MeshBoolean",
     "RepeatInput",
@@ -1501,6 +1503,22 @@ class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
         self.node.data_type = value
 
 
+type MenuItems[V] = Mapping[str, None | V | tuple[V | None, str]]
+"""Menu Switch ``items`` mapping: item name → value, where the value may be
+a ``(value, description)`` pair to also set the item's tooltip."""
+
+
+def _split_menu_item(
+    value: InputAny | tuple[InputAny, str],
+) -> tuple[InputAny, str | None]:
+    """Split a ``(value, description)`` menu item pair. A 2-tuple whose
+    second element is a string can never be a socket default value, so the
+    form is unambiguous."""
+    if isinstance(value, tuple) and len(value) == 2 and isinstance(value[1], str):
+        return value[0], value[1]
+    return cast("InputAny", value), None
+
+
 class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
     """Base class for MenuSwitch nodes across all tree types."""
 
@@ -1525,30 +1543,42 @@ class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
     def __init__(
         self,
         menu: InputMenu = None,
-        items: Mapping[str, InputAny] | None = None,
+        items: MenuItems[InputAny] | None = None,
         *,
         data_type: SOCKET_TYPES = "FLOAT",
     ):
         super().__init__()
         self.data_type = data_type
         self.node.enum_items.clear()
-        key_args = {"Menu": menu}
+        # a plain string `menu` is an explicit selection; otherwise the
+        # selection defaults to the first item
+        self._explicit_selection = isinstance(menu, str)
         self._link_args(**(items or {}))
-        self._establish_links(**key_args)
-        # a plain string `menu` is an explicit selection; otherwise default
-        # the selection to the first item
-
-        if self.node.enum_items and not isinstance(menu, str):
+        if isinstance(menu, str) and not self.node.enum_items:
+            # a selection named before any items exist (they will be added via
+            # item()) can't be set yet; defer it to context exit
             assert self.node.inputs is not None
-            try:
-                menu_socket = self.node.inputs["Menu"]
-                menu_socket.default_value = self.node.enum_items[0].name
-            except TypeError:  # pragma: no cover - rare Blender enum-refresh quirk
-                # the socket is a NodeSocketMenu whose enum hasn't refreshed yet, so
-                # the default_value isn't settable here; defer it to context exit.
-                self.tree._menu_defaults.append(
-                    _MenuDefault(self.node.inputs["Menu"], self.node.enum_items[0].name)
-                )
+            self.tree._menu_defaults.append(
+                _MenuDefault(self.node.inputs["Menu"], menu)
+            )
+        else:
+            self._establish_links(Menu=menu)
+
+        if self.node.enum_items and not self._explicit_selection:
+            self._default_selection_to_first()
+
+    def _default_selection_to_first(self) -> None:
+        """Default the menu selection to the first enum item."""
+        assert self.node.inputs is not None
+        try:
+            menu_socket = self.node.inputs["Menu"]
+            menu_socket.default_value = self.node.enum_items[0].name
+        except TypeError:  # pragma: no cover - rare Blender enum-refresh quirk
+            # the socket is a NodeSocketMenu whose enum hasn't refreshed yet, so
+            # the default_value isn't settable here; defer it to context exit.
+            self.tree._menu_defaults.append(
+                _MenuDefault(self.node.inputs["Menu"], self.node.enum_items[0].name)
+            )
 
     @property
     def _socket_data_types(self) -> tuple[str, ...]:
@@ -1560,24 +1590,57 @@ class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
         # menu items are untyped; .new() takes only a name
         return self._items.new(name)
 
-    def _link_args(self, **kwargs: InputAny):
+    def _link_args(self, **kwargs: InputAny | tuple[InputAny, str]):
         for key, value in kwargs.items():
-            socket = self._add_socket(name=key, type=self.data_type)
-            if value is None:
-                continue  # item declared but left unlinked
-            if _is_default_value(value):
-                if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(
-                    value, str
-                ):
-                    # the socket is a NodeSocketMenu, but the default_value is not settable
-                    # until the full tree is built and menu items are known. We need to defer
-                    # the setting of the default values until after tree construction.
-                    self.tree._menu_defaults.append(_MenuDefault(socket, value))
-                else:
-                    socket.default_value = value  # ty: ignore[unresolved-attribute]
+            value, description = _split_menu_item(value)
+            item = self._new_item(key, self.data_type)
+            if description:
+                item.description = description
+            self._apply_item_input(self._item_socket(item), value)
+
+    def _apply_item_input(self, socket: NodeSocket, value: InputAny) -> None:
+        if value is None:
+            return  # item declared but left unlinked
+        if _is_default_value(value):
+            if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(value, str):
+                # the socket is a NodeSocketMenu, but the default_value is not settable
+                # until the full tree is built and menu items are known. We need to defer
+                # the setting of the default values until after tree construction.
+                self.tree._menu_defaults.append(_MenuDefault(socket, value))
             else:
-                source = self._source_socket(value)  # type: ignore
-                self._link(source, socket)
+                socket.default_value = value  # ty: ignore[unresolved-attribute]
+        else:
+            source = self._source_socket(value)  # type: ignore
+            self._link(source, socket)
+
+    def item(
+        self,
+        name: str,
+        value: InputAny | tuple[InputAny, str] = None,
+        *,
+        description: str | None = None,
+    ) -> MenuItem[T]:
+        """Declare a menu item and return its handle.
+
+        ``value`` may be a linkable (linked into the item's input socket), a
+        plain default value, or a ``(value, description)`` pair; omit it to
+        declare the item unlinked. ``description`` sets the tooltip Blender
+        shows for the item in the menu.
+
+        Unless the menu selection was set explicitly, declaring the first
+        item also defaults the selection to it (as the constructor does).
+        """
+        value, pair_description = _split_menu_item(value)
+        if description is None:
+            description = pair_description
+        bpy_item = self._new_item(name, self.data_type)
+        if description:
+            bpy_item.description = description
+        handle = cast("MenuItem[T]", MenuItem(self, bpy_item))
+        self._apply_item_input(self._item_socket(bpy_item), value)
+        if len(self.node.enum_items) == 1 and not self._explicit_selection:
+            self._default_selection_to_first()
+        return handle
 
     def is_selected(self, name: str) -> BooleanSocket:
         """Gets the boolean output socket that is True when the named menu item is selected.
@@ -1616,7 +1679,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def float(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputFloat] | None = None,
+        items: MenuItems[InputFloat] | None = None,
     ) -> "MenuSwitch[FloatSocket]":
         return MenuSwitch(menu, items, data_type="FLOAT")
 
@@ -1624,7 +1687,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def integer(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputInteger] | None = None,
+        items: MenuItems[InputInteger] | None = None,
     ) -> "MenuSwitch[IntegerSocket]":
         return MenuSwitch(menu, items, data_type="INT")
 
@@ -1632,7 +1695,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def boolean(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputBoolean] | None = None,
+        items: MenuItems[InputBoolean] | None = None,
     ) -> "MenuSwitch[BooleanSocket]":
         return MenuSwitch(menu, items, data_type="BOOLEAN")
 
@@ -1640,7 +1703,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def vector(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputVector] | None = None,
+        items: MenuItems[InputVector] | None = None,
     ) -> "MenuSwitch[VectorSocket]":
         return MenuSwitch(menu, items, data_type="VECTOR")
 
@@ -1648,7 +1711,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def color(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputColor] | None = None,
+        items: MenuItems[InputColor] | None = None,
     ) -> "MenuSwitch[ColorSocket]":
         return MenuSwitch(menu, items, data_type="RGBA")
 
@@ -1656,7 +1719,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def rotation(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputRotation] | None = None,
+        items: MenuItems[InputRotation] | None = None,
     ) -> "MenuSwitch[RotationSocket]":
         return MenuSwitch(menu, items, data_type="ROTATION")
 
@@ -1664,7 +1727,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def matrix(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMatrix] | None = None,
+        items: MenuItems[InputMatrix] | None = None,
     ) -> "MenuSwitch[MatrixSocket]":
         return MenuSwitch(menu, items, data_type="MATRIX")
 
@@ -1672,7 +1735,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def string(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputString] | None = None,
+        items: MenuItems[InputString] | None = None,
     ) -> "MenuSwitch[StringSocket]":
         return MenuSwitch(menu, items, data_type="STRING")
 
@@ -1680,7 +1743,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def menu(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMenu] | None = None,
+        items: MenuItems[InputMenu] | None = None,
     ) -> "MenuSwitch[MenuSocket]":
         return MenuSwitch(menu, items, data_type="MENU")
 
@@ -1688,7 +1751,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def object(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputObject] | None = None,
+        items: MenuItems[InputObject] | None = None,
     ) -> "MenuSwitch[ObjectSocket]":
         return MenuSwitch(menu, items, data_type="OBJECT")
 
@@ -1696,7 +1759,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def geometry(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputGeometry] | None = None,
+        items: MenuItems[InputGeometry] | None = None,
     ) -> "MenuSwitch[GeometrySocket]":
         return MenuSwitch(menu, items, data_type="GEOMETRY")
 
@@ -1704,7 +1767,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def collection(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputCollection] | None = None,
+        items: MenuItems[InputCollection] | None = None,
     ) -> "MenuSwitch[CollectionSocket]":
         return MenuSwitch(menu, items, data_type="COLLECTION")
 
@@ -1712,7 +1775,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def image(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputImage] | None = None,
+        items: MenuItems[InputImage] | None = None,
     ) -> "MenuSwitch[ImageSocket]":
         return MenuSwitch(menu, items, data_type="IMAGE")
 
@@ -1720,7 +1783,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def material(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMaterial] | None = None,
+        items: MenuItems[InputMaterial] | None = None,
     ) -> "MenuSwitch[MaterialSocket]":
         return MenuSwitch(menu, items, data_type="MATERIAL")
 
@@ -1728,7 +1791,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def bundle(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputBundle] | None = None,
+        items: MenuItems[InputBundle] | None = None,
     ) -> "MenuSwitch[BundleSocket]":
         return MenuSwitch(menu, items, data_type="BUNDLE")
 
@@ -1736,7 +1799,7 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     def closure(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputClosure] | None = None,
+        items: MenuItems[InputClosure] | None = None,
     ) -> "MenuSwitch[ClosureSocket]":
         return MenuSwitch(menu, items, data_type="CLOSURE")
 

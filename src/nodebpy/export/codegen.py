@@ -3904,6 +3904,7 @@ def _emit_menu_switch(node, ctx: EmitContext) -> Expr | _Val | None:
     """MenuSwitch emits the factory dict form
     ``g.MenuSwitch.geometry(menu, {"Name": value, ...})`` — the plain
     constructor's per-socket kwargs cannot recreate the enum item names.
+    An item with a tooltip emits the ``(value, description)`` pair form.
     Each tree type has its own MenuSwitch class (with tree-specific factories
     such as ``shader``), so the alias follows the tree being exported."""
     factory = _SWITCH_FACTORY_NAMES.get(node.data_type)
@@ -3911,7 +3912,14 @@ def _emit_menu_switch(node, ctx: EmitContext) -> Expr | _Val | None:
         return None
     alias = _TREE_ALIAS.get(ctx.node_tree.bl_idname, "g")
     ctx.used_aliases.add(alias)
-    items = DictExpr(dict(_switch_item_exprs(node, ctx, "Menu")))
+    item_exprs: dict[str, Expr] = {}
+    for (name, expr), item in zip(
+        _switch_item_exprs(node, ctx, "Menu"), node.enum_items
+    ):
+        if item.description:
+            expr = TupleExpr([expr, Lit(item.description)])
+        item_exprs[name] = expr
+    items = DictExpr(item_exprs)
     menu_link = ctx.input_link(node, "Menu")
     if menu_link is not None:
         return Call(
