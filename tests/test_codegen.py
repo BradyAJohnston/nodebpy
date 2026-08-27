@@ -1550,6 +1550,28 @@ def test_menu_switch_defaults_and_unlinked_items():
     assert menu_node.inputs["Menu"].default_value == "B"
 
 
+def test_menu_switch_item_descriptions_roundtrip():
+    """An enum item's description round-trips via the ``(value, description)``
+    pair form; items without one keep the plain value form."""
+    with TreeBuilder("MenuDesc") as tree:
+        menu = tree.inputs.menu("Mode", "Object")
+        switch = g.MenuSwitch.geometry(
+            menu,
+            {"Object": (g.Cube(), "Use the source object"), "Mesh": g.Grid()},
+        )
+        switch >> tree.outputs.geometry("Out")
+    code = _assert_roundtrip(tree)
+    assert '"Object": (g.Cube(), "Use the source object")' in code
+    assert '"Mesh": g.Grid()' in code
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = next(
+        n for n in ns["tree"].tree.nodes if n.bl_idname == "GeometryNodeMenuSwitch"
+    )
+    assert rebuilt.enum_items["Object"].description == "Use the source object"
+    assert rebuilt.enum_items["Mesh"].description == ""
+
+
 def test_menu_interface_default_deferred_after_body():
     """A menu interface input's default is set after the body, not inline: its
     valid values only exist once the consuming MenuSwitch has been linked, so

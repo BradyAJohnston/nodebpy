@@ -9,7 +9,7 @@ from .asset import (
     PackageLibrary,
     asset_group_base,
 )
-from .items import Item, ItemsMixin
+from .items import Item, ItemsMixin, MenuItem
 from .mixins import LinkingMixin, OperatorMixin
 from .node import (
     BaseNode,
@@ -118,6 +118,7 @@ __all__ = [
     "MaterialSocketList",
     "MatrixSocket",
     "MatrixSocketList",
+    "MenuItem",
     "MenuSocket",
     "MenuSocketList",
     "NodeGroupBuilder",
