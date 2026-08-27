@@ -194,3 +194,47 @@ Each custom group appears as a single, named node in the tree -- keeping the gra
 | `_name` | `str` | *(required)* | Display name and cache key for the group |
 | `_color_tag` | `str` | `"NONE"` | Header colour in Blender (`"INPUT"`, `"CONVERTER"`, `"GEOMETRY"`, etc.) |
 | `_warning_propagation` | `str` | `"ALL"` | How warnings propagate (`"ALL"`, `"ERRORS_AND_WARNINGS"`, `"ERRORS"`, `"NONE"`) |
+
+## Tree Decorators
+
+Subclassing `CustomGeometryGroup` is worthwhile when you want a reusable *node* with a typed constructor. Sometimes you just want a plain node group -- parameterised by Python values at build time -- that you'll assign to a modifier or only re-use within the current script. The `geometry_tree`, `shader_tree` and `compositor_tree` decorators turn a function into a factory for such a group.
+
+The decorated function receives the `TreeBuilder` as its first argument; any remaining arguments become parameters of the factory. Calling it builds the graph and returns the finished `bpy.types.NodeTree` data-block:
+
+```{python}
+import nodebpy as nb
+
+
+@nb.geometry_tree("Scattered Spheres")
+def scattered_spheres(tree, count: int = 64, radius: float = 0.05):
+    points = g.Points(count) >> g.SetPosition(offset=g.RandomValue.vector(min=-1))
+    _ = (
+        points
+        >> g.InstanceOnPoints(instance=g.IcoSphere(radius=radius))
+        >> tree.outputs.geometry()
+    )
+
+
+node_group = scattered_spheres(count=32, radius=0.1)
+node_group
+```
+
+```{python}
+# | echo: false
+nb.TreeBuilder(node_group)
+```
+
+Because the result is an ordinary node group, it can be assigned straight to a modifier:
+
+```{python}
+# | eval: false
+import bpy
+
+obj = bpy.data.objects["Cube"]
+modifier = obj.modifiers.new("Scatter", "NODES")
+modifier.node_group = scattered_spheres(count=128)
+```
+
+Unlike `CustomGeometryGroup`, nothing is cached -- every call creates a fresh node group data-block (Blender will suffix repeated names with `.001`, `.002`, ...).
+
+The decorators accept the same options as `TreeBuilder.geometry()` / `.shader()` / `.compositor()`: the tree `name`, `collapse` to collapse all nodes, the `arrange` algorithm, and `fake_user` to protect the group from being purged on save.

@@ -1,5 +1,10 @@
 import bpy
-from bpy.types import FunctionNodeInputInt, GeometryNodeTree
+from bpy.types import (
+    CompositorNodeTree,
+    FunctionNodeInputInt,
+    GeometryNodeTree,
+    ShaderNodeTree,
+)
 
 import nodebpy as nb
 from nodebpy import TreeBuilder
@@ -148,6 +153,45 @@ def test_tree_decorator():
         g.Integer(count) >> g.Points() >> tree.outputs.geometry()
 
     tree = new_group(100)
+    assert isinstance(tree, GeometryNodeTree)
+    assert tree.name == "Simple Points Group"
+    assert new_group.__name__ == "new_group"
     node: FunctionNodeInputInt = tree.nodes["Integer"]  # ty: ignore
     assert node.integer == 100
+    assert len(tree.nodes) == 3
+
+    # keyword arguments pass through to the decorated function
+    other = new_group(count=42)
+    node = other.nodes["Integer"]  # ty: ignore
+    assert node.integer == 42
+
+
+def test_shader_tree_decorator():
+    from nodebpy import shader as s
+
+    @nb.shader_tree("Decorated Shader")
+    def new_shader(tree: nb.TreeBuilder[ShaderNodeTree], roughness: float):
+        _ = s.PrincipledBSDF(roughness=roughness) >> tree.outputs.shader()
+
+    tree = new_shader(0.25)
+    assert isinstance(tree, ShaderNodeTree)
+    assert tree.name == "Decorated Shader"
+    node = tree.nodes["Principled BSDF"]
+    assert node.inputs["Roughness"].default_value == 0.25  # ty: ignore
+    assert len(tree.nodes) == 2
+
+
+def test_compositor_tree_decorator():
+    from nodebpy import compositor as c
+
+    @nb.compositor_tree("Decorated Compositor")
+    def new_compositor(tree: nb.TreeBuilder[CompositorNodeTree], size: float):
+        image = tree.inputs.color("Image")
+        _ = image >> c.Kuwahara(size=size) >> tree.outputs.color("Image")
+
+    tree = new_compositor(4.0)
+    assert isinstance(tree, CompositorNodeTree)
+    assert tree.name == "Decorated Compositor"
+    node = tree.nodes["Kuwahara"]
+    assert node.inputs["Size"].default_value == 4.0  # ty: ignore
     assert len(tree.nodes) == 3
