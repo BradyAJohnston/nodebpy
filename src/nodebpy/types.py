@@ -236,6 +236,18 @@ InputAny = (
     | InputSound
 )
 
+_ColorTags = Literal[
+    "NONE",
+    "ATTRIBUTE",
+    "COLOR",
+    "CONVERTER",
+    "GEOMETRY",
+    "INPUT",
+    "OUTPUT",
+    "TEXTURE",
+    "VECTOR",
+]
+
 _AccumulateFieldDataTypes = Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
 
 _AttributeDomains = typing.Literal[
