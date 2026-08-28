@@ -12,7 +12,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable
 from functools import wraps
-from typing import Any, cast
+from typing import Any, Protocol, cast
 
 from bpy.types import NodeSocket
 
@@ -142,7 +142,13 @@ def _add_outputs(fn: Any, tree: TreeBuilder, result: Any) -> None:
         tree.link(socket, output.socket)
 
 
-def _group_decorator[G: NodeGroupBuilder](base: type[G], name: str | None):
+class _GroupDecorator[G: NodeGroupBuilder](Protocol):
+    def __call__[**P](self, fn: Callable[P, Any]) -> Callable[P, G]: ...
+
+
+def _group_decorator[G: NodeGroupBuilder](
+    base: type[G], name: str | None, color_tag: t._ColorTags | None = None
+) -> _GroupDecorator[G]:
     def decorator[**P](fn: Callable[P, Any]) -> Callable[P, G]:
         meta: Any = fn
         sig = inspect.signature(fn)
@@ -177,6 +183,7 @@ def _group_decorator[G: NodeGroupBuilder](base: type[G], name: str | None):
                     "__doc__": meta.__doc__,
                     "__module__": meta.__module__,
                     "__qualname__": meta.__qualname__,
+                    "_color_tag": color_tag if color_tag else "NONE",
                 },
             ),
         )
@@ -191,7 +198,9 @@ def _group_decorator[G: NodeGroupBuilder](base: type[G], name: str | None):
     return decorator
 
 
-def geometry_tree(name: str | None = None):
+def geometry_tree(
+    name: str | None = None, color_tag: t._ColorTags | None = None
+) -> _GroupDecorator[CustomGeometryGroup]:
     """Turn a build function into a reusable geometry node group.
 
     Every parameter becomes an interface input whose socket type comes from
@@ -202,20 +211,24 @@ def geometry_tree(name: str | None = None):
     and cached by ``name`` in ``bpy.data.node_groups``; each call adds a group
     node to the active tree and links or sets its inputs from the arguments.
     """
-    return _group_decorator(CustomGeometryGroup, name)
+    return _group_decorator(CustomGeometryGroup, name, color_tag)
 
 
-def shader_tree(name: str | None = None):
+def shader_tree(
+    name: str | None = None, color_tag: t._ColorTags | None = None
+) -> _GroupDecorator[CustomShaderGroup]:
     """Turn a build function into a reusable shader node group.
 
     See :func:`geometry_tree`.
     """
-    return _group_decorator(CustomShaderGroup, name)
+    return _group_decorator(CustomShaderGroup, name, color_tag)
 
 
-def compositor_tree(name: str | None = None):
+def compositor_tree(
+    name: str | None = None, color_tag: t._ColorTags | None = None
+) -> _GroupDecorator[CustomCompositorGroup]:
     """Turn a build function into a reusable compositor node group.
 
     See :func:`geometry_tree`.
     """
-    return _group_decorator(CustomCompositorGroup, name)
+    return _group_decorator(CustomCompositorGroup, name, color_tag)
