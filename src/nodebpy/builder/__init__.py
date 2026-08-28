@@ -9,6 +9,7 @@ from .asset import (
     PackageLibrary,
     asset_group_base,
 )
+from .decorators import compositor_tree, geometry_tree, shader_tree
 from .items import Item, ItemsMixin
 from .mixins import LinkingMixin, OperatorMixin
 from .node import (
@@ -72,9 +73,6 @@ from .tree import (
     PanelContext,
     SocketContext,
     TreeBuilder,
-    compositor_tree,
-    geometry_tree,
-    shader_tree,
 )
 
 __all__ = [
