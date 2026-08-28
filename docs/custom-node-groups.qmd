@@ -199,8 +199,8 @@ Each custom group appears as a single, named node in the tree -- keeping the gra
 
 Subclassing `CustomGeometryGroup` gives you full control, but for a group you only reuse within a script it is a lot of ceremony. The `geometry_tree`, `shader_tree` and `compositor_tree` decorators build the same thing from a plain function:
 
-- The function receives the group's `TreeBuilder` as its first argument.
-- Every other parameter becomes an interface input. The socket type comes from the annotation (`int`, `float`, `bool`, `str`, or any `InputGeometry` / `InputVector` / `InputColor` ... alias from `nodebpy.types`) and the default from the signature. Inside the function those parameters are the input *sockets*, ready to link.
+- Every parameter becomes an interface input. The socket type comes from the annotation (`int`, `float`, `bool`, `str`, or any `InputGeometry` / `InputVector` / `InputColor` ... alias from `nodebpy.types`) and the default from the signature. Inside the function those parameters are the input *sockets*, ready to link.
+- Whatever the function returns becomes the interface outputs: a single socket or node, a tuple of them, or a `{"Name": socket}` dict. Un-named outputs take the name of the socket they come from, just as Blender does when grouping nodes with <kbd>Ctrl</kbd>+<kbd>G</kbd>.
 - The group is built once, on first use, and cached by name in `bpy.data.node_groups` just like `CustomGeometryGroup`.
 - Calling the function inside a tree context adds a group node and links or sets its inputs from the arguments -- so `scatter(count=10)` and `cube >> scatter(radius=0.2)` are two nodes sharing one group.
 
@@ -209,18 +209,12 @@ import nodebpy as nb
 
 
 @nb.geometry_tree("Scatter Spheres")
-def scatter(
-    tree, geometry: InputGeometry, count: InputInteger = 64, radius: float = 0.05
-):
+def scatter(geometry: InputGeometry, count: InputInteger = 64, radius: float = 0.05):
     points = geometry >> g.DistributePointsOnFaces(density=count)
-    _ = (
-        points
-        >> g.InstanceOnPoints(instance=g.IcoSphere(radius=radius))
-        >> tree.outputs.geometry()
-    )
+    return points >> g.InstanceOnPoints(instance=g.IcoSphere(radius=radius))
 ```
 
-The group's internals, showing the interface inputs derived from the signature:
+The group's internals, showing the inputs derived from the signature and the `Instances` output derived from the return value:
 
 ```{python}
 with g.tree("ScatterInternal") as tree:
@@ -236,6 +230,21 @@ with g.tree("ScatterDemo") as tree:
     density = tree.inputs.float("Density", 20.0)
     out = tree.outputs.geometry()
     _ = g.Cube() >> scatter(count=density, radius=0.1) >> out
+
+tree
+```
+
+Return a tuple for several outputs, or a dict to name them explicitly:
+
+```{python}
+@nb.geometry_tree()
+def bounds(geometry: InputGeometry):
+    box = geometry >> g.BoundingBox()
+    return {"Box": box, "Size": box.o.max - box.o.min}
+
+
+with g.tree("BoundsInternal") as tree:
+    _ = bounds()
 
 tree
 ```
