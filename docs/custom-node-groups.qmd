@@ -197,44 +197,47 @@ Each custom group appears as a single, named node in the tree -- keeping the gra
 
 ## Tree Decorators
 
-Subclassing `CustomGeometryGroup` is worthwhile when you want a reusable *node* with a typed constructor. Sometimes you just want a plain node group -- parameterised by Python values at build time -- that you'll assign to a modifier or only re-use within the current script. The `geometry_tree`, `shader_tree` and `compositor_tree` decorators turn a function into a factory for such a group.
+Subclassing `CustomGeometryGroup` gives you full control, but for a group you only reuse within a script it is a lot of ceremony. The `geometry_tree`, `shader_tree` and `compositor_tree` decorators build the same thing from a plain function:
 
-The decorated function receives the `TreeBuilder` as its first argument; any remaining arguments become parameters of the factory. Calling it builds the graph and returns the finished `bpy.types.NodeTree` data-block:
+- The function receives the group's `TreeBuilder` as its first argument.
+- Every other parameter becomes an interface input. The socket type comes from the annotation (`int`, `float`, `bool`, `str`, or any `InputGeometry` / `InputVector` / `InputColor` ... alias from `nodebpy.types`) and the default from the signature. Inside the function those parameters are the input *sockets*, ready to link.
+- The group is built once, on first use, and cached by name in `bpy.data.node_groups` just like `CustomGeometryGroup`.
+- Calling the function inside a tree context adds a group node and links or sets its inputs from the arguments -- so `scatter(count=10)` and `cube >> scatter(radius=0.2)` are two nodes sharing one group.
 
 ```{python}
 import nodebpy as nb
 
 
-@nb.geometry_tree("Scattered Spheres")
-def scattered_spheres(tree, count: int = 64, radius: float = 0.05):
-    points = g.Points(count) >> g.SetPosition(offset=g.RandomValue.vector(min=-1))
+@nb.geometry_tree("Scatter Spheres")
+def scatter(
+    tree, geometry: InputGeometry, count: InputInteger = 64, radius: float = 0.05
+):
+    points = geometry >> g.DistributePointsOnFaces(density=count)
     _ = (
         points
         >> g.InstanceOnPoints(instance=g.IcoSphere(radius=radius))
         >> tree.outputs.geometry()
     )
-
-
-node_group = scattered_spheres(count=32, radius=0.1)
-node_group
 ```
+
+The group's internals, showing the interface inputs derived from the signature:
 
 ```{python}
-# | echo: false
-nb.TreeBuilder(node_group)
+with g.tree("ScatterInternal") as tree:
+    _ = scatter()
+
+tree
 ```
 
-Because the result is an ordinary node group, it can be assigned straight to a modifier:
+Now use it like any node -- arguments are set as defaults or linked, and anything not passed keeps its interface default:
 
 ```{python}
-# | eval: false
-import bpy
+with g.tree("ScatterDemo") as tree:
+    density = tree.inputs.float("Density", 20.0)
+    out = tree.outputs.geometry()
+    _ = g.Cube() >> scatter(count=density, radius=0.1) >> out
 
-obj = bpy.data.objects["Cube"]
-modifier = obj.modifiers.new("Scatter", "NODES")
-modifier.node_group = scattered_spheres()
+tree
 ```
 
-Like `CustomGeometryGroup`, the group is built once and cached by name: if a node group with the decorator's name already exists in `bpy.data.node_groups`, calling the function returns it without rebuilding -- so repeated calls (or re-running the script) share one data-block instead of piling up `.001` copies. Note this means the function's arguments only take effect on the first call; to rebuild with different values, remove the existing group or use a different name.
-
-The decorators accept the same options as `TreeBuilder.geometry()` / `.shader()` / `.compositor()`: the tree `name`, `collapse` to collapse all nodes, the `arrange` algorithm, and `fake_user` to protect the group from being purged on save.
+Parameters annotated with an `Input*` alias accept both plain values and sockets when called, which is why the example uses `InputInteger` for `count`.
