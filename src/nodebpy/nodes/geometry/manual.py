@@ -1427,6 +1427,18 @@ class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
     ) -> "IndexSwitch[ClosureSocket]":
         return IndexSwitch(index=index, items=items, data_type="CLOSURE")
 
+    @classmethod
+    def font(
+        cls, index: InputInteger = 0, items: Iterable[InputFont] = ()
+    ) -> "IndexSwitch[FontSocket]":
+        return IndexSwitch(index=index, items=items, data_type="FONT")
+
+    @classmethod
+    def sound(
+        cls, index: InputInteger = 0, items: Iterable[InputSound] = ()
+    ) -> "IndexSwitch[SoundSocket]":
+        return IndexSwitch(index=index, items=items, data_type="SOUND")
+
     class _Inputs(SocketAccessor):
         index: IntegerSocket
 
@@ -1804,6 +1816,22 @@ class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
         items: MenuItems[InputClosure] | None = None,
     ) -> "MenuSwitch[ClosureSocket]":
         return MenuSwitch(menu, items, data_type="CLOSURE")
+
+    @classmethod
+    def font(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputFont] | None = None,
+    ) -> "MenuSwitch[FontSocket]":
+        return MenuSwitch(menu, items, data_type="FONT")
+
+    @classmethod
+    def sound(
+        cls,
+        menu: InputMenu = None,
+        items: dict[str, InputSound] | None = None,
+    ) -> "MenuSwitch[SoundSocket]":
+        return MenuSwitch(menu, items, data_type="SOUND")
 
 
 class CaptureAttribute(ItemsMixin, BaseNode):
