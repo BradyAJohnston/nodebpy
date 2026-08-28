@@ -2,6 +2,11 @@
 title: Changelog
 ---
 
+## Unreleased
+
+### Enhancements
+- **Font and Sound sockets everywhere Blender allows them** — `tree.inputs.font()` / `.sound()` (and the `outputs` equivalents) create interface sockets; typed `font` / `sound` factories were added to `IndexSwitch`, `MenuSwitch`, the repeat zone's `items`, closure zone `inputs` / `outputs`, `EvaluateClosure` `inputs` / `outputs` and Combine / Separate Bundle `items`. `to_python` emits the new spellings, and `FONT` joined the socket-compatibility table so font links are accepted by the builder. Simulation, For-Each, Bake and Capture Attribute items are unchanged: Blender 5.2 rejects these datablock types there.
+
 ## v520.14.0 - 2026-08-23
 
 ### Enhancements
