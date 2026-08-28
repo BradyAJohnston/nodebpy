@@ -517,6 +517,60 @@ def test_menu_switch_menu_items_empty_default_deferred():
     assert len(switch.node.enum_items) == 2
 
 
+def test_menu_switch_item_descriptions_tuple_form():
+    """A dict item value may be a ``(value, description)`` pair — the
+    description lands on the enum item; plain values (including vector
+    tuples) are unaffected."""
+    with TreeBuilder("MenuDescriptions"):
+        switch = g.MenuSwitch.geometry(
+            items={
+                "Object": (g.Cube(), "Use the source object"),
+                "Mesh": g.Grid(),
+            }
+        )
+        vec = g.MenuSwitch.vector(
+            items={"A": (1.0, 2.0, 3.0), "B": ((4.0, 5.0, 6.0), "described")}
+        )
+    assert switch.node.enum_items["Object"].description == "Use the source object"
+    assert switch.node.enum_items["Mesh"].description == ""
+    assert tuple(vec.i["A"].socket.default_value) == (1.0, 2.0, 3.0)
+    assert tuple(vec.i["B"].socket.default_value) == (4.0, 5.0, 6.0)
+    assert vec.node.enum_items["B"].description == "described"
+
+
+def test_menu_switch_item_helper():
+    """``switch.item()`` declares an item and returns a MenuItem handle
+    exposing the input socket, the is_selected boolean output and the
+    description; the first declared item defaults the selection."""
+    with TreeBuilder("MenuItemHelper") as tree:
+        switch = g.MenuSwitch.geometry()
+        obj = switch.item("Object", g.Cube(), description="Use the source object")
+        mesh = switch.item("Mesh", (g.Grid(), "A grid mesh"))
+        obj.is_selected >> tree.outputs.boolean("IsObject")
+        switch >> tree.outputs.geometry("Out")
+    assert obj.description == "Use the source object"
+    assert mesh.description == "A grid mesh"
+    mesh.description = "changed"
+    assert switch.node.enum_items["Mesh"].description == "changed"
+    assert obj.input.socket.links[0].from_node.bl_idname == g.Cube._bl_idname
+    assert obj.is_selected.socket.name == "Object"
+    assert obj.is_selected.socket.type == "BOOLEAN"
+    assert obj.is_selected.socket.is_output
+    # the first declared item defaults the selection, as the constructor does
+    assert switch.i["Menu"].socket.default_value == "Object"
+
+
+def test_menu_switch_item_helper_explicit_selection():
+    """An explicit string selection given to the constructor survives items
+    declared afterwards via item(), even when no items existed yet."""
+    with TreeBuilder("MenuItemExplicit", arrange=None) as tree:
+        switch = g.MenuSwitch.float("B")
+        switch.item("A", 1.0)
+        switch.item("B", tree.inputs.float("In"))
+        switch >> tree.outputs.float("Out")
+    assert switch.i["Menu"].socket.default_value == "B"
+
+
 def test_multi_menu():
     with TreeBuilder() as tree:
         items = (g.Cube(), g.IcoSphere(), g.Grid())
