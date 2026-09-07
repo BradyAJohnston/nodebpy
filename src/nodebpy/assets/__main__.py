@@ -5,12 +5,17 @@ libraries and writes typed classes to ``nodebpy/nodes/{geometry,shader,
 compositor}/assets.py``, where ``python -m gen`` re-exports them so they are
 available alongside the built-in nodes (e.g. ``g.SmoothByAngle()``). Run *before*
 ``python -m gen`` and through the ruff/ty post-processing (see the Makefile).
+
+``python -m nodebpy.assets dump <blend> <dir>`` and ``… build <dir> <blend>``
+instead round-trip a ``.blend`` asset library through per-asset Python sources
+(see :mod:`nodebpy.assets._library`).
 """
 
 from __future__ import annotations
 
 import argparse
 import os
+import sys
 from pathlib import Path
 
 from ..builder import BundledLibrary, PackageLibrary
@@ -100,6 +105,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:  # pragma: no cover - CLI wrapper
+    # The dump/build subcommands (blend ↔ .py round-trip) have their own
+    # parser; everything else keeps the original flag-based interface.
+    if len(sys.argv) > 1 and sys.argv[1] in ("dump", "build"):
+        from ._library import main as library_main
+
+        library_main(sys.argv[1:])
+        return
+
     args = parse_args()
     output = (
         args.output
