@@ -384,25 +384,22 @@ def test_find_best_socket_pair_raw_node_socket_target():
 
 def test_find_best_socket_pair_bad_source_raises():
     """non-outputs, non-NodeSocket source raises TypeError."""
-    with TreeBuilder("PairBadSrc"):
-        with pytest.raises(TypeError):
-            g.Position()._find_best_socket_pair(42, g.Position())
+    with TreeBuilder("PairBadSrc"), pytest.raises(TypeError):
+        g.Position()._find_best_socket_pair(42, g.Position())
 
 
 def test_find_best_socket_pair_bad_target_raises():
     """non-inputs, non-NodeSocket target raises TypeError."""
-    with TreeBuilder("PairBadTgt"):
-        with pytest.raises(TypeError):
-            g.Position()._find_best_socket_pair(g.Position(), 42)
+    with TreeBuilder("PairBadTgt"), pytest.raises(TypeError):
+        g.Position()._find_best_socket_pair(g.Position(), 42)
 
 
 def test_find_best_socket_pair_no_compatible_sockets_raises():
     """SocketError is raised when source and target have no compatible socket pair."""
-    with TreeBuilder("PairIncompat"):
-        with pytest.raises(SocketError):
-            # Position outputs Vector; BooleanMath.l_and has only Boolean inputs —
-            # no compatible pair exists so _find_best_socket_pair raises SocketError.
-            g.Position() >> g.Switch.geometry(False, ...)
+    with TreeBuilder("PairIncompat"), pytest.raises(SocketError):
+        # Position outputs Vector; BooleanMath.l_and has only Boolean inputs —
+        # no compatible pair exists so _find_best_socket_pair raises SocketError.
+        g.Position() >> g.Switch.geometry(False, ...)
 
 
 def test_rshift_fallback_path():
@@ -438,9 +435,8 @@ def test_find_best_socket_pair_compatible_type_fallback():
 
 def test_link_from_unknown_socket_name_raises():
     """_link_from with a name absent from the node inputs raises ValueError."""
-    with TreeBuilder("LinkFromBadName"):
-        with pytest.raises(ValueError):
-            g.Position()._link_from(g.Index(), "NoSuchSocket")
+    with TreeBuilder("LinkFromBadName"), pytest.raises(ValueError):
+        g.Position()._link_from(g.Index(), "NoSuchSocket")
 
 
 def test_dynamic_inputs_incompatible_source_raises():
@@ -449,9 +445,8 @@ def test_dynamic_inputs_incompatible_source_raises():
     FieldToGrid only accepts VALUE/INT/VECTOR/BOOLEAN data; a String source has
     no compatible grid type so _match_compatible_data raises SocketError.
     """
-    with TreeBuilder("DynIncompat"):
-        with pytest.raises(SocketError):
-            g.FieldToGrid(items={"x": g.String("x")})
+    with TreeBuilder("DynIncompat"), pytest.raises(SocketError):
+        g.FieldToGrid(items={"x": g.String("x")})
 
 
 def test_default_value_on_output_socket_raises():
@@ -459,7 +454,7 @@ def test_default_value_on_output_socket_raises():
     with TreeBuilder("DefValOutput"):
         out = g.Value().o._get("Value")
         with pytest.raises(RuntimeError):
-            out.default_value
+            _ = out.default_value
 
 
 def test_vector_socket_rmatmul():

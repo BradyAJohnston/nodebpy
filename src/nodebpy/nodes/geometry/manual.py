@@ -1,10 +1,8 @@
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from typing import (
     TYPE_CHECKING,
-    Generic,
-    Iterable,
+    ClassVar,
     Literal,
-    TypeVar,
     cast,
 )
 
@@ -30,6 +28,7 @@ from ...builder import (
     ColorSocket,
     FloatSocket,
     FloatSocketGrid,
+    FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
@@ -42,6 +41,7 @@ from ...builder import (
     ObjectSocket,
     RotationSocket,
     SocketAccessor,
+    SoundSocket,
     StringSocket,
     TreeBuilder,
     VectorSocket,
@@ -51,6 +51,7 @@ from ...builder import Socket as SocketLinker
 from ...builder._registry import _wrap_socket
 from ...builder.items import (
     GridItem,
+    MenuItem,
     _apply_item_value,
     _FieldItemFactory,
     _socket_for_item,
@@ -71,6 +72,7 @@ from ...types import (
     InputColor,
     InputFloat,
     InputFloatGrid,
+    InputFont,
     InputGeometry,
     InputGrid,
     InputImage,
@@ -82,6 +84,7 @@ from ...types import (
     InputMenu,
     InputObject,
     InputRotation,
+    InputSound,
     InputString,
     InputVector,
     InputVectorGrid,
@@ -106,44 +109,40 @@ from .zone import (
     _sync_closure_items,
 )
 
-_T = TypeVar("_T", bound=BaseSocket)
-_S = TypeVar("_S")
-
 __all__ = (
-    "RepeatInput",
-    "RepeatOutput",
-    "RepeatZone",
-    "SimulationInput",
-    "SimulationOutput",
-    "SimulationZone",
-    "ForEachGeometryElementInput",
-    "ForEachGeometryElementOutput",
-    "ForEachGeometryElementZone",
-    "EvaluateClosure",
+    "AttributeStatistic",
+    "CaptureAttribute",
     "ClosureInput",
     "ClosureOutput",
     "ClosureZone",
-    "GeometryToInstance",
-    "SDFGridBoolean",
-    #
-    "IndexSwitch",
-    "MenuSwitch",
-    "MeshBoolean",
-    "CaptureAttribute",
-    "FieldToGrid",
-    "JoinGeometry",
-    "SDFGridBoolean",
-    "JoinStrings",
-    "GeometryToInstance",
-    "JoinStrings",
-    "Value",
+    "ColorRamp",
     "Compare",
-    "AttributeStatistic",
-    "Frame",
+    "EvaluateClosure",
+    "FieldToGrid",
     "Float",
     "FloatCurve",
-    "ColorRamp",
+    "ForEachGeometryElementInput",
+    "ForEachGeometryElementOutput",
+    "ForEachGeometryElementZone",
+    "Frame",
+    "GeometryToInstance",
+    "IndexSwitch",
+    "JoinGeometry",
+    "JoinStrings",
+    # "MenuItems" is deliberately not exported: quartodoc cannot document a
+    # PEP 695 `type` alias (griffe Kind.TYPE_ALIAS); import it from this
+    # module directly for annotations.
+    "MenuSwitch",
+    "MeshBoolean",
+    "RepeatInput",
+    "RepeatOutput",
+    "RepeatZone",
+    "SDFGridBoolean",
+    "SimulationInput",
+    "SimulationOutput",
+    "SimulationZone",
     "StoreNamedAttribute",
+    "Value",
 )
 
 
@@ -225,6 +224,7 @@ class ColorRamp(BaseNode):
                 point = self.elements[i]
             else:
                 point = self.elements.new(0.0)
+            assert point is not None
             point.position = item[0]
             point.color = item[1]
 
@@ -333,6 +333,7 @@ class FloatCurve(BaseNode):
                 point.location = item[:2]
             else:
                 point = self.points.new(*item[:2])
+            assert point is not None
             if len(item) > 2:
                 point.handle_type = item[2]  # ty: ignore[index-out-of-bounds]
 
@@ -359,7 +360,7 @@ _NamedAttributeDataTypes = Literal[
 ]
 
 
-class StoreNamedAttribute(BaseNode, Generic[_T]):
+class StoreNamedAttribute[T: BaseSocket](BaseNode):
     """
     Store the result of a field on a geometry as an attribute with the specified name
 
@@ -576,14 +577,14 @@ class StoreNamedAttribute(BaseNode, Generic[_T]):
     instance = _StoreNamedAttributeDomainFactory("INSTANCE")
     layer = _StoreNamedAttributeDomainFactory("LAYER")
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         geometry: GeometrySocket
         """Geometry"""
         selection: BooleanSocket
         """Selection"""
         name: StringSocket
         """Name"""
-        value: _S
+        value: S
         """Value"""
 
     class _Outputs(SocketAccessor):
@@ -660,6 +661,7 @@ class _EvaluateClosureInputs(_SocketValueItemFactory):
     ) -> SocketLinker:
         node = self._owner.node
         item = node.input_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         if structure_type != "AUTO":
             item.structure_type = structure_type
         socket = _socket_for_item(node, node.input_items, "Item_", item)
@@ -678,6 +680,7 @@ class _EvaluateClosureOutputs(_SocketItemFactory):
     ) -> SocketLinker:
         node = self._owner.node
         item = node.output_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         if structure_type != "AUTO":
             item.structure_type = structure_type
         return _wrap_socket(
@@ -796,7 +799,7 @@ class EvaluateClosure(BaseNode):
 
 
 class Frame(BaseNode):
-    """ """
+    """Frame for visually grouping nodes in the editor."""
 
     _bl_idname = "NodeFrame"
     node: bpy.types.NodeFrame
@@ -1007,10 +1010,12 @@ class Value(BaseNode):
     def value(self) -> float:
         """Input socket: Value"""
 
+        assert self.node.outputs is not None
         return self.node.outputs[0].default_value
 
     @value.setter
     def value(self, value: float):
+        assert self.node.outputs is not None
         self.node.outputs[0].default_value = value
 
 
@@ -1090,7 +1095,7 @@ class IntegerVector(BaseNode):
 
     def __init__(
         self,
-        vector: list[int] = [0, 0, 0],
+        vector: tuple[int, int, int] | list[int] = (0, 0, 0),
         vector_dimensions: Literal[2, 3] = 3,
     ):
         super().__init__()
@@ -1104,7 +1109,7 @@ class IntegerVector(BaseNode):
         return list(self.node.vector)
 
     @vector.setter
-    def vector(self, value: list[int]):
+    def vector(self, value: tuple[int, int, int] | list[int]):
         self.node.vector = value
 
     @property
@@ -1319,7 +1324,7 @@ class JoinGeometry(BaseNode):
             self._link(*self._find_best_socket_pair(source, self))
 
 
-class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
+class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
     """Node builder for the Index Switch node"""
 
     _bl_idname = "GeometryNodeIndexSwitch"
@@ -1425,15 +1430,15 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
     class _Inputs(SocketAccessor):
         index: IntegerSocket
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        output: _S
+    class _Outputs[S](SocketAccessor):
+        output: S
 
     if TYPE_CHECKING:
 
         @property
         def i(self) -> _Inputs: ...
         @property
-        def o(self) -> "_Outputs[_T]": ...
+        def o(self) -> "_Outputs[T]": ...
 
     def __init__(
         self,
@@ -1464,6 +1469,7 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
         if output:
             raise ValueError("Index switch items do not have output sockets")
         identifier = f"Item_{item.identifier}"
+        assert self.node.inputs is not None
         for socket in self.node.inputs:
             if socket.identifier == identifier:
                 return socket
@@ -1499,7 +1505,23 @@ class IndexSwitch(ItemsMixin, BaseNode, Generic[_T]):
         self.node.data_type = value
 
 
-class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
+type MenuItems[V] = Mapping[str, None | V | tuple[V | None, str]]
+"""Menu Switch ``items`` mapping: item name → value, where the value may be
+a ``(value, description)`` pair to also set the item's tooltip."""
+
+
+def _split_menu_item(
+    value: InputAny | tuple[InputAny, str],
+) -> tuple[InputAny, str | None]:
+    """Split a ``(value, description)`` menu item pair. A 2-tuple whose
+    second element is a string can never be a socket default value, so the
+    form is unambiguous."""
+    if isinstance(value, tuple) and len(value) == 2 and isinstance(value[1], str):
+        return value[0], value[1]
+    return cast("InputAny", value), None
+
+
+class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
     """Base class for MenuSwitch nodes across all tree types."""
 
     _bl_idname = "GeometryNodeMenuSwitch"
@@ -1509,8 +1531,8 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
     class _Inputs(SocketAccessor):
         menu: MenuSocket
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        output: _S
+    class _Outputs[S](SocketAccessor):
+        output: S
 
     if TYPE_CHECKING:
 
@@ -1518,34 +1540,47 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         def i(self) -> "_Inputs": ...
 
         @property
-        def o(self) -> "_Outputs[_T]": ...
+        def o(self) -> "_Outputs[T]": ...
 
     def __init__(
         self,
         menu: InputMenu = None,
-        items: Mapping[str, InputAny] | None = None,
+        items: MenuItems[InputAny] | None = None,
         *,
         data_type: SOCKET_TYPES = "FLOAT",
     ):
         super().__init__()
         self.data_type = data_type
         self.node.enum_items.clear()
-        key_args = {"Menu": menu}
+        # a plain string `menu` is an explicit selection; otherwise the
+        # selection defaults to the first item
+        self._explicit_selection = isinstance(menu, str)
         self._link_args(**(items or {}))
-        self._establish_links(**key_args)
-        # a plain string `menu` is an explicit selection; otherwise default
-        # the selection to the first item
+        if isinstance(menu, str) and not self.node.enum_items:
+            # a selection named before any items exist (they will be added via
+            # item()) can't be set yet; defer it to context exit
+            assert self.node.inputs is not None
+            self.tree._menu_defaults.append(
+                _MenuDefault(self.node.inputs["Menu"], menu)
+            )
+        else:
+            self._establish_links(Menu=menu)
 
-        if self.node.enum_items and not isinstance(menu, str):
-            try:
-                menu_socket = cast(bpy.types.NodeSocketMenu, self.node.inputs["Menu"])
-                menu_socket.default_value = self.node.enum_items[0].name
-            except TypeError:  # pragma: no cover - rare Blender enum-refresh quirk
-                # the socket is a NodeSocketMenu whose enum hasn't refreshed yet, so
-                # the default_value isn't settable here; defer it to context exit.
-                self.tree._menu_defaults.append(
-                    _MenuDefault(self.node.inputs["Menu"], self.node.enum_items[0].name)
-                )
+        if self.node.enum_items and not self._explicit_selection:
+            self._default_selection_to_first()
+
+    def _default_selection_to_first(self) -> None:
+        """Default the menu selection to the first enum item."""
+        assert self.node.inputs is not None
+        try:
+            menu_socket = self.node.inputs["Menu"]
+            menu_socket.default_value = self.node.enum_items[0].name
+        except TypeError:  # pragma: no cover - rare Blender enum-refresh quirk
+            # the socket is a NodeSocketMenu whose enum hasn't refreshed yet, so
+            # the default_value isn't settable here; defer it to context exit.
+            self.tree._menu_defaults.append(
+                _MenuDefault(self.node.inputs["Menu"], self.node.enum_items[0].name)
+            )
 
     @property
     def _socket_data_types(self) -> tuple[str, ...]:
@@ -1557,24 +1592,57 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         # menu items are untyped; .new() takes only a name
         return self._items.new(name)
 
-    def _link_args(self, **kwargs: InputAny):
+    def _link_args(self, **kwargs: InputAny | tuple[InputAny, str]):
         for key, value in kwargs.items():
-            socket = self._add_socket(name=key, type=self.data_type)
-            if value is None:
-                continue  # item declared but left unlinked
-            if _is_default_value(value):
-                if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(
-                    value, str
-                ):
-                    # the socket is a NodeSocketMenu, but the default_value is not settable
-                    # until the full tree is built and menu items are known. We need to defer
-                    # the setting of the default values until after tree construction.
-                    self.tree._menu_defaults.append(_MenuDefault(socket, value))
-                else:
-                    socket.default_value = value  # ty: ignore[unresolved-attribute]
+            value, description = _split_menu_item(value)
+            item = self._new_item(key, self.data_type)
+            if description:
+                item.description = description
+            self._apply_item_input(self._item_socket(item), value)
+
+    def _apply_item_input(self, socket: NodeSocket, value: InputAny) -> None:
+        if value is None:
+            return  # item declared but left unlinked
+        if _is_default_value(value):
+            if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(value, str):
+                # the socket is a NodeSocketMenu, but the default_value is not settable
+                # until the full tree is built and menu items are known. We need to defer
+                # the setting of the default values until after tree construction.
+                self.tree._menu_defaults.append(_MenuDefault(socket, value))
             else:
-                source = self._source_socket(value)  # type: ignore
-                self._link(source, socket)
+                socket.default_value = value  # ty: ignore[unresolved-attribute]
+        else:
+            source = self._source_socket(value)  # type: ignore
+            self._link(source, socket)
+
+    def item(
+        self,
+        name: str,
+        value: InputAny | tuple[InputAny, str] = None,
+        *,
+        description: str | None = None,
+    ) -> MenuItem[T]:
+        """Declare a menu item and return its handle.
+
+        ``value`` may be a linkable (linked into the item's input socket), a
+        plain default value, or a ``(value, description)`` pair; omit it to
+        declare the item unlinked. ``description`` sets the tooltip Blender
+        shows for the item in the menu.
+
+        Unless the menu selection was set explicitly, declaring the first
+        item also defaults the selection to it (as the constructor does).
+        """
+        value, pair_description = _split_menu_item(value)
+        if description is None:
+            description = pair_description
+        bpy_item = self._new_item(name, self.data_type)
+        if description:
+            bpy_item.description = description
+        handle = cast("MenuItem[T]", MenuItem(self, bpy_item))
+        self._apply_item_input(self._item_socket(bpy_item), value)
+        if len(self.node.enum_items) == 1 and not self._explicit_selection:
+            self._default_selection_to_first()
+        return handle
 
     def is_selected(self, name: str) -> BooleanSocket:
         """Gets the boolean output socket that is True when the named menu item is selected.
@@ -1606,14 +1674,14 @@ class _MenuSwitchBase(ItemsMixin, BaseNode, Generic[_T]):
         self.node.data_type = value
 
 
-class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
+class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     """Node builder for the Menu Switch node"""
 
     @classmethod
     def float(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputFloat] | None = None,
+        items: MenuItems[InputFloat] | None = None,
     ) -> "MenuSwitch[FloatSocket]":
         return MenuSwitch(menu, items, data_type="FLOAT")
 
@@ -1621,7 +1689,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def integer(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputInteger] | None = None,
+        items: MenuItems[InputInteger] | None = None,
     ) -> "MenuSwitch[IntegerSocket]":
         return MenuSwitch(menu, items, data_type="INT")
 
@@ -1629,7 +1697,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def boolean(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputBoolean] | None = None,
+        items: MenuItems[InputBoolean] | None = None,
     ) -> "MenuSwitch[BooleanSocket]":
         return MenuSwitch(menu, items, data_type="BOOLEAN")
 
@@ -1637,7 +1705,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def vector(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputVector] | None = None,
+        items: MenuItems[InputVector] | None = None,
     ) -> "MenuSwitch[VectorSocket]":
         return MenuSwitch(menu, items, data_type="VECTOR")
 
@@ -1645,7 +1713,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def color(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputColor] | None = None,
+        items: MenuItems[InputColor] | None = None,
     ) -> "MenuSwitch[ColorSocket]":
         return MenuSwitch(menu, items, data_type="RGBA")
 
@@ -1653,7 +1721,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def rotation(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputRotation] | None = None,
+        items: MenuItems[InputRotation] | None = None,
     ) -> "MenuSwitch[RotationSocket]":
         return MenuSwitch(menu, items, data_type="ROTATION")
 
@@ -1661,7 +1729,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def matrix(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMatrix] | None = None,
+        items: MenuItems[InputMatrix] | None = None,
     ) -> "MenuSwitch[MatrixSocket]":
         return MenuSwitch(menu, items, data_type="MATRIX")
 
@@ -1669,7 +1737,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def string(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputString] | None = None,
+        items: MenuItems[InputString] | None = None,
     ) -> "MenuSwitch[StringSocket]":
         return MenuSwitch(menu, items, data_type="STRING")
 
@@ -1677,7 +1745,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def menu(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMenu] | None = None,
+        items: MenuItems[InputMenu] | None = None,
     ) -> "MenuSwitch[MenuSocket]":
         return MenuSwitch(menu, items, data_type="MENU")
 
@@ -1685,7 +1753,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def object(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputObject] | None = None,
+        items: MenuItems[InputObject] | None = None,
     ) -> "MenuSwitch[ObjectSocket]":
         return MenuSwitch(menu, items, data_type="OBJECT")
 
@@ -1693,7 +1761,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def geometry(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputGeometry] | None = None,
+        items: MenuItems[InputGeometry] | None = None,
     ) -> "MenuSwitch[GeometrySocket]":
         return MenuSwitch(menu, items, data_type="GEOMETRY")
 
@@ -1701,7 +1769,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def collection(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputCollection] | None = None,
+        items: MenuItems[InputCollection] | None = None,
     ) -> "MenuSwitch[CollectionSocket]":
         return MenuSwitch(menu, items, data_type="COLLECTION")
 
@@ -1709,7 +1777,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def image(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputImage] | None = None,
+        items: MenuItems[InputImage] | None = None,
     ) -> "MenuSwitch[ImageSocket]":
         return MenuSwitch(menu, items, data_type="IMAGE")
 
@@ -1717,7 +1785,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def material(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputMaterial] | None = None,
+        items: MenuItems[InputMaterial] | None = None,
     ) -> "MenuSwitch[MaterialSocket]":
         return MenuSwitch(menu, items, data_type="MATERIAL")
 
@@ -1725,7 +1793,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def bundle(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputBundle] | None = None,
+        items: MenuItems[InputBundle] | None = None,
     ) -> "MenuSwitch[BundleSocket]":
         return MenuSwitch(menu, items, data_type="BUNDLE")
 
@@ -1733,7 +1801,7 @@ class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
     def closure(
         cls,
         menu: InputMenu = None,
-        items: dict[str, InputClosure] | None = None,
+        items: MenuItems[InputClosure] | None = None,
     ) -> "MenuSwitch[ClosureSocket]":
         return MenuSwitch(menu, items, data_type="CLOSURE")
 
@@ -1760,7 +1828,7 @@ class CaptureAttribute(ItemsMixin, BaseNode):
     # capture_items.new(socket_type=...) takes the *socket* type spelling
     # (VECTOR/RGBA/ROTATION/MATRIX), not the data_type spelling
     # (FLOAT_VECTOR/FLOAT_COLOR/QUATERNION/FLOAT4X4); only VALUE differs (FLOAT).
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     class _DomainFactory:
         def __init__(self, domain: _AttributeDomains):
@@ -1882,7 +1950,7 @@ class _FieldToGridItems(_TypedItemFactory):
         )
 
 
-class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
+class FieldToGrid[T: BaseSocket](ItemsMixin, BaseNode):
     """Create new grids by evaluating new values on an existing volume grid topology
 
 
@@ -1904,17 +1972,17 @@ class FieldToGrid(ItemsMixin, BaseNode, Generic[_T]):
     node: bpy.types.GeometryNodeFieldToGrid
     _items_collection = "grid_items"
     _socket_data_types = ("VALUE", "INT", "VECTOR", "BOOLEAN")
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
     _default_input_id = "Topology"
 
     if TYPE_CHECKING:
 
-        class _Inputs(SocketAccessor, Generic[_S]):
-            topology: _S
+        class _Inputs[S](SocketAccessor):
+            topology: S
             """The grid which contains the topology to evaluate the different fields on."""
 
         @property
-        def i(self) -> _Inputs[_T]: ...
+        def i(self) -> _Inputs[T]: ...
 
     def __init__(
         self,
@@ -2115,8 +2183,13 @@ _CompareDataTypes = Literal[
     "INT",
     "VECTOR",
     "RGBA",
-    "ROTATION",
     "STRING",
+    "OBJECT",
+    "IMAGE",
+    "COLLECTION",
+    "MATERIAL",
+    "FONT",
+    "SOUND",
 ]
 
 _CompareVectorModes = Literal[
@@ -2124,7 +2197,7 @@ _CompareVectorModes = Literal[
 ]
 
 
-class Compare(BaseNode, Generic[_T]):
+class Compare[T: BaseSocket](BaseNode):
     """Perform a comparison operation on the two given inputs"""
 
     _bl_idname = "FunctionNodeCompare"
@@ -2352,16 +2425,94 @@ class Compare(BaseNode, Generic[_T]):
         ) -> "Compare[StringSocket]":
             return Compare(operation="NOT_EQUAL", data_type="STRING", A=a, B=b)
 
+    class _ObjectFactory:
+        @staticmethod
+        def equal(
+            a: InputObject = None, b: InputObject = None
+        ) -> "Compare[ObjectSocket]":
+            return Compare(operation="EQUAL", data_type="OBJECT", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputObject = None, b: InputObject = None
+        ) -> "Compare[ObjectSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="OBJECT", A=a, B=b)
+
+    class _ImageFactory:
+        @staticmethod
+        def equal(a: InputImage = None, b: InputImage = None) -> "Compare[ImageSocket]":
+            return Compare(operation="EQUAL", data_type="IMAGE", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputImage = None, b: InputImage = None
+        ) -> "Compare[ImageSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="IMAGE", A=a, B=b)
+
+    class _CollectionFactory:
+        @staticmethod
+        def equal(
+            a: InputCollection = None, b: InputCollection = None
+        ) -> "Compare[CollectionSocket]":
+            return Compare(operation="EQUAL", data_type="COLLECTION", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputCollection = None, b: InputCollection = None
+        ) -> "Compare[CollectionSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="COLLECTION", A=a, B=b)
+
+    class _MaterialFactory:
+        @staticmethod
+        def equal(
+            a: InputMaterial = None, b: InputMaterial = None
+        ) -> "Compare[MaterialSocket]":
+            return Compare(operation="EQUAL", data_type="MATERIAL", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputMaterial = None, b: InputMaterial = None
+        ) -> "Compare[MaterialSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="MATERIAL", A=a, B=b)
+
+    class _FontFactory:
+        @staticmethod
+        def equal(a: InputFont = None, b: InputFont = None) -> "Compare[FontSocket]":
+            return Compare(operation="EQUAL", data_type="FONT", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputFont = None, b: InputFont = None
+        ) -> "Compare[FontSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="FONT", A=a, B=b)
+
+    class _SoundFactory:
+        @staticmethod
+        def equal(a: InputSound = None, b: InputSound = None) -> "Compare[SoundSocket]":
+            return Compare(operation="EQUAL", data_type="SOUND", A=a, B=b)
+
+        @staticmethod
+        def not_equal(
+            a: InputSound = None, b: InputSound = None
+        ) -> "Compare[SoundSocket]":
+            return Compare(operation="NOT_EQUAL", data_type="SOUND", A=a, B=b)
+
     float = _FloatFactory()
     integer = _IntegerFactory()
     vector = _VectorFactory()
     color = _ColorFactory()
     string = _StringFactory()
+    object = _ObjectFactory()
+    image = _ImageFactory()
+    collection = _CollectionFactory()
+    material = _MaterialFactory()
+    font = _FontFactory()
+    sound = _SoundFactory()
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         _bpy_node: "bpy.types.FunctionNodeCompare"
-        a: _S
-        b: _S
+        a: S
+        b: S
         c: FloatSocket
         epsilon: FloatSocket
         angle: FloatSocket
@@ -2379,7 +2530,7 @@ class Compare(BaseNode, Generic[_T]):
     if TYPE_CHECKING:
 
         @property  # type: ignore[override]
-        def i(self) -> "_Inputs[_T]": ...
+        def i(self) -> "_Inputs[T]": ...
 
         @property
         def o(self) -> _Outputs: ...
@@ -2727,7 +2878,7 @@ class Mix(BaseNode):
         self.node.clamp_result = value
 
 
-class AttributeStatistic(BaseNode, Generic[_T]):
+class AttributeStatistic[T: BaseSocket](BaseNode):
     """Calculate statistics about a data set from a field evaluated on a geometry"""
 
     _bl_idname = "GeometryNodeAttributeStatistic"
@@ -2776,30 +2927,30 @@ class AttributeStatistic(BaseNode, Generic[_T]):
     instance = _AttributeStatisticDomainFactor("INSTANCE")
     layer = _AttributeStatisticDomainFactor("LAYER")
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         geometry: GeometrySocket
         """The geometry whose attribute to analyze."""
         selection: BooleanSocket
         """Limits which elements are included in the statistics."""
-        attribute: _S
+        attribute: S
         """The field to calculate statistics for."""
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        mean: _S
+    class _Outputs[S](SocketAccessor):
+        mean: S
         """The arithmetic mean."""
-        median: _S
+        median: S
         """The median value."""
-        sum: _S
+        sum: S
         """The sum of all values."""
-        min: _S
+        min: S
         """The minimum value."""
-        max: _S
+        max: S
         """The maximum value."""
-        range: _S
+        range: S
         """The range (max - min)."""
-        standard_deviation: _S
+        standard_deviation: S
         """The standard deviation."""
-        variance: _S
+        variance: S
         """The variance."""
 
     if TYPE_CHECKING:
@@ -2880,7 +3031,7 @@ _SampleCurveDataTypes = Literal[
 ]
 
 
-class SampleCurve(BaseNode, Generic[_T]):
+class SampleCurve[T: BaseSocket](BaseNode):
     """
     Retrieve data from a point on a curve at a certain distance from its start
 
@@ -3210,10 +3361,10 @@ class SampleCurve(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeSampleCurve"
     node: bpy.types.GeometryNodeSampleCurve
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         curves: GeometrySocket
         """Curves"""
-        value: _S
+        value: S
         """Value"""
         factor: FloatSocket
         """Factor"""
@@ -3222,8 +3373,8 @@ class SampleCurve(BaseNode, Generic[_T]):
         curve_index: IntegerSocket
         """Curve Index"""
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        value: _S
+    class _Outputs[S](SocketAccessor):
+        value: S
         """Value"""
         position: VectorSocket
         """Position"""
@@ -3294,7 +3445,7 @@ class SampleCurve(BaseNode, Generic[_T]):
         self.node.data_type = value
 
 
-class SampleIndex(BaseNode, Generic[_T]):
+class SampleIndex[T: BaseSocket](BaseNode):
     """
     Retrieve values from specific geometry elements
 
@@ -3466,16 +3617,16 @@ class SampleIndex(BaseNode, Generic[_T]):
     _bl_idname = "GeometryNodeSampleIndex"
     node: bpy.types.GeometryNodeSampleIndex
 
-    class _Inputs(SocketAccessor, Generic[_S]):
+    class _Inputs[S](SocketAccessor):
         geometry: GeometrySocket
         """Geometry"""
-        value: _S
+        value: S
         """Value"""
         index: IntegerSocket
         """Index"""
 
-    class _Outputs(SocketAccessor, Generic[_S]):
-        value: _S
+    class _Outputs[S](SocketAccessor):
+        value: S
         """Value"""
 
     if TYPE_CHECKING:

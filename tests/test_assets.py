@@ -331,5 +331,5 @@ def test_socket_types_fallback():
 @_needs_essentials
 def test_generate_essentials_writes_modules(tmp_path):
     written = generate_essentials(tmp_path)
-    assert "geometry" in written and written["geometry"]
+    assert written.get("geometry")
     assert (tmp_path / "geometry" / "assets.py").exists()

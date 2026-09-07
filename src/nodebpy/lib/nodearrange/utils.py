@@ -4,7 +4,6 @@ from collections import Counter, defaultdict
 from collections.abc import Callable, Hashable, Iterable
 from functools import cache
 from operator import itemgetter
-from typing import TypeVar
 
 import bpy
 from bpy.types import Node
@@ -19,15 +18,11 @@ def get_ntree() -> bpy.types.NodeTree:
     return TreeBuilder._tree_contexts[-1].tree
 
 
-_T1 = TypeVar("_T1", bound=Hashable)
-_T2 = TypeVar("_T2", bound=Hashable)
-
-
-def group_by(
-    iterable: Iterable[_T1],
-    key: Callable[[_T1], _T2],
+def group_by[T1: Hashable, T2: Hashable](
+    iterable: Iterable[T1],
+    key: Callable[[T1], T2],
     sort: bool = False,
-) -> dict[tuple[_T1, ...], _T2]:
+) -> dict[tuple[T1, ...], T2]:
     groups = defaultdict(list)
     for item in iterable:
         groups[key(item)].append(item)
@@ -72,7 +67,7 @@ def get_bottom(node: Node, y_loc: float | None = None) -> float:
     if y_loc is None:
         y_loc = abs_loc(node).y
     dim_y = calculate_node_dimensions(
-        node, Counter({i: len(i.links) for i in node.inputs}), 1.0
+        node, Counter({i: len(i.links or ()) for i in node.inputs}), 1.0
     )[1]
     bottom = y_loc - dim_y
     return bottom + dim_y / 2 - _HIDE_OFFSET if node.hide else bottom

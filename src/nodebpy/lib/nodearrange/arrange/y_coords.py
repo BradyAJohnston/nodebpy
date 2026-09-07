@@ -234,7 +234,7 @@ def get_marked_nodes(
 ) -> set[Node]:
     marked_nodes = set()
     for cluster in T:
-        if cluster.type != Kind.CLUSTER or cluster.nesting_level != 1:
+        if not isinstance(cluster, Cluster) or cluster.nesting_level != 1:
             continue
 
         descendant_clusters = cast(
@@ -317,7 +317,7 @@ def bk_assign_y_coords(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) 
 
     layouts = []
     for dir_x in (-1, 1):
-        G = nx.reverse_view(G)
+        G = G.reverse(copy=False)
         columns.reverse()
         for dir_y in (-1, 1):
             i = 0

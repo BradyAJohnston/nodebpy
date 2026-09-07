@@ -30,7 +30,7 @@ class ModuleWriter:
     def __init__(self, module_name: str, output_dir: Path):
         self.module_name = module_name
         self.output_dir = output_dir
-        self.node_list: list[NodeInfo] = list()
+        self.node_list: list[NodeInfo] = []
 
     @property
     def filename(self):
@@ -124,7 +124,7 @@ class ModulesHandler:
                 path.unlink()
 
     def write_modules(self):
-        for module_name, module_writer in self.modules.items():
+        for module_writer in self.modules.values():
             module_writer.write(self.config)
 
     def generate_init(self):

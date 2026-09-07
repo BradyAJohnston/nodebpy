@@ -72,10 +72,10 @@ def _assert_roundtrip(tree):
     # ruff subprocess per round-trip); ruff formatting is covered separately.
     code = to_python(tree, format=False)
     ns: dict = {}
-    # exec(code, ns)  # noqa: S102
+    # exec(code, ns)
     try:
-        exec(code, ns)  # noqa: S102
-    except Exception as e:
+        exec(code, ns)
+    except Exception as e:  # noqa: BLE001
         print("Generated code:\n", code)
         pytest.fail(f"Failed to execute generated code: {e}")
     rebuilt: TreeBuilder = ns["tree"]
@@ -189,7 +189,7 @@ def test_value_output_default_round_trips():
     assert "g.Value(0.05)" in code
 
     namespace: dict = {}
-    exec(code, namespace)  # noqa: S102
+    exec(code, namespace)
     rebuilt: TreeBuilder = namespace["tree"]
     value_node = next(
         node for node in rebuilt.tree.nodes if node.bl_idname == "ShaderNodeValue"
@@ -265,7 +265,7 @@ def test_round_trip_executes():
     ast.parse(code)
 
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
 
     new_tree: TreeBuilder = ns.get("tree")  # type: ignore[assignment]
     assert new_tree is not None
@@ -305,7 +305,7 @@ def test_snapshot_positions_round_trip():
     assert "tree.node_positions = {" in code
 
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     rebuilt: TreeBuilder = ns["tree"]
     for node in rebuilt.tree.nodes:
         got = tuple(round(v, 1) for v in node.location)
@@ -354,7 +354,7 @@ def test_format_with_ruff_tidies_output():
 
     ast.parse(formatted)  # still valid Python
     ns: dict = {}
-    exec(formatted, ns)  # noqa: S102 — still runnable
+    exec(formatted, ns)
     assert ns["tree"] is not None
 
 
@@ -406,7 +406,7 @@ def test_top_level_class_round_trips_via_create_group():
 
     with TreeBuilder("ArchiveOuter") as tree:
         geo = tree.inputs.geometry("Geometry")
-        _ArchiveInner(**{"Geometry": geo}) >> tree.outputs.geometry("Geometry")
+        _ArchiveInner(Geometry=geo) >> tree.outputs.geometry("Geometry")
     orig_top = _structure(tree.tree)
     orig_inner = _structure(
         next(n.node_tree for n in tree.tree.nodes if n.bl_idname == "GeometryNodeGroup")
@@ -416,7 +416,7 @@ def test_top_level_class_round_trips_via_create_group():
     for t in list(bpy.data.node_groups):  # force fresh builds
         t.name = "_orig_" + t.name
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     rebuilt = ns[_class_name("ArchiveOuter")].create_group()
 
     assert _structure(rebuilt) == orig_top, code
@@ -439,7 +439,7 @@ def test_snapshot_top_level_class(snapshot):
 
     with TreeBuilder("SnapClassOuter") as tree:
         geo = tree.inputs.geometry("Geometry")
-        _SnapClassInner(**{"Geometry": geo}) >> tree.outputs.geometry("Geometry")
+        _SnapClassInner(Geometry=geo) >> tree.outputs.geometry("Geometry")
     assert snapshot == to_python(tree, top_level="class", format=False)
 
 
@@ -507,7 +507,7 @@ def test_snapshot_positions_nested_group_round_trip():
     with TreeBuilder("PosOuter", arrange=None) as tree:
         geo = tree.inputs.geometry("Geometry")
         out = tree.outputs.geometry("Geometry")
-        _PosInner(**{"Geometry": geo}) >> out
+        _PosInner(Geometry=geo) >> out
 
     want_outer, want_inner = {}, {}
     for i, node in enumerate(tree.tree.nodes):
@@ -522,7 +522,7 @@ def test_snapshot_positions_nested_group_round_trip():
 
     _force_fresh_group_build()
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     rebuilt: TreeBuilder = ns["tree"]
     for node in rebuilt.tree.nodes:
         got = tuple(round(v, 1) for v in node.location)
@@ -1281,7 +1281,7 @@ def test_snapshot_positions_nested_group_block(snapshot):
 
     with TreeBuilder("SnapNested", arrange=None) as tree:
         geo_in = tree.inputs.geometry("Geometry")
-        _SnapInner(**{"Geometry": geo_in}) >> tree.outputs.geometry("Geometry")
+        _SnapInner(Geometry=geo_in) >> tree.outputs.geometry("Geometry")
     for i, node in enumerate(tree.tree.nodes):
         node.location = (i * 120.0, i * 50.0)
     for i, node in enumerate(bpy.data.node_groups["SnapInner"].nodes):
@@ -1487,7 +1487,7 @@ def test_string_with_control_characters_round_trips():
     code = to_python(tree)
     ast.parse(code)  # would raise SyntaxError on an unterminated literal
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     node = next(
         n for n in ns["tree"].tree.nodes if n.bl_idname == "FunctionNodeInputString"
     )
@@ -1513,6 +1513,21 @@ def test_menu_switch_emits_factory_dict():
     assert "_MenuSwitchBase" not in code
 
 
+def test_menu_switch_shader_tree_roundtrip():
+    """A MenuSwitch in a shader tree emits the shader MenuSwitch class —
+    including the shader-only SHADER data type — never the private base."""
+    with TreeBuilder.shader("MenuShaderRT") as tree:
+        menu = tree.inputs.menu("Mode", "Glossy")
+        switch = s.MenuSwitch.shader(
+            menu, {"Glossy": s.GlossyBSDF(), "Diffuse": s.DiffuseBSDF()}
+        )
+        switch >> tree.outputs.shader("Surface")
+    code = _assert_roundtrip(tree)
+    assert "s.MenuSwitch.shader(" in code
+    assert '"Glossy":' in code and '"Diffuse":' in code
+    assert "_MenuSwitchBase" not in code
+
+
 def test_menu_switch_defaults_and_unlinked_items():
     """Unlinked items keep their default value (or None for linkable types);
     a non-first menu selection survives as an explicit argument."""
@@ -1525,7 +1540,7 @@ def test_menu_switch_defaults_and_unlinked_items():
     assert 'g.MenuSwitch.float("B", {"A": 1.0,' in code
     assert '"Empty": None' in code
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     rebuilt = ns["tree"].tree
     menu_node = next(
         n
@@ -1533,6 +1548,28 @@ def test_menu_switch_defaults_and_unlinked_items():
         if n.bl_idname == "GeometryNodeMenuSwitch" and n.data_type == "FLOAT"
     )
     assert menu_node.inputs["Menu"].default_value == "B"
+
+
+def test_menu_switch_item_descriptions_roundtrip():
+    """An enum item's description round-trips via the ``(value, description)``
+    pair form; items without one keep the plain value form."""
+    with TreeBuilder("MenuDesc") as tree:
+        menu = tree.inputs.menu("Mode", "Object")
+        switch = g.MenuSwitch.geometry(
+            menu,
+            {"Object": (g.Cube(), "Use the source object"), "Mesh": g.Grid()},
+        )
+        switch >> tree.outputs.geometry("Out")
+    code = _assert_roundtrip(tree)
+    assert '"Object": (g.Cube(), "Use the source object")' in code
+    assert '"Mesh": g.Grid()' in code
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = next(
+        n for n in ns["tree"].tree.nodes if n.bl_idname == "GeometryNodeMenuSwitch"
+    )
+    assert rebuilt.enum_items["Object"].description == "Use the source object"
+    assert rebuilt.enum_items["Mesh"].description == ""
 
 
 def test_menu_interface_default_deferred_after_body():
@@ -1840,7 +1877,7 @@ def test_custom_group_emits_recursive_class():
 
     _force_fresh_group_build()
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     rebuilt = ns["tree"].tree
     assert _structure(rebuilt) == orig_top, code
     rebuilt_inner = next(
@@ -1891,7 +1928,7 @@ def test_nested_groups_emit_in_dependency_order():
 
     _force_fresh_group_build()
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     rebuilt = ns["tree"].tree
     assert _structure(rebuilt) == orig_top, code
     rebuilt_outer = next(
@@ -2055,7 +2092,7 @@ def test_interface_props_round_trip():
         off >> tree.outputs.vector("Off Out")
     code = _assert_roundtrip(tree)
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     assert _iface_structure(ns["tree"].tree) == _iface_structure(tree.tree), code
     assert 'description="How much"' in code
     assert "min_value=0.0" in code and "max_value=1.0" in code
@@ -2075,7 +2112,7 @@ def test_interface_panels_round_trip():
         (size * count) >> tree.outputs.float("Sized")
     code = _assert_roundtrip(tree)
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     assert _iface_structure(ns["tree"].tree) == _iface_structure(tree.tree), code
     assert 'with tree.inputs.panel("Settings", default_closed=True):' in code
     assert '        size = tree.inputs.float("Size", 1.0)' in code
@@ -2101,7 +2138,7 @@ def test_frames_round_trip():
         smooth >> tree.outputs.geometry("Out")
     code = _assert_roundtrip(tree)
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     assert _frame_structure(ns["tree"].tree) == _frame_structure(tree.tree), code
     assert 'with g.Frame("Deform"):' in code
     assert 'with g.Frame("Shade"):' in code
@@ -2133,7 +2170,7 @@ def test_nested_frames_round_trip():
     assert 'with g.Frame("Inner B"):' in code
 
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     rebuilt = ns["tree"].tree
     assert _frame_structure(rebuilt) == _frame_structure(tree.tree), code
     # "Inner A"/"Inner B" must be re-parented under "Outer", not top-level.
@@ -2441,7 +2478,7 @@ def _bundled_assets():
             path = os.path.join(nodes_dir, filename)
             if not os.path.exists(path):
                 continue
-            with bpy.data.libraries.load(path, link=False, assets_only=True) as (
+            with bpy.data.libraries.load(path, link=False, assets_only=True) as (  # ty: ignore[invalid-context-manager]
                 src,
                 _,
             ):
@@ -2467,7 +2504,7 @@ def _bundled_assets():
 def test_roundtrip_bundled_asset(path, name):
     import bpy
 
-    with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, dst):
+    with bpy.data.libraries.load(path, link=False, assets_only=True) as (src, dst):  # ty: ignore[invalid-context-manager]
         if name not in src.node_groups:
             pytest.skip(f"{name!r} not in {path}")
         dst.node_groups = [name]
@@ -2501,7 +2538,7 @@ def test_keyword_named_output_uses_suffixed_attribute():
 
     with TreeBuilder("KeywordOutTree") as tree:
         v = tree.inputs.float("Value")
-        grp = _KeywordOut(**{"Value": v})
+        grp = _KeywordOut(Value=v)
         grp.o["From"] >> tree.outputs.integer("Result")
 
     code = _assert_roundtrip(tree)
@@ -2582,7 +2619,7 @@ def test_axes_to_rotation_socket_property_collision():
     code = _assert_roundtrip(tree)
     assert 'g.AxesToRotation(primary_axis=v, primary="X", secondary="Y")' in code
     ns: dict = {}
-    exec(code, ns)  # noqa: S102
+    exec(code, ns)
     rebuilt_axes = next(
         n for n in ns["tree"].tree.nodes if n.bl_idname == "FunctionNodeAxesToRotation"
     )
@@ -2597,7 +2634,7 @@ def test_property_rna_name_unreadable_getter_returns_none():
     from nodebpy.export.codegen import _property_rna_name
 
     ns: dict = {}
-    exec(  # noqa: S102 — getter has no source file, so getsource() raises OSError
+    exec(
         "class C:\n"
         "    @property\n"
         "    def primary(self):\n"
@@ -2638,7 +2675,7 @@ def get_mn_asset_names():
     if not MN_FILE_PATH.exists():
         return []
 
-    with bpy.data.libraries.load(
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
         str(MN_FILE_PATH),
         link=False,
         assets_only=True,
@@ -2654,11 +2691,11 @@ def get_mn_asset_names():
 def test_roundtrip_mn_assets(name):
     import bpy
 
-    with bpy.data.libraries.load(
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
         str(MN_FILE_PATH),
         link=False,
         assets_only=True,
-    ) as (src, dst):
+    ) as (_src, dst):
         dst.node_groups = [name]
     group = dst.node_groups[0]
     builder = _TREE_BUILDER_FOR.get(group.bl_idname)

@@ -534,7 +534,7 @@ class TestComparisonEqualNotEqual:
     def test_comparison_returns_float(self):
         """Test comparison returns float."""
         with TreeBuilder("TestCompareReturnsFloat"):
-            result = (g.Integer(5) == 4).switch.float(5.0, int(5))
+            result = (g.Integer(5) == 4).switch.float(5.0, 5)
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "FLOAT"
@@ -542,7 +542,7 @@ class TestComparisonEqualNotEqual:
     def test_comparison_returns_int(self):
         """Test comparison returns int."""
         with TreeBuilder("TestCompareReturnsInt"):
-            result = (g.Integer(5) == 4).switch.integer(int(5), 0)
+            result = (g.Integer(5) == 4).switch.integer(5, 0)
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "INT"
@@ -558,7 +558,7 @@ class TestComparisonEqualNotEqual:
     def test_comparison_int(self):
         """Test int comparison."""
         with TreeBuilder("TestCompareInt"):
-            result = (g.Integer(5) == 4).switch.integer(int(5), g.RandomValue.integer())
+            result = (g.Integer(5) == 4).switch.integer(5, g.RandomValue.integer())
 
         assert result.node.bl_idname == g.Switch._bl_idname
         assert result.node.input_type == "INT"
@@ -915,9 +915,8 @@ class TestReverseOperators:
             == g.CombineMatrix._bl_idname
         )
 
-        with tree:
-            with pytest.raises(nodebpy.builder.SocketError):
-                _ = vec @ mat
+        with tree, pytest.raises(nodebpy.builder.SocketError):
+            _ = vec @ mat
 
 
 class TestMatrixMultiplcation:
@@ -938,11 +937,11 @@ class TestMatrixMultiplcation:
 
         assert cube.o.mesh.links[0].to_node.bl_idname == g.SetPosition._bl_idname
         assert (
-            cube.o.mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname  # type: ignore
+            cube.o.mesh.links[0].to_node.inputs["Position"].links[0].from_node.bl_idname
             == g.TransformPoint._bl_idname
         )
         assert (
-            cube.o.mesh.links[0]  # type: ignore
+            cube.o.mesh.links[0]
             .to_node.inputs["Position"]
             .links[0]
             .from_node.inputs["Transform"]
@@ -960,7 +959,7 @@ class TestColorSocketOperatorMath:
             result = color * 0.01
 
             result2 = color * g.Integer(1).o.integer
-            result3 = int(1) * color
+            result3 = 1 * color
             result4 = color * g.Value(2.0)
             result5 = color ** g.Value(3.0)
             result6 = color * (0.1, 0.2, 0.3)

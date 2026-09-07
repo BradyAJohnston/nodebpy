@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import contextlib
+from typing import Any, cast
+
 import bpy
 from bpy.types import bpy_prop_array
 from mathutils import Euler, Vector
@@ -14,9 +17,10 @@ from .util import normalize_name
 def _collect_socket_menu_items(socket: bpy.types.NodeSocket) -> list[str]:
     """Collect menu items for a socket of type 'MENU'."""
     try:
-        socket.default_value = "X" * 100
+        # deliberately invalid: harvest the enum values from the TypeError
+        cast(Any, socket).default_value = "X" * 100
         raise ValueError(
-            f"Should not be able to set default value of this menu socket, but it succeeded: {socket.default_value}, {socket}"
+            f"Should not be able to set default value of this menu socket, but it succeeded: {cast(Any, socket).default_value}, {socket}"
         )
     except TypeError as e:
         string = str(e)
@@ -32,14 +36,17 @@ def collect_socket_info(
     """Extract socket infos for a current node state"""
     inputs = []
     for socket in sockets:
+        assert socket.node is not None
         # Switch-type nodes have sockets that are inactive one or the other
         # so we have to be explicit to capture all of them
-        if "Switch" not in socket.node.bl_idname:
-            if (
+        if "Switch" not in socket.node.bl_idname and (
+            (
                 (socket.is_inactive and socket.node.bl_idname != "NodeEnableOutput")
                 and not hidden
-            ) or "__extend__" in socket.identifier:
-                continue
+            )
+            or "__extend__" in socket.identifier
+        ):
+            continue
 
         socket_info = SocketInfo(
             name=socket.name,
@@ -52,12 +59,12 @@ def collect_socket_info(
             is_multi_input=getattr(socket, "is_multi_input", False),
             structure_type=getattr(socket, "inferred_structure_type", ""),
             menu_items=_collect_socket_menu_items(socket)
-            if socket.type == "MENU" and socket.default_value != ""
+            if socket.type == "MENU" and cast(Any, socket).default_value != ""
             else [],
         )
 
         if hasattr(socket, "default_value"):
-            value = socket.default_value
+            value = cast(Any, socket).default_value
             if isinstance(value, (Euler, Vector, bpy_prop_array)):
                 value = list(value)
             if socket.type == "MENU" and value == "":
@@ -117,7 +124,6 @@ def collect_property_info(node, node_type):
 
                 except TypeError as e:
                     print(f"TypeError: {prop.identifier}, {e}")
-                    pass
 
             properties.append(
                 PropertyInfo(
@@ -126,10 +132,11 @@ def collect_property_info(node, node_type):
                     prop_type="ENUM",
                     enum_items=usable_values,
                     default=default,
+                    enum_all=[item.identifier for item in prop.enum_items],
                 )
             )
         elif prop.type in ["BOOLEAN", "INT", "FLOAT", "STRING"]:
-            default = prop.default if not prop.type == "STRING" else ""
+            default = prop.default if prop.type != "STRING" else ""
             if prop.subtype == "COLOR":
                 default = (0.735, 0.735, 0.735, 1.0)
                 if len(prop.default_array) == 3:
@@ -153,7 +160,7 @@ def collect_property_info(node, node_type):
 # Introspecting a node spins up and tears down a temporary node group, which is
 # the slow part of generation; cache by (bl_idname, tree_type) so the per-tree
 # loop and the re-export registry never pay for it twice.
-_INTROSPECT_CACHE: dict[tuple[str, str], "NodeInfo | None"] = {}
+_INTROSPECT_CACHE: dict[tuple[str, str], NodeInfo | None] = {}
 
 
 def introspect_node(node_type: type, tree_type: str) -> NodeInfo | None:
@@ -174,13 +181,16 @@ def introspect_node(node_type: type, tree_type: str) -> NodeInfo | None:
 def _introspect_node_uncached(node_type: type, tree_type: str) -> NodeInfo | None:
     try:
         # Create temporary node group to instantiate the node
-        temp_tree = bpy.data.node_groups.new("temp", tree_type)
-        node: bpy.types.Node = temp_tree.nodes.new(node_type.__name__)
+        temp_tree = bpy.data.node_groups.new("temp", cast(Any, tree_type))
+        assert temp_tree is not None
+        node = temp_tree.nodes.new(node_type.__name__)
+        assert node is not None
 
-        # Extract basic info
+        # Extract basic info (``bl_rna`` lives on the metaclass, invisible to
+        # type checkers looking at plain ``type``)
         bl_idname = node_type.__name__
-        name = node_type.bl_rna.name
-        description = node_type.bl_rna.description or f"{name} node"
+        name = cast(Any, node_type).bl_rna.name
+        description = cast(Any, node_type).bl_rna.description or f"{name} node"
         color_tag = getattr(node, "color_tag", "UTILITY")
 
         inputs = collect_socket_info(node.inputs, hidden=True)
@@ -200,19 +210,18 @@ def _introspect_node_uncached(node_type: type, tree_type: str) -> NodeInfo | Non
                 continue
             # Build identifier → description map from the socket's RNA enum items.
             rna_descriptions: dict[str, str] = {}
-            try:
+            with contextlib.suppress(Exception):
                 enum_prop = live_socket.bl_rna.properties.get("default_value")
                 if enum_prop and hasattr(enum_prop, "enum_items"):
                     for rna_item in enum_prop.enum_items:
                         rna_descriptions[rna_item.identifier] = rna_item.description
-            except Exception:
-                pass
 
-            saved = live_socket.default_value
+            live_any = cast(Any, live_socket)
+            saved = live_any.default_value
             for raw_item in menu_items:
                 item_value = raw_item.strip("'\"")
                 try:
-                    live_socket.default_value = item_value
+                    live_any.default_value = item_value
                     type_socket_enums.append(
                         EnumInfo(
                             identifier=item_value,
@@ -221,10 +230,10 @@ def _introspect_node_uncached(node_type: type, tree_type: str) -> NodeInfo | Non
                             sockets=collect_socket_info(node.inputs),
                         )
                     )
-                except Exception:
+                except Exception:  # noqa: BLE001, S110
                     pass
                 finally:
-                    live_socket.default_value = saved
+                    live_any.default_value = saved
             break  # only handle the first "Type" socket
 
         # Clean up
@@ -253,15 +262,15 @@ def probe_node_tree_compatibility(node_type: type) -> list[str]:
     for tree_type in TREE_TYPES:
         try:
             temp_tree = bpy.data.node_groups.new("probe", tree_type)
+            assert temp_tree is not None
             temp_tree.nodes.new(node_type.__name__)
             bpy.data.node_groups.remove(temp_tree)
             compatible.append(tree_type)
         except RuntimeError:
             # Clean up on failure too
-            try:
+            with contextlib.suppress(Exception):
+                assert temp_tree is not None
                 bpy.data.node_groups.remove(temp_tree)
-            except Exception:
-                pass
     return compatible
 
 

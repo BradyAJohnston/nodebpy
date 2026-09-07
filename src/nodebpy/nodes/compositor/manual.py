@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Generic, Literal
+from typing import TYPE_CHECKING, Literal
 
 from bpy.types import (
     CompositorNodeConvertColorSpace,
@@ -19,6 +19,7 @@ from ...builder import (
     TreeBuilder,
     VectorSocket,
 )
+from ...builder.socket import BaseSocket
 from ...types import (
     Image,
     InputBoolean,
@@ -29,9 +30,9 @@ from ...types import (
     InputString,
     InputVector,
 )
-from ..geometry.manual import _T, Float, Frame, _MenuSwitchBase
+from ..geometry.manual import Float, Frame, MenuItems, _MenuSwitchBase
 
-__all__ = ["Frame", "MenuSwitch", "tree", "Float"]
+__all__ = ["Float", "Frame", "MenuSwitch", "tree"]
 
 
 def tree(
@@ -46,48 +47,48 @@ def tree(
     )
 
 
-class MenuSwitch(_MenuSwitchBase[_T], Generic[_T]):
+class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
     """Node builder for the Menu Switch node (Compositor tree)"""
 
     @classmethod
     def float(
-        cls, menu: InputMenu = None, items: dict[str, InputFloat] = {}
+        cls, menu: InputMenu = None, items: MenuItems[InputFloat] | None = None
     ) -> "MenuSwitch[FloatSocket]":
         return MenuSwitch(menu, items, data_type="FLOAT")
 
     @classmethod
     def integer(
-        cls, menu: InputMenu = None, items: dict[str, InputInteger] = {}
+        cls, menu: InputMenu = None, items: MenuItems[InputInteger] | None = None
     ) -> "MenuSwitch[IntegerSocket]":
         return MenuSwitch(menu, items, data_type="INT")
 
     @classmethod
     def boolean(
-        cls, menu: InputMenu = None, items: dict[str, InputBoolean] = {}
+        cls, menu: InputMenu = None, items: MenuItems[InputBoolean] | None = None
     ) -> "MenuSwitch[BooleanSocket]":
         return MenuSwitch(menu, items, data_type="BOOLEAN")
 
     @classmethod
     def vector(
-        cls, menu: InputMenu = None, items: dict[str, InputVector] = {}
+        cls, menu: InputMenu = None, items: MenuItems[InputVector] | None = None
     ) -> "MenuSwitch[VectorSocket]":
         return MenuSwitch(menu, items, data_type="VECTOR")
 
     @classmethod
     def color(
-        cls, menu: InputMenu = None, items: dict[str, InputColor] = {}
+        cls, menu: InputMenu = None, items: MenuItems[InputColor] | None = None
     ) -> "MenuSwitch[ColorSocket]":
         return MenuSwitch(menu, items, data_type="RGBA")
 
     @classmethod
     def string(
-        cls, menu: InputMenu = None, items: dict[str, InputString] = {}
+        cls, menu: InputMenu = None, items: MenuItems[InputString] | None = None
     ) -> "MenuSwitch[StringSocket]":
         return MenuSwitch(menu, items, data_type="STRING")
 
     @classmethod
     def menu(
-        cls, menu: InputMenu = None, items: dict[str, InputMenu] = {}
+        cls, menu: InputMenu = None, items: MenuItems[InputMenu] | None = None
     ) -> "MenuSwitch[MenuSocket]":
         return MenuSwitch(menu, items, data_type="MENU")
 

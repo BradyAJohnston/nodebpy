@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "520.13.0"
+version = "520.15.0"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
@@ -44,5 +44,26 @@ dev = [
     "syrupy>=5.0.0",
     "pytest-xdist>=3.8.0",
     "griffe<2.0.0",
-    "ty==0.0.51",
+    "ty==0.0.74",
+    "types-networkx>=3.6.1.20260728",
 ]
+
+# The bpy stubs mark most collections/pointers as `| None` and cannot type
+# dynamic attributes (e.g. `socket.default_value`), which test code exercises
+# constantly under a real Blender runtime. Relax only those rules for tests;
+# src/ passes `ty check` with no per-directory relaxation.
+[[tool.ty.overrides]]
+include = ["tests/**"]
+
+[tool.ty.overrides.rules]
+unresolved-attribute = "ignore"
+not-subscriptable = "ignore"
+invalid-assignment = "ignore"
+invalid-argument-type = "ignore"
+
+[tool.ruff.lint]
+ignore = ["SIM117", "RUF059"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_codegen.py" = ["S102"]
+"tests/test_assets.py" = ["S102"]

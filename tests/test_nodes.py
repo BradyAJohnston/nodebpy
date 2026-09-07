@@ -132,8 +132,8 @@ def test_format_string():
         )
 
         assert len(format.node.format_items) == 3
-        assert format.i[0].default_value == str_to_format  # type: ignore
-        i_string: StringSocket = format.i[1]  # ty: ignore[invalid-assignment]
+        assert format.i[0].default_value == str_to_format
+        i_string: StringSocket = format.i[1]
         assert i_string.name == "String"
         assert i_string.type == "STRING"
         assert i_string.default_value == ""
@@ -167,7 +167,7 @@ def test_field_to_grid():
     assert ftg.node.grid_items[5].name == "test"
     assert ftg.o["test"].socket.links[0].to_socket.node == math.node
     assert all(
-        [i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs]
+        i._default_output_socket.links[0].to_socket.node == ftg.node for i in inputs
     )
     for item, type in zip(
         ftg.node.grid_items, ["VECTOR", "FLOAT", "BOOLEAN", "INT", "VECTOR", "FLOAT"]
@@ -432,9 +432,9 @@ def test_repeat(snapshot):
             )
             >> join
         )
-    assert all(
-        [link.from_socket.type == "GEOMETRY" for link in join.node.inputs[0].links]
-    )
+    links = list(join.node.inputs[0].links)
+
+    assert all(link.from_socket.type == "GEOMETRY" for link in links)
     assert len(tree) == 7
     assert snapshot == tree._repr_markdown_()
 
@@ -515,6 +515,60 @@ def test_menu_switch_menu_items_empty_default_deferred():
     assert len(switch.node.enum_items) == 2
 
 
+def test_menu_switch_item_descriptions_tuple_form():
+    """A dict item value may be a ``(value, description)`` pair — the
+    description lands on the enum item; plain values (including vector
+    tuples) are unaffected."""
+    with TreeBuilder("MenuDescriptions"):
+        switch = g.MenuSwitch.geometry(
+            items={
+                "Object": (g.Cube(), "Use the source object"),
+                "Mesh": g.Grid(),
+            }
+        )
+        vec = g.MenuSwitch.vector(
+            items={"A": (1.0, 2.0, 3.0), "B": ((4.0, 5.0, 6.0), "described")}
+        )
+    assert switch.node.enum_items["Object"].description == "Use the source object"
+    assert switch.node.enum_items["Mesh"].description == ""
+    assert tuple(vec.i["A"].socket.default_value) == (1.0, 2.0, 3.0)
+    assert tuple(vec.i["B"].socket.default_value) == (4.0, 5.0, 6.0)
+    assert vec.node.enum_items["B"].description == "described"
+
+
+def test_menu_switch_item_helper():
+    """``switch.item()`` declares an item and returns a MenuItem handle
+    exposing the input socket, the is_selected boolean output and the
+    description; the first declared item defaults the selection."""
+    with TreeBuilder("MenuItemHelper") as tree:
+        switch = g.MenuSwitch.geometry()
+        obj = switch.item("Object", g.Cube(), description="Use the source object")
+        mesh = switch.item("Mesh", (g.Grid(), "A grid mesh"))
+        obj.is_selected >> tree.outputs.boolean("IsObject")
+        switch >> tree.outputs.geometry("Out")
+    assert obj.description == "Use the source object"
+    assert mesh.description == "A grid mesh"
+    mesh.description = "changed"
+    assert switch.node.enum_items["Mesh"].description == "changed"
+    assert obj.input.socket.links[0].from_node.bl_idname == g.Cube._bl_idname
+    assert obj.is_selected.socket.name == "Object"
+    assert obj.is_selected.socket.type == "BOOLEAN"
+    assert obj.is_selected.socket.is_output
+    # the first declared item defaults the selection, as the constructor does
+    assert switch.i["Menu"].socket.default_value == "Object"
+
+
+def test_menu_switch_item_helper_explicit_selection():
+    """An explicit string selection given to the constructor survives items
+    declared afterwards via item(), even when no items existed yet."""
+    with TreeBuilder("MenuItemExplicit", arrange=None) as tree:
+        switch = g.MenuSwitch.float("B")
+        switch.item("A", 1.0)
+        switch.item("B", tree.inputs.float("In"))
+        switch >> tree.outputs.float("Out")
+    assert switch.i["Menu"].socket.default_value == "B"
+
+
 def test_multi_menu():
     with TreeBuilder() as tree:
         items = (g.Cube(), g.IcoSphere(), g.Grid())
@@ -563,7 +617,7 @@ def test_accumulate_field():
         cube = g.Cube()
         aatr = g.AxisAngleToRotation(angle=1.0)
         tran = g.AccumulateField.point.transform(
-            g.EvaluateAtIndex.point.quaternion(aatr, g.Index() - int(1))
+            g.EvaluateAtIndex.point.quaternion(aatr, g.Index() - 1)
         )
         _ = cube >> g.SetPosition(
             position=g.TransformPoint(g.Position(), tran.o.trailing),
@@ -646,7 +700,7 @@ def test_foreachgeometryelement_zone():
     with pytest.raises(IndexError):
         zone[2]
 
-    assert all([i.socket_type == "VECTOR" for i in zone.input._items])
+    assert all(i.socket_type == "VECTOR" for i in zone.input._items)
     assert len(zone.input._items) == 2
     assert len(zone.output._items) == 1
     assert zone.output._items[0].socket_type == "VECTOR"
@@ -1418,6 +1472,26 @@ def test_compare_node_data_types():
         comp = g.Compare.color.not_equal()
         assert comp.operation == "NOT_EQUAL"
 
+        # --- datablocks (equal / not_equal only) ---
+        for factory, data_type in [
+            (g.Compare.object, "OBJECT"),
+            (g.Compare.image, "IMAGE"),
+            (g.Compare.collection, "COLLECTION"),
+            (g.Compare.material, "MATERIAL"),
+            (g.Compare.font, "FONT"),
+            (g.Compare.sound, "SOUND"),
+        ]:
+            comp = factory.equal()
+            assert comp.data_type == data_type
+            assert comp.operation == "EQUAL"
+            assert comp.i.a.socket.type == data_type
+            assert comp.i.b.socket.type == data_type
+            assert comp.o.result.socket.type == "BOOLEAN"
+
+            comp = factory.not_equal()
+            assert comp.data_type == data_type
+            assert comp.operation == "NOT_EQUAL"
+
 
 def test_manual_field_factories():
     with g.tree("FieldFactories"):
@@ -1755,14 +1829,14 @@ def test_geometry_nodes():
         assert att.data_type == "FLOAT"
 
         rot = g.Rotation()
-        assert list(rot.rotation_euler) == [0.0, 0.0, 0.0]  # ty: ignore[invalid-argument-type]
+        assert list(rot.rotation_euler) == [0.0, 0.0, 0.0]
         rot.rotation_euler = (1.0, 2.0, 3.0)
-        assert list(rot.rotation_euler) == [1.0, 2.0, 3.0]  # ty: ignore[invalid-argument-type]
+        assert list(rot.rotation_euler) == [1.0, 2.0, 3.0]
 
         vec = g.Vector()
-        assert list(vec.vector) == [0.0, 0.0, 0.0]  # ty: ignore[invalid-argument-type]
+        assert list(vec.vector) == [0.0, 0.0, 0.0]
         vec.vector = (1.0, 2.0, 3.0)
-        assert list(vec.vector) == [1.0, 2.0, 3.0]  # ty: ignore[invalid-argument-type]
+        assert list(vec.vector) == [1.0, 2.0, 3.0]
 
         blur = g.BlurAttribute.integer()
         assert blur.data_type == "INT"

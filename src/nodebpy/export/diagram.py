@@ -3,6 +3,9 @@
 
 from __future__ import annotations
 
+import contextlib
+from typing import cast
+
 import bpy
 from bpy.types import Node, NodeTree
 
@@ -37,7 +40,7 @@ def _node_label(node: Node) -> str:
         if socket.is_linked or not hasattr(socket, "default_value"):
             continue
         name = socket.name.lower()
-        try:
+        with contextlib.suppress(Exception):
             value = socket.default_value
             if name == "seed":
                 if isinstance(value, (int, float)) and value != 0:
@@ -46,13 +49,17 @@ def _node_label(node: Node) -> str:
                 if value != 1:
                     key_params.append(f"×{value:.1g}")
             elif name == "offset" and hasattr(value, "__len__"):
-                if not all(v == 0 for v in value):
-                    key_params.append(f"+({','.join(f'{v:.1g}' for v in value)})")
-            elif hasattr(value, "__len__") and len(value) == 3:
-                if not all(v == 0 for v in value) and not all(v == 1 for v in value):
-                    key_params.append(f"({','.join(f'{v:.1g}' for v in value)})")
-        except Exception:
-            pass
+                seq = cast("list[float]", value)
+                if not all(v == 0 for v in seq):
+                    key_params.append(f"+({','.join(f'{v:.1g}' for v in seq)})")
+            elif hasattr(value, "__len__"):
+                seq = cast("list[float]", value)
+                if (
+                    len(seq) == 3
+                    and not all(v == 0 for v in seq)
+                    and not all(v == 1 for v in seq)
+                ):
+                    key_params.append(f"({','.join(f'{v:.1g}' for v in seq)})")
 
     if key_params:
         label += f"<br/><small>{' '.join(key_params[:2])}</small>"

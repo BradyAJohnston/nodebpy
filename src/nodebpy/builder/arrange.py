@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter, deque
+from typing import Any, cast
 
 import bpy
 
@@ -114,10 +115,12 @@ def calculate_node_dimensions(
     enabled_outputs = sum(1 for s in node.outputs if s.enabled)
 
     # count properties specific to this node type (not inherited)
+    # ``bl_rna`` exists on bpy classes via their metaclass, invisible to type
+    # checkers looking at plain ``type``.
     inherited_ids = {
         prop.identifier
         for base in type(node).__bases__
-        for prop in getattr(base, "bl_rna").properties
+        for prop in cast(Any, base).bl_rna.properties
     }
     node_property_count = sum(
         1 for prop in node.bl_rna.properties if prop.identifier not in inherited_ids
@@ -275,8 +278,7 @@ def position_nodes_in_columns(
 
             width, height = calculate_node_dimensions(node, connection_counts, 1.0)
 
-            if width > col_width:
-                col_width = width
+            col_width = max(col_width, width)
 
             node.location = (x, y)
 
