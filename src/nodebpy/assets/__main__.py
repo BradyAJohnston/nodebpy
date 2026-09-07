@@ -63,7 +63,26 @@ def generate_essentials(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog="python -m nodebpy.assets",
+        description=(
+            "Generate typed nodebpy API classes for node-group assets. "
+            "Without a subcommand this regenerates the bundled-essentials "
+            "asset APIs (or, with --blend-file, generates an API module for "
+            "a custom asset library)."
+        ),
+        epilog=(
+            "subcommands:\n"
+            "  dump <blend> <output-dir>    dump every node-group asset in a "
+            ".blend to per-asset .py source files\n"
+            "  build <source-dir> <blend>   rebuild the .blend asset library "
+            "from dumped .py source files\n"
+            "\n"
+            "See 'python -m nodebpy.assets dump --help' and "
+            "'python -m nodebpy.assets build --help' for their options."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument(
         "--blend-file",
         "-b",

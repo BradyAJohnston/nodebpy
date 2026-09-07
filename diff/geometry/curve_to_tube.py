@@ -121,10 +121,8 @@ class Half_spheres(CustomGeometryGroup):
 
         boolean_math = ~shade_smooth
         group = UV_sphere_corrected(
-            **{
-                "Segments": resolution,
-                "Rings": g.IntegerMath.divide_round(resolution, 2).o.value * 2,
-            }
+            Segments=resolution,
+            Rings=g.IntegerMath.divide_round(resolution, 2).o.value * 2,
         )
         capture = g.CaptureAttribute.face(geometry=group >> g.TransformGeometry())
         top_1 = capture.items.boolean("Top", g.Position().o.position.z > 0.0)
@@ -202,13 +200,13 @@ class CurveToTube(CustomGeometryGroup):
                 True,
                 description="Use smooth vertex normals instead of face normals for the result mesh",
             )
-        miter_scale = tree.inputs.boolean(
+        _miter_scale = tree.inputs.boolean(
             "Miter Scale",
             True,
             description="Scale the profile along the axis of the corner's turn to maintain a constant visual width",
             is_panel_toggle=True,
         )
-        miter_scale_limit = tree.inputs.float(
+        _miter_scale_limit = tree.inputs.float(
             "Miter Scale Limit",
             2.3561945,
             description="Angle at which the miter scale stops increasing",
@@ -469,11 +467,10 @@ class CurveToTube(CustomGeometryGroup):
             capture_4 = g.CaptureAttribute.face(geometry=set_position)
             boolean = capture_4.items.boolean("Boolean", True)
             with g.Frame("UV"):
-                combine_xyz = g.CombineXYZ(
+                vector_math_5 = g.CombineXYZ(
                     x=factor_1.output,
-                    y=1.0 - Curve_UV_factor_propagate(**{"Input": factor.output}),
-                )
-                vector_math_5 = combine_xyz.o.vector * (0.5, 1.0, 1.0)
+                    y=1.0 - Curve_UV_factor_propagate(Input=factor.output),
+                ).o.vector * (0.5, 1.0, 1.0)
                 switch_6 = boolean.output.switch.vector(
                     vector_math_5 * (-1.0, 1.0, 1.0), vector_math_5 + (1.0, 0.0, 0.0)
                 )
@@ -668,8 +665,8 @@ class CurveToTube(CustomGeometryGroup):
             ),
         )
         with g.Frame("Tube Mesh & UVs"):
-            group = Curve_UV(**{"Menu": uv_map_parameter_u})
-            group_1 = Curve_UV(**{"Menu": uv_map_parameter_v})
+            group = Curve_UV(Menu=uv_map_parameter_u)
+            group_1 = Curve_UV(Menu=uv_map_parameter_v)
             switch_9 = flip_and_cyclic.output.switch.float(
                 group_1,
                 group_1.o.factor.point.at(g.OffsetPointInCurve(offset=1).o.point_index),
@@ -694,15 +691,15 @@ class CurveToTube(CustomGeometryGroup):
                 scale=radius.output,
                 fill_caps=switch_2,
             )
-            group_2 = Curve_UV_factor_propagate(**{"Input": factor_3.output})
-            combine_xyz_1 = g.CombineXYZ(
+            group_2 = Curve_UV_factor_propagate(Input=factor_3.output)
+            combine_xyz = g.CombineXYZ(
                 x=use_length.output.switch.float(
                     group_2, group_2.o.output * length.output
                 ),
-                y=1.0 - Curve_UV_factor_propagate(**{"Input": factor_2.output}),
+                y=1.0 - Curve_UV_factor_propagate(Input=factor_2.output),
             )
             store_named_attribute_1 = g.StoreNamedAttribute.corner.vector_2d(
-                curve_to_mesh_2, name=uv_map_name, value=combine_xyz_1
+                curve_to_mesh_2, name=uv_map_name, value=combine_xyz
             )
             switch_10 = uv_map.switch.geometry(curve_to_mesh_2, store_named_attribute_1)
         with g.Frame("Shade Smooth and Flat Caps Smooth"):
@@ -738,15 +735,15 @@ class CurveToTube(CustomGeometryGroup):
                 },
             )
             group_3 = Half_spheres(
+                Resolution=profile_resolution,
                 **{
-                    "Resolution": profile_resolution,
                     "Shade Smooth": shade_smooth,
                     "UV Map": uv_map,
                     "UV Name": uv_map_name,
                     "Align Normals": shade_smooth.switch.boolean(
                         true=caps_merge.switch.boolean(caps_align_normals)
                     ),
-                }
+                },
             )
             switch_15 = menu_switch_2.o.custom.switch.geometry(
                 g.GeometryToInstance(group_3, group_3.o.bottom), merge_by_distance
@@ -894,17 +891,17 @@ class CurveToTube(CustomGeometryGroup):
                 abs(transform_point.z), math_1 * transform.output.scale.z
             )
             math_14 = switch_25 * switch_24 + 1.0
-            combine_xyz_2 = g.CombineXYZ(
+            combine_xyz_1 = g.CombineXYZ(
                 x=math_14,
                 y=math_14,
                 z=g.Mix(
                     a_float=math_14, factor_float=0.5, b_float=1.0, clamp_factor=True
                 ),
             )
-            vector_math_8 = transform_point * combine_xyz_2
+            vector_math_8 = transform_point * combine_xyz_1
             mix = g.Mix(
                 a_vector=vector_math_8,
-                b_vector=(transform_point - transform_point_1) * combine_xyz_2
+                b_vector=(transform_point - transform_point_1) * combine_xyz_1
                 + transform_point_1,
                 factor_float=0.5,
                 data_type="VECTOR",
@@ -943,7 +940,7 @@ class CurveToTube(CustomGeometryGroup):
                     ),
                 )
             )
-            combine_xyz_3 = g.CombineXYZ(
+            combine_xyz_2 = g.CombineXYZ(
                 y=consider_curve_radius.switch.float(
                     math_15, caps.switch.float(math_16, switch_28)
                 ),
@@ -953,7 +950,7 @@ class CurveToTube(CustomGeometryGroup):
             store_named_attribute_3 = g.StoreNamedAttribute.corner.vector_2d(
                 switch_27,
                 name=uv_map_name,
-                value=g.NamedAttribute.vector(uv_map_name).o.attribute * combine_xyz_3,
+                value=g.NamedAttribute.vector(uv_map_name).o.attribute * combine_xyz_2,
             )
             switch_29 = uv_map.switch.boolean(true=group_1.o.length).switch.geometry(
                 switch_27, store_named_attribute_3

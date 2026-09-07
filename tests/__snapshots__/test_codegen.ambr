@@ -164,7 +164,7 @@
       geometry = tree.inputs.geometry("Geometry")
       geometry_1 = tree.outputs.geometry("Geometry")
   
-      SnapInner(**{"Geometry": geometry}) >> geometry_1
+      SnapInner(Geometry=geometry) >> geometry_1
   
   # Restore authored node positions.
   tree.node_positions = {
@@ -190,7 +190,7 @@
   from nodebpy import geometry as g, TreeBuilder
   
   with TreeBuilder("SnapshotSingle") as tree:
-      position = g.Position()
+      _position = g.Position()
   '''
 # ---
 # name: test_snapshot_top_level_class
@@ -216,7 +216,7 @@
           geometry = tree.inputs.geometry("Geometry")
           geometry_1 = tree.outputs.geometry("Geometry")
   
-          SnapClassInner(**{"Geometry": geometry}) >> geometry_1
+          SnapClassInner(Geometry=geometry) >> geometry_1
   '''
 # ---
 # name: test_snapshot_with_properties

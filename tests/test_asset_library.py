@@ -68,10 +68,60 @@ def _write_library(path: Path) -> None:
     _clear_node_groups()
 
 
+class _InnerWidget(CustomGeometryGroup):
+    """A group that is an asset itself, is nested inside other assets, and
+    itself nests the shared ``Doubler`` helper — the deepest sharing case."""
+
+    _name = "Inner Widget"
+
+    def _build_group(self, tree):
+        geo = tree.inputs.geometry("Geometry")
+        amount = tree.inputs.float("Amount")
+        doubled = _Doubler(Value=amount).o.doubled
+        offset = g.CombineXYZ(z=doubled)
+        g.SetPosition(geometry=geo, offset=offset) >> tree.outputs.geometry("Geometry")
+
+
+def _write_nested_library(path: Path) -> None:
+    """Write a library where asset "Inner Widget" is nested inside assets
+    "Outer A" and "Outer B", "Outer A" also uses the non-asset ``Doubler``
+    directly, and ``Doubler`` is reachable from all three assets."""
+    inner = _InnerWidget.create_group()
+    inner.asset_mark()
+    assert inner.asset_data is not None
+    inner.asset_data.description = "Inner widget"
+
+    with TreeBuilder("Outer A") as outer_a:
+        geo = outer_a.inputs.geometry("Geometry")
+        factor = outer_a.inputs.float("Factor")
+        doubled = _Doubler(Value=factor).o.doubled
+        widget = _InnerWidget(Geometry=geo, Amount=doubled)
+        widget.o.geometry >> outer_a.outputs.geometry("Geometry")
+    outer_a.tree.asset_mark()
+
+    with TreeBuilder("Outer B") as outer_b:
+        geo = outer_b.inputs.geometry("Geometry")
+        widget = _InnerWidget(Geometry=geo, Amount=1.0)
+        widget.o.geometry >> outer_b.outputs.geometry("Geometry")
+    outer_b.tree.asset_mark()
+
+    bpy.data.libraries.write(
+        str(path), {inner, outer_a.tree, outer_b.tree}, fake_user=True
+    )
+    _clear_node_groups()
+
+
 @pytest.fixture
 def library_blend(tmp_path):
     path = tmp_path / "library.blend"
     _write_library(path)
+    return path
+
+
+@pytest.fixture
+def nested_library_blend(tmp_path):
+    path = tmp_path / "nested_library.blend"
+    _write_nested_library(path)
     return path
 
 
@@ -171,6 +221,93 @@ def test_roundtrip_blend_to_python_to_blend(library_blend, tmp_path):
     assert rebuilt_scale_up.asset_data is not None
     assert rebuilt_scale_up.asset_data.catalog_id == CATALOG_ID
     assert rebuilt_scale_up.is_modifier
+
+
+def test_shared_and_nested_assets_split_into_modules(nested_library_blend, tmp_path):
+    """Every group class is defined exactly once: a group shared by several
+    assets gets its own ``_shared`` module, and an asset nested inside other
+    assets keeps its class in its own module — dependents import both."""
+    out = tmp_path / "src"
+    written = dump_library(nested_library_blend, out)
+    assert set(written) == {"Inner Widget", "Outer A", "Outer B"}
+
+    # Doubler is reachable from all three assets → one module under _shared/,
+    # with no ASSET marker (it is not an asset).
+    shared_code = (out / "geometry" / "_shared" / "doubler.py").read_text()
+    assert "class Doubler(CustomGeometryGroup):" in shared_code
+    assert "ASSET" not in shared_code
+
+    # The nested asset keeps its class in its own module and imports Doubler.
+    inner_code = written["Inner Widget"].read_text()
+    assert "class InnerWidget(CustomGeometryGroup):" in inner_code
+    assert "from ._shared.doubler import Doubler" in inner_code
+    assert "class Doubler" not in inner_code
+    assert "ASSET = InnerWidget" in inner_code
+
+    # Outer A imports both the nested asset and the shared helper it also
+    # uses directly; neither class is re-defined.
+    a_code = written["Outer A"].read_text()
+    assert "from .inner_widget import InnerWidget" in a_code
+    assert "from ._shared.doubler import Doubler" in a_code
+    assert "class InnerWidget" not in a_code and "class Doubler" not in a_code
+
+    # Outer B only references the nested asset, so it imports only that.
+    b_code = written["Outer B"].read_text()
+    assert "from .inner_widget import InnerWidget" in b_code
+    assert "doubler" not in b_code
+
+    # Package markers make the relative imports resolvable.
+    assert (out / "__init__.py").is_file()
+    assert (out / "geometry" / "__init__.py").is_file()
+    assert (out / "geometry" / "_shared" / "__init__.py").is_file()
+
+
+def test_roundtrip_nested_library(nested_library_blend, tmp_path):
+    src = tmp_path / "src"
+    dump_library(nested_library_blend, src)
+    assert not bpy.data.node_groups
+
+    rebuilt_path = tmp_path / "rebuilt.blend"
+    names = build_library(src, rebuilt_path)
+    assert set(names) == {"Inner Widget", "Outer A", "Outer B"}
+    # The shared helper and nested asset were each built exactly once.
+    assert "Doubler" in bpy.data.node_groups
+    assert bpy.data.node_groups["Inner Widget"].asset_data is not None
+
+    # Structural signatures survive the trip.
+    _clear_node_groups()
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+        str(nested_library_blend), link=False, assets_only=True
+    ) as (src_lib, dst):
+        dst.node_groups = list(src_lib.node_groups)
+    originals = {t.name: _structure(t) for t in dst.node_groups}
+    _clear_node_groups()
+
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+        str(rebuilt_path), link=False, assets_only=True
+    ) as (src_lib, dst):
+        assert set(src_lib.node_groups) == set(originals)
+        dst.node_groups = list(src_lib.node_groups)
+    for rebuilt in dst.node_groups:
+        assert _structure(rebuilt) == originals[rebuilt.name], rebuilt.name
+
+
+def test_nested_dump_is_stable_across_a_roundtrip(nested_library_blend, tmp_path):
+    """The module split (own file / _shared / embedded) is deterministic, so a
+    no-op round-trip of the nested library leaves no VCS diff."""
+    first = tmp_path / "first"
+    dump_library(nested_library_blend, first)
+    rebuilt = tmp_path / "rebuilt.blend"
+    build_library(first, rebuilt)
+    _clear_node_groups()
+
+    second = tmp_path / "second"
+    dump_library(rebuilt, second)
+    first_files = sorted(p.relative_to(first) for p in first.rglob("*.py"))
+    second_files = sorted(p.relative_to(second) for p in second.rglob("*.py"))
+    assert first_files == second_files
+    for rel in first_files:
+        assert (second / rel).read_text() == (first / rel).read_text(), rel
 
 
 def test_dump_is_stable_across_a_roundtrip(library_blend, tmp_path):

@@ -26,7 +26,7 @@ import json
 import keyword
 import re
 import textwrap
-from collections.abc import Callable
+from collections.abc import Callable, Collection, Mapping
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
@@ -175,13 +175,15 @@ class DictExpr(Expr):
 
 @dataclass
 class GroupCall(Expr):
-    """``ClassName(**{"Socket Name": value, ...})`` for a generated group class.
+    """``ClassName(Socket=value, ...)`` for a generated group class.
 
-    Socket names are passed through a dict because they need not be valid
-    Python identifiers (``"Box Object"``); ``_establish_links`` matches them
-    by socket name. Inputs whose name is shared by several interface sockets
-    are ambiguous as dict keys, so they ride in ``named_links`` — ``(name,
-    value)`` pairs resolved by name + type at link time.
+    ``_establish_links`` matches inputs by socket name, so names that are
+    valid Python identifiers pass as plain keyword arguments; the rest
+    (``"Box Object"``) ride in a ``**{...}`` unpacking, spliced in place so
+    the socket order is preserved. Inputs whose name is shared by several
+    interface sockets are ambiguous as keywords/dict keys, so they ride in
+    ``named_links`` — ``(name, value)`` pairs resolved by name + type at
+    link time.
     """
 
     func: str
@@ -189,10 +191,28 @@ class GroupCall(Expr):
     named_links: list[tuple[str, Expr]] = field(default_factory=list)
 
     def render(self) -> str:
-        parts = []
-        if self.items:
-            inner = ", ".join(f"{_fmt(k)}: {v.render()}" for k, v in self.items.items())
-            parts.append(f"**{{{inner}}}")
+        parts: list[str] = []
+        raw: dict[str, Expr] = {}
+
+        def flush_raw() -> None:
+            if raw:
+                inner = ", ".join(f"{_fmt(k)}: {v.render()}" for k, v in raw.items())
+                parts.append(f"**{{{inner}}}")
+                raw.clear()
+
+        for k, v in self.items.items():
+            # "self" and "_named_links" are taken by the __init__ signature
+            # itself, so those socket names must stay dict-packed too.
+            if (
+                k.isidentifier()
+                and not keyword.iskeyword(k)
+                and k not in ("self", "_named_links")
+            ):
+                flush_raw()
+                parts.append(f"{k}={v.render()}")
+            else:
+                raw[k] = v
+        flush_raw()
         if self.named_links:
             pairs = ", ".join(f"({_fmt(k)}, {v.render()})" for k, v in self.named_links)
             parts.append(f"_named_links=[{pairs}]")
@@ -3097,6 +3117,27 @@ def _emit_interface(
     """One ``var = tree.inputs.*()`` / ``tree.outputs.*()`` line."""
     method = _INTERFACE_TYPE_METHOD.get(item.socket_type, "geometry")
     var_name = _make_var(item.name, ctx.counter)
+    # A socket no effective link touches (e.g. a panel-toggle input, or one
+    # only read through the modifier UI) still needs its declaration, but the
+    # variable is never referenced again — prefix it so the generated module
+    # passes lint (F841). A menu input with a default counts as referenced:
+    # its deferred ``var.default_value = …`` line reads the variable.
+    if direction == "inputs":
+        used = any(
+            link.from_node.bl_idname == "NodeGroupInput"
+            and link.from_socket.identifier == item.identifier
+            for link in ctx.links
+        )
+        if not used and item.socket_type == "NodeSocketMenu":
+            used = bool(getattr(item, "default_value", None))
+    else:
+        used = any(
+            link.to_node.bl_idname == "NodeGroupOutput"
+            and link.to_socket.identifier == item.identifier
+            for link in ctx.links
+        )
+    if not used:
+        var_name = "_" + var_name
     ctx.var_map[f"_iface_{direction}_{item.identifier}"] = _Val(
         Ref(var_name), is_socket=True
     )
@@ -3202,6 +3243,8 @@ def to_python(
     top_level: Literal["with", "class"] = "with",
     format: bool = True,
     nodebpy_pkg: str = "nodebpy",
+    group_class_names: Mapping[str, str] | None = None,
+    external_groups: Collection[str] | None = None,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -3252,6 +3295,15 @@ def to_python(
         package, pass the path that reaches it *relative to the generated
         module's package* — e.g. ``"..vendor.nodebpy"`` — so the emitted
         imports stay relative to the install/vendor location.
+    group_class_names: Mapping[str, str] | None
+        Class name to use for a given tree name, overriding the derived
+        PascalCase name — for callers that split groups across several
+        generated modules and need the names to agree between them.
+    external_groups: Collection[str] | None
+        Tree names whose classes are defined in another module: they are
+        referenced by their ``group_class_names`` entry (which must exist)
+        but no class definition is emitted for them. The caller is
+        responsible for making the name resolvable (e.g. an import).
 
     Returns
     -------
@@ -3260,12 +3312,24 @@ def to_python(
     """
     node_tree: NodeTree = tree.tree if hasattr(tree, "tree") else tree  # ty: ignore[invalid-assignment]
 
+    class_names = dict(group_class_names or {})
+    externals = set(external_groups or ())
+    if missing := externals - class_names.keys():
+        raise ValueError(
+            f"external_groups without a group_class_names entry: {sorted(missing)}"
+        )
+
     collector = _GroupCollector(
         min_chain_length=min_chain_length,
         strict=strict,
         max_inline_width=max_inline_width,
         snapshot_positions=snapshot_positions,
         keep_reroutes=keep_reroutes,
+        group_class_names=class_names,
+        external_groups=externals,
+        # Reserve every assigned name so a locally derived one never shadows a
+        # class the caller imports from another module.
+        used_names=set(class_names.values()),
     )
 
     # In "class" mode the top-level tree is registered as a Custom*Group class
@@ -3413,6 +3477,12 @@ class _GroupCollector:
     max_inline_width: int | None
     snapshot_positions: bool = False
     keep_reroutes: bool = False
+    # Tree name → class name to use, overriding the derived name. Lets a
+    # caller that splits groups across modules keep names globally consistent.
+    group_class_names: dict[str, str] = field(default_factory=dict)
+    # Tree names whose classes are defined elsewhere (the caller provides the
+    # import): referenced by their assigned name, never emitted here.
+    external_groups: set[str] = field(default_factory=set)
     class_defs: list[str] = field(default_factory=list)
     names_by_tree: dict[str, str] = field(default_factory=dict)
     used_names: set[str] = field(default_factory=set)
@@ -3424,6 +3494,10 @@ class _GroupCollector:
         existing = self.names_by_tree.get(node_tree.name)
         if existing is not None:
             return existing
+        if node_tree.name in self.external_groups:
+            class_name = self.group_class_names[node_tree.name]
+            self.names_by_tree[node_tree.name] = class_name
+            return class_name
         class_name = self._unique_name(node_tree.name)
         # Reserve before recursing so a self-referential group resolves.
         self.names_by_tree[node_tree.name] = class_name
@@ -3444,6 +3518,10 @@ class _GroupCollector:
         return class_name
 
     def _unique_name(self, tree_name: str) -> str:
+        assigned = self.group_class_names.get(tree_name)
+        if assigned is not None:
+            self.used_names.add(assigned)
+            return assigned
         base = _class_name(tree_name)
         name, n = base, 1
         while name in self.used_names:
@@ -3555,6 +3633,8 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
                         "with register_emitter() or pass strict=False."
                     )
                 var = _make_var(node.bl_label or "node", ctx.counter)
+                if not ctx.outgoing.get(name):
+                    var = "_" + var
                 ctx.var_map[name] = _Val(Ref(var))
                 tagged_body.append((frame, f"    {var} = None  # TODO: {message}"))
                 continue
@@ -3622,6 +3702,11 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
             continue
 
         var = _make_var(node.bl_label or "node", ctx.counter)
+        # A node created purely for its side effect (a gizmo, a dangling
+        # node) is never referenced again — prefix its variable so the
+        # generated module passes lint (F841).
+        if not out_links:
+            var = "_" + var
         width = _MAX_LINE_WIDTH - 4 * len(frame)
         tagged_body.extend(
             (frame, line)
@@ -4241,14 +4326,15 @@ def _emit_viewer(node, ctx: EmitContext) -> Expr | _Val | None:
         kwargs["domain"] = Lit(node.domain)
     if getattr(node, "ui_shortcut", 0):
         kwargs["ui_shortcut"] = Lit(node.ui_shortcut)
-    var = _make_var("viewer", ctx.counter)
-    ctx.pending_lines.append(f"    {var} = {Call('g.Viewer', kwargs=kwargs).render()}")
-
     order = {s.identifier: i for i, s in enumerate(node.inputs)}
     links = sorted(
         ctx.incoming.get(node.name, ()),
         key=lambda link: order.get(link.to_socket.identifier, 0),
     )
+    var = _make_var("viewer", ctx.counter)
+    if not links:  # nothing wired into it → the variable is never read (F841)
+        var = "_" + var
+    ctx.pending_lines.append(f"    {var} = {Call('g.Viewer', kwargs=kwargs).render()}")
     for link in links:
         statement = BinOp(">>", ctx.upstream_expr(link), Ref(var))
         ctx.pending_lines.extend(_stmt_lines(statement))

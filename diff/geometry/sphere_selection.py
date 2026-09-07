@@ -27,7 +27,7 @@ class SphereSelection(CustomGeometryGroup):
             "Selection", description="Selection of elements within a sphere"
         )
 
-        transform_gizmo = g.TransformGizmo(
+        _transform_gizmo = g.TransformGizmo(
             value=(g.CombineTransform(translation=center),),
             position=center,
             use_translation_x=True,

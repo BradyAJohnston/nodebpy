@@ -3,28 +3,7 @@
 from nodebpy import geometry as g
 from nodebpy.builder import CustomGeometryGroup
 
-
-class TransformAndProject(CustomGeometryGroup):
-    _name = "Transform and Project"
-    _color_tag = "VECTOR"
-
-    def _build_group(self, tree):
-        vector = tree.inputs.vector("Vector", (0.0, 0.0, 0.0), subtype="XYZ")
-        transform = tree.inputs.matrix("Transform")
-        projection = tree.inputs.matrix("Projection")
-        normalized = tree.outputs.vector("Normalized", dimensions=2)
-        depth = tree.outputs.float("Depth")
-
-        transform_point = vector.transform(transform)
-        with g.Frame("Depth in scene units"):
-            abs(transform_point.z) >> depth
-        vector_math = g.VectorMath.multiply_add(
-            g.ProjectPoint(vector=transform_point, transform=projection),
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.5),
-        )
-
-        vector_math >> normalized
+from .transform_and_project import TransformAndProject
 
 
 class Group3DToScreenSpace(CustomGeometryGroup):
@@ -58,11 +37,9 @@ class Group3DToScreenSpace(CustomGeometryGroup):
 
         camera_info = g.CameraInfo(camera=camera)
         group = TransformAndProject(
-            **{
-                "Vector": vector,
-                "Transform": g.ObjectInfo(object=camera).o.transform.invert(),
-                "Projection": camera_info,
-            }
+            Vector=vector,
+            Transform=g.ObjectInfo(object=camera).o.transform.invert(),
+            Projection=camera_info,
         )
         (
             clamp_depth.switch.float(

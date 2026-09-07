@@ -2521,6 +2521,49 @@ def test_roundtrip_bundled_asset(path, name):
 # ---------------------------------------------------------------------------
 
 
+def test_unused_variables_get_underscore_prefix():
+    """A node whose outputs feed nothing and interface sockets no effective
+    link touches still emit their declarations, but bound to ``_``-prefixed
+    variables so the generated module passes lint (F841)."""
+    with TreeBuilder("UnusedVars") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        tree.inputs.float("Spare Input")
+        tree.outputs.float("Never Fed")
+        g.Value()  # dangling: outputs unused
+        geo >> tree.outputs.geometry("Geometry")
+
+    code = _assert_roundtrip(tree)
+    assert "_spare_input = tree.inputs.float(" in code
+    assert "_never_fed = tree.outputs.float(" in code
+    assert "_value = g.Value()" in code
+    # Referenced variables keep their plain names.
+    assert "geometry = tree.inputs.geometry(" in code
+
+
+def test_group_call_mixes_keywords_and_raw_names():
+    """Group-call inputs whose socket names are valid identifiers render as
+    plain keyword arguments; only names that aren't (``"Box Value"``) stay in
+    a ``**{...}`` unpacking, spliced in place so socket order is preserved."""
+    from nodebpy.builder import CustomGeometryGroup
+
+    class _MixedNames(CustomGeometryGroup):
+        _name = "MixedNamesGrp"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            tree.inputs.float("Box Value")
+            geo >> tree.outputs.geometry("Geometry")
+
+    with TreeBuilder("MixedNames") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        value = tree.inputs.float("Value")
+        grp = _MixedNames(**{"Geometry": geo, "Box Value": value})
+        grp >> tree.outputs.geometry("Out")
+
+    code = _assert_roundtrip(tree)
+    assert 'MixedNamesGrp(Geometry=geometry, **{"Box Value": value})' in code
+
+
 def test_keyword_named_output_uses_suffixed_attribute():
     """An output socket whose name would normalize to a Python keyword (``From``
     → ``from``) is read via the suffixed attribute ``.o.from_`` — ``normalize_name``

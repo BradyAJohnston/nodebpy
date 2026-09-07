@@ -3,6 +3,8 @@
 from nodebpy import geometry as g
 from nodebpy.builder import CustomGeometryGroup
 
+from .is_edge_boundary import IsEdgeBoundary
+
 
 class Average_face_corners_for_edge(CustomGeometryGroup):
     _name = ".average_face_corners_for_edge"
@@ -21,22 +23,6 @@ class Average_face_corners_for_edge(CustomGeometryGroup):
                 vector, vector.corner.mean(hash_value)
             )
             >> vector_1
-        )
-
-
-class IsEdgeBoundary(CustomGeometryGroup):
-    _name = "Is Edge Boundary"
-    _color_tag = "INPUT"
-
-    def _build_group(self, tree):
-        is_edge_boundary = tree.outputs.boolean(
-            "Is Edge Boundary",
-            description="Selection of edges that are part of the boundary of a mesh surface",
-        )
-
-        (
-            g.Compare.integer.equal(g.EdgeNeighbors(), 1).o.result.edge.evaluate()
-            >> is_edge_boundary
         )
 
 
@@ -61,13 +47,10 @@ class IsUVSplit(CustomGeometryGroup):
         with g.Frame("Compare averages for face count > 2"):
             edges_of_corner = g.EdgesOfCorner()
             group = Average_face_corners_for_edge(
-                **{
-                    "Edge Index": edges_of_corner.o.previous_edge_index,
-                    "Vector": uv_map,
-                }
+                **{"Edge Index": edges_of_corner.o.previous_edge_index}, Vector=uv_map
             )
             group_1 = Average_face_corners_for_edge(
-                **{"Edge Index": edges_of_corner, "Vector": uv_map}
+                **{"Edge Index": edges_of_corner}, Vector=uv_map
             )
         value = g.Value(0.00001)
         corners_of_edge = g.CornersOfEdge(weights=vertex_of_corner)

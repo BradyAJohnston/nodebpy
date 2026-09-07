@@ -30,7 +30,7 @@ class BoxSelection(CustomGeometryGroup):
 
         position = g.Position()
         vector_math = size * 0.5
-        transform_gizmo = g.TransformGizmo(
+        _transform_gizmo = g.TransformGizmo(
             value=(g.CombineTransform(translation=center),),
             position=center,
             use_translation_x=True,
