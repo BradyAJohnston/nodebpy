@@ -158,7 +158,7 @@ register_customization(
 
 
 # Generic field nodes: the generator now emits the full generic structure
-# (Generic[_T], _S-typed sockets, __init__, data_type/domain properties, and the
+# (the [T] type parameter, S-typed sockets, __init__, data_type/domain properties, and the
 # flat per-type/per-domain factories). Only the nested `<node>.<domain>.<dtype>()`
 # domain-factory helpers are bespoke (they self-reference the class for precise
 # return typing), so they live in extra_body; the colliding flat domain factories

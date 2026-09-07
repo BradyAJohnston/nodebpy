@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, TypeVar, Union, cast
+from typing import TYPE_CHECKING, ClassVar, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -14,8 +14,8 @@ from bpy.types import (
 if TYPE_CHECKING:
     from .manual import EvaluateClosure
 
-from ...builder import BaseNode as BaseNode
 from ...builder import (
+    BaseNode,
     BooleanSocket,
     BundleSocket,
     ClosureSocket,
@@ -346,7 +346,7 @@ class BaseSimulationZone(BaseZone):
         "GEOMETRY",
         "BUNDLE",
     )
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
 
 class SimulationInput(BaseSimulationZone, BaseZoneInput):
@@ -421,7 +421,7 @@ class BaseRepeatZone(BaseZone):
         "CLOSURE",
     )
 
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
 
 class RepeatInput(BaseRepeatZone, BaseZoneInput):
@@ -761,7 +761,7 @@ class ForEachGeometryElementInput(BaseZoneInput):
         "MATRIX",
         "MENU",
     )
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     _bl_idname = "GeometryNodeForeachGeometryElementInput"
     node: bpy.types.GeometryNodeForeachGeometryElementInput
@@ -806,7 +806,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
         "MATRIX",
     )
     _generation_data_types = _socket_data_types + ("GEOMETRY",)
-    _type_map = {"VALUE": "FLOAT"}
+    _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}
 
     _bl_idname = "GeometryNodeForeachGeometryElementOutput"
     node: bpy.types.GeometryNodeForeachGeometryElementOutput
@@ -872,6 +872,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
             if type is None:
                 raise TypeError(f"item {name!r} requires a value or an explicit type=")
         item = self.items_generated.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         item.domain = domain
         handle = _GenerationItem(self, item)
         if source is not None:
@@ -965,6 +966,7 @@ class _ClosureInputItems(_SocketItemFactory):
         zone = self._owner
         items = zone.output.node.input_items
         item = items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         if structure_type != "AUTO":
             item.structure_type = structure_type
         return _wrap_socket(
@@ -984,6 +986,7 @@ class _ClosureOutputItems(_SocketItemFactory):
         zone = self._owner
         items = zone.output.node.output_items
         item = items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
         if structure_type != "AUTO":
             item.structure_type = structure_type
         return _wrap_socket(_socket_for_item(zone.output.node, items, "Item_", item))
@@ -1034,13 +1037,12 @@ class ClosureZone(_ZonePair):
         return self.output.o.closure
 
 
-_ClosureItemCollections = Union[
-    NodeClosureInputItems,
-    NodeClosureOutputItems,
-    NodeEvaluateClosureInputItems,
-    NodeEvaluateClosureOutputItems,
-    NodeEvaluateClosureOutputItems,
-]
+_ClosureItemCollections = (
+    NodeClosureInputItems
+    | NodeClosureOutputItems
+    | NodeEvaluateClosureInputItems
+    | NodeEvaluateClosureOutputItems
+)
 
 
 def _sync_closure_items(
@@ -1049,6 +1051,7 @@ def _sync_closure_items(
     target.clear()
     for source_item in source:
         item = target.new(source_item.socket_type, source_item.name)
+        assert item is not None
         item.structure_type = source_item.structure_type
 
 

@@ -25,9 +25,8 @@ from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
 from nodebpy import shader as s
-from nodebpy.builder import BaseNode as BaseNode
+from nodebpy.builder import BaseNode, NodeGroupBuilder, SocketAccessor, SocketError
 from nodebpy.builder import ColorSocket as ColorSocketLinker
-from nodebpy.builder import NodeGroupBuilder, SocketAccessor, SocketError
 
 
 class TestTreeBuilder:
@@ -615,7 +614,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                     else "MULTIPLY"
                 )
             elif isinstance(output.socket, NodeSocketBool):
-                if not tree_type == "GeometryNodeTree":
+                if tree_type != "GeometryNodeTree":
                     continue
                 result = output | True
                 assert result.node is not None
@@ -625,7 +624,7 @@ def test_add_all_nodes(module, tree_type, class_names):
                 assert result.node.inputs[1].default_value
                 assert result.operation == "OR"
             elif isinstance(output.socket, NodeSocketMatrix):
-                if not tree_type == "GeometryNodeTree":
+                if tree_type != "GeometryNodeTree":
                     continue
                 result = output @ g.CombineTransform()
                 assert result.node is not None
@@ -818,13 +817,11 @@ class TestSocketAccessor:
             )
 
             assert all(
-                [
-                    a == b.name
-                    for a, b in zip(
-                        ["Geometry", "Selection", "Position", "Offset"],
-                        list(setpos.i),
-                    )
-                ]
+                a == b.name
+                for a, b in zip(
+                    ["Geometry", "Selection", "Position", "Offset"],
+                    list(setpos.i),
+                )
             )
 
     def test_ignore_visibility_outside_context_returns_false(self):
@@ -1046,7 +1043,7 @@ class TestEstablishLinksNameFallback:
 
         from numpy.testing import assert_allclose
 
-        assert_allclose(node.node.inputs["Translation"].default_value, (1.0, 2.0, 3.0))
+        assert_allclose(node.node.inputs["Translation"].default_value, (1.0, 2.0, 3.0))  # ty: ignore[no-matching-overload]
 
 
 class TestRShiftFallback:

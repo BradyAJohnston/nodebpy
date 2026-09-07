@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generic, Mapping, TypeVar, cast
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 
 from bpy.types import ID, Node, NodeSocket
 from mathutils import Euler
@@ -9,7 +10,7 @@ from ..types import _is_default_value
 from ._registry import _wrap_socket
 from ._utils import _SocketLike
 from .node import DynamicInputsMixin
-from .socket import Socket
+from .socket import BaseSocket, Socket
 
 if TYPE_CHECKING:
     from ..types import (
@@ -95,7 +96,7 @@ def _infer_value_type(value: Any) -> str | None:
             return None
 
 
-_SocketT = TypeVar("_SocketT", bound=Socket, default=Socket)
+_SocketT = TypeVar("_SocketT", bound=BaseSocket, default=Socket)
 
 
 class Item(Generic[_SocketT]):
@@ -149,6 +150,29 @@ class Item(Generic[_SocketT]):
         return cast(
             "_SocketT", _wrap_socket(self._owner._item_socket(self._item, output=True))
         )
+
+
+class MenuItem(Item[_SocketT]):
+    """Handle for one Menu Switch enum item.
+
+    ``input`` is the item's input socket (typed to the switch's data
+    type), ``is_selected`` the item's boolean output socket, and
+    ``description`` the tooltip Blender shows for the item in the menu.
+    """
+
+    @property
+    def is_selected(self) -> BooleanSocket:
+        """Boolean output socket — True when this item is selected."""
+        return cast("BooleanSocket", self.output)
+
+    @property
+    def description(self) -> str:
+        """Tooltip shown for this item in the drop-down menu."""
+        return self._item.description
+
+    @description.setter
+    def description(self, value: str) -> None:
+        self._item.description = value
 
 
 class ItemsMixin(DynamicInputsMixin):
