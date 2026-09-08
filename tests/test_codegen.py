@@ -488,6 +488,35 @@ def test_keep_reroutes_with_snapshot_positions():
     assert f'"{reroute.name}": (360.0, 120.0)' in code  # reroute position kept
 
 
+def test_keep_reroutes_across_frame_boundary():
+    """A reroute chain crossing a frame boundary must not break emission order.
+
+    The frame-cluster sort has to order clusters with reroute-aware edges when
+    ``keep_reroutes`` is on; with collapsed edges the outside reroute has no
+    ordering constraints and lands before the framed reroute it consumes
+    (``CodegenError: referenced before any code was generated``). Shape
+    reduced from the bundled "Scatter on Surface" asset."""
+    with TreeBuilder("RerouteFrames", arrange=None) as tree:
+        out = tree.outputs.float("Out")
+        value = g.Value()
+        r1 = tree.tree.nodes.new("NodeReroute")
+        r2 = tree.tree.nodes.new("NodeReroute")
+        tree.tree.links.new(value.node.outputs[0], r1.inputs[0])
+        tree.tree.links.new(r1.outputs[0], r2.inputs[0])
+        outside = g.Math.add(0.0, 1.0)
+        tree.tree.links.new(r2.outputs[0], outside.node.inputs[0])
+        framed = g.Math.add(outside, 1.0)
+        framed >> out
+        # r1 sits inside a frame with a node that depends on the outside
+        # chain, so the frame cluster must sort after r2 — which consumes r1.
+        frame = tree.tree.nodes.new("NodeFrame")
+        r1.parent = frame
+        framed.node.parent = frame
+
+    code = to_python(tree, keep_reroutes=True, format=False)
+    assert code.count("g.Reroute(") == 2
+
+
 def test_snapshot_positions_nested_group_round_trip():
     """snapshot_positions restores locations inside nested group classes too:
     the generated ``_build_group`` disables its own auto-layout and applies a

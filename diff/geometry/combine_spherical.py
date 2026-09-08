@@ -9,6 +9,8 @@ class CombineSpherical(CustomGeometryGroup):
     _color_tag = "CONVERTER"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         r = tree.inputs.float(
             "R",
             0.0,
@@ -43,6 +45,15 @@ class CombineSpherical(CustomGeometryGroup):
         vector_rotate_1 = g.VectorRotate.z_axis(vector_rotate, angle=phi)
 
         vector_rotate_1 >> vector
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (-120.0, 200.0),
+            "Vector Math": (-680.0, 240.0),
+            "Vector Rotate": (-500.0, 240.0),
+            "Vector Rotate.001": (-320.0, 240.0),
+            "Group Input": (-900.0, 240.0),
+        }
 
 
 ASSET = CombineSpherical

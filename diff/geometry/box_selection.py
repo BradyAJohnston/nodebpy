@@ -9,6 +9,8 @@ class BoxSelection(CustomGeometryGroup):
     _color_tag = "INPUT"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         center = tree.inputs.vector(
             "Center",
             (0.0, 0.0, 0.0),
@@ -41,6 +43,22 @@ class BoxSelection(CustomGeometryGroup):
             ((position >= center - vector_math) & (position <= center + vector_math))
             >> selection
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (340.0, 40.0),
+            "Compare": (-20.0, 40.0),
+            "Position": (-260.0, 120.0),
+            "Vector Math": (-260.0, -100.0),
+            "Group Input": (-520.0, 260.0),
+            "Vector Math.001": (-520.0, 40.0),
+            "Group Input.001": (-700.0, 40.0),
+            "Boolean Math": (160.0, 40.0),
+            "Compare.001": (-20.0, -100.0),
+            "Vector Math.002": (-260.0, 40.0),
+            "Transform Gizmo": (-20.0, 280.0),
+            "Combine Transform": (-280.0, 340.0),
+        }
 
 
 ASSET = BoxSelection

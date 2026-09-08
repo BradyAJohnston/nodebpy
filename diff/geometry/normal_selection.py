@@ -9,6 +9,8 @@ class NormalSelection(CustomGeometryGroup):
     _color_tag = "INPUT"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         direction = tree.inputs.vector(
             "Direction",
             (0.0, 0.0, 1.0),
@@ -39,6 +41,15 @@ class NormalSelection(CustomGeometryGroup):
             )
             >> selection
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (140.0, 160.0),
+            "Group Input": (-260.0, 200.0),
+            "Normal": (-260.0, 120.0),
+            "Compare": (-60.0, 160.0),
+            "Group Input.001": (-260.0, 20.0),
+        }
 
 
 ASSET = NormalSelection

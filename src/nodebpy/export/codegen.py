@@ -846,7 +846,7 @@ def _frame_chain(node) -> list:
     return chain
 
 
-def _frame_order(node_tree, ordered):
+def _frame_order(node_tree, ordered, keep_reroutes: bool = False):
     """Reorder ``ordered`` so nodes sharing a frame path emit contiguously and
     nested frames stay grouped under their parent.
 
@@ -866,9 +866,12 @@ def _frame_order(node_tree, ordered):
 
     node_by_name = {n.name: n for n in ordered}
     in_order = set(node_by_name)
+    # The ordering edges must match how the nodes will actually be emitted:
+    # when reroutes emit as ordinary nodes, the cluster sort has to see their
+    # edges too, or reroutes end up placed before their sources.
     edges = [
         (a.name, b.name)
-        for a, b in _ordering_edges(node_tree)
+        for a, b in _ordering_edges(node_tree, keep_reroutes)
         if a.name in in_order and b.name in in_order
     ]
     dropped: set[str] = set()
@@ -3587,7 +3590,9 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
         for n in _topo_sort(node_tree, collector.keep_reroutes)
         if n.bl_idname not in skip
     ]
-    ordered, frame_path_of, frame_nodes = _frame_order(node_tree, ordered)
+    ordered, frame_path_of, frame_nodes = _frame_order(
+        node_tree, ordered, collector.keep_reroutes
+    )
 
     iface_lines = _emit_interface_lines(node_tree, ctx)
 

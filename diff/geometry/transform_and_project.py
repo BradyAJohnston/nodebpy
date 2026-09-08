@@ -9,6 +9,8 @@ class TransformAndProject(CustomGeometryGroup):
     _color_tag = "VECTOR"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         vector = tree.inputs.vector("Vector", (0.0, 0.0, 0.0), subtype="XYZ")
         transform = tree.inputs.matrix("Transform")
         projection = tree.inputs.matrix("Projection")
@@ -25,6 +27,18 @@ class TransformAndProject(CustomGeometryGroup):
         )
 
         vector_math >> normalized
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Project Point.001": (-259.3, -10.4),
+            "Transform Point.001": (-454.5, 43.2),
+            "Vector Math.001": (-79.3, -10.4),
+            "Separate XYZ.003": (29.8, -36.0),
+            "Math.001": (209.8, -36.0),
+            "Frame.003": (-125.0, 255.0),
+            "Node": (398.1, 42.8),
+            "Group Input": (-717.1, 9.1),
+        }
 
 
 ASSET = TransformAndProject

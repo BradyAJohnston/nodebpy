@@ -2,7 +2,6 @@
 # Rebuild the library with nodebpy.assets.build_library (python -m nodebpy.assets build).
 from nodebpy import geometry as g
 from nodebpy.builder import CustomGeometryGroup
-
 from .project_with_depth import ProjectWithDepth
 
 
@@ -11,6 +10,8 @@ class ScreenTo3DSpace(CustomGeometryGroup):
     _color_tag = "VECTOR"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         normalized = tree.inputs.vector(
             "Normalized",
             (0.5, 0.5),
@@ -51,6 +52,17 @@ class ScreenTo3DSpace(CustomGeometryGroup):
             )
             >> vector
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Input": (-434.9, 11.4),
+            "Group Output": (20.0, -40.0),
+            "Group": (-200.0, -40.0),
+            "Camera Info": (-640.0, -160.0),
+            "Invert Matrix": (-480.0, -100.0),
+            "Object Info.001": (-640.0, -300.0),
+            "Group Input.001": (-860.0, -340.0),
+        }
 
 
 ASSET = ScreenTo3DSpace

@@ -9,6 +9,8 @@ class CaptureRestGeometry(CustomGeometryGroup):
     _color_tag = "GEOMETRY"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         geometry = tree.inputs.geometry(
             "Geometry", description="Points to modify the positions of"
         )
@@ -35,6 +37,22 @@ class CaptureRestGeometry(CustomGeometryGroup):
             >> g.SetGeometryBundle(bundle=store_bundle_item)
             >> geometry_1
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Set Geometry Bundle": (420.0, 60.0),
+            "Set Position": (-120.0, -220.0),
+            "Named Attribute": (-480.0, -300.0),
+            "Group Output": (600.0, 60.0),
+            "Group Input": (-140.0, 60.0),
+            "Get Geometry Bundle": (40.0, 60.0),
+            "Store Bundle Item": (240.0, 0.0),
+            "Switch": (-300.0, -240.0),
+            "Position": (-480.0, -240.0),
+            "Switch.001": (60.0, -60.0),
+            "Group Input.002": (-120.0, -100.0),
+            "Group Input.003": (-300.0, -160.0),
+        }
 
 
 ASSET = CaptureRestGeometry

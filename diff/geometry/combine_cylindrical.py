@@ -9,6 +9,8 @@ class CombineCylindrical(CustomGeometryGroup):
     _color_tag = "CONVERTER"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         r = tree.inputs.float(
             "R",
             0.0,
@@ -40,6 +42,16 @@ class CombineCylindrical(CustomGeometryGroup):
             + g.CombineXYZ(z=z)
             >> vector
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (-60.0, -100.0),
+            "Vector Math": (-720.0, 40.0),
+            "Group Input": (-920.0, -100.0),
+            "Vector Math.001": (-260.0, -100.0),
+            "Combine XYZ.001": (-500.0, -200.0),
+            "Vector Rotate.002": (-500.0, -20.0),
+        }
 
 
 ASSET = CombineCylindrical

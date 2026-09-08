@@ -9,6 +9,8 @@ class EdgeLength(CustomGeometryGroup):
     _color_tag = "INPUT"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         length = tree.outputs.float("Length")
 
         edge_vertices = g.EdgeVertices()
@@ -18,6 +20,14 @@ class EdgeLength(CustomGeometryGroup):
             ).edge.evaluate()
             >> length
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (60.0, -20.0),
+            "Edge Vertices": (-540.0, -20.0),
+            "Vector Math": (-340.0, -20.0),
+            "Evaluate on Domain.001": (-140.0, -20.0),
+        }
 
 
 ASSET = EdgeLength

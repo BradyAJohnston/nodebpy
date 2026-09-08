@@ -9,6 +9,8 @@ class SmoothGeometry(CustomGeometryGroup):
     _color_tag = "GEOMETRY"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         geometry = tree.inputs.geometry(
             "Geometry", description="Points to smooth based on their neighbors"
         )
@@ -37,6 +39,15 @@ class SmoothGeometry(CustomGeometryGroup):
             )
             >> geometry_1
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (370.5, 0.0),
+            "Group Input": (-460.0, 0.0),
+            "Set Position": (100.0, 40.0),
+            "Position": (-260.0, -40.0),
+            "Blur Attribute": (-80.0, -20.0),
+        }
 
 
 ASSET = SmoothGeometry

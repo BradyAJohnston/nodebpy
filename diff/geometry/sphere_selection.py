@@ -9,6 +9,8 @@ class SphereSelection(CustomGeometryGroup):
     _color_tag = "INPUT"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         center = tree.inputs.vector(
             "Center",
             (0.0, 0.0, 0.0),
@@ -35,6 +37,18 @@ class SphereSelection(CustomGeometryGroup):
             use_translation_z=True,
         )
         (g.Position().o.position.distance(center) <= radius) >> selection
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (320.0, 40.0),
+            "Position": (-260.0, 40.0),
+            "Group Input": (-260.0, -180.0),
+            "Group Input.001": (-260.0, -60.0),
+            "Transform Gizmo": (140.0, -140.0),
+            "Combine Transform": (-40.0, -120.0),
+            "Vector Math": (-40.0, 40.0),
+            "Compare": (140.0, 40.0),
+        }
 
 
 ASSET = SphereSelection

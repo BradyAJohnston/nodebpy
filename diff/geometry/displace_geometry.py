@@ -9,6 +9,8 @@ class DisplaceGeometry(CustomGeometryGroup):
     _color_tag = "GEOMETRY"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         geometry = tree.inputs.geometry(
             "Geometry", description="Geometry with points to displace"
         )
@@ -82,7 +84,7 @@ class DisplaceGeometry(CustomGeometryGroup):
         )
         evaluate_closure.inputs.geometry("Geometry", set_position)
         evaluate_closure.inputs.boolean("Selection", selection)
-        evaluate_closure.inputs.float("Strength", math)
+        evaluate_closure.inputs.float("Strength", g.Reroute(input=math))
         evaluate_closure.inputs.integer("Substep Index", repeat_zone.iteration)
         geometry_3 = evaluate_closure.outputs.geometry("Geometry")
         geometry_3 >> geometry_2.next
@@ -94,6 +96,38 @@ class DisplaceGeometry(CustomGeometryGroup):
         )
 
         offset_method.default_value = "Normal"
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (1879.7, 193.2),
+            "Group Input": (220.0, 280.0),
+            "Set Position": (640.0, 180.0),
+            "Repeat Input": (440.0, 340.0),
+            "Repeat Output": (1040.0, 180.0),
+            "Vector Math": (440.0, 60.0),
+            "Math": (220.0, -80.0),
+            "Vector Math.001": (389.6, -55.7),
+            "Normal": (209.6, -35.7),
+            "Frame": (-429.6, 235.7),
+            "Group Input.003": (29.6, -95.7),
+            "Math.002": (209.6, -95.7),
+            "Group Input.004": (220.0, 340.0),
+            "Group Input.005": (440.0, 140.0),
+            "Group Input.006": (40.0, -100.0),
+            "Group Input.010": (-20.0, -20.0),
+            "Evaluate Closure": (840.0, 240.0),
+            "Group Input.011": (640.0, 260.0),
+            "Reroute": (700.0, -120.0),
+            "Group Input.001": (29.6, -155.7),
+            "Menu Switch": (-40.0, 300.0),
+            "Index Switch": (220.0, 180.0),
+            "Group Input.002": (-240.0, 340.0),
+            "Warning": (1500.0, 280.0),
+            "Compare": (1328.2, 285.2),
+            "Switch": (1687.9, 227.3),
+            "Group Input.007": (1164.0, 282.5),
+            "Group Input.008": (1477.9, 129.8),
+        }
 
 
 ASSET = DisplaceGeometry

@@ -9,6 +9,8 @@ class IsEdgeBoundary(CustomGeometryGroup):
     _color_tag = "INPUT"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         is_edge_boundary = tree.outputs.boolean(
             "Is Edge Boundary",
             description="Selection of edges that are part of the boundary of a mesh surface",
@@ -18,6 +20,14 @@ class IsEdgeBoundary(CustomGeometryGroup):
             g.Compare.integer.equal(g.EdgeNeighbors(), 1).o.result.edge.evaluate()
             >> is_edge_boundary
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (320.0, 0.0),
+            "Edge Neighbors": (-280.0, 0.0),
+            "Compare": (-80.0, 0.0),
+            "Evaluate on Domain": (120.0, 0.0),
+        }
 
 
 ASSET = IsEdgeBoundary

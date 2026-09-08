@@ -9,6 +9,8 @@ class IsEdgeManifold(CustomGeometryGroup):
     _color_tag = "INPUT"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         is_edge_manifold = tree.outputs.boolean(
             "Is Edge Manifold",
             description="Selection of edges that connect two faces of a mesh surface",
@@ -20,6 +22,14 @@ class IsEdgeManifold(CustomGeometryGroup):
             ).o.result.edge.evaluate()
             >> is_edge_manifold
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (440.0, 0.0),
+            "Corners of Edge": (-100.0, 0.0),
+            "Compare": (80.0, 0.0),
+            "Evaluate on Domain": (260.0, 0.0),
+        }
 
 
 ASSET = IsEdgeManifold

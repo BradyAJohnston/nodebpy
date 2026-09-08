@@ -9,6 +9,8 @@ class IsEdgeLoose(CustomGeometryGroup):
     _color_tag = "INPUT"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         is_edge_loose = tree.outputs.boolean(
             "Is Edge Loose",
             description="Selection of edges that are not connected to a face",
@@ -20,6 +22,14 @@ class IsEdgeLoose(CustomGeometryGroup):
             ).o.result.edge.evaluate()
             >> is_edge_loose
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Group Output": (240.0, 0.0),
+            "Corners of Edge": (-360.0, 0.0),
+            "Compare": (-160.0, 0.0),
+            "Evaluate on Domain": (40.0, 0.0),
+        }
 
 
 ASSET = IsEdgeLoose

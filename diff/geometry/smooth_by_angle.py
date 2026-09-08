@@ -9,6 +9,8 @@ class SmoothByAngle(CustomGeometryGroup):
     _color_tag = "GEOMETRY"
 
     def _build_group(self, tree):
+        tree.disable_arrange()
+
         mesh = tree.inputs.geometry("Mesh")
         angle = tree.inputs.float(
             "Angle",
@@ -34,6 +36,24 @@ class SmoothByAngle(CustomGeometryGroup):
             >> g.SetShadeSmooth()
             >> mesh_1
         )
+
+        # Restore authored node positions.
+        tree.node_positions = {
+            "Set Shade Smooth": (120.0, -80.0),
+            "Set Shade Smooth.001": (300.0, -80.0),
+            "Group Output": (480.0, -80.0),
+            "Edge Angle": (-440.0, -240.0),
+            "Group Input": (-80.0, -80.0),
+            "Is Edge Smooth": (-260.0, -120.0),
+            "Is Shade Smooth": (-439.5, -396.6),
+            "Compare": (-260.0, -260.0),
+            "Boolean Math.001": (-80.0, -260.0),
+            "Group Input.001": (-439.5, -329.1),
+            "Group Input.002": (-259.0, -188.7),
+            "Boolean Math": (-80.0, -149.1),
+            "Boolean Math.002": (-260.0, -380.0),
+            "Group Input.003": (-440.0, -460.0),
+        }
 
 
 ASSET = SmoothByAngle
