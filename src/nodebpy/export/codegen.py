@@ -4458,6 +4458,67 @@ def _emit_separate_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     return _Val(None, outputs=outputs)
 
 
+def _closure_to_list_kwargs(node, ctx: EmitContext) -> dict[str, Expr]:
+    """The fixed ``count``/``closure`` kwargs for a Closure to List call."""
+    kwargs: dict[str, Expr] = {}
+    count_link = ctx.input_link(node, "Count")
+    if count_link is not None:
+        kwargs["count"] = ctx.upstream_expr(count_link)
+    else:
+        socket = _input_socket_by_identifier(node, "Count")
+        fresh = _get_blender_socket_defaults(
+            ctx.node_tree.bl_idname, node.bl_idname
+        ).get("Count")
+        if socket is not None and not _eq(socket.default_value, fresh):
+            kwargs["count"] = Lit(socket.default_value)
+    closure_link = ctx.input_link(node, "Closure")
+    if closure_link is not None:
+        kwargs["closure"] = ctx.upstream_expr(closure_link)
+    return kwargs
+
+
+def _closure_to_list_dict(node, ctx: EmitContext) -> Expr:
+    """Fallback: ``g.ClosureToList(count, closure, items={name: "TYPE"})``;
+    items are read back via ``.o[name]``."""
+    kwargs = _closure_to_list_kwargs(node, ctx)
+    kwargs["items"] = DictExpr(
+        {item.name: Lit(item.socket_type) for item in node.list_items}
+    )
+    return Call("g.ClosureToList", kwargs=kwargs)
+
+
+@register_emitter("GeometryNodeClosureToList")
+def _emit_closure_to_list(node, ctx: EmitContext) -> Expr | _Val | None:
+    """Closure to List's outputs are its list items: emit the constructor
+    plus one typed ``.items.<type>(name)`` line per item, binding a handle
+    variable whenever the item's output is read. Items must be declared —
+    Blender only syncs them from the linked closure's signature on an editor
+    update, which a headless rebuild never runs. Falls back to the items-dict
+    constructor for item types without a typed factory."""
+    items = list(node.list_items)
+    ctx.used_aliases.add("g")
+    if any(item.socket_type not in _SWITCH_METHOD for item in items):
+        # pragma: no cover — every creatable item type has a typed factory
+        # today; this guards item types a future Blender may add.
+        return _closure_to_list_dict(node, ctx)
+    ref = Ref(_make_var("closure_to_list", ctx.counter))
+    ctor = Call("g.ClosureToList", kwargs=_closure_to_list_kwargs(node, ctx))
+    ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
+    outputs: dict[str, Expr] = {}
+    consumed = {link.from_socket.identifier for link in ctx.outgoing.get(node.name, ())}
+    for socket, item in zip(_prefixed_sockets(node, "List_", output=True), items):
+        call = _bundle_item_call(
+            f"{ref.name}.items", item, [Lit(item.name)], _SWITCH_METHOD
+        )
+        if socket.identifier in consumed:
+            handle = Ref(_make_var(item.name, ctx.counter))
+            ctx.pending_lines.append(f"    {handle.name} = {call.render()}")
+            outputs[socket.identifier] = handle
+        else:
+            ctx.pending_lines.append(f"    {call.render()}")
+    return _Val(None, outputs=outputs)
+
+
 def _evaluate_closure_dict(node, ctx: EmitContext) -> Expr:
     """Fallback: ``g.EvaluateClosure(closure, input_items={name: source},
     output_items={name: "TYPE"})``; results are read back via ``.o[name]``."""

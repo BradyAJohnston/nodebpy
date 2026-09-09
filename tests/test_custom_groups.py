@@ -90,6 +90,30 @@ def test_named_links_resolve_same_name_by_type():
         assert by_type["VECTOR"] == "VECTOR"
 
 
+class _DupRotationGroup(CustomGeometryGroup):
+    """A rotation and a float input sharing a name — the shape of
+    MolecularNodes' "Curve Custom Profile" group."""
+
+    _name = "Dup Rotation Group"
+
+    def _build_group(self, tree):
+        tree.inputs.rotation("Profile Rotation")
+        tree.inputs.float("Profile Rotation")
+        tree.outputs.geometry("Geometry")
+
+
+def test_named_links_plain_value_resolves_by_inferred_type():
+    """A plain default in _named_links resolves to the socket its Python type
+    fits: 0.25 lands on the float "Profile Rotation", never the same-named
+    rotation socket that comes first in interface order (whose default it
+    could not even be assigned to). (MN asset: "Style Cartoon".)"""
+    with TreeBuilder():
+        node = _DupRotationGroup(_named_links=[("Profile Rotation", 0.25)])
+        by_type = {s.type: s for s in node.node.inputs if s.name == "Profile Rotation"}
+        assert by_type["VALUE"].default_value == 0.25
+        assert not by_type["ROTATION"].is_linked
+
+
 def test_named_links_errors_when_sockets_exhausted():
     """More values than matching sockets raises a clear error."""
     with TreeBuilder():

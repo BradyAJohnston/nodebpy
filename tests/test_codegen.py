@@ -2550,6 +2550,54 @@ def test_roundtrip_bundled_asset(path, name):
 # ---------------------------------------------------------------------------
 
 
+def test_closure_to_list_roundtrip():
+    """Closure to List's outputs are dynamic list items that must be declared
+    explicitly — Blender only syncs them from the linked closure's signature
+    on an editor update, which a headless rebuild never runs. The emitter
+    writes the constructor plus typed ``.items.<type>(name)`` lines, binding
+    a handle for consumed outputs. (MN asset: "Evaluate Ordered Bundles".)"""
+    with TreeBuilder("ClosureList") as tree:
+        count = tree.inputs.integer("Count")
+        zone = g.ClosureZone()
+        index = zone.inputs.integer("Index")
+        item = zone.outputs.integer("Item")
+        g.Math.multiply(index, 2.0) >> item
+        ctl = g.ClosureToList(count=count, closure=zone.closure)
+        values = ctl.items.integer("Item")
+        values >> tree.outputs.integer("Values")
+
+    node = ctl.node
+    assert [(i.name, i.socket_type) for i in node.list_items] == [("Item", "INT")]
+
+    code = _assert_roundtrip(tree)
+    assert "g.ClosureToList(" in code
+    assert '.items.integer("Item"' in code
+
+    # The rebuilt node carries the declared item, not an empty collection.
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = next(
+        n for n in ns["tree"].tree.nodes if n.bl_idname == "GeometryNodeClosureToList"
+    )
+    assert [(i.name, i.socket_type) for i in rebuilt.list_items] == [("Item", "INT")]
+
+
+def test_closure_to_list_items_dict_constructor():
+    """The ``items={name: "TYPE"}`` constructor form (the dumped-code
+    fallback for item types without a typed factory) declares the items."""
+    with TreeBuilder("ClosureListDict") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        ctl = g.ClosureToList(count=3, items={"A": "INT", "B": "STRING"})
+        geo >> tree.outputs.geometry("Geometry")
+
+    assert [(i.name, i.socket_type) for i in ctl.node.list_items] == [
+        ("A", "INT"),
+        ("B", "STRING"),
+    ]
+    assert ctl.o["A"].socket.identifier == "List_0"
+    _assert_roundtrip(tree)
+
+
 def test_unused_variables_get_underscore_prefix():
     """A node whose outputs feed nothing and interface sockets no effective
     link touches still emit their declarations, but bound to ``_``-prefixed

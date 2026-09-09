@@ -470,6 +470,25 @@ def test_dump_is_stable_across_a_roundtrip(library_blend, tmp_path):
         assert (second / rel).read_text() == (first / rel).read_text(), rel
 
 
+def test_digit_led_asset_name_roundtrips(tmp_path):
+    """An asset whose name starts with a digit ("2 Index Angle") must not get
+    a "_"-prefixed module — the build skips those as non-root (the _shared
+    convention) and would silently drop the asset from the library."""
+    path = tmp_path / "library.blend"
+    with TreeBuilder("2 Sided") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        geo >> tree.outputs.geometry("Geometry")
+    tree.tree.asset_mark()
+    bpy.data.libraries.write(str(path), {tree.tree}, fake_user=True)
+    _clear_node_groups()
+
+    src = tmp_path / "src"
+    written = dump_library(path, src)
+    assert written["2 Sided"] == src / "geometry" / "n2_sided.py"
+    names = build_library(src, tmp_path / "rebuilt.blend")
+    assert names == ["2 Sided"]
+
+
 def test_catalog_file_travels_both_ways(library_blend, tmp_path):
     catalog = "VERSION 1\n\n" + CATALOG_ID + ":Tools:Tools\n"
     (library_blend.parent / CATALOG_FILENAME).write_text(catalog)

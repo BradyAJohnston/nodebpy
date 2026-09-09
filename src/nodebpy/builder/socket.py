@@ -951,7 +951,7 @@ class _VectorMixin[
 
     def rotate(
         self,
-        rotation: InputRotation,
+        rotation: InputRotation = None,
     ) -> VectorResult:
         "Rotate this vector by the given rotation. Uses `RotateVector` with this socket as the vector input."
         self._assert_output("rotate")
@@ -959,7 +959,7 @@ class _VectorMixin[
 
         return RotateVector(self.socket, rotation).o.vector  # ty: ignore[invalid-return-type]
 
-    def transform(self, matrix: InputMatrix) -> VectorResult:
+    def transform(self, matrix: InputMatrix = None) -> VectorResult:
         "Transform this vector by the given matrix."
         self._assert_output("transform")
         from ..nodes.geometry import TransformPoint
@@ -1034,8 +1034,8 @@ class _VectorMixin[
         def project(self, other: InputVector) -> Self: ...
         def reflect(self, normal: InputVector) -> Self: ...
         def map_range(self, *args: Any, **kwargs: Any) -> Self: ...
-        def rotate(self, rotation: InputRotation) -> Self: ...
-        def transform(self, matrix: InputMatrix) -> Self: ...
+        def rotate(self, rotation: InputRotation = None) -> Self: ...
+        def transform(self, matrix: InputMatrix = None) -> Self: ...
         def _dispatch_unary(self, operation: str) -> Self: ...
         def _dispatch_math(
             self, other: Any, operation: str, reverse: bool = ...
@@ -1369,7 +1369,7 @@ class _RotationMixin[
 
     def rotate(
         self,
-        rotation: InputRotation,
+        rotation: InputRotation = None,
         rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
     ) -> Self:
         "Rotate this rotation by the given rotation in the specified rotation space."
@@ -1940,7 +1940,7 @@ class _MatrixMixin[
         o = MatrixSVD(self.socket).o
         return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-argument-type]
 
-    def transform_direction(self, direction: InputVector) -> VectorResult:
+    def transform_direction(self, direction: InputVector = None) -> VectorResult:
         """Apply this matrix to *direction*, ignoring translation.
 
         Use this instead of ``transform()`` when transforming a direction vector
@@ -2679,6 +2679,17 @@ class MenuSocket(_MenuSocketMixin, _ToListMixin["MenuSocketList"]):
 
     @default_value.setter
     def default_value(self, value: str) -> None:
+        interface_socket = getattr(self, "_interface_socket", None)
+        tree = getattr(self, "_tree", None)
+        if interface_socket is not None and tree is not None:
+            # An interface menu default: its enum only populates once the
+            # menu propagates from the defining Menu Switch, so defer to the
+            # tree-context exit — writing the raw socket here is silently
+            # lost in a headless session.
+            from .tree import _MenuDefault
+
+            tree._menu_defaults.append(_MenuDefault(interface_socket, value))
+            return
         self.socket.default_value = value
 
 

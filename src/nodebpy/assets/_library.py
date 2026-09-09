@@ -294,6 +294,11 @@ def _assign_stems(group_names: list[str]) -> dict[str, str]:
     used: set[str] = set()
     for group_name in sorted(group_names):
         base = normalize_name(group_name)
+        if base.startswith("_"):
+            # A "_"-prefixed module would be skipped as non-root by the build
+            # (the _shared convention); digit-led names ("2 Index Angle")
+            # take an "n" prefix instead.
+            base = "n" + base.lstrip("_")
         stem, n = base, 1
         while stem in used:
             n += 1
@@ -760,6 +765,9 @@ def _import_source_modules(source_dir: Path, files: list[Path]) -> list:
     spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
     spec.submodule_search_locations = [str(source_dir)]
     sys.modules[package] = importlib.util.module_from_spec(spec)
+    # No __pycache__ droppings in the (version-controlled) source tree.
+    dont_write_bytecode = sys.dont_write_bytecode
+    sys.dont_write_bytecode = True
     try:
         return [
             importlib.import_module(
@@ -768,6 +776,7 @@ def _import_source_modules(source_dir: Path, files: list[Path]) -> list:
             for file in files
         ]
     finally:
+        sys.dont_write_bytecode = dont_write_bytecode
         for key in [k for k in sys.modules if k.split(".")[0] == package]:
             del sys.modules[key]
 

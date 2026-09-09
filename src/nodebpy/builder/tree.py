@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, ClassVar, Literal, Self, TypeVar, cast
 
 import bpy
@@ -600,8 +600,37 @@ class OutputInterfaceContext(DirectionalContext):
 
 @dataclass
 class _MenuDefault:
+    """A menu default deferred to context exit, with enough breadcrumbs to
+    re-resolve its target — the reference captured at queue time is
+    invalidated by the interface update that populates the menu enums."""
+
     item: bpy.types.NodeSocketMenu | bpy.types.NodeTreeInterfaceSocketMenu
     default: str
+    identifier: str = field(init=False)
+    node_name: str | None = field(init=False, default=None)
+
+    def __post_init__(self) -> None:
+        self.identifier = self.item.identifier
+        node = getattr(self.item, "node", None)  # sockets only; interface has none
+        self.node_name = node.name if node is not None else None
+
+    def resolve(self, tree: NodeTree):
+        """The live menu socket/interface item this default targets."""
+        if self.node_name is None:
+            interface = tree.interface
+            assert interface is not None
+            return next(
+                (
+                    item
+                    for item in interface.items_tree
+                    if getattr(item, "identifier", None) == self.identifier
+                ),
+                None,
+            )
+        node = tree.nodes.get(self.node_name)
+        if node is None:
+            return None
+        return next((s for s in node.inputs if s.identifier == self.identifier), None)
 
 
 class TreeBuilder[TreeT: NodeTree]:
@@ -781,10 +810,20 @@ class TreeBuilder[TreeT: NodeTree]:
         self.deactivate_tree()
 
     def _apply_input_defaults(self) -> None:
+        if not self._menu_defaults:
+            return
+        # Menu enums populate by propagation from the Menu Switch that
+        # defines them; a headless session never runs the editor update that
+        # triggers it, so without this nudge the assignments below silently
+        # store an empty default. The update can reallocate the targets, so
+        # each is re-resolved from its breadcrumbs before assignment.
+        self.tree.interface_update(bpy.context)
         for value in self._menu_defaults:
             if value.default == "":
                 continue
-            value.item.default_value = value.default
+            item = value.resolve(self.tree)
+            if item is not None:
+                item.default_value = value.default
 
     def __len__(self) -> int:
         return len(self.nodes)

@@ -178,6 +178,20 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             input.default_value = [value] * len(input.default_value)  # type: ignore
         elif stype == "INT" and isinstance(value, float):
             input.default_value = int(value)  # type: ignore
+        elif stype == "MENU":
+            try:
+                input.default_value = value  # type: ignore
+            except TypeError:
+                # A menu socket's enum items arrive by link propagation from
+                # the Menu Switch that defines them, which may not have run
+                # yet (e.g. a Switch whose output links up only after its
+                # inputs get defaults). Retry at tree-context exit, when
+                # every link exists.
+                from .tree import _MenuDefault
+
+                self.tree._menu_defaults.append(
+                    _MenuDefault(cast("bpy.types.NodeSocketMenu", input), value)
+                )
         else:
             input.default_value = value  # type: ignore
 
@@ -258,6 +272,15 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                     f"no remaining input socket named {name!r} on {self._bl_idname}"
                 )
             value_type = _value_socket_type(value)
+            if value_type is None:
+                # A plain default carries no socket, but its Python type still
+                # narrows the target: 0.0 must mean a float "Profile Rotation",
+                # never the same-named rotation socket, whose default it would
+                # not even fit.
+                from .items import _infer_value_type
+
+                inferred = _infer_value_type(value)
+                value_type = "VALUE" if inferred == "FLOAT" else inferred
             socket = next(
                 (s for s in candidates if s.type == value_type), candidates[0]
             )
