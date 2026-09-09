@@ -1144,6 +1144,24 @@ def test_string_socket_methods(snapshot):
         assert trim.node.bl_idname == g.TrimString._bl_idname
         assert trim.builder_node.i.string.links[0].from_node == string.node
 
+        parsed = string.to_float()
+        assert isinstance(parsed, FloatSocket)
+        assert parsed.node.bl_idname == g.StringToValue._bl_idname
+        assert parsed.builder_node.i.string.links[0].from_node == string.node
+
+        parsed_int = string.to_integer(16)
+        assert isinstance(parsed_int, IntegerSocket)
+        assert parsed_int.node.bl_idname == g.StringToValue._bl_idname
+        assert cast(g.StringToValue, parsed_int.builder_node).data_type == "INT"
+        assert parsed_int.builder_node.i.base.default_value == 16
+
+        int_str = string.length().to_string(16, 4)
+        assert isinstance(int_str, StringSocket)
+        assert int_str.node.bl_idname == g.ValueToString._bl_idname
+        assert cast(g.ValueToString, int_str.builder_node).data_type == "INT"
+        assert int_str.builder_node.i.base.default_value == 16
+        assert int_str.builder_node.i.padding.default_value == 4
+
 
 def test_vector_socket_rotate():
     with g.tree():

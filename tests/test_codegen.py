@@ -1072,6 +1072,28 @@ def test_string_methods():
         assert expected in code, expected
 
 
+def test_string_conversion_methods():
+    with TreeBuilder("StringConversions") as tree:
+        path = tree.inputs.string("Path")
+        num = tree.inputs.float("Num")
+        count = tree.inputs.integer("Count")
+        path.to_float() >> tree.outputs.float("Parsed")
+        path.to_integer(16) >> tree.outputs.integer("ParsedInt")
+        num.to_string(2) >> tree.outputs.string("NumStr")
+        count.to_string(16, 4) >> tree.outputs.string("CountStr")
+        path.split(",").list_length() >> tree.outputs.integer("Parts")
+    code = _assert_roundtrip(tree)
+    for expected in (
+        "path.to_float()",
+        "path.to_integer(16)",
+        "num.to_string(2)",
+        "count.to_string(16, 4)",
+        'path.split(",")',
+        ".list_length()",
+    ):
+        assert expected in code, expected
+
+
 def test_matrix_methods():
     with TreeBuilder("MatrixMethods") as tree:
         mat = tree.inputs.matrix("Mat")

@@ -2194,12 +2194,14 @@ class _FloatConvertDatatypeMixin[
 class _IntegerConvertDatatypeMixin[StringResult: (StringSocket, StringSocketList)](
     Socket
 ):
-    def to_string(self) -> StringResult:
-        "Convert the `IntegerSocket` to a `StringSocket`."
+    def to_string(
+        self, base: InputInteger = 10, padding: InputInteger = 0
+    ) -> StringResult:
+        "Convert the `IntegerSocket` to a `StringSocket` in the given base, zero-padded to `padding` digits."
         self._assert_output("to_string")
         from ..nodes.geometry import ValueToString
 
-        return ValueToString.integer(self.socket).o.string  # ty: ignore[invalid-return-type]
+        return ValueToString.integer(self.socket, base, padding).o.string  # ty: ignore[invalid-return-type]
 
 
 # ---------------------------------------------------------------------------
@@ -2646,6 +2648,20 @@ class StringSocket(
         from ..nodes.geometry import SplitString
 
         return SplitString(self.socket, separator=separator).o.list
+
+    def to_float(self) -> FloatSocket:
+        "Parse the string as a floating-point value and return as `FloatSocket`."
+        self._assert_output("to_float")
+        from ..nodes.geometry import StringToValue
+
+        return StringToValue.float(self.socket).o.value
+
+    def to_integer(self, base: InputInteger = 10) -> IntegerSocket:
+        "Parse the string as an integer in the given base and return as `IntegerSocket`."
+        self._assert_output("to_integer")
+        from ..nodes.geometry import StringToValue
+
+        return StringToValue.integer(self.socket, base).o.value
 
     def join(
         self, strings: Iterable[str | StringSocket | NodeSocketString | BaseNode]

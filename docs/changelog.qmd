@@ -7,6 +7,8 @@ title: Changelog
 ### Enhancements
 
 - Exposed the `TrimString` node via `StringSocket.trim()`, with codegen round-tripping trees back to the method call
+- Exposed the `StringToValue` node via `StringSocket.to_float()` / `.to_integer(base)`, and `IntegerSocket.to_string()` now exposes the node's `base` and `padding` options
+- `to_python` now round-trips `split()`, `to_float()` / `to_integer()` and float/integer `to_string()` as socket method calls instead of `g.SplitString(...)` / `g.StringToValue.*(...)` / `g.ValueToString.*(...)` factory calls
 
 ## v520.15.0 - 2026-08-28
 
