@@ -8141,7 +8141,7 @@ class SetSplineType(BaseNode):
         return cls(spline_type="POLY", curve=curve, selection=selection)
 
     @classmethod
-    def bézier(
+    def bezier(
         cls, curve: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSplineType":
         """Create Set Spline Type with operation 'Bézier'."""
