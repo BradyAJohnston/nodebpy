@@ -3506,6 +3506,8 @@ def to_python(
     nodebpy_pkg: str = "nodebpy",
     group_class_names: Mapping[str, str] | None = None,
     external_groups: Collection[str] | None = None,
+    typed_groups: Collection[str] | None = None,
+    root_interface: GroupInterface | None = None,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -3565,6 +3567,15 @@ def to_python(
         referenced by their ``group_class_names`` entry (which must exist)
         but no class definition is emitted for them. The caller is
         responsible for making the name resolvable (e.g. an import).
+    typed_groups: Collection[str] | None
+        Tree names whose classes carry a typed ``__init__`` (merged dump
+        classes) — group calls to them are emitted with the normalized
+        parameter names from ``typed_param_names`` instead of socket-name
+        keyword keys.
+    root_interface: GroupInterface | None
+        Typed-interface parts (docstring, class attributes, accessors and
+        ``__init__``) spliced into the top-level tree's class in ``class``
+        mode, ahead of ``_build_group``.
 
     Returns
     -------
@@ -3588,6 +3599,9 @@ def to_python(
         keep_reroutes=keep_reroutes,
         group_class_names=class_names,
         external_groups=externals,
+        typed_groups=set(typed_groups or ()),
+        root_interface=root_interface,
+        root_tree_name=node_tree.name if root_interface is not None else None,
         # Reserve every assigned name so a locally derived one never shadows a
         # class the caller imports from another module.
         used_names=set(class_names.values()),
@@ -3771,6 +3785,22 @@ class _TreeEmission:
     deferred_lines: list[str] = field(default_factory=list)
 
 
+@dataclass
+class GroupInterface:
+    """Typed-interface parts spliced into a generated group class.
+
+    Produced by ``nodebpy.assets`` introspection of the live tree (docstring,
+    ``_Inputs``/``_Outputs`` accessors, typed ``__init__``) and merged into
+    the class emitted around ``_build_group``, so one class both documents the
+    group and carries the recipe that regenerates it.
+    """
+
+    docstring: str  # rendered '"""…"""' block, pre-indented to class-body depth
+    body: str  # accessors + TYPE_CHECKING + __init__, pre-indented block
+    base: str | None = None  # override base class (e.g. "AssetGeometryGroup")
+    attr_lines: list[str] = field(default_factory=list)  # e.g. _asset_name/_library
+
+
 # bl_idname of a group node → the CustomGroup base it round-trips to.
 _GROUP_BASES = {
     "GeometryNodeGroup": "CustomGeometryGroup",
@@ -3806,6 +3836,13 @@ class _GroupCollector:
     # Tree names whose classes are defined elsewhere (the caller provides the
     # import): referenced by their assigned name, never emitted here.
     external_groups: set[str] = field(default_factory=set)
+    # Tree names whose classes have a typed __init__ (merged dump classes):
+    # calls to them use typed_param_names kwargs instead of socket-name keys.
+    typed_groups: set[str] = field(default_factory=set)
+    # Interface parts for the top-level tree's class (class mode only),
+    # matched by tree name.
+    root_interface: GroupInterface | None = None
+    root_tree_name: str | None = None
     class_defs: list[str] = field(default_factory=list)
     names_by_tree: dict[str, str] = field(default_factory=dict)
     used_names: set[str] = field(default_factory=set)
@@ -3827,6 +3864,11 @@ class _GroupCollector:
         emission = _emit_tree(node_tree, self)
         self.used_aliases |= emission.used_aliases
         base = _GROUP_BASE_FOR_TREE.get(node_tree.bl_idname, "CustomGeometryGroup")
+        interface = (
+            self.root_interface if node_tree.name == self.root_tree_name else None
+        )
+        if interface is not None and interface.base:
+            base = interface.base
         self.bases_used.add(base)
         self.class_defs.append(
             _render_group_class(
@@ -3836,6 +3878,7 @@ class _GroupCollector:
                 emission,
                 self.snapshot_positions,
                 self.keep_reroutes,
+                interface,
             )
         )
         return class_name
@@ -3924,10 +3967,20 @@ def _render_group_class(
     emission: _TreeEmission,
     snapshot_positions: bool = False,
     keep_reroutes: bool = False,
+    interface: GroupInterface | None = None,
 ) -> str:
     """A ``class X(CustomGroup): _name = ...; def _build_group(self, tree): ...``
-    block, with the tree body re-indented one level deeper."""
-    header = [f"class {class_name}({base}):", f"    _name = {_fmt(node_tree.name)}"]
+    block, with the tree body re-indented one level deeper.
+
+    With ``interface``, the class also carries its typed API — docstring,
+    ``_asset_name``/``_library`` attributes, accessors and typed ``__init__``
+    — ahead of ``_build_group``."""
+    header = [f"class {class_name}({base}):"]
+    if interface is not None:
+        header.extend([interface.docstring, ""])
+    header.append(f"    _name = {_fmt(node_tree.name)}")
+    if interface is not None:
+        header.extend(f"    {line}" for line in interface.attr_lines)
     color = getattr(node_tree, "color_tag", "NONE")
     if color and color != "NONE":
         header.append(f"    _color_tag = {_fmt(color)}")
@@ -3937,6 +3990,8 @@ def _render_group_class(
             f"{_fmt(key)}: {_fmt(value)}" for key, value in tree_props.items()
         )
         header.append(f"    _tree_properties = {{{rendered}}}")
+    if interface is not None:
+        header.extend(["", interface.body])
     header.extend(["", "    def _build_group(self, tree):"])
     inner = _assemble_tree_body(emission)
     # Either option needs auto-layout off (it dissolves reroutes and overwrites
@@ -4661,10 +4716,16 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
         return None
 
     ctx.used_aliases.add(alias)
-    ref = Ref(_make_var(spec.label, ctx.counter))
+    var_name = _make_var(spec.label, ctx.counter)
+    prop_lines = _node_prop_lines(node)
+    # No items, props or consumers → nothing ever references the variable;
+    # prefix it so the generated module passes lint (F841).
+    if not items and not prop_lines and not ctx.outgoing.get(node.name):
+        var_name = "_" + var_name
+    ref = Ref(var_name)
     ctor = _items_node_ctor(alias, cls, spec, node, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
-    for prop_line in _node_prop_lines(node):
+    for prop_line in prop_lines:
         ctx.pending_lines.append(f"    {ref.name}.node.{prop_line}")
 
     outputs: dict[str, Expr] = {
@@ -4805,7 +4866,10 @@ def _emit_combine_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     kwargs: dict[str, Expr] = {}
     if node.define_signature:
         kwargs["define_signature"] = Lit(True)
-    ref = Ref(_make_var("combine_bundle", ctx.counter))
+    var_name = _make_var("combine_bundle", ctx.counter)
+    if not items and not ctx.outgoing.get(node.name):
+        var_name = "_" + var_name  # dangling and item-less → never referenced
+    ref = Ref(var_name)
     ctor = Call("g.CombineBundle", kwargs=kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     for socket, item in zip(_prefixed_sockets(node, "Item_"), items):
@@ -4844,7 +4908,10 @@ def _emit_separate_bundle(node, ctx: EmitContext) -> Expr | _Val | None:
     kwargs: dict[str, Expr] = {}
     if node.define_signature:
         kwargs["define_signature"] = Lit(True)
-    ref = Ref(_make_var("separate_bundle", ctx.counter))
+    var_name = _make_var("separate_bundle", ctx.counter)
+    if not items:
+        var_name = "_" + var_name  # no item lines → never referenced
+    ref = Ref(var_name)
     ctor = Call("g.SeparateBundle", args, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     outputs: dict[str, Expr] = {}
@@ -4905,7 +4972,10 @@ def _emit_closure_to_list(node, ctx: EmitContext) -> Expr | _Val | None:
         # pragma: no cover — every creatable item type has a typed factory
         # today; this guards item types a future Blender may add.
         return _closure_to_list_dict(node, ctx)
-    ref = Ref(_make_var("closure_to_list", ctx.counter))
+    var_name = _make_var("closure_to_list", ctx.counter)
+    if not items:
+        var_name = "_" + var_name  # no item lines → never referenced
+    ref = Ref(var_name)
     ctor = Call("g.ClosureToList", kwargs=_closure_to_list_kwargs(node, ctx))
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     outputs: dict[str, Expr] = {}
@@ -4969,7 +5039,10 @@ def _emit_evaluate_closure(node, ctx: EmitContext) -> Expr | _Val | None:
     kwargs: dict[str, Expr] = {}
     if node.define_signature:
         kwargs["define_signature"] = Lit(True)
-    ref = Ref(_make_var("evaluate_closure", ctx.counter))
+    var_name = _make_var("evaluate_closure", ctx.counter)
+    if not in_items and not out_items:
+        var_name = "_" + var_name  # no item lines → never referenced
+    ref = Ref(var_name)
     ctor = Call("g.EvaluateClosure", args, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
     for socket, item in zip(_prefixed_sockets(node, "Item_"), in_items):
@@ -5027,6 +5100,16 @@ def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
     class_name = ctx.collector.register(inner)
     iface_defaults = _group_input_defaults(inner)
 
+    # A typed class (merged dump) declares one parameter per input socket, so
+    # calls use its normalized parameter names — the mapping is shared with
+    # the typed __init__ generator via typed_param_names, both derived from
+    # the same live tree.
+    typed_params: dict[str, str] | None = None
+    if inner.name in ctx.collector.typed_groups:
+        from ..builder._utils import typed_param_names
+
+        typed_params = typed_param_names(node.inputs)
+
     # _establish_links matches a kwarg key against socket names. A name shared
     # by several interface sockets (a group may declare two "Scale" inputs) is
     # ambiguous as a dict key — and the raw identifier (Socket_6) is an
@@ -5039,7 +5122,9 @@ def _emit_group_node(node, ctx: EmitContext) -> Expr | _Val | None:
     named_links: list[tuple[str, Expr]] = []
 
     def _add(socket, value: Expr) -> None:
-        if names.count(socket.name) > 1:
+        if typed_params is not None:
+            items[typed_params[socket.identifier]] = value
+        elif names.count(socket.name) > 1:
             named_links.append((socket.name, value))
         else:
             items[socket.name] = value

@@ -22,7 +22,8 @@ from typing import cast
 import bpy
 
 from ..builder import AssetLibrary, BundledLibrary, asset_group_base
-from ..builder._utils import normalize_name
+from ..builder._utils import normalize_name, typed_param_names
+from ..export.codegen import GroupInterface, _fmt
 
 # bl_socket_type substring → (Socket accessor class, Input* parameter type).
 # Order matters: more specific keys (IntVector before Int) come first.
@@ -90,7 +91,10 @@ def _format_default(socket: bpy.types.NodeSocket) -> str:
     if isinstance(value, int):
         return str(value)
     if isinstance(value, float):
-        return str(round(value, 6))
+        # The exact float32 round-trip formatter (which also folds pi/tau/e
+        # constants): a lossy default here would *change* the socket value on
+        # every instantiation, since the typed __init__ always passes it.
+        return _fmt(value)
     if isinstance(value, str):
         return repr(value)
     return "None"
@@ -370,6 +374,112 @@ def _render_class(cls: _AssetClass, docstrings: bool = False) -> str:
 """
 
 
+def interface_parts(
+    group,
+    *,
+    library_source: str | None,
+    nodebpy_pkg: str = "nodebpy",
+) -> tuple[GroupInterface, list[str]]:
+    """The typed-interface parts of a merged dump class for ``group`` (a live
+    ``bpy.types.NodeTree``), plus the import lines they require.
+
+    The parts — numpydoc docstring, ``_asset_name``/``_library`` attributes,
+    ``_Inputs``/``_Outputs`` accessors and the typed ``__init__`` — are spliced
+    by :func:`nodebpy.export.to_python` into the class it emits around
+    ``_build_group``, so one class both documents the group and carries the
+    recipe that regenerates it.
+
+    With ``library_source`` (a ``PackageLibrary(...)`` expression), the class
+    becomes an appending ``Asset*Group``; without it (shared helper groups,
+    which are not assets), only the typed API is added and the ``Custom*Group``
+    base stays.
+
+    The ``__init__`` keys its super call by socket *name* (with a
+    ``_named_links`` fallback for duplicate names) rather than by identifier:
+    identifiers are authoring-history artifacts that a tree rebuilt from
+    ``_build_group`` reassigns, while names round-trip. Parameter names come
+    from :func:`~nodebpy.builder._utils.typed_param_names` — the same mapping
+    codegen uses for call sites, so generated calls match the signature.
+    """
+    cls = _introspect_group(group, group.name, library_source or "")
+    # Align accessor/parameter names with the shared call-site mapping.
+    for side in (cls.inputs, cls.outputs):
+        params = typed_param_names(side)
+        for s in side:
+            s.attr = params[s.identifier]
+
+    docstring = f"    {_class_docstring(cls)}"
+
+    params = [f"{s.attr}: {s.param_type} = {s.default}" for s in cls.inputs]
+    signature = (
+        "(\n        self,\n        " + ",\n        ".join(params) + ",\n    )"
+        if params
+        else "(self)"
+    )
+    name_counts = Counter(s.name for s in cls.inputs)
+    keyed = [
+        f"{_quote(s.name)}: {s.attr}" for s in cls.inputs if name_counts[s.name] == 1
+    ]
+    pairs = [
+        f"({_quote(s.name)}, {s.attr})" for s in cls.inputs if name_counts[s.name] > 1
+    ]
+    args = []
+    if keyed:
+        args.append("**{" + ", ".join(keyed) + "}")
+    if pairs:
+        args.append("_named_links=[" + ", ".join(pairs) + "]")
+    init = f"    def __init__{signature}:\n        super().__init__({', '.join(args)})"
+
+    type_checking = (
+        "    if TYPE_CHECKING:\n"
+        "        @property\n"
+        "        def i(self) -> _Inputs: ...\n"
+        "        @property\n"
+        "        def o(self) -> _Outputs: ..."
+    )
+    body = "\n\n".join(
+        [
+            _accessor(cls.inputs, "_Inputs", docstrings=True),
+            _accessor(cls.outputs, "_Outputs", docstrings=True),
+            type_checking,
+            init,
+        ]
+    )
+
+    base: str | None = None
+    attr_lines: list[str] = []
+    if library_source:
+        base = asset_group_base(cls.tree_idname).__name__
+        attr_lines = [
+            f"_asset_name = {cls.asset_name!r}",
+            f"_library = {library_source}",
+        ]
+
+    socket_classes = sorted({s.socket_class for s in cls.inputs + cls.outputs})
+    input_types = sorted({s.input_type for s in cls.inputs})
+    typing_names = ["TYPE_CHECKING"]
+    if any(s.menu_items for s in cls.inputs):
+        typing_names.append("Literal")
+    builder_names = {"SocketAccessor", *socket_classes}
+    if library_source:
+        builder_names.add(library_source.partition("(")[0])
+    import_lines = [
+        f"from typing import {', '.join(typing_names)}",
+        f"from {nodebpy_pkg}.builder import {', '.join(sorted(builder_names))}",
+    ]
+    if any("math." in s.default for s in cls.inputs):
+        import_lines.insert(0, "import math")
+    if input_types:
+        import_lines.append(f"from {nodebpy_pkg}.types import {', '.join(input_types)}")
+
+    return (
+        GroupInterface(
+            docstring=docstring, body=body, base=base, attr_lines=attr_lines
+        ),
+        import_lines,
+    )
+
+
 def _render_module(
     classes: list[_AssetClass],
     nodebpy_pkg: str = "nodebpy",
@@ -399,6 +509,9 @@ def _render_module(
 
     lines = [
         "# Auto-generated by nodebpy.assets.generate_asset_api — do not edit manually.",
+        "import math"
+        if any("math." in s.default for c in classes for s in c.inputs)
+        else "",
         f"from typing import {', '.join(typing_imports)}",
         "",
         f"from {nodebpy_pkg}.builder import (\n    {',\n    '.join(builder_imports)},\n)",

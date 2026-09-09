@@ -666,3 +666,298 @@ def test_cli_dump_and_build_dispatch(monkeypatch, library_blend, tmp_path, capsy
     main()
     assert "Built" in capsys.readouterr().out
     assert rebuilt.is_file()
+
+
+# ---------------------------------------------------------------------------
+# typed_api: merged classes (typed interface + _build_group source of truth)
+# ---------------------------------------------------------------------------
+
+
+def test_typed_param_names_collisions_and_reserved():
+    from types import SimpleNamespace as NS
+
+    from nodebpy.builder._utils import typed_param_names
+
+    sockets = [
+        NS(name="Scale", identifier="Socket_1"),
+        NS(name="Scale", identifier="Socket_2"),
+        NS(name="Self", identifier="Socket_3"),
+        NS(name="Geometry", identifier="Socket_4"),
+        NS(name="__extend__", identifier="__extend__"),
+    ]
+    params = typed_param_names(sockets)
+    # Colliding names fall back to identifiers; reserved names get a suffix;
+    # __extend__ virtual sockets are skipped entirely.
+    assert params == {
+        "Socket_1": "socket_1",
+        "Socket_2": "socket_2",
+        "Socket_3": "self_2",
+        "Socket_4": "geometry",
+    }
+
+
+def test_typed_api_dump_merges_interface(nested_library_blend, tmp_path):
+    """typed_api merges the asset API into the dumped class: Asset*Group base
+    with _library, numpydoc docstring, accessors, typed __init__ keyed by
+    socket name, typed call sites, and __init__.py re-exports; shared helper
+    modules get the typed API but stay Custom*Group."""
+    import os
+
+    out = tmp_path / "src"
+    dump_library(nested_library_blend, out, typed_api=True)
+
+    outer_a = (out / "geometry" / "outer_a.py").read_text(encoding="utf-8")
+    assert "class OuterA(AssetGeometryGroup):" in outer_a
+    assert '_asset_name = "Outer A"' in outer_a
+    relpath = Path(os.path.relpath(nested_library_blend, out / "geometry")).as_posix()
+    assert f'_library = PackageLibrary(__file__, "{relpath}")' in outer_a
+    assert "Parameters" in outer_a and "Outputs" in outer_a
+    assert "class _Inputs(SocketAccessor):" in outer_a
+    assert 'super().__init__(**{"Geometry": geometry, "Factor": factor})' in outer_a
+    assert "def _build_group(self, tree):" in outer_a
+    # Group calls inside _build_group use the typed parameter names.
+    assert "InnerWidget(geometry=geometry, amount=Doubler(value=factor))" in outer_a
+    assert "ASSET = OuterA" in outer_a
+
+    # Shared helpers are typed but stay Custom*Group — they are not assets.
+    doubler = (out / "geometry" / "_shared" / "doubler.py").read_text(encoding="utf-8")
+    assert "class Doubler(CustomGeometryGroup):" in doubler
+    assert "_library =" not in doubler
+    assert "class _Inputs(SocketAccessor):" in doubler
+
+    init = (out / "geometry" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .outer_a import OuterA" in init
+    assert "from .inner_widget import InnerWidget" in init
+    assert '"OuterB",' in init
+
+
+def test_typed_api_roundtrip_stable_and_builds_from_source(
+    nested_library_blend, tmp_path
+):
+    """dump(typed) → build → dump(typed) is byte-stable when the .blend sits
+    at the same relative location, and the build constructs every tree from
+    _build_group source rather than appending."""
+    import shutil as _shutil
+
+    pkg1 = tmp_path / "pkg1"
+    pkg1.mkdir()
+    blend1 = pkg1 / "assets.blend"
+    _shutil.copyfile(nested_library_blend, blend1)
+    first = pkg1 / "nodes"
+    dump_library(blend1, first, typed_api=True)
+
+    pkg2 = tmp_path / "pkg2"
+    pkg2.mkdir()
+    blend2 = pkg2 / "assets.blend"
+    names = build_library(first, blend2)
+    assert set(names) == {"Inner Widget", "Outer A", "Outer B"}
+    # Built locally from source, not appended from the library.
+    assert all(bpy.data.node_groups[n].library is None for n in names)
+    _clear_node_groups()
+
+    second = pkg2 / "nodes"
+    dump_library(blend2, second, typed_api=True)
+    first_files = sorted(p.relative_to(first) for p in first.rglob("*.py"))
+    second_files = sorted(p.relative_to(second) for p in second.rglob("*.py"))
+    assert first_files == second_files
+    for rel in first_files:
+        assert (second / rel).read_text(encoding="utf-8") == (first / rel).read_text(
+            encoding="utf-8"
+        ), rel
+
+
+def test_typed_api_create_group_appends_then_falls_back(nested_library_blend, tmp_path):
+    """At runtime a merged class appends its group from the .blend; under
+    build_from_source() — or when the .blend is missing — it builds from its
+    _build_group recipe instead."""
+    from nodebpy.assets._library import _import_source_modules, _source_files
+    from nodebpy.builder import build_from_source
+
+    out = tmp_path / "src"
+    dump_library(nested_library_blend, out, typed_api=True)
+    files = _source_files(out)
+    modules = _import_source_modules(out, files)
+    outer_b = next(m.ASSET for m in modules if m.ASSET._name == "Outer B")
+
+    appended = outer_b.create_group()
+    assert appended.library is not None  # linked from the .blend
+    _clear_node_groups()
+
+    with build_from_source():
+        built = outer_b.create_group()
+    assert built.library is None
+    _clear_node_groups()
+
+    outer_b._library.relative = "does_not_exist.blend"
+    fallback = outer_b.create_group()
+    assert fallback.library is None
+    _clear_node_groups()
+
+
+def test_typed_api_instantiates_with_typed_kwargs(nested_library_blend, tmp_path):
+    """The typed __init__ links inputs by socket name on the appended tree."""
+    from nodebpy.assets._library import _import_source_modules, _source_files
+
+    out = tmp_path / "src"
+    dump_library(nested_library_blend, out, typed_api=True)
+    modules = _import_source_modules(out, _source_files(out))
+    outer_a = next(m.ASSET for m in modules if m.ASSET._name == "Outer A")
+
+    with TreeBuilder("Host") as host:
+        call = outer_a(geometry=host.inputs.geometry("Geo"), factor=2.0)
+        call.o.geometry >> host.outputs.geometry("Out")
+    node = host.tree.nodes["Outer A"]
+    assert node.inputs["Factor"].default_value == 2.0
+    assert node.inputs["Geometry"].is_linked
+    _clear_node_groups()
+
+
+def test_typed_api_duplicate_socket_names(tmp_path):
+    """Duplicate interface names ride the _named_links mechanism in the typed
+    __init__ and still build from source."""
+    with TreeBuilder("Dup") as tb:
+        a = tb.inputs.float("Value")
+        b = tb.inputs.float("Value", 3.0)
+        g.Math.add(a, b) >> tb.outputs.float("Sum")
+    tb.tree.asset_mark()
+    blend = tmp_path / "dup.blend"
+    bpy.data.libraries.write(str(blend), {tb.tree}, fake_user=True)
+    _clear_node_groups()
+
+    out = tmp_path / "src"
+    dump_library(blend, out, typed_api=True)
+    module = (out / "geometry" / "dup.py").read_text(encoding="utf-8")
+    assert "_named_links=[" in module
+
+    rebuilt = tmp_path / "rebuilt.blend"
+    build_library(out, rebuilt)
+    tree = bpy.data.node_groups["Dup"]
+    values = [
+        item.default_value
+        for item in tree.interface.items_tree
+        if item.item_type == "SOCKET" and item.in_out == "INPUT"
+    ]
+    assert values == [0.0, 3.0]
+    _clear_node_groups()
+
+
+def test_typed_api_material_library_builds(material_library_blend, tmp_path):
+    """Material modules coexist with typed asset modules and still build."""
+    pkg = tmp_path / "pkg"
+    pkg.mkdir()
+    src = pkg / "nodes"
+    dump_library(material_library_blend, src, typed_api=True)
+    rebuilt = pkg / "assets.blend"
+    names = build_library(src, rebuilt, resources=material_library_blend)
+    assert names == ["Glowing Grid"]
+    assert bpy.data.node_groups["Glowing Grid"].library is None
+    _clear_node_groups()
+    for coll in ("materials", "images"):
+        data = getattr(bpy.data, coll)
+        for db in list(data):
+            data.remove(db)
+
+
+def test_typed_api_keeps_handwritten_dir_init(library_blend, tmp_path):
+    """A hand-written tree-dir __init__.py is never overwritten."""
+    out = tmp_path / "src"
+    (out / "geometry").mkdir(parents=True)
+    custom = "# my hand-rolled exports\n"
+    (out / "geometry" / "__init__.py").write_text(custom, encoding="utf-8")
+    dump_library(library_blend, out, typed_api=True)
+    assert (out / "geometry" / "__init__.py").read_text(encoding="utf-8") == custom
+    # The untouched shader dir still gets generated exports.
+    shader_init = (out / "shader" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .flat_red import FlatRed" in shader_init
+
+
+def test_cli_dump_typed_api(monkeypatch, library_blend, tmp_path, capsys):
+    """--typed-api reaches dump_library through the CLI."""
+    import sys as _sys
+
+    from nodebpy.assets.__main__ import main
+
+    src = tmp_path / "src"
+    monkeypatch.setattr(
+        _sys, "argv", ["prog", "dump", str(library_blend), str(src), "--typed-api"]
+    )
+    main()
+    assert "Dumped 2 assets" in capsys.readouterr().out
+    code = (src / "geometry" / "scale_up.py").read_text(encoding="utf-8")
+    assert "class ScaleUp(AssetGeometryGroup):" in code
+
+
+def _write_compositor_library(path: Path) -> None:
+    """Write a library with one compositor asset. Leaves the session clean."""
+    from nodebpy import compositor as c
+
+    with TreeBuilder.compositor("Grade Boost") as tb:
+        img = tb.inputs.color("Image")
+        fac = tb.inputs.float("Boost", 0.5, description="How much to boost")
+        blur = c.Blur(image=img)
+        c.Mix(factor_float=fac, a_color=img, b_color=blur, data_type="RGBA") >> (
+            tb.outputs.color("Image")
+        )
+    tb.tree.asset_mark()
+    assert tb.tree.asset_data is not None
+    tb.tree.asset_data.description = "Boosts an image"
+    bpy.data.libraries.write(str(path), {tb.tree}, fake_user=True)
+    _clear_node_groups()
+
+
+def test_compositor_roundtrip_plain_and_typed(tmp_path):
+    """Compositor assets round-trip in both dump modes: plain
+    Custom*Group sources rebuild the .blend, and typed_api merges an
+    appending AssetCompositorGroup with the _build_group recipe."""
+    from nodebpy.assets._library import _import_source_modules, _source_files
+
+    pkg1 = tmp_path / "pkg1"
+    pkg1.mkdir()
+    blend = pkg1 / "assets.blend"
+    _write_compositor_library(blend)
+
+    # Plain dump → build.
+    plain = tmp_path / "plain"
+    dump_library(blend, plain)
+    code = (plain / "compositor" / "grade_boost.py").read_text(encoding="utf-8")
+    assert "class GradeBoost(CustomCompositorGroup):" in code
+    rebuilt_plain = tmp_path / "plain.blend"
+    assert build_library(plain, rebuilt_plain) == ["Grade Boost"]
+    _clear_node_groups()
+
+    # Typed dump: merged class, appends at runtime, builds from source.
+    first = pkg1 / "nodes"
+    dump_library(blend, first, typed_api=True)
+    typed = (first / "compositor" / "grade_boost.py").read_text(encoding="utf-8")
+    assert "class GradeBoost(AssetCompositorGroup):" in typed
+    assert '_library = PackageLibrary(__file__, "../../assets.blend")' in typed
+    assert 'super().__init__(**{"Image": image, "Boost": boost})' in typed
+    assert "def _build_group(self, tree):" in typed
+    init = (first / "compositor" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .grade_boost import GradeBoost" in init
+
+    pkg2 = tmp_path / "pkg2"
+    pkg2.mkdir()
+    blend2 = pkg2 / "assets.blend"
+    assert build_library(first, blend2) == ["Grade Boost"]
+    assert bpy.data.node_groups["Grade Boost"].library is None
+    _clear_node_groups()
+
+    # Byte-stable across the round trip (same relative blend location).
+    second = pkg2 / "nodes"
+    dump_library(blend2, second, typed_api=True)
+    for rel in sorted(p.relative_to(first) for p in first.rglob("*.py")):
+        assert (second / rel).read_text(encoding="utf-8") == (first / rel).read_text(
+            encoding="utf-8"
+        ), rel
+
+    # Runtime: typed instantiation appends the group into a compositor tree.
+    modules = _import_source_modules(first, _source_files(first))
+    grade_boost = next(m.ASSET for m in modules if m.ASSET._name == "Grade Boost")
+    with TreeBuilder.compositor("Host") as host:
+        call = grade_boost(image=host.inputs.color("In"), boost=0.8)
+        call.o.image >> host.outputs.color("Out")
+    assert bpy.data.node_groups["Grade Boost"].library is not None
+    node = host.tree.nodes["Grade Boost"]
+    assert round(node.inputs["Boost"].default_value, 3) == 0.8
+    _clear_node_groups()

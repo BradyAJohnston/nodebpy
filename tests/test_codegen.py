@@ -2826,6 +2826,27 @@ def test_unused_variables_get_underscore_prefix():
     assert "geometry = tree.inputs.geometry(" in code
 
 
+def test_unused_item_node_variables_get_underscore_prefix():
+    """Item-style nodes go through their own emitters; a dangling, item-less
+    one binds a variable nothing references — it must carry the ``_`` prefix
+    too (regression: EvaluateClosure/CaptureAttribute leaked plain names)."""
+    with TreeBuilder("UnusedItemVars") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        g.CaptureAttribute()
+        g.EvaluateClosure()
+        g.CombineBundle()
+        g.SeparateBundle()
+        g.ClosureToList()
+        geo >> tree.outputs.geometry("Geometry")
+
+    code = _assert_roundtrip(tree)
+    assert "_capture = g.CaptureAttribute.point()" in code
+    assert "_evaluate_closure = g.EvaluateClosure()" in code
+    assert "_combine_bundle = g.CombineBundle()" in code
+    assert "_separate_bundle = g.SeparateBundle()" in code
+    assert "_closure_to_list = g.ClosureToList()" in code
+
+
 def test_group_call_mixes_keywords_and_raw_names():
     """Group-call inputs whose socket names are valid identifiers render as
     plain keyword arguments; only names that aren't (``"Box Value"``) stay in
