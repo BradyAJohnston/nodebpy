@@ -488,6 +488,91 @@ def test_keep_reroutes_with_snapshot_positions():
     assert f'"{reroute.name}": (360.0, 120.0)' in code  # reroute position kept
 
 
+def test_node_instance_properties_roundtrip():
+    """Muted (bypassed) nodes, non-default warning propagation, and clamped
+    math ops round-trip: the first two force a variable binding plus
+    ``<var>.node.<prop>`` lines, and ``use_clamp`` blocks the operator-sugar
+    lift so the constructor can carry it."""
+    with TreeBuilder("NodeProps") as tree:
+        a = tree.inputs.float("A")
+        geo = tree.inputs.geometry("G")
+        clamped = g.Math.subtract(a, 0.2)
+        clamped.node.use_clamp = True
+        muted = g.SetPosition(geometry=geo, offset=g.CombineXYZ(z=clamped))
+        muted.node.mute = True
+        muted.node.warning_propagation = "ERRORS"
+        muted >> tree.outputs.geometry("Out")
+
+    code = _assert_roundtrip(tree)
+    assert "use_clamp=True" in code
+    assert ".node.mute = True" in code
+    assert '.node.warning_propagation = "ERRORS"' in code
+
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    math = next(n for n in rebuilt.nodes if n.bl_idname == "ShaderNodeMath")
+    assert math.use_clamp
+    set_pos = next(n for n in rebuilt.nodes if n.bl_idname == "GeometryNodeSetPosition")
+    assert set_pos.mute
+    assert set_pos.warning_propagation == "ERRORS"
+
+
+def test_interface_and_tree_properties_roundtrip():
+    """The functional gaps surfaced by the tree_clipper parity audit all
+    round-trip: output-socket defaults and structure types,
+    ``force_non_field``, ``default_input`` on any socket type, panel
+    descriptions, mixed input/output panels, and non-default tree-level
+    properties (via ``_tree_properties`` on the generated class)."""
+    with TreeBuilder("IfaceProps") as tree:
+        with tree.panel("Mixed", description="Both directions."):
+            fac = tree.inputs.float("Fac", 0.5, force_non_field=True)
+            scale = tree.outputs.float("Scale", 0.01)
+        tree.inputs.object("Target", default_input="SELF_OBJECT")
+        geo = tree.inputs.geometry("Geometry")
+        geo_out = tree.outputs.geometry("Geometry", structure_type="SINGLE")
+        fac >> scale
+        geo >> geo_out
+    tree.tree.description = "Round-trips everything"
+    tree.tree.is_modifier = True
+    tree.tree.default_group_node_width = 200
+
+    code = to_python(tree, top_level="class", format=False)
+    assert 'with tree.panel("Mixed", description="Both directions."):' in code
+    assert "force_non_field=True" in code
+    assert 'default_input="SELF_OBJECT"' in code
+    assert 'structure_type="SINGLE"' in code
+    assert '"Scale", 0.01' in code  # output default, emitted positionally
+    assert "_tree_properties = {" in code
+    assert '"is_modifier": True' in code
+    assert '"default_group_node_width": 200' in code
+
+    _force_fresh_group_build()
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["IfaceProps"].create_group()
+    items = {
+        (i.name, i.in_out): i
+        for i in rebuilt.interface.items_tree
+        if getattr(i, "item_type", "") == "SOCKET"
+    }
+    panels = {
+        i.name: i
+        for i in rebuilt.interface.items_tree
+        if getattr(i, "item_type", "") == "PANEL"
+    }
+    assert panels["Mixed"].description == "Both directions."
+    assert items[("Fac", "INPUT")].parent == panels["Mixed"]
+    assert items[("Scale", "OUTPUT")].parent == panels["Mixed"]
+    assert items[("Fac", "INPUT")].force_non_field
+    assert round(items[("Scale", "OUTPUT")].default_value, 4) == 0.01
+    assert items[("Target", "INPUT")].default_input == "SELF_OBJECT"
+    assert items[("Geometry", "OUTPUT")].structure_type == "SINGLE"
+    assert rebuilt.description == "Round-trips everything"
+    assert rebuilt.is_modifier
+    assert rebuilt.default_group_node_width == 200
+
+
 def test_snapshot_positions_preserves_group_input_splits():
     """snapshot_positions also round-trips extra Group Input instances — the
     editor convention of one input node per consumer cluster with unused

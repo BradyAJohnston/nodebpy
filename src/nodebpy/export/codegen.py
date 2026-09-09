@@ -461,6 +461,17 @@ _INTERFACE_TYPE_METHOD: dict[str, str] = {
     "NodeSocketShader": "shader",
 }
 
+# Interface datablock defaults that *do* carry meaning (emitted as bpy.data
+# lookups) despite living in _NO_DEFAULT_VALUE_TYPES below.
+_DATABLOCK_IFACE_DEFAULT_TYPES = frozenset(
+    {
+        "NodeSocketObject",
+        "NodeSocketCollection",
+        "NodeSocketImage",
+        "NodeSocketMaterial",
+    }
+)
+
 _NO_DEFAULT_VALUE_TYPES = frozenset(
     {
         "NodeSocketGeometry",
@@ -2527,6 +2538,23 @@ def _match_socket_method(
         )
         if uncovered:
             continue
+        # An unlinked input the call can't express must sit at its default,
+        # or the method would silently drop the authored value (e.g. Vector
+        # Rotate's Axis) — bail to the constructor path instead.
+        spec_ids = param_ids | {spec.receiver} | {i for i, _ in spec.require_sockets}
+        fresh_defaults = _get_blender_socket_defaults(
+            node.id_data.bl_idname, node.bl_idname
+        )
+        if any(
+            socket.identifier not in spec_ids
+            and socket.identifier not in incoming
+            and socket.enabled
+            and hasattr(socket, "default_value")
+            and (fresh := fresh_defaults.get(socket.identifier)) is not None
+            and not _eq(socket.default_value, fresh)
+            for socket in node.inputs
+        ):
+            continue
         return spec, method, out_id
     return None
 
@@ -2882,6 +2910,9 @@ def _lift_plan(
     Requires at least one linked operand and that *all* incoming links target
     operand sockets — otherwise links would be silently dropped on round-trip.
     """
+    # An operator expression can't carry the clamp flag; the constructor can.
+    if getattr(node, "use_clamp", False):
+        return None
     operation = getattr(node, "operation", "")
 
     binary = _LIFT_BINARY.get(node.bl_idname, {})
@@ -3148,11 +3179,38 @@ def _emit_interface(
     )
 
     args: list[str] = [_fmt(item.name)]
-    if direction == "inputs" and item.socket_type not in _NO_DEFAULT_VALUE_TYPES:
+    # Datablock defaults (an Object/Collection/Image/Material) do have
+    # meaning on the interface and render as bpy.data lookups; the rest of
+    # _NO_DEFAULT_VALUE_TYPES genuinely has no default_value.
+    emits_default = (
+        item.socket_type not in _NO_DEFAULT_VALUE_TYPES
+        or item.socket_type in _DATABLOCK_IFACE_DEFAULT_TYPES
+    )
+    if emits_default:
         try:
             default = item.default_value
         except (AttributeError, TypeError):
             default = None
+        if direction == "outputs" and default is not None:
+            # Outputs rarely carry a meaningful default (a group constant the
+            # caller reads back is the exception), so only a value the rebuild
+            # wouldn't produce anyway is emitted — it must match both the
+            # fresh socket's default AND the factory parameter's (a colour
+            # socket starts (0,0,0,1) but the factory fills (1,1,1,1)) to be
+            # skipped. Inputs keep emitting theirs unconditionally, as before.
+            from ..builder.tree import SocketContext
+
+            fresh = _get_interface_defaults(item.id_data.bl_idname, item.socket_type)
+            param = inspect.signature(getattr(SocketContext, method)).parameters.get(
+                "default_value"
+            )
+            factory_default = None if param is None else param.default
+            if (
+                "default_value" in fresh
+                and _eq(default, fresh["default_value"])
+                and (factory_default is None or _eq(default, factory_default))
+            ):
+                default = None
         if item.socket_type == "NodeSocketMenu" and default:
             # A menu's valid values come from the MenuSwitch linked to it, so
             # the default can only be set once the body has created that node.
@@ -3169,40 +3227,63 @@ def _emit_interface(
     return f"{indent}{var_name} = tree.{direction}.{method}({', '.join(args)})"
 
 
-def _panel_emittable(panel, in_out: str) -> bool:
-    """A panel the builder can author: top-level, sockets all one direction."""
-    if panel is None or panel.index == -1:
-        return False
-    if panel.parent is None or panel.parent.index != -1:
-        return False  # nested panels are not expressible
-    children = [
-        c for c in panel.interface_items if getattr(c, "item_type", "") == "SOCKET"
-    ]
-    return bool(children) and all(c.in_out == in_out for c in children)
+def _panel_directions(panel) -> set[str]:
+    """The socket directions found anywhere under ``panel`` (recursively)."""
+    directions: set[str] = set()
+    for child in panel.interface_items:
+        if getattr(child, "item_type", "") == "SOCKET":
+            directions.add(child.in_out)
+        elif getattr(child, "item_type", "") == "PANEL":
+            directions |= _panel_directions(child)
+    return directions
+
+
+def _panel_chain(item) -> list:
+    """The panels enclosing ``item``, outermost first."""
+    chain = []
+    parent = item.parent
+    while parent is not None and parent.index != -1:
+        chain.append(parent)
+        parent = parent.parent
+    chain.reverse()
+    return chain
 
 
 def _emit_interface_lines(node_tree, ctx: EmitContext) -> list[str]:
-    """Interface lines in items_tree order, grouped into panel with-blocks."""
+    """Interface lines in items_tree order, grouped into (possibly nested)
+    panel with-blocks. A panel whose sockets span both directions is opened
+    with ``tree.panel`` — once per direction pass, reusing the panel — and a
+    single-direction panel with ``tree.<direction>.panel``."""
     lines: list[str] = []
     for direction, in_out in (("inputs", "INPUT"), ("outputs", "OUTPUT")):
-        open_panel_index: int | None = None
+        open_stack: list[int] = []  # indices of the panels currently open
         for item in node_tree.interface.items_tree:
             if getattr(item, "item_type", "") != "SOCKET" or item.in_out != in_out:
                 continue
-            panel = item.parent
-            if not _panel_emittable(panel, in_out):
-                open_panel_index = None
-                lines.append(_emit_interface(item, direction, ctx))
-                continue
-            if open_panel_index != panel.index:
-                open_panel_index = panel.index
+            chain = _panel_chain(item)
+            keep = 0
+            while (
+                keep < min(len(open_stack), len(chain))
+                and open_stack[keep] == chain[keep].index
+            ):
+                keep += 1
+            del open_stack[keep:]
+            for panel in chain[keep:]:
                 panel_args = [_fmt(panel.name)]
+                if panel.description:
+                    panel_args.append(f"description={_fmt(panel.description)}")
                 if panel.default_closed:
                     panel_args.append("default_closed=True")
-                lines.append(
-                    f"    with tree.{direction}.panel({', '.join(panel_args)}):"
+                mixed = len(_panel_directions(panel)) > 1
+                target = "tree" if mixed else f"tree.{direction}"
+                indent = "    " * (1 + len(open_stack))
+                lines.append(f"{indent}with {target}.panel({', '.join(panel_args)}):")
+                open_stack.append(panel.index)
+            lines.append(
+                _emit_interface(
+                    item, direction, ctx, indent="    " * (1 + len(open_stack))
                 )
-            lines.append(_emit_interface(item, direction, ctx, indent=" " * 8))
+            )
     return lines
 
 
@@ -3465,7 +3546,9 @@ def _node_positions_lines(node_tree, indent: str) -> list[str]:
     # Sorted by name: the nodes collection follows creation order, which a
     # rebuild shuffles — sorting keeps a re-dump byte-stable.
     for node in sorted(node_tree.nodes, key=lambda n: n.name):
-        loc = tuple(round(v, 1) for v in node.location)
+        # Two decimals: auto-layout produces quarter-unit positions (6.75)
+        # that one decimal would visibly nudge on rebuild.
+        loc = tuple(round(v, 2) for v in node.location)
         lines.append(f"{indent}    {_fmt(node.name)}: {_fmt(loc)},")
     lines.append(f"{indent}}}")
     return lines
@@ -3603,6 +3686,59 @@ def _class_name(name: str) -> str:
     return cleaned
 
 
+# Tree-level properties that affect how a group behaves or presents
+# (description, modifier/tool flags, tool modes and object types, default
+# group-node width) but aren't part of the node graph. Only values differing
+# from a fresh tree's defaults are emitted, as ``_tree_properties`` on the
+# generated class; properties a Blender version doesn't have are skipped.
+_TREE_PROP_CANDIDATES = (
+    "description",
+    "default_group_node_width",
+    "node_tool_idname",
+    "show_modifier_manage_panel",
+    "is_modifier",
+    "is_tool",
+    "is_mode_object",
+    "is_mode_edit",
+    "is_mode_sculpt",
+    "is_mode_paint",
+    "use_wait_for_click",
+    "is_type_mesh",
+    "is_type_curve",
+    "is_type_pointcloud",
+    "is_type_grease_pencil",
+)
+
+
+def _tree_prop_overrides(node_tree) -> dict[str, Any]:
+    """Tree-level properties of ``node_tree`` differing from a fresh tree's
+    defaults, probed against a throwaway tree of the same type."""
+
+    def collect(probe) -> dict[str, Any]:
+        out: dict[str, Any] = {}
+        for name in _TREE_PROP_CANDIDATES:
+            if not hasattr(probe, name):
+                continue
+            value = getattr(node_tree, name)
+            if value != getattr(probe, name):
+                out[name] = value
+        return out
+
+    return _with_probe_tree(node_tree.bl_idname, collect, {})
+
+
+def _node_prop_lines(node) -> list[str]:
+    """Assignments for node-instance properties no constructor expresses (a
+    muted/bypassed node, non-default warning propagation), rendered as
+    ``<attr> = <value>`` to append after ``<var>.node.``."""
+    lines: list[str] = []
+    if getattr(node, "mute", False):
+        lines.append("mute = True")
+    if getattr(node, "warning_propagation", "ALL") != "ALL":
+        lines.append(f"warning_propagation = {_fmt(node.warning_propagation)}")
+    return lines
+
+
 def _render_group_class(
     class_name: str,
     node_tree,
@@ -3617,6 +3753,12 @@ def _render_group_class(
     color = getattr(node_tree, "color_tag", "NONE")
     if color and color != "NONE":
         header.append(f"    _color_tag = {_fmt(color)}")
+    tree_props = _tree_prop_overrides(node_tree)
+    if tree_props:
+        rendered = ", ".join(
+            f"{_fmt(key)}: {_fmt(value)}" for key, value in tree_props.items()
+        )
+        header.append(f"    _tree_properties = {{{rendered}}}")
     header.extend(["", "    def _build_group(self, tree):"])
     inner = _assemble_tree_body(emission)
     # Either option needs auto-layout off (it dissolves reroutes and overwrites
@@ -3733,8 +3875,14 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
             link for link in out_links if link.to_node.bl_idname == "NodeGroupOutput"
         ]
 
+        # Node-instance properties no constructor expresses (a muted/bypassed
+        # node, non-default warning propagation) force a variable binding so
+        # they can be applied to the built node afterwards.
+        node_prop_lines = _node_prop_lines(node)
+
         if (
-            len(out_links) == 1
+            not node_prop_lines
+            and len(out_links) == 1
             and not group_outs
             # Inlining would create this node at the consumer's statement —
             # only allowed when both sit in the same frame path.
@@ -3752,7 +3900,12 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
 
         # Gated nodes render no >> syntax; everything else with a single link
         # to a group output finishes its chain right here.
-        if len(out_links) == 1 and group_outs and name not in gated_nodes:
+        if (
+            not node_prop_lines
+            and len(out_links) == 1
+            and group_outs
+            and name not in gated_nodes
+        ):
             link = group_outs[0]
             out_ref = ctx.var_map.get(f"_iface_outputs_{link.to_socket.identifier}")
             if out_ref is None:
@@ -3773,13 +3926,17 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # A node created purely for its side effect (a gizmo, a dangling
         # node) is never referenced again — prefix its variable so the
         # generated module passes lint (F841).
-        if not out_links:
+        if not out_links and not node_prop_lines:
             var = "_" + var
         width = _MAX_LINE_WIDTH - 4 * len(frame)
         tagged_body.extend(
             (frame, line)
             for line in _stmt_lines(val.require_expr(), assign=var, width=width)
         )
+        for prop_line in node_prop_lines:
+            # ``.node`` reaches the bpy node from a node wrapper and a socket
+            # wrapper alike, so this works for constructor and method values.
+            tagged_body.append((frame, f"    {var}.node.{prop_line}"))
         ctx.var_map[name] = _Val(
             Ref(var), is_socket=val.is_socket, socket_id=val.socket_id
         )
@@ -4325,6 +4482,8 @@ def _emit_typed_items_node(node, ctx: EmitContext) -> Expr | _Val | None:
     ref = Ref(_make_var(spec.label, ctx.counter))
     ctor = _items_node_ctor(alias, cls, spec, node, kwargs)
     ctx.pending_lines.append(f"    {ref.name} = {ctor.render()}")
+    for prop_line in _node_prop_lines(node):
+        ctx.pending_lines.append(f"    {ref.name}.node.{prop_line}")
 
     outputs: dict[str, Expr] = {
         ident: Attr(ref, attr) for ident, attr in spec.fixed_outputs

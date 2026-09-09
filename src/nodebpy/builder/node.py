@@ -401,6 +401,10 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
         "TEXTURE",
         "VECTOR",
     ] = "NONE"
+    # Tree-level properties applied after the build (description, modifier/
+    # tool flags, default group-node width, …) — only values differing from a
+    # fresh tree's defaults belong here; codegen fills it when exporting.
+    _tree_properties: ClassVar[dict[str, Any]] = {}
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -463,6 +467,13 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
         with TreeBuilder(cls._name, tree_type=cls._tree_idname) as tree:
             builder._build_group(tree)
         tree.tree.color_tag = cls._color_tag
+        for key, value in cls._tree_properties.items():
+            try:
+                setattr(tree.tree, key, value)
+            except (AttributeError, TypeError):
+                # A property this Blender version doesn't have (or types
+                # differently) — skip rather than fail the whole build.
+                print(f"  {cls._name}: skipping tree property {key!r}")
         return cast(T, tree.tree)
 
 

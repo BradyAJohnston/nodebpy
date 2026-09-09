@@ -12,8 +12,8 @@ hand-editable without divergent copies:
 
 - each **asset** gets its own module holding its class, an ``ASSET`` name
   pointing at it, and — when present — an ``ASSET_METADATA`` dict (catalog id,
-  description, author, tags, …) and a ``TREE_PROPERTIES`` dict (non-default
-  tree flags such as ``is_modifier``/``is_tool``);
+  description, author, tags, …); non-default tree flags (``is_modifier``,
+  description, …) ride on every generated class as ``_tree_properties``;
 - a helper group used by **only that asset** is embedded in the same module;
 - a group nested by **several** assets gets its own module under
   ``_shared/``, and an asset nested inside **another asset** keeps its class in
@@ -129,23 +129,10 @@ _METADATA_FIELDS = (
 # An unassigned catalog — not worth dumping.
 _NIL_CATALOG = "00000000-0000-0000-0000-000000000000"
 
-# Tree-level properties that affect how an asset behaves (modifier/tool flags,
-# tool modes and object types) but aren't part of the node graph, so codegen
-# doesn't capture them. Only values differing from a fresh tree's defaults are
-# dumped; properties a Blender version doesn't have are skipped.
-_TREE_PROP_CANDIDATES = (
-    "description",
-    "is_modifier",
-    "is_tool",
-    "is_mode_object",
-    "is_mode_edit",
-    "is_mode_sculpt",
-    "use_wait_for_click",
-    "is_type_mesh",
-    "is_type_curve",
-    "is_type_pointcloud",
-    "is_type_grease_pencil",
-)
+# Tree-level properties (description, modifier/tool flags, …) now ride on
+# each generated class as ``_tree_properties`` (see nodebpy.export.codegen);
+# build_library still applies a legacy TREE_PROPERTIES footer when an older
+# dump carries one.
 
 # Material-level properties (beyond the shader tree) worth round-tripping.
 # Only values differing from a fresh material's defaults are dumped;
@@ -181,24 +168,6 @@ def _asset_metadata(group) -> dict[str, object]:
     if tags:
         meta["tags"] = tags
     return meta
-
-
-def _tree_properties(group) -> dict[str, object]:
-    """Tree-level properties of ``group`` that differ from a fresh tree's
-    defaults, probed against a throwaway tree of the same type."""
-    probe = bpy.data.node_groups.new("_nodebpy_dump_probe", group.bl_idname)
-    assert probe is not None
-    try:
-        props: dict[str, object] = {}
-        for name in _TREE_PROP_CANDIDATES:
-            if not hasattr(probe, name):
-                continue
-            value = getattr(group, name)
-            if value != getattr(probe, name):
-                props[name] = value
-        return props
-    finally:
-        bpy.data.node_groups.remove(probe)
 
 
 def _material_properties(material) -> dict[str, object]:
@@ -398,9 +367,6 @@ def _render_group_module(
         meta = _asset_metadata(group)
         if meta:
             footer += [""] + _dict_lines("ASSET_METADATA", meta)
-        props = _tree_properties(group)
-        if props:
-            footer += [""] + _dict_lines("TREE_PROPERTIES", props)
     elif kind == "material":
         assert material_name is not None
         footer = [
