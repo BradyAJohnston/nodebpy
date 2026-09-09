@@ -62,7 +62,7 @@ def generate_essentials(
     return written
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args() -> argparse.Namespace:  # pragma: no cover - CLI wrapper
     parser = argparse.ArgumentParser(
         prog="python -m nodebpy.assets",
         description=(

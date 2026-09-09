@@ -481,7 +481,7 @@ def _fmt(value: Any) -> str:
         collection = _ID_COLLECTIONS.get(value.id_type)
         if collection is not None:
             return f"bpy.data.{collection}.get({json.dumps(value.name, ensure_ascii=False)})"
-        return repr(value)
+        return repr(value)  # pragma: no cover - ID kinds outside the table
     # Vectors / sequences
     try:
         items = list(value)
@@ -958,28 +958,26 @@ def _topo_sort(node_tree, keep_reroutes: bool = False) -> list:
         for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
             G.add_edge(from_node, to_node)
         return list(nx.lexicographical_topological_sort(G, key=lambda n: n.name))
-    except ImportError:
-        pass
-
-    nodes = list(node_tree.nodes)
-    node_by_name = {n.name: n for n in nodes}
-    in_deg: dict[str, int] = {n.name: 0 for n in nodes}
-    adj: dict[str, list[str]] = {n.name: [] for n in nodes}
-    for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
-        fn, tn = from_node.name, to_node.name
-        adj[fn].append(tn)
-        in_deg[tn] += 1
-    heap = [n.name for n in nodes if in_deg[n.name] == 0]
-    heapq.heapify(heap)
-    order = []
-    while heap:
-        name = heapq.heappop(heap)
-        order.append(node_by_name[name])
-        for m_name in adj[name]:
-            in_deg[m_name] -= 1
-            if in_deg[m_name] == 0:
-                heapq.heappush(heap, m_name)
-    return order
+    except ImportError:  # pragma: no cover - networkx ships as a dependency
+        nodes = list(node_tree.nodes)
+        node_by_name = {n.name: n for n in nodes}
+        in_deg: dict[str, int] = {n.name: 0 for n in nodes}
+        adj: dict[str, list[str]] = {n.name: [] for n in nodes}
+        for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
+            fn, tn = from_node.name, to_node.name
+            adj[fn].append(tn)
+            in_deg[tn] += 1
+        heap = [n.name for n in nodes if in_deg[n.name] == 0]
+        heapq.heapify(heap)
+        order = []
+        while heap:
+            name = heapq.heappop(heap)
+            order.append(node_by_name[name])
+            for m_name in adj[name]:
+                in_deg[m_name] -= 1
+                if in_deg[m_name] == 0:
+                    heapq.heappush(heap, m_name)
+        return order
 
 
 def _frame_chain(node) -> list:
@@ -2873,7 +2871,7 @@ def _socket_method_val(ctx: EmitContext, node) -> _Val | None:
             continue
         socket = _input_socket_by_identifier(node, identifier)
         if socket is None or not hasattr(socket, "default_value"):
-            continue
+            continue  # pragma: no cover - spec params name real sockets
         value = socket.default_value
         if index >= spec.always_args:
             if blender_defaults is None:
@@ -3633,15 +3631,13 @@ def _emit_interface_lines(node_tree, ctx: EmitContext) -> list[str]:
             continue
         depth = 1
         for ancestor in _panel_chain(panel):
+            # items_tree lists parents before their children, so every
+            # ancestor was already created — by a socket pass or by this loop.
             indent = "    " * depth
-            if ancestor.index in handles:
+            if ancestor.index in handles:  # pragma: no cover - ambiguous mixed
                 lines.append(f"{indent}with tree.panel({handles[ancestor.index]}):")
-            elif ancestor.index in opened:
-                lines.append(f"{indent}with tree.panel({_fmt(ancestor.name)}):")
             else:
-                args = [*_panel_open_args(ancestor), "reuse=False"]
-                lines.append(f"{indent}with tree.panel({', '.join(args)}):")
-                opened.add(ancestor.index)
+                lines.append(f"{indent}with tree.panel({_fmt(ancestor.name)}):")
             depth += 1
         args = [*_panel_open_args(panel), "reuse=False"]
         lines.append(f"{'    ' * depth}with tree.panel({', '.join(args)}):")
@@ -4215,7 +4211,7 @@ def _fresh_mapping_state(tree_idname: str, bl_idname: str) -> tuple | None:
             node = tree.nodes.new(bl_idname)
             mapping = getattr(node, "mapping", None)
             if mapping is None or not hasattr(mapping, "curves"):
-                return None
+                return None  # pragma: no cover - callers checked already
             return _mapping_state(mapping)
 
         _FRESH_MAPPING_CACHE[key] = _with_probe_tree(tree_idname, probe, None)
@@ -4246,7 +4242,7 @@ def _node_mapping_lines(
     lines: list[str] = []
     for name in _MAPPING_ATTRS:
         if not hasattr(mapping, name):
-            continue
+            continue  # pragma: no cover - all current mappings carry them
         value = _mapping_attr_value(mapping, name)
         if fresh is None or fresh_attrs.get(name) != _norm_floats(value):
             lines.append(f"{map_ref}.{name} = {_fmt(value)}")
@@ -5283,9 +5279,9 @@ def _closure_to_list_kwargs(node, ctx: EmitContext) -> dict[str, Expr]:
     return kwargs
 
 
-def _closure_to_list_dict(node, ctx: EmitContext) -> Expr:
+def _closure_to_list_dict(node, ctx: EmitContext) -> Expr:  # pragma: no cover
     """Fallback: ``g.ClosureToList(count, closure, items={name: "TYPE"})``;
-    items are read back via ``.o[name]``."""
+    items are read back via ``.o[name]`` (see the caller's guard)."""
     kwargs = _closure_to_list_kwargs(node, ctx)
     kwargs["items"] = DictExpr(
         {item.name: Lit(item.socket_type) for item in node.list_items}
@@ -5303,9 +5299,9 @@ def _emit_closure_to_list(node, ctx: EmitContext) -> Expr | _Val | None:
     constructor for item types without a typed factory."""
     items = list(node.list_items)
     ctx.used_aliases.add("g")
-    if any(item.socket_type not in _SWITCH_METHOD for item in items):
-        # pragma: no cover — every creatable item type has a typed factory
-        # today; this guards item types a future Blender may add.
+    if any(  # pragma: no cover - guards item types a future Blender may add
+        item.socket_type not in _SWITCH_METHOD for item in items
+    ):
         return _closure_to_list_dict(node, ctx)
     var_name = _make_var("closure_to_list", ctx.counter)
     if not items:

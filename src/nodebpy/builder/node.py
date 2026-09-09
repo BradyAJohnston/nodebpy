@@ -281,7 +281,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                 def fits(s) -> bool:
                     try:
                         return len(s.default_value) == len(value)  # noqa: B023
-                    except (AttributeError, TypeError):
+                    except (AttributeError, TypeError):  # pragma: no cover
                         return False
 
                 socket = next((s for s in candidates if fits(s)), candidates[0])

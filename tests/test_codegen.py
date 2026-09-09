@@ -3256,3 +3256,61 @@ def test_empty_panels_roundtrip():
     ns: dict = {}
     exec(code, ns)
     assert panel_parents(ns["tree"].tree) == expected
+
+
+def test_rgb_curves_mapping_roundtrip():
+    """An edited RGB Curves node round-trips its curve mapping — the edited
+    curve's points are emitted while untouched curves stay implicit — and
+    the rebuilt mapping matches point for point."""
+    from nodebpy.export.codegen import _mapping_state
+
+    with TreeBuilder("CurveMap") as tree:
+        col = tree.inputs.color("Color")
+        curves = g.RGBCurves(color=col)
+        curve = curves.node.mapping.curves[3]  # the composite C curve
+        point = curve.points.new(0.25, 0.6)
+        point.handle_type = "VECTOR"
+        curves.node.mapping.update()
+        curves >> tree.outputs.color("Out")
+
+    code = to_python(tree, format=False)
+    assert ".points.new(" in code
+    assert '.handle_type = "VECTOR"' in code
+    assert ".mapping.update()" in code
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    rebuilt_node = next(n for n in rebuilt.nodes if n.bl_idname == "ShaderNodeRGBCurve")
+    assert _mapping_state(rebuilt_node.mapping) == _mapping_state(curves.node.mapping)
+
+
+def test_unwired_viewer_gets_throwaway_variable():
+    """A Viewer with nothing wired into it still emits (side effect only),
+    bound to an underscore variable so the module passes lint."""
+    with TreeBuilder("LoneViewer") as tree:
+        g.Viewer()
+        tree.inputs.geometry("In") >> tree.outputs.geometry("Out")
+    code = to_python(tree, format=False)
+    assert "_viewer = g.Viewer()" in code
+
+
+def test_external_groups_require_class_names():
+    """Naming an external group without its class-name mapping is a caller
+    error caught upfront."""
+    with TreeBuilder("ExtCheck") as tree:
+        tree.inputs.float("A") >> tree.outputs.float("Out")
+    with pytest.raises(ValueError, match="external_groups without"):
+        to_python(tree, external_groups={"Missing Group"}, format=False)
+
+
+def test_class_mode_snapshot_emits_group_input_splits():
+    """Class-mode snapshots carry the group_input_splits block too."""
+    with TreeBuilder("ClassSplit", arrange=None) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        math = g.Math.add(a, 1.0)
+        combine = g.CombineXYZ(x=math, y=b)
+        combine.o.vector.length() >> tree.outputs.float("Out")
+        tree.split_group_inputs()
+    code = to_python(tree, top_level="class", snapshot_positions=True, format=False)
+    assert "tree.group_input_splits = [" in code

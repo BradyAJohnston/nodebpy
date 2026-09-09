@@ -967,6 +967,8 @@ def test_full_dump_removes_stale_modules(library_blend, tmp_path):
     """A full re-dump clears modules for assets since renamed or deleted, so
     the next build cannot silently resurrect them; a filtered dump leaves the
     other assets' files alone, and empty leftover directories are pruned."""
+    from nodebpy.assets._library import _INIT_CONTENT
+
     src = tmp_path / "src"
     dump_library(library_blend, src)
     stale = src / "geometry" / "old_asset.py"
@@ -974,6 +976,8 @@ def test_full_dump_removes_stale_modules(library_blend, tmp_path):
     stale_dir = src / "compositor"
     stale_dir.mkdir()
     (stale_dir / "gone.py").write_text("ASSET = None\n", encoding="utf-8")
+    # A generated package marker is pruned with its emptied directory.
+    (stale_dir / "__init__.py").write_text(_INIT_CONTENT, encoding="utf-8")
 
     dump_library(library_blend, src, names={"Scale Up"})
     assert stale.exists()  # filtered dump: other files untouched

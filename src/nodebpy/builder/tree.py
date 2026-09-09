@@ -871,7 +871,7 @@ class _MenuDefault:
                 return self.item
         except ReferenceError:  # pragma: no cover - the socket was removed
             pass
-        return self._resolve_by_breadcrumbs(tree)
+        return self._resolve_by_breadcrumbs(tree)  # pragma: no cover
 
     def _resolve_by_breadcrumbs(self, tree: NodeTree):  # pragma: no cover
         """Fallback for a removed/stale socket reference: re-find the socket
@@ -1227,7 +1227,7 @@ class TreeBuilder[TreeT: NodeTree]:
                     (s for s in instance.outputs if s.identifier == identifier), None
                 )
                 if from_socket is None:
-                    continue
+                    continue  # pragma: no cover - instance lacks the socket
                 self.tree.links.remove(link)
                 self.tree.links.new(from_socket, to_socket)
         if splits:
