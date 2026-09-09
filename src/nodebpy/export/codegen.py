@@ -1041,13 +1041,18 @@ class EmitContext:
             )
         return val
 
-    def upstream_expr(self, link: _Link) -> Expr:
-        """Expression referencing the source side of ``link``."""
+    def upstream_expr(self, link: _Link, *, pipeline: bool = False) -> Expr:
+        """Expression referencing the source side of ``link``.
+
+        ``pipeline`` marks a ``>>`` statement source: the arrow already
+        implies the node's primary output, so a multi-output node stays a
+        bare reference there instead of forcing ``.o.<name>``."""
         return _output_expr(
             self._resolve(link),
             link.from_node,
             link.from_socket,
             to_socket=link.to_socket,
+            pipeline=pipeline,
         )
 
     def socket_expr(self, link: _Link) -> Expr:
@@ -1250,15 +1255,48 @@ def _bare_resolves_elsewhere(from_node, from_socket, to_socket) -> bool:
     return candidates[best].identifier != from_socket.identifier
 
 
+def _needs_output_accessor(from_node, from_socket) -> bool:
+    """Whether a reference to ``from_socket`` must spell out ``.o.<name>``
+    even though it is the node's first output.
+
+    A node with several active outputs is referenced explicitly so no reader
+    has to know which one is the default — except a node's *sole* geometry
+    output: for a geometry consumer nothing else could be meant (Cube's Mesh
+    next to its UV Map), so the bare reference stays. Inactive sockets (the
+    dormant variants of enum-switched outputs) and ``__extend__`` virtual
+    sockets don't count — only what the reader sees in the editor."""
+    active = [
+        s
+        for s in from_node.outputs
+        if not getattr(s, "is_inactive", False) and "__extend__" not in s.identifier
+    ]
+    if len(active) <= 1:
+        return False
+    if from_socket.type == "GEOMETRY":
+        return sum(s.type == "GEOMETRY" for s in active) > 1
+    return True
+
+
 def _output_expr(
-    val: _Val, from_node, from_socket, *, to_socket=None, force_socket: bool = False
+    val: _Val,
+    from_node,
+    from_socket,
+    *,
+    to_socket=None,
+    force_socket: bool = False,
+    pipeline: bool = False,
 ) -> Expr:
     """Reference an output socket of an emitted value.
 
-    Node-valued expressions reference the first output bare (``noise``) and
-    others via ``.o.<name>``; ``force_socket`` adds the accessor even for the
-    first output. Socket-valued expressions are returned as-is, after
-    checking they represent the requested output.
+    Single-output node-valued expressions are referenced bare (``math``);
+    a node with several active outputs gets an explicit ``.o.<name>``
+    accessor so no reader has to know which output is the default
+    (SeparateMatrix's nine components read uniformly) — except in
+    ``pipeline`` position, where ``>>`` already implies the primary output,
+    and per :func:`_needs_output_accessor`'s sole-geometry-output rule.
+    ``force_socket`` adds the accessor even to a single-output node.
+    Socket-valued expressions are returned as-is, after checking they
+    represent the requested output.
 
     ``to_socket`` is the consumer-side socket of the link, used to detect the
     case where a bare reference would resolve to a *different* output than the
@@ -1287,6 +1325,7 @@ def _output_expr(
         not force_socket
         and from_node.outputs
         and from_node.outputs[0].identifier == from_socket.identifier
+        and (pipeline or not _needs_output_accessor(from_node, from_socket))
         and not _bare_resolves_elsewhere(from_node, from_socket, to_socket)
     ):
         return val.expr
@@ -3896,7 +3935,9 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
                 skip_input_id=chain_link.to_socket.identifier if chain_link else None,
             )
             expr: Expr = (
-                BinOp(">>", ctx.upstream_expr(chain_link), call) if chain_link else call
+                BinOp(">>", ctx.upstream_expr(chain_link, pipeline=True), call)
+                if chain_link
+                else call
             )
             val = _Val(expr)
 
@@ -3955,7 +3996,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
                     f"Group output socket '{link.to_socket.name}' has no "
                     "interface variable"
                 )
-            source = _output_expr(val, node, link.from_socket)
+            source = _output_expr(val, node, link.from_socket, pipeline=True)
             chain = BinOp(">>", source, out_ref.require_expr())
             width = _MAX_LINE_WIDTH - 4 * len(frame)
             tagged_body.extend(
@@ -4018,7 +4059,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
             raise CodegenError(
                 f"Group output socket '{link.to_socket.name}' has no interface variable"
             )
-        source = ctx.upstream_expr(link)
+        source = ctx.upstream_expr(link, pipeline=True)
         out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
     return _TreeEmission(
@@ -4607,7 +4648,7 @@ def _emit_viewer(node, ctx: EmitContext) -> Expr | _Val | None:
         var = "_" + var
     ctx.pending_lines.append(f"    {var} = {Call('g.Viewer', kwargs=kwargs).render()}")
     for link in links:
-        statement = BinOp(">>", ctx.upstream_expr(link), Ref(var))
+        statement = BinOp(">>", ctx.upstream_expr(link, pipeline=True), Ref(var))
         ctx.pending_lines.extend(_stmt_lines(statement))
     return _Val(None, outputs={})
 
@@ -5301,7 +5342,7 @@ def _emit_zone_output(node, ctx: EmitContext) -> _Val:
                 f"zone output node '{node.name}' has a link into "
                 f"'{link.to_socket.name}' with no emit target"
             )
-        statement = BinOp(">>", ctx.upstream_expr(link), target)
+        statement = BinOp(">>", ctx.upstream_expr(link, pipeline=True), target)
         ctx.pending_lines.extend(_stmt_lines(statement))
     return _Val(None, outputs=state.outputs)
 

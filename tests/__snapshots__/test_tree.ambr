@@ -25,7 +25,7 @@
       with g.Frame("SVD"):
           matrix_svd = combine_matrix.o.matrix.svd()
           separate_matrix = g.SeparateMatrix(matrix=matrix_svd.u)
-          combine_xyz = g.CombineXYZ(x=separate_matrix, y=separate_matrix.o.column_1_row_2, z=separate_matrix.o.column_1_row_3)
+          combine_xyz = g.CombineXYZ(x=separate_matrix.o.column_1_row_1, y=separate_matrix.o.column_1_row_2, z=separate_matrix.o.column_1_row_3)
           combine_xyz_1 = g.CombineXYZ(x=separate_matrix.o.column_2_row_1, y=separate_matrix.o.column_2_row_2, z=separate_matrix.o.column_2_row_3)
           combine_xyz_2 = g.CombineXYZ(x=separate_matrix.o.column_3_row_1, y=separate_matrix.o.column_3_row_2, z=separate_matrix.o.column_3_row_3)
           axes_to_rotation = g.AxesToRotation(primary_axis=combine_xyz, secondary_axis=combine_xyz_2)
