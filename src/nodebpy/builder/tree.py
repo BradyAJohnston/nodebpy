@@ -119,57 +119,80 @@ class TreePanelContext:
     def __init__(
         self,
         builder: TreeBuilder,
-        name: str,
+        name: str | bpy.types.NodeTreeInterfacePanel,
         *,
         description: str = "",
         default_closed: bool = False,
+        reuse: bool = True,
     ):
         self._builder = builder
         self._name = name
         self._description = description
         self._default_closed = default_closed
+        self._reuse = reuse
         self.panel: bpy.types.NodeTreeInterfacePanel | None = None
 
     def __enter__(self):
         interface = self._builder.tree.interface
         assert interface is not None
-        # Entered inside another panel context → nest under it; the inputs
-        # and outputs contexts always agree on the active panel here.
-        parent = self._builder.inputs._active_panel
-        self._previous = parent
+        # Entered inside another panel context → nest under it. A mixed panel
+        # lives in one place, so an enclosing panel open on only one side
+        # (e.g. inside ``tree.outputs.panel(...)``) parents it too; two
+        # different panels open at once leave no sensible parent.
+        self._previous_inputs = self._builder.inputs._active_panel
+        self._previous_outputs = self._builder.outputs._active_panel
+        parent = self._previous_inputs or self._previous_outputs
+        if (
+            self._previous_inputs is not None
+            and self._previous_outputs is not None
+            and self._previous_inputs != self._previous_outputs
+        ):
+            raise ValueError(
+                f"Cannot nest mixed panel {self._name!r}: different panels "
+                f"are active for inputs ({self._previous_inputs.name!r}) and "
+                f"outputs ({self._previous_outputs.name!r})."
+            )
 
         def parent_matches(item) -> bool:
             if parent is None:
                 return item.parent is None or item.parent.index == -1
             return item.parent == parent
 
-        self.panel = next(
-            (
-                item
-                for item in interface.items_tree
-                if getattr(item, "item_type", "") == "PANEL"
-                and item.name == self._name
-                and parent_matches(item)
-            ),
-            None,
-        )
-        if self.panel is None:
-            self.panel = interface.new_panel(
-                self._name,
-                description=self._description,
-                default_closed=self._default_closed,
-            )
-            if parent is not None:
-                interface.move_to_parent(
-                    self.panel, parent, len(parent.interface_items)
+        if not isinstance(self._name, str):
+            # Reopening an exact panel by handle (e.g. the second direction
+            # pass of generated round-trip code, where a name lookup could
+            # land on a same-named sibling): activate it as it stands.
+            self.panel = self._name
+        else:
+            self.panel = None
+            if self._reuse:
+                self.panel = next(
+                    (
+                        item
+                        for item in interface.items_tree
+                        if getattr(item, "item_type", "") == "PANEL"
+                        and item.name == self._name
+                        and parent_matches(item)
+                    ),
+                    None,
                 )
+            if self.panel is None:
+                self.panel = interface.new_panel(
+                    self._name,
+                    description=self._description,
+                    default_closed=self._default_closed,
+                )
+                if parent is not None:
+                    interface.move_to_parent(
+                        self.panel, parent, len(parent.interface_items)
+                    )
         self._builder.inputs._active_panel = self.panel
         self._builder.outputs._active_panel = self.panel
         return self
 
     def __exit__(self, *args):
-        self._builder.inputs._active_panel = self._previous
-        self._builder.outputs._active_panel = self._previous
+        self._builder.inputs._active_panel = self._previous_inputs
+        self._builder.outputs._active_panel = self._previous_outputs
 
 
 class SocketContext:
@@ -889,6 +912,7 @@ class TreeBuilder[TreeT: NodeTree]:
             self.tree = tree  # type: ignore
 
         self._menu_defaults: list[_MenuDefault] = []
+        self._exited = False
         self.inputs = InputInterfaceContext(self)
         self.outputs = OutputInterfaceContext(self)
         self._arrange = arrange
@@ -1036,6 +1060,7 @@ class TreeBuilder[TreeT: NodeTree]:
 
     def __enter__(self) -> Self:
         self.activate_tree()
+        self._exited = False
         return self
 
     def __exit__(self, *args):
@@ -1046,6 +1071,10 @@ class TreeBuilder[TreeT: NodeTree]:
         if self._arrange is not None:
             self.arrange()
         self._apply_input_defaults()
+        # Interface-menu defaults assigned from here on can't wait for a
+        # context exit that already happened — apply them immediately
+        # (see MenuSocket.default_value).
+        self._exited = True
         self.deactivate_tree()
 
     def _apply_input_defaults(self) -> None:
@@ -1073,14 +1102,32 @@ class TreeBuilder[TreeT: NodeTree]:
         self._arrange = None
 
     def panel(
-        self, name: str, *, description: str = "", default_closed: bool = False
+        self,
+        name: str | bpy.types.NodeTreeInterfacePanel | TreePanelContext,
+        *,
+        description: str = "",
+        default_closed: bool = False,
+        reuse: bool = True,
     ) -> TreePanelContext:
         """A panel that can group input *and* output sockets together
         (``tree.inputs.panel`` / ``tree.outputs.panel`` group one direction).
-        Reuses an existing top-level panel of the same name, so a mixed panel
-        can be declared in separate input and output passes."""
+        Reuses an existing same-named panel under the same parent, so a mixed
+        panel can be declared in separate input and output passes; pass
+        ``reuse=False`` to always create a fresh panel — Blender allows
+        several same-named sibling panels, and rebuilding such an interface
+        must not fold them into one. Passing an existing panel (or a previous
+        ``tree.panel(...)`` context) instead of a name reopens exactly that
+        panel — the unambiguous spelling generated code uses for the second
+        direction pass over a same-named sibling."""
+        if isinstance(name, TreePanelContext):
+            assert name.panel is not None
+            name = name.panel
         return TreePanelContext(
-            self, name, description=description, default_closed=default_closed
+            self,
+            name,
+            description=description,
+            default_closed=default_closed,
+            reuse=reuse,
         )
 
     @property
@@ -1123,8 +1170,9 @@ class TreeBuilder[TreeT: NodeTree]:
     def group_input_splits(self, splits: list[dict]) -> None:
         """Split the Group Input node into several instances: each entry
         creates one instance carrying the listed links (moved off whichever
-        input node holds them), then unused sockets are hidden on every
-        instance. An entry naming a consumer or socket the tree doesn't have
+        input node holds them — exactly one per entry, so parallel links from
+        several instances into one multi-input socket are never swept away
+        together). An entry naming a consumer or socket the tree doesn't have
         is skipped — that noodle simply stays on the primary node — so
         applying a snapshot to an edited tree degrades gracefully, like
         :attr:`node_positions`."""
@@ -1161,18 +1209,26 @@ class TreeBuilder[TreeT: NodeTree]:
                 ]
                 if not existing:
                     continue
+                # Move exactly one link per recorded entry: a multi-input
+                # socket legally takes the same interface input several
+                # times, and the getter records one entry per link — moving
+                # them all here would collapse the duplicates into one.
+                # Prefer a link still on another instance so repeated entries
+                # walk through the remaining duplicates.
+                link = next(
+                    (ln for ln in existing if ln.from_node != instance), existing[0]
+                )
                 # Re-source the very interface socket the link already uses
                 # (by identifier): interface names can repeat across types,
                 # so a name lookup on the instance could pick a same-named
                 # socket of the wrong type and forge an invalid link.
-                identifier = existing[0].from_socket.identifier
+                identifier = link.from_socket.identifier
                 from_socket = next(
                     (s for s in instance.outputs if s.identifier == identifier), None
                 )
                 if from_socket is None:
                     continue
-                for link in existing:
-                    self.tree.links.remove(link)
+                self.tree.links.remove(link)
                 self.tree.links.new(from_socket, to_socket)
         if splits:
             self._hide_unused_input_sockets()

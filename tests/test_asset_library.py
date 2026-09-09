@@ -361,7 +361,7 @@ def test_dump_generates_material_modules(material_library_blend, tmp_path):
     assert "ASSET" not in code  # a material module is not an asset module
 
     asset_code = written["Glowing Grid"].read_text(encoding="utf-8")
-    assert 'bpy.data.materials["Test Glow"]' in asset_code
+    assert 'bpy.data.materials.get("Test Glow")' in asset_code
     assert '"materials": ("Test Glow",)' in asset_code
     assert '"images": ("Grid Tex",)' in asset_code
     # The dump cleans every appended datablock back out of the session.
@@ -528,7 +528,7 @@ def test_dump_refuses_renamed_dependencies(nested_library_blend, tmp_path):
     post-append guard."""
     with TreeBuilder("Doubler"):
         pass
-    with pytest.raises(RuntimeError, match="renamed dependency groups"):
+    with pytest.raises(RuntimeError, match="renamed dependency datablocks"):
         dump_library(nested_library_blend, tmp_path / "src")
 
 
@@ -960,4 +960,55 @@ def test_compositor_roundtrip_plain_and_typed(tmp_path):
     assert bpy.data.node_groups["Grade Boost"].library is not None
     node = host.tree.nodes["Grade Boost"]
     assert round(node.inputs["Boost"].default_value, 3) == 0.8
+    _clear_node_groups()
+
+
+def test_full_dump_removes_stale_modules(library_blend, tmp_path):
+    """A full re-dump clears modules for assets since renamed or deleted, so
+    the next build cannot silently resurrect them; a filtered dump leaves the
+    other assets' files alone, and empty leftover directories are pruned."""
+    src = tmp_path / "src"
+    dump_library(library_blend, src)
+    stale = src / "geometry" / "old_asset.py"
+    stale.write_text("ASSET = None\n", encoding="utf-8")
+    stale_dir = src / "compositor"
+    stale_dir.mkdir()
+    (stale_dir / "gone.py").write_text("ASSET = None\n", encoding="utf-8")
+
+    dump_library(library_blend, src, names={"Scale Up"})
+    assert stale.exists()  # filtered dump: other files untouched
+
+    dump_library(library_blend, src)
+    assert not stale.exists()
+    assert not stale_dir.exists()  # nothing left inside → pruned
+    assert (src / "geometry" / "scale_up.py").exists()
+
+
+def test_dump_refuses_renamed_non_group_dependency(material_library_blend, tmp_path):
+    """A session already holding a same-named *material* makes the appended
+    dependency arrive renamed ('.001'); baking that name into the dump would
+    corrupt it, so the post-append guard now covers every datablock kind."""
+    clash = bpy.data.materials.new("Test Glow")
+    try:
+        with pytest.raises(RuntimeError, match="renamed dependency datablocks"):
+            dump_library(material_library_blend, tmp_path / "src")
+    finally:
+        bpy.data.materials.remove(clash)
+
+
+def test_build_duplicate_asset_names_error(library_blend, tmp_path):
+    """Sources building two same-named assets (e.g. separate libraries dumped
+    into one directory) fail upfront with a per-tree-directory hint instead
+    of aborting mid-build on the .blend's name/type clash."""
+    src = tmp_path / "src"
+    dump_library(library_blend, src)
+    copy_dir = src / "compositor"
+    copy_dir.mkdir()
+    (copy_dir / "__init__.py").write_text("", encoding="utf-8")
+    (copy_dir / "scale_up.py").write_text(
+        (src / "geometry" / "scale_up.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Duplicate asset names"):
+        build_library(src, tmp_path / "rebuilt.blend")
     _clear_node_groups()

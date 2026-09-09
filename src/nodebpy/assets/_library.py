@@ -70,38 +70,30 @@ import bpy
 
 from ..builder import NodeGroupBuilder, TreeBuilder, build_from_source
 from ..builder._utils import normalize_name
-from ..export.codegen import GroupInterface, _class_name, _format_with_ruff, to_python
+from ..export.codegen import (
+    _ID_COLLECTIONS,
+    GroupInterface,
+    _class_name,
+    _format_with_ruff,
+    to_python,
+)
+from ._codegen import _TREE_MODULES
 
 # Tree-type bl_idname → subdirectory the dumped modules are written into.
 # Asset names repeat across editors (a geometry and a compositor "Combine
-# Spherical" both exist), so splitting keeps filenames collision-free.
-_TREE_DIRS: dict[str, str] = {
-    "GeometryNodeTree": "geometry",
-    "ShaderNodeTree": "shader",
-    "CompositorNodeTree": "compositor",
-}
+# Spherical" both exist), so splitting keeps filenames collision-free. The
+# same table drives the per-tree module split in the typed-API generator.
+_TREE_DIRS: dict[str, str] = _TREE_MODULES
 
 # Directory for code-generated materials referenced by the dumped trees.
 _MATERIALS_DIR = "materials"
 
-# ID.id_type → the bpy.data collection holding that datablock type, for the
-# datablock-dependency scan. Node trees are deliberately absent — groups are
-# dumped as classes, not recorded as dependencies.
-_ID_COLLECTIONS: dict[str, str] = {
-    "MATERIAL": "materials",
-    "IMAGE": "images",
-    "OBJECT": "objects",
-    "COLLECTION": "collections",
-    "TEXTURE": "textures",
-    "TEXT": "texts",
-    "FONT": "fonts",
-    "SOUND": "sounds",
-    "SCENE": "scenes",
-    "MASK": "masks",
-}
+# The datablock-dependency scan and cleanup share codegen's ID.id_type →
+# bpy.data collection table (imported above as _ID_COLLECTIONS).
 
-# bpy.data collections the dump appends dependencies into and cleans back out.
-_CLEANUP_COLLECTIONS = ("node_groups", "materials", "images", "objects", "collections")
+# bpy.data collections the dump appends dependencies into and cleans back
+# out: node groups plus every datablock kind the dependency scan can record.
+_CLEANUP_COLLECTIONS = ("node_groups", *_ID_COLLECTIONS.values())
 
 # Collections that can stand in a placeholder for on_missing="drop": the
 # placeholder satisfies the bpy.data lookup during the build and is deleted
@@ -484,6 +476,10 @@ def dump_library(
         Directory to write the per-asset modules into (created if needed).
     names:
         Restrict the dump to these asset (node-group) names; defaults to all.
+        A full dump first clears the managed subdirectories
+        (``geometry``/``shader``/``compositor``/``materials``) so files from
+        renamed or deleted assets don't linger; a filtered dump leaves the
+        other assets' files in place.
     nodebpy_pkg:
         Import anchor for nodebpy in the generated sources, as for
         :func:`nodebpy.export.to_python`.
@@ -525,50 +521,51 @@ def dump_library(
     if not blend_path.is_file():
         raise FileNotFoundError(f"Asset library not found: {blend_path.resolve()}")
 
-    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
-        str(blend_path), link=False, assets_only=True
-    ) as (src, _):
-        available = list(src.node_groups)
-    wanted = [n for n in available if names is None or n in names]
-    if names is not None and (missing := names - set(wanted)):
-        raise KeyError(f"Assets not found in {blend_path}: {sorted(missing)}")
-
-    clashes = sorted(n for n in wanted if n in bpy.data.node_groups)
-    if clashes:
-        raise RuntimeError(
-            f"Node groups already exist in this session: {clashes}. Appending "
-            "would rename them and corrupt the dumped sources — dump from a "
-            "fresh session (e.g. python -m nodebpy.assets dump)."
-        )
-
     # Append every wanted asset in one load, so groups shared between assets
     # (including assets nested in other assets) arrive as single trees and the
     # sharing structure can be read off the session directly. Dependencies of
     # other kinds (materials, images, …) come along too; everything appended
-    # is cleaned back out afterwards.
+    # is cleaned back out afterwards. The pre-append checks run inside the
+    # load context (the load itself happens on exit, with nothing selected
+    # when a check raises), so the .blend is opened only once.
     before = {
         coll: set(getattr(bpy.data, coll).keys()) for coll in _CLEANUP_COLLECTIONS
     }
     with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
         str(blend_path), link=False, assets_only=True
     ) as (src, dst):
+        available = list(src.node_groups)
+        wanted = [n for n in available if names is None or n in names]
+        if names is not None and (missing := names - set(wanted)):
+            raise KeyError(f"Assets not found in {blend_path}: {sorted(missing)}")
+        clashes = sorted(n for n in wanted if n in bpy.data.node_groups)
+        if clashes:
+            raise RuntimeError(
+                f"Node groups already exist in this session: {clashes}. "
+                "Appending would rename them and corrupt the dumped sources — "
+                "dump from a fresh session (e.g. python -m nodebpy.assets dump)."
+            )
         dst.node_groups = list(wanted)
     added = {
         coll: [db for db in getattr(bpy.data, coll) if db.name not in before[coll]]
         for coll in _CLEANUP_COLLECTIONS
     }
     try:
+        # Any appended datablock (not just a group) arriving renamed means a
+        # same-named datablock already sat in the session; the '.001' name
+        # would be baked into DATABLOCK_DEPENDENCIES and the generated
+        # bpy.data lookups, silently corrupting the dump.
         renamed = sorted(
-            g.name
-            for g in added["node_groups"]
-            if (m := re.fullmatch(r"(.*)\.\d{3}", g.name))
-            and m[1] in before["node_groups"]
+            f"{coll}[{db.name!r}]"
+            for coll, dbs in added.items()
+            for db in dbs
+            if (m := re.fullmatch(r"(.*)\.\d{3}", db.name)) and m[1] in before[coll]
         )
         if renamed:
             raise RuntimeError(
-                f"Appending renamed dependency groups {renamed} because "
-                "same-named groups already exist in this session — dump from "
-                "a fresh session."
+                f"Appending renamed dependency datablocks {renamed} because "
+                "same-named datablocks already exist in this session — dump "
+                "from a fresh session."
             )
         written = _dump_appended(
             list(dst.node_groups),
@@ -580,6 +577,11 @@ def dump_library(
             materials=materials,
             format=format,
             library_blend=blend_path.resolve() if typed_api else None,
+            # A full dump owns the managed subdirectories: clear stale modules
+            # from assets since renamed or deleted, so the next build_library
+            # doesn't silently resurrect them. A filtered dump (names=...)
+            # leaves the other assets' files alone.
+            clean_stale=names is None,
         )
     finally:
         for coll in _CLEANUP_COLLECTIONS:
@@ -589,6 +591,42 @@ def dump_library(
 
     _copy_catalog_file(blend_path.parent, output_dir)
     return written
+
+
+def _is_generated_init(path: Path) -> bool:
+    """Whether ``path`` is an ``__init__.py`` nodebpy wrote (marker or plain
+    package marker) rather than a hand-written one."""
+    first_line = path.read_text(encoding="utf-8").split("\n", 1)[0]
+    return first_line in (_GENERATED_INIT_HEADER, _INIT_CONTENT.rstrip("\n"))
+
+
+def _remove_stale_modules(output_dir: Path, written: set[Path]) -> None:
+    """Remove modules under the managed subdirectories that this dump did not
+    write — leftovers from assets since renamed or deleted. Hand-written
+    ``__init__.py`` files survive; directories left holding nothing but a
+    generated ``__init__.py`` are pruned entirely."""
+    keep = {path.resolve() for path in written}
+    for dirname in (*_TREE_DIRS.values(), _MATERIALS_DIR):
+        base = output_dir / dirname
+        if not base.is_dir():
+            continue
+        for path in base.rglob("*.py"):
+            if path.name != "__init__.py" and path.resolve() not in keep:
+                path.unlink()
+        subdirs = sorted((p for p in base.rglob("*") if p.is_dir()), reverse=True) + [
+            base
+        ]
+        for sub in subdirs:
+            entries = list(sub.iterdir())
+            if (
+                len(entries) == 1
+                and (init := entries[0]).name == "__init__.py"
+                and _is_generated_init(init)
+            ):
+                init.unlink()
+                entries = []
+            if not entries:
+                sub.rmdir()
 
 
 def _dump_appended(
@@ -602,6 +640,7 @@ def _dump_appended(
     materials: bool,
     format: bool,
     library_blend: Path | None = None,
+    clean_stale: bool = False,
 ) -> dict[str, Path]:
     """Partition the appended groups (and referenced materials) into modules
     and write them.
@@ -609,7 +648,9 @@ def _dump_appended(
     ``asset_trees`` are the trees dumped as assets; ``appended`` is every
     group the load brought in (the assets plus all their dependencies).
     ``library_blend`` (the resolved ``.blend`` path) turns on the merged
-    typed API — see ``dump_library(typed_api=...)``.
+    typed API — see ``dump_library(typed_api=...)``. ``clean_stale`` removes
+    modules under the managed subdirectories that this dump did not write
+    (hand-written ``__init__.py`` files are kept, as ever).
     """
     # Unsupported tree types (e.g. texture trees) can't be code-generated;
     # skip those assets — their private dependencies drop out with them.
@@ -770,10 +811,13 @@ def _dump_appended(
     written: dict[str, Path] = {}
     for tree in asset_trees:
         written[tree.name] = write_module(tree.name, modules[tree.name], kind="asset")
+    all_written = set(written.values())
     for name in sorted(shared):
-        write_module(name, modules[name], kind="shared")
+        all_written.add(write_module(name, modules[name], kind="shared"))
     for key in sorted(material_trees):
-        write_module(key, modules[key], kind="material")
+        all_written.add(write_module(key, modules[key], kind="material"))
+    if clean_stale:
+        _remove_stale_modules(output_dir, all_written)
 
     if library_blend is not None:
         # Typed API: each tree directory re-exports its asset classes, so
@@ -988,6 +1032,28 @@ def build_library(
             raise ValueError(
                 f"{file} defines neither ASSET nor MATERIAL — not a dumped module?"
             )
+
+    # A .blend keys node groups by name across every tree type, so two dumped
+    # assets sharing a display name (e.g. a geometry and a compositor "Combine
+    # Spherical", dumped from separate libraries into one source dir) cannot
+    # coexist in one rebuilt library — the second create_group would abort the
+    # build mid-way on the name/type clash. Fail upfront with the way out.
+    by_name: dict[str, list[Path]] = {}
+    for file, module in asset_modules:
+        name = getattr(module.ASSET, "_name", None)  # ty: ignore[unresolved-attribute]
+        if isinstance(name, str):
+            by_name.setdefault(name, []).append(file)
+    if duplicates := {n: fs for n, fs in by_name.items() if len(fs) > 1}:
+        listing = "; ".join(
+            f"{name!r} in {[str(f.relative_to(source_dir)) for f in files]}"
+            for name, files in sorted(duplicates.items())
+        )
+        raise ValueError(
+            f"Duplicate asset names across sources: {listing}. A .blend holds "
+            "one node group per name regardless of tree type — build each "
+            "tree directory into its own .blend (e.g. "
+            "build_library(source_dir / 'geometry', ...))."
+        )
 
     # Resolve non-serialisable datablocks before anything builds. Materials
     # the dump code-generated are provided by their own modules, not looked

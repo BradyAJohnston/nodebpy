@@ -26,11 +26,12 @@ import json
 import keyword
 import re
 import textwrap
+from collections import Counter
 from collections.abc import Callable, Collection, Mapping
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
-from bpy.types import FunctionNodeCompare, NodeTree
+from bpy.types import ID, FunctionNodeCompare, NodeTree
 
 if TYPE_CHECKING:
     from ..builder.tree import TreeBuilder
@@ -361,7 +362,12 @@ def _within_one_ulp(candidate: float, f32) -> bool:
     value."""
     import numpy as np
 
-    c32 = np.float32(candidate)
+    # A candidate beyond float32 range (a huge clamp bound) overflows the
+    # cast to inf with a RuntimeWarning; it is never within one ULP.
+    with np.errstate(over="ignore"):
+        c32 = np.float32(candidate)
+    if not np.isfinite(c32):
+        return False
     return bool(c32 == f32 or np.nextafter(f32, c32) == c32)
 
 
@@ -466,6 +472,16 @@ def _fmt(value: Any) -> str:
         # naive quote/backslash replace would leave to break the literal,
         # stays double-quoted, and leaves printable non-ASCII as-is.
         return json.dumps(value, ensure_ascii=False)
+    if isinstance(value, ID):
+        # A datablock renders as a *guarded* lookup: repr()'s subscript form
+        # raises KeyError in any session that lacks the datablock, so a
+        # standalone script would crash at exec time; .get() degrades to an
+        # empty default instead (the dump/build pipeline pre-resolves these
+        # from DATABLOCK_DEPENDENCIES, so there the datablock is present).
+        collection = _ID_COLLECTIONS.get(value.id_type)
+        if collection is not None:
+            return f"bpy.data.{collection}.get({json.dumps(value.name, ensure_ascii=False)})"
+        return repr(value)
     # Vectors / sequences
     try:
         items = list(value)
@@ -560,8 +576,28 @@ _DATABLOCK_IFACE_DEFAULT_TYPES = frozenset(
         "NodeSocketCollection",
         "NodeSocketImage",
         "NodeSocketMaterial",
+        "NodeSocketFont",
+        "NodeSocketSound",
     }
 )
+
+# ID.id_type → the bpy.data collection holding that datablock type. Drives
+# the guarded ``bpy.data.<collection>.get(...)`` spelling _fmt renders
+# datablock values as, and the dump pipeline's dependency scan
+# (nodebpy.assets._library). Node trees are deliberately absent — groups are
+# emitted as classes, never as lookups.
+_ID_COLLECTIONS: dict[str, str] = {
+    "MATERIAL": "materials",
+    "IMAGE": "images",
+    "OBJECT": "objects",
+    "COLLECTION": "collections",
+    "TEXTURE": "textures",
+    "TEXT": "texts",
+    "FONT": "fonts",
+    "SOUND": "sounds",
+    "SCENE": "scenes",
+    "MASK": "masks",
+}
 
 _NO_DEFAULT_VALUE_TYPES = frozenset(
     {
@@ -1428,12 +1464,15 @@ def _output_expr(
         # A variable-items node's item-output identifier carries a
         # creation-order counter the rebuilt node reassigns (e.g. a captured
         # item named "Selection" colliding with CaptureAttribute's built-in
-        # "Selection" output). The *output position* follows the item-collection
-        # order, which round-trips, so reference it by index. Fixed-output nodes
-        # (Mix's four "Result" sockets) keep their stable identifier.
+        # "Selection" output), and a group node's identifiers come from its
+        # interface, which a rebuild reassigns too. The *output position*
+        # follows the item-collection/interface order, which round-trips, so
+        # reference it by index. Fixed-output nodes (Mix's four "Result"
+        # sockets) keep their stable identifier.
         if (
             from_node.bl_idname in _ITEMS_NODE_SPECS
             or from_node.bl_idname in _TYPED_ITEMS_NODE_SPECS
+            or from_node.type == "GROUP"
         ):
             index = next(
                 i
@@ -1890,6 +1929,9 @@ class SocketMethodSpec:
     always_args: int = 0  # leading params the method signature requires —
     # emitted even when unlinked at the default value (skipping them would
     # render a call with missing positional arguments).
+    max_positional: int | None = None  # cap on positionally-rendered params;
+    # params beyond it are keyword-only in the method signature (map_range's
+    # ``steps``) and must render as kwargs.
     receiver_list_prop: str | None = None  # for list methods: the receiver must
     # be a LIST whose element type matches this prop (``socket_type`` /
     # ``data_type``), inverting _socket_dtype's VALUE↔FLOAT swap, so the rebuilt
@@ -2010,7 +2052,11 @@ def _vector_op_spec(
 
 
 def _string_spec(
-    method: str, output: str, *params, case: str | None = None
+    method: str,
+    output: str,
+    *params,
+    case: str | None = None,
+    always_args: int = 0,
 ) -> SocketMethodSpec:
     return SocketMethodSpec(
         receiver="String",
@@ -2019,6 +2065,7 @@ def _string_spec(
         params=tuple(params),
         require_sockets=(("Case", case),) if case else (),
         receiver_socket_type="STRING",
+        always_args=always_args,
     )
 
 
@@ -2030,6 +2077,9 @@ def _match_string_spec(method: str, operation: str) -> SocketMethodSpec:
         params=(("Key", "search"),),
         require_sockets=(("Operation", operation),),
         receiver_socket_type="STRING",
+        # ``search`` is a required parameter — a match against the empty
+        # string is never worth a silent default.
+        always_args=1,
     )
 
 
@@ -2170,6 +2220,7 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             consumed_props=("data_type",),
             prop_kwargs=_MAP_RANGE_PROP_KWARGS,
             receiver_socket_type="VALUE",
+            max_positional=4,  # ``steps`` is keyword-only
         ),
         SocketMethodSpec(
             receiver="Vector",
@@ -2186,6 +2237,7 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             consumed_props=("data_type",),
             prop_kwargs=_MAP_RANGE_PROP_KWARGS,
             receiver_socket_type="VECTOR",
+            max_positional=4,  # ``steps`` is keyword-only
         ),
     ],
     "GeometryNodeFieldAtIndex": [
@@ -2227,6 +2279,9 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             output="Vector",
             params=(("Rotation", "rotation"),),
             receiver_socket_type="VECTOR",
+            # The operand is a required parameter (an identity rotate is
+            # never worth a silent default), so it always renders.
+            always_args=1,
         ),
     ],
     "FunctionNodeTransformPoint": [
@@ -2236,6 +2291,7 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             output="Vector",
             params=(("Transform", "matrix"),),
             receiver_socket_type="VECTOR",
+            always_args=1,
         ),
     ],
     "ShaderNodeMath": [
@@ -2325,7 +2381,13 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
         _string_spec("slice", "String", ("Position", "position"), ("Length", "length")),
     ],
     "FunctionNodeReplaceString": [
-        _string_spec("replace", "String", ("Find", "find"), ("Replace", "replace")),
+        _string_spec(
+            "replace",
+            "String",
+            ("Find", "find"),
+            ("Replace", "replace"),
+            always_args=2,
+        ),
     ],
     "FunctionNodeReverseString": [
         _string_spec("reverse", "String"),
@@ -2410,6 +2472,7 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             output="Direction",
             params=(("Direction", "direction"),),
             receiver_socket_type="MATRIX",
+            always_args=1,
         ),
     ],
     "FunctionNodeInvertRotation": [
@@ -2428,6 +2491,7 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
             params=(("Rotate By", "rotation"),),
             prop_kwargs=(("rotation_space", "GLOBAL"),),
             receiver_socket_type="ROTATION",
+            always_args=1,
         ),
     ],
     "FunctionNodeRotationToEuler": [
@@ -2829,10 +2893,13 @@ def _socket_method_val(ctx: EmitContext, node) -> _Val | None:
         if current != default:
             kwargs[prop] = Lit(current)
 
-    # Leading consecutive parameters render positionally.
+    # Leading consecutive parameters render positionally (capped where the
+    # signature makes trailing params keyword-only).
     args: list[Expr] = []
     for _, param in spec.params:
         if param not in kwargs:
+            break
+        if spec.max_positional is not None and len(args) >= spec.max_positional:
             break
         args.append(kwargs.pop(param))
 
@@ -3121,6 +3188,14 @@ def _operator_dispatch_ok(node, pair, linked_ids: set[str], src_types) -> bool:
             return False
         return any(
             s.identifier not in linked_ids or src_types.get(s.identifier) == "VALUE"
+            for s in pair
+        )
+    if node.bl_idname == "FunctionNodeIntegerMath":
+        # ``a - b`` re-dispatches to IntegerMath only when every linked
+        # operand is an integer source (unlinked defaults render as int
+        # literals); a float operand rebuilds as a ShaderNodeMath instead.
+        return all(
+            s.identifier not in linked_ids or src_types.get(s.identifier) == "INT"
             for s in pair
         )
     return True
@@ -3477,8 +3552,37 @@ def _emit_interface_lines(node_tree, ctx: EmitContext) -> list[str]:
     """Interface lines in items_tree order, grouped into (possibly nested)
     panel with-blocks. A panel whose sockets span both directions is opened
     with ``tree.panel`` — once per direction pass, reusing the panel — and a
-    single-direction panel with ``tree.<direction>.panel``."""
+    single-direction panel with ``tree.<direction>.panel``. Blender allows
+    same-named sibling panels, which a name-based reuse would fold into one
+    on rebuild: those are created with ``reuse=False`` and, when mixed,
+    bound to a variable the second direction pass reopens by handle."""
     lines: list[str] = []
+
+    def _sibling_key(panel) -> tuple[str, int]:
+        parent = panel.parent
+        parent_ix = -1 if parent is None else parent.index
+        return (panel.name, parent_ix)
+
+    duplicate_keys = {
+        key
+        for key, count in Counter(
+            _sibling_key(item)
+            for item in node_tree.interface.items_tree
+            if getattr(item, "item_type", "") == "PANEL"
+        ).items()
+        if count > 1
+    }
+    handles: dict[int, str] = {}  # ambiguous mixed panel index → variable name
+    opened: set[int] = set()  # panel indices any pass has created
+
+    def _panel_open_args(panel) -> list[str]:
+        panel_args = [_fmt(panel.name)]
+        if panel.description:
+            panel_args.append(f"description={_fmt(panel.description)}")
+        if panel.default_closed:
+            panel_args.append("default_closed=True")
+        return panel_args
+
     for direction, in_out in (("inputs", "INPUT"), ("outputs", "OUTPUT")):
         open_stack: list[int] = []  # indices of the panels currently open
         for item in node_tree.interface.items_tree:
@@ -3493,21 +3597,56 @@ def _emit_interface_lines(node_tree, ctx: EmitContext) -> list[str]:
                 keep += 1
             del open_stack[keep:]
             for panel in chain[keep:]:
-                panel_args = [_fmt(panel.name)]
-                if panel.description:
-                    panel_args.append(f"description={_fmt(panel.description)}")
-                if panel.default_closed:
-                    panel_args.append("default_closed=True")
-                mixed = len(_panel_directions(panel)) > 1
-                target = "tree" if mixed else f"tree.{direction}"
                 indent = "    " * (1 + len(open_stack))
-                lines.append(f"{indent}with {target}.panel({', '.join(panel_args)}):")
+                if panel.index in handles:
+                    # Second direction pass over an ambiguously-named mixed
+                    # panel: reopen exactly the panel the first pass created.
+                    lines.append(f"{indent}with tree.panel({handles[panel.index]}):")
+                    open_stack.append(panel.index)
+                    continue
+                panel_args = _panel_open_args(panel)
+                mixed = len(_panel_directions(panel)) > 1
+                ambiguous = _sibling_key(panel) in duplicate_keys
+                suffix = ""
+                if mixed and ambiguous:
+                    panel_args.append("reuse=False")
+                    var = f"_panel_{panel.index}"
+                    handles[panel.index] = var
+                    suffix = f" as {var}"
+                target = "tree" if mixed else f"tree.{direction}"
+                lines.append(
+                    f"{indent}with {target}.panel({', '.join(panel_args)}){suffix}:"
+                )
                 open_stack.append(panel.index)
+                opened.add(panel.index)
             lines.append(
                 _emit_interface(
                     item, direction, ctx, indent="    " * (1 + len(open_stack))
                 )
             )
+
+    # Panels holding no sockets anywhere (an empty organizational stub) were
+    # never opened above — create them explicitly, nesting under their (by
+    # now existing) ancestors via reusing ``tree.panel`` blocks.
+    for panel in node_tree.interface.items_tree:
+        if getattr(panel, "item_type", "") != "PANEL" or panel.index in opened:
+            continue
+        depth = 1
+        for ancestor in _panel_chain(panel):
+            indent = "    " * depth
+            if ancestor.index in handles:
+                lines.append(f"{indent}with tree.panel({handles[ancestor.index]}):")
+            elif ancestor.index in opened:
+                lines.append(f"{indent}with tree.panel({_fmt(ancestor.name)}):")
+            else:
+                args = [*_panel_open_args(ancestor), "reuse=False"]
+                lines.append(f"{indent}with tree.panel({', '.join(args)}):")
+                opened.add(ancestor.index)
+            depth += 1
+        args = [*_panel_open_args(panel), "reuse=False"]
+        lines.append(f"{'    ' * depth}with tree.panel({', '.join(args)}):")
+        lines.append(f"{'    ' * (depth + 1)}pass")
+        opened.add(panel.index)
     return lines
 
 
@@ -3970,6 +4109,7 @@ _TREE_PROP_CANDIDATES = (
     "node_tool_idname",
     "show_modifier_manage_panel",
     "is_modifier",
+    "is_strip_modifier",
     "is_tool",
     "is_mode_object",
     "is_mode_edit",
@@ -4009,6 +4149,138 @@ def _node_prop_lines(node) -> list[str]:
         lines.append("mute = True")
     if getattr(node, "warning_propagation", "ALL") != "ALL":
         lines.append(f"warning_propagation = {_fmt(node.warning_propagation)}")
+    return lines
+
+
+# -- Curve mappings (Float Curve, RGB/Vector Curves, Hue Correct) -----------
+
+_MAPPING_ATTRS = (
+    "extend",
+    "tone",
+    "use_clip",
+    "clip_min_x",
+    "clip_min_y",
+    "clip_max_x",
+    "clip_max_y",
+    "black_level",
+    "white_level",
+)
+
+
+def _mapping_attr_value(mapping, name):
+    value = getattr(mapping, name)
+    if isinstance(value, (str, bool, int, float)):
+        return value
+    return tuple(value)
+
+
+def _mapping_state(mapping) -> tuple:
+    """A comparable snapshot of a ``CurveMapping``: its attrs plus every
+    curve's points (location, handle type, selection)."""
+    attrs = tuple(
+        (name, _norm_floats(_mapping_attr_value(mapping, name)))
+        for name in _MAPPING_ATTRS
+        if hasattr(mapping, name)
+    )
+    curves = tuple(
+        tuple(
+            (
+                _norm_floats(tuple(point.location)),
+                point.handle_type,
+                bool(point.select),
+            )
+            for point in curve.points
+        )
+        for curve in mapping.curves
+    )
+    return (attrs, curves)
+
+
+def _norm_floats(value):
+    if isinstance(value, float):
+        return round(value, 5)
+    if isinstance(value, tuple):
+        return tuple(_norm_floats(v) for v in value)
+    return value
+
+
+_FRESH_MAPPING_CACHE: dict[tuple[str, str], tuple | None] = {}
+
+
+def _fresh_mapping_state(tree_idname: str, bl_idname: str) -> tuple | None:
+    key = (tree_idname, bl_idname)
+    if key not in _FRESH_MAPPING_CACHE:
+
+        def probe(tree):
+            node = tree.nodes.new(bl_idname)
+            mapping = getattr(node, "mapping", None)
+            if mapping is None or not hasattr(mapping, "curves"):
+                return None
+            return _mapping_state(mapping)
+
+        _FRESH_MAPPING_CACHE[key] = _with_probe_tree(tree_idname, probe, None)
+    return _FRESH_MAPPING_CACHE[key]
+
+
+def _has_custom_mapping(node, tree_idname: str) -> bool:
+    """Whether the node carries a curve mapping differing from a fresh one."""
+    mapping = getattr(node, "mapping", None)
+    if mapping is None or not hasattr(mapping, "curves"):
+        return False
+    return _mapping_state(mapping) != _fresh_mapping_state(tree_idname, node.bl_idname)
+
+
+def _node_mapping_lines(
+    node, tree_idname: str, accessor: str, counter: dict[str, int]
+) -> list[str]:
+    """Statements that reproduce the node's edited curve mapping.
+
+    Point locations don't resort until ``update()`` runs, so extra points are
+    first created at large dummy x (appending them at the end), every point
+    is then assigned by index in the mapping's own (x-sorted) order, and one
+    final ``update()`` re-sorts — a no-op, since the targets were sorted."""
+    mapping = node.mapping
+    fresh = _fresh_mapping_state(tree_idname, node.bl_idname)
+    fresh_attrs = dict(fresh[0]) if fresh is not None else {}
+    map_ref = f"{accessor}.mapping"
+    lines: list[str] = []
+    for name in _MAPPING_ATTRS:
+        if not hasattr(mapping, name):
+            continue
+        value = _mapping_attr_value(mapping, name)
+        if fresh is None or fresh_attrs.get(name) != _norm_floats(value):
+            lines.append(f"{map_ref}.{name} = {_fmt(value)}")
+    fresh_curves = fresh[1] if fresh is not None else None
+    state_curves = _mapping_state(mapping)[1]
+    for index, curve in enumerate(mapping.curves):
+        if (
+            fresh_curves is not None
+            and index < len(fresh_curves)
+            and state_curves[index] == fresh_curves[index]
+        ):
+            continue
+        var = _make_var("curve", counter)
+        lines.append(f"{var} = {map_ref}.curves[{index}]")
+        fresh_count = (
+            len(fresh_curves[index])
+            if fresh_curves is not None and index < len(fresh_curves)
+            else 2
+        )
+        for extra in range(len(curve.points) - fresh_count):
+            # Dummy x beyond any real curve keeps the new point at the end.
+            lines.append(f"{var}.points.new({1e6 + extra}, 0.0)")
+        for _ in range(fresh_count - len(curve.points)):
+            lines.append(f"{var}.points.remove({var}.points[-1])")
+        for j, point in enumerate(curve.points):
+            lines.append(f"{var}.points[{j}].location = {_fmt(tuple(point.location))}")
+            if point.handle_type != "AUTO":
+                lines.append(
+                    f"{var}.points[{j}].handle_type = {_fmt(point.handle_type)}"
+                )
+            # Selection is part of the stored state (and ``points.new`` may
+            # select what it creates), so it is always written out.
+            lines.append(f"{var}.points[{j}].select = {point.select}")
+    lines.append(f"{map_ref}.update()")
     return lines
 
 
@@ -4163,12 +4435,15 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
         ]
 
         # Node-instance properties no constructor expresses (a muted/bypassed
-        # node, non-default warning propagation) force a variable binding so
-        # they can be applied to the built node afterwards.
+        # node, non-default warning propagation, an edited curve mapping)
+        # force a variable binding so they can be applied to the built node
+        # afterwards.
         node_prop_lines = _node_prop_lines(node)
+        custom_mapping = _has_custom_mapping(node, node_tree.bl_idname)
 
         if (
             not node_prop_lines
+            and not custom_mapping
             and len(out_links) == 1
             and not group_outs
             # Inlining would create this node at the consumer's statement —
@@ -4189,6 +4464,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # to a group output finishes its chain right here.
         if (
             not node_prop_lines
+            and not custom_mapping
             and len(out_links) == 1
             and group_outs
             and name not in gated_nodes
@@ -4213,7 +4489,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
         # A node created purely for its side effect (a gizmo, a dangling
         # node) is never referenced again — prefix its variable so the
         # generated module passes lint (F841).
-        if not out_links and not node_prop_lines:
+        if not out_links and not node_prop_lines and not custom_mapping:
             var = "_" + var
         width = _MAX_LINE_WIDTH - 4 * len(frame)
         tagged_body.extend(
@@ -4224,6 +4500,13 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
             # ``.node`` reaches the bpy node from a node wrapper and a socket
             # wrapper alike, so this works for constructor and method values.
             tagged_body.append((frame, f"    {var}.node.{prop_line}"))
+        if custom_mapping:
+            tagged_body.extend(
+                (frame, f"    {line}")
+                for line in _node_mapping_lines(
+                    node, node_tree.bl_idname, f"{var}.node", ctx.counter
+                )
+            )
         ctx.var_map[name] = _Val(
             Ref(var), is_socket=val.is_socket, socket_id=val.socket_id
         )
@@ -5236,14 +5519,6 @@ def _prefixed_sockets(node, prefix: str, *, output: bool = False) -> list:
     return [s for s in sockets if s.identifier.startswith(prefix)]
 
 
-def _ident_num(identifier: str) -> int:
-    """The numeric suffix of an item socket identifier (``Item_3`` → 3)."""
-    try:
-        return int(identifier.rsplit("_", 1)[1])
-    except (IndexError, ValueError):
-        return -1
-
-
 def _item_socket_type(item) -> str:
     return getattr(item, "socket_type", None) or item.data_type
 
@@ -5296,7 +5571,6 @@ def _zone_required(node) -> Any:
 class _ZoneItemPlan(NamedTuple):
     """One ``zone.<method>(...)`` declaration line plus its socket roles."""
 
-    sort_key: int
     method: str  # typed factory path, e.g. "items.geometry" / "main.float"
     item: Any
     value_link: _Link | None  # link supplying the declaration's value=
@@ -5329,7 +5603,11 @@ def _emit_zone_items(
     current_map: dict[str, Expr] = {}
     targets: dict[str, Expr] = {}
     outputs: dict[str, Expr] = {}
-    for plan in sorted(plans, key=lambda p: p.sort_key):
+    # Emit in plan (item-collection) order: the rebuild recreates the
+    # collection in emission order, and socket identifiers carry creation
+    # counters that stop matching the collection after a UI reorder — sorting
+    # by them would rebuild reordered items in their original positions.
+    for plan in plans:
         args: list[Expr] = [Lit(plan.item.name)]
         kwargs: dict[str, Expr] = {}
         if plan.value_link is not None:
@@ -5377,6 +5655,12 @@ def _emit_state_zone_input(
     ctx.used_aliases.add("g")
     zone_ref = Ref(_make_var(label, ctx.counter))
     ctx.pending_lines.append(f"    {zone_ref.name} = {Call(ctor, ctor_args).render()}")
+    if inspection := getattr(out_node, "inspection_index", 0):
+        # Which iteration the spreadsheet inspects — zone-output state no
+        # constructor argument carries.
+        ctx.pending_lines.append(
+            f"    {zone_ref.name}.output.node.inspection_index = {inspection}"
+        )
 
     items = list(getattr(out_node, items_attr))
     in_inputs = _prefixed_sockets(node, "Item_")
@@ -5386,7 +5670,6 @@ def _emit_state_zone_input(
 
     plans = [
         _ZoneItemPlan(
-            sort_key=_ident_num(in_inputs[i].identifier),
             method=_zone_item_method("items", item),
             item=item,
             value_link=ctx.input_link(node, in_inputs[i].identifier),
@@ -5486,7 +5769,6 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
     for i, item in enumerate(out_node.input_items):
         plans.append(
             _ZoneItemPlan(
-                sort_key=_ident_num(in_inputs[i].identifier),
                 method=_zone_item_method("inputs", item),
                 item=item,
                 value_link=ctx.input_link(node, in_inputs[i].identifier),
@@ -5503,7 +5785,6 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
     for i, item in enumerate(out_node.main_items):
         plans.append(
             _ZoneItemPlan(
-                sort_key=_ident_num(main_inputs[i].identifier),
                 method=_zone_item_method("main", item),
                 item=item,
                 value_link=None,
@@ -5525,7 +5806,6 @@ def _emit_foreach_input(node, ctx: EmitContext) -> _Val:
             extra["domain"] = Lit(item.domain)
         plans.append(
             _ZoneItemPlan(
-                sort_key=_ident_num(gen_inputs[i].identifier),
                 method=_zone_item_method("generated", item),
                 item=item,
                 value_link=None,

@@ -3119,3 +3119,103 @@ def test_codegen_input_detection():
     assert "option_2: InputGeometry = None" in code
     for socket in cls.inputs:  # __init__ forwards every input by identifier
         assert f'"{socket.identifier}": {socket.attr}' in code
+
+
+def test_group_input_splits_move_one_link_per_entry():
+    """The same interface input can reach a multi-input socket from several
+    Group Input instances (one link each — bpy holds at most one identical
+    link per socket pair). Applying a split entry must move exactly one of
+    them, never sweep away every same-named link into a single replacement."""
+    with TreeBuilder("DupJoin", arrange=None) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        join = g.JoinGeometry((geo,))
+        join >> tree.outputs.geometry("Out")
+        multi = join.node.inputs[0]
+        # A second instance feeding the same multi-input socket, the way an
+        # artist splits inputs in the editor.
+        extra = tree.tree.nodes.new("NodeGroupInput")
+        extra.name = "Group Input.001"
+        tree.tree.links.new(extra.outputs["Geometry"], multi)
+        assert len(multi.links) == 2
+
+        # Re-source one of them onto a third instance (a snapshot applied to
+        # an edited tree): the other link must survive.
+        tree.group_input_splits = [
+            {
+                "name": "Group Input.002",
+                "links": [("Geometry", join.node.name, multi.identifier)],
+            }
+        ]
+        incoming = list(multi.links)
+        assert len(incoming) == 2
+        sources = {link.from_node.name for link in incoming}
+        # Exactly one link moved onto the new instance; the other survived
+        # (the old remove-all collapsed both into a single replacement).
+        assert "Group Input.002" in sources
+        assert len(sources) == 2
+
+
+def test_same_named_sibling_mixed_panels_roundtrip():
+    """Blender allows several same-named sibling panels; the rebuild must not
+    fold them into one. Codegen creates them with ``reuse=False`` and reopens
+    each mixed panel by handle in the outputs pass."""
+    with TreeBuilder("DupPanels") as tree:
+        with tree.panel("Settings"):
+            a = tree.inputs.float("A")
+            out_a = tree.outputs.float("OutA")
+        with tree.panel("Settings", reuse=False):
+            b = tree.inputs.float("B")
+            out_b = tree.outputs.float("OutB")
+        a >> out_a
+        b >> out_b
+
+    def panels(node_tree):
+        return [
+            item
+            for item in node_tree.interface.items_tree
+            if getattr(item, "item_type", "") == "PANEL"
+        ]
+
+    assert len(panels(tree.tree)) == 2  # reuse=False created a distinct panel
+
+    code = to_python(tree, format=False)
+    assert "reuse=False" in code
+    assert "with tree.panel(_panel_" in code  # outputs pass reopens by handle
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    rebuilt_panels = panels(rebuilt)
+    assert len(rebuilt_panels) == 2
+    # Each panel kept its own pair of sockets.
+    for panel in rebuilt_panels:
+        sockets = [
+            item.name
+            for item in panel.interface_items
+            if getattr(item, "item_type", "") == "SOCKET"
+        ]
+        assert len(sockets) == 2, sockets
+
+
+def test_datablock_interface_default_emits_guarded_lookup():
+    """Datablock defaults render as bpy.data.<coll>.get(...) so a standalone
+    script still runs in a session that lacks the datablock (the default
+    degrades to empty instead of a KeyError at exec time)."""
+    import bpy
+
+    obj = bpy.data.objects.new("TempTarget", None)
+    with TreeBuilder("ObjDefault") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        tree.inputs.object("Target", obj)
+        geo >> tree.outputs.geometry("Out")
+    code = to_python(tree, format=False)
+    assert 'bpy.data.objects.get("TempTarget")' in code
+    assert "bpy.data.objects[" not in code
+
+    bpy.data.objects.remove(obj)
+    ns: dict = {}
+    exec(code, ns)  # must not raise despite the missing datablock
+    rebuilt = ns["tree"].tree
+    item = next(
+        i for i in rebuilt.interface.items_tree if getattr(i, "name", "") == "Target"
+    )
+    assert item.default_value is None

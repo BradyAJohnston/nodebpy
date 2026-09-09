@@ -272,6 +272,22 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                     f"no remaining input socket named {name!r} on {self._bl_idname}"
                 )
             value_type = _value_socket_type(value)
+            if value_type is None and isinstance(value, (tuple, list)):
+                # A plain sequence is ambiguous between VECTOR, RGBA, ROTATION
+                # and MATRIX (a blanket "VECTOR" would steer a 4-tuple colour
+                # default onto a same-named vector socket): pick the first
+                # candidate whose array default it actually fits, falling back
+                # to interface order.
+                def fits(s) -> bool:
+                    try:
+                        return len(s.default_value) == len(value)  # noqa: B023
+                    except (AttributeError, TypeError):
+                        return False
+
+                socket = next((s for s in candidates if fits(s)), candidates[0])
+                used.add(socket.identifier)
+                self._apply_input(socket, value)
+                continue
             if value_type is None:
                 # A plain default carries no socket, but its Python type still
                 # narrows the target: 0.0 must mean a float "Profile Rotation",

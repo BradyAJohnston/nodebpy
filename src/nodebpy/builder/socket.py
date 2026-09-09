@@ -956,7 +956,7 @@ class _VectorMixin[
 
     def rotate(
         self,
-        rotation: InputRotation = None,
+        rotation: InputRotation,
     ) -> VectorResult:
         "Rotate this vector by the given rotation. Uses `RotateVector` with this socket as the vector input."
         self._assert_output("rotate")
@@ -964,7 +964,7 @@ class _VectorMixin[
 
         return RotateVector(self.socket, rotation).o.vector  # ty: ignore[invalid-return-type]
 
-    def transform(self, matrix: InputMatrix = None) -> VectorResult:
+    def transform(self, matrix: InputMatrix) -> VectorResult:
         "Transform this vector by the given matrix."
         self._assert_output("transform")
         from ..nodes.geometry import TransformPoint
@@ -1039,8 +1039,8 @@ class _VectorMixin[
         def project(self, other: InputVector) -> Self: ...
         def reflect(self, normal: InputVector) -> Self: ...
         def map_range(self, *args: Any, **kwargs: Any) -> Self: ...
-        def rotate(self, rotation: InputRotation = None) -> Self: ...
-        def transform(self, matrix: InputMatrix = None) -> Self: ...
+        def rotate(self, rotation: InputRotation) -> Self: ...
+        def transform(self, matrix: InputMatrix) -> Self: ...
         def _dispatch_unary(self, operation: str) -> Self: ...
         def _dispatch_math(
             self, other: Any, operation: str, reverse: bool = ...
@@ -1374,7 +1374,7 @@ class _RotationMixin[
 
     def rotate(
         self,
-        rotation: InputRotation = None,
+        rotation: InputRotation,
         rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
     ) -> Self:
         "Rotate this rotation by the given rotation in the specified rotation space."
@@ -1803,17 +1803,17 @@ class _StringMixin[
 
         return MatchString
 
-    def starts_with(self, search: InputString = "") -> BooleanResult:
+    def starts_with(self, search: InputString) -> BooleanResult:
         "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
         self._assert_output("starts_with")
         return self._match(self.socket, "Starts With", search).o.result  # ty: ignore[invalid-return-type]
 
-    def ends_with(self, search: InputString = "") -> BooleanResult:
+    def ends_with(self, search: InputString) -> BooleanResult:
         "Create a MatchString[Ends With], return the result as a `BooleanSocket`."
         self._assert_output("ends_with")
         return self._match(self.socket, "Ends With", search).o.result  # ty: ignore[invalid-return-type]
 
-    def contains(self, search: InputString = "") -> BooleanResult:
+    def contains(self, search: InputString) -> BooleanResult:
         "Create a MatchString[Contains], return the result as a `BooleanSocket`."
         self._assert_output("contains")
         return self._match(self.socket, "Contains", search).o.result  # ty: ignore[invalid-return-type]
@@ -1836,9 +1836,7 @@ class _StringMixin[
 
         return FormatString(self.socket, items).o.string  # ty: ignore[invalid-return-type]
 
-    def replace(
-        self, find: InputString = "", replace: InputString = ""
-    ) -> StringResult:
+    def replace(self, find: InputString, replace: InputString) -> StringResult:
         "Replace every match of the string with the replacement string"
         self._assert_output("replace")
         from ..nodes.geometry import ReplaceString
@@ -1859,7 +1857,7 @@ class _StringMixin[
 
         return StringLength(self.socket).o.length  # ty: ignore[invalid-return-type]
 
-    def find(self, search: InputString = "") -> ResultStringFind[IntegerResult]:
+    def find(self, search: InputString) -> ResultStringFind[IntegerResult]:
         "Find where in a string a pattern occurs. Returns `(first_found, count)`."
         self._assert_output("find")
         from ..nodes.geometry import FindInString
@@ -1964,7 +1962,7 @@ class _MatrixMixin[
         o = MatrixSVD(self.socket).o
         return ResultMatrixSVD(o.u, o.s, o.v)  # ty: ignore[invalid-argument-type]
 
-    def transform_direction(self, direction: InputVector = None) -> VectorResult:
+    def transform_direction(self, direction: InputVector) -> VectorResult:
         """Apply this matrix to *direction*, ignoring translation.
 
         Use this instead of ``transform()`` when transforming a direction vector
@@ -2719,6 +2717,27 @@ class MenuSocket(_MenuSocketMixin, _ToListMixin["MenuSocketList"]):
 
     @property
     def default_value(self) -> str:
+        # A deferred interface default hasn't reached the raw socket yet —
+        # report the queued value; once applied, read the interface item
+        # itself (the raw node socket lags until the editor propagates).
+        tree = getattr(self, "_tree", None)
+        identifier = getattr(self, "_interface_identifier", "")
+        if tree is not None and identifier:
+            for pending in reversed(tree._menu_defaults):
+                if pending.identifier == identifier:
+                    return pending.default
+            interface = tree.tree.interface
+            if interface is not None:
+                item = next(
+                    (
+                        item
+                        for item in interface.items_tree
+                        if getattr(item, "identifier", None) == identifier
+                    ),
+                    None,
+                )
+                if item is not None:
+                    return item.default_value
         return self.socket.default_value
 
     @default_value.setter
@@ -2740,6 +2759,11 @@ class MenuSocket(_MenuSocketMixin, _ToListMixin["MenuSocketList"]):
                     identifier=getattr(self, "_interface_identifier", ""),
                 )
             )
+            if tree._exited:
+                # The context-exit drain already ran — an assignment made
+                # after the with-block would otherwise queue forever.
+                tree._apply_input_defaults()
+                tree._menu_defaults.clear()
             return
         self.socket.default_value = value
 

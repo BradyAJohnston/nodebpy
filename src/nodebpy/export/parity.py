@@ -291,7 +291,7 @@ def _fresh_input_defaults(bl_idname: str) -> tuple:
     except ImportError:  # pragma: no cover - parity runs inside Blender
         bpy = None
     if bpy is not None:
-        for tree_type in ("GeometryNodeTree", "CompositorNodeTree"):
+        for tree_type in ("GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"):
             tree = bpy.data.node_groups.new("_parity_probe", tree_type)
             assert tree is not None
             try:

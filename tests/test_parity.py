@@ -238,3 +238,76 @@ def test_cli_compares_two_blends(tmp_path, capsys):
 
     assert main([str(blend_a), str(blend_c)]) == 1
     assert "findings" in capsys.readouterr().out
+
+
+# ---------------------------------------------------------------------------
+# Real-library round trips: every bundled essentials library and the
+# MolecularNodes asset library must reach functional parity through
+# dump → build. These are the example geometry, shader and compositor trees
+# the rest of the suite already exercises.
+# ---------------------------------------------------------------------------
+
+from pathlib import Path
+
+from nodebpy.builder import BundledLibrary
+
+MN_FILE_PATH = (
+    Path.cwd().parent / "MolecularNodes/molecularnodes/assets/node_data_file.blend"
+)
+
+
+def _clear_all_data():
+    """Also drop objects/collections the startup file or a library load holds
+    — a same-named leftover would make the dump's rename guard fire."""
+    _clear_node_groups()
+    bpy.data.batch_remove(
+        list(bpy.data.materials)
+        + list(bpy.data.images)
+        + list(bpy.data.objects)
+        + list(bpy.data.collections)
+    )
+
+
+def _capture_all(path):
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+        str(path), link=False, assets_only=True
+    ) as (src, dst):
+        dst.node_groups = list(src.node_groups)
+    capture = serialize_library(list(dst.node_groups))
+    _clear_all_data()
+    return capture
+
+
+def _assert_library_roundtrip(blend, tmp_path):
+    _clear_all_data()
+    original = _capture_all(blend)
+    src = tmp_path / "src"
+    dump_library(blend, src, format=False)
+    rebuilt = tmp_path / "rebuilt.blend"
+    build_library(src, rebuilt, resources=blend)
+    _clear_all_data()
+    findings = compare_libraries(original, _capture_all(rebuilt), ignore=SURFACES)
+    assert not findings, format_report(findings)
+
+
+@pytest.mark.parametrize(
+    "filename",
+    [
+        "geometry_nodes_essentials.blend",
+        "shading_nodes_essentials.blend",
+        "compositing_nodes_essentials.blend",
+    ],
+)
+def test_functional_parity_bundled_essentials(filename, tmp_path):
+    path = Path(BundledLibrary(filename).path())
+    if not path.is_file():
+        pytest.skip(f"bundled library {filename} not installed")
+    _assert_library_roundtrip(path, tmp_path)
+
+
+@pytest.mark.skipif(
+    not MN_FILE_PATH.exists(),
+    reason="MolecularNodes asset library not found",
+)
+def test_functional_parity_molecular_nodes(tmp_path):
+    _assert_library_roundtrip(MN_FILE_PATH, tmp_path)
