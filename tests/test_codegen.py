@@ -1057,6 +1057,8 @@ def test_string_methods():
         path.length() >> tree.outputs.integer("Len")
         path.uppercase() >> tree.outputs.string("Upper")
         path.replace("a", "b") >> tree.outputs.string("Replaced")
+        path.trim() >> tree.outputs.string("Trimmed")
+        path.trim("x", whitespace=False) >> tree.outputs.string("TrimmedChars")
     code = _assert_roundtrip(tree)
     for expected in (
         "path.starts_with(prefix)",
@@ -1064,6 +1066,8 @@ def test_string_methods():
         "path.length()",
         "path.uppercase()",
         'path.replace("a", "b")',
+        "path.trim()",
+        'path.trim("x", False)',
     ):
         assert expected in code, expected
 

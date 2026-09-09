@@ -6,7 +6,7 @@ title: Changelog
 
 ### Enhancements
 
-- Exposed the `TrimString` node via `StringSocket.trim()`
+- Exposed the `TrimString` node via `StringSocket.trim()`, with codegen round-tripping trees back to the method call
 
 ## v520.15.0 - 2026-08-28
 

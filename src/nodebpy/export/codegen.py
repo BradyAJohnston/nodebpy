@@ -2138,6 +2138,16 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
         _string_spec("uppercase", "String", case="Uppercase"),
         _string_spec("lowercase", "String", case="Lowercase"),
     ],
+    "FunctionNodeTrimString": [
+        _string_spec(
+            "trim",
+            "String",
+            ("Characters", "characters"),
+            ("Whitespace", "whitespace"),
+            ("Start", "start"),
+            ("End", "end"),
+        ),
+    ],
     "FunctionNodeInvertMatrix": [
         _matrix_spec("invert", "Matrix"),
     ],
