@@ -269,7 +269,7 @@ class GetAttributeNames(BaseNode):
 
     Outputs
     -------
-    o.names : StringSocket
+    o.names : StringSocketList
         Names
     """
 
