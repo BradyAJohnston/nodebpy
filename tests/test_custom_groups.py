@@ -577,3 +577,32 @@ def test_menu_socket_default_defers_until_links_exist():
         if s.type == "MENU" and hasattr(s, "default_value")
     ]
     assert values == ["A", "B"]
+
+
+class _DupNamedInputs(CustomGeometryGroup):
+    """Two inputs sharing a name but not a type — resolution must go by the
+    value's shape, not a blanket sequence-means-vector inference."""
+
+    _name = "Dup Named Inputs"
+
+    def _build_group(self, tree):
+        col = tree.inputs.color("Value")
+        vec = tree.inputs.vector("Value")
+        col >> tree.outputs.color("C")
+        vec >> tree.outputs.vector("V")
+
+
+def test_named_links_sequence_matches_socket_arity():
+    """A plain 4-tuple aimed at duplicate-named sockets lands on the RGBA
+    socket and a 3-tuple on the vector one, regardless of declaration order —
+    the value must fit the socket's array default."""
+    with TreeBuilder("HostDup", arrange=None):
+        node = _DupNamedInputs(
+            _named_links=[
+                ("Value", (0.1, 0.2, 0.3, 1.0)),
+                ("Value", (5.0, 6.0, 7.0)),
+            ]
+        )
+    color_in, vector_in = node.node.inputs[0], node.node.inputs[1]
+    assert tuple(round(v, 3) for v in color_in.default_value) == (0.1, 0.2, 0.3, 1.0)
+    assert tuple(round(v, 3) for v in vector_in.default_value) == (5.0, 6.0, 7.0)

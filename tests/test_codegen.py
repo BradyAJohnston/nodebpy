@@ -3219,3 +3219,40 @@ def test_datablock_interface_default_emits_guarded_lookup():
         i for i in rebuilt.interface.items_tree if getattr(i, "name", "") == "Target"
     )
     assert item.default_value is None
+
+
+def test_empty_panels_roundtrip():
+    """Panels holding no sockets — including one nested under a populated
+    panel and a fully empty parent/child pair — are still emitted and
+    rebuilt, instead of silently vanishing."""
+    with TreeBuilder("EmptyPanels") as tree:
+        with tree.inputs.panel("Outer"):
+            a = tree.inputs.float("A")
+            with tree.inputs.panel("Empty Child"):
+                pass
+        with tree.inputs.panel("Empty Root"):
+            with tree.inputs.panel("Empty Leaf"):
+                pass
+        a >> tree.outputs.float("Out")
+
+    def panel_parents(node_tree):
+        return {
+            item.name: (
+                item.parent.name if item.parent and item.parent.index != -1 else None
+            )
+            for item in node_tree.interface.items_tree
+            if getattr(item, "item_type", "") == "PANEL"
+        }
+
+    expected = {
+        "Outer": None,
+        "Empty Child": "Outer",
+        "Empty Root": None,
+        "Empty Leaf": "Empty Root",
+    }
+    assert panel_parents(tree.tree) == expected
+
+    code = to_python(tree, format=False)
+    ns: dict = {}
+    exec(code, ns)
+    assert panel_parents(ns["tree"].tree) == expected
