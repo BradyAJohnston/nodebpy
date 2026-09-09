@@ -51,21 +51,23 @@ from .socket import (
 
 _SocketT = TypeVar("_SocketT", bound=Socket)
 
-# The interface ``default_input`` options Blender exposes on every socket
-# type (which of them a group evaluates meaningfully depends on context).
-_DefaultInputOptions = Literal[
+# The interface ``default_input`` values Blender actually accepts at runtime,
+# per socket type (the RNA enum lists every option on every type, but
+# assignment validates a per-type subset — union across tree types here).
+# Socket types not listed accept only "VALUE", so their factories don't take
+# the parameter at all.
+_FloatDefaultInputs = Literal["VALUE", "SCENE_FRAME"]
+_IntegerDefaultInputs = Literal["VALUE", "INDEX", "ID_OR_INDEX", "SCENE_FRAME"]
+_VectorDefaultInputs = Literal[
     "VALUE",
-    "INDEX",
-    "ID_OR_INDEX",
     "NORMAL",
     "POSITION",
-    "INSTANCE_TRANSFORM",
     "HANDLE_LEFT",
     "HANDLE_RIGHT",
-    "SCENE_FRAME",
     "UNIFORM_IMAGE_COORDINATES",
-    "SELF_OBJECT",
 ]
+_MatrixDefaultInputs = Literal["VALUE", "INSTANCE_TRANSFORM"]
+_ObjectDefaultInputs = Literal["VALUE", "SELF_OBJECT"]
 
 
 class PanelContext:
@@ -276,7 +278,7 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
+        default_input: _FloatDefaultInputs = "VALUE",
     ) -> FloatSocket:
         iface = self._add_socket("NodeSocketFloat", name, description)
         self._set_props(
@@ -308,7 +310,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: _DefaultInputOptions = "VALUE",
+        default_input: _IntegerDefaultInputs = "VALUE",
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
@@ -347,7 +349,6 @@ class SocketContext:
         default_attribute: str | None = None,
         is_panel_toggle: bool = False,
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> BooleanSocket:
         iface = self._add_socket("NodeSocketBool", name, description)
         self._set_props(
@@ -362,7 +363,6 @@ class SocketContext:
             default_attribute=default_attribute,
             is_panel_toggle=is_panel_toggle,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(BooleanSocket, iface)
 
@@ -384,7 +384,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
-        default_input: _DefaultInputOptions = "VALUE",
+        default_input: _VectorDefaultInputs = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         force_non_field: bool = False,
     ) -> VectorSocket:
@@ -427,7 +427,6 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> ColorSocket:
         assert len(default_value) == 4, "Default color must be RGBA tuple"
         iface = self._add_socket("NodeSocketColor", name, description)
@@ -441,7 +440,6 @@ class SocketContext:
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(ColorSocket, iface)
 
@@ -458,7 +456,6 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> RotationSocket:
         iface = self._add_socket("NodeSocketRotation", name, description)
         self._set_props(
@@ -471,7 +468,6 @@ class SocketContext:
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(RotationSocket, iface)
 
@@ -484,7 +480,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: _DefaultInputOptions = "VALUE",
+        default_input: _MatrixDefaultInputs = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
@@ -515,7 +511,6 @@ class SocketContext:
         subtype: StringInterfaceSubtypes = "NONE",
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> StringSocket:
         iface = self._add_socket("NodeSocketString", name, description)
         self._set_props(
@@ -527,7 +522,6 @@ class SocketContext:
             subtype=subtype,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(StringSocket, iface)
 
@@ -543,7 +537,6 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> MenuSocket:
         iface = self._add_socket("NodeSocketMenu", name, description)
         self._set_props(
@@ -555,7 +548,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(MenuSocket, iface)
 
@@ -570,7 +562,7 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
+        default_input: _ObjectDefaultInputs = "VALUE",
     ) -> ObjectSocket:
         iface = self._add_socket("NodeSocketObject", name, description)
         self._set_props(
@@ -595,7 +587,6 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> GeometrySocket:
         iface = self._add_socket("NodeSocketGeometry", name, description)
         self._set_props(
@@ -605,7 +596,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(GeometrySocket, iface)
 
@@ -620,7 +610,6 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> CollectionSocket:
         iface = self._add_socket("NodeSocketCollection", name, description)
         self._set_props(
@@ -631,7 +620,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(CollectionSocket, iface)
 
@@ -646,7 +634,6 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> ImageSocket:
         iface = self._add_socket("NodeSocketImage", name, description)
         self._set_props(
@@ -657,7 +644,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(ImageSocket, iface)
 
@@ -672,7 +658,6 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> MaterialSocket:
         iface = self._add_socket("NodeSocketMaterial", name, description)
         self._set_props(
@@ -683,7 +668,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(MaterialSocket, iface)
 
@@ -737,7 +721,6 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> BundleSocket:
         iface = self._add_socket("NodeSocketBundle", name, description)
         self._set_props(
@@ -747,7 +730,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(BundleSocket, iface)
 
@@ -761,7 +743,6 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> ClosureSocket:
         iface = self._add_socket("NodeSocketClosure", name, description)
         self._set_props(
@@ -771,7 +752,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(ClosureSocket, iface)
 
@@ -785,7 +765,6 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _DefaultInputOptions = "VALUE",
     ) -> ShaderSocket:
         iface = self._add_socket("NodeSocketShader", name, description)
         self._set_props(
@@ -795,7 +774,6 @@ class SocketContext:
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
             force_non_field=force_non_field,
-            default_input=default_input,
         )
         return self._wrap(ShaderSocket, iface)
 
