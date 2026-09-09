@@ -160,6 +160,9 @@ class BaseSocket:
         self._tree = None
         self.socket = socket
         self._interface_socket: bpy.types.NodeTreeInterfaceSocket | None = None
+        # Captured at wrap time: _interface_socket can go stale as the
+        # interface grows, but the identifier string stays addressable.
+        self._interface_identifier: str = ""
         self._builder_node: BaseNode | None = None
 
     @property
@@ -2685,10 +2688,17 @@ class MenuSocket(_MenuSocketMixin, _ToListMixin["MenuSocketList"]):
             # An interface menu default: its enum only populates once the
             # menu propagates from the defining Menu Switch, so defer to the
             # tree-context exit — writing the raw socket here is silently
-            # lost in a headless session.
+            # lost in a headless session. The identifier captured at wrap
+            # time addresses the item; the reference itself may be stale.
             from .tree import _MenuDefault
 
-            tree._menu_defaults.append(_MenuDefault(interface_socket, value))
+            tree._menu_defaults.append(
+                _MenuDefault(
+                    interface_socket,
+                    value,
+                    identifier=getattr(self, "_interface_identifier", ""),
+                )
+            )
             return
         self.socket.default_value = value
 

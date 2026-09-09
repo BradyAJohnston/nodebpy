@@ -488,6 +488,54 @@ def test_keep_reroutes_with_snapshot_positions():
     assert f'"{reroute.name}": (360.0, 120.0)' in code  # reroute position kept
 
 
+def test_snapshot_positions_preserves_group_input_splits():
+    """snapshot_positions also round-trips extra Group Input instances — the
+    editor convention of one input node per consumer cluster with unused
+    sockets hidden. The emitted ``tree.group_input_splits`` block recreates
+    the instances and moves their links; the positions block then places
+    them by name."""
+    with TreeBuilder("SplitSnap", arrange=None) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        out = tree.outputs.float("Out")
+        math = g.Math.add(a, 1.0)
+        combine = g.CombineXYZ(x=math, y=b)
+        combine.o.vector.length() >> out
+        # Author a second Group Input instance feeding CombineXYZ's Y, the
+        # way an artist splits inputs to shorten noodles.
+        extra = tree.tree.nodes.new("NodeGroupInput")
+        extra.location = (-321.0, -123.0)
+        link = next(
+            l
+            for l in tree.tree.links
+            if l.to_node == combine.node and l.from_node.name == "Group Input"
+        )
+        to_socket = link.to_socket
+        tree.tree.links.remove(link)
+        tree.tree.links.new(extra.outputs["B"], to_socket)
+
+    code = to_python(tree, snapshot_positions=True, format=False)
+    assert "tree.group_input_splits = [" in code
+
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    assert _structure(rebuilt) == _structure(tree.tree)
+    instances = [n for n in rebuilt.nodes if n.bl_idname == "NodeGroupInput"]
+    assert len(instances) == 2
+    split = rebuilt.nodes[extra.name]
+    assert split.outputs["B"].is_linked
+    assert split.outputs["A"].hide and not split.outputs["A"].is_linked
+    assert tuple(round(v, 1) for v in split.location) == (-321.0, -123.0)
+    # The primary instance kept A and had its unused B hidden too.
+    primary = rebuilt.nodes["Group Input"]
+    assert primary.outputs["A"].is_linked
+    assert primary.outputs["B"].hide
+
+    # Without snapshot_positions the instances still collapse to one.
+    assert "group_input_splits" not in to_python(tree, format=False)
+
+
 def test_keep_reroutes_across_frame_boundary():
     """A reroute chain crossing a frame boundary must not break emission order.
 

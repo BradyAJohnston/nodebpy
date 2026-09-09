@@ -77,8 +77,8 @@
       "Group Input": (0.0, 0.0),
       "Group Output": (90.0, 30.0),
       "Position": (180.0, 60.0),
-      "Set Position": (270.0, 90.0),
       "Reroute": (360.0, 120.0),
+      "Set Position": (270.0, 90.0),
   }
   '''
 # ---
@@ -129,9 +129,9 @@
   # Restore authored node positions.
   tree.node_positions = {
       "Group Input": (0.0, 0.0),
+      "Group Output": (300.0, 120.0),
       "Position": (100.0, 40.0),
       "Set Position": (200.0, 80.0),
-      "Group Output": (300.0, 120.0),
   }
   '''
 # ---
@@ -155,8 +155,8 @@
           # Restore authored node positions.
           tree.node_positions = {
               "Group Input": (0.0, 0.0),
-              "Set Position": (200.0, 60.0),
               "Group Output": (400.0, 120.0),
+              "Set Position": (200.0, 60.0),
           }
   
   
@@ -169,8 +169,8 @@
   # Restore authored node positions.
   tree.node_positions = {
       "Group Input": (0.0, 0.0),
-      "SnapInner": (120.0, 50.0),
       "Group Output": (240.0, 100.0),
+      "SnapInner": (120.0, 50.0),
   }
   '''
 # ---

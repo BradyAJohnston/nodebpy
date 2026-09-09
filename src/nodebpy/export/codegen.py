@@ -800,7 +800,10 @@ def _ordering_edges(node_tree, keep_reroutes: bool = False):
 
 
 def _topo_sort(node_tree, keep_reroutes: bool = False) -> list:
-    """Return nodes in topological order (dependencies first)."""
+    """Return nodes in topological order (dependencies first), ties broken by
+    node name — the nodes collection follows creation order, which a rebuild
+    shuffles, and a name tie-break keeps emission (and thus re-dumps of a
+    rebuilt tree) deterministic."""
     try:
         import networkx as nx
 
@@ -809,11 +812,9 @@ def _topo_sort(node_tree, keep_reroutes: bool = False) -> list:
             G.add_node(node)
         for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
             G.add_edge(from_node, to_node)
-        return list(nx.topological_sort(G))
+        return list(nx.lexicographical_topological_sort(G, key=lambda n: n.name))
     except ImportError:
         pass
-
-    from collections import deque
 
     nodes = list(node_tree.nodes)
     node_by_name = {n.name: n for n in nodes}
@@ -823,15 +824,16 @@ def _topo_sort(node_tree, keep_reroutes: bool = False) -> list:
         fn, tn = from_node.name, to_node.name
         adj[fn].append(tn)
         in_deg[tn] += 1
-    queue: deque = deque(n for n in nodes if in_deg[n.name] == 0)
+    heap = [n.name for n in nodes if in_deg[n.name] == 0]
+    heapq.heapify(heap)
     order = []
-    while queue:
-        n = queue.popleft()
-        order.append(n)
-        for m_name in adj[n.name]:
+    while heap:
+        name = heapq.heappop(heap)
+        order.append(node_by_name[name])
+        for m_name in adj[name]:
             in_deg[m_name] -= 1
             if in_deg[m_name] == 0:
-                queue.append(node_by_name[m_name])
+                heapq.heappush(heap, m_name)
     return order
 
 
@@ -3383,6 +3385,11 @@ def to_python(
         lines.extend(_assemble_tree_body(emission))
 
         if snapshot_positions:
+            # Splits first: the positions block then places the instances.
+            splits = _group_input_split_lines(node_tree, "", keep_reroutes)
+            if splits:
+                lines.append("")
+                lines.extend(splits)
             lines.append("")
             lines.extend(_node_positions_lines(node_tree, indent=""))
 
@@ -3395,6 +3402,56 @@ def to_python(
     return _format_with_ruff(code) if format else code
 
 
+def _group_input_split_lines(
+    node_tree, indent: str, keep_reroutes: bool = False
+) -> list[str]:
+    """A ``tree.group_input_splits = [...]`` assignment recreating the extra
+    Group Input instances an author placed near consumers (with unused
+    sockets hidden) — the editor convention that avoids one input node
+    trailing long noodles. ``TreeBuilder.group_input_splits`` applies them by
+    name, tolerating consumers a rebuild names differently (those links stay
+    on the primary node); their locations restore via the positions block,
+    which is why this only emits under ``snapshot_positions``."""
+    instances = [n for n in node_tree.nodes if n.bl_idname == "NodeGroupInput"]
+    if len(instances) <= 1:
+        return []
+    # The rebuilt tree's primary input node is named "Group Input"; the
+    # same-named authored instance (or the first) keeps that role, and every
+    # other instance is split off it.
+    primary = next((n for n in instances if n.name == "Group Input"), instances[0])
+    outgoing: dict[str, list[_Link]] = {}
+    for link in _effective_links(node_tree, keep_reroutes):
+        outgoing.setdefault(link.from_node.name, []).append(link)
+
+    lines = [
+        f"{indent}# Restore the authored extra Group Input instances.",
+        f"{indent}tree.group_input_splits = [",
+    ]
+    # Sorted (instances by name, links by content): the collections follow
+    # creation order, which a rebuild shuffles — sorting keeps a re-dump
+    # byte-stable.
+    for node in sorted(instances, key=lambda n: n.name):
+        if node is primary:
+            continue
+        entries = sorted(
+            (
+                link.from_socket.name,
+                link.to_node.name,
+                link.to_socket.identifier,
+            )
+            for link in outgoing.get(node.name, ())
+        )
+        lines.append(f"{indent}    {{")
+        lines.append(f'{indent}        "name": {_fmt(node.name)},')
+        lines.append(f'{indent}        "links": [')
+        for entry in entries:
+            lines.append(f"{indent}            {_fmt(entry)},")
+        lines.append(f"{indent}        ],")
+        lines.append(f"{indent}    }},")
+    lines.append(f"{indent}]")
+    return lines
+
+
 def _node_positions_lines(node_tree, indent: str) -> list[str]:
     """A ``tree.node_positions = {name: (x, y), ...}`` assignment at ``indent``
     that restores each node's authored location. ``TreeBuilder.node_positions``
@@ -3405,7 +3462,9 @@ def _node_positions_lines(node_tree, indent: str) -> list[str]:
         f"{indent}# Restore authored node positions.",
         f"{indent}tree.node_positions = {{",
     ]
-    for node in node_tree.nodes:
+    # Sorted by name: the nodes collection follows creation order, which a
+    # rebuild shuffles — sorting keeps a re-dump byte-stable.
+    for node in sorted(node_tree.nodes, key=lambda n: n.name):
         loc = tuple(round(v, 1) for v in node.location)
         lines.append(f"{indent}    {_fmt(node.name)}: {_fmt(loc)},")
     lines.append(f"{indent}}}")
@@ -3566,6 +3625,10 @@ def _render_group_class(
     if snapshot_positions or keep_reroutes:
         inner = ["    tree.disable_arrange()", ""] + inner
     if snapshot_positions:
+        # Splits first: the positions block then places the instances.
+        splits = _group_input_split_lines(node_tree, "    ", keep_reroutes)
+        if splits:
+            inner = inner + [""] + splits
         inner = inner + [""] + _node_positions_lines(node_tree, indent="    ")
     body = [("    " + line) if line else "" for line in inner]
     return "\n".join(header + body)

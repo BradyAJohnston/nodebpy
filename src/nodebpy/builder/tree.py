@@ -149,6 +149,10 @@ class SocketContext:
         s = socket_cls(bpy_socket)
         s._tree = self.builder
         s._interface_socket = interface_socket
+        # Captured while the reference is certainly fresh: interface items
+        # reallocate as the interface grows, so a later read through
+        # _interface_socket can hit a different item.
+        s._interface_identifier = interface_socket.identifier
         return s
 
     def float(
@@ -606,16 +610,27 @@ class _MenuDefault:
 
     item: bpy.types.NodeSocketMenu | bpy.types.NodeTreeInterfaceSocketMenu
     default: str
-    identifier: str = field(init=False)
+    # Interface references go stale as the interface grows, so a caller that
+    # captured the identifier while the reference was fresh passes it in;
+    # otherwise it is read here, at queue time.
+    identifier: str = ""
     node_name: str | None = field(init=False, default=None)
 
     def __post_init__(self) -> None:
-        self.identifier = self.item.identifier
-        node = getattr(self.item, "node", None)  # sockets only; interface has none
-        self.node_name = node.name if node is not None else None
+        if not self.identifier:
+            self.identifier = self.item.identifier
+            node = getattr(self.item, "node", None)  # sockets only
+            self.node_name = node.name if node is not None else None
 
     def resolve(self, tree: NodeTree):
-        """The live menu socket/interface item this default targets."""
+        """The live menu socket/interface item this default targets.
+
+        Interface items are re-resolved by identifier — the interface update
+        that populates the enums reallocates them, leaving the queued
+        reference stale. A node socket keeps its direct reference (its node
+        may have been *renamed* since queueing, so the name breadcrumb could
+        hit a different same-named node); the breadcrumbs are only its
+        fallback if the socket itself was removed."""
         if self.node_name is None:
             interface = tree.interface
             assert interface is not None
@@ -627,6 +642,11 @@ class _MenuDefault:
                 ),
                 None,
             )
+        try:
+            if self.item.identifier == self.identifier:
+                return self.item
+        except ReferenceError:  # pragma: no cover - the socket was removed
+            pass
         node = tree.nodes.get(self.node_name)
         if node is None:
             return None
@@ -654,6 +674,7 @@ class TreeBuilder[TreeT: NodeTree]:
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
         ignore_visibility: bool = False,
+        split_inputs: bool = False,
     ):
         if isinstance(tree, str):
             self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
@@ -667,6 +688,7 @@ class TreeBuilder[TreeT: NodeTree]:
         self.collapse = collapse
         self.fake_user = fake_user
         self.ignore_visibility = ignore_visibility
+        self._split_inputs = split_inputs
 
     @classmethod
     def geometry(
@@ -676,6 +698,7 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
+        split_inputs: bool = False,
     ) -> TreeBuilder[GeometryNodeTree]:
         """Create a geometry node tree."""
         return cast(
@@ -686,6 +709,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 collapse=collapse,
                 arrange=arrange,
                 fake_user=fake_user,
+                split_inputs=split_inputs,
             ),
         )
 
@@ -697,6 +721,7 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
+        split_inputs: bool = False,
     ) -> TreeBuilder[ShaderNodeTree]:
         """Create a shader node tree."""
         return cast(
@@ -707,6 +732,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 collapse=collapse,
                 arrange=arrange,
                 fake_user=fake_user,
+                split_inputs=split_inputs,
             ),
         )
 
@@ -718,6 +744,7 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
+        split_inputs: bool = False,
     ) -> TreeBuilder[CompositorNodeTree]:
         """Create a compositor node tree."""
         return cast(
@@ -728,6 +755,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 collapse=collapse,
                 arrange=arrange,
                 fake_user=fake_user,
+                split_inputs=split_inputs,
             ),
         )
 
@@ -804,6 +832,10 @@ class TreeBuilder[TreeT: NodeTree]:
         return self
 
     def __exit__(self, *args):
+        # Split before auto-layout, so the created instances get arranged
+        # next to their consumers.
+        if self._split_inputs:
+            self.split_group_inputs()
         if self._arrange is not None:
             self.arrange()
         self._apply_input_defaults()
@@ -848,6 +880,119 @@ class TreeBuilder[TreeT: NodeTree]:
             node = self.tree.nodes.get(name)
             if node is not None:
                 node.location = location
+
+    @property
+    def group_input_splits(self) -> list[dict]:
+        """The extra Group Input instances beyond the primary one, each as
+        ``{"name": ..., "links": [(interface input name, consumer node name,
+        consumer socket identifier), ...]}`` — the editor convention of
+        several input nodes near their consumers instead of one node trailing
+        long noodles. See the setter."""
+        splits: list[dict] = []
+        for node in self.tree.nodes:
+            if node.bl_idname != "NodeGroupInput" or node.name == "Group Input":
+                continue
+            links: list[tuple[str, str, str]] = []
+            for socket in node.outputs:
+                for link in socket.links or ():
+                    to_node, to_socket = link.to_node, link.to_socket
+                    assert to_node is not None and to_socket is not None
+                    links.append((socket.name, to_node.name, to_socket.identifier))
+            splits.append({"name": node.name, "links": links})
+        return splits
+
+    @group_input_splits.setter
+    def group_input_splits(self, splits: list[dict]) -> None:
+        """Split the Group Input node into several instances: each entry
+        creates one instance carrying the listed links (moved off whichever
+        input node holds them), then unused sockets are hidden on every
+        instance. An entry naming a consumer or socket the tree doesn't have
+        is skipped — that noodle simply stays on the primary node — so
+        applying a snapshot to an edited tree degrades gracefully, like
+        :attr:`node_positions`."""
+        # Deferred menu defaults must land before any link moves: their enums
+        # propagate through the pre-split wiring, and re-sourcing a menu link
+        # leaves the enum unpopulated until an editor update this headless
+        # session never runs.
+        self._apply_input_defaults()
+        self._menu_defaults.clear()
+        for split in splits:
+            instance = self.tree.nodes.new("NodeGroupInput")
+            assert instance is not None
+            instance.name = split["name"]
+            for from_name, to_node_name, to_socket_id in split["links"]:
+                to_node = self.tree.nodes.get(to_node_name)
+                if to_node is None:
+                    continue
+                to_socket = next(
+                    (s for s in to_node.inputs if s.identifier == to_socket_id), None
+                )
+                if to_socket is None:
+                    continue
+                # Only re-source an existing identical link: the consumer
+                # must already take this same interface input from some
+                # Group Input instance. A rebuild that assigned this name to
+                # a *different* node fails the check and the noodle stays on
+                # the primary — names alone must never create connectivity,
+                # or two same-typed consumers could end up cross-wired.
+                existing = [
+                    link
+                    for link in to_socket.links or ()
+                    if link.from_node.bl_idname == "NodeGroupInput"
+                    and link.from_socket.name == from_name
+                ]
+                if not existing:
+                    continue
+                # Re-source the very interface socket the link already uses
+                # (by identifier): interface names can repeat across types,
+                # so a name lookup on the instance could pick a same-named
+                # socket of the wrong type and forge an invalid link.
+                identifier = existing[0].from_socket.identifier
+                from_socket = next(
+                    (s for s in instance.outputs if s.identifier == identifier), None
+                )
+                if from_socket is None:
+                    continue
+                for link in existing:
+                    self.tree.links.remove(link)
+                self.tree.links.new(from_socket, to_socket)
+        if splits:
+            self._hide_unused_input_sockets()
+
+    def split_group_inputs(self) -> None:
+        """Split the Group Input node into one instance per consumer node,
+        with unused sockets hidden — regenerating the editor style that
+        avoids a single input node trailing long noodles. Runs automatically
+        on context exit (before auto-layout, so the instances are arranged
+        next to their consumers) when the builder was created with
+        ``split_inputs=True``."""
+        primary = self.tree.nodes.get("Group Input")
+        if primary is None:
+            return
+        by_consumer: dict[str, list[tuple[str, str, str]]] = {}
+        for socket in primary.outputs:
+            for link in socket.links:
+                by_consumer.setdefault(link.to_node.name, []).append(
+                    (socket.name, link.to_node.name, link.to_socket.identifier)
+                )
+        # The first consumer keeps the primary node; each further consumer
+        # gets its own instance (named like Blender would on duplication).
+        self.group_input_splits = [
+            {"name": f"Group Input.{index:03d}", "links": by_consumer[consumer]}
+            for index, consumer in enumerate(list(by_consumer)[1:], start=1)
+        ]
+        self._hide_unused_input_sockets()
+
+    def _hide_unused_input_sockets(self) -> None:
+        """Hide every unlinked output on every Group Input instance (the
+        virtual extension socket excluded), as the editor's Hide Unused
+        Sockets does."""
+        for node in self.tree.nodes:
+            if node.bl_idname != "NodeGroupInput":
+                continue
+            for socket in node.outputs:
+                if not socket.identifier.startswith("__extend__"):
+                    socket.hide = not socket.is_linked
 
     def arrange(self):
         if self._arrange == "sugiyama":

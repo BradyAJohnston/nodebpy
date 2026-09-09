@@ -136,3 +136,39 @@ def test_string_generators(snapshot):
     assert snapshot == tree.to_python(format=False)
     assert snapshot == tree.to_mermaid()
     assert snapshot == tree.to_mermaid(fenced=False)
+
+
+def test_split_inputs_creates_instance_per_consumer():
+    """``split_inputs=True`` regenerates the editor style: one Group Input
+    instance per consumer node, unused sockets hidden, wiring unchanged."""
+    with TreeBuilder("AutoSplit", split_inputs=True) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        out = tree.outputs.float("Out")
+        math = g.Math.add(a, 1.0)
+        combine = g.CombineXYZ(x=math, y=b)
+        combine.o.vector.length() >> out
+
+    instances = [n for n in tree.tree.nodes if n.bl_idname == "NodeGroupInput"]
+    assert len(instances) == 2
+    for node in instances:
+        linked = {s.name for s in node.outputs if s.is_linked}
+        hidden = {s.name for s in node.outputs if s.hide}
+        assert len(linked) == 1  # one instance per consumer, one input each
+        assert hidden == {"A", "B"} - linked
+    # Wiring is unchanged: Math still takes A, CombineXYZ still takes B.
+    assert math.node.inputs[0].links[0].from_socket.name == "A"
+    assert combine.node.inputs["Y"].links[0].from_socket.name == "B"
+
+
+def test_split_inputs_noop_with_single_consumer():
+    """One consumer node means nothing to split — the primary stays alone
+    (with its unused sockets hidden)."""
+    with TreeBuilder("AutoSplitNoop", split_inputs=True) as tree:
+        a = tree.inputs.float("A")
+        tree.inputs.float("Spare")
+        g.Math.add(a, 1.0) >> tree.outputs.float("Out")
+
+    instances = [n for n in tree.tree.nodes if n.bl_idname == "NodeGroupInput"]
+    assert len(instances) == 1
+    assert instances[0].outputs["Spare"].hide
