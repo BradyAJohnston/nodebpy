@@ -400,9 +400,9 @@ class CollectionChildren(BaseNode):
 
     Outputs
     -------
-    o.collections : CollectionSocket
+    o.collections : CollectionSocketList
         Collections
-    o.objects : ObjectSocket
+    o.objects : ObjectSocketList
         Objects
     """
 

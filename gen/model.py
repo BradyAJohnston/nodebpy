@@ -97,7 +97,7 @@ class SocketInfo:
                 if "GRID" in self.structure_type:
                     return _GRID_TYPE_MAP.get(item, item)
                 if "LIST" in self.structure_type:
-                    return item.replace("Input", "InputList")
+                    return f"{item}List"
                 return item
         raise KeyError(f"Couldnt match socket type {self.bl_socket_type}")
 
@@ -389,6 +389,56 @@ class NodeInfo:
         return True
 
     @property
+    def varying_grid_outputs(self) -> set[str]:
+        """Varying outputs that are grid-structured (their socket class is the
+        ``*SocketGrid`` variant of the bound type)."""
+        grid = {s.identifier for s in self.outputs if "GRID" in s.structure_type}
+        return self.varying_output_identifiers & grid
+
+    @property
+    def varying_grid_inputs(self) -> set[str]:
+        """Varying inputs that are grid-structured."""
+        grid = {s.identifier for s in self.inputs if "GRID" in s.structure_type}
+        return self.varying_input_identifiers & grid
+
+    @property
+    def generic_mixed_grid(self) -> bool:
+        """The generic type spans both grid and non-grid varying sockets
+        (e.g. Set Grid Background: Grid is ``FloatSocketGrid`` while
+        Background is ``FloatSocket``) — such classes take a second ``TGrid``
+        type parameter."""
+        grid = self.varying_grid_outputs | self.varying_grid_inputs
+        non_grid = (
+            self.varying_output_identifiers | self.varying_input_identifiers
+        ) - grid
+        return bool(grid) and bool(non_grid)
+
+    @property
+    def varying_list_outputs(self) -> set[str]:
+        """Varying outputs that are list-structured (their socket class is the
+        ``*SocketList`` variant of the bound type)."""
+        lists = {s.identifier for s in self.outputs if "LIST" in s.structure_type}
+        return self.varying_output_identifiers & lists
+
+    @property
+    def varying_list_inputs(self) -> set[str]:
+        """Varying inputs that are list-structured."""
+        lists = {s.identifier for s in self.inputs if "LIST" in s.structure_type}
+        return self.varying_input_identifiers & lists
+
+    @property
+    def generic_mixed_list(self) -> bool:
+        """The generic type spans both list and non-list varying sockets
+        (e.g. Get List Item: List is ``FloatSocketList`` while Value is
+        ``FloatSocket``) — such classes take a second ``TList`` type
+        parameter."""
+        lists = self.varying_list_outputs | self.varying_list_inputs
+        non_list = (
+            self.varying_output_identifiers | self.varying_input_identifiers
+        ) - lists
+        return bool(lists) and bool(non_list)
+
+    @property
     def outputs_generic(self) -> bool:
         """The output side is generic: ≥1 output varies and all varying outputs
         share a single type per enum value (so a single ``_S`` suffices)."""
@@ -404,10 +454,29 @@ class NodeInfo:
             self.varying_input_identifiers, outputs=False
         )
 
+    def _maybe_grid_class(
+        self, socket_identifier: str, cls_name: str, *, outputs: bool
+    ) -> str:
+        """The ``*SocketGrid``/``*SocketList`` variant when the socket is
+        grid- or list-structured."""
+        side = self.outputs if outputs else self.inputs
+        for s in side:
+            if s.identifier != socket_identifier:
+                continue
+            if "GRID" in s.structure_type:
+                return cls_name.replace("Socket", "SocketGrid")
+            if "LIST" in s.structure_type:
+                return f"{cls_name}List"
+        return cls_name
+
     def output_class_for_enum(
         self, socket_identifier: str, enum_identifier: str
     ) -> str:
         """Return the socket class name for a varying output given an enum identifier."""
+
+        def finish(cls: str) -> str:
+            return self._maybe_grid_class(socket_identifier, cls, outputs=True)
+
         for prop in self.properties:
             for enum in prop.enum_items:
                 if enum.identifier == enum_identifier:
@@ -415,18 +484,22 @@ class NodeInfo:
                         if s.identifier == socket_identifier:
                             for key, cls in _OUTPUT_SOCKET_CLASSES.items():
                                 if key in s.bl_socket_type:
-                                    return cls
+                                    return finish(cls)
         for s in self.outputs:
             if s.identifier == socket_identifier:
                 for key, cls in _OUTPUT_SOCKET_CLASSES.items():
                     if key in s.bl_socket_type:
-                        return cls
+                        return finish(cls)
         return "Socket"
 
     def input_class_for_enum(self, socket_identifier: str, enum_identifier: str) -> str:
         """Return the socket class name for a varying input given an enum
         identifier (mirrors :meth:`output_class_for_enum` for input-generic
         nodes like Compare)."""
+
+        def finish(cls: str) -> str:
+            return self._maybe_grid_class(socket_identifier, cls, outputs=False)
+
         for prop in self.properties:
             for enum in prop.enum_items:
                 if enum.identifier == enum_identifier:
@@ -434,12 +507,12 @@ class NodeInfo:
                         if s.identifier == socket_identifier:
                             for key, cls in _OUTPUT_SOCKET_CLASSES.items():
                                 if key in s.bl_socket_type:
-                                    return cls
+                                    return finish(cls)
         for s in self.inputs:
             if s.identifier == socket_identifier:
                 for key, cls in _OUTPUT_SOCKET_CLASSES.items():
                     if key in s.bl_socket_type:
-                        return cls
+                        return finish(cls)
         return "Socket"
 
     def generate_enum_class_methods(
@@ -514,8 +587,15 @@ class NodeInfo:
                         and param_name != ""
                         and param_name != normalize_name(prop.identifier)
                     ):
+                        # Grid/list-structured sockets have no scalar default.
+                        default = (
+                            "None"
+                            if "GRID" in socket.structure_type
+                            or "LIST" in socket.structure_type
+                            else format_python_value(socket.default_value)
+                        )
                         input_params.append(
-                            f"{param_name}: {socket.type_hint} = {format_python_value(socket.default_value)}"
+                            f"{param_name}: {socket.type_hint} = {default}"
                         )
                         # Use the same parameter name as in the constructor
                         call_params.append(f"{socket_name}={param_name}")
@@ -537,17 +617,30 @@ class NodeInfo:
                 # Parameterise the return type when the node is generic. The
                 # output side wins when present (Switch/Mix/field nodes); else
                 # the input side drives it (Compare, whose output is Boolean).
-                if self.outputs_generic:
-                    varying_id = next(iter(self.varying_output_identifiers))
-                    socket_cls = self.output_class_for_enum(varying_id, enum.identifier)
-                    return_type = f"{cls_name}[{socket_cls}]"
+                # Mixed grid/non-grid generics bind both parameters
+                # (``[FloatSocket, FloatSocketGrid]``).
+                if self.outputs_generic or self.inputs_generic:
+                    if self.outputs_generic:
+                        varying_id = next(iter(self.varying_output_identifiers))
+                        socket_cls = self.output_class_for_enum(
+                            varying_id, enum.identifier
+                        )
+                    else:
+                        varying_id = next(iter(self.varying_input_identifiers))
+                        socket_cls = self.input_class_for_enum(
+                            varying_id, enum.identifier
+                        )
+                    if self.generic_mixed_grid:
+                        base_cls = socket_cls.replace("SocketGrid", "Socket")
+                        grid_cls = base_cls.replace("Socket", "SocketGrid")
+                        return_type = f"{cls_name}[{base_cls}, {grid_cls}]"
+                    elif self.generic_mixed_list:
+                        base_cls = socket_cls.removesuffix("List")
+                        return_type = f"{cls_name}[{base_cls}, {base_cls}List]"
+                    else:
+                        return_type = f"{cls_name}[{socket_cls}]"
                     # Use the class name directly (not cls) so the type checker
                     # can resolve the parameterized return type.
-                    call_expr = f"{cls_name}({call_params_str})"
-                elif self.inputs_generic:
-                    varying_id = next(iter(self.varying_input_identifiers))
-                    socket_cls = self.input_class_for_enum(varying_id, enum.identifier)
-                    return_type = f"{cls_name}[{socket_cls}]"
                     call_expr = f"{cls_name}({call_params_str})"
                 else:
                     return_type = cls_name

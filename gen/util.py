@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import unicodedata
 from typing import TYPE_CHECKING, Any
 
 from bpy.types import VectorFont
@@ -15,8 +16,13 @@ def normalize_name(name: str) -> str:
 
     Handles numeric names by prefixing with 'input_' to make valid Python identifiers.
     """
+    # Fold accented letters to their ASCII base ('Bézier' → 'bezier') so
+    # generated method names stay plain-ASCII identifiers.
+    normalized = "".join(
+        c for c in unicodedata.normalize("NFKD", name) if not unicodedata.combining(c)
+    )
     # Replace spaces, hyphens, and other non-alphanumeric characters with underscores
-    normalized = name.lower()
+    normalized = normalized.lower()
     normalized = "".join(c if c.isalnum() else "_" for c in normalized)
 
     # Remove consecutive underscores and leading/trailing underscores

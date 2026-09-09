@@ -34,6 +34,18 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     is_generic = outputs_generic or inputs_generic
     if not inputs_generic:
         varying_inputs = set()
+    # Mixed grid/non-grid generics (Set Grid Background: Grid is a
+    # FloatSocketGrid while Background is a FloatSocket) take a second
+    # TGrid/SGrid type parameter; grid-only generics bind their single
+    # parameter to the *SocketGrid classes directly. Mixed list/non-list
+    # generics (Get List Item: List is a FloatSocketList while Value is a
+    # FloatSocket) likewise take a second TList/SList parameter.
+    mixed_grid = is_generic and node_info.generic_mixed_grid
+    varying_grid_inputs = node_info.varying_grid_inputs if mixed_grid else set()
+    varying_grid_outputs = node_info.varying_grid_outputs if mixed_grid else set()
+    mixed_list = is_generic and node_info.generic_mixed_list
+    varying_list_inputs = node_info.varying_list_inputs if mixed_list else set()
+    varying_list_outputs = node_info.varying_list_outputs if mixed_list else set()
 
     init_params = ["self"]
     establish_links_params = []
@@ -192,6 +204,10 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
             for key, cls in _OUTPUT_SOCKET_CLASSES.items():
                 if key in socket.bl_socket_type:
                     return_type = cls
+                    if "GRID" in socket.structure_type:
+                        return_type = return_type.replace("Socket", "SocketGrid")
+                    elif "LIST" in socket.structure_type:
+                        return_type = f"{return_type}List"
                     break
             attr_name = normalize_name(socket.identifier)
             desc = socket.description if socket.description else socket.name
@@ -215,7 +231,13 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         if inputs_generic and socket.identifier in varying_inputs:
             attr_name = normalize_name(socket.identifier)
             doc = socket.description or socket.name
-            ann = f"        {attr_name}: S"
+            if socket.identifier in varying_grid_inputs:
+                param = "SGrid"
+            elif socket.identifier in varying_list_inputs:
+                param = "SList"
+            else:
+                param = "S"
+            ann = f"        {attr_name}: {param}"
             if doc:
                 ann += f'\n        """{doc}"""'
             return ann
@@ -225,7 +247,13 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     input_annotations = [_input_annotation(socket) for socket in node_info.inputs] + [
         _input_annotation(socket) for socket in _extra_sockets
     ]
-    inputs_base = "[S](SocketAccessor)" if inputs_generic else "(SocketAccessor)"
+    if mixed_grid:
+        generic_base = "[S, SGrid](SocketAccessor)"
+    elif mixed_list:
+        generic_base = "[S, SList](SocketAccessor)"
+    else:
+        generic_base = "[S](SocketAccessor)"
+    inputs_base = generic_base if inputs_generic else "(SocketAccessor)"
     if input_annotations:
         inputs_class = f"    class _Inputs{inputs_base}:\n" + "\n".join(
             input_annotations
@@ -238,14 +266,20 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         if outputs_generic and socket.identifier in varying_outputs:
             attr_name = normalize_name(socket.identifier)
             doc = socket.description or socket.name
-            ann = f"        {attr_name}: S"
+            if socket.identifier in varying_grid_outputs:
+                param = "SGrid"
+            elif socket.identifier in varying_list_outputs:
+                param = "SList"
+            else:
+                param = "S"
+            ann = f"        {attr_name}: {param}"
             if doc:
                 ann += f'\n        """{doc}"""'
             output_annotations.append(ann)
         else:
             output_annotations.append(socket.format_accessor_annotation())
 
-    outputs_base = "[S](SocketAccessor)" if outputs_generic else "(SocketAccessor)"
+    outputs_base = generic_base if outputs_generic else "(SocketAccessor)"
     if output_annotations:
         outputs_class = f"    class _Outputs{outputs_base}:\n" + "\n".join(
             output_annotations
@@ -255,10 +289,16 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
 
     # Prepend any registered mixin bases (listed first so they win via MRO).
     base_classes = list(custom.bases) if custom else []
-    type_params = "[T]" if is_generic else ""
+    if mixed_grid:
+        generic_args = "[T, TGrid]"
+    elif mixed_list:
+        generic_args = "[T, TList]"
+    else:
+        generic_args = "[T]"
+    type_params = generic_args if is_generic else ""
     class_base = type_params + "(" + ", ".join(base_classes + ["BaseNode"]) + ")"
-    o_return_type = "_Outputs[T]" if outputs_generic else "_Outputs"
-    i_return_type = "_Inputs[T]" if inputs_generic else "_Inputs"
+    o_return_type = f"_Outputs{generic_args}" if outputs_generic else "_Outputs"
+    i_return_type = f"_Inputs{generic_args}" if inputs_generic else "_Inputs"
 
     # When extra sockets exist, properties must be set before collecting socket IDs
     # so the node reflects the correct enum state when we filter key_args.

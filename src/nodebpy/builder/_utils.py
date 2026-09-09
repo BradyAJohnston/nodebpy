@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import keyword
 import re
+import unicodedata
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import bpy
@@ -43,8 +44,12 @@ def normalize_name(name: str) -> str:
     """Convert 'Geometry' or 'My Socket' to a valid lower-case Python identifier
     ('geometry', 'my_socket'). Spaces, punctuation and other non-identifier
     characters (e.g. the '⟂'/'(' in 'BA⟂(BC)') collapse to underscores so the
-    result is always usable as an attribute or parameter name."""
-    text = name.lower().replace("é", "e")
+    result is always usable as an attribute or parameter name. Accented
+    letters fold to their ASCII base ('Bézier' → 'bezier') to match the
+    generated method names."""
+    text = "".join(
+        c for c in unicodedata.normalize("NFKD", name) if not unicodedata.combining(c)
+    ).lower()
     cleaned = _NON_IDENTIFIER.sub("_", text).strip("_")
     if cleaned and cleaned[0].isdigit():
         cleaned = "_" + cleaned
