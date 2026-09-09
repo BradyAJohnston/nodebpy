@@ -166,7 +166,7 @@ def test_dump_writes_one_module_per_asset(library_blend, tmp_path):
     assert written["Scale Up"] == out / "geometry" / "scale_up.py"
     assert written["Flat Red"] == out / "shader" / "flat_red.py"
 
-    code = written["Scale Up"].read_text()
+    code = written["Scale Up"].read_text(encoding="utf-8")
     # The asset's class and its nested dependency are both in the file.
     assert "class ScaleUp(CustomGeometryGroup):" in code
     assert "class Doubler(CustomGeometryGroup):" in code
@@ -176,7 +176,7 @@ def test_dump_writes_one_module_per_asset(library_blend, tmp_path):
     assert '"tags": ("mesh", "transform")' in code
     assert '"is_modifier": True' in code
     # The shader asset carries no metadata or tree flags — no empty footers.
-    shader_code = written["Flat Red"].read_text()
+    shader_code = written["Flat Red"].read_text(encoding="utf-8")
     assert "ASSET = FlatRed" in shader_code
     assert "ASSET_METADATA" not in shader_code
     assert "TREE_PROPERTIES" not in shader_code
@@ -206,9 +206,11 @@ def test_build_ignores_stale_catalog_simple_name(library_blend, tmp_path):
     written = dump_library(library_blend, src)
     assert not bpy.data.node_groups
     path = written["Scale Up"]
-    code = path.read_text()
+    code = path.read_text(encoding="utf-8")
     assert "catalog_simple_name" not in code  # no longer dumped at all
-    path.write_text(code + '\nASSET_METADATA["catalog_simple_name"] = "Tools"\n')
+    path.write_text(
+        code + '\nASSET_METADATA["catalog_simple_name"] = "Tools"\n', encoding="utf-8"
+    )
 
     names = build_library(src, tmp_path / "rebuilt.blend")
     assert "Scale Up" in names
@@ -283,12 +285,14 @@ def test_shared_and_nested_assets_split_into_modules(nested_library_blend, tmp_p
 
     # Doubler is reachable from all three assets → one module under _shared/,
     # with no ASSET marker (it is not an asset).
-    shared_code = (out / "geometry" / "_shared" / "doubler.py").read_text()
+    shared_code = (out / "geometry" / "_shared" / "doubler.py").read_text(
+        encoding="utf-8"
+    )
     assert "class Doubler(CustomGeometryGroup):" in shared_code
     assert "ASSET" not in shared_code
 
     # The nested asset keeps its class in its own module and imports Doubler.
-    inner_code = written["Inner Widget"].read_text()
+    inner_code = written["Inner Widget"].read_text(encoding="utf-8")
     assert "class InnerWidget(CustomGeometryGroup):" in inner_code
     assert "from ._shared.doubler import Doubler" in inner_code
     assert "class Doubler" not in inner_code
@@ -296,13 +300,13 @@ def test_shared_and_nested_assets_split_into_modules(nested_library_blend, tmp_p
 
     # Outer A imports both the nested asset and the shared helper it also
     # uses directly; neither class is re-defined.
-    a_code = written["Outer A"].read_text()
+    a_code = written["Outer A"].read_text(encoding="utf-8")
     assert "from .inner_widget import InnerWidget" in a_code
     assert "from ._shared.doubler import Doubler" in a_code
     assert "class InnerWidget" not in a_code and "class Doubler" not in a_code
 
     # Outer B only references the nested asset, so it imports only that.
-    b_code = written["Outer B"].read_text()
+    b_code = written["Outer B"].read_text(encoding="utf-8")
     assert "from .inner_widget import InnerWidget" in b_code
     assert "doubler" not in b_code
 
@@ -349,14 +353,14 @@ def test_dump_generates_material_modules(material_library_blend, tmp_path):
     out = tmp_path / "src"
     written = dump_library(material_library_blend, out)
 
-    code = (out / "materials" / "test_glow.py").read_text()
+    code = (out / "materials" / "test_glow.py").read_text(encoding="utf-8")
     assert "class TestGlow(CustomShaderGroup):" in code
     assert "MATERIAL = TestGlow" in code
     assert 'MATERIAL_NAME = "Test Glow"' in code
     assert '"metallic": 1.0' in code
     assert "ASSET" not in code  # a material module is not an asset module
 
-    asset_code = written["Glowing Grid"].read_text()
+    asset_code = written["Glowing Grid"].read_text(encoding="utf-8")
     assert 'bpy.data.materials["Test Glow"]' in asset_code
     assert '"materials": ("Test Glow",)' in asset_code
     assert '"images": ("Grid Tex",)' in asset_code
@@ -449,7 +453,9 @@ def test_nested_dump_is_stable_across_a_roundtrip(nested_library_blend, tmp_path
     second_files = sorted(p.relative_to(second) for p in second.rglob("*.py"))
     assert first_files == second_files
     for rel in first_files:
-        assert (second / rel).read_text() == (first / rel).read_text(), rel
+        assert (second / rel).read_text(encoding="utf-8") == (first / rel).read_text(
+            encoding="utf-8"
+        ), rel
 
 
 def test_dump_is_stable_across_a_roundtrip(library_blend, tmp_path):
@@ -467,7 +473,9 @@ def test_dump_is_stable_across_a_roundtrip(library_blend, tmp_path):
     second_files = sorted(p.relative_to(second) for p in second.rglob("*.py"))
     assert first_files == second_files
     for rel in first_files:
-        assert (second / rel).read_text() == (first / rel).read_text(), rel
+        assert (second / rel).read_text(encoding="utf-8") == (first / rel).read_text(
+            encoding="utf-8"
+        ), rel
 
 
 def test_digit_led_asset_name_roundtrips(tmp_path):
@@ -491,15 +499,17 @@ def test_digit_led_asset_name_roundtrips(tmp_path):
 
 def test_catalog_file_travels_both_ways(library_blend, tmp_path):
     catalog = "VERSION 1\n\n" + CATALOG_ID + ":Tools:Tools\n"
-    (library_blend.parent / CATALOG_FILENAME).write_text(catalog)
+    (library_blend.parent / CATALOG_FILENAME).write_text(catalog, encoding="utf-8")
 
     src = tmp_path / "src"
     dump_library(library_blend, src)
-    assert (src / CATALOG_FILENAME).read_text() == catalog
+    assert (src / CATALOG_FILENAME).read_text(encoding="utf-8") == catalog
 
     rebuilt_path = tmp_path / "rebuilt" / "library.blend"
     build_library(src, rebuilt_path)
-    assert (rebuilt_path.parent / CATALOG_FILENAME).read_text() == catalog
+    assert (rebuilt_path.parent / CATALOG_FILENAME).read_text(
+        encoding="utf-8"
+    ) == catalog
 
 
 # ---------------------------------------------------------------------------
@@ -575,13 +585,13 @@ def test_build_rejects_malformed_modules(library_blend, tmp_path):
     dump_library(library_blend, src)
 
     rogue = src / "geometry" / "rogue.py"
-    rogue.write_text("x = 1\n")
+    rogue.write_text("x = 1\n", encoding="utf-8")
     with pytest.raises(ValueError, match="neither ASSET nor MATERIAL"):
         build_library(src, tmp_path / "rebuilt.blend")
-    rogue.write_text("ASSET = 42\n")
+    rogue.write_text("ASSET = 42\n", encoding="utf-8")
     with pytest.raises(TypeError, match="not a node-group class"):
         build_library(src, tmp_path / "rebuilt.blend")
-    rogue.write_text("MATERIAL = 42\nMATERIAL_NAME = 'X'\n")
+    rogue.write_text("MATERIAL = 42\nMATERIAL_NAME = 'X'\n", encoding="utf-8")
     with pytest.raises(TypeError, match="MATERIAL is not a node-group class"):
         build_library(src, tmp_path / "rebuilt.blend")
 
@@ -593,7 +603,9 @@ def test_build_applies_legacy_tree_properties_footer(library_blend, tmp_path):
     written = dump_library(library_blend, src)
     path = written["Flat Red"]
     path.write_text(
-        path.read_text() + '\nTREE_PROPERTIES = {"description": "legacy"}\n'
+        path.read_text(encoding="utf-8")
+        + '\nTREE_PROPERTIES = {"description": "legacy"}\n',
+        encoding="utf-8",
     )
 
     build_library(src, tmp_path / "rebuilt.blend")
@@ -607,7 +619,9 @@ def test_build_skips_unknown_material_property(
     dump_library(material_library_blend, src)
     mat_module = src / "materials" / "test_glow.py"
     mat_module.write_text(
-        mat_module.read_text() + '\nMATERIAL_PROPERTIES = {"not_a_real_property": 1}\n'
+        mat_module.read_text(encoding="utf-8")
+        + '\nMATERIAL_PROPERTIES = {"not_a_real_property": 1}\n',
+        encoding="utf-8",
     )
     names = build_library(src, tmp_path / "rebuilt.blend", on_missing="drop")
     assert "Glowing Grid" in names
@@ -629,7 +643,7 @@ def test_colliding_names_get_suffixes(tmp_path):
     src = tmp_path / "src"
     written = dump_library(path, src)
     assert {p.name for p in written.values()} == {"twin.py", "twin_2.py"}
-    code = "".join(p.read_text() for p in written.values())
+    code = "".join(p.read_text(encoding="utf-8") for p in written.values())
     assert "class Twin(" in code and "class Twin2(" in code
 
     names = build_library(src, tmp_path / "rebuilt.blend")

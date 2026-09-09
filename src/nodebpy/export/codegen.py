@@ -3315,7 +3315,10 @@ def _format_with_ruff(code: str) -> str:
             [find_ruff_bin(), "format", "-"],
             input=code,
             capture_output=True,
-            text=True,
+            # Explicit UTF-8: text mode alone uses the locale encoding, and on
+            # Windows (cp1252) any non-ASCII character in the source reaches
+            # ruff as invalid UTF-8 — it errors and the code stays unformatted.
+            encoding="utf-8",
             check=True,
         )
     except (OSError, subprocess.SubprocessError):

@@ -398,7 +398,7 @@ def _ensure_init(directory: Path) -> None:
     ``__init__.py`` (e.g. hand-written) is left untouched."""
     init = directory / "__init__.py"
     if not init.exists():
-        init.write_text(_INIT_CONTENT, encoding="utf-8")
+        init.write_text(_INIT_CONTENT, encoding="utf-8", newline="\n")
 
 
 def _copy_catalog_file(src_dir: Path, dst_dir: Path) -> None:
@@ -689,7 +689,9 @@ def _dump_appended(
         )
         path = output_dir / (module + ".py")
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(source, encoding="utf-8")
+        # LF regardless of platform: dumps are committed to git, and a
+        # Windows dump must not diff against the same dump made elsewhere.
+        path.write_text(source, encoding="utf-8", newline="\n")
         _ensure_init(output_dir)
         parent = path.parent
         while parent != output_dir:
