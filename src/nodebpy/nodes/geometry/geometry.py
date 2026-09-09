@@ -35,6 +35,7 @@ from ...types import (
     InputMenu,
     InputRotation,
     InputString,
+    InputStringList,
     InputVector,
 )
 from .._mixins import _BakeMixin, _HandleModeMixin
@@ -8140,7 +8141,7 @@ class SetSplineType(BaseNode):
         return cls(spline_type="POLY", curve=curve, selection=selection)
 
     @classmethod
-    def bézier(
+    def bezier(
         cls, curve: InputGeometry = None, selection: InputBoolean = True
     ) -> "SetSplineType":
         """Create Set Spline Type with operation 'Bézier'."""
@@ -9134,7 +9135,7 @@ class TransferAttributes(BaseNode):
         Source Instance ID
     pattern_mode : InputMenu | Literal['Exact', 'Wildcard']
         Pattern Mode
-    attribute_names : InputString
+    attribute_names : InputStringList
         Attribute Names
     exclude_names : InputBoolean
         Exclude Names
@@ -9171,7 +9172,7 @@ class TransferAttributes(BaseNode):
         Source Instance ID
     i.pattern_mode : MenuSocket
         Pattern Mode
-    i.attribute_names : StringSocket
+    i.attribute_names : StringSocketList
         Attribute Names
     i.exclude_names : BooleanSocket
         Exclude Names
@@ -9180,7 +9181,7 @@ class TransferAttributes(BaseNode):
     -------
     o.target : GeometrySocket
         Target
-    o.transferred_names : StringSocket
+    o.transferred_names : StringSocketList
         Transferred Names
     """
 
@@ -9218,7 +9219,7 @@ class TransferAttributes(BaseNode):
         """Source Instance ID"""
         pattern_mode: MenuSocket
         """Pattern Mode"""
-        attribute_names: StringSocket
+        attribute_names: StringSocketList
         """Attribute Names"""
         exclude_names: BooleanSocket
         """Exclude Names"""
@@ -9253,7 +9254,7 @@ class TransferAttributes(BaseNode):
         source_curve_id: InputInteger = 0,
         source_instance_id: InputInteger = 0,
         pattern_mode: InputMenu | Literal["Exact", "Wildcard"] = "Wildcard",
-        attribute_names: InputString = "",
+        attribute_names: InputStringList = None,
         exclude_names: InputBoolean = False,
     ):
         super().__init__()

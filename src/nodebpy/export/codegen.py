@@ -101,6 +101,17 @@ class Lit(Expr):
     def render(self) -> str:
         return _fmt(self.value)
 
+    @property
+    def prec(self) -> int:  # type: ignore[override]
+        # A float can format as a compound math-constant expression
+        # (``2 * math.pi``, ``math.tau / 3``), which must parenthesise like
+        # the operators in it; a bare ``math.e`` stays an atom.
+        if isinstance(self.value, float):
+            text = _fmt(self.value)
+            if "math." in text and " " in text:
+                return _BINOP_PREC["*"]
+        return _ATOM_PREC
+
 
 @dataclass
 class Ref(Expr):
@@ -322,13 +333,74 @@ def _stmt_lines(
 # ---------------------------------------------------------------------------
 
 
+def _within_one_ulp(candidate: float, f32) -> bool:
+    """Whether ``candidate`` lands on ``f32`` or its immediate float32
+    neighbour. One ULP is the round-off a value picks up crossing precisions
+    (an authored ``0.15`` surviving as ``0.14999999``), so snapping across it
+    restores the authored constant without moving any genuinely different
+    value."""
+    import numpy as np
+
+    c32 = np.float32(candidate)
+    return bool(c32 == f32 or np.nextafter(f32, c32) == c32)
+
+
+def _math_constant_expression(f32) -> str | None:
+    """A ``math.pi``/``math.tau``/``math.e`` expression for a rational
+    multiple of one of those constants, or None.
+
+    Constants authored as expressions (``2 * math.pi``, ``pi / 3``, ``tau``,
+    ``e``) survive in a blend only as float32 values; matching small-fraction
+    multiples (within one ULP) restores the readable form. Numerators up to 48
+    over denominators up to 12 cover the usual turns and subdivisions while
+    keeping a chance coincidence with an ordinary decimal essentially
+    impossible. An even multiple of pi renders in tau form (``math.tau``,
+    ``math.tau / 3``) — with the fraction reduced, halving the numerator is
+    always the simpler expression.
+    """
+    import math
+
+    magnitude = abs(float(f32))
+    if magnitude == 0.0:
+        return None
+    for name, const in (("pi", math.pi), ("e", math.e)):
+        for den in range(1, 13):
+            num = round(magnitude * den / const)
+            if not 1 <= num <= 48 or math.gcd(num, den) != 1:
+                continue
+            if not _within_one_ulp(num * const / den, abs(f32)):
+                continue
+            if name == "pi" and num % 2 == 0:
+                name, num = "tau", num // 2
+            expr = f"math.{name}" if num == 1 else f"{num} * math.{name}"
+            if den > 1:
+                expr = f"{expr} / {den}"
+            return f"-{expr}" if float(f32) < 0 else expr
+    return None
+
+
+def _group_digits(text: str) -> str:
+    """Underscore-group a positional float literal's integer part when it has
+    five or more digits (``10000.0`` → ``10_000.0``)."""
+    sign = ""
+    if text.startswith("-"):
+        sign, text = "-", text[1:]
+    int_part, dot, frac = text.partition(".")
+    if len(int_part) < 5:
+        return sign + text
+    return sign + f"{int(int_part):_}" + dot + frac
+
+
 def _fmt_float(value: float) -> str:
-    """Shortest literal that round-trips through float32.
+    """Shortest readable literal for a float32-backed value.
 
     Blender stores socket values as float32, so reading them back through
-    Python gives noisy float64 reprs (``0.10000000149011612``); the
-    shortest decimal that uniquely identifies the float32 (``0.1``)
-    rebuilds the identical socket value.
+    Python gives noisy float64 reprs (``0.10000000149011612``); the shortest
+    decimal that uniquely identifies the float32 (``0.1``) rebuilds the
+    identical socket value. On top of that, rational multiples of pi, tau
+    and e render as ``math.*`` expressions, a value one ULP off a much shorter decimal
+    snaps to it (``0.14999999`` → ``0.15``), and long integer parts get
+    underscore grouping (``-10_000.0``).
     """
     import math
 
@@ -341,7 +413,24 @@ def _fmt_float(value: float) -> str:
     f32 = np.float32(value)
     if float(f32) != value:
         return repr(value)  # genuine float64 — keep full precision
-    return np.format_float_positional(f32, unique=True, trim="0")
+    const_expr = _math_constant_expression(f32)
+    if const_expr is not None:
+        return const_expr
+    text = np.format_float_positional(f32, unique=True, trim="0")
+    # Snap to the shortest decimal within one ULP: fewer significant digits
+    # first, so ``0.14999999`` becomes ``0.15`` rather than ``0.1499999``.
+    digits = sum(c.isdigit() for c in text.lstrip("-0."))
+    for sig in range(1, digits):
+        candidate = float(f"%.{sig}g" % float(f32))
+        if not _within_one_ulp(candidate, f32):
+            continue
+        snapped = np.format_float_positional(
+            np.float32(candidate), unique=True, trim="0"
+        )
+        if len(snapped) < len(text):
+            text = snapped
+        break
+    return _group_digits(text)
 
 
 def _fmt(value: Any) -> str:
@@ -641,6 +730,11 @@ def _make_var(label: str, counter: dict[str, int]) -> str:
         base = f"n_{base}" if base else "node"
     if keyword.iskeyword(base) or base in ["g", "s", "c", "nodebpy"]:
         base = f"{base}_"
+    # Module names the generated code may import stay off-limits: a Math
+    # node named ``math`` would shadow ``import math`` (for ``math.pi``
+    # constants), so its variables run ``math_1``, ``math_2``, …
+    if base in ("math", "bpy") and base not in counter:
+        counter[base] = 0
     if base not in counter:
         counter[base] = 0
         return base
@@ -1005,13 +1099,18 @@ class EmitContext:
             )
         return val
 
-    def upstream_expr(self, link: _Link) -> Expr:
-        """Expression referencing the source side of ``link``."""
+    def upstream_expr(self, link: _Link, *, pipeline: bool = False) -> Expr:
+        """Expression referencing the source side of ``link``.
+
+        ``pipeline`` marks a ``>>`` statement source: the arrow already
+        implies the node's primary output, so a multi-output node stays a
+        bare reference there instead of forcing ``.o.<name>``."""
         return _output_expr(
             self._resolve(link),
             link.from_node,
             link.from_socket,
             to_socket=link.to_socket,
+            pipeline=pipeline,
         )
 
     def socket_expr(self, link: _Link) -> Expr:
@@ -1214,15 +1313,48 @@ def _bare_resolves_elsewhere(from_node, from_socket, to_socket) -> bool:
     return candidates[best].identifier != from_socket.identifier
 
 
+def _needs_output_accessor(from_node, from_socket) -> bool:
+    """Whether a reference to ``from_socket`` must spell out ``.o.<name>``
+    even though it is the node's first output.
+
+    A node with several active outputs is referenced explicitly so no reader
+    has to know which one is the default — except a node's *sole* geometry
+    output: for a geometry consumer nothing else could be meant (Cube's Mesh
+    next to its UV Map), so the bare reference stays. Inactive sockets (the
+    dormant variants of enum-switched outputs) and ``__extend__`` virtual
+    sockets don't count — only what the reader sees in the editor."""
+    active = [
+        s
+        for s in from_node.outputs
+        if not getattr(s, "is_inactive", False) and "__extend__" not in s.identifier
+    ]
+    if len(active) <= 1:
+        return False
+    if from_socket.type == "GEOMETRY":
+        return sum(s.type == "GEOMETRY" for s in active) > 1
+    return True
+
+
 def _output_expr(
-    val: _Val, from_node, from_socket, *, to_socket=None, force_socket: bool = False
+    val: _Val,
+    from_node,
+    from_socket,
+    *,
+    to_socket=None,
+    force_socket: bool = False,
+    pipeline: bool = False,
 ) -> Expr:
     """Reference an output socket of an emitted value.
 
-    Node-valued expressions reference the first output bare (``noise``) and
-    others via ``.o.<name>``; ``force_socket`` adds the accessor even for the
-    first output. Socket-valued expressions are returned as-is, after
-    checking they represent the requested output.
+    Single-output node-valued expressions are referenced bare (``math``);
+    a node with several active outputs gets an explicit ``.o.<name>``
+    accessor so no reader has to know which output is the default
+    (SeparateMatrix's nine components read uniformly) — except in
+    ``pipeline`` position, where ``>>`` already implies the primary output,
+    and per :func:`_needs_output_accessor`'s sole-geometry-output rule.
+    ``force_socket`` adds the accessor even to a single-output node.
+    Socket-valued expressions are returned as-is, after checking they
+    represent the requested output.
 
     ``to_socket`` is the consumer-side socket of the link, used to detect the
     case where a bare reference would resolve to a *different* output than the
@@ -1251,6 +1383,7 @@ def _output_expr(
         not force_socket
         and from_node.outputs
         and from_node.outputs[0].identifier == from_socket.identifier
+        and (pipeline or not _needs_output_accessor(from_node, from_socket))
         and not _bare_resolves_elsewhere(from_node, from_socket, to_socket)
     ):
         return val.expr
@@ -1484,11 +1617,32 @@ def _parse_factory_func(
     call = returns[0].value
     if not (isinstance(call.func, ast.Name) and call.func.id in ("cls", cls.__name__)):
         return None
-    if call.args:
-        return None
 
     props: dict[str, Any] = {}
     socket_params: dict[str, str] = {}
+    if call.args:
+        # Positional socket forwarding — ``return cls(value, group_index,
+        # data_type="FLOAT")`` — maps each bare-name argument to the
+        # constructor parameter at that position.
+        try:
+            init_params = [
+                param
+                for param in inspect.signature(cls.__init__).parameters.values()
+                if param.name != "self"
+                and param.kind
+                in (
+                    inspect.Parameter.POSITIONAL_ONLY,
+                    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                )
+            ]
+        except (TypeError, ValueError):
+            return None
+        if len(call.args) > len(init_params):
+            return None
+        for arg, param in zip(call.args, init_params):
+            if not isinstance(arg, ast.Name):
+                return None
+            socket_params[_normalize(param.name)] = arg.id
     for kw in call.keywords:
         if kw.arg is None:
             return None  # **kwargs forwarding
@@ -1579,6 +1733,16 @@ def _factory_state_matches(node, props: dict[str, Any]) -> bool:
     return True
 
 
+# Factory-baked properties that define a node's *type signature* rather than
+# an operation choice. A factory baking only these is preferred even when
+# every baked value sits at its default — the data type is load-bearing, so
+# ``NamedAttribute.float(name)`` or ``FieldMinAndMax.point.float()`` reads
+# better than a bare constructor that leaves the type implicit. Factories
+# baking behavioural props (``operation``, ``mode``, …) keep requiring a
+# non-default state, as before.
+_TYPE_FACTORY_PROPS = frozenset({"data_type", "domain", "input_type", "socket_type"})
+
+
 def _factory_call(
     func_prefix: str,
     node,
@@ -1603,7 +1767,11 @@ def _factory_call(
         covered = {_normalize(key) for key in factory.props}
         if set(prop_values) - set(factory.props):
             continue  # leftover props can't be passed to the factory
-        if not (set(prop_values) or covered & set(socket_kwargs)):
+        if not (
+            (factory.props and set(factory.props) <= _TYPE_FACTORY_PROPS)
+            or set(prop_values)
+            or covered & set(socket_kwargs)
+        ):
             continue  # nothing gained over the plain constructor
 
         call_kwargs: dict[str, Expr] = {}
@@ -3378,6 +3546,9 @@ def to_python(
     # Datablock defaults (a Material/Object/Image socket value) render via
     # ``repr()`` as ``bpy.data.<collection>['name']``, so the module needs a
     # bare ``import bpy`` to resolve them on rebuild.
+    # Math-constant expressions (from _fmt_float) need the stdlib import.
+    if any(re.search(r"\bmath\.(pi|tau|e)\b", line) for line in lines):
+        lines.insert(0, "import math")
     if any("bpy.data." in line for line in lines):
         lines.insert(0, "import bpy")
     code = "\n".join(lines)
@@ -3620,7 +3791,9 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
                 skip_input_id=chain_link.to_socket.identifier if chain_link else None,
             )
             expr: Expr = (
-                BinOp(">>", ctx.upstream_expr(chain_link), call) if chain_link else call
+                BinOp(">>", ctx.upstream_expr(chain_link, pipeline=True), call)
+                if chain_link
+                else call
             )
             val = _Val(expr)
 
@@ -3668,7 +3841,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
                     f"Group output socket '{link.to_socket.name}' has no "
                     "interface variable"
                 )
-            source = _output_expr(val, node, link.from_socket)
+            source = _output_expr(val, node, link.from_socket, pipeline=True)
             chain = BinOp(">>", source, out_ref.require_expr())
             width = _MAX_LINE_WIDTH - 4 * len(frame)
             tagged_body.extend(
@@ -3722,7 +3895,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
             raise CodegenError(
                 f"Group output socket '{link.to_socket.name}' has no interface variable"
             )
-        source = ctx.upstream_expr(link)
+        source = ctx.upstream_expr(link, pipeline=True)
         out_lines.extend(_stmt_lines(BinOp(">>", source, out_ref.require_expr())))
 
     return _TreeEmission(
@@ -4308,7 +4481,7 @@ def _emit_viewer(node, ctx: EmitContext) -> Expr | _Val | None:
         key=lambda link: order.get(link.to_socket.identifier, 0),
     )
     for link in links:
-        statement = BinOp(">>", ctx.upstream_expr(link), Ref(var))
+        statement = BinOp(">>", ctx.upstream_expr(link, pipeline=True), Ref(var))
         ctx.pending_lines.extend(_stmt_lines(statement))
     return _Val(None, outputs={})
 
@@ -4941,7 +5114,7 @@ def _emit_zone_output(node, ctx: EmitContext) -> _Val:
                 f"zone output node '{node.name}' has a link into "
                 f"'{link.to_socket.name}' with no emit target"
             )
-        statement = BinOp(">>", ctx.upstream_expr(link), target)
+        statement = BinOp(">>", ctx.upstream_expr(link, pipeline=True), target)
         ctx.pending_lines.extend(_stmt_lines(statement))
     return _Val(None, outputs=state.outputs)
 
