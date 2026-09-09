@@ -488,6 +488,26 @@ def test_keep_reroutes_with_snapshot_positions():
     assert f'"{reroute.name}": (360.0, 120.0)' in code  # reroute position kept
 
 
+def test_type_factories_emitted_at_defaults():
+    """Factories baked purely over type-defining props (data_type, domain,
+    input_type, …) render even when every baked value sits at its default —
+    the data type is load-bearing, so it stays explicit. Generic: any node
+    with such factories qualifies, including ones whose factory bodies pass
+    sockets positionally (FieldMinAndMax)."""
+    with TreeBuilder("AttrDefaults") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        value = g.NamedAttribute("radius")
+        stored = g.StoreNamedAttribute(geometry=geo, name="radius", value=value)
+        minmax = g.FieldMinAndMax()  # unlinked: factory, not a socket method
+        g.Math.add(minmax.o.min, 0.0)
+        stored >> tree.outputs.geometry("Out")
+
+    code = _assert_roundtrip(tree)
+    assert 'g.NamedAttribute.float("radius")' in code
+    assert "g.StoreNamedAttribute.point.float(" in code
+    assert "g.FieldMinAndMax.point.float()" in code
+
+
 def test_snapshot_positions_nested_group_round_trip():
     """snapshot_positions restores locations inside nested group classes too:
     the generated ``_build_group`` disables its own auto-layout and applies a
@@ -927,11 +947,9 @@ def test_switch_emits_socket_method():
 
 
 def test_switch_unlinked_condition_falls_back():
-    """Switch with no linked condition can't be a method — constructor/factory.
-
-    FLOAT is the default input_type, so the plain constructor suffices; a
-    non-default type (geometry) uses the factory spelling.
-    """
+    """Switch with no linked condition can't be a method — it renders as the
+    typed factory, even for the default FLOAT input type: type-defining
+    factories always keep the data type explicit."""
     with TreeBuilder("SwitchFactory") as tree:
         a = tree.inputs.float("A", 1.0)
         b = tree.inputs.float("B", 2.0)
@@ -939,7 +957,7 @@ def test_switch_unlinked_condition_falls_back():
         geo = tree.inputs.geometry("Geo")
         g.Switch.geometry(None, None, geo) >> tree.outputs.geometry("GeoOut")
     code = _assert_roundtrip(tree)
-    assert "g.Switch(false=a, true=b)" in code
+    assert "g.Switch.float(false=a, true=b)" in code
     assert "g.Switch.geometry(true=geo)" in code
 
 

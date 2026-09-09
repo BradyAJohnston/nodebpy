@@ -1484,11 +1484,32 @@ def _parse_factory_func(
     call = returns[0].value
     if not (isinstance(call.func, ast.Name) and call.func.id in ("cls", cls.__name__)):
         return None
-    if call.args:
-        return None
 
     props: dict[str, Any] = {}
     socket_params: dict[str, str] = {}
+    if call.args:
+        # Positional socket forwarding — ``return cls(value, group_index,
+        # data_type="FLOAT")`` — maps each bare-name argument to the
+        # constructor parameter at that position.
+        try:
+            init_params = [
+                param
+                for param in inspect.signature(cls.__init__).parameters.values()
+                if param.name != "self"
+                and param.kind
+                in (
+                    inspect.Parameter.POSITIONAL_ONLY,
+                    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                )
+            ]
+        except (TypeError, ValueError):
+            return None
+        if len(call.args) > len(init_params):
+            return None
+        for arg, param in zip(call.args, init_params):
+            if not isinstance(arg, ast.Name):
+                return None
+            socket_params[_normalize(param.name)] = arg.id
     for kw in call.keywords:
         if kw.arg is None:
             return None  # **kwargs forwarding
@@ -1579,6 +1600,16 @@ def _factory_state_matches(node, props: dict[str, Any]) -> bool:
     return True
 
 
+# Factory-baked properties that define a node's *type signature* rather than
+# an operation choice. A factory baking only these is preferred even when
+# every baked value sits at its default — the data type is load-bearing, so
+# ``NamedAttribute.float(name)`` or ``FieldMinAndMax.point.float()`` reads
+# better than a bare constructor that leaves the type implicit. Factories
+# baking behavioural props (``operation``, ``mode``, …) keep requiring a
+# non-default state, as before.
+_TYPE_FACTORY_PROPS = frozenset({"data_type", "domain", "input_type", "socket_type"})
+
+
 def _factory_call(
     func_prefix: str,
     node,
@@ -1603,7 +1634,11 @@ def _factory_call(
         covered = {_normalize(key) for key in factory.props}
         if set(prop_values) - set(factory.props):
             continue  # leftover props can't be passed to the factory
-        if not (set(prop_values) or covered & set(socket_kwargs)):
+        if not (
+            (factory.props and set(factory.props) <= _TYPE_FACTORY_PROPS)
+            or set(prop_values)
+            or covered & set(socket_kwargs)
+        ):
             continue  # nothing gained over the plain constructor
 
         call_kwargs: dict[str, Expr] = {}
