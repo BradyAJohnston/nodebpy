@@ -157,7 +157,7 @@ CATALOG_FILENAME = "blender_assets.cats.txt"
 def _asset_metadata(group) -> dict[str, object]:
     """The dumpable asset metadata of ``group``, non-empty fields only."""
     asset_data = group.asset_data
-    if asset_data is None:
+    if asset_data is None:  # pragma: no cover - assets_only appends stay marked
         return {}
     meta: dict[str, object] = {}
     for field in _METADATA_FIELDS:
@@ -178,14 +178,14 @@ def _material_properties(material) -> dict[str, object]:
     try:
         props: dict[str, object] = {}
         for name in _MATERIAL_PROP_CANDIDATES:
-            if not hasattr(probe, name):
+            if not hasattr(probe, name):  # pragma: no cover - other Blender versions
                 continue
             value = getattr(material, name)
             default = getattr(probe, name)
             if not isinstance(value, (str, int, float, bool)):
                 try:  # bpy float arrays (diffuse_color) repr as data paths —
                     value, default = tuple(value), tuple(default)  # dump tuples
-                except TypeError:
+                except TypeError:  # pragma: no cover - unexpected prop shape
                     continue
             if value != default:
                 props[name] = value
@@ -586,7 +586,7 @@ def _dump_appended(
         )
         for mat_name in referenced:
             material = bpy.data.materials.get(mat_name)
-            if material is None or material.node_tree is None:
+            if material is None or material.node_tree is None:  # pragma: no cover
                 print(f"  material {mat_name!r}: no shader tree, left as a dependency")
                 continue
             if material.node_tree.name in trees:
@@ -819,7 +819,7 @@ def _build_material(material_cls, name: str):
         return existing
     material = bpy.data.materials.new(name)
     assert material is not None
-    if material.node_tree is None:  # older Blender: opt into nodes explicitly
+    if material.node_tree is None:  # pragma: no cover - pre-5.x Blender
         material.use_nodes = True
     tree = material.node_tree
     assert tree is not None
@@ -959,9 +959,9 @@ def build_library(
             if field in metadata:
                 try:
                     setattr(asset_data, field, metadata[field])
-                except AttributeError:
+                except AttributeError:  # pragma: no cover - other Blender versions
                     # Read-only in this Blender version (as catalog_simple_name
-                    # is) — the value is derived, not lost; keep building.
+                    # was) — the value is derived, not lost; keep building.
                     print(f"  {tree.name}: skipping read-only asset field {field!r}")
         existing_tags = {tag.name for tag in asset_data.tags}
         for tag in metadata.get("tags", ()):

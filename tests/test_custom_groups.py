@@ -1,4 +1,5 @@
 from functools import reduce
+from typing import ClassVar
 
 import bpy
 import pytest
@@ -535,3 +536,44 @@ class TestMenuDefaultValue:
 
             ms = g.MenuSwitch.string(..., {letter: letter for letter in "ABCDEFG"})
             assert ms.i.menu.default_value == "A"
+
+
+class _FutureProps(CustomGeometryGroup):
+    """Carries a tree property this Blender version doesn't know — applied
+    with a skip, never a crash (cross-version dumps stay buildable)."""
+
+    _name = "Future Props Group"
+    _tree_properties: ClassVar[dict] = {
+        "description": "known",
+        "not_a_real_property": 1,
+    }
+
+    def _build_group(self, tree):
+        tree.inputs.float("A") >> tree.outputs.float("B")
+
+
+def test_unknown_tree_property_is_skipped(capsys):
+    tree = _FutureProps.create_group()
+    assert tree.description == "known"
+    assert "skipping tree property 'not_a_real_property'" in capsys.readouterr().out
+
+
+def test_menu_socket_default_defers_until_links_exist():
+    """A menu value assigned to a Switch's inputs before the switch output is
+    wired (so its enum is still empty) is deferred to context exit instead of
+    failing. (MN asset: "Animate Trails".)"""
+    from nodebpy import geometry as g2
+
+    with TreeBuilder("MenuDeferred") as tree:
+        flag = tree.inputs.boolean("Flag")
+        out = tree.outputs.float("Out")
+        selected = flag.switch.menu("A", "B")
+        g2.MenuSwitch.float(menu=selected, items={"A": 1.0, "B": 2.0}) >> out
+
+    switch = next(n for n in tree.tree.nodes if n.bl_idname == "GeometryNodeSwitch")
+    values = [
+        s.default_value
+        for s in switch.inputs
+        if s.type == "MENU" and hasattr(s, "default_value")
+    ]
+    assert values == ["A", "B"]

@@ -500,3 +500,155 @@ def test_catalog_file_travels_both_ways(library_blend, tmp_path):
     rebuilt_path = tmp_path / "rebuilt" / "library.blend"
     build_library(src, rebuilt_path)
     assert (rebuilt_path.parent / CATALOG_FILENAME).read_text() == catalog
+
+
+# ---------------------------------------------------------------------------
+# Error paths, collisions, and legacy-format compatibility
+# ---------------------------------------------------------------------------
+
+
+def test_dump_missing_blend_errors(tmp_path):
+    with pytest.raises(FileNotFoundError, match="Asset library not found"):
+        dump_library(tmp_path / "nope.blend", tmp_path / "src")
+
+
+def test_dump_refuses_renamed_dependencies(nested_library_blend, tmp_path):
+    """A pre-existing group matching a *dependency* name (not an asset name)
+    slips past the upfront clash check but renames on append — caught by the
+    post-append guard."""
+    with TreeBuilder("Doubler"):
+        pass
+    with pytest.raises(RuntimeError, match="renamed dependency groups"):
+        dump_library(nested_library_blend, tmp_path / "src")
+
+
+def test_dump_skips_unsupported_tree_types(tmp_path, capsys):
+    tex = bpy.data.node_groups.new("Tex Asset", "TextureNodeTree")
+    tex.asset_mark()
+    path = tmp_path / "library.blend"
+    bpy.data.libraries.write(str(path), {tex}, fake_user=True)
+    _clear_node_groups()
+
+    written = dump_library(path, tmp_path / "src")
+    assert written == {}
+    assert "unsupported tree type" in capsys.readouterr().out
+
+
+def test_dump_material_tree_name_collision_errors(tmp_path):
+    """A *dumped* node group named like an embedded material tree would be
+    clobbered by the per-emission class-name override — refused with
+    guidance."""
+
+    class _Weird(CustomGeometryGroup):
+        _name = "Shader Nodetree"
+
+        def _build_group(self, tree):
+            tree.inputs.float("V") >> tree.outputs.float("V")
+
+    material = bpy.data.materials.new("Collide Mat")
+    with TreeBuilder("Collider Asset") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        _Weird(V=1.0)
+        set_mat = g.SetMaterial(geometry=geo, material=material)
+        set_mat >> tree.outputs.geometry("Geometry")
+    tree.tree.asset_mark()
+    path = tmp_path / "library.blend"
+    bpy.data.libraries.write(str(path), {tree.tree}, fake_user=True)
+    _clear_node_groups()
+    bpy.data.materials.remove(material)
+
+    with pytest.raises(RuntimeError, match="embedded tree"):
+        dump_library(path, tmp_path / "src")
+
+
+def test_resolve_dependencies_errors():
+    from nodebpy.assets._library import _resolve_dependencies
+
+    with pytest.raises(FileNotFoundError, match="Resources library not found"):
+        _resolve_dependencies({"images": {"X"}}, Path("/nope.blend"), "error")
+    with pytest.raises(RuntimeError, match="Cannot placeholder"):
+        _resolve_dependencies({"fonts": {"SomeFont"}}, None, "drop")
+
+
+def test_build_rejects_malformed_modules(library_blend, tmp_path):
+    src = tmp_path / "src"
+    dump_library(library_blend, src)
+
+    rogue = src / "geometry" / "rogue.py"
+    rogue.write_text("x = 1\n")
+    with pytest.raises(ValueError, match="neither ASSET nor MATERIAL"):
+        build_library(src, tmp_path / "rebuilt.blend")
+    rogue.write_text("ASSET = 42\n")
+    with pytest.raises(TypeError, match="not a node-group class"):
+        build_library(src, tmp_path / "rebuilt.blend")
+    rogue.write_text("MATERIAL = 42\nMATERIAL_NAME = 'X'\n")
+    with pytest.raises(TypeError, match="MATERIAL is not a node-group class"):
+        build_library(src, tmp_path / "rebuilt.blend")
+
+
+def test_build_applies_legacy_tree_properties_footer(library_blend, tmp_path):
+    """Older dumps carried tree flags in a TREE_PROPERTIES footer; build
+    still applies them."""
+    src = tmp_path / "src"
+    written = dump_library(library_blend, src)
+    path = written["Flat Red"]
+    path.write_text(
+        path.read_text() + '\nTREE_PROPERTIES = {"description": "legacy"}\n'
+    )
+
+    build_library(src, tmp_path / "rebuilt.blend")
+    assert bpy.data.node_groups["Flat Red"].description == "legacy"
+
+
+def test_build_skips_unknown_material_property(
+    material_library_blend, tmp_path, capsys
+):
+    src = tmp_path / "src"
+    dump_library(material_library_blend, src)
+    mat_module = src / "materials" / "test_glow.py"
+    mat_module.write_text(
+        mat_module.read_text() + '\nMATERIAL_PROPERTIES = {"not_a_real_property": 1}\n'
+    )
+    names = build_library(src, tmp_path / "rebuilt.blend", on_missing="drop")
+    assert "Glowing Grid" in names
+    assert "skipping read-only material property" in capsys.readouterr().out
+
+
+def test_colliding_names_get_suffixes(tmp_path):
+    """Assets whose names normalize identically get distinct class names and
+    module stems, and still round-trip."""
+    for name in ("Twin!", "Twin?"):
+        with TreeBuilder(name) as tree:
+            tree.inputs.float("A") >> tree.outputs.float("B")
+        tree.tree.asset_mark()
+    trees = {t for t in bpy.data.node_groups}
+    path = tmp_path / "library.blend"
+    bpy.data.libraries.write(str(path), trees, fake_user=True)
+    _clear_node_groups()
+
+    src = tmp_path / "src"
+    written = dump_library(path, src)
+    assert {p.name for p in written.values()} == {"twin.py", "twin_2.py"}
+    code = "".join(p.read_text() for p in written.values())
+    assert "class Twin(" in code and "class Twin2(" in code
+
+    names = build_library(src, tmp_path / "rebuilt.blend")
+    assert set(names) == {"Twin!", "Twin?"}
+
+
+def test_cli_dump_and_build_dispatch(monkeypatch, library_blend, tmp_path, capsys):
+    """``python -m nodebpy.assets dump/build`` dispatches to the library CLI."""
+    import sys as _sys
+
+    from nodebpy.assets.__main__ import main
+
+    src = tmp_path / "src"
+    monkeypatch.setattr(_sys, "argv", ["prog", "dump", str(library_blend), str(src)])
+    main()
+    assert "Dumped 2 assets" in capsys.readouterr().out
+
+    rebuilt = tmp_path / "rebuilt.blend"
+    monkeypatch.setattr(_sys, "argv", ["prog", "build", str(src), str(rebuilt)])
+    main()
+    assert "Built" in capsys.readouterr().out
+    assert rebuilt.is_file()

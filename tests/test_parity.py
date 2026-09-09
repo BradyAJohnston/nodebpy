@@ -87,3 +87,154 @@ def test_full_parity_with_snapshot_positions(writer, tmp_path):
 def test_unknown_surface_rejected():
     with pytest.raises(ValueError, match="positionz"):
         compare_libraries({}, {}, ignore={"positionz"})
+
+
+# ---------------------------------------------------------------------------
+# Direct comparison behaviour (no dump/build round-trip involved)
+# ---------------------------------------------------------------------------
+
+from nodebpy import TreeBuilder
+from nodebpy import geometry as g
+
+
+def _capture_variant(add_value, description, extra):
+    """Serialize one small tree (plus optionally an extra tree), then clean."""
+    with TreeBuilder("Alpha") as tree:
+        fac = tree.inputs.float("Fac", description="in")
+        g.Math.add(fac, add_value) >> tree.outputs.float("Out")
+    tree.tree.description = description
+    trees = [tree.tree]
+    if extra:
+        with TreeBuilder(extra) as other:
+            other.inputs.float("X") >> other.outputs.float("Y")
+        trees.append(other.tree)
+    capture = serialize_library(trees)
+    _clear_session()
+    return capture
+
+
+def test_compare_reports_each_difference_kind():
+    a = _capture_variant(1.0, "one", "OnlyA")
+    b = _capture_variant(2.0, "two", "OnlyB")
+
+    findings = compare_libraries(a, b, ignore=SURFACES)
+    kinds = {(f.context, f.path) for f in findings}
+    assert ("tree", "presence") in kinds  # OnlyA / OnlyB
+    assert ("tree", "description") in kinds  # "one" -> "two"
+    # The 1.0 vs 2.0 operand shows as a node value-multiset difference.
+    assert any(c == "node" and "ShaderNodeMath" in p for c, p in kinds)
+
+    report = format_report(findings)
+    assert "findings in" in report
+    assert "[tree] description" in report
+
+
+def test_interface_differences_reported():
+    with TreeBuilder("Iface") as tree_a:
+        tree_a.inputs.float("Fac", description="first")
+        tree_a.inputs.float("Extra")
+        tree_a.inputs.float("X") >> tree_a.outputs.float("Y")
+    a = serialize_library([tree_a.tree])
+    _clear_session()
+    with TreeBuilder("Iface") as tree_b:
+        tree_b.inputs.float("Fac", description="second")
+        tree_b.inputs.float("X") >> tree_b.outputs.float("Y")
+    b = serialize_library([tree_b.tree])
+    _clear_session()
+
+    kinds = {(f.context, f.path) for f in compare_libraries(a, b, ignore=SURFACES)}
+    assert ("interface", "item count") in kinds
+
+    # Same item count → per-item comparison kicks in.
+    with TreeBuilder("Iface") as tree_c:
+        tree_c.inputs.float("Fac", description="third")
+        tree_c.inputs.float("X") >> tree_c.outputs.float("Y")
+    c = serialize_library([tree_c.tree])
+    _clear_session()
+    kinds = {(f.context, f.path) for f in compare_libraries(b, c, ignore=SURFACES)}
+    assert ("interface", "Fac.description") in kinds
+
+
+def test_inert_links_do_not_count():
+    """Stale links into inactive sockets (a Mix wired for every type, then
+    set to RGBA) and reroute hops are invisible to the functional surface."""
+    with TreeBuilder("Inert", ignore_visibility=True) as tree_a:
+        col = tree_a.inputs.color("Color")
+        fac = tree_a.inputs.float("Fac")
+        mix = g.Mix(
+            data_type="RGBA",
+            factor_float=fac,
+            a_color=col,
+            b_color=col,
+            a_float=fac,  # stale link into an inactive socket
+            b_float=fac,
+        )
+        mix.o.result_color >> tree_a.outputs.color("Result")
+    a = serialize_library([tree_a.tree])
+    _clear_session()
+
+    with TreeBuilder("Inert") as tree_b:
+        col = tree_b.inputs.color("Color")
+        fac = tree_b.inputs.float("Fac")
+        mix = g.Mix(data_type="RGBA", factor_float=fac, a_color=col, b_color=col)
+        mix.o.result_color >> tree_b.outputs.color("Result")
+    b = serialize_library([tree_b.tree])
+    _clear_session()
+
+    findings = compare_libraries(a, b, ignore=SURFACES)
+    assert not findings, format_report(findings)
+
+
+def test_reroute_hops_do_not_count():
+    with TreeBuilder("Hop", arrange=None) as tree_a:
+        geo = tree_a.inputs.geometry("Geometry")
+        out = tree_a.outputs.geometry("Out")
+        sp = g.SetPosition(geometry=geo)
+        reroute = tree_a.tree.nodes.new("NodeReroute")
+        tree_a.tree.links.new(sp.node.outputs[0], reroute.inputs[0])
+        tree_a.tree.links.new(reroute.outputs[0], out.socket)
+    a = serialize_library([tree_a.tree])
+    _clear_session()
+
+    with TreeBuilder("Hop") as tree_b:
+        geo = tree_b.inputs.geometry("Geometry")
+        g.SetPosition(geometry=geo) >> tree_b.outputs.geometry("Out")
+    b = serialize_library([tree_b.tree])
+    _clear_session()
+
+    findings = compare_libraries(a, b, ignore=SURFACES)
+    assert not findings, format_report(findings)
+    # Without the reroutes surface, the extra hop is a difference.
+    assert compare_libraries(a, b, ignore=frozenset())
+
+
+def test_material_tree_serializes():
+    """An embedded material tree serializes via its owning material and is
+    keyed by the material (embedded trees all share one name)."""
+    material = bpy.data.materials.new("Cap Mat")
+    assert material.node_tree is not None
+    capture = serialize_library([material.node_tree])
+    assert "material:Cap Mat" in capture
+    bpy.data.materials.remove(material)
+
+
+def test_cli_compares_two_blends(tmp_path, capsys):
+    from nodebpy.export.parity import main
+
+    blend_a = tmp_path / "a.blend"
+    blend_b = tmp_path / "b.blend"
+    _write_library(blend_a)
+    _write_library(blend_b)
+
+    assert main([str(blend_a), str(blend_b), "--ignore", "positions"]) == 0
+    assert "no differences" in capsys.readouterr().out
+
+    with TreeBuilder("Scale Up") as tree:  # same name, different content
+        tree.inputs.float("Other") >> tree.outputs.float("Out")
+    tree.tree.asset_mark()
+    blend_c = tmp_path / "c.blend"
+    bpy.data.libraries.write(str(blend_c), {tree.tree}, fake_user=True)
+    _clear_session()
+
+    assert main([str(blend_a), str(blend_c)]) == 1
+    assert "findings" in capsys.readouterr().out

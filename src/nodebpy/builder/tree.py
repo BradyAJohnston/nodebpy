@@ -870,6 +870,12 @@ class _MenuDefault:
                 return self.item
         except ReferenceError:  # pragma: no cover - the socket was removed
             pass
+        return self._resolve_by_breadcrumbs(tree)
+
+    def _resolve_by_breadcrumbs(self, tree: NodeTree):  # pragma: no cover
+        """Fallback for a removed/stale socket reference: re-find the socket
+        via its node name and identifier."""
+        assert self.node_name is not None
         node = tree.nodes.get(self.node_name)
         if node is None:
             return None

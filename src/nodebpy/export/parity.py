@@ -108,7 +108,15 @@ def serialize_library(trees: Iterable[Any]) -> dict[str, dict]:
 
     out: dict[str, dict] = {}
     for tree in trees:
-        payload = json.loads(to_tree_clipper_payload(TreeBuilder(tree), compress=False))
+        builder = TreeBuilder(tree)
+        owner = None
+        if tree.name not in bpy.data.node_groups:
+            # An embedded tree — tree_clipper resolves those through the
+            # owning material (duck-typing web_render's MaterialBuilder).
+            owner = next((m for m in bpy.data.materials if m.node_tree == tree), None)
+            if owner is not None:
+                builder.material = owner  # ty: ignore[unresolved-attribute]
+        payload = json.loads(to_tree_clipper_payload(builder, compress=False))
         external = {
             int(key): f"<{value.get('fixed_type_name')}:{value.get('description')}>"
             for key, value in payload.get("external", {}).items()
@@ -116,10 +124,15 @@ def serialize_library(trees: Iterable[Any]) -> dict[str, dict]:
         for entry in payload.get("node_trees", []):
             data = entry["data"]
             live = bpy.data.node_groups.get(data["name"])
+            key = data["name"]
             if live is None and tree.name == data["name"]:
                 live = tree
+                if owner is not None:
+                    # Embedded trees all share one name ("Shader Nodetree");
+                    # key them by their owner so materials don't collide.
+                    key = f"material:{owner.name}"
             _enrich_tree(data, live, external)
-            out.setdefault(data["name"], data)
+            out.setdefault(key, data)
     return out
 
 
@@ -213,15 +226,6 @@ def _linked_socket_ids(tree: dict) -> set[int]:
             if isinstance(ref, int):
                 linked.add(ref)
     return linked
-
-
-def _node_socket_ids(node: dict) -> set[int]:
-    ids: set[int] = set()
-    for key in ("inputs", "outputs"):
-        value = node.get(key)
-        if isinstance(value, dict):
-            ids.update(item["id"] for item in value["data"]["items"])
-    return ids
 
 
 def _node_paths(
