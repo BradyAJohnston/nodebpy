@@ -26,6 +26,22 @@ nesting can never produce an import cycle. At build time
 :meth:`~nodebpy.builder.NodeGroupBuilder.create_group` reuses an existing tree
 by name, so each group is still built exactly once.
 
+**Materials** referenced by the dumped trees (a Material socket or interface
+default) are code-generated too: each becomes a module under ``materials/``
+holding its shader tree as a class, a ``MATERIAL`` marker and a
+``MATERIAL_PROPERTIES`` dict. Build recreates the material and runs the class
+body into ``material.node_tree`` — a material is never a node group, so its
+class is only a recipe, never ``create_group``-ed. A material's nested shader
+groups take part in the normal shared/embedded classification.
+
+**Datablocks that cannot be serialised** (images, objects, collections, …)
+are recorded per module in a ``DATABLOCK_DEPENDENCIES`` footer. At build time
+they resolve in order: already present in the session ("build in the
+presence" of the data), appended by name from a ``resources`` ``.blend``, or
+— with ``on_missing="drop"`` — replaced by temporary placeholders that are
+deleted before the ``.blend`` is written, leaving those socket defaults
+empty. The default is a hard error listing exactly what is missing.
+
 Asset previews are not round-tripped (they are binary); regenerate them in
 Blender after a rebuild if needed. An asset catalog definition file
 (``blender_assets.cats.txt``) sitting next to the source is copied alongside
@@ -51,7 +67,7 @@ from pathlib import Path
 
 import bpy
 
-from ..builder import NodeGroupBuilder
+from ..builder import NodeGroupBuilder, TreeBuilder
 from ..builder._utils import normalize_name
 from ..export.codegen import _class_name, _format_with_ruff, to_python
 
@@ -64,15 +80,50 @@ _TREE_DIRS: dict[str, str] = {
     "CompositorNodeTree": "compositor",
 }
 
+# Directory for code-generated materials referenced by the dumped trees.
+_MATERIALS_DIR = "materials"
+
+# ID.id_type → the bpy.data collection holding that datablock type, for the
+# datablock-dependency scan. Node trees are deliberately absent — groups are
+# dumped as classes, not recorded as dependencies.
+_ID_COLLECTIONS: dict[str, str] = {
+    "MATERIAL": "materials",
+    "IMAGE": "images",
+    "OBJECT": "objects",
+    "COLLECTION": "collections",
+    "TEXTURE": "textures",
+    "TEXT": "texts",
+    "FONT": "fonts",
+    "SOUND": "sounds",
+    "SCENE": "scenes",
+    "MASK": "masks",
+}
+
+# bpy.data collections the dump appends dependencies into and cleans back out.
+_CLEANUP_COLLECTIONS = ("node_groups", "materials", "images", "objects", "collections")
+
+# Collections that can stand in a placeholder for on_missing="drop": the
+# placeholder satisfies the bpy.data lookup during the build and is deleted
+# before the .blend is written, which nulls the referencing socket defaults.
+_PLACEHOLDER_FACTORIES = {
+    "materials": lambda name: bpy.data.materials.new(name),
+    "images": lambda name: bpy.data.images.new(name, 1, 1),
+    "objects": lambda name: bpy.data.objects.new(name, None),
+    "collections": lambda name: bpy.data.collections.new(name),
+    "texts": lambda name: bpy.data.texts.new(name),
+}
+
 # Asset-metadata fields that round-trip through ASSET_METADATA (plus tags,
-# handled separately as a collection).
+# handled separately as a collection). ``catalog_simple_name`` is deliberately
+# absent: it is read-only on AssetMetaData (Blender derives it from
+# ``catalog_id`` and the catalog definition file), so it is neither dumped nor
+# applied — a stale key in an older dump's metadata is ignored at build time.
 _METADATA_FIELDS = (
     "description",
     "author",
     "copyright",
     "license",
     "catalog_id",
-    "catalog_simple_name",
 )
 
 # An unassigned catalog — not worth dumping.
@@ -94,6 +145,22 @@ _TREE_PROP_CANDIDATES = (
     "is_type_curve",
     "is_type_pointcloud",
     "is_type_grease_pencil",
+)
+
+# Material-level properties (beyond the shader tree) worth round-tripping.
+# Only values differing from a fresh material's defaults are dumped;
+# properties a Blender version doesn't have are skipped.
+_MATERIAL_PROP_CANDIDATES = (
+    "diffuse_color",
+    "metallic",
+    "roughness",
+    "surface_render_method",
+    "displacement_method",
+    "use_backface_culling",
+    "use_transparency_overlap",
+    "use_transparent_shadow",
+    "blend_method",
+    "pass_index",
 )
 
 #: Catalog definition file that Blender keeps next to an asset library.
@@ -134,6 +201,56 @@ def _tree_properties(group) -> dict[str, object]:
         bpy.data.node_groups.remove(probe)
 
 
+def _material_properties(material) -> dict[str, object]:
+    """Material-level properties of ``material`` that differ from a fresh
+    material's defaults, probed against a throwaway material."""
+    probe = bpy.data.materials.new("_nodebpy_dump_probe")
+    assert probe is not None
+    try:
+        props: dict[str, object] = {}
+        for name in _MATERIAL_PROP_CANDIDATES:
+            if not hasattr(probe, name):
+                continue
+            value = getattr(material, name)
+            default = getattr(probe, name)
+            if not isinstance(value, (str, int, float, bool)):
+                try:  # bpy float arrays (diffuse_color) repr as data paths —
+                    value, default = tuple(value), tuple(default)  # dump tuples
+                except TypeError:
+                    continue
+            if value != default:
+                props[name] = value
+        return props
+    finally:
+        bpy.data.materials.remove(probe)
+
+
+def _id_defaults(tree) -> dict[str, set[str]]:
+    """``{bpy.data collection: {names}}`` of ID datablocks referenced by
+    ``tree`` — socket and interface defaults plus node pointer properties
+    (e.g. an Image Texture's image). Node trees are excluded: groups are
+    dumped as classes rather than treated as data dependencies."""
+    found: dict[str, set[str]] = {}
+
+    def record(value) -> None:
+        if not isinstance(value, bpy.types.ID) or isinstance(value, bpy.types.NodeTree):
+            return
+        collection = _ID_COLLECTIONS.get(value.id_type)
+        if collection is not None:
+            found.setdefault(collection, set()).add(value.name)
+
+    for node in tree.nodes:
+        for prop in node.bl_rna.properties:
+            if prop.type == "POINTER":
+                record(getattr(node, prop.identifier, None))
+        for socket in node.inputs:
+            record(getattr(socket, "default_value", None))
+    for item in tree.interface.items_tree:
+        if getattr(item, "item_type", "") == "SOCKET":
+            record(getattr(item, "default_value", None))
+    return found
+
+
 def _dict_lines(name: str, data: dict[str, object]) -> list[str]:
     lines = [f"{name} = {{"]
     lines += [f"    {key!r}: {value!r}," for key, value in data.items()]
@@ -151,21 +268,22 @@ def _direct_refs(tree) -> set[str]:
     return refs
 
 
-def _assign_class_names(group_names: list[str]) -> dict[str, str]:
-    """A globally unique PascalCase class name per group, assigned in sorted
-    order so the result is deterministic across dumps. Global uniqueness
-    matters because the classes span modules that import each other — two
-    same-named classes would collide in the importing module's namespace."""
+def _assign_class_names(display_names: dict[str, str]) -> dict[str, str]:
+    """A globally unique PascalCase class name per tree key, derived from the
+    key's display name and assigned in sorted order so the result is
+    deterministic across dumps. Global uniqueness matters because the classes
+    span modules that import each other — two same-named classes would
+    collide in the importing module's namespace."""
     class_names: dict[str, str] = {}
     used: set[str] = set()
-    for group_name in sorted(group_names):
-        base = _class_name(group_name)
+    for key in sorted(display_names, key=lambda k: (display_names[k], k)):
+        base = _class_name(display_names[key])
         name, n = base, 1
         while name in used:
             n += 1
             name = f"{base}{n}"
         used.add(name)
-        class_names[group_name] = name
+        class_names[key] = name
     return class_names
 
 
@@ -187,13 +305,17 @@ def _assign_stems(group_names: list[str]) -> dict[str, str]:
 
 def _relative_import(target_module: str, from_module: str) -> str:
     """The relative module reference from one dumped module to another, both
-    given as paths relative to the tree directory (``"scale_up"`` or
-    ``"_shared.utils"``)."""
-    if from_module.startswith("_shared."):
-        if target_module.startswith("_shared."):
-            return "." + target_module.removeprefix("_shared.")
-        return ".." + target_module
-    return "." + target_module
+    given as ``/``-separated paths from the output root (``"geometry/scale_up"``,
+    ``"geometry/_shared/utils"``, ``"materials/glass"``)."""
+    target = target_module.split("/")
+    source = from_module.split("/")
+    common = 0
+    while (
+        common < min(len(target), len(source)) - 1 and target[common] == source[common]
+    ):
+        common += 1
+    ups = len(source) - 1 - common  # levels above the source module's package
+    return "." * (ups + 1) + ".".join(target[common:])
 
 
 def _insert_imports(code: str, import_lines: list[str]) -> str:
@@ -213,18 +335,21 @@ def _insert_imports(code: str, import_lines: list[str]) -> str:
 def _render_group_module(
     group,
     *,
-    asset: bool,
+    kind: str,  # "asset" | "shared" | "material"
+    class_name: str,
     import_lines: list[str],
     class_names: dict[str, str],
     external: set[str],
+    dependencies: dict[str, tuple[str, ...]],
+    material_name: str | None = None,
     nodebpy_pkg: str,
     snapshot_positions: bool,
     keep_reroutes: bool,
     format: bool,
 ) -> str:
-    """The full source for one dumped ``.py`` module: the group's class (plus
+    """The full source for one dumped ``.py`` module: the tree's class (plus
     any embedded helper classes), imports for externally defined classes, and
-    — for assets — the ``ASSET`` marker and metadata footers."""
+    the marker/metadata footers for its kind."""
     code = to_python(
         group,
         top_level="class",
@@ -239,32 +364,55 @@ def _render_group_module(
 
     # Deliberately no source filename/timestamp in the header: a dump must be
     # byte-identical across a no-op round-trip so it leaves no VCS diff.
-    kind = "Node-group asset" if asset else "Node group"
+    label = {
+        "asset": f"Node-group asset {group.name!r} ({group.bl_idname})",
+        "shared": f"Node group {group.name!r} ({group.bl_idname})",
+        "material": f"Material {material_name!r}",
+    }[kind]
     header = [
-        (
-            f"# {kind} {group.name!r} ({group.bl_idname}),"
-            " dumped by nodebpy.assets.dump_library."
-        ),
+        f"# {label}, dumped by nodebpy.assets.dump_library.",
         (
             "# Rebuild the library with nodebpy.assets.build_library"
             " (python -m nodebpy.assets build)."
         ),
     ]
-    if not asset:
+    if kind == "shared":
         header.append(
             "# Shared by several assets, which import it; not an asset itself."
+        )
+    if kind == "material":
+        header.append(
+            "# The class is a recipe for the material's shader tree — build "
+            "recreates the material and runs it into material.node_tree."
         )
     header.append("")
 
     footer: list[str] = []
-    if asset:
-        footer = ["", "", f"ASSET = {class_names[group.name]}"]
+    if kind == "asset":
+        footer = ["", "", f"ASSET = {class_name}"]
         meta = _asset_metadata(group)
         if meta:
             footer += [""] + _dict_lines("ASSET_METADATA", meta)
         props = _tree_properties(group)
         if props:
             footer += [""] + _dict_lines("TREE_PROPERTIES", props)
+    elif kind == "material":
+        assert material_name is not None
+        footer = [
+            "",
+            "",
+            f"MATERIAL = {class_name}",
+            f"MATERIAL_NAME = {material_name!r}",
+        ]
+        material = bpy.data.materials[material_name]
+        props = _material_properties(material)
+        if props:
+            footer += [""] + _dict_lines("MATERIAL_PROPERTIES", props)
+    if dependencies:
+        footer = footer or ["", ""]
+        footer += [""] + _dict_lines(
+            "DATABLOCK_DEPENDENCIES", dict(sorted(dependencies.items()))
+        )
 
     source = "\n".join(header) + code + "\n".join(footer) + "\n"
     return _format_with_ruff(source) if format else source
@@ -298,6 +446,7 @@ def dump_library(
     nodebpy_pkg: str = "nodebpy",
     snapshot_positions: bool = False,
     keep_reroutes: bool = False,
+    materials: bool = True,
     format: bool = True,
 ) -> dict[str, Path]:
     """Dump every node-group asset in ``blend_path`` to Python source files.
@@ -309,7 +458,10 @@ def dump_library(
     by several assets get their own module under ``<tree>/_shared/``, and an
     asset nested inside other assets keeps its class in its own module — all
     referenced via relative imports (``__init__.py`` package markers are
-    written so the imports resolve). :func:`build_library` rebuilds the
+    written so the imports resolve). Materials referenced by the trees are
+    code-generated into ``materials/`` modules, and other non-serialisable
+    datablocks each module needs are recorded in its
+    ``DATABLOCK_DEPENDENCIES`` footer. :func:`build_library` rebuilds the
     ``.blend`` from these files. A ``blender_assets.cats.txt`` next to the
     ``.blend`` is copied into ``output_dir`` so catalog assignments travel
     with the sources.
@@ -339,6 +491,11 @@ def dump_library(
         than layout fidelity.
     keep_reroutes:
         Preserve reroute nodes instead of collapsing them into direct links.
+    materials:
+        Code-generate materials referenced by the dumped trees into
+        ``materials/`` modules (the default). With ``False`` they are only
+        recorded as ``DATABLOCK_DEPENDENCIES``, to be resolved at build time
+        like any other non-serialisable datablock.
     format:
         Run the generated sources through ``ruff format`` when available.
 
@@ -370,18 +527,26 @@ def dump_library(
 
     # Append every wanted asset in one load, so groups shared between assets
     # (including assets nested in other assets) arrive as single trees and the
-    # sharing structure can be read off the session directly.
-    before = set(bpy.data.node_groups.keys())
+    # sharing structure can be read off the session directly. Dependencies of
+    # other kinds (materials, images, …) come along too; everything appended
+    # is cleaned back out afterwards.
+    before = {
+        coll: set(getattr(bpy.data, coll).keys()) for coll in _CLEANUP_COLLECTIONS
+    }
     with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
         str(blend_path), link=False, assets_only=True
     ) as (src, dst):
         dst.node_groups = list(wanted)
-    appended = [g for g in bpy.data.node_groups if g.name not in before]
+    added = {
+        coll: [db for db in getattr(bpy.data, coll) if db.name not in before[coll]]
+        for coll in _CLEANUP_COLLECTIONS
+    }
     try:
         renamed = sorted(
             g.name
-            for g in appended
-            if (m := re.fullmatch(r"(.*)\.\d{3}", g.name)) and m[1] in before
+            for g in added["node_groups"]
+            if (m := re.fullmatch(r"(.*)\.\d{3}", g.name))
+            and m[1] in before["node_groups"]
         )
         if renamed:
             raise RuntimeError(
@@ -391,16 +556,19 @@ def dump_library(
             )
         written = _dump_appended(
             list(dst.node_groups),
-            appended,
+            added["node_groups"],
             output_dir,
             nodebpy_pkg=nodebpy_pkg,
             snapshot_positions=snapshot_positions,
             keep_reroutes=keep_reroutes,
+            materials=materials,
             format=format,
         )
     finally:
-        for g in appended:
-            bpy.data.node_groups.remove(g)
+        for coll in _CLEANUP_COLLECTIONS:
+            data = getattr(bpy.data, coll)
+            for db in added[coll]:
+                data.remove(db)
 
     _copy_catalog_file(blend_path.parent, output_dir)
     return written
@@ -414,9 +582,11 @@ def _dump_appended(
     nodebpy_pkg: str,
     snapshot_positions: bool,
     keep_reroutes: bool,
+    materials: bool,
     format: bool,
 ) -> dict[str, Path]:
-    """Partition the appended groups into modules and write them.
+    """Partition the appended groups (and referenced materials) into modules
+    and write them.
 
     ``asset_trees`` are the trees dumped as assets; ``appended`` is every
     group the load brought in (the assets plus all their dependencies).
@@ -430,19 +600,52 @@ def _dump_appended(
     asset_names = {t.name for t in asset_trees}
     trees = {g.name: g for g in appended}
 
-    # Sharing structure: which groups each asset (transitively) reaches.
-    refs = {g.name: _direct_refs(g) for g in appended}
+    # Non-serialisable datablocks each group references, by tree name.
+    id_deps = {g.name: _id_defaults(g) for g in appended}
+
+    # Materials referenced anywhere in the dump are code-generated too: their
+    # embedded shader tree joins the group universe as an extra root. Embedded
+    # trees all ship named "Shader Nodetree" and the name is read-only, so
+    # material trees are keyed synthetically ("material:<name>") and the class
+    # name is overridden per emission instead.
+    material_trees: dict[str, str] = {}  # tree key → material name
+    if materials:
+        referenced = sorted(
+            {name for deps in id_deps.values() for name in deps.get("materials", ())}
+        )
+        for mat_name in referenced:
+            material = bpy.data.materials.get(mat_name)
+            if material is None or material.node_tree is None:
+                print(f"  material {mat_name!r}: no shader tree, left as a dependency")
+                continue
+            if material.node_tree.name in trees:
+                # A node group named like the embedded tree would be clobbered
+                # by the per-emission class-name override.
+                raise RuntimeError(
+                    f"A node group is named {material.node_tree.name!r}, which "
+                    f"collides with material {mat_name!r}'s embedded tree — "
+                    "rename that group to dump this library."
+                )
+            key = f"material:{mat_name}"
+            trees[key] = material.node_tree
+            id_deps[key] = _id_defaults(material.node_tree)
+            material_trees[key] = mat_name
+
+    # Sharing structure: which groups each root (asset or material tree)
+    # transitively reaches.
+    refs = {name: _direct_refs(tree) for name, tree in trees.items()}
+    root_names = asset_names | set(material_trees)
     closures: dict[str, set[str]] = {}
-    for tree in asset_trees:
+    for root in root_names:
         seen: set[str] = set()
-        stack = list(refs[tree.name])
+        stack = list(refs[root])
         while stack:
             name = stack.pop()
             if name in seen:
                 continue
             seen.add(name)
             stack.extend(refs.get(name, ()))
-        closures[tree.name] = seen
+        closures[root] = seen
 
     usage: dict[str, int] = {}
     for closure in closures.values():
@@ -450,68 +653,96 @@ def _dump_appended(
             usage[name] = usage.get(name, 0) + 1
     shared = {name for name, count in usage.items() if count >= 2}
 
-    # Every class that lives in its own module (assets and shared helpers) is
-    # imported by name across files, so names are assigned globally; helper
-    # groups used by one asset stay embedded in that asset's module.
-    class_names = _assign_class_names(list(trees))
+    # Every class that lives in its own module (assets, materials and shared
+    # helpers) is imported or referenced by name across files, so names are
+    # assigned globally; helper groups used by one root stay embedded.
+    # Material keys display as the material's name, not the embedded tree's.
+    class_names = _assign_class_names({name: name for name in trees} | material_trees)
     external = asset_names | shared
 
-    # Module paths (relative to the tree directory) for every non-embedded
-    # group, per tree type so filenames never collide across editors.
+    # Module paths from the output root for every non-embedded tree.
     modules: dict[str, str] = {}
-    for tree_idname in _TREE_DIRS:
+    for tree_idname, dirname in _TREE_DIRS.items():
         dir_assets = [t.name for t in asset_trees if t.bl_idname == tree_idname]
         dir_shared = [n for n in shared if trees[n].bl_idname == tree_idname]
-        modules.update(_assign_stems(dir_assets))
         modules.update(
-            {n: f"_shared.{stem}" for n, stem in _assign_stems(dir_shared).items()}
+            {n: f"{dirname}/{stem}" for n, stem in _assign_stems(dir_assets).items()}
         )
+        modules.update(
+            {
+                n: f"{dirname}/_shared/{stem}"
+                for n, stem in _assign_stems(dir_shared).items()
+            }
+        )
+    material_stems = _assign_stems(list(material_trees.values()))
+    for key, mat_name in material_trees.items():
+        modules[key] = f"{_MATERIALS_DIR}/{material_stems[mat_name]}"
 
-    def write_module(group, module: str, *, asset: bool) -> Path:
-        # Emitted here: the group itself plus, for assets, its private helpers.
-        emitted = {group.name}
-        if asset:
-            emitted |= closures[group.name] - external
-        needed = set().union(*(refs[n] for n in emitted)) & (external - {group.name})
+    def module_dependencies(root: str) -> dict[str, tuple[str, ...]]:
+        """The datablocks the root's whole subtree references, sorted for a
+        deterministic dump. Recorded on root modules only — shared groups'
+        needs are repeated in every dependent root, and build unions them."""
+        merged: dict[str, set[str]] = {}
+        for name in {root} | closures[root]:
+            for collection, ids in id_deps.get(name, {}).items():
+                merged.setdefault(collection, set()).update(ids)
+        return {coll: tuple(sorted(ids)) for coll, ids in merged.items()}
+
+    def write_module(key: str, module: str, *, kind: str) -> Path:
+        group = trees[key]
+        # Emitted here: the tree itself plus, for roots, its private helpers.
+        # Sets mix tree keys and group names; for groups the two coincide.
+        emitted = {key}
+        if kind in ("asset", "material"):
+            emitted |= closures[key] - external
+        needed = set().union(*(refs[n] for n in emitted)) & (external - {key})
         import_lines = sorted(
             f"from {_relative_import(modules[n], module)} import {class_names[n]}"
             for n in needed
         )
+        # A material tree's key isn't its (read-only, non-unique) tree name,
+        # so map the tree's actual name onto the key's class name for codegen.
         source = _render_group_module(
             group,
-            asset=asset,
+            kind=kind,
+            class_name=class_names[key],
             import_lines=import_lines,
-            class_names=class_names,
-            external=external - {group.name},
+            class_names={**class_names, group.name: class_names[key]},
+            external=external - {key},
+            dependencies=(module_dependencies(key) if kind != "shared" else {}),
+            material_name=material_trees.get(key),
             nodebpy_pkg=nodebpy_pkg,
             snapshot_positions=snapshot_positions,
             keep_reroutes=keep_reroutes,
             format=format,
         )
-        subdir = output_dir / _TREE_DIRS[group.bl_idname]
-        path = subdir / (module.replace(".", "/") + ".py")
+        path = output_dir / (module + ".py")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(source, encoding="utf-8")
         _ensure_init(output_dir)
-        _ensure_init(subdir)
-        if path.parent != subdir:
-            _ensure_init(path.parent)
+        parent = path.parent
+        while parent != output_dir:
+            _ensure_init(parent)
+            parent = parent.parent
         return path
 
     written: dict[str, Path] = {}
     for tree in asset_trees:
-        written[tree.name] = write_module(tree, modules[tree.name], asset=True)
+        written[tree.name] = write_module(tree.name, modules[tree.name], kind="asset")
     for name in sorted(shared):
-        write_module(trees[name], modules[name], asset=False)
+        write_module(name, modules[name], kind="shared")
+    for key in sorted(material_trees):
+        write_module(key, modules[key], kind="material")
     return written
 
 
 def _source_files(source_dir: Path) -> list[Path]:
-    """The dumped *asset* modules under ``source_dir``, in deterministic order.
+    """The dumped *root* modules (assets and materials) under ``source_dir``,
+    in deterministic order.
 
     ``_``-prefixed files and directories (the ``_shared`` group modules) and
-    ``__init__.py`` package markers are not asset modules — shared groups are
-    pulled in by the asset modules' own imports."""
+    ``__init__.py`` package markers are not root modules — shared groups are
+    pulled in by the root modules' own imports."""
     return sorted(
         p
         for p in source_dir.rglob("*.py")
@@ -541,23 +772,119 @@ def _import_source_modules(source_dir: Path, files: list[Path]) -> list:
             del sys.modules[key]
 
 
+def _resolve_dependencies(
+    needed: dict[str, set[str]],
+    resources: Path | None,
+    on_missing: str,
+) -> list:
+    """Make the datablocks in ``needed`` available for the build.
+
+    Resolution order per datablock: already present in the session, appended
+    by name from the ``resources`` ``.blend``, or — with
+    ``on_missing="drop"`` — a temporary placeholder the caller must delete
+    before writing. Anything still missing raises with the full list.
+
+    Returns the placeholder datablocks created (as ``(collection, id)``).
+    """
+
+    def missing_now() -> dict[str, set[str]]:
+        return {
+            coll: absent
+            for coll, ids in needed.items()
+            if (
+                absent := {n for n in ids if getattr(bpy.data, coll, {}).get(n) is None}
+            )
+        }
+
+    missing = missing_now()
+    if missing and resources is not None:
+        if not resources.is_file():
+            raise FileNotFoundError(f"Resources library not found: {resources}")
+        with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+            str(resources), link=False
+        ) as (src, dst):
+            for coll, ids in missing.items():
+                available = set(getattr(src, coll, ()))
+                setattr(dst, coll, sorted(ids & available))
+        missing = missing_now()
+
+    if not missing:
+        return []
+    if on_missing != "drop":
+        listing = "; ".join(
+            f"{coll}: {sorted(ids)}" for coll, ids in sorted(missing.items())
+        )
+        raise RuntimeError(
+            f"Datablocks referenced by the sources are missing: {listing}. "
+            "Either build in a session that already holds them, pass "
+            "resources=<.blend> to append them by name, or pass "
+            "on_missing='drop' to build with those defaults left empty."
+        )
+
+    placeholders = []
+    for coll, ids in sorted(missing.items()):
+        factory = _PLACEHOLDER_FACTORIES.get(coll)
+        if factory is None:
+            raise RuntimeError(
+                f"Cannot placeholder missing {coll} {sorted(ids)} for "
+                "on_missing='drop'; provide them via a resources .blend or "
+                "the session instead."
+            )
+        for name in sorted(ids):
+            placeholders.append((coll, factory(name)))
+    return placeholders
+
+
+def _build_material(material_cls, name: str):
+    """Recreate the material ``name`` by running ``material_cls``'s
+    ``_build_group`` recipe into its embedded shader tree; an existing
+    same-named material is reused untouched ("in the presence" of the data)."""
+    existing = bpy.data.materials.get(name)
+    if existing is not None:
+        return existing
+    material = bpy.data.materials.new(name)
+    assert material is not None
+    if material.node_tree is None:  # older Blender: opt into nodes explicitly
+        material.use_nodes = True
+    tree = material.node_tree
+    assert tree is not None
+    tree.nodes.clear()
+    builder = material_cls.__new__(material_cls)
+    with TreeBuilder(tree) as wrapped:
+        builder._build_group(wrapped)
+    return material
+
+
 def build_library(
     source_dir: str | Path,
     blend_path: str | Path,
     *,
     compress: bool = True,
     allow_existing: bool = False,
+    resources: str | Path | None = None,
+    on_missing: str = "error",
 ) -> list[str]:
     """Rebuild a ``.blend`` asset library from sources written by
     :func:`dump_library`.
 
-    Imports every asset module under ``source_dir`` (recursively; ``_shared``
-    group modules are pulled in by the asset modules' own imports), builds
-    each module's ``ASSET`` class via ``create_group()``, re-marks the tree as
-    an asset, applies the dumped ``ASSET_METADATA``/``TREE_PROPERTIES``, and
-    writes exactly those trees (plus their dependencies) to ``blend_path``
-    with ``bpy.data.libraries.write``. A ``blender_assets.cats.txt`` in
-    ``source_dir`` is copied next to the ``.blend``.
+    Imports every root module under ``source_dir`` (recursively; ``_shared``
+    group modules are pulled in by the root modules' own imports), rebuilds
+    each ``MATERIAL`` module's material, builds each ``ASSET`` class via
+    ``create_group()``, re-marks the tree as an asset, applies the dumped
+    ``ASSET_METADATA``/``TREE_PROPERTIES``/``MATERIAL_PROPERTIES``, and
+    writes those trees and materials (plus their dependencies) to
+    ``blend_path`` with ``bpy.data.libraries.write``. A
+    ``blender_assets.cats.txt`` in ``source_dir`` is copied next to the
+    ``.blend``.
+
+    Datablocks the sources reference but cannot serialise (images, objects,
+    …, recorded in each module's ``DATABLOCK_DEPENDENCIES``) resolve in
+    order: already present in the session (build "in the presence" of the
+    data — e.g. after opening a working file), appended by name from the
+    ``resources`` ``.blend``, or — with ``on_missing="drop"`` — replaced by
+    temporary placeholders deleted again before the write, leaving those
+    socket defaults empty. The default ``on_missing="error"`` raises upfront,
+    listing everything missing.
 
     The built trees stay in the current session afterwards. Because
     ``create_group()`` reuses an existing tree of the same name (that is what
@@ -586,13 +913,62 @@ def build_library(
             "pass allow_existing=True to override."
         )
 
-    trees = []
+    asset_modules: list[tuple[Path, object]] = []
+    material_modules: list[tuple[Path, object]] = []
     for file, module in zip(
         files, _import_source_modules(source_dir, files), strict=True
     ):
-        asset_cls = getattr(module, "ASSET", None)
-        if asset_cls is None:
-            raise ValueError(f"{file} defines no ASSET — not a dumped asset module?")
+        if getattr(module, "MATERIAL", None) is not None:
+            material_modules.append((file, module))
+        elif getattr(module, "ASSET", None) is not None:
+            asset_modules.append((file, module))
+        else:
+            raise ValueError(
+                f"{file} defines neither ASSET nor MATERIAL — not a dumped module?"
+            )
+
+    # Resolve non-serialisable datablocks before anything builds. Materials
+    # the dump code-generated are provided by their own modules, not looked
+    # up, so they never count as missing.
+    provided_materials = {
+        getattr(module, "MATERIAL_NAME", None) or module.MATERIAL._name  # ty: ignore[unresolved-attribute]
+        for _, module in material_modules
+    }
+    needed: dict[str, set[str]] = {}
+    for _, module in asset_modules + material_modules:
+        dependencies = getattr(module, "DATABLOCK_DEPENDENCIES", {})
+        assert isinstance(dependencies, dict)
+        for coll, ids in dependencies.items():
+            needed.setdefault(coll, set()).update(ids)
+    if "materials" in needed:
+        needed["materials"] -= provided_materials
+    placeholders = _resolve_dependencies(
+        {c: ids for c, ids in needed.items() if ids},
+        Path(resources) if resources is not None else None,
+        on_missing,
+    )
+
+    # Materials first: asset trees look them up by name while building.
+    built_materials = []
+    for file, module in material_modules:
+        material_cls = module.MATERIAL  # ty: ignore[unresolved-attribute]
+        if not (
+            isinstance(material_cls, type)
+            and issubclass(material_cls, NodeGroupBuilder)
+        ):
+            raise TypeError(f"{file}: MATERIAL is not a node-group class")
+        name = getattr(module, "MATERIAL_NAME", None) or material_cls._name
+        material = _build_material(material_cls, name)
+        for key, value in getattr(module, "MATERIAL_PROPERTIES", {}).items():
+            try:
+                setattr(material, key, value)
+            except AttributeError:
+                print(f"  {name}: skipping read-only material property {key!r}")
+        built_materials.append(material)
+
+    trees = []
+    for file, module in asset_modules:
+        asset_cls = module.ASSET  # ty: ignore[unresolved-attribute]
         if not (
             isinstance(asset_cls, type) and issubclass(asset_cls, NodeGroupBuilder)
         ):
@@ -606,7 +982,12 @@ def build_library(
         assert isinstance(metadata, dict)
         for field in _METADATA_FIELDS:
             if field in metadata:
-                setattr(asset_data, field, metadata[field])
+                try:
+                    setattr(asset_data, field, metadata[field])
+                except AttributeError:
+                    # Read-only in this Blender version (as catalog_simple_name
+                    # is) — the value is derived, not lost; keep building.
+                    print(f"  {tree.name}: skipping read-only asset field {field!r}")
         existing_tags = {tag.name for tag in asset_data.tags}
         for tag in metadata.get("tags", ()):
             if tag not in existing_tags:
@@ -617,9 +998,17 @@ def build_library(
             setattr(tree, key, value)
         trees.append(tree)
 
+    # Placeholders satisfied the lookups during the build; deleting them nulls
+    # the referencing socket defaults, which is exactly what "drop" means.
+    for coll, datablock in placeholders:
+        getattr(bpy.data, coll).remove(datablock)
+
     blend_path.parent.mkdir(parents=True, exist_ok=True)
     bpy.data.libraries.write(
-        str(blend_path), set(trees), fake_user=True, compress=compress
+        str(blend_path),
+        set(trees) | set(built_materials),
+        fake_user=True,
+        compress=compress,
     )
     _copy_catalog_file(source_dir, blend_path.parent)
     return [tree.name for tree in trees]
@@ -677,6 +1066,16 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
         action="store_true",
         help="Preserve reroute nodes instead of collapsing them.",
     )
+    dump.add_argument(
+        "--no-materials",
+        dest="materials",
+        action="store_false",
+        help=(
+            "Skip code-generating referenced materials into materials/ "
+            "modules; record them only as DATABLOCK_DEPENDENCIES, to be "
+            "resolved at build time (session / --resources / --drop-missing)."
+        ),
+    )
 
     build = sub.add_parser(
         "build",
@@ -708,6 +1107,27 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
         action="store_false",
         help="Write the .blend uncompressed (compressed by default).",
     )
+    build.add_argument(
+        "--resources",
+        type=Path,
+        help=(
+            "A .blend to append missing datablock dependencies (images, "
+            "objects, …) from, by name, before building."
+        ),
+    )
+    build.add_argument(
+        "--drop-missing",
+        dest="on_missing",
+        action="store_const",
+        const="drop",
+        default="error",
+        help=(
+            "Build even when datablock dependencies are missing: temporary "
+            "placeholders satisfy the lookups and are deleted before the "
+            ".blend is written, leaving those socket defaults empty. The "
+            "default is to error upfront, listing everything missing."
+        ),
+    )
 
     args = parser.parse_args(argv)
     if args.command == "dump":
@@ -718,6 +1138,7 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             nodebpy_pkg=args.nodebpy_pkg,
             snapshot_positions=args.snapshot_positions,
             keep_reroutes=args.keep_reroutes,
+            materials=args.materials,
         )
         for name, path in written.items():
             print(f"  {name}: {path}")
@@ -728,6 +1149,8 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             args.blend,
             compress=args.compress,
             allow_existing=args.allow_existing,
+            resources=args.resources,
+            on_missing=args.on_missing,
         )
         print(f"Built {args.blend} with {len(names)} assets: {', '.join(names)}")
 

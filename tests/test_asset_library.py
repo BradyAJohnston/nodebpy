@@ -125,6 +125,39 @@ def nested_library_blend(tmp_path):
     return path
 
 
+def _write_material_library(path: Path) -> None:
+    """Write a library whose one geometry asset references a material (with a
+    non-default property) and an image datablock. Leaves the session clean."""
+    image = bpy.data.images.new("Grid Tex", 4, 4)
+    material = bpy.data.materials.new("Test Glow")
+    material.metallic = 1.0
+    assert material.node_tree is not None
+    material.node_tree.nodes.clear()
+    with TreeBuilder(material.node_tree) as shader_tree:
+        emission = s.Emission(color=(1.0, 0.5, 0.0, 1.0), strength=5.0)
+        s.MaterialOutput(surface=emission)
+    del shader_tree
+
+    with TreeBuilder("Glowing Grid") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        g.ImageTexture(image=image)  # dangling on purpose: an image dependency
+        set_mat = g.SetMaterial(geometry=geo, material=material)
+        set_mat >> tree.outputs.geometry("Geometry")
+    tree.tree.asset_mark()
+
+    bpy.data.libraries.write(str(path), {tree.tree}, fake_user=True)
+    _clear_node_groups()
+    bpy.data.materials.remove(material)
+    bpy.data.images.remove(image)
+
+
+@pytest.fixture
+def material_library_blend(tmp_path):
+    path = tmp_path / "material_library.blend"
+    _write_material_library(path)
+    return path
+
+
 def test_dump_writes_one_module_per_asset(library_blend, tmp_path):
     out = tmp_path / "src"
     written = dump_library(library_blend, out)
@@ -163,6 +196,23 @@ def test_dump_refuses_clashing_session_groups(library_blend, tmp_path):
         pass
     with pytest.raises(RuntimeError, match="fresh session"):
         dump_library(library_blend, tmp_path / "src")
+
+
+def test_build_ignores_stale_catalog_simple_name(library_blend, tmp_path):
+    """``catalog_simple_name`` is read-only on AssetMetaData (derived from
+    ``catalog_id``), so a dump that recorded it — as older nodebpy versions
+    did — must still build rather than crash on the setattr."""
+    src = tmp_path / "src"
+    written = dump_library(library_blend, src)
+    assert not bpy.data.node_groups
+    path = written["Scale Up"]
+    code = path.read_text()
+    assert "catalog_simple_name" not in code  # no longer dumped at all
+    path.write_text(code + '\nASSET_METADATA["catalog_simple_name"] = "Tools"\n')
+
+    names = build_library(src, tmp_path / "rebuilt.blend")
+    assert "Scale Up" in names
+    assert bpy.data.node_groups["Scale Up"].asset_data.catalog_id == CATALOG_ID
 
 
 def test_build_refuses_dirty_session(library_blend, tmp_path):
@@ -290,6 +340,98 @@ def test_roundtrip_nested_library(nested_library_blend, tmp_path):
         dst.node_groups = list(src_lib.node_groups)
     for rebuilt in dst.node_groups:
         assert _structure(rebuilt) == originals[rebuilt.name], rebuilt.name
+
+
+def test_dump_generates_material_modules(material_library_blend, tmp_path):
+    """A referenced material becomes a materials/ module: its shader tree as
+    a class recipe, MATERIAL/MATERIAL_NAME markers, non-default material
+    properties, and datablock dependencies recorded on the root modules."""
+    out = tmp_path / "src"
+    written = dump_library(material_library_blend, out)
+
+    code = (out / "materials" / "test_glow.py").read_text()
+    assert "class TestGlow(CustomShaderGroup):" in code
+    assert "MATERIAL = TestGlow" in code
+    assert 'MATERIAL_NAME = "Test Glow"' in code
+    assert '"metallic": 1.0' in code
+    assert "ASSET" not in code  # a material module is not an asset module
+
+    asset_code = written["Glowing Grid"].read_text()
+    assert 'bpy.data.materials["Test Glow"]' in asset_code
+    assert '"materials": ("Test Glow",)' in asset_code
+    assert '"images": ("Grid Tex",)' in asset_code
+    # The dump cleans every appended datablock back out of the session.
+    assert not bpy.data.node_groups
+    assert "Test Glow" not in bpy.data.materials
+    assert "Grid Tex" not in bpy.data.images
+
+
+def test_roundtrip_material_library(material_library_blend, tmp_path):
+    """Materials rebuild from their modules; the remaining image dependency
+    is sourced by name from a resources .blend (here: the original library)."""
+    src = tmp_path / "src"
+    dump_library(material_library_blend, src)
+
+    rebuilt_path = tmp_path / "rebuilt.blend"
+    names = build_library(src, rebuilt_path, resources=material_library_blend)
+    assert names == ["Glowing Grid"]
+
+    material = bpy.data.materials["Test Glow"]
+    assert material.metallic == 1.0
+    assert material.node_tree is not None
+    assert any(n.bl_idname == "ShaderNodeEmission" for n in material.node_tree.nodes)
+    # The asset's Set Material default points at the rebuilt material.
+    set_mat = next(
+        n
+        for n in bpy.data.node_groups["Glowing Grid"].nodes
+        if n.bl_idname == "GeometryNodeSetMaterial"
+    )
+    assert set_mat.inputs["Material"].default_value is material
+    # The image came from the resources blend and ships in the library.
+    assert "Grid Tex" in bpy.data.images
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+        str(rebuilt_path), link=False
+    ) as (src_lib, _):
+        assert "Test Glow" in src_lib.materials
+        assert "Grid Tex" in src_lib.images
+
+
+def test_build_missing_datablocks_error(material_library_blend, tmp_path):
+    """Without resources, the missing image is a hard, listed error — the
+    material never counts as missing because its own module provides it."""
+    src = tmp_path / "src"
+    dump_library(material_library_blend, src)
+    with pytest.raises(RuntimeError, match="Grid Tex"):
+        build_library(src, tmp_path / "rebuilt.blend")
+
+
+def test_build_drop_missing_datablocks(material_library_blend, tmp_path):
+    """on_missing='drop' builds via temporary placeholders and deletes them
+    before the write, leaving the referencing socket default empty."""
+    src = tmp_path / "src"
+    dump_library(material_library_blend, src)
+    names = build_library(src, tmp_path / "rebuilt.blend", on_missing="drop")
+    assert names == ["Glowing Grid"]
+    assert "Grid Tex" not in bpy.data.images  # placeholder was cleaned up
+    tex = next(
+        n
+        for n in bpy.data.node_groups["Glowing Grid"].nodes
+        if n.bl_idname == "GeometryNodeImageTexture"
+    )
+    assert tex.inputs["Image"].default_value is None
+
+
+def test_build_in_presence_of_datablocks(material_library_blend, tmp_path):
+    """Datablocks already in the session satisfy dependencies directly, and a
+    same-named existing material is reused instead of rebuilt."""
+    src = tmp_path / "src"
+    dump_library(material_library_blend, src)
+    image = bpy.data.images.new("Grid Tex", 2, 2)
+    material = bpy.data.materials.new("Test Glow")
+    names = build_library(src, tmp_path / "rebuilt.blend")
+    assert names == ["Glowing Grid"]
+    assert bpy.data.materials["Test Glow"] is material  # reused, not rebuilt
+    assert bpy.data.images["Grid Tex"] is image
 
 
 def test_nested_dump_is_stable_across_a_roundtrip(nested_library_blend, tmp_path):

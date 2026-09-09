@@ -1798,17 +1798,17 @@ class _StringMixin[
 
         return MatchString
 
-    def starts_with(self, search: InputString) -> BooleanResult:
+    def starts_with(self, search: InputString = "") -> BooleanResult:
         "Create a MatchString[Starts With], return the result as a `BooleanSocket`."
         self._assert_output("starts_with")
         return self._match(self.socket, "Starts With", search).o.result  # ty: ignore[invalid-return-type]
 
-    def ends_with(self, search: InputString) -> BooleanResult:
+    def ends_with(self, search: InputString = "") -> BooleanResult:
         "Create a MatchString[Ends With], return the result as a `BooleanSocket`."
         self._assert_output("ends_with")
         return self._match(self.socket, "Ends With", search).o.result  # ty: ignore[invalid-return-type]
 
-    def contains(self, search: InputString) -> BooleanResult:
+    def contains(self, search: InputString = "") -> BooleanResult:
         "Create a MatchString[Contains], return the result as a `BooleanSocket`."
         self._assert_output("contains")
         return self._match(self.socket, "Contains", search).o.result  # ty: ignore[invalid-return-type]
@@ -1831,7 +1831,9 @@ class _StringMixin[
 
         return FormatString(self.socket, items).o.string  # ty: ignore[invalid-return-type]
 
-    def replace(self, find: InputString, replace: InputString) -> StringResult:
+    def replace(
+        self, find: InputString = "", replace: InputString = ""
+    ) -> StringResult:
         "Replace every match of the string with the replacement string"
         self._assert_output("replace")
         from ..nodes.geometry import ReplaceString
@@ -1852,7 +1854,7 @@ class _StringMixin[
 
         return StringLength(self.socket).o.length  # ty: ignore[invalid-return-type]
 
-    def find(self, search: InputString) -> ResultStringFind[IntegerResult]:
+    def find(self, search: InputString = "") -> ResultStringFind[IntegerResult]:
         "Find where in a string a pattern occurs. Returns `(first_found, count)`."
         self._assert_output("find")
         from ..nodes.geometry import FindInString
