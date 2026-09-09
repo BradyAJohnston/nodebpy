@@ -21,6 +21,7 @@ if TYPE_CHECKING:
         InputCollection,
         InputColor,
         InputFloat,
+        InputFont,
         InputGeometry,
         InputImage,
         InputInteger,
@@ -30,6 +31,7 @@ if TYPE_CHECKING:
         InputMenu,
         InputObject,
         InputRotation,
+        InputSound,
         InputString,
         InputVector,
         _SocketShapeStructureType,
@@ -41,6 +43,7 @@ if TYPE_CHECKING:
         CollectionSocket,
         ColorSocket,
         FloatSocket,
+        FontSocket,
         GeometrySocket,
         ImageSocket,
         IntegerSocket,
@@ -49,6 +52,7 @@ if TYPE_CHECKING:
         MenuSocket,
         ObjectSocket,
         RotationSocket,
+        SoundSocket,
         StringSocket,
         VectorSocket,
     )
@@ -534,6 +538,22 @@ class _SocketItemFactory(_TypedItemFactory):
     ) -> MaterialSocket:
         return cast("MaterialSocket", self._declare(name, "MATERIAL", structure_type))
 
+    def font(
+        self,
+        name: str = "Font",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> FontSocket:
+        return cast("FontSocket", self._declare(name, "FONT", structure_type))
+
+    def sound(
+        self,
+        name: str = "Sound",
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> SoundSocket:
+        return cast("SoundSocket", self._declare(name, "SOUND", structure_type))
+
     def bundle(
         self,
         name: str = "Bundle",
@@ -708,6 +728,24 @@ class _SocketValueItemFactory(_TypedItemFactory):
         return cast(
             "MaterialSocket", self._declare(name, value, "MATERIAL", structure_type)
         )
+
+    def font(
+        self,
+        name: str = "Font",
+        value: InputFont = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> FontSocket:
+        return cast("FontSocket", self._declare(name, value, "FONT", structure_type))
+
+    def sound(
+        self,
+        name: str = "Sound",
+        value: InputSound = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> SoundSocket:
+        return cast("SoundSocket", self._declare(name, value, "SOUND", structure_type))
 
     def bundle(
         self,

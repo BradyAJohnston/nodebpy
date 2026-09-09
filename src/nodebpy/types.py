@@ -369,6 +369,7 @@ SOCKET_COMPATIBILITY: dict[str, tuple[str, ...]] = {
     "BUNDLE": ("BUNDLE",),
     "CLOSURE": ("CLOSURE",),
     "SHADER": ("SHADER", "RGBA"),
+    "FONT": ("FONT",),
     "SOUND": ("SOUND",),
 }
 

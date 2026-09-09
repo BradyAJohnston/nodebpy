@@ -33,6 +33,7 @@ from .socket import (
     CollectionSocket,
     ColorSocket,
     FloatSocket,
+    FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
@@ -43,6 +44,7 @@ from .socket import (
     RotationSocket,
     ShaderSocket,
     Socket,
+    SoundSocket,
     StringSocket,
     VectorSocket,
 )
@@ -684,6 +686,46 @@ class SocketContext:
             default_input=default_input,
         )
         return self._wrap(MaterialSocket, iface)
+
+    def font(
+        self,
+        name: str = "Font",
+        default_value: bpy.types.VectorFont | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> FontSocket:
+        iface = self._add_socket("NodeSocketFont", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+        return self._wrap(FontSocket, iface)
+
+    def sound(
+        self,
+        name: str = "Sound",
+        default_value: bpy.types.Sound | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> SoundSocket:
+        iface = self._add_socket("NodeSocketSound", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+        return self._wrap(SoundSocket, iface)
 
     def bundle(
         self,
