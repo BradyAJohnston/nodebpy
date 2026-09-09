@@ -405,25 +405,25 @@ class _FloatGridOperatorMixin(Socket):
         """Calculate the direction and magnitude of the change in values of a scalar grid."""
         from ..nodes.geometry import GridGradient
 
-        return GridGradient(self.socket).o.gradient
+        return GridGradient(self.socket).o.gradient  # ty: ignore[invalid-argument-type]
 
     def laplacian(self) -> FloatSocketGrid:
         """Compute the divergence of the gradient of the input grid."""
         from ..nodes.geometry import GridLaplacian
 
-        return GridLaplacian(self.socket).o.laplacian
+        return GridLaplacian(self.socket).o.laplacian  # ty: ignore[invalid-argument-type]
 
     def sdf_fillet(self, iterations: InputInteger = 1) -> FloatSocketGrid:
         """Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces."""
         from ..nodes.geometry import SDFGridFillet
 
-        return SDFGridFillet(self.socket, iterations=iterations).o.grid
+        return SDFGridFillet(self.socket, iterations=iterations).o.grid  # ty: ignore[invalid-argument-type]
 
     def sdf_laplacian(self, iterations: InputInteger = 1) -> FloatSocketGrid:
         """Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization."""
         from ..nodes.geometry import SDFGridLaplacian
 
-        return SDFGridLaplacian(self.socket, iterations=iterations).o.grid
+        return SDFGridLaplacian(self.socket, iterations=iterations).o.grid  # ty: ignore[invalid-argument-type]
 
     def sdf_mean(
         self, width: InputInteger = 1, iterations: InputInteger = 1
@@ -431,13 +431,13 @@ class _FloatGridOperatorMixin(Socket):
         """Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field."""
         from ..nodes.geometry import SDFGridMean
 
-        return SDFGridMean(self.socket, width=width, iterations=iterations).o.grid
+        return SDFGridMean(self.socket, width=width, iterations=iterations).o.grid  # ty: ignore[invalid-argument-type]
 
     def sdf_mean_curvature(self, iterations: InputInteger = 1) -> FloatSocketGrid:
         """Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas."""
         from ..nodes.geometry import SDFGridMeanCurvature
 
-        return SDFGridMeanCurvature(self.socket, iterations=iterations).o.grid
+        return SDFGridMeanCurvature(self.socket, iterations=iterations).o.grid  # ty: ignore[invalid-argument-type]
 
     def sdf_median(
         self, width: InputInteger = 1, iterations: InputInteger = 1
@@ -445,13 +445,13 @@ class _FloatGridOperatorMixin(Socket):
         """Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field."""
         from ..nodes.geometry import SDFGridMedian
 
-        return SDFGridMedian(self.socket, width=width, iterations=iterations).o.grid
+        return SDFGridMedian(self.socket, width=width, iterations=iterations).o.grid  # ty: ignore[invalid-argument-type]
 
     def sdf_offset(self, distance: InputFloat = 0.1) -> FloatSocketGrid:
         """Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property."""
         from ..nodes.geometry import SDFGridOffset
 
-        return SDFGridOffset(self.socket, distance=distance).o.grid
+        return SDFGridOffset(self.socket, distance=distance).o.grid  # ty: ignore[invalid-argument-type]
 
     def to_mesh(
         self, threshold: InputFloat = 0.1, adaptivity: InputFloat = 0.0
@@ -460,7 +460,9 @@ class _FloatGridOperatorMixin(Socket):
         from ..nodes.geometry import GridToMesh
 
         return GridToMesh(
-            self.socket, threshold=threshold, adaptivity=adaptivity
+            self.socket,  # ty: ignore[invalid-argument-type]
+            threshold=threshold,
+            adaptivity=adaptivity,
         ).o.mesh
 
 
@@ -469,13 +471,13 @@ class _VectorGridOperatorMixin(Socket):
         """Calculate the magnitude and direction of circulation of a directional vector grid."""
         from ..nodes.geometry import GridCurl
 
-        return GridCurl(self.socket).o.curl
+        return GridCurl(self.socket).o.curl  # ty: ignore[invalid-argument-type]
 
     def divergence(self) -> FloatSocketGrid:
         """Calculate the flow into and out of each point of a directional vector grid."""
         from ..nodes.geometry import GridDivergence
 
-        return GridDivergence(self.socket).o.divergence
+        return GridDivergence(self.socket).o.divergence  # ty: ignore[invalid-argument-type]
 
 
 # ---------------------------------------------------------------------------
@@ -483,8 +485,8 @@ class _VectorGridOperatorMixin(Socket):
 # ---------------------------------------------------------------------------
 
 
-class _GridSocketMixin[T](Socket):
-    def _info(self) -> GridInfo[T]:
+class _GridSocketMixin[T, TG](Socket):
+    def _info(self) -> GridInfo[T, TG]:
         from ..nodes.geometry import GridInfo
 
         self._assert_output("transform / background_value")
@@ -618,7 +620,7 @@ class _GridSocketMixin[T](Socket):
             data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.grid
 
-    def to_points(self) -> GridToPoints[T]:
+    def to_points(self) -> GridToPoints[T, TG]:
         """Generate a point cloud from a volume grid's active voxels."""
         from ..nodes.geometry import GridToPoints
 
@@ -2268,7 +2270,7 @@ class FloatSocketList(
 
 class FloatSocketGrid(
     _FloatMixin["IntegerSocketGrid"],
-    _GridSocketMixin[FloatSocket],
+    _GridSocketMixin[FloatSocket, "FloatSocketGrid"],
     _FloatGridOperatorMixin,
     _GridMeanMixin,
 ):
@@ -2353,7 +2355,7 @@ class VectorSocketList(
 
 class VectorSocketGrid(
     _VectorMixin,
-    _GridSocketMixin[VectorSocket],
+    _GridSocketMixin[VectorSocket, "VectorSocketGrid"],
     _VectorGridOperatorMixin,
     _GridMeanMixin,
 ):
@@ -2436,7 +2438,9 @@ class IntegerVectorSocket(
     """Runtime integer vector socket wrapper."""
 
 
-class IntegerSocketGrid(_IntegerMixin, _GridSocketMixin[IntegerSocket], _GridMeanMixin):
+class IntegerSocketGrid(
+    _IntegerMixin, _GridSocketMixin[IntegerSocket, "IntegerSocketGrid"], _GridMeanMixin
+):
     """Runtime integer grid socket wrapper."""
 
 
@@ -2487,7 +2491,9 @@ class BooleanSocketList(_BooleanMixin, _ListMixin[BooleanSocket]):
     """List of boolean sockets."""
 
 
-class BooleanSocketGrid(_BooleanMixin, _GridSocketMixin[BooleanSocket]):
+class BooleanSocketGrid(
+    _BooleanMixin, _GridSocketMixin[BooleanSocket, "BooleanSocketGrid"]
+):
     """Runtime boolean grid socket wrapper."""
 
 

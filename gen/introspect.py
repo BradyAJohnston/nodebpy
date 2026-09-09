@@ -28,6 +28,22 @@ def _collect_socket_menu_items(socket: bpy.types.NodeSocket) -> list[str]:
         return values
 
 
+def _socket_structure_type(socket: bpy.types.NodeSocket) -> str:
+    """The socket's structure type, honouring its *declared* grid-ness.
+
+    ``inferred_structure_type`` comes from Blender's link-based inference,
+    which reports SINGLE for an unlinked grid or list input (e.g. Set Grid
+    Background's Grid, List Length's List) — but such sockets always render
+    with the ``VOLUME_GRID``/``LIST`` display shape, so that is the reliable
+    declaration."""
+    display_shape = getattr(socket, "display_shape", "")
+    if display_shape == "VOLUME_GRID":
+        return "GRID"
+    if display_shape == "LIST":
+        return "LIST"
+    return getattr(socket, "inferred_structure_type", "")
+
+
 def collect_socket_info(
     sockets: bpy.types.bpy_prop_collection[bpy.types.NodeSocket],
     hidden=False,
@@ -57,7 +73,7 @@ def collect_socket_info(
             socket_type=socket.type,
             is_output=is_output,
             is_multi_input=getattr(socket, "is_multi_input", False),
-            structure_type=getattr(socket, "inferred_structure_type", ""),
+            structure_type=_socket_structure_type(socket),
             menu_items=_collect_socket_menu_items(socket)
             if socket.type == "MENU" and cast(Any, socket).default_value != ""
             else [],

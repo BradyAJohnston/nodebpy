@@ -12,6 +12,7 @@ from ...builder.socket import (
     FloatSocketGrid,
     GeometrySocket,
     IntegerSocket,
+    IntegerSocketGrid,
     MatrixSocket,
     MenuSocket,
     StringSocket,
@@ -21,13 +22,17 @@ from ...builder.socket import (
 from ...types import (
     InputAny,
     InputBoolean,
+    InputBooleanGrid,
     InputFloat,
+    InputFloatGrid,
     InputGeometry,
     InputInteger,
+    InputIntegerGrid,
     InputMatrix,
     InputMenu,
     InputString,
     InputVector,
+    InputVectorGrid,
 )
 
 
@@ -37,9 +42,9 @@ class AdvectGrid[T](BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
-    velocity : InputVector
+    velocity : InputVectorGrid
         Velocity
     time_step : InputFloat
         Time Step
@@ -50,9 +55,9 @@ class AdvectGrid[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
-    i.velocity : VectorSocket
+    i.velocity : VectorSocketGrid
         Velocity
     i.time_step : FloatSocket
         Time Step
@@ -63,7 +68,7 @@ class AdvectGrid[T](BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -73,7 +78,7 @@ class AdvectGrid[T](BaseNode):
     class _Inputs[S](SocketAccessor):
         grid: S
         """Grid"""
-        velocity: VectorSocket
+        velocity: VectorSocketGrid
         """Velocity"""
         time_step: FloatSocket
         """Time Step"""
@@ -95,8 +100,8 @@ class AdvectGrid[T](BaseNode):
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
-        velocity: InputVector = None,
+        grid: InputAny = None,
+        velocity: InputVectorGrid = None,
         time_step: InputFloat = 1.0,
         integration_scheme: InputMenu
         | Literal[
@@ -125,8 +130,8 @@ class AdvectGrid[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
-        velocity: InputVector = None,
+        grid: InputFloatGrid = None,
+        velocity: InputVectorGrid = None,
         time_step: InputFloat = 1.0,
         integration_scheme: InputMenu
         | Literal[
@@ -138,7 +143,7 @@ class AdvectGrid[T](BaseNode):
             "BFECC",
         ] = "Runge-Kutta 3",
         limiter: InputMenu | Literal["None", "Clamp", "Revert"] = "Clamp",
-    ) -> "AdvectGrid[FloatSocket]":
+    ) -> "AdvectGrid[FloatSocketGrid]":
         """Create Advect Grid with operation 'Float'."""
         return AdvectGrid(
             data_type="FLOAT",
@@ -152,8 +157,8 @@ class AdvectGrid[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
-        velocity: InputVector = None,
+        grid: InputIntegerGrid = None,
+        velocity: InputVectorGrid = None,
         time_step: InputFloat = 1.0,
         integration_scheme: InputMenu
         | Literal[
@@ -165,7 +170,7 @@ class AdvectGrid[T](BaseNode):
             "BFECC",
         ] = "Runge-Kutta 3",
         limiter: InputMenu | Literal["None", "Clamp", "Revert"] = "Clamp",
-    ) -> "AdvectGrid[IntegerSocket]":
+    ) -> "AdvectGrid[IntegerSocketGrid]":
         """Create Advect Grid with operation 'Integer'."""
         return AdvectGrid(
             data_type="INT",
@@ -179,8 +184,8 @@ class AdvectGrid[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
-        velocity: InputVector = None,
+        grid: InputVectorGrid = None,
+        velocity: InputVectorGrid = None,
         time_step: InputFloat = 1.0,
         integration_scheme: InputMenu
         | Literal[
@@ -192,7 +197,7 @@ class AdvectGrid[T](BaseNode):
             "BFECC",
         ] = "Runge-Kutta 3",
         limiter: InputMenu | Literal["None", "Clamp", "Revert"] = "Clamp",
-    ) -> "AdvectGrid[VectorSocket]":
+    ) -> "AdvectGrid[VectorSocketGrid]":
         """Create Advect Grid with operation 'Vector'."""
         return AdvectGrid(
             data_type="VECTOR",
@@ -218,7 +223,7 @@ class ClipGrid[T](BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     min_x : InputInteger
         Min X
@@ -235,7 +240,7 @@ class ClipGrid[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.min_x : IntegerSocket
         Min X
@@ -252,7 +257,7 @@ class ClipGrid[T](BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -288,7 +293,7 @@ class ClipGrid[T](BaseNode):
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         min_x: InputInteger = 0,
         min_y: InputInteger = 0,
         min_z: InputInteger = 0,
@@ -314,14 +319,14 @@ class ClipGrid[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         min_x: InputInteger = 0,
         min_y: InputInteger = 0,
         min_z: InputInteger = 0,
         max_x: InputInteger = 32,
         max_y: InputInteger = 32,
         max_z: InputInteger = 32,
-    ) -> "ClipGrid[FloatSocket]":
+    ) -> "ClipGrid[FloatSocketGrid]":
         """Create Clip Grid with operation 'Float'."""
         return ClipGrid(
             data_type="FLOAT",
@@ -337,14 +342,14 @@ class ClipGrid[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
+        grid: InputIntegerGrid = None,
         min_x: InputInteger = 0,
         min_y: InputInteger = 0,
         min_z: InputInteger = 0,
         max_x: InputInteger = 32,
         max_y: InputInteger = 32,
         max_z: InputInteger = 32,
-    ) -> "ClipGrid[IntegerSocket]":
+    ) -> "ClipGrid[IntegerSocketGrid]":
         """Create Clip Grid with operation 'Integer'."""
         return ClipGrid(
             data_type="INT",
@@ -360,14 +365,14 @@ class ClipGrid[T](BaseNode):
     @classmethod
     def boolean(
         cls,
-        grid: InputBoolean = False,
+        grid: InputBooleanGrid = None,
         min_x: InputInteger = 0,
         min_y: InputInteger = 0,
         min_z: InputInteger = 0,
         max_x: InputInteger = 32,
         max_y: InputInteger = 32,
         max_z: InputInteger = 32,
-    ) -> "ClipGrid[BooleanSocket]":
+    ) -> "ClipGrid[BooleanSocketGrid]":
         """Create Clip Grid with operation 'Boolean'."""
         return ClipGrid(
             data_type="BOOLEAN",
@@ -383,14 +388,14 @@ class ClipGrid[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
+        grid: InputVectorGrid = None,
         min_x: InputInteger = 0,
         min_y: InputInteger = 0,
         min_z: InputInteger = 0,
         max_x: InputInteger = 32,
         max_y: InputInteger = 32,
         max_z: InputInteger = 32,
-    ) -> "ClipGrid[VectorSocket]":
+    ) -> "ClipGrid[VectorSocketGrid]":
         """Create Clip Grid with operation 'Vector'."""
         return ClipGrid(
             data_type="VECTOR",
@@ -456,7 +461,7 @@ class CubeGridTopology(BaseNode):
 
     Outputs
     -------
-    o.topology : BooleanSocket
+    o.topology : BooleanSocketGrid
         Topology
     """
 
@@ -524,7 +529,7 @@ class DistributePointsInGrid(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     density : InputFloat
         Density
@@ -537,7 +542,7 @@ class DistributePointsInGrid(BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.density : FloatSocket
         Density
@@ -558,7 +563,7 @@ class DistributePointsInGrid(BaseNode):
     node: bpy.types.GeometryNodeDistributePointsInGrid
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
         density: FloatSocket
         """Density"""
@@ -582,7 +587,7 @@ class DistributePointsInGrid(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         density: InputFloat = 1.0,
         seed: InputInteger = 0,
         spacing: InputVector = None,
@@ -603,7 +608,10 @@ class DistributePointsInGrid(BaseNode):
 
     @classmethod
     def random(
-        cls, grid: InputFloat = 0.0, density: InputFloat = 1.0, seed: InputInteger = 0
+        cls,
+        grid: InputFloatGrid = None,
+        density: InputFloat = 1.0,
+        seed: InputInteger = 0,
     ) -> "DistributePointsInGrid":
         """Create Distribute Points in Grid with operation 'Random'. Distribute points randomly inside of the volume"""
         return cls(mode="DENSITY_RANDOM", grid=grid, density=density, seed=seed)
@@ -611,7 +619,7 @@ class DistributePointsInGrid(BaseNode):
     @classmethod
     def grid(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         spacing: InputVector = None,
         threshold: InputFloat = 0.1,
     ) -> "DistributePointsInGrid":
@@ -743,7 +751,7 @@ class GetNamedGrid[T](BaseNode):
     -------
     o.volume : GeometrySocket
         Volume
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -790,7 +798,7 @@ class GetNamedGrid[T](BaseNode):
         volume: InputGeometry = None,
         name: InputString = "",
         remove: InputBoolean = True,
-    ) -> "GetNamedGrid[FloatSocket]":
+    ) -> "GetNamedGrid[FloatSocketGrid]":
         """Create Get Named Grid with operation 'Float'."""
         return GetNamedGrid(data_type="FLOAT", volume=volume, name=name, remove=remove)
 
@@ -800,7 +808,7 @@ class GetNamedGrid[T](BaseNode):
         volume: InputGeometry = None,
         name: InputString = "",
         remove: InputBoolean = True,
-    ) -> "GetNamedGrid[IntegerSocket]":
+    ) -> "GetNamedGrid[IntegerSocketGrid]":
         """Create Get Named Grid with operation 'Integer'."""
         return GetNamedGrid(data_type="INT", volume=volume, name=name, remove=remove)
 
@@ -810,7 +818,7 @@ class GetNamedGrid[T](BaseNode):
         volume: InputGeometry = None,
         name: InputString = "",
         remove: InputBoolean = True,
-    ) -> "GetNamedGrid[BooleanSocket]":
+    ) -> "GetNamedGrid[BooleanSocketGrid]":
         """Create Get Named Grid with operation 'Boolean'."""
         return GetNamedGrid(
             data_type="BOOLEAN", volume=volume, name=name, remove=remove
@@ -822,7 +830,7 @@ class GetNamedGrid[T](BaseNode):
         volume: InputGeometry = None,
         name: InputString = "",
         remove: InputBoolean = True,
-    ) -> "GetNamedGrid[VectorSocket]":
+    ) -> "GetNamedGrid[VectorSocketGrid]":
         """Create Get Named Grid with operation 'Vector'."""
         return GetNamedGrid(data_type="VECTOR", volume=volume, name=name, remove=remove)
 
@@ -841,17 +849,17 @@ class GridCurl(BaseNode):
 
     Parameters
     ----------
-    grid : InputVector
+    grid : InputVectorGrid
         Grid
 
     Inputs
     ------
-    i.grid : VectorSocket
+    i.grid : VectorSocketGrid
         Grid
 
     Outputs
     -------
-    o.curl : VectorSocket
+    o.curl : VectorSocketGrid
         Curl
     """
 
@@ -859,7 +867,7 @@ class GridCurl(BaseNode):
     node: bpy.types.GeometryNodeGridCurl
 
     class _Inputs(SocketAccessor):
-        grid: VectorSocket
+        grid: VectorSocketGrid
         """Grid"""
 
     class _Outputs(SocketAccessor):
@@ -873,7 +881,7 @@ class GridCurl(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, grid: InputVector = None):
+    def __init__(self, grid: InputVectorGrid = None):
         super().__init__()
         key_args = {"Grid": grid}
 
@@ -886,7 +894,7 @@ class GridDilateErode[T](BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     connectivity : InputMenu | Literal['Face', 'Edge', 'Vertex']
         Connectivity
@@ -897,7 +905,7 @@ class GridDilateErode[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.connectivity : MenuSocket
         Connectivity
@@ -908,7 +916,7 @@ class GridDilateErode[T](BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -938,7 +946,7 @@ class GridDilateErode[T](BaseNode):
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
         tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
         steps: InputInteger = 1,
@@ -958,11 +966,11 @@ class GridDilateErode[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
         tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
         steps: InputInteger = 1,
-    ) -> "GridDilateErode[FloatSocket]":
+    ) -> "GridDilateErode[FloatSocketGrid]":
         """Create Grid Dilate & Erode with operation 'Float'."""
         return GridDilateErode(
             data_type="FLOAT",
@@ -975,11 +983,11 @@ class GridDilateErode[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
+        grid: InputIntegerGrid = None,
         connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
         tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
         steps: InputInteger = 1,
-    ) -> "GridDilateErode[IntegerSocket]":
+    ) -> "GridDilateErode[IntegerSocketGrid]":
         """Create Grid Dilate & Erode with operation 'Integer'."""
         return GridDilateErode(
             data_type="INT",
@@ -992,11 +1000,11 @@ class GridDilateErode[T](BaseNode):
     @classmethod
     def boolean(
         cls,
-        grid: InputBoolean = False,
+        grid: InputBooleanGrid = None,
         connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
         tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
         steps: InputInteger = 1,
-    ) -> "GridDilateErode[BooleanSocket]":
+    ) -> "GridDilateErode[BooleanSocketGrid]":
         """Create Grid Dilate & Erode with operation 'Boolean'."""
         return GridDilateErode(
             data_type="BOOLEAN",
@@ -1009,11 +1017,11 @@ class GridDilateErode[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
+        grid: InputVectorGrid = None,
         connectivity: InputMenu | Literal["Face", "Edge", "Vertex"] = "Face",
         tiles: InputMenu | Literal["Ignore", "Expand", "Preserve"] = "Preserve",
         steps: InputInteger = 1,
-    ) -> "GridDilateErode[VectorSocket]":
+    ) -> "GridDilateErode[VectorSocketGrid]":
         """Create Grid Dilate & Erode with operation 'Vector'."""
         return GridDilateErode(
             data_type="VECTOR",
@@ -1038,17 +1046,17 @@ class GridDivergence(BaseNode):
 
     Parameters
     ----------
-    grid : InputVector
+    grid : InputVectorGrid
         Grid
 
     Inputs
     ------
-    i.grid : VectorSocket
+    i.grid : VectorSocketGrid
         Grid
 
     Outputs
     -------
-    o.divergence : FloatSocket
+    o.divergence : FloatSocketGrid
         Divergence
     """
 
@@ -1056,7 +1064,7 @@ class GridDivergence(BaseNode):
     node: bpy.types.GeometryNodeGridDivergence
 
     class _Inputs(SocketAccessor):
-        grid: VectorSocket
+        grid: VectorSocketGrid
         """Grid"""
 
     class _Outputs(SocketAccessor):
@@ -1070,7 +1078,7 @@ class GridDivergence(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, grid: InputVector = None):
+    def __init__(self, grid: InputVectorGrid = None):
         super().__init__()
         key_args = {"Grid": grid}
 
@@ -1083,17 +1091,17 @@ class GridGradient(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
 
     Outputs
     -------
-    o.gradient : VectorSocket
+    o.gradient : VectorSocketGrid
         Gradient
     """
 
@@ -1101,7 +1109,7 @@ class GridGradient(BaseNode):
     node: bpy.types.GeometryNodeGridGradient
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
 
     class _Outputs(SocketAccessor):
@@ -1115,25 +1123,25 @@ class GridGradient(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, grid: InputFloat = 0.0):
+    def __init__(self, grid: InputFloatGrid = None):
         super().__init__()
         key_args = {"Grid": grid}
 
         self._establish_links(**key_args)
 
 
-class GridInfo[T](BaseNode):
+class GridInfo[T, TGrid](BaseNode):
     """
     Retrieve information about a volume grid
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
 
     Outputs
@@ -1147,11 +1155,11 @@ class GridInfo[T](BaseNode):
     _bl_idname = "GeometryNodeGridInfo"
     node: bpy.types.GeometryNodeGridInfo
 
-    class _Inputs[S](SocketAccessor):
-        grid: S
+    class _Inputs[S, SGrid](SocketAccessor):
+        grid: SGrid
         """Grid"""
 
-    class _Outputs[S](SocketAccessor):
+    class _Outputs[S, SGrid](SocketAccessor):
         transform: MatrixSocket
         """Transform"""
         background_value: S
@@ -1160,13 +1168,13 @@ class GridInfo[T](BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs[T]: ...
+        def i(self) -> _Inputs[T, TGrid]: ...
         @property
-        def o(self) -> _Outputs[T]: ...
+        def o(self) -> _Outputs[T, TGrid]: ...
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1176,22 +1184,30 @@ class GridInfo[T](BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, grid: InputFloat = 0.0) -> "GridInfo[FloatSocket]":
+    def float(
+        cls, grid: InputFloatGrid = None
+    ) -> "GridInfo[FloatSocket, FloatSocketGrid]":
         """Create Grid Info with operation 'Float'."""
         return GridInfo(data_type="FLOAT", grid=grid)
 
     @classmethod
-    def integer(cls, grid: InputInteger = 0) -> "GridInfo[IntegerSocket]":
+    def integer(
+        cls, grid: InputIntegerGrid = None
+    ) -> "GridInfo[IntegerSocket, IntegerSocketGrid]":
         """Create Grid Info with operation 'Integer'."""
         return GridInfo(data_type="INT", grid=grid)
 
     @classmethod
-    def boolean(cls, grid: InputBoolean = False) -> "GridInfo[BooleanSocket]":
+    def boolean(
+        cls, grid: InputBooleanGrid = None
+    ) -> "GridInfo[BooleanSocket, BooleanSocketGrid]":
         """Create Grid Info with operation 'Boolean'."""
         return GridInfo(data_type="BOOLEAN", grid=grid)
 
     @classmethod
-    def vector(cls, grid: InputVector = None) -> "GridInfo[VectorSocket]":
+    def vector(
+        cls, grid: InputVectorGrid = None
+    ) -> "GridInfo[VectorSocket, VectorSocketGrid]":
         """Create Grid Info with operation 'Vector'."""
         return GridInfo(data_type="VECTOR", grid=grid)
 
@@ -1210,17 +1226,17 @@ class GridLaplacian(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
 
     Outputs
     -------
-    o.laplacian : FloatSocket
+    o.laplacian : FloatSocketGrid
         Laplacian
     """
 
@@ -1228,7 +1244,7 @@ class GridLaplacian(BaseNode):
     node: bpy.types.GeometryNodeGridLaplacian
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
 
     class _Outputs(SocketAccessor):
@@ -1242,7 +1258,7 @@ class GridLaplacian(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, grid: InputFloat = 0.0):
+    def __init__(self, grid: InputFloatGrid = None):
         super().__init__()
         key_args = {"Grid": grid}
 
@@ -1255,7 +1271,7 @@ class GridMean[T](BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     width : InputInteger
         Width
@@ -1264,7 +1280,7 @@ class GridMean[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.width : IntegerSocket
         Width
@@ -1273,7 +1289,7 @@ class GridMean[T](BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -1301,7 +1317,7 @@ class GridMean[T](BaseNode):
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
         *,
@@ -1315,10 +1331,10 @@ class GridMean[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
-    ) -> "GridMean[FloatSocket]":
+    ) -> "GridMean[FloatSocketGrid]":
         """Create Grid Mean with operation 'Float'."""
         return GridMean(
             data_type="FLOAT", grid=grid, width=width, iterations=iterations
@@ -1327,20 +1343,20 @@ class GridMean[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
+        grid: InputIntegerGrid = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
-    ) -> "GridMean[IntegerSocket]":
+    ) -> "GridMean[IntegerSocketGrid]":
         """Create Grid Mean with operation 'Integer'."""
         return GridMean(data_type="INT", grid=grid, width=width, iterations=iterations)
 
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
+        grid: InputVectorGrid = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
-    ) -> "GridMean[VectorSocket]":
+    ) -> "GridMean[VectorSocketGrid]":
         """Create Grid Mean with operation 'Vector'."""
         return GridMean(
             data_type="VECTOR", grid=grid, width=width, iterations=iterations
@@ -1361,7 +1377,7 @@ class GridMedian[T](BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     width : InputInteger
         Width
@@ -1370,7 +1386,7 @@ class GridMedian[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.width : IntegerSocket
         Width
@@ -1379,7 +1395,7 @@ class GridMedian[T](BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -1407,7 +1423,7 @@ class GridMedian[T](BaseNode):
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
         *,
@@ -1421,10 +1437,10 @@ class GridMedian[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
-    ) -> "GridMedian[FloatSocket]":
+    ) -> "GridMedian[FloatSocketGrid]":
         """Create Grid Median with operation 'Float'."""
         return GridMedian(
             data_type="FLOAT", grid=grid, width=width, iterations=iterations
@@ -1433,10 +1449,10 @@ class GridMedian[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
+        grid: InputIntegerGrid = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
-    ) -> "GridMedian[IntegerSocket]":
+    ) -> "GridMedian[IntegerSocketGrid]":
         """Create Grid Median with operation 'Integer'."""
         return GridMedian(
             data_type="INT", grid=grid, width=width, iterations=iterations
@@ -1445,10 +1461,10 @@ class GridMedian[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
+        grid: InputVectorGrid = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
-    ) -> "GridMedian[VectorSocket]":
+    ) -> "GridMedian[VectorSocketGrid]":
         """Create Grid Median with operation 'Vector'."""
         return GridMedian(
             data_type="VECTOR", grid=grid, width=width, iterations=iterations
@@ -1469,7 +1485,7 @@ class GridToMesh(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     threshold : InputFloat
         Threshold
@@ -1478,7 +1494,7 @@ class GridToMesh(BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.threshold : FloatSocket
         Threshold
@@ -1495,7 +1511,7 @@ class GridToMesh(BaseNode):
     node: bpy.types.GeometryNodeGridToMesh
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
         threshold: FloatSocket
         """Threshold"""
@@ -1515,7 +1531,7 @@ class GridToMesh(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         threshold: InputFloat = 0.1,
         adaptivity: InputFloat = 0.0,
     ):
@@ -1525,18 +1541,18 @@ class GridToMesh(BaseNode):
         self._establish_links(**key_args)
 
 
-class GridToPoints[T](BaseNode):
+class GridToPoints[T, TGrid](BaseNode):
     """
     Generate a point cloud from a volume grid's active voxels
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
 
     Outputs
@@ -1560,11 +1576,11 @@ class GridToPoints[T](BaseNode):
     _bl_idname = "GeometryNodeGridToPoints"
     node: bpy.types.GeometryNodeGridToPoints
 
-    class _Inputs[S](SocketAccessor):
-        grid: S
+    class _Inputs[S, SGrid](SocketAccessor):
+        grid: SGrid
         """Grid"""
 
-    class _Outputs[S](SocketAccessor):
+    class _Outputs[S, SGrid](SocketAccessor):
         points: GeometrySocket
         """Points"""
         value: S
@@ -1583,13 +1599,13 @@ class GridToPoints[T](BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs[T]: ...
+        def i(self) -> _Inputs[T, TGrid]: ...
         @property
-        def o(self) -> _Outputs[T]: ...
+        def o(self) -> _Outputs[T, TGrid]: ...
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -1599,22 +1615,30 @@ class GridToPoints[T](BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, grid: InputFloat = 0.0) -> "GridToPoints[FloatSocket]":
+    def float(
+        cls, grid: InputFloatGrid = None
+    ) -> "GridToPoints[FloatSocket, FloatSocketGrid]":
         """Create Grid to Points with operation 'Float'."""
         return GridToPoints(data_type="FLOAT", grid=grid)
 
     @classmethod
-    def integer(cls, grid: InputInteger = 0) -> "GridToPoints[IntegerSocket]":
+    def integer(
+        cls, grid: InputIntegerGrid = None
+    ) -> "GridToPoints[IntegerSocket, IntegerSocketGrid]":
         """Create Grid to Points with operation 'Integer'."""
         return GridToPoints(data_type="INT", grid=grid)
 
     @classmethod
-    def boolean(cls, grid: InputBoolean = False) -> "GridToPoints[BooleanSocket]":
+    def boolean(
+        cls, grid: InputBooleanGrid = None
+    ) -> "GridToPoints[BooleanSocket, BooleanSocketGrid]":
         """Create Grid to Points with operation 'Boolean'."""
         return GridToPoints(data_type="BOOLEAN", grid=grid)
 
     @classmethod
-    def vector(cls, grid: InputVector = None) -> "GridToPoints[VectorSocket]":
+    def vector(
+        cls, grid: InputVectorGrid = None
+    ) -> "GridToPoints[VectorSocket, VectorSocketGrid]":
         """Create Grid to Points with operation 'Vector'."""
         return GridToPoints(data_type="VECTOR", grid=grid)
 
@@ -1655,7 +1679,7 @@ class MeshToDensityGrid(BaseNode):
 
     Outputs
     -------
-    o.density_grid : FloatSocket
+    o.density_grid : FloatSocketGrid
         Density Grid
     """
 
@@ -1725,7 +1749,7 @@ class MeshToSDFGrid(BaseNode):
 
     Outputs
     -------
-    o.sdf_grid : FloatSocket
+    o.sdf_grid : FloatSocketGrid
         SDF Grid
     """
 
@@ -1877,7 +1901,7 @@ class PointsToSDFGrid(BaseNode):
 
     Outputs
     -------
-    o.sdf_grid : FloatSocket
+    o.sdf_grid : FloatSocketGrid
         SDF Grid
     """
 
@@ -2005,13 +2029,13 @@ class PointsToVolume(BaseNode):
         self._establish_links(**key_args)
 
 
-class PruneGrid[T](BaseNode):
+class PruneGrid[T, TGrid](BaseNode):
     """
     Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     mode : InputMenu | Literal['Inactive', 'Threshold', 'SDF']
         Mode
@@ -2020,7 +2044,7 @@ class PruneGrid[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.mode : MenuSocket
         Mode
@@ -2029,35 +2053,35 @@ class PruneGrid[T](BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
     _bl_idname = "GeometryNodeGridPrune"
     node: bpy.types.GeometryNodeGridPrune
 
-    class _Inputs[S](SocketAccessor):
-        grid: S
+    class _Inputs[S, SGrid](SocketAccessor):
+        grid: SGrid
         """Grid"""
         mode: MenuSocket
         """Mode"""
         threshold: S
         """Threshold"""
 
-    class _Outputs[S](SocketAccessor):
-        grid: S
+    class _Outputs[S, SGrid](SocketAccessor):
+        grid: SGrid
         """Grid"""
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs[T]: ...
+        def i(self) -> _Inputs[T, TGrid]: ...
         @property
-        def o(self) -> _Outputs[T]: ...
+        def o(self) -> _Outputs[T, TGrid]: ...
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
         threshold: InputAny = 0.01,
         *,
@@ -2071,39 +2095,39 @@ class PruneGrid[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
         threshold: InputFloat = 0.01,
-    ) -> "PruneGrid[FloatSocket]":
+    ) -> "PruneGrid[FloatSocket, FloatSocketGrid]":
         """Create Prune Grid with operation 'Float'."""
         return PruneGrid(data_type="FLOAT", grid=grid, mode=mode, threshold=threshold)
 
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
+        grid: InputIntegerGrid = None,
         mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
         threshold: InputInteger = 0,
-    ) -> "PruneGrid[IntegerSocket]":
+    ) -> "PruneGrid[IntegerSocket, IntegerSocketGrid]":
         """Create Prune Grid with operation 'Integer'."""
         return PruneGrid(data_type="INT", grid=grid, mode=mode, threshold=threshold)
 
     @classmethod
     def boolean(
         cls,
-        grid: InputBoolean = False,
+        grid: InputBooleanGrid = None,
         mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
-    ) -> "PruneGrid[BooleanSocket]":
+    ) -> "PruneGrid[BooleanSocket, BooleanSocketGrid]":
         """Create Prune Grid with operation 'Boolean'."""
         return PruneGrid(data_type="BOOLEAN", grid=grid, mode=mode)
 
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
+        grid: InputVectorGrid = None,
         mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
         threshold: InputVector = None,
-    ) -> "PruneGrid[VectorSocket]":
+    ) -> "PruneGrid[VectorSocket, VectorSocketGrid]":
         """Create Prune Grid with operation 'Vector'."""
         return PruneGrid(data_type="VECTOR", grid=grid, mode=mode, threshold=threshold)
 
@@ -2122,21 +2146,21 @@ class SDFGridFillet(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     iterations : InputInteger
         Iterations
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.iterations : IntegerSocket
         Iterations
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -2144,7 +2168,7 @@ class SDFGridFillet(BaseNode):
     node: bpy.types.GeometryNodeSDFGridFillet
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
         iterations: IntegerSocket
         """Iterations"""
@@ -2162,7 +2186,7 @@ class SDFGridFillet(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         iterations: InputInteger = 1,
     ):
         super().__init__()
@@ -2177,21 +2201,21 @@ class SDFGridLaplacian(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     iterations : InputInteger
         Iterations
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.iterations : IntegerSocket
         Iterations
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -2199,7 +2223,7 @@ class SDFGridLaplacian(BaseNode):
     node: bpy.types.GeometryNodeSDFGridLaplacian
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
         iterations: IntegerSocket
         """Iterations"""
@@ -2217,7 +2241,7 @@ class SDFGridLaplacian(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         iterations: InputInteger = 1,
     ):
         super().__init__()
@@ -2232,7 +2256,7 @@ class SDFGridMean(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     width : InputInteger
         Width
@@ -2241,7 +2265,7 @@ class SDFGridMean(BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.width : IntegerSocket
         Width
@@ -2250,7 +2274,7 @@ class SDFGridMean(BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -2258,7 +2282,7 @@ class SDFGridMean(BaseNode):
     node: bpy.types.GeometryNodeSDFGridMean
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
         width: IntegerSocket
         """Width"""
@@ -2278,7 +2302,7 @@ class SDFGridMean(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
     ):
@@ -2294,21 +2318,21 @@ class SDFGridMeanCurvature(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     iterations : InputInteger
         Iterations
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.iterations : IntegerSocket
         Iterations
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -2316,7 +2340,7 @@ class SDFGridMeanCurvature(BaseNode):
     node: bpy.types.GeometryNodeSDFGridMeanCurvature
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
         iterations: IntegerSocket
         """Iterations"""
@@ -2334,7 +2358,7 @@ class SDFGridMeanCurvature(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         iterations: InputInteger = 1,
     ):
         super().__init__()
@@ -2349,7 +2373,7 @@ class SDFGridMedian(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     width : InputInteger
         Width
@@ -2358,7 +2382,7 @@ class SDFGridMedian(BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.width : IntegerSocket
         Width
@@ -2367,7 +2391,7 @@ class SDFGridMedian(BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -2375,7 +2399,7 @@ class SDFGridMedian(BaseNode):
     node: bpy.types.GeometryNodeSDFGridMedian
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
         width: IntegerSocket
         """Width"""
@@ -2395,7 +2419,7 @@ class SDFGridMedian(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         width: InputInteger = 1,
         iterations: InputInteger = 1,
     ):
@@ -2411,21 +2435,21 @@ class SDFGridOffset(BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     distance : InputFloat
         Distance
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.distance : FloatSocket
         Distance
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -2433,7 +2457,7 @@ class SDFGridOffset(BaseNode):
     node: bpy.types.GeometryNodeSDFGridOffset
 
     class _Inputs(SocketAccessor):
-        grid: FloatSocket
+        grid: FloatSocketGrid
         """Grid"""
         distance: FloatSocket
         """Distance"""
@@ -2451,7 +2475,7 @@ class SDFGridOffset(BaseNode):
 
     def __init__(
         self,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         distance: InputFloat = 0.1,
     ):
         super().__init__()
@@ -2460,13 +2484,13 @@ class SDFGridOffset(BaseNode):
         self._establish_links(**key_args)
 
 
-class SampleGrid[T](BaseNode):
+class SampleGrid[T, TGrid](BaseNode):
     """
     Retrieve values from the specified volume grid
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     position : InputVector
         Position
@@ -2475,7 +2499,7 @@ class SampleGrid[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.position : VectorSocket
         Position
@@ -2491,28 +2515,28 @@ class SampleGrid[T](BaseNode):
     _bl_idname = "GeometryNodeSampleGrid"
     node: bpy.types.GeometryNodeSampleGrid
 
-    class _Inputs[S](SocketAccessor):
-        grid: S
+    class _Inputs[S, SGrid](SocketAccessor):
+        grid: SGrid
         """Grid"""
         position: VectorSocket
         """Position"""
         interpolation: MenuSocket
         """Interpolation"""
 
-    class _Outputs[S](SocketAccessor):
+    class _Outputs[S, SGrid](SocketAccessor):
         value: S
         """Value"""
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs[T]: ...
+        def i(self) -> _Inputs[T, TGrid]: ...
         @property
-        def o(self) -> _Outputs[T]: ...
+        def o(self) -> _Outputs[T, TGrid]: ...
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
@@ -2527,11 +2551,11 @@ class SampleGrid[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
-    ) -> "SampleGrid[FloatSocket]":
+    ) -> "SampleGrid[FloatSocket, FloatSocketGrid]":
         """Create Sample Grid with operation 'Float'."""
         return SampleGrid(
             data_type="FLOAT", grid=grid, position=position, interpolation=interpolation
@@ -2540,11 +2564,11 @@ class SampleGrid[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
+        grid: InputIntegerGrid = None,
         position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
-    ) -> "SampleGrid[IntegerSocket]":
+    ) -> "SampleGrid[IntegerSocket, IntegerSocketGrid]":
         """Create Sample Grid with operation 'Integer'."""
         return SampleGrid(
             data_type="INT", grid=grid, position=position, interpolation=interpolation
@@ -2553,11 +2577,11 @@ class SampleGrid[T](BaseNode):
     @classmethod
     def boolean(
         cls,
-        grid: InputBoolean = False,
+        grid: InputBooleanGrid = None,
         position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
-    ) -> "SampleGrid[BooleanSocket]":
+    ) -> "SampleGrid[BooleanSocket, BooleanSocketGrid]":
         """Create Sample Grid with operation 'Boolean'."""
         return SampleGrid(
             data_type="BOOLEAN",
@@ -2569,11 +2593,11 @@ class SampleGrid[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
+        grid: InputVectorGrid = None,
         position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
-    ) -> "SampleGrid[VectorSocket]":
+    ) -> "SampleGrid[VectorSocket, VectorSocketGrid]":
         """Create Sample Grid with operation 'Vector'."""
         return SampleGrid(
             data_type="VECTOR",
@@ -2591,13 +2615,13 @@ class SampleGrid[T](BaseNode):
         self.node.data_type = value
 
 
-class SampleGridIndex[T](BaseNode):
+class SampleGridIndex[T, TGrid](BaseNode):
     """
     Retrieve volume grid values at specific voxels
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     x : InputInteger
         X
@@ -2608,7 +2632,7 @@ class SampleGridIndex[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.x : IntegerSocket
         X
@@ -2626,8 +2650,8 @@ class SampleGridIndex[T](BaseNode):
     _bl_idname = "GeometryNodeSampleGridIndex"
     node: bpy.types.GeometryNodeSampleGridIndex
 
-    class _Inputs[S](SocketAccessor):
-        grid: S
+    class _Inputs[S, SGrid](SocketAccessor):
+        grid: SGrid
         """Grid"""
         x: IntegerSocket
         """X"""
@@ -2636,20 +2660,20 @@ class SampleGridIndex[T](BaseNode):
         z: IntegerSocket
         """Z"""
 
-    class _Outputs[S](SocketAccessor):
+    class _Outputs[S, SGrid](SocketAccessor):
         value: S
         """Value"""
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs[T]: ...
+        def i(self) -> _Inputs[T, TGrid]: ...
         @property
-        def o(self) -> _Outputs[T]: ...
+        def o(self) -> _Outputs[T, TGrid]: ...
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         x: InputInteger = 0,
         y: InputInteger = 0,
         z: InputInteger = 0,
@@ -2664,44 +2688,44 @@ class SampleGridIndex[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         x: InputInteger = 0,
         y: InputInteger = 0,
         z: InputInteger = 0,
-    ) -> "SampleGridIndex[FloatSocket]":
+    ) -> "SampleGridIndex[FloatSocket, FloatSocketGrid]":
         """Create Sample Grid Index with operation 'Float'."""
         return SampleGridIndex(data_type="FLOAT", grid=grid, x=x, y=y, z=z)
 
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
+        grid: InputIntegerGrid = None,
         x: InputInteger = 0,
         y: InputInteger = 0,
         z: InputInteger = 0,
-    ) -> "SampleGridIndex[IntegerSocket]":
+    ) -> "SampleGridIndex[IntegerSocket, IntegerSocketGrid]":
         """Create Sample Grid Index with operation 'Integer'."""
         return SampleGridIndex(data_type="INT", grid=grid, x=x, y=y, z=z)
 
     @classmethod
     def boolean(
         cls,
-        grid: InputBoolean = False,
+        grid: InputBooleanGrid = None,
         x: InputInteger = 0,
         y: InputInteger = 0,
         z: InputInteger = 0,
-    ) -> "SampleGridIndex[BooleanSocket]":
+    ) -> "SampleGridIndex[BooleanSocket, BooleanSocketGrid]":
         """Create Sample Grid Index with operation 'Boolean'."""
         return SampleGridIndex(data_type="BOOLEAN", grid=grid, x=x, y=y, z=z)
 
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
+        grid: InputVectorGrid = None,
         x: InputInteger = 0,
         y: InputInteger = 0,
         z: InputInteger = 0,
-    ) -> "SampleGridIndex[VectorSocket]":
+    ) -> "SampleGridIndex[VectorSocket, VectorSocketGrid]":
         """Create Sample Grid Index with operation 'Vector'."""
         return SampleGridIndex(data_type="VECTOR", grid=grid, x=x, y=y, z=z)
 
@@ -2714,13 +2738,13 @@ class SampleGridIndex[T](BaseNode):
         self.node.data_type = value
 
 
-class SetGridBackground[T](BaseNode):
+class SetGridBackground[T, TGrid](BaseNode):
     """
     Set the background value used for inactive voxels and tiles
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     background : InputFloat
         Background
@@ -2729,7 +2753,7 @@ class SetGridBackground[T](BaseNode):
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.background : FloatSocket
         Background
@@ -2738,35 +2762,35 @@ class SetGridBackground[T](BaseNode):
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
     _bl_idname = "GeometryNodeSetGridBackground"
     node: bpy.types.GeometryNodeSetGridBackground
 
-    class _Inputs[S](SocketAccessor):
-        grid: S
+    class _Inputs[S, SGrid](SocketAccessor):
+        grid: SGrid
         """Grid"""
         background: S
         """Background"""
         update_inactive: BooleanSocket
         """Update Inactive"""
 
-    class _Outputs[S](SocketAccessor):
-        grid: S
+    class _Outputs[S, SGrid](SocketAccessor):
+        grid: SGrid
         """Grid"""
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs[T]: ...
+        def i(self) -> _Inputs[T, TGrid]: ...
         @property
-        def o(self) -> _Outputs[T]: ...
+        def o(self) -> _Outputs[T, TGrid]: ...
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         background: InputAny = 0.0,
         update_inactive: InputBoolean = False,
         *,
@@ -2784,10 +2808,10 @@ class SetGridBackground[T](BaseNode):
     @classmethod
     def float(
         cls,
-        grid: InputFloat = 0.0,
+        grid: InputFloatGrid = None,
         background: InputFloat = 0.0,
         update_inactive: InputBoolean = False,
-    ) -> "SetGridBackground[FloatSocket]":
+    ) -> "SetGridBackground[FloatSocket, FloatSocketGrid]":
         """Create Set Grid Background with operation 'Float'."""
         return SetGridBackground(
             data_type="FLOAT",
@@ -2799,10 +2823,10 @@ class SetGridBackground[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        grid: InputInteger = 0,
+        grid: InputIntegerGrid = None,
         background: InputInteger = 0,
         update_inactive: InputBoolean = False,
-    ) -> "SetGridBackground[IntegerSocket]":
+    ) -> "SetGridBackground[IntegerSocket, IntegerSocketGrid]":
         """Create Set Grid Background with operation 'Integer'."""
         return SetGridBackground(
             data_type="INT",
@@ -2814,10 +2838,10 @@ class SetGridBackground[T](BaseNode):
     @classmethod
     def boolean(
         cls,
-        grid: InputBoolean = False,
+        grid: InputBooleanGrid = None,
         background: InputBoolean = False,
         update_inactive: InputBoolean = False,
-    ) -> "SetGridBackground[BooleanSocket]":
+    ) -> "SetGridBackground[BooleanSocket, BooleanSocketGrid]":
         """Create Set Grid Background with operation 'Boolean'."""
         return SetGridBackground(
             data_type="BOOLEAN",
@@ -2829,10 +2853,10 @@ class SetGridBackground[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        grid: InputVector = None,
+        grid: InputVectorGrid = None,
         background: InputVector = None,
         update_inactive: InputBoolean = False,
-    ) -> "SetGridBackground[VectorSocket]":
+    ) -> "SetGridBackground[VectorSocket, VectorSocketGrid]":
         """Create Set Grid Background with operation 'Vector'."""
         return SetGridBackground(
             data_type="VECTOR",
@@ -2856,14 +2880,14 @@ class SetGridTransform[T](BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
     transform : InputMatrix
         Transform
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
     i.transform : MatrixSocket
         Transform
@@ -2872,7 +2896,7 @@ class SetGridTransform[T](BaseNode):
     -------
     o.is_valid : BooleanSocket
         Is Valid
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -2900,7 +2924,7 @@ class SetGridTransform[T](BaseNode):
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         transform: InputMatrix = None,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
@@ -2912,29 +2936,29 @@ class SetGridTransform[T](BaseNode):
 
     @classmethod
     def float(
-        cls, grid: InputFloat = 0.0, transform: InputMatrix = None
-    ) -> "SetGridTransform[FloatSocket]":
+        cls, grid: InputFloatGrid = None, transform: InputMatrix = None
+    ) -> "SetGridTransform[FloatSocketGrid]":
         """Create Set Grid Transform with operation 'Float'."""
         return SetGridTransform(data_type="FLOAT", grid=grid, transform=transform)
 
     @classmethod
     def integer(
-        cls, grid: InputInteger = 0, transform: InputMatrix = None
-    ) -> "SetGridTransform[IntegerSocket]":
+        cls, grid: InputIntegerGrid = None, transform: InputMatrix = None
+    ) -> "SetGridTransform[IntegerSocketGrid]":
         """Create Set Grid Transform with operation 'Integer'."""
         return SetGridTransform(data_type="INT", grid=grid, transform=transform)
 
     @classmethod
     def boolean(
-        cls, grid: InputBoolean = False, transform: InputMatrix = None
-    ) -> "SetGridTransform[BooleanSocket]":
+        cls, grid: InputBooleanGrid = None, transform: InputMatrix = None
+    ) -> "SetGridTransform[BooleanSocketGrid]":
         """Create Set Grid Transform with operation 'Boolean'."""
         return SetGridTransform(data_type="BOOLEAN", grid=grid, transform=transform)
 
     @classmethod
     def vector(
-        cls, grid: InputVector = None, transform: InputMatrix = None
-    ) -> "SetGridTransform[VectorSocket]":
+        cls, grid: InputVectorGrid = None, transform: InputMatrix = None
+    ) -> "SetGridTransform[VectorSocketGrid]":
         """Create Set Grid Transform with operation 'Vector'."""
         return SetGridTransform(data_type="VECTOR", grid=grid, transform=transform)
 
@@ -2957,7 +2981,7 @@ class StoreNamedGrid[T](BaseNode):
         Volume
     name : InputString
         Name
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
 
     Inputs
@@ -2966,7 +2990,7 @@ class StoreNamedGrid[T](BaseNode):
         Volume
     i.name : StringSocket
         Name
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
 
     Outputs
@@ -3001,7 +3025,7 @@ class StoreNamedGrid[T](BaseNode):
         self,
         volume: InputGeometry = None,
         name: InputString = "",
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         *,
         data_type: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"] = "FLOAT",
     ):
@@ -3015,8 +3039,8 @@ class StoreNamedGrid[T](BaseNode):
         cls,
         volume: InputGeometry = None,
         name: InputString = "",
-        grid: InputBoolean = False,
-    ) -> "StoreNamedGrid[BooleanSocket]":
+        grid: InputBooleanGrid = None,
+    ) -> "StoreNamedGrid[BooleanSocketGrid]":
         """Create Store Named Grid with operation 'Boolean'. Boolean"""
         return StoreNamedGrid(data_type="BOOLEAN", volume=volume, name=name, grid=grid)
 
@@ -3025,8 +3049,8 @@ class StoreNamedGrid[T](BaseNode):
         cls,
         volume: InputGeometry = None,
         name: InputString = "",
-        grid: InputFloat = 0.0,
-    ) -> "StoreNamedGrid[FloatSocket]":
+        grid: InputFloatGrid = None,
+    ) -> "StoreNamedGrid[FloatSocketGrid]":
         """Create Store Named Grid with operation 'Float'. Single precision float"""
         return StoreNamedGrid(data_type="FLOAT", volume=volume, name=name, grid=grid)
 
@@ -3035,8 +3059,8 @@ class StoreNamedGrid[T](BaseNode):
         cls,
         volume: InputGeometry = None,
         name: InputString = "",
-        grid: InputInteger = 0,
-    ) -> "StoreNamedGrid[IntegerSocket]":
+        grid: InputIntegerGrid = None,
+    ) -> "StoreNamedGrid[IntegerSocketGrid]":
         """Create Store Named Grid with operation 'Integer'. 32-bit integer"""
         return StoreNamedGrid(data_type="INT", volume=volume, name=name, grid=grid)
 
@@ -3045,8 +3069,8 @@ class StoreNamedGrid[T](BaseNode):
         cls,
         volume: InputGeometry = None,
         name: InputString = "",
-        grid: InputVector = None,
-    ) -> "StoreNamedGrid[VectorSocket]":
+        grid: InputVectorGrid = None,
+    ) -> "StoreNamedGrid[VectorSocketGrid]":
         """Create Store Named Grid with operation 'Vector'. 3D float vector"""
         return StoreNamedGrid(
             data_type="VECTOR_FLOAT", volume=volume, name=name, grid=grid
@@ -3255,17 +3279,17 @@ class VoxelizeGrid[T](BaseNode):
 
     Parameters
     ----------
-    grid : InputFloat
+    grid : InputFloatGrid
         Grid
 
     Inputs
     ------
-    i.grid : FloatSocket
+    i.grid : FloatSocketGrid
         Grid
 
     Outputs
     -------
-    o.grid : FloatSocket
+    o.grid : FloatSocketGrid
         Grid
     """
 
@@ -3289,7 +3313,7 @@ class VoxelizeGrid[T](BaseNode):
 
     def __init__(
         self,
-        grid: InputAny = 0.0,
+        grid: InputAny = None,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -3299,22 +3323,26 @@ class VoxelizeGrid[T](BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, grid: InputFloat = 0.0) -> "VoxelizeGrid[FloatSocket]":
+    def float(cls, grid: InputFloatGrid = None) -> "VoxelizeGrid[FloatSocketGrid]":
         """Create Voxelize Grid with operation 'Float'."""
         return VoxelizeGrid(data_type="FLOAT", grid=grid)
 
     @classmethod
-    def integer(cls, grid: InputInteger = 0) -> "VoxelizeGrid[IntegerSocket]":
+    def integer(
+        cls, grid: InputIntegerGrid = None
+    ) -> "VoxelizeGrid[IntegerSocketGrid]":
         """Create Voxelize Grid with operation 'Integer'."""
         return VoxelizeGrid(data_type="INT", grid=grid)
 
     @classmethod
-    def boolean(cls, grid: InputBoolean = False) -> "VoxelizeGrid[BooleanSocket]":
+    def boolean(
+        cls, grid: InputBooleanGrid = None
+    ) -> "VoxelizeGrid[BooleanSocketGrid]":
         """Create Voxelize Grid with operation 'Boolean'."""
         return VoxelizeGrid(data_type="BOOLEAN", grid=grid)
 
     @classmethod
-    def vector(cls, grid: InputVector = None) -> "VoxelizeGrid[VectorSocket]":
+    def vector(cls, grid: InputVectorGrid = None) -> "VoxelizeGrid[VectorSocketGrid]":
         """Create Voxelize Grid with operation 'Vector'."""
         return VoxelizeGrid(data_type="VECTOR", grid=grid)
 
