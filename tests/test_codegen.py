@@ -1840,6 +1840,48 @@ def test_closure_zone_round_trip():
     assert "item_0" not in code  # no raw Item_N socket kwargs
 
 
+def test_font_sound_items_round_trip():
+    """Font/sound items round-trip through every typed-factory emitter:
+    switches, bundles, evaluate-closure, closure zone and repeat zone."""
+    with TreeBuilder("FontSoundRT") as tree:
+        font = tree.inputs.font("Font")
+        sound = tree.inputs.sound("Sound")
+        choice = tree.inputs.integer("Choice")
+
+        idx = g.IndexSwitch.font(choice, (font, font))
+        menu = g.MenuSwitch.sound(items={"A": sound, "B": sound})
+
+        bundle = g.CombineBundle()
+        bundle.items.font("f", idx.o.output)
+        bundle.items.sound("s", menu.o.output)
+        parts = g.SeparateBundle(bundle.o.bundle)
+        parts.items.font("f") >> tree.outputs.font("Font Out")
+        parts.items.sound("s") >> tree.outputs.sound("Sound Out")
+
+        cz = g.ClosureZone()
+        cz_font = cz.inputs.font("Font")
+        cz_font >> cz.outputs.font("Font")
+        ev = g.EvaluateClosure(cz.closure)
+        ev.inputs.font("Font", font)
+        ev.outputs.font("Font") >> tree.outputs.font("Closure Out")
+
+        zone = g.RepeatZone(3)
+        item = zone.items.sound("S", sound)
+        item.current >> item.next
+        item.result >> tree.outputs.sound("Repeat Out")
+    code = _assert_roundtrip(tree)
+    assert "g.IndexSwitch.font(" in code
+    assert "g.MenuSwitch.sound(" in code
+    assert 'combine_bundle.items.font("f"' in code
+    assert 'combine_bundle.items.sound("s"' in code
+    assert 'separate_bundle.items.font("f")' in code
+    assert 'separate_bundle.items.sound("s")' in code
+    assert '.inputs.font("Font")' in code
+    assert 'evaluate_closure.inputs.font("Font", font)' in code
+    assert '.items.sound("S", sound)' in code
+    assert "input_item(" not in code and "item_0" not in code
+
+
 # ---------------------------------------------------------------------------
 # Recursive node groups
 # ---------------------------------------------------------------------------
@@ -2100,6 +2142,22 @@ def test_interface_props_round_trip():
     assert 'default_attribute="my_attr"' in code
     assert 'default_input="INDEX"' in code
     assert "hide_value=True" in code
+
+
+def test_interface_font_sound_round_trip():
+    with TreeBuilder("IfaceFontSound") as tree:
+        tree.inputs.font("Font")
+        tree.inputs.sound("Sound")
+        tree.outputs.font("Font Out")
+        tree.outputs.sound("Sound Out")
+    code = _assert_roundtrip(tree)
+    ns: dict = {}
+    exec(code, ns)
+    assert _iface_structure(ns["tree"].tree) == _iface_structure(tree.tree), code
+    assert 'tree.inputs.font("Font")' in code
+    assert 'tree.inputs.sound("Sound")' in code
+    assert 'tree.outputs.font("Font Out")' in code
+    assert 'tree.outputs.sound("Sound Out")' in code
 
 
 def test_interface_panels_round_trip():

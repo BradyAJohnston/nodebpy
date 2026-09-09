@@ -8,12 +8,17 @@ title: Changelog
 
 - Exposed the `TrimString` node via `StringSocket.trim()`
 
+## v520.15.0 - 2026-08-28
+
+### Enhancements
+- **Font and Sound sockets everywhere Blender allows them** — `tree.inputs.font()` / `.sound()` (and the `outputs` equivalents) create interface sockets; typed `font` / `sound` factories were added to `IndexSwitch`, `MenuSwitch`, the repeat zone's `items`, closure zone `inputs` / `outputs`, `EvaluateClosure` `inputs` / `outputs` and Combine / Separate Bundle `items`. `to_python` emits the new spellings, and `FONT` joined the socket-compatibility table so font links are accepted by the builder. Simulation, For-Each, Bake and Capture Attribute items are unchanged: Blender 5.2 rejects these datablock types there.
+
 ## v520.15.0 - 2026-08-27
 
 ### Enhancements
 - **Menu Switch item descriptions** — enum items can now carry the tooltip Blender shows in the menu. A dict item value may be a `(value, description)` pair (`g.MenuSwitch.geometry(menu, {"Object": (obj, "Use the source object")})`), and the new `switch.item(name, value, description=...)` helper declares a single item and returns a `MenuItem` handle exposing the item's `input` socket, its `is_selected` boolean output and its (settable) `description`. Declaring the first item via `item()` defaults the menu selection to it, matching the constructor, and a selection named before any items exist (`g.MenuSwitch.geometry("Mesh")`) is deferred until the tree is built. `to_python` export emits the pair form for described items, so descriptions now round-trip instead of being silently dropped.
 
-
+## v520.14.0 - 2026-08-23
 
 ### Enhancements
 - **Datablock comparisons** — the `Compare` node now covers the datablock types Blender 5.2 can compare in geometry trees: `g.Compare.object`, `.image`, `.collection`, `.material`, `.font` and `.sound` factories each offer `equal` / `not_equal` (the only operations Blender permits for datablocks) and return a typed `Compare[...]` whose `i.a` / `i.b` carry the matching socket class. `to_python` export emits the factory spellings automatically.

@@ -436,6 +436,8 @@ _INTERFACE_TYPE_METHOD: dict[str, str] = {
     "NodeSocketCollection": "collection",
     "NodeSocketImage": "image",
     "NodeSocketMaterial": "material",
+    "NodeSocketFont": "font",
+    "NodeSocketSound": "sound",
     "NodeSocketBundle": "bundle",
     "NodeSocketClosure": "closure",
     "NodeSocketShader": "shader",
@@ -448,6 +450,8 @@ _NO_DEFAULT_VALUE_TYPES = frozenset(
         "NodeSocketCollection",
         "NodeSocketImage",
         "NodeSocketMaterial",
+        "NodeSocketFont",
+        "NodeSocketSound",
         "NodeSocketBundle",
         "NodeSocketClosure",
         "NodeSocketShader",
@@ -3875,6 +3879,8 @@ _SWITCH_FACTORY_NAMES = {
     "BUNDLE": "bundle",
     "CLOSURE": "closure",
     "SHADER": "shader",
+    "FONT": "font",
+    "SOUND": "sound",
 }
 
 

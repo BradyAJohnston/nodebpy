@@ -22,6 +22,7 @@ from ...builder import (
     CollectionSocket,
     ColorSocket,
     FloatSocket,
+    FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
@@ -32,6 +33,7 @@ from ...builder import (
     MenuSocket,
     ObjectSocket,
     RotationSocket,
+    SoundSocket,
     StringSocket,
     VectorSocket,
 )
@@ -48,6 +50,7 @@ from ...types import (
     InputCollection,
     InputColor,
     InputFloat,
+    InputFont,
     InputGeometry,
     InputImage,
     InputInteger,
@@ -57,6 +60,7 @@ from ...types import (
     InputMenu,
     InputObject,
     InputRotation,
+    InputSound,
     InputString,
     InputVector,
     _AttributeDomains,
@@ -331,6 +335,16 @@ class _RepeatZoneItems(_StateZoneItems):
     ) -> "ZoneItem[ClosureSocket]":
         return cast("ZoneItem[ClosureSocket]", self._declare(name, initial, "CLOSURE"))
 
+    def font(
+        self, name: str = "Font", initial: InputFont = None
+    ) -> "ZoneItem[FontSocket]":
+        return cast("ZoneItem[FontSocket]", self._declare(name, initial, "FONT"))
+
+    def sound(
+        self, name: str = "Sound", initial: InputSound = None
+    ) -> "ZoneItem[SoundSocket]":
+        return cast("ZoneItem[SoundSocket]", self._declare(name, initial, "SOUND"))
+
 
 class BaseSimulationZone(BaseZone):
     _items_collection = "state_items"
@@ -419,6 +433,8 @@ class BaseRepeatZone(BaseZone):
         "MATERIAL",
         "BUNDLE",
         "CLOSURE",
+        "FONT",
+        "SOUND",
     )
 
     _type_map: ClassVar[dict[str, str]] = {"VALUE": "FLOAT"}

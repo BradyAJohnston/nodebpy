@@ -106,17 +106,25 @@ def test_geometry_menu_socket():
 
 
 def test_geometry_datablock_sockets():
-    """Object, Collection, Material, and Image sockets are created correctly."""
+    """Object, Collection, Material, Image, Font and Sound sockets are created correctly."""
     with g.tree(arrange=None) as tree:
         obj = tree.inputs.object("Object")
         col = tree.inputs.collection("Collection")
         mat = tree.inputs.material("Material")
         img = tree.inputs.image("Image")
+        font = tree.inputs.font("Font")
+        sound = tree.inputs.sound("Sound")
+        font_out = tree.outputs.font("Font")
+        sound_out = tree.outputs.sound("Sound")
 
     assert obj._interface_socket.socket_type == "NodeSocketObject"
     assert col._interface_socket.socket_type == "NodeSocketCollection"
     assert mat._interface_socket.socket_type == "NodeSocketMaterial"
     assert img._interface_socket.socket_type == "NodeSocketImage"
+    assert font._interface_socket.socket_type == "NodeSocketFont"
+    assert sound._interface_socket.socket_type == "NodeSocketSound"
+    assert font_out._interface_socket.socket_type == "NodeSocketFont"
+    assert sound_out._interface_socket.socket_type == "NodeSocketSound"
 
 
 def test_geometry_bundle_and_closure_sockets():

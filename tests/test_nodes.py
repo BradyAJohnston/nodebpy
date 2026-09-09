@@ -16,6 +16,7 @@ from nodebpy.builder import (
     FloatSocket,
     FloatSocketGrid,
     FloatSocketList,
+    FontSocket,
     GeometrySocket,
     IntegerSocket,
     IntegerSocketGrid,
@@ -24,6 +25,7 @@ from nodebpy.builder import (
     MatrixSocketList,
     MenuSocketList,
     RotationSocketList,
+    SoundSocket,
     StringSocket,
     StringSocketList,
     VectorSocket,
@@ -846,8 +848,14 @@ def test_state_zone_typed_items():
             (zone.items.rotation(), "ROTATION"),
             (zone.items.matrix(), "MATRIX"),
             (zone.items.bundle(), "BUNDLE"),
+            (zone.items.font(), "FONT"),
+            (zone.items.sound(), "SOUND"),
         ]:
             assert handle.socket_type == expected
+
+        # string-typed declarations accept the new datablock types too
+        assert zone.item("F", type="FONT").socket_type == "FONT"
+        assert zone.item("S", type="SOUND").socket_type == "SOUND"
 
         # datablock initial values become socket defaults, not links
         material = bpy.data.materials.new("TestZoneMaterial")
@@ -944,6 +952,8 @@ def test_closure_zone_typed_items():
             (cz.inputs.material, "MATERIAL"),
             (cz.inputs.bundle, "BUNDLE"),
             (cz.inputs.closure, "CLOSURE"),
+            (cz.inputs.font, "FONT"),
+            (cz.inputs.sound, "SOUND"),
         ]:
             factory()
         assert [i.socket_type for i in cz.output.node.input_items] == [
@@ -962,6 +972,14 @@ def test_closure_zone_typed_items():
             "MATERIAL",
             "BUNDLE",
             "CLOSURE",
+            "FONT",
+            "SOUND",
+        ]
+        cz.outputs.font("FontOut")
+        cz.outputs.sound("SoundOut")
+        assert [i.socket_type for i in cz.output.node.output_items] == [
+            "FONT",
+            "SOUND",
         ]
 
 
@@ -1029,6 +1047,8 @@ def test_evaluate_closure_typed_items_all_types():
             (ev.inputs.material, "MATERIAL"),
             (ev.inputs.bundle, "BUNDLE"),
             (ev.inputs.closure, "CLOSURE"),
+            (ev.inputs.font, "FONT"),
+            (ev.inputs.sound, "SOUND"),
         ]
         for factory, _ in pairs:
             factory()
@@ -2480,3 +2500,56 @@ def test_grid_socket_methods():
         assert isinstance(fgrid.prune(), FloatSocketGrid)
         assert isinstance(fgrid.voxelize(), FloatSocketGrid)
         assert isinstance(fgrid.to_points(), g.GridToPoints)
+
+
+def test_font_sound_switch_factories():
+    """Switch, IndexSwitch and MenuSwitch offer typed font/sound factories."""
+    with TreeBuilder() as tree:
+        font_in = tree.inputs.font("Font")
+        sound_in = tree.inputs.sound("Sound")
+
+        sw = g.Switch.font(True, font_in, font_in)
+        assert sw.node.input_type == "FONT"
+        assert isinstance(sw.o.output, FontSocket)
+        sw2 = g.Switch.sound(False, sound_in, sound_in)
+        assert sw2.node.input_type == "SOUND"
+        assert isinstance(sw2.o.output, SoundSocket)
+
+        idx = g.IndexSwitch.font(0, (font_in, font_in))
+        assert idx.data_type == "FONT"
+        assert len(idx.node.index_switch_items) == 2
+        assert isinstance(idx.o.output, FontSocket)
+        idx2 = g.IndexSwitch.sound(items=(sound_in,))
+        assert idx2.data_type == "SOUND"
+        assert isinstance(idx2.o.output, SoundSocket)
+
+        menu = g.MenuSwitch.font(items={"A": font_in, "B": font_in})
+        assert menu.data_type == "FONT"
+        assert [i.name for i in menu.node.enum_items] == ["A", "B"]
+        assert isinstance(menu.o.output, FontSocket)
+        menu2 = g.MenuSwitch.sound(items={"A": sound_in})
+        assert menu2.data_type == "SOUND"
+        assert isinstance(menu2.o.output, SoundSocket)
+
+        # datablock sockets link to their own kind
+        idx.o.output >> tree.outputs.font("Out")
+        menu2.o.output >> tree.outputs.sound("SoundOut")
+
+
+def test_font_sound_bundle_items():
+    with TreeBuilder() as tree:
+        font_in = tree.inputs.font("Font")
+        cb = g.CombineBundle()
+        f = cb.items.font("f", font_in)
+        snd = cb.items.sound("s")
+        assert isinstance(f, FontSocket)
+        assert isinstance(snd, SoundSocket)
+        assert f.socket.links[0].from_socket == font_in.socket
+        assert [i.socket_type for i in cb.node.bundle_items] == ["FONT", "SOUND"]
+
+        sb = g.SeparateBundle(cb.o.bundle)
+        sf = sb.items.font("f")
+        ss = sb.items.sound("s")
+        assert isinstance(sf, FontSocket)
+        assert isinstance(ss, SoundSocket)
+        assert [i.socket_type for i in sb.node.bundle_items] == ["FONT", "SOUND"]
