@@ -2342,6 +2342,58 @@ _SOCKET_METHODS: dict[str, list[SocketMethodSpec]] = {
         _string_spec("uppercase", "String", case="Uppercase"),
         _string_spec("lowercase", "String", case="Lowercase"),
     ],
+    "FunctionNodeTrimString": [
+        _string_spec(
+            "trim",
+            "String",
+            ("Characters", "characters"),
+            ("Whitespace", "whitespace"),
+            ("Start", "start"),
+            ("End", "end"),
+        ),
+    ],
+    "FunctionNodeSplitString": [
+        _string_spec("split", "List", ("Separator", "separator")),
+    ],
+    "FunctionNodeStringToValue": [
+        SocketMethodSpec(
+            receiver="String",
+            method="to_float",
+            output="Value",
+            require=(("data_type", "FLOAT"),),
+            consumed_props=("data_type",),
+            receiver_socket_type="STRING",
+        ),
+        SocketMethodSpec(
+            receiver="String",
+            method="to_integer",
+            output="Value",
+            params=(("Base", "base"),),
+            require=(("data_type", "INT"),),
+            consumed_props=("data_type",),
+            receiver_socket_type="STRING",
+        ),
+    ],
+    "FunctionNodeValueToString": [
+        SocketMethodSpec(
+            receiver="Value",
+            method="to_string",
+            output="String",
+            params=(("Decimals", "decimals"),),
+            require=(("data_type", "FLOAT"),),
+            consumed_props=("data_type",),
+            receiver_socket_type="VALUE",
+        ),
+        SocketMethodSpec(
+            receiver="Value",
+            method="to_string",
+            output="String",
+            params=(("Base", "base"), ("Padding", "padding")),
+            require=(("data_type", "INT"),),
+            consumed_props=("data_type",),
+            receiver_socket_type="INT",
+        ),
+    ],
     "FunctionNodeInvertMatrix": [
         _matrix_spec("invert", "Matrix"),
     ],
