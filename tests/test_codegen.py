@@ -1192,7 +1192,7 @@ def test_factory_keeps_default_prop_constructor():
     with TreeBuilder("PlainMath") as tree:
         g.Math()  # ADD is the default operation
     code = to_python(tree)
-    assert "math = g.Math()" in code
+    assert "math_1 = g.Math()" in code
 
 
 # ---------------------------------------------------------------------------
@@ -2307,7 +2307,7 @@ def test_long_expressions_split_into_variables():
     code = _assert_roundtrip(tree)
     body = [line for line in code.splitlines() if line.strip()]
     assert all(len(line) <= 110 for line in body), code
-    assert any(line.strip().startswith("math = ") for line in body), code
+    assert any(line.strip().startswith("math_1 = ") for line in body), code
 
     # format=False so ruff doesn't re-wrap the long line we're asserting on.
     unbudgeted = to_python(tree, max_inline_width=None, format=False)
