@@ -1131,6 +1131,11 @@ def test_string_socket_methods(snapshot):
         assert lower.builder_node.i.case.default_value == "Lowercase"
         assert lower.builder_node.i.string.links[0].from_node == string.node
 
+        trim = string.trim()
+        assert isinstance(trim, StringSocket)
+        assert trim.node.bl_idname == g.TrimString._bl_idname
+        assert trim.builder_node.i.string.links[0].from_node == string.node
+
 
 def test_vector_socket_rotate():
     with g.tree():

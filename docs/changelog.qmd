@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## UNRELEASED
+
+### Enhancements
+
+- Exposed the `TrimString` node via `StringSocket.trim()`
+
 ## v520.15.0 - 2026-08-27
 
 ### Enhancements

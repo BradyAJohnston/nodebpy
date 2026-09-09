@@ -1874,6 +1874,25 @@ class _StringMixin[
 
         return SetStringCase(self.socket, case="Lowercase").o.string  # ty: ignore[invalid-return-type]
 
+    def trim(
+        self,
+        characters: InputString = "",
+        whitespace: InputBoolean = True,
+        start: InputBoolean = True,
+        end: InputBoolean = True,
+    ) -> StringResult:
+        "Trim the string and return as `StringSocket`."
+        self._assert_output("trim")
+        from ..nodes.geometry import TrimString
+
+        return TrimString(
+            self.socket,
+            characters=characters,
+            whitespace=whitespace,
+            start=start,
+            end=end,
+        ).o.string  # ty: ignore[invalid-return-type]
+
 
 class _MatrixMixin[
     VectorResult: (VectorSocket, VectorSocketGrid, VectorSocketList),
