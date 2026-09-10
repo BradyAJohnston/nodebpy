@@ -2,7 +2,18 @@
 title: Changelog
 ---
 
-## UNRELEASED
+## v250.18.0 - UNRELEASED
+
+### Enhancements
+
+- **Typed `_build_group` signatures** — generated classes annotate the builder parameter per tree type (`def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:`), importing the `bpy.types` tree class, so the whole method body type-checks and autocompletes in editors; `NodeGroupBuilder._build_group` itself is now typed `TreeBuilder[T]`, so hand-written `Custom*Group` subclasses inherit the narrowed hint too.
+- **Lint-clean generated output** — formatted output now runs `ruff check --fix` *and* `ruff format` as it is written (sorted imports, double-quoted strings, `**{...}` collapsed to plain kwargs where socket names allow), so dumped sources need no lint pass afterwards; the dump's metadata footers and library references emit double-quoted strings directly.
+
+### Fixes
+
+- Codegen's value formatter rendered a one-element tuple without its trailing comma (`("X")` — a plain string), so any single-entry sequence value degenerated on rebuild; it now keeps the comma.
+
+## v250.17.0 - 2026-09-10
 
 ### Enhancements
 

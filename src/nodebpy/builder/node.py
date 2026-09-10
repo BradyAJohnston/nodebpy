@@ -455,7 +455,7 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
         ...
 
     @abstractmethod
-    def _build_group(self, tree: TreeBuilder) -> None:
+    def _build_group(self, tree: TreeBuilder[T]) -> None:
         """Build the node group internals and interface."""
 
     @classmethod

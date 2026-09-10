@@ -485,9 +485,12 @@ def _fmt(value: Any) -> str:
     # Vectors / sequences
     try:
         items = list(value)
-        return f"({', '.join(_fmt(v) for v in items)})"
     except TypeError:
         return repr(value)
+    if len(items) == 1:
+        # The trailing comma keeps a one-element tuple a tuple.
+        return f"({_fmt(items[0])},)"
+    return f"({', '.join(_fmt(v) for v in items)})"
 
 
 def _eq(a: Any, b: Any) -> bool:
@@ -3652,8 +3655,10 @@ def _emit_interface_lines(node_tree, ctx: EmitContext) -> list[str]:
 
 
 def _format_with_ruff(code: str) -> str:
-    """Format ``code`` with ruff if the optional ``ruff`` package is installed,
-    otherwise return it unchanged.
+    """Run ``code`` through ``ruff check --fix-only`` and ``ruff format`` if
+    the optional ``ruff`` package is installed, otherwise return it unchanged
+    — so generated files come out already fixed and formatted rather than
+    needing a lint pass afterwards.
 
     Uses the binary bundled with the ``ruff`` Python package (via
     ``ruff.find_ruff_bin``), so it works wherever the package is importable —
@@ -3665,20 +3670,24 @@ def _format_with_ruff(code: str) -> str:
         return code
     import subprocess
 
-    try:
-        result = subprocess.run(
-            [find_ruff_bin(), "format", "-"],
-            input=code,
-            capture_output=True,
-            # Explicit UTF-8: text mode alone uses the locale encoding, and on
-            # Windows (cp1252) any non-ASCII character in the source reaches
-            # ruff as invalid UTF-8 — it errors and the code stays unformatted.
-            encoding="utf-8",
-            check=True,
-        )
-    except (OSError, subprocess.SubprocessError):
-        return code
-    return result.stdout or code
+    ruff = find_ruff_bin()
+    for command in (["check", "--fix-only", "-"], ["format", "-"]):
+        try:
+            result = subprocess.run(
+                [ruff, *command],
+                input=code,
+                capture_output=True,
+                # Explicit UTF-8: text mode alone uses the locale encoding,
+                # and on Windows (cp1252) any non-ASCII character in the
+                # source reaches ruff as invalid UTF-8 — it errors and the
+                # code stays unformatted.
+                encoding="utf-8",
+                check=True,
+            )
+        except (OSError, subprocess.SubprocessError):  # pragma: no cover
+            return code
+        code = result.stdout or code
+    return code
 
 
 def to_python(
@@ -3811,10 +3820,17 @@ def to_python(
         for alias in ("g", "s", "c")
         if alias in used_aliases
     ]
-    # TreeBuilder is only referenced by the `with` block; class bodies use the
-    # ``tree`` parameter of ``_build_group`` instead.
-    import_names = import_parts + (["TreeBuilder"] if top_level == "with" else [])
+    # TreeBuilder anchors the `with` block and annotates every generated
+    # ``_build_group(self, tree: TreeBuilder)``, so editors type the whole
+    # body of a dumped class.
+    import_names = import_parts + ["TreeBuilder"]
     lines: list[str] = []
+    if collector.tree_param_types:
+        # The ``tree: TreeBuilder[GeometryNodeTree]`` annotations on emitted
+        # classes reference the bpy tree types by name.
+        lines.append(
+            "from bpy.types import " + ", ".join(sorted(collector.tree_param_types))
+        )
     if import_names:
         lines.append(f"from {nodebpy_pkg} import " + ", ".join(import_names))
     if collector.bases_used:
@@ -3850,9 +3866,9 @@ def to_python(
             lines.append("")
             lines.extend(_node_positions_lines(node_tree, indent=""))
 
-    # Datablock defaults (a Material/Object/Image socket value) render via
-    # ``repr()`` as ``bpy.data.<collection>['name']``, so the module needs a
-    # bare ``import bpy`` to resolve them on rebuild.
+    # Datablock defaults (a Material/Object/Image socket value) render as
+    # guarded ``bpy.data.<collection>.get("name")`` lookups, so the module
+    # needs a bare ``import bpy`` to resolve them on rebuild.
     # Math-constant expressions (from _fmt_float) need the stdlib import.
     if any(re.search(r"\bmath\.(pi|tau|e)\b", line) for line in lines):
         lines.insert(0, "import math")
@@ -4035,6 +4051,8 @@ class _GroupCollector:
     used_names: set[str] = field(default_factory=set)
     bases_used: set[str] = field(default_factory=set)
     used_aliases: set[str] = field(default_factory=set)
+    # bpy.types names the emitted ``tree: TreeBuilder[...]`` annotations need.
+    tree_param_types: set[str] = field(default_factory=set)
 
     def register(self, node_tree) -> str:
         """Ensure a class exists for ``node_tree`` and return its name."""
@@ -4057,6 +4075,10 @@ class _GroupCollector:
         if interface is not None and interface.base:
             base = interface.base
         self.bases_used.add(base)
+        if node_tree.bl_idname in _GROUP_BASE_FOR_TREE:
+            # A tree's bl_idname doubles as its bpy.types class name, which
+            # parameterizes the emitted ``tree: TreeBuilder[...]`` annotation.
+            self.tree_param_types.add(node_tree.bl_idname)
         self.class_defs.append(
             _render_group_class(
                 class_name,
@@ -4312,7 +4334,13 @@ def _render_group_class(
         header.append(f"    _tree_properties = {{{rendered}}}")
     if interface is not None:
         header.extend(["", interface.body])
-    header.extend(["", "    def _build_group(self, tree):"])
+    # The tree's bl_idname doubles as its bpy.types class name.
+    annotation = (
+        f"TreeBuilder[{node_tree.bl_idname}]"
+        if node_tree.bl_idname in _GROUP_BASE_FOR_TREE
+        else "TreeBuilder"
+    )
+    header.extend(["", f"    def _build_group(self, tree: {annotation}) -> None:"])
     inner = _assemble_tree_body(emission)
     # Either option needs auto-layout off (it dissolves reroutes and overwrites
     # locations); the disable line goes at the body's "in-block" 4-space indent,
