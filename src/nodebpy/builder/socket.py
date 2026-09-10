@@ -160,6 +160,9 @@ class BaseSocket:
         self._tree = None
         self.socket = socket
         self._interface_socket: bpy.types.NodeTreeInterfaceSocket | None = None
+        # Captured at wrap time: _interface_socket can go stale as the
+        # interface grows, but the identifier string stays addressable.
+        self._interface_identifier: str = ""
         self._builder_node: BaseNode | None = None
 
     @property
@@ -2714,10 +2717,54 @@ class MenuSocket(_MenuSocketMixin, _ToListMixin["MenuSocketList"]):
 
     @property
     def default_value(self) -> str:
+        # A deferred interface default hasn't reached the raw socket yet —
+        # report the queued value; once applied, read the interface item
+        # itself (the raw node socket lags until the editor propagates).
+        tree = getattr(self, "_tree", None)
+        identifier = getattr(self, "_interface_identifier", "")
+        if tree is not None and identifier:
+            for pending in reversed(tree._menu_defaults):
+                if pending.identifier == identifier:
+                    return pending.default
+            interface = tree.tree.interface
+            if interface is not None:
+                item = next(
+                    (
+                        item
+                        for item in interface.items_tree
+                        if getattr(item, "identifier", None) == identifier
+                    ),
+                    None,
+                )
+                if item is not None:
+                    return item.default_value
         return self.socket.default_value
 
     @default_value.setter
     def default_value(self, value: str) -> None:
+        interface_socket = getattr(self, "_interface_socket", None)
+        tree = getattr(self, "_tree", None)
+        if interface_socket is not None and tree is not None:
+            # An interface menu default: its enum only populates once the
+            # menu propagates from the defining Menu Switch, so defer to the
+            # tree-context exit — writing the raw socket here is silently
+            # lost in a headless session. The identifier captured at wrap
+            # time addresses the item; the reference itself may be stale.
+            from .tree import _MenuDefault
+
+            tree._menu_defaults.append(
+                _MenuDefault(
+                    interface_socket,
+                    value,
+                    identifier=getattr(self, "_interface_identifier", ""),
+                )
+            )
+            if tree._exited:
+                # The context-exit drain already ran — an assignment made
+                # after the with-block would otherwise queue forever.
+                tree._apply_input_defaults()
+                tree._menu_defaults.clear()
+            return
         self.socket.default_value = value
 
 

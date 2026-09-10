@@ -125,6 +125,18 @@ register_customization(
     )
 )
 
+# Closure to List's outputs are dynamic list items; the mixin supplies the
+# items constructor and typed factories (Blender only syncs items from the
+# linked closure's signature on an editor update, so builds must declare them).
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeClosureToList",
+        bases=("_ClosureToListMixin",),
+        imports=("from .._mixins import _ClosureToListMixin",),
+        suppress=frozenset({"__init__"}),
+    )
+)
+
 
 # Items-based nodes: the generated boilerplate (sockets, docstring, property
 # accessors) is kept; a mixin in _mixins.py supplies the variadic items

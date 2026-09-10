@@ -85,6 +85,7 @@ from ...types import (
     _AttributeDomains,
 )
 from .._mixins import (
+    _ClosureToListMixin,
     _CombineBundleMixin,
     _FieldToListMixin,
     _FormatStringMixin,
@@ -813,7 +814,7 @@ class Clamp(BaseNode):
         self.node.clamp_type = value
 
 
-class ClosureToList(BaseNode):
+class ClosureToList(_ClosureToListMixin, BaseNode):
     """
     Create a list of values
 
@@ -850,16 +851,6 @@ class ClosureToList(BaseNode):
         def i(self) -> _Inputs: ...
         @property
         def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        count: InputInteger = 1,
-        closure: InputClosure = None,
-    ):
-        super().__init__()
-        key_args = {"Count": count, "Closure": closure}
-
-        self._establish_links(**key_args)
 
 
 class ClusterByConnected(BaseNode):

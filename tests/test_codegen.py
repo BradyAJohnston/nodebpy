@@ -508,6 +508,168 @@ def test_type_factories_emitted_at_defaults():
     assert "g.FieldMinAndMax.point.float()" in code
 
 
+def test_node_instance_properties_roundtrip():
+    """Muted (bypassed) nodes, non-default warning propagation, and clamped
+    math ops round-trip: the first two force a variable binding plus
+    ``<var>.node.<prop>`` lines, and ``use_clamp`` blocks the operator-sugar
+    lift so the constructor can carry it."""
+    with TreeBuilder("NodeProps") as tree:
+        a = tree.inputs.float("A")
+        geo = tree.inputs.geometry("G")
+        clamped = g.Math.subtract(a, 0.2)
+        clamped.node.use_clamp = True
+        muted = g.SetPosition(geometry=geo, offset=g.CombineXYZ(z=clamped))
+        muted.node.mute = True
+        muted.node.warning_propagation = "ERRORS"
+        muted >> tree.outputs.geometry("Out")
+
+    code = _assert_roundtrip(tree)
+    assert "use_clamp=True" in code
+    assert ".node.mute = True" in code
+    assert '.node.warning_propagation = "ERRORS"' in code
+
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    math = next(n for n in rebuilt.nodes if n.bl_idname == "ShaderNodeMath")
+    assert math.use_clamp
+    set_pos = next(n for n in rebuilt.nodes if n.bl_idname == "GeometryNodeSetPosition")
+    assert set_pos.mute
+    assert set_pos.warning_propagation == "ERRORS"
+
+
+def test_interface_and_tree_properties_roundtrip():
+    """The functional gaps surfaced by the tree_clipper parity audit all
+    round-trip: output-socket defaults and structure types,
+    ``force_non_field``, ``default_input`` on any socket type, panel
+    descriptions, mixed input/output panels, and non-default tree-level
+    properties (via ``_tree_properties`` on the generated class)."""
+    with TreeBuilder("IfaceProps") as tree:
+        with tree.panel("Mixed", description="Both directions."):
+            fac = tree.inputs.float("Fac", 0.5, force_non_field=True)
+            scale = tree.outputs.float("Scale", 0.01)
+        tree.inputs.object("Target", default_input="SELF_OBJECT")
+        geo = tree.inputs.geometry("Geometry")
+        geo_out = tree.outputs.geometry("Geometry", structure_type="SINGLE")
+        fac >> scale
+        geo >> geo_out
+    tree.tree.description = "Round-trips everything"
+    tree.tree.is_modifier = True
+    tree.tree.default_group_node_width = 200
+
+    code = to_python(tree, top_level="class", format=False)
+    assert 'with tree.panel("Mixed", description="Both directions."):' in code
+    assert "force_non_field=True" in code
+    assert 'default_input="SELF_OBJECT"' in code
+    assert 'structure_type="SINGLE"' in code
+    assert '"Scale", 0.01' in code  # output default, emitted positionally
+    assert "_tree_properties = {" in code
+    assert '"is_modifier": True' in code
+    assert '"default_group_node_width": 200' in code
+
+    _force_fresh_group_build()
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["IfaceProps"].create_group()
+    items = {
+        (i.name, i.in_out): i
+        for i in rebuilt.interface.items_tree
+        if getattr(i, "item_type", "") == "SOCKET"
+    }
+    panels = {
+        i.name: i
+        for i in rebuilt.interface.items_tree
+        if getattr(i, "item_type", "") == "PANEL"
+    }
+    assert panels["Mixed"].description == "Both directions."
+    assert items[("Fac", "INPUT")].parent == panels["Mixed"]
+    assert items[("Scale", "OUTPUT")].parent == panels["Mixed"]
+    assert items[("Fac", "INPUT")].force_non_field
+    assert round(items[("Scale", "OUTPUT")].default_value, 4) == 0.01
+    assert items[("Target", "INPUT")].default_input == "SELF_OBJECT"
+    assert items[("Geometry", "OUTPUT")].structure_type == "SINGLE"
+    assert rebuilt.description == "Round-trips everything"
+    assert rebuilt.is_modifier
+    assert rebuilt.default_group_node_width == 200
+
+
+def test_snapshot_positions_preserves_group_input_splits():
+    """snapshot_positions also round-trips extra Group Input instances — the
+    editor convention of one input node per consumer cluster with unused
+    sockets hidden. The emitted ``tree.group_input_splits`` block recreates
+    the instances and moves their links; the positions block then places
+    them by name."""
+    with TreeBuilder("SplitSnap", arrange=None) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        out = tree.outputs.float("Out")
+        math = g.Math.add(a, 1.0)
+        combine = g.CombineXYZ(x=math, y=b)
+        combine.o.vector.length() >> out
+        # Author a second Group Input instance feeding CombineXYZ's Y, the
+        # way an artist splits inputs to shorten noodles.
+        extra = tree.tree.nodes.new("NodeGroupInput")
+        extra.location = (-321.0, -123.0)
+        link = next(
+            l
+            for l in tree.tree.links
+            if l.to_node == combine.node and l.from_node.name == "Group Input"
+        )
+        to_socket = link.to_socket
+        tree.tree.links.remove(link)
+        tree.tree.links.new(extra.outputs["B"], to_socket)
+
+    code = to_python(tree, snapshot_positions=True, format=False)
+    assert "tree.group_input_splits = [" in code
+
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    assert _structure(rebuilt) == _structure(tree.tree)
+    instances = [n for n in rebuilt.nodes if n.bl_idname == "NodeGroupInput"]
+    assert len(instances) == 2
+    split = rebuilt.nodes[extra.name]
+    assert split.outputs["B"].is_linked
+    assert split.outputs["A"].hide and not split.outputs["A"].is_linked
+    assert tuple(round(v, 1) for v in split.location) == (-321.0, -123.0)
+    # The primary instance kept A and had its unused B hidden too.
+    primary = rebuilt.nodes["Group Input"]
+    assert primary.outputs["A"].is_linked
+    assert primary.outputs["B"].hide
+
+    # Without snapshot_positions the instances still collapse to one.
+    assert "group_input_splits" not in to_python(tree, format=False)
+
+
+def test_keep_reroutes_across_frame_boundary():
+    """A reroute chain crossing a frame boundary must not break emission order.
+
+    The frame-cluster sort has to order clusters with reroute-aware edges when
+    ``keep_reroutes`` is on; with collapsed edges the outside reroute has no
+    ordering constraints and lands before the framed reroute it consumes
+    (``CodegenError: referenced before any code was generated``). Shape
+    reduced from the bundled "Scatter on Surface" asset."""
+    with TreeBuilder("RerouteFrames", arrange=None) as tree:
+        out = tree.outputs.float("Out")
+        value = g.Value()
+        r1 = tree.tree.nodes.new("NodeReroute")
+        r2 = tree.tree.nodes.new("NodeReroute")
+        tree.tree.links.new(value.node.outputs[0], r1.inputs[0])
+        tree.tree.links.new(r1.outputs[0], r2.inputs[0])
+        outside = g.Math.add(0.0, 1.0)
+        tree.tree.links.new(r2.outputs[0], outside.node.inputs[0])
+        framed = g.Math.add(outside, 1.0)
+        framed >> out
+        # r1 sits inside a frame with a node that depends on the outside
+        # chain, so the frame cluster must sort after r2 — which consumes r1.
+        frame = tree.tree.nodes.new("NodeFrame")
+        r1.parent = frame
+        framed.node.parent = frame
+
+    code = to_python(tree, keep_reroutes=True, format=False)
+    assert code.count("g.Reroute(") == 2
+
+
 def test_snapshot_positions_nested_group_round_trip():
     """snapshot_positions restores locations inside nested group classes too:
     the generated ``_build_group`` disables its own auto-layout and applies a
@@ -1192,7 +1354,7 @@ def test_factory_keeps_default_prop_constructor():
     with TreeBuilder("PlainMath") as tree:
         g.Math()  # ADD is the default operation
     code = to_python(tree)
-    assert "math_1 = g.Math()" in code
+    assert "_math_1 = g.Math()" in code
 
 
 # ---------------------------------------------------------------------------
@@ -2623,6 +2785,118 @@ def test_roundtrip_bundled_asset(path, name):
 # ---------------------------------------------------------------------------
 
 
+def test_closure_to_list_roundtrip():
+    """Closure to List's outputs are dynamic list items that must be declared
+    explicitly — Blender only syncs them from the linked closure's signature
+    on an editor update, which a headless rebuild never runs. The emitter
+    writes the constructor plus typed ``.items.<type>(name)`` lines, binding
+    a handle for consumed outputs. (MN asset: "Evaluate Ordered Bundles".)"""
+    with TreeBuilder("ClosureList") as tree:
+        count = tree.inputs.integer("Count")
+        zone = g.ClosureZone()
+        index = zone.inputs.integer("Index")
+        item = zone.outputs.integer("Item")
+        g.Math.multiply(index, 2.0) >> item
+        ctl = g.ClosureToList(count=count, closure=zone.closure)
+        values = ctl.items.integer("Item")
+        values >> tree.outputs.integer("Values")
+
+    node = ctl.node
+    assert [(i.name, i.socket_type) for i in node.list_items] == [("Item", "INT")]
+
+    code = _assert_roundtrip(tree)
+    assert "g.ClosureToList(" in code
+    assert '.items.integer("Item"' in code
+
+    # The rebuilt node carries the declared item, not an empty collection.
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = next(
+        n for n in ns["tree"].tree.nodes if n.bl_idname == "GeometryNodeClosureToList"
+    )
+    assert [(i.name, i.socket_type) for i in rebuilt.list_items] == [("Item", "INT")]
+
+
+def test_closure_to_list_items_dict_constructor():
+    """The ``items={name: "TYPE"}`` constructor form (the dumped-code
+    fallback for item types without a typed factory) declares the items."""
+    with TreeBuilder("ClosureListDict") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        ctl = g.ClosureToList(count=3, items={"A": "INT", "B": "STRING"})
+        geo >> tree.outputs.geometry("Geometry")
+
+    assert [(i.name, i.socket_type) for i in ctl.node.list_items] == [
+        ("A", "INT"),
+        ("B", "STRING"),
+    ]
+    assert ctl.o["A"].socket.identifier == "List_0"
+    _assert_roundtrip(tree)
+
+
+def test_unused_variables_get_underscore_prefix():
+    """A node whose outputs feed nothing and interface sockets no effective
+    link touches still emit their declarations, but bound to ``_``-prefixed
+    variables so the generated module passes lint (F841)."""
+    with TreeBuilder("UnusedVars") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        tree.inputs.float("Spare Input")
+        tree.outputs.float("Never Fed")
+        g.Value()  # dangling: outputs unused
+        geo >> tree.outputs.geometry("Geometry")
+
+    code = _assert_roundtrip(tree)
+    assert "_spare_input = tree.inputs.float(" in code
+    assert "_never_fed = tree.outputs.float(" in code
+    assert "_value = g.Value()" in code
+    # Referenced variables keep their plain names.
+    assert "geometry = tree.inputs.geometry(" in code
+
+
+def test_unused_item_node_variables_get_underscore_prefix():
+    """Item-style nodes go through their own emitters; a dangling, item-less
+    one binds a variable nothing references — it must carry the ``_`` prefix
+    too (regression: EvaluateClosure/CaptureAttribute leaked plain names)."""
+    with TreeBuilder("UnusedItemVars") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        g.CaptureAttribute()
+        g.EvaluateClosure()
+        g.CombineBundle()
+        g.SeparateBundle()
+        g.ClosureToList()
+        geo >> tree.outputs.geometry("Geometry")
+
+    code = _assert_roundtrip(tree)
+    assert "_capture = g.CaptureAttribute.point()" in code
+    assert "_evaluate_closure = g.EvaluateClosure()" in code
+    assert "_combine_bundle = g.CombineBundle()" in code
+    assert "_separate_bundle = g.SeparateBundle()" in code
+    assert "_closure_to_list = g.ClosureToList()" in code
+
+
+def test_group_call_mixes_keywords_and_raw_names():
+    """Group-call inputs whose socket names are valid identifiers render as
+    plain keyword arguments; only names that aren't (``"Box Value"``) stay in
+    a ``**{...}`` unpacking, spliced in place so socket order is preserved."""
+    from nodebpy.builder import CustomGeometryGroup
+
+    class _MixedNames(CustomGeometryGroup):
+        _name = "MixedNamesGrp"
+
+        def _build_group(self, tree):
+            geo = tree.inputs.geometry("Geometry")
+            tree.inputs.float("Box Value")
+            geo >> tree.outputs.geometry("Geometry")
+
+    with TreeBuilder("MixedNames") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        value = tree.inputs.float("Value")
+        grp = _MixedNames(**{"Geometry": geo, "Box Value": value})
+        grp >> tree.outputs.geometry("Out")
+
+    code = _assert_roundtrip(tree)
+    assert 'MixedNamesGrp(Geometry=geometry, **{"Box Value": value})' in code
+
+
 def test_keyword_named_output_uses_suffixed_attribute():
     """An output socket whose name would normalize to a Python keyword (``From``
     → ``from``) is read via the suffixed attribute ``.o.from_`` — ``normalize_name``
@@ -2845,3 +3119,198 @@ def test_codegen_input_detection():
     assert "option_2: InputGeometry = None" in code
     for socket in cls.inputs:  # __init__ forwards every input by identifier
         assert f'"{socket.identifier}": {socket.attr}' in code
+
+
+def test_group_input_splits_move_one_link_per_entry():
+    """The same interface input can reach a multi-input socket from several
+    Group Input instances (one link each — bpy holds at most one identical
+    link per socket pair). Applying a split entry must move exactly one of
+    them, never sweep away every same-named link into a single replacement."""
+    with TreeBuilder("DupJoin", arrange=None) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        join = g.JoinGeometry((geo,))
+        join >> tree.outputs.geometry("Out")
+        multi = join.node.inputs[0]
+        # A second instance feeding the same multi-input socket, the way an
+        # artist splits inputs in the editor.
+        extra = tree.tree.nodes.new("NodeGroupInput")
+        extra.name = "Group Input.001"
+        tree.tree.links.new(extra.outputs["Geometry"], multi)
+        assert len(multi.links) == 2
+
+        # Re-source one of them onto a third instance (a snapshot applied to
+        # an edited tree): the other link must survive.
+        tree.group_input_splits = [
+            {
+                "name": "Group Input.002",
+                "links": [("Geometry", join.node.name, multi.identifier)],
+            }
+        ]
+        incoming = list(multi.links)
+        assert len(incoming) == 2
+        sources = {link.from_node.name for link in incoming}
+        # Exactly one link moved onto the new instance; the other survived
+        # (the old remove-all collapsed both into a single replacement).
+        assert "Group Input.002" in sources
+        assert len(sources) == 2
+
+
+def test_same_named_sibling_mixed_panels_roundtrip():
+    """Blender allows several same-named sibling panels; the rebuild must not
+    fold them into one. Codegen creates them with ``reuse=False`` and reopens
+    each mixed panel by handle in the outputs pass."""
+    with TreeBuilder("DupPanels") as tree:
+        with tree.panel("Settings"):
+            a = tree.inputs.float("A")
+            out_a = tree.outputs.float("OutA")
+        with tree.panel("Settings", reuse=False):
+            b = tree.inputs.float("B")
+            out_b = tree.outputs.float("OutB")
+        a >> out_a
+        b >> out_b
+
+    def panels(node_tree):
+        return [
+            item
+            for item in node_tree.interface.items_tree
+            if getattr(item, "item_type", "") == "PANEL"
+        ]
+
+    assert len(panels(tree.tree)) == 2  # reuse=False created a distinct panel
+
+    code = to_python(tree, format=False)
+    assert "reuse=False" in code
+    assert "with tree.panel(_panel_" in code  # outputs pass reopens by handle
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    rebuilt_panels = panels(rebuilt)
+    assert len(rebuilt_panels) == 2
+    # Each panel kept its own pair of sockets.
+    for panel in rebuilt_panels:
+        sockets = [
+            item.name
+            for item in panel.interface_items
+            if getattr(item, "item_type", "") == "SOCKET"
+        ]
+        assert len(sockets) == 2, sockets
+
+
+def test_datablock_interface_default_emits_guarded_lookup():
+    """Datablock defaults render as bpy.data.<coll>.get(...) so a standalone
+    script still runs in a session that lacks the datablock (the default
+    degrades to empty instead of a KeyError at exec time)."""
+    import bpy
+
+    obj = bpy.data.objects.new("TempTarget", None)
+    with TreeBuilder("ObjDefault") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        tree.inputs.object("Target", obj)
+        geo >> tree.outputs.geometry("Out")
+    code = to_python(tree, format=False)
+    assert 'bpy.data.objects.get("TempTarget")' in code
+    assert "bpy.data.objects[" not in code
+
+    bpy.data.objects.remove(obj)
+    ns: dict = {}
+    exec(code, ns)  # must not raise despite the missing datablock
+    rebuilt = ns["tree"].tree
+    item = next(
+        i for i in rebuilt.interface.items_tree if getattr(i, "name", "") == "Target"
+    )
+    assert item.default_value is None
+
+
+def test_empty_panels_roundtrip():
+    """Panels holding no sockets — including one nested under a populated
+    panel and a fully empty parent/child pair — are still emitted and
+    rebuilt, instead of silently vanishing."""
+    with TreeBuilder("EmptyPanels") as tree:
+        with tree.inputs.panel("Outer"):
+            a = tree.inputs.float("A")
+            with tree.inputs.panel("Empty Child"):
+                pass
+        with tree.inputs.panel("Empty Root"):
+            with tree.inputs.panel("Empty Leaf"):
+                pass
+        a >> tree.outputs.float("Out")
+
+    def panel_parents(node_tree):
+        return {
+            item.name: (
+                item.parent.name if item.parent and item.parent.index != -1 else None
+            )
+            for item in node_tree.interface.items_tree
+            if getattr(item, "item_type", "") == "PANEL"
+        }
+
+    expected = {
+        "Outer": None,
+        "Empty Child": "Outer",
+        "Empty Root": None,
+        "Empty Leaf": "Empty Root",
+    }
+    assert panel_parents(tree.tree) == expected
+
+    code = to_python(tree, format=False)
+    ns: dict = {}
+    exec(code, ns)
+    assert panel_parents(ns["tree"].tree) == expected
+
+
+def test_rgb_curves_mapping_roundtrip():
+    """An edited RGB Curves node round-trips its curve mapping — the edited
+    curve's points are emitted while untouched curves stay implicit — and
+    the rebuilt mapping matches point for point."""
+    from nodebpy.export.codegen import _mapping_state
+
+    with TreeBuilder("CurveMap") as tree:
+        col = tree.inputs.color("Color")
+        curves = g.RGBCurves(color=col)
+        curve = curves.node.mapping.curves[3]  # the composite C curve
+        point = curve.points.new(0.25, 0.6)
+        point.handle_type = "VECTOR"
+        curves.node.mapping.update()
+        curves >> tree.outputs.color("Out")
+
+    code = to_python(tree, format=False)
+    assert ".points.new(" in code
+    assert '.handle_type = "VECTOR"' in code
+    assert ".mapping.update()" in code
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    rebuilt_node = next(n for n in rebuilt.nodes if n.bl_idname == "ShaderNodeRGBCurve")
+    assert _mapping_state(rebuilt_node.mapping) == _mapping_state(curves.node.mapping)
+
+
+def test_unwired_viewer_gets_throwaway_variable():
+    """A Viewer with nothing wired into it still emits (side effect only),
+    bound to an underscore variable so the module passes lint."""
+    with TreeBuilder("LoneViewer") as tree:
+        g.Viewer()
+        tree.inputs.geometry("In") >> tree.outputs.geometry("Out")
+    code = to_python(tree, format=False)
+    assert "_viewer = g.Viewer()" in code
+
+
+def test_external_groups_require_class_names():
+    """Naming an external group without its class-name mapping is a caller
+    error caught upfront."""
+    with TreeBuilder("ExtCheck") as tree:
+        tree.inputs.float("A") >> tree.outputs.float("Out")
+    with pytest.raises(ValueError, match="external_groups without"):
+        to_python(tree, external_groups={"Missing Group"}, format=False)
+
+
+def test_class_mode_snapshot_emits_group_input_splits():
+    """Class-mode snapshots carry the group_input_splits block too."""
+    with TreeBuilder("ClassSplit", arrange=None) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        math = g.Math.add(a, 1.0)
+        combine = g.CombineXYZ(x=math, y=b)
+        combine.o.vector.length() >> tree.outputs.float("Out")
+        tree.split_group_inputs()
+    code = to_python(tree, top_level="class", snapshot_positions=True, format=False)
+    assert "tree.group_input_splits = [" in code

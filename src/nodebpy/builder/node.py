@@ -178,6 +178,20 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             input.default_value = [value] * len(input.default_value)  # type: ignore
         elif stype == "INT" and isinstance(value, float):
             input.default_value = int(value)  # type: ignore
+        elif stype == "MENU":
+            try:
+                input.default_value = value  # type: ignore
+            except TypeError:
+                # A menu socket's enum items arrive by link propagation from
+                # the Menu Switch that defines them, which may not have run
+                # yet (e.g. a Switch whose output links up only after its
+                # inputs get defaults). Retry at tree-context exit, when
+                # every link exists.
+                from .tree import _MenuDefault
+
+                self.tree._menu_defaults.append(
+                    _MenuDefault(cast("bpy.types.NodeSocketMenu", input), value)
+                )
         else:
             input.default_value = value  # type: ignore
 
@@ -258,6 +272,31 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
                     f"no remaining input socket named {name!r} on {self._bl_idname}"
                 )
             value_type = _value_socket_type(value)
+            if value_type is None and isinstance(value, (tuple, list)):
+                # A plain sequence is ambiguous between VECTOR, RGBA, ROTATION
+                # and MATRIX (a blanket "VECTOR" would steer a 4-tuple colour
+                # default onto a same-named vector socket): pick the first
+                # candidate whose array default it actually fits, falling back
+                # to interface order.
+                def fits(s) -> bool:
+                    try:
+                        return len(s.default_value) == len(value)  # noqa: B023
+                    except (AttributeError, TypeError):  # pragma: no cover
+                        return False
+
+                socket = next((s for s in candidates if fits(s)), candidates[0])
+                used.add(socket.identifier)
+                self._apply_input(socket, value)
+                continue
+            if value_type is None:
+                # A plain default carries no socket, but its Python type still
+                # narrows the target: 0.0 must mean a float "Profile Rotation",
+                # never the same-named rotation socket, whose default it would
+                # not even fit.
+                from .items import _infer_value_type
+
+                inferred = _infer_value_type(value)
+                value_type = "VALUE" if inferred == "FLOAT" else inferred
             socket = next(
                 (s for s in candidates if s.type == value_type), candidates[0]
             )
@@ -378,6 +417,10 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
         "TEXTURE",
         "VECTOR",
     ] = "NONE"
+    # Tree-level properties applied after the build (description, modifier/
+    # tool flags, default group-node width, …) — only values differing from a
+    # fresh tree's defaults belong here; codegen fills it when exporting.
+    _tree_properties: ClassVar[dict[str, Any]] = {}
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -440,6 +483,13 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
         with TreeBuilder(cls._name, tree_type=cls._tree_idname) as tree:
             builder._build_group(tree)
         tree.tree.color_tag = cls._color_tag
+        for key, value in cls._tree_properties.items():
+            try:
+                setattr(tree.tree, key, value)
+            except (AttributeError, TypeError):
+                # A property this Blender version doesn't have (or types
+                # differently) — skip rather than fail the whole build.
+                print(f"  {cls._name}: skipping tree property {key!r}")
         return cast(T, tree.tree)
 
 
