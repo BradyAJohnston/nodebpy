@@ -14,6 +14,8 @@ title: Changelog
 - **Same-named sibling panels** — Blender allows several same-named panels under one parent; `tree.panel(...)` gained `reuse=False` (create a fresh panel instead of reusing) and accepts an existing panel (or a previous `tree.panel(...)` context) to reopen exactly that panel. Codegen uses both spellings so such interfaces rebuild without folding panels together, and empty organizational panels are now emitted too. A mixed `tree.panel` inside `tree.outputs.panel(...)` now nests under it correctly and restores each direction's own active panel on exit.
 - Interface menu defaults assigned after the `with TreeBuilder(...)` block exits now apply immediately instead of queueing forever, and reading `menu.default_value` reports the pending or applied interface value instead of the stale node socket.
 - Interface `Font` / `Sound` socket defaults are now dumped and rebuilt like the other datablock defaults, and `is_strip_modifier` joined the round-tripped tree-level properties.
+- **Typed `_build_group` signatures** — generated classes annotate the builder parameter per tree type (`def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:`), importing the `bpy.types` tree class, so the whole method body type-checks and autocompletes in editors; `NodeGroupBuilder._build_group` itself is now typed `TreeBuilder[T]`, so hand-written `Custom*Group` subclasses inherit the narrowed hint too.
+- **Lint-clean generated output** — formatted output now runs `ruff check --fix` *and* `ruff format` as it is written (sorted imports, double-quoted strings, `**{...}` collapsed to plain kwargs where socket names allow), so dumped sources need no lint pass afterwards; the dump's metadata footers and library references emit double-quoted strings directly.
 - Exposed the `TrimString` node via `StringSocket.trim()`, with codegen round-tripping trees back to the method call
 - Exposed the `StringToValue` node via `StringSocket.to_float()` / `.to_integer(base)`, and `IntegerSocket.to_string()` now exposes the node's `base` and `padding` options
 - `to_python` now round-trips `split()`, `to_float()` / `to_integer()` and float/integer `to_string()` as socket method calls instead of `g.SplitString(...)` / `g.StringToValue.*(...)` / `g.ValueToString.*(...)` factory calls
@@ -25,6 +27,7 @@ title: Changelog
 - Referencing one of several same-named outputs on a *group* node used an identifier-derived accessor name (`group.o.socket_0`) that broke on rebuild — such outputs are now referenced by position (`group.o[2]`), which the interface order preserves.
 - `value.map_range(...)` with a non-default steps value emitted five positional arguments where `steps` is keyword-only, making the generated script fail to run.
 - An IntegerMath operation with a float operand was lifted to a Python operator that rebuilt as a float `ShaderNodeMath` node; the lift now checks operand types like the other math lifts.
+- Codegen's value formatter rendered a one-element tuple without its trailing comma (`("X")` — a plain string), so any single-entry sequence value degenerated on rebuild; it now keeps the comma.
 
 ## v520.15.0 - 2026-08-28
 

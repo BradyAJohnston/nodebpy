@@ -1,7 +1,8 @@
 # serializer version: 1
 # name: test_codegen_list_methods
   '''
-  from nodebpy import geometry as g, TreeBuilder
+  from nodebpy import TreeBuilder
+  from nodebpy import geometry as g
   
   with TreeBuilder("Geometry Node Group") as tree:
       filtered = tree.outputs.vector("Filtered")
@@ -137,6 +138,7 @@
 # ---
 # name: test_snapshot_positions_nested_group_block
   '''
+  from bpy.types import GeometryNodeTree
   from nodebpy import geometry as g, TreeBuilder
   from nodebpy.builder import CustomGeometryGroup
   
@@ -144,7 +146,7 @@
   class SnapInner(CustomGeometryGroup):
       _name = "SnapInner"
   
-      def _build_group(self, tree):
+      def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:
           tree.disable_arrange()
   
           geometry = tree.inputs.geometry("Geometry")
@@ -195,14 +197,15 @@
 # ---
 # name: test_snapshot_top_level_class
   '''
-  from nodebpy import geometry as g
+  from bpy.types import GeometryNodeTree
+  from nodebpy import geometry as g, TreeBuilder
   from nodebpy.builder import CustomGeometryGroup
   
   
   class SnapClassInner(CustomGeometryGroup):
       _name = "SnapClassInner"
   
-      def _build_group(self, tree):
+      def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:
           geometry = tree.inputs.geometry("Geometry")
           geometry_1 = tree.outputs.geometry("Geometry")
   
@@ -212,7 +215,7 @@
   class SnapClassOuter(CustomGeometryGroup):
       _name = "SnapClassOuter"
   
-      def _build_group(self, tree):
+      def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:
           geometry = tree.inputs.geometry("Geometry")
           geometry_1 = tree.outputs.geometry("Geometry")
   
