@@ -290,7 +290,7 @@ def _introspect(library: AssetLibrary, names: set[str] | None) -> list[_AssetCla
 def _library_source(library: AssetLibrary) -> str:
     """Source expression that reconstructs ``library`` in the generated module."""
     if isinstance(library, BundledLibrary):
-        return f"BundledLibrary({library.filename!r})"
+        return f"BundledLibrary({_fmt(library.filename)})"
     from ..builder import PackageLibrary
 
     if isinstance(library, PackageLibrary):
@@ -298,7 +298,7 @@ def _library_source(library: AssetLibrary) -> str:
         # so the generated module imports cleanly and stays cross-platform even
         # when ``relative`` was passed as a ``Path``.
         relative = Path(library.relative).as_posix()
-        return f"PackageLibrary(__file__, {relative!r})"
+        return f"PackageLibrary(__file__, {_fmt(relative)})"
     raise TypeError(f"Cannot serialise asset library: {library!r}")
 
 
@@ -355,8 +355,8 @@ def _render_class(cls: _AssetClass, docstrings: bool = False) -> str:
     return f"""class {cls.class_name}({base}):
     {docstring}
 
-    _name = {cls.asset_name!r}
-    _asset_name = {cls.asset_name!r}
+    _name = {_fmt(cls.asset_name)}
+    _asset_name = {_fmt(cls.asset_name)}
     _library = {cls.library_source}
 
 {inputs_cls}
@@ -451,7 +451,7 @@ def interface_parts(
     if library_source:
         base = asset_group_base(cls.tree_idname).__name__
         attr_lines = [
-            f"_asset_name = {cls.asset_name!r}",
+            f"_asset_name = {_fmt(cls.asset_name)}",
             f"_library = {library_source}",
         ]
 

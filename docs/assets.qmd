@@ -75,7 +75,7 @@ generate_asset_modules(
 Because asset names repeat across editors, splitting also keeps the generated
 class names collision-free where a single mixed module would silently shadow
 one tree type's class with another's.
-=======
+
 ### Docstrings and menu types
 
 By default the generated classes carry numpy-style docstrings built from the

@@ -713,8 +713,11 @@ def test_typed_api_dump_merges_interface(nested_library_blend, tmp_path):
     assert f'_library = PackageLibrary(__file__, "{relpath}")' in outer_a
     assert "Parameters" in outer_a and "Outputs" in outer_a
     assert "class _Inputs(SocketAccessor):" in outer_a
-    assert 'super().__init__(**{"Geometry": geometry, "Factor": factor})' in outer_a
-    assert "def _build_group(self, tree):" in outer_a
+    assert "super().__init__(Geometry=geometry, Factor=factor)" in outer_a
+    assert (
+        "def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:"
+        in outer_a
+    )
     # Group calls inside _build_group use the typed parameter names.
     assert "InnerWidget(geometry=geometry, amount=Doubler(value=factor))" in outer_a
     assert "ASSET = OuterA" in outer_a
@@ -931,8 +934,11 @@ def test_compositor_roundtrip_plain_and_typed(tmp_path):
     typed = (first / "compositor" / "grade_boost.py").read_text(encoding="utf-8")
     assert "class GradeBoost(AssetCompositorGroup):" in typed
     assert '_library = PackageLibrary(__file__, "../../assets.blend")' in typed
-    assert 'super().__init__(**{"Image": image, "Boost": boost})' in typed
-    assert "def _build_group(self, tree):" in typed
+    assert "super().__init__(Image=image, Boost=boost)" in typed
+    assert (
+        "def _build_group(self, tree: TreeBuilder[CompositorNodeTree]) -> None:"
+        in typed
+    )
     init = (first / "compositor" / "__init__.py").read_text(encoding="utf-8")
     assert "from .grade_boost import GradeBoost" in init
 

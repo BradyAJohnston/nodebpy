@@ -74,6 +74,7 @@ from ..export.codegen import (
     _ID_COLLECTIONS,
     GroupInterface,
     _class_name,
+    _fmt,
     _format_with_ruff,
     to_python,
 )
@@ -215,7 +216,7 @@ def _id_defaults(tree) -> dict[str, set[str]]:
 
 def _dict_lines(name: str, data: dict[str, object]) -> list[str]:
     lines = [f"{name} = {{"]
-    lines += [f"    {key!r}: {value!r}," for key, value in data.items()]
+    lines += [f"    {_fmt(key)}: {_fmt(value)}," for key, value in data.items()]
     lines.append("}")
     return lines
 
@@ -336,9 +337,9 @@ def _render_group_module(
     # Deliberately no source filename/timestamp in the header: a dump must be
     # byte-identical across a no-op round-trip so it leaves no VCS diff.
     label = {
-        "asset": f"Node-group asset {group.name!r} ({group.bl_idname})",
-        "shared": f"Node group {group.name!r} ({group.bl_idname})",
-        "material": f"Material {material_name!r}",
+        "asset": f'Node-group asset "{group.name}" ({group.bl_idname})',
+        "shared": f'Node group "{group.name}" ({group.bl_idname})',
+        "material": f'Material "{material_name}"',
     }[kind]
     header = [
         f"# {label}, dumped by nodebpy.assets.dump_library.",
@@ -375,7 +376,7 @@ def _render_group_module(
             "",
             "",
             f"MATERIAL = {class_name}",
-            f"MATERIAL_NAME = {material_name!r}",
+            f"MATERIAL_NAME = {_fmt(material_name)}",
         ]
         material = bpy.data.materials[material_name]
         props = _material_properties(material)
@@ -773,7 +774,7 @@ def _dump_appended(
             if kind == "asset":
                 module_dir = (output_dir / module).parent
                 relpath = Path(os.path.relpath(library_blend, module_dir)).as_posix()
-                library_source = f"PackageLibrary(__file__, {relpath!r})"
+                library_source = f"PackageLibrary(__file__, {_fmt(relpath)})"
             root_interface, iface_imports = interface_parts(
                 group, library_source=library_source, nodebpy_pkg=nodebpy_pkg
             )

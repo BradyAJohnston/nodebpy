@@ -120,7 +120,8 @@ def test_boilerplate_imports():
     with TreeBuilder("Imports") as tree:
         g.Position()
     code = to_python(tree)
-    assert "from nodebpy import geometry as g, TreeBuilder" in code
+    assert "from nodebpy import TreeBuilder" in code
+    assert "from nodebpy import geometry as g" in code
 
 
 def test_with_interface_inputs():
@@ -374,8 +375,8 @@ def test_nodebpy_pkg_rewrites_import_anchor():
 
 def test_top_level_class_emits_class_not_with_block():
     """top_level='class' renders the working tree as a Custom*Group subclass
-    (no ``with`` block / TreeBuilder import); the default stays the ``with``
-    form."""
+    (no ``with`` block; TreeBuilder is imported only for the typed ``tree``
+    parameter); the default stays the ``with`` form."""
     with TreeBuilder("ArchiveMe") as tree:
         geo = tree.inputs.geometry("Geometry")
         g.SetPosition(geometry=geo) >> tree.outputs.geometry("Geometry")
@@ -384,9 +385,11 @@ def test_top_level_class_emits_class_not_with_block():
 
     code = to_python(tree, top_level="class")
     assert "class ArchiveMe(CustomGeometryGroup):" in code
-    assert "def _build_group(self, tree):" in code
+    assert (
+        "def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:" in code
+    )
     assert "with TreeBuilder(" not in code
-    assert "TreeBuilder" not in code  # not imported when unused
+    assert "from bpy.types import GeometryNodeTree" in code
 
 
 def test_top_level_class_round_trips_via_create_group():
@@ -1415,7 +1418,8 @@ def test_imports_only_used_aliases():
     with TreeBuilder("GeoOnly") as tree:
         g.Position()
     code = to_python(tree)
-    assert code.splitlines()[0] == "from nodebpy import geometry as g, TreeBuilder"
+    assert code.splitlines()[0] == "from nodebpy import TreeBuilder"
+    assert code.splitlines()[1] == "from nodebpy import geometry as g"
 
 
 def test_imports_no_alias_for_empty_tree():
@@ -2114,7 +2118,9 @@ def test_custom_group_emits_recursive_class():
     code = to_python(tree)
     assert "from nodebpy.builder import CustomGeometryGroup" in code
     assert "class ClipFieldToBox(CustomGeometryGroup):" in code
-    assert "def _build_group(self, tree):" in code
+    assert (
+        "def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:" in code
+    )
     assert 'ClipFieldToBox(**{"Box Object": object})' in code
 
     orig_top = _structure(tree.tree)
