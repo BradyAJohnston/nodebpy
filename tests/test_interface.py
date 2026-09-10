@@ -1703,3 +1703,65 @@ def test_enable_output(snapshot):
         g.IcoSphere() >> tree.outputs.geometry("IcoSphere").enable_output(sel)
 
     assert snapshot == tree.to_mermaid()
+
+
+def test_mixed_panel_nests_inside_outputs_panel():
+    """``tree.panel`` opened inside ``tree.outputs.panel`` nests under it and,
+    on exit, restores each direction's own active panel instead of clobbering
+    the still-open outputs-side one."""
+    with g.tree(arrange=None) as tree:
+        with tree.outputs.panel("P"):
+            with tree.panel("Q"):
+                tree.inputs.float("A")
+                tree.outputs.float("B")
+            after = tree.outputs.float("After")
+
+    interface = tree.tree.interface
+    panels = {
+        item.name: item
+        for item in interface.items_tree
+        if getattr(item, "item_type", "") == "PANEL"
+    }
+    q = panels["Q"]
+    assert q.parent == panels["P"]  # nested, not top-level
+    # After Q exits, output sockets still land in the enclosing P.
+    assert after._interface_socket.parent == panels["P"]
+
+
+def test_mixed_panel_rejects_disagreeing_active_panels():
+    """Two different panels open at once (one per direction) leave no
+    sensible parent for a mixed panel — that's an error, not a guess."""
+    with g.tree(arrange=None) as tree:
+        with tree.inputs.panel("Ins"):
+            with tree.outputs.panel("Outs"):
+                with pytest.raises(ValueError, match="different panels"):
+                    with tree.panel("Mixed"):
+                        pass  # pragma: no cover - unreachable
+
+
+def test_menu_default_assignment_after_context_exit():
+    """An interface menu default assigned *after* the with-block applies
+    immediately (the deferred queue has already drained), and the getter
+    reports a queued value instead of the stale raw socket."""
+    with g.tree(arrange=None) as tree:
+        mode = tree.inputs.menu("Mode")
+        switch = g.MenuSwitch.geometry(
+            mode, {"A": tree.inputs.geometry("A"), "B": tree.inputs.geometry("B")}
+        )
+        switch >> tree.outputs.geometry("Out")
+        mode.default_value = "A"
+        # Queued, not yet on the raw socket — but the getter reports it.
+        assert mode.default_value == "A"
+
+    def iface_default():
+        item = next(
+            item
+            for item in tree.tree.interface.items_tree
+            if getattr(item, "name", "") == "Mode"
+        )
+        return item.default_value
+
+    assert iface_default() == "A"  # applied on context exit
+    mode.default_value = "B"  # after exit: applied immediately, not lost
+    assert iface_default() == "B"
+    assert mode.default_value == "B"

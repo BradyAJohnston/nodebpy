@@ -45,6 +45,7 @@ from ..types import (
     InputAny,
     InputBoolean,
     InputBundle,
+    InputClosure,
     InputColor,
     InputFloat,
     InputGeometry,
@@ -230,6 +231,57 @@ class _SeparateBundleMixin:
     def items(self) -> _SeparateBundleItems:
         """Typed item factories — declare bundle items with static types."""
         return _SeparateBundleItems(self)
+
+
+class _ClosureToListItems(_SocketItemFactory):
+    """Typed factories for Closure to List items; each declares one list item
+    and returns its typed output socket (a list of that type, one element per
+    closure evaluation)."""
+
+    _owner: _ClosureToListMixin
+
+    def _declare(
+        self, name: str, type: str, structure_type: _SocketShapeStructureType
+    ) -> SocketLinker:
+        node = self._owner.node
+        item = node.list_items.new(type, name)  # ty: ignore[invalid-argument-type]
+        assert item is not None
+        if structure_type != "AUTO":
+            item.structure_type = structure_type
+        return _wrap_socket(
+            _socket_for_item(node, node.list_items, "List_", item, output=True)
+        )
+
+
+class _ClosureToListMixin:
+    """Items constructor + typed item factories for the Closure to List node,
+    whose outputs are all dynamic list items filled by evaluating the closure
+    ``count`` times. Items must be declared explicitly — Blender only syncs
+    them from the linked closure's signature on an editor update, which never
+    runs in a headless build."""
+
+    if TYPE_CHECKING:
+        node: bpy.types.GeometryNodeClosureToList
+
+        def _establish_links(self, **kwargs: Any) -> None: ...
+
+    def __init__(
+        self,
+        count: InputInteger = 1,
+        closure: InputClosure = None,
+        items: dict[str, str] | None = None,
+    ):
+        super().__init__()
+        # Items are output lists computed from the closure; each is declared
+        # by name and socket-type string (as for SeparateBundle).
+        for name, socket_type in (items or {}).items():
+            self.node.list_items.new(socket_type, name)  # ty: ignore[invalid-argument-type]
+        self._establish_links(Count=count, Closure=closure)
+
+    @property
+    def items(self) -> _ClosureToListItems:
+        """Typed item factories — declare list items with static types."""
+        return _ClosureToListItems(self)
 
 
 class _FormatStringMixin(ItemsMixin):
