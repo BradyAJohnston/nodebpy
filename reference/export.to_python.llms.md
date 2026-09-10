@@ -11,6 +11,10 @@ to_python(
     top_level='with',
     format=True,
     nodebpy_pkg='nodebpy',
+    group_class_names=None,
+    external_groups=None,
+    typed_groups=None,
+    root_interface=None,
 )
 ```
 
@@ -29,6 +33,10 @@ Generate Python code that recreates the given node tree using nodebpy.
 | top_level | Literal\['with', 'class'\] | How the top-level tree is rendered. `"with"` (default) emits a `with TreeBuilder(...) as tree:` block. `"class"` emits the top-level tree as a `Custom*Group` subclass too — so every node group, including the one being exported, becomes a class. Build any of them with `ClassName.create_group()`; useful for archiving a set of node groups as plain, reusable Python. | `'with'` |
 | format | bool | If True (default) and the optional `ruff` package is installed, the generated source is run through `ruff format` for tidier output. A no-op when `ruff` is unavailable. | `True` |
 | nodebpy_pkg | str | Import anchor for nodebpy in the generated source. Defaults to the absolute `"nodebpy"`. When nodebpy is vendored inside another package, pass the path that reaches it *relative to the generated module’s package* — e.g. `"..vendor.nodebpy"` — so the emitted imports stay relative to the install/vendor location. | `'nodebpy'` |
+| group_class_names | Mapping\[str, str\] \| None | Class name to use for a given tree name, overriding the derived PascalCase name — for callers that split groups across several generated modules and need the names to agree between them. | `None` |
+| external_groups | Collection\[str\] \| None | Tree names whose classes are defined in another module: they are referenced by their `group_class_names` entry (which must exist) but no class definition is emitted for them. The caller is responsible for making the name resolvable (e.g. an import). | `None` |
+| typed_groups | Collection\[str\] \| None | Tree names whose classes carry a typed `__init__` (merged dump classes) — group calls to them are emitted with the normalized parameter names from `typed_param_names` instead of socket-name keyword keys. | `None` |
+| root_interface | GroupInterface \| None | Typed-interface parts (docstring, class attributes, accessors and `__init__`) spliced into the top-level tree’s class in `class` mode, ahead of `_build_group`. | `None` |
 
 ## Returns
 

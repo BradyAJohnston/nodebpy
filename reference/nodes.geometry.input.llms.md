@@ -331,10 +331,10 @@ Retrieve a collection’s object and collection children, in a name-based order
 
 **Outputs**
 
-| Attribute       | Type               | Description |
-|-----------------|--------------------|-------------|
-| `o.collections` | `CollectionSocket` | Collections |
-| `o.objects`     | `ObjectSocket`     | Objects     |
+| Attribute       | Type                   | Description |
+|-----------------|------------------------|-------------|
+| `o.collections` | `CollectionSocketList` | Collections |
+| `o.objects`     | `ObjectSocketList`     | Objects     |
 
 ### CollectionInfo
 

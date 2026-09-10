@@ -103,7 +103,7 @@ with g.tree() as tree:
 tree
 ```
 
-The repeat zone additionally offers datablock item types the simulation zone does not support (`zone.items.object()`, `zone.items.image()`, `zone.items.collection()`, `zone.items.material()` and `zone.items.closure()`). The string-typed `zone.item(name, initial, type=...)` form remains available when the data type is only known at runtime.
+The repeat zone additionally offers datablock item types the simulation zone does not support (`zone.items.object()`, `zone.items.image()`, `zone.items.collection()`, `zone.items.material()`, `zone.items.font()`, `zone.items.sound()` and `zone.items.closure()`). The string-typed `zone.item(name, initial, type=...)` form remains available when the data type is only known at runtime.
 
 The for-each zone has the same style of typed factories for its three item collections — `zone.inputs` (per-element fields read inside the body), `zone.main` (per-element results written back onto the input geometry) and `zone.generated` (values stored on the generated geometry, with a `domain=` option). The closure zone declares its signature through `zone.inputs` and `zone.outputs`, which return the body-side socket directly.
 

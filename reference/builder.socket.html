@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.15.0</span>
+    <span class="navbar-title">nodebpy 520.17.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,6 +340,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/assets.dump_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">assets.dump_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/assets.build_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">assets.build_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/assets.AssetLibrary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">assets.AssetLibrary</span></a>
   </div>
@@ -377,6 +389,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">export.to_mermaid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.serialize_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.serialize_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.compare_libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.compare_libraries</span></a>
   </div>
 </li>
       </ul>
@@ -6181,7 +6205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><a href="#nodebpy.builder.socket.IntegerSocket.to_string">to_string</a></td>
-<td>Convert the <code>IntegerSocket</code> to a <code>StringSocket</code>.</td>
+<td>Convert the <code>IntegerSocket</code> to a <code>StringSocket</code> in the given base, zero-padded to <code>padding</code> digits.</td>
 </tr>
 </tbody>
 </table>
@@ -6284,8 +6308,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.builder.socket.IntegerSocket.to_string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.IntegerSocket.to_string">to_string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb243"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb243-1"><a href="#cb243-1" aria-hidden="true" tabindex="-1"></a>to_string()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Convert the <code>IntegerSocket</code> to a <code>StringSocket</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb243"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb243-1"><a href="#cb243-1" aria-hidden="true" tabindex="-1"></a>to_string(base<span class="op">=</span><span class="dv">10</span>, padding<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Convert the <code>IntegerSocket</code> to a <code>StringSocket</code> in the given base, zero-padded to <code>padding</code> digits.</p>
 </section>
 </section>
 </section>
@@ -6699,7 +6723,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><a href="#nodebpy.builder.socket.IntegerSocketList.to_string">to_string</a></td>
-<td>Convert the <code>IntegerSocket</code> to a <code>StringSocket</code>.</td>
+<td>Convert the <code>IntegerSocket</code> to a <code>StringSocket</code> in the given base, zero-padded to <code>padding</code> digits.</td>
 </tr>
 </tbody>
 </table>
@@ -6885,8 +6909,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.builder.socket.IntegerSocketList.to_string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.IntegerSocketList.to_string">to_string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb278"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb278-1"><a href="#cb278-1" aria-hidden="true" tabindex="-1"></a>to_string()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Convert the <code>IntegerSocket</code> to a <code>StringSocket</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb278"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb278-1"><a href="#cb278-1" aria-hidden="true" tabindex="-1"></a>to_string(base<span class="op">=</span><span class="dv">10</span>, padding<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Convert the <code>IntegerSocket</code> to a <code>StringSocket</code> in the given base, zero-padded to <code>padding</code> digits.</p>
 </section>
 </section>
 </section>
@@ -10647,10 +10671,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Create a MatchString[Starts With], return the result as a <code>BooleanSocket</code>.</td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.builder.socket.StringSocket.to_float">to_float</a></td>
+<td>Parse the string as a floating-point value and return as <code>FloatSocket</code>.</td>
+</tr>
+<tr class="odd">
+<td><a href="#nodebpy.builder.socket.StringSocket.to_integer">to_integer</a></td>
+<td>Parse the string as an integer in the given base and return as <code>IntegerSocket</code>.</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.builder.socket.StringSocket.to_list">to_list</a></td>
 <td>Create a list of elements, evaluating this field <code>count</code> times based on the <code>Index</code> node.</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.builder.socket.StringSocket.trim">trim</a></td>
+<td>Trim the string and return as <code>StringSocket</code>.</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.builder.socket.StringSocket.uppercase">uppercase</a></td>
 <td>Convert the string to uppercase and return as <code>StringSocket</code>.</td>
 </tr>
@@ -10772,21 +10808,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb407"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb407-1"><a href="#cb407-1" aria-hidden="true" tabindex="-1"></a>starts_with(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a MatchString[Starts With], return the result as a <code>BooleanSocket</code>.</p>
 </section>
+<section id="nodebpy.builder.socket.StringSocket.to_float" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocket.to_float">to_float</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb408"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb408-1"><a href="#cb408-1" aria-hidden="true" tabindex="-1"></a>to_float()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Parse the string as a floating-point value and return as <code>FloatSocket</code>.</p>
+</section>
+<section id="nodebpy.builder.socket.StringSocket.to_integer" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocket.to_integer">to_integer</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb409"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb409-1"><a href="#cb409-1" aria-hidden="true" tabindex="-1"></a>to_integer(base<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Parse the string as an integer in the given base and return as <code>IntegerSocket</code>.</p>
+</section>
 <section id="nodebpy.builder.socket.StringSocket.to_list" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocket.to_list">to_list</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb408"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb408-1"><a href="#cb408-1" aria-hidden="true" tabindex="-1"></a>to_list(count<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb410"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb410-1"><a href="#cb410-1" aria-hidden="true" tabindex="-1"></a>to_list(count<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a list of elements, evaluating this field <code>count</code> times based on the <code>Index</code> node.</p>
+</section>
+<section id="nodebpy.builder.socket.StringSocket.trim" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocket.trim">trim</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb411"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb411-1"><a href="#cb411-1" aria-hidden="true" tabindex="-1"></a>trim(characters<span class="op">=</span><span class="st">''</span>, whitespace<span class="op">=</span><span class="va">True</span>, start<span class="op">=</span><span class="va">True</span>, end<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Trim the string and return as <code>StringSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocket.uppercase" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocket.uppercase">uppercase</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb409"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb409-1"><a href="#cb409-1" aria-hidden="true" tabindex="-1"></a>uppercase()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb412"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb412-1"><a href="#cb412-1" aria-hidden="true" tabindex="-1"></a>uppercase()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert the string to uppercase and return as <code>StringSocket</code>.</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList">StringSocketList</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb410"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb410-1"><a href="#cb410-1" aria-hidden="true" tabindex="-1"></a>StringSocketList(socket)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb413"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb413-1"><a href="#cb413-1" aria-hidden="true" tabindex="-1"></a>StringSocketList(socket)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>List of string sockets.</p>
 <section id="attributes-45" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-45">Attributes</h4>
@@ -10912,6 +10963,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Create a MatchString[Starts With], return the result as a <code>BooleanSocket</code>.</td>
 </tr>
 <tr class="odd">
+<td><a href="#nodebpy.builder.socket.StringSocketList.trim">trim</a></td>
+<td>Trim the string and return as <code>StringSocket</code>.</td>
+</tr>
+<tr class="even">
 <td><a href="#nodebpy.builder.socket.StringSocketList.uppercase">uppercase</a></td>
 <td>Convert the string to uppercase and return as <code>StringSocket</code>.</td>
 </tr>
@@ -10919,12 +10974,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.builder.socket.StringSocketList.contains" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.contains">contains</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb411"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb411-1"><a href="#cb411-1" aria-hidden="true" tabindex="-1"></a>contains(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb414"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb414-1"><a href="#cb414-1" aria-hidden="true" tabindex="-1"></a>contains(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a MatchString<a href="#nodebpy.builder.socket.StringSocket.contains">Contains</a>, return the result as a <code>BooleanSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.enable_output" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.enable_output">enable_output</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb412"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb412-1"><a href="#cb412-1" aria-hidden="true" tabindex="-1"></a>enable_output(enable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb415"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb415-1"><a href="#cb415-1" aria-hidden="true" tabindex="-1"></a>enable_output(enable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Enable or disable the the output of this node group that is connected to this socket.</p>
 <p>If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.</p>
 <section id="parameters-63" class="level6 doc-section doc-section-parameters">
@@ -10981,67 +11036,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.ends_with" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.ends_with">ends_with</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb413"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb413-1"><a href="#cb413-1" aria-hidden="true" tabindex="-1"></a>ends_with(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb416"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb416-1"><a href="#cb416-1" aria-hidden="true" tabindex="-1"></a>ends_with(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a MatchString[Ends With], return the result as a <code>BooleanSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.filter" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.filter">filter</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb414"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb414-1"><a href="#cb414-1" aria-hidden="true" tabindex="-1"></a><span class="bu">filter</span>(selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb417"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb417-1"><a href="#cb417-1" aria-hidden="true" tabindex="-1"></a><span class="bu">filter</span>(selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Filter the list based on the selection.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.find" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.find">find</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb415"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb415-1"><a href="#cb415-1" aria-hidden="true" tabindex="-1"></a>find(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb418"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb418-1"><a href="#cb418-1" aria-hidden="true" tabindex="-1"></a>find(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Find where in a string a pattern occurs. Returns <code>(first_found, count)</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.format" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.format">format</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb416"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb416-1"><a href="#cb416-1" aria-hidden="true" tabindex="-1"></a><span class="bu">format</span>(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb419"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb419-1"><a href="#cb419-1" aria-hidden="true" tabindex="-1"></a><span class="bu">format</span>(items)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Format a given string with the key-value items.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.get" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.get">get</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb417"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb417-1"><a href="#cb417-1" aria-hidden="true" tabindex="-1"></a>get(index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb420"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb420-1"><a href="#cb420-1" aria-hidden="true" tabindex="-1"></a>get(index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get the item at the given index from the list.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.length" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.length">length</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb418"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb418-1"><a href="#cb418-1" aria-hidden="true" tabindex="-1"></a>length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb421"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb421-1"><a href="#cb421-1" aria-hidden="true" tabindex="-1"></a>length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Compute the length of a string and return as <code>IntegerSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.list_length" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.list_length">list_length</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb419"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb419-1"><a href="#cb419-1" aria-hidden="true" tabindex="-1"></a>list_length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb422"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb422-1"><a href="#cb422-1" aria-hidden="true" tabindex="-1"></a>list_length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get the length of the list.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.list_slice" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.list_slice">list_slice</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb420"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb420-1"><a href="#cb420-1" aria-hidden="true" tabindex="-1"></a>list_slice(start<span class="op">=</span><span class="dv">0</span>, stop<span class="op">=</span><span class="va">None</span>, step<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb423"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb423-1"><a href="#cb423-1" aria-hidden="true" tabindex="-1"></a>list_slice(start<span class="op">=</span><span class="dv">0</span>, stop<span class="op">=</span><span class="va">None</span>, step<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.lowercase" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.lowercase">lowercase</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb421"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb421-1"><a href="#cb421-1" aria-hidden="true" tabindex="-1"></a>lowercase()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb424"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb424-1"><a href="#cb424-1" aria-hidden="true" tabindex="-1"></a>lowercase()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert the string to lowercase and return as <code>StringSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.replace" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.replace">replace</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb422"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb422-1"><a href="#cb422-1" aria-hidden="true" tabindex="-1"></a>replace(find, replace)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb425"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb425-1"><a href="#cb425-1" aria-hidden="true" tabindex="-1"></a>replace(find, replace)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Replace every match of the string with the replacement string</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.reverse" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.reverse">reverse</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb423"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb423-1"><a href="#cb423-1" aria-hidden="true" tabindex="-1"></a>reverse()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb426"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb426-1"><a href="#cb426-1" aria-hidden="true" tabindex="-1"></a>reverse()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Reverse the string.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.slice" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.slice">slice</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb424"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb424-1"><a href="#cb424-1" aria-hidden="true" tabindex="-1"></a><span class="bu">slice</span>(position<span class="op">=</span><span class="dv">0</span>, length<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb427"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb427-1"><a href="#cb427-1" aria-hidden="true" tabindex="-1"></a><span class="bu">slice</span>(position<span class="op">=</span><span class="dv">0</span>, length<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Slice a given string from a starting position for a given length.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.sort" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.sort">sort</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb425"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb425-1"><a href="#cb425-1" aria-hidden="true" tabindex="-1"></a>sort(sort_weight, group_id<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb428"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb428-1"><a href="#cb428-1" aria-hidden="true" tabindex="-1"></a>sort(sort_weight, group_id<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Sort the list based on the weights. Optional <code>Group ID</code> and <code>Selection</code> can be provided.</p>
 <section id="parameters-64" class="level6 doc-section doc-section-parameters">
 <h6 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-64">Parameters</h6>
@@ -11104,19 +11159,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.starts_with" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.starts_with">starts_with</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb426"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb426-1"><a href="#cb426-1" aria-hidden="true" tabindex="-1"></a>starts_with(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb429"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb429-1"><a href="#cb429-1" aria-hidden="true" tabindex="-1"></a>starts_with(search)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a MatchString[Starts With], return the result as a <code>BooleanSocket</code>.</p>
+</section>
+<section id="nodebpy.builder.socket.StringSocketList.trim" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.trim">trim</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb430"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb430-1"><a href="#cb430-1" aria-hidden="true" tabindex="-1"></a>trim(characters<span class="op">=</span><span class="st">''</span>, whitespace<span class="op">=</span><span class="va">True</span>, start<span class="op">=</span><span class="va">True</span>, end<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Trim the string and return as <code>StringSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.StringSocketList.uppercase" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.StringSocketList.uppercase">uppercase</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb427"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb427-1"><a href="#cb427-1" aria-hidden="true" tabindex="-1"></a>uppercase()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb431"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb431-1"><a href="#cb431-1" aria-hidden="true" tabindex="-1"></a>uppercase()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert the string to uppercase and return as <code>StringSocket</code>.</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket">VectorSocket</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb428"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb428-1"><a href="#cb428-1" aria-hidden="true" tabindex="-1"></a>VectorSocket(socket)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb432"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb432-1"><a href="#cb432-1" aria-hidden="true" tabindex="-1"></a>VectorSocket(socket)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Runtime vector socket wrapper.</p>
 <section id="attributes-46" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-46">Attributes</h4>
@@ -11281,26 +11341,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.builder.socket.VectorSocket.align_rotation" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.align_rotation">align_rotation</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb429"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb429-1"><a href="#cb429-1" aria-hidden="true" tabindex="-1"></a>align_rotation(rotation<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, axis<span class="op">=</span><span class="st">'Z'</span>, pivot_axis<span class="op">=</span><span class="st">'AUTO'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb433"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb433-1"><a href="#cb433-1" aria-hidden="true" tabindex="-1"></a>align_rotation(rotation<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, axis<span class="op">=</span><span class="st">'Z'</span>, pivot_axis<span class="op">=</span><span class="st">'AUTO'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Orient the given rotation along the current vector. Uses <code>AlignRotationToVector</code> with this socket as the vector input.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.cross" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.cross">cross</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb430"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb430-1"><a href="#cb430-1" aria-hidden="true" tabindex="-1"></a>cross(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb434"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb434-1"><a href="#cb434-1" aria-hidden="true" tabindex="-1"></a>cross(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.distance" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.distance">distance</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb431"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb431-1"><a href="#cb431-1" aria-hidden="true" tabindex="-1"></a>distance(other<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb435"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb435-1"><a href="#cb435-1" aria-hidden="true" tabindex="-1"></a>distance(other<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Euclidean distance between this vector and <em>other</em>, as a <code>FloatSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.dot" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.dot">dot</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb432"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb432-1"><a href="#cb432-1" aria-hidden="true" tabindex="-1"></a>dot(vector<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb436"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb436-1"><a href="#cb436-1" aria-hidden="true" tabindex="-1"></a>dot(vector<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Dot product with another vector and return the result as a <code>FloatSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.enable_output" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.enable_output">enable_output</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb433"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb433-1"><a href="#cb433-1" aria-hidden="true" tabindex="-1"></a>enable_output(enable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb437"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb437-1"><a href="#cb437-1" aria-hidden="true" tabindex="-1"></a>enable_output(enable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Enable or disable the the output of this node group that is connected to this socket.</p>
 <p>If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.</p>
 <section id="parameters-65" class="level6 doc-section doc-section-parameters">
@@ -11357,47 +11417,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.length" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.length">length</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb434"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb434-1"><a href="#cb434-1" aria-hidden="true" tabindex="-1"></a>length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb438"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb438-1"><a href="#cb438-1" aria-hidden="true" tabindex="-1"></a>length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get the length of this vector as a <code>FloatSocket</code></p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.map_range" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.map_range">map_range</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb435"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb435-1"><a href="#cb435-1" aria-hidden="true" tabindex="-1"></a>map_range(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb439"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb439-1"><a href="#cb439-1" aria-hidden="true" tabindex="-1"></a>map_range(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.normalize" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.normalize">normalize</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb436"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb436-1"><a href="#cb436-1" aria-hidden="true" tabindex="-1"></a>normalize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb440"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb440-1"><a href="#cb440-1" aria-hidden="true" tabindex="-1"></a>normalize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.project" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.project">project</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb437"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb437-1"><a href="#cb437-1" aria-hidden="true" tabindex="-1"></a>project(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb441"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb441-1"><a href="#cb441-1" aria-hidden="true" tabindex="-1"></a>project(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.reflect" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.reflect">reflect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb438"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb438-1"><a href="#cb438-1" aria-hidden="true" tabindex="-1"></a>reflect(normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb442"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb442-1"><a href="#cb442-1" aria-hidden="true" tabindex="-1"></a>reflect(normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.rotate" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.rotate">rotate</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb439"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb439-1"><a href="#cb439-1" aria-hidden="true" tabindex="-1"></a>rotate(rotation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb443"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb443-1"><a href="#cb443-1" aria-hidden="true" tabindex="-1"></a>rotate(rotation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.scale" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.scale">scale</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb440"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb440-1"><a href="#cb440-1" aria-hidden="true" tabindex="-1"></a>scale(scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb444"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb444-1"><a href="#cb444-1" aria-hidden="true" tabindex="-1"></a>scale(scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.to_list" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.to_list">to_list</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb441"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb441-1"><a href="#cb441-1" aria-hidden="true" tabindex="-1"></a>to_list(count<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb445"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb445-1"><a href="#cb445-1" aria-hidden="true" tabindex="-1"></a>to_list(count<span class="op">=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a list of elements, evaluating this field <code>count</code> times based on the <code>Index</code> node.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocket.transform" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocket.transform">transform</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb442"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb442-1"><a href="#cb442-1" aria-hidden="true" tabindex="-1"></a>transform(matrix)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb446"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb446-1"><a href="#cb446-1" aria-hidden="true" tabindex="-1"></a>transform(matrix)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid">VectorSocketGrid</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb443"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb443-1"><a href="#cb443-1" aria-hidden="true" tabindex="-1"></a>VectorSocketGrid(socket)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb447"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb447-1"><a href="#cb447-1" aria-hidden="true" tabindex="-1"></a>VectorSocketGrid(socket)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Runtime vector grid socket wrapper.</p>
 <section id="attributes-47" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-47">Attributes</h4>
@@ -11578,46 +11638,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.builder.socket.VectorSocketGrid.align_rotation" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.align_rotation">align_rotation</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb444"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb444-1"><a href="#cb444-1" aria-hidden="true" tabindex="-1"></a>align_rotation(rotation<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, axis<span class="op">=</span><span class="st">'Z'</span>, pivot_axis<span class="op">=</span><span class="st">'AUTO'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb448"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb448-1"><a href="#cb448-1" aria-hidden="true" tabindex="-1"></a>align_rotation(rotation<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, axis<span class="op">=</span><span class="st">'Z'</span>, pivot_axis<span class="op">=</span><span class="st">'AUTO'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Orient the given rotation along the current vector. Uses <code>AlignRotationToVector</code> with this socket as the vector input.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.clip" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.clip">clip</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb445"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb445-1"><a href="#cb445-1" aria-hidden="true" tabindex="-1"></a>clip(min_x<span class="op">=</span><span class="dv">0</span>, min_y<span class="op">=</span><span class="dv">0</span>, min_z<span class="op">=</span><span class="dv">0</span>, max_x<span class="op">=</span><span class="dv">32</span>, max_y<span class="op">=</span><span class="dv">32</span>, max_z<span class="op">=</span><span class="dv">32</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb449"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb449-1"><a href="#cb449-1" aria-hidden="true" tabindex="-1"></a>clip(min_x<span class="op">=</span><span class="dv">0</span>, min_y<span class="op">=</span><span class="dv">0</span>, min_z<span class="op">=</span><span class="dv">0</span>, max_x<span class="op">=</span><span class="dv">32</span>, max_y<span class="op">=</span><span class="dv">32</span>, max_z<span class="op">=</span><span class="dv">32</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Deactivate grid voxels outside minimum and maximum coordinates, setting them to the background value.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.cross" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.cross">cross</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb446"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb446-1"><a href="#cb446-1" aria-hidden="true" tabindex="-1"></a>cross(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb450"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb450-1"><a href="#cb450-1" aria-hidden="true" tabindex="-1"></a>cross(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.curl" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.curl">curl</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb447"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb447-1"><a href="#cb447-1" aria-hidden="true" tabindex="-1"></a>curl()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb451"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb451-1"><a href="#cb451-1" aria-hidden="true" tabindex="-1"></a>curl()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the magnitude and direction of circulation of a directional vector grid.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.dilate_erode" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.dilate_erode">dilate_erode</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb448"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb448-1"><a href="#cb448-1" aria-hidden="true" tabindex="-1"></a>dilate_erode(steps<span class="op">=</span><span class="dv">1</span>, connectivity<span class="op">=</span><span class="st">'Face'</span>, tiles<span class="op">=</span><span class="st">'Preserve'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb452"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb452-1"><a href="#cb452-1" aria-hidden="true" tabindex="-1"></a>dilate_erode(steps<span class="op">=</span><span class="dv">1</span>, connectivity<span class="op">=</span><span class="st">'Face'</span>, tiles<span class="op">=</span><span class="st">'Preserve'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Dilate or erode the active regions of a grid. This changes which voxels are active but does not change their values.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.distance" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.distance">distance</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb449"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb449-1"><a href="#cb449-1" aria-hidden="true" tabindex="-1"></a>distance(other<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb453"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb453-1"><a href="#cb453-1" aria-hidden="true" tabindex="-1"></a>distance(other<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Euclidean distance between this vector and <em>other</em>, as a <code>FloatSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.divergence" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.divergence">divergence</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb450"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb450-1"><a href="#cb450-1" aria-hidden="true" tabindex="-1"></a>divergence()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb454"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb454-1"><a href="#cb454-1" aria-hidden="true" tabindex="-1"></a>divergence()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Calculate the flow into and out of each point of a directional vector grid.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.dot" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.dot">dot</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb451"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb451-1"><a href="#cb451-1" aria-hidden="true" tabindex="-1"></a>dot(vector<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb455"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb455-1"><a href="#cb455-1" aria-hidden="true" tabindex="-1"></a>dot(vector<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Dot product with another vector and return the result as a <code>FloatSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.enable_output" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.enable_output">enable_output</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb452"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb452-1"><a href="#cb452-1" aria-hidden="true" tabindex="-1"></a>enable_output(enable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb456"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb456-1"><a href="#cb456-1" aria-hidden="true" tabindex="-1"></a>enable_output(enable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Enable or disable the the output of this node group that is connected to this socket.</p>
 <p>If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.</p>
 <section id="parameters-66" class="level6 doc-section doc-section-parameters">
@@ -11674,82 +11734,82 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.field_to_grid" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.field_to_grid">field_to_grid</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb453"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb453-1"><a href="#cb453-1" aria-hidden="true" tabindex="-1"></a>field_to_grid()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb457"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb457-1"><a href="#cb457-1" aria-hidden="true" tabindex="-1"></a>field_to_grid()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create new grids by evaluating new values on an existing volume grid topology.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.length" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.length">length</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb454"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb454-1"><a href="#cb454-1" aria-hidden="true" tabindex="-1"></a>length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb458"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb458-1"><a href="#cb458-1" aria-hidden="true" tabindex="-1"></a>length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get the length of this vector as a <code>FloatSocket</code></p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.map_range" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.map_range">map_range</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb455"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb455-1"><a href="#cb455-1" aria-hidden="true" tabindex="-1"></a>map_range(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb459"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb459-1"><a href="#cb459-1" aria-hidden="true" tabindex="-1"></a>map_range(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.mean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.mean">mean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb456"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb456-1"><a href="#cb456-1" aria-hidden="true" tabindex="-1"></a>mean(width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb460"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb460-1"><a href="#cb460-1" aria-hidden="true" tabindex="-1"></a>mean(width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.median" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.median">median</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb457"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb457-1"><a href="#cb457-1" aria-hidden="true" tabindex="-1"></a>median(width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb461"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb461-1"><a href="#cb461-1" aria-hidden="true" tabindex="-1"></a>median(width<span class="op">=</span><span class="dv">1</span>, iterations<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.normalize" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.normalize">normalize</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb458"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb458-1"><a href="#cb458-1" aria-hidden="true" tabindex="-1"></a>normalize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb462"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb462-1"><a href="#cb462-1" aria-hidden="true" tabindex="-1"></a>normalize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.project" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.project">project</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb459"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb459-1"><a href="#cb459-1" aria-hidden="true" tabindex="-1"></a>project(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb463"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb463-1"><a href="#cb463-1" aria-hidden="true" tabindex="-1"></a>project(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.prune" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.prune">prune</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb460"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb460-1"><a href="#cb460-1" aria-hidden="true" tabindex="-1"></a>prune(threshold<span class="op">=</span><span class="fl">0.1</span>, mode<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb464"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb464-1"><a href="#cb464-1" aria-hidden="true" tabindex="-1"></a>prune(threshold<span class="op">=</span><span class="fl">0.1</span>, mode<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.reflect" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.reflect">reflect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb461"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb461-1"><a href="#cb461-1" aria-hidden="true" tabindex="-1"></a>reflect(normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb465"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb465-1"><a href="#cb465-1" aria-hidden="true" tabindex="-1"></a>reflect(normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.rotate" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.rotate">rotate</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb462"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb462-1"><a href="#cb462-1" aria-hidden="true" tabindex="-1"></a>rotate(rotation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb466"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb466-1"><a href="#cb466-1" aria-hidden="true" tabindex="-1"></a>rotate(rotation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.sample" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.sample">sample</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb463"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb463-1"><a href="#cb463-1" aria-hidden="true" tabindex="-1"></a>sample(position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb467"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb467-1"><a href="#cb467-1" aria-hidden="true" tabindex="-1"></a>sample(position<span class="op">=</span><span class="va">None</span>, interpolation<span class="op">=</span><span class="st">'Trilinear'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve values from the specified volume grid.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.sample_index" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.sample_index">sample_index</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb464"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb464-1"><a href="#cb464-1" aria-hidden="true" tabindex="-1"></a>sample_index(x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb468"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb468-1"><a href="#cb468-1" aria-hidden="true" tabindex="-1"></a>sample_index(x<span class="op">=</span><span class="dv">0</span>, y<span class="op">=</span><span class="dv">0</span>, z<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve volume grid values at specific voxels.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.scale" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.scale">scale</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb465"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb465-1"><a href="#cb465-1" aria-hidden="true" tabindex="-1"></a>scale(scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb469"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb469-1"><a href="#cb469-1" aria-hidden="true" tabindex="-1"></a>scale(scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.to_points" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.to_points">to_points</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb466"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb466-1"><a href="#cb466-1" aria-hidden="true" tabindex="-1"></a>to_points()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb470"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb470-1"><a href="#cb470-1" aria-hidden="true" tabindex="-1"></a>to_points()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate a point cloud from a volume grid’s active voxels.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.transform" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.transform">transform</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb467"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb467-1"><a href="#cb467-1" aria-hidden="true" tabindex="-1"></a>transform(matrix)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb471"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb471-1"><a href="#cb471-1" aria-hidden="true" tabindex="-1"></a>transform(matrix)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketGrid.voxelize" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketGrid.voxelize">voxelize</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb468"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb468-1"><a href="#cb468-1" aria-hidden="true" tabindex="-1"></a>voxelize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb472"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb472-1"><a href="#cb472-1" aria-hidden="true" tabindex="-1"></a>voxelize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Remove sparseness from a volume grid by making the active tiles into voxels.</p>
 </section>
 </section>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList">VectorSocketList</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb469"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb469-1"><a href="#cb469-1" aria-hidden="true" tabindex="-1"></a>VectorSocketList(socket)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb473"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb473-1"><a href="#cb473-1" aria-hidden="true" tabindex="-1"></a>VectorSocketList(socket)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Class for list of vector sockets.</p>
 <section id="attributes-48" class="level4">
 <h4 class="anchored" data-anchor-id="attributes-48">Attributes</h4>
@@ -11902,26 +11962,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.builder.socket.VectorSocketList.align_rotation" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.align_rotation">align_rotation</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb470"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb470-1"><a href="#cb470-1" aria-hidden="true" tabindex="-1"></a>align_rotation(rotation<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, axis<span class="op">=</span><span class="st">'Z'</span>, pivot_axis<span class="op">=</span><span class="st">'AUTO'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb474"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb474-1"><a href="#cb474-1" aria-hidden="true" tabindex="-1"></a>align_rotation(rotation<span class="op">=</span><span class="va">None</span>, factor<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, axis<span class="op">=</span><span class="st">'Z'</span>, pivot_axis<span class="op">=</span><span class="st">'AUTO'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Orient the given rotation along the current vector. Uses <code>AlignRotationToVector</code> with this socket as the vector input.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.cross" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.cross">cross</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb471"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb471-1"><a href="#cb471-1" aria-hidden="true" tabindex="-1"></a>cross(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb475"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb475-1"><a href="#cb475-1" aria-hidden="true" tabindex="-1"></a>cross(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.distance" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.distance">distance</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb472"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb472-1"><a href="#cb472-1" aria-hidden="true" tabindex="-1"></a>distance(other<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb476"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb476-1"><a href="#cb476-1" aria-hidden="true" tabindex="-1"></a>distance(other<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Euclidean distance between this vector and <em>other</em>, as a <code>FloatSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.dot" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.dot">dot</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb473"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb473-1"><a href="#cb473-1" aria-hidden="true" tabindex="-1"></a>dot(vector<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb477"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb477-1"><a href="#cb477-1" aria-hidden="true" tabindex="-1"></a>dot(vector<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Dot product with another vector and return the result as a <code>FloatSocket</code>.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.enable_output" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.enable_output">enable_output</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb474"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb474-1"><a href="#cb474-1" aria-hidden="true" tabindex="-1"></a>enable_output(enable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb478"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb478-1"><a href="#cb478-1" aria-hidden="true" tabindex="-1"></a>enable_output(enable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Enable or disable the the output of this node group that is connected to this socket.</p>
 <p>If called on an output socket, the output of the EnableOutput node is returned. If called on an input socket, the input socket is returned.</p>
 <section id="parameters-67" class="level6 doc-section doc-section-parameters">
@@ -11978,61 +12038,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.filter" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.filter">filter</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb475"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb475-1"><a href="#cb475-1" aria-hidden="true" tabindex="-1"></a><span class="bu">filter</span>(selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb479"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb479-1"><a href="#cb479-1" aria-hidden="true" tabindex="-1"></a><span class="bu">filter</span>(selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Filter the list based on the selection.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.get" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.get">get</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb476"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb476-1"><a href="#cb476-1" aria-hidden="true" tabindex="-1"></a>get(index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb480"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb480-1"><a href="#cb480-1" aria-hidden="true" tabindex="-1"></a>get(index)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get the item at the given index from the list.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.length" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.length">length</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb477"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb477-1"><a href="#cb477-1" aria-hidden="true" tabindex="-1"></a>length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb481"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb481-1"><a href="#cb481-1" aria-hidden="true" tabindex="-1"></a>length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get the length of this vector as a <code>FloatSocket</code></p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.list_length" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.list_length">list_length</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb478"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb478-1"><a href="#cb478-1" aria-hidden="true" tabindex="-1"></a>list_length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb482"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb482-1"><a href="#cb482-1" aria-hidden="true" tabindex="-1"></a>list_length()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Get the length of the list.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.list_slice" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.list_slice">list_slice</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb479"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb479-1"><a href="#cb479-1" aria-hidden="true" tabindex="-1"></a>list_slice(start<span class="op">=</span><span class="dv">0</span>, stop<span class="op">=</span><span class="va">None</span>, step<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb483"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb483-1"><a href="#cb483-1" aria-hidden="true" tabindex="-1"></a>list_slice(start<span class="op">=</span><span class="dv">0</span>, stop<span class="op">=</span><span class="va">None</span>, step<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Slice the list using start, stop, and step indices. Behaves like Python’s slice notation.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.map_range" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.map_range">map_range</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb480"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb480-1"><a href="#cb480-1" aria-hidden="true" tabindex="-1"></a>map_range(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb484"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb484-1"><a href="#cb484-1" aria-hidden="true" tabindex="-1"></a>map_range(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.normalize" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.normalize">normalize</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb481"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb481-1"><a href="#cb481-1" aria-hidden="true" tabindex="-1"></a>normalize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb485"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb485-1"><a href="#cb485-1" aria-hidden="true" tabindex="-1"></a>normalize()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.project" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.project">project</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb482"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb482-1"><a href="#cb482-1" aria-hidden="true" tabindex="-1"></a>project(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb486"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb486-1"><a href="#cb486-1" aria-hidden="true" tabindex="-1"></a>project(other)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.reflect" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.reflect">reflect</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb483"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb483-1"><a href="#cb483-1" aria-hidden="true" tabindex="-1"></a>reflect(normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb487"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb487-1"><a href="#cb487-1" aria-hidden="true" tabindex="-1"></a>reflect(normal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.reverse" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.reverse">reverse</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb484"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb484-1"><a href="#cb484-1" aria-hidden="true" tabindex="-1"></a>reverse()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb488"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb488-1"><a href="#cb488-1" aria-hidden="true" tabindex="-1"></a>reverse()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Reverse the list. Currently uses a SortList node with negative Index to reverse the list.</p>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.rotate" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.rotate">rotate</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb485"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb485-1"><a href="#cb485-1" aria-hidden="true" tabindex="-1"></a>rotate(rotation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb489"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb489-1"><a href="#cb489-1" aria-hidden="true" tabindex="-1"></a>rotate(rotation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.scale" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.scale">scale</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb486"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb486-1"><a href="#cb486-1" aria-hidden="true" tabindex="-1"></a>scale(scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb490"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb490-1"><a href="#cb490-1" aria-hidden="true" tabindex="-1"></a>scale(scale)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.sort" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.sort">sort</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb487"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb487-1"><a href="#cb487-1" aria-hidden="true" tabindex="-1"></a>sort(sort_weight, group_id<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb491"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb491-1"><a href="#cb491-1" aria-hidden="true" tabindex="-1"></a>sort(sort_weight, group_id<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Sort the list based on the weights. Optional <code>Group ID</code> and <code>Selection</code> can be provided.</p>
 <section id="parameters-68" class="level6 doc-section doc-section-parameters">
 <h6 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-68">Parameters</h6>
@@ -12095,7 +12155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.builder.socket.VectorSocketList.transform" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.socket.VectorSocketList.transform">transform</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb488"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb488-1"><a href="#cb488-1" aria-hidden="true" tabindex="-1"></a>transform(matrix)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb492"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb492-1"><a href="#cb492-1" aria-hidden="true" tabindex="-1"></a>transform(matrix)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.15.0</span>
+    <span class="navbar-title">nodebpy 520.17.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,6 +340,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/assets.dump_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">assets.dump_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/assets.build_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">assets.build_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/assets.AssetLibrary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">assets.AssetLibrary</span></a>
   </div>
@@ -377,6 +389,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">export.to_mermaid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.serialize_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.serialize_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.compare_libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.compare_libraries</span></a>
   </div>
 </li>
       </ul>
@@ -14161,7 +14185,7 @@ i.radius : FloatSocket
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.geometry.geometry.SetSplineType.bézier">bézier</a></td>
+<td><a href="#nodebpy.nodes.geometry.geometry.SetSplineType.bezier">bezier</a></td>
 <td>Create Set Spline Type with operation ‘Bézier’.</td>
 </tr>
 <tr class="even">
@@ -14178,9 +14202,9 @@ i.radius : FloatSocket
 </tr>
 </tbody>
 </table>
-<section id="nodebpy.nodes.geometry.geometry.SetSplineType.bézier" class="level5">
-<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetSplineType.bézier">bézier</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb208"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb208-1"><a href="#cb208-1" aria-hidden="true" tabindex="-1"></a>bézier(curve<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nodebpy.nodes.geometry.geometry.SetSplineType.bezier" class="level5">
+<h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.geometry.SetSplineType.bezier">bezier</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb208"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb208-1"><a href="#cb208-1" aria-hidden="true" tabindex="-1"></a>bezier(curve<span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Spline Type with operation ‘Bézier’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.geometry.SetSplineType.catmull_rom" class="level5">
@@ -15715,7 +15739,7 @@ i.radius : FloatSocket
 <span id="cb232-14"><a href="#cb232-14" aria-hidden="true" tabindex="-1"></a>    source_curve_id<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb232-15"><a href="#cb232-15" aria-hidden="true" tabindex="-1"></a>    source_instance_id<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb232-16"><a href="#cb232-16" aria-hidden="true" tabindex="-1"></a>    pattern_mode<span class="op">=</span><span class="st">'Wildcard'</span>,</span>
-<span id="cb232-17"><a href="#cb232-17" aria-hidden="true" tabindex="-1"></a>    attribute_names<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb232-17"><a href="#cb232-17" aria-hidden="true" tabindex="-1"></a>    attribute_names<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb232-18"><a href="#cb232-18" aria-hidden="true" tabindex="-1"></a>    exclude_names<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb232-19"><a href="#cb232-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Copy attributes from one geometry to another</p>
@@ -15829,9 +15853,9 @@ i.radius : FloatSocket
 </tr>
 <tr class="even">
 <td>attribute_names</td>
-<td>InputString</td>
+<td>InputStringList</td>
 <td>Attribute Names</td>
-<td><code>''</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>exclude_names</td>
@@ -15965,7 +15989,7 @@ i.radius : FloatSocket
 </tr>
 <tr class="even">
 <td><code>i.attribute_names</code></td>
-<td><code>StringSocket</code></td>
+<td><code>StringSocketList</code></td>
 <td>Attribute Names</td>
 </tr>
 <tr class="odd">
@@ -15992,7 +16016,7 @@ i.radius : FloatSocket
 </tr>
 <tr class="even">
 <td><code>o.transferred_names</code></td>
-<td><code>StringSocket</code></td>
+<td><code>StringSocketList</code></td>
 <td>Transferred Names</td>
 </tr>
 </tbody>

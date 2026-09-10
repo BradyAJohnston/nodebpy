@@ -47,7 +47,7 @@
 
 ``` python
 AdvectGrid(
-    grid=0.0,
+    grid=None,
     velocity=None,
     time_step=1.0,
     integration_scheme='Runge-Kutta 3',
@@ -63,8 +63,8 @@ Move grid values through a velocity field using numerical integration. Supports 
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| grid | InputFloat | Grid | `0.0` |
-| velocity | InputVector | Velocity | `None` |
+| grid | InputFloatGrid | Grid | `None` |
+| velocity | InputVectorGrid | Velocity | `None` |
 | time_step | InputFloat | Time Step | `1.0` |
 | integration_scheme | InputMenu \| Literal\['Semi-Lagrangian', 'Midpoint', 'Runge-Kutta 3', 'Runge-Kutta 4', 'MacCormack', 'BFECC'\] | Integration Scheme | `'Runge-Kutta 3'` |
 | limiter | InputMenu \| Literal\['None', 'Clamp', 'Revert'\] | Limiter | `'Clamp'` |
@@ -93,7 +93,7 @@ Move grid values through a velocity field using numerical integration. Supports 
 
 ``` python
 float(
-    grid=0.0,
+    grid=None,
     velocity=None,
     time_step=1.0,
     integration_scheme='Runge-Kutta 3',
@@ -107,7 +107,7 @@ Create Advect Grid with operation ‘Float’.
 
 ``` python
 integer(
-    grid=0,
+    grid=None,
     velocity=None,
     time_step=1.0,
     integration_scheme='Runge-Kutta 3',
@@ -133,25 +133,25 @@ Create Advect Grid with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute              | Type           | Description        |
-|------------------------|----------------|--------------------|
-| `i.grid`               | `FloatSocket`  | Grid               |
-| `i.velocity`           | `VectorSocket` | Velocity           |
-| `i.time_step`          | `FloatSocket`  | Time Step          |
-| `i.integration_scheme` | `MenuSocket`   | Integration Scheme |
-| `i.limiter`            | `MenuSocket`   | Limiter            |
+| Attribute              | Type               | Description        |
+|------------------------|--------------------|--------------------|
+| `i.grid`               | `FloatSocketGrid`  | Grid               |
+| `i.velocity`           | `VectorSocketGrid` | Velocity           |
+| `i.time_step`          | `FloatSocket`      | Time Step          |
+| `i.integration_scheme` | `MenuSocket`       | Integration Scheme |
+| `i.limiter`            | `MenuSocket`       | Limiter            |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### ClipGrid
 
 ``` python
 ClipGrid(
-    grid=0.0,
+    grid=None,
     min_x=0,
     min_y=0,
     min_z=0,
@@ -167,15 +167,15 @@ Deactivate grid voxels outside minimum and maximum coordinates, setting them to 
 
 #### Parameters
 
-| Name  | Type         | Description | Default |
-|-------|--------------|-------------|---------|
-| grid  | InputFloat   | Grid        | `0.0`   |
-| min_x | InputInteger | Min X       | `0`     |
-| min_y | InputInteger | Min Y       | `0`     |
-| min_z | InputInteger | Min Z       | `0`     |
-| max_x | InputInteger | Max X       | `32`    |
-| max_y | InputInteger | Max Y       | `32`    |
-| max_z | InputInteger | Max Z       | `32`    |
+| Name  | Type           | Description | Default |
+|-------|----------------|-------------|---------|
+| grid  | InputFloatGrid | Grid        | `None`  |
+| min_x | InputInteger   | Min X       | `0`     |
+| min_y | InputInteger   | Min Y       | `0`     |
+| min_z | InputInteger   | Min Z       | `0`     |
+| max_x | InputInteger   | Max X       | `32`    |
+| max_y | InputInteger   | Max Y       | `32`    |
+| max_z | InputInteger   | Max Z       | `32`    |
 
 #### Attributes
 
@@ -201,7 +201,7 @@ Deactivate grid voxels outside minimum and maximum coordinates, setting them to 
 ##### boolean
 
 ``` python
-boolean(grid=False, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+boolean(grid=None, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
 ```
 
 Create Clip Grid with operation ‘Boolean’.
@@ -209,7 +209,7 @@ Create Clip Grid with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+float(grid=None, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
 ```
 
 Create Clip Grid with operation ‘Float’.
@@ -217,7 +217,7 @@ Create Clip Grid with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
+integer(grid=None, min_x=0, min_y=0, min_z=0, max_x=32, max_y=32, max_z=32)
 ```
 
 Create Clip Grid with operation ‘Integer’.
@@ -232,21 +232,21 @@ Create Clip Grid with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute | Type            | Description |
-|-----------|-----------------|-------------|
-| `i.grid`  | `FloatSocket`   | Grid        |
-| `i.min_x` | `IntegerSocket` | Min X       |
-| `i.min_y` | `IntegerSocket` | Min Y       |
-| `i.min_z` | `IntegerSocket` | Min Z       |
-| `i.max_x` | `IntegerSocket` | Max X       |
-| `i.max_y` | `IntegerSocket` | Max Y       |
-| `i.max_z` | `IntegerSocket` | Max Z       |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.grid`  | `FloatSocketGrid` | Grid        |
+| `i.min_x` | `IntegerSocket`   | Min X       |
+| `i.min_y` | `IntegerSocket`   | Min Y       |
+| `i.min_z` | `IntegerSocket`   | Min Z       |
+| `i.max_x` | `IntegerSocket`   | Max X       |
+| `i.max_y` | `IntegerSocket`   | Max Y       |
+| `i.max_z` | `IntegerSocket`   | Max Z       |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### CubeGridTopology
 
@@ -304,15 +304,15 @@ Create a boolean grid topology with the given dimensions, for use with the Field
 
 **Outputs**
 
-| Attribute    | Type            | Description |
-|--------------|-----------------|-------------|
-| `o.topology` | `BooleanSocket` | Topology    |
+| Attribute    | Type                | Description |
+|--------------|---------------------|-------------|
+| `o.topology` | `BooleanSocketGrid` | Topology    |
 
 ### DistributePointsInGrid
 
 ``` python
 DistributePointsInGrid(
-    grid=0.0,
+    grid=None,
     density=1.0,
     seed=0,
     spacing=None,
@@ -326,13 +326,13 @@ Generate points inside a volume grid
 
 #### Parameters
 
-| Name      | Type         | Description | Default |
-|-----------|--------------|-------------|---------|
-| grid      | InputFloat   | Grid        | `0.0`   |
-| density   | InputFloat   | Density     | `1.0`   |
-| seed      | InputInteger | Seed        | `0`     |
-| spacing   | InputVector  | Spacing     | `None`  |
-| threshold | InputFloat   | Threshold   | `0.1`   |
+| Name      | Type           | Description | Default |
+|-----------|----------------|-------------|---------|
+| grid      | InputFloatGrid | Grid        | `None`  |
+| density   | InputFloat     | Density     | `1.0`   |
+| seed      | InputInteger   | Seed        | `0`     |
+| spacing   | InputVector    | Spacing     | `None`  |
+| threshold | InputFloat     | Threshold   | `0.1`   |
 
 #### Attributes
 
@@ -356,7 +356,7 @@ Generate points inside a volume grid
 ##### grid
 
 ``` python
-grid(grid=0.0, spacing=None, threshold=0.1)
+grid(grid=None, spacing=None, threshold=0.1)
 ```
 
 Create Distribute Points in Grid with operation ‘Grid’. Distribute the points in a grid pattern inside of the volume
@@ -364,20 +364,20 @@ Create Distribute Points in Grid with operation ‘Grid’. Distribute the point
 ##### random
 
 ``` python
-random(grid=0.0, density=1.0, seed=0)
+random(grid=None, density=1.0, seed=0)
 ```
 
 Create Distribute Points in Grid with operation ‘Random’. Distribute points randomly inside of the volume
 
 **Inputs**
 
-| Attribute     | Type            | Description |
-|---------------|-----------------|-------------|
-| `i.grid`      | `FloatSocket`   | Grid        |
-| `i.density`   | `FloatSocket`   | Density     |
-| `i.seed`      | `IntegerSocket` | Seed        |
-| `i.spacing`   | `VectorSocket`  | Spacing     |
-| `i.threshold` | `FloatSocket`   | Threshold   |
+| Attribute     | Type              | Description |
+|---------------|-------------------|-------------|
+| `i.grid`      | `FloatSocketGrid` | Grid        |
+| `i.density`   | `FloatSocket`     | Density     |
+| `i.seed`      | `IntegerSocket`   | Seed        |
+| `i.spacing`   | `VectorSocket`    | Spacing     |
+| `i.threshold` | `FloatSocket`     | Threshold   |
 
 **Outputs**
 
@@ -518,10 +518,10 @@ Create Get Named Grid with operation ‘Vector’.
 
 **Outputs**
 
-| Attribute  | Type             | Description |
-|------------|------------------|-------------|
-| `o.volume` | `GeometrySocket` | Volume      |
-| `o.grid`   | `FloatSocket`    | Grid        |
+| Attribute  | Type              | Description |
+|------------|-------------------|-------------|
+| `o.volume` | `GeometrySocket`  | Volume      |
+| `o.grid`   | `FloatSocketGrid` | Grid        |
 
 ### GridCurl
 
@@ -533,9 +533,9 @@ Calculate the magnitude and direction of circulation of a directional vector gri
 
 #### Parameters
 
-| Name | Type        | Description | Default |
-|------|-------------|-------------|---------|
-| grid | InputVector | Grid        | `None`  |
+| Name | Type            | Description | Default |
+|------|-----------------|-------------|---------|
+| grid | InputVectorGrid | Grid        | `None`  |
 
 #### Attributes
 
@@ -550,21 +550,21 @@ Calculate the magnitude and direction of circulation of a directional vector gri
 
 **Inputs**
 
-| Attribute | Type           | Description |
-|-----------|----------------|-------------|
-| `i.grid`  | `VectorSocket` | Grid        |
+| Attribute | Type               | Description |
+|-----------|--------------------|-------------|
+| `i.grid`  | `VectorSocketGrid` | Grid        |
 
 **Outputs**
 
-| Attribute | Type           | Description |
-|-----------|----------------|-------------|
-| `o.curl`  | `VectorSocket` | Curl        |
+| Attribute | Type               | Description |
+|-----------|--------------------|-------------|
+| `o.curl`  | `VectorSocketGrid` | Curl        |
 
 ### GridDilateErode
 
 ``` python
 GridDilateErode(
-    grid=0.0,
+    grid=None,
     connectivity='Face',
     tiles='Preserve',
     steps=1,
@@ -579,7 +579,7 @@ Dilate or erode the active regions of a grid. This changes which voxels are acti
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| grid | InputFloat | Grid | `0.0` |
+| grid | InputFloatGrid | Grid | `None` |
 | connectivity | InputMenu \| Literal\['Face', 'Edge', 'Vertex'\] | Connectivity | `'Face'` |
 | tiles | InputMenu \| Literal\['Ignore', 'Expand', 'Preserve'\] | Tiles | `'Preserve'` |
 | steps | InputInteger | Steps | `1` |
@@ -608,7 +608,7 @@ Dilate or erode the active regions of a grid. This changes which voxels are acti
 ##### boolean
 
 ``` python
-boolean(grid=False, connectivity='Face', tiles='Preserve', steps=1)
+boolean(grid=None, connectivity='Face', tiles='Preserve', steps=1)
 ```
 
 Create Grid Dilate & Erode with operation ‘Boolean’.
@@ -616,7 +616,7 @@ Create Grid Dilate & Erode with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0, connectivity='Face', tiles='Preserve', steps=1)
+float(grid=None, connectivity='Face', tiles='Preserve', steps=1)
 ```
 
 Create Grid Dilate & Erode with operation ‘Float’.
@@ -624,7 +624,7 @@ Create Grid Dilate & Erode with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, connectivity='Face', tiles='Preserve', steps=1)
+integer(grid=None, connectivity='Face', tiles='Preserve', steps=1)
 ```
 
 Create Grid Dilate & Erode with operation ‘Integer’.
@@ -639,18 +639,18 @@ Create Grid Dilate & Erode with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute        | Type            | Description  |
-|------------------|-----------------|--------------|
-| `i.grid`         | `FloatSocket`   | Grid         |
-| `i.connectivity` | `MenuSocket`    | Connectivity |
-| `i.tiles`        | `MenuSocket`    | Tiles        |
-| `i.steps`        | `IntegerSocket` | Steps        |
+| Attribute        | Type              | Description  |
+|------------------|-------------------|--------------|
+| `i.grid`         | `FloatSocketGrid` | Grid         |
+| `i.connectivity` | `MenuSocket`      | Connectivity |
+| `i.tiles`        | `MenuSocket`      | Tiles        |
+| `i.steps`        | `IntegerSocket`   | Steps        |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### GridDivergence
 
@@ -662,9 +662,9 @@ Calculate the flow into and out of each point of a directional vector grid
 
 #### Parameters
 
-| Name | Type        | Description | Default |
-|------|-------------|-------------|---------|
-| grid | InputVector | Grid        | `None`  |
+| Name | Type            | Description | Default |
+|------|-----------------|-------------|---------|
+| grid | InputVectorGrid | Grid        | `None`  |
 
 #### Attributes
 
@@ -679,29 +679,29 @@ Calculate the flow into and out of each point of a directional vector grid
 
 **Inputs**
 
-| Attribute | Type           | Description |
-|-----------|----------------|-------------|
-| `i.grid`  | `VectorSocket` | Grid        |
+| Attribute | Type               | Description |
+|-----------|--------------------|-------------|
+| `i.grid`  | `VectorSocketGrid` | Grid        |
 
 **Outputs**
 
-| Attribute      | Type          | Description |
-|----------------|---------------|-------------|
-| `o.divergence` | `FloatSocket` | Divergence  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `o.divergence` | `FloatSocketGrid` | Divergence  |
 
 ### GridGradient
 
 ``` python
-GridGradient(grid=0.0)
+GridGradient(grid=None)
 ```
 
 Calculate the direction and magnitude of the change in values of a scalar grid
 
 #### Parameters
 
-| Name | Type       | Description | Default |
-|------|------------|-------------|---------|
-| grid | InputFloat | Grid        | `0.0`   |
+| Name | Type           | Description | Default |
+|------|----------------|-------------|---------|
+| grid | InputFloatGrid | Grid        | `None`  |
 
 #### Attributes
 
@@ -716,29 +716,29 @@ Calculate the direction and magnitude of the change in values of a scalar grid
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.grid`  | `FloatSocketGrid` | Grid        |
 
 **Outputs**
 
-| Attribute    | Type           | Description |
-|--------------|----------------|-------------|
-| `o.gradient` | `VectorSocket` | Gradient    |
+| Attribute    | Type               | Description |
+|--------------|--------------------|-------------|
+| `o.gradient` | `VectorSocketGrid` | Gradient    |
 
 ### GridInfo
 
 ``` python
-GridInfo(grid=0.0, *, data_type='FLOAT')
+GridInfo(grid=None, *, data_type='FLOAT')
 ```
 
 Retrieve information about a volume grid
 
 #### Parameters
 
-| Name | Type       | Description | Default |
-|------|------------|-------------|---------|
-| grid | InputFloat | Grid        | `0.0`   |
+| Name | Type           | Description | Default |
+|------|----------------|-------------|---------|
+| grid | InputFloatGrid | Grid        | `None`  |
 
 #### Attributes
 
@@ -764,7 +764,7 @@ Retrieve information about a volume grid
 ##### boolean
 
 ``` python
-boolean(grid=False)
+boolean(grid=None)
 ```
 
 Create Grid Info with operation ‘Boolean’.
@@ -772,7 +772,7 @@ Create Grid Info with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0)
+float(grid=None)
 ```
 
 Create Grid Info with operation ‘Float’.
@@ -780,7 +780,7 @@ Create Grid Info with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0)
+integer(grid=None)
 ```
 
 Create Grid Info with operation ‘Integer’.
@@ -795,9 +795,9 @@ Create Grid Info with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.grid`  | `FloatSocketGrid` | Grid        |
 
 **Outputs**
 
@@ -809,16 +809,16 @@ Create Grid Info with operation ‘Vector’.
 ### GridLaplacian
 
 ``` python
-GridLaplacian(grid=0.0)
+GridLaplacian(grid=None)
 ```
 
 Compute the divergence of the gradient of the input grid
 
 #### Parameters
 
-| Name | Type       | Description | Default |
-|------|------------|-------------|---------|
-| grid | InputFloat | Grid        | `0.0`   |
+| Name | Type           | Description | Default |
+|------|----------------|-------------|---------|
+| grid | InputFloatGrid | Grid        | `None`  |
 
 #### Attributes
 
@@ -833,31 +833,31 @@ Compute the divergence of the gradient of the input grid
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.grid`  | `FloatSocketGrid` | Grid        |
 
 **Outputs**
 
-| Attribute     | Type          | Description |
-|---------------|---------------|-------------|
-| `o.laplacian` | `FloatSocket` | Laplacian   |
+| Attribute     | Type              | Description |
+|---------------|-------------------|-------------|
+| `o.laplacian` | `FloatSocketGrid` | Laplacian   |
 
 ### GridMean
 
 ``` python
-GridMean(grid=0.0, width=1, iterations=1, *, data_type='FLOAT')
+GridMean(grid=None, width=1, iterations=1, *, data_type='FLOAT')
 ```
 
 Apply mean (box) filter smoothing to a voxel. The mean value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| grid       | InputFloat   | Grid        | `0.0`   |
-| width      | InputInteger | Width       | `1`     |
-| iterations | InputInteger | Iterations  | `1`     |
+| Name       | Type           | Description | Default |
+|------------|----------------|-------------|---------|
+| grid       | InputFloatGrid | Grid        | `None`  |
+| width      | InputInteger   | Width       | `1`     |
+| iterations | InputInteger   | Iterations  | `1`     |
 
 #### Attributes
 
@@ -882,7 +882,7 @@ Apply mean (box) filter smoothing to a voxel. The mean value from surrounding vo
 ##### float
 
 ``` python
-float(grid=0.0, width=1, iterations=1)
+float(grid=None, width=1, iterations=1)
 ```
 
 Create Grid Mean with operation ‘Float’.
@@ -890,7 +890,7 @@ Create Grid Mean with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, width=1, iterations=1)
+integer(grid=None, width=1, iterations=1)
 ```
 
 Create Grid Mean with operation ‘Integer’.
@@ -905,33 +905,33 @@ Create Grid Mean with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute      | Type            | Description |
-|----------------|-----------------|-------------|
-| `i.grid`       | `FloatSocket`   | Grid        |
-| `i.width`      | `IntegerSocket` | Width       |
-| `i.iterations` | `IntegerSocket` | Iterations  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `i.grid`       | `FloatSocketGrid` | Grid        |
+| `i.width`      | `IntegerSocket`   | Width       |
+| `i.iterations` | `IntegerSocket`   | Iterations  |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### GridMedian
 
 ``` python
-GridMedian(grid=0.0, width=1, iterations=1, *, data_type='FLOAT')
+GridMedian(grid=None, width=1, iterations=1, *, data_type='FLOAT')
 ```
 
 Apply median (box) filter smoothing to a voxel. The median value from surrounding voxels in a box-shape defined by the radius replaces the voxel value.
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| grid       | InputFloat   | Grid        | `0.0`   |
-| width      | InputInteger | Width       | `1`     |
-| iterations | InputInteger | Iterations  | `1`     |
+| Name       | Type           | Description | Default |
+|------------|----------------|-------------|---------|
+| grid       | InputFloatGrid | Grid        | `None`  |
+| width      | InputInteger   | Width       | `1`     |
+| iterations | InputInteger   | Iterations  | `1`     |
 
 #### Attributes
 
@@ -956,7 +956,7 @@ Apply median (box) filter smoothing to a voxel. The median value from surroundin
 ##### float
 
 ``` python
-float(grid=0.0, width=1, iterations=1)
+float(grid=None, width=1, iterations=1)
 ```
 
 Create Grid Median with operation ‘Float’.
@@ -964,7 +964,7 @@ Create Grid Median with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, width=1, iterations=1)
+integer(grid=None, width=1, iterations=1)
 ```
 
 Create Grid Median with operation ‘Integer’.
@@ -979,33 +979,33 @@ Create Grid Median with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute      | Type            | Description |
-|----------------|-----------------|-------------|
-| `i.grid`       | `FloatSocket`   | Grid        |
-| `i.width`      | `IntegerSocket` | Width       |
-| `i.iterations` | `IntegerSocket` | Iterations  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `i.grid`       | `FloatSocketGrid` | Grid        |
+| `i.width`      | `IntegerSocket`   | Width       |
+| `i.iterations` | `IntegerSocket`   | Iterations  |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### GridToMesh
 
 ``` python
-GridToMesh(grid=0.0, threshold=0.1, adaptivity=0.0)
+GridToMesh(grid=None, threshold=0.1, adaptivity=0.0)
 ```
 
 Generate a mesh on the “surface” of a volume grid
 
 #### Parameters
 
-| Name       | Type       | Description | Default |
-|------------|------------|-------------|---------|
-| grid       | InputFloat | Grid        | `0.0`   |
-| threshold  | InputFloat | Threshold   | `0.1`   |
-| adaptivity | InputFloat | Adaptivity  | `0.0`   |
+| Name       | Type           | Description | Default |
+|------------|----------------|-------------|---------|
+| grid       | InputFloatGrid | Grid        | `None`  |
+| threshold  | InputFloat     | Threshold   | `0.1`   |
+| adaptivity | InputFloat     | Adaptivity  | `0.0`   |
 
 #### Attributes
 
@@ -1020,11 +1020,11 @@ Generate a mesh on the “surface” of a volume grid
 
 **Inputs**
 
-| Attribute      | Type          | Description |
-|----------------|---------------|-------------|
-| `i.grid`       | `FloatSocket` | Grid        |
-| `i.threshold`  | `FloatSocket` | Threshold   |
-| `i.adaptivity` | `FloatSocket` | Adaptivity  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `i.grid`       | `FloatSocketGrid` | Grid        |
+| `i.threshold`  | `FloatSocket`     | Threshold   |
+| `i.adaptivity` | `FloatSocket`     | Adaptivity  |
 
 **Outputs**
 
@@ -1035,16 +1035,16 @@ Generate a mesh on the “surface” of a volume grid
 ### GridToPoints
 
 ``` python
-GridToPoints(grid=0.0, *, data_type='FLOAT')
+GridToPoints(grid=None, *, data_type='FLOAT')
 ```
 
 Generate a point cloud from a volume grid’s active voxels
 
 #### Parameters
 
-| Name | Type       | Description | Default |
-|------|------------|-------------|---------|
-| grid | InputFloat | Grid        | `0.0`   |
+| Name | Type           | Description | Default |
+|------|----------------|-------------|---------|
+| grid | InputFloatGrid | Grid        | `None`  |
 
 #### Attributes
 
@@ -1070,7 +1070,7 @@ Generate a point cloud from a volume grid’s active voxels
 ##### boolean
 
 ``` python
-boolean(grid=False)
+boolean(grid=None)
 ```
 
 Create Grid to Points with operation ‘Boolean’.
@@ -1078,7 +1078,7 @@ Create Grid to Points with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0)
+float(grid=None)
 ```
 
 Create Grid to Points with operation ‘Float’.
@@ -1086,7 +1086,7 @@ Create Grid to Points with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0)
+integer(grid=None)
 ```
 
 Create Grid to Points with operation ‘Integer’.
@@ -1101,9 +1101,9 @@ Create Grid to Points with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.grid`  | `FloatSocketGrid` | Grid        |
 
 **Outputs**
 
@@ -1156,9 +1156,9 @@ Create a filled volume grid from a mesh
 
 **Outputs**
 
-| Attribute        | Type          | Description  |
-|------------------|---------------|--------------|
-| `o.density_grid` | `FloatSocket` | Density Grid |
+| Attribute        | Type              | Description  |
+|------------------|-------------------|--------------|
+| `o.density_grid` | `FloatSocketGrid` | Density Grid |
 
 ### MeshToSDFGrid
 
@@ -1197,9 +1197,9 @@ Create a signed distance volume grid from a mesh
 
 **Outputs**
 
-| Attribute    | Type          | Description |
-|--------------|---------------|-------------|
-| `o.sdf_grid` | `FloatSocket` | SDF Grid    |
+| Attribute    | Type              | Description |
+|--------------|-------------------|-------------|
+| `o.sdf_grid` | `FloatSocketGrid` | SDF Grid    |
 
 ### MeshToVolume
 
@@ -1292,9 +1292,9 @@ Create a signed distance volume grid from points
 
 **Outputs**
 
-| Attribute    | Type          | Description |
-|--------------|---------------|-------------|
-| `o.sdf_grid` | `FloatSocket` | SDF Grid    |
+| Attribute    | Type              | Description |
+|--------------|-------------------|-------------|
+| `o.sdf_grid` | `FloatSocketGrid` | SDF Grid    |
 
 ### PointsToVolume
 
@@ -1353,7 +1353,7 @@ Generate a fog volume sphere around every point
 ### PruneGrid
 
 ``` python
-PruneGrid(grid=0.0, mode='Threshold', threshold=0.01, *, data_type='FLOAT')
+PruneGrid(grid=None, mode='Threshold', threshold=0.01, *, data_type='FLOAT')
 ```
 
 Make the storage of a volume grid more efficient by collapsing data into tiles or inner nodes
@@ -1362,7 +1362,7 @@ Make the storage of a volume grid more efficient by collapsing data into tiles o
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| grid | InputFloat | Grid | `0.0` |
+| grid | InputFloatGrid | Grid | `None` |
 | mode | InputMenu \| Literal\['Inactive', 'Threshold', 'SDF'\] | Mode | `'Threshold'` |
 | threshold | InputFloat | Threshold | `0.01` |
 
@@ -1390,7 +1390,7 @@ Make the storage of a volume grid more efficient by collapsing data into tiles o
 ##### boolean
 
 ``` python
-boolean(grid=False, mode='Threshold')
+boolean(grid=None, mode='Threshold')
 ```
 
 Create Prune Grid with operation ‘Boolean’.
@@ -1398,7 +1398,7 @@ Create Prune Grid with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0, mode='Threshold', threshold=0.01)
+float(grid=None, mode='Threshold', threshold=0.01)
 ```
 
 Create Prune Grid with operation ‘Float’.
@@ -1406,7 +1406,7 @@ Create Prune Grid with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, mode='Threshold', threshold=0)
+integer(grid=None, mode='Threshold', threshold=0)
 ```
 
 Create Prune Grid with operation ‘Integer’.
@@ -1421,32 +1421,32 @@ Create Prune Grid with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute     | Type          | Description |
-|---------------|---------------|-------------|
-| `i.grid`      | `FloatSocket` | Grid        |
-| `i.mode`      | `MenuSocket`  | Mode        |
-| `i.threshold` | `FloatSocket` | Threshold   |
+| Attribute     | Type              | Description |
+|---------------|-------------------|-------------|
+| `i.grid`      | `FloatSocketGrid` | Grid        |
+| `i.mode`      | `MenuSocket`      | Mode        |
+| `i.threshold` | `FloatSocket`     | Threshold   |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### SDFGridFillet
 
 ``` python
-SDFGridFillet(grid=0.0, iterations=1)
+SDFGridFillet(grid=None, iterations=1)
 ```
 
 Round off concave internal corners in a signed distance field. Only affects areas with negative principal curvature, creating smoother transitions between surfaces
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| grid       | InputFloat   | Grid        | `0.0`   |
-| iterations | InputInteger | Iterations  | `1`     |
+| Name       | Type           | Description | Default |
+|------------|----------------|-------------|---------|
+| grid       | InputFloatGrid | Grid        | `None`  |
+| iterations | InputInteger   | Iterations  | `1`     |
 
 #### Attributes
 
@@ -1461,31 +1461,31 @@ Round off concave internal corners in a signed distance field. Only affects area
 
 **Inputs**
 
-| Attribute      | Type            | Description |
-|----------------|-----------------|-------------|
-| `i.grid`       | `FloatSocket`   | Grid        |
-| `i.iterations` | `IntegerSocket` | Iterations  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `i.grid`       | `FloatSocketGrid` | Grid        |
+| `i.iterations` | `IntegerSocket`   | Iterations  |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### SDFGridLaplacian
 
 ``` python
-SDFGridLaplacian(grid=0.0, iterations=1)
+SDFGridLaplacian(grid=None, iterations=1)
 ```
 
 Apply Laplacian flow smoothing to a signed distance field. Computationally efficient alternative to mean curvature flow, ideal when combined with SDF normalization
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| grid       | InputFloat   | Grid        | `0.0`   |
-| iterations | InputInteger | Iterations  | `1`     |
+| Name       | Type           | Description | Default |
+|------------|----------------|-------------|---------|
+| grid       | InputFloatGrid | Grid        | `None`  |
+| iterations | InputInteger   | Iterations  | `1`     |
 
 #### Attributes
 
@@ -1500,32 +1500,32 @@ Apply Laplacian flow smoothing to a signed distance field. Computationally effic
 
 **Inputs**
 
-| Attribute      | Type            | Description |
-|----------------|-----------------|-------------|
-| `i.grid`       | `FloatSocket`   | Grid        |
-| `i.iterations` | `IntegerSocket` | Iterations  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `i.grid`       | `FloatSocketGrid` | Grid        |
+| `i.iterations` | `IntegerSocket`   | Iterations  |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### SDFGridMean
 
 ``` python
-SDFGridMean(grid=0.0, width=1, iterations=1)
+SDFGridMean(grid=None, width=1, iterations=1)
 ```
 
 Apply mean (box) filter smoothing to a signed distance field. Fast separable averaging filter for general smoothing of the distance field
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| grid       | InputFloat   | Grid        | `0.0`   |
-| width      | InputInteger | Width       | `1`     |
-| iterations | InputInteger | Iterations  | `1`     |
+| Name       | Type           | Description | Default |
+|------------|----------------|-------------|---------|
+| grid       | InputFloatGrid | Grid        | `None`  |
+| width      | InputInteger   | Width       | `1`     |
+| iterations | InputInteger   | Iterations  | `1`     |
 
 #### Attributes
 
@@ -1540,32 +1540,32 @@ Apply mean (box) filter smoothing to a signed distance field. Fast separable ave
 
 **Inputs**
 
-| Attribute      | Type            | Description |
-|----------------|-----------------|-------------|
-| `i.grid`       | `FloatSocket`   | Grid        |
-| `i.width`      | `IntegerSocket` | Width       |
-| `i.iterations` | `IntegerSocket` | Iterations  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `i.grid`       | `FloatSocketGrid` | Grid        |
+| `i.width`      | `IntegerSocket`   | Width       |
+| `i.iterations` | `IntegerSocket`   | Iterations  |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### SDFGridMeanCurvature
 
 ``` python
-SDFGridMeanCurvature(grid=0.0, iterations=1)
+SDFGridMeanCurvature(grid=None, iterations=1)
 ```
 
 Apply mean curvature flow smoothing to a signed distance field. Evolves the surface based on its mean curvature, naturally smoothing high-curvature regions more than flat areas
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| grid       | InputFloat   | Grid        | `0.0`   |
-| iterations | InputInteger | Iterations  | `1`     |
+| Name       | Type           | Description | Default |
+|------------|----------------|-------------|---------|
+| grid       | InputFloatGrid | Grid        | `None`  |
+| iterations | InputInteger   | Iterations  | `1`     |
 
 #### Attributes
 
@@ -1580,32 +1580,32 @@ Apply mean curvature flow smoothing to a signed distance field. Evolves the surf
 
 **Inputs**
 
-| Attribute      | Type            | Description |
-|----------------|-----------------|-------------|
-| `i.grid`       | `FloatSocket`   | Grid        |
-| `i.iterations` | `IntegerSocket` | Iterations  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `i.grid`       | `FloatSocketGrid` | Grid        |
+| `i.iterations` | `IntegerSocket`   | Iterations  |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### SDFGridMedian
 
 ``` python
-SDFGridMedian(grid=0.0, width=1, iterations=1)
+SDFGridMedian(grid=None, width=1, iterations=1)
 ```
 
 Apply median filter to a signed distance field. Reduces noise while preserving sharp features and edges in the distance field
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| grid       | InputFloat   | Grid        | `0.0`   |
-| width      | InputInteger | Width       | `1`     |
-| iterations | InputInteger | Iterations  | `1`     |
+| Name       | Type           | Description | Default |
+|------------|----------------|-------------|---------|
+| grid       | InputFloatGrid | Grid        | `None`  |
+| width      | InputInteger   | Width       | `1`     |
+| iterations | InputInteger   | Iterations  | `1`     |
 
 #### Attributes
 
@@ -1620,32 +1620,32 @@ Apply median filter to a signed distance field. Reduces noise while preserving s
 
 **Inputs**
 
-| Attribute      | Type            | Description |
-|----------------|-----------------|-------------|
-| `i.grid`       | `FloatSocket`   | Grid        |
-| `i.width`      | `IntegerSocket` | Width       |
-| `i.iterations` | `IntegerSocket` | Iterations  |
+| Attribute      | Type              | Description |
+|----------------|-------------------|-------------|
+| `i.grid`       | `FloatSocketGrid` | Grid        |
+| `i.width`      | `IntegerSocket`   | Width       |
+| `i.iterations` | `IntegerSocket`   | Iterations  |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### SDFGridOffset
 
 ``` python
-SDFGridOffset(grid=0.0, distance=0.1)
+SDFGridOffset(grid=None, distance=0.1)
 ```
 
 Offset a signed distance field surface by a world-space distance. Dilates (positive) or erodes (negative) while maintaining the signed distance property
 
 #### Parameters
 
-| Name     | Type       | Description | Default |
-|----------|------------|-------------|---------|
-| grid     | InputFloat | Grid        | `0.0`   |
-| distance | InputFloat | Distance    | `0.1`   |
+| Name     | Type           | Description | Default |
+|----------|----------------|-------------|---------|
+| grid     | InputFloatGrid | Grid        | `None`  |
+| distance | InputFloat     | Distance    | `0.1`   |
 
 #### Attributes
 
@@ -1660,22 +1660,22 @@ Offset a signed distance field surface by a world-space distance. Dilates (posit
 
 **Inputs**
 
-| Attribute    | Type          | Description |
-|--------------|---------------|-------------|
-| `i.grid`     | `FloatSocket` | Grid        |
-| `i.distance` | `FloatSocket` | Distance    |
+| Attribute    | Type              | Description |
+|--------------|-------------------|-------------|
+| `i.grid`     | `FloatSocketGrid` | Grid        |
+| `i.distance` | `FloatSocket`     | Distance    |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### SampleGrid
 
 ``` python
 SampleGrid(
-    grid=0.0,
+    grid=None,
     position=None,
     interpolation='Trilinear',
     *,
@@ -1689,7 +1689,7 @@ Retrieve values from the specified volume grid
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| grid | InputFloat | Grid | `0.0` |
+| grid | InputFloatGrid | Grid | `None` |
 | position | InputVector | Position | `None` |
 | interpolation | InputMenu \| Literal\['Nearest Neighbor', 'Trilinear', 'Triquadratic'\] | Interpolation | `'Trilinear'` |
 
@@ -1717,7 +1717,7 @@ Retrieve values from the specified volume grid
 ##### boolean
 
 ``` python
-boolean(grid=False, position=None, interpolation='Trilinear')
+boolean(grid=None, position=None, interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Boolean’.
@@ -1725,7 +1725,7 @@ Create Sample Grid with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0, position=None, interpolation='Trilinear')
+float(grid=None, position=None, interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Float’.
@@ -1733,7 +1733,7 @@ Create Sample Grid with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, position=None, interpolation='Trilinear')
+integer(grid=None, position=None, interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Integer’.
@@ -1748,11 +1748,11 @@ Create Sample Grid with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute         | Type           | Description   |
-|-------------------|----------------|---------------|
-| `i.grid`          | `FloatSocket`  | Grid          |
-| `i.position`      | `VectorSocket` | Position      |
-| `i.interpolation` | `MenuSocket`   | Interpolation |
+| Attribute         | Type              | Description   |
+|-------------------|-------------------|---------------|
+| `i.grid`          | `FloatSocketGrid` | Grid          |
+| `i.position`      | `VectorSocket`    | Position      |
+| `i.interpolation` | `MenuSocket`      | Interpolation |
 
 **Outputs**
 
@@ -1763,19 +1763,19 @@ Create Sample Grid with operation ‘Vector’.
 ### SampleGridIndex
 
 ``` python
-SampleGridIndex(grid=0.0, x=0, y=0, z=0, *, data_type='FLOAT')
+SampleGridIndex(grid=None, x=0, y=0, z=0, *, data_type='FLOAT')
 ```
 
 Retrieve volume grid values at specific voxels
 
 #### Parameters
 
-| Name | Type         | Description | Default |
-|------|--------------|-------------|---------|
-| grid | InputFloat   | Grid        | `0.0`   |
-| x    | InputInteger | X           | `0`     |
-| y    | InputInteger | Y           | `0`     |
-| z    | InputInteger | Z           | `0`     |
+| Name | Type           | Description | Default |
+|------|----------------|-------------|---------|
+| grid | InputFloatGrid | Grid        | `None`  |
+| x    | InputInteger   | X           | `0`     |
+| y    | InputInteger   | Y           | `0`     |
+| z    | InputInteger   | Z           | `0`     |
 
 #### Attributes
 
@@ -1801,7 +1801,7 @@ Retrieve volume grid values at specific voxels
 ##### boolean
 
 ``` python
-boolean(grid=False, x=0, y=0, z=0)
+boolean(grid=None, x=0, y=0, z=0)
 ```
 
 Create Sample Grid Index with operation ‘Boolean’.
@@ -1809,7 +1809,7 @@ Create Sample Grid Index with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0, x=0, y=0, z=0)
+float(grid=None, x=0, y=0, z=0)
 ```
 
 Create Sample Grid Index with operation ‘Float’.
@@ -1817,7 +1817,7 @@ Create Sample Grid Index with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, x=0, y=0, z=0)
+integer(grid=None, x=0, y=0, z=0)
 ```
 
 Create Sample Grid Index with operation ‘Integer’.
@@ -1832,12 +1832,12 @@ Create Sample Grid Index with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute | Type            | Description |
-|-----------|-----------------|-------------|
-| `i.grid`  | `FloatSocket`   | Grid        |
-| `i.x`     | `IntegerSocket` | X           |
-| `i.y`     | `IntegerSocket` | Y           |
-| `i.z`     | `IntegerSocket` | Z           |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.grid`  | `FloatSocketGrid` | Grid        |
+| `i.x`     | `IntegerSocket`   | X           |
+| `i.y`     | `IntegerSocket`   | Y           |
+| `i.z`     | `IntegerSocket`   | Z           |
 
 **Outputs**
 
@@ -1849,7 +1849,7 @@ Create Sample Grid Index with operation ‘Vector’.
 
 ``` python
 SetGridBackground(
-    grid=0.0,
+    grid=None,
     background=0.0,
     update_inactive=False,
     *,
@@ -1861,11 +1861,11 @@ Set the background value used for inactive voxels and tiles
 
 #### Parameters
 
-| Name            | Type         | Description     | Default |
-|-----------------|--------------|-----------------|---------|
-| grid            | InputFloat   | Grid            | `0.0`   |
-| background      | InputFloat   | Background      | `0.0`   |
-| update_inactive | InputBoolean | Update Inactive | `False` |
+| Name            | Type           | Description     | Default |
+|-----------------|----------------|-----------------|---------|
+| grid            | InputFloatGrid | Grid            | `None`  |
+| background      | InputFloat     | Background      | `0.0`   |
+| update_inactive | InputBoolean   | Update Inactive | `False` |
 
 #### Attributes
 
@@ -1891,7 +1891,7 @@ Set the background value used for inactive voxels and tiles
 ##### boolean
 
 ``` python
-boolean(grid=False, background=False, update_inactive=False)
+boolean(grid=None, background=False, update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Boolean’.
@@ -1899,7 +1899,7 @@ Create Set Grid Background with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0, background=0.0, update_inactive=False)
+float(grid=None, background=0.0, update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Float’.
@@ -1907,7 +1907,7 @@ Create Set Grid Background with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, background=0, update_inactive=False)
+integer(grid=None, background=0, update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Integer’.
@@ -1922,32 +1922,32 @@ Create Set Grid Background with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute           | Type            | Description     |
-|---------------------|-----------------|-----------------|
-| `i.grid`            | `FloatSocket`   | Grid            |
-| `i.background`      | `FloatSocket`   | Background      |
-| `i.update_inactive` | `BooleanSocket` | Update Inactive |
+| Attribute           | Type              | Description     |
+|---------------------|-------------------|-----------------|
+| `i.grid`            | `FloatSocketGrid` | Grid            |
+| `i.background`      | `FloatSocket`     | Background      |
+| `i.update_inactive` | `BooleanSocket`   | Update Inactive |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |
 
 ### SetGridTransform
 
 ``` python
-SetGridTransform(grid=0.0, transform=None, *, data_type='FLOAT')
+SetGridTransform(grid=None, transform=None, *, data_type='FLOAT')
 ```
 
 Set the transform for the grid from index space into object space.
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| grid      | InputFloat  | Grid        | `0.0`   |
-| transform | InputMatrix | Transform   | `None`  |
+| Name      | Type           | Description | Default |
+|-----------|----------------|-------------|---------|
+| grid      | InputFloatGrid | Grid        | `None`  |
+| transform | InputMatrix    | Transform   | `None`  |
 
 #### Attributes
 
@@ -1973,7 +1973,7 @@ Set the transform for the grid from index space into object space.
 ##### boolean
 
 ``` python
-boolean(grid=False, transform=None)
+boolean(grid=None, transform=None)
 ```
 
 Create Set Grid Transform with operation ‘Boolean’.
@@ -1981,7 +1981,7 @@ Create Set Grid Transform with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0, transform=None)
+float(grid=None, transform=None)
 ```
 
 Create Set Grid Transform with operation ‘Float’.
@@ -1989,7 +1989,7 @@ Create Set Grid Transform with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0, transform=None)
+integer(grid=None, transform=None)
 ```
 
 Create Set Grid Transform with operation ‘Integer’.
@@ -2004,33 +2004,33 @@ Create Set Grid Transform with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute     | Type           | Description |
-|---------------|----------------|-------------|
-| `i.grid`      | `FloatSocket`  | Grid        |
-| `i.transform` | `MatrixSocket` | Transform   |
+| Attribute     | Type              | Description |
+|---------------|-------------------|-------------|
+| `i.grid`      | `FloatSocketGrid` | Grid        |
+| `i.transform` | `MatrixSocket`    | Transform   |
 
 **Outputs**
 
-| Attribute    | Type            | Description |
-|--------------|-----------------|-------------|
-| `o.is_valid` | `BooleanSocket` | Is Valid    |
-| `o.grid`     | `FloatSocket`   | Grid        |
+| Attribute    | Type              | Description |
+|--------------|-------------------|-------------|
+| `o.is_valid` | `BooleanSocket`   | Is Valid    |
+| `o.grid`     | `FloatSocketGrid` | Grid        |
 
 ### StoreNamedGrid
 
 ``` python
-StoreNamedGrid(volume=None, name='', grid=0.0, *, data_type='FLOAT')
+StoreNamedGrid(volume=None, name='', grid=None, *, data_type='FLOAT')
 ```
 
 Store grid data in a volume geometry with the specified name
 
 #### Parameters
 
-| Name   | Type          | Description | Default |
-|--------|---------------|-------------|---------|
-| volume | InputGeometry | Volume      | `None`  |
-| name   | InputString   | Name        | `''`    |
-| grid   | InputFloat    | Grid        | `0.0`   |
+| Name   | Type           | Description | Default |
+|--------|----------------|-------------|---------|
+| volume | InputGeometry  | Volume      | `None`  |
+| name   | InputString    | Name        | `''`    |
+| grid   | InputFloatGrid | Grid        | `None`  |
 
 #### Attributes
 
@@ -2056,7 +2056,7 @@ Store grid data in a volume geometry with the specified name
 ##### boolean
 
 ``` python
-boolean(volume=None, name='', grid=False)
+boolean(volume=None, name='', grid=None)
 ```
 
 Create Store Named Grid with operation ‘Boolean’. Boolean
@@ -2064,7 +2064,7 @@ Create Store Named Grid with operation ‘Boolean’. Boolean
 ##### float
 
 ``` python
-float(volume=None, name='', grid=0.0)
+float(volume=None, name='', grid=None)
 ```
 
 Create Store Named Grid with operation ‘Float’. Single precision float
@@ -2072,7 +2072,7 @@ Create Store Named Grid with operation ‘Float’. Single precision float
 ##### integer
 
 ``` python
-integer(volume=None, name='', grid=0)
+integer(volume=None, name='', grid=None)
 ```
 
 Create Store Named Grid with operation ‘Integer’. 32-bit integer
@@ -2087,11 +2087,11 @@ Create Store Named Grid with operation ‘Vector’. 3D float vector
 
 **Inputs**
 
-| Attribute  | Type             | Description |
-|------------|------------------|-------------|
-| `i.volume` | `GeometrySocket` | Volume      |
-| `i.name`   | `StringSocket`   | Name        |
-| `i.grid`   | `FloatSocket`    | Grid        |
+| Attribute  | Type              | Description |
+|------------|-------------------|-------------|
+| `i.volume` | `GeometrySocket`  | Volume      |
+| `i.name`   | `StringSocket`    | Name        |
+| `i.grid`   | `FloatSocketGrid` | Grid        |
 
 **Outputs**
 
@@ -2213,16 +2213,16 @@ Generate a mesh on the “surface” of a volume
 ### VoxelizeGrid
 
 ``` python
-VoxelizeGrid(grid=0.0, *, data_type='FLOAT')
+VoxelizeGrid(grid=None, *, data_type='FLOAT')
 ```
 
 Remove sparseness from a volume grid by making the active tiles into voxels
 
 #### Parameters
 
-| Name | Type       | Description | Default |
-|------|------------|-------------|---------|
-| grid | InputFloat | Grid        | `0.0`   |
+| Name | Type           | Description | Default |
+|------|----------------|-------------|---------|
+| grid | InputFloatGrid | Grid        | `None`  |
 
 #### Attributes
 
@@ -2248,7 +2248,7 @@ Remove sparseness from a volume grid by making the active tiles into voxels
 ##### boolean
 
 ``` python
-boolean(grid=False)
+boolean(grid=None)
 ```
 
 Create Voxelize Grid with operation ‘Boolean’.
@@ -2256,7 +2256,7 @@ Create Voxelize Grid with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=0.0)
+float(grid=None)
 ```
 
 Create Voxelize Grid with operation ‘Float’.
@@ -2264,7 +2264,7 @@ Create Voxelize Grid with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=0)
+integer(grid=None)
 ```
 
 Create Voxelize Grid with operation ‘Integer’.
@@ -2279,12 +2279,12 @@ Create Voxelize Grid with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.grid`  | `FloatSocketGrid` | Grid        |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.grid`  | `FloatSocket` | Grid        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.grid`  | `FloatSocketGrid` | Grid        |

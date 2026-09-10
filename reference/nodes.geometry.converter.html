@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.15.0</span>
+    <span class="navbar-title">nodebpy 520.17.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,6 +340,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/assets.dump_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">assets.dump_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/assets.build_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">assets.build_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/assets.AssetLibrary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">assets.AssetLibrary</span></a>
   </div>
@@ -377,6 +389,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">export.to_mermaid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.serialize_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.serialize_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.compare_libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.compare_libraries</span></a>
   </div>
 </li>
       </ul>
@@ -2232,7 +2256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.ClosureToList" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.ClosureToList">ClosureToList</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ClosureToList(count<span class="op">=</span><span class="dv">1</span>, closure<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ClosureToList(count<span class="op">=</span><span class="dv">1</span>, closure<span class="op">=</span><span class="va">None</span>, items<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a list of values</p>
 <section id="parameters-8" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-8">Parameters</h4>
@@ -2276,22 +2300,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
+<td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.items"><code>items</code></a></td>
+<td>Typed item factories — declare list items with static types.</td>
+</tr>
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.name"><code>name</code></a></td>
 <td>The name of the node being wrapped by this instance.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.node"><code>node</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.o"><code>o</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.outputs"><code>outputs</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.geometry.converter.ClosureToList.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -4474,7 +4502,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.FilterList" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.FilterList">FilterList</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>FilterList(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, selection<span class="op">=</span><span class="va">True</span>, <span class="op">*</span>, socket_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>FilterList(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, <span class="op">*</span>, socket_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Remove items from a list</p>
 <section id="parameters-22" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-22">Parameters</h4>
@@ -4490,9 +4518,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>list</td>
-<td>InputFloat</td>
+<td>InputFloatList</td>
 <td>List</td>
-<td><code>0.0</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>selection</td>
@@ -4630,7 +4658,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.converter.FilterList.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.FilterList.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">list</span><span class="op">=</span><span class="va">False</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter List with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.FilterList.bundle" class="level5">
@@ -4655,7 +4683,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.FilterList.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.FilterList.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter List with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.FilterList.font" class="level5">
@@ -4675,7 +4703,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.FilterList.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.FilterList.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">list</span><span class="op">=</span><span class="dv">0</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter List with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.FilterList.material" class="level5">
@@ -4710,7 +4738,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.FilterList.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.FilterList.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">list</span><span class="op">=</span><span class="st">''</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter List with operation ‘String’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.FilterList.vector" class="level5">
@@ -4729,7 +4757,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>i.list</code></td>
-<td><code>FloatSocket</code></td>
+<td><code>FloatSocketList</code></td>
 <td>List</td>
 </tr>
 <tr class="even">
@@ -4751,12 +4779,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>o.selection</code></td>
-<td><code>FloatSocket</code></td>
+<td><code>FloatSocketList</code></td>
 <td>Selection</td>
 </tr>
 <tr class="even">
 <td><code>o.inverted</code></td>
-<td><code>FloatSocket</code></td>
+<td><code>FloatSocketList</code></td>
 <td>Inverted</td>
 </tr>
 </tbody>
@@ -5514,7 +5542,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem">GetListItem</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb114"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>GetListItem(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, index<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, socket_type<span class="op">=</span><span class="st">'FLOAT'</span>, structure_type<span class="op">=</span><span class="st">'AUTO'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb114"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>GetListItem(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>, <span class="op">*</span>, socket_type<span class="op">=</span><span class="st">'FLOAT'</span>, structure_type<span class="op">=</span><span class="st">'AUTO'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retrieve a value from a list</p>
 <section id="parameters-27" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-27">Parameters</h4>
@@ -5530,9 +5558,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>list</td>
-<td>InputFloat</td>
+<td>InputFloatList</td>
 <td>List</td>
-<td><code>0.0</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>index</td>
@@ -5698,12 +5726,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.auto" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.auto">auto</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb115"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>auto(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb115"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>auto(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb116"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">list</span><span class="op">=</span><span class="va">False</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb116"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.bundle" class="level5">
@@ -5728,17 +5756,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.dynamic" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.dynamic">dynamic</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb121"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>dynamic(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb121"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>dynamic(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘Dynamic’. Socket can work with different kinds of structures</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.field" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.field">field</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb122"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>field(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb122"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>field(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘Field’. Socket expects a field</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb123"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb123"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.font" class="level5">
@@ -5753,7 +5781,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.grid" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.grid">grid</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb126"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>grid(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb126"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>grid(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘Grid’. Socket expects a grid</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.image" class="level5">
@@ -5763,12 +5791,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb128"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">list</span><span class="op">=</span><span class="dv">0</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb128"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.list" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.list">list</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb129"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb129"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘List’. Socket expects a list</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.material" class="level5">
@@ -5798,7 +5826,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.single" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.single">single</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb135"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>single(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb135"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>single(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘Single’. Socket expects a single value</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.sound" class="level5">
@@ -5808,7 +5836,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.GetListItem.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb137"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">list</span><span class="op">=</span><span class="st">''</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb137"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, index<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Get List Item with operation ‘String’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.GetListItem.vector" class="level5">
@@ -5827,7 +5855,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>i.list</code></td>
-<td><code>FloatSocket</code></td>
+<td><code>FloatSocketList</code></td>
 <td>List</td>
 </tr>
 <tr class="even">
@@ -6003,7 +6031,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>o.paths</code></td>
-<td><code>StringSocket</code></td>
+<td><code>StringSocketList</code></td>
 <td>Paths</td>
 </tr>
 </tbody>
@@ -7183,7 +7211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.ListLength" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.ListLength">ListLength</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb190"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb190-1"><a href="#cb190-1" aria-hidden="true" tabindex="-1"></a>ListLength(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb190"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb190-1"><a href="#cb190-1" aria-hidden="true" tabindex="-1"></a>ListLength(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, data_type<span class="op">=</span><span class="st">'FLOAT'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Count how many items are in a given list</p>
 <section id="parameters-36" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-36">Parameters</h4>
@@ -7199,9 +7227,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>list</td>
-<td>InputFloat</td>
+<td>InputFloatList</td>
 <td>List</td>
-<td><code>0.0</code></td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>
@@ -7333,7 +7361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.converter.ListLength.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.ListLength.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb191"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">list</span><span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb191"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create List Length with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.ListLength.bundle" class="level5">
@@ -7358,7 +7386,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.ListLength.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.ListLength.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb196"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb196-1"><a href="#cb196-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb196"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb196-1"><a href="#cb196-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create List Length with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.ListLength.font" class="level5">
@@ -7378,7 +7406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.ListLength.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.ListLength.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb200"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb200-1"><a href="#cb200-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">list</span><span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb200"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb200-1"><a href="#cb200-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create List Length with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.ListLength.material" class="level5">
@@ -7413,7 +7441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.ListLength.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.ListLength.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb207"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">list</span><span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb207"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create List Length with operation ‘String’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.ListLength.vector" class="level5">
@@ -7432,7 +7460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>i.list</code></td>
-<td><code>FloatSocket</code></td>
+<td><code>FloatSocketList</code></td>
 <td>List</td>
 </tr>
 </tbody>
@@ -11332,7 +11360,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.geometry.converter.SortList" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.SortList">SortList</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb291"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb291-1"><a href="#cb291-1" aria-hidden="true" tabindex="-1"></a>SortList(</span>
-<span id="cb291-2"><a href="#cb291-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb291-2"><a href="#cb291-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">list</span><span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb291-3"><a href="#cb291-3" aria-hidden="true" tabindex="-1"></a>    selection<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb291-4"><a href="#cb291-4" aria-hidden="true" tabindex="-1"></a>    group_id<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb291-5"><a href="#cb291-5" aria-hidden="true" tabindex="-1"></a>    sort_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
@@ -11354,9 +11382,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>list</td>
-<td>InputFloat</td>
+<td>InputFloatList</td>
 <td>List</td>
-<td><code>0.0</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>selection</td>
@@ -11506,7 +11534,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.geometry.converter.SortList.boolean" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.SortList.boolean">boolean</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb292"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb292-1"><a href="#cb292-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">list</span><span class="op">=</span><span class="va">False</span>, selection<span class="op">=</span><span class="va">True</span>, group_id<span class="op">=</span><span class="dv">0</span>, sort_weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb292"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb292-1"><a href="#cb292-1" aria-hidden="true" tabindex="-1"></a>boolean(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, group_id<span class="op">=</span><span class="dv">0</span>, sort_weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sort List with operation ‘Boolean’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.SortList.bundle" class="level5">
@@ -11531,7 +11559,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.SortList.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.SortList.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb297"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb297-1"><a href="#cb297-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">list</span><span class="op">=</span><span class="fl">0.0</span>, selection<span class="op">=</span><span class="va">True</span>, group_id<span class="op">=</span><span class="dv">0</span>, sort_weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb297"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb297-1"><a href="#cb297-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, group_id<span class="op">=</span><span class="dv">0</span>, sort_weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sort List with operation ‘Float’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.SortList.font" class="level5">
@@ -11551,7 +11579,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.SortList.integer" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.SortList.integer">integer</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb301"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb301-1"><a href="#cb301-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">list</span><span class="op">=</span><span class="dv">0</span>, selection<span class="op">=</span><span class="va">True</span>, group_id<span class="op">=</span><span class="dv">0</span>, sort_weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb301"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb301-1"><a href="#cb301-1" aria-hidden="true" tabindex="-1"></a>integer(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, group_id<span class="op">=</span><span class="dv">0</span>, sort_weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sort List with operation ‘Integer’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.SortList.material" class="level5">
@@ -11586,7 +11614,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.SortList.string" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.SortList.string">string</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb308"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb308-1"><a href="#cb308-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">list</span><span class="op">=</span><span class="st">''</span>, selection<span class="op">=</span><span class="va">True</span>, group_id<span class="op">=</span><span class="dv">0</span>, sort_weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb308"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb308-1"><a href="#cb308-1" aria-hidden="true" tabindex="-1"></a>string(<span class="bu">list</span><span class="op">=</span><span class="va">None</span>, selection<span class="op">=</span><span class="va">True</span>, group_id<span class="op">=</span><span class="dv">0</span>, sort_weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Sort List with operation ‘String’.</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.SortList.vector" class="level5">
@@ -11605,7 +11633,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>i.list</code></td>
-<td><code>FloatSocket</code></td>
+<td><code>FloatSocketList</code></td>
 <td>List</td>
 </tr>
 <tr class="even">
@@ -11637,7 +11665,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>o.list</code></td>
-<td><code>FloatSocket</code></td>
+<td><code>FloatSocketList</code></td>
 <td>List</td>
 </tr>
 </tbody>
@@ -11746,7 +11774,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><code>o.list</code></td>
-<td><code>StringSocket</code></td>
+<td><code>StringSocketList</code></td>
 <td>List</td>
 </tr>
 </tbody>
@@ -12007,7 +12035,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.StoreBundleItem.grid" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.StoreBundleItem.grid">grid</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb323"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb323-1"><a href="#cb323-1" aria-hidden="true" tabindex="-1"></a>grid(bundle<span class="op">=</span><span class="va">None</span>, path<span class="op">=</span><span class="st">''</span>, item<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb323"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb323-1"><a href="#cb323-1" aria-hidden="true" tabindex="-1"></a>grid(bundle<span class="op">=</span><span class="va">None</span>, path<span class="op">=</span><span class="st">''</span>, item<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Store Bundle Item with operation ‘Grid’. Socket expects a grid</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.StoreBundleItem.image" class="level5">
@@ -12022,7 +12050,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.StoreBundleItem.list" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.StoreBundleItem.list">list</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb326"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb326-1"><a href="#cb326-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(bundle<span class="op">=</span><span class="va">None</span>, path<span class="op">=</span><span class="st">''</span>, item<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb326"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb326-1"><a href="#cb326-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(bundle<span class="op">=</span><span class="va">None</span>, path<span class="op">=</span><span class="st">''</span>, item<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Store Bundle Item with operation ‘List’. Socket expects a list</p>
 </section>
 <section id="nodebpy.nodes.geometry.converter.StoreBundleItem.material" class="level5">
@@ -12661,7 +12689,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.geometry.converter.TagFilter" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.geometry.converter.TagFilter">TagFilter</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb359"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb359-1"><a href="#cb359-1" aria-hidden="true" tabindex="-1"></a>TagFilter(tag_filter<span class="op">=</span><span class="st">''</span>, tags<span class="op">=</span><span class="st">''</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb359"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb359-1"><a href="#cb359-1" aria-hidden="true" tabindex="-1"></a>TagFilter(tag_filter<span class="op">=</span><span class="st">''</span>, tags<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Check if a filter string matches a list of tags</p>
 <section id="parameters-69" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-69">Parameters</h4>
@@ -12683,9 +12711,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>tags</td>
-<td>InputString</td>
+<td>InputStringList</td>
 <td>Tags</td>
-<td><code>''</code></td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>
@@ -12743,7 +12771,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><code>i.tags</code></td>
-<td><code>StringSocket</code></td>
+<td><code>StringSocketList</code></td>
 <td>Tags</td>
 </tr>
 </tbody>

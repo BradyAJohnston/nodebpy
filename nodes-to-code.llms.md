@@ -122,7 +122,7 @@ with TreeBuilder("Principal Components") as tree:
         matrix_svd = combine_matrix.o.matrix.svd()
         separate_matrix = g.SeparateMatrix(matrix=matrix_svd.u)
         combine_xyz = g.CombineXYZ(
-            x=separate_matrix,
+            x=separate_matrix.o.column_1_row_1,
             y=separate_matrix.o.column_1_row_2,
             z=separate_matrix.o.column_1_row_3,
         )
@@ -298,11 +298,11 @@ with TreeBuilder("Wave Deform.001", arrange=None) as tree:
 
 # Restore authored node positions.
 tree.node_positions = {
+    "Combine XYZ": (0.0, -52.0),
     "Group Input": (0.0, 52.0),
     "Group Output": (400.0, 52.0),
     "Position": (-400.0, -52.0),
     "Separate XYZ": (-200.0, -52.0),
-    "Combine XYZ": (0.0, -52.0),
     "Set Position": (200.0, 52.0),
 }
 ```
@@ -373,7 +373,7 @@ with TreeBuilder("Framed") as tree:
     with g.Frame("Deform"):
         with g.Frame("Warp"):
             set_position = geometry >> g.SetPosition(offset=(0.0, 0.0, 1.0))
-    set_position >> g.SetShadeSmooth() >> out
+    set_position >> g.SetShadeSmooth.face() >> out
 ```
 
 ## Archiving as Classes

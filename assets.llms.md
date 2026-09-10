@@ -12,8 +12,12 @@ The classes for Blender’s bundled essentials libraries are generated into `nod
 from nodebpy import geometry as g
 
 with g.tree("Assets") as tree:
-    mesh = g.SmoothByAngle(mesh=g.Cube(), angle=0.6).o.mesh
-    _ = g.Array(geometry=mesh, count=4) >> tree.outputs.geometry()
+    (
+        g.Cube()
+        >> g.SmoothByAngle(angle=0.6)
+        >> g.Array(count=4)
+        >> tree.outputs.geometry()
+    )
 
 tree
 ```
@@ -46,7 +50,9 @@ generate_asset_modules(
 )
 ```
 
-Because asset names repeat across editors, splitting also keeps the generated class names collision-free where a single mixed module would silently shadow one tree type’s class with another’s. ======= \### Docstrings and menu types
+Because asset names repeat across editors, splitting also keeps the generated class names collision-free where a single mixed module would silently shadow one tree type’s class with another’s.
+
+### Docstrings and menu types
 
 By default the generated classes carry numpy-style docstrings built from the asset’s own interface — the group description, then `Parameters`, `Inputs` and `Outputs` sections using each socket’s tooltip — so editors show documentation next to the type hints. Menu sockets are narrowed to the items they actually offer:
 
@@ -81,6 +87,29 @@ Generated classes carry the library reference, not a hard-coded path, and the gr
 | `PackageLibrary(__file__, "data/my_assets.blend")` | a path relative to the generated module’s file |
 
 Because asset names can collide across editors (a geometry **and** a compositor “Combine Spherical” both exist), an appended group is reused only when its tree type matches; otherwise the correct one is appended fresh.
+
+## Dumping a library to Python source (and back)
+
+`dump_library` and `build_library` round-trip a whole `.blend` asset library through per-asset Python modules, so the `.py` files — not the binary `.blend` — can be the version-controlled source of truth:
+
+``` python
+# | eval: false
+from nodebpy.assets import build_library, dump_library
+
+dump_library("my_assets.blend", "my_assets_src/")   # one .py per asset
+build_library("my_assets_src/", "my_assets.blend")  # rebuild the .blend
+```
+
+or from the command line (each runs in a fresh Blender session):
+
+``` bash
+python -m nodebpy.assets dump my_assets.blend my_assets_src/
+python -m nodebpy.assets build my_assets_src/ my_assets.blend
+```
+
+Each asset becomes one module holding its group as a class; helper groups used by a single asset are embedded, groups shared between assets get their own module under `_shared/`, and referenced materials are code-generated under `materials/`. Asset metadata (catalog, description, tags), tree-level flags and non-serialisable datablock references (`DATABLOCK_DEPENDENCIES`) travel in module footers, and a `blender_assets.cats.txt` next to the `.blend` is copied along so catalog assignments survive. Pass `snapshot_positions=True` to keep authored node layouts (including split Group Input instances), and `--typed-api` / `typed_api=True` to merge the typed asset API from above into the dumped classes.
+
+Round-trip fidelity is checked with `nodebpy.export.compare_libraries` / `serialize_library` (or `python -m nodebpy.export.parity a.blend b.blend`), which deep-compare two libraries with cosmetic surfaces (positions, reroutes, …) excludable — Blender’s bundled essentials libraries and MolecularNodes round-trip to zero functional findings.
 
 ## Notes
 

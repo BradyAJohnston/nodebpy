@@ -185,9 +185,9 @@ Retrieves attribute names as a list of strings
 
 **Outputs**
 
-| Attribute | Type           | Description |
-|-----------|----------------|-------------|
-| `o.names` | `StringSocket` | Names       |
+| Attribute | Type               | Description |
+|-----------|--------------------|-------------|
+| `o.names` | `StringSocketList` | Names       |
 
 ### RemoveNamedAttribute
 

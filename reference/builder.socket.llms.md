@@ -3060,7 +3060,7 @@ Runtime integer socket wrapper.
 | [power](#nodebpy.builder.socket.IntegerSocket.power) | Raise this value to *exponent*. |
 | [sign](#nodebpy.builder.socket.IntegerSocket.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
 | [to_list](#nodebpy.builder.socket.IntegerSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
-| [to_string](#nodebpy.builder.socket.IntegerSocket.to_string) | Convert the `IntegerSocket` to a `StringSocket`. |
+| [to_string](#nodebpy.builder.socket.IntegerSocket.to_string) | Convert the `IntegerSocket` to a `StringSocket` in the given base, zero-padded to `padding` digits. |
 
 ##### abs
 
@@ -3151,10 +3151,10 @@ Create a list of elements, evaluating this field `count` times based on the `Ind
 ##### to_string
 
 ``` python
-to_string()
+to_string(base=10, padding=0)
 ```
 
-Convert the `IntegerSocket` to a `StringSocket`.
+Convert the `IntegerSocket` to a `StringSocket` in the given base, zero-padded to `padding` digits.
 
 ### IntegerSocketGrid
 
@@ -3401,7 +3401,7 @@ List of integer sockets.
 | [reverse](#nodebpy.builder.socket.IntegerSocketList.reverse) | Reverse the list. Currently uses a SortList node with negative Index to reverse the list. |
 | [sign](#nodebpy.builder.socket.IntegerSocketList.sign) | Return the sign of the IntegerSocket, either `-1`, `0`, or `1`. |
 | [sort](#nodebpy.builder.socket.IntegerSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
-| [to_string](#nodebpy.builder.socket.IntegerSocketList.to_string) | Convert the `IntegerSocket` to a `StringSocket`. |
+| [to_string](#nodebpy.builder.socket.IntegerSocketList.to_string) | Convert the `IntegerSocket` to a `StringSocket` in the given base, zero-padded to `padding` digits. |
 
 ##### abs
 
@@ -3546,10 +3546,10 @@ Sort the list based on the weights. Optional `Group ID` and `Selection` can be p
 ##### to_string
 
 ``` python
-to_string()
+to_string(base=10, padding=0)
 ```
 
-Convert the `IntegerSocket` to a `StringSocket`.
+Convert the `IntegerSocket` to a `StringSocket` in the given base, zero-padded to `padding` digits.
 
 ### IntegerVectorSocket
 
@@ -5373,7 +5373,10 @@ Runtime string socket wrapper.
 | [slice](#nodebpy.builder.socket.StringSocket.slice) | Slice a given string from a starting position for a given length. |
 | [split](#nodebpy.builder.socket.StringSocket.split) |  |
 | [starts_with](#nodebpy.builder.socket.StringSocket.starts_with) | Create a MatchString\[Starts With\], return the result as a `BooleanSocket`. |
+| [to_float](#nodebpy.builder.socket.StringSocket.to_float) | Parse the string as a floating-point value and return as `FloatSocket`. |
+| [to_integer](#nodebpy.builder.socket.StringSocket.to_integer) | Parse the string as an integer in the given base and return as `IntegerSocket`. |
 | [to_list](#nodebpy.builder.socket.StringSocket.to_list) | Create a list of elements, evaluating this field `count` times based on the `Index` node. |
+| [trim](#nodebpy.builder.socket.StringSocket.trim) | Trim the string and return as `StringSocket`. |
 | [uppercase](#nodebpy.builder.socket.StringSocket.uppercase) | Convert the string to uppercase and return as `StringSocket`. |
 
 ##### contains
@@ -5492,6 +5495,22 @@ starts_with(search)
 
 Create a MatchString\[Starts With\], return the result as a `BooleanSocket`.
 
+##### to_float
+
+``` python
+to_float()
+```
+
+Parse the string as a floating-point value and return as `FloatSocket`.
+
+##### to_integer
+
+``` python
+to_integer(base=10)
+```
+
+Parse the string as an integer in the given base and return as `IntegerSocket`.
+
 ##### to_list
 
 ``` python
@@ -5499,6 +5518,14 @@ to_list(count=10)
 ```
 
 Create a list of elements, evaluating this field `count` times based on the `Index` node.
+
+##### trim
+
+``` python
+trim(characters='', whitespace=True, start=True, end=True)
+```
+
+Trim the string and return as `StringSocket`.
 
 ##### uppercase
 
@@ -5550,6 +5577,7 @@ List of string sockets.
 | [slice](#nodebpy.builder.socket.StringSocketList.slice) | Slice a given string from a starting position for a given length. |
 | [sort](#nodebpy.builder.socket.StringSocketList.sort) | Sort the list based on the weights. Optional `Group ID` and `Selection` can be provided. |
 | [starts_with](#nodebpy.builder.socket.StringSocketList.starts_with) | Create a MatchString\[Starts With\], return the result as a `BooleanSocket`. |
+| [trim](#nodebpy.builder.socket.StringSocketList.trim) | Trim the string and return as `StringSocket`. |
 | [uppercase](#nodebpy.builder.socket.StringSocketList.uppercase) | Convert the string to uppercase and return as `StringSocket`. |
 
 ##### contains
@@ -5707,6 +5735,14 @@ starts_with(search)
 ```
 
 Create a MatchString\[Starts With\], return the result as a `BooleanSocket`.
+
+##### trim
+
+``` python
+trim(characters='', whitespace=True, start=True, end=True)
+```
+
+Trim the string and return as `StringSocket`.
 
 ##### uppercase
 

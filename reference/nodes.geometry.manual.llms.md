@@ -541,6 +541,7 @@ Node builder for the Index Switch node
 | [collection](#nodebpy.nodes.geometry.manual.IndexSwitch.collection) |  |
 | [color](#nodebpy.nodes.geometry.manual.IndexSwitch.color) |  |
 | [float](#nodebpy.nodes.geometry.manual.IndexSwitch.float) |  |
+| [font](#nodebpy.nodes.geometry.manual.IndexSwitch.font) |  |
 | [geometry](#nodebpy.nodes.geometry.manual.IndexSwitch.geometry) |  |
 | [image](#nodebpy.nodes.geometry.manual.IndexSwitch.image) |  |
 | [integer](#nodebpy.nodes.geometry.manual.IndexSwitch.integer) |  |
@@ -549,6 +550,7 @@ Node builder for the Index Switch node
 | [menu](#nodebpy.nodes.geometry.manual.IndexSwitch.menu) |  |
 | [object](#nodebpy.nodes.geometry.manual.IndexSwitch.object) |  |
 | [rotation](#nodebpy.nodes.geometry.manual.IndexSwitch.rotation) |  |
+| [sound](#nodebpy.nodes.geometry.manual.IndexSwitch.sound) |  |
 | [string](#nodebpy.nodes.geometry.manual.IndexSwitch.string) |  |
 | [vector](#nodebpy.nodes.geometry.manual.IndexSwitch.vector) |  |
 
@@ -618,6 +620,12 @@ color(index=0, items=())
 float(index=0, items=())
 ```
 
+##### font
+
+``` python
+font(index=0, items=())
+```
+
 ##### geometry
 
 ``` python
@@ -664,6 +672,12 @@ object(index=0, items=())
 
 ``` python
 rotation(index=0, items=())
+```
+
+##### sound
+
+``` python
+sound(index=0, items=())
 ```
 
 ##### string
@@ -749,6 +763,7 @@ Node builder for the Menu Switch node
 | [collection](#nodebpy.nodes.geometry.manual.MenuSwitch.collection) |  |
 | [color](#nodebpy.nodes.geometry.manual.MenuSwitch.color) |  |
 | [float](#nodebpy.nodes.geometry.manual.MenuSwitch.float) |  |
+| [font](#nodebpy.nodes.geometry.manual.MenuSwitch.font) |  |
 | [geometry](#nodebpy.nodes.geometry.manual.MenuSwitch.geometry) |  |
 | [image](#nodebpy.nodes.geometry.manual.MenuSwitch.image) |  |
 | [integer](#nodebpy.nodes.geometry.manual.MenuSwitch.integer) |  |
@@ -759,6 +774,7 @@ Node builder for the Menu Switch node
 | [menu](#nodebpy.nodes.geometry.manual.MenuSwitch.menu) |  |
 | [object](#nodebpy.nodes.geometry.manual.MenuSwitch.object) |  |
 | [rotation](#nodebpy.nodes.geometry.manual.MenuSwitch.rotation) |  |
+| [sound](#nodebpy.nodes.geometry.manual.MenuSwitch.sound) |  |
 | [string](#nodebpy.nodes.geometry.manual.MenuSwitch.string) |  |
 | [vector](#nodebpy.nodes.geometry.manual.MenuSwitch.vector) |  |
 
@@ -826,6 +842,12 @@ color(menu=None, items=None)
 
 ``` python
 float(menu=None, items=None)
+```
+
+##### font
+
+``` python
+font(menu=None, items=None)
 ```
 
 ##### geometry
@@ -908,6 +930,12 @@ object(menu=None, items=None)
 
 ``` python
 rotation(menu=None, items=None)
+```
+
+##### sound
+
+``` python
+sound(menu=None, items=None)
 ```
 
 ##### string

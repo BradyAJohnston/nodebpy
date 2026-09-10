@@ -19,6 +19,8 @@ Generating classes from pre-build assets
 |----|----|
 | [assets.generate_asset_api](../reference/assets.generate_asset_api.llms.md#nodebpy.assets.generate_asset_api) | Generate typed asset classes for `libraries` into `output_path`. |
 | [assets.generate_asset_modules](../reference/assets.generate_asset_modules.llms.md#nodebpy.assets.generate_asset_modules) | Generate typed asset classes for `libraries`, split into one module per |
+| [assets.dump_library](../reference/assets.dump_library.llms.md#nodebpy.assets.dump_library) | Dump every node-group asset in `blend_path` to Python source files. |
+| [assets.build_library](../reference/assets.build_library.llms.md#nodebpy.assets.build_library) | Rebuild a `.blend` asset library from sources written by |
 | [assets.AssetLibrary](../reference/assets.AssetLibrary.llms.md#nodebpy.assets.AssetLibrary) | Locates a `.blend` asset library on disk at runtime. |
 | [assets.BundledLibrary](../reference/assets.BundledLibrary.llms.md#nodebpy.assets.BundledLibrary) | A node-group asset library shipped with Blender itself, under the system |
 | [assets.PackageLibrary](../reference/assets.PackageLibrary.llms.md#nodebpy.assets.PackageLibrary) | A `.blend` shipped inside a Python package, located relative to a module |
@@ -31,6 +33,8 @@ Exporting node trees to code.
 |----|----|
 | [export.to_python](../reference/export.to_python.llms.md#nodebpy.export.to_python) | Generate Python code that recreates the given node tree using nodebpy. |
 | [export.to_mermaid](../reference/export.to_mermaid.llms.md#nodebpy.export.to_mermaid) | Generate a Mermaid diagram string from a node tree. |
+| [export.serialize_library](../reference/export.serialize_library.llms.md#nodebpy.export.serialize_library) | `tree_clipper` JSON data for each tree in `trees` (nested groups |
+| [export.compare_libraries](../reference/export.compare_libraries.llms.md#nodebpy.export.compare_libraries) | Differences between two :func:`serialize_library` captures. |
 
 ## Geometry Nodes
 

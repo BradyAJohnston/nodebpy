@@ -9,6 +9,7 @@ TreeBuilder(
     arrange='sugiyama',
     fake_user=False,
     ignore_visibility=False,
+    split_inputs=False,
 )
 ```
 
@@ -22,6 +23,7 @@ Supports geometry, shader, and compositor node trees.
 |----|----|
 | [`collapse`](#nodebpy.TreeBuilder.collapse) |  |
 | [`fake_user`](#nodebpy.TreeBuilder.fake_user) |  |
+| [`group_input_splits`](#nodebpy.TreeBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.TreeBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.TreeBuilder.inputs) |  |
 | [`node_positions`](#nodebpy.TreeBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
@@ -41,7 +43,9 @@ Supports geometry, shader, and compositor node trees.
 | [disable_arrange](#nodebpy.TreeBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.TreeBuilder.geometry) | Create a geometry node tree. |
 | [link](#nodebpy.TreeBuilder.link) |  |
+| [panel](#nodebpy.TreeBuilder.panel) | A panel that can group input *and* output sockets together |
 | [shader](#nodebpy.TreeBuilder.shader) | Create a shader node tree. |
+| [split_group_inputs](#nodebpy.TreeBuilder.split_group_inputs) | Split the Group Input node into one instance per consumer node, |
 | [to_mermaid](#nodebpy.TreeBuilder.to_mermaid) | Generate a Mermaid diagram that represents this tree. |
 | [to_python](#nodebpy.TreeBuilder.to_python) | Generate Python source that recreates this tree using nodebpy. |
 
@@ -74,6 +78,7 @@ compositor(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
@@ -104,6 +109,7 @@ geometry(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
@@ -115,6 +121,14 @@ Create a geometry node tree.
 link(socket1, socket2)
 ```
 
+### panel
+
+``` python
+panel(name, *, description='', default_closed=False, reuse=True)
+```
+
+A panel that can group input *and* output sockets together (`tree.inputs.panel` / `tree.outputs.panel` group one direction). Reuses an existing same-named panel under the same parent, so a mixed panel can be declared in separate input and output passes; pass `reuse=False` to always create a fresh panel — Blender allows several same-named sibling panels, and rebuilding such an interface must not fold them into one. Passing an existing panel (or a previous `tree.panel(...)` context) instead of a name reopens exactly that panel — the unambiguous spelling generated code uses for the second direction pass over a same-named sibling.
+
 ### shader
 
 ``` python
@@ -124,10 +138,19 @@ shader(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
 Create a shader node tree.
+
+### split_group_inputs
+
+``` python
+split_group_inputs()
+```
+
+Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with `split_inputs=True`.
 
 ### to_mermaid
 

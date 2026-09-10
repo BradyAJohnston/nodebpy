@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.15.0</span>
+    <span class="navbar-title">nodebpy 520.17.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -340,6 +340,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../reference/assets.dump_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">assets.dump_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/assets.build_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">assets.build_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../reference/assets.AssetLibrary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">assets.AssetLibrary</span></a>
   </div>
@@ -377,6 +389,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">export.to_mermaid</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.serialize_library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.serialize_library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/export.compare_libraries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">export.compare_libraries</span></a>
   </div>
 </li>
       </ul>
@@ -654,7 +678,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    top_level<span class="op">=</span><span class="st">'with'</span>,</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">format</span><span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    nodebpy_pkg<span class="op">=</span><span class="st">'nodebpy'</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    group_class_names<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    external_groups<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    typed_groups<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    root_interface<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Generate Python code that recreates the given node tree using nodebpy.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
@@ -727,6 +755,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>str</td>
 <td>Import anchor for nodebpy in the generated source. Defaults to the absolute <code>"nodebpy"</code>. When nodebpy is vendored inside another package, pass the path that reaches it <em>relative to the generated module’s package</em> — e.g.&nbsp;<code>"..vendor.nodebpy"</code> — so the emitted imports stay relative to the install/vendor location.</td>
 <td><code>'nodebpy'</code></td>
+</tr>
+<tr class="even">
+<td>group_class_names</td>
+<td>Mapping[str, str] | None</td>
+<td>Class name to use for a given tree name, overriding the derived PascalCase name — for callers that split groups across several generated modules and need the names to agree between them.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>external_groups</td>
+<td>Collection[str] | None</td>
+<td>Tree names whose classes are defined in another module: they are referenced by their <code>group_class_names</code> entry (which must exist) but no class definition is emitted for them. The caller is responsible for making the name resolvable (e.g.&nbsp;an import).</td>
+<td><code>None</code></td>
+</tr>
+<tr class="even">
+<td>typed_groups</td>
+<td>Collection[str] | None</td>
+<td>Tree names whose classes carry a typed <code>__init__</code> (merged dump classes) — group calls to them are emitted with the normalized parameter names from <code>typed_param_names</code> instead of socket-name keyword keys.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td>root_interface</td>
+<td>GroupInterface | None</td>
+<td>Typed-interface parts (docstring, class attributes, accessors and <code>__init__</code>) spliced into the top-level tree’s class in <code>class</code> mode, ahead of <code>_build_group</code>.</td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>

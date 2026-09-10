@@ -5400,15 +5400,15 @@ Change the type of curves
 
 | Name | Description |
 |----|----|
-| [bézier](#nodebpy.nodes.geometry.geometry.SetSplineType.bézier) | Create Set Spline Type with operation ‘Bézier’. |
+| [bezier](#nodebpy.nodes.geometry.geometry.SetSplineType.bezier) | Create Set Spline Type with operation ‘Bézier’. |
 | [catmull_rom](#nodebpy.nodes.geometry.geometry.SetSplineType.catmull_rom) | Create Set Spline Type with operation ‘Catmull Rom’. |
 | [nurbs](#nodebpy.nodes.geometry.geometry.SetSplineType.nurbs) | Create Set Spline Type with operation ‘NURBS’. |
 | [poly](#nodebpy.nodes.geometry.geometry.SetSplineType.poly) | Create Set Spline Type with operation ‘Poly’. |
 
-##### bézier
+##### bezier
 
 ``` python
-bézier(curve=None, selection=True)
+bezier(curve=None, selection=True)
 ```
 
 Create Set Spline Type with operation ‘Bézier’.
@@ -6023,7 +6023,7 @@ TransferAttributes(
     source_curve_id=0,
     source_instance_id=0,
     pattern_mode='Wildcard',
-    attribute_names='',
+    attribute_names=None,
     exclude_names=False,
 )
 ```
@@ -6049,7 +6049,7 @@ Copy attributes from one geometry to another
 | source_curve_id | InputInteger | Source Curve ID | `0` |
 | source_instance_id | InputInteger | Source Instance ID | `0` |
 | pattern_mode | InputMenu \| Literal\['Exact', 'Wildcard'\] | Pattern Mode | `'Wildcard'` |
-| attribute_names | InputString | Attribute Names | `''` |
+| attribute_names | InputStringList | Attribute Names | `None` |
 | exclude_names | InputBoolean | Exclude Names | `False` |
 
 #### Attributes
@@ -6065,32 +6065,32 @@ Copy attributes from one geometry to another
 
 **Inputs**
 
-| Attribute              | Type             | Description        |
-|------------------------|------------------|--------------------|
-| `i.target`             | `GeometrySocket` | Target             |
-| `i.target_point_id`    | `IntegerSocket`  | Target Point ID    |
-| `i.target_edge_id`     | `IntegerSocket`  | Target Edge ID     |
-| `i.target_face_id`     | `IntegerSocket`  | Target Face ID     |
-| `i.target_corner_id`   | `IntegerSocket`  | Target Corner ID   |
-| `i.target_curve_id`    | `IntegerSocket`  | Target Curve ID    |
-| `i.target_instance_id` | `IntegerSocket`  | Target Instance ID |
-| `i.source`             | `GeometrySocket` | Source             |
-| `i.source_point_id`    | `IntegerSocket`  | Source Point ID    |
-| `i.source_edge_id`     | `IntegerSocket`  | Source Edge ID     |
-| `i.source_face_id`     | `IntegerSocket`  | Source Face ID     |
-| `i.source_corner_id`   | `IntegerSocket`  | Source Corner ID   |
-| `i.source_curve_id`    | `IntegerSocket`  | Source Curve ID    |
-| `i.source_instance_id` | `IntegerSocket`  | Source Instance ID |
-| `i.pattern_mode`       | `MenuSocket`     | Pattern Mode       |
-| `i.attribute_names`    | `StringSocket`   | Attribute Names    |
-| `i.exclude_names`      | `BooleanSocket`  | Exclude Names      |
+| Attribute              | Type               | Description        |
+|------------------------|--------------------|--------------------|
+| `i.target`             | `GeometrySocket`   | Target             |
+| `i.target_point_id`    | `IntegerSocket`    | Target Point ID    |
+| `i.target_edge_id`     | `IntegerSocket`    | Target Edge ID     |
+| `i.target_face_id`     | `IntegerSocket`    | Target Face ID     |
+| `i.target_corner_id`   | `IntegerSocket`    | Target Corner ID   |
+| `i.target_curve_id`    | `IntegerSocket`    | Target Curve ID    |
+| `i.target_instance_id` | `IntegerSocket`    | Target Instance ID |
+| `i.source`             | `GeometrySocket`   | Source             |
+| `i.source_point_id`    | `IntegerSocket`    | Source Point ID    |
+| `i.source_edge_id`     | `IntegerSocket`    | Source Edge ID     |
+| `i.source_face_id`     | `IntegerSocket`    | Source Face ID     |
+| `i.source_corner_id`   | `IntegerSocket`    | Source Corner ID   |
+| `i.source_curve_id`    | `IntegerSocket`    | Source Curve ID    |
+| `i.source_instance_id` | `IntegerSocket`    | Source Instance ID |
+| `i.pattern_mode`       | `MenuSocket`       | Pattern Mode       |
+| `i.attribute_names`    | `StringSocketList` | Attribute Names    |
+| `i.exclude_names`      | `BooleanSocket`    | Exclude Names      |
 
 **Outputs**
 
-| Attribute             | Type             | Description       |
-|-----------------------|------------------|-------------------|
-| `o.target`            | `GeometrySocket` | Target            |
-| `o.transferred_names` | `StringSocket`   | Transferred Names |
+| Attribute             | Type               | Description       |
+|-----------------------|--------------------|-------------------|
+| `o.target`            | `GeometrySocket`   | Target            |
+| `o.transferred_names` | `StringSocketList` | Transferred Names |
 
 ### TransformGeometry
 

@@ -616,7 +616,7 @@ Create Clamp with operation ‘Range’. Constrain value between min and max, sw
 ### ClosureToList
 
 ``` python
-ClosureToList(count=1, closure=None)
+ClosureToList(count=1, closure=None, items=None)
 ```
 
 Create a list of values
@@ -633,6 +633,7 @@ Create a list of values
 | Name | Description |
 |----|----|
 | [`i`](#nodebpy.nodes.geometry.converter.ClosureToList.i) |  |
+| [`items`](#nodebpy.nodes.geometry.converter.ClosureToList.items) | Typed item factories — declare list items with static types. |
 | [`name`](#nodebpy.nodes.geometry.converter.ClosureToList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ClosureToList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ClosureToList.o) |  |
@@ -1500,17 +1501,17 @@ Create Field Variance with operation ‘Face Corner’. Attribute on mesh face c
 ### FilterList
 
 ``` python
-FilterList(list=0.0, selection=True, *, socket_type='FLOAT')
+FilterList(list=None, selection=True, *, socket_type='FLOAT')
 ```
 
 Remove items from a list
 
 #### Parameters
 
-| Name      | Type         | Description | Default |
-|-----------|--------------|-------------|---------|
-| list      | InputFloat   | List        | `0.0`   |
-| selection | InputBoolean | Selection   | `True`  |
+| Name      | Type           | Description | Default |
+|-----------|----------------|-------------|---------|
+| list      | InputFloatList | List        | `None`  |
+| selection | InputBoolean   | Selection   | `True`  |
 
 #### Attributes
 
@@ -1550,7 +1551,7 @@ Remove items from a list
 ##### boolean
 
 ``` python
-boolean(list=False, selection=True)
+boolean(list=None, selection=True)
 ```
 
 Create Filter List with operation ‘Boolean’.
@@ -1590,7 +1591,7 @@ Create Filter List with operation ‘Color’.
 ##### float
 
 ``` python
-float(list=0.0, selection=True)
+float(list=None, selection=True)
 ```
 
 Create Filter List with operation ‘Float’.
@@ -1622,7 +1623,7 @@ Create Filter List with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(list=0, selection=True)
+integer(list=None, selection=True)
 ```
 
 Create Filter List with operation ‘Integer’.
@@ -1678,7 +1679,7 @@ Create Filter List with operation ‘Sound’.
 ##### string
 
 ``` python
-string(list='', selection=True)
+string(list=None, selection=True)
 ```
 
 Create Filter List with operation ‘String’.
@@ -1693,17 +1694,17 @@ Create Filter List with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute     | Type            | Description |
-|---------------|-----------------|-------------|
-| `i.list`      | `FloatSocket`   | List        |
-| `i.selection` | `BooleanSocket` | Selection   |
+| Attribute     | Type              | Description |
+|---------------|-------------------|-------------|
+| `i.list`      | `FloatSocketList` | List        |
+| `i.selection` | `BooleanSocket`   | Selection   |
 
 **Outputs**
 
-| Attribute     | Type          | Description |
-|---------------|---------------|-------------|
-| `o.selection` | `FloatSocket` | Selection   |
-| `o.inverted`  | `FloatSocket` | Inverted    |
+| Attribute     | Type              | Description |
+|---------------|-------------------|-------------|
+| `o.selection` | `FloatSocketList` | Selection   |
+| `o.inverted`  | `FloatSocketList` | Inverted    |
 
 ### FindInString
 
@@ -2137,17 +2138,17 @@ Create Get Bundle Item with operation ‘Vector’.
 ### GetListItem
 
 ``` python
-GetListItem(list=0.0, index=0, *, socket_type='FLOAT', structure_type='AUTO')
+GetListItem(list=None, index=0, *, socket_type='FLOAT', structure_type='AUTO')
 ```
 
 Retrieve a value from a list
 
 #### Parameters
 
-| Name  | Type         | Description | Default |
-|-------|--------------|-------------|---------|
-| list  | InputFloat   | List        | `0.0`   |
-| index | InputInteger | Index       | `0`     |
+| Name  | Type           | Description | Default |
+|-------|----------------|-------------|---------|
+| list  | InputFloatList | List        | `None`  |
+| index | InputInteger   | Index       | `0`     |
 
 #### Attributes
 
@@ -2194,7 +2195,7 @@ Retrieve a value from a list
 ##### auto
 
 ``` python
-auto(list=0.0, index=0)
+auto(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used
@@ -2202,7 +2203,7 @@ Create Get List Item with operation ‘Auto’. Automatically detect a good stru
 ##### boolean
 
 ``` python
-boolean(list=False, index=0)
+boolean(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘Boolean’.
@@ -2242,7 +2243,7 @@ Create Get List Item with operation ‘Color’.
 ##### dynamic
 
 ``` python
-dynamic(list=0.0, index=0)
+dynamic(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘Dynamic’. Socket can work with different kinds of structures
@@ -2250,7 +2251,7 @@ Create Get List Item with operation ‘Dynamic’. Socket can work with differen
 ##### field
 
 ``` python
-field(list=0.0, index=0)
+field(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘Field’. Socket expects a field
@@ -2258,7 +2259,7 @@ Create Get List Item with operation ‘Field’. Socket expects a field
 ##### float
 
 ``` python
-float(list=0.0, index=0)
+float(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘Float’.
@@ -2282,7 +2283,7 @@ Create Get List Item with operation ‘Geometry’.
 ##### grid
 
 ``` python
-grid(list=0.0, index=0)
+grid(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘Grid’. Socket expects a grid
@@ -2298,7 +2299,7 @@ Create Get List Item with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(list=0, index=0)
+integer(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘Integer’.
@@ -2306,7 +2307,7 @@ Create Get List Item with operation ‘Integer’.
 ##### list
 
 ``` python
-list(list=0.0, index=0)
+list(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘List’. Socket expects a list
@@ -2354,7 +2355,7 @@ Create Get List Item with operation ‘Rotation’.
 ##### single
 
 ``` python
-single(list=0.0, index=0)
+single(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘Single’. Socket expects a single value
@@ -2370,7 +2371,7 @@ Create Get List Item with operation ‘Sound’.
 ##### string
 
 ``` python
-string(list='', index=0)
+string(list=None, index=0)
 ```
 
 Create Get List Item with operation ‘String’.
@@ -2385,10 +2386,10 @@ Create Get List Item with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute | Type            | Description |
-|-----------|-----------------|-------------|
-| `i.list`  | `FloatSocket`   | List        |
-| `i.index` | `IntegerSocket` | Index       |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.list`  | `FloatSocketList` | List        |
+| `i.index` | `IntegerSocket`   | Index       |
 
 **Outputs**
 
@@ -2443,9 +2444,9 @@ Get paths to items in a nested bundle with a filter
 
 **Outputs**
 
-| Attribute | Type           | Description |
-|-----------|----------------|-------------|
-| `o.paths` | `StringSocket` | Paths       |
+| Attribute | Type               | Description |
+|-----------|--------------------|-------------|
+| `o.paths` | `StringSocketList` | Paths       |
 
 ### HashValue
 
@@ -3124,16 +3125,16 @@ Join multiple bundles together
 ### ListLength
 
 ``` python
-ListLength(list=0.0, *, data_type='FLOAT')
+ListLength(list=None, *, data_type='FLOAT')
 ```
 
 Count how many items are in a given list
 
 #### Parameters
 
-| Name | Type       | Description | Default |
-|------|------------|-------------|---------|
-| list | InputFloat | List        | `0.0`   |
+| Name | Type           | Description | Default |
+|------|----------------|-------------|---------|
+| list | InputFloatList | List        | `None`  |
 
 #### Attributes
 
@@ -3173,7 +3174,7 @@ Count how many items are in a given list
 ##### boolean
 
 ``` python
-boolean(list=False)
+boolean(list=None)
 ```
 
 Create List Length with operation ‘Boolean’.
@@ -3213,7 +3214,7 @@ Create List Length with operation ‘Color’.
 ##### float
 
 ``` python
-float(list=0.0)
+float(list=None)
 ```
 
 Create List Length with operation ‘Float’.
@@ -3245,7 +3246,7 @@ Create List Length with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(list=0)
+integer(list=None)
 ```
 
 Create List Length with operation ‘Integer’.
@@ -3301,7 +3302,7 @@ Create List Length with operation ‘Sound’.
 ##### string
 
 ``` python
-string(list='')
+string(list=None)
 ```
 
 Create List Length with operation ‘String’.
@@ -3316,9 +3317,9 @@ Create List Length with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `i.list`  | `FloatSocket` | List        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `i.list`  | `FloatSocketList` | List        |
 
 **Outputs**
 
@@ -5014,7 +5015,7 @@ Extract a string segment from a larger string
 
 ``` python
 SortList(
-    list=0.0,
+    list=None,
     selection=True,
     group_id=0,
     sort_weight=0.0,
@@ -5027,12 +5028,12 @@ Sort a list based on weights
 
 #### Parameters
 
-| Name        | Type         | Description | Default |
-|-------------|--------------|-------------|---------|
-| list        | InputFloat   | List        | `0.0`   |
-| selection   | InputBoolean | Selection   | `True`  |
-| group_id    | InputInteger | Group ID    | `0`     |
-| sort_weight | InputFloat   | Sort Weight | `0.0`   |
+| Name        | Type           | Description | Default |
+|-------------|----------------|-------------|---------|
+| list        | InputFloatList | List        | `None`  |
+| selection   | InputBoolean   | Selection   | `True`  |
+| group_id    | InputInteger   | Group ID    | `0`     |
+| sort_weight | InputFloat     | Sort Weight | `0.0`   |
 
 #### Attributes
 
@@ -5072,7 +5073,7 @@ Sort a list based on weights
 ##### boolean
 
 ``` python
-boolean(list=False, selection=True, group_id=0, sort_weight=0.0)
+boolean(list=None, selection=True, group_id=0, sort_weight=0.0)
 ```
 
 Create Sort List with operation ‘Boolean’.
@@ -5112,7 +5113,7 @@ Create Sort List with operation ‘Color’.
 ##### float
 
 ``` python
-float(list=0.0, selection=True, group_id=0, sort_weight=0.0)
+float(list=None, selection=True, group_id=0, sort_weight=0.0)
 ```
 
 Create Sort List with operation ‘Float’.
@@ -5144,7 +5145,7 @@ Create Sort List with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(list=0, selection=True, group_id=0, sort_weight=0.0)
+integer(list=None, selection=True, group_id=0, sort_weight=0.0)
 ```
 
 Create Sort List with operation ‘Integer’.
@@ -5200,7 +5201,7 @@ Create Sort List with operation ‘Sound’.
 ##### string
 
 ``` python
-string(list='', selection=True, group_id=0, sort_weight=0.0)
+string(list=None, selection=True, group_id=0, sort_weight=0.0)
 ```
 
 Create Sort List with operation ‘String’.
@@ -5215,18 +5216,18 @@ Create Sort List with operation ‘Vector’.
 
 **Inputs**
 
-| Attribute       | Type            | Description |
-|-----------------|-----------------|-------------|
-| `i.list`        | `FloatSocket`   | List        |
-| `i.selection`   | `BooleanSocket` | Selection   |
-| `i.group_id`    | `IntegerSocket` | Group ID    |
-| `i.sort_weight` | `FloatSocket`   | Sort Weight |
+| Attribute       | Type              | Description |
+|-----------------|-------------------|-------------|
+| `i.list`        | `FloatSocketList` | List        |
+| `i.selection`   | `BooleanSocket`   | Selection   |
+| `i.group_id`    | `IntegerSocket`   | Group ID    |
+| `i.sort_weight` | `FloatSocket`     | Sort Weight |
 
 **Outputs**
 
-| Attribute | Type          | Description |
-|-----------|---------------|-------------|
-| `o.list`  | `FloatSocket` | List        |
+| Attribute | Type              | Description |
+|-----------|-------------------|-------------|
+| `o.list`  | `FloatSocketList` | List        |
 
 ### SplitString
 
@@ -5263,9 +5264,9 @@ Split a string into a list using a separator
 
 **Outputs**
 
-| Attribute | Type           | Description |
-|-----------|----------------|-------------|
-| `o.list`  | `StringSocket` | List        |
+| Attribute | Type               | Description |
+|-----------|--------------------|-------------|
+| `o.list`  | `StringSocketList` | List        |
 
 ### StoreBundleItem
 
@@ -5423,7 +5424,7 @@ Create Store Bundle Item with operation ‘Geometry’.
 ##### grid
 
 ``` python
-grid(bundle=None, path='', item=0.0)
+grid(bundle=None, path='', item=None)
 ```
 
 Create Store Bundle Item with operation ‘Grid’. Socket expects a grid
@@ -5447,7 +5448,7 @@ Create Store Bundle Item with operation ‘Integer’.
 ##### list
 
 ``` python
-list(bundle=None, path='', item=0.0)
+list(bundle=None, path='', item=None)
 ```
 
 Create Store Bundle Item with operation ‘List’. Socket expects a list
@@ -5851,17 +5852,17 @@ Create Switch with operation ‘Vector’.
 ### TagFilter
 
 ``` python
-TagFilter(tag_filter='', tags='')
+TagFilter(tag_filter='', tags=None)
 ```
 
 Check if a filter string matches a list of tags
 
 #### Parameters
 
-| Name       | Type        | Description | Default |
-|------------|-------------|-------------|---------|
-| tag_filter | InputString | Tag Filter  | `''`    |
-| tags       | InputString | Tags        | `''`    |
+| Name       | Type            | Description | Default |
+|------------|-----------------|-------------|---------|
+| tag_filter | InputString     | Tag Filter  | `''`    |
+| tags       | InputStringList | Tags        | `None`  |
 
 #### Attributes
 
@@ -5876,10 +5877,10 @@ Check if a filter string matches a list of tags
 
 **Inputs**
 
-| Attribute      | Type           | Description |
-|----------------|----------------|-------------|
-| `i.tag_filter` | `StringSocket` | Tag Filter  |
-| `i.tags`       | `StringSocket` | Tags        |
+| Attribute      | Type               | Description |
+|----------------|--------------------|-------------|
+| `i.tag_filter` | `StringSocket`     | Tag Filter  |
+| `i.tags`       | `StringSocketList` | Tags        |
 
 **Outputs**
 

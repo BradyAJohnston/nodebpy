@@ -13,6 +13,7 @@
 | [PanelContext](#nodebpy.builder.tree.PanelContext) | Context manager for grouping sockets into a panel. |
 | [SocketContext](#nodebpy.builder.tree.SocketContext) |  |
 | [TreeBuilder](#nodebpy.builder.tree.TreeBuilder) | Builder for creating Blender node trees with a clean Python API. |
+| [TreePanelContext](#nodebpy.builder.tree.TreePanelContext) | Context manager for a panel holding both input *and* output sockets. |
 
 ### DirectionalContext
 
@@ -40,6 +41,7 @@ Base class for directional socket contexts
 | [collection](#nodebpy.builder.tree.DirectionalContext.collection) |  |
 | [color](#nodebpy.builder.tree.DirectionalContext.color) |  |
 | [float](#nodebpy.builder.tree.DirectionalContext.float) |  |
+| [font](#nodebpy.builder.tree.DirectionalContext.font) |  |
 | [geometry](#nodebpy.builder.tree.DirectionalContext.geometry) |  |
 | [image](#nodebpy.builder.tree.DirectionalContext.image) |  |
 | [integer](#nodebpy.builder.tree.DirectionalContext.integer) |  |
@@ -50,6 +52,7 @@ Base class for directional socket contexts
 | [panel](#nodebpy.builder.tree.DirectionalContext.panel) | Create a panel context for grouping sockets. |
 | [rotation](#nodebpy.builder.tree.DirectionalContext.rotation) |  |
 | [shader](#nodebpy.builder.tree.DirectionalContext.shader) |  |
+| [sound](#nodebpy.builder.tree.DirectionalContext.sound) |  |
 | [string](#nodebpy.builder.tree.DirectionalContext.string) |  |
 | [vector](#nodebpy.builder.tree.DirectionalContext.vector) |  |
 
@@ -69,6 +72,7 @@ boolean(
     attribute_domain='POINT',
     default_attribute=None,
     is_panel_toggle=False,
+    force_non_field=False,
 )
 ```
 
@@ -82,6 +86,8 @@ bundle(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -95,6 +101,8 @@ closure(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -109,6 +117,8 @@ collection(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -126,6 +136,7 @@ color(
     structure_type='AUTO',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -146,6 +157,22 @@ float(
     subtype='NONE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
+    default_input='VALUE',
+)
+```
+
+##### font
+
+``` python
+font(
+    name='Font',
+    default_value=None,
+    description='',
+    *,
+    optional_label=False,
+    hide_value=False,
+    hide_in_modifier=False,
 )
 ```
 
@@ -159,6 +186,8 @@ geometry(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -173,6 +202,8 @@ image(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -194,6 +225,7 @@ integer(
     subtype='NONE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -208,6 +240,8 @@ material(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -225,6 +259,7 @@ matrix(
     default_input='VALUE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -241,6 +276,7 @@ menu(
     hide_value=False,
     hide_in_modifier=False,
     structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -255,13 +291,16 @@ object(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
+    default_input='VALUE',
 )
 ```
 
 ##### panel
 
 ``` python
-panel(name, *, default_closed=False)
+panel(name, *, description='', default_closed=False)
 ```
 
 Create a panel context for grouping sockets.
@@ -280,6 +319,7 @@ rotation(
     structure_type='AUTO',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -288,6 +328,22 @@ rotation(
 ``` python
 shader(
     name='Shader',
+    description='',
+    *,
+    optional_label=False,
+    hide_value=False,
+    hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
+)
+```
+
+##### sound
+
+``` python
+sound(
+    name='Sound',
+    default_value=None,
     description='',
     *,
     optional_label=False,
@@ -308,6 +364,8 @@ string(
     hide_value=False,
     hide_in_modifier=False,
     subtype='NONE',
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -330,6 +388,7 @@ vector(
     default_attribute=None,
     default_input='VALUE',
     attribute_domain='POINT',
+    force_non_field=False,
 )
 ```
 
@@ -357,6 +416,7 @@ InputInterfaceContext(tree_builder)
 | [collection](#nodebpy.builder.tree.InputInterfaceContext.collection) |  |
 | [color](#nodebpy.builder.tree.InputInterfaceContext.color) |  |
 | [float](#nodebpy.builder.tree.InputInterfaceContext.float) |  |
+| [font](#nodebpy.builder.tree.InputInterfaceContext.font) |  |
 | [geometry](#nodebpy.builder.tree.InputInterfaceContext.geometry) |  |
 | [image](#nodebpy.builder.tree.InputInterfaceContext.image) |  |
 | [integer](#nodebpy.builder.tree.InputInterfaceContext.integer) |  |
@@ -367,6 +427,7 @@ InputInterfaceContext(tree_builder)
 | [panel](#nodebpy.builder.tree.InputInterfaceContext.panel) | Create a panel context for grouping sockets. |
 | [rotation](#nodebpy.builder.tree.InputInterfaceContext.rotation) |  |
 | [shader](#nodebpy.builder.tree.InputInterfaceContext.shader) |  |
+| [sound](#nodebpy.builder.tree.InputInterfaceContext.sound) |  |
 | [string](#nodebpy.builder.tree.InputInterfaceContext.string) |  |
 | [vector](#nodebpy.builder.tree.InputInterfaceContext.vector) |  |
 
@@ -386,6 +447,7 @@ boolean(
     attribute_domain='POINT',
     default_attribute=None,
     is_panel_toggle=False,
+    force_non_field=False,
 )
 ```
 
@@ -399,6 +461,8 @@ bundle(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -412,6 +476,8 @@ closure(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -426,6 +492,8 @@ collection(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -443,6 +511,7 @@ color(
     structure_type='AUTO',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -463,6 +532,22 @@ float(
     subtype='NONE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
+    default_input='VALUE',
+)
+```
+
+##### font
+
+``` python
+font(
+    name='Font',
+    default_value=None,
+    description='',
+    *,
+    optional_label=False,
+    hide_value=False,
+    hide_in_modifier=False,
 )
 ```
 
@@ -476,6 +561,8 @@ geometry(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -490,6 +577,8 @@ image(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -511,6 +600,7 @@ integer(
     subtype='NONE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -525,6 +615,8 @@ material(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -542,6 +634,7 @@ matrix(
     default_input='VALUE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -558,6 +651,7 @@ menu(
     hide_value=False,
     hide_in_modifier=False,
     structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -572,13 +666,16 @@ object(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
+    default_input='VALUE',
 )
 ```
 
 ##### panel
 
 ``` python
-panel(name, *, default_closed=False)
+panel(name, *, description='', default_closed=False)
 ```
 
 Create a panel context for grouping sockets.
@@ -597,6 +694,7 @@ rotation(
     structure_type='AUTO',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -605,6 +703,22 @@ rotation(
 ``` python
 shader(
     name='Shader',
+    description='',
+    *,
+    optional_label=False,
+    hide_value=False,
+    hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
+)
+```
+
+##### sound
+
+``` python
+sound(
+    name='Sound',
+    default_value=None,
     description='',
     *,
     optional_label=False,
@@ -625,6 +739,8 @@ string(
     hide_value=False,
     hide_in_modifier=False,
     subtype='NONE',
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -647,6 +763,7 @@ vector(
     default_attribute=None,
     default_input='VALUE',
     attribute_domain='POINT',
+    force_non_field=False,
 )
 ```
 
@@ -669,6 +786,7 @@ MaterialBuilder(
 |----|----|
 | [`collapse`](#nodebpy.builder.tree.MaterialBuilder.collapse) |  |
 | [`fake_user`](#nodebpy.builder.tree.MaterialBuilder.fake_user) |  |
+| [`group_input_splits`](#nodebpy.builder.tree.MaterialBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.builder.tree.MaterialBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.builder.tree.MaterialBuilder.inputs) |  |
 | [`material`](#nodebpy.builder.tree.MaterialBuilder.material) |  |
@@ -689,7 +807,9 @@ MaterialBuilder(
 | [disable_arrange](#nodebpy.builder.tree.MaterialBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.MaterialBuilder.geometry) | Create a geometry node tree. |
 | [link](#nodebpy.builder.tree.MaterialBuilder.link) |  |
+| [panel](#nodebpy.builder.tree.MaterialBuilder.panel) | A panel that can group input *and* output sockets together |
 | [shader](#nodebpy.builder.tree.MaterialBuilder.shader) | Create a shader node tree. |
+| [split_group_inputs](#nodebpy.builder.tree.MaterialBuilder.split_group_inputs) | Split the Group Input node into one instance per consumer node, |
 | [to_mermaid](#nodebpy.builder.tree.MaterialBuilder.to_mermaid) | Generate a Mermaid diagram that represents this tree. |
 | [to_python](#nodebpy.builder.tree.MaterialBuilder.to_python) | Generate Python source that recreates this tree using nodebpy. |
 
@@ -722,6 +842,7 @@ compositor(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
@@ -752,6 +873,7 @@ geometry(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
@@ -763,6 +885,14 @@ Create a geometry node tree.
 link(socket1, socket2)
 ```
 
+##### panel
+
+``` python
+panel(name, *, description='', default_closed=False, reuse=True)
+```
+
+A panel that can group input *and* output sockets together (`tree.inputs.panel` / `tree.outputs.panel` group one direction). Reuses an existing same-named panel under the same parent, so a mixed panel can be declared in separate input and output passes; pass `reuse=False` to always create a fresh panel — Blender allows several same-named sibling panels, and rebuilding such an interface must not fold them into one. Passing an existing panel (or a previous `tree.panel(...)` context) instead of a name reopens exactly that panel — the unambiguous spelling generated code uses for the second direction pass over a same-named sibling.
+
 ##### shader
 
 ``` python
@@ -772,10 +902,19 @@ shader(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
 Create a shader node tree.
+
+##### split_group_inputs
+
+``` python
+split_group_inputs()
+```
+
+Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with `split_inputs=True`.
 
 ##### to_mermaid
 
@@ -841,6 +980,7 @@ OutputInterfaceContext(tree_builder)
 | [collection](#nodebpy.builder.tree.OutputInterfaceContext.collection) |  |
 | [color](#nodebpy.builder.tree.OutputInterfaceContext.color) |  |
 | [float](#nodebpy.builder.tree.OutputInterfaceContext.float) |  |
+| [font](#nodebpy.builder.tree.OutputInterfaceContext.font) |  |
 | [geometry](#nodebpy.builder.tree.OutputInterfaceContext.geometry) |  |
 | [image](#nodebpy.builder.tree.OutputInterfaceContext.image) |  |
 | [integer](#nodebpy.builder.tree.OutputInterfaceContext.integer) |  |
@@ -851,6 +991,7 @@ OutputInterfaceContext(tree_builder)
 | [panel](#nodebpy.builder.tree.OutputInterfaceContext.panel) | Create a panel context for grouping sockets. |
 | [rotation](#nodebpy.builder.tree.OutputInterfaceContext.rotation) |  |
 | [shader](#nodebpy.builder.tree.OutputInterfaceContext.shader) |  |
+| [sound](#nodebpy.builder.tree.OutputInterfaceContext.sound) |  |
 | [string](#nodebpy.builder.tree.OutputInterfaceContext.string) |  |
 | [vector](#nodebpy.builder.tree.OutputInterfaceContext.vector) |  |
 
@@ -870,6 +1011,7 @@ boolean(
     attribute_domain='POINT',
     default_attribute=None,
     is_panel_toggle=False,
+    force_non_field=False,
 )
 ```
 
@@ -883,6 +1025,8 @@ bundle(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -896,6 +1040,8 @@ closure(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -910,6 +1056,8 @@ collection(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -927,6 +1075,7 @@ color(
     structure_type='AUTO',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -947,6 +1096,22 @@ float(
     subtype='NONE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
+    default_input='VALUE',
+)
+```
+
+##### font
+
+``` python
+font(
+    name='Font',
+    default_value=None,
+    description='',
+    *,
+    optional_label=False,
+    hide_value=False,
+    hide_in_modifier=False,
 )
 ```
 
@@ -960,6 +1125,8 @@ geometry(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -974,6 +1141,8 @@ image(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -995,6 +1164,7 @@ integer(
     subtype='NONE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -1009,6 +1179,8 @@ material(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1026,6 +1198,7 @@ matrix(
     default_input='VALUE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -1042,6 +1215,7 @@ menu(
     hide_value=False,
     hide_in_modifier=False,
     structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1056,13 +1230,16 @@ object(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
+    default_input='VALUE',
 )
 ```
 
 ##### panel
 
 ``` python
-panel(name, *, default_closed=False)
+panel(name, *, description='', default_closed=False)
 ```
 
 Create a panel context for grouping sockets.
@@ -1081,6 +1258,7 @@ rotation(
     structure_type='AUTO',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -1089,6 +1267,22 @@ rotation(
 ``` python
 shader(
     name='Shader',
+    description='',
+    *,
+    optional_label=False,
+    hide_value=False,
+    hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
+)
+```
+
+##### sound
+
+``` python
+sound(
+    name='Sound',
+    default_value=None,
     description='',
     *,
     optional_label=False,
@@ -1109,6 +1303,8 @@ string(
     hide_value=False,
     hide_in_modifier=False,
     subtype='NONE',
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1131,13 +1327,14 @@ vector(
     default_attribute=None,
     default_input='VALUE',
     attribute_domain='POINT',
+    force_non_field=False,
 )
 ```
 
 ### PanelContext
 
 ``` python
-PanelContext(socket_context, name, *, default_closed=False)
+PanelContext(socket_context, name, *, description='', default_closed=False)
 ```
 
 Context manager for grouping sockets into a panel.
@@ -1166,6 +1363,7 @@ SocketContext(tree_builder)
 | [collection](#nodebpy.builder.tree.SocketContext.collection) |  |
 | [color](#nodebpy.builder.tree.SocketContext.color) |  |
 | [float](#nodebpy.builder.tree.SocketContext.float) |  |
+| [font](#nodebpy.builder.tree.SocketContext.font) |  |
 | [geometry](#nodebpy.builder.tree.SocketContext.geometry) |  |
 | [image](#nodebpy.builder.tree.SocketContext.image) |  |
 | [integer](#nodebpy.builder.tree.SocketContext.integer) |  |
@@ -1176,6 +1374,7 @@ SocketContext(tree_builder)
 | [panel](#nodebpy.builder.tree.SocketContext.panel) | Create a panel context for grouping sockets. |
 | [rotation](#nodebpy.builder.tree.SocketContext.rotation) |  |
 | [shader](#nodebpy.builder.tree.SocketContext.shader) |  |
+| [sound](#nodebpy.builder.tree.SocketContext.sound) |  |
 | [string](#nodebpy.builder.tree.SocketContext.string) |  |
 | [vector](#nodebpy.builder.tree.SocketContext.vector) |  |
 
@@ -1195,6 +1394,7 @@ boolean(
     attribute_domain='POINT',
     default_attribute=None,
     is_panel_toggle=False,
+    force_non_field=False,
 )
 ```
 
@@ -1208,6 +1408,8 @@ bundle(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1221,6 +1423,8 @@ closure(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1235,6 +1439,8 @@ collection(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1252,6 +1458,7 @@ color(
     structure_type='AUTO',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -1272,6 +1479,22 @@ float(
     subtype='NONE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
+    default_input='VALUE',
+)
+```
+
+##### font
+
+``` python
+font(
+    name='Font',
+    default_value=None,
+    description='',
+    *,
+    optional_label=False,
+    hide_value=False,
+    hide_in_modifier=False,
 )
 ```
 
@@ -1285,6 +1508,8 @@ geometry(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1299,6 +1524,8 @@ image(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1320,6 +1547,7 @@ integer(
     subtype='NONE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -1334,6 +1562,8 @@ material(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1351,6 +1581,7 @@ matrix(
     default_input='VALUE',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -1367,6 +1598,7 @@ menu(
     hide_value=False,
     hide_in_modifier=False,
     structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1381,13 +1613,16 @@ object(
     optional_label=False,
     hide_value=False,
     hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
+    default_input='VALUE',
 )
 ```
 
 ##### panel
 
 ``` python
-panel(name, *, default_closed=False)
+panel(name, *, description='', default_closed=False)
 ```
 
 Create a panel context for grouping sockets.
@@ -1406,6 +1641,7 @@ rotation(
     structure_type='AUTO',
     attribute_domain='POINT',
     default_attribute=None,
+    force_non_field=False,
 )
 ```
 
@@ -1414,6 +1650,22 @@ rotation(
 ``` python
 shader(
     name='Shader',
+    description='',
+    *,
+    optional_label=False,
+    hide_value=False,
+    hide_in_modifier=False,
+    structure_type='AUTO',
+    force_non_field=False,
+)
+```
+
+##### sound
+
+``` python
+sound(
+    name='Sound',
+    default_value=None,
     description='',
     *,
     optional_label=False,
@@ -1434,6 +1686,8 @@ string(
     hide_value=False,
     hide_in_modifier=False,
     subtype='NONE',
+    structure_type='AUTO',
+    force_non_field=False,
 )
 ```
 
@@ -1456,6 +1710,7 @@ vector(
     default_attribute=None,
     default_input='VALUE',
     attribute_domain='POINT',
+    force_non_field=False,
 )
 ```
 
@@ -1470,6 +1725,7 @@ TreeBuilder(
     arrange='sugiyama',
     fake_user=False,
     ignore_visibility=False,
+    split_inputs=False,
 )
 ```
 
@@ -1483,6 +1739,7 @@ Supports geometry, shader, and compositor node trees.
 |----|----|
 | [`collapse`](#nodebpy.builder.tree.TreeBuilder.collapse) |  |
 | [`fake_user`](#nodebpy.builder.tree.TreeBuilder.fake_user) |  |
+| [`group_input_splits`](#nodebpy.builder.tree.TreeBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.builder.tree.TreeBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.builder.tree.TreeBuilder.inputs) |  |
 | [`node_positions`](#nodebpy.builder.tree.TreeBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
@@ -1502,7 +1759,9 @@ Supports geometry, shader, and compositor node trees.
 | [disable_arrange](#nodebpy.builder.tree.TreeBuilder.disable_arrange) | Disable the auto-layout that otherwise runs when this tree’s context |
 | [geometry](#nodebpy.builder.tree.TreeBuilder.geometry) | Create a geometry node tree. |
 | [link](#nodebpy.builder.tree.TreeBuilder.link) |  |
+| [panel](#nodebpy.builder.tree.TreeBuilder.panel) | A panel that can group input *and* output sockets together |
 | [shader](#nodebpy.builder.tree.TreeBuilder.shader) | Create a shader node tree. |
+| [split_group_inputs](#nodebpy.builder.tree.TreeBuilder.split_group_inputs) | Split the Group Input node into one instance per consumer node, |
 | [to_mermaid](#nodebpy.builder.tree.TreeBuilder.to_mermaid) | Generate a Mermaid diagram that represents this tree. |
 | [to_python](#nodebpy.builder.tree.TreeBuilder.to_python) | Generate Python source that recreates this tree using nodebpy. |
 
@@ -1535,6 +1794,7 @@ compositor(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
@@ -1565,6 +1825,7 @@ geometry(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
@@ -1576,6 +1837,14 @@ Create a geometry node tree.
 link(socket1, socket2)
 ```
 
+##### panel
+
+``` python
+panel(name, *, description='', default_closed=False, reuse=True)
+```
+
+A panel that can group input *and* output sockets together (`tree.inputs.panel` / `tree.outputs.panel` group one direction). Reuses an existing same-named panel under the same parent, so a mixed panel can be declared in separate input and output passes; pass `reuse=False` to always create a fresh panel — Blender allows several same-named sibling panels, and rebuilding such an interface must not fold them into one. Passing an existing panel (or a previous `tree.panel(...)` context) instead of a name reopens exactly that panel — the unambiguous spelling generated code uses for the second direction pass over a same-named sibling.
+
 ##### shader
 
 ``` python
@@ -1585,10 +1854,19 @@ shader(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    split_inputs=False,
 )
 ```
 
 Create a shader node tree.
+
+##### split_group_inputs
+
+``` python
+split_group_inputs()
+```
+
+Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with `split_inputs=True`.
 
 ##### to_mermaid
 
@@ -1629,3 +1907,26 @@ to_python(
 Generate Python source that recreates this tree using nodebpy.
 
 See :func:`nodebpy.codegen.to_python` for parameter details.
+
+### TreePanelContext
+
+``` python
+TreePanelContext(
+    builder,
+    name,
+    *,
+    description='',
+    default_closed=False,
+    reuse=True,
+)
+```
+
+Context manager for a panel holding both input *and* output sockets.
+
+Activates the panel on the builder’s `inputs` and `outputs` contexts at once, and reuses an existing top-level panel of the same name — so a mixed panel can be filled in two passes (inputs, then outputs) without duplicating it.
+
+#### Attributes
+
+| Name                                                    | Description |
+|---------------------------------------------------------|-------------|
+| [`panel`](#nodebpy.builder.tree.TreePanelContext.panel) |             |
