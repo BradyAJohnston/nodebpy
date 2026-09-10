@@ -23,8 +23,12 @@ nodes, so you reach them straight off the editor module:
 from nodebpy import geometry as g
 
 with g.tree("Assets") as tree:
-    mesh = g.SmoothByAngle(mesh=g.Cube(), angle=0.6).o.mesh
-    _ = g.Array(geometry=mesh, count=4) >> tree.outputs.geometry()
+    (
+        g.Cube()
+        >> g.SmoothByAngle(angle=0.6)
+        >> g.Array(count=4)
+        >> tree.outputs.geometry()
+    )
 
 tree
 ```
