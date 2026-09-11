@@ -136,3 +136,112 @@ def test_string_generators(snapshot):
     assert snapshot == tree.to_python(format=False)
     assert snapshot == tree.to_mermaid()
     assert snapshot == tree.to_mermaid(fenced=False)
+
+
+def test_split_inputs_creates_instance_per_consumer():
+    """``split_inputs=True`` regenerates the editor style: one Group Input
+    instance per consumer node, unused sockets hidden, wiring unchanged."""
+    with TreeBuilder("AutoSplit", split_inputs=True) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        out = tree.outputs.float("Out")
+        math = g.Math.add(a, 1.0)
+        combine = g.CombineXYZ(x=math, y=b)
+        combine.o.vector.length() >> out
+
+    instances = [n for n in tree.tree.nodes if n.bl_idname == "NodeGroupInput"]
+    assert len(instances) == 2
+    for node in instances:
+        linked = {s.name for s in node.outputs if s.is_linked}
+        hidden = {s.name for s in node.outputs if s.hide}
+        assert len(linked) == 1  # one instance per consumer, one input each
+        assert hidden == {"A", "B"} - linked
+    # Wiring is unchanged: Math still takes A, CombineXYZ still takes B.
+    assert math.node.inputs[0].links[0].from_socket.name == "A"
+    assert combine.node.inputs["Y"].links[0].from_socket.name == "B"
+
+
+def test_split_inputs_noop_with_single_consumer():
+    """One consumer node means nothing to split — the primary stays alone
+    (with its unused sockets hidden)."""
+    with TreeBuilder("AutoSplitNoop", split_inputs=True) as tree:
+        a = tree.inputs.float("A")
+        tree.inputs.float("Spare")
+        g.Math.add(a, 1.0) >> tree.outputs.float("Out")
+
+    instances = [n for n in tree.tree.nodes if n.bl_idname == "NodeGroupInput"]
+    assert len(instances) == 1
+    assert instances[0].outputs["Spare"].hide
+
+
+def test_group_input_splits_getter_reports_instances():
+    with TreeBuilder("SplitGet", split_inputs=True) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        math = g.Math.add(a, 1.0)
+        g.CombineXYZ(x=math, y=b).o.vector.length() >> tree.outputs.float("Out")
+
+    splits = tree.group_input_splits
+    assert len(splits) == 1
+    (split,) = splits
+    assert split["name"] != "Group Input"
+    assert len(split["links"]) == 1
+
+
+def test_group_input_splits_setter_skips_gracefully():
+    """Entries naming consumers, sockets, or interface inputs the tree does
+    not have (or that carry no matching existing link) leave the noodle on
+    the primary node instead of mis-wiring anything."""
+    with TreeBuilder("SplitSkip") as tree:
+        a = tree.inputs.float("A")
+        math = g.Math.add(a, 1.0)
+        math >> tree.outputs.float("Out")
+        tree.group_input_splits = [
+            {"name": "GI.001", "links": [("A", "No Such Node", "Value")]},
+            {"name": "GI.002", "links": [("A", "Math", "No Such Socket")]},
+            # names a socket that exists but is not fed by a Group Input
+            {"name": "GI.003", "links": [("A", "Math", "Value_001")]},
+            # names an interface input that does not exist
+            {"name": "GI.004", "links": [("Nope", "Math", "Value")]},
+        ]
+
+    primary = tree.tree.nodes["Group Input"]
+    assert primary.outputs["A"].is_linked  # the noodle stayed put
+    assert len([n for n in tree.tree.nodes if n.bl_idname == "NodeGroupInput"]) == 5
+
+
+def test_split_group_inputs_without_primary_is_noop():
+    with TreeBuilder("NoInputs", split_inputs=True) as tree:
+        g.Value(1.0) >> tree.outputs.float("Out")
+    assert not any(n.bl_idname == "NodeGroupInput" for n in tree.tree.nodes)
+
+
+def test_nested_tree_panel_reuses_by_parent():
+    """Re-entering the same nested tree.panel chain reuses the panels
+    instead of duplicating them."""
+    with TreeBuilder("NestedPanels") as tree:
+        with tree.panel("Outer", description="o"):
+            tree.inputs.float("A")
+            with tree.panel("Inner"):
+                tree.inputs.float("B")
+        with tree.panel("Outer"):
+            with tree.panel("Inner"):
+                tree.outputs.float("C")
+        tree.inputs.float("X") >> tree.outputs.float("Y")
+
+    panels = [
+        i
+        for i in tree.tree.interface.items_tree
+        if getattr(i, "item_type", "") == "PANEL"
+    ]
+    assert [p.name for p in panels] == ["Outer", "Inner"]
+    outer, inner = panels
+    assert inner.parent == outer
+    sockets = {
+        i.name: i
+        for i in tree.tree.interface.items_tree
+        if getattr(i, "item_type", "") == "SOCKET"
+    }
+    assert sockets["A"].parent == outer
+    assert sockets["B"].parent == inner
+    assert sockets["C"].parent == inner  # reused, not duplicated

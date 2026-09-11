@@ -2,12 +2,52 @@
 title: Changelog
 ---
 
+## v250.18.0 - 2026-09-10
+
+### Enhancements
+
+- **Typed `_build_group` signatures** — generated classes annotate the builder parameter per tree type (`def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:`), importing the `bpy.types` tree class, so the whole method body type-checks and autocompletes in editors; `NodeGroupBuilder._build_group` itself is now typed `TreeBuilder[T]`, so hand-written `Custom*Group` subclasses inherit the narrowed hint too.
+- **Lint-clean generated output** — formatted output now runs `ruff check --fix` *and* `ruff format` as it is written (sorted imports, double-quoted strings, `**{...}` collapsed to plain kwargs where socket names allow), so dumped sources need no lint pass afterwards; the dump's metadata footers and library references emit double-quoted strings directly.
+
+### Fixes
+
+- Codegen's value formatter rendered a one-element tuple without its trailing comma (`("X")` — a plain string), so any single-entry sequence value degenerated on rebuild; it now keeps the comma.
+
+## v250.17.0 - 2026-09-10
+
+### Enhancements
+
+- **Dump and build asset libraries** — `nodebpy.assets.dump_library(blend, dir)` writes every node-group asset in a `.blend` to its own `.py` module: assets, shared helper groups (under `_shared/`), code-generated materials (under `materials/`), with `ASSET_METADATA` / `MATERIAL_PROPERTIES` / `DATABLOCK_DEPENDENCIES` footers and the asset catalog file travelling alongside. `nodebpy.assets.build_library(dir, blend)` rebuilds the `.blend` from those sources, so the Python files can be the version-controlled source of truth. `python -m nodebpy.assets dump <blend> <dir>` / `build <dir> <blend>` run both in a fresh session; `--typed-api` merges the typed asset API (docstrings, `_Inputs`/`_Outputs` accessors, `PackageLibrary` anchor) into the dumped classes. A full re-dump clears modules of assets since renamed or deleted, appending refuses sessions whose same-named datablocks would corrupt the dumped names, and `build_library` resolves non-serialisable datablocks from the session, a `resources=` `.blend`, or `on_missing="drop"` placeholders — and fails upfront (with a per-tree-directory hint) when two sources build same-named assets.
+- **Library parity auditing** — `nodebpy.export.serialize_library` / `compare_libraries` (and the `python -m nodebpy.export.parity a.blend b.blend` CLI) deep-compare two asset libraries via `tree_clipper` serialization, with selectable cosmetic surfaces (`positions`, `reroutes`, …) to exclude. Used throughout the test suite to verify dump → build round-trips.
+- **Round-trip fidelity against real libraries** — Blender's bundled geometry / shading / compositing essentials and the MolecularNodes asset library (456 assets together) now round-trip through dump → build to **zero** functional-parity findings, enforced by tests.
+- **Curve mappings round-trip** — Float Curve, RGB / Vector Curves and Hue Correct nodes with edited curves now emit their full mapping state (point locations, handle types, selection, clip ranges, tone, black/white levels); previously an edited curve silently rebuilt as the default ramp.
+- **Multiple separate Group Input nodes** — trees using the editor convention of one input node per consumer cluster round-trip via `tree.group_input_splits` (recorded with `snapshot_positions=True`), and `tree.split_group_inputs()` / `TreeBuilder(split_inputs=True)` regenerate the style on authored trees. Each split entry moves exactly one link, so parallel links from several instances into one multi-input socket survive.
+- **Same-named sibling panels** — Blender allows several same-named panels under one parent; `tree.panel(...)` gained `reuse=False` (create a fresh panel instead of reusing) and accepts an existing panel (or a previous `tree.panel(...)` context) to reopen exactly that panel. Codegen uses both spellings so such interfaces rebuild without folding panels together, and empty organizational panels are now emitted too. A mixed `tree.panel` inside `tree.outputs.panel(...)` now nests under it correctly and restores each direction's own active panel on exit.
+- Interface menu defaults assigned after the `with TreeBuilder(...)` block exits now apply immediately instead of queueing forever, and reading `menu.default_value` reports the pending or applied interface value instead of the stale node socket.
+- Interface `Font` / `Sound` socket defaults are now dumped and rebuilt like the other datablock defaults, and `is_strip_modifier` joined the round-tripped tree-level properties.
+- Exposed the `TrimString` node via `StringSocket.trim()`, with codegen round-tripping trees back to the method call
+- Exposed the `StringToValue` node via `StringSocket.to_float()` / `.to_integer(base)`, and `IntegerSocket.to_string()` now exposes the node's `base` and `padding` options
+- `to_python` now round-trips `split()`, `to_float()` / `to_integer()` and float/integer `to_string()` as socket method calls instead of `g.SplitString(...)` / `g.StringToValue.*(...)` / `g.ValueToString.*(...)` factory calls
+
+### Fixes
+
+- `to_python` rendered datablock values as `bpy.data.<collection>["Name"]`, so a generated script raised `KeyError` in any session lacking the datablock — they now render as guarded `.get("Name")` lookups, letting standalone scripts run with the default left empty (the dump/build pipeline still resolves them upfront via `DATABLOCK_DEPENDENCIES`).
+- Zone items (simulation / repeat / for-each) were re-created in socket-identifier order, silently un-reordering items that had been reordered in the editor; they now rebuild in collection order. The zone output's `inspection_index` round-trips too.
+- Referencing one of several same-named outputs on a *group* node used an identifier-derived accessor name (`group.o.socket_0`) that broke on rebuild — such outputs are now referenced by position (`group.o[2]`), which the interface order preserves.
+- `value.map_range(...)` with a non-default steps value emitted five positional arguments where `steps` is keyword-only, making the generated script fail to run.
+- An IntegerMath operation with a float operand was lifted to a Python operator that rebuilt as a float `ShaderNodeMath` node; the lift now checks operand types like the other math lifts.
+
+## v520.15.0 - 2026-08-28
+
+### Enhancements
+- **Font and Sound sockets everywhere Blender allows them** — `tree.inputs.font()` / `.sound()` (and the `outputs` equivalents) create interface sockets; typed `font` / `sound` factories were added to `IndexSwitch`, `MenuSwitch`, the repeat zone's `items`, closure zone `inputs` / `outputs`, `EvaluateClosure` `inputs` / `outputs` and Combine / Separate Bundle `items`. `to_python` emits the new spellings, and `FONT` joined the socket-compatibility table so font links are accepted by the builder. Simulation, For-Each, Bake and Capture Attribute items are unchanged: Blender 5.2 rejects these datablock types there.
+
 ## v520.15.0 - 2026-08-27
 
 ### Enhancements
 - **Menu Switch item descriptions** — enum items can now carry the tooltip Blender shows in the menu. A dict item value may be a `(value, description)` pair (`g.MenuSwitch.geometry(menu, {"Object": (obj, "Use the source object")})`), and the new `switch.item(name, value, description=...)` helper declares a single item and returns a `MenuItem` handle exposing the item's `input` socket, its `is_selected` boolean output and its (settable) `description`. Declaring the first item via `item()` defaults the menu selection to it, matching the constructor, and a selection named before any items exist (`g.MenuSwitch.geometry("Mesh")`) is deferred until the tree is built. `to_python` export emits the pair form for described items, so descriptions now round-trip instead of being silently dropped.
 
-
+## v520.14.0 - 2026-08-23
 
 ### Enhancements
 - **Datablock comparisons** — the `Compare` node now covers the datablock types Blender 5.2 can compare in geometry trees: `g.Compare.object`, `.image`, `.collection`, `.material`, `.font` and `.sound` factories each offer `equal` / `not_equal` (the only operations Blender permits for datablocks) and return a typed `Compare[...]` whose `i.a` / `i.b` carry the matching socket class. `to_python` export emits the factory spellings automatically.

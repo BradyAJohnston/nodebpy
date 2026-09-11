@@ -187,7 +187,7 @@ def test_library_source_renders_path_as_plain_string():
     module doesn't import (and which isn't cross-platform)."""
     lib = PackageLibrary(__file__, Path("assets") / "data.blend")
     source = _codegen._library_source(lib)
-    assert source == "PackageLibrary(__file__, 'assets/data.blend')"
+    assert source == 'PackageLibrary(__file__, "assets/data.blend")'
     assert "PosixPath" not in source
     assert "WindowsPath" not in source
 

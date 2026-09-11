@@ -8,6 +8,7 @@ from .asset import (
     BundledLibrary,
     PackageLibrary,
     asset_group_base,
+    build_from_source,
 )
 from .items import Item, ItemsMixin, MenuItem
 from .mixins import LinkingMixin, OperatorMixin
@@ -145,6 +146,7 @@ __all__ = [
     "VectorSocketGrid",
     "VectorSocketList",
     "asset_group_base",
+    "build_from_source",
     "denormalize_name",
     "normalize_name",
 ]

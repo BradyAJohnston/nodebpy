@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import keyword
 import re
+import unicodedata
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import bpy
@@ -43,8 +44,12 @@ def normalize_name(name: str) -> str:
     """Convert 'Geometry' or 'My Socket' to a valid lower-case Python identifier
     ('geometry', 'my_socket'). Spaces, punctuation and other non-identifier
     characters (e.g. the '⟂'/'(' in 'BA⟂(BC)') collapse to underscores so the
-    result is always usable as an attribute or parameter name."""
-    text = name.lower().replace("é", "e")
+    result is always usable as an attribute or parameter name. Accented
+    letters fold to their ASCII base ('Bézier' → 'bezier') to match the
+    generated method names."""
+    text = "".join(
+        c for c in unicodedata.normalize("NFKD", name) if not unicodedata.combining(c)
+    ).lower()
     cleaned = _NON_IDENTIFIER.sub("_", text).strip("_")
     if cleaned and cleaned[0].isdigit():
         cleaned = "_" + cleaned
@@ -56,6 +61,41 @@ def normalize_name(name: str) -> str:
 def denormalize_name(attr_name: str) -> str:
     """Convert 'geometry' or 'my_socket' to 'Geometry' or 'My Socket'."""
     return attr_name.replace("_", " ").title()
+
+
+def typed_param_names(sockets) -> dict[str, str]:
+    """Socket identifier → ``__init__`` parameter name for a typed group class.
+
+    The one place this mapping is defined: both the generated class's typed
+    ``__init__`` (``nodebpy.assets``) and the call sites codegen emits for it
+    (``nodebpy.export``) must agree, and they both derive it from the same
+    live tree during a dump. A socket's parameter is its normalized name; when
+    several sockets normalize to the same name, each falls back to its
+    normalized identifier; residual collisions (or reserved names like
+    ``self``) get a numeric suffix.
+
+    ``sockets`` is any iterable of objects with ``name``/``identifier``
+    (interface items or group-node sockets); ``__extend__`` virtual sockets
+    are skipped.
+    """
+    real = [s for s in sockets if not s.identifier.startswith("__extend__")]
+    from collections import Counter
+
+    counts = Counter(normalize_name(s.name) for s in real)
+    reserved = {"self", "_named_links"}
+    params: dict[str, str] = {}
+    used: set[str] = set()
+    for s in real:
+        base = normalize_name(s.name)
+        if counts[base] > 1:
+            base = normalize_name(s.identifier)
+        name, n = base, 1
+        while name in used or name in reserved:
+            n += 1
+            name = f"{base}_{n}"
+        used.add(name)
+        params[s.identifier] = name
+    return params
 
 
 def _allow_innactive_sockets(node: bpy.types.Node) -> bool:

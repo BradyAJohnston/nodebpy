@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, ClassVar, Literal, Self, TypeVar, cast
 
 import bpy
@@ -33,6 +33,7 @@ from .socket import (
     CollectionSocket,
     ColorSocket,
     FloatSocket,
+    FontSocket,
     GeometrySocket,
     ImageSocket,
     IntegerSocket,
@@ -43,11 +44,30 @@ from .socket import (
     RotationSocket,
     ShaderSocket,
     Socket,
+    SoundSocket,
     StringSocket,
     VectorSocket,
 )
 
 _SocketT = TypeVar("_SocketT", bound=Socket)
+
+# The interface ``default_input`` values Blender actually accepts at runtime,
+# per socket type (the RNA enum lists every option on every type, but
+# assignment validates a per-type subset — union across tree types here).
+# Socket types not listed accept only "VALUE", so their factories don't take
+# the parameter at all.
+_FloatDefaultInputs = Literal["VALUE", "SCENE_FRAME"]
+_IntegerDefaultInputs = Literal["VALUE", "INDEX", "ID_OR_INDEX", "SCENE_FRAME"]
+_VectorDefaultInputs = Literal[
+    "VALUE",
+    "NORMAL",
+    "POSITION",
+    "HANDLE_LEFT",
+    "HANDLE_RIGHT",
+    "UNIFORM_IMAGE_COORDINATES",
+]
+_MatrixDefaultInputs = Literal["VALUE", "INSTANCE_TRANSFORM"]
+_ObjectDefaultInputs = Literal["VALUE", "SELF_OBJECT"]
 
 
 class PanelContext:
@@ -58,22 +78,121 @@ class PanelContext:
         socket_context: SocketContext,
         name: str,
         *,
+        description: str = "",
         default_closed: bool = False,
     ):
         self._socket_context = socket_context
         self._name = name
+        self._description = description
         self._default_closed = default_closed
         self._panel: bpy.types.NodeTreeInterfacePanel | None = None
 
     def __enter__(self):
-        self._panel = self._socket_context.interface.new_panel(
-            self._name, default_closed=self._default_closed
+        interface = self._socket_context.interface
+        self._panel = interface.new_panel(
+            self._name,
+            description=self._description,
+            default_closed=self._default_closed,
         )
+        # Entered inside another panel context → nest under it.
+        self._previous = self._socket_context._active_panel
+        if self._previous is not None:
+            assert self._panel is not None
+            interface.move_to_parent(
+                self._panel, self._previous, len(self._previous.interface_items)
+            )
         self._socket_context._active_panel = self._panel
         return self
 
     def __exit__(self, *args):
-        self._socket_context._active_panel = None
+        self._socket_context._active_panel = self._previous
+
+
+class TreePanelContext:
+    """Context manager for a panel holding both input *and* output sockets.
+
+    Activates the panel on the builder's ``inputs`` and ``outputs`` contexts
+    at once, and reuses an existing top-level panel of the same name — so a
+    mixed panel can be filled in two passes (inputs, then outputs) without
+    duplicating it."""
+
+    def __init__(
+        self,
+        builder: TreeBuilder,
+        name: str | bpy.types.NodeTreeInterfacePanel,
+        *,
+        description: str = "",
+        default_closed: bool = False,
+        reuse: bool = True,
+    ):
+        self._builder = builder
+        self._name = name
+        self._description = description
+        self._default_closed = default_closed
+        self._reuse = reuse
+        self.panel: bpy.types.NodeTreeInterfacePanel | None = None
+
+    def __enter__(self):
+        interface = self._builder.tree.interface
+        assert interface is not None
+        # Entered inside another panel context → nest under it. A mixed panel
+        # lives in one place, so an enclosing panel open on only one side
+        # (e.g. inside ``tree.outputs.panel(...)``) parents it too; two
+        # different panels open at once leave no sensible parent.
+        self._previous_inputs = self._builder.inputs._active_panel
+        self._previous_outputs = self._builder.outputs._active_panel
+        parent = self._previous_inputs or self._previous_outputs
+        if (
+            self._previous_inputs is not None
+            and self._previous_outputs is not None
+            and self._previous_inputs != self._previous_outputs
+        ):
+            raise ValueError(
+                f"Cannot nest mixed panel {self._name!r}: different panels "
+                f"are active for inputs ({self._previous_inputs.name!r}) and "
+                f"outputs ({self._previous_outputs.name!r})."
+            )
+
+        def parent_matches(item) -> bool:
+            if parent is None:
+                return item.parent is None or item.parent.index == -1
+            return item.parent == parent
+
+        if not isinstance(self._name, str):
+            # Reopening an exact panel by handle (e.g. the second direction
+            # pass of generated round-trip code, where a name lookup could
+            # land on a same-named sibling): activate it as it stands.
+            self.panel = self._name
+        else:
+            self.panel = None
+            if self._reuse:
+                self.panel = next(
+                    (
+                        item
+                        for item in interface.items_tree
+                        if getattr(item, "item_type", "") == "PANEL"
+                        and item.name == self._name
+                        and parent_matches(item)
+                    ),
+                    None,
+                )
+            if self.panel is None:
+                self.panel = interface.new_panel(
+                    self._name,
+                    description=self._description,
+                    default_closed=self._default_closed,
+                )
+                if parent is not None:
+                    interface.move_to_parent(
+                        self.panel, parent, len(parent.interface_items)
+                    )
+        self._builder.inputs._active_panel = self.panel
+        self._builder.outputs._active_panel = self.panel
+        return self
+
+    def __exit__(self, *args):
+        self._builder.inputs._active_panel = self._previous_inputs
+        self._builder.outputs._active_panel = self._previous_outputs
 
 
 class SocketContext:
@@ -95,9 +214,13 @@ class SocketContext:
         assert interface is not None
         return interface
 
-    def panel(self, name: str, *, default_closed: bool = False) -> PanelContext:
+    def panel(
+        self, name: str, *, description: str = "", default_closed: bool = False
+    ) -> PanelContext:
         """Create a panel context for grouping sockets."""
-        return PanelContext(self, name, default_closed=default_closed)
+        return PanelContext(
+            self, name, description=description, default_closed=default_closed
+        )
 
     # ------------------------------------------------------------------
     # Socket factory methods
@@ -121,6 +244,13 @@ class SocketContext:
     def _set_props(
         self, interface_socket: bpy.types.NodeTreeInterfaceSocket, **kwargs: Any
     ) -> None:
+        # ``force_non_field``'s RNA update callback recomputes the structure
+        # type, clobbering an already-assigned ``structure_type`` — apply it
+        # first, and skip the pointless (but still update-firing) False write.
+        if kwargs.get("force_non_field") is False:
+            kwargs.pop("force_non_field")
+        elif "force_non_field" in kwargs:
+            kwargs = {"force_non_field": kwargs.pop("force_non_field"), **kwargs}
         for key, value in kwargs.items():
             if value is None:
                 continue
@@ -149,6 +279,10 @@ class SocketContext:
         s = socket_cls(bpy_socket)
         s._tree = self.builder
         s._interface_socket = interface_socket
+        # Captured while the reference is certainly fresh: interface items
+        # reallocate as the interface grows, so a later read through
+        # _interface_socket can hit a different item.
+        s._interface_identifier = interface_socket.identifier
         return s
 
     def float(
@@ -166,6 +300,8 @@ class SocketContext:
         subtype: FloatInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
+        force_non_field: bool = False,
+        default_input: _FloatDefaultInputs = "VALUE",
     ) -> FloatSocket:
         iface = self._add_socket("NodeSocketFloat", name, description)
         self._set_props(
@@ -180,6 +316,8 @@ class SocketContext:
             subtype=subtype,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
+            force_non_field=force_non_field,
+            default_input=default_input,
         )
         return self._wrap(FloatSocket, iface)
 
@@ -195,10 +333,11 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: Literal["INDEX", "VALUE", "ID_OR_INDEX"] = "VALUE",
+        default_input: _IntegerDefaultInputs = "VALUE",
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
+        force_non_field: bool = False,
     ) -> IntegerSocket:
         iface = self._add_socket("NodeSocketInt", name, description)
         self._set_props(
@@ -214,6 +353,7 @@ class SocketContext:
             subtype=subtype,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
+            force_non_field=force_non_field,
         )
         return self._wrap(IntegerSocket, iface)
 
@@ -231,6 +371,7 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         is_panel_toggle: bool = False,
+        force_non_field: bool = False,
     ) -> BooleanSocket:
         iface = self._add_socket("NodeSocketBool", name, description)
         self._set_props(
@@ -244,6 +385,7 @@ class SocketContext:
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
             is_panel_toggle=is_panel_toggle,
+            force_non_field=force_non_field,
         )
         return self._wrap(BooleanSocket, iface)
 
@@ -265,10 +407,9 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
-        default_input: Literal[
-            "VALUE", "NORMAL", "POSITION", "HANDLE_LEFT", "HANDLE_RIGHT"
-        ] = "VALUE",
+        default_input: _VectorDefaultInputs = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
+        force_non_field: bool = False,
     ) -> VectorSocket:
         values: tuple[float, ...] = (
             (0.0,) * dimensions if default_value is None else tuple(default_value)
@@ -292,6 +433,7 @@ class SocketContext:
             default_input=default_input,
             default_attribute=default_attribute,
             attribute_domain=attribute_domain,
+            force_non_field=force_non_field,
         )
         return self._wrap(VectorSocket, iface)
 
@@ -307,6 +449,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
+        force_non_field: bool = False,
     ) -> ColorSocket:
         assert len(default_value) == 4, "Default color must be RGBA tuple"
         iface = self._add_socket("NodeSocketColor", name, description)
@@ -319,6 +462,7 @@ class SocketContext:
             structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
+            force_non_field=force_non_field,
         )
         return self._wrap(ColorSocket, iface)
 
@@ -334,6 +478,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
+        force_non_field: bool = False,
     ) -> RotationSocket:
         iface = self._add_socket("NodeSocketRotation", name, description)
         self._set_props(
@@ -345,6 +490,7 @@ class SocketContext:
             structure_type=structure_type,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
+            force_non_field=force_non_field,
         )
         return self._wrap(RotationSocket, iface)
 
@@ -357,9 +503,10 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: Literal["VALUE", "INSTANCE_TRANSFORM"] = "VALUE",
+        default_input: _MatrixDefaultInputs = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
+        force_non_field: bool = False,
     ) -> MatrixSocket:
         iface = self._add_socket("NodeSocketMatrix", name, description)
         self._set_props(
@@ -371,6 +518,7 @@ class SocketContext:
             default_input=default_input,
             attribute_domain=attribute_domain,
             default_attribute=default_attribute,
+            force_non_field=force_non_field,
         )
         return self._wrap(MatrixSocket, iface)
 
@@ -384,6 +532,8 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         subtype: StringInterfaceSubtypes = "NONE",
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> StringSocket:
         iface = self._add_socket("NodeSocketString", name, description)
         self._set_props(
@@ -393,6 +543,8 @@ class SocketContext:
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
             subtype=subtype,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(StringSocket, iface)
 
@@ -407,6 +559,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> MenuSocket:
         iface = self._add_socket("NodeSocketMenu", name, description)
         self._set_props(
@@ -417,6 +570,7 @@ class SocketContext:
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
             structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(MenuSocket, iface)
 
@@ -429,6 +583,9 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
+        default_input: _ObjectDefaultInputs = "VALUE",
     ) -> ObjectSocket:
         iface = self._add_socket("NodeSocketObject", name, description)
         self._set_props(
@@ -437,6 +594,9 @@ class SocketContext:
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
+            default_input=default_input,
         )
         return self._wrap(ObjectSocket, iface)
 
@@ -448,6 +608,8 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> GeometrySocket:
         iface = self._add_socket("NodeSocketGeometry", name, description)
         self._set_props(
@@ -455,6 +617,8 @@ class SocketContext:
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(GeometrySocket, iface)
 
@@ -467,6 +631,8 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> CollectionSocket:
         iface = self._add_socket("NodeSocketCollection", name, description)
         self._set_props(
@@ -475,6 +641,8 @@ class SocketContext:
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(CollectionSocket, iface)
 
@@ -487,6 +655,8 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> ImageSocket:
         iface = self._add_socket("NodeSocketImage", name, description)
         self._set_props(
@@ -495,6 +665,8 @@ class SocketContext:
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(ImageSocket, iface)
 
@@ -507,6 +679,8 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> MaterialSocket:
         iface = self._add_socket("NodeSocketMaterial", name, description)
         self._set_props(
@@ -515,8 +689,50 @@ class SocketContext:
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(MaterialSocket, iface)
+
+    def font(
+        self,
+        name: str = "Font",
+        default_value: bpy.types.VectorFont | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> FontSocket:
+        iface = self._add_socket("NodeSocketFont", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+        return self._wrap(FontSocket, iface)
+
+    def sound(
+        self,
+        name: str = "Sound",
+        default_value: bpy.types.Sound | None = None,
+        description: str = "",
+        *,
+        optional_label: bool = False,
+        hide_value: bool = False,
+        hide_in_modifier: bool = False,
+    ) -> SoundSocket:
+        iface = self._add_socket("NodeSocketSound", name, description)
+        self._set_props(
+            iface,
+            default_value=default_value,
+            optional_label=optional_label,
+            hide_value=hide_value,
+            hide_in_modifier=hide_in_modifier,
+        )
+        return self._wrap(SoundSocket, iface)
 
     def bundle(
         self,
@@ -526,6 +742,8 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> BundleSocket:
         iface = self._add_socket("NodeSocketBundle", name, description)
         self._set_props(
@@ -533,6 +751,8 @@ class SocketContext:
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(BundleSocket, iface)
 
@@ -544,6 +764,8 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> ClosureSocket:
         iface = self._add_socket("NodeSocketClosure", name, description)
         self._set_props(
@@ -551,6 +773,8 @@ class SocketContext:
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(ClosureSocket, iface)
 
@@ -562,6 +786,8 @@ class SocketContext:
         optional_label: bool = False,
         hide_value: bool = False,
         hide_in_modifier: bool = False,
+        structure_type: _SocketShapeStructureType = "AUTO",
+        force_non_field: bool = False,
     ) -> ShaderSocket:
         iface = self._add_socket("NodeSocketShader", name, description)
         self._set_props(
@@ -569,6 +795,8 @@ class SocketContext:
             optional_label=optional_label,
             hide_value=hide_value,
             hide_in_modifier=hide_in_modifier,
+            structure_type=structure_type,
+            force_non_field=force_non_field,
         )
         return self._wrap(ShaderSocket, iface)
 
@@ -600,8 +828,59 @@ class OutputInterfaceContext(DirectionalContext):
 
 @dataclass
 class _MenuDefault:
+    """A menu default deferred to context exit, with enough breadcrumbs to
+    re-resolve its target — the reference captured at queue time is
+    invalidated by the interface update that populates the menu enums."""
+
     item: bpy.types.NodeSocketMenu | bpy.types.NodeTreeInterfaceSocketMenu
     default: str
+    # Interface references go stale as the interface grows, so a caller that
+    # captured the identifier while the reference was fresh passes it in;
+    # otherwise it is read here, at queue time.
+    identifier: str = ""
+    node_name: str | None = field(init=False, default=None)
+
+    def __post_init__(self) -> None:
+        if not self.identifier:
+            self.identifier = self.item.identifier
+            node = getattr(self.item, "node", None)  # sockets only
+            self.node_name = node.name if node is not None else None
+
+    def resolve(self, tree: NodeTree):
+        """The live menu socket/interface item this default targets.
+
+        Interface items are re-resolved by identifier — the interface update
+        that populates the enums reallocates them, leaving the queued
+        reference stale. A node socket keeps its direct reference (its node
+        may have been *renamed* since queueing, so the name breadcrumb could
+        hit a different same-named node); the breadcrumbs are only its
+        fallback if the socket itself was removed."""
+        if self.node_name is None:
+            interface = tree.interface
+            assert interface is not None
+            return next(
+                (
+                    item
+                    for item in interface.items_tree
+                    if getattr(item, "identifier", None) == self.identifier
+                ),
+                None,
+            )
+        try:
+            if self.item.identifier == self.identifier:
+                return self.item
+        except ReferenceError:  # pragma: no cover - the socket was removed
+            pass
+        return self._resolve_by_breadcrumbs(tree)  # pragma: no cover
+
+    def _resolve_by_breadcrumbs(self, tree: NodeTree):  # pragma: no cover
+        """Fallback for a removed/stale socket reference: re-find the socket
+        via its node name and identifier."""
+        assert self.node_name is not None
+        node = tree.nodes.get(self.node_name)
+        if node is None:
+            return None
+        return next((s for s in node.inputs if s.identifier == self.identifier), None)
 
 
 class TreeBuilder[TreeT: NodeTree]:
@@ -625,6 +904,7 @@ class TreeBuilder[TreeT: NodeTree]:
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
         ignore_visibility: bool = False,
+        split_inputs: bool = False,
     ):
         if isinstance(tree, str):
             self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
@@ -632,12 +912,14 @@ class TreeBuilder[TreeT: NodeTree]:
             self.tree = tree  # type: ignore
 
         self._menu_defaults: list[_MenuDefault] = []
+        self._exited = False
         self.inputs = InputInterfaceContext(self)
         self.outputs = OutputInterfaceContext(self)
         self._arrange = arrange
         self.collapse = collapse
         self.fake_user = fake_user
         self.ignore_visibility = ignore_visibility
+        self._split_inputs = split_inputs
 
     @classmethod
     def geometry(
@@ -647,6 +929,7 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
+        split_inputs: bool = False,
     ) -> TreeBuilder[GeometryNodeTree]:
         """Create a geometry node tree."""
         return cast(
@@ -657,6 +940,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 collapse=collapse,
                 arrange=arrange,
                 fake_user=fake_user,
+                split_inputs=split_inputs,
             ),
         )
 
@@ -668,6 +952,7 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
+        split_inputs: bool = False,
     ) -> TreeBuilder[ShaderNodeTree]:
         """Create a shader node tree."""
         return cast(
@@ -678,6 +963,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 collapse=collapse,
                 arrange=arrange,
                 fake_user=fake_user,
+                split_inputs=split_inputs,
             ),
         )
 
@@ -689,6 +975,7 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
         fake_user: bool = False,
+        split_inputs: bool = False,
     ) -> TreeBuilder[CompositorNodeTree]:
         """Create a compositor node tree."""
         return cast(
@@ -699,6 +986,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 collapse=collapse,
                 arrange=arrange,
                 fake_user=fake_user,
+                split_inputs=split_inputs,
             ),
         )
 
@@ -772,19 +1060,38 @@ class TreeBuilder[TreeT: NodeTree]:
 
     def __enter__(self) -> Self:
         self.activate_tree()
+        self._exited = False
         return self
 
     def __exit__(self, *args):
+        # Split before auto-layout, so the created instances get arranged
+        # next to their consumers.
+        if self._split_inputs:
+            self.split_group_inputs()
         if self._arrange is not None:
             self.arrange()
         self._apply_input_defaults()
+        # Interface-menu defaults assigned from here on can't wait for a
+        # context exit that already happened — apply them immediately
+        # (see MenuSocket.default_value).
+        self._exited = True
         self.deactivate_tree()
 
     def _apply_input_defaults(self) -> None:
+        if not self._menu_defaults:
+            return
+        # Menu enums populate by propagation from the Menu Switch that
+        # defines them; a headless session never runs the editor update that
+        # triggers it, so without this nudge the assignments below silently
+        # store an empty default. The update can reallocate the targets, so
+        # each is re-resolved from its breadcrumbs before assignment.
+        self.tree.interface_update(bpy.context)
         for value in self._menu_defaults:
             if value.default == "":
                 continue
-            value.item.default_value = value.default
+            item = value.resolve(self.tree)
+            if item is not None:
+                item.default_value = value.default
 
     def __len__(self) -> int:
         return len(self.nodes)
@@ -793,6 +1100,35 @@ class TreeBuilder[TreeT: NodeTree]:
         """Disable the auto-layout that otherwise runs when this tree's context
         exits, so explicitly assigned node locations are preserved."""
         self._arrange = None
+
+    def panel(
+        self,
+        name: str | bpy.types.NodeTreeInterfacePanel | TreePanelContext,
+        *,
+        description: str = "",
+        default_closed: bool = False,
+        reuse: bool = True,
+    ) -> TreePanelContext:
+        """A panel that can group input *and* output sockets together
+        (``tree.inputs.panel`` / ``tree.outputs.panel`` group one direction).
+        Reuses an existing same-named panel under the same parent, so a mixed
+        panel can be declared in separate input and output passes; pass
+        ``reuse=False`` to always create a fresh panel — Blender allows
+        several same-named sibling panels, and rebuilding such an interface
+        must not fold them into one. Passing an existing panel (or a previous
+        ``tree.panel(...)`` context) instead of a name reopens exactly that
+        panel — the unambiguous spelling generated code uses for the second
+        direction pass over a same-named sibling."""
+        if isinstance(name, TreePanelContext):
+            assert name.panel is not None
+            name = name.panel
+        return TreePanelContext(
+            self,
+            name,
+            description=description,
+            default_closed=default_closed,
+            reuse=reuse,
+        )
 
     @property
     def node_positions(self) -> dict[str, tuple[float, float]]:
@@ -809,6 +1145,128 @@ class TreeBuilder[TreeT: NodeTree]:
             node = self.tree.nodes.get(name)
             if node is not None:
                 node.location = location
+
+    @property
+    def group_input_splits(self) -> list[dict]:
+        """The extra Group Input instances beyond the primary one, each as
+        ``{"name": ..., "links": [(interface input name, consumer node name,
+        consumer socket identifier), ...]}`` — the editor convention of
+        several input nodes near their consumers instead of one node trailing
+        long noodles. See the setter."""
+        splits: list[dict] = []
+        for node in self.tree.nodes:
+            if node.bl_idname != "NodeGroupInput" or node.name == "Group Input":
+                continue
+            links: list[tuple[str, str, str]] = []
+            for socket in node.outputs:
+                for link in socket.links or ():
+                    to_node, to_socket = link.to_node, link.to_socket
+                    assert to_node is not None and to_socket is not None
+                    links.append((socket.name, to_node.name, to_socket.identifier))
+            splits.append({"name": node.name, "links": links})
+        return splits
+
+    @group_input_splits.setter
+    def group_input_splits(self, splits: list[dict]) -> None:
+        """Split the Group Input node into several instances: each entry
+        creates one instance carrying the listed links (moved off whichever
+        input node holds them — exactly one per entry, so parallel links from
+        several instances into one multi-input socket are never swept away
+        together). An entry naming a consumer or socket the tree doesn't have
+        is skipped — that noodle simply stays on the primary node — so
+        applying a snapshot to an edited tree degrades gracefully, like
+        :attr:`node_positions`."""
+        # Deferred menu defaults must land before any link moves: their enums
+        # propagate through the pre-split wiring, and re-sourcing a menu link
+        # leaves the enum unpopulated until an editor update this headless
+        # session never runs.
+        self._apply_input_defaults()
+        self._menu_defaults.clear()
+        for split in splits:
+            instance = self.tree.nodes.new("NodeGroupInput")
+            assert instance is not None
+            instance.name = split["name"]
+            for from_name, to_node_name, to_socket_id in split["links"]:
+                to_node = self.tree.nodes.get(to_node_name)
+                if to_node is None:
+                    continue
+                to_socket = next(
+                    (s for s in to_node.inputs if s.identifier == to_socket_id), None
+                )
+                if to_socket is None:
+                    continue
+                # Only re-source an existing identical link: the consumer
+                # must already take this same interface input from some
+                # Group Input instance. A rebuild that assigned this name to
+                # a *different* node fails the check and the noodle stays on
+                # the primary — names alone must never create connectivity,
+                # or two same-typed consumers could end up cross-wired.
+                existing = [
+                    link
+                    for link in to_socket.links or ()
+                    if link.from_node.bl_idname == "NodeGroupInput"
+                    and link.from_socket.name == from_name
+                ]
+                if not existing:
+                    continue
+                # Move exactly one link per recorded entry: a multi-input
+                # socket legally takes the same interface input several
+                # times, and the getter records one entry per link — moving
+                # them all here would collapse the duplicates into one.
+                # Prefer a link still on another instance so repeated entries
+                # walk through the remaining duplicates.
+                link = next(
+                    (ln for ln in existing if ln.from_node != instance), existing[0]
+                )
+                # Re-source the very interface socket the link already uses
+                # (by identifier): interface names can repeat across types,
+                # so a name lookup on the instance could pick a same-named
+                # socket of the wrong type and forge an invalid link.
+                identifier = link.from_socket.identifier
+                from_socket = next(
+                    (s for s in instance.outputs if s.identifier == identifier), None
+                )
+                if from_socket is None:
+                    continue  # pragma: no cover - instance lacks the socket
+                self.tree.links.remove(link)
+                self.tree.links.new(from_socket, to_socket)
+        if splits:
+            self._hide_unused_input_sockets()
+
+    def split_group_inputs(self) -> None:
+        """Split the Group Input node into one instance per consumer node,
+        with unused sockets hidden — regenerating the editor style that
+        avoids a single input node trailing long noodles. Runs automatically
+        on context exit (before auto-layout, so the instances are arranged
+        next to their consumers) when the builder was created with
+        ``split_inputs=True``."""
+        primary = self.tree.nodes.get("Group Input")
+        if primary is None:
+            return
+        by_consumer: dict[str, list[tuple[str, str, str]]] = {}
+        for socket in primary.outputs:
+            for link in socket.links:
+                by_consumer.setdefault(link.to_node.name, []).append(
+                    (socket.name, link.to_node.name, link.to_socket.identifier)
+                )
+        # The first consumer keeps the primary node; each further consumer
+        # gets its own instance (named like Blender would on duplication).
+        self.group_input_splits = [
+            {"name": f"Group Input.{index:03d}", "links": by_consumer[consumer]}
+            for index, consumer in enumerate(list(by_consumer)[1:], start=1)
+        ]
+        self._hide_unused_input_sockets()
+
+    def _hide_unused_input_sockets(self) -> None:
+        """Hide every unlinked output on every Group Input instance (the
+        virtual extension socket excluded), as the editor's Hide Unused
+        Sockets does."""
+        for node in self.tree.nodes:
+            if node.bl_idname != "NodeGroupInput":
+                continue
+            for socket in node.outputs:
+                if not socket.identifier.startswith("__extend__"):
+                    socket.hide = not socket.is_linked
 
     def arrange(self):
         if self._arrange == "sugiyama":
