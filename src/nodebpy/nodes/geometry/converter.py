@@ -7,48 +7,85 @@ import bpy
 from ...builder import BaseNode, SocketAccessor
 from ...builder.socket import (
     BooleanSocket,
+    BooleanSocketList,
     BundleSocket,
+    BundleSocketList,
     ClosureSocket,
+    ClosureSocketList,
     CollectionSocket,
+    CollectionSocketList,
     ColorSocket,
+    ColorSocketList,
     FloatSocket,
+    FloatSocketList,
     FontSocket,
+    FontSocketList,
     GeometrySocket,
+    GeometrySocketList,
     ImageSocket,
+    ImageSocketList,
     IntegerSocket,
+    IntegerSocketList,
     MaterialSocket,
+    MaterialSocketList,
     MatrixSocket,
+    MatrixSocketList,
     MenuSocket,
+    MenuSocketList,
     ObjectSocket,
+    ObjectSocketList,
     RotationSocket,
+    RotationSocketList,
     SoundSocket,
+    SoundSocketList,
     StringSocket,
     StringSocketList,
     VectorSocket,
+    VectorSocketList,
 )
 from ...types import (
     InputAny,
     InputBoolean,
+    InputBooleanList,
     InputBundle,
+    InputBundleList,
     InputClosure,
+    InputClosureList,
     InputCollection,
+    InputCollectionList,
     InputColor,
+    InputColorList,
     InputFloat,
+    InputFloatGrid,
+    InputFloatList,
     InputFont,
+    InputFontList,
     InputGeometry,
+    InputGeometryList,
     InputImage,
+    InputImageList,
     InputInteger,
+    InputIntegerList,
     InputMaterial,
+    InputMaterialList,
     InputMatrix,
+    InputMatrixList,
     InputMenu,
+    InputMenuList,
     InputObject,
+    InputObjectList,
     InputRotation,
+    InputRotationList,
     InputSound,
+    InputSoundList,
     InputString,
+    InputStringList,
     InputVector,
+    InputVectorList,
     _AttributeDomains,
 )
 from .._mixins import (
+    _ClosureToListMixin,
     _CombineBundleMixin,
     _FieldToListMixin,
     _FormatStringMixin,
@@ -777,7 +814,7 @@ class Clamp(BaseNode):
         self.node.clamp_type = value
 
 
-class ClosureToList(BaseNode):
+class ClosureToList(_ClosureToListMixin, BaseNode):
     """
     Create a list of values
 
@@ -814,16 +851,6 @@ class ClosureToList(BaseNode):
         def i(self) -> _Inputs: ...
         @property
         def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        count: InputInteger = 1,
-        closure: InputClosure = None,
-    ):
-        super().__init__()
-        key_args = {"Count": count, "Closure": closure}
-
-        self._establish_links(**key_args)
 
 
 class ClusterByConnected(BaseNode):
@@ -2212,23 +2239,23 @@ class FilterList[T](BaseNode):
 
     Parameters
     ----------
-    list : InputFloat
+    list : InputFloatList
         List
     selection : InputBoolean
         Selection
 
     Inputs
     ------
-    i.list : FloatSocket
+    i.list : FloatSocketList
         List
     i.selection : BooleanSocket
         Selection
 
     Outputs
     -------
-    o.selection : FloatSocket
+    o.selection : FloatSocketList
         Selection
-    o.inverted : FloatSocket
+    o.inverted : FloatSocketList
         Inverted
     """
 
@@ -2256,7 +2283,7 @@ class FilterList[T](BaseNode):
 
     def __init__(
         self,
-        list: InputAny = 0.0,
+        list: InputAny = None,
         selection: InputBoolean = True,
         *,
         socket_type: Literal[
@@ -2287,127 +2314,127 @@ class FilterList[T](BaseNode):
 
     @classmethod
     def float(
-        cls, list: InputFloat = 0.0, selection: InputBoolean = True
-    ) -> "FilterList[FloatSocket]":
+        cls, list: InputFloatList = None, selection: InputBoolean = True
+    ) -> "FilterList[FloatSocketList]":
         """Create Filter List with operation 'Float'."""
         return FilterList(socket_type="FLOAT", list=list, selection=selection)
 
     @classmethod
     def integer(
-        cls, list: InputInteger = 0, selection: InputBoolean = True
-    ) -> "FilterList[IntegerSocket]":
+        cls, list: InputIntegerList = None, selection: InputBoolean = True
+    ) -> "FilterList[IntegerSocketList]":
         """Create Filter List with operation 'Integer'."""
         return FilterList(socket_type="INT", list=list, selection=selection)
 
     @classmethod
     def boolean(
-        cls, list: InputBoolean = False, selection: InputBoolean = True
-    ) -> "FilterList[BooleanSocket]":
+        cls, list: InputBooleanList = None, selection: InputBoolean = True
+    ) -> "FilterList[BooleanSocketList]":
         """Create Filter List with operation 'Boolean'."""
         return FilterList(socket_type="BOOLEAN", list=list, selection=selection)
 
     @classmethod
     def vector(
-        cls, list: InputVector = None, selection: InputBoolean = True
-    ) -> "FilterList[VectorSocket]":
+        cls, list: InputVectorList = None, selection: InputBoolean = True
+    ) -> "FilterList[VectorSocketList]":
         """Create Filter List with operation 'Vector'."""
         return FilterList(socket_type="VECTOR", list=list, selection=selection)
 
     @classmethod
     def color(
-        cls, list: InputColor = None, selection: InputBoolean = True
-    ) -> "FilterList[ColorSocket]":
+        cls, list: InputColorList = None, selection: InputBoolean = True
+    ) -> "FilterList[ColorSocketList]":
         """Create Filter List with operation 'Color'."""
         return FilterList(socket_type="RGBA", list=list, selection=selection)
 
     @classmethod
     def rotation(
-        cls, list: InputRotation = None, selection: InputBoolean = True
-    ) -> "FilterList[RotationSocket]":
+        cls, list: InputRotationList = None, selection: InputBoolean = True
+    ) -> "FilterList[RotationSocketList]":
         """Create Filter List with operation 'Rotation'."""
         return FilterList(socket_type="ROTATION", list=list, selection=selection)
 
     @classmethod
     def matrix(
-        cls, list: InputMatrix = None, selection: InputBoolean = True
-    ) -> "FilterList[MatrixSocket]":
+        cls, list: InputMatrixList = None, selection: InputBoolean = True
+    ) -> "FilterList[MatrixSocketList]":
         """Create Filter List with operation 'Matrix'."""
         return FilterList(socket_type="MATRIX", list=list, selection=selection)
 
     @classmethod
     def string(
-        cls, list: InputString = "", selection: InputBoolean = True
-    ) -> "FilterList[StringSocket]":
+        cls, list: InputStringList = None, selection: InputBoolean = True
+    ) -> "FilterList[StringSocketList]":
         """Create Filter List with operation 'String'."""
         return FilterList(socket_type="STRING", list=list, selection=selection)
 
     @classmethod
     def menu(
-        cls, list: InputMenu = None, selection: InputBoolean = True
-    ) -> "FilterList[MenuSocket]":
+        cls, list: InputMenuList = None, selection: InputBoolean = True
+    ) -> "FilterList[MenuSocketList]":
         """Create Filter List with operation 'Menu'."""
         return FilterList(socket_type="MENU", list=list, selection=selection)
 
     @classmethod
     def object(
-        cls, list: InputObject = None, selection: InputBoolean = True
-    ) -> "FilterList[ObjectSocket]":
+        cls, list: InputObjectList = None, selection: InputBoolean = True
+    ) -> "FilterList[ObjectSocketList]":
         """Create Filter List with operation 'Object'."""
         return FilterList(socket_type="OBJECT", list=list, selection=selection)
 
     @classmethod
     def image(
-        cls, list: InputImage = None, selection: InputBoolean = True
-    ) -> "FilterList[ImageSocket]":
+        cls, list: InputImageList = None, selection: InputBoolean = True
+    ) -> "FilterList[ImageSocketList]":
         """Create Filter List with operation 'Image'."""
         return FilterList(socket_type="IMAGE", list=list, selection=selection)
 
     @classmethod
     def geometry(
-        cls, list: InputGeometry = None, selection: InputBoolean = True
-    ) -> "FilterList[GeometrySocket]":
+        cls, list: InputGeometryList = None, selection: InputBoolean = True
+    ) -> "FilterList[GeometrySocketList]":
         """Create Filter List with operation 'Geometry'."""
         return FilterList(socket_type="GEOMETRY", list=list, selection=selection)
 
     @classmethod
     def collection(
-        cls, list: InputCollection = None, selection: InputBoolean = True
-    ) -> "FilterList[CollectionSocket]":
+        cls, list: InputCollectionList = None, selection: InputBoolean = True
+    ) -> "FilterList[CollectionSocketList]":
         """Create Filter List with operation 'Collection'."""
         return FilterList(socket_type="COLLECTION", list=list, selection=selection)
 
     @classmethod
     def material(
-        cls, list: InputMaterial = None, selection: InputBoolean = True
-    ) -> "FilterList[MaterialSocket]":
+        cls, list: InputMaterialList = None, selection: InputBoolean = True
+    ) -> "FilterList[MaterialSocketList]":
         """Create Filter List with operation 'Material'."""
         return FilterList(socket_type="MATERIAL", list=list, selection=selection)
 
     @classmethod
     def bundle(
-        cls, list: InputBundle = None, selection: InputBoolean = True
-    ) -> "FilterList[BundleSocket]":
+        cls, list: InputBundleList = None, selection: InputBoolean = True
+    ) -> "FilterList[BundleSocketList]":
         """Create Filter List with operation 'Bundle'."""
         return FilterList(socket_type="BUNDLE", list=list, selection=selection)
 
     @classmethod
     def closure(
-        cls, list: InputClosure = None, selection: InputBoolean = True
-    ) -> "FilterList[ClosureSocket]":
+        cls, list: InputClosureList = None, selection: InputBoolean = True
+    ) -> "FilterList[ClosureSocketList]":
         """Create Filter List with operation 'Closure'."""
         return FilterList(socket_type="CLOSURE", list=list, selection=selection)
 
     @classmethod
     def font(
-        cls, list: InputFont = None, selection: InputBoolean = True
-    ) -> "FilterList[FontSocket]":
+        cls, list: InputFontList = None, selection: InputBoolean = True
+    ) -> "FilterList[FontSocketList]":
         """Create Filter List with operation 'Font'."""
         return FilterList(socket_type="FONT", list=list, selection=selection)
 
     @classmethod
     def sound(
-        cls, list: InputSound = None, selection: InputBoolean = True
-    ) -> "FilterList[SoundSocket]":
+        cls, list: InputSoundList = None, selection: InputBoolean = True
+    ) -> "FilterList[SoundSocketList]":
         """Create Filter List with operation 'Sound'."""
         return FilterList(socket_type="SOUND", list=list, selection=selection)
 
@@ -3070,20 +3097,20 @@ class GetBundleItem[T](BaseNode):
         self.node.structure_type = value
 
 
-class GetListItem[T](BaseNode):
+class GetListItem[T, TList](BaseNode):
     """
     Retrieve a value from a list
 
     Parameters
     ----------
-    list : InputFloat
+    list : InputFloatList
         List
     index : InputInteger
         Index
 
     Inputs
     ------
-    i.list : FloatSocket
+    i.list : FloatSocketList
         List
     i.index : IntegerSocket
         Index
@@ -3097,26 +3124,26 @@ class GetListItem[T](BaseNode):
     _bl_idname = "GeometryNodeListGetItem"
     node: bpy.types.GeometryNodeListGetItem
 
-    class _Inputs[S](SocketAccessor):
-        list: S
+    class _Inputs[S, SList](SocketAccessor):
+        list: SList
         """List"""
         index: IntegerSocket
         """Index"""
 
-    class _Outputs[S](SocketAccessor):
+    class _Outputs[S, SList](SocketAccessor):
         value: S
         """Value"""
 
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs[T]: ...
+        def i(self) -> _Inputs[T, TList]: ...
         @property
-        def o(self) -> _Outputs[T]: ...
+        def o(self) -> _Outputs[T, TList]: ...
 
     def __init__(
         self,
-        list: InputAny = 0.0,
+        list: InputAny = None,
         index: InputInteger = 0,
         *,
         socket_type: Literal[
@@ -3151,169 +3178,169 @@ class GetListItem[T](BaseNode):
 
     @classmethod
     def float(
-        cls, list: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "GetListItem[FloatSocket]":
+        cls, list: InputFloatList = None, index: InputInteger = 0
+    ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Float'."""
         return GetListItem(socket_type="FLOAT", list=list, index=index)
 
     @classmethod
     def integer(
-        cls, list: InputInteger = 0, index: InputInteger = 0
-    ) -> "GetListItem[IntegerSocket]":
+        cls, list: InputIntegerList = None, index: InputInteger = 0
+    ) -> "GetListItem[IntegerSocket, IntegerSocketList]":
         """Create Get List Item with operation 'Integer'."""
         return GetListItem(socket_type="INT", list=list, index=index)
 
     @classmethod
     def boolean(
-        cls, list: InputBoolean = False, index: InputInteger = 0
-    ) -> "GetListItem[BooleanSocket]":
+        cls, list: InputBooleanList = None, index: InputInteger = 0
+    ) -> "GetListItem[BooleanSocket, BooleanSocketList]":
         """Create Get List Item with operation 'Boolean'."""
         return GetListItem(socket_type="BOOLEAN", list=list, index=index)
 
     @classmethod
     def vector(
-        cls, list: InputVector = None, index: InputInteger = 0
-    ) -> "GetListItem[VectorSocket]":
+        cls, list: InputVectorList = None, index: InputInteger = 0
+    ) -> "GetListItem[VectorSocket, VectorSocketList]":
         """Create Get List Item with operation 'Vector'."""
         return GetListItem(socket_type="VECTOR", list=list, index=index)
 
     @classmethod
     def color(
-        cls, list: InputColor = None, index: InputInteger = 0
-    ) -> "GetListItem[ColorSocket]":
+        cls, list: InputColorList = None, index: InputInteger = 0
+    ) -> "GetListItem[ColorSocket, ColorSocketList]":
         """Create Get List Item with operation 'Color'."""
         return GetListItem(socket_type="RGBA", list=list, index=index)
 
     @classmethod
     def rotation(
-        cls, list: InputRotation = None, index: InputInteger = 0
-    ) -> "GetListItem[RotationSocket]":
+        cls, list: InputRotationList = None, index: InputInteger = 0
+    ) -> "GetListItem[RotationSocket, RotationSocketList]":
         """Create Get List Item with operation 'Rotation'."""
         return GetListItem(socket_type="ROTATION", list=list, index=index)
 
     @classmethod
     def matrix(
-        cls, list: InputMatrix = None, index: InputInteger = 0
-    ) -> "GetListItem[MatrixSocket]":
+        cls, list: InputMatrixList = None, index: InputInteger = 0
+    ) -> "GetListItem[MatrixSocket, MatrixSocketList]":
         """Create Get List Item with operation 'Matrix'."""
         return GetListItem(socket_type="MATRIX", list=list, index=index)
 
     @classmethod
     def string(
-        cls, list: InputString = "", index: InputInteger = 0
-    ) -> "GetListItem[StringSocket]":
+        cls, list: InputStringList = None, index: InputInteger = 0
+    ) -> "GetListItem[StringSocket, StringSocketList]":
         """Create Get List Item with operation 'String'."""
         return GetListItem(socket_type="STRING", list=list, index=index)
 
     @classmethod
     def menu(
-        cls, list: InputMenu = None, index: InputInteger = 0
-    ) -> "GetListItem[MenuSocket]":
+        cls, list: InputMenuList = None, index: InputInteger = 0
+    ) -> "GetListItem[MenuSocket, MenuSocketList]":
         """Create Get List Item with operation 'Menu'."""
         return GetListItem(socket_type="MENU", list=list, index=index)
 
     @classmethod
     def object(
-        cls, list: InputObject = None, index: InputInteger = 0
-    ) -> "GetListItem[ObjectSocket]":
+        cls, list: InputObjectList = None, index: InputInteger = 0
+    ) -> "GetListItem[ObjectSocket, ObjectSocketList]":
         """Create Get List Item with operation 'Object'."""
         return GetListItem(socket_type="OBJECT", list=list, index=index)
 
     @classmethod
     def image(
-        cls, list: InputImage = None, index: InputInteger = 0
-    ) -> "GetListItem[ImageSocket]":
+        cls, list: InputImageList = None, index: InputInteger = 0
+    ) -> "GetListItem[ImageSocket, ImageSocketList]":
         """Create Get List Item with operation 'Image'."""
         return GetListItem(socket_type="IMAGE", list=list, index=index)
 
     @classmethod
     def geometry(
-        cls, list: InputGeometry = None, index: InputInteger = 0
-    ) -> "GetListItem[GeometrySocket]":
+        cls, list: InputGeometryList = None, index: InputInteger = 0
+    ) -> "GetListItem[GeometrySocket, GeometrySocketList]":
         """Create Get List Item with operation 'Geometry'."""
         return GetListItem(socket_type="GEOMETRY", list=list, index=index)
 
     @classmethod
     def collection(
-        cls, list: InputCollection = None, index: InputInteger = 0
-    ) -> "GetListItem[CollectionSocket]":
+        cls, list: InputCollectionList = None, index: InputInteger = 0
+    ) -> "GetListItem[CollectionSocket, CollectionSocketList]":
         """Create Get List Item with operation 'Collection'."""
         return GetListItem(socket_type="COLLECTION", list=list, index=index)
 
     @classmethod
     def material(
-        cls, list: InputMaterial = None, index: InputInteger = 0
-    ) -> "GetListItem[MaterialSocket]":
+        cls, list: InputMaterialList = None, index: InputInteger = 0
+    ) -> "GetListItem[MaterialSocket, MaterialSocketList]":
         """Create Get List Item with operation 'Material'."""
         return GetListItem(socket_type="MATERIAL", list=list, index=index)
 
     @classmethod
     def bundle(
-        cls, list: InputBundle = None, index: InputInteger = 0
-    ) -> "GetListItem[BundleSocket]":
+        cls, list: InputBundleList = None, index: InputInteger = 0
+    ) -> "GetListItem[BundleSocket, BundleSocketList]":
         """Create Get List Item with operation 'Bundle'."""
         return GetListItem(socket_type="BUNDLE", list=list, index=index)
 
     @classmethod
     def closure(
-        cls, list: InputClosure = None, index: InputInteger = 0
-    ) -> "GetListItem[ClosureSocket]":
+        cls, list: InputClosureList = None, index: InputInteger = 0
+    ) -> "GetListItem[ClosureSocket, ClosureSocketList]":
         """Create Get List Item with operation 'Closure'."""
         return GetListItem(socket_type="CLOSURE", list=list, index=index)
 
     @classmethod
     def font(
-        cls, list: InputFont = None, index: InputInteger = 0
-    ) -> "GetListItem[FontSocket]":
+        cls, list: InputFontList = None, index: InputInteger = 0
+    ) -> "GetListItem[FontSocket, FontSocketList]":
         """Create Get List Item with operation 'Font'."""
         return GetListItem(socket_type="FONT", list=list, index=index)
 
     @classmethod
     def sound(
-        cls, list: InputSound = None, index: InputInteger = 0
-    ) -> "GetListItem[SoundSocket]":
+        cls, list: InputSoundList = None, index: InputInteger = 0
+    ) -> "GetListItem[SoundSocket, SoundSocketList]":
         """Create Get List Item with operation 'Sound'."""
         return GetListItem(socket_type="SOUND", list=list, index=index)
 
     @classmethod
     def auto(
-        cls, list: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "GetListItem[FloatSocket]":
+        cls, list: InputFloatList = None, index: InputInteger = 0
+    ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
         return GetListItem(structure_type="AUTO", list=list, index=index)
 
     @classmethod
     def dynamic(
-        cls, list: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "GetListItem[FloatSocket]":
+        cls, list: InputFloatList = None, index: InputInteger = 0
+    ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
         return GetListItem(structure_type="DYNAMIC", list=list, index=index)
 
     @classmethod
     def field(
-        cls, list: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "GetListItem[FloatSocket]":
+        cls, list: InputFloatList = None, index: InputInteger = 0
+    ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Field'. Socket expects a field"""
         return GetListItem(structure_type="FIELD", list=list, index=index)
 
     @classmethod
     def grid(
-        cls, list: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "GetListItem[FloatSocket]":
+        cls, list: InputFloatList = None, index: InputInteger = 0
+    ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Grid'. Socket expects a grid"""
         return GetListItem(structure_type="GRID", list=list, index=index)
 
     @classmethod
     def list(
-        cls, list: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "GetListItem[FloatSocket]":
+        cls, list: InputFloatList = None, index: InputInteger = 0
+    ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'List'. Socket expects a list"""
         return GetListItem(structure_type="LIST", list=list, index=index)
 
     @classmethod
     def single(
-        cls, list: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "GetListItem[FloatSocket]":
+        cls, list: InputFloatList = None, index: InputInteger = 0
+    ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Single'. Socket expects a single value"""
         return GetListItem(structure_type="SINGLE", list=list, index=index)
 
@@ -3413,7 +3440,7 @@ class GetNestedBundlePaths(BaseNode):
 
     Outputs
     -------
-    o.paths : StringSocket
+    o.paths : StringSocketList
         Paths
     """
 
@@ -4290,12 +4317,12 @@ class ListLength[T](BaseNode):
 
     Parameters
     ----------
-    list : InputFloat
+    list : InputFloatList
         List
 
     Inputs
     ------
-    i.list : FloatSocket
+    i.list : FloatSocketList
         List
 
     Outputs
@@ -4324,7 +4351,7 @@ class ListLength[T](BaseNode):
 
     def __init__(
         self,
-        list: InputAny = 0.0,
+        list: InputAny = None,
         *,
         data_type: Literal[
             "FLOAT",
@@ -4353,92 +4380,100 @@ class ListLength[T](BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, list: InputFloat = 0.0) -> "ListLength[FloatSocket]":
+    def float(cls, list: InputFloatList = None) -> "ListLength[FloatSocketList]":
         """Create List Length with operation 'Float'."""
         return ListLength(data_type="FLOAT", list=list)
 
     @classmethod
-    def integer(cls, list: InputInteger = 0) -> "ListLength[IntegerSocket]":
+    def integer(cls, list: InputIntegerList = None) -> "ListLength[IntegerSocketList]":
         """Create List Length with operation 'Integer'."""
         return ListLength(data_type="INT", list=list)
 
     @classmethod
-    def boolean(cls, list: InputBoolean = False) -> "ListLength[BooleanSocket]":
+    def boolean(cls, list: InputBooleanList = None) -> "ListLength[BooleanSocketList]":
         """Create List Length with operation 'Boolean'."""
         return ListLength(data_type="BOOLEAN", list=list)
 
     @classmethod
-    def vector(cls, list: InputVector = None) -> "ListLength[VectorSocket]":
+    def vector(cls, list: InputVectorList = None) -> "ListLength[VectorSocketList]":
         """Create List Length with operation 'Vector'."""
         return ListLength(data_type="VECTOR", list=list)
 
     @classmethod
-    def color(cls, list: InputColor = None) -> "ListLength[ColorSocket]":
+    def color(cls, list: InputColorList = None) -> "ListLength[ColorSocketList]":
         """Create List Length with operation 'Color'."""
         return ListLength(data_type="RGBA", list=list)
 
     @classmethod
-    def rotation(cls, list: InputRotation = None) -> "ListLength[RotationSocket]":
+    def rotation(
+        cls, list: InputRotationList = None
+    ) -> "ListLength[RotationSocketList]":
         """Create List Length with operation 'Rotation'."""
         return ListLength(data_type="ROTATION", list=list)
 
     @classmethod
-    def matrix(cls, list: InputMatrix = None) -> "ListLength[MatrixSocket]":
+    def matrix(cls, list: InputMatrixList = None) -> "ListLength[MatrixSocketList]":
         """Create List Length with operation 'Matrix'."""
         return ListLength(data_type="MATRIX", list=list)
 
     @classmethod
-    def string(cls, list: InputString = "") -> "ListLength[StringSocket]":
+    def string(cls, list: InputStringList = None) -> "ListLength[StringSocketList]":
         """Create List Length with operation 'String'."""
         return ListLength(data_type="STRING", list=list)
 
     @classmethod
-    def menu(cls, list: InputMenu = None) -> "ListLength[MenuSocket]":
+    def menu(cls, list: InputMenuList = None) -> "ListLength[MenuSocketList]":
         """Create List Length with operation 'Menu'."""
         return ListLength(data_type="MENU", list=list)
 
     @classmethod
-    def object(cls, list: InputObject = None) -> "ListLength[ObjectSocket]":
+    def object(cls, list: InputObjectList = None) -> "ListLength[ObjectSocketList]":
         """Create List Length with operation 'Object'."""
         return ListLength(data_type="OBJECT", list=list)
 
     @classmethod
-    def image(cls, list: InputImage = None) -> "ListLength[ImageSocket]":
+    def image(cls, list: InputImageList = None) -> "ListLength[ImageSocketList]":
         """Create List Length with operation 'Image'."""
         return ListLength(data_type="IMAGE", list=list)
 
     @classmethod
-    def geometry(cls, list: InputGeometry = None) -> "ListLength[GeometrySocket]":
+    def geometry(
+        cls, list: InputGeometryList = None
+    ) -> "ListLength[GeometrySocketList]":
         """Create List Length with operation 'Geometry'."""
         return ListLength(data_type="GEOMETRY", list=list)
 
     @classmethod
-    def collection(cls, list: InputCollection = None) -> "ListLength[CollectionSocket]":
+    def collection(
+        cls, list: InputCollectionList = None
+    ) -> "ListLength[CollectionSocketList]":
         """Create List Length with operation 'Collection'."""
         return ListLength(data_type="COLLECTION", list=list)
 
     @classmethod
-    def material(cls, list: InputMaterial = None) -> "ListLength[MaterialSocket]":
+    def material(
+        cls, list: InputMaterialList = None
+    ) -> "ListLength[MaterialSocketList]":
         """Create List Length with operation 'Material'."""
         return ListLength(data_type="MATERIAL", list=list)
 
     @classmethod
-    def bundle(cls, list: InputBundle = None) -> "ListLength[BundleSocket]":
+    def bundle(cls, list: InputBundleList = None) -> "ListLength[BundleSocketList]":
         """Create List Length with operation 'Bundle'."""
         return ListLength(data_type="BUNDLE", list=list)
 
     @classmethod
-    def closure(cls, list: InputClosure = None) -> "ListLength[ClosureSocket]":
+    def closure(cls, list: InputClosureList = None) -> "ListLength[ClosureSocketList]":
         """Create List Length with operation 'Closure'."""
         return ListLength(data_type="CLOSURE", list=list)
 
     @classmethod
-    def font(cls, list: InputFont = None) -> "ListLength[FontSocket]":
+    def font(cls, list: InputFontList = None) -> "ListLength[FontSocketList]":
         """Create List Length with operation 'Font'."""
         return ListLength(data_type="FONT", list=list)
 
     @classmethod
-    def sound(cls, list: InputSound = None) -> "ListLength[SoundSocket]":
+    def sound(cls, list: InputSoundList = None) -> "ListLength[SoundSocketList]":
         """Create List Length with operation 'Sound'."""
         return ListLength(data_type="SOUND", list=list)
 
@@ -6896,7 +6931,7 @@ class SortList[T](BaseNode):
 
     Parameters
     ----------
-    list : InputFloat
+    list : InputFloatList
         List
     selection : InputBoolean
         Selection
@@ -6907,7 +6942,7 @@ class SortList[T](BaseNode):
 
     Inputs
     ------
-    i.list : FloatSocket
+    i.list : FloatSocketList
         List
     i.selection : BooleanSocket
         Selection
@@ -6918,7 +6953,7 @@ class SortList[T](BaseNode):
 
     Outputs
     -------
-    o.list : FloatSocket
+    o.list : FloatSocketList
         List
     """
 
@@ -6948,7 +6983,7 @@ class SortList[T](BaseNode):
 
     def __init__(
         self,
-        list: InputAny = 0.0,
+        list: InputAny = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
@@ -6987,11 +7022,11 @@ class SortList[T](BaseNode):
     @classmethod
     def float(
         cls,
-        list: InputFloat = 0.0,
+        list: InputFloatList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[FloatSocket]":
+    ) -> "SortList[FloatSocketList]":
         """Create Sort List with operation 'Float'."""
         return SortList(
             socket_type="FLOAT",
@@ -7004,11 +7039,11 @@ class SortList[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        list: InputInteger = 0,
+        list: InputIntegerList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[IntegerSocket]":
+    ) -> "SortList[IntegerSocketList]":
         """Create Sort List with operation 'Integer'."""
         return SortList(
             socket_type="INT",
@@ -7021,11 +7056,11 @@ class SortList[T](BaseNode):
     @classmethod
     def boolean(
         cls,
-        list: InputBoolean = False,
+        list: InputBooleanList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[BooleanSocket]":
+    ) -> "SortList[BooleanSocketList]":
         """Create Sort List with operation 'Boolean'."""
         return SortList(
             socket_type="BOOLEAN",
@@ -7038,11 +7073,11 @@ class SortList[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        list: InputVector = None,
+        list: InputVectorList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[VectorSocket]":
+    ) -> "SortList[VectorSocketList]":
         """Create Sort List with operation 'Vector'."""
         return SortList(
             socket_type="VECTOR",
@@ -7055,11 +7090,11 @@ class SortList[T](BaseNode):
     @classmethod
     def color(
         cls,
-        list: InputColor = None,
+        list: InputColorList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[ColorSocket]":
+    ) -> "SortList[ColorSocketList]":
         """Create Sort List with operation 'Color'."""
         return SortList(
             socket_type="RGBA",
@@ -7072,11 +7107,11 @@ class SortList[T](BaseNode):
     @classmethod
     def rotation(
         cls,
-        list: InputRotation = None,
+        list: InputRotationList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[RotationSocket]":
+    ) -> "SortList[RotationSocketList]":
         """Create Sort List with operation 'Rotation'."""
         return SortList(
             socket_type="ROTATION",
@@ -7089,11 +7124,11 @@ class SortList[T](BaseNode):
     @classmethod
     def matrix(
         cls,
-        list: InputMatrix = None,
+        list: InputMatrixList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[MatrixSocket]":
+    ) -> "SortList[MatrixSocketList]":
         """Create Sort List with operation 'Matrix'."""
         return SortList(
             socket_type="MATRIX",
@@ -7106,11 +7141,11 @@ class SortList[T](BaseNode):
     @classmethod
     def string(
         cls,
-        list: InputString = "",
+        list: InputStringList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[StringSocket]":
+    ) -> "SortList[StringSocketList]":
         """Create Sort List with operation 'String'."""
         return SortList(
             socket_type="STRING",
@@ -7123,11 +7158,11 @@ class SortList[T](BaseNode):
     @classmethod
     def menu(
         cls,
-        list: InputMenu = None,
+        list: InputMenuList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[MenuSocket]":
+    ) -> "SortList[MenuSocketList]":
         """Create Sort List with operation 'Menu'."""
         return SortList(
             socket_type="MENU",
@@ -7140,11 +7175,11 @@ class SortList[T](BaseNode):
     @classmethod
     def object(
         cls,
-        list: InputObject = None,
+        list: InputObjectList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[ObjectSocket]":
+    ) -> "SortList[ObjectSocketList]":
         """Create Sort List with operation 'Object'."""
         return SortList(
             socket_type="OBJECT",
@@ -7157,11 +7192,11 @@ class SortList[T](BaseNode):
     @classmethod
     def image(
         cls,
-        list: InputImage = None,
+        list: InputImageList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[ImageSocket]":
+    ) -> "SortList[ImageSocketList]":
         """Create Sort List with operation 'Image'."""
         return SortList(
             socket_type="IMAGE",
@@ -7174,11 +7209,11 @@ class SortList[T](BaseNode):
     @classmethod
     def geometry(
         cls,
-        list: InputGeometry = None,
+        list: InputGeometryList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[GeometrySocket]":
+    ) -> "SortList[GeometrySocketList]":
         """Create Sort List with operation 'Geometry'."""
         return SortList(
             socket_type="GEOMETRY",
@@ -7191,11 +7226,11 @@ class SortList[T](BaseNode):
     @classmethod
     def collection(
         cls,
-        list: InputCollection = None,
+        list: InputCollectionList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[CollectionSocket]":
+    ) -> "SortList[CollectionSocketList]":
         """Create Sort List with operation 'Collection'."""
         return SortList(
             socket_type="COLLECTION",
@@ -7208,11 +7243,11 @@ class SortList[T](BaseNode):
     @classmethod
     def material(
         cls,
-        list: InputMaterial = None,
+        list: InputMaterialList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[MaterialSocket]":
+    ) -> "SortList[MaterialSocketList]":
         """Create Sort List with operation 'Material'."""
         return SortList(
             socket_type="MATERIAL",
@@ -7225,11 +7260,11 @@ class SortList[T](BaseNode):
     @classmethod
     def bundle(
         cls,
-        list: InputBundle = None,
+        list: InputBundleList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[BundleSocket]":
+    ) -> "SortList[BundleSocketList]":
         """Create Sort List with operation 'Bundle'."""
         return SortList(
             socket_type="BUNDLE",
@@ -7242,11 +7277,11 @@ class SortList[T](BaseNode):
     @classmethod
     def closure(
         cls,
-        list: InputClosure = None,
+        list: InputClosureList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[ClosureSocket]":
+    ) -> "SortList[ClosureSocketList]":
         """Create Sort List with operation 'Closure'."""
         return SortList(
             socket_type="CLOSURE",
@@ -7259,11 +7294,11 @@ class SortList[T](BaseNode):
     @classmethod
     def font(
         cls,
-        list: InputFont = None,
+        list: InputFontList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[FontSocket]":
+    ) -> "SortList[FontSocketList]":
         """Create Sort List with operation 'Font'."""
         return SortList(
             socket_type="FONT",
@@ -7276,11 +7311,11 @@ class SortList[T](BaseNode):
     @classmethod
     def sound(
         cls,
-        list: InputSound = None,
+        list: InputSoundList = None,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
         sort_weight: InputFloat = 0.0,
-    ) -> "SortList[SoundSocket]":
+    ) -> "SortList[SoundSocketList]":
         """Create Sort List with operation 'Sound'."""
         return SortList(
             socket_type="SOUND",
@@ -7362,7 +7397,7 @@ class SplitString(BaseNode):
 
     Outputs
     -------
-    o.list : StringSocket
+    o.list : StringSocketList
         List
     """
 
@@ -7690,7 +7725,10 @@ class StoreBundleItem[T](BaseNode):
 
     @classmethod
     def grid(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloatGrid = None,
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Grid'. Socket expects a grid"""
         return StoreBundleItem(
@@ -7699,7 +7737,10 @@ class StoreBundleItem[T](BaseNode):
 
     @classmethod
     def list(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloatList = None,
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'List'. Socket expects a list"""
         return StoreBundleItem(
@@ -8227,14 +8268,14 @@ class TagFilter(BaseNode):
     ----------
     tag_filter : InputString
         Tag Filter
-    tags : InputString
+    tags : InputStringList
         Tags
 
     Inputs
     ------
     i.tag_filter : StringSocket
         Tag Filter
-    i.tags : StringSocket
+    i.tags : StringSocketList
         Tags
 
     Outputs
@@ -8249,7 +8290,7 @@ class TagFilter(BaseNode):
     class _Inputs(SocketAccessor):
         tag_filter: StringSocket
         """Tag Filter"""
-        tags: StringSocket
+        tags: StringSocketList
         """Tags"""
 
     class _Outputs(SocketAccessor):
@@ -8266,7 +8307,7 @@ class TagFilter(BaseNode):
     def __init__(
         self,
         tag_filter: InputString = "",
-        tags: InputString = "",
+        tags: InputStringList = None,
     ):
         super().__init__()
         key_args = {"Tag Filter": tag_filter, "Tags": tags}

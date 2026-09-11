@@ -87,27 +87,31 @@ quartodoc:
     signature_name: short
 
   sections:
-  - title: Interface
-    contents:
-    - builder.tree
-    - builder.socket
-    - builder.node
-    - builder.accessor
-    - TreeBuilder
-    - builder.BaseNode
-  - title: Assets
-    desc: Generating classes from pre-build assets
-    contents:
-    - assets.generate_asset_api
-    - assets.generate_asset_modules
-    - assets.AssetLibrary
-    - assets.BundledLibrary
-    - assets.PackageLibrary
-  - title: Export
-    desc: Exporting node trees to code.
-    contents:
-    - export.to_python
-    - export.to_mermaid
+    - title: Interface
+      contents:
+        - builder.tree
+        - builder.socket
+        - builder.node
+        - builder.accessor
+        - TreeBuilder
+        - builder.BaseNode
+    - title: Assets
+      desc: Generating classes from pre-build assets
+      contents:
+        - assets.generate_asset_api
+        - assets.generate_asset_modules
+        - assets.dump_library
+        - assets.build_library
+        - assets.AssetLibrary
+        - assets.BundledLibrary
+        - assets.PackageLibrary
+    - title: Export
+      desc: Exporting node trees to code.
+      contents:
+        - export.to_python
+        - export.to_mermaid
+        - export.serialize_library
+        - export.compare_libraries
 
   - title: Geometry Nodes
     desc: Nodes use in Geometry Nodes trees.

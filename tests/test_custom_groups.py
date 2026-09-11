@@ -1,4 +1,5 @@
 from functools import reduce
+from typing import ClassVar
 
 import bpy
 import pytest
@@ -88,6 +89,30 @@ def test_named_links_resolve_same_name_by_type():
         by_type = {s.type: s.links[0].from_socket.type for s in amount_inputs}
         assert by_type["VALUE"] == "VALUE"
         assert by_type["VECTOR"] == "VECTOR"
+
+
+class _DupRotationGroup(CustomGeometryGroup):
+    """A rotation and a float input sharing a name — the shape of
+    MolecularNodes' "Curve Custom Profile" group."""
+
+    _name = "Dup Rotation Group"
+
+    def _build_group(self, tree):
+        tree.inputs.rotation("Profile Rotation")
+        tree.inputs.float("Profile Rotation")
+        tree.outputs.geometry("Geometry")
+
+
+def test_named_links_plain_value_resolves_by_inferred_type():
+    """A plain default in _named_links resolves to the socket its Python type
+    fits: 0.25 lands on the float "Profile Rotation", never the same-named
+    rotation socket that comes first in interface order (whose default it
+    could not even be assigned to). (MN asset: "Style Cartoon".)"""
+    with TreeBuilder():
+        node = _DupRotationGroup(_named_links=[("Profile Rotation", 0.25)])
+        by_type = {s.type: s for s in node.node.inputs if s.name == "Profile Rotation"}
+        assert by_type["VALUE"].default_value == 0.25
+        assert not by_type["ROTATION"].is_linked
 
 
 def test_named_links_errors_when_sockets_exhausted():
@@ -511,3 +536,73 @@ class TestMenuDefaultValue:
 
             ms = g.MenuSwitch.string(..., {letter: letter for letter in "ABCDEFG"})
             assert ms.i.menu.default_value == "A"
+
+
+class _FutureProps(CustomGeometryGroup):
+    """Carries a tree property this Blender version doesn't know — applied
+    with a skip, never a crash (cross-version dumps stay buildable)."""
+
+    _name = "Future Props Group"
+    _tree_properties: ClassVar[dict] = {
+        "description": "known",
+        "not_a_real_property": 1,
+    }
+
+    def _build_group(self, tree):
+        tree.inputs.float("A") >> tree.outputs.float("B")
+
+
+def test_unknown_tree_property_is_skipped(capsys):
+    tree = _FutureProps.create_group()
+    assert tree.description == "known"
+    assert "skipping tree property 'not_a_real_property'" in capsys.readouterr().out
+
+
+def test_menu_socket_default_defers_until_links_exist():
+    """A menu value assigned to a Switch's inputs before the switch output is
+    wired (so its enum is still empty) is deferred to context exit instead of
+    failing. (MN asset: "Animate Trails".)"""
+    from nodebpy import geometry as g2
+
+    with TreeBuilder("MenuDeferred") as tree:
+        flag = tree.inputs.boolean("Flag")
+        out = tree.outputs.float("Out")
+        selected = flag.switch.menu("A", "B")
+        g2.MenuSwitch.float(menu=selected, items={"A": 1.0, "B": 2.0}) >> out
+
+    switch = next(n for n in tree.tree.nodes if n.bl_idname == "GeometryNodeSwitch")
+    values = [
+        s.default_value
+        for s in switch.inputs
+        if s.type == "MENU" and hasattr(s, "default_value")
+    ]
+    assert values == ["A", "B"]
+
+
+class _DupNamedInputs(CustomGeometryGroup):
+    """Two inputs sharing a name but not a type — resolution must go by the
+    value's shape, not a blanket sequence-means-vector inference."""
+
+    _name = "Dup Named Inputs"
+
+    def _build_group(self, tree):
+        col = tree.inputs.color("Value")
+        vec = tree.inputs.vector("Value")
+        col >> tree.outputs.color("C")
+        vec >> tree.outputs.vector("V")
+
+
+def test_named_links_sequence_matches_socket_arity():
+    """A plain 4-tuple aimed at duplicate-named sockets lands on the RGBA
+    socket and a 3-tuple on the vector one, regardless of declaration order —
+    the value must fit the socket's array default."""
+    with TreeBuilder("HostDup", arrange=None):
+        node = _DupNamedInputs(
+            _named_links=[
+                ("Value", (0.1, 0.2, 0.3, 1.0)),
+                ("Value", (5.0, 6.0, 7.0)),
+            ]
+        )
+    color_in, vector_in = node.node.inputs[0], node.node.inputs[1]
+    assert tuple(round(v, 3) for v in color_in.default_value) == (0.1, 0.2, 0.3, 1.0)
+    assert tuple(round(v, 3) for v in vector_in.default_value) == (5.0, 6.0, 7.0)
