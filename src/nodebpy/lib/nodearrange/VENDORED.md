@@ -18,14 +18,18 @@ The Blender-addon shell: `__init__.py` (registration), `operators.py`,
 Keep these in mind when porting upstream commits; a straight file copy will
 break headless operation.
 
-- `utils.get_ntree()` resolves the tree from `TreeBuilder._tree_contexts`
-  instead of `bpy.context` (no UI context exists under the `bpy` module).
-- Headless adaptations — Blender never draws the tree, so UI-derived data is
-  unavailable:
-  - `graph.get_socket_y()` is stubbed (socket runtime locations are only
-    written during drawing). Socket-precise Y alignment is effectively
-    disabled; `utils.get_bottom()` estimates node heights via
-    `nodebpy.builder.arrange.calculate_node_dimensions()`.
+- `utils.get_ntree()` resolves the tree from `config.ntree` (set by
+  `sugiyama_layout()`) instead of `bpy.context` (no UI context exists under
+  the `bpy` module). Settings are applied per-call by
+  `nodebpy.builder.layout.arrange()` swapping `config.SETTINGS` /
+  `config.MARGIN`.
+- Headless adaptations — under the headless `bpy` module Blender never draws
+  the tree, so UI-derived geometry (`node.dimensions`, socket runtime
+  locations) stays zeroed:
+  - `utils.dimensions()` and `graph.get_socket_y()` use the drawn values
+    when present and otherwise fall back to estimates from
+    `nodebpy.builder.layout` (`calculate_node_dimensions()` /
+    `calculate_socket_offset_y()`).
   - `sugiyama.optimize_sizes()` skips `bpy.ops.wm.redraw_timer` and falls
     back to a per-character width estimate when `blf` can't measure text.
 - `structs.py` uses explicit `_fields_` lists (upstream builds them from
@@ -47,6 +51,9 @@ break headless operation.
   and parallel edges.
 
 ## How to sync with upstream
+
+Run `make vendor-check` from the repo root to list upstream commits not yet
+ported, or manually:
 
 ```sh
 git clone https://github.com/Leonardo-Pike-Excell/node-arrange /tmp/node-arrange

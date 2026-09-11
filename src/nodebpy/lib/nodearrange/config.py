@@ -7,12 +7,13 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
 from bpy.types import Node as BlenderNode
-from bpy.types import NodeSocket
+from bpy.types import NodeSocket, NodeTree
 from mathutils import Vector
 
 if TYPE_CHECKING:
     from .arrange.graph import Socket
 
+ntree: NodeTree | None = None
 selected: list[BlenderNode] = []
 linked_sockets: defaultdict[NodeSocket, set[NodeSocket]] = defaultdict(set)
 multi_input_sort_ids: defaultdict[Socket, list[tuple[Socket, int]]] = defaultdict(list)
@@ -41,6 +42,9 @@ MARGIN: Vector = Vector((200, 20.0))
 
 
 def reset() -> None:
+    global ntree
+
+    ntree = None
     selected.clear()
     linked_sockets.clear()
     multi_input_sort_ids.clear()

@@ -276,6 +276,7 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
 
 
 def sugiyama_layout(ntree: NodeTree) -> None:
+    config.ntree = ntree
     config.selected = [n for n in ntree.nodes if n.select]
     locs = [abs_loc(n) for n in config.selected if n.bl_idname != "NodeFrame"]
 

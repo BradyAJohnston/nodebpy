@@ -10,6 +10,7 @@ from itertools import chain, pairwise, product
 from math import inf
 from typing import Any, Literal, TypeGuard
 
+import bpy
 import networkx as nx
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeFrame, NodeSocket
@@ -481,8 +482,21 @@ class ClusterGraph:
 
 
 def get_socket_y(socket: NodeSocket) -> float:
-    bNodeSocket.from_address(socket.as_pointer())
-    return 1.0
+    node = socket.node
+    assert node is not None
+
+    # Socket runtime locations are only written when a node editor draws the
+    # tree; `node.dimensions` being set is the tell. Headless, estimate the
+    # socket's position from the same row model used for node dimensions.
+    if node.dimensions.y > 0:
+        b_socket = bNodeSocket.from_address(socket.as_pointer())
+        preferences = bpy.context.preferences
+        assert preferences is not None
+        return b_socket.runtime.contents.location[1] / preferences.system.ui_scale
+
+    from ....builder.layout import calculate_socket_offset_y
+
+    return get_top(node) + calculate_socket_offset_y(socket)
 
 
 @dataclass(frozen=True)

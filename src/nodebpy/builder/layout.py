@@ -1,9 +1,21 @@
 from __future__ import annotations
 
+import warnings
 from collections import Counter, deque
-from typing import Any, cast
+from dataclasses import dataclass
+from typing import Any, Literal, cast
 
 import bpy
+
+# Estimated row heights (in unscaled UI units) used to model node layout
+# without a UI. Blender only computes real node/socket geometry when a node
+# editor draws the tree, which never happens under the headless ``bpy`` module.
+HEADER = 20
+SOCKET_ROW = 32
+HIDDEN_SOCKET = 14
+HIDDEN_HEADER = 30
+PROPERTY_ROW = 28
+VECTOR_EXPANDED = 84
 
 
 def _is_layoutable(node: bpy.types.Node) -> bool:
@@ -86,62 +98,117 @@ def organize_into_columns(
     return list(reversed(columns))
 
 
+def _node_property_count(node: bpy.types.Node) -> int:
+    """Count properties specific to this node type (not inherited).
+
+    ``bl_rna`` exists on bpy classes via their metaclass, invisible to type
+    checkers looking at plain ``type``.
+    """
+    inherited_ids = {
+        prop.identifier
+        for base in type(node).__bases__
+        for prop in cast(Any, base).bl_rna.properties
+    }
+    return sum(
+        1 for prop in node.bl_rna.properties if prop.identifier not in inherited_ids
+    )
+
+
+def _is_expanded_vector(
+    socket: bpy.types.NodeSocket,
+    socket_input_connection_count: Counter | None,
+) -> bool:
+    """Whether an input draws the expanded 3-component vector widget."""
+    if socket.type != "VECTOR":
+        return False
+    if socket_input_connection_count is None:
+        return not socket.is_linked
+    return socket_input_connection_count[socket] == 0
+
+
 def calculate_node_dimensions(
     node: bpy.types.Node,
-    socket_input_connection_count: Counter,
-    interface_scale: float,
+    socket_input_connection_count: Counter | None = None,
+    interface_scale: float = 1.0,
 ) -> tuple[float, float]:
     """Calculate the visual dimensions of a node.
 
     When a node is collapsed (``node.hide is True``) only linked sockets
     contribute to the height, and header / property / vector-expansion rows
-    are omitted.
+    are omitted. When ``socket_input_connection_count`` is None, link state
+    is read directly from ``socket.is_linked``.
     """
-    HEADER = 20
-    SOCKET = 32
-    HIDDEN_SOCKET = 14
-    HIDDEN_HEADER = 30
-
     if node.hide:
         linked_inputs = sum(1 for s in node.inputs if s.enabled and s.is_linked)
         linked_outputs = sum(1 for s in node.outputs if s.enabled and s.is_linked)
         visible = max(linked_inputs, linked_outputs, 1)
         height = (HIDDEN_HEADER + visible * HIDDEN_SOCKET) * interface_scale
         return node.width, height
-    PROPERTY_ROW = 28
-    VECTOR_EXPANDED = 84
 
     enabled_inputs = sum(1 for s in node.inputs if s.enabled)
     enabled_outputs = sum(1 for s in node.outputs if s.enabled)
-
-    # count properties specific to this node type (not inherited)
-    # ``bl_rna`` exists on bpy classes via their metaclass, invisible to type
-    # checkers looking at plain ``type``.
-    inherited_ids = {
-        prop.identifier
-        for base in type(node).__bases__
-        for prop in cast(Any, base).bl_rna.properties
-    }
-    node_property_count = sum(
-        1 for prop in node.bl_rna.properties if prop.identifier not in inherited_ids
-    )
 
     # count vector inputs that need expanded UI widgets (not connected)
     unconnected_vectors = sum(
         1
         for s in node.inputs
-        if s.enabled and s.type == "VECTOR" and socket_input_connection_count[s] == 0
+        if s.enabled and _is_expanded_vector(s, socket_input_connection_count)
     )
 
     height = (
         HEADER
-        + enabled_outputs * SOCKET
-        + node_property_count * PROPERTY_ROW
-        + enabled_inputs * SOCKET
+        + enabled_outputs * SOCKET_ROW
+        + _node_property_count(node) * PROPERTY_ROW
+        + enabled_inputs * SOCKET_ROW
         + unconnected_vectors * VECTOR_EXPANDED
     ) * interface_scale
 
     return node.width, height
+
+
+def calculate_socket_offset_y(socket: bpy.types.NodeSocket) -> float:
+    """Estimate a socket's vertical offset (<= 0) from the top of its node.
+
+    Models the same row layout as :func:`calculate_node_dimensions`: header,
+    outputs, properties, then inputs (unconnected vector inputs are followed
+    by their expanded widget). Collapsed nodes spread their linked sockets
+    evenly across the node's height.
+    """
+    node = socket.node
+    assert node is not None
+
+    if node.hide:
+        side = node.outputs if socket.is_output else node.inputs
+        visible = [s for s in side if s.enabled and s.is_linked]
+        index = next((k for k, s in enumerate(visible) if s == socket), 0)
+        height = calculate_node_dimensions(node)[1]
+        return -height * (index + 0.5) / max(len(visible), 1)
+
+    if socket.is_output:
+        index = 0
+        for s in node.outputs:
+            if s == socket:
+                break
+            if s.enabled:
+                index += 1
+        return -(HEADER + (index + 0.5) * SOCKET_ROW)
+
+    enabled_outputs = sum(1 for s in node.outputs if s.enabled)
+    offset = (
+        HEADER
+        + enabled_outputs * SOCKET_ROW
+        + _node_property_count(node) * PROPERTY_ROW
+    )
+    for s in node.inputs:
+        if s == socket:
+            break
+        if not s.enabled:
+            continue
+        offset += SOCKET_ROW
+        if _is_expanded_vector(s, None):
+            offset += VECTOR_EXPANDED
+
+    return -(offset + 0.5 * SOCKET_ROW)
 
 
 def _socket_index(socket: bpy.types.NodeSocket) -> int:
@@ -340,3 +407,133 @@ def arrange_tree(
     _reduce_crossings(columns, tree)
     position_nodes_in_columns(columns, connection_counts, spacing)
     position_reroutes(tree)
+
+
+@dataclass(frozen=True)
+class SimpleOptions:
+    """Options for the simple column-based arrangement.
+
+    Parameters
+    ----------
+    spacing : tuple[float, float]
+        Horizontal gap between columns and vertical gap between nodes.
+    """
+
+    spacing: tuple[float, float] = (50, 25)
+
+
+@dataclass(frozen=True)
+class SugiyamaOptions:
+    """Options for the Sugiyama (layered) arrangement.
+
+    Parameters
+    ----------
+    margin : tuple[float, float]
+        Horizontal and vertical space between nodes.
+    direction : str
+        Which directions nodes may be moved in during layout.
+    socket_alignment : str
+        How aggressively links are straightened by aligning the sockets
+        they connect.
+    add_reroutes : bool
+        Insert reroute nodes to route long edges around nodes. Off by
+        default: added reroutes are real nodes, which would change the
+        authored structure of generated trees (node counts, round-trips,
+        diagrams).
+    keep_reroutes_outside_frames : bool
+        Do not place added reroutes inside frames.
+    stack_collapsed : bool
+        Stack consecutive collapsed nodes tightly.
+    stack_margin_y_fac : float
+        Fraction of the vertical margin used between stacked collapsed
+        nodes.
+    optimize_sizes : bool
+        Fit the widths of collapsed nodes to their display name.
+    iterations : int
+        Number of crossing-minimization iterations.
+    """
+
+    margin: tuple[float, float] = (200.0, 20.0)
+    direction: Literal["LEFT_DOWN", "RIGHT_DOWN", "BALANCED", "LEFT_UP", "RIGHT_UP"] = (
+        "LEFT_UP"
+    )
+    socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "MODERATE"
+    add_reroutes: bool = False
+    keep_reroutes_outside_frames: bool = False
+    stack_collapsed: bool = True
+    stack_margin_y_fac: float = 0.5
+    optimize_sizes: bool = False
+    iterations: int = 50
+
+
+type ArrangeMethod = (
+    Literal["sugiyama", "simple"] | SugiyamaOptions | SimpleOptions | None
+)
+
+
+def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:
+    from mathutils import Vector
+
+    from ..lib.nodearrange import config
+    from ..lib.nodearrange.arrange import sugiyama
+
+    previous_settings = config.SETTINGS
+    previous_margin = config.MARGIN
+    config.SETTINGS = config.Settings(
+        iterations=options.iterations,
+        direction=options.direction,
+        socket_alignment=options.socket_alignment,
+        add_reroutes=options.add_reroutes,
+        keep_reroutes_outside_frames=options.keep_reroutes_outside_frames,
+        stack_collapsed=options.stack_collapsed,
+        optimize_sizes=options.optimize_sizes,
+        stack_margin_y_fac=options.stack_margin_y_fac,
+    )
+    config.MARGIN = Vector(options.margin)
+    try:
+        sugiyama.sugiyama_layout(tree)
+    finally:
+        config.SETTINGS = previous_settings
+        config.MARGIN = previous_margin
+        config.reset()
+
+
+def arrange(
+    tree: bpy.types.NodeTree,
+    method: ArrangeMethod = "sugiyama",
+) -> None:
+    """Arrange the nodes of a tree.
+
+    ``method`` selects the algorithm: ``"sugiyama"`` (or a
+    :class:`SugiyamaOptions` instance for tuned settings), ``"simple"`` (or a
+    :class:`SimpleOptions` instance), or None to leave the tree untouched.
+
+    The Sugiyama layout requires the optional ``networkx`` dependency; when
+    it is missing, the simple arrangement is used instead (with a warning).
+    """
+    if method is None:
+        return
+
+    if isinstance(method, SimpleOptions):
+        arrange_tree(tree, method.spacing)
+    elif method == "simple":
+        arrange_tree(tree)
+    else:
+        options = method if isinstance(method, SugiyamaOptions) else SugiyamaOptions()
+        try:
+            _arrange_sugiyama(tree, options)
+        except ImportError as e:
+            if "networkx" not in str(e):
+                raise
+            warnings.warn(
+                "networkx is not installed, falling back to simple arrangement. "
+                "Install networkx for the Sugiyama layout: pip install nodebpy[networkx]",
+                stacklevel=2,
+            )
+            arrange_tree(tree)
+
+    # Quantize to the precision node positions are dumped with, so arranged
+    # trees round-trip losslessly (and sub-0.01 UI units carry no meaning).
+    for node in tree.nodes:
+        location = node.location
+        node.location = (round(location.x, 2), round(location.y, 2))

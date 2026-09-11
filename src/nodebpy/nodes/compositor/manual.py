@@ -8,6 +8,7 @@ from bpy.types import (
 )
 
 from ...builder import (
+    ArrangeMethod,
     BaseNode,
     BooleanSocket,
     ColorSocket,
@@ -39,7 +40,7 @@ def tree(
     name: str = "Compositor Nodes",
     *,
     collapse: bool = False,
-    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+    arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
 ) -> TreeBuilder[CompositorNodeTree]:
     return TreeBuilder.compositor(

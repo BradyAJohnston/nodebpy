@@ -19,6 +19,7 @@ from bpy.types import (
 )
 
 from ...builder import (
+    ArrangeMethod,
     BaseNode,
     BooleanSocket,
     BooleanSocketGrid,
@@ -150,7 +151,7 @@ def tree(
     name: str = "Geometry Node Group",
     *,
     collapse: bool = False,
-    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+    arrange: ArrangeMethod = "sugiyama",
 ) -> TreeBuilder[GeometryNodeTree]:
     return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
 

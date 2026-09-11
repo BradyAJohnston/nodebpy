@@ -25,7 +25,8 @@ from ..types import (
     _SocketShapeStructureType,
 )
 from ._utils import SocketError, _allow_innactive_sockets
-from .arrange import arrange_tree
+from .layout import ArrangeMethod
+from .layout import arrange as _arrange_nodes
 from .socket import (
     BooleanSocket,
     BundleSocket,
@@ -901,7 +902,7 @@ class TreeBuilder[TreeT: NodeTree]:
             "GeometryNodeTree", "ShaderNodeTree", "CompositorNodeTree"
         ] = "GeometryNodeTree",
         collapse: bool = False,
-        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+        arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         ignore_visibility: bool = False,
         split_inputs: bool = False,
@@ -927,7 +928,7 @@ class TreeBuilder[TreeT: NodeTree]:
         name: GeometryNodeTree | str = "Geometry Nodes",
         *,
         collapse: bool = False,
-        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+        arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         split_inputs: bool = False,
     ) -> TreeBuilder[GeometryNodeTree]:
@@ -950,7 +951,7 @@ class TreeBuilder[TreeT: NodeTree]:
         name: ShaderNodeTree | str = "Shader Nodes",
         *,
         collapse: bool = False,
-        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+        arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         split_inputs: bool = False,
     ) -> TreeBuilder[ShaderNodeTree]:
@@ -973,7 +974,7 @@ class TreeBuilder[TreeT: NodeTree]:
         name: CompositorNodeTree | str = "Compositor Nodes",
         *,
         collapse: bool = False,
-        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+        arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         split_inputs: bool = False,
     ) -> TreeBuilder[CompositorNodeTree]:
@@ -1269,25 +1270,7 @@ class TreeBuilder[TreeT: NodeTree]:
                     socket.hide = not socket.is_linked
 
     def arrange(self):
-        if self._arrange == "sugiyama":
-            try:
-                from ..lib.nodearrange.arrange import sugiyama
-
-                sugiyama.sugiyama_layout(self.tree)
-                sugiyama.config.reset()
-            except ImportError as e:
-                if "networkx" not in str(e):
-                    raise
-                import warnings
-
-                warnings.warn(
-                    "networkx is not installed, falling back to simple arrangement. "
-                    "Install networkx for the Sugiyama layout: pip install nodebpy[networkx]",
-                    stacklevel=2,
-                )
-                arrange_tree(self.tree)
-        elif self._arrange == "simple":
-            arrange_tree(self.tree)
+        _arrange_nodes(self.tree, self._arrange)
 
     def _repr_markdown_(self) -> str | None:
         """
@@ -1408,7 +1391,7 @@ class MaterialBuilder(TreeBuilder):
         name: str = "New Material",
         *,
         collapse: bool = False,
-        arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+        arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         ignore_visibility: bool = False,
     ):

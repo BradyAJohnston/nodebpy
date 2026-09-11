@@ -11,6 +11,13 @@ from .asset import (
     build_from_source,
 )
 from .items import Item, ItemsMixin, MenuItem
+from .layout import (
+    ArrangeMethod,
+    SimpleOptions,
+    SugiyamaOptions,
+    arrange,
+    arrange_tree,
+)
 from .mixins import LinkingMixin, OperatorMixin
 from .node import (
     BaseNode,
@@ -76,6 +83,7 @@ from .tree import (
 )
 
 __all__ = [
+    "ArrangeMethod",
     "AssetCompositorGroup",
     "AssetGeometryGroup",
     "AssetLibrary",
@@ -133,6 +141,7 @@ __all__ = [
     "RotationSocketList",
     "ShaderSocket",
     "ShaderSocketList",
+    "SimpleOptions",
     "Socket",
     "SocketAccessor",
     "SocketContext",
@@ -141,10 +150,13 @@ __all__ = [
     "SoundSocketList",
     "StringSocket",
     "StringSocketList",
+    "SugiyamaOptions",
     "TreeBuilder",
     "VectorSocket",
     "VectorSocketGrid",
     "VectorSocketList",
+    "arrange",
+    "arrange_tree",
     "asset_group_base",
     "build_from_source",
     "denormalize_name",

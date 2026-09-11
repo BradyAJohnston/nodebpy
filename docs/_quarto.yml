@@ -93,6 +93,12 @@ quartodoc:
         - builder.accessor
         - TreeBuilder
         - builder.BaseNode
+    - title: Arrangement
+      desc: Automatic node layout and its options.
+      contents:
+        - arrange
+        - SugiyamaOptions
+        - SimpleOptions
     - title: Assets
       desc: Generating classes from pre-build assets
       contents:

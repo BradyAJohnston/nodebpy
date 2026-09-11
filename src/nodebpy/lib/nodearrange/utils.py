@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from collections import Counter, defaultdict
+from collections import defaultdict
 from collections.abc import Callable, Hashable, Iterable
 from functools import cache
 from operator import itemgetter
@@ -13,9 +13,8 @@ from . import config
 
 
 def get_ntree() -> bpy.types.NodeTree:
-    from ...builder import TreeBuilder
-
-    return TreeBuilder._tree_contexts[-1].tree
+    assert config.ntree is not None, "no layout in progress (see sugiyama_layout)"
+    return config.ntree
 
 
 def group_by[T1: Hashable, T2: Hashable](
@@ -45,10 +44,18 @@ REROUTE_DIM = Vector((8, 8))
 
 
 def dimensions(node: Node) -> Vector:
-    if node.bl_idname != "NodeReroute":
-        return node.dimensions
-    else:
+    if node.bl_idname == "NodeReroute":
         return REROUTE_DIM
+
+    dim = node.dimensions
+    if dim.x > 0 and dim.y > 0:
+        return dim
+
+    # `node.dimensions` is only computed when a node editor draws the tree;
+    # under the headless `bpy` module it stays (0, 0), so estimate instead.
+    from ...builder.layout import calculate_node_dimensions
+
+    return Vector(calculate_node_dimensions(node))
 
 
 _HIDE_OFFSET = 10
@@ -62,13 +69,9 @@ def get_top(node: Node, y_loc: float | None = None) -> float:
 
 
 def get_bottom(node: Node, y_loc: float | None = None) -> float:
-    from ...builder.arrange import calculate_node_dimensions
-
     if y_loc is None:
         y_loc = abs_loc(node).y
-    dim_y = calculate_node_dimensions(
-        node, Counter({i: len(i.links or ()) for i in node.inputs}), 1.0
-    )[1]
+    dim_y = dimensions(node).y
     bottom = y_loc - dim_y
     return bottom + dim_y / 2 - _HIDE_OFFSET if node.hide else bottom
 

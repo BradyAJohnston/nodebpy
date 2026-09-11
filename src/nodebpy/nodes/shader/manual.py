@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Literal
 from bpy.types import ShaderNodeAttribute, ShaderNodeTree
 
 from ...builder import (
+    ArrangeMethod,
     BaseNode,
     BooleanSocket,
     BundleSocket,
@@ -49,7 +50,7 @@ def tree(
     name: str = "Shader Nodes",
     *,
     collapse: bool = False,
-    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+    arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
 ) -> TreeBuilder[ShaderNodeTree]:
     return TreeBuilder.shader(
@@ -61,7 +62,7 @@ def material(
     name: str = "New Material",
     *,
     collapse: bool = False,
-    arrange: Literal["sugiyama", "simple"] | None = "sugiyama",
+    arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
 ) -> MaterialBuilder:
     return MaterialBuilder(
