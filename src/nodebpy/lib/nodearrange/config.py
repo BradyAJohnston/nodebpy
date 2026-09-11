@@ -30,6 +30,7 @@ class Settings:
     add_reroutes: bool = True
     keep_reroutes_outside_frames: bool = False
     stack_collapsed: bool = True
+    optimize_sizes: bool = False
     recenter_mode = "NODES"
     origin: Literal["CENTER", "ACTIVE_OUTPUT", "ACTIVE_NODE"] = "CENTER"
     stack_margin_y_fac: float = 0.5

@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from itertools import chain
 from statistics import fmean
 from typing import cast
 
 import networkx as nx
+from bpy.types import Node as BlenderNode
 from bpy.types import NodeFrame, NodeTree
 from mathutils import Vector
 
@@ -31,6 +32,69 @@ from .realize import realize_layout, remove_reroutes
 from .stacking import contracted_node_stacks, expand_node_stack
 from .x_coords import assign_x_coords, route_edges
 from .y_coords import bk_assign_y_coords
+
+# -------------------------------------------------------------------
+
+
+def get_display_name_of(node: BlenderNode) -> str:
+    if node.label:
+        return node.label
+
+    if node.bl_idname.endswith("NodeGroup") and (
+        tree := getattr(node, "node_tree", None)
+    ):
+        return tree.name
+
+    if node.bl_idname.endswith("Math") or node.bl_idname == "FunctionNodeCompare":
+        return getattr(node, "operation", node.bl_label)
+
+    relevant_node_types = {
+        "ShaderNodeTexImage",
+        "ShaderNodeTexEnvironment",
+        "CompositorNodeImage",
+    }
+    if node.bl_idname in relevant_node_types and (
+        image := getattr(node, "image", None)
+    ):
+        return image.name
+
+    return node.bl_label
+
+
+NODE_LABEL_SIZE = 11
+LABEL_LEFT_OFFSET = 23
+LABEL_RIGHT_OFFSET = LABEL_LEFT_OFFSET
+
+# Rough advance width per character, as a fraction of the font size. Used when
+# `blf` can't measure text (e.g. the headless `bpy` module without a UI font).
+_FALLBACK_CHAR_WIDTH_FAC = 0.6
+
+
+def _label_width(text: str) -> float:
+    try:
+        import blf
+
+        blf.size(0, NODE_LABEL_SIZE)
+        width: float = blf.dimensions(0, text)[0]
+    except (ImportError, RuntimeError):
+        return len(text) * NODE_LABEL_SIZE * _FALLBACK_CHAR_WIDTH_FAC
+    # Headless builds can report a zero width instead of raising.
+    return (
+        width if width > 0 else len(text) * NODE_LABEL_SIZE * _FALLBACK_CHAR_WIDTH_FAC
+    )
+
+
+def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
+    for node in nodes:
+        if not node.hide:
+            continue
+
+        display_name = get_display_name_of(node)
+        optimized_width = (
+            _label_width(display_name) + LABEL_LEFT_OFFSET + LABEL_RIGHT_OFFSET
+        )
+        node.width = max(optimized_width, node.bl_width_min)
+
 
 # -------------------------------------------------------------------
 
@@ -219,6 +283,9 @@ def sugiyama_layout(ntree: NodeTree) -> None:
         return
 
     old_center = Vector(list(map(fmean, zip(*locs))))
+
+    if config.SETTINGS.optimize_sizes:
+        optimize_sizes(config.selected)
 
     precompute_links(ntree)
     CG = ClusterGraph(get_multidigraph())
