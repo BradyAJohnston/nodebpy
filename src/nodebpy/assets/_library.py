@@ -26,10 +26,13 @@ nesting can never produce an import cycle. At build time
 :meth:`~nodebpy.builder.NodeGroupBuilder.create_group` reuses an existing tree
 by name, so each group is still built exactly once.
 
-**Materials** referenced by the dumped trees (a Material socket or interface
-default) are code-generated too: each becomes a module under ``materials/``
-holding its shader tree as a class, a ``MATERIAL`` marker and a
-``MATERIAL_PROPERTIES`` dict. Build recreates the material and runs the class
+**Materials** are dump roots in their own right when marked as assets, and
+are code-generated as dependencies when referenced by the dumped trees (a
+Material socket or interface default): either way each becomes a module under
+``materials/`` holding its shader tree as a class, a ``MATERIAL`` marker and
+a ``MATERIAL_PROPERTIES`` dict — an asset-marked material additionally
+carries its asset metadata as a ``MATERIAL_ASSET_METADATA`` dict, which makes
+build re-mark it as an asset. Build recreates the material and runs the class
 body into ``material.node_tree`` — a material is never a node group, so its
 class is only a recipe, never ``create_group``-ed. A material's nested shader
 groups take part in the normal shared/embedded classification.
@@ -392,6 +395,12 @@ def _render_group_module(
         props = _material_properties(material)
         if props:
             footer += [""] + _dict_lines("MATERIAL_PROPERTIES", props)
+        if material.asset_data is not None:
+            # The footer's presence (even empty) is what makes build re-mark
+            # the material as an asset; dependency-only materials carry none.
+            footer += [""] + _dict_lines(
+                "MATERIAL_ASSET_METADATA", _asset_metadata(material)
+            )
     if dependencies:
         footer = footer or ["", ""]
         footer += [""] + _dict_lines(
@@ -455,22 +464,26 @@ def dump_library(
     format: bool = True,
     typed_api: bool = False,
 ) -> dict[str, Path]:
-    """Dump every node-group asset in ``blend_path`` to Python source files.
+    """Dump every node-group and material asset in ``blend_path`` to Python
+    source files.
 
-    Each asset becomes one ``.py`` module under ``<output_dir>/<tree>/``
-    (``geometry``/``shader``/``compositor``) with an ``ASSET`` marker and
-    metadata footers. Every group class is defined exactly once: helper groups
-    used by a single asset are embedded in that asset's module, groups nested
-    by several assets get their own module under ``<tree>/_shared/``, and an
-    asset nested inside other assets keeps its class in its own module — all
-    referenced via relative imports (``__init__.py`` package markers are
-    written so the imports resolve). Materials referenced by the trees are
-    code-generated into ``materials/`` modules, and other non-serialisable
-    datablocks each module needs are recorded in its
-    ``DATABLOCK_DEPENDENCIES`` footer. :func:`build_library` rebuilds the
-    ``.blend`` from these files. A ``blender_assets.cats.txt`` next to the
-    ``.blend`` is copied into ``output_dir`` so catalog assignments travel
-    with the sources.
+    Each node-group asset becomes one ``.py`` module under
+    ``<output_dir>/<tree>/`` (``geometry``/``shader``/``compositor``) with an
+    ``ASSET`` marker and metadata footers. Every group class is defined
+    exactly once: helper groups used by a single asset are embedded in that
+    asset's module, groups nested by several assets get their own module
+    under ``<tree>/_shared/``, and an asset nested inside other assets keeps
+    its class in its own module — all referenced via relative imports
+    (``__init__.py`` package markers are written so the imports resolve).
+    Materials marked as assets, and materials referenced by the trees, are
+    code-generated into ``materials/`` modules — asset-marked ones carry
+    their asset metadata as a ``MATERIAL_ASSET_METADATA`` footer, so a
+    rebuild re-marks them (referenced-only materials build as unmarked
+    dependencies). Other non-serialisable datablocks each module needs are
+    recorded in its ``DATABLOCK_DEPENDENCIES`` footer. :func:`build_library`
+    rebuilds the ``.blend`` from these files. A ``blender_assets.cats.txt``
+    next to the ``.blend`` is copied into ``output_dir`` so catalog
+    assignments travel with the sources.
 
     Each asset is appended into the current session for introspection and the
     appended groups are removed again afterwards. Run this in a session that
@@ -486,8 +499,8 @@ def dump_library(
     output_dir:
         Directory to write the per-asset modules into (created if needed).
     names:
-        Restrict the dump to these asset (node-group) names; defaults to all.
-        A full dump first clears the managed subdirectories
+        Restrict the dump to these asset (node-group or material) names;
+        defaults to all. A full dump first clears the managed subdirectories
         (``geometry``/``shader``/``compositor``/``materials``) so files from
         renamed or deleted assets don't linger; a filtered dump leaves the
         other assets' files in place.
@@ -505,7 +518,9 @@ def dump_library(
         Code-generate materials referenced by the dumped trees into
         ``materials/`` modules (the default). With ``False`` they are only
         recorded as ``DATABLOCK_DEPENDENCIES``, to be resolved at build time
-        like any other non-serialisable datablock.
+        like any other non-serialisable datablock. Asset-marked materials
+        are dump roots in their own right and are always code-generated,
+        regardless of this flag.
     format:
         Run the generated sources through ``ruff format`` when available.
     typed_api:
@@ -525,7 +540,8 @@ def dump_library(
     Returns
     -------
     dict[str, Path]
-        Mapping of asset name to the file it was written to.
+        Mapping of asset (node-group or material) name to the file it was
+        written to.
     """
     blend_path = Path(blend_path)
     output_dir = Path(output_dir)
@@ -546,8 +562,16 @@ def dump_library(
         str(blend_path), link=False, assets_only=True
     ) as (src, dst):
         available = list(src.node_groups)
+        # assets_only exposes exactly the asset-marked materials: they are
+        # dump roots alongside the node-group assets.
+        available_materials = list(src.materials)
         wanted = [n for n in available if names is None or n in names]
-        if names is not None and (missing := names - set(wanted)):
+        wanted_materials = [
+            n for n in available_materials if names is None or n in names
+        ]
+        if names is not None and (
+            missing := names - set(wanted) - set(wanted_materials)
+        ):
             raise KeyError(f"Assets not found in {blend_path}: {sorted(missing)}")
         clashes = sorted(n for n in wanted if n in bpy.data.node_groups)
         if clashes:
@@ -557,6 +581,9 @@ def dump_library(
                 "dump from a fresh session (e.g. python -m nodebpy.assets dump)."
             )
         dst.node_groups = list(wanted)
+        # A same-named material already in the session renames the appended
+        # one — caught by the post-append renamed-datablock guard below.
+        dst.materials = list(wanted_materials)
     added = {
         coll: [db for db in getattr(bpy.data, coll) if db.name not in before[coll]]
         for coll in _CLEANUP_COLLECTIONS
@@ -582,6 +609,7 @@ def dump_library(
             list(dst.node_groups),
             added["node_groups"],
             output_dir,
+            asset_materials=[m.name for m in dst.materials],
             nodebpy_pkg=nodebpy_pkg,
             snapshot_positions=snapshot_positions,
             keep_reroutes=keep_reroutes,
@@ -645,6 +673,7 @@ def _dump_appended(
     appended: list,
     output_dir: Path,
     *,
+    asset_materials: Iterable[str] = (),
     nodebpy_pkg: str,
     snapshot_positions: bool,
     keep_reroutes: bool,
@@ -653,11 +682,14 @@ def _dump_appended(
     library_blend: Path | None = None,
     clean_stale: bool = False,
 ) -> dict[str, Path]:
-    """Partition the appended groups (and referenced materials) into modules
-    and write them.
+    """Partition the appended groups (and material roots and referenced
+    materials) into modules and write them.
 
     ``asset_trees`` are the trees dumped as assets; ``appended`` is every
-    group the load brought in (the assets plus all their dependencies).
+    group the load brought in (the assets plus all their dependencies);
+    ``asset_materials`` names the asset-marked materials appended as dump
+    roots in their own right — they are always code-generated, regardless of
+    the ``materials`` flag governing referenced ones.
     ``library_blend`` (the resolved ``.blend`` path) turns on the merged
     typed API — see ``dump_library(typed_api=...)``. ``clean_stale`` removes
     modules under the managed subdirectories that this dump did not write
@@ -675,33 +707,35 @@ def _dump_appended(
     # Non-serialisable datablocks each group references, by tree name.
     id_deps = {g.name: _id_defaults(g) for g in appended}
 
-    # Materials referenced anywhere in the dump are code-generated too: their
-    # embedded shader tree joins the group universe as an extra root. Embedded
-    # trees all ship named "Shader Nodetree" and the name is read-only, so
-    # material trees are keyed synthetically ("material:<name>") and the class
-    # name is overridden per emission instead.
+    # Materials marked as assets (dump roots in their own right) and materials
+    # referenced anywhere in the dump are code-generated too: their embedded
+    # shader tree joins the group universe as an extra root. Embedded trees
+    # all ship named "Shader Nodetree" and the name is read-only, so material
+    # trees are keyed synthetically ("material:<name>") and the class name is
+    # overridden per emission instead.
     material_trees: dict[str, str] = {}  # tree key → material name
+    wanted_materials = set(asset_materials)
     if materials:
-        referenced = sorted(
-            {name for deps in id_deps.values() for name in deps.get("materials", ())}
-        )
-        for mat_name in referenced:
-            material = bpy.data.materials.get(mat_name)
-            if material is None or material.node_tree is None:  # pragma: no cover
-                print(f"  material {mat_name!r}: no shader tree, left as a dependency")
-                continue
-            if material.node_tree.name in trees:
-                # A node group named like the embedded tree would be clobbered
-                # by the per-emission class-name override.
-                raise RuntimeError(
-                    f"A node group is named {material.node_tree.name!r}, which "
-                    f"collides with material {mat_name!r}'s embedded tree — "
-                    "rename that group to dump this library."
-                )
-            key = f"material:{mat_name}"
-            trees[key] = material.node_tree
-            id_deps[key] = _id_defaults(material.node_tree)
-            material_trees[key] = mat_name
+        wanted_materials |= {
+            name for deps in id_deps.values() for name in deps.get("materials", ())
+        }
+    for mat_name in sorted(wanted_materials):
+        material = bpy.data.materials.get(mat_name)
+        if material is None or material.node_tree is None:  # pragma: no cover
+            print(f"  material {mat_name!r}: no shader tree, left as a dependency")
+            continue
+        if material.node_tree.name in trees:
+            # A node group named like the embedded tree would be clobbered
+            # by the per-emission class-name override.
+            raise RuntimeError(
+                f"A node group is named {material.node_tree.name!r}, which "
+                f"collides with material {mat_name!r}'s embedded tree — "
+                "rename that group to dump this library."
+            )
+        key = f"material:{mat_name}"
+        trees[key] = material.node_tree
+        id_deps[key] = _id_defaults(material.node_tree)
+        material_trees[key] = mat_name
 
     # Sharing structure: which groups each root (asset or material tree)
     # transitively reaches.
@@ -825,8 +859,14 @@ def _dump_appended(
     all_written = set(written.values())
     for name in sorted(shared):
         all_written.add(write_module(name, modules[name], kind="shared"))
+    asset_material_names = set(asset_materials)
     for key in sorted(material_trees):
-        all_written.add(write_module(key, modules[key], kind="material"))
+        path = write_module(key, modules[key], kind="material")
+        all_written.add(path)
+        # Material roots are assets the caller asked for, so they belong in
+        # the returned mapping; referenced-only materials are dependencies.
+        if (mat_name := material_trees[key]) in asset_material_names:
+            written[mat_name] = path
     if clean_stale:
         _remove_stale_modules(output_dir, all_written)
 
@@ -950,6 +990,27 @@ def _resolve_dependencies(
     return placeholders
 
 
+def _apply_asset_metadata(datablock, metadata: dict) -> None:
+    """Mark ``datablock`` (a built tree or material) as an asset and apply the
+    dumped metadata fields and tags onto it. A field read-only in this Blender
+    version (as ``catalog_simple_name`` was) is derived, not lost — skipped
+    with a note rather than aborting the build."""
+    if datablock.asset_data is None:
+        datablock.asset_mark()
+    asset_data = datablock.asset_data
+    assert asset_data is not None
+    for field in _METADATA_FIELDS:
+        if field in metadata:
+            try:
+                setattr(asset_data, field, metadata[field])
+            except AttributeError:  # pragma: no cover - other Blender versions
+                print(f"  {datablock.name}: skipping read-only asset field {field!r}")
+    existing_tags = {tag.name for tag in asset_data.tags}
+    for tag in metadata.get("tags", ()):
+        if tag not in existing_tags:
+            asset_data.tags.new(tag)
+
+
 def _build_material(material_cls, name: str):
     """Recreate the material ``name`` by running ``material_cls``'s
     ``_build_group`` recipe into its embedded shader tree; an existing
@@ -986,8 +1047,10 @@ def build_library(
 
     Imports every root module under ``source_dir`` (recursively; ``_shared``
     group modules are pulled in by the root modules' own imports), rebuilds
-    each ``MATERIAL`` module's material, builds each ``ASSET`` class via
-    ``create_group()``, re-marks the tree as an asset, applies the dumped
+    each ``MATERIAL`` module's material (re-marking it as an asset when the
+    module carries a ``MATERIAL_ASSET_METADATA`` footer), builds each
+    ``ASSET`` class via ``create_group()``, re-marks the tree as an asset,
+    applies the dumped
     ``ASSET_METADATA``/``TREE_PROPERTIES``/``MATERIAL_PROPERTIES``, and
     writes those trees and materials (plus their dependencies) to
     ``blend_path`` with ``bpy.data.libraries.write``. A
@@ -1129,6 +1192,13 @@ def build_library(
                     setattr(material, key, value)
                 except AttributeError:
                     print(f"  {name}: skipping read-only material property {key!r}")
+            # The footer's presence (even empty) marks the material as an
+            # asset; dependency-only material modules carry none and the
+            # material stays unmarked.
+            asset_metadata = getattr(module, "MATERIAL_ASSET_METADATA", None)
+            if asset_metadata is not None:
+                assert isinstance(asset_metadata, dict)
+                _apply_asset_metadata(material, asset_metadata)
             built_materials.append(material)
 
         trees = []
@@ -1144,26 +1214,9 @@ def build_library(
             # own .blend; building from source is the whole point here.
             with build_from_source():
                 tree = asset_cls.create_group()
-            if tree.asset_data is None:
-                tree.asset_mark()
-            asset_data = tree.asset_data
-            assert asset_data is not None
             metadata = getattr(module, "ASSET_METADATA", {})
             assert isinstance(metadata, dict)
-            for field in _METADATA_FIELDS:
-                if field in metadata:
-                    try:
-                        setattr(asset_data, field, metadata[field])
-                    except AttributeError:  # pragma: no cover - other Blender versions
-                        # Read-only in this Blender version (as catalog_simple_name
-                        # was) — the value is derived, not lost; keep building.
-                        print(
-                            f"  {tree.name}: skipping read-only asset field {field!r}"
-                        )
-            existing_tags = {tag.name for tag in asset_data.tags}
-            for tag in metadata.get("tags", ()):
-                if tag not in existing_tags:
-                    asset_data.tags.new(tag)
+            _apply_asset_metadata(tree, metadata)
             properties = getattr(module, "TREE_PROPERTIES", {})
             assert isinstance(properties, dict)
             for key, value in properties.items():
@@ -1381,15 +1434,19 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
         "dump",
         help="Dump every asset in a .blend to per-asset .py files.",
         description=(
-            "Dump every node-group asset in a .blend to Python source files: "
-            "one .py per asset under <output>/geometry, <output>/shader and "
-            "<output>/compositor, holding the asset's class, an ASSET marker "
-            "and its metadata. Each group class is defined exactly once — "
-            "helpers used by a single asset are embedded in its module, "
-            "groups nested by several assets get their own module under "
-            "_shared/, and nested assets are imported from their own modules. "
-            "Check these files into version control as the source of truth "
-            "and rebuild the .blend from them with the 'build' subcommand. A "
+            "Dump every node-group and material asset in a .blend to Python "
+            "source files: one .py per node-group asset under "
+            "<output>/geometry, <output>/shader and <output>/compositor, "
+            "holding the asset's class, an ASSET marker and its metadata. "
+            "Each group class is defined exactly once — helpers used by a "
+            "single asset are embedded in its module, groups nested by "
+            "several assets get their own module under _shared/, and nested "
+            "assets are imported from their own modules. Asset-marked and "
+            "referenced materials get modules under <output>/materials; "
+            "asset-marked ones carry their metadata as "
+            "MATERIAL_ASSET_METADATA, so a rebuild re-marks them. Check "
+            "these files into version control as the source of truth and "
+            "rebuild the .blend from them with the 'build' subcommand. A "
             "blender_assets.cats.txt next to the .blend is copied along, so "
             "catalog assignments survive the round trip."
         ),
@@ -1397,7 +1454,9 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
     dump.add_argument("blend", type=Path, help="The .blend asset library to dump.")
     dump.add_argument("output", type=Path, help="Directory to write the .py files to.")
     dump.add_argument(
-        "--names", nargs="+", help="Only dump these asset names (default: all)."
+        "--names",
+        nargs="+",
+        help="Only dump these asset (node-group or material) names (default: all).",
     )
     dump.add_argument(
         "--nodebpy-pkg",
@@ -1438,7 +1497,8 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
         help=(
             "Skip code-generating referenced materials into materials/ "
             "modules; record them only as DATABLOCK_DEPENDENCIES, to be "
-            "resolved at build time (session / --resources / --drop-missing)."
+            "resolved at build time (session / --resources / --drop-missing). "
+            "Asset-marked materials are dump roots and are always generated."
         ),
     )
 
@@ -1449,7 +1509,9 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             "Rebuild a .blend asset library from sources written by the "
             "'dump' subcommand: every .py under <source> is executed, its "
             "ASSET class is built, re-marked as an asset with its dumped "
-            "metadata, and exactly those node groups (plus dependencies) are "
+            "metadata (MATERIAL modules rebuild their material, re-marked "
+            "when they carry MATERIAL_ASSET_METADATA), and exactly those "
+            "node groups and materials (plus dependencies) are "
             "written to the .blend. Asset previews are not round-tripped; "
             "regenerate them in Blender if needed. A blender_assets.cats.txt "
             "in <source> is copied next to the built .blend."

@@ -572,6 +572,169 @@ def test_build_in_presence_of_datablocks(material_library_blend, tmp_path):
     assert bpy.data.images["Grid Tex"] is image
 
 
+def _write_material_asset_library(path: Path) -> None:
+    """Write a library with three materials: "Preset Glass" is asset-marked
+    (description, catalog, tag) but referenced by nothing, "Shared Metal" is
+    asset-marked *and* referenced by the geometry asset, and "Plain Rubber"
+    is referenced only. Leaves the session clean."""
+
+    def _material(name: str, color) -> bpy.types.Material:
+        material = bpy.data.materials.new(name)
+        assert material.node_tree is not None
+        material.node_tree.nodes.clear()
+        with TreeBuilder(material.node_tree):
+            emission = s.Emission(color=color)
+            s.MaterialOutput(surface=emission)
+        return material
+
+    glass = _material("Preset Glass", (0.2, 0.4, 1.0, 1.0))
+    glass.asset_mark()
+    assert glass.asset_data is not None
+    glass.asset_data.description = "A preset glass material"
+    glass.asset_data.catalog_id = CATALOG_ID
+    glass.asset_data.tags.new("preset")
+
+    metal = _material("Shared Metal", (0.8, 0.8, 0.8, 1.0))
+    metal.asset_mark()
+    assert metal.asset_data is not None
+    metal.asset_data.description = "Shared metal"
+
+    rubber = _material("Plain Rubber", (0.1, 0.1, 0.1, 1.0))
+
+    with TreeBuilder("Painted Cube") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        set_metal = g.SetMaterial(geometry=geo, material=metal)
+        set_rubber = g.SetMaterial(geometry=set_metal, material=rubber)
+        set_rubber >> tree.outputs.geometry("Geometry")
+    tree.tree.asset_mark()
+
+    bpy.data.libraries.write(str(path), {tree.tree, glass}, fake_user=True)
+    _clear_node_groups()
+    for material in (glass, metal, rubber):
+        bpy.data.materials.remove(material)
+
+
+@pytest.fixture
+def material_asset_library_blend(tmp_path):
+    path = tmp_path / "material_asset_library.blend"
+    _write_material_asset_library(path)
+    return path
+
+
+def test_dump_material_assets_become_roots(material_asset_library_blend, tmp_path):
+    """Asset-marked materials are dump roots: each gets a materials/ module
+    carrying its metadata as a MATERIAL_ASSET_METADATA footer, an unreferenced
+    one included; a referenced-only material dumps without the footer; and a
+    material both referenced and asset-marked yields exactly one module."""
+    out = tmp_path / "src"
+    written = dump_library(material_asset_library_blend, out)
+    assert set(written) == {"Painted Cube", "Preset Glass", "Shared Metal"}
+    assert written["Preset Glass"] == out / "materials" / "preset_glass.py"
+
+    glass = written["Preset Glass"].read_text(encoding="utf-8")
+    assert "MATERIAL = PresetGlass" in glass
+    assert 'MATERIAL_NAME = "Preset Glass"' in glass
+    assert '"description": "A preset glass material"' in glass
+    assert f'"catalog_id": "{CATALOG_ID}"' in glass
+    assert '"tags": ("preset",)' in glass
+    assert "ASSET =" not in glass  # a material module keeps the MATERIAL marker
+
+    # Referenced *and* asset-marked: exactly one module, with the footer.
+    metal_files = sorted((out / "materials").glob("shared_metal*.py"))
+    assert metal_files == [written["Shared Metal"]]
+    metal = written["Shared Metal"].read_text(encoding="utf-8")
+    assert '"description": "Shared metal"' in metal
+    assert "MATERIAL_ASSET_METADATA" in metal
+
+    # Referenced-only materials stay pure dependencies: no footer.
+    rubber = (out / "materials" / "plain_rubber.py").read_text(encoding="utf-8")
+    assert "MATERIAL = PlainRubber" in rubber
+    assert "MATERIAL_ASSET_METADATA" not in rubber
+
+    # The dump cleans the appended asset materials back out of the session.
+    assert not bpy.data.node_groups
+    for name in ("Preset Glass", "Shared Metal", "Plain Rubber"):
+        assert name not in bpy.data.materials
+
+
+def test_roundtrip_material_asset_library(material_asset_library_blend, tmp_path):
+    """Asset materials rebuild marked, with metadata and tags applied, survive
+    into the written .blend as assets, and a re-dump of the rebuilt library
+    reproduces the sources byte-for-byte."""
+    first = tmp_path / "first"
+    dump_library(material_asset_library_blend, first)
+
+    rebuilt = tmp_path / "rebuilt.blend"
+    names = build_library(first, rebuilt)
+    assert names == ["Painted Cube"]
+
+    glass = bpy.data.materials["Preset Glass"]
+    assert glass.asset_data is not None
+    assert glass.asset_data.description == "A preset glass material"
+    assert glass.asset_data.catalog_id == CATALOG_ID
+    assert {t.name for t in glass.asset_data.tags} == {"preset"}
+    assert bpy.data.materials["Shared Metal"].asset_data is not None
+    assert bpy.data.materials["Plain Rubber"].asset_data is None  # unmarked
+
+    # The written .blend exposes exactly the asset-marked materials as assets,
+    # with their asset data intact.
+    _clear_node_groups()
+    for name in ("Preset Glass", "Shared Metal", "Plain Rubber"):
+        bpy.data.materials.remove(bpy.data.materials[name])
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+        str(rebuilt), link=False, assets_only=True
+    ) as (src_lib, dst):
+        assert set(src_lib.materials) == {"Preset Glass", "Shared Metal"}
+        dst.materials = ["Preset Glass"]
+    reloaded = bpy.data.materials["Preset Glass"]
+    assert reloaded.asset_data is not None
+    assert reloaded.asset_data.catalog_id == CATALOG_ID
+    bpy.data.materials.remove(reloaded)
+
+    # dump → build → dump is a fixed point for material modules too.
+    second = tmp_path / "second"
+    dump_library(rebuilt, second)
+    first_files = sorted(p.relative_to(first) for p in first.rglob("*.py"))
+    second_files = sorted(p.relative_to(second) for p in second.rglob("*.py"))
+    assert first_files == second_files
+    for rel in first_files:
+        assert (second / rel).read_text(encoding="utf-8") == (first / rel).read_text(
+            encoding="utf-8"
+        ), rel
+
+
+def test_dump_names_filter_matches_material_assets(
+    material_asset_library_blend, tmp_path
+):
+    """names/--names matches material asset names alongside node-group asset
+    names; a name matching neither still raises."""
+    out = tmp_path / "src"
+    written = dump_library(material_asset_library_blend, out, names={"Preset Glass"})
+    assert set(written) == {"Preset Glass"}
+    assert (out / "materials" / "preset_glass.py").is_file()
+    with pytest.raises(KeyError, match="No Such Asset"):
+        dump_library(
+            material_asset_library_blend, tmp_path / "src2", names={"No Such Asset"}
+        )
+
+
+def test_full_dump_removes_stale_material_modules(
+    material_asset_library_blend, tmp_path
+):
+    """A module left over from a formerly-asset-marked material is cleared by
+    the next full dump; a filtered dump leaves it in place."""
+    src = tmp_path / "src"
+    dump_library(material_asset_library_blend, src)
+    stale = src / "materials" / "old_mat.py"
+    stale.write_text("MATERIAL = None\n", encoding="utf-8")
+
+    dump_library(material_asset_library_blend, src, names={"Preset Glass"})
+    assert stale.exists()  # filtered dump: other files untouched
+
+    dump_library(material_asset_library_blend, src)
+    assert not stale.exists()
+
+
 def test_nested_dump_is_stable_across_a_roundtrip(nested_library_blend, tmp_path):
     """The module split (own file / _shared / embedded) is deterministic, so a
     no-op round-trip of the nested library leaves no VCS diff."""
