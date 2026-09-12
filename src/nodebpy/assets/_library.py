@@ -65,6 +65,7 @@ import shutil
 import sys
 import uuid
 from contextlib import nullcontext
+from dataclasses import replace
 from pathlib import Path
 
 import bpy
@@ -976,6 +977,7 @@ def build_library(
     resources: str | Path | None = None,
     on_missing: str = "error",
     add_reroutes: bool = False,
+    arrange: SugiyamaOptions | None = None,
 ) -> list[str]:
     """Rebuild a ``.blend`` asset library from sources written by
     :func:`dump_library`.
@@ -999,12 +1001,16 @@ def build_library(
     socket defaults empty. The default ``on_missing="error"`` raises upfront,
     listing everything missing.
 
-    ``add_reroutes=True`` arranges the built trees with reroute nodes
-    inserted to route long links around nodes (the node-arrange addon's
-    behaviour), by scoping :func:`nodebpy.builder.default_sugiyama_options`
-    over the build. It only affects modules that leave the arrangement at
-    its default — sources dumped with ``snapshot_positions`` disable
-    arrangement and keep their authored layout.
+    ``arrange`` tunes how the built trees are laid out: a
+    :class:`~nodebpy.SugiyamaOptions` with any of its settings (spacing,
+    crossing-reduction iterations, direction, socket alignment, ...) is
+    scoped over the build via
+    :func:`nodebpy.builder.default_sugiyama_options`. ``add_reroutes=True``
+    additionally inserts reroute nodes to route long links around nodes
+    (the node-arrange addon's behaviour); it composes with ``arrange``.
+    Either only affects modules that leave the arrangement at its default —
+    sources dumped with ``snapshot_positions`` disable arrangement and keep
+    their authored layout.
 
     The built trees stay in the current session afterwards. Because
     ``create_group()`` reuses an existing tree of the same name (that is what
@@ -1095,10 +1101,11 @@ def build_library(
     # A dumped module's recipe leaves TreeBuilder at its default arrangement,
     # which resolves through this scoped default (snapshot-positions modules
     # disable arrangement and are unaffected).
+    options = arrange
+    if add_reroutes:
+        options = replace(options or SugiyamaOptions(), add_reroutes=True)
     arrange_override = (
-        default_sugiyama_options(SugiyamaOptions(add_reroutes=True))
-        if add_reroutes
-        else nullcontext()
+        default_sugiyama_options(options) if options is not None else nullcontext()
     )
     with arrange_override:
         # Materials first: asset trees look them up by name while building.
@@ -1175,6 +1182,31 @@ def build_library(
     )
     _copy_catalog_file(source_dir, blend_path.parent)
     return [tree.name for tree in trees]
+
+
+def _arrange_options_from_args(args) -> SugiyamaOptions | None:
+    """The build CLI's arrangement override: a :class:`SugiyamaOptions` with
+    every provided layout flag applied, or None when all are left unset (so
+    the build runs with the plain defaults, overridable further in-process).
+    ``--add-reroutes`` is composed separately by :func:`build_library`."""
+    overrides: dict = {}
+    if args.spacing is not None:
+        overrides["margin"] = tuple(args.spacing)
+    if args.iterations is not None:
+        overrides["iterations"] = args.iterations
+    if args.direction is not None:
+        overrides["direction"] = args.direction
+    if args.socket_alignment is not None:
+        overrides["socket_alignment"] = args.socket_alignment
+    if args.keep_reroutes_outside_frames:
+        overrides["keep_reroutes_outside_frames"] = True
+    if not args.stack_collapsed:
+        overrides["stack_collapsed"] = False
+    if args.stack_margin_y_fac is not None:
+        overrides["stack_margin_y_fac"] = args.stack_margin_y_fac
+    if args.optimize_sizes:
+        overrides["optimize_sizes"] = True
+    return SugiyamaOptions(**overrides) if overrides else None
 
 
 def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapper
@@ -1290,15 +1322,78 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             "objects, …) from, by name, before building."
         ),
     )
-    build.add_argument(
+    layout = build.add_argument_group(
+        "arrangement",
+        description=(
+            "Tune the automatic layout of the built trees (the SugiyamaOptions "
+            "defaults apply where unset). Sources dumped with "
+            "--snapshot-positions keep their authored layout regardless."
+        ),
+    )
+    layout.add_argument(
         "--add-reroutes",
         action="store_true",
         help=(
             "Arrange the built trees with reroute nodes inserted to route "
-            "long links around nodes (the node-arrange addon's behaviour). "
-            "Sources dumped with --snapshot-positions keep their authored "
-            "layout regardless."
+            "long links around nodes (the node-arrange addon's behaviour)."
         ),
+    )
+    layout.add_argument(
+        "--spacing",
+        nargs=2,
+        type=float,
+        metavar=("X", "Y"),
+        help="Horizontal and vertical space between nodes (default: 30 30).",
+    )
+    layout.add_argument(
+        "--iterations",
+        type=int,
+        help=(
+            "Number of iterations spent reducing crossings between links "
+            "(higher gives fewer crossings, but is slower; default: 50)."
+        ),
+    )
+    layout.add_argument(
+        "--direction",
+        type=str.upper,
+        choices=["LEFT_DOWN", "RIGHT_DOWN", "LEFT_UP", "RIGHT_UP", "BALANCED"],
+        help=(
+            "Direction of layout — which corner nodes align towards, or "
+            "'balanced' to even out the four extremes (default: right_up)."
+        ),
+    )
+    layout.add_argument(
+        "--socket-alignment",
+        type=str.upper,
+        choices=["NONE", "MODERATE", "FULL"],
+        help=(
+            "How aggressively links are straightened by aligning the sockets "
+            "they connect (default: none)."
+        ),
+    )
+    layout.add_argument(
+        "--keep-reroutes-outside-frames",
+        action="store_true",
+        help="Do not place added reroutes inside frames.",
+    )
+    layout.add_argument(
+        "--no-stack-collapsed",
+        dest="stack_collapsed",
+        action="store_false",
+        help="Do not stack consecutive collapsed nodes tightly.",
+    )
+    layout.add_argument(
+        "--stack-margin-y-fac",
+        type=float,
+        help=(
+            "Fraction of the vertical spacing used between stacked collapsed "
+            "nodes (default: 0.5)."
+        ),
+    )
+    layout.add_argument(
+        "--optimize-sizes",
+        action="store_true",
+        help="Fit the widths of collapsed nodes to their display name.",
     )
     build.add_argument(
         "--drop-missing",
@@ -1338,6 +1433,7 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             resources=args.resources,
             on_missing=args.on_missing,
             add_reroutes=args.add_reroutes,
+            arrange=_arrange_options_from_args(args),
         )
         print(f"Built {args.blend} with {len(names)} assets: {', '.join(names)}")
 

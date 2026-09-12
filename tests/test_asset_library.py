@@ -251,6 +251,70 @@ def test_build_add_reroutes(tmp_path):
     assert reroute_count() > 0
 
 
+def test_build_arrange_options(library_blend, tmp_path):
+    """build_library(arrange=...) tunes the built trees' layout: wider
+    spacing spreads the same tree further apart."""
+    from nodebpy import SugiyamaOptions
+
+    src = tmp_path / "src"
+    dump_library(library_blend, src)
+
+    def x_spread():
+        xs = [n.location.x for n in bpy.data.node_groups["Scale Up"].nodes]
+        return max(xs) - min(xs)
+
+    build_library(src, tmp_path / "plain.blend")
+    plain = x_spread()
+    _clear_node_groups()
+
+    build_library(
+        src, tmp_path / "wide.blend", arrange=SugiyamaOptions(margin=(300.0, 60.0))
+    )
+    assert x_spread() > plain
+
+
+def test_cli_arrange_options_mapping():
+    """The build CLI's layout flags map onto SugiyamaOptions; all-unset
+    means no override at all."""
+    from argparse import Namespace
+
+    from nodebpy import SugiyamaOptions
+    from nodebpy.assets._library import _arrange_options_from_args
+
+    defaults = Namespace(
+        spacing=None,
+        iterations=None,
+        direction=None,
+        socket_alignment=None,
+        keep_reroutes_outside_frames=False,
+        stack_collapsed=True,
+        stack_margin_y_fac=None,
+        optimize_sizes=False,
+    )
+    assert _arrange_options_from_args(defaults) is None
+
+    tuned = Namespace(
+        spacing=[50.0, 40.0],
+        iterations=10,
+        direction="BALANCED",
+        socket_alignment="FULL",
+        keep_reroutes_outside_frames=True,
+        stack_collapsed=False,
+        stack_margin_y_fac=0.25,
+        optimize_sizes=True,
+    )
+    assert _arrange_options_from_args(tuned) == SugiyamaOptions(
+        margin=(50.0, 40.0),
+        iterations=10,
+        direction="BALANCED",
+        socket_alignment="FULL",
+        keep_reroutes_outside_frames=True,
+        stack_collapsed=False,
+        stack_margin_y_fac=0.25,
+        optimize_sizes=True,
+    )
+
+
 def test_build_refuses_dirty_session(library_blend, tmp_path):
     src = tmp_path / "src"
     dump_library(library_blend, src)
