@@ -17,3 +17,4 @@ tests/blend_files/*.blend1
 /docs/reference
 docs/objects.json
 tests/plots/*.png
+.coverage
