@@ -7,8 +7,17 @@ available alongside the built-in nodes (e.g. ``g.SmoothByAngle()``). Run *before
 ``python -m gen`` and through the ruff/ty post-processing (see the Makefile).
 
 ``python -m nodebpy.assets dump <blend> <dir>`` and ``… build <dir> <blend>``
-instead round-trip a ``.blend`` asset library through per-asset Python sources
-(see :mod:`nodebpy.assets._library`).
+instead round-trip a ``.blend`` asset library through per-asset Python sources;
+``… ensure`` rebuilds only when the ``.blend`` is missing or stale, and
+``… check`` verifies that build → dump reproduces the sources byte-for-byte
+(see :mod:`nodebpy.assets._library` and :mod:`nodebpy.assets._pipeline` — the
+latter also documents the ``[tool.nodebpy.assets]`` pyproject table these
+subcommands read their arguments from).
+
+Under a full Blender (no ``bpy`` module) any invocation runs this file as a
+script, with the arguments after Blender's ``--`` separator::
+
+    blender -b --factory-startup -P <.../nodebpy/assets/__main__.py> -- ensure
 """
 
 from __future__ import annotations
@@ -18,8 +27,14 @@ import os
 import sys
 from pathlib import Path
 
-from ..builder import BundledLibrary, PackageLibrary
-from ._codegen import generate_asset_api, generate_asset_modules
+# ``blender ... -P .../nodebpy/assets/__main__.py`` runs this file as a plain
+# script (no package context): put the package root on sys.path so the
+# absolute imports resolve — a no-op under ``python -m nodebpy.assets``.
+if not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from nodebpy.assets._codegen import generate_asset_api, generate_asset_modules
+from nodebpy.builder import BundledLibrary, PackageLibrary
 
 # Bundled libraries shipped with Blender, grouped by output module. Each library
 # holds node groups of a single tree type.
@@ -62,7 +77,9 @@ def generate_essentials(
     return written
 
 
-def parse_args() -> argparse.Namespace:  # pragma: no cover - CLI wrapper
+def parse_args(
+    argv: list[str] | None = None,
+) -> argparse.Namespace:  # pragma: no cover - CLI wrapper
     parser = argparse.ArgumentParser(
         prog="python -m nodebpy.assets",
         description=(
@@ -77,9 +94,20 @@ def parse_args() -> argparse.Namespace:  # pragma: no cover - CLI wrapper
             ".blend to per-asset .py source files\n"
             "  build <source-dir> <blend>   rebuild the .blend asset library "
             "from dumped .py source files\n"
+            "  ensure <source-dir> <blend>  rebuild only when the .blend or "
+            "its fingerprint stamp is missing or stale\n"
+            "  check <source-dir> <blend>   verify that build -> dump "
+            "reproduces the sources byte-for-byte\n"
             "  plot <blend> <output-dir> [names ...]\n"
             "                               render node groups (wildcards "
             "supported) to PNG images\n"
+            "\n"
+            "These subcommands can read their positionals and flags from a "
+            "[tool.nodebpy.assets] table\n"
+            "in the nearest pyproject.toml. Inside a full Blender (no bpy "
+            "module), run any of them as\n"
+            "  blender -b --factory-startup -P <.../nodebpy/assets/"
+            "__main__.py> -- <subcommand ...>\n"
             "\n"
             "See 'python -m nodebpy.assets dump --help', '… build --help' "
             "and '… plot --help' for their options."
@@ -123,20 +151,27 @@ def parse_args() -> argparse.Namespace:  # pragma: no cover - CLI wrapper
             "Inputs, Outputs) and emit a terser module."
         ),
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def main() -> None:  # pragma: no cover - CLI wrapper
-    # The dump/build/plot subcommands (blend ↔ .py round-trip, PNG renders)
-    # have their own parser; everything else keeps the original flag-based
-    # interface.
-    if len(sys.argv) > 1 and sys.argv[1] in ("dump", "build", "plot"):
-        from ._library import main as library_main
+    # Blender passes script arguments after a ``--`` separator (``blender -b
+    # --factory-startup -P .../__main__.py -- build``): strip everything up
+    # to and including it, so the same subcommands work there too.
+    argv = sys.argv[1:]
+    if "--" in sys.argv:
+        argv = sys.argv[sys.argv.index("--") + 1 :]
 
-        library_main(sys.argv[1:])
+    # The dump/build/ensure/check/plot subcommands (blend ↔ .py round-trip,
+    # staleness stamping, roundtrip verification, PNG renders) have their own
+    # parser; everything else keeps the original flag-based interface.
+    if argv and argv[0] in ("dump", "build", "ensure", "check", "plot"):
+        from nodebpy.assets._library import main as library_main
+
+        library_main(argv)
         return
 
-    args = parse_args()
+    args = parse_args(argv)
     output = (
         args.output
         if args.output
