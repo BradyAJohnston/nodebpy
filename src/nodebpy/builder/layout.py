@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import warnings
 from collections import Counter, deque
+from collections.abc import Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import Any, Literal, cast
 
@@ -483,6 +486,31 @@ type ArrangeMethod = (
     Literal["sugiyama", "simple"] | SugiyamaOptions | SimpleOptions | None
 )
 
+# What the plain "sugiyama" method resolves to (None = SugiyamaOptions()).
+# Overridable per scope so a batch build can tune the arrangement of trees
+# whose recipes leave TreeBuilder at its default — see
+# :func:`default_sugiyama_options`.
+_DEFAULT_SUGIYAMA: ContextVar[SugiyamaOptions | None] = ContextVar(
+    "nodebpy_default_sugiyama", default=None
+)
+
+
+@contextmanager
+def default_sugiyama_options(options: SugiyamaOptions) -> Iterator[None]:
+    """Scope in which ``arrange(tree, "sugiyama")`` — and therefore every
+    ``TreeBuilder`` left at its default arrangement — uses ``options``
+    instead of ``SugiyamaOptions()``.
+
+    Explicit ``SugiyamaOptions`` / ``SimpleOptions`` arguments and
+    ``arrange=None`` (as emitted by ``snapshot_positions`` dumps) are
+    unaffected.
+    """
+    token = _DEFAULT_SUGIYAMA.set(options)
+    try:
+        yield
+    finally:
+        _DEFAULT_SUGIYAMA.reset(token)
+
 
 def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:
     from mathutils import Vector
@@ -524,7 +552,11 @@ def arrange(
     elif method == "simple":
         arrange_tree(tree)
     else:
-        options = method if isinstance(method, SugiyamaOptions) else SugiyamaOptions()
+        options = (
+            method
+            if isinstance(method, SugiyamaOptions)
+            else _DEFAULT_SUGIYAMA.get() or SugiyamaOptions()
+        )
         try:
             _arrange_sugiyama(tree, options)
         except ImportError as e:

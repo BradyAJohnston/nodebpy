@@ -17,6 +17,7 @@ from .layout import (
     SugiyamaOptions,
     arrange,
     arrange_tree,
+    default_sugiyama_options,
 )
 from .mixins import LinkingMixin, OperatorMixin
 from .node import (
@@ -159,6 +160,7 @@ __all__ = [
     "arrange_tree",
     "asset_group_base",
     "build_from_source",
+    "default_sugiyama_options",
     "denormalize_name",
     "normalize_name",
 ]

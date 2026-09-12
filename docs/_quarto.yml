@@ -99,6 +99,7 @@ quartodoc:
         - arrange
         - SugiyamaOptions
         - SimpleOptions
+        - default_sugiyama_options
     - title: Assets
       desc: Generating classes from pre-build assets
       contents:

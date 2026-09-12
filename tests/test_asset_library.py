@@ -217,6 +217,40 @@ def test_build_ignores_stale_catalog_simple_name(library_blend, tmp_path):
     assert bpy.data.node_groups["Scale Up"].asset_data.catalog_id == CATALOG_ID
 
 
+def test_build_add_reroutes(tmp_path):
+    """build_library(add_reroutes=True) — the CLI's --add-reroutes — arranges
+    the built trees with routed edges; the default build stays reroute-free."""
+    with TreeBuilder("Routed") as tree:
+        cube = g.Cube()
+        sim = g.SimulationZone({"cube": cube})
+        pos = sim.item("Position", g.Position())
+        (pos.current + 0.1) >> pos.next
+        offset = sim.delta_time * g.Vector((0, 0, 0.1)) * pos.current
+        sim.input >> g.SetPosition(offset=offset) >> sim.output
+        sim.output >> g.SetPosition(position=sim.output.o["Position"])
+    tree.tree.asset_mark()
+    blend = tmp_path / "library.blend"
+    bpy.data.libraries.write(str(blend), {tree.tree}, fake_user=True)
+    _clear_node_groups()
+
+    src = tmp_path / "src"
+    dump_library(blend, src)
+
+    def reroute_count():
+        return sum(
+            1
+            for n in bpy.data.node_groups["Routed"].nodes
+            if n.bl_idname == "NodeReroute"
+        )
+
+    build_library(src, tmp_path / "plain.blend")
+    assert reroute_count() == 0
+    _clear_node_groups()
+
+    build_library(src, tmp_path / "routed.blend", add_reroutes=True)
+    assert reroute_count() > 0
+
+
 def test_build_refuses_dirty_session(library_blend, tmp_path):
     src = tmp_path / "src"
     dump_library(library_blend, src)

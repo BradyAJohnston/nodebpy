@@ -154,7 +154,10 @@ module footers, and a `blender_assets.cats.txt` next to the `.blend` is copied
 along so catalog assignments survive. Pass `snapshot_positions=True` to keep
 authored node layouts (including split Group Input instances), and
 `--typed-api` / `typed_api=True` to merge the typed asset API from above into
-the dumped classes.
+the dumped classes. On the build side, `--add-reroutes` /
+`add_reroutes=True` arranges the rebuilt trees with reroute nodes routing
+long links around nodes (the node-arrange addon's behaviour); sources dumped
+with `snapshot_positions` keep their authored layout regardless.
 
 Round-trip fidelity is checked with `nodebpy.export.compare_libraries` /
 `serialize_library` (or `python -m nodebpy.export.parity a.blend b.blend`),

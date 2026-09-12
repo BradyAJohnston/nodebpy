@@ -64,11 +64,18 @@ import re
 import shutil
 import sys
 import uuid
+from contextlib import nullcontext
 from pathlib import Path
 
 import bpy
 
-from ..builder import NodeGroupBuilder, TreeBuilder, build_from_source
+from ..builder import (
+    NodeGroupBuilder,
+    SugiyamaOptions,
+    TreeBuilder,
+    build_from_source,
+    default_sugiyama_options,
+)
 from ..builder._utils import normalize_name
 from ..export.codegen import (
     _ID_COLLECTIONS,
@@ -968,6 +975,7 @@ def build_library(
     allow_existing: bool = False,
     resources: str | Path | None = None,
     on_missing: str = "error",
+    add_reroutes: bool = False,
 ) -> list[str]:
     """Rebuild a ``.blend`` asset library from sources written by
     :func:`dump_library`.
@@ -990,6 +998,13 @@ def build_library(
     temporary placeholders deleted again before the write, leaving those
     socket defaults empty. The default ``on_missing="error"`` raises upfront,
     listing everything missing.
+
+    ``add_reroutes=True`` arranges the built trees with reroute nodes
+    inserted to route long links around nodes (the node-arrange addon's
+    behaviour), by scoping :func:`nodebpy.builder.default_sugiyama_options`
+    over the build. It only affects modules that leave the arrangement at
+    its default — sources dumped with ``snapshot_positions`` disable
+    arrangement and keep their authored layout.
 
     The built trees stay in the current session afterwards. Because
     ``create_group()`` reuses an existing tree of the same name (that is what
@@ -1077,61 +1092,74 @@ def build_library(
         on_missing,
     )
 
-    # Materials first: asset trees look them up by name while building.
-    built_materials = []
-    for file, module in material_modules:
-        material_cls = module.MATERIAL  # ty: ignore[unresolved-attribute]
-        if not (
-            isinstance(material_cls, type)
-            and issubclass(material_cls, NodeGroupBuilder)
-        ):
-            raise TypeError(f"{file}: MATERIAL is not a node-group class")
-        name = getattr(module, "MATERIAL_NAME", None) or material_cls._name
-        # The material recipe may instantiate typed-API asset classes, which
-        # must build from their _build_group source, not append.
-        with build_from_source():
-            material = _build_material(material_cls, name)
-        for key, value in getattr(module, "MATERIAL_PROPERTIES", {}).items():
-            try:
-                setattr(material, key, value)
-            except AttributeError:
-                print(f"  {name}: skipping read-only material property {key!r}")
-        built_materials.append(material)
-
-    trees = []
-    for file, module in asset_modules:
-        asset_cls = module.ASSET  # ty: ignore[unresolved-attribute]
-        if not (
-            isinstance(asset_cls, type) and issubclass(asset_cls, NodeGroupBuilder)
-        ):
-            raise TypeError(f"{file}: ASSET is not a node-group class: {asset_cls!r}")
-        # Merged typed-API classes are Asset*Groups that would *append* their
-        # own .blend; building from source is the whole point here.
-        with build_from_source():
-            tree = asset_cls.create_group()
-        if tree.asset_data is None:
-            tree.asset_mark()
-        asset_data = tree.asset_data
-        assert asset_data is not None
-        metadata = getattr(module, "ASSET_METADATA", {})
-        assert isinstance(metadata, dict)
-        for field in _METADATA_FIELDS:
-            if field in metadata:
+    # A dumped module's recipe leaves TreeBuilder at its default arrangement,
+    # which resolves through this scoped default (snapshot-positions modules
+    # disable arrangement and are unaffected).
+    arrange_override = (
+        default_sugiyama_options(SugiyamaOptions(add_reroutes=True))
+        if add_reroutes
+        else nullcontext()
+    )
+    with arrange_override:
+        # Materials first: asset trees look them up by name while building.
+        built_materials = []
+        for file, module in material_modules:
+            material_cls = module.MATERIAL  # ty: ignore[unresolved-attribute]
+            if not (
+                isinstance(material_cls, type)
+                and issubclass(material_cls, NodeGroupBuilder)
+            ):
+                raise TypeError(f"{file}: MATERIAL is not a node-group class")
+            name = getattr(module, "MATERIAL_NAME", None) or material_cls._name
+            # The material recipe may instantiate typed-API asset classes, which
+            # must build from their _build_group source, not append.
+            with build_from_source():
+                material = _build_material(material_cls, name)
+            for key, value in getattr(module, "MATERIAL_PROPERTIES", {}).items():
                 try:
-                    setattr(asset_data, field, metadata[field])
-                except AttributeError:  # pragma: no cover - other Blender versions
-                    # Read-only in this Blender version (as catalog_simple_name
-                    # was) — the value is derived, not lost; keep building.
-                    print(f"  {tree.name}: skipping read-only asset field {field!r}")
-        existing_tags = {tag.name for tag in asset_data.tags}
-        for tag in metadata.get("tags", ()):
-            if tag not in existing_tags:
-                asset_data.tags.new(tag)
-        properties = getattr(module, "TREE_PROPERTIES", {})
-        assert isinstance(properties, dict)
-        for key, value in properties.items():
-            setattr(tree, key, value)
-        trees.append(tree)
+                    setattr(material, key, value)
+                except AttributeError:
+                    print(f"  {name}: skipping read-only material property {key!r}")
+            built_materials.append(material)
+
+        trees = []
+        for file, module in asset_modules:
+            asset_cls = module.ASSET  # ty: ignore[unresolved-attribute]
+            if not (
+                isinstance(asset_cls, type) and issubclass(asset_cls, NodeGroupBuilder)
+            ):
+                raise TypeError(
+                    f"{file}: ASSET is not a node-group class: {asset_cls!r}"
+                )
+            # Merged typed-API classes are Asset*Groups that would *append* their
+            # own .blend; building from source is the whole point here.
+            with build_from_source():
+                tree = asset_cls.create_group()
+            if tree.asset_data is None:
+                tree.asset_mark()
+            asset_data = tree.asset_data
+            assert asset_data is not None
+            metadata = getattr(module, "ASSET_METADATA", {})
+            assert isinstance(metadata, dict)
+            for field in _METADATA_FIELDS:
+                if field in metadata:
+                    try:
+                        setattr(asset_data, field, metadata[field])
+                    except AttributeError:  # pragma: no cover - other Blender versions
+                        # Read-only in this Blender version (as catalog_simple_name
+                        # was) — the value is derived, not lost; keep building.
+                        print(
+                            f"  {tree.name}: skipping read-only asset field {field!r}"
+                        )
+            existing_tags = {tag.name for tag in asset_data.tags}
+            for tag in metadata.get("tags", ()):
+                if tag not in existing_tags:
+                    asset_data.tags.new(tag)
+            properties = getattr(module, "TREE_PROPERTIES", {})
+            assert isinstance(properties, dict)
+            for key, value in properties.items():
+                setattr(tree, key, value)
+            trees.append(tree)
 
     # Placeholders satisfied the lookups during the build; deleting them nulls
     # the referencing socket defaults, which is exactly what "drop" means.
@@ -1263,6 +1291,16 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
         ),
     )
     build.add_argument(
+        "--add-reroutes",
+        action="store_true",
+        help=(
+            "Arrange the built trees with reroute nodes inserted to route "
+            "long links around nodes (the node-arrange addon's behaviour). "
+            "Sources dumped with --snapshot-positions keep their authored "
+            "layout regardless."
+        ),
+    )
+    build.add_argument(
         "--drop-missing",
         dest="on_missing",
         action="store_const",
@@ -1299,6 +1337,7 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             allow_existing=args.allow_existing,
             resources=args.resources,
             on_missing=args.on_missing,
+            add_reroutes=args.add_reroutes,
         )
         print(f"Built {args.blend} with {len(names)} assets: {', '.join(names)}")
 

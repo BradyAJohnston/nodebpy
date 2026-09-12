@@ -142,6 +142,36 @@ def test_sugiyama_add_reroutes_option():
     assert any(n.bl_idname == "NodeReroute" for n in tree.tree.nodes)
 
 
+def _build_reroutable(name: str) -> TreeBuilder:
+    """A tree whose default arrangement spans enough ranks to route edges."""
+    with TreeBuilder(name) as tree:
+        cube = g.Cube()
+        sim = g.SimulationZone({"cube": cube})
+        pos = sim.item("Position", g.Position())
+        (pos.current + 0.1) >> pos.next
+        offset = sim.delta_time * g.Vector((0, 0, 0.1)) * pos.current
+        sim.input >> g.SetPosition(offset=offset) >> sim.output
+        sim.output >> g.SetPosition(position=sim.output.o["Position"])
+    return tree
+
+
+def test_default_sugiyama_options_scope():
+    """default_sugiyama_options() changes what the plain "sugiyama" default
+    resolves to (the hook behind the build CLI's --add-reroutes), without
+    leaking past its scope or affecting explicit options."""
+    from nodebpy import default_sugiyama_options
+
+    with default_sugiyama_options(SugiyamaOptions(add_reroutes=True)):
+        routed = _build_reroutable("ScopedReroutes")
+        # An explicit method is not overridden.
+        explicit = _build_chain("ScopedExplicit", SugiyamaOptions())
+    after = _build_reroutable("ScopedRerouteAfter")
+
+    assert any(n.bl_idname == "NodeReroute" for n in routed.tree.nodes)
+    assert not any(n.bl_idname == "NodeReroute" for n in explicit.tree.nodes)
+    assert not any(n.bl_idname == "NodeReroute" for n in after.tree.nodes)
+
+
 def test_options_do_not_leak_between_runs():
     """Each layout run gets fresh state: a run with custom options must not
     influence a later run with defaults."""
