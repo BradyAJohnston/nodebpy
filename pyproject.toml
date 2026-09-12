@@ -16,6 +16,9 @@ nodebpy = "nodebpy:main"
 networkx = [
     "networkx>=3.6.1",
 ]
+plot = [
+    "matplotlib>=3.8",
+]
 bpy = [
     "bpy==5.2.*",
 ]
@@ -46,6 +49,7 @@ dev = [
     "griffe<2.0.0",
     "ty==0.0.74",
     "types-networkx>=3.6.1.20260728",
+    "matplotlib>=3.11.2",
 ]
 
 # The bpy stubs mark most collections/pointers as `| None` and cannot type
