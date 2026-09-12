@@ -36,6 +36,14 @@ break headless operation.
     `calculate_socket_offset_y()`).
   - `sugiyama.optimize_sizes()` skips `bpy.ops.wm.redraw_timer` and falls
     back to a per-character width estimate when `blf` can't measure text.
+- **Selection is ignored.** Upstream arranges the user's selection
+  (`config.selected`, and per-link `node.select` gates in
+  `get_multidigraph()` and `realize.is_safe_to_remove()`). Here
+  `sugiyama_layout` always lays out the whole tree — a library-loaded tree
+  has no selection at all, which would silently arrange nothing — so the
+  working set is `list(ntree.nodes)` and the select gates are membership /
+  always-true checks. Upstream patches touching `.select` need the same
+  translation.
 - `structs.py` uses explicit `_fields_` lists (upstream builds them from
   annotations, formerly via `eval`) and additionally binds `bNode` /
   `bNodeRuntime` / `rctf`, which upstream does not have.

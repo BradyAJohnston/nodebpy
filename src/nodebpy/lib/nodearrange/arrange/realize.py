@@ -38,8 +38,10 @@ def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
         if any(v == i[0].owner for i in val):
             return False
 
+    # Headless divergence: the addon requires the reroute's peers to be in
+    # the selection; here the working set is the whole tree.
     return all(
-        s.node is not None and s.node.select
+        s.node is not None
         for s in chain(
             state.linked_sockets[v.node.inputs[0]],
             state.linked_sockets[v.node.outputs[0]],

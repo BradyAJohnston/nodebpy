@@ -9,13 +9,17 @@ import bpy
 
 # Estimated row heights (in unscaled UI units) used to model node layout
 # without a UI. Blender only computes real node/socket geometry when a node
-# editor draws the tree, which never happens under the headless ``bpy`` module.
-HEADER = 20
-SOCKET_ROW = 32
+# editor draws the tree, which never happens under the headless ``bpy``
+# module. HEADER and SOCKET_ROW are calibrated against a UI-arranged tree
+# whose reroutes the arranger had socket-aligned: reroute y minus node top
+# measures the real socket offsets, giving header + (i + 0.5) * row fits of
+# 24.5 / 21.75. The remaining rows scale to the same grid.
+HEADER = 24.5
+SOCKET_ROW = 21.75
 HIDDEN_SOCKET = 14
 HIDDEN_HEADER = 30
-PROPERTY_ROW = 28
-VECTOR_EXPANDED = 84
+PROPERTY_ROW = 24
+VECTOR_EXPANDED = 65.25  # three extra value rows
 
 
 def _is_layoutable(node: bpy.types.Node) -> bool:
@@ -114,6 +118,13 @@ def _node_property_count(node: bpy.types.Node) -> int:
     )
 
 
+def _socket_visible(socket: bpy.types.NodeSocket) -> bool:
+    """Whether Blender draws this socket on an expanded node: enabled, and
+    not hidden — a hidden socket reappears while it is linked (the editor's
+    Hide Unused Sockets only hides unlinked ones)."""
+    return socket.enabled and (not socket.hide or socket.is_linked)
+
+
 def _is_expanded_vector(
     socket: bpy.types.NodeSocket,
     socket_input_connection_count: Counter | None,
@@ -145,21 +156,21 @@ def calculate_node_dimensions(
         height = (HIDDEN_HEADER + visible * HIDDEN_SOCKET) * interface_scale
         return node.width, height
 
-    enabled_inputs = sum(1 for s in node.inputs if s.enabled)
-    enabled_outputs = sum(1 for s in node.outputs if s.enabled)
+    visible_inputs = sum(1 for s in node.inputs if _socket_visible(s))
+    visible_outputs = sum(1 for s in node.outputs if _socket_visible(s))
 
     # count vector inputs that need expanded UI widgets (not connected)
     unconnected_vectors = sum(
         1
         for s in node.inputs
-        if s.enabled and _is_expanded_vector(s, socket_input_connection_count)
+        if _socket_visible(s) and _is_expanded_vector(s, socket_input_connection_count)
     )
 
     height = (
         HEADER
-        + enabled_outputs * SOCKET_ROW
+        + visible_outputs * SOCKET_ROW
         + _node_property_count(node) * PROPERTY_ROW
-        + enabled_inputs * SOCKET_ROW
+        + visible_inputs * SOCKET_ROW
         + unconnected_vectors * VECTOR_EXPANDED
     ) * interface_scale
 
@@ -189,20 +200,20 @@ def calculate_socket_offset_y(socket: bpy.types.NodeSocket) -> float:
         for s in node.outputs:
             if s == socket:
                 break
-            if s.enabled:
+            if _socket_visible(s):
                 index += 1
         return -(HEADER + (index + 0.5) * SOCKET_ROW)
 
-    enabled_outputs = sum(1 for s in node.outputs if s.enabled)
+    visible_outputs = sum(1 for s in node.outputs if _socket_visible(s))
     offset = (
         HEADER
-        + enabled_outputs * SOCKET_ROW
+        + visible_outputs * SOCKET_ROW
         + _node_property_count(node) * PROPERTY_ROW
     )
     for s in node.inputs:
         if s == socket:
             break
-        if not s.enabled:
+        if not _socket_visible(s):
             continue
         offset += SOCKET_ROW
         if _is_expanded_vector(s, None):
@@ -212,14 +223,14 @@ def calculate_socket_offset_y(socket: bpy.types.NodeSocket) -> float:
 
 
 def _socket_index(socket: bpy.types.NodeSocket) -> int:
-    """Return the index of a socket among its node's enabled sockets."""
+    """Return the index of a socket among its node's visible sockets."""
     assert socket.node is not None
     collection = socket.node.inputs if not socket.is_output else socket.node.outputs
     idx = 0
     for s in collection:
         if s == socket:
             return idx
-        if s.enabled:
+        if _socket_visible(s):
             idx += 1
     return idx
 
@@ -453,11 +464,13 @@ class SugiyamaOptions:
         Number of crossing-minimization iterations.
     """
 
-    margin: tuple[float, float] = (200.0, 20.0)
+    # Defaults calibrated against hand-approved node-arrange addon output
+    # ("30" x/y spacing, no socket alignment, top-right node alignment).
+    margin: tuple[float, float] = (30.0, 30.0)
     direction: Literal["LEFT_DOWN", "RIGHT_DOWN", "BALANCED", "LEFT_UP", "RIGHT_UP"] = (
-        "LEFT_UP"
+        "RIGHT_UP"
     )
-    socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "MODERATE"
+    socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "NONE"
     add_reroutes: bool = False
     keep_reroutes_outside_frames: bool = False
     stack_collapsed: bool = True

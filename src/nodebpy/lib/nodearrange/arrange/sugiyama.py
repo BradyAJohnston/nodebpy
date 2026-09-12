@@ -127,14 +127,17 @@ def get_multidigraph(state: LayoutState) -> nx.MultiDiGraph[Node]:
             if n.bl_idname != "NodeFrame"
         ]
     )
+    # Headless divergence: the addon skips links to unselected nodes; here
+    # the working set is the whole tree, so membership in G is the test.
+    by_node = {v.node: v for v in G}
     for u in G:
         for i, from_output in enumerate(u.node.outputs):
             for to_input in state.linked_sockets[from_output]:
                 assert to_input.node is not None
-                if not to_input.node.select:
+                v = by_node.get(to_input.node)
+                if v is None:
                     continue
 
-                v = next(v for v in G if v.node == to_input.node)
                 j = to_input.node.inputs[:].index(to_input)
                 G.add_edge(
                     u, v, from_socket=Socket(u, i, True), to_socket=Socket(v, j, False)
@@ -283,7 +286,10 @@ def sugiyama_layout(
     state = LayoutState(ntree=ntree, settings=settings or Settings())
     if margin is not None:
         state.margin = margin
-    state.selected = [n for n in ntree.nodes if n.select]
+    # Headless divergence: the addon arranges the user's selection, but this
+    # entry point always lays out the whole tree — a library-loaded tree has
+    # no selection at all, which would silently arrange nothing.
+    state.selected = list(ntree.nodes)
     locs = [abs_loc(n) for n in state.selected if n.bl_idname != "NodeFrame"]
 
     if not locs:

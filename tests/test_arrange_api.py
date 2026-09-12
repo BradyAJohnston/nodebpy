@@ -30,6 +30,43 @@ def test_arrange_standalone_without_builder_context():
     assert len(xs) > 1, "nodes should be spread horizontally"
 
 
+def test_arrange_ignores_selection_state():
+    """arrange() lays out the whole tree even when no node is selected —
+    a library-loaded tree has no selection, and the addon-derived layout
+    code used to silently arrange nothing (and drop every link whose
+    consumer was unselected)."""
+    builder = _build_chain("UnselectedArrange")
+    tree = builder.tree
+    for node in tree.nodes:
+        node.select = False
+        node.location = (0, 0)
+
+    arrange(tree)
+
+    xs = {round(n.location.x) for n in tree.nodes}
+    assert len(xs) > 1, "unselected nodes should still be spread horizontally"
+
+
+def test_hidden_sockets_do_not_add_height():
+    """Sockets hidden by the editor's Hide Unused Sockets (hide=True and
+    unlinked) don't occupy rows; hidden-but-linked sockets still do."""
+    from nodebpy.builder.layout import calculate_node_dimensions
+
+    builder = _build_chain("HiddenSockets")
+    node = builder.tree.nodes["Set Position"]
+
+    full = calculate_node_dimensions(node)[1]
+    for socket in node.inputs:
+        if not socket.is_linked:
+            socket.hide = True
+    reduced = calculate_node_dimensions(node)[1]
+    assert reduced < full
+
+    for socket in node.inputs:
+        socket.hide = True  # linked sockets stay drawn regardless
+    assert calculate_node_dimensions(node)[1] == reduced
+
+
 def test_arrange_none_leaves_tree_untouched():
     builder = _build_chain("NoArrange")
     tree = builder.tree
