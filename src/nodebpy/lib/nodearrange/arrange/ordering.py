@@ -21,7 +21,7 @@ from typing import cast
 
 import networkx as nx
 
-from .. import config
+from ..config import LayoutState
 from .graph import FROM_SOCKET, TO_SOCKET, Cluster, Kind, Node, Socket, socket_graph
 
 # -------------------------------------------------------------------
@@ -43,10 +43,10 @@ def get_col_nesting_trees(
     return trees
 
 
-def expand_multi_inputs(G: nx.MultiDiGraph[Node]) -> None:
+def expand_multi_inputs(G: nx.MultiDiGraph[Node], state: LayoutState) -> None:
     H = socket_graph(G)
     reroutes = {v for v in H if v.owner.is_reroute}
-    for v in {s.owner for s in config.multi_input_sort_ids}:
+    for v in {s.owner for s in state.multi_input_sort_ids}:
         if v not in G:
             continue
         inputs = sorted(
@@ -54,7 +54,7 @@ def expand_multi_inputs(G: nx.MultiDiGraph[Node]) -> None:
         )
         i = inputs[0].idx
         for socket in inputs:
-            if socket not in config.multi_input_sort_ids:
+            if socket not in state.multi_input_sort_ids:
                 if i != socket.idx:
                     d = next(
                         d
@@ -65,7 +65,7 @@ def expand_multi_inputs(G: nx.MultiDiGraph[Node]) -> None:
                 i += 1
                 continue
 
-            sort_ids = config.multi_input_sort_ids[socket]
+            sort_ids = state.multi_input_sort_ids[socket]
             SH = H.subgraph({i[0] for i in sort_ids} | {socket} | reroutes)
             seen = set()
             for base_from_socket, _ in sorted(
@@ -529,12 +529,14 @@ def minimized_cross_count(
     return old_cross_count
 
 
-def minimize_crossings(G: nx.MultiDiGraph[Node], T: _MixedGraph) -> None:
+def minimize_crossings(
+    G: nx.MultiDiGraph[Node], T: _MixedGraph, state: LayoutState
+) -> None:
     columns = G.graph["columns"]
     trees = get_col_nesting_trees(columns, T)
     G_ = G.copy()
 
-    expand_multi_inputs(G_)
+    expand_multi_inputs(G_, state)
 
     forward_items = crossing_reduction_items(trees, G_, True)
 
@@ -546,7 +548,7 @@ def minimize_crossings(G: nx.MultiDiGraph[Node], T: _MixedGraph) -> None:
     random.seed(0)
     best_cross_count = inf
     best_columns = [c.copy() for c in columns]
-    for _ in range(config.SETTINGS.iterations):
+    for _ in range(state.settings.iterations):
         cross_count = minimized_cross_count(columns, forward_items, backward_items, T)
         if cross_count < best_cross_count:
             best_cross_count = cross_count

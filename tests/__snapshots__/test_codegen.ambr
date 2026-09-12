@@ -73,13 +73,14 @@
           >> geometry_1
       )
   
-  # Restore authored node positions.
-  tree.node_positions = {
-      "Group Input": (0.0, 0.0),
-      "Group Output": (90.0, 30.0),
-      "Position": (180.0, 60.0),
-      "Reroute": (360.0, 120.0),
-      "Set Position": (270.0, 90.0),
+  # Restore authored node names and positions (matched by tree
+  # structure — see TreeBuilder.layout_snapshot).
+  tree.layout_snapshot = {
+      "Group Input": ("NodeGroupInput", (0.0, 0.0), None, ()),
+      "Group Output": ("NodeGroupOutput", (90.0, 30.0), None, (("Geometry", "Reroute", "Output"), )),
+      "Position": ("GeometryNodeInputPosition", (180.0, 60.0), None, ()),
+      "Reroute": ("NodeReroute", (360.0, 120.0), None, (("Input", "Set Position", "Geometry"), )),
+      "Set Position": ("GeometryNodeSetPosition", (270.0, 90.0), None, (("Geometry", "Group Input", "Geometry"), ("Offset", "Position", "Position"), )),
   }
   '''
 # ---
@@ -127,12 +128,13 @@
   
       geometry >> g.SetPosition(offset=g.Position()) >> geometry_1
   
-  # Restore authored node positions.
-  tree.node_positions = {
-      "Group Input": (0.0, 0.0),
-      "Group Output": (300.0, 120.0),
-      "Position": (100.0, 40.0),
-      "Set Position": (200.0, 80.0),
+  # Restore authored node names and positions (matched by tree
+  # structure — see TreeBuilder.layout_snapshot).
+  tree.layout_snapshot = {
+      "Group Input": ("NodeGroupInput", (0.0, 0.0), None, ()),
+      "Group Output": ("NodeGroupOutput", (300.0, 120.0), None, (("Geometry", "Set Position", "Geometry"), )),
+      "Position": ("GeometryNodeInputPosition", (100.0, 40.0), None, ()),
+      "Set Position": ("GeometryNodeSetPosition", (200.0, 80.0), None, (("Geometry", "Group Input", "Geometry"), ("Offset", "Position", "Position"), )),
   }
   '''
 # ---
@@ -154,11 +156,12 @@
   
           geometry >> g.SetPosition() >> geometry_1
   
-          # Restore authored node positions.
-          tree.node_positions = {
-              "Group Input": (0.0, 0.0),
-              "Group Output": (400.0, 120.0),
-              "Set Position": (200.0, 60.0),
+          # Restore authored node names and positions (matched by tree
+          # structure — see TreeBuilder.layout_snapshot).
+          tree.layout_snapshot = {
+              "Group Input": ("NodeGroupInput", (0.0, 0.0), None, ()),
+              "Group Output": ("NodeGroupOutput", (400.0, 120.0), None, (("Geometry", "Set Position", "Geometry"), )),
+              "Set Position": ("GeometryNodeSetPosition", (200.0, 60.0), None, (("Geometry", "Group Input", "Geometry"), )),
           }
   
   
@@ -168,11 +171,12 @@
   
       SnapInner(Geometry=geometry) >> geometry_1
   
-  # Restore authored node positions.
-  tree.node_positions = {
-      "Group Input": (0.0, 0.0),
-      "Group Output": (240.0, 100.0),
-      "SnapInner": (120.0, 50.0),
+  # Restore authored node names and positions (matched by tree
+  # structure — see TreeBuilder.layout_snapshot).
+  tree.layout_snapshot = {
+      "Group Input": ("NodeGroupInput", (0.0, 0.0), None, ()),
+      "Group Output": ("NodeGroupOutput", (240.0, 100.0), None, (("Geometry", "SnapInner", "Geometry"), )),
+      "SnapInner": ("GeometryNodeGroup", (120.0, 50.0), None, (("Geometry", "Group Input", "Geometry"), )),
   }
   '''
 # ---

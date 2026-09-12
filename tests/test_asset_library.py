@@ -217,6 +217,140 @@ def test_build_ignores_stale_catalog_simple_name(library_blend, tmp_path):
     assert bpy.data.node_groups["Scale Up"].asset_data.catalog_id == CATALOG_ID
 
 
+def test_build_add_reroutes(tmp_path):
+    """build_library(add_reroutes=True) — the CLI's --add-reroutes — arranges
+    the built trees with routed edges; the default build stays reroute-free."""
+    with TreeBuilder("Routed") as tree:
+        cube = g.Cube()
+        sim = g.SimulationZone({"cube": cube})
+        pos = sim.item("Position", g.Position())
+        (pos.current + 0.1) >> pos.next
+        offset = sim.delta_time * g.Vector((0, 0, 0.1)) * pos.current
+        sim.input >> g.SetPosition(offset=offset) >> sim.output
+        sim.output >> g.SetPosition(position=sim.output.o["Position"])
+    tree.tree.asset_mark()
+    blend = tmp_path / "library.blend"
+    bpy.data.libraries.write(str(blend), {tree.tree}, fake_user=True)
+    _clear_node_groups()
+
+    src = tmp_path / "src"
+    dump_library(blend, src)
+
+    def reroute_count():
+        return sum(
+            1
+            for n in bpy.data.node_groups["Routed"].nodes
+            if n.bl_idname == "NodeReroute"
+        )
+
+    build_library(src, tmp_path / "plain.blend")
+    assert reroute_count() == 0
+    _clear_node_groups()
+
+    build_library(src, tmp_path / "routed.blend", add_reroutes=True)
+    assert reroute_count() > 0
+
+
+def test_build_arrange_options(library_blend, tmp_path):
+    """build_library(arrange=...) tunes the built trees' layout: wider
+    spacing spreads the same tree further apart."""
+    from nodebpy import SugiyamaOptions
+
+    src = tmp_path / "src"
+    dump_library(library_blend, src)
+
+    def x_spread():
+        xs = [n.location.x for n in bpy.data.node_groups["Scale Up"].nodes]
+        return max(xs) - min(xs)
+
+    build_library(src, tmp_path / "plain.blend")
+    plain = x_spread()
+    _clear_node_groups()
+
+    build_library(
+        src, tmp_path / "wide.blend", arrange=SugiyamaOptions(margin=(300.0, 60.0))
+    )
+    assert x_spread() > plain
+
+
+def test_plot_library(library_blend, tmp_path):
+    """plot_library renders selected node groups to PNGs: wildcard and exact
+    selection, all-groups default (assets and helpers alike), unmatched
+    patterns raise, and the session is left clean."""
+    pytest.importorskip("matplotlib")
+    from nodebpy import SugiyamaOptions
+    from nodebpy.assets import plot_library
+
+    out = tmp_path / "plots"
+    written = plot_library(library_blend, out, ["Scale *"])
+    assert set(written) == {"Scale Up"}
+    assert written["Scale Up"] == out / "Scale_Up.png"
+    assert written["Scale Up"].stat().st_size > 5_000
+    assert not bpy.data.node_groups  # appended groups removed again
+
+    # No names: every group in the file, including the non-asset helper —
+    # and re-arranging before plotting works.
+    written = plot_library(
+        library_blend, out, arrange=SugiyamaOptions(margin=(60.0, 40.0))
+    )
+    assert {"Scale Up", "Flat Red", "Doubler"} <= set(written)
+    assert not bpy.data.node_groups
+
+    with pytest.raises(KeyError, match="No node groups"):
+        plot_library(library_blend, out, ["Nope*"])
+
+    with pytest.raises(FileNotFoundError):
+        plot_library(tmp_path / "missing.blend", out)
+
+    # A same-named group already in the session would be renamed on append.
+    with TreeBuilder("Scale Up"):
+        pass
+    with pytest.raises(RuntimeError, match="fresh session"):
+        plot_library(library_blend, out, ["Scale Up"])
+
+
+def test_cli_arrange_options_mapping():
+    """The build CLI's layout flags map onto SugiyamaOptions; all-unset
+    means no override at all."""
+    from argparse import Namespace
+
+    from nodebpy import SugiyamaOptions
+    from nodebpy.assets._library import _arrange_options_from_args
+
+    defaults = Namespace(
+        spacing=None,
+        iterations=None,
+        direction=None,
+        socket_alignment=None,
+        keep_reroutes_outside_frames=False,
+        stack_collapsed=True,
+        stack_margin_y_fac=None,
+        optimize_sizes=False,
+    )
+    assert _arrange_options_from_args(defaults) is None
+
+    tuned = Namespace(
+        spacing=[50.0, 40.0],
+        iterations=10,
+        direction="BALANCED",
+        socket_alignment="FULL",
+        keep_reroutes_outside_frames=True,
+        stack_collapsed=False,
+        stack_margin_y_fac=0.25,
+        optimize_sizes=True,
+    )
+    assert _arrange_options_from_args(tuned) == SugiyamaOptions(
+        margin=(50.0, 40.0),
+        iterations=10,
+        direction="BALANCED",
+        socket_alignment="FULL",
+        keep_reroutes_outside_frames=True,
+        stack_collapsed=False,
+        stack_margin_y_fac=0.25,
+        optimize_sizes=True,
+    )
+
+
 def test_build_refuses_dirty_session(library_blend, tmp_path):
     src = tmp_path / "src"
     dump_library(library_blend, src)

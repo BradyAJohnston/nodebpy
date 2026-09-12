@@ -86,7 +86,7 @@ def build_principal_components() -> TreeBuilder:
 
 def test_PCA_asset():
     tree = build_principal_components()
-    assert len(tree.nodes) == 11
+    assert len(tree.nodes) == 10
 
 
 def build_surface_hello_world() -> TreeBuilder:
@@ -113,7 +113,7 @@ def build_surface_hello_world() -> TreeBuilder:
 
 
 def test_surface_hello_world():
-    assert len(build_surface_hello_world()) == 22
+    assert len(build_surface_hello_world()) == 19
 
 
 def build_eulers_number() -> TreeBuilder:

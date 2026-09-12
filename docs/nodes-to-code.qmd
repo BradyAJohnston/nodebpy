@@ -192,8 +192,9 @@ Deeply nested graphs split into named steps rather than collapsing into one huge
 ### Node positions
 
 By default the generated code lets `nodebpy` lay the tree out automatically when it is built.
-Pass `snapshot_positions=True` to instead capture each node's authored `location` and restore it, so the rebuilt tree matches the original layout.
-The tree is built with `arrange=None` (auto-layout off) and a `tree.node_positions = {...}` mapping is appended:
+Pass `snapshot_positions=True` to instead capture each node's authored name and `location` and restore them, so the rebuilt tree matches the original layout.
+The tree is built with `arrange=None` (auto-layout off) and a `tree.layout_snapshot = {...}` mapping is appended.
+Each entry records the node's type, location, frame parent and incoming links; on rebuild the nodes are matched to entries by structure — a rebuild names duplicate-type nodes in creation order, so bare names cannot be trusted — then renamed and placed:
 
 ::: {.panel-tabset}
 ## Hand-written

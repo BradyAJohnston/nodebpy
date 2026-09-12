@@ -10,12 +10,14 @@ compositor}.assets`` and are re-exported alongside the built-in nodes.
 ``dump_library`` and ``build_library`` round-trip a ``.blend`` asset library
 through Python source: every asset is dumped to its own ``.py`` file (the
 version-controlled source of truth) and the ``.blend`` is rebuilt from them
-(``python -m nodebpy.assets dump/build``).
+(``python -m nodebpy.assets dump/build``). ``plot_library`` renders node
+groups from a ``.blend`` to PNG images by name or wildcard
+(``python -m nodebpy.assets plot``), for review outside Blender.
 """
 
 from ..builder import AssetLibrary, BundledLibrary, PackageLibrary
 from ._codegen import generate_asset_api, generate_asset_modules
-from ._library import build_library, dump_library
+from ._library import build_library, dump_library, plot_library
 
 __all__ = [
     "AssetLibrary",
@@ -25,4 +27,5 @@ __all__ = [
     "dump_library",
     "generate_asset_api",
     "generate_asset_modules",
+    "plot_library",
 ]
