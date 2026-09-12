@@ -96,7 +96,9 @@ def _draw_node(ax: Axes, node: bpy.types.Node) -> None:
             (x, top - height),
             width,
             height,
-            boxstyle=f"round,pad=0,rounding_size={height / 2}",
+            # Rounded rectangle, not a pill: a fixed corner radius well
+            # under half the collapsed height.
+            boxstyle=f"round,pad=0,rounding_size={min(6.0, height / 3)}",
             facecolor=face,
             edgecolor=edge,
             lw=0.9,
