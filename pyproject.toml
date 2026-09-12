@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "520.18.0"
+version = "520.19.0"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
@@ -15,6 +15,9 @@ nodebpy = "nodebpy:main"
 [project.optional-dependencies]
 networkx = [
     "networkx>=3.6.1",
+]
+plot = [
+    "matplotlib>=3.8",
 ]
 bpy = [
     "bpy==5.2.*",
@@ -46,6 +49,7 @@ dev = [
     "griffe<2.0.0",
     "ty==0.0.74",
     "types-networkx>=3.6.1.20260728",
+    "matplotlib>=3.11.2",
 ]
 
 # The bpy stubs mark most collections/pointers as `| None` and cannot type
@@ -67,3 +71,4 @@ ignore = ["SIM117", "RUF059"]
 [tool.ruff.lint.per-file-ignores]
 "tests/test_codegen.py" = ["S102"]
 "tests/test_assets.py" = ["S102"]
+"tests/test_layout_snapshot.py" = ["S102"]
