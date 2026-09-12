@@ -6,7 +6,6 @@ import pytest
 from nodebpy import SimpleOptions, SugiyamaOptions, TreeBuilder, arrange
 from nodebpy import geometry as g
 from nodebpy.builder.layout import calculate_socket_offset_y
-from nodebpy.lib.nodearrange import config
 
 
 def _build_chain(name: str, arrange_method=None) -> TreeBuilder:
@@ -106,16 +105,20 @@ def test_sugiyama_add_reroutes_option():
     assert any(n.bl_idname == "NodeReroute" for n in tree.tree.nodes)
 
 
-def test_settings_restored_after_arrange():
-    """Custom options must not leak into the global vendored settings."""
-    defaults = config.Settings()
+def test_options_do_not_leak_between_runs():
+    """Each layout run gets fresh state: a run with custom options must not
+    influence a later run with defaults."""
+    reference = _build_chain("LeakReference", "sugiyama")
     _build_chain(
-        "SettingsRestore",
+        "LeakCustom",
         SugiyamaOptions(add_reroutes=True, optimize_sizes=True, iterations=3),
     )
-    assert config.SETTINGS == defaults
-    assert tuple(config.MARGIN) == (200.0, 20.0)
-    assert config.ntree is None
+    repeat = _build_chain("LeakRepeat", "sugiyama")
+
+    def locations(tree):
+        return {n.name: tuple(n.location) for n in tree.tree.nodes}
+
+    assert locations(repeat) == locations(reference)
 
 
 def test_locations_are_quantized():

@@ -12,8 +12,8 @@ from bpy.types import Node as BlenderNode
 from bpy.types import NodeFrame, NodeTree
 from mathutils import Vector
 
-from .. import config
-from ..utils import abs_loc, get_ntree, group_by
+from ..config import LayoutState, Settings
+from ..utils import abs_loc, group_by
 from .graph import (
     FROM_SOCKET,
     TO_SOCKET,
@@ -99,21 +99,21 @@ def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
 # -------------------------------------------------------------------
 
 
-def precompute_links(ntree: NodeTree) -> None:
+def precompute_links(state: LayoutState) -> None:
     # Precompute links to ignore invalid/hidden links, and avoid `O(len(ntree.links))` time
 
-    for link in ntree.links:
+    for link in state.ntree.links:
         if not link.is_hidden and link.is_valid:
             assert link.from_socket
             assert link.to_socket
-            config.linked_sockets[link.to_socket].add(link.from_socket)
-            config.linked_sockets[link.from_socket].add(link.to_socket)
+            state.linked_sockets[link.to_socket].add(link.from_socket)
+            state.linked_sockets[link.from_socket].add(link.to_socket)
 
 
-def get_multidigraph() -> nx.MultiDiGraph[Node]:
+def get_multidigraph(state: LayoutState) -> nx.MultiDiGraph[Node]:
     parents = {
         n.parent: Cluster(cast(NodeFrame | None, n.parent), None)  # type: ignore
-        for n in get_ntree().nodes
+        for n in state.ntree.nodes
     }
     for c in parents.values():
         if c.node:
@@ -123,13 +123,13 @@ def get_multidigraph() -> nx.MultiDiGraph[Node]:
     G.add_nodes_from(
         [
             Node(n, parents[n.parent])
-            for n in config.selected
+            for n in state.selected
             if n.bl_idname != "NodeFrame"
         ]
     )
     for u in G:
         for i, from_output in enumerate(u.node.outputs):
-            for to_input in config.linked_sockets[from_output]:
+            for to_input in state.linked_sockets[from_output]:
                 assert to_input.node is not None
                 if not to_input.node.select:
                     continue
@@ -143,8 +143,8 @@ def get_multidigraph() -> nx.MultiDiGraph[Node]:
     return G
 
 
-def save_multi_input_orders(G: nx.MultiDiGraph[Node]) -> None:
-    links = {(link.from_socket, link.to_socket): link for link in get_ntree().links}
+def save_multi_input_orders(G: nx.MultiDiGraph[Node], state: LayoutState) -> None:
+    links = {(link.from_socket, link.to_socket): link for link in state.ntree.links}
     for v, w, d in G.edges.data():
         to_socket = d[TO_SOCKET]
 
@@ -160,7 +160,7 @@ def save_multi_input_orders(G: nx.MultiDiGraph[Node]) -> None:
             base_from_socket = d[FROM_SOCKET]
 
         link = links[(d[FROM_SOCKET].bpy, to_socket.bpy)]
-        config.multi_input_sort_ids[to_socket].append(
+        state.multi_input_sort_ids[to_socket].append(
             (base_from_socket, link.multi_input_sort_id)
         )
 
@@ -237,7 +237,7 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
                     for v in p1
                     if v != v.col[0]
                 ]
-                if above_y_vals and y > min(above_y_vals) - config.MARGIN.y:
+                if above_y_vals and y > min(above_y_vals) - CG.state.margin.y:
                     continue
             else:
                 below_y_vals = [
@@ -245,7 +245,7 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
                 ]
                 if (
                     below_y_vals
-                    and max(below_y_vals) + config.MARGIN.y > y - p1[0].height
+                    and max(below_y_vals) + CG.state.margin.y > y - p1[0].height
                 ):
                     continue
 
@@ -275,29 +275,35 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
 # -------------------------------------------------------------------
 
 
-def sugiyama_layout(ntree: NodeTree) -> None:
-    config.ntree = ntree
-    config.selected = [n for n in ntree.nodes if n.select]
-    locs = [abs_loc(n) for n in config.selected if n.bl_idname != "NodeFrame"]
+def sugiyama_layout(
+    ntree: NodeTree,
+    settings: Settings | None = None,
+    margin: Vector | None = None,
+) -> None:
+    state = LayoutState(ntree=ntree, settings=settings or Settings())
+    if margin is not None:
+        state.margin = margin
+    state.selected = [n for n in ntree.nodes if n.select]
+    locs = [abs_loc(n) for n in state.selected if n.bl_idname != "NodeFrame"]
 
     if not locs:
         return
 
     old_center = Vector(list(map(fmean, zip(*locs))))
 
-    if config.SETTINGS.optimize_sizes:
-        optimize_sizes(config.selected)
+    if state.settings.optimize_sizes:
+        optimize_sizes(state.selected)
 
-    precompute_links(ntree)
-    CG = ClusterGraph(get_multidigraph())
+    precompute_links(state)
+    CG = ClusterGraph(get_multidigraph(state), state)
     G = CG.G
     T = CG.T
 
-    save_multi_input_orders(G)
-    if config.SETTINGS.add_reroutes:
+    save_multi_input_orders(G, state)
+    if state.settings.add_reroutes:
         remove_reroutes(CG)
 
-    if config.SETTINGS.stack_collapsed:
+    if state.settings.stack_collapsed:
         node_stacks = contracted_node_stacks(CG)
 
     compute_ranks(CG)
@@ -305,22 +311,22 @@ def sugiyama_layout(ntree: NodeTree) -> None:
     CG.insert_dummy_nodes()
 
     add_columns(G)
-    minimize_crossings(G, T)
+    minimize_crossings(G, T, state)
 
     CG.add_vertical_border_nodes()
     CG.remove_nodes_from([v for v in G if v.is_fill_dummy])
-    bk_assign_y_coords(G, T)
+    bk_assign_y_coords(G, T, state)
 
-    if not config.SETTINGS.add_reroutes:
+    if not state.settings.add_reroutes:
         dissolve_dummy_nodes(CG)
 
     align_reroutes_with_sockets(CG)
     CG.remove_nodes_from([v for v in G if v.type == Kind.VERTICAL_BORDER])
-    assign_x_coords(G, T)
-    if config.SETTINGS.add_reroutes:
-        route_edges(G, T)
+    assign_x_coords(G, T, state)
+    if state.settings.add_reroutes:
+        route_edges(G, T, state)
 
-    if config.SETTINGS.stack_collapsed:
+    if state.settings.stack_collapsed:
         for node_stack in node_stacks:
             expand_node_stack(CG, node_stack)
 

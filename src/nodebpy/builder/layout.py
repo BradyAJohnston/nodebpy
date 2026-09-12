@@ -474,12 +474,10 @@ type ArrangeMethod = (
 def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:
     from mathutils import Vector
 
-    from ..lib.nodearrange import config
     from ..lib.nodearrange.arrange import sugiyama
+    from ..lib.nodearrange.config import Settings
 
-    previous_settings = config.SETTINGS
-    previous_margin = config.MARGIN
-    config.SETTINGS = config.Settings(
+    settings = Settings(
         iterations=options.iterations,
         direction=options.direction,
         socket_alignment=options.socket_alignment,
@@ -489,13 +487,7 @@ def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> Non
         optimize_sizes=options.optimize_sizes,
         stack_margin_y_fac=options.stack_margin_y_fac,
     )
-    config.MARGIN = Vector(options.margin)
-    try:
-        sugiyama.sugiyama_layout(tree)
-    finally:
-        config.SETTINGS = previous_settings
-        config.MARGIN = previous_margin
-        config.reset()
+    sugiyama.sugiyama_layout(tree, settings=settings, margin=Vector(options.margin))
 
 
 def arrange(

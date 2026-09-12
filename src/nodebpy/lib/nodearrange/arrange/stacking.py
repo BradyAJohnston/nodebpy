@@ -10,7 +10,6 @@ from typing import cast
 
 import networkx as nx
 
-from .. import config
 from ..utils import get_top
 from .graph import (
     FROM_SOCKET,
@@ -238,7 +237,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
         for v in path:
             relabel_sockets(G.in_edges, v, node_stack, y)
             relabel_sockets(G.out_edges, v, node_stack, y)
-            y += v.height + config.MARGIN.y * config.SETTINGS.stack_margin_y_fac
+            y += v.height + CG.state.margin.y * CG.state.settings.stack_margin_y_fac
 
         rep_node.height = y
         rep_node.width = max([v.width for v in path])
@@ -314,6 +313,6 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
         CG.T.add_edge(cast(Cluster, rep_node.cluster), v)
         v.x = rep_node.x - (v.width - rep_node.width) / 2
         v.y = y
-        y -= v.height + config.MARGIN.y * config.SETTINGS.stack_margin_y_fac
+        y -= v.height + CG.state.margin.y * CG.state.settings.stack_margin_y_fac
 
     CG.remove_nodes_from([rep_node])

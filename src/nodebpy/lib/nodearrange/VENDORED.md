@@ -18,11 +18,15 @@ The Blender-addon shell: `__init__.py` (registration), `operators.py`,
 Keep these in mind when porting upstream commits; a straight file copy will
 break headless operation.
 
-- `utils.get_ntree()` resolves the tree from `config.ntree` (set by
-  `sugiyama_layout()`) instead of `bpy.context` (no UI context exists under
-  the `bpy` module). Settings are applied per-call by
-  `nodebpy.builder.layout.arrange()` swapping `config.SETTINGS` /
-  `config.MARGIN`.
+- **No module globals.** Upstream keeps its working state (`selected`,
+  `linked_sockets`, `multi_input_sort_ids`, `SETTINGS`, `MARGIN`) as module
+  globals in `config.py`, reset manually per operator invocation. Here that
+  is a per-run `config.LayoutState` dataclass, created by
+  `sugiyama_layout(ntree, settings, margin)` and threaded explicitly:
+  `ClusterGraph` carries it as `.state` for the pipeline, and pure-graph
+  helpers take it as a parameter. Upstream patches that touch `config.*` or
+  `bpy.context` need translating to `state.*` / `state.ntree` accordingly
+  (`utils.get_ntree()` no longer exists).
 - Headless adaptations — under the headless `bpy` module Blender never draws
   the tree, so UI-derived geometry (`node.dimensions`, socket runtime
   locations) stays zeroed:

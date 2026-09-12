@@ -10,7 +10,7 @@ from typing import cast
 import networkx as nx
 from mathutils.geometry import intersect_line_line_2d
 
-from .. import config
+from ..config import LayoutState
 from ..utils import frame_padding, group_by
 from .graph import (
     FROM_SOCKET,
@@ -54,7 +54,9 @@ def frame_padding_of_col(
     return frame_padding() * dist
 
 
-def assign_x_coords(G: nx.DiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:
+def assign_x_coords(
+    G: nx.DiGraph[Node], T: nx.DiGraph[Node | Cluster], state: LayoutState
+) -> None:
     columns: list[list[Node]] = G.graph["columns"]
     x = 0
     for i, col in enumerate(columns):
@@ -68,10 +70,10 @@ def assign_x_coords(G: nx.DiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:
             [
                 1
                 for *_, d in G.out_edges(col, data=True)
-                if abs(d[TO_SOCKET].y - d[FROM_SOCKET].y) >= config.MARGIN.x * 3
+                if abs(d[TO_SOCKET].y - d[FROM_SOCKET].y) >= state.margin.x * 3
             ]
         )
-        spacing = (1 + min(delta_i / 4, 2)) * config.MARGIN.x
+        spacing = (1 + min(delta_i / 4, 2)) * state.margin.x
         x += max_width + spacing + frame_padding_of_col(columns, i, T)
 
 
@@ -79,7 +81,9 @@ _MIN_X_DIFF = 30
 _MIN_Y_DIFF = 8
 
 
-def is_unnecessary_bend_point(socket: Socket, other_socket: Socket) -> bool:
+def is_unnecessary_bend_point(
+    socket: Socket, other_socket: Socket, state: LayoutState
+) -> bool:
     v = socket.owner
 
     if v.is_reroute:
@@ -96,7 +100,7 @@ def is_unnecessary_bend_point(socket: Socket, other_socket: Socket) -> bool:
     if nbr.is_reroute:
         return True
 
-    nbr_x_offset, nbr_y_offset = config.MARGIN / 2
+    nbr_x_offset, nbr_y_offset = state.margin / 2
     nbr_y = nbr.y - nbr.height - nbr_y_offset if is_above else nbr.y + nbr_y_offset
 
     assert nbr.cluster
@@ -116,6 +120,7 @@ def add_bend_points(
     G: nx.MultiDiGraph[Node],
     v: Node,
     bend_points: defaultdict[MultiEdge, list[Node]],
+    state: LayoutState,
 ) -> None:
     d: dict[str, Socket]
     largest = max(v.col, key=lambda w: w.width)
@@ -136,7 +141,7 @@ def add_bend_points(
         if abs(other_socket.y - bend_point.y) <= _MIN_Y_DIFF:
             continue
 
-        if is_unnecessary_bend_point(socket, other_socket):
+        if is_unnecessary_bend_point(socket, other_socket, state):
             continue
 
         bend_points[u, w, k].append(bend_point)
@@ -160,10 +165,12 @@ def node_overlaps_edge(
     return bool(intersect_line_line_2d(*edge_line, *bottom_line))
 
 
-def route_edges(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:
+def route_edges(
+    G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster], state: LayoutState
+) -> None:
     bend_points = defaultdict(list)
     for v in chain(*G.graph["columns"]):
-        add_bend_points(G, v, bend_points)
+        add_bend_points(G, v, bend_points, state)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -210,7 +217,7 @@ def route_edges(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None
 
     lca = lowest_common_cluster(T, bend_points)
     for (u, v, k), dummy_nodes in bend_points.items():
-        add_dummy_nodes_to_edge(G, (u, v, k), dummy_nodes)
+        add_dummy_nodes_to_edge(G, (u, v, k), dummy_nodes, state)
 
         c = lca.get((u, v), u.cluster)
         for w in dummy_nodes:

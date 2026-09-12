@@ -9,13 +9,6 @@ import bpy
 from bpy.types import Node
 from mathutils import Vector
 
-from . import config
-
-
-def get_ntree() -> bpy.types.NodeTree:
-    assert config.ntree is not None, "no layout in progress (see sugiyama_layout)"
-    return config.ntree
-
 
 def group_by[T1: Hashable, T2: Hashable](
     iterable: Iterable[T1],
@@ -84,7 +77,7 @@ def frame_padding() -> float:
 _MAX_LOC = 100_000
 
 
-def move(node: Node, *, x: float = 0, y: float = 0) -> None:
+def move(node: Node, selected: list[Node], *, x: float = 0, y: float = 0) -> None:
     if x == 0 and y == 0:
         return
 
@@ -97,11 +90,11 @@ def move(node: Node, *, x: float = 0, y: float = 0) -> None:
         loc += Vector((x, y))
         return
 
-    for n in config.selected:
+    for n in selected:
         n.select = n == node
 
     ui_scale = 1.0
     bpy.ops.transform.translate(value=[v * ui_scale for v in (x, y, 0)])
 
-    for n in config.selected:
+    for n in selected:
         n.select = True
