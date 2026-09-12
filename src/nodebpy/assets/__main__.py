@@ -77,9 +77,12 @@ def parse_args() -> argparse.Namespace:  # pragma: no cover - CLI wrapper
             ".blend to per-asset .py source files\n"
             "  build <source-dir> <blend>   rebuild the .blend asset library "
             "from dumped .py source files\n"
+            "  plot <blend> <output-dir> [names ...]\n"
+            "                               render node groups (wildcards "
+            "supported) to PNG images\n"
             "\n"
-            "See 'python -m nodebpy.assets dump --help' and "
-            "'python -m nodebpy.assets build --help' for their options."
+            "See 'python -m nodebpy.assets dump --help', '… build --help' "
+            "and '… plot --help' for their options."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -124,9 +127,10 @@ def parse_args() -> argparse.Namespace:  # pragma: no cover - CLI wrapper
 
 
 def main() -> None:  # pragma: no cover - CLI wrapper
-    # The dump/build subcommands (blend ↔ .py round-trip) have their own
-    # parser; everything else keeps the original flag-based interface.
-    if len(sys.argv) > 1 and sys.argv[1] in ("dump", "build"):
+    # The dump/build/plot subcommands (blend ↔ .py round-trip, PNG renders)
+    # have their own parser; everything else keeps the original flag-based
+    # interface.
+    if len(sys.argv) > 1 and sys.argv[1] in ("dump", "build", "plot"):
         from ._library import main as library_main
 
         library_main(sys.argv[1:])

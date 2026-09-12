@@ -93,6 +93,13 @@ quartodoc:
         - builder.accessor
         - TreeBuilder
         - builder.BaseNode
+    - title: Arrangement
+      desc: Automatic node layout and its options.
+      contents:
+        - arrange
+        - SugiyamaOptions
+        - SimpleOptions
+        - default_sugiyama_options
     - title: Assets
       desc: Generating classes from pre-build assets
       contents:
@@ -100,6 +107,7 @@ quartodoc:
         - assets.generate_asset_modules
         - assets.dump_library
         - assets.build_library
+        - assets.plot_library
         - assets.AssetLibrary
         - assets.BundledLibrary
         - assets.PackageLibrary
@@ -108,6 +116,7 @@ quartodoc:
       contents:
         - export.to_python
         - export.to_mermaid
+        - export.to_plot
         - export.serialize_library
         - export.compare_libraries
 

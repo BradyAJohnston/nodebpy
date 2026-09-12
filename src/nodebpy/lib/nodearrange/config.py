@@ -3,19 +3,15 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal
 
 from bpy.types import Node as BlenderNode
-from bpy.types import NodeSocket
+from bpy.types import NodeSocket, NodeTree
 from mathutils import Vector
 
 if TYPE_CHECKING:
     from .arrange.graph import Socket
-
-selected: list[BlenderNode] = []
-linked_sockets: defaultdict[NodeSocket, set[NodeSocket]] = defaultdict(set)
-multi_input_sort_ids: defaultdict[Socket, list[tuple[Socket, int]]] = defaultdict(list)
 
 
 @dataclass
@@ -30,16 +26,32 @@ class Settings:
     add_reroutes: bool = True
     keep_reroutes_outside_frames: bool = False
     stack_collapsed: bool = True
+    optimize_sizes: bool = False
     recenter_mode = "NODES"
     origin: Literal["CENTER", "ACTIVE_OUTPUT", "ACTIVE_NODE"] = "CENTER"
     stack_margin_y_fac: float = 0.5
 
 
-SETTINGS = Settings()
-MARGIN: Vector = Vector((200, 20.0))
+DEFAULT_MARGIN = (200.0, 20.0)
 
 
-def reset() -> None:
-    selected.clear()
-    linked_sockets.clear()
-    multi_input_sort_ids.clear()
+@dataclass
+class LayoutState:
+    """All state for a single layout run.
+
+    Replaces the upstream addon's module globals (which acted as ambient
+    operator state plus a manual ``reset()``): one instance is created per
+    ``sugiyama_layout()`` call and threaded through the pipeline, so nothing
+    persists between runs.
+    """
+
+    ntree: NodeTree
+    settings: Settings = field(default_factory=Settings)
+    margin: Vector = field(default_factory=lambda: Vector(DEFAULT_MARGIN))
+    selected: list[BlenderNode] = field(default_factory=list)
+    linked_sockets: defaultdict[NodeSocket, set[NodeSocket]] = field(
+        default_factory=lambda: defaultdict(set)
+    )
+    multi_input_sort_ids: defaultdict[Socket, list[tuple[Socket, int]]] = field(
+        default_factory=lambda: defaultdict(list)
+    )

@@ -10,7 +10,6 @@ from typing import cast
 
 import networkx as nx
 
-from .. import config
 from ..utils import get_top
 from .graph import (
     FROM_SOCKET,
@@ -117,21 +116,22 @@ _WEIGHT = "weight"
 def minimum_feedback_arc_set(G: nx.MultiDiGraph[Node]) -> set[MultiEdge]:
     G_ = G.copy()
     while not nx.is_directed_acyclic_graph(G_):
-        C = tuple(G_.subgraph(next(nx.simple_cycles(G_))).edges)
+        pairs = nx.utils.pairwise(next(nx.simple_cycles(G_)), cyclic=True)
+        C = [(u, v, next(iter(G_[u][v]))) for u, v in pairs]
         min_weight = min([G.edges[e][_WEIGHT] for e in C])
-        for u, v, k in C:
-            d = G.edges[u, v, k]
+        for e in C:
+            d = G.edges[e]
             d[_WEIGHT] -= min_weight
             if d[_WEIGHT] == 0:
-                G_.remove_edge(u, v, k)
+                G_.remove_edge(*e)
 
-    for u, v, k in G.edges:
-        if G_.has_edge(u, v, k):
+    for e in G.edges:
+        if G_.has_edge(*e):
             continue
 
-        G_.add_edge(u, v, k)
+        G_.add_edge(*e)
         if not nx.is_directed_acyclic_graph(G_):
-            G_.remove_edge(u, v, k)
+            G_.remove_edge(*e)
 
     return set(G.edges - G_.edges)
 
@@ -237,7 +237,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
         for v in path:
             relabel_sockets(G.in_edges, v, node_stack, y)
             relabel_sockets(G.out_edges, v, node_stack, y)
-            y += v.height + config.MARGIN.y * config.SETTINGS.stack_margin_y_fac
+            y += v.height + CG.state.margin.y * CG.state.settings.stack_margin_y_fac
 
         rep_node.height = y
         rep_node.width = max([v.width for v in path])
@@ -313,6 +313,6 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
         CG.T.add_edge(cast(Cluster, rep_node.cluster), v)
         v.x = rep_node.x - (v.width - rep_node.width) / 2
         v.y = y
-        y -= v.height + config.MARGIN.y * config.SETTINGS.stack_margin_y_fac
+        y -= v.height + CG.state.margin.y * CG.state.settings.stack_margin_y_fac
 
     CG.remove_nodes_from([rep_node])

@@ -5,7 +5,7 @@ import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy.builder.arrange import (
+from nodebpy.builder.layout import (
     arrange_tree,
     build_dependency_graph,
     calculate_node_dimensions,

@@ -8,24 +8,26 @@ from enum import Enum, auto
 from functools import cached_property
 from itertools import chain, pairwise, product
 from math import inf
-from typing import Any, Literal, TypeGuard
+from typing import TYPE_CHECKING, Any, Literal, TypeGuard
 
+import bpy
 import networkx as nx
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeFrame, NodeSocket
 
-from .. import config
 from ..utils import (
     REROUTE_DIM,
     abs_loc,
     dimensions,
     frame_padding,
     get_bottom,
-    get_ntree,
     get_top,
     group_by,
 )
 from .structs import bNodeSocket
+
+if TYPE_CHECKING:
+    from ..config import LayoutState
 
 # -------------------------------------------------------------------
 
@@ -216,6 +218,7 @@ def add_dummy_nodes_to_edge(
     G: nx.MultiDiGraph[Node],
     edge: MultiEdge,
     dummy_nodes: Sequence[Node],
+    state: LayoutState,
 ) -> None:
     if not dummy_nodes:
         return
@@ -239,7 +242,7 @@ def add_dummy_nodes_to_edge(
     if not is_real(u) or not is_real(v):
         return
 
-    links = get_ntree().links
+    links = state.ntree.links
     if d[TO_SOCKET].bpy.is_multi_input:
         target_link = (d[FROM_SOCKET].bpy, d[TO_SOCKET].bpy)
         links.remove(
@@ -268,8 +271,10 @@ def assign_clusters(
         w.cluster = c
 
 
-def improve_cluster_assignment(e: Edge, dummy_nodes: Sequence[Node]) -> None:
-    if config.SETTINGS.keep_reroutes_outside_frames:
+def improve_cluster_assignment(
+    e: Edge, dummy_nodes: Sequence[Node], state: LayoutState
+) -> None:
+    if state.settings.keep_reroutes_outside_frames:
         return
 
     u, v = e
@@ -328,15 +333,17 @@ class ClusterGraph:
     G: nx.MultiDiGraph[Node]
     T: nx.DiGraph[Node | Cluster]
     S: set[Cluster]
+    state: LayoutState
     __slots__ = tuple(__annotations__)
 
-    def __init__(self, G: nx.MultiDiGraph[Node]) -> None:
+    def __init__(self, G: nx.MultiDiGraph[Node], state: LayoutState) -> None:
         self.G = G
+        self.state = state
         self.T = nx.DiGraph(chain(*map(get_nesting_relations, G)))
         self.S = {v for v in self.T if isinstance(v, Cluster)}
 
     def remove_nodes_from(self, nodes: Iterable[Node]) -> None:
-        ntree = get_ntree()
+        state = self.state
         for v in nodes:
             self.G.remove_node(v)
             self.T.remove_node(v)
@@ -349,13 +356,13 @@ class ClusterGraph:
             sockets = {*v.node.inputs, *v.node.outputs}
 
             for socket in sockets:
-                config.linked_sockets.pop(socket, None)
+                state.linked_sockets.pop(socket, None)
 
-            for val in config.linked_sockets.values():
+            for val in state.linked_sockets.values():
                 val -= sockets
 
-            config.selected.remove(v.node)
-            ntree.nodes.remove(v.node)
+            state.selected.remove(v.node)
+            state.ntree.nodes.remove(v.node)
 
     def merge_edges(self) -> None:
         G = self.G
@@ -380,7 +387,7 @@ class ClusterGraph:
                     w = Node(None, c, Kind.DUMMY, v.rank - 1)
                     dummy_nodes.append(w)
 
-                add_dummy_nodes_to_edge(G, (u, v, k), [w])
+                add_dummy_nodes_to_edge(G, (u, v, k), [w], self.state)
                 G.remove_edge(u, w)
 
             for pair in pairwise(dummy_nodes):
@@ -389,7 +396,7 @@ class ClusterGraph:
             w = dummy_nodes[0]
             G.add_edge(u, w, from_socket=from_socket, to_socket=Socket(w, 0, False))
 
-            improve_cluster_assignment((u, v), dummy_nodes)
+            improve_cluster_assignment((u, v), dummy_nodes, self.state)
             for w in dummy_nodes:
                 assert w.cluster is not None
                 T.add_edge(w.cluster, w)
@@ -419,8 +426,8 @@ class ClusterGraph:
                 w = Node(None, c, Kind.DUMMY, i)
                 dummy_nodes.append(w)
 
-            improve_cluster_assignment((u, v), dummy_nodes)
-            add_dummy_nodes_to_edge(G, (u, v, k), dummy_nodes)
+            improve_cluster_assignment((u, v), dummy_nodes, self.state)
+            add_dummy_nodes_to_edge(G, (u, v, k), dummy_nodes, self.state)
 
         for w in G.nodes - T.nodes:
             assert w.cluster
@@ -481,8 +488,21 @@ class ClusterGraph:
 
 
 def get_socket_y(socket: NodeSocket) -> float:
-    bNodeSocket.from_address(socket.as_pointer())
-    return 1.0
+    node = socket.node
+    assert node is not None
+
+    # Socket runtime locations are only written when a node editor draws the
+    # tree; `node.dimensions` being set is the tell. Headless, estimate the
+    # socket's position from the same row model used for node dimensions.
+    if node.dimensions.y > 0:
+        b_socket = bNodeSocket.from_address(socket.as_pointer())
+        preferences = bpy.context.preferences
+        assert preferences is not None
+        return b_socket.runtime.contents.location[1] / preferences.system.ui_scale
+
+    from ....builder.layout import calculate_socket_offset_y
+
+    return get_top(node) + calculate_socket_offset_y(socket)
 
 
 @dataclass(frozen=True)

@@ -145,6 +145,18 @@ python -m nodebpy.assets dump my_assets.blend my_assets_src/
 python -m nodebpy.assets build my_assets_src/ my_assets.blend
 ```
 
+Node groups can also be rendered to PNG images headlessly — for reviewing
+layouts or posting graphs in pull requests — selected by exact name or
+wildcard (`plot_library` in Python):
+
+```bash
+python -m nodebpy.assets plot my_assets.blend plots/ "Style *"
+```
+
+By default each tree is drawn at its stored layout; pass `--arrange` (plus
+any of the arrangement flags shared with `build`, e.g. `--add-reroutes`) to
+re-arrange before plotting.
+
 Each asset becomes one module holding its group as a class; helper groups used
 by a single asset are embedded, groups shared between assets get their own
 module under `_shared/`, and referenced materials are code-generated under
@@ -154,7 +166,13 @@ module footers, and a `blender_assets.cats.txt` next to the `.blend` is copied
 along so catalog assignments survive. Pass `snapshot_positions=True` to keep
 authored node layouts (including split Group Input instances), and
 `--typed-api` / `typed_api=True` to merge the typed asset API from above into
-the dumped classes.
+the dumped classes. On the build side the automatic layout is tunable:
+`--add-reroutes` / `add_reroutes=True` arranges the rebuilt trees with
+reroute nodes routing long links around nodes (the node-arrange addon's
+behaviour), and `--spacing`, `--iterations` (crossing reduction),
+`--direction`, `--socket-alignment` and the other `SugiyamaOptions` fields
+(`arrange=SugiyamaOptions(...)` in Python) override the defaults; sources
+dumped with `snapshot_positions` keep their authored layout regardless.
 
 Round-trip fidelity is checked with `nodebpy.export.compare_libraries` /
 `serialize_library` (or `python -m nodebpy.export.parity a.blend b.blend`),

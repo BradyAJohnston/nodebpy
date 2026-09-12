@@ -1,0 +1,3 @@
+Layout plots rendered by tests/test_arrange_plots.py for visual inspection
+of arrangement results (Blender cannot draw node editors headlessly).
+Regenerate with: uv run pytest tests/test_arrange_plots.py
