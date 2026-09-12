@@ -420,9 +420,9 @@ def compare_sources(source_dir: Path, redump_dir: Path) -> tuple[list[str], int]
     untouched in place, so the re-dump's generated marker is no divergence —
     :func:`_is_generated_init` semantics). Everything else must match
     exactly, file sets included: a file present on only one side is a
-    failure. Returns the offending files (set differences first, then
-    content differences, each sorted) and the number of ``.py`` modules
-    compared.
+    failure. Returns the offending files as posix-style relative paths (set
+    differences first, then content differences, each sorted — identical on
+    every platform) and the number of ``.py`` modules compared.
     """
 
     def tree(root: Path) -> set[Path]:
@@ -446,10 +446,12 @@ def compare_sources(source_dir: Path, redump_dir: Path) -> tuple[list[str], int]
         src_files.discard(Path("__init__.py"))
         new_files.discard(Path("__init__.py"))
 
-    problems = sorted(str(f) for f in src_files ^ new_files)
+    # Report (and sort) as posix, as the fingerprint does: byte-identical
+    # listings and ordering on every platform, not backslashed on Windows.
+    problems = sorted(f.as_posix() for f in src_files ^ new_files)
     matching = src_files & new_files
     problems += sorted(
-        str(f)
+        f.as_posix()
         for f in matching
         if (source_dir / f).read_bytes() != (redump_dir / f).read_bytes()
     )
