@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.19.0</span>
+    <span class="navbar-title">nodebpy 520.20.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -727,8 +727,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">format</span><span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    typed_api<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Dump every node-group asset in <code>blend_path</code> to Python source files.</p>
-<p>Each asset becomes one <code>.py</code> module under <code>&lt;output_dir&gt;/&lt;tree&gt;/</code> (<code>geometry</code>/<code>shader</code>/<code>compositor</code>) with an <code>ASSET</code> marker and metadata footers. Every group class is defined exactly once: helper groups used by a single asset are embedded in that asset’s module, groups nested by several assets get their own module under <code>&lt;tree&gt;/_shared/</code>, and an asset nested inside other assets keeps its class in its own module — all referenced via relative imports (<code>__init__.py</code> package markers are written so the imports resolve). Materials referenced by the trees are code-generated into <code>materials/</code> modules, and other non-serialisable datablocks each module needs are recorded in its <code>DATABLOCK_DEPENDENCIES</code> footer. :func:<code>build_library</code> rebuilds the <code>.blend</code> from these files. A <code>blender_assets.cats.txt</code> next to the <code>.blend</code> is copied into <code>output_dir</code> so catalog assignments travel with the sources.</p>
+<p>Dump every node-group and material asset in <code>blend_path</code> to Python source files.</p>
+<p>Each node-group asset becomes one <code>.py</code> module under <code>&lt;output_dir&gt;/&lt;tree&gt;/</code> (<code>geometry</code>/<code>shader</code>/<code>compositor</code>) with an <code>ASSET</code> marker and metadata footers. Every group class is defined exactly once: helper groups used by a single asset are embedded in that asset’s module, groups nested by several assets get their own module under <code>&lt;tree&gt;/_shared/</code>, and an asset nested inside other assets keeps its class in its own module — all referenced via relative imports (<code>__init__.py</code> package markers are written so the imports resolve). Materials marked as assets, and materials referenced by the trees, are code-generated into <code>materials/</code> modules — asset-marked ones carry their asset metadata as a <code>MATERIAL_ASSET_METADATA</code> footer, so a rebuild re-marks them (referenced-only materials build as unmarked dependencies). Other non-serialisable datablocks each module needs are recorded in its <code>DATABLOCK_DEPENDENCIES</code> footer. :func:<code>build_library</code> rebuilds the <code>.blend</code> from these files. A <code>blender_assets.cats.txt</code> next to the <code>.blend</code> is copied into <code>output_dir</code> so catalog assignments travel with the sources.</p>
 <p>Each asset is appended into the current session for introspection and the appended groups are removed again afterwards. Run this in a session that doesn’t already hold node groups with the same names — appending renames on a clash, which would corrupt the dumped <code>_name</code> attributes; a clash raises instead. The CLI (<code>python -m nodebpy.assets dump</code>) runs in a fresh session by construction.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
@@ -763,7 +763,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>names</td>
 <td>set[str] | None</td>
-<td>Restrict the dump to these asset (node-group) names; defaults to all. A full dump first clears the managed subdirectories (<code>geometry</code>/<code>shader</code>/<code>compositor</code>/<code>materials</code>) so files from renamed or deleted assets don’t linger; a filtered dump leaves the other assets’ files in place.</td>
+<td>Restrict the dump to these asset (node-group or material) names; defaults to all. A full dump first clears the managed subdirectories (<code>geometry</code>/<code>shader</code>/<code>compositor</code>/<code>materials</code>) so files from renamed or deleted assets don’t linger; a filtered dump leaves the other assets’ files in place.</td>
 <td><code>None</code></td>
 </tr>
 <tr class="even">
@@ -787,7 +787,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>materials</td>
 <td>bool</td>
-<td>Code-generate materials referenced by the dumped trees into <code>materials/</code> modules (the default). With <code>False</code> they are only recorded as <code>DATABLOCK_DEPENDENCIES</code>, to be resolved at build time like any other non-serialisable datablock.</td>
+<td>Code-generate materials referenced by the dumped trees into <code>materials/</code> modules (the default). With <code>False</code> they are only recorded as <code>DATABLOCK_DEPENDENCIES</code>, to be resolved at build time like any other non-serialisable datablock. Asset-marked materials are dump roots in their own right and are always code-generated, regardless of this flag.</td>
 <td><code>True</code></td>
 </tr>
 <tr class="even">
@@ -809,9 +809,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 9%">
-<col style="width: 23%">
-<col style="width: 66%">
+<col style="width: 7%">
+<col style="width: 17%">
+<col style="width: 74%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -824,7 +824,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>dict[str, Path]</td>
-<td>Mapping of asset name to the file it was written to.</td>
+<td>Mapping of asset (node-group or material) name to the file it was written to.</td>
 </tr>
 </tbody>
 </table>

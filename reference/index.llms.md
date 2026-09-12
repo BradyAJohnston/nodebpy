@@ -30,7 +30,7 @@ Generating classes from pre-build assets
 |----|----|
 | [assets.generate_asset_api](../reference/assets.generate_asset_api.llms.md#nodebpy.assets.generate_asset_api) | Generate typed asset classes for `libraries` into `output_path`. |
 | [assets.generate_asset_modules](../reference/assets.generate_asset_modules.llms.md#nodebpy.assets.generate_asset_modules) | Generate typed asset classes for `libraries`, split into one module per |
-| [assets.dump_library](../reference/assets.dump_library.llms.md#nodebpy.assets.dump_library) | Dump every node-group asset in `blend_path` to Python source files. |
+| [assets.dump_library](../reference/assets.dump_library.llms.md#nodebpy.assets.dump_library) | Dump every node-group and material asset in `blend_path` to Python |
 | [assets.build_library](../reference/assets.build_library.llms.md#nodebpy.assets.build_library) | Rebuild a `.blend` asset library from sources written by |
 | [assets.plot_library](../reference/assets.plot_library.llms.md#nodebpy.assets.plot_library) | Render node groups from `blend_path` to PNG images under |
 | [assets.AssetLibrary](../reference/assets.AssetLibrary.llms.md#nodebpy.assets.AssetLibrary) | Locates a `.blend` asset library on disk at runtime. |

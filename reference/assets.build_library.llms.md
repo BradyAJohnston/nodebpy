@@ -16,7 +16,7 @@ build_library(
 
 Rebuild a `.blend` asset library from sources written by :func:`dump_library`.
 
-Imports every root module under `source_dir` (recursively; `_shared` group modules are pulled in by the root modules’ own imports), rebuilds each `MATERIAL` module’s material, builds each `ASSET` class via `create_group()`, re-marks the tree as an asset, applies the dumped `ASSET_METADATA`/`TREE_PROPERTIES`/`MATERIAL_PROPERTIES`, and writes those trees and materials (plus their dependencies) to `blend_path` with `bpy.data.libraries.write`. A `blender_assets.cats.txt` in `source_dir` is copied next to the `.blend`.
+Imports every root module under `source_dir` (recursively; `_shared` group modules are pulled in by the root modules’ own imports), rebuilds each `MATERIAL` module’s material (re-marking it as an asset when the module carries a `MATERIAL_ASSET_METADATA` footer), builds each `ASSET` class via `create_group()`, re-marks the tree as an asset, applies the dumped `ASSET_METADATA`/`TREE_PROPERTIES`/`MATERIAL_PROPERTIES`, and writes those trees and materials (plus their dependencies) to `blend_path` with `bpy.data.libraries.write`. A `blender_assets.cats.txt` in `source_dir` is copied next to the `.blend`.
 
 Datablocks the sources reference but cannot serialise (images, objects, …, recorded in each module’s `DATABLOCK_DEPENDENCIES`) resolve in order: already present in the session (build “in the presence” of the data — e.g. after opening a working file), appended by name from the `resources` `.blend`, or — with `on_missing="drop"` — replaced by temporary placeholders deleted again before the write, leaving those socket defaults empty. The default `on_missing="error"` raises upfront, listing everything missing.
 
