@@ -11,6 +11,17 @@
 | [TreeBuilder](../reference/TreeBuilder.llms.md#nodebpy.TreeBuilder) | Builder for creating Blender node trees with a clean Python API. |
 | [builder.BaseNode](../reference/builder.BaseNode.llms.md#nodebpy.builder.BaseNode) | Base class for all node wrappers. |
 
+## Arrangement
+
+Automatic node layout and its options.
+
+|  |  |
+|----|----|
+| [arrange](../reference/arrange.llms.md#nodebpy.arrange) | Arrange the nodes of a tree. |
+| [SugiyamaOptions](../reference/SugiyamaOptions.llms.md#nodebpy.SugiyamaOptions) | Options for the Sugiyama (layered) arrangement. |
+| [SimpleOptions](../reference/SimpleOptions.llms.md#nodebpy.SimpleOptions) | Options for the simple column-based arrangement. |
+| [default_sugiyama_options](../reference/default_sugiyama_options.llms.md#nodebpy.default_sugiyama_options) | Scope in which `arrange(tree, "sugiyama")` — and therefore every |
+
 ## Assets
 
 Generating classes from pre-build assets
@@ -21,6 +32,7 @@ Generating classes from pre-build assets
 | [assets.generate_asset_modules](../reference/assets.generate_asset_modules.llms.md#nodebpy.assets.generate_asset_modules) | Generate typed asset classes for `libraries`, split into one module per |
 | [assets.dump_library](../reference/assets.dump_library.llms.md#nodebpy.assets.dump_library) | Dump every node-group asset in `blend_path` to Python source files. |
 | [assets.build_library](../reference/assets.build_library.llms.md#nodebpy.assets.build_library) | Rebuild a `.blend` asset library from sources written by |
+| [assets.plot_library](../reference/assets.plot_library.llms.md#nodebpy.assets.plot_library) | Render node groups from `blend_path` to PNG images under |
 | [assets.AssetLibrary](../reference/assets.AssetLibrary.llms.md#nodebpy.assets.AssetLibrary) | Locates a `.blend` asset library on disk at runtime. |
 | [assets.BundledLibrary](../reference/assets.BundledLibrary.llms.md#nodebpy.assets.BundledLibrary) | A node-group asset library shipped with Blender itself, under the system |
 | [assets.PackageLibrary](../reference/assets.PackageLibrary.llms.md#nodebpy.assets.PackageLibrary) | A `.blend` shipped inside a Python package, located relative to a module |
@@ -33,6 +45,7 @@ Exporting node trees to code.
 |----|----|
 | [export.to_python](../reference/export.to_python.llms.md#nodebpy.export.to_python) | Generate Python code that recreates the given node tree using nodebpy. |
 | [export.to_mermaid](../reference/export.to_mermaid.llms.md#nodebpy.export.to_mermaid) | Generate a Mermaid diagram string from a node tree. |
+| [export.to_plot](../reference/export.to_plot.llms.md#nodebpy.export.to_plot) | Draw the tree’s current layout to an image file. |
 | [export.serialize_library](../reference/export.serialize_library.llms.md#nodebpy.export.serialize_library) | `tree_clipper` JSON data for each tree in `trees` (nested groups |
 | [export.compare_libraries](../reference/export.compare_libraries.llms.md#nodebpy.export.compare_libraries) | Differences between two :func:`serialize_library` captures. |
 

@@ -26,6 +26,7 @@ Supports geometry, shader, and compositor node trees.
 | [`group_input_splits`](#nodebpy.TreeBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.TreeBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.TreeBuilder.inputs) |  |
+| [`layout_snapshot`](#nodebpy.TreeBuilder.layout_snapshot) | A structural layout snapshot: for every node its type, `(x, y)` |
 | [`node_positions`](#nodebpy.TreeBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
 | [`nodes`](#nodebpy.TreeBuilder.nodes) |  |
 | [`outputs`](#nodebpy.TreeBuilder.outputs) |  |

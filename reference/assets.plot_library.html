@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>export.to_mermaid – nodebpy {{&lt; var version &gt;}}</title>
+<title>assets.plot_library – nodebpy {{&lt; var version &gt;}}</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,8 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../reference/export.to_plot.html" rel="next">
-<link href="../reference/export.to_python.html" rel="prev">
+<link href="../reference/assets.AssetLibrary.html" rel="next">
+<link href="../reference/assets.build_library.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -252,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/export.to_python.html">Export</a></li><li class="breadcrumb-item"><a href="../reference/export.to_mermaid.html">export.to_mermaid</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/assets.generate_asset_api.html">Assets</a></li><li class="breadcrumb-item"><a href="../reference/assets.plot_library.html">assets.plot_library</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -387,7 +387,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/assets.plot_library.html" class="sidebar-item-text sidebar-link">
+  <a href="../reference/assets.plot_library.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">assets.plot_library</span></a>
   </div>
 </li>
@@ -428,7 +428,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link active">
+  <a href="../reference/export.to_mermaid.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">export.to_mermaid</span></a>
   </div>
 </li>
@@ -699,38 +699,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#nodebpy.export.to_mermaid" id="toc-nodebpy.export.to_mermaid" class="nav-link active" data-scroll-target="#nodebpy.export.to_mermaid">export.to_mermaid</a>
+  <li><a href="#nodebpy.assets.plot_library" id="toc-nodebpy.assets.plot_library" class="nav-link active" data-scroll-target="#nodebpy.assets.plot_library">assets.plot_library</a>
   <ul class="collapse">
-  <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/export.to_python.html">Export</a></li><li class="breadcrumb-item"><a href="../reference/export.to_mermaid.html">export.to_mermaid</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/assets.generate_asset_api.html">Assets</a></li><li class="breadcrumb-item"><a href="../reference/assets.plot_library.html">assets.plot_library</a></li></ol></nav></header>
 
 
 
 
-<section id="nodebpy.export.to_mermaid" class="level1">
-<h1>export.to_mermaid</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>to_mermaid(tree, fenced<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Generate a Mermaid diagram string from a node tree.</p>
-<section id="arguments" class="level2 doc-section doc-section-arguments">
-<h2 class="doc-section doc-section-arguments anchored" data-anchor-id="arguments">Arguments</h2>
-<pre><code>tree:
-    TreeBuilder or Blender node tree
-fenced:
-    Whether to wrap the output in a fenced code block</code></pre>
-</section>
+<section id="nodebpy.assets.plot_library" class="level1">
+<h1>assets.plot_library</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>plot_library(blend_path, output_dir, names<span class="op">=</span><span class="va">None</span>, <span class="op">*</span>, dpi<span class="op">=</span><span class="dv">150</span>, arrange<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Render node groups from <code>blend_path</code> to PNG images under <code>output_dir</code> — a headless look at node graphs, e.g.&nbsp;for posting in pull requests (<code>python -m nodebpy.assets plot</code>).</p>
+<p><code>names</code> selects the groups to plot: exact names or :mod:<code>fnmatch</code> wildcard patterns (<code>"Style *"</code>), matched against <em>every</em> node group in the <code>.blend</code> (not just assets); <code>None</code> plots them all. A pattern matching nothing raises. Each tree is drawn with :func:<code>nodebpy.export.to_plot</code> (which needs the optional <code>matplotlib</code> dependency) at its stored layout, or re-arranged first when <code>arrange</code> options are given. Everything appended for plotting is removed from the session again afterwards.</p>
 <section id="returns" class="level2 doc-section doc-section-returns">
 <h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 7%">
-<col style="width: 78%">
-<col style="width: 14%">
+<col style="width: 9%">
+<col style="width: 23%">
+<col style="width: 67%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -742,8 +735,8 @@ fenced:
 <tbody>
 <tr class="odd">
 <td></td>
-<td>A string containing the Mermaid diagram as a possibly fenced markdown code block</td>
-<td></td>
+<td>dict[str, Path]</td>
+<td>Mapping of group name to the image it was written to.</td>
 </tr>
 </tbody>
 </table>
@@ -1155,13 +1148,13 @@ fenced:
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../reference/export.to_python.html" class="pagination-link" aria-label="export.to_python">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">export.to_python</span>
+      <a href="../reference/assets.build_library.html" class="pagination-link" aria-label="assets.build_library">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">assets.build_library</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../reference/export.to_plot.html" class="pagination-link" aria-label="export.to_plot">
-        <span class="nav-page-text">export.to_plot</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../reference/assets.AssetLibrary.html" class="pagination-link" aria-label="assets.AssetLibrary">
+        <span class="nav-page-text">assets.AssetLibrary</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

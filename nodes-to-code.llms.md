@@ -50,7 +50,8 @@ code = to_python(nt)
 ```
 
 ``` python
-from nodebpy import geometry as g, TreeBuilder
+from nodebpy import TreeBuilder
+from nodebpy import geometry as g
 
 with TreeBuilder("Scatter") as tree:
     geometry = tree.inputs.geometry("Geometry")
@@ -77,7 +78,8 @@ This is a new node group asset in Blender 5.2 to do PCA on the positions of poin
 ## Generated
 
 ``` python
-from nodebpy import geometry as g, TreeBuilder
+from nodebpy import TreeBuilder
+from nodebpy import geometry as g
 
 with TreeBuilder("Principal Components") as tree:
     position = tree.inputs.vector("Position", (0.0, 0.0, 0.0), default_input="POSITION")
@@ -216,7 +218,8 @@ code = tree.to_python()
 ```
 
 ``` python
-from nodebpy import geometry as g, TreeBuilder
+from nodebpy import TreeBuilder
+from nodebpy import geometry as g
 
 with TreeBuilder("Wave Deform") as tree:
     geometry = tree.inputs.geometry("Geometry")
@@ -245,7 +248,8 @@ code = tree.to_python(min_chain_length=99)
 ```
 
 ``` python
-from nodebpy import geometry as g, TreeBuilder
+from nodebpy import TreeBuilder
+from nodebpy import geometry as g
 
 with TreeBuilder("Wave Deform") as tree:
     geometry = tree.inputs.geometry("Geometry")
@@ -266,7 +270,7 @@ with TreeBuilder("Wave Deform") as tree:
 
 ### Node positions
 
-By default the generated code lets `nodebpy` lay the tree out automatically when it is built. Pass `snapshot_positions=True` to instead capture each node’s authored `location` and restore it, so the rebuilt tree matches the original layout. The tree is built with `arrange=None` (auto-layout off) and a `tree.node_positions = {...}` mapping is appended:
+By default the generated code lets `nodebpy` lay the tree out automatically when it is built. Pass `snapshot_positions=True` to instead capture each node’s authored name and `location` and restore them, so the rebuilt tree matches the original layout. The tree is built with `arrange=None` (auto-layout off) and a `tree.layout_snapshot = {...}` mapping is appended. Each entry records the node’s type, location, frame parent and incoming links; on rebuild the nodes are matched to entries by structure — a rebuild names duplicate-type nodes in creation order, so bare names cannot be trusted — then renamed and placed:
 
 ## Hand-written
 
@@ -284,7 +288,8 @@ code = tree.to_python(snapshot_positions=True)
 ```
 
 ``` python
-from nodebpy import geometry as g, TreeBuilder
+from nodebpy import TreeBuilder
+from nodebpy import geometry as g
 
 with TreeBuilder("Wave Deform.001", arrange=None) as tree:
     geometry = tree.inputs.geometry("Geometry")
@@ -296,14 +301,38 @@ with TreeBuilder("Wave Deform.001", arrange=None) as tree:
         >> geometry_1
     )
 
-# Restore authored node positions.
-tree.node_positions = {
-    "Combine XYZ": (0.0, -52.0),
-    "Group Input": (0.0, 52.0),
-    "Group Output": (400.0, 52.0),
-    "Position": (-400.0, -52.0),
-    "Separate XYZ": (-200.0, -52.0),
-    "Set Position": (200.0, 52.0),
+# Restore authored node names and positions (matched by tree
+# structure — see TreeBuilder.layout_snapshot).
+tree.layout_snapshot = {
+    "Combine XYZ": (
+        "ShaderNodeCombineXYZ",
+        (0.0, -49.0),
+        None,
+        (("Z", "Separate XYZ", "X"),),
+    ),
+    "Group Input": ("NodeGroupInput", (0.0, 49.0), None, ()),
+    "Group Output": (
+        "NodeGroupOutput",
+        (340.0, 49.0),
+        None,
+        (("Geometry", "Set Position", "Geometry"),),
+    ),
+    "Position": ("GeometryNodeInputPosition", (-340.0, -49.0), None, ()),
+    "Separate XYZ": (
+        "ShaderNodeSeparateXYZ",
+        (-170.0, -49.0),
+        None,
+        (("Vector", "Position", "Position"),),
+    ),
+    "Set Position": (
+        "GeometryNodeSetPosition",
+        (170.0, 49.0),
+        None,
+        (
+            ("Geometry", "Group Input", "Geometry"),
+            ("Offset", "Combine XYZ", "Vector"),
+        ),
+    ),
 }
 ```
 
@@ -333,7 +362,8 @@ code = tree.to_python()
 ```
 
 ``` python
-from nodebpy import geometry as g, TreeBuilder
+from nodebpy import TreeBuilder
+from nodebpy import geometry as g
 
 with TreeBuilder("Stack") as tree:
     geometry = tree.outputs.geometry("Geometry")
@@ -364,7 +394,8 @@ code = tree.to_python()
 ```
 
 ``` python
-from nodebpy import geometry as g, TreeBuilder
+from nodebpy import TreeBuilder
+from nodebpy import geometry as g
 
 with TreeBuilder("Framed") as tree:
     geometry = tree.inputs.geometry("Geometry")
@@ -390,6 +421,9 @@ code = tree.to_python(top_level="class")
 ```
 
 ``` python
+from bpy.types import GeometryNodeTree
+
+from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.builder import CustomGeometryGroup
 
@@ -397,7 +431,7 @@ from nodebpy.builder import CustomGeometryGroup
 class WaveDeform002(CustomGeometryGroup):
     _name = "Wave Deform.002"
 
-    def _build_group(self, tree):
+    def _build_group(self, tree: TreeBuilder[GeometryNodeTree]) -> None:
         geometry = tree.inputs.geometry("Geometry")
         geometry_1 = tree.outputs.geometry("Geometry")
 

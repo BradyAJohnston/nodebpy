@@ -789,6 +789,7 @@ MaterialBuilder(
 | [`group_input_splits`](#nodebpy.builder.tree.MaterialBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.builder.tree.MaterialBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.builder.tree.MaterialBuilder.inputs) |  |
+| [`layout_snapshot`](#nodebpy.builder.tree.MaterialBuilder.layout_snapshot) | A structural layout snapshot: for every node its type, `(x, y)` |
 | [`material`](#nodebpy.builder.tree.MaterialBuilder.material) |  |
 | [`node_positions`](#nodebpy.builder.tree.MaterialBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
 | [`nodes`](#nodebpy.builder.tree.MaterialBuilder.nodes) |  |
@@ -1742,6 +1743,7 @@ Supports geometry, shader, and compositor node trees.
 | [`group_input_splits`](#nodebpy.builder.tree.TreeBuilder.group_input_splits) | The extra Group Input instances beyond the primary one, each as |
 | [`ignore_visibility`](#nodebpy.builder.tree.TreeBuilder.ignore_visibility) |  |
 | [`inputs`](#nodebpy.builder.tree.TreeBuilder.inputs) |  |
+| [`layout_snapshot`](#nodebpy.builder.tree.TreeBuilder.layout_snapshot) | A structural layout snapshot: for every node its type, `(x, y)` |
 | [`node_positions`](#nodebpy.builder.tree.TreeBuilder.node_positions) | A `{node name: (x, y)}` snapshot of every node’s location. |
 | [`nodes`](#nodebpy.builder.tree.TreeBuilder.nodes) |  |
 | [`outputs`](#nodebpy.builder.tree.TreeBuilder.outputs) |  |

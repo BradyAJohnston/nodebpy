@@ -1,5 +1,21 @@
 # Changelog
 
+## v520.19.0 - 2026-09-12
+
+### Enhancements
+
+- **Unified `arrange()` API** — `nodebpy.arrange(tree, method)` lays out any node tree, in or outside a `TreeBuilder` context. `method` is `"sugiyama"` (layered layout, the default), `"simple"`, `None`, or a `SugiyamaOptions` / `SimpleOptions` instance for tuned settings; every `arrange=` parameter accepts the same values. `default_sugiyama_options(options)` scopes what the plain `"sugiyama"` default resolves to, so batch builds can tune trees whose recipes don’t set an arrangement themselves.
+- **Vendored node-arrange synced and made truly headless** — the layout engine is synced with upstream `8ca5e29` (cycle-edge fix, Blender 5.0–5.2 socket bindings, `optimize_sizes`), its module-global state replaced with per-run state, and — critically — it now always arranges the whole tree: the addon-derived code arranged the *selection*, so a tree loaded from a `.blend` (no selection) was silently left untouched, and links to unselected nodes were dropped from the layout graph.
+- **Calibrated layout geometry** — headless size estimation now skips sockets Blender doesn’t draw (hidden-unlinked), and the row metrics were calibrated against real addon-arranged output (socket-aligned reroutes measure the true socket offsets), fixing nodes estimated ~45% too tall. `SugiyamaOptions` defaults now match the addon settings validated against MolecularNodes’ hand-arranged trees: 30/30 spacing, top-right alignment, no socket alignment. `add_reroutes=True` routes long links with reroute nodes (off by default — added reroutes change authored structure).
+- **Structural layout snapshots** — `to_python(snapshot_positions=True)` emits a `tree.layout_snapshot` block recording each node’s type, location, frame parent and links; on rebuild, nodes are matched to entries by structure (names only break ties), renamed to their authored names, re-parented into frames and placed. Duplicate-type nodes a rebuild names in a different order previously landed on each other’s authored spots; real libraries (including the 617-node “Curve to Tube”) now round-trip with identical names, positions and link topology. Sockets are recorded by rebuild-stable keys (name + repeat index) instead of history-dependent identifiers, and `group_input_splits` entries carry each instance’s location and frame parent.
+- **Headless layout plots** — `nodebpy.export.to_plot(tree, path)` draws a tree’s layout to an image with matplotlib (`pip install nodebpy[plot]`): real node rectangles, estimated socket-anchored links, frames and reroutes. `nodebpy.assets.plot_library(blend, dir, names)` / `python -m nodebpy.assets plot` render node groups selected by exact name or wildcard (`"Style *"`) to PNGs — for reviewing layouts or posting graphs in pull requests — optionally re-arranged first.
+- **Arrangement on the build CLI** — `build_library` (and `python -m nodebpy.assets build`) accepts `arrange=SugiyamaOptions(...)` plus `add_reroutes=True`; the CLI exposes every option (`--spacing`, `--iterations`, `--direction`, `--socket-alignment`, `--add-reroutes`, …), shared with the `plot` subcommand. Snapshot-positions sources keep their authored layout regardless.
+
+### Fixes
+
+- `TreeBuilder.link` read socket endpoints after `links.new(handle_dynamic_sockets=True)` had freed and recreated them (a reroute retypes its sockets to match the link), an intermittent use-after-free segfault; endpoints are now re-read from the created link. The `group_input_splits` setter had the same stale-socket hazard after `links.remove`.
+- Arranged node locations are quantized to the 2-decimal dump precision, so arranged trees round-trip losslessly through dump → build.
+
 ## v250.18.0 - 2026-09-10
 
 ### Enhancements

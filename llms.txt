@@ -1,7 +1,12 @@
-# nodebpy 520.17.0
+# nodebpy 520.19.0
 
 ## Pages
 
+- [Nodes to Code](nodes-to-code.llms.md)
+- [Asset Node Groups](assets.llms.md)
+- [export.to_plot](reference/export.to_plot.llms.md)
+- [default_sugiyama_options](reference/default_sugiyama_options.llms.md)
+- [SugiyamaOptions](reference/SugiyamaOptions.llms.md)
 - [nodes.compositor.vector](reference/nodes.compositor.vector.llms.md)
 - [nodes.compositor.matte](reference/nodes.compositor.matte.llms.md)
 - [nodes.compositor.interface](reference/nodes.compositor.interface.llms.md)
@@ -28,16 +33,12 @@
 - [builder.accessor](reference/builder.accessor.llms.md)
 - [builder.socket](reference/builder.socket.llms.md)
 - [index](reference/index.llms.md)
-- [Changelog](changelog.llms.md)
-- [Nodes to Code](nodes-to-code.llms.md)
 - [Node API Design](node-api.llms.md)
 - [Custom Node Groups](custom-node-groups.llms.md)
 - [Math Operators](operators.llms.md)
 - [Comparing the API](comparisons.llms.md)
 - [index](index.llms.md)
 - [Using `nodebpy`](using.llms.md)
-- [Writing Node Trees](introduction.llms.md)
-- [Asset Node Groups](assets.llms.md)
 - [builder.tree](reference/builder.tree.llms.md)
 - [builder.node](reference/builder.node.llms.md)
 - [TreeBuilder](reference/TreeBuilder.llms.md)
@@ -63,3 +64,8 @@
 - [nodes.compositor.input](reference/nodes.compositor.input.llms.md)
 - [nodes.compositor.manual](reference/nodes.compositor.manual.llms.md)
 - [nodes.compositor.output](reference/nodes.compositor.output.llms.md)
+- [arrange](reference/arrange.llms.md)
+- [SimpleOptions](reference/SimpleOptions.llms.md)
+- [assets.plot_library](reference/assets.plot_library.llms.md)
+- [Writing Node Trees](introduction.llms.md)
+- [Changelog](changelog.llms.md)
