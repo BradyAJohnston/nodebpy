@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Literal, Self, TypeVar, cast
 
@@ -24,7 +25,12 @@ from ..types import (
     _AttributeDomains,
     _SocketShapeStructureType,
 )
-from ._utils import SocketError, _allow_innactive_sockets
+from ._utils import (
+    SocketError,
+    _allow_innactive_sockets,
+    resolve_socket_key,
+    socket_key,
+)
 from .layout import ArrangeMethod
 from .layout import arrange as _arrange_nodes
 from .socket import (
@@ -884,6 +890,201 @@ class _MenuDefault:
         return next((s for s in node.inputs if s.identifier == self.identifier), None)
 
 
+# One node's layout-snapshot record: (bl_idname, (x, y), parent frame name,
+# incoming links as (own input socket key, source node name, source socket
+# key)) — socket keys per :func:`socket_key`, stable across a rebuild where
+# identifiers are not.
+type _LayoutEntry = tuple[
+    str,
+    tuple[float, float],
+    str | None,
+    tuple[tuple[str, str, str], ...],
+]
+
+# One piece of matching evidence: a link as (own socket id, is_output, peer's
+# authored name, peer socket id), or ("parent", frame's authored name) /
+# ("child", child's authored name) for frame membership.
+type _Evidence = tuple[str, bool, str, str] | tuple[str, str]
+
+
+_IO_BL_IDNAMES = frozenset({"NodeGroupInput", "NodeGroupOutput"})
+
+
+def _sub_multiset(smaller: Counter, larger: Counter) -> bool:
+    return all(count <= larger[key] for key, count in smaller.items())
+
+
+def _match_layout_snapshot(
+    tree: NodeTree, entries: dict[str, _LayoutEntry]
+) -> list[tuple[Node, str]]:
+    """Match the tree's nodes to layout-snapshot entries, returning
+    ``(node, entry name)`` pairs.
+
+    Structure decides, names only break ties: a rebuild reuses authored
+    names for *different* nodes whenever duplicate-type creation order
+    differs, so a name match is a hint, never ground truth. A node is
+    compatible with an entry of its type when its evidence — links to
+    already-matched neighbours (Group Input/Output instances counting as
+    anonymous peers), plus frame parent/child relations — equals the
+    entry's. Each round binds every node compatible with exactly one entry
+    that no other node uniquely demands; when a round stalls, the first
+    same-name pair whose node evidence is a sub-multiset of its entry's (a
+    rebuild recreates the authored links but may drop one it refuses)
+    binds, and propagation resumes. Leftovers pair up by sorted name within
+    each type — after the fixpoint they are structural twins
+    (interchangeable by definition) or pairs the evidence could not
+    separate, where a best-effort spot beats no position at all."""
+    nodes = {node.name: node for node in tree.nodes}
+    node_parent = {
+        name: node.parent.name if node.parent is not None else None
+        for name, node in nodes.items()
+    }
+    entry_parent = {name: entry[2] for name, entry in entries.items()}
+
+    node_adj: dict[str, list[tuple[str, bool, str, str]]] = {name: [] for name in nodes}
+    for link in tree.links:
+        assert link.to_node and link.to_socket and link.from_node
+        assert link.from_socket is not None
+        to_key, from_key = socket_key(link.to_socket), socket_key(link.from_socket)
+        node_adj[link.to_node.name].append(
+            (to_key, False, link.from_node.name, from_key)
+        )
+        node_adj[link.from_node.name].append(
+            (from_key, True, link.to_node.name, to_key)
+        )
+    entry_adj: dict[str, list[tuple[str, bool, str, str]]] = {
+        name: [] for name in entries
+    }
+    for name, (_type, _pos, _parent, incoming) in entries.items():
+        for own_sock, peer, peer_sock in incoming:
+            entry_adj[name].append((own_sock, False, peer, peer_sock))
+            if peer in entry_adj:
+                entry_adj[peer].append((peer_sock, True, name, own_sock))
+
+    n2e: dict[str, str] = {}  # rebuilt node name -> entry (authored) name
+    e2n: dict[str, str] = {}
+
+    # Group Input/Output instances are matched by name alone and count as
+    # anonymous link peers: authored links may be spread over several split
+    # instances while the rebuilt tree still has them all on the primary
+    # (splits apply *after* the snapshot, once consumers carry their
+    # authored names), so instance identity would contradict, not confirm.
+    def node_sig(name: str) -> Counter[_Evidence]:
+        sig: Counter[_Evidence] = Counter()
+        if nodes[name].bl_idname not in _IO_BL_IDNAMES:
+            for own_sock, is_out, peer, peer_sock in node_adj[name]:
+                peer_type = nodes[peer].bl_idname
+                if peer_type in _IO_BL_IDNAMES:
+                    sig[(own_sock, is_out, peer_type, peer_sock)] += 1
+                elif peer in n2e:
+                    sig[(own_sock, is_out, n2e[peer], peer_sock)] += 1
+        parent = node_parent[name]
+        if parent is not None and parent in n2e:
+            sig[("parent", n2e[parent])] += 1
+        for child, child_parent in node_parent.items():
+            if child_parent == name and child in n2e:
+                sig[("child", n2e[child])] += 1
+        return sig
+
+    def entry_sig(name: str) -> Counter[_Evidence]:
+        sig: Counter[_Evidence] = Counter()
+        if entries[name][0] not in _IO_BL_IDNAMES:
+            for own_sock, is_out, peer, peer_sock in entry_adj[name]:
+                # A peer with no entry is a split Group Input instance — the
+                # snapshot deliberately omits them (they don't exist until
+                # the splits block runs, after this match).
+                peer_type = entries[peer][0] if peer in entries else "NodeGroupInput"
+                if peer_type in _IO_BL_IDNAMES:
+                    sig[(own_sock, is_out, peer_type, peer_sock)] += 1
+                elif peer in e2n:
+                    sig[(own_sock, is_out, peer, peer_sock)] += 1
+        parent = entry_parent[name]
+        if parent is not None and parent in e2n:
+            sig[("parent", parent)] += 1
+        for child, child_parent in entry_parent.items():
+            if child_parent == name and child in e2n:
+                sig[("child", child)] += 1
+        return sig
+
+    def bind(name: str, entry_name: str) -> None:
+        n2e[name] = entry_name
+        e2n[entry_name] = name
+
+    while True:
+        by_type_entries: dict[str, list[str]] = {}
+        for entry_name in entries:
+            if entry_name not in e2n:
+                by_type_entries.setdefault(entries[entry_name][0], []).append(
+                    entry_name
+                )
+        by_type_nodes: dict[str, list[str]] = {}
+        for name, node in nodes.items():
+            if name not in n2e and node.bl_idname in by_type_entries:
+                by_type_nodes.setdefault(node.bl_idname, []).append(name)
+
+        binds: list[tuple[str, str]] = []
+        for bl_idname, group_nodes in by_type_nodes.items():
+            node_sigs = {name: node_sig(name) for name in group_nodes}
+            entry_sigs = {name: entry_sig(name) for name in by_type_entries[bl_idname]}
+            # Both sides restrict evidence to already-matched neighbours, so
+            # a true pair's signatures are *equal* whenever the rebuild
+            # recreated every authored link (it does, short of a link the
+            # builder refused — those resolve via the name tie-break below).
+            # A node equal to exactly one entry must be that entry — unless
+            # another node demands the same entry just as uniquely, which
+            # means the evidence cannot separate them yet.
+            demands: dict[str, list[str]] = {}
+            for name, sig in node_sigs.items():
+                compatible = [
+                    entry_name for entry_name, esig in entry_sigs.items() if sig == esig
+                ]
+                if len(compatible) == 1:
+                    demands.setdefault(compatible[0], []).append(name)
+            for entry_name, claimants in demands.items():
+                if len(claimants) == 1:
+                    binds.append((claimants[0], entry_name))
+        if binds:
+            for name, entry_name in binds:
+                bind(name, entry_name)
+            continue
+
+        # Stalled: use a name match as a tie-break — one pair per stall, so
+        # the evidence it adds can veto later same-name pairs that would
+        # have bound wrongly.
+        tie = next(
+            (
+                name
+                for name in sorted(nodes)
+                if name not in n2e
+                and name in entries
+                and name not in e2n
+                and nodes[name].bl_idname == entries[name][0]
+                and _sub_multiset(node_sig(name), entry_sig(name))
+            ),
+            None,
+        )
+        if tie is None:
+            break
+        bind(tie, tie)
+
+    # Leftovers: pair remaining same-type nodes and entries by sorted name.
+    # After the fixpoint these are either structural twins (any assignment
+    # reproduces the authored look) or pairs blocked by a missing link — for
+    # which a best-effort spot still beats no position at all.
+    remaining_entries: dict[str, list[str]] = {}
+    for entry_name in sorted(entries):
+        if entry_name not in e2n:
+            remaining_entries.setdefault(entries[entry_name][0], []).append(entry_name)
+    for name in sorted(nodes):
+        if name in n2e:
+            continue
+        pool = remaining_entries.get(nodes[name].bl_idname)
+        if pool:
+            n2e[name] = pool.pop(0)
+
+    return [(nodes[name], entry_name) for name, entry_name in n2e.items()]
+
+
 class TreeBuilder[TreeT: NodeTree]:
     """Builder for creating Blender node trees with a clean Python API.
 
@@ -1148,12 +1349,86 @@ class TreeBuilder[TreeT: NodeTree]:
                 node.location = location
 
     @property
+    def layout_snapshot(self) -> dict[str, _LayoutEntry]:
+        """A structural layout snapshot: for every node its type, ``(x, y)``
+        location, frame parent and incoming links, keyed by node name —
+        the block ``to_python(snapshot_positions=True)`` emits. See the
+        setter for how it is applied."""
+        incoming: dict[str, list[tuple[str, str, str]]] = {}
+        for link in self.tree.links:
+            assert link.to_node and link.to_socket and link.from_node
+            assert link.from_socket is not None
+            incoming.setdefault(link.to_node.name, []).append(
+                (
+                    socket_key(link.to_socket),
+                    link.from_node.name,
+                    socket_key(link.from_socket),
+                )
+            )
+        return {
+            node.name: (
+                node.bl_idname,
+                (node.location.x, node.location.y),
+                node.parent.name if node.parent is not None else None,
+                tuple(sorted(incoming.get(node.name, ()))),
+            )
+            for node in self.tree.nodes
+        }
+
+    @layout_snapshot.setter
+    def layout_snapshot(self, snapshot: dict[str, _LayoutEntry]) -> None:
+        """Restore authored node names and locations from a snapshot.
+
+        A rebuild names duplicate-type nodes by creation order (``Math``,
+        ``Math.001``, ...), which rarely matches the authored order, so
+        applying locations by bare name would put nodes on each other's
+        authored spots. Nodes are instead matched to snapshot entries
+        structurally: exact name+type matches seed the correspondence, then
+        it grows through link/frame evidence against already-matched
+        neighbours; matched nodes are renamed to their authored names and
+        moved to their authored locations. Entries a rebuild has no
+        counterpart for (e.g. dropped reroutes) are skipped, so applying a
+        snapshot to an edited tree degrades gracefully."""
+        entries = {
+            name: (entry[0], tuple(entry[1]), entry[2], tuple(entry[3]))
+            for name, entry in snapshot.items()
+        }
+        matches = _match_layout_snapshot(self.tree, entries)
+
+        # Rename via unique temporaries: authored names can swap between
+        # nodes (assigning directly would make Blender suffix the second),
+        # and an unmatched node squatting on a target name must yield it.
+        targets = {entry_name for _node, entry_name in matches}
+        matched_nodes = {node.name for node, _entry_name in matches}
+        squatters = [
+            node
+            for node in self.tree.nodes
+            if node.name in targets and node.name not in matched_nodes
+        ]
+        displaced = [(node, node.name) for node in squatters]
+        for index, node in enumerate([node for node, _ in matches] + squatters):
+            node.name = f"__nodebpy_tmp_{index}"
+        matched_by_entry = {entry_name: node for node, entry_name in matches}
+        for node, entry_name in matches:
+            node.name = entry_name
+            _bl_idname, location, parent, _links = entries[entry_name]
+            # Restore frame membership before the location: locations are
+            # parent-relative, and a rebuild leaves some nodes unparented
+            # (split Group Input instances are created outside any frame).
+            parent_node = matched_by_entry.get(parent) if parent is not None else None
+            if parent_node is not None or parent is None:
+                node.parent = cast("NodeFrame | None", parent_node)
+            node.location = location
+        for node, old_name in displaced:
+            node.name = old_name  # re-suffixed by Blender on collision
+
+    @property
     def group_input_splits(self) -> list[dict]:
         """The extra Group Input instances beyond the primary one, each as
         ``{"name": ..., "links": [(interface input name, consumer node name,
-        consumer socket identifier), ...]}`` — the editor convention of
-        several input nodes near their consumers instead of one node trailing
-        long noodles. See the setter."""
+        consumer socket key), ...], "location": ..., "parent": ...}`` — the
+        editor convention of several input nodes near their consumers
+        instead of one node trailing long noodles. See the setter."""
         splits: list[dict] = []
         for node in self.tree.nodes:
             if node.bl_idname != "NodeGroupInput" or node.name == "Group Input":
@@ -1163,8 +1438,15 @@ class TreeBuilder[TreeT: NodeTree]:
                 for link in socket.links or ():
                     to_node, to_socket = link.to_node, link.to_socket
                     assert to_node is not None and to_socket is not None
-                    links.append((socket.name, to_node.name, to_socket.identifier))
-            splits.append({"name": node.name, "links": links})
+                    links.append((socket.name, to_node.name, socket_key(to_socket)))
+            splits.append(
+                {
+                    "name": node.name,
+                    "links": links,
+                    "location": (node.location.x, node.location.y),
+                    "parent": node.parent.name if node.parent is not None else None,
+                }
+            )
         return splits
 
     @group_input_splits.setter
@@ -1187,13 +1469,19 @@ class TreeBuilder[TreeT: NodeTree]:
             instance = self.tree.nodes.new("NodeGroupInput")
             assert instance is not None
             instance.name = split["name"]
-            for from_name, to_node_name, to_socket_id in split["links"]:
+            # Authored placement (parent before location — locations are
+            # parent-relative); older snapshots without these keys leave the
+            # instance where auto-layout or the caller puts it.
+            parent = self.tree.nodes.get(split.get("parent") or "")
+            if isinstance(parent, NodeFrame):
+                instance.parent = parent
+            if (location := split.get("location")) is not None:
+                instance.location = location
+            for from_name, to_node_name, to_socket_key in split["links"]:
                 to_node = self.tree.nodes.get(to_node_name)
                 if to_node is None:
                     continue
-                to_socket = next(
-                    (s for s in to_node.inputs if s.identifier == to_socket_id), None
-                )
+                to_socket = resolve_socket_key(to_node.inputs, to_socket_key)
                 if to_socket is None:
                     continue
                 # Only re-source an existing identical link: the consumer
@@ -1205,7 +1493,9 @@ class TreeBuilder[TreeT: NodeTree]:
                 existing = [
                     link
                     for link in to_socket.links or ()
-                    if link.from_node.bl_idname == "NodeGroupInput"
+                    if link.from_node is not None
+                    and link.from_socket is not None
+                    and link.from_node.bl_idname == "NodeGroupInput"
                     and link.from_socket.name == from_name
                 ]
                 if not existing:
@@ -1223,6 +1513,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 # (by identifier): interface names can repeat across types,
                 # so a name lookup on the instance could pick a same-named
                 # socket of the wrong type and forge an invalid link.
+                assert link.from_socket is not None
                 identifier = link.from_socket.identifier
                 from_socket = next(
                     (s for s in instance.outputs if s.identifier == identifier), None
@@ -1230,6 +1521,11 @@ class TreeBuilder[TreeT: NodeTree]:
                 if from_socket is None:
                     continue  # pragma: no cover - instance lacks the socket
                 self.tree.links.remove(link)
+                # Removing the link can retype a reroute consumer, freeing
+                # and recreating its sockets — re-resolve before relinking.
+                to_socket = resolve_socket_key(to_node.inputs, to_socket_key)
+                if to_socket is None:
+                    continue  # pragma: no cover - socket vanished on retype
                 self.tree.links.new(from_socket, to_socket)
         if splits:
             self._hide_unused_input_sockets()
@@ -1248,7 +1544,7 @@ class TreeBuilder[TreeT: NodeTree]:
         for socket in primary.outputs:
             for link in socket.links:
                 by_consumer.setdefault(link.to_node.name, []).append(
-                    (socket.name, link.to_node.name, link.to_socket.identifier)
+                    (socket.name, link.to_node.name, socket_key(link.to_socket))
                 )
         # The first consumer keeps the primary node; each further consumer
         # gets its own instance (named like Blender would on duplication).
@@ -1346,13 +1642,17 @@ class TreeBuilder[TreeT: NodeTree]:
         link = self.tree.links.new(socket1, socket2, handle_dynamic_sockets=True)
         assert link is not None
 
+        # handle_dynamic_sockets=True can free and recreate an endpoint (a
+        # reroute retypes its sockets to match the link), leaving socket1 /
+        # socket2 dangling — read the endpoints back off the link instead.
+        from_socket, to_socket = link.from_socket, link.to_socket
+        assert from_socket is not None and to_socket is not None
+
         if (
-            any(socket.is_inactive for socket in [socket1, socket2])
+            any(socket.is_inactive for socket in [from_socket, to_socket])
             and not self.ignore_visibility
         ):
-            assert socket1.node
-            assert socket2.node
-            for socket in [socket1, socket2]:
+            for socket in [from_socket, to_socket]:
                 assert socket.node is not None
                 if socket.is_inactive and (
                     # allow innactive sockets on some node types but we can't just blanket allow the sockets
@@ -1362,7 +1662,7 @@ class TreeBuilder[TreeT: NodeTree]:
                     not _allow_innactive_sockets(socket.node)
                     and (getattr(socket.node, "data_type", None) != socket.type)
                 ):
-                    other = socket2 if socket is socket1 else socket1
+                    other = to_socket if socket is from_socket else from_socket
                     assert other.node is not None
                     direction = "input" if socket.is_output is False else "output"
                     message = (

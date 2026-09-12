@@ -3728,11 +3728,13 @@ def to_python(
         ``None`` disables the budget.
     snapshot_positions: bool
         If True, build the tree with ``arrange=None`` (no auto-layout) and
-        append a block that restores each node's authored ``location`` by
-        name. Nodes a rebuild doesn't recreate (reroutes — unless
-        ``keep_reroutes``) or names a rebuild assigns differently
-        (duplicate-type nodes created in another order) are skipped via
-        ``tree.tree.nodes.get(name)``.
+        append a ``tree.layout_snapshot`` block that restores each node's
+        authored name and ``location``. Rebuilt nodes are matched to their
+        authored counterparts structurally (by type, links and frame
+        parent, seeded from exact name matches), so duplicate-type nodes a
+        rebuild names in another order still land on their own authored
+        spots. Nodes a rebuild doesn't recreate (reroutes — unless
+        ``keep_reroutes``) are skipped.
     keep_reroutes: bool
         If True, preserve reroute nodes as ``g.Reroute(...)`` pass-throughs
         instead of collapsing each reroute chain into a direct link. Useful
@@ -3858,13 +3860,18 @@ def to_python(
         lines.extend(_assemble_tree_body(emission))
 
         if snapshot_positions:
-            # Splits first: the positions block then places the instances.
+            # Snapshot first: renaming consumers to their authored names is
+            # what lets the splits block find them and move their links.
+            lines.append("")
+            lines.extend(
+                _layout_snapshot_lines(
+                    node_tree, indent="", keep_reroutes=keep_reroutes
+                )
+            )
             splits = _group_input_split_lines(node_tree, "", keep_reroutes)
             if splits:
                 lines.append("")
                 lines.extend(splits)
-            lines.append("")
-            lines.extend(_node_positions_lines(node_tree, indent=""))
 
     # Datablock defaults (a Material/Object/Image socket value) render as
     # guarded ``bpy.data.<collection>.get("name")`` lookups, so the module
@@ -3885,9 +3892,11 @@ def _group_input_split_lines(
     Group Input instances an author placed near consumers (with unused
     sockets hidden) — the editor convention that avoids one input node
     trailing long noodles. ``TreeBuilder.group_input_splits`` applies them by
-    name, tolerating consumers a rebuild names differently (those links stay
-    on the primary node); their locations restore via the positions block,
-    which is why this only emits under ``snapshot_positions``."""
+    name — the block runs after ``tree.layout_snapshot`` has restored the
+    consumers' authored names — and each entry carries the instance's
+    authored location and frame parent."""
+    from ..builder._utils import socket_key
+
     instances = [n for n in node_tree.nodes if n.bl_idname == "NodeGroupInput"]
     if len(instances) <= 1:
         return []
@@ -3913,12 +3922,16 @@ def _group_input_split_lines(
             (
                 link.from_socket.name,
                 link.to_node.name,
-                link.to_socket.identifier,
+                socket_key(link.to_socket),
             )
             for link in outgoing.get(node.name, ())
         )
+        loc = tuple(round(v, 2) for v in node.location)
+        parent = _fmt(node.parent.name) if node.parent is not None else "None"
         lines.append(f"{indent}    {{")
         lines.append(f'{indent}        "name": {_fmt(node.name)},')
+        lines.append(f'{indent}        "location": {_fmt(loc)},')
+        lines.append(f'{indent}        "parent": {parent},')
         lines.append(f'{indent}        "links": [')
         for entry in entries:
             lines.append(f"{indent}            {_fmt(entry)},")
@@ -3928,23 +3941,69 @@ def _group_input_split_lines(
     return lines
 
 
-def _node_positions_lines(node_tree, indent: str) -> list[str]:
-    """A ``tree.node_positions = {name: (x, y), ...}`` assignment at ``indent``
-    that restores each node's authored location. ``TreeBuilder.node_positions``
-    applies them by name, tolerating a node a rebuild drops (reroute) or renames.
-    References the local ``tree`` (the top-level ``with`` target, or a group's
-    ``_build_group`` parameter)."""
+def _layout_snapshot_lines(
+    node_tree, indent: str, keep_reroutes: bool = False
+) -> list[str]:
+    """A ``tree.layout_snapshot = {...}`` assignment at ``indent`` that
+    restores each node's authored name and location.
+
+    A rebuild names duplicate-type nodes by creation order (``Math``,
+    ``Math.001``, ...), which rarely matches the authored order — restoring
+    positions by bare name would place nodes at each other's authored spots.
+    Each entry therefore also records the node's type, frame parent and
+    incoming links, and :attr:`TreeBuilder.layout_snapshot` matches rebuilt
+    nodes to entries structurally before renaming and placing them.
+    References the local ``tree`` (the top-level ``with`` target, or a
+    group's ``_build_group`` parameter)."""
+    from ..builder._utils import socket_key
+
+    # Only the links a rebuild recreates: inert links are dropped and (without
+    # keep_reroutes) reroute chains collapse to their real endpoints — the
+    # same normalization the emitted body goes through. Sockets are recorded
+    # by rebuild-stable key, not identifier — see :func:`socket_key`.
+    links = _effective_links(node_tree, keep_reroutes)
+    incoming: dict[str, list[tuple[str, str, str]]] = {}
+    for link in links:
+        incoming.setdefault(link.to_node.name, []).append(
+            (
+                socket_key(link.to_socket),
+                link.from_node.name,
+                socket_key(link.from_socket),
+            )
+        )
+
     lines = [
-        f"{indent}# Restore authored node positions.",
-        f"{indent}tree.node_positions = {{",
+        f"{indent}# Restore authored node names and positions (matched by tree",
+        f"{indent}# structure — see TreeBuilder.layout_snapshot).",
+        f"{indent}tree.layout_snapshot = {{",
     ]
-    # Sorted by name: the nodes collection follows creation order, which a
-    # rebuild shuffles — sorting keeps a re-dump byte-stable.
+    skip_reroutes = not keep_reroutes
+    # Extra Group Input instances don't exist yet when the snapshot applies —
+    # the splits block that follows creates and places them.
+    instances = [n for n in node_tree.nodes if n.bl_idname == "NodeGroupInput"]
+    primary_input = next(
+        (n.name for n in instances if n.name == "Group Input"),
+        instances[0].name if instances else None,
+    )
+    # Sorted (nodes by name, links by content): the collections follow
+    # creation order, which a rebuild shuffles — sorting keeps a re-dump
+    # byte-stable.
     for node in sorted(node_tree.nodes, key=lambda n: n.name):
+        if skip_reroutes and node.bl_idname == "NodeReroute":
+            continue
+        if node.bl_idname == "NodeGroupInput" and node.name != primary_input:
+            continue
         # Two decimals: auto-layout produces quarter-unit positions (6.75)
         # that one decimal would visibly nudge on rebuild.
         loc = tuple(round(v, 2) for v in node.location)
-        lines.append(f"{indent}    {_fmt(node.name)}: {_fmt(loc)},")
+        parent = _fmt(node.parent.name) if node.parent is not None else "None"
+        entry_links = "".join(
+            f"{_fmt(entry)}, " for entry in sorted(incoming.get(node.name, ()))
+        )
+        lines.append(
+            f"{indent}    {_fmt(node.name)}: ({_fmt(node.bl_idname)}, "
+            f"{_fmt(loc)}, {parent}, ({entry_links})),"
+        )
     lines.append(f"{indent}}}")
     return lines
 
@@ -4348,11 +4407,18 @@ def _render_group_class(
     if snapshot_positions or keep_reroutes:
         inner = ["    tree.disable_arrange()", ""] + inner
     if snapshot_positions:
-        # Splits first: the positions block then places the instances.
+        # Snapshot first: renaming consumers to their authored names is
+        # what lets the splits block find them and move their links.
+        inner = (
+            inner
+            + [""]
+            + _layout_snapshot_lines(
+                node_tree, indent="    ", keep_reroutes=keep_reroutes
+            )
+        )
         splits = _group_input_split_lines(node_tree, "    ", keep_reroutes)
         if splits:
             inner = inner + [""] + splits
-        inner = inner + [""] + _node_positions_lines(node_tree, indent="    ")
     body = [("    " + line) if line else "" for line in inner]
     return "\n".join(header + body)
 

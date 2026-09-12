@@ -98,6 +98,42 @@ def typed_param_names(sockets) -> dict[str, str]:
     return params
 
 
+def socket_key(socket: NodeSocket) -> str:
+    """A rebuild-stable key for a socket on its node: the socket name, plus
+    ``#<n>`` for repeats (a Math node has two ``Value`` inputs).
+
+    Socket *identifiers* are not stable across a dump → build round-trip:
+    interface sockets and dynamic items (Index Switch, Capture Attribute, ...)
+    get counter-based identifiers (``Socket_7``, ``Item_2``) that depend on
+    the tree's full editing history, which a rebuild does not replay. Names
+    and their in-node order are recreated exactly, so they are the currency
+    layout snapshots and split records use."""
+    node = socket.node
+    assert node is not None
+    collection = node.outputs if socket.is_output else node.inputs
+    repeat = 0
+    for other in collection:
+        if other.identifier == socket.identifier:
+            break
+        if other.name == socket.name:
+            repeat += 1
+    return f"{socket.name}#{repeat}" if repeat else socket.name
+
+
+def resolve_socket_key(sockets, key: str) -> NodeSocket | None:
+    """Find the socket a :func:`socket_key` (or, for records written before
+    keys existed, a raw identifier) refers to, or None."""
+    name, _, repeat = key.partition("#")
+    index = int(repeat) if repeat.isdigit() else 0
+    seen = 0
+    for socket in sockets:
+        if socket.name == name:
+            if seen == index:
+                return socket
+            seen += 1
+    return next((s for s in sockets if s.identifier == key), None)
+
+
 def _allow_innactive_sockets(node: bpy.types.Node) -> bool:
     """Returns True if we should allow inactive sockets to be linked for this node type"""
     return node.bl_idname in (
