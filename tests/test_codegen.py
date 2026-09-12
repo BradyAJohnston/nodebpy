@@ -303,7 +303,7 @@ def test_snapshot_positions_round_trip():
 
     code = to_python(tree, snapshot_positions=True)
     assert "arrange=None" in code  # auto-layout disabled
-    assert "tree.node_positions = {" in code
+    assert "tree.layout_snapshot = {" in code
 
     ns: dict = {}
     exec(code, ns)
@@ -319,7 +319,7 @@ def test_default_does_not_snapshot_positions():
         g.Position()
     code = to_python(tree, format=False)
     assert "arrange=None" not in code
-    assert "_node_positions" not in code
+    assert "layout_snapshot" not in code
 
 
 def test_format_with_ruff_tidies_output():
@@ -474,21 +474,17 @@ def test_keep_reroutes_emits_reroute_call():
 
 def test_keep_reroutes_with_snapshot_positions():
     """keep_reroutes + snapshot_positions emits the reroute node and includes
-    its own location in the positions block.
-
-    (Asserts on the generated source rather than exec-rebuilding: linking a
-    fresh ``g.Reroute`` mutates the node's adaptive sockets, which intermittently
-    segfaults the in-process Blender under full-suite memory pressure. The
-    exact rebuilt output is locked by ``test_snapshot_keep_reroutes_block``.)"""
+    its own entry in the layout snapshot."""
     tree = _tree_with_reroute("ReroutePos")
     reroute = next(n for n in tree.tree.nodes if n.bl_idname == "NodeReroute")
     reroute.location = (360.0, 120.0)
 
-    code = to_python(tree, keep_reroutes=True, snapshot_positions=True)
+    code = to_python(tree, keep_reroutes=True, snapshot_positions=True, format=False)
     assert "g.Reroute(" in code
     assert "arrange=None" in code
-    assert "tree.node_positions = {" in code
-    assert f'"{reroute.name}": (360.0, 120.0)' in code  # reroute position kept
+    assert "tree.layout_snapshot = {" in code
+    # reroute position kept
+    assert f'"{reroute.name}": ("NodeReroute", (360.0, 120.0)' in code
 
 
 def test_type_factories_emitted_at_defaults():

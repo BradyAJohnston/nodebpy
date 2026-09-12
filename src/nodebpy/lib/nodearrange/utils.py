@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from collections import Counter, defaultdict
+from collections import defaultdict
 from collections.abc import Callable, Hashable, Iterable
 from functools import cache
 from operator import itemgetter
@@ -8,14 +8,6 @@ from operator import itemgetter
 import bpy
 from bpy.types import Node
 from mathutils import Vector
-
-from . import config
-
-
-def get_ntree() -> bpy.types.NodeTree:
-    from ...builder import TreeBuilder
-
-    return TreeBuilder._tree_contexts[-1].tree
 
 
 def group_by[T1: Hashable, T2: Hashable](
@@ -45,10 +37,18 @@ REROUTE_DIM = Vector((8, 8))
 
 
 def dimensions(node: Node) -> Vector:
-    if node.bl_idname != "NodeReroute":
-        return node.dimensions
-    else:
+    if node.bl_idname == "NodeReroute":
         return REROUTE_DIM
+
+    dim = node.dimensions
+    if dim.x > 0 and dim.y > 0:  # pragma: no cover - only drawn in a UI
+        return dim
+
+    # `node.dimensions` is only computed when a node editor draws the tree;
+    # under the headless `bpy` module it stays (0, 0), so estimate instead.
+    from ...builder.layout import calculate_node_dimensions
+
+    return Vector(calculate_node_dimensions(node))
 
 
 _HIDE_OFFSET = 10
@@ -62,13 +62,9 @@ def get_top(node: Node, y_loc: float | None = None) -> float:
 
 
 def get_bottom(node: Node, y_loc: float | None = None) -> float:
-    from ...builder.arrange import calculate_node_dimensions
-
     if y_loc is None:
         y_loc = abs_loc(node).y
-    dim_y = calculate_node_dimensions(
-        node, Counter({i: len(i.links or ()) for i in node.inputs}), 1.0
-    )[1]
+    dim_y = dimensions(node).y
     bottom = y_loc - dim_y
     return bottom + dim_y / 2 - _HIDE_OFFSET if node.hide else bottom
 
@@ -81,7 +77,7 @@ def frame_padding() -> float:
 _MAX_LOC = 100_000
 
 
-def move(node: Node, *, x: float = 0, y: float = 0) -> None:
+def move(node: Node, selected: list[Node], *, x: float = 0, y: float = 0) -> None:
     if x == 0 and y == 0:
         return
 
@@ -94,11 +90,17 @@ def move(node: Node, *, x: float = 0, y: float = 0) -> None:
         loc += Vector((x, y))
         return
 
-    for n in config.selected:
+    _move_via_operator(node, selected, x, y)  # pragma: no cover - see below
+
+
+def _move_via_operator(
+    node: Node, selected: list[Node], x: float, y: float
+) -> None:  # pragma: no cover - needs a windowed UI context
+    for n in selected:
         n.select = n == node
 
     ui_scale = 1.0
     bpy.ops.transform.translate(value=[v * ui_scale for v in (x, y, 0)])
 
-    for n in config.selected:
+    for n in selected:
         n.select = True

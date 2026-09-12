@@ -397,7 +397,8 @@ def test_simulation(snapshot):
         sim.input >> g.SetPosition(offset=offset) >> sim.output
         sim.output >> g.SetPosition(position=sim.output.o["Position"])
     assert len(sim.output.node.inputs["Skip"].links) == 0
-    assert len(tree) == 11
+    # exactly the authored nodes: arrangement no longer injects reroutes
+    assert len(tree) == 10
     assert snapshot == tree._repr_markdown_()
 
 
@@ -418,7 +419,8 @@ def test_repeat(snapshot):
             >> output
         )
         _ = output >> g.SetPosition(position=output.o["Position"])
-    assert len(tree) == 13
+    # exactly the authored nodes: arrangement no longer injects reroutes
+    assert len(tree) == 11
     assert len(input._items) == 2
     assert snapshot == tree._repr_markdown_()
 
@@ -437,7 +439,7 @@ def test_repeat(snapshot):
     links = list(join.node.inputs[0].links)
 
     assert all(link.from_socket.type == "GEOMETRY" for link in links)
-    assert len(tree) == 7
+    assert len(tree) == 5
     assert snapshot == tree._repr_markdown_()
 
 

@@ -15,7 +15,7 @@ from typing import Any, cast
 
 import networkx as nx
 
-from .. import config
+from ..config import LayoutState
 from .graph import FROM_SOCKET, TO_SOCKET, Cluster, Edge, Kind, Node, Socket
 
 
@@ -87,14 +87,16 @@ def iter_block(start: Node) -> Iterator[Node]:
         yield w
 
 
-def should_use_inner_shift(v: Node, w: Node, is_right: bool) -> bool:
+def should_use_inner_shift(
+    v: Node, w: Node, is_right: bool, state: LayoutState
+) -> bool:
     if v.is_reroute or w.is_reroute:
         return True
 
-    if config.SETTINGS.socket_alignment == "NONE":
+    if state.settings.socket_alignment == "NONE":
         return False
 
-    if config.SETTINGS.socket_alignment == "FULL":
+    if state.settings.socket_alignment == "FULL":
         return True
 
     if v.cluster != w.cluster or Kind.STACK in {v.type, w.type}:
@@ -109,10 +111,12 @@ def should_use_inner_shift(v: Node, w: Node, is_right: bool) -> bool:
     return abs(v.height - w.height) > fmean((v.height, w.height)) / 2
 
 
-def inner_shift(G: nx.MultiDiGraph[Node], is_right: bool, is_up: bool) -> None:
+def inner_shift(
+    G: nx.MultiDiGraph[Node], is_right: bool, is_up: bool, state: LayoutState
+) -> None:
     for root in {v.root for v in G}:
         for v, w in pairwise(iter_block(root)):
-            if not should_use_inner_shift(v, w, is_right):
+            if not should_use_inner_shift(v, w, is_right, state):
                 w.inner_shift = v.inner_shift
                 continue
 
@@ -131,7 +135,7 @@ def inner_shift(G: nx.MultiDiGraph[Node], is_right: bool, is_up: bool) -> None:
             w.inner_shift = fmean(inner_shifts)
 
 
-def place_block(v: Node, is_up: bool) -> None:
+def place_block(v: Node, is_up: bool, state: LayoutState) -> None:
     if cast(float | None, v.y) is not None:
         return
 
@@ -145,15 +149,13 @@ def place_block(v: Node, is_up: bool) -> None:
 
         n = w.col[i - 1]
         u = n.root
-        place_block(u, is_up)
+        place_block(u, is_up, state)
 
         if v.sink == v:
             v.sink = u.sink
 
         if v.sink == u.sink:
-            delta_l = (
-                n.height + config.MARGIN.y if is_up else w.height + config.MARGIN.y
-            )
+            delta_l = n.height + state.margin.y if is_up else w.height + state.margin.y
             s_b = u.y + n.inner_shift - w.inner_shift + delta_l
             v.y = s_b if initial else max(v.y, s_b)
             initial = False
@@ -163,10 +165,10 @@ def place_block(v: Node, is_up: bool) -> None:
         w.sink = v.sink
 
 
-def vertical_compaction(G: nx.DiGraph[Node], is_up: bool) -> None:
+def vertical_compaction(G: nx.DiGraph[Node], is_up: bool, state: LayoutState) -> None:
     for v in G:
         if v.root == v:
-            place_block(v, is_up)
+            place_block(v, is_up, state)
 
     columns = G.graph["columns"]
     neighborings: defaultdict[tuple[Node, ...], set[Edge]] = defaultdict(set)
@@ -181,9 +183,7 @@ def vertical_compaction(G: nx.DiGraph[Node], is_up: bool) -> None:
             col[0].sink.shift = 0
 
         for u, v in neighborings[tuple(col)]:
-            delta_l = (
-                u.height + config.MARGIN.y if is_up else v.height + config.MARGIN.y
-            )
+            delta_l = u.height + state.margin.y if is_up else v.height + state.margin.y
             s_c = v.y + v.inner_shift - u.y - u.inner_shift - delta_l
             u.sink.shift = min(u.sink.shift, v.sink.shift + s_c)
 
@@ -204,7 +204,7 @@ def get_merged_lines(lines: Iterable[tuple[float, float]]) -> list[tuple[float, 
 
 
 def has_large_gaps_in_frame(
-    cluster: Cluster, T: nx.DiGraph[Cluster | Node], is_up: bool
+    cluster: Cluster, T: nx.DiGraph[Cluster | Node], is_up: bool, state: LayoutState
 ) -> bool:
     lines = []
     for v in T[cluster]:
@@ -223,7 +223,7 @@ def has_large_gaps_in_frame(
         lines.append(line)
 
     merged = get_merged_lines(lines)
-    return any(l2[0] - l1[1] > config.MARGIN.y for l1, l2 in pairwise(merged))
+    return any(l2[0] - l1[1] > state.margin.y for l1, l2 in pairwise(merged))
 
 
 def get_marked_nodes(
@@ -231,6 +231,7 @@ def get_marked_nodes(
     T: nx.DiGraph[Node | Cluster],
     old_marked_nodes: set[Node],
     is_up: bool,
+    state: LayoutState,
 ) -> set[Node]:
     marked_nodes = set()
     for cluster in T:
@@ -251,7 +252,7 @@ def get_marked_nodes(
             if children <= old_marked_nodes:
                 continue
 
-            if not has_large_gaps_in_frame(nested_cluster, T, is_up):
+            if not has_large_gaps_in_frame(nested_cluster, T, is_up, state):
                 continue
 
             if children & old_marked_nodes:
@@ -297,7 +298,9 @@ _ITER_LIMIT = 20
 _DIRECTION_TO_IDX = {"RIGHT_DOWN": 0, "RIGHT_UP": 1, "LEFT_DOWN": 2, "LEFT_UP": 3}
 
 
-def bk_assign_y_coords(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) -> None:
+def bk_assign_y_coords(
+    G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster], state: LayoutState
+) -> None:
     columns = G.graph["columns"]
     for col in columns:
         col.reverse()
@@ -326,10 +329,12 @@ def bk_assign_y_coords(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) 
             while i < _ITER_LIMIT:
                 i += 1
                 horizontal_alignment(G, marked_edges, marked_nodes)
-                inner_shift(G, dir_x == 1, is_up)
-                vertical_compaction(G, is_up)
+                inner_shift(G, dir_x == 1, is_up, state)
+                vertical_compaction(G, is_up, state)
 
-                if new_marked_nodes := get_marked_nodes(G, T, marked_nodes, is_up):
+                if new_marked_nodes := get_marked_nodes(
+                    G, T, marked_nodes, is_up, state
+                ):
                     marked_nodes.update(new_marked_nodes)
                     for v in G:
                         v.bk_reset()
@@ -346,13 +351,13 @@ def bk_assign_y_coords(G: nx.MultiDiGraph[Node], T: nx.DiGraph[Node | Cluster]) 
     for col in columns:
         col.reverse()
 
-    if config.SETTINGS.direction == "BALANCED":
+    if state.settings.direction == "BALANCED":
         balance(G, layouts)
         for i, v in enumerate(G):
             values = [layout[i] for layout in layouts]
             values.sort()
             v.y = fmean(values[1:3])
     else:
-        i = _DIRECTION_TO_IDX[config.SETTINGS.direction]
+        i = _DIRECTION_TO_IDX[state.settings.direction]
         for v, y in zip(G, layouts[i]):
             v.y = y
