@@ -56,6 +56,7 @@ rebuilding reuses same-named trees (which would bake a stale group into the
 
 from __future__ import annotations
 
+import fnmatch
 import importlib
 import importlib.machinery
 import importlib.util
@@ -64,6 +65,7 @@ import re
 import shutil
 import sys
 import uuid
+from collections.abc import Iterable
 from contextlib import nullcontext
 from dataclasses import replace
 from pathlib import Path
@@ -1184,6 +1186,162 @@ def build_library(
     return [tree.name for tree in trees]
 
 
+def plot_library(
+    blend_path: str | Path,
+    output_dir: str | Path,
+    names: Iterable[str] | None = None,
+    *,
+    dpi: int = 150,
+    arrange: SugiyamaOptions | None = None,
+) -> dict[str, Path]:
+    """Render node groups from ``blend_path`` to PNG images under
+    ``output_dir`` — a headless look at node graphs, e.g. for posting in
+    pull requests (``python -m nodebpy.assets plot``).
+
+    ``names`` selects the groups to plot: exact names or :mod:`fnmatch`
+    wildcard patterns (``"Style *"``), matched against *every* node group in
+    the ``.blend`` (not just assets); ``None`` plots them all. A pattern
+    matching nothing raises. Each tree is drawn with
+    :func:`nodebpy.export.to_plot` (which needs the optional ``matplotlib``
+    dependency) at its stored layout, or re-arranged first when ``arrange``
+    options are given. Everything appended for plotting is removed from the
+    session again afterwards.
+
+    Returns
+    -------
+    dict[str, Path]
+        Mapping of group name to the image it was written to.
+    """
+    blend_path = Path(blend_path)
+    output_dir = Path(output_dir)
+    if not blend_path.is_file():
+        raise FileNotFoundError(f"Asset library not found: {blend_path.resolve()}")
+
+    from ..builder.layout import arrange as arrange_tree_nodes
+    from ..export import to_plot
+
+    patterns = list(names) if names is not None else None
+    before = {
+        coll: set(getattr(bpy.data, coll).keys()) for coll in _CLEANUP_COLLECTIONS
+    }
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+        str(blend_path), link=False
+    ) as (src, dst):
+        available = list(src.node_groups)
+        if patterns is None:
+            wanted = available
+        else:
+            wanted = [
+                n for n in available if any(fnmatch.fnmatchcase(n, p) for p in patterns)
+            ]
+            unmatched = [
+                p
+                for p in patterns
+                if not any(fnmatch.fnmatchcase(n, p) for n in available)
+            ]
+            if unmatched:
+                raise KeyError(f"No node groups in {blend_path} match: {unmatched}")
+        clashes = sorted(n for n in wanted if n in bpy.data.node_groups)
+        if clashes:
+            raise RuntimeError(
+                f"Node groups already exist in this session: {clashes}. "
+                "Appending would rename them — plot from a fresh session "
+                "(e.g. python -m nodebpy.assets plot)."
+            )
+        dst.node_groups = list(wanted)
+    added = {
+        coll: [db for db in getattr(bpy.data, coll) if db.name not in before[coll]]
+        for coll in _CLEANUP_COLLECTIONS
+    }
+
+    try:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        written: dict[str, Path] = {}
+        for tree in dst.node_groups:
+            assert tree is not None
+            if arrange is not None:
+                arrange_tree_nodes(tree, arrange)
+            slug = re.sub(r"[^A-Za-z0-9._-]+", "_", tree.name).lstrip(".") or "tree"
+            written[tree.name] = to_plot(tree, output_dir / f"{slug}.png", dpi=dpi)
+    finally:
+        for coll in _CLEANUP_COLLECTIONS:
+            data = getattr(bpy.data, coll)
+            for db in added[coll]:
+                data.remove(db)
+    return written
+
+
+def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cover
+    """Attach the shared arrangement flag group (one per SugiyamaOptions
+    field, plus --add-reroutes) to a CLI subparser."""
+    layout = parser.add_argument_group("arrangement", description=description)
+    layout.add_argument(
+        "--add-reroutes",
+        action="store_true",
+        help=(
+            "Arrange with reroute nodes inserted to route long links around "
+            "nodes (the node-arrange addon's behaviour)."
+        ),
+    )
+    layout.add_argument(
+        "--spacing",
+        nargs=2,
+        type=float,
+        metavar=("X", "Y"),
+        help="Horizontal and vertical space between nodes (default: 30 30).",
+    )
+    layout.add_argument(
+        "--iterations",
+        type=int,
+        help=(
+            "Number of iterations spent reducing crossings between links "
+            "(higher gives fewer crossings, but is slower; default: 50)."
+        ),
+    )
+    layout.add_argument(
+        "--direction",
+        type=str.upper,
+        choices=["LEFT_DOWN", "RIGHT_DOWN", "LEFT_UP", "RIGHT_UP", "BALANCED"],
+        help=(
+            "Direction of layout — which corner nodes align towards, or "
+            "'balanced' to even out the four extremes (default: right_up)."
+        ),
+    )
+    layout.add_argument(
+        "--socket-alignment",
+        type=str.upper,
+        choices=["NONE", "MODERATE", "FULL"],
+        help=(
+            "How aggressively links are straightened by aligning the sockets "
+            "they connect (default: none)."
+        ),
+    )
+    layout.add_argument(
+        "--keep-reroutes-outside-frames",
+        action="store_true",
+        help="Do not place added reroutes inside frames.",
+    )
+    layout.add_argument(
+        "--no-stack-collapsed",
+        dest="stack_collapsed",
+        action="store_false",
+        help="Do not stack consecutive collapsed nodes tightly.",
+    )
+    layout.add_argument(
+        "--stack-margin-y-fac",
+        type=float,
+        help=(
+            "Fraction of the vertical spacing used between stacked collapsed "
+            "nodes (default: 0.5)."
+        ),
+    )
+    layout.add_argument(
+        "--optimize-sizes",
+        action="store_true",
+        help="Fit the widths of collapsed nodes to their display name.",
+    )
+
+
 def _arrange_options_from_args(args) -> SugiyamaOptions | None:
     """The build CLI's arrangement override: a :class:`SugiyamaOptions` with
     every provided layout flag applied, or None when all are left unset (so
@@ -1322,78 +1480,11 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             "objects, …) from, by name, before building."
         ),
     )
-    layout = build.add_argument_group(
-        "arrangement",
-        description=(
-            "Tune the automatic layout of the built trees (the SugiyamaOptions "
-            "defaults apply where unset). Sources dumped with "
-            "--snapshot-positions keep their authored layout regardless."
-        ),
-    )
-    layout.add_argument(
-        "--add-reroutes",
-        action="store_true",
-        help=(
-            "Arrange the built trees with reroute nodes inserted to route "
-            "long links around nodes (the node-arrange addon's behaviour)."
-        ),
-    )
-    layout.add_argument(
-        "--spacing",
-        nargs=2,
-        type=float,
-        metavar=("X", "Y"),
-        help="Horizontal and vertical space between nodes (default: 30 30).",
-    )
-    layout.add_argument(
-        "--iterations",
-        type=int,
-        help=(
-            "Number of iterations spent reducing crossings between links "
-            "(higher gives fewer crossings, but is slower; default: 50)."
-        ),
-    )
-    layout.add_argument(
-        "--direction",
-        type=str.upper,
-        choices=["LEFT_DOWN", "RIGHT_DOWN", "LEFT_UP", "RIGHT_UP", "BALANCED"],
-        help=(
-            "Direction of layout — which corner nodes align towards, or "
-            "'balanced' to even out the four extremes (default: right_up)."
-        ),
-    )
-    layout.add_argument(
-        "--socket-alignment",
-        type=str.upper,
-        choices=["NONE", "MODERATE", "FULL"],
-        help=(
-            "How aggressively links are straightened by aligning the sockets "
-            "they connect (default: none)."
-        ),
-    )
-    layout.add_argument(
-        "--keep-reroutes-outside-frames",
-        action="store_true",
-        help="Do not place added reroutes inside frames.",
-    )
-    layout.add_argument(
-        "--no-stack-collapsed",
-        dest="stack_collapsed",
-        action="store_false",
-        help="Do not stack consecutive collapsed nodes tightly.",
-    )
-    layout.add_argument(
-        "--stack-margin-y-fac",
-        type=float,
-        help=(
-            "Fraction of the vertical spacing used between stacked collapsed "
-            "nodes (default: 0.5)."
-        ),
-    )
-    layout.add_argument(
-        "--optimize-sizes",
-        action="store_true",
-        help="Fit the widths of collapsed nodes to their display name.",
+    _add_arrangement_flags(
+        build,
+        "Tune the automatic layout of the built trees (the SugiyamaOptions "
+        "defaults apply where unset). Sources dumped with "
+        "--snapshot-positions keep their authored layout regardless.",
     )
     build.add_argument(
         "--drop-missing",
@@ -1407,6 +1498,44 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             ".blend is written, leaving those socket defaults empty. The "
             "default is to error upfront, listing everything missing."
         ),
+    )
+
+    plot = sub.add_parser(
+        "plot",
+        help="Render node groups from a .blend to PNG images.",
+        description=(
+            "Render node groups from a .blend to PNG images — a headless "
+            "look at node graphs, e.g. for posting in pull requests. Selects "
+            "groups by exact name or fnmatch wildcard ('Style *'), matched "
+            "against every node group in the file (not just assets); with no "
+            "names, every group is plotted. Trees are drawn at their stored "
+            "layout unless --arrange (or any arrangement flag) is given. "
+            "Requires matplotlib (pip install nodebpy[plot])."
+        ),
+    )
+    plot.add_argument("blend", type=Path, help="The .blend holding the node groups.")
+    plot.add_argument("output", type=Path, help="Directory to write the .png files to.")
+    plot.add_argument(
+        "names",
+        nargs="*",
+        help=(
+            "Group names to plot; fnmatch wildcards supported ('Style *', "
+            "quoted to keep the shell from expanding them). Default: all."
+        ),
+    )
+    plot.add_argument("--dpi", type=int, default=150, help="Image DPI (default: 150).")
+    plot.add_argument(
+        "--arrange",
+        action="store_true",
+        help=(
+            "Re-arrange each tree before plotting instead of drawing its "
+            "stored layout (implied by any arrangement flag below)."
+        ),
+    )
+    _add_arrangement_flags(
+        plot,
+        "Tune the re-arrangement applied before plotting; passing any of "
+        "these implies --arrange.",
     )
 
     args = parser.parse_args(argv)
@@ -1424,6 +1553,23 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
         for name, path in written.items():
             print(f"  {name}: {path}")
         print(f"Dumped {len(written)} assets to {args.output}")
+    elif args.command == "plot":
+        options = _arrange_options_from_args(args)
+        method: SugiyamaOptions | None = None
+        if args.arrange or args.add_reroutes or options is not None:
+            method = options or SugiyamaOptions()
+            if args.add_reroutes:
+                method = replace(method, add_reroutes=True)
+        written = plot_library(
+            args.blend,
+            args.output,
+            args.names or None,
+            dpi=args.dpi,
+            arrange=method,
+        )
+        for name, path in written.items():
+            print(f"  {name}: {path}")
+        print(f"Plotted {len(written)} node groups to {args.output}")
     else:
         names = build_library(
             args.source,

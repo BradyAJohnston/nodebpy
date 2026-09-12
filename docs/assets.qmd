@@ -145,6 +145,18 @@ python -m nodebpy.assets dump my_assets.blend my_assets_src/
 python -m nodebpy.assets build my_assets_src/ my_assets.blend
 ```
 
+Node groups can also be rendered to PNG images headlessly — for reviewing
+layouts or posting graphs in pull requests — selected by exact name or
+wildcard (`plot_library` in Python):
+
+```bash
+python -m nodebpy.assets plot my_assets.blend plots/ "Style *"
+```
+
+By default each tree is drawn at its stored layout; pass `--arrange` (plus
+any of the arrangement flags shared with `build`, e.g. `--add-reroutes`) to
+re-arrange before plotting.
+
 Each asset becomes one module holding its group as a class; helper groups used
 by a single asset are embedded, groups shared between assets get their own
 module under `_shared/`, and referenced materials are code-generated under

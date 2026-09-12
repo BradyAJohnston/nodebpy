@@ -107,6 +107,7 @@ quartodoc:
         - assets.generate_asset_modules
         - assets.dump_library
         - assets.build_library
+        - assets.plot_library
         - assets.AssetLibrary
         - assets.BundledLibrary
         - assets.PackageLibrary

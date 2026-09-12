@@ -273,6 +273,33 @@ def test_build_arrange_options(library_blend, tmp_path):
     assert x_spread() > plain
 
 
+def test_plot_library(library_blend, tmp_path):
+    """plot_library renders selected node groups to PNGs: wildcard and exact
+    selection, all-groups default (assets and helpers alike), unmatched
+    patterns raise, and the session is left clean."""
+    pytest.importorskip("matplotlib")
+    from nodebpy import SugiyamaOptions
+    from nodebpy.assets import plot_library
+
+    out = tmp_path / "plots"
+    written = plot_library(library_blend, out, ["Scale *"])
+    assert set(written) == {"Scale Up"}
+    assert written["Scale Up"] == out / "Scale_Up.png"
+    assert written["Scale Up"].stat().st_size > 5_000
+    assert not bpy.data.node_groups  # appended groups removed again
+
+    # No names: every group in the file, including the non-asset helper —
+    # and re-arranging before plotting works.
+    written = plot_library(
+        library_blend, out, arrange=SugiyamaOptions(margin=(60.0, 40.0))
+    )
+    assert {"Scale Up", "Flat Red", "Doubler"} <= set(written)
+    assert not bpy.data.node_groups
+
+    with pytest.raises(KeyError, match="No node groups"):
+        plot_library(library_blend, out, ["Nope*"])
+
+
 def test_cli_arrange_options_mapping():
     """The build CLI's layout flags map onto SugiyamaOptions; all-unset
     means no override at all."""
