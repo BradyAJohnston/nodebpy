@@ -140,6 +140,63 @@ def test_snapshot_skips_missing_entries():
     assert "Ghost Node" not in tree.tree.nodes
 
 
+def _twin_tree(name: str) -> TreeBuilder:
+    """Two structurally identical dangling Math twins fed by the same input."""
+    with TreeBuilder(name, arrange=None) as tree:
+        x = tree.inputs.float("X")
+        _a = x + 1.0  # "Math"
+        _b = x + 1.0  # "Math.001" — indistinguishable twin
+        x >> tree.outputs.float("Out")
+    return tree
+
+
+def test_snapshot_twins_tie_break_by_name():
+    """Structural twins stall the matcher; the name tie-break then binds
+    same-name pairs so both get their authored spots."""
+    tree = _twin_tree("TwinTie")
+    tree.tree.nodes["Math"].location = (10.0, 20.0)
+    tree.tree.nodes["Math.001"].location = (30.0, 40.0)
+
+    tree.layout_snapshot = tree.layout_snapshot
+    assert tuple(tree.tree.nodes["Math"].location) == (10.0, 20.0)
+    assert tuple(tree.tree.nodes["Math.001"].location) == (30.0, 40.0)
+
+
+def test_snapshot_twins_fallback_pairing():
+    """Twins whose authored names match no rebuilt node pair up by sorted
+    name — interchangeable by definition, so any assignment is correct."""
+    tree = _twin_tree("TwinFallback")
+    snapshot = tree.layout_snapshot
+    a = snapshot.pop("Math")
+    b = snapshot.pop("Math.001")
+    snapshot["TwinA"] = (a[0], (1.0, 2.0), a[2], a[3])
+    snapshot["TwinB"] = (b[0], (3.0, 4.0), b[2], b[3])
+
+    tree.layout_snapshot = snapshot
+    twins = sorted(n.name for n in tree.tree.nodes if n.bl_idname == "ShaderNodeMath")
+    assert twins == ["TwinA", "TwinB"]
+
+
+def test_snapshot_displaces_name_squatter():
+    """An unmatched node holding a matched node's authored name yields it
+    (getting re-suffixed), so the authored name lands on the right node."""
+    with TreeBuilder("Squatter", arrange=None) as tree:
+        x = tree.inputs.float("X")
+        (x + 1.0) >> tree.outputs.float("Out")
+
+    snapshot = tree.layout_snapshot
+    # The Math node is authored as "Target"; a value node squats the name
+    # and has no snapshot entry at all.
+    snapshot["Target"] = snapshot.pop("Math")
+    squatter = tree.tree.nodes.new("ShaderNodeValue")
+    squatter.name = "Target"
+
+    tree.layout_snapshot = snapshot
+    assert tree.tree.nodes["Target"].bl_idname == "ShaderNodeMath"
+    value_nodes = [n for n in tree.tree.nodes if n.bl_idname == "ShaderNodeValue"]
+    assert len(value_nodes) == 1 and value_nodes[0].name != "Target"
+
+
 # ---------------------------------------------------------------------------
 # Real-asset round-trips, with before/after plots
 # ---------------------------------------------------------------------------

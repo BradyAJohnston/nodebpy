@@ -235,7 +235,7 @@ def _socket_index(socket: bpy.types.NodeSocket) -> int:
             return idx
         if _socket_visible(s):
             idx += 1
-    return idx
+    return idx  # pragma: no cover - socket not in its own node's collection
 
 
 def _reduce_crossings(
@@ -283,7 +283,7 @@ def _reduce_crossings(
         if src not in layoutable or dst not in layoutable:
             continue
         src_col, dst_col = col_of[src], col_of[dst]
-        if src_col >= dst_col:
+        if src_col >= dst_col:  # pragma: no cover - Blender forbids link cycles
             continue  # only consider forward edges
 
         # Weight based on socket position on the neighbour node.

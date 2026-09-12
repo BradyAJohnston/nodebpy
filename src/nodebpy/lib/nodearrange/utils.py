@@ -41,7 +41,7 @@ def dimensions(node: Node) -> Vector:
         return REROUTE_DIM
 
     dim = node.dimensions
-    if dim.x > 0 and dim.y > 0:
+    if dim.x > 0 and dim.y > 0:  # pragma: no cover - only drawn in a UI
         return dim
 
     # `node.dimensions` is only computed when a node editor draws the tree;
@@ -90,6 +90,12 @@ def move(node: Node, selected: list[Node], *, x: float = 0, y: float = 0) -> Non
         loc += Vector((x, y))
         return
 
+    _move_via_operator(node, selected, x, y)  # pragma: no cover - see below
+
+
+def _move_via_operator(
+    node: Node, selected: list[Node], x: float, y: float
+) -> None:  # pragma: no cover - needs a windowed UI context
     for n in selected:
         n.select = n == node
 

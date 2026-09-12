@@ -1,10 +1,14 @@
 """Tests for the unified arrange() API and its options."""
 
+import itertools
+from pathlib import Path
+
 import bpy
 import pytest
 
 from nodebpy import SimpleOptions, SugiyamaOptions, TreeBuilder, arrange
 from nodebpy import geometry as g
+from nodebpy.builder import BundledLibrary
 from nodebpy.builder.layout import calculate_socket_offset_y
 
 
@@ -170,6 +174,136 @@ def test_default_sugiyama_options_scope():
     assert any(n.bl_idname == "NodeReroute" for n in routed.tree.nodes)
     assert not any(n.bl_idname == "NodeReroute" for n in explicit.tree.nodes)
     assert not any(n.bl_idname == "NodeReroute" for n in after.tree.nodes)
+
+
+def test_labelled_reroute_survives_add_reroutes():
+    """add_reroutes dissolves authored reroutes before layout, but a
+    labelled reroute carries meaning and must survive."""
+    with TreeBuilder("LabelReroute", arrange=None) as tree:
+        geo = tree.inputs.geometry()
+        out = tree.outputs.geometry()
+        sp = g.SetPosition(geometry=geo)
+        reroute = tree.tree.nodes.new("NodeReroute")
+        reroute.label = "keep me"
+        tree.tree.links.new(sp.node.outputs[0], reroute.inputs[0])
+        tree.tree.links.new(reroute.outputs[0], out.socket)
+
+    arrange(tree.tree, SugiyamaOptions(add_reroutes=True))
+    assert any(
+        n.bl_idname == "NodeReroute" and n.label == "keep me" for n in tree.tree.nodes
+    )
+
+
+_ESSENTIALS = Path(BundledLibrary("geometry_nodes_essentials.blend").path())
+
+
+@pytest.mark.skipif(
+    not _ESSENTIALS.is_file(), reason="bundled geometry essentials not installed"
+)
+@pytest.mark.parametrize(
+    ("tree_name", "options"),
+    [
+        # Authored reroutes + BALANCED direction + full socket alignment.
+        (
+            "Random Rotation",
+            SugiyamaOptions(
+                add_reroutes=True, direction="BALANCED", socket_alignment="FULL"
+            ),
+        ),
+        # Frames + edge routing kept outside frames + moderate alignment.
+        (
+            "Project with Depth",
+            SugiyamaOptions(
+                add_reroutes=True,
+                direction="RIGHT_DOWN",
+                socket_alignment="MODERATE",
+                keep_reroutes_outside_frames=True,
+            ),
+        ),
+        # Frames + reroutes without routing (dummy nodes dissolve).
+        (
+            "Face Corner Angle",
+            SugiyamaOptions(direction="LEFT_DOWN", socket_alignment="MODERATE"),
+        ),
+        # Heavy duplicate-type twins with authored reroutes: edge routing
+        # around nodes (bend points).
+        ("Randomize Transforms", SugiyamaOptions(add_reroutes=True)),
+        # Frames + reroutes + split group inputs.
+        ("Is UV Split", SugiyamaOptions(add_reroutes=True)),
+    ],
+    ids=[
+        "balanced_full",
+        "routed_outside_frames",
+        "dissolved_left_down",
+        "routed_twins",
+        "routed_frames",
+    ],
+)
+def test_arrange_essentials_option_matrix(tree_name, options):
+    """The option combinations exercise the layout paths the defaults skip
+    (BALANCED balancing, socket alignment, frame-aware edge routing,
+    authored-reroute dissolution) on real, human-authored trees."""
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+        str(_ESSENTIALS), link=False, assets_only=True
+    ) as (src, dst):
+        dst.node_groups = [tree_name]
+    tree = dst.node_groups[0]
+    assert tree is not None
+
+    arrange(tree, options)
+
+    real = [n for n in tree.nodes if n.bl_idname not in ("NodeFrame", "NodeReroute")]
+    xs = {round(n.location.x) for n in real}
+    assert len(xs) > 3, "nodes should be spread over several columns"
+    for node in tree.nodes:
+        for value in node.location:
+            # Quantized to 2 decimals, modulo float32 storage error.
+            assert abs(value - round(value, 2)) < 1e-4
+
+
+def test_reroute_only_frame_and_repeated_multi_input():
+    """A frame holding nothing but a reroute chain keeps its chain (as
+    dummies) rather than dissolving it, and a reroute feeding the same
+    multi-input twice is left alone — dissolving would collapse the
+    duplicate links into one."""
+    with TreeBuilder("RerouteCluster", arrange=None) as tree:
+        geo = tree.inputs.geometry()
+        out = tree.outputs.geometry()
+        sp = g.SetPosition(geometry=geo)
+        chain = [tree.tree.nodes.new("NodeReroute") for _ in range(3)]
+        frame = tree.tree.nodes.new("NodeFrame")
+        tree.tree.links.new(sp.node.outputs[0], chain[0].inputs[0])
+        for a, b in itertools.pairwise(chain):
+            tree.tree.links.new(a.outputs[0], b.inputs[0])
+            a.parent = frame
+            b.parent = frame
+        join = g.JoinGeometry(geometry=[sp])
+        # The same reroute output into the same multi-input, twice.
+        tree.tree.links.new(chain[-1].outputs[0], join.node.inputs[0])
+        tree.tree.links.new(chain[-1].outputs[0], join.node.inputs[0])
+        join >> out
+
+    arrange(tree.tree, SugiyamaOptions(add_reroutes=True))
+    multi_links = [link for link in tree.tree.links if link.to_node == join.node]
+    assert len(multi_links) >= 2, "duplicate multi-input links must survive"
+
+
+def test_simple_arrangement_edge_cases():
+    """The simple arrangement handles an empty tree and a cyclic (zone)
+    tree whose backward edges the crossing reducer must skip."""
+    empty = bpy.data.node_groups.new("SimpleEmpty", "GeometryNodeTree")
+    arrange(empty, "simple")
+    assert len(empty.nodes) == 0
+
+    # Nodes but nothing layoutable: only a frame.
+    frame_only = bpy.data.node_groups.new("SimpleFrameOnly", "GeometryNodeTree")
+    frame_only.nodes.new("NodeFrame")
+    arrange(frame_only, "simple")
+
+    cyclic = _build_reroutable("SimpleCyclic")
+    arrange(cyclic.tree, SimpleOptions(spacing=(60, 30)))
+    xs = {round(n.location.x) for n in cyclic.tree.nodes}
+    assert len(xs) > 1
 
 
 def test_options_do_not_leak_between_runs():

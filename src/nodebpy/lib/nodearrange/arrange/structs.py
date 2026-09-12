@@ -31,7 +31,7 @@ class bNodeSocketRuntime(ctypes.Structure):
 
 
 _bNodeSocketRuntime_fields: list[tuple[str, Any]] = []
-if platform.system() == "Windows":
+if platform.system() == "Windows":  # pragma: no cover - platform-gated
     _bNodeSocketRuntime_fields.append(("_pad0", ctypes.c_char * 8))
 _bNodeSocketRuntime_fields.append(("declaration", ctypes.c_void_p))
 if bpy.app.version >= (5, 2, 0):
@@ -75,7 +75,7 @@ if bpy.app.version >= (5, 0, 0):
         ("attribute_domain", ctypes.c_char),
         ("_pad", ctypes.c_char * 2),
     ]
-else:
+else:  # pragma: no cover - Blender < 5.0
     _bNodeSocket_fields += [
         ("stack_index", ctypes.c_short),
         ("display_shape", ctypes.c_char),
@@ -86,7 +86,7 @@ _bNodeSocket_fields += [
     ("label", ctypes.c_char * 64),
     ("description", ctypes.c_char * 64),
 ]
-if bpy.app.version < (5, 1, 0):
+if bpy.app.version < (5, 1, 0):  # pragma: no cover - Blender < 5.1
     _bNodeSocket_fields.append(("short_label", ctypes.c_char * 64))
 _bNodeSocket_fields += [
     ("default_attribute_name", ctypes.POINTER(ctypes.c_char)),
@@ -123,7 +123,7 @@ _bNodeRuntime_fields: list[tuple[str, Any]] = [
 ]
 if bpy.app.version >= (4, 4, 0):
     _bNodeRuntime_fields.append(("draw_bounds", rctf))
-else:
+else:  # pragma: no cover - older Blender
     _bNodeRuntime_fields.append(("totr", rctf))
 _bNodeRuntime_fields += [
     ("tmp_flag", ctypes.c_short),
@@ -155,7 +155,7 @@ _bNode_fields: list[tuple[str, Any]] = [
 ]
 if bpy.app.version >= (4, 4, 0):
     _bNode_fields.append(("type_legacy", ctypes.c_int16))
-else:
+else:  # pragma: no cover - older Blender
     _bNode_fields.append(("type", ctypes.c_int16))
 _bNode_fields += [
     ("ui_order", ctypes.c_int16),
@@ -177,7 +177,7 @@ _bNode_fields += [
 ]
 if bpy.app.version >= (4, 4, 0):
     _bNode_fields.append(("location", ctypes.c_float * 2))
-else:
+else:  # pragma: no cover - older Blender
     _bNode_fields += [
         ("locx", ctypes.c_float),
         ("locy", ctypes.c_float),
@@ -193,7 +193,7 @@ if bpy.app.version >= (4, 3, 0):
         ("offsetx_legacy", ctypes.c_float),
         ("offsety_legacy", ctypes.c_float),
     ]
-else:
+else:  # pragma: no cover - older Blender
     _bNode_fields += [
         ("offsetx", ctypes.c_float),
         ("offsety", ctypes.c_float),

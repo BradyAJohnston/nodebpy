@@ -299,6 +299,15 @@ def test_plot_library(library_blend, tmp_path):
     with pytest.raises(KeyError, match="No node groups"):
         plot_library(library_blend, out, ["Nope*"])
 
+    with pytest.raises(FileNotFoundError):
+        plot_library(tmp_path / "missing.blend", out)
+
+    # A same-named group already in the session would be renamed on append.
+    with TreeBuilder("Scale Up"):
+        pass
+    with pytest.raises(RuntimeError, match="fresh session"):
+        plot_library(library_blend, out, ["Scale Up"])
+
 
 def test_cli_arrange_options_mapping():
     """The build CLI's layout flags map onto SugiyamaOptions; all-unset
