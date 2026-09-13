@@ -3318,3 +3318,36 @@ def test_class_mode_snapshot_emits_group_input_splits():
         tree.split_group_inputs()
     code = to_python(tree, top_level="class", snapshot_positions=True, format=False)
     assert "tree.group_input_splits = [" in code
+
+
+def test_round_trip_fixpoint_with_split_inputs():
+    """dump → build → dump must be a fixpoint when the tree holds several
+    Group Input instances (split inputs). The instances' socket-derived
+    names must not gate their consumers' readiness in the lexicographic
+    topological sort: which instance feeds a consumer follows link creation
+    order — i.e. the previous emission — so letting the names in would make
+    same-type twins swap statements on every round trip, forever."""
+    import bpy
+
+    from nodebpy.builder import default_split_inputs
+
+    with TreeBuilder("SplitFixpoint", split_inputs=True) as builder:
+        gid = builder.inputs.integer("Group ID")
+        ev = g.EdgeVertices()
+        e1 = gid.point.at(ev.o.vertex_index_1)
+        e2 = gid.point.at(ev.o.vertex_index_2)
+        g.Compare.integer.equal(e1, e2) >> builder.outputs.boolean("Is Equal")
+        abs(e1 - e2) >> builder.outputs.integer("Difference")
+
+    codes = []
+    current = builder
+    for _ in range(3):
+        code = to_python(current, format=False)
+        codes.append(code)
+        bpy.data.node_groups.remove(current.tree)
+        ns: dict = {}
+        with default_split_inputs():
+            exec(code, ns)
+        current = ns["tree"]
+    bpy.data.node_groups.remove(current.tree)
+    assert codes[0] == codes[1] == codes[2]
