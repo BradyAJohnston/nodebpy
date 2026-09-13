@@ -9,7 +9,7 @@ TreeBuilder(
     arrange='sugiyama',
     fake_user=False,
     ignore_visibility=False,
-    split_inputs=False,
+    split_inputs=None,
 )
 ```
 
@@ -79,7 +79,7 @@ compositor(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
-    split_inputs=False,
+    split_inputs=None,
 )
 ```
 
@@ -110,7 +110,7 @@ geometry(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
-    split_inputs=False,
+    split_inputs=None,
 )
 ```
 
@@ -139,7 +139,7 @@ shader(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
-    split_inputs=False,
+    split_inputs=None,
 )
 ```
 
@@ -151,7 +151,7 @@ Create a shader node tree.
 split_group_inputs()
 ```
 
-Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with `split_inputs=True`.
+Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Each instance is named (and labelled, so the editor header shows it) after the interface sockets it carries, making it easy to spot when scanning the tree (Blender de-duplicates repeated names with `.001` suffixes as usual), and parented into its consumer’s frame so the arranger’s frame clustering keeps the pair together. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with `split_inputs=True`, or inside a :func:`~nodebpy.builder.default_split_inputs` scope.
 
 ### to_mermaid
 

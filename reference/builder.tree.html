@@ -82,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-f2d0871641e9fa8bbf4b5fa23e868b66.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-58fa400742eb6ad1662038d04151022b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.21.0</span>
+    <span class="navbar-title">nodebpy 520.22.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -342,6 +342,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../reference/SimpleOptions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">SimpleOptions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/default_split_inputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">default_split_inputs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -1756,7 +1762,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
 <span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a compositor node tree.</p>
 </section>
@@ -1778,7 +1784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
 <span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a geometry node tree.</p>
 </section>
@@ -1799,14 +1805,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
 <span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a shader node tree.</p>
 </section>
 <section id="nodebpy.builder.tree.MaterialBuilder.split_group_inputs" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.MaterialBuilder.split_group_inputs">split_group_inputs</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>split_group_inputs()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with <code>split_inputs=True</code>.</p>
+<p>Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Each instance is named (and labelled, so the editor header shows it) after the interface sockets it carries, making it easy to spot when scanning the tree (Blender de-duplicates repeated names with <code>.001</code> suffixes as usual), and parented into its consumer’s frame so the arranger’s frame clustering keeps the pair together. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with <code>split_inputs=True</code>, or inside a :func:<code>~nodebpy.builder.default_split_inputs</code> scope.</p>
 </section>
 <section id="nodebpy.builder.tree.MaterialBuilder.to_mermaid" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.MaterialBuilder.to_mermaid">to_mermaid</h5>
@@ -2709,7 +2715,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
 <span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb101-8"><a href="#cb101-8" aria-hidden="true" tabindex="-1"></a>    ignore_visibility<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb101-9"><a href="#cb101-9" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb101-9"><a href="#cb101-9" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb101-10"><a href="#cb101-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Builder for creating Blender node trees with a clean Python API.</p>
 <p>Supports geometry, shader, and compositor node trees.</p>
@@ -2851,7 +2857,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
 <span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb105-8"><a href="#cb105-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a compositor node tree.</p>
 </section>
@@ -2873,7 +2879,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
 <span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb108-8"><a href="#cb108-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a geometry node tree.</p>
 </section>
@@ -2894,14 +2900,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>    collapse<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>    arrange<span class="op">=</span><span class="st">'sugiyama'</span>,</span>
 <span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>    fake_user<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a>    split_inputs<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a shader node tree.</p>
 </section>
 <section id="nodebpy.builder.tree.TreeBuilder.split_group_inputs" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.TreeBuilder.split_group_inputs">split_group_inputs</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb112"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>split_group_inputs()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with <code>split_inputs=True</code>.</p>
+<p>Split the Group Input node into one instance per consumer node, with unused sockets hidden — regenerating the editor style that avoids a single input node trailing long noodles. Each instance is named (and labelled, so the editor header shows it) after the interface sockets it carries, making it easy to spot when scanning the tree (Blender de-duplicates repeated names with <code>.001</code> suffixes as usual), and parented into its consumer’s frame so the arranger’s frame clustering keeps the pair together. Runs automatically on context exit (before auto-layout, so the instances are arranged next to their consumers) when the builder was created with <code>split_inputs=True</code>, or inside a :func:<code>~nodebpy.builder.default_split_inputs</code> scope.</p>
 </section>
 <section id="nodebpy.builder.tree.TreeBuilder.to_mermaid" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.builder.tree.TreeBuilder.to_mermaid">to_mermaid</h5>

@@ -20,6 +20,7 @@ Automatic node layout and its options.
 | [arrange](../reference/arrange.llms.md#nodebpy.arrange) | Arrange the nodes of a tree. |
 | [SugiyamaOptions](../reference/SugiyamaOptions.llms.md#nodebpy.SugiyamaOptions) | Options for the Sugiyama (layered) arrangement. |
 | [SimpleOptions](../reference/SimpleOptions.llms.md#nodebpy.SimpleOptions) | Options for the simple column-based arrangement. |
+| [default_split_inputs](../reference/default_split_inputs.llms.md#nodebpy.default_split_inputs) | Scope in which every `TreeBuilder` left at its default |
 | [default_sugiyama_options](../reference/default_sugiyama_options.llms.md#nodebpy.default_sugiyama_options) | Scope in which `arrange(tree, "sugiyama")` — and therefore every |
 
 ## Assets

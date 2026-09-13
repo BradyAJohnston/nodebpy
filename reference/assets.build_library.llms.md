@@ -11,6 +11,7 @@ build_library(
     on_missing='error',
     add_reroutes=False,
     arrange=None,
+    split_inputs=False,
 )
 ```
 
@@ -20,7 +21,7 @@ Imports every root module under `source_dir` (recursively; `_shared` group modul
 
 Datablocks the sources reference but cannot serialise (images, objects, …, recorded in each module’s `DATABLOCK_DEPENDENCIES`) resolve in order: already present in the session (build “in the presence” of the data — e.g. after opening a working file), appended by name from the `resources` `.blend`, or — with `on_missing="drop"` — replaced by temporary placeholders deleted again before the write, leaving those socket defaults empty. The default `on_missing="error"` raises upfront, listing everything missing.
 
-`arrange` tunes how the built trees are laid out: a :class:`~nodebpy.SugiyamaOptions` with any of its settings (spacing, crossing-reduction iterations, direction, socket alignment, …) is scoped over the build via :func:`nodebpy.builder.default_sugiyama_options`. `add_reroutes=True` additionally inserts reroute nodes to route long links around nodes (the node-arrange addon’s behaviour); it composes with `arrange`. Either only affects modules that leave the arrangement at its default — sources dumped with `snapshot_positions` disable arrangement and keep their authored layout.
+`arrange` tunes how the built trees are laid out: a :class:`~nodebpy.SugiyamaOptions` with any of its settings (spacing, crossing-reduction iterations, direction, socket alignment, …) is scoped over the build via :func:`nodebpy.builder.default_sugiyama_options`. `add_reroutes=True` additionally inserts reroute nodes to route long links around nodes (the node-arrange addon’s behaviour); it composes with `arrange`. `split_inputs=True` gives each consumer node its own Group Input instance — named and labelled after the interface sockets it carries, with unused sockets hidden — instead of a single Group Input trailing long noodles (scoped via :func:`nodebpy.builder.default_split_inputs`). All three only affect modules that leave the arrangement at its default — sources dumped with `snapshot_positions` disable arrangement and keep their authored layout, authored Group Input splits included.
 
 The built trees stay in the current session afterwards. Because `create_group()` reuses an existing tree of the same name (that is what deduplicates groups shared between asset files), the session must not already hold node groups when the build starts — a stale same-named group would silently end up in the `.blend`. This raises if any exist, unless `allow_existing` is passed. The CLI (`python -m nodebpy.assets build`) runs in a fresh session by construction.
 
