@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## 520.24.0 - 2026-09-13
+
+### Fixes
+
+- **Deterministic emission order with split Group Inputs** — dumped sources oscillated forever across `build` → `dump` round trips (the same node groups re-shuffling on every rebuild): links from Group Input nodes gated their consumers' readiness in codegen's lexicographic topological sort, so a tree holding several instances (`split_inputs`) emitted consumers in an order depending on the instances' socket-derived *names* — and which instance feeds a consumer follows link creation order, i.e. the previous emission. Group Input links now impose no emission order (they render as interface references, bound before any node emits), making dump → build → dump a fixpoint; expect a one-time re-normalization diff on the next dump of an affected library.
+
 ## 520.23.0 - 2026-09-13
 
 ### Enhancements

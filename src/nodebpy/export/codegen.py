@@ -946,9 +946,20 @@ def _ordering_edges(node_tree, keep_reroutes: bool = False):
     """(from, to) node pairs that must hold in emission order: effective
     links (canonical order, reroutes collapsed) plus a synthetic edge from
     each zone input node to its paired output, so the zone wrapper is
-    declared before the output side is emitted."""
+    declared before the output side is emitted.
+
+    Links from Group Input nodes impose no order: they render as interface
+    references (bound in the interface block, before any node emits), and
+    a tree holding several instances (split inputs) must not let the
+    instances' names gate their consumers' readiness in the lexicographic
+    topological sort — which instance feeds a consumer follows link
+    creation order, so emission order would depend on the previous
+    emission and oscillate across dump → build round trips."""
     for link in _effective_links(node_tree, keep_reroutes):
-        if link.from_node != link.to_node:
+        if (
+            link.from_node != link.to_node
+            and link.from_node.bl_idname != "NodeGroupInput"
+        ):
             yield link.from_node, link.to_node
     for node in node_tree.nodes:
         paired = getattr(node, "paired_output", None)
