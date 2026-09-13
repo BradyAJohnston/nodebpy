@@ -181,6 +181,25 @@ def test_split_inputs_instances_named_after_sockets():
     assert tree.tree.nodes["Group Input"].outputs["Radius"].is_linked
 
 
+def test_split_inputs_instances_follow_consumer_frames():
+    """A split instance is parented into its consumer's frame — an
+    unparented instance would be pushed away from the consumer by the
+    arranger's frame clustering."""
+    with TreeBuilder("SplitFrames", split_inputs=True) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        math = g.Math.add(a, 1.0)
+        with g.Frame("Inner"):
+            combine = g.CombineXYZ(x=math, y=b)
+        combine.o.vector.length() >> tree.outputs.float("Out")
+
+    instance = tree.tree.nodes["B"]
+    assert instance.parent is not None
+    assert instance.parent == combine.node.parent
+    # The frame-less first consumer keeps the frame-less primary node.
+    assert tree.tree.nodes["Group Input"].parent is None
+
+
 def test_default_split_inputs_scope():
     """Inside a default_split_inputs scope, builders left at their default
     split_inputs split on exit; an explicit False and arrangement-disabled

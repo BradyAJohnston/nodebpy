@@ -1547,8 +1547,9 @@ class TreeBuilder[TreeT: NodeTree]:
         avoids a single input node trailing long noodles. Each instance is
         named (and labelled, so the editor header shows it) after the
         interface sockets it carries, making it easy to spot when scanning
-        the tree; Blender de-duplicates repeated names with ``.001`` suffixes
-        as usual. Runs automatically on context exit (before auto-layout, so
+        the tree (Blender de-duplicates repeated names with ``.001``
+        suffixes as usual), and parented into its consumer's frame so the
+        arranger's frame clustering keeps the pair together. Runs automatically on context exit (before auto-layout, so
         the instances are arranged next to their consumers) when the builder
         was created with ``split_inputs=True``, or inside a
         :func:`~nodebpy.builder.default_split_inputs` scope."""
@@ -1565,12 +1566,20 @@ class TreeBuilder[TreeT: NodeTree]:
         def socket_names(links: list[tuple[str, str, str]]) -> str:
             return ", ".join(dict.fromkeys(name for name, _, _ in links))
 
+        def parent_frame(consumer: str) -> str | None:
+            parent = self.tree.nodes[consumer].parent
+            return parent.name if parent is not None else None
+
         # The first consumer keeps the primary node; each further consumer
-        # gets its own instance, named after the sockets it carries.
+        # gets its own instance, named after the sockets it carries and
+        # parented into the consumer's frame — frame clustering would
+        # otherwise push an unparented instance away from its consumer when
+        # the tree is arranged.
         self.group_input_splits = [
             {
                 "name": socket_names(by_consumer[consumer]),
                 "label": socket_names(by_consumer[consumer]),
+                "parent": parent_frame(consumer),
                 "links": by_consumer[consumer],
             }
             for consumer in list(by_consumer)[1:]
