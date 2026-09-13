@@ -3930,6 +3930,8 @@ def _group_input_split_lines(
         parent = _fmt(node.parent.name) if node.parent is not None else "None"
         lines.append(f"{indent}    {{")
         lines.append(f'{indent}        "name": {_fmt(node.name)},')
+        if node.label:
+            lines.append(f'{indent}        "label": {_fmt(node.label)},')
         lines.append(f'{indent}        "location": {_fmt(loc)},')
         lines.append(f'{indent}        "parent": {parent},')
         lines.append(f'{indent}        "links": [')

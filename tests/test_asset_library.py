@@ -251,6 +251,42 @@ def test_build_add_reroutes(tmp_path):
     assert reroute_count() > 0
 
 
+def test_build_split_inputs(tmp_path):
+    """build_library(split_inputs=True) — the CLI's --split-inputs — gives
+    each consumer node its own Group Input instance named after the sockets
+    it uses; the default build keeps the single primary node."""
+    with TreeBuilder("Splittable") as tree:
+        a = tree.inputs.float("Radius")
+        b = tree.inputs.float("Height")
+        math = g.Math.add(a, 1.0)
+        g.CombineXYZ(x=math, y=b).o.vector.length() >> tree.outputs.float("Out")
+    tree.tree.asset_mark()
+    blend = tmp_path / "library.blend"
+    bpy.data.libraries.write(str(blend), {tree.tree}, fake_user=True)
+    _clear_node_groups()
+
+    src = tmp_path / "src"
+    dump_library(blend, src)
+
+    def input_nodes():
+        return [
+            n
+            for n in bpy.data.node_groups["Splittable"].nodes
+            if n.bl_idname == "NodeGroupInput"
+        ]
+
+    build_library(src, tmp_path / "plain.blend")
+    assert len(input_nodes()) == 1
+    _clear_node_groups()
+
+    build_library(src, tmp_path / "split.blend", split_inputs=True)
+    instances = input_nodes()
+    assert len(instances) == 2
+    named = next(n for n in instances if n.name != "Group Input")
+    assert named.name == named.label == "Height"
+    assert named.outputs["Radius"].hide and not named.outputs["Radius"].is_linked
+
+
 def test_build_arrange_options(library_blend, tmp_path):
     """build_library(arrange=...) tunes the built trees' layout: wider
     spacing spreads the same tree further apart."""

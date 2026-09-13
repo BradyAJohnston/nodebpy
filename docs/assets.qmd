@@ -171,8 +171,12 @@ the dumped classes. On the build side the automatic layout is tunable:
 reroute nodes routing long links around nodes (the node-arrange addon's
 behaviour), and `--spacing`, `--iterations` (crossing reduction),
 `--direction`, `--socket-alignment` and the other `SugiyamaOptions` fields
-(`arrange=SugiyamaOptions(...)` in Python) override the defaults; sources
-dumped with `snapshot_positions` keep their authored layout regardless.
+(`arrange=SugiyamaOptions(...)` in Python) override the defaults;
+`--split-inputs` / `split_inputs=True` gives each consumer node its own
+Group Input instance — named and labelled after the interface sockets it
+uses, unused sockets hidden — instead of a single Group Input trailing long
+noodles. Sources dumped with `snapshot_positions` keep their authored layout
+regardless.
 
 Round-trip fidelity is checked with `nodebpy.export.compare_libraries` /
 `serialize_library` (or `python -m nodebpy.export.parity a.blend b.blend`),

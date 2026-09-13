@@ -609,6 +609,7 @@ def test_snapshot_positions_preserves_group_input_splits():
         # way an artist splits inputs to shorten noodles.
         extra = tree.tree.nodes.new("NodeGroupInput")
         extra.location = (-321.0, -123.0)
+        extra.label = "B input"
         link = next(
             l
             for l in tree.tree.links
@@ -628,6 +629,7 @@ def test_snapshot_positions_preserves_group_input_splits():
     instances = [n for n in rebuilt.nodes if n.bl_idname == "NodeGroupInput"]
     assert len(instances) == 2
     split = rebuilt.nodes[extra.name]
+    assert split.label == "B input"
     assert split.outputs["B"].is_linked
     assert split.outputs["A"].hide and not split.outputs["A"].is_linked
     assert tuple(round(v, 1) for v in split.location) == (-321.0, -123.0)
