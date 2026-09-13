@@ -122,47 +122,47 @@ quartodoc:
         - export.serialize_library
         - export.compare_libraries
 
-  - title: Geometry Nodes
-    desc: Nodes use in Geometry Nodes trees.
-    contents:
-    - nodes.geometry.input
-    - nodes.geometry.attribute
-    - nodes.geometry.color
-    - nodes.geometry.converter
-    - nodes.geometry.texture
-    - nodes.geometry.grid
-    - nodes.geometry.groups
-    - nodes.geometry.geometry
-    - nodes.geometry.attribute
-    - nodes.geometry.vector
-    - nodes.geometry.manual
-    - nodes.geometry.zone
+    - title: Geometry Nodes
+      desc: Nodes use in Geometry Nodes trees.
+      contents:
+      - nodes.geometry.input
+      - nodes.geometry.attribute
+      - nodes.geometry.color
+      - nodes.geometry.converter
+      - nodes.geometry.texture
+      - nodes.geometry.grid
+      - nodes.geometry.groups
+      - nodes.geometry.geometry
+      - nodes.geometry.attribute
+      - nodes.geometry.vector
+      - nodes.geometry.manual
+      - nodes.geometry.zone
 
-  - title: Shader Nodes
-    desc: Nodes use in Material / Shader node trees
-    contents:
-    - nodes.shader.color
-    - nodes.shader.converter
-    - nodes.shader.grid
-    - nodes.shader.group
-    - nodes.shader.input
-    - nodes.shader.manual
-    - nodes.shader.output
-    - nodes.shader.script
-    - nodes.shader.shader
-    - nodes.shader.texture
-    - nodes.shader.vector
-  - title: Compositor Nodes
-    desc: Nodes for use in the compositor
-    contents:
-    - nodes.compositor.color
-    - nodes.compositor.converter
-    - nodes.compositor.distort
-    - nodes.compositor.filter
-    - nodes.compositor.group
-    - nodes.compositor.input
-    - nodes.compositor.interface
-    - nodes.compositor.manual
-    - nodes.compositor.matte
-    - nodes.compositor.output
-    - nodes.compositor.vector
+    - title: Shader Nodes
+      desc: Nodes use in Material / Shader node trees
+      contents:
+      - nodes.shader.color
+      - nodes.shader.converter
+      - nodes.shader.grid
+      - nodes.shader.group
+      - nodes.shader.input
+      - nodes.shader.manual
+      - nodes.shader.output
+      - nodes.shader.script
+      - nodes.shader.shader
+      - nodes.shader.texture
+      - nodes.shader.vector
+    - title: Compositor Nodes
+      desc: Nodes for use in the compositor
+      contents:
+      - nodes.compositor.color
+      - nodes.compositor.converter
+      - nodes.compositor.distort
+      - nodes.compositor.filter
+      - nodes.compositor.group
+      - nodes.compositor.input
+      - nodes.compositor.interface
+      - nodes.compositor.manual
+      - nodes.compositor.matte
+      - nodes.compositor.output
+      - nodes.compositor.vector
