@@ -12,6 +12,7 @@ dump_library(
     materials=True,
     format=True,
     typed_api=False,
+    library_anchor=None,
 )
 ```
 
@@ -34,6 +35,7 @@ Each asset is appended into the current session for introspection and the append
 | materials | bool | Code-generate materials referenced by the dumped trees into `materials/` modules (the default). With `False` they are only recorded as `DATABLOCK_DEPENDENCIES`, to be resolved at build time like any other non-serialisable datablock. Asset-marked materials are dump roots in their own right and are always code-generated, regardless of this flag. | `True` |
 | format | bool | Run the generated sources through `ruff format` when available. | `True` |
 | typed_api | bool | Merge the typed asset API into the dumped classes: each asset class gains a numpydoc docstring, `_Inputs`/`_Outputs` accessors and a typed `__init__`, subclasses `Asset*Group` and carries `_library = PackageLibrary(__file__, <relative path to blend_path>)` — so at runtime it *appends* the shipped `.blend` while its `_build_group` remains the source of truth that regenerates it (`build_library` builds from source via :func:`nodebpy.builder.build_from_source`). Shared helper modules get the typed API too (but stay `Custom*Group` — they are not assets), group calls in generated bodies use the typed parameter names, and each tree directory’s `__init__.py` re-exports its asset classes. Everything outside `_build_group` is regenerated on the next dump. | `False` |
+| library_anchor | tuple\[str \| Path, str \| Path\] \| None | `(output_dir, blend_path)` stand-ins for the typed-API `PackageLibrary` relative-path computation: the dumped modules come out exactly as if they were written at that output directory with the library at that `.blend` — regardless of where this dump actually writes. Internal, used by the CLI’s `check` subcommand so a re-dump into a temporary directory is byte-identical to the real sources. | `None` |
 
 ## Returns
 
