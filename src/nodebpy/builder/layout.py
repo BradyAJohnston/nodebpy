@@ -512,6 +512,32 @@ def default_sugiyama_options(options: SugiyamaOptions) -> Iterator[None]:
         _DEFAULT_SUGIYAMA.reset(token)
 
 
+# What TreeBuilder's split_inputs=None resolves to. Overridable per scope so
+# a batch build can split the Group Input of trees whose recipes leave
+# TreeBuilder at its default — see :func:`default_split_inputs`.
+_DEFAULT_SPLIT_INPUTS: ContextVar[bool] = ContextVar(
+    "nodebpy_default_split_inputs", default=False
+)
+
+
+@contextmanager
+def default_split_inputs(split: bool = True) -> Iterator[None]:
+    """Scope in which every ``TreeBuilder`` left at its default
+    ``split_inputs`` splits the Group Input node into one instance per
+    consumer node (with unused sockets hidden) on context exit.
+
+    An explicit ``split_inputs=True/False`` is unaffected, and so are trees
+    that disable auto-arrangement (as ``snapshot_positions`` dumps do) —
+    their authored layout, including any authored Group Input splits, must
+    survive untouched.
+    """
+    token = _DEFAULT_SPLIT_INPUTS.set(split)
+    try:
+        yield
+    finally:
+        _DEFAULT_SPLIT_INPUTS.reset(token)
+
+
 def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:
     from mathutils import Vector
 

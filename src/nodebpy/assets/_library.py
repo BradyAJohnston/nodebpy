@@ -88,6 +88,7 @@ from ..builder import (
     SugiyamaOptions,
     TreeBuilder,
     build_from_source,
+    default_split_inputs,
     default_sugiyama_options,
 )
 from ..builder._utils import normalize_name
@@ -1062,6 +1063,7 @@ def build_library(
     on_missing: str = "error",
     add_reroutes: bool = False,
     arrange: SugiyamaOptions | None = None,
+    split_inputs: bool = False,
 ) -> list[str]:
     """Rebuild a ``.blend`` asset library from sources written by
     :func:`dump_library`.
@@ -1094,9 +1096,14 @@ def build_library(
     :func:`nodebpy.builder.default_sugiyama_options`. ``add_reroutes=True``
     additionally inserts reroute nodes to route long links around nodes
     (the node-arrange addon's behaviour); it composes with ``arrange``.
-    Either only affects modules that leave the arrangement at its default —
-    sources dumped with ``snapshot_positions`` disable arrangement and keep
-    their authored layout.
+    ``split_inputs=True`` gives each consumer node its own Group Input
+    instance — named and labelled after the interface sockets it carries,
+    with unused sockets hidden — instead of a single Group Input trailing
+    long noodles (scoped via
+    :func:`nodebpy.builder.default_split_inputs`). All three only affect
+    modules that leave the arrangement at its default — sources dumped with
+    ``snapshot_positions`` disable arrangement and keep their authored
+    layout, authored Group Input splits included.
 
     The built trees stay in the current session afterwards. Because
     ``create_group()`` reuses an existing tree of the same name (that is what
@@ -1193,7 +1200,8 @@ def build_library(
     arrange_override = (
         default_sugiyama_options(options) if options is not None else nullcontext()
     )
-    with arrange_override:
+    split_override = default_split_inputs() if split_inputs else nullcontext()
+    with arrange_override, split_override:
         # Materials first: asset trees look them up by name while building.
         built_materials = []
         for file, module in material_modules:
@@ -1522,6 +1530,17 @@ def _add_build_flags(parser) -> None:  # pragma: no cover
         "--snapshot-positions keep their authored layout regardless.",
     )
     parser.add_argument(
+        "--split-inputs",
+        action="store_true",
+        help=(
+            "Give each consumer node its own Group Input instance, named "
+            "after the interface sockets it uses (unused sockets hidden), "
+            "instead of one Group Input trailing long noodles. Sources "
+            "dumped with --snapshot-positions keep their authored layout "
+            "regardless."
+        ),
+    )
+    parser.add_argument(
         "--drop-missing",
         dest="on_missing",
         action="store_const",
@@ -1784,6 +1803,7 @@ def _build_command(args) -> None:
         on_missing=args.on_missing,
         add_reroutes=args.add_reroutes,
         arrange=_arrange_options_from_args(args),
+        split_inputs=args.split_inputs,
     )
     print(f"Built {args.blend} with {len(names)} assets: {', '.join(names)}")
     write_stamp(args.blend, args.source, args.resources, stamp_options(args))

@@ -88,6 +88,7 @@ _CONFIG_KEYS: dict[str, tuple[str | None, str]] = {
     "no-compress": ("compress", "off"),
     "drop-missing": ("on_missing", "drop"),
     "add-reroutes": ("add_reroutes", "flag"),
+    "split-inputs": ("split_inputs", "flag"),
     "spacing": ("spacing", "value"),
     "iterations": ("iterations", "value"),
     "direction": ("direction", "value"),
@@ -122,6 +123,7 @@ _OPTION_DEFAULTS: dict[str, object] = {
     "compress": True,
     "on_missing": "error",
     "add_reroutes": False,
+    "split_inputs": False,
     "spacing": None,
     "iterations": None,
     "direction": None,
@@ -150,6 +152,7 @@ _STAMP_DESTS = (
     "snapshot_positions",
     "socket_alignment",
     "spacing",
+    "split_inputs",
     "stack_collapsed",
     "stack_margin_y_fac",
     "typed_api",
@@ -345,6 +348,8 @@ def _build_stage_flags(args: Namespace) -> list[str]:
         flags.append("--no-compress")
     if args.add_reroutes:
         flags.append("--add-reroutes")
+    if args.split_inputs:
+        flags.append("--split-inputs")
     if args.spacing is not None:
         flags += ["--spacing", *(str(value) for value in args.spacing)]
     if args.iterations is not None:

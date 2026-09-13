@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## v520.22.0 - 2026-09-13
+
+### Enhancements
+
+- **Split Group Inputs on build** — `build_library(split_inputs=True)` / `python -m nodebpy.assets build --split-inputs` gives each consumer node its own Group Input instance instead of one node trailing long noodles: instances are named and labelled after the interface sockets they carry (so they read as their content when scanning a tree), unused sockets are hidden, and each instance is parented into its consumer's frame and arranged next to it. Backed by the new `default_split_inputs()` scope (mirroring `default_sugiyama_options`), which `TreeBuilder`s left at their default `split_inputs` resolve on exit; snapshot-positions sources keep their authored splits untouched. `group_input_splits` entries now round-trip instance labels too. The config key `split-inputs` works in `[tool.nodebpy.assets]`, and the option is covered by the `ensure` stamp fingerprint and forwarded by `check`.
+
 ## v520.21.0 - 2026-09-12
 
 ### Enhancements
