@@ -161,6 +161,67 @@ def test_split_inputs_creates_instance_per_consumer():
     assert combine.node.inputs["Y"].links[0].from_socket.name == "B"
 
 
+def test_split_inputs_instances_named_after_sockets():
+    """Split instances take the name (and header label) of the interface
+    sockets they carry, so they read as their content when scanning the
+    tree instead of an anonymous 'Group Input.001'."""
+    with TreeBuilder("SplitNames", split_inputs=True) as tree:
+        radius = tree.inputs.float("Radius")
+        height = tree.inputs.float("Height")
+        depth = tree.inputs.float("Depth")
+        math = g.Math.add(radius, 1.0)
+        combine = g.CombineXYZ(x=math, y=height, z=depth)
+        combine.o.vector.length() >> tree.outputs.float("Out")
+
+    # The first consumer (Math) keeps the primary node; CombineXYZ's
+    # instance is named after both sockets it carries.
+    instance = tree.tree.nodes["Height, Depth"]
+    assert instance.bl_idname == "NodeGroupInput"
+    assert instance.label == "Height, Depth"
+    assert tree.tree.nodes["Group Input"].outputs["Radius"].is_linked
+
+
+def test_split_inputs_instances_follow_consumer_frames():
+    """A split instance is parented into its consumer's frame — an
+    unparented instance would be pushed away from the consumer by the
+    arranger's frame clustering."""
+    with TreeBuilder("SplitFrames", split_inputs=True) as tree:
+        a = tree.inputs.float("A")
+        b = tree.inputs.float("B")
+        math = g.Math.add(a, 1.0)
+        with g.Frame("Inner"):
+            combine = g.CombineXYZ(x=math, y=b)
+        combine.o.vector.length() >> tree.outputs.float("Out")
+
+    instance = tree.tree.nodes["B"]
+    assert instance.parent is not None
+    assert instance.parent == combine.node.parent
+    # The frame-less first consumer keeps the frame-less primary node.
+    assert tree.tree.nodes["Group Input"].parent is None
+
+
+def test_default_split_inputs_scope():
+    """Inside a default_split_inputs scope, builders left at their default
+    split_inputs split on exit; an explicit False and arrangement-disabled
+    trees (snapshot-positions dumps) are unaffected, and the default resets
+    when the scope closes."""
+    from nodebpy.builder import default_split_inputs
+
+    def input_node_count(name: str, **kwargs) -> int:
+        with TreeBuilder(name, **kwargs) as tree:
+            a = tree.inputs.float("A")
+            b = tree.inputs.float("B")
+            math = g.Math.add(a, 1.0)
+            g.CombineXYZ(x=math, y=b).o.vector.length() >> tree.outputs.float("Out")
+        return sum(1 for n in tree.tree.nodes if n.bl_idname == "NodeGroupInput")
+
+    with default_split_inputs():
+        assert input_node_count("AmbientSplit") == 2
+        assert input_node_count("AmbientSplitOff", split_inputs=False) == 1
+        assert input_node_count("AmbientSplitNoArrange", arrange=None) == 1
+    assert input_node_count("AmbientSplitOutside") == 1
+
+
 def test_split_inputs_noop_with_single_consumer():
     """One consumer node means nothing to split — the primary stays alone
     (with its unused sockets hidden)."""
