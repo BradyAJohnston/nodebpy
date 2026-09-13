@@ -812,6 +812,15 @@ def _make_var(label: str, counter: dict[str, int]) -> str:
     return f"{base}_{counter[base]}"
 
 
+def _node_var_label(node) -> str:
+    """The stem for a node's generated variable name. A group node's
+    ``bl_label`` is just "Group", so it reads as its group's name instead
+    (``inverse_mass = InverseMass()``)."""
+    if node.bl_idname in _GROUP_BASES and node.node_tree is not None:
+        return node.node_tree.name
+    return node.bl_label or "node"
+
+
 # ---------------------------------------------------------------------------
 # Graph utilities
 # ---------------------------------------------------------------------------
@@ -1203,7 +1212,7 @@ class EmitContext:
         vector feeding ``vec.x`` / ``vec.y``). The assignment is queued on
         ``pending_lines`` and flushed before the consuming statement.
         """
-        label = link.from_socket.name or link.from_node.bl_label or "value"
+        label = link.from_socket.name or _node_var_label(link.from_node)
         var = _make_var(label, self.counter)
         self.pending_lines.append(f"    {var} = {expr.render()}")
         ref = Ref(var)
@@ -4491,7 +4500,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
                         f"Cannot generate code: {message}. Register an emitter "
                         "with register_emitter() or pass strict=False."
                     )
-                var = _make_var(node.bl_label or "node", ctx.counter)
+                var = _make_var(_node_var_label(node), ctx.counter)
                 if not ctx.outgoing.get(name):
                     var = "_" + var
                 ctx.var_map[name] = _Val(Ref(var))
@@ -4577,7 +4586,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
             consumed_out_links.add(id(link))
             continue
 
-        var = _make_var(node.bl_label or "node", ctx.counter)
+        var = _make_var(_node_var_label(node), ctx.counter)
         # A node created purely for its side effect (a gizmo, a dangling
         # node) is never referenced again — prefix its variable so the
         # generated module passes lint (F841).

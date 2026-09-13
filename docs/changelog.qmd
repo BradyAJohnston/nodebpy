@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## 520.23.0 - 2026-09-13
+
+### Enhancements
+
+- **Group nodes read as their group in generated code** — codegen names a group node's variable after its node group (`inverse_mass = InverseMass()`) instead of the generic `group` / `group_1` a group node's "Group" label used to produce.
+
 ## v520.22.0 - 2026-09-13
 
 ### Enhancements
