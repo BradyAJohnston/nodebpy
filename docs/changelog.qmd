@@ -2,7 +2,28 @@
 title: Changelog
 ---
 
+## v520.21.0 - 2026-09-12
+
+### Enhancements
+
+- **Assets CLI reads `pyproject.toml`** — `python -m nodebpy.assets` positionals and flags can come from a `[tool.nodebpy.assets]` table in the nearest `pyproject.toml` (walking up from the working directory), with keys spelled like the flags (`source` and `blend` supply the positionals, paths relative to the pyproject); explicit CLI arguments always win, and a positional neither given nor configured errors naming both the argument and the config key.
+- **`ensure` and `check` subcommands** — `build` and full `dump` now record a fingerprint stamp (`<blend>.stamp`) covering nodebpy's version, the resolved options, the source files and the resources `.blend` bytes. `ensure` rebuilds only when the `.blend` or stamp is missing or stale, comparing hashes alone; `check` verifies the roundtrip fixed point, building the sources and dumping the result back out (as fresh-session subprocesses) and failing unless the sources are reproduced byte-for-byte. The CLI entry also strips argv up to Blender's `--` separator, so every subcommand works as `blender -b --factory-startup -P .../__main__.py -- ...`.
+
+### Fixes
+
+- `check` reported offending source paths with the platform separator, so the listing and its ordering differed on Windows; paths are now reported and sorted as POSIX, matching the fingerprint.
+
+## v520.20.0 - 2026-09-12
+
+### Enhancements
+
+- **Material assets are dump roots** — `dump_library` now dumps materials marked as assets alongside node-group assets, not only materials referenced by the dumped trees. Each gets its own `materials/` module carrying a `MATERIAL_ASSET_METADATA` footer, so `build_library` re-marks it as an asset with its metadata and tags; referenced-only materials still build unmarked. `names` / `--names` matches material asset names too, and a full re-dump clears modules of materials that are no longer asset-marked.
+
 ## v520.19.0 - 2026-09-12
+
+### Breaking Changes
+
+- **`nodebpy.builder.arrange` module renamed to `nodebpy.builder.layout`** — the name `arrange` is now the `arrange()` function at both `nodebpy.arrange` and `nodebpy.builder.arrange`, so `import nodebpy.builder.arrange` (and the pre-v520.1.0 `import nodebpy.arrange`) raise `ModuleNotFoundError`. Every helper keeps its name and signature under `nodebpy.builder.layout` (`arrange_tree`, `build_dependency_graph`, `topological_sort`, `organize_into_columns`, `calculate_node_dimensions`, `position_nodes_in_columns`, `position_reroutes`); `arrange_tree` is also exported from `nodebpy.builder`. A shim module cannot be provided because importing it would rebind the package attribute and shadow the function.
 
 ### Enhancements
 
@@ -18,7 +39,7 @@ title: Changelog
 - `TreeBuilder.link` read socket endpoints after `links.new(handle_dynamic_sockets=True)` had freed and recreated them (a reroute retypes its sockets to match the link), an intermittent use-after-free segfault; endpoints are now re-read from the created link. The `group_input_splits` setter had the same stale-socket hazard after `links.remove`.
 - Arranged node locations are quantized to the 2-decimal dump precision, so arranged trees round-trip losslessly through dump → build.
 
-## v250.18.0 - 2026-09-10
+## v520.18.0 - 2026-09-10
 
 ### Enhancements
 
@@ -29,7 +50,7 @@ title: Changelog
 
 - Codegen's value formatter rendered a one-element tuple without its trailing comma (`("X")` — a plain string), so any single-entry sequence value degenerated on rebuild; it now keeps the comma.
 
-## v250.17.0 - 2026-09-10
+## v520.17.0 - 2026-09-10
 
 ### Enhancements
 
@@ -53,7 +74,7 @@ title: Changelog
 - `value.map_range(...)` with a non-default steps value emitted five positional arguments where `steps` is keyword-only, making the generated script fail to run.
 - An IntegerMath operation with a float operand was lifted to a Python operator that rebuilt as a float `ShaderNodeMath` node; the lift now checks operand types like the other math lifts.
 
-## v520.15.0 - 2026-08-28
+## v520.16.0 - 2026-08-28
 
 ### Enhancements
 - **Font and Sound sockets everywhere Blender allows them** — `tree.inputs.font()` / `.sound()` (and the `outputs` equivalents) create interface sockets; typed `font` / `sound` factories were added to `IndexSwitch`, `MenuSwitch`, the repeat zone's `items`, closure zone `inputs` / `outputs`, `EvaluateClosure` `inputs` / `outputs` and Combine / Separate Bundle `items`. `to_python` emits the new spellings, and `FONT` joined the socket-compatibility table so font links are accepted by the builder. Simulation, For-Each, Bake and Capture Attribute items are unchanged: Blender 5.2 rejects these datablock types there.
