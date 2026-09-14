@@ -172,3 +172,252 @@ def test_plot_collapsed_and_framed_tree():
     for path in (before, after):
         assert path.exists()
         assert path.stat().st_size > _MIN_PLOT_BYTES
+
+
+def test_node_plot_draws_group_node(tmp_path):
+    """to_plot(node=True) renders the tree as one group node — from the
+    export function and the TreeBuilder method alike — and leaves no
+    scratch tree behind. Every interface socket type that draws a value
+    widget is exercised, and axes=True adds a ticked frame."""
+    before = set(bpy.data.node_groups.keys())
+    with TreeBuilder("NodePlot", arrange=None) as tree:
+        geo = tree.inputs.geometry()
+        tree.inputs.float("Factor", 0.5, min_value=0.0, max_value=1.0, subtype="FACTOR")
+        tree.inputs.float("Angle", 1.0, subtype="ANGLE")
+        tree.inputs.integer("Order", 6)
+        tree.inputs.vector("Axis", (0.0, 0.0, 1.0))
+        tree.inputs.string("Name", "sym_id")
+        tree.inputs.boolean("Realize", True)
+        tree.inputs.color("Tint", (0.8, 0.2, 0.1, 1.0))
+        geo >> tree.outputs.geometry()
+
+    path = to_plot(tree.tree, PLOT_DIR / "NodePlot_node.png", node=True)
+    assert path.stat().st_size > _MIN_PLOT_BYTES
+    wide = tree.to_plot(tmp_path / "wide.png", node=True, width=240)
+    assert wide.stat().st_size > _MIN_PLOT_BYTES
+    plain = tree.to_plot(tmp_path / "tree.png", title="NodePlot")
+    framed = tree.to_plot(PLOT_DIR / "NodePlot_axes.png", title="NodePlot", axes=True)
+    assert set(bpy.data.node_groups.keys()) == before | {"NodePlot"}
+
+    from PIL import Image
+
+    # The axes margin grows the image without rescaling the drawing.
+    assert Image.open(framed).width > Image.open(plain).width
+    assert Image.open(framed).height > Image.open(plain).height
+
+
+def test_node_plot_rejects_unknown_tree_type(tmp_path):
+    """A tree type without a known group-node counterpart is refused."""
+    tree = bpy.data.node_groups.new("NoGroupNode", "TextureNodeTree")
+    from nodebpy.export import plot as plot_module
+
+    monkey = plot_module._GROUP_NODE_FOR_TREE.pop("TextureNodeTree")
+    try:
+        with pytest.raises(ValueError, match="Cannot draw a group node"):
+            to_plot(tree, tmp_path / "never.png", node=True)
+    finally:
+        plot_module._GROUP_NODE_FOR_TREE["TextureNodeTree"] = monkey
+        bpy.data.node_groups.remove(tree)
+
+
+def test_plot_zones_reroutes_and_widgets():
+    """A tree exercising the remaining editor features the plotter draws:
+    a simulation zone, a reroute, muted / invalid links, custom node colour,
+    a frame label, value / vector / colour / string input nodes and every
+    property widget kind."""
+    with TreeBuilder("PlotZones", arrange=None) as tree:
+        cube = g.Cube()
+        sim = g.SimulationZone({"cube": cube})
+        pos = sim.item("Position", g.Position())
+        (pos.current + 0.1) >> pos.next
+        vec = g.Vector((0.0, 0.0, 0.1))
+        offset = sim.delta_time * vec * pos.current
+        sim.input >> g.SetPosition(offset=offset) >> sim.output
+        out = sim.output >> g.SetPosition(position=sim.output.o["Position"])
+        with g.Frame("Constants"):
+            g.Color(value=(0.2, 0.4, 0.8, 1.0))
+            g.String(string="a comment")
+            g.Value(1.5)
+        store = g.StoreNamedAttribute(
+            geometry=out, name="idx", value=g.Index(), data_type="INT"
+        )
+        store >> tree.outputs.geometry()
+        reroute = tree.tree.nodes.new("NodeReroute")
+        tree.tree.links.new(cube.node.outputs[0], reroute.inputs[0])
+        cube.node.use_custom_color = True
+        cube.node.color = (0.4, 0.2, 0.2)
+        muted = tree.tree.links.new(vec.node.outputs[0], store.node.inputs["Name"])
+        muted.is_muted = True
+
+    arrange(tree.tree, "sugiyama")
+    path = to_plot(tree.tree, PLOT_DIR / "PlotZones.png", title="PlotZones")
+    assert path.stat().st_size > _MIN_PLOT_BYTES
+
+
+def test_plot_matches_layout_row_model():
+    """The plot and the arranger share one row model: Set Position draws
+    its Geometry output on the Geometry input's row (Blender's aligned
+    sockets), a hide_value vector input takes a single row, and undrawn RNA
+    bookkeeping adds no property rows — header + 4 input rows in all."""
+    from nodebpy.builder.layout import (
+        HEADER,
+        SOCKET_ROW,
+        VECTOR_EXPANDED,
+        calculate_node_dimensions,
+        calculate_socket_offset_y,
+        node_property_rows,
+        node_rows,
+    )
+
+    with TreeBuilder("RowModel", arrange=None) as tree:
+        sp = g.SetPosition()
+        sim = g.SimulationZone({"cube": g.Cube()})
+        vec = g.Vector((1.0, 2.0, 3.0))
+        out = tree.outputs.geometry()
+        sim.output >> out
+
+    rows = node_rows(sp.node)
+    assert [r.kind for r in rows] == ["input"] * 4
+    assert rows[0].socket.name == "Geometry" and rows[0].partner.name == "Geometry"
+    assert calculate_socket_offset_y(sp.node.outputs["Geometry"]) == rows[0].anchor
+    _, height = calculate_node_dimensions(sp.node)
+    # Offset is an unlinked, shown vector: one row plus the expanded widget.
+    assert height == pytest.approx(HEADER + 4 * SOCKET_ROW + VECTOR_EXPANDED)
+    assert node_property_rows(sim.input.node) == []
+    assert node_property_rows(sim.output.node) == []
+    assert node_property_rows(tree.tree.nodes["Group Output"]) == []
+    (vector_prop, rows_count), *rest = node_property_rows(vec.node)
+    assert vector_prop.identifier == "vector" and rows_count == 3
+    assert rest == []
+
+
+def test_declared_socket_order_rows():
+    """Nodes Blender draws from their declaration follow the recorded
+    order: a Menu Switch shows Output, its data-type dropdown, Menu, then
+    one row per item carrying both the value input and the "chosen" output;
+    a Principled BSDF folds its closed panels into header rows; a zone
+    output node pairs each item's input with its output."""
+    from nodebpy import shader as s
+    from nodebpy.builder.layout import (
+        HEADER,
+        PROPERTY_ROW,
+        SOCKET_ROW,
+        calculate_node_dimensions,
+        calculate_socket_offset_y,
+        node_rows,
+    )
+
+    with TreeBuilder("Declared", arrange=None):
+        switch = g.MenuSwitch(data_type="BOOLEAN")
+        switch.add_item("A", True)
+        switch.add_item("B", False)
+        node = switch.node
+        rep = g.RepeatZone()
+        rep.input >> g.SetPosition() >> rep.output
+
+    rows = node_rows(node)
+    summary = [
+        (r.kind, r.socket.name if r.socket else r.prop.identifier, bool(r.partner))
+        for r in rows
+    ]
+    assert summary == [
+        ("output", "Output", False),
+        ("property", "data_type", False),
+        ("input", "Menu", False),
+        ("input", "A", True),
+        ("input", "B", True),
+        ("input", "", False),  # the extend socket
+    ]
+    assert rows[3].partner.name == "A" and rows[3].partner.is_output
+    assert calculate_socket_offset_y(node.outputs["A"]) == rows[3].anchor
+    assert calculate_node_dimensions(node)[1] == pytest.approx(
+        HEADER + 5 * SOCKET_ROW + PROPERTY_ROW
+    )
+
+    zone_rows = node_rows(rep.output.node)
+    geometry = [
+        r for r in zone_rows if r.socket is not None and r.socket.name == "Geometry"
+    ]
+    assert len(geometry) == 1 and geometry[0].partner is not None
+
+    with TreeBuilder.shader("DeclaredShader") as shader_tree:
+        bsdf = s.PrincipledBSDF()
+        bsdf >> shader_tree.outputs.shader("Shader")
+    kinds = [
+        (r.kind, r.panel if r.kind == "panel" else None, r.open)
+        for r in node_rows(bsdf.node)
+    ]
+    assert kinds[0] == ("output", None, True)
+    assert ("panel", "Subsurface", False) in kinds
+    # Closed panels hide their sockets: no "Subsurface Weight" row.
+    assert all(
+        r.socket is None or r.socket.name != "Subsurface Weight"
+        for r in node_rows(bsdf.node)
+    )
+    for state in bsdf.node.panel_states:
+        state.is_collapsed = False
+    assert any(
+        r.socket is not None and r.socket.name == "Subsurface Weight" and r.depth == 1
+        for r in node_rows(bsdf.node)
+    )
+
+
+def test_group_node_panels_in_row_model(tmp_path):
+    """A group node draws its interface panels: a closed panel is one header
+    row hiding its sockets (linked ones fold onto the header, which is
+    where links anchor), an open panel adds a header row above its
+    sockets, and to_plot(node=True, open_panels=True) expands them all."""
+    from nodebpy.builder.layout import (
+        HEADER,
+        PROPERTY_ROW,
+        SOCKET_ROW,
+        calculate_node_dimensions,
+        calculate_socket_offset_y,
+        node_rows,
+    )
+
+    with TreeBuilder("Panelled", arrange=None) as inner:
+        geo = inner.inputs.geometry()
+        with inner.inputs.panel("Shape", default_closed=True):
+            inner.inputs.float("Radius", 1.0)
+            inner.inputs.float("Depth", 2.0)
+        with inner.inputs.panel("Colour"):
+            inner.inputs.boolean("Flat", False)
+        geo >> inner.outputs.geometry()
+
+    with TreeBuilder("Outer", arrange=None) as outer:
+        group = g.Group()
+        group.node.node_tree = inner.tree
+        outer.inputs.float("Value", 0.5) >> group.node.inputs["Depth"]
+        node = group.node
+
+    kinds = [(r.kind, getattr(r.panel, "name", None), r.open) for r in node_rows(node)]
+    assert kinds == [
+        ("output", None, True),
+        ("property", None, True),
+        ("input", None, True),  # Geometry
+        ("panel", "Shape", False),
+        ("panel", "Colour", True),
+        ("input", None, True),  # Flat
+    ]
+    # Closed panel: 1 row for the header, none for Radius / Depth.
+    _, height = calculate_node_dimensions(node)
+    assert height == pytest.approx(HEADER + 5 * SOCKET_ROW + PROPERTY_ROW)
+    # The linked Depth folds onto the Shape header; unlinked Radius does not.
+    shape_row = node_rows(node)[3]
+    assert [s.name for s in shape_row.collapsed_sockets] == ["Depth"]
+    assert calculate_socket_offset_y(node.inputs["Depth"]) == shape_row.anchor
+    assert calculate_socket_offset_y(node.inputs["Radius"]) == pytest.approx(
+        -HEADER / 2
+    )
+
+    for state in node.panel_states:
+        state.is_collapsed = False
+    assert [r.kind for r in node_rows(node)].count("input") == 4
+
+    closed = to_plot(inner.tree, tmp_path / "closed.png", node=True)
+    opened = to_plot(inner.tree, tmp_path / "open.png", node=True, open_panels=True)
+    # More rows drawn => a taller image.
+    from PIL import Image
+
+    assert Image.open(opened).height > Image.open(closed).height

@@ -3,6 +3,12 @@ generate:
 	uv run python -m gen
 	make format
 
+# Regenerate the socket draw-order table from Blender's node declarations
+# (network: sparse-clones the tag matching the installed bpy).
+socket-order:
+	uv run python -m gen.socket_order
+	uv run ruff format src/nodebpy/builder/_socket_order.py
+
 test:
 	uv run pytest -n 4
 
