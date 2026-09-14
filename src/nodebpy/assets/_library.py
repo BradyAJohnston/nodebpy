@@ -1291,9 +1291,9 @@ def plot_library(
     (``<name>.png``, :func:`nodebpy.export.to_plot`, drawn at the stored
     layout or re-arranged first when ``arrange`` options are given) and the
     single group node a user sees when adding it (``<name>_node.png``,
-    :func:`nodebpy.export.to_node_plot`, with every interface panel expanded
-    when ``open_panels`` is set); ``tree=False`` / ``node=False`` skip
-    either. Both need the optional ``matplotlib`` dependency.
+    ``to_plot(node=True)``, with every interface panel expanded when
+    ``open_panels`` is set); ``tree=False`` / ``node=False`` skip either.
+    Both need the optional ``matplotlib`` dependency.
     Everything appended for plotting is removed from the session again
     afterwards.
 
@@ -1309,7 +1309,7 @@ def plot_library(
         raise FileNotFoundError(f"Asset library not found: {blend_path.resolve()}")
 
     from ..builder.layout import arrange as arrange_tree_nodes
-    from ..export import to_node_plot, to_plot
+    from ..export import to_plot
 
     patterns = list(names) if names is not None else None
     before = {
@@ -1358,10 +1358,11 @@ def plot_library(
                     group, output_dir / f"{slug}.png", title=group.name, dpi=dpi
                 )
             if node:
-                written[f"{group.name} (node)"] = to_node_plot(
+                written[f"{group.name} (node)"] = to_plot(
                     group,
                     output_dir / f"{slug}_node.png",
                     dpi=dpi,
+                    node=True,
                     open_panels=open_panels,
                 )
     finally:

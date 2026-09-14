@@ -1259,39 +1259,29 @@ class TreeBuilder[TreeT: NodeTree]:
         *,
         title: str | None = None,
         dpi: int = 150,
+        node: bool = False,
+        open_panels: bool = False,
+        width: float | None = None,
+        axes: bool = False,
     ) -> Path:
-        """Draw this tree's node graph to an image, styled like Blender's
-        node editor, for headless review (``pip install nodebpy[plot]``).
+        """Draw this tree to an image, styled like Blender's node editor,
+        for headless review (``pip install nodebpy[plot]``): its internals,
+        or with ``node=True`` the single group node a user adds to another
+        tree, showing the interface sockets with their default values.
 
         See :func:`nodebpy.export.to_plot`.
         """
         from ..export import to_plot
 
-        return to_plot(self.tree, filepath, title=title, dpi=dpi)
-
-    def to_node_plot(
-        self,
-        filepath: str | Path,
-        *,
-        title: str | None = None,
-        dpi: int = 150,
-        width: float | None = None,
-        open_panels: bool = False,
-    ) -> Path:
-        """Draw this tree as the single group node a user adds to another
-        tree: its interface sockets with their default values.
-
-        See :func:`nodebpy.export.to_node_plot`.
-        """
-        from ..export import to_node_plot
-
-        return to_node_plot(
+        return to_plot(
             self.tree,
             filepath,
             title=title,
             dpi=dpi,
-            width=width,
+            node=node,
             open_panels=open_panels,
+            width=width,
+            axes=axes,
         )
 
     def activate_tree(self) -> None:

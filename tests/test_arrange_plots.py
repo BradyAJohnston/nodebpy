@@ -14,7 +14,7 @@ import pytest
 
 from nodebpy import SugiyamaOptions, TreeBuilder, arrange
 from nodebpy import geometry as g
-from nodebpy.export import to_node_plot, to_plot
+from nodebpy.export import to_plot
 from nodebpy.nodes.geometry.groups import (
     ClipFieldToBox,
     GeometryPrincipalComponents,
@@ -175,10 +175,10 @@ def test_plot_collapsed_and_framed_tree():
 
 
 def test_node_plot_draws_group_node(tmp_path):
-    """to_node_plot renders the tree as one group node — from the export
-    function and the TreeBuilder method alike — and leaves no scratch tree
-    behind. Every interface socket type that draws a value widget is
-    exercised."""
+    """to_plot(node=True) renders the tree as one group node — from the
+    export function and the TreeBuilder method alike — and leaves no
+    scratch tree behind. Every interface socket type that draws a value
+    widget is exercised, and axes=True adds a ticked frame."""
     before = set(bpy.data.node_groups.keys())
     with TreeBuilder("NodePlot", arrange=None) as tree:
         geo = tree.inputs.geometry()
@@ -191,12 +191,19 @@ def test_node_plot_draws_group_node(tmp_path):
         tree.inputs.color("Tint", (0.8, 0.2, 0.1, 1.0))
         geo >> tree.outputs.geometry()
 
-    path = to_node_plot(tree.tree, PLOT_DIR / "NodePlot_node.png")
+    path = to_plot(tree.tree, PLOT_DIR / "NodePlot_node.png", node=True)
     assert path.stat().st_size > _MIN_PLOT_BYTES
-    wide = tree.to_node_plot(tmp_path / "wide.png", width=240)
+    wide = tree.to_plot(tmp_path / "wide.png", node=True, width=240)
     assert wide.stat().st_size > _MIN_PLOT_BYTES
-    assert tree.to_plot(tmp_path / "tree.png", title="NodePlot").exists()
+    plain = tree.to_plot(tmp_path / "tree.png", title="NodePlot")
+    framed = tree.to_plot(PLOT_DIR / "NodePlot_axes.png", title="NodePlot", axes=True)
     assert set(bpy.data.node_groups.keys()) == before | {"NodePlot"}
+
+    from PIL import Image
+
+    # The axes margin grows the image without rescaling the drawing.
+    assert Image.open(framed).width > Image.open(plain).width
+    assert Image.open(framed).height > Image.open(plain).height
 
 
 def test_node_plot_rejects_unknown_tree_type(tmp_path):
@@ -207,7 +214,7 @@ def test_node_plot_rejects_unknown_tree_type(tmp_path):
     monkey = plot_module._GROUP_NODE_FOR_TREE.pop("TextureNodeTree")
     try:
         with pytest.raises(ValueError, match="Cannot draw a group node"):
-            to_node_plot(tree, tmp_path / "never.png")
+            to_plot(tree, tmp_path / "never.png", node=True)
     finally:
         plot_module._GROUP_NODE_FOR_TREE["TextureNodeTree"] = monkey
         bpy.data.node_groups.remove(tree)
@@ -359,7 +366,7 @@ def test_group_node_panels_in_row_model(tmp_path):
     """A group node draws its interface panels: a closed panel is one header
     row hiding its sockets (linked ones fold onto the header, which is
     where links anchor), an open panel adds a header row above its
-    sockets, and to_node_plot(open_panels=True) expands them all."""
+    sockets, and to_plot(node=True, open_panels=True) expands them all."""
     from nodebpy.builder.layout import (
         HEADER,
         PROPERTY_ROW,
@@ -408,8 +415,8 @@ def test_group_node_panels_in_row_model(tmp_path):
         state.is_collapsed = False
     assert [r.kind for r in node_rows(node)].count("input") == 4
 
-    closed = to_node_plot(inner.tree, tmp_path / "closed.png")
-    opened = to_node_plot(inner.tree, tmp_path / "open.png", open_panels=True)
+    closed = to_plot(inner.tree, tmp_path / "closed.png", node=True)
+    opened = to_plot(inner.tree, tmp_path / "open.png", node=True, open_panels=True)
     # More rows drawn => a taller image.
     from PIL import Image
 

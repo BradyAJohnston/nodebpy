@@ -6,9 +6,9 @@ would show — header colours per node class, socket markers coloured and
 shaped by type, value widgets for unlinked inputs, property dropdowns,
 frames, zones and socket-coloured links — from the same estimated geometry
 the arranger works with (:mod:`nodebpy.builder.layout`), so a tree can be
-reviewed without opening Blender. :func:`to_node_plot` draws a node group
-the way it appears when *used*: as a single group node with its interface
-sockets and default values.
+reviewed without opening Blender. ``to_plot(..., node=True)`` draws a node
+group the way it appears when *used*: as a single group node with its
+interface sockets and default values.
 
 Colours are read from Blender's active theme where possible, so a render
 follows the user's preferences; the shipped defaults match Blender's dark
@@ -1170,6 +1170,10 @@ def _tree_bounds(tree: bpy.types.NodeTree) -> tuple[float, float, float, float]:
     )
 
 
+#: Room left around the drawing for axis ticks and their labels.
+_AXES_MARGIN = 36.0
+
+
 def _render(
     tree: bpy.types.NodeTree,
     filepath: Path,
@@ -1177,6 +1181,7 @@ def _render(
     title: str | None,
     dpi: int,
     grid: bool,
+    axes: bool,
 ) -> Path:
     try:
         from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -1192,8 +1197,11 @@ def _render(
     y0 -= _MARGIN
     x1 += _MARGIN
     y1 += _MARGIN + (22.0 if title else 0.0)
-    width_in = (x1 - x0) / UNITS_PER_INCH
-    height_in = (y1 - y0) / UNITS_PER_INCH
+    # With axes, the figure grows by a margin on every side so the tick
+    # labels sit outside the drawing; the drawing itself keeps its scale.
+    pad = _AXES_MARGIN if axes else 0.0
+    width_in = (x1 - x0 + 2 * pad) / UNITS_PER_INCH
+    height_in = (y1 - y0 + 2 * pad) / UNITS_PER_INCH
     largest = max(width_in, height_in)
     if largest * dpi > _MAX_PIXELS:
         dpi = max(int(_MAX_PIXELS / largest), 20)
@@ -1201,12 +1209,31 @@ def _render(
     fig = Figure(figsize=(width_in, height_in), dpi=dpi)
     FigureCanvasAgg(fig)
     fig.patch.set_facecolor(theme.back)
-    ax = fig.add_axes((0.0, 0.0, 1.0, 1.0))
+    fx = pad / (x1 - x0 + 2 * pad)
+    fy = pad / (y1 - y0 + 2 * pad)
+    ax = fig.add_axes((fx, fy, 1.0 - 2 * fx, 1.0 - 2 * fy))
     ax.set_xlim(x0, x1)
     ax.set_ylim(y0, y1)
     ax.set_aspect("equal")
-    ax.axis("off")
     ax.set_facecolor(theme.back)
+    if axes:
+        # Blender UI units on both axes, styled to sit quietly on the backdrop.
+        dim = theme.text_dim
+        for spine in ax.spines.values():
+            spine.set_color(dim)
+            spine.set_linewidth(0.6)
+        ax.tick_params(
+            labelsize=7,
+            colors=dim,
+            length=3,
+            width=0.6,
+            direction="out",
+            pad=2,
+        )
+        for label in (*ax.get_xticklabels(), *ax.get_yticklabels()):
+            label.set_fontfamily("DejaVu Sans")
+    else:
+        ax.axis("off")
 
     cv = _Canvas(ax, theme)
     if grid:
@@ -1236,22 +1263,40 @@ def _render(
     return filepath
 
 
+_GROUP_NODE_FOR_TREE = {
+    "GeometryNodeTree": "GeometryNodeGroup",
+    "ShaderNodeTree": "ShaderNodeGroup",
+    "CompositorNodeTree": "CompositorNodeGroup",
+    "TextureNodeTree": "TextureNodeGroup",
+}
+
+
 def to_plot(
     tree: bpy.types.NodeTree,
     filepath: str | Path,
     *,
     title: str | None = None,
     dpi: int = 150,
+    node: bool = False,
+    open_panels: bool = False,
+    width: float | None = None,
+    axes: bool = False,
     grid: bool = True,
 ) -> Path:
-    """Draw the tree's current layout to an image file, Blender-style.
+    """Draw a node tree to an image file, Blender-style.
 
-    Nodes are drawn at their real locations with the same estimated
-    dimensions the arranger uses, so what you see is what the layout
-    algorithm saw. Each node shows its header colour, title, socket markers,
-    value widgets for unlinked inputs, and property dropdowns; links are
-    coloured by socket type (dashed for fields), and frames and zones are
-    drawn behind their members.
+    By default the tree's *internals* are drawn: nodes at their real
+    locations with the same estimated dimensions the arranger uses, so what
+    you see is what the layout algorithm saw. Each node shows its header
+    colour, title, socket markers, value widgets for unlinked inputs, and
+    property dropdowns; links are coloured by socket type (dashed for
+    fields), and frames and zones are drawn behind their members.
+
+    With ``node=True`` the tree is drawn instead as the single group node a
+    user sees when adding it to another tree: a scratch tree holding one
+    group node that references *tree* is drawn and discarded, showing the
+    group's interface — inputs with their default values, outputs, and
+    interface panels in their default open / closed state.
 
     Parameters
     ----------
@@ -1267,60 +1312,40 @@ def to_plot(
         Output resolution. One Blender UI unit is drawn as one point, so a
         default 140-wide node is about 290 px across at 150 dpi. Very large
         trees lower the dpi automatically to stay within a sane image size.
+    node
+        Draw the tree as one group node rather than its internals.
+    open_panels
+        With ``node=True``, expand every interface panel instead of
+        honouring each panel's default closed state, so all sockets are
+        visible for review.
+    width
+        With ``node=True``, the group node's width in UI units; defaults to
+        Blender's default group-node width (140), which is also what a user
+        gets when adding the group.
+    axes
+        Frame the drawing with axes ticked in Blender UI units (node
+        locations), handy for reading off distances when tuning a layout.
     grid
         Draw the editor's dotted background grid.
     """
-    return _render(tree, Path(filepath), title=title, dpi=dpi, grid=grid)
+    filepath = Path(filepath)
+    if not node:
+        return _render(tree, filepath, title=title, dpi=dpi, grid=grid, axes=axes)
 
-
-_GROUP_NODE_FOR_TREE = {
-    "GeometryNodeTree": "GeometryNodeGroup",
-    "ShaderNodeTree": "ShaderNodeGroup",
-    "CompositorNodeTree": "CompositorNodeGroup",
-    "TextureNodeTree": "TextureNodeGroup",
-}
-
-
-def to_node_plot(
-    tree: bpy.types.NodeTree,
-    filepath: str | Path,
-    *,
-    title: str | None = None,
-    dpi: int = 150,
-    width: float | None = None,
-    open_panels: bool = False,
-    grid: bool = True,
-) -> Path:
-    """Draw *tree* as the single group node a user sees when they add it.
-
-    A scratch tree holding one group node that references *tree* is drawn
-    and discarded, so the image shows the group's interface — input sockets
-    with their default values and output sockets — exactly as it appears
-    inside another tree.
-
-    Parameters
-    ----------
-    width
-        Node width in UI units; defaults to Blender's default group-node
-        width (140), which is also what a user gets when adding the group.
-    open_panels
-        Expand every interface panel instead of honouring each panel's
-        default closed state, so all sockets are visible for review.
-    """
     group_idname = _GROUP_NODE_FOR_TREE.get(tree.bl_idname)
     if group_idname is None:
         raise ValueError(f"Cannot draw a group node for tree type {tree.bl_idname}")
     scratch = bpy.data.node_groups.new(".nodebpy_node_plot", cast(Any, tree.bl_idname))
     assert scratch is not None
     try:
-        node: Any = scratch.nodes.new(group_idname)
-        node.node_tree = tree
-        node.location = (0.0, 0.0)
+        group: Any = scratch.nodes.new(group_idname)
+        group.node_tree = tree
+        group.location = (0.0, 0.0)
         if width is not None:
-            node.width = width
+            group.width = width
         if open_panels:
-            for state in node.panel_states:
+            for state in group.panel_states:
                 state.is_collapsed = False
-        return _render(scratch, Path(filepath), title=title, dpi=dpi, grid=grid)
+        return _render(scratch, filepath, title=title, dpi=dpi, grid=grid, axes=axes)
     finally:
         bpy.data.node_groups.remove(scratch)

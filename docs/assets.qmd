@@ -162,9 +162,11 @@ interface sockets and default values, with interface panels in their default
 open or closed state (`--open-panels` expands them all). `--tree-only` /
 `--node-only` keep just one. By default the internals are drawn at their stored layout; pass
 `--arrange` (plus any of the arrangement flags shared with `build`, e.g.
-`--add-reroutes`) to re-arrange before plotting. From Python, any
-`TreeBuilder` offers the same as `tree.to_plot(path)` and
-`tree.to_node_plot(path)`.
+`--add-reroutes`) to re-arrange before plotting. From Python,
+`nodebpy.export.to_plot(tree, path)` draws the internals and
+`to_plot(tree, path, node=True)` the group node (`axes=True` frames either
+with axes ticked in node-location units), and any `TreeBuilder` offers the
+same as `tree.to_plot(path, ...)`.
 
 Each asset becomes one module holding its group as a class; helper groups used
 by a single asset are embedded, groups shared between assets get their own
