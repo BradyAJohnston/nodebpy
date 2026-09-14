@@ -5,22 +5,22 @@
   graph LR
       N0("Group Input"):::default-node
       subgraph F0["Ambient Occlusion"]
-          N1("Math<br/><small>(SUBTRACT)</small>"):::converter-node
-          N5("Math<br/><small>(POWER)</small>"):::converter-node
-          N8("Kuwahara"):::default-node
-          N11("Mix<br/><small>(0.5,0.5,0.5)</small>"):::default-node
+          N6("Math<br/><small>(SUBTRACT)</small>"):::converter-node
+          N9("Math<br/><small>(POWER)</small>"):::converter-node
+          N11("Kuwahara"):::default-node
+          N14("Mix<br/><small>(0.5,0.5,0.5)</small>"):::default-node
       end
       subgraph F1["Outline"]
-          N2("Filter"):::default-node
+          N1("Filter"):::default-node
+          N2("Math<br/><small>(DIVIDE)</small>"):::converter-node
           N3("Filter"):::default-node
-          N4("Math<br/><small>(DIVIDE)</small>"):::converter-node
-          N6("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
-          N7("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
-          N9("Math<br/><small>(ADD)</small>"):::converter-node
-          N10("Anti-Aliasing"):::default-node
-          N12("Math<br/><small>(SUBTRACT)</small>"):::converter-node
-          N13("Dilate/Erode"):::default-node
-          N14("Anti-Aliasing"):::default-node
+          N4("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
+          N5("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
+          N7("Math<br/><small>(ADD)</small>"):::converter-node
+          N8("Anti-Aliasing"):::default-node
+          N10("Math<br/><small>(SUBTRACT)</small>"):::converter-node
+          N12("Dilate/Erode"):::default-node
+          N13("Anti-Aliasing"):::default-node
       end
       subgraph F2["Final Composit"]
           N15("Alpha Over"):::default-node
@@ -30,28 +30,28 @@
       end
       N19("Group Output"):::default-node
       N18 -->|"Output->Image"| N19
-      N0 -->|"AO->Value"| N1
-      N1 -->|"Value->Value"| N5
-      N5 -->|"Value->Image"| N8
-      N8 -->|"Image->Factor"| N11
-      N0 -->|"Image->A"| N11
-      N0 -->|"Depth->Image"| N2
-      N0 -->|"Socket Depth->Value"| N4
-      N2 -->|"Image->Value"| N6
-      N4 -->|"Value->Value"| N6
-      N0 -->|"Normal->Image"| N3
-      N3 -->|"Image->Value"| N7
+      N0 -->|"AO->Value"| N6
       N6 -->|"Value->Value"| N9
-      N7 -->|"Value->Value"| N9
-      N9 -->|"Value->Image"| N10
-      N0 -->|"Outline Size->Value"| N12
-      N10 -->|"Image->Mask"| N13
-      N12 -->|"Value->Size"| N13
-      N13 -->|"Mask->Image"| N14
-      N14 -->|"Image->Background"| N15
+      N9 -->|"Value->Image"| N11
+      N11 -->|"Image->Factor"| N14
+      N0 -->|"Image->A"| N14
+      N0 -->|"Depth->Image"| N1
+      N0 -->|"Socket Depth->Value"| N2
+      N1 -->|"Image->Value"| N4
+      N2 -->|"Value->Value"| N4
+      N0 -->|"Normal->Image"| N3
+      N3 -->|"Image->Value"| N5
+      N4 -->|"Value->Value"| N7
+      N5 -->|"Value->Value"| N7
+      N7 -->|"Value->Image"| N8
+      N0 -->|"Outline Size->Value"| N10
+      N8 -->|"Image->Mask"| N12
+      N10 -->|"Value->Size"| N12
+      N12 -->|"Mask->Image"| N13
+      N13 -->|"Image->Background"| N15
       N0 -->|"Outline Color->Foreground"| N15
       N0 -->|"Outline->Menu"| N16
-      N11 -->|"Result->None"| N16
+      N14 -->|"Result->None"| N16
       N15 -->|"Image->Outline"| N16
       N0 -->|"Background Color->Background"| N17
       N16 -->|"Output->Foreground"| N17

@@ -871,13 +871,33 @@ class SugiyamaOptions:
         Fit the widths of collapsed nodes to their display name.
     iterations : int
         Number of crossing-minimization iterations.
+    sequential_frames : bool
+        Rank frames as stages of the flow: every node of a frame comes
+        after every node of the frame (or intermediate node) feeding it, so
+        successive frames line up left to right instead of stacking into a
+        staircase. Frames with no links between them (parallel branches)
+        still share columns and stack vertically.
+    balance_heights : bool
+        Shorten the tallest column by moving nodes whose feeders serve only
+        them (a private upstream chain) one column left, while that makes
+        the drawing smaller overall. Counters the tall sliver a node with
+        many inputs otherwise produces, at the price of slightly longer
+        links routed through reroutes / dummy nodes.
+    balance_aspect : float
+        Width-to-height ratio the balancing aims for: it keeps promoting
+        feeders left while the drawing's bounding box (height, or width
+        divided by this ratio, whichever is larger) shrinks.
+    reroute_margin_y_fac : float
+        Fraction of the vertical margin kept between consecutive reroutes
+        (and the dummy nodes long links are routed through) in a column;
+        bundles of long links pack tighter than nodes.
     """
 
     # Defaults calibrated against hand-approved node-arrange addon output
     # ("30" x/y spacing, no socket alignment, top-right node alignment).
     margin: tuple[float, float] = (30.0, 30.0)
     direction: Literal["LEFT_DOWN", "RIGHT_DOWN", "BALANCED", "LEFT_UP", "RIGHT_UP"] = (
-        "RIGHT_UP"
+        "BALANCED"
     )
     socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "NONE"
     add_reroutes: bool = False
@@ -886,6 +906,10 @@ class SugiyamaOptions:
     stack_margin_y_fac: float = 0.5
     optimize_sizes: bool = False
     iterations: int = 50
+    sequential_frames: bool = True
+    balance_heights: bool = True
+    balance_aspect: float = 1.6
+    reroute_margin_y_fac: float = 0.35
 
 
 type ArrangeMethod = (
@@ -959,6 +983,10 @@ def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> Non
         stack_collapsed=options.stack_collapsed,
         optimize_sizes=options.optimize_sizes,
         stack_margin_y_fac=options.stack_margin_y_fac,
+        sequential_frames=options.sequential_frames,
+        balance_heights=options.balance_heights,
+        balance_aspect=options.balance_aspect,
+        reroute_margin_y_fac=options.reroute_margin_y_fac,
     )
     sugiyama.sugiyama_layout(tree, settings=settings, margin=Vector(options.margin))
 

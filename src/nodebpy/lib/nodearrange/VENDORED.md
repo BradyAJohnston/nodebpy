@@ -44,6 +44,23 @@ break headless operation.
   working set is `list(ntree.nodes)` and the select gates are membership /
   always-true checks. Upstream patches touching `.select` need the same
   translation.
+- **Layout readability additions** (nodebpy-only, each behind a `Settings`
+  flag mirrored on `SugiyamaOptions`):
+  - `ranking.add_frame_sequence_edges()` (`sequential_frames`): ranks
+    frames as stages of the flow by constraining every node of a frame to
+    come after every node of the frame (or intermediate node) feeding it, so
+    successive frames line up left to right instead of stacking into a
+    staircase.
+  - `balancing.balance_column_heights()` (`balance_heights`,
+    `balance_aspect`): after ranking, promotes nodes of the tallest columns
+    together with their upstream into emptier columns while the drawing
+    gets closer to a screen-shaped box.
+  - `y_coords.vertical_gap()` (`reroute_margin_y_fac`): consecutive
+    reroutes / dummy nodes in a column pack at a fraction of the margin.
+  - `sugiyama.precompute_links()` keeps `is_hidden` links (links into a
+    collapsed panel's sockets), which still order the nodes; and
+    `x_coords.assign_x_coords()` skips a column left empty by dissolved
+    dummies.
 - `structs.py` uses explicit `_fields_` lists (upstream builds them from
   annotations, formerly via `eval`) and additionally binds `bNode` /
   `bNodeRuntime` / `rctf`, which upstream does not have.

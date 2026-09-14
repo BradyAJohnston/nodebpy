@@ -135,6 +135,17 @@ def inner_shift(
             w.inner_shift = fmean(inner_shifts)
 
 
+def vertical_gap(u: Node, w: Node, state: LayoutState) -> float:
+    """Margin between two vertically adjacent nodes of a column (nodebpy
+    divergence): consecutive reroutes / dummy nodes — the bundles of long
+    links routed past a column — pack much tighter than nodes, as reroute
+    dots do in hand-made trees, so a fan-in of many long links no longer
+    costs a node's height per link."""
+    if u.is_reroute and w.is_reroute:
+        return state.margin.y * state.settings.reroute_margin_y_fac
+    return state.margin.y
+
+
 def place_block(v: Node, is_up: bool, state: LayoutState) -> None:
     if cast(float | None, v.y) is not None:
         return
@@ -155,7 +166,8 @@ def place_block(v: Node, is_up: bool, state: LayoutState) -> None:
             v.sink = u.sink
 
         if v.sink == u.sink:
-            delta_l = n.height + state.margin.y if is_up else w.height + state.margin.y
+            gap = vertical_gap(n, w, state)
+            delta_l = n.height + gap if is_up else w.height + gap
             s_b = u.y + n.inner_shift - w.inner_shift + delta_l
             v.y = s_b if initial else max(v.y, s_b)
             initial = False
@@ -183,7 +195,8 @@ def vertical_compaction(G: nx.DiGraph[Node], is_up: bool, state: LayoutState) ->
             col[0].sink.shift = 0
 
         for u, v in neighborings[tuple(col)]:
-            delta_l = u.height + state.margin.y if is_up else v.height + state.margin.y
+            gap = vertical_gap(u, v, state)
+            delta_l = u.height + gap if is_up else v.height + gap
             s_c = v.y + v.inner_shift - u.y - u.inner_shift - delta_l
             u.sink.shift = min(u.sink.shift, v.sink.shift + s_c)
 
