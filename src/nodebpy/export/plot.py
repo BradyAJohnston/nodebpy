@@ -1069,8 +1069,10 @@ def _draw_frames(cv: _Canvas, tree: bpy.types.NodeTree) -> None:
 def _zone_members(
     tree: bpy.types.NodeTree, start: bpy.types.Node, end: bpy.types.Node
 ) -> set[bpy.types.Node]:
-    """Nodes on a path from *start* to *end*: forward-reachable from the zone
-    input and backward-reachable from the zone output."""
+    """The nodes Blender draws inside a zone: everything reachable forward
+    from the zone input up to the output, and everything the output depends
+    on back to (but not through) the zone input — a feeder of a node inside
+    the zone is inside the zone too."""
     forward: dict[bpy.types.Node, set[bpy.types.Node]] = {}
     backward: dict[bpy.types.Node, set[bpy.types.Node]] = {}
     for link in tree.links:
@@ -1079,18 +1081,20 @@ def _zone_members(
         forward.setdefault(link.from_node, set()).add(link.to_node)
         backward.setdefault(link.to_node, set()).add(link.from_node)
 
-    def reach(root: bpy.types.Node, graph: dict) -> set[bpy.types.Node]:
+    def reach(root: bpy.types.Node, graph: dict, stop: bpy.types.Node) -> set:
         seen = {root}
         queue = deque([root])
         while queue:
             node = queue.popleft()
+            if node is stop:
+                continue
             for nxt in graph.get(node, ()):
                 if nxt not in seen:
                     seen.add(nxt)
                     queue.append(nxt)
         return seen
 
-    return (reach(start, forward) & reach(end, backward)) | {start, end}
+    return reach(start, forward, end) | reach(end, backward, start)
 
 
 def _draw_zones(cv: _Canvas, tree: bpy.types.NodeTree) -> None:

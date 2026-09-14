@@ -60,6 +60,10 @@ def assign_x_coords(
     columns: list[list[Node]] = G.graph["columns"]
     x = 0
     for i, col in enumerate(columns):
+        if not col:
+            # nodebpy divergence: a rank whose only occupants were dummy
+            # nodes (dissolved when reroutes are not added) takes no space.
+            continue
         max_width = max([v.width for v in col])
 
         for v in col:

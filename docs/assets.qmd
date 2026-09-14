@@ -181,7 +181,8 @@ the dumped classes. On the build side the automatic layout is tunable:
 `--add-reroutes` / `add_reroutes=True` arranges the rebuilt trees with
 reroute nodes routing long links around nodes (the node-arrange addon's
 behaviour), and `--spacing`, `--iterations` (crossing reduction),
-`--direction`, `--socket-alignment` and the other `SugiyamaOptions` fields
+`--direction`, `--socket-alignment`, `--no-sequential-frames`,
+`--no-balance-heights`, `--balance-aspect` and the other `SugiyamaOptions` fields
 (`arrange=SugiyamaOptions(...)` in Python) override the defaults;
 `--split-inputs` / `split_inputs=True` gives each consumer node its own
 Group Input instance — named and labelled after the interface sockets it

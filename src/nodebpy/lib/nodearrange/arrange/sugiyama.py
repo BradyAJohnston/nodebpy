@@ -14,6 +14,7 @@ from mathutils import Vector
 
 from ..config import LayoutState, Settings
 from ..utils import abs_loc, group_by
+from .balancing import balance_column_heights
 from .graph import (
     FROM_SOCKET,
     TO_SOCKET,
@@ -102,8 +103,11 @@ def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
 def precompute_links(state: LayoutState) -> None:
     # Precompute links to ignore invalid/hidden links, and avoid `O(len(ntree.links))` time
 
+    # Headless divergence: links into a collapsed panel's sockets report
+    # ``is_hidden`` (Blender draws them to the panel header); they still
+    # carry data, so they still order the nodes.
     for link in state.ntree.links:
-        if not link.is_hidden and link.is_valid:
+        if link.is_valid:
             assert link.from_socket
             assert link.to_socket
             state.linked_sockets[link.to_socket].add(link.from_socket)
@@ -313,6 +317,8 @@ def sugiyama_layout(
         node_stacks = contracted_node_stacks(CG)
 
     compute_ranks(CG)
+    if state.settings.balance_heights:
+        balance_column_heights(G, CG.S, state)
     CG.merge_edges()
     CG.insert_dummy_nodes()
 

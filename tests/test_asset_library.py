@@ -370,6 +370,10 @@ def test_cli_arrange_options_mapping():
         stack_collapsed=True,
         stack_margin_y_fac=None,
         optimize_sizes=False,
+        sequential_frames=True,
+        balance_heights=True,
+        balance_aspect=None,
+        reroute_margin_y_fac=None,
     )
     assert _arrange_options_from_args(defaults) is None
 
@@ -382,6 +386,10 @@ def test_cli_arrange_options_mapping():
         stack_collapsed=False,
         stack_margin_y_fac=0.25,
         optimize_sizes=True,
+        sequential_frames=False,
+        balance_heights=False,
+        balance_aspect=2.0,
+        reroute_margin_y_fac=0.5,
     )
     assert _arrange_options_from_args(tuned) == SugiyamaOptions(
         margin=(50.0, 40.0),
@@ -392,6 +400,10 @@ def test_cli_arrange_options_mapping():
         stack_collapsed=False,
         stack_margin_y_fac=0.25,
         optimize_sizes=True,
+        sequential_frames=False,
+        balance_heights=False,
+        balance_aspect=2.0,
+        reroute_margin_y_fac=0.5,
     )
 
 

@@ -97,6 +97,10 @@ _CONFIG_KEYS: dict[str, tuple[str | None, str]] = {
     "no-stack-collapsed": ("stack_collapsed", "off"),
     "stack-margin-y-fac": ("stack_margin_y_fac", "value"),
     "optimize-sizes": ("optimize_sizes", "flag"),
+    "no-sequential-frames": ("sequential_frames", "off"),
+    "no-balance-heights": ("balance_heights", "off"),
+    "balance-aspect": ("balance_aspect", "value"),
+    "reroute-margin-y-fac": ("reroute_margin_y_fac", "value"),
 }
 
 # Which dest each positional config key fills, per subcommand: the dump
@@ -132,6 +136,10 @@ _OPTION_DEFAULTS: dict[str, object] = {
     "stack_collapsed": True,
     "stack_margin_y_fac": None,
     "optimize_sizes": False,
+    "sequential_frames": True,
+    "balance_heights": True,
+    "balance_aspect": None,
+    "reroute_margin_y_fac": None,
 }
 
 # The resolved options the stamp fingerprint covers: everything, beyond the
@@ -140,6 +148,8 @@ _OPTION_DEFAULTS: dict[str, object] = {
 # it gates the session check, not the output.
 _STAMP_DESTS = (
     "add_reroutes",
+    "balance_aspect",
+    "balance_heights",
     "compress",
     "direction",
     "iterations",
@@ -149,6 +159,8 @@ _STAMP_DESTS = (
     "nodebpy_pkg",
     "on_missing",
     "optimize_sizes",
+    "reroute_margin_y_fac",
+    "sequential_frames",
     "snapshot_positions",
     "socket_alignment",
     "spacing",
