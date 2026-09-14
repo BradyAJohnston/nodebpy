@@ -2,6 +2,20 @@
 title: Changelog
 ---
 
+## 520.26.0 - 2026-09-14
+
+### Enhancements
+
+- **Layouts read left to right with less dead space** — three additions to the Sugiyama arrangement, all on by default and each a `SugiyamaOptions` field / `build` flag / `[tool.nodebpy.assets]` key:
+  - `sequential_frames` ranks frames as stages of the flow: every node of a frame comes after every node of the frame (or intermediate node) feeding it, so successive frames — closure bodies, processing stages — line up left to right instead of sharing columns and stacking into a staircase (MolecularNodes' *Style Surface* halves in height). Frames with no links between them still stack vertically as parallel branches.
+  - `balance_heights` counters the tall sliver a node with many inputs produces: after ranking, nodes of the tallest columns are promoted, together with everything upstream of them, into emptier columns while the drawing gets closer to a screen-shaped box (`balance_aspect`, default 1.6 wide per unit of height). The longer links are routed through reroutes / dummy nodes, which now pack at `reroute_margin_y_fac` (0.35) of the vertical margin instead of a full node gap.
+  - The default `direction` is now `BALANCED` (the average of the four Brandes–Köpf extremes), which is shorter than `RIGHT_UP` on every MolecularNodes style tree and centres the flow vertically.
+- Links into a collapsed panel's sockets (`is_hidden` in Blender's terms) now count for the layout, so a producer feeding a panel socket is placed before its consumer instead of drifting off as a disconnected node.
+
+### Fixes
+
+- Zones in plots are drawn as Blender draws them: a rounded convex hull around the zone's input and output nodes and every node fed from the zone input; a node that only feeds into the zone from outside stays outside.
+
 ## 520.25.0 - 2026-09-14
 
 ### Enhancements

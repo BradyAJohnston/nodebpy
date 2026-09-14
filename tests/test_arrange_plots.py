@@ -421,3 +421,30 @@ def test_group_node_panels_in_row_model(tmp_path):
     from PIL import Image
 
     assert Image.open(opened).height > Image.open(closed).height
+
+
+def test_zone_members_and_hull():
+    """A zone holds its input and output nodes and whatever is fed from the
+    input; a node feeding into the zone from outside is not a member. The
+    zone outline is the rounded convex hull of the members."""
+    from nodebpy.export.plot import _convex_hull, _rounded_offset, _zone_members
+
+    with TreeBuilder("ZoneMembers", arrange=None) as tree:
+        sim = g.SimulationZone({"mesh": g.Cube()})
+        outside = g.Vector((0.0, 0.0, 0.1))  # fed from nothing inside
+        inside = sim.input >> g.SetPosition(offset=outside)
+        inside >> sim.output
+        sim.output >> tree.outputs.geometry()
+
+    members = _zone_members(tree.tree, sim.input.node, sim.output.node)
+    assert {sim.input.node, sim.output.node, inside.node} <= members
+    assert outside.node not in members
+    assert tree.tree.nodes["Group Output"] not in members
+
+    hull = _convex_hull([(0, 0), (2, 0), (2, 2), (0, 2), (1, 1), (1, 0)])
+    assert set(hull) == {(0, 0), (2, 0), (2, 2), (0, 2)}
+    outline = _rounded_offset(hull, 1.0)
+    xs = [x for x, _ in outline]
+    ys = [y for _, y in outline]
+    assert min(xs) == pytest.approx(-1.0) and max(xs) == pytest.approx(3.0)
+    assert min(ys) == pytest.approx(-1.0) and max(ys) == pytest.approx(3.0)

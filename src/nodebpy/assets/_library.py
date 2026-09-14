@@ -1406,7 +1406,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
         choices=["LEFT_DOWN", "RIGHT_DOWN", "LEFT_UP", "RIGHT_UP", "BALANCED"],
         help=(
             "Direction of layout — which corner nodes align towards, or "
-            "'balanced' to even out the four extremes (default: right_up)."
+            "'balanced' to even out the four extremes (default: balanced)."
         ),
     )
     layout.add_argument(
@@ -1442,6 +1442,38 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
         action="store_true",
         help="Fit the widths of collapsed nodes to their display name.",
     )
+    layout.add_argument(
+        "--no-sequential-frames",
+        dest="sequential_frames",
+        action="store_false",
+        help=(
+            "Do not rank frames as stages of the flow (by default every node "
+            "of a frame comes after every node of the frame feeding it, so "
+            "frames line up left to right instead of stacking)."
+        ),
+    )
+    layout.add_argument(
+        "--no-balance-heights",
+        dest="balance_heights",
+        action="store_false",
+        help=(
+            "Do not promote feeder chains into emptier columns to shorten the "
+            "tallest column."
+        ),
+    )
+    layout.add_argument(
+        "--balance-aspect",
+        type=float,
+        help=("Width-to-height ratio the height balancing aims for (default: 1.6)."),
+    )
+    layout.add_argument(
+        "--reroute-margin-y-fac",
+        type=float,
+        help=(
+            "Fraction of the vertical spacing kept between consecutive "
+            "reroutes in a column (default: 0.35)."
+        ),
+    )
 
 
 def _arrange_options_from_args(args) -> SugiyamaOptions | None:
@@ -1466,6 +1498,14 @@ def _arrange_options_from_args(args) -> SugiyamaOptions | None:
         overrides["stack_margin_y_fac"] = args.stack_margin_y_fac
     if args.optimize_sizes:
         overrides["optimize_sizes"] = True
+    if not args.sequential_frames:
+        overrides["sequential_frames"] = False
+    if not args.balance_heights:
+        overrides["balance_heights"] = False
+    if args.balance_aspect is not None:
+        overrides["balance_aspect"] = args.balance_aspect
+    if args.reroute_margin_y_fac is not None:
+        overrides["reroute_margin_y_fac"] = args.reroute_margin_y_fac
     return SugiyamaOptions(**overrides) if overrides else None
 
 
