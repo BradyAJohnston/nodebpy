@@ -877,6 +877,14 @@ def _draw_node(cv: _Canvas, node: bpy.types.Node) -> None:
             assert row.socket is not None
             cv.socket(x, sy, row.socket.display_shape, _socket_color(row.socket, theme))
             _draw_input_widget(cv, row.socket, x, sy, width)
+            if row.partner is not None:
+                # An output aligned with this input shares the row and label.
+                cv.socket(
+                    x + width,
+                    sy,
+                    row.partner.display_shape,
+                    _socket_color(row.partner, theme),
+                )
         else:
             _draw_panel_row(cv, row, x, sy, width)
 
@@ -953,10 +961,28 @@ def _draw_panel_row(
         ys = [sy + 3.2, sy, sy - 3.2, sy + 3.2]
     cv.ax.plot(xs, ys, color=cv.theme.text, lw=0.8, zorder=5)
     label_x = ax_x + 9.0
+    name = row.panel if isinstance(row.panel, str) else row.panel.name
+    if row.toggle is not None:
+        # A panel toggle: its socket on the left, a checkbox before the name.
+        cv.socket(x, sy, row.toggle.display_shape, _socket_color(row.toggle, cv.theme))
+        _, outline, _, _, checked = cv.theme.option
+        size = 13.0
+        value = bool(getattr(row.toggle, "default_value", False))
+        cv.rect(
+            label_x,
+            sy - size / 2,
+            size,
+            size,
+            face=checked if value else cv.theme.option[0],
+            edge=outline,
+            radius=3,
+            z=3.5,
+        )
+        label_x += size + 6.0
     cv.text(
         label_x,
         sy,
-        _fit(row.panel.name, x + width - _LABEL_INSET - label_x),
+        _fit(name, x + width - _LABEL_INSET - label_x),
         weight="bold",
         z=5,
     )

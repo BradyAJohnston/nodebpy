@@ -248,14 +248,18 @@ def test_plot_zones_reroutes_and_widgets():
 
 
 def test_plot_matches_layout_row_model():
-    """The plot and the arranger share one row model: a hide_value vector
-    input takes a single row and undrawn RNA bookkeeping adds no property
-    rows, so a Set Position node is header + 1 output + 4 inputs."""
+    """The plot and the arranger share one row model: Set Position draws
+    its Geometry output on the Geometry input's row (Blender's aligned
+    sockets), a hide_value vector input takes a single row, and undrawn RNA
+    bookkeeping adds no property rows — header + 4 input rows in all."""
     from nodebpy.builder.layout import (
         HEADER,
         SOCKET_ROW,
+        VECTOR_EXPANDED,
         calculate_node_dimensions,
+        calculate_socket_offset_y,
         node_property_rows,
+        node_rows,
     )
 
     with TreeBuilder("RowModel", arrange=None) as tree:
@@ -265,17 +269,90 @@ def test_plot_matches_layout_row_model():
         out = tree.outputs.geometry()
         sim.output >> out
 
+    rows = node_rows(sp.node)
+    assert [r.kind for r in rows] == ["input"] * 4
+    assert rows[0].socket.name == "Geometry" and rows[0].partner.name == "Geometry"
+    assert calculate_socket_offset_y(sp.node.outputs["Geometry"]) == rows[0].anchor
     _, height = calculate_node_dimensions(sp.node)
     # Offset is an unlinked, shown vector: one row plus the expanded widget.
-    from nodebpy.builder.layout import VECTOR_EXPANDED
-
-    assert height == pytest.approx(HEADER + 5 * SOCKET_ROW + VECTOR_EXPANDED)
+    assert height == pytest.approx(HEADER + 4 * SOCKET_ROW + VECTOR_EXPANDED)
     assert node_property_rows(sim.input.node) == []
     assert node_property_rows(sim.output.node) == []
     assert node_property_rows(tree.tree.nodes["Group Output"]) == []
-    (vector_prop, rows), *rest = node_property_rows(vec.node)
-    assert vector_prop.identifier == "vector" and rows == 3
+    (vector_prop, rows_count), *rest = node_property_rows(vec.node)
+    assert vector_prop.identifier == "vector" and rows_count == 3
     assert rest == []
+
+
+def test_declared_socket_order_rows():
+    """Nodes Blender draws from their declaration follow the recorded
+    order: a Menu Switch shows Output, its data-type dropdown, Menu, then
+    one row per item carrying both the value input and the "chosen" output;
+    a Principled BSDF folds its closed panels into header rows; a zone
+    output node pairs each item's input with its output."""
+    from nodebpy import shader as s
+    from nodebpy.builder.layout import (
+        HEADER,
+        PROPERTY_ROW,
+        SOCKET_ROW,
+        calculate_node_dimensions,
+        calculate_socket_offset_y,
+        node_rows,
+    )
+
+    with TreeBuilder("Declared", arrange=None):
+        switch = g.MenuSwitch(data_type="BOOLEAN")
+        switch.add_item("A", True)
+        switch.add_item("B", False)
+        node = switch.node
+        rep = g.RepeatZone()
+        rep.input >> g.SetPosition() >> rep.output
+
+    rows = node_rows(node)
+    summary = [
+        (r.kind, r.socket.name if r.socket else r.prop.identifier, bool(r.partner))
+        for r in rows
+    ]
+    assert summary == [
+        ("output", "Output", False),
+        ("property", "data_type", False),
+        ("input", "Menu", False),
+        ("input", "A", True),
+        ("input", "B", True),
+        ("input", "", False),  # the extend socket
+    ]
+    assert rows[3].partner.name == "A" and rows[3].partner.is_output
+    assert calculate_socket_offset_y(node.outputs["A"]) == rows[3].anchor
+    assert calculate_node_dimensions(node)[1] == pytest.approx(
+        HEADER + 5 * SOCKET_ROW + PROPERTY_ROW
+    )
+
+    zone_rows = node_rows(rep.output.node)
+    geometry = [
+        r for r in zone_rows if r.socket is not None and r.socket.name == "Geometry"
+    ]
+    assert len(geometry) == 1 and geometry[0].partner is not None
+
+    with TreeBuilder.shader("DeclaredShader") as shader_tree:
+        bsdf = s.PrincipledBSDF()
+        bsdf >> shader_tree.outputs.shader("Shader")
+    kinds = [
+        (r.kind, r.panel if r.kind == "panel" else None, r.open)
+        for r in node_rows(bsdf.node)
+    ]
+    assert kinds[0] == ("output", None, True)
+    assert ("panel", "Subsurface", False) in kinds
+    # Closed panels hide their sockets: no "Subsurface Weight" row.
+    assert all(
+        r.socket is None or r.socket.name != "Subsurface Weight"
+        for r in node_rows(bsdf.node)
+    )
+    for state in bsdf.node.panel_states:
+        state.is_collapsed = False
+    assert any(
+        r.socket is not None and r.socket.name == "Subsurface Weight" and r.depth == 1
+        for r in node_rows(bsdf.node)
+    )
 
 
 def test_group_node_panels_in_row_model(tmp_path):

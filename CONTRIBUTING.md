@@ -41,6 +41,13 @@ uv run python -m gen --only geometry
 
 Inside `gen/`: `config.py` holds the per-tree-type configuration and the skip / hand-written / generate disposition for each node, `customizations.py` is the `register_customization` registry that layers generation-time mixins onto specific nodes, `introspect.py` inspects the live node registry, and `model.py` / `emit.py` / `writers.py` turn the results into module files.
 
+The socket *draw order* table `src/nodebpy/builder/_socket_order.py` is generated separately, from Blender's C++ node declarations rather than the live registry: Blender draws nodes declared with `use_custom_socket_order()` in declaration order (inputs and outputs interleaved, aligned pairs sharing a row, buttons and panels where declared), which RNA does not expose. After a Blender version change regenerate it with
+
+```sh
+uv run python -m gen.socket_order            # sparse-clones the tag matching the installed bpy
+uv run python -m gen.socket_order --source ~/src/blender   # or parse a local checkout
+```
+
 Nodes that need special handling are hand-written in `src/nodebpy/nodes/*/manual.py` (and the zone nodes in `nodes/geometry/zone.py` / `nodes/shader/zone.py`); the generator skips these and re-exports them alongside the generated classes.
 
 ## Building the docs
