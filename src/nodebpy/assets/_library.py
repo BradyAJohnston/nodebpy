@@ -1275,24 +1275,33 @@ def plot_library(
     *,
     dpi: int = 150,
     arrange: SugiyamaOptions | None = None,
+    tree: bool = True,
+    node: bool = True,
+    open_panels: bool = False,
 ) -> dict[str, Path]:
     """Render node groups from ``blend_path`` to PNG images under
-    ``output_dir`` — a headless look at node graphs, e.g. for posting in
-    pull requests (``python -m nodebpy.assets plot``).
+    ``output_dir`` — a headless, Blender-styled look at node graphs, e.g.
+    for reviewing new nodes in pull requests (``python -m nodebpy.assets
+    plot``).
 
     ``names`` selects the groups to plot: exact names or :mod:`fnmatch`
     wildcard patterns (``"Style *"``), matched against *every* node group in
     the ``.blend`` (not just assets); ``None`` plots them all. A pattern
-    matching nothing raises. Each tree is drawn with
-    :func:`nodebpy.export.to_plot` (which needs the optional ``matplotlib``
-    dependency) at its stored layout, or re-arranged first when ``arrange``
-    options are given. Everything appended for plotting is removed from the
-    session again afterwards.
+    matching nothing raises. Each group is rendered twice: its internals
+    (``<name>.png``, :func:`nodebpy.export.to_plot`, drawn at the stored
+    layout or re-arranged first when ``arrange`` options are given) and the
+    single group node a user sees when adding it (``<name>_node.png``,
+    ``to_plot(node=True)``, with every interface panel expanded when
+    ``open_panels`` is set); ``tree=False`` / ``node=False`` skip either.
+    Both need the optional ``matplotlib`` dependency.
+    Everything appended for plotting is removed from the session again
+    afterwards.
 
     Returns
     -------
     dict[str, Path]
-        Mapping of group name to the image it was written to.
+        Mapping of group name (suffixed with ``" (node)"`` for the group-node
+        render) to the image it was written to.
     """
     blend_path = Path(blend_path)
     output_dir = Path(output_dir)
@@ -1339,12 +1348,23 @@ def plot_library(
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
         written: dict[str, Path] = {}
-        for tree in dst.node_groups:
-            assert tree is not None
-            if arrange is not None:
-                arrange_tree_nodes(tree, arrange)
-            slug = re.sub(r"[^A-Za-z0-9._-]+", "_", tree.name).lstrip(".") or "tree"
-            written[tree.name] = to_plot(tree, output_dir / f"{slug}.png", dpi=dpi)
+        for group in dst.node_groups:
+            assert group is not None
+            if arrange is not None and tree:
+                arrange_tree_nodes(group, arrange)
+            slug = re.sub(r"[^A-Za-z0-9._-]+", "_", group.name).lstrip(".") or "tree"
+            if tree:
+                written[group.name] = to_plot(
+                    group, output_dir / f"{slug}.png", title=group.name, dpi=dpi
+                )
+            if node:
+                written[f"{group.name} (node)"] = to_plot(
+                    group,
+                    output_dir / f"{slug}_node.png",
+                    dpi=dpi,
+                    node=True,
+                    open_panels=open_panels,
+                )
     finally:
         for coll in _CLEANUP_COLLECTIONS:
             data = getattr(bpy.data, coll)
@@ -1726,13 +1746,15 @@ def _parse_args(argv: list[str] | None = None):
         "plot",
         help="Render node groups from a .blend to PNG images.",
         description=(
-            "Render node groups from a .blend to PNG images — a headless "
-            "look at node graphs, e.g. for posting in pull requests. Selects "
-            "groups by exact name or fnmatch wildcard ('Style *'), matched "
-            "against every node group in the file (not just assets); with no "
-            "names, every group is plotted. Trees are drawn at their stored "
-            "layout unless --arrange (or any arrangement flag) is given. "
-            "Requires matplotlib (pip install nodebpy[plot])."
+            "Render node groups from a .blend to PNG images — a headless, "
+            "Blender-styled look at node graphs, e.g. for reviewing new nodes "
+            "in pull requests. Selects groups by exact name or fnmatch "
+            "wildcard ('Style *'), matched against every node group in the "
+            "file (not just assets); with no names, every group is plotted. "
+            "Each group gets two images: its internals (<name>.png, drawn at "
+            "the stored layout unless --arrange or any arrangement flag is "
+            "given) and the group node as seen from another tree "
+            "(<name>_node.png). Requires matplotlib (pip install nodebpy[plot])."
         ),
     )
     plot.add_argument("blend", type=Path, help="The .blend holding the node groups.")
@@ -1746,6 +1768,24 @@ def _parse_args(argv: list[str] | None = None):
         ),
     )
     plot.add_argument("--dpi", type=int, default=150, help="Image DPI (default: 150).")
+    plot.add_argument(
+        "--tree-only",
+        action="store_true",
+        help="Only render the internals of each group (skip <name>_node.png).",
+    )
+    plot.add_argument(
+        "--node-only",
+        action="store_true",
+        help="Only render each group as a group node (skip <name>.png).",
+    )
+    plot.add_argument(
+        "--open-panels",
+        action="store_true",
+        help=(
+            "Expand every interface panel in the group-node render instead "
+            "of drawing panels in their default closed state."
+        ),
+    )
     plot.add_argument(
         "--arrange",
         action="store_true",
@@ -1835,10 +1875,13 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             args.names or None,
             dpi=args.dpi,
             arrange=method,
+            tree=not args.node_only,
+            node=not args.tree_only,
+            open_panels=args.open_panels,
         )
         for name, path in written.items():
             print(f"  {name}: {path}")
-        print(f"Plotted {len(written)} node groups to {args.output}")
+        print(f"Wrote {len(written)} images to {args.output}")
     else:
         _build_command(args)
 

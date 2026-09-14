@@ -332,8 +332,9 @@ def test_locations_are_quantized():
 
 class TestSocketOffsets:
     def test_outputs_above_inputs(self):
+        """A conventionally drawn node lists its outputs above its inputs."""
         tree = bpy.data.node_groups.new("Offsets", "GeometryNodeTree")
-        node = tree.nodes.new("GeometryNodeSetPosition")
+        node = tree.nodes.new("ShaderNodeMath")
 
         output_offsets = [
             calculate_socket_offset_y(s) for s in node.outputs if s.enabled
@@ -342,6 +343,17 @@ class TestSocketOffsets:
 
         assert all(offset < 0 for offset in output_offsets + input_offsets)
         assert max(input_offsets) < min(output_offsets)
+
+    def test_aligned_output_shares_input_row(self):
+        """Set Position is drawn from its declaration: the Geometry output
+        sits on the Geometry input's row, above the remaining inputs."""
+        tree = bpy.data.node_groups.new("OffsetsAligned", "GeometryNodeTree")
+        node = tree.nodes.new("GeometryNodeSetPosition")
+
+        geometry_out = calculate_socket_offset_y(node.outputs["Geometry"])
+        input_offsets = [calculate_socket_offset_y(s) for s in node.inputs if s.enabled]
+        assert geometry_out == input_offsets[0]
+        assert all(offset < geometry_out for offset in input_offsets[1:])
 
     def test_inputs_ordered_top_to_bottom(self):
         tree = bpy.data.node_groups.new("OffsetsOrder", "GeometryNodeTree")

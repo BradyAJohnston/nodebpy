@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, ClassVar, Literal, Self, TypeVar, cast
 
 import bpy
@@ -1251,6 +1252,37 @@ class TreeBuilder[TreeT: NodeTree]:
         from ..export import to_mermaid
 
         return to_mermaid(self, fenced=fenced)
+
+    def to_plot(
+        self,
+        filepath: str | Path,
+        *,
+        title: str | None = None,
+        dpi: int = 150,
+        node: bool = False,
+        open_panels: bool = False,
+        width: float | None = None,
+        axes: bool = False,
+    ) -> Path:
+        """Draw this tree to an image, styled like Blender's node editor,
+        for headless review (``pip install nodebpy[plot]``): its internals,
+        or with ``node=True`` the single group node a user adds to another
+        tree, showing the interface sockets with their default values.
+
+        See :func:`nodebpy.export.to_plot`.
+        """
+        from ..export import to_plot
+
+        return to_plot(
+            self.tree,
+            filepath,
+            title=title,
+            dpi=dpi,
+            node=node,
+            open_panels=open_panels,
+            width=width,
+            axes=axes,
+        )
 
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""
