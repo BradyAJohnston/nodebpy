@@ -319,10 +319,18 @@ def test_plot_library(library_blend, tmp_path):
 
     out = tmp_path / "plots"
     written = plot_library(library_blend, out, ["Scale *"])
-    assert set(written) == {"Scale Up"}
+    assert set(written) == {"Scale Up", "Scale Up (node)"}
     assert written["Scale Up"] == out / "Scale_Up.png"
     assert written["Scale Up"].stat().st_size > 5_000
+    assert written["Scale Up (node)"] == out / "Scale_Up_node.png"
+    assert written["Scale Up (node)"].stat().st_size > 5_000
     assert not bpy.data.node_groups  # appended groups removed again
+
+    # Either render can be skipped.
+    written = plot_library(library_blend, out, ["Scale *"], node=False)
+    assert set(written) == {"Scale Up"}
+    written = plot_library(library_blend, out, ["Scale *"], tree=False)
+    assert set(written) == {"Scale Up (node)"}
 
     # No names: every group in the file, including the non-asset helper —
     # and re-arranging before plotting works.

@@ -6,6 +6,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
+from dataclasses import replace as dataclass_replace
 from typing import Any, Literal, cast
 
 import bpy
@@ -105,8 +106,33 @@ def organize_into_columns(
     return list(reversed(columns))
 
 
-def _node_property_count(node: bpy.types.Node) -> int:
-    """Count properties specific to this node type (not inherited).
+# Node-specific RNA properties Blender never draws in the node body: UI
+# bookkeeping for item lists and zones rather than settings.
+_UNDRAWN_PROPERTIES = frozenset({"is_active_output", "vector_dimensions"})
+
+# Rows a colour-picker widget (the Color input node) takes up.
+_COLOR_PICKER_ROWS = 6
+
+
+def _is_id_pointer(prop: Any) -> bool:
+    """Whether a POINTER property references an ID datablock (drawn as a
+    datablock selector) rather than an internal struct or another node."""
+    fixed = getattr(prop, "fixed_type", None)
+    if fixed is None:
+        return False
+    rna_type = getattr(bpy.types, fixed.bl_rna.identifier, None)
+    return rna_type is not None and issubclass(rna_type, bpy.types.ID)
+
+
+def node_property_rows(node: bpy.types.Node) -> list[tuple[Any, int]]:
+    """The node-specific RNA properties Blender draws in the node body, each
+    with the number of :data:`PROPERTY_ROW` rows it takes.
+
+    Properties inherited from the node's base classes (location, label, ...)
+    are skipped, as are item collections, pointers to internal structs or
+    other nodes (a zone's ``paired_output``) and known bookkeeping flags —
+    none of which draw a widget. Vector-valued properties draw one number
+    field per component; a colour property draws a picker.
 
     ``bl_rna`` exists on bpy classes via their metaclass, invisible to type
     checkers looking at plain ``type``.
@@ -116,9 +142,30 @@ def _node_property_count(node: bpy.types.Node) -> int:
         for base in type(node).__bases__
         for prop in cast(Any, base).bl_rna.properties
     }
-    return sum(
-        1 for prop in node.bl_rna.properties if prop.identifier not in inherited_ids
-    )
+    rows: list[tuple[Any, int]] = []
+    for prop in node.bl_rna.properties:
+        if prop.identifier in inherited_ids or prop.identifier in _UNDRAWN_PROPERTIES:
+            continue
+        if prop.identifier.startswith("active_"):
+            continue  # active item / index of an item list, edited in the sidebar
+        if prop.type == "COLLECTION":
+            continue
+        if prop.type == "POINTER" and not _is_id_pointer(prop):
+            continue
+        count = 1
+        array_length = int(getattr(prop, "array_length", 0) or 0)
+        if prop.type in ("FLOAT", "INT") and array_length > 1:
+            if getattr(prop, "subtype", "NONE") == "COLOR":
+                count = _COLOR_PICKER_ROWS
+            else:
+                count = int(getattr(node, "vector_dimensions", array_length))
+        rows.append((prop, count))
+    return rows
+
+
+def _node_property_count(node: bpy.types.Node) -> int:
+    """Number of :data:`PROPERTY_ROW` rows the node's drawn properties take."""
+    return sum(count for _, count in node_property_rows(node))
 
 
 def _socket_visible(socket: bpy.types.NodeSocket) -> bool:
@@ -132,12 +179,172 @@ def _is_expanded_vector(
     socket: bpy.types.NodeSocket,
     socket_input_connection_count: Counter | None,
 ) -> bool:
-    """Whether an input draws the expanded 3-component vector widget."""
-    if socket.type != "VECTOR":
+    """Whether an input draws the expanded 3-component vector widget: an
+    unlinked vector whose value is shown (``hide_value`` sockets, such as
+    Set Position's *Position*, draw just their label)."""
+    if socket.type != "VECTOR" or socket.hide_value:
         return False
     if socket_input_connection_count is None:
         return not socket.is_linked
     return socket_input_connection_count[socket] == 0
+
+
+@dataclass(frozen=True)
+class NodeRow:
+    """One drawn row of an expanded node, as the headless row model sees it.
+
+    ``top`` is the row's offset (<= 0) from the node's top edge and
+    ``height`` its extent; ``anchor`` is where a socket marker sits. Socket
+    rows carry their ``socket``; property rows the RNA ``prop``; panel rows
+    the interface ``panel`` item, whether it is ``open``, and — when closed
+    — the linked ``collapsed_sockets`` Blender draws on the header instead.
+    """
+
+    kind: Literal["output", "property", "input", "panel"]
+    top: float
+    height: float
+    socket: bpy.types.NodeSocket | None = None
+    prop: Any = None
+    panel: Any = None
+    depth: int = 0
+    open: bool = True
+    collapsed_sockets: tuple[bpy.types.NodeSocket, ...] = ()
+
+    @property
+    def anchor(self) -> float:
+        """Vertical offset (<= 0) of the row's socket marker / centre."""
+        if self.kind == "property":
+            return self.top - self.height / 2
+        # Socket and panel rows anchor on their first SOCKET_ROW; an expanded
+        # vector's three value rows hang below its label row.
+        return self.top - SOCKET_ROW / 2
+
+
+def _is_root_panel(item: Any) -> bool:
+    return item is None or getattr(item, "index", -1) < 0
+
+
+def _interface_panels(node: bpy.types.Node) -> tuple[list[Any], dict[int, bool]] | None:
+    """For a group node whose tree declares panels: the interface items in
+    draw order and the node's per-panel collapsed state (keyed by the
+    panel's persistent uid, falling back to ``default_closed``)."""
+    if not node.bl_idname.endswith("NodeGroup"):
+        return None
+    tree = getattr(node, "node_tree", None)
+    if tree is None:
+        return None
+    items = list(tree.interface.items_tree)
+    if not any(item.item_type == "PANEL" for item in items):
+        return None
+    collapsed = {
+        state.identifier: state.is_collapsed
+        for state in getattr(node, "panel_states", ())
+    }
+    for item in items:
+        if item.item_type == "PANEL":
+            collapsed.setdefault(item.persistent_uid, item.default_closed)
+    return items, collapsed
+
+
+def node_rows(
+    node: bpy.types.Node,
+    socket_input_connection_count: Counter | None = None,
+) -> list[NodeRow]:
+    """The rows Blender draws below an expanded node's header, top to bottom.
+
+    Outputs come first, then the node's drawn properties
+    (:func:`node_property_rows`), then inputs; an unlinked, shown vector
+    input is followed by its expanded three-value widget. Group nodes whose
+    interface declares panels draw them in interface order: a header row per
+    panel, its sockets beneath it while open, and — while closed — nothing
+    but linked sockets gathered onto the header. When
+    ``socket_input_connection_count`` is None, link state is read from
+    ``socket.is_linked``.
+    """
+    rows: list[NodeRow] = []
+    y = HEADER
+
+    def add(kind: Any, height: float, **extra: Any) -> None:
+        nonlocal y
+        rows.append(NodeRow(kind, -y, height, **extra))
+        y += height
+
+    def add_input(socket: bpy.types.NodeSocket) -> None:
+        height = SOCKET_ROW
+        if _is_expanded_vector(socket, socket_input_connection_count):
+            height += VECTOR_EXPANDED
+        add("input", height, socket=socket)
+
+    panels = _interface_panels(node)
+    if panels is None:
+        for socket in node.outputs:
+            if _socket_visible(socket):
+                add("output", SOCKET_ROW, socket=socket)
+        for prop, count in node_property_rows(node):
+            add("property", count * PROPERTY_ROW, prop=prop)
+        for socket in node.inputs:
+            if _socket_visible(socket):
+                add_input(socket)
+        return rows
+
+    items, collapsed = panels
+    by_key = {
+        (socket.is_output, socket.identifier): socket
+        for socket in (*node.inputs, *node.outputs)
+    }
+    # Top-level outputs sit above everything else, as on any node.
+    for item in items:
+        if (
+            item.item_type == "SOCKET"
+            and item.in_out == "OUTPUT"
+            and _is_root_panel(item.parent)
+        ):
+            socket = by_key.get((True, item.identifier))
+            if socket is not None and _socket_visible(socket):
+                add("output", SOCKET_ROW, socket=socket)
+    for prop, count in node_property_rows(node):
+        add("property", count * PROPERTY_ROW, prop=prop)
+
+    # Walk the remaining items in interface order. ``closed`` tracks the
+    # innermost closed panel enclosing the current item, whose header row
+    # collects the linked sockets Blender folds onto it.
+    depth_of: dict[int, int] = {}
+    closed_row: dict[int, int] = {}  # panel uid -> index of its header row
+    for item in items:
+        parent = item.parent
+        parent_uid = None if _is_root_panel(parent) else parent.persistent_uid
+        enclosing_closed = closed_row.get(parent_uid) if parent_uid else None
+        if item.item_type == "PANEL":
+            depth = 0 if parent_uid is None else depth_of[parent_uid] + 1
+            depth_of[item.persistent_uid] = depth
+            if enclosing_closed is not None:
+                closed_row[item.persistent_uid] = enclosing_closed
+                continue
+            is_open = not collapsed.get(item.persistent_uid, item.default_closed)
+            if not is_open:
+                closed_row[item.persistent_uid] = len(rows)
+            add("panel", SOCKET_ROW, panel=item, depth=depth, open=is_open)
+            continue
+        if item.in_out == "OUTPUT" and parent_uid is None:
+            continue  # already placed at the top
+        socket = by_key.get((item.in_out == "OUTPUT", item.identifier))
+        if socket is None or not _socket_visible(socket):
+            continue
+        if enclosing_closed is not None:
+            if socket.is_linked:
+                header = rows[enclosing_closed]
+                rows[enclosing_closed] = dataclass_replace(
+                    header, collapsed_sockets=(*header.collapsed_sockets, socket)
+                )
+            continue
+        if socket.is_output:
+            add("output", SOCKET_ROW, socket=socket, depth=depth_of.get(parent_uid, 0))
+        else:
+            height = SOCKET_ROW
+            if _is_expanded_vector(socket, socket_input_connection_count):
+                height += VECTOR_EXPANDED
+            add("input", height, socket=socket, depth=depth_of.get(parent_uid, 0))
+    return rows
 
 
 def calculate_node_dimensions(
@@ -149,8 +356,9 @@ def calculate_node_dimensions(
 
     When a node is collapsed (``node.hide is True``) only linked sockets
     contribute to the height, and header / property / vector-expansion rows
-    are omitted. When ``socket_input_connection_count`` is None, link state
-    is read directly from ``socket.is_linked``.
+    are omitted. Otherwise the height is the header plus every row of
+    :func:`node_rows`. When ``socket_input_connection_count`` is None, link
+    state is read directly from ``socket.is_linked``.
     """
     if node.hide:
         linked_inputs = sum(1 for s in node.inputs if s.enabled and s.is_linked)
@@ -159,34 +367,17 @@ def calculate_node_dimensions(
         height = (HIDDEN_HEADER + visible * HIDDEN_SOCKET) * interface_scale
         return node.width, height
 
-    visible_inputs = sum(1 for s in node.inputs if _socket_visible(s))
-    visible_outputs = sum(1 for s in node.outputs if _socket_visible(s))
-
-    # count vector inputs that need expanded UI widgets (not connected)
-    unconnected_vectors = sum(
-        1
-        for s in node.inputs
-        if _socket_visible(s) and _is_expanded_vector(s, socket_input_connection_count)
-    )
-
-    height = (
-        HEADER
-        + visible_outputs * SOCKET_ROW
-        + _node_property_count(node) * PROPERTY_ROW
-        + visible_inputs * SOCKET_ROW
-        + unconnected_vectors * VECTOR_EXPANDED
-    ) * interface_scale
-
+    rows = node_rows(node, socket_input_connection_count)
+    height = (HEADER + sum(row.height for row in rows)) * interface_scale
     return node.width, height
 
 
 def calculate_socket_offset_y(socket: bpy.types.NodeSocket) -> float:
     """Estimate a socket's vertical offset (<= 0) from the top of its node.
 
-    Models the same row layout as :func:`calculate_node_dimensions`: header,
-    outputs, properties, then inputs (unconnected vector inputs are followed
-    by their expanded widget). Collapsed nodes spread their linked sockets
-    evenly across the node's height.
+    Reads the row model of :func:`node_rows`: a socket sits on its own row's
+    anchor, or on the header of the closed panel that hides it. Collapsed
+    nodes spread their linked sockets evenly across the node's height.
     """
     node = socket.node
     assert node is not None
@@ -198,31 +389,11 @@ def calculate_socket_offset_y(socket: bpy.types.NodeSocket) -> float:
         height = calculate_node_dimensions(node)[1]
         return -height * (index + 0.5) / max(len(visible), 1)
 
-    if socket.is_output:
-        index = 0
-        for s in node.outputs:
-            if s == socket:
-                break
-            if _socket_visible(s):
-                index += 1
-        return -(HEADER + (index + 0.5) * SOCKET_ROW)
-
-    visible_outputs = sum(1 for s in node.outputs if _socket_visible(s))
-    offset = (
-        HEADER
-        + visible_outputs * SOCKET_ROW
-        + _node_property_count(node) * PROPERTY_ROW
-    )
-    for s in node.inputs:
-        if s == socket:
-            break
-        if not _socket_visible(s):
-            continue
-        offset += SOCKET_ROW
-        if _is_expanded_vector(s, None):
-            offset += VECTOR_EXPANDED
-
-    return -(offset + 0.5 * SOCKET_ROW)
+    for row in node_rows(node):
+        if row.socket == socket or socket in row.collapsed_sockets:
+            return row.anchor
+    # Not drawn (hidden and unlinked, or in a closed panel): the header.
+    return -HEADER / 2
 
 
 def _socket_index(socket: bpy.types.NodeSocket) -> int:

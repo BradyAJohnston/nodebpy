@@ -118,6 +118,7 @@ quartodoc:
         - export.to_python
         - export.to_mermaid
         - export.to_plot
+        - export.to_node_plot
         - export.serialize_library
         - export.compare_libraries
 

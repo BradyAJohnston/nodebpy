@@ -145,17 +145,26 @@ python -m nodebpy.assets dump my_assets.blend my_assets_src/
 python -m nodebpy.assets build my_assets_src/ my_assets.blend
 ```
 
-Node groups can also be rendered to PNG images headlessly — for reviewing
-layouts or posting graphs in pull requests — selected by exact name or
-wildcard (`plot_library` in Python):
+Node groups can also be rendered to PNG images headlessly, styled like
+Blender's node editor — for reviewing new or edited nodes in pull requests
+without opening Blender — selected by exact name or wildcard (`plot_library`
+in Python):
 
 ```bash
 python -m nodebpy.assets plot my_assets.blend plots/ "Style *"
 ```
 
-By default each tree is drawn at its stored layout; pass `--arrange` (plus
-any of the arrangement flags shared with `build`, e.g. `--add-reroutes`) to
-re-arrange before plotting.
+Each group gets two images: `<name>.png` shows its internals (header colours
+per node class, socket markers by type, value widgets, property dropdowns,
+frames, zones and socket-coloured links) and `<name>_node.png` shows the
+group node as a user sees it when adding the group to a tree, with its
+interface sockets and default values, with interface panels in their default
+open or closed state (`--open-panels` expands them all). `--tree-only` /
+`--node-only` keep just one. By default the internals are drawn at their stored layout; pass
+`--arrange` (plus any of the arrangement flags shared with `build`, e.g.
+`--add-reroutes`) to re-arrange before plotting. From Python, any
+`TreeBuilder` offers the same as `tree.to_plot(path)` and
+`tree.to_node_plot(path)`.
 
 Each asset becomes one module holding its group as a class; helper groups used
 by a single asset are embedded, groups shared between assets get their own
