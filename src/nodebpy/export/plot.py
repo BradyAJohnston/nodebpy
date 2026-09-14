@@ -1069,35 +1069,81 @@ def _draw_frames(cv: _Canvas, tree: bpy.types.NodeTree) -> None:
 def _zone_members(
     tree: bpy.types.NodeTree, start: bpy.types.Node, end: bpy.types.Node
 ) -> set[bpy.types.Node]:
-    """The nodes Blender draws inside a zone: everything reachable forward
-    from the zone input up to the output, and everything the output depends
-    on back to (but not through) the zone input — a feeder of a node inside
-    the zone is inside the zone too."""
+    """The nodes Blender draws inside a zone: the zone's input and output
+    nodes and every node fed, directly or through other nodes, from the
+    zone input. A node that only feeds into the zone from outside (a group
+    input, a constant, a value computed elsewhere) stays outside."""
     forward: dict[bpy.types.Node, set[bpy.types.Node]] = {}
-    backward: dict[bpy.types.Node, set[bpy.types.Node]] = {}
     for link in tree.links:
         if link.from_node is None or link.to_node is None:
             continue
         forward.setdefault(link.from_node, set()).add(link.to_node)
-        backward.setdefault(link.to_node, set()).add(link.from_node)
 
-    def reach(root: bpy.types.Node, graph: dict, stop: bpy.types.Node) -> set:
-        seen = {root}
-        queue = deque([root])
-        while queue:
-            node = queue.popleft()
-            if node is stop:
-                continue
-            for nxt in graph.get(node, ()):
-                if nxt not in seen:
-                    seen.add(nxt)
-                    queue.append(nxt)
-        return seen
+    seen = {start, end}
+    queue = deque([start])
+    while queue:
+        node = queue.popleft()
+        # bpy hands out a fresh wrapper per access, so compare by value.
+        if node == end:
+            continue
+        for nxt in forward.get(node, ()):
+            if nxt not in seen:
+                seen.add(nxt)
+                queue.append(nxt)
+    return seen
 
-    return reach(start, forward, end) | reach(end, backward, start)
+
+def _convex_hull(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    """Counter-clockwise convex hull (monotone chain)."""
+    pts = sorted(set(points))
+    if len(pts) <= 2:
+        return pts
+
+    def cross(o: tuple[float, float], a: tuple[float, float], b: tuple[float, float]):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    lower: list[tuple[float, float]] = []
+    for pt in pts:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], pt) <= 0:
+            lower.pop()
+        lower.append(pt)
+    upper: list[tuple[float, float]] = []
+    for pt in reversed(pts):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], pt) <= 0:
+            upper.pop()
+        upper.append(pt)
+    return lower[:-1] + upper[:-1]
+
+
+def _rounded_offset(
+    hull: list[tuple[float, float]], radius: float, steps: int = 6
+) -> list[tuple[float, float]]:
+    """Outline of a convex polygon grown by *radius*: its edges pushed
+    outwards, its corners rounded (the Minkowski sum with a disc)."""
+    n = len(hull)
+    if n == 1:
+        cx, cy = hull[0]
+        return [
+            (cx + radius * math.cos(a), cy + radius * math.sin(a))
+            for a in (2 * math.pi * k / (4 * steps) for k in range(4 * steps))
+        ]
+    outline: list[tuple[float, float]] = []
+    for i, (x, y) in enumerate(hull):
+        (px, py), (nx, ny) = hull[i - 1], hull[(i + 1) % n]
+        # Outward normals of the incoming and outgoing edges (hull is CCW).
+        a_in = math.atan2(-(x - px), (y - py))
+        a_out = math.atan2(-(nx - x), (ny - y))
+        while a_out < a_in:
+            a_out += 2 * math.pi
+        for k in range(steps + 1):
+            a = a_in + (a_out - a_in) * k / steps
+            outline.append((x + radius * math.cos(a), y + radius * math.sin(a)))
+    return outline
 
 
 def _draw_zones(cv: _Canvas, tree: bpy.types.NodeTree) -> None:
+    from matplotlib.patches import Polygon
+
     for node in tree.nodes:
         attr = _ZONE_THEME_ATTR.get(node.bl_idname)
         if attr is None:
@@ -1105,24 +1151,23 @@ def _draw_zones(cv: _Canvas, tree: bpy.types.NodeTree) -> None:
         paired = getattr(node, "paired_output", None)
         if paired is None:
             continue
-        members = _zone_members(tree, node, paired)
-        bounds = [_node_bounds(n) for n in members]
-        x0 = min(b[0] for b in bounds) - _ZONE_PADDING
-        y0 = min(b[1] for b in bounds) - _ZONE_PADDING
-        x1 = max(b[2] for b in bounds) + _ZONE_PADDING
-        y1 = max(b[3] for b in bounds) + _ZONE_PADDING
+        corners: list[tuple[float, float]] = []
+        for member in _zone_members(tree, node, paired):
+            x0, y0, x1, y1 = _node_bounds(member)
+            corners += [(x0, y0), (x0, y1), (x1, y0), (x1, y1)]
+        outline = _rounded_offset(_convex_hull(corners), _ZONE_PADDING)
         color = cv.theme.zones[attr]
         border = (color[0], color[1], color[2], 0.9)
-        cv.rect(
-            x0,
-            y0,
-            x1 - x0,
-            y1 - y0,
-            face=color,
-            edge=border,
-            radius=10.0,
-            lw=1.0,
-            z=1.5,
+        cv.ax.add_patch(
+            Polygon(
+                outline,
+                closed=True,
+                facecolor=color,
+                edgecolor=border,
+                lw=1.0,
+                joinstyle="round",
+                zorder=1.5,
+            )
         )
 
 

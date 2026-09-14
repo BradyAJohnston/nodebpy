@@ -14,7 +14,7 @@ title: Changelog
 
 ### Fixes
 
-- Zone extents in plots follow Blender's rule: everything upstream of the zone output (and downstream of its input) is inside the zone, so feeders of a node inside a closure zone are drawn within it.
+- Zones in plots are drawn as Blender draws them: a rounded convex hull around the zone's input and output nodes and every node fed from the zone input; a node that only feeds into the zone from outside stays outside.
 
 ## 520.25.0 - 2026-09-14
 
