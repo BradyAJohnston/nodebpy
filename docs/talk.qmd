@@ -482,6 +482,10 @@ code = to_python(nt)
 print(f"```python\n{code}\n```")
 ```
 
+## Comparison
+
+![](images/bpy_comparison.png)
+
 ## The generator is smart about it
 
 ::: {.incremental}
