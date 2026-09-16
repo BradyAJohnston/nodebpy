@@ -228,7 +228,7 @@ def test_filtered_dump_keeps_the_full_dumps_sharing_structure(
         written = dump_library(nested_library_blend, out, names={name})
         assert set(written) == {name}
         files = {p.relative_to(out) for p in out.rglob("*.py")}
-        assert {str(f) for f in files if f.name != "__init__.py"} == modules
+        assert {f.as_posix() for f in files if f.name != "__init__.py"} == modules
         for rel in files:
             assert (out / rel).read_bytes() == (full / rel).read_bytes(), rel
 
