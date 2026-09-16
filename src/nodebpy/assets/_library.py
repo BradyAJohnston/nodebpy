@@ -467,7 +467,7 @@ def dump_library(
     blend_path: str | Path,
     output_dir: str | Path,
     *,
-    names: set[str] | None = None,
+    names: Iterable[str] | None = None,
     nodebpy_pkg: str = "nodebpy",
     snapshot_positions: bool = False,
     keep_reroutes: bool = False,
@@ -511,11 +511,20 @@ def dump_library(
     output_dir:
         Directory to write the per-asset modules into (created if needed).
     names:
-        Restrict the dump to these asset (node-group or material) names;
-        defaults to all. A full dump first clears the managed subdirectories
-        (``geometry``/``shader``/``compositor``/``materials``) so files from
-        renamed or deleted assets don't linger; a filtered dump leaves the
-        other assets' files in place.
+        Restrict the dump to the assets (node groups or materials) matching
+        these exact names or :mod:`fnmatch` wildcard patterns (``"Style *"``);
+        defaults to all. A pattern matching nothing raises. Meant for quick
+        iteration on a few assets: only the selected assets' modules are
+        regenerated, plus the ``_shared`` helper and ``materials/`` modules
+        they depend on — byte-identical to what a full dump writes for them,
+        because the whole library is still appended to decide what is shared
+        (a helper also used by an unselected asset stays in ``_shared``;
+        an unselected nested asset stays imported from its own module).
+        Edits to unselected assets are not picked up; a full dump (or the
+        ``check`` subcommand) catches those. A full dump first clears the
+        managed subdirectories (``geometry``/``shader``/``compositor``/
+        ``materials``) so files from renamed or deleted assets don't linger;
+        a filtered dump leaves the other assets' files in place.
     nodebpy_pkg:
         Import anchor for nodebpy in the generated sources, as for
         :func:`nodebpy.export.to_python`.
@@ -572,13 +581,18 @@ def dump_library(
         else (output_dir, blend_path)
     )
 
-    # Append every wanted asset in one load, so groups shared between assets
-    # (including assets nested in other assets) arrive as single trees and the
-    # sharing structure can be read off the session directly. Dependencies of
-    # other kinds (materials, images, …) come along too; everything appended
-    # is cleaned back out afterwards. The pre-append checks run inside the
-    # load context (the load itself happens on exit, with nothing selected
-    # when a check raises), so the .blend is opened only once.
+    # Append every asset in one load — even for a filtered dump — so groups
+    # shared between assets (including assets nested in other assets) arrive
+    # as single trees and the sharing structure can be read off the session
+    # directly: whether a helper is embedded or goes to _shared/ depends on
+    # how many assets reach it, and an asset outside the selection counts
+    # just the same. Appending is cheap next to code generation, which only
+    # runs for the selected roots. Dependencies of other kinds (materials,
+    # images, …) come along too; everything appended is cleaned back out
+    # afterwards. The pre-append checks run inside the load context (the
+    # load itself happens on exit, with nothing selected when a check
+    # raises), so the .blend is opened only once.
+    patterns = list(names) if names is not None else None
     before = {
         coll: set(getattr(bpy.data, coll).keys()) for coll in _CLEANUP_COLLECTIONS
     }
@@ -589,25 +603,28 @@ def dump_library(
         # assets_only exposes exactly the asset-marked materials: they are
         # dump roots alongside the node-group assets.
         available_materials = list(src.materials)
-        wanted = [n for n in available if names is None or n in names]
-        wanted_materials = [
-            n for n in available_materials if names is None or n in names
-        ]
-        if names is not None and (
-            missing := names - set(wanted) - set(wanted_materials)
-        ):
-            raise KeyError(f"Assets not found in {blend_path}: {sorted(missing)}")
-        clashes = sorted(n for n in wanted if n in bpy.data.node_groups)
+        selected: set[str] | None = None
+        if patterns is not None:
+            roots = available + available_materials
+            selected = {
+                n for n in roots if any(fnmatch.fnmatchcase(n, p) for p in patterns)
+            }
+            unmatched = [
+                p for p in patterns if not any(fnmatch.fnmatchcase(n, p) for n in roots)
+            ]
+            if unmatched:
+                raise KeyError(f"No assets in {blend_path} match: {unmatched}")
+        clashes = sorted(n for n in available if n in bpy.data.node_groups)
         if clashes:
             raise RuntimeError(
                 f"Node groups already exist in this session: {clashes}. "
                 "Appending would rename them and corrupt the dumped sources — "
                 "dump from a fresh session (e.g. python -m nodebpy.assets dump)."
             )
-        dst.node_groups = list(wanted)
+        dst.node_groups = list(available)
         # A same-named material already in the session renames the appended
         # one — caught by the post-append renamed-datablock guard below.
-        dst.materials = list(wanted_materials)
+        dst.materials = list(available_materials)
     added = {
         coll: [db for db in getattr(bpy.data, coll) if db.name not in before[coll]]
         for coll in _CLEANUP_COLLECTIONS
@@ -641,11 +658,12 @@ def dump_library(
             format=format,
             library_blend=anchor_blend.resolve() if typed_api else None,
             anchor_dir=anchor_dir.resolve(),
+            roots=selected,
             # A full dump owns the managed subdirectories: clear stale modules
             # from assets since renamed or deleted, so the next build_library
             # doesn't silently resurrect them. A filtered dump (names=...)
             # leaves the other assets' files alone.
-            clean_stale=names is None,
+            clean_stale=selected is None,
         )
     finally:
         for coll in _CLEANUP_COLLECTIONS:
@@ -699,6 +717,7 @@ def _dump_appended(
     format: bool,
     library_blend: Path | None = None,
     anchor_dir: Path | None = None,
+    roots: set[str] | None = None,
     clean_stale: bool = False,
 ) -> dict[str, Path]:
     """Partition the appended groups (and material roots and referenced
@@ -713,7 +732,11 @@ def _dump_appended(
     typed API — see ``dump_library(typed_api=...)`` — and ``anchor_dir``
     (default: ``output_dir``) is the directory the ``PackageLibrary``
     relative paths are computed against — see
-    ``dump_library(library_anchor=...)``. ``clean_stale`` removes
+    ``dump_library(library_anchor=...)``. ``roots`` restricts the modules
+    written to those assets (node-group or material names) plus the shared
+    helpers and materials they depend on — the partition itself is always
+    computed over every appended asset, so a filtered dump writes exactly
+    what a full one would for those modules. ``clean_stale`` removes
     modules under the managed subdirectories that this dump did not write
     (hand-written ``__init__.py`` files are kept, as ever).
     """
@@ -820,6 +843,24 @@ def _dump_appended(
     # and group calls to any of them use the typed parameter names.
     typed_groups = external if library_blend is not None else set()
 
+    # The modules this dump writes. A filtered dump writes the selected roots
+    # plus the modules they depend on that no other asset owns: the _shared
+    # helpers in their closures, the materials their footers record and those
+    # materials' shared helpers. Unselected assets — nested in a selected one
+    # or not — keep their own modules untouched and are imported as usual.
+    if roots is None:
+        write_assets = list(asset_trees)
+        write_materials = set(material_trees)
+    else:
+        write_assets = [t for t in asset_trees if t.name in roots]
+        write_materials = {k for k, m in material_trees.items() if m in roots}
+        for tree in write_assets:
+            for mat_name in module_dependencies(tree.name).get("materials", ()):
+                if (key := f"material:{mat_name}") in material_trees:
+                    write_materials.add(key)
+    write_roots = {t.name for t in write_assets} | write_materials
+    write_shared = shared & set().union(*(closures[r] for r in write_roots))
+
     def write_module(key: str, module: str, *, kind: str) -> Path:
         group = trees[key]
         # Emitted here: the tree itself plus, for roots, its private helpers.
@@ -876,13 +917,13 @@ def _dump_appended(
         return path
 
     written: dict[str, Path] = {}
-    for tree in asset_trees:
+    for tree in write_assets:
         written[tree.name] = write_module(tree.name, modules[tree.name], kind="asset")
     all_written = set(written.values())
-    for name in sorted(shared):
+    for name in sorted(write_shared):
         all_written.add(write_module(name, modules[name], kind="shared"))
     asset_material_names = set(asset_materials)
-    for key in sorted(material_trees):
+    for key in sorted(write_materials):
         path = write_module(key, modules[key], kind="material")
         all_written.add(path)
         # Material roots are assets the caller asked for, so they belong in
@@ -895,12 +936,14 @@ def _dump_appended(
     if library_blend is not None:
         # Typed API: each tree directory re-exports its asset classes, so
         # ``from <pkg>.<tree_dir> import <Class>`` (or an aliased module
-        # import) works like the old single-file API.
+        # import) works like the old single-file API. A filtered dump only
+        # exports modules that exist on disk (a full dump wrote them all).
         for dirname in set(_TREE_DIRS.values()):
             exports = sorted(
                 (modules[t.name].split("/")[1], class_names[t.name])
                 for t in asset_trees
                 if modules[t.name].startswith(f"{dirname}/")
+                and (output_dir / f"{modules[t.name]}.py").is_file()
             )
             if exports:
                 _write_dir_exports(output_dir / dirname, exports)
@@ -1674,7 +1717,15 @@ def _parse_args(argv: list[str] | None = None):
     dump.add_argument(
         "--names",
         nargs="+",
-        help="Only dump these asset (node-group or material) names (default: all).",
+        metavar="NAME",
+        help=(
+            "Only dump the assets (node groups or materials) matching these "
+            "names; fnmatch wildcards supported ('Style *', quoted to keep the "
+            "shell from expanding them). Default: all. The _shared helpers "
+            "and materials the selection depends on are written too, and the "
+            "other assets' files are left untouched — for quick iteration on "
+            "a few assets; a full dump (or 'check') catches edits elsewhere."
+        ),
     )
     _add_dump_flags(dump)
     dump.add_argument(
@@ -1856,7 +1907,7 @@ def _dump_command(args) -> None:
     written = dump_library(
         args.blend,
         args.output,
-        names=set(args.names) if args.names else None,
+        names=args.names or None,
         nodebpy_pkg=args.nodebpy_pkg,
         snapshot_positions=args.snapshot_positions,
         keep_reroutes=args.keep_reroutes,

@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## 520.27.0 - 2026-09-16
+
+### Enhancements
+
+- **Dump a subset of assets** — `python -m nodebpy.assets dump --names` (and `dump_library(names=...)`) takes fnmatch wildcards like `plot` does (`--names "Style *"`), for quick iteration on a few assets without regenerating the whole library. A filtered dump now writes exactly what the full dump would for those assets: the whole library is still read to decide what is shared, so a helper also used by an unselected asset stays in `_shared/` (previously it was embedded into the selected asset's module) and an unselected nested asset stays imported from its own module (previously its class was duplicated into the importer). The `_shared/` and `materials/` modules the selection depends on are rewritten alongside; other assets' files are left untouched, so `check` remains the authority on the full sources.
+
 ## 520.26.0 - 2026-09-14
 
 ### Enhancements
