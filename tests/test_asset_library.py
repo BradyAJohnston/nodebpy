@@ -191,6 +191,88 @@ def test_dump_names_filter(library_blend, tmp_path):
         dump_library(library_blend, tmp_path / "src", names={"No Such Asset"})
 
 
+def test_dump_names_accepts_wildcards(nested_library_blend, tmp_path):
+    """``names`` takes fnmatch patterns as well as exact names, like ``plot``;
+    a pattern matching nothing raises even when the others match."""
+    written = dump_library(nested_library_blend, tmp_path / "src", names=["Outer *"])
+    assert set(written) == {"Outer A", "Outer B"}
+    written = dump_library(
+        nested_library_blend, tmp_path / "src2", names=["Inner*", "Outer B"]
+    )
+    assert set(written) == {"Inner Widget", "Outer B"}
+    with pytest.raises(KeyError, match=r"\['Nope \*'\]"):
+        dump_library(
+            nested_library_blend, tmp_path / "src3", names=["Outer *", "Nope *"]
+        )
+
+
+def test_filtered_dump_keeps_the_full_dumps_sharing_structure(
+    nested_library_blend, tmp_path
+):
+    """Dumping a single asset writes its module exactly as the full dump does
+    — a helper it shares with *unselected* assets stays in ``_shared`` and an
+    unselected nested asset stays imported — plus the ``_shared`` modules it
+    depends on, and nothing else."""
+    full = tmp_path / "full"
+    dump_library(nested_library_blend, full)
+    full_files = {p.relative_to(full) for p in full.rglob("*.py")}
+    assert Path("geometry/_shared/doubler.py") in full_files
+
+    expected = {
+        "Outer A": {"geometry/outer_a.py", "geometry/_shared/doubler.py"},
+        "Outer B": {"geometry/outer_b.py", "geometry/_shared/doubler.py"},
+        "Inner Widget": {"geometry/inner_widget.py", "geometry/_shared/doubler.py"},
+    }
+    for name, modules in expected.items():
+        out = tmp_path / name.replace(" ", "_")
+        written = dump_library(nested_library_blend, out, names={name})
+        assert set(written) == {name}
+        files = {p.relative_to(out) for p in out.rglob("*.py")}
+        assert {str(f) for f in files if f.name != "__init__.py"} == modules
+        for rel in files:
+            assert (out / rel).read_bytes() == (full / rel).read_bytes(), rel
+
+    code = (tmp_path / "Outer_A" / "geometry" / "outer_a.py").read_text("utf-8")
+    assert "from ._shared.doubler import Doubler" in code
+    assert "from .inner_widget import InnerWidget" in code
+    assert "class Doubler" not in code
+    assert "class InnerWidget" not in code
+    # Dumping cleans every appended group (selected or not) back out.
+    assert not bpy.data.node_groups
+
+
+def test_filtered_dump_writes_referenced_materials(material_library_blend, tmp_path):
+    """A filtered dump also (re)writes the materials/ modules its assets
+    reference, byte-identical to the full dump's."""
+    full = tmp_path / "full"
+    dump_library(material_library_blend, full)
+    out = tmp_path / "part"
+    written = dump_library(material_library_blend, out, names=["Glowing *"])
+    assert set(written) == {"Glowing Grid"}
+    material = out / "materials" / "test_glow.py"
+    assert material.is_file()
+    assert material.read_bytes() == (full / "materials" / "test_glow.py").read_bytes()
+
+
+def test_filtered_typed_api_dump_exports_only_modules_on_disk(
+    nested_library_blend, tmp_path
+):
+    """The typed-API ``__init__.py`` of a tree directory only re-exports asset
+    modules that exist there, so a filtered dump into a fresh directory stays
+    importable; after a full dump it lists every asset as before."""
+    out = tmp_path / "src"
+    dump_library(nested_library_blend, out, names={"Outer A"}, typed_api=True)
+    init = (out / "geometry" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .outer_a import OuterA" in init
+    assert "OuterB" not in init
+    assert "InnerWidget" not in init
+
+    dump_library(nested_library_blend, out, typed_api=True)
+    init = (out / "geometry" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .outer_b import OuterB" in init
+    assert "from .inner_widget import InnerWidget" in init
+
+
 def test_dump_refuses_clashing_session_groups(library_blend, tmp_path):
     with TreeBuilder("Scale Up"):
         pass
