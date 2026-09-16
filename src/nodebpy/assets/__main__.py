@@ -90,8 +90,11 @@ def parse_args(
         ),
         epilog=(
             "subcommands:\n"
-            "  dump <blend> <output-dir>    dump every node-group asset in a "
+            "  dump <blend> <output-dir> [--names ...]\n"
+            "                               dump every node-group asset in a "
             ".blend to per-asset .py source files\n"
+            "                               (or only those matching --names, "
+            "wildcards supported)\n"
             "  build <source-dir> <blend>   rebuild the .blend asset library "
             "from dumped .py source files\n"
             "  ensure <source-dir> <blend>  rebuild only when the .blend or "

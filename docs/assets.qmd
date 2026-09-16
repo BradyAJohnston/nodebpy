@@ -145,6 +145,20 @@ python -m nodebpy.assets dump my_assets.blend my_assets_src/
 python -m nodebpy.assets build my_assets_src/ my_assets.blend
 ```
 
+Dumping a whole library takes a while, so while iterating on a few assets
+pass `--names` (`names=` in Python) with exact names or wildcards, as for
+`plot` below:
+
+```bash
+python -m nodebpy.assets dump my_assets.blend my_assets_src/ --names "Style *" "Sample Radius"
+```
+
+Only the matching assets' modules are rewritten — plus the `_shared/` helper
+and `materials/` modules they depend on — byte-identical to what a full dump
+would write, since the whole library is still read to decide what is shared.
+Other assets' files are left untouched, so edits to them are not picked up:
+a full dump, or the `check` subcommand in CI, catches those.
+
 Node groups can also be rendered to PNG images headlessly, styled like
 Blender's node editor — for reviewing new or edited nodes in pull requests
 without opening Blender — selected by exact name or wildcard (`plot_library`
