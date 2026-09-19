@@ -27,6 +27,25 @@ Version `520.X.Y` should be forward compatible with Blender 5.3+, but incompatib
 Development and updates will mostly happen on the later versions as Blender adds new updates and features, but some fixes and patches may be backported to older versions as needed.
 
 
+## Re-running code in a live session
+
+An editor that re-runs a script on every change — a Text block, a file watched on disk — needs more than `exec`.
+`nodebpy.live.run_source` executes the source and takes care of the rough edges of running it *again*:
+
+```{.python}
+from nodebpy.live import run_source
+
+result = run_source(text.as_string(), filename=text.name)
+result.tree      # the tree the run produced (or None)
+result.created   # every node group the run added
+```
+
+- Node groups the code's `Custom*Group` classes claim by `_name` are moved out of the way first, so `create_group()` rebuilds them from the current code instead of handing back the previous build. Afterwards the old trees' users (group nodes, modifiers, pinned editors) are remapped onto the new builds and the old trees removed; if the run fails, the old names are restored and the original exception is re-raised.
+- Input values on Geometry Nodes modifiers are kept across a rebuild of the tree's interface, matched by socket name (a rebuilt interface gets new socket identifiers, which is what the modifier keys its values on).
+- Tracebacks carry `filename` and the real line numbers.
+
+Pair it with `to_python(in_place=True)`, whose header rebuilds the exported tree in the same datablock (see [Nodes to Code](nodes-to-code.qmd#in-place)).
+
 ## Using multiple versions
 
 If you use `nodebpy` in your add-on you likely support multiple versions of Blender.
