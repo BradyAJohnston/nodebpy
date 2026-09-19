@@ -366,3 +366,7 @@ namespace["tree"].tree == tree.tree
 
 `clear=True` works the same way when writing code by hand — `g.tree("Name", clear=True)` is "get-or-create, then empty", and `TreeBuilder(existing_tree, clear=True)` rebuilds a tree you already hold.
 A group of the same name but another tree type is left alone and a new tree is created as usual.
+Only the tree's contents are rebuilt: tree-level properties such as its description, colour tag and tool/modifier flags are kept.
+
+Only the top-level tree is rebuilt in place. Nested groups are emitted as `Custom*Group` classes, and `create_group()` reuses an existing group of the same name, so running the source with a plain `exec` leaves an edited nested group unchanged.
+[`run_source`](using.qmd#re-running-code-in-a-live-session) handles that case by rebuilding the groups the classes name.

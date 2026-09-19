@@ -369,3 +369,134 @@ def test_run_source_failure_restores_stashed_group():
     assert bpy.data.node_groups["Live Group"] == first.tree
     assert modifier.node_group == first.tree
     assert {t.name for t in bpy.data.node_groups} == names_before
+
+
+# ---------------------------------------------------------------------------
+# Review follow-ups
+# ---------------------------------------------------------------------------
+
+
+def test_preserve_modifier_inputs_reapplies_when_body_raises():
+    first = run_source(WITH_FORM)
+    assert first.tree is not None
+    modifier = _modifier(first.tree)
+    _set_input(modifier, "Scale", 7.0)
+
+    # The failing edit comes after the sockets are declared, as a half-typed
+    # line at the end of the body would.
+    failing = WITH_FORM + "    raise ValueError('half typed')\n"
+    with pytest.raises(ValueError, match="half typed"):
+        run_source(failing)
+    assert modifier.node_group == first.tree
+    assert _input_value(modifier, "Scale") == 7.0
+
+    # And the value survives into the next successful run.
+    run_source(WITH_FORM)
+    assert _input_value(modifier, "Scale") == 7.0
+
+
+def test_preserve_modifier_inputs_keeps_attribute_mode():
+    first = run_source(WITH_FORM)
+    assert first.tree is not None
+    modifier = _modifier(first.tree)
+    item = next(
+        i
+        for i in first.tree.interface.items_tree
+        if i.item_type == "SOCKET" and i.in_out == "INPUT" and i.name == "Scale"
+    )
+    wrapper = getattr(modifier.properties.inputs, item.identifier)
+    wrapper.type = "ATTRIBUTE"
+    wrapper.attribute_name = "my_attr"
+
+    run_source(WITH_FORM)
+
+    item = next(
+        i
+        for i in first.tree.interface.items_tree
+        if i.item_type == "SOCKET" and i.in_out == "INPUT" and i.name == "Scale"
+    )
+    wrapper = getattr(modifier.properties.inputs, item.identifier)
+    assert wrapper.type == "ATTRIBUTE"
+    assert wrapper.attribute_name == "my_attr"
+
+
+def test_stash_groups_skips_linked_asset_group():
+    from nodebpy.nodes.geometry.assets import Array
+
+    linked = Array.create_group()
+    assert linked.library is not None
+
+    stash = stash_groups(["Array"])
+    assert stash.stashed == {}
+    assert linked.name == "Array"
+    # A class claiming that name reuses the linked group rather than failing.
+    result = run_source(
+        textwrap.dedent(
+            """
+            from nodebpy.nodes.geometry.assets import Array
+            tree = Array.create_group()
+            """
+        )
+    )
+    assert result.tree == linked
+
+
+TWO_CLASSES = textwrap.dedent(
+    """
+    from nodebpy.builder import CustomGeometryGroup
+
+    class Unused(CustomGeometryGroup):
+        _name = "Unused Group"
+
+        def _build_group(self, tree):
+            tree.inputs.geometry("Geometry") >> tree.outputs.geometry("Geometry")
+
+    class Built(CustomGeometryGroup):
+        _name = "Built Group"
+
+        def _build_group(self, tree):
+            tree.inputs.geometry("Geometry") >> tree.outputs.geometry("Geometry")
+
+    {calls}
+    """
+)
+
+
+def test_run_source_created_excludes_restored_stashed_group():
+    run_source(TWO_CLASSES.format(calls="Unused.create_group()\nBuilt.create_group()"))
+    unused = bpy.data.node_groups["Unused Group"]
+
+    result = run_source(TWO_CLASSES.format(calls="Built.create_group()"))
+
+    assert bpy.data.node_groups["Unused Group"] == unused
+    assert [t.name for t in result.created] == ["Built Group"]
+
+
+def test_run_source_ignores_tree_carried_over_in_namespace():
+    first = run_source(WITH_FORM)
+    assert first.tree is not None
+
+    second = run_source(
+        TWO_CLASSES.format(calls="Built.create_group()"), namespace=first.namespace
+    )
+
+    assert second.tree is not None
+    assert second.tree.name == "Built Group"
+
+
+def test_group_stash_replace_and_restore_are_idempotent():
+    old = _Old.create_group()
+    stash = stash_groups(["Stash Me"])
+    new = bpy.data.node_groups.new("Stash Me", "GeometryNodeTree")
+    stash.replace()
+    assert stash.stashed == {}
+    stash.replace()
+    stash.restore()
+    assert bpy.data.node_groups["Stash Me"] == new
+
+    stash = stash_groups(["Stash Me"])
+    stash.restore()
+    assert stash.stashed == {}
+    stash.restore()
+    assert new.name == "Stash Me"
+    del old

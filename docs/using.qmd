@@ -41,8 +41,9 @@ result.created   # every node group the run added
 ```
 
 - Node groups the code's `Custom*Group` classes claim by `_name` are moved out of the way first, so `create_group()` rebuilds them from the current code instead of handing back the previous build. Afterwards the old trees' users (group nodes, modifiers, pinned editors) are remapped onto the new builds and the old trees removed; if the run fails, the old names are restored and the original exception is re-raised.
-- Input values on Geometry Nodes modifiers are kept across a rebuild of the tree's interface, matched by socket name (a rebuilt interface gets new socket identifiers, which is what the modifier keys its values on).
+- Input values on Geometry Nodes modifiers are kept across a rebuild of the tree's interface, matched by socket name (a rebuilt interface gets new socket identifiers, which is what the modifier keys its values on). Inputs that read a named attribute stay that way. Values are reapplied even when the run fails, so a half-built `clear=True` tree keeps the values of the sockets it did build.
 - Tracebacks carry `filename` and the real line numbers.
+- Groups linked from an asset library cannot be renamed, so a class whose `_name` is an already-appended asset reuses it rather than rebuilding it.
 
 Pair it with `to_python(in_place=True)`, whose header rebuilds the exported tree in the same datablock (see [Nodes to Code](nodes-to-code.qmd#in-place)).
 

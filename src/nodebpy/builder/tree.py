@@ -1116,6 +1116,8 @@ class TreeBuilder[TreeT: NodeTree]:
         # a name, an existing group of that name and tree type is reused
         # instead of creating a ``Name.001`` duplicate; a group of another
         # tree type is left alone and a new one is created as usual.
+        # Tree-level properties (description, color_tag, is_tool, fake user,
+        # ...) are kept: only the contents are rebuilt.
         if isinstance(tree, str):
             existing = bpy.data.node_groups.get(tree) if clear else None
             if existing is not None and existing.bl_idname == tree_type:

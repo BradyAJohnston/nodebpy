@@ -82,18 +82,21 @@ class GroupStash:
 
     def restore(self) -> None:
         """Failure path: remove any partial build under an original name and
-        give the old trees their names back."""
+        give the old trees their names back. Empties the stash, so calling
+        it (or :meth:`replace`) again is a no-op."""
         for name, old in self.stashed.items():
             leftover = bpy.data.node_groups.get(name)
             if leftover is not None and leftover != old:
                 bpy.data.node_groups.remove(leftover)
             old.name = name
+        self.stashed.clear()
 
     def replace(self) -> None:
         """Success path: for each name, if the run created a new tree of the
         same type under it, point the old tree's users (group nodes,
         modifiers, pinned editors) at the new one and remove the old;
-        otherwise the old tree keeps its original name."""
+        otherwise the old tree keeps its original name. Empties the stash,
+        so calling it (or :meth:`restore`) again is a no-op."""
         for name, old in self.stashed.items():
             new = bpy.data.node_groups.get(name)
             if new is not None and new != old and new.bl_idname == old.bl_idname:
@@ -101,17 +104,22 @@ class GroupStash:
                 bpy.data.node_groups.remove(old)
             else:
                 old.name = name
+        self.stashed.clear()
 
 
 def stash_groups(names: Iterable[str]) -> GroupStash:
     """Rename each existing ``bpy.data.node_groups[name]`` to ``"<name>.stale"``
-    and return the :class:`GroupStash` that undoes or completes the move."""
+    and return the :class:`GroupStash` that undoes or completes the move.
+
+    A group linked from a library (an appended asset) cannot be renamed and
+    is left in place, so ``create_group()`` reuses it as usual.
+    """
     stash = GroupStash()
     for name in names:
         if name in stash.stashed:
             continue
         existing = bpy.data.node_groups.get(name)
-        if existing is not None:
+        if existing is not None and existing.library is None:
             existing.name = f"{name}.stale"
             stash.stashed[name] = existing
     return stash
@@ -158,55 +166,77 @@ def _nodes_modifiers(pointers: set[int]) -> Iterator[bpy.types.NodesModifier]:
                 yield modifier
 
 
+# Per-input state a modifier stores besides ``value``: whether the input
+# reads a named attribute instead (``type`` is ``VALUE`` or ``ATTRIBUTE``)
+# and which one.
+_INPUT_ATTRS = ("value", "type", "attribute_name")
+
+
+@dataclass
+class _InputState:
+    socket_type: str
+    attrs: dict[str, Any]
+
+
 @contextmanager
 def preserve_modifier_inputs(trees: Iterable[bpy.types.NodeTree]) -> Iterator[None]:
     """Keep Geometry Nodes modifier input values across an interface rebuild.
 
-    Snapshots the input values of every Geometry Nodes modifier (on any
+    Snapshots the input state of every Geometry Nodes modifier (on any
     object) whose ``node_group`` is one of ``trees``, keyed by interface
-    socket *name*. On exit each value whose socket name still exists on the
-    modifier's (possibly rebuilt, possibly remapped) tree is reapplied;
-    sockets whose type changed are skipped, as is anything that fails to
-    apply — the reapply step never raises.
+    socket *name*: the value, and whether the input reads a named attribute
+    instead (``type`` and ``attribute_name``). On exit — also when the body
+    raised, so a failed in-place rebuild keeps the values of the sockets it
+    did build — each entry whose socket name still exists on the modifier's
+    (possibly rebuilt, possibly remapped) tree is reapplied; sockets whose
+    type changed are skipped, as is anything that fails to apply — the
+    reapply step never raises.
     """
     pointers = {tree.as_pointer() for tree in trees}
-    snapshot: list[tuple[bpy.types.NodesModifier, dict[str, tuple[str, Any]]]] = []
+    snapshot: list[tuple[bpy.types.NodesModifier, dict[str, _InputState]]] = []
     for modifier in _nodes_modifiers(pointers):
         assert modifier.node_group is not None
         inputs = _modifier_inputs(modifier)
-        values: dict[str, tuple[str, Any]] = {}
+        values: dict[str, _InputState] = {}
         for name, socket in _input_sockets(modifier.node_group).items():
             wrapper = getattr(inputs, socket.identifier, None)
             if wrapper is None or not hasattr(wrapper, "value"):
                 continue  # a geometry socket, or one with no stored value
-            values[name] = (socket.socket_type, _copy_value(wrapper.value))
+            attrs = {
+                attr: _copy_value(getattr(wrapper, attr))
+                for attr in _INPUT_ATTRS
+                if hasattr(wrapper, attr)
+            }
+            values[name] = _InputState(socket.socket_type, attrs)
         snapshot.append((modifier, values))
 
-    yield
-
-    for modifier, values in snapshot:
-        # A modifier the run removed, a tree it freed, ...: never raise.
-        with suppress(Exception):
-            _reapply_inputs(modifier, values)
+    try:
+        yield
+    finally:
+        for modifier, values in snapshot:
+            # A modifier the run removed, a tree it freed, ...: never raise.
+            with suppress(Exception):
+                _reapply_inputs(modifier, values)
 
 
 def _reapply_inputs(
-    modifier: bpy.types.NodesModifier, values: dict[str, tuple[str, Any]]
+    modifier: bpy.types.NodesModifier, values: dict[str, _InputState]
 ) -> None:
     group = modifier.node_group
     if group is None:
         return
     inputs = _modifier_inputs(modifier)
     sockets = _input_sockets(group)
-    for name, (socket_type, value) in values.items():
+    for name, state in values.items():
         socket = sockets.get(name)
-        if socket is None or socket.socket_type != socket_type:
+        if socket is None or socket.socket_type != state.socket_type:
             continue
         wrapper = getattr(inputs, socket.identifier, None)
         if wrapper is None or not hasattr(wrapper, "value"):
             continue
-        with suppress(Exception):  # best effort, per socket
-            wrapper.value = value
+        for attr, value in state.attrs.items():
+            with suppress(Exception):  # best effort, per attribute
+                setattr(wrapper, attr, value)
 
 
 @dataclass
@@ -232,17 +262,23 @@ def _is_group_class(value: Any, module_name: str | None) -> bool:
 
 
 def _produced_tree(
-    namespace: dict[str, Any], before: set[str]
+    namespace: dict[str, Any], before: set[int], prior: Any
 ) -> bpy.types.NodeTree | None:
     """The tree a run produced: the ``tree`` variable's, else the newest
-    top-level group created, else the last group class defined (built now)."""
-    bound = namespace.get("tree")
-    if isinstance(bound, TreeBuilder):
-        return bound.tree
-    if isinstance(bound, bpy.types.NodeTree):
-        return bound
+    top-level group created, else the last group class defined (built now).
 
-    new_groups = [group for group in bpy.data.node_groups if group.name not in before]
+    ``before`` holds the ``session_uid`` of every group that existed before
+    the run; ``prior`` is whatever ``tree`` was bound to before it (a value
+    the caller's namespace carried over from an earlier run), which does not
+    count as produced by this one."""
+    bound = namespace.get("tree")
+    if bound is not prior:
+        if isinstance(bound, TreeBuilder):
+            return bound.tree
+        if isinstance(bound, bpy.types.NodeTree):
+            return bound
+
+    new_groups = [g for g in bpy.data.node_groups if g.session_uid not in before]
     if new_groups:
         nested = {
             sub.as_pointer()
@@ -288,10 +324,16 @@ def run_source(
         Text block or file.
     namespace
         Extra globals merged over the defaults (``__name__``, ``__file__``
-        and ``bpy``).
+        and ``bpy``). A ``tree`` it carries over from an earlier run's
+        :attr:`RunResult.namespace` is not mistaken for this run's tree.
+
+    A run that fails partway through a ``with g.tree(..., clear=True)`` body
+    leaves that tree half built (the class form is atomic: the old build is
+    restored). Groups the failed run created under other names are left
+    behind as well.
     """
     stash = stash_groups(group_names_in_source(code))
-    before = {group.name for group in bpy.data.node_groups}
+    before = {group.session_uid for group in bpy.data.node_groups}
     globals_: dict[str, Any] = {
         "__name__": "__nodebpy_live__",
         "__file__": filename,
@@ -299,6 +341,7 @@ def run_source(
     }
     if namespace:
         globals_.update(namespace)
+    prior = globals_.get("tree")
 
     existing = list(bpy.data.node_groups)
     with preserve_modifier_inputs(existing):
@@ -306,7 +349,7 @@ def run_source(
             exec(compile(code, filename, "exec"), globals_)  # noqa: S102
             # Resolved before the stash is replaced: building a defined-only
             # class must not find the old tree back under its name.
-            tree = _produced_tree(globals_, before)
+            tree = _produced_tree(globals_, before, prior)
         except BaseException:
             stash.restore()
             raise
@@ -314,5 +357,5 @@ def run_source(
         # tree resets its inputs just like an in-place rebuild does.
         stash.replace()
 
-    created = [group for group in bpy.data.node_groups if group.name not in before]
+    created = [g for g in bpy.data.node_groups if g.session_uid not in before]
     return RunResult(tree=tree, created=created, namespace=globals_)

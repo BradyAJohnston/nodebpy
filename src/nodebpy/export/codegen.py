@@ -3800,8 +3800,12 @@ def to_python(
         ``with g.tree("Name", clear=True) as tree:`` so running the source
         rebuilds the exported tree in place — the same datablock, emptied
         first — instead of creating a ``Name.001`` copy, keeping modifiers,
-        group nodes and pinned editors attached across re-runs. Only affects
-        ``top_level="with"``.
+        group nodes and pinned editors attached across re-runs. Only the
+        top-level tree is rebuilt this way: nested groups are emitted as
+        ``Custom*Group`` classes whose ``create_group()`` reuses an existing
+        tree of the same name, so edits to them only take effect through
+        :func:`nodebpy.live.run_source`. Ignored with ``top_level="class"``
+        (a class is rebuilt by ``run_source``, not by a header).
 
     Returns
     -------
