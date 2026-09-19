@@ -1,4 +1,4 @@
-from . import builder, export, nodes, types
+from . import builder, export, live, nodes, types
 from .builder import (
     ArrangeMethod,
     SimpleOptions,
@@ -22,6 +22,7 @@ __all__ = [
     "default_sugiyama_options",
     "export",
     "geometry",
+    "live",
     "nodes",
     "shader",
     "types",
