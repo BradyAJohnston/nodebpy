@@ -1236,6 +1236,7 @@ class TreeBuilder[TreeT: NodeTree]:
         top_level: Literal["with", "class"] = "with",
         format: bool = True,
         nodebpy_pkg: str = "nodebpy",
+        in_place: bool = False,
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -1253,6 +1254,7 @@ class TreeBuilder[TreeT: NodeTree]:
             top_level=top_level,
             format=format,
             nodebpy_pkg=nodebpy_pkg,
+            in_place=in_place,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:
