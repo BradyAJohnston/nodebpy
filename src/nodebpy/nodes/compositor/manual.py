@@ -42,9 +42,10 @@ def tree(
     collapse: bool = False,
     arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
+    clear: bool = False,
 ) -> TreeBuilder[CompositorNodeTree]:
     return TreeBuilder.compositor(
-        name, collapse=collapse, arrange=arrange, fake_user=fake_user
+        name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
     )
 
 
