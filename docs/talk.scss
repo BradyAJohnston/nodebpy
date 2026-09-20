@@ -19,7 +19,9 @@ $code-block-font-size: 0.5em;
   width: auto;
   min-width: 0;
 }
-.reveal pre {
+// Only beside a preview: full-width blocks fit at 1280 wide, and the
+// line-highlight plugin's scrollIntoView would nudge a scrollable one sideways.
+.reveal div.column-output-location pre {
   overflow-x: auto;
 }
 // The tree preview (`_repr_html_`) is an inline-styled 480px box; beside code

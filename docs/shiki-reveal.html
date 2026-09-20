@@ -1,0 +1,131 @@
+<script type="module">
+    // Re-highlight the deck's code blocks with Shiki (TextMate grammars, as in
+    // VS Code) and then colour identifiers by *role*, which no grammar can do
+    // on its own: module aliases, node classes, methods and attributes each
+    // get their own colour so `g.SetPosition(g.Cube()).o.geometry` reads as
+    // module.Class(module.Class()).attribute.attribute at a glance.
+    //
+    //   module / namespace   g  s  c  bpy  nodebpy  math      purple, italic
+    //   class                SetPosition  Cube  Jitter        cyan
+    //   function / method    tree()  integer()  sine()        green
+    //   attribute            .o  .geometry  .inputs  .x       orange
+    //   keyword argument     offset=  seed=                   orange, italic
+    //
+    // Pandoc's highlighting stays in the HTML as the no-JS fallback. Quarto's
+    // per-line spans (`<span id="cb3-7">`) are kept, so `code-line-numbers`
+    // stepping and line numbers keep working.
+    import { codeToTokens } from "https://esm.sh/shiki@3";
+
+    const MODULES = new Set(["g", "s", "c", "bpy", "nodebpy", "math", "np"]);
+    const COLOR = {
+        module: "#BD93F9",
+        cls: "#8BE9FD",
+        func: "#50FA7B",
+        attr: "#FFB86C",
+        kwarg: "#FFB86C",
+    };
+    const IDENT = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
+    // Scopes are a stack (outermost first) and every piece inside a call's
+    // arguments inherits the call's own scopes, so only the innermost scope
+    // says what a piece *is*; whether it follows a "." says whether it is a
+    // member.
+    function roleFor(text, scopes, prevPiece) {
+        const last = scopes[scopes.length - 1] || "";
+        if (/string|comment|keyword|constant|storage|support|punctuation/.test(last))
+            return null;
+        if (!IDENT.test(text)) return null;
+        if (last.includes("variable.parameter.function-call")) return "kwarg";
+        if (last.includes("entity.name.type.class") || last.includes("inherited-class"))
+            return "cls";
+        if (last.includes("entity.name.function")) return "func";
+        if (last.includes("variable.parameter") || last.includes("variable.language"))
+            return null; // def parameters, self
+        const isCall = last.includes("meta.function-call.generic");
+        const isMember = prevPiece.trim() === ".";
+        if (/^[A-Z]/.test(text) && !/^[A-Z0-9_]+$/.test(text)) return "cls";
+        if (isCall) return "func";
+        if (isMember) return "attr";
+        if (MODULES.has(text)) return "module";
+        return null;
+    }
+
+    function esc(t) {
+        return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Shiki merges neighbouring tokens that share a colour; the `explanation`
+    // keeps the grammar-level pieces, which is what the role rules need.
+    function renderLine(tokens) {
+        let html = "";
+        let prev = "";
+        for (const tok of tokens) {
+            const pieces = tok.explanation?.length
+                ? tok.explanation
+                : [{ content: tok.content, scopes: [] }];
+            for (const piece of pieces) {
+                const scopes = (piece.scopes || []).map((x) => x.scopeName ?? x);
+                // A piece can hold several identifiers and punctuation
+                // ("sp.o.geometry", or "    g" inside call arguments); split
+                // so each identifier gets its own role.
+                const parts = piece.content
+                    .split(/([A-Za-z_][A-Za-z0-9_]*)/)
+                    .filter(Boolean);
+                for (const part of parts) {
+                    const role = roleFor(part, scopes, prev);
+                    let style = `color:${tok.color || "inherit"}`;
+                    if (role) style = `color:${COLOR[role]}`;
+                    if (role === "module" || role === "kwarg") style += ";font-style:italic";
+                    if (tok.fontStyle & 1 && !role) style += ";font-style:italic";
+                    html += `<span style="${style}">${esc(part)}</span>`;
+                    if (part.trim()) prev = part;
+                }
+            }
+        }
+        return html;
+    }
+
+    async function rehighlightCode(code, lang) {
+        const lineSpans = [...code.children].filter(
+            (el) => el.tagName === "SPAN" && /^cb\d+-\d+$/.test(el.id),
+        );
+        const text = lineSpans.length
+            ? lineSpans.map((el) => el.textContent).join("\n")
+            : code.textContent.replace(/\n$/, "");
+        let result;
+        try {
+            result = await codeToTokens(text, {
+                lang,
+                theme: "dracula-soft",
+                includeExplanation: true,
+            });
+        } catch {
+            return null; // language Shiki does not know: keep Pandoc's colours
+        }
+        const lines = result.tokens.map(renderLine);
+        if (lineSpans.length) {
+            lineSpans.forEach((el, i) => {
+                const anchor = el.querySelector("a[aria-label]");
+                el.innerHTML = (anchor ? anchor.outerHTML : "") + (lines[i] ?? "");
+            });
+        } else {
+            code.innerHTML = lines.join("\n");
+        }
+        return result.fg;
+    }
+
+    async function rehighlight(pre) {
+        const lang = [...pre.classList].find((c) =>
+            !["sourceCode", "code-with-copy", "numberSource", "number-lines", "code-wrapper"].includes(c),
+        );
+        if (!lang) return;
+        // Quarto's line-highlight plugin clones <code> once per `|a-b|c-d|`
+        // step inside the same <pre>; every clone needs the same treatment.
+        for (const code of pre.querySelectorAll("code")) {
+            const fg = await rehighlightCode(code, lang);
+            if (fg) pre.style.color = fg;
+        }
+    }
+
+    await Promise.all([...document.querySelectorAll("pre.sourceCode")].map(rehighlight));
+</script>
