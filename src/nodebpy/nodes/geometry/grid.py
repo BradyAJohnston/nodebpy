@@ -1688,7 +1688,7 @@ class GridSolvePoisson(BaseNode):
         threshold_mode: InputMenu | Literal["Relative", "Absolute"] = "Relative",
         boundary: InputMenu | Literal["Fixed", "Gradient", "Mixed"] = "Fixed",
         boundary_value: InputFloat = 0.0,
-        boundary_gradient: InputVector = None,
+        boundary_gradient: InputVector = (0.0, 0.0, 0.0),
         boundary_factor: InputFloat = 0.0,
     ):
         super().__init__()

@@ -338,8 +338,8 @@ class IndexSwitch[T](BaseNode):
     def __init__(
         self,
         index: InputInteger = 0,
-        item_0: InputAny = None,
-        item_1: InputAny = None,
+        item_0: InputAny = (0.8, 0.8, 0.8, 1.0),
+        item_1: InputAny = (0.8, 0.8, 0.8, 1.0),
         extend: InputLinkable = None,
         *,
         data_type: Literal[
@@ -412,8 +412,8 @@ class IndexSwitch[T](BaseNode):
     def vector(
         cls,
         index: InputInteger = 0,
-        item_0: InputVector = None,
-        item_1: InputVector = None,
+        item_0: InputVector = (0.0, 0.0, 0.0),
+        item_1: InputVector = (0.0, 0.0, 0.0),
         extend: InputLinkable = None,
     ) -> "IndexSwitch[VectorSocket]":
         """Create Index Switch with operation 'Vector'."""
@@ -425,8 +425,8 @@ class IndexSwitch[T](BaseNode):
     def color(
         cls,
         index: InputInteger = 0,
-        item_0: InputColor = None,
-        item_1: InputColor = None,
+        item_0: InputColor = (0.8, 0.8, 0.8, 1.0),
+        item_1: InputColor = (0.8, 0.8, 0.8, 1.0),
         extend: InputLinkable = None,
     ) -> "IndexSwitch[ColorSocket]":
         """Create Index Switch with operation 'Color'."""
@@ -1036,8 +1036,8 @@ class Switch[T](BaseNode):
     def __init__(
         self,
         switch: InputBoolean = False,
-        false: InputAny = None,
-        true: InputAny = None,
+        false: InputAny = (0.8, 0.8, 0.8, 1.0),
+        true: InputAny = (0.8, 0.8, 0.8, 1.0),
         *,
         input_type: Literal[
             "FLOAT",
@@ -1091,8 +1091,8 @@ class Switch[T](BaseNode):
     def vector(
         cls,
         switch: InputBoolean = False,
-        false: InputVector = None,
-        true: InputVector = None,
+        false: InputVector = (0.0, 0.0, 0.0),
+        true: InputVector = (0.0, 0.0, 0.0),
     ) -> "Switch[VectorSocket]":
         """Create Switch with operation 'Vector'."""
         return Switch(input_type="VECTOR", switch=switch, false=false, true=true)
@@ -1101,8 +1101,8 @@ class Switch[T](BaseNode):
     def color(
         cls,
         switch: InputBoolean = False,
-        false: InputColor = None,
-        true: InputColor = None,
+        false: InputColor = (0.8, 0.8, 0.8, 1.0),
+        true: InputColor = (0.8, 0.8, 0.8, 1.0),
     ) -> "Switch[ColorSocket]":
         """Create Switch with operation 'Color'."""
         return Switch(input_type="RGBA", switch=switch, false=false, true=true)

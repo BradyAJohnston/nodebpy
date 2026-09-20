@@ -1228,21 +1228,21 @@ class CombineList[T, TList](BaseNode):
 
     @classmethod
     def vector(
-        cls, item_0: InputVector = None
+        cls, item_0: InputVector = (0.0, 0.0, 0.0)
     ) -> "CombineList[VectorSocket, VectorSocketList]":
         """Create Combine List with operation 'Vector'."""
         return CombineList(data_type="VECTOR", item_0=item_0)
 
     @classmethod
     def color(
-        cls, item_0: InputColor = None
+        cls, item_0: InputColor = (0.8, 0.8, 0.8, 1.0)
     ) -> "CombineList[ColorSocket, ColorSocketList]":
         """Create Combine List with operation 'Color'."""
         return CombineList(data_type="RGBA", item_0=item_0)
 
     @classmethod
     def rotation(
-        cls, item_0: InputRotation = None
+        cls, item_0: InputRotation = (0.0, 0.0, 0.0)
     ) -> "CombineList[RotationSocket, RotationSocketList]":
         """Create Combine List with operation 'Rotation'."""
         return CombineList(data_type="ROTATION", item_0=item_0)
@@ -3802,7 +3802,7 @@ class GetVectorComponent(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
         index: InputInteger = 0,
     ):
         super().__init__()

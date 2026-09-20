@@ -390,14 +390,17 @@ class Compare[T](BaseNode):
 
     @classmethod
     def vector(
-        cls, a: InputVector = None, b: InputVector = None
+        cls, a: InputVector = (0.0, 0.0, 0.0), b: InputVector = (0.0, 0.0, 0.0)
     ) -> "Compare[VectorSocket]":
         """Create Compare with operation 'Vector'."""
         return Compare(data_type="VECTOR", a=a, b=b)
 
     @classmethod
     def color(
-        cls, a: InputColor = None, b: InputColor = None, epsilon: InputFloat = 0.001
+        cls,
+        a: InputColor = (0.8, 0.8, 0.8, 1.0),
+        b: InputColor = (0.8, 0.8, 0.8, 1.0),
+        epsilon: InputFloat = 0.001,
     ) -> "Compare[ColorSocket]":
         """Create Compare with operation 'Color'."""
         return Compare(data_type="RGBA", a=a, b=b, epsilon=epsilon)
@@ -2074,7 +2077,7 @@ class StoreBundleItem[T](BaseNode):
         cls,
         bundle: InputBundle = None,
         path: InputString = "",
-        item: InputVector = None,
+        item: InputVector = (0.0, 0.0, 0.0),
     ) -> "StoreBundleItem[VectorSocket]":
         """Create Store Bundle Item with operation 'Vector'."""
         return StoreBundleItem(
@@ -2083,7 +2086,10 @@ class StoreBundleItem[T](BaseNode):
 
     @classmethod
     def color(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputColor = None
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputColor = (0.8, 0.8, 0.8, 1.0),
     ) -> "StoreBundleItem[ColorSocket]":
         """Create Store Bundle Item with operation 'Color'."""
         return StoreBundleItem(socket_type="RGBA", bundle=bundle, path=path, item=item)
@@ -2093,7 +2099,7 @@ class StoreBundleItem[T](BaseNode):
         cls,
         bundle: InputBundle = None,
         path: InputString = "",
-        item: InputRotation = None,
+        item: InputRotation = (0.0, 0.0, 0.0),
     ) -> "StoreBundleItem[RotationSocket]":
         """Create Store Bundle Item with operation 'Rotation'."""
         return StoreBundleItem(
@@ -2164,7 +2170,7 @@ class StoreBundleItem[T](BaseNode):
         cls,
         bundle: InputBundle = None,
         path: InputString = "",
-        item: InputIntegerVector = None,
+        item: InputIntegerVector = (0, 0, 0),
     ) -> "StoreBundleItem[IntegerSocket]":
         """Create Store Bundle Item with operation 'Integer Vector'."""
         return StoreBundleItem(
