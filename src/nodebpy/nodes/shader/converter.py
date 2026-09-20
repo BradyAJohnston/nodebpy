@@ -168,7 +168,7 @@ class ImplicitConversion[T](BaseNode):
 
     def __init__(
         self,
-        value: InputAny = None,
+        value: InputAny = (0.0, 0.0, 0.0, 1.0),
         *,
         data_type: Literal[
             "FLOAT",
@@ -206,12 +206,16 @@ class ImplicitConversion[T](BaseNode):
         return ImplicitConversion(data_type="BOOLEAN", value=value)
 
     @classmethod
-    def vector(cls, value: InputVector = None) -> "ImplicitConversion[VectorSocket]":
+    def vector(
+        cls, value: InputVector = (0.0, 0.0, 0.0)
+    ) -> "ImplicitConversion[VectorSocket]":
         """Create Implicit Conversion with operation 'Vector'."""
         return ImplicitConversion(data_type="VECTOR", value=value)
 
     @classmethod
-    def color(cls, value: InputColor = None) -> "ImplicitConversion[ColorSocket]":
+    def color(
+        cls, value: InputColor = (0.0, 0.0, 0.0, 1.0)
+    ) -> "ImplicitConversion[ColorSocket]":
         """Create Implicit Conversion with operation 'Color'."""
         return ImplicitConversion(data_type="RGBA", value=value)
 
@@ -642,15 +646,15 @@ class Mix(BaseNode):
     def __init__(
         self,
         factor_float: InputFloat = 1.0,
-        factor_vector: InputVector = None,
+        factor_vector: InputVector = (0.5, 0.5, 0.5),
         a_float: InputFloat = 0.0,
         b_float: InputFloat = 0.0,
-        a_vector: InputVector = None,
-        b_vector: InputVector = None,
-        a_color: InputColor = None,
-        b_color: InputColor = None,
-        a_rotation: InputRotation = None,
-        b_rotation: InputRotation = None,
+        a_vector: InputVector = (0.0, 0.0, 0.0),
+        b_vector: InputVector = (0.0, 0.0, 0.0),
+        a_color: InputColor = (0.5, 0.5, 0.5, 1.0),
+        b_color: InputColor = (0.5, 0.5, 0.5, 1.0),
+        a_rotation: InputRotation = (0.0, 0.0, 0.0),
+        b_rotation: InputRotation = (0.0, 0.0, 0.0),
         *,
         data_type: Literal["FLOAT", "VECTOR", "RGBA"] = "FLOAT",
         factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
@@ -704,12 +708,16 @@ class Mix(BaseNode):
         return cls(data_type="FLOAT", factor_float=factor, b_float=b)
 
     @classmethod
-    def vector(cls, factor: InputFloat = 1.0, b: InputVector = None) -> "Mix":
+    def vector(
+        cls, factor: InputFloat = 1.0, b: InputVector = (0.0, 0.0, 0.0)
+    ) -> "Mix":
         """Create Mix with operation 'Vector'."""
         return cls(data_type="VECTOR", factor_float=factor, b_vector=b)
 
     @classmethod
-    def color(cls, factor: InputFloat = 1.0, b_color: InputColor = None) -> "Mix":
+    def color(
+        cls, factor: InputFloat = 1.0, b_color: InputColor = (0.5, 0.5, 0.5, 1.0)
+    ) -> "Mix":
         """Create Mix with operation 'Color'."""
         return cls(data_type="RGBA", factor_float=factor, b_color=b_color)
 
@@ -837,7 +845,7 @@ class RGBToBW(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, color: InputColor = None):
+    def __init__(self, color: InputColor = (0.5, 0.5, 0.5, 1.0)):
         super().__init__()
         key_args = {"Color": color}
 
@@ -892,7 +900,7 @@ class SeparateColor(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
         *,
         mode: Literal["RGB", "HSV", "HSL"] = "RGB",
     ):
@@ -902,17 +910,17 @@ class SeparateColor(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def rgb(cls, color: InputColor = None) -> "SeparateColor":
+    def rgb(cls, color: InputColor = (0.8, 0.8, 0.8, 1.0)) -> "SeparateColor":
         """Create Separate Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
         return cls(mode="RGB", color=color)
 
     @classmethod
-    def hsv(cls, color: InputColor = None) -> "SeparateColor":
+    def hsv(cls, color: InputColor = (0.8, 0.8, 0.8, 1.0)) -> "SeparateColor":
         """Create Separate Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
         return cls(mode="HSV", color=color)
 
     @classmethod
-    def hsl(cls, color: InputColor = None) -> "SeparateColor":
+    def hsl(cls, color: InputColor = (0.8, 0.8, 0.8, 1.0)) -> "SeparateColor":
         """Create Separate Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
         return cls(mode="HSL", color=color)
 

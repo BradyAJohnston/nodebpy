@@ -109,11 +109,11 @@ class CornerPin(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
-        upper_left: InputVector = None,
-        upper_right: InputVector = None,
-        lower_left: InputVector = None,
-        lower_right: InputVector = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        upper_left: InputVector = (0.0, 1.0),
+        upper_right: InputVector = (1.0, 1.0),
+        lower_left: InputVector = (0.0, 0.0),
+        lower_right: InputVector = (1.0, 0.0),
         interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
         extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
@@ -204,7 +204,7 @@ class Crop(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         x: InputInteger = 0,
         y: InputInteger = 0,
         width: InputInteger = 1920,
@@ -288,8 +288,8 @@ class Displace(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
-        displacement: InputVector = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        displacement: InputVector = (0.0, 0.0),
         interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
         extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
@@ -359,7 +359,7 @@ class Flip(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         flip_x: InputBoolean = False,
         flip_y: InputBoolean = False,
     ):
@@ -439,7 +439,7 @@ class LensDistortion(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         type: InputMenu | Literal["Radial", "Horizontal"] = "Radial",
         distortion: InputFloat = 0.0,
         dispersion: InputFloat = 0.0,
@@ -461,7 +461,7 @@ class LensDistortion(BaseNode):
     @classmethod
     def radial(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         distortion: InputFloat = 0.0,
         dispersion: InputFloat = 0.0,
         jitter: InputBoolean = False,
@@ -479,7 +479,7 @@ class LensDistortion(BaseNode):
 
     @classmethod
     def horizontal(
-        cls, image: InputColor = None, dispersion: InputFloat = 0.0
+        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), dispersion: InputFloat = 0.0
     ) -> "LensDistortion":
         """Create Lens Distortion node with type 'Horizontal'."""
         return cls(image=image, dispersion=dispersion, type="Horizontal")
@@ -549,8 +549,8 @@ class MapUV(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
-        uv: InputVector = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        uv: InputVector = (1.0, 0.0, 0.0),
         interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
         extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
@@ -614,7 +614,7 @@ class MovieDistortion(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (0.8, 0.8, 0.8, 1.0),
         type: InputMenu | Literal["Undistort", "Distort"] = "Undistort",
     ):
         super().__init__()
@@ -623,12 +623,12 @@ class MovieDistortion(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def undistort(cls, image: InputColor = None) -> "MovieDistortion":
+    def undistort(cls, image: InputColor = (0.8, 0.8, 0.8, 1.0)) -> "MovieDistortion":
         """Create Movie Distortion node with type 'Undistort'."""
         return cls(image=image, type="Undistort")
 
     @classmethod
-    def distort(cls, image: InputColor = None) -> "MovieDistortion":
+    def distort(cls, image: InputColor = (0.8, 0.8, 0.8, 1.0)) -> "MovieDistortion":
         """Create Movie Distortion node with type 'Distort'."""
         return cls(image=image, type="Distort")
 
@@ -695,7 +695,7 @@ class PlaneTrackDeform(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (0.8, 0.8, 0.8, 1.0),
         motion_blur: InputBoolean = False,
         motion_blur_samples: InputInteger = 16,
         motion_blur_shutter: InputFloat = 0.5,
@@ -795,7 +795,7 @@ class Rotate(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         angle: InputFloat = 0.0,
         interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
@@ -896,7 +896,7 @@ class Scale(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         type: InputMenu
         | Literal["Relative", "Absolute", "Scene Size", "Render Size"] = "Relative",
         x: InputFloat = 1.0,
@@ -924,7 +924,7 @@ class Scale(BaseNode):
     @classmethod
     def relative(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         x: InputFloat = 1.0,
         y: InputFloat = 1.0,
         interpolation: InputMenu
@@ -946,7 +946,7 @@ class Scale(BaseNode):
     @classmethod
     def absolute(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         x: InputFloat = 1.0,
         y: InputFloat = 1.0,
         interpolation: InputMenu
@@ -968,7 +968,7 @@ class Scale(BaseNode):
     @classmethod
     def scene_size(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
         extension_x: InputMenu | Literal["Clip", "Extend", "Repeat"] = "Clip",
@@ -986,7 +986,7 @@ class Scale(BaseNode):
     @classmethod
     def render_size(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         frame_type: InputMenu | Literal["Stretch", "Fit", "Crop"] = "Stretch",
         interpolation: InputMenu
         | Literal["Nearest", "Bilinear", "Bicubic", "Anisotropic"] = "Bilinear",
@@ -1074,7 +1074,7 @@ class Stabilize2D(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (0.8, 0.8, 0.8, 1.0),
         frame: InputInteger = 0,
         invert: InputBoolean = False,
         interpolation: InputMenu
@@ -1177,7 +1177,7 @@ class Transform(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (0.8, 0.8, 0.8, 1.0),
         x: InputFloat = 0.0,
         y: InputFloat = 0.0,
         angle: InputFloat = 0.0,
@@ -1272,7 +1272,7 @@ class Translate(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         x: InputFloat = 0.0,
         y: InputFloat = 0.0,
         interpolation: InputMenu

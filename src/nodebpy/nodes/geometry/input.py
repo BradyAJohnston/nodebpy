@@ -3945,7 +3945,7 @@ class UVTangent(BaseNode):
     def __init__(
         self,
         method: InputMenu | Literal["Exact", "Fast"] = "Exact",
-        uv: InputVector = None,
+        uv: InputVector = (0.0, 0.0),
     ):
         super().__init__()
         key_args = {"Method": method, "UV": uv}

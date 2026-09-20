@@ -76,9 +76,9 @@ class AmbientOcclusion(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         distance: InputFloat = 1.0,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         *,
         samples: int = 0,
         inside: bool = False,
@@ -164,7 +164,7 @@ class Bevel(BaseNode):
     def __init__(
         self,
         radius: InputFloat = 0.05,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         *,
         samples: int = 0,
     ):
@@ -406,7 +406,7 @@ class Fresnel(BaseNode):
     def __init__(
         self,
         ior: InputFloat = 1.5,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
     ):
         super().__init__()
         key_args = {"IOR": ior, "Normal": normal}
@@ -532,7 +532,7 @@ class LayerWeight(BaseNode):
     def __init__(
         self,
         blend: InputFloat = 0.5,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
     ):
         super().__init__()
         key_args = {"Blend": blend, "Normal": normal}
@@ -1023,8 +1023,8 @@ class Raycast(BaseNode):
 
     def __init__(
         self,
-        position: InputVector = None,
-        direction: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
+        direction: InputVector = (0.0, 0.0, 0.0),
         length: InputFloat = 1.0,
         *,
         only_local: bool = False,
