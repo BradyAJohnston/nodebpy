@@ -122,14 +122,14 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def vector(
-        cls, enable: InputBoolean = False, value: InputVector = None
+        cls, enable: InputBoolean = False, value: InputVector = (0.0, 0.0, 0.0)
     ) -> "EnableOutput[VectorSocket]":
         """Create Enable Output with operation 'Vector'."""
         return EnableOutput(data_type="VECTOR", enable=enable, value=value)
 
     @classmethod
     def color(
-        cls, enable: InputBoolean = False, value: InputColor = None
+        cls, enable: InputBoolean = False, value: InputColor = (0.8, 0.8, 0.8, 1.0)
     ) -> "EnableOutput[ColorSocket]":
         """Create Enable Output with operation 'Color'."""
         return EnableOutput(data_type="RGBA", enable=enable, value=value)
