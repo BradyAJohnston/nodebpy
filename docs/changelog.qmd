@@ -2,6 +2,13 @@
 title: Changelog
 ---
 
+## 520.29.0 - 2026-09-20
+
+### Fixes
+
+- **Generated defaults are Blender's exact socket defaults** — the node-class generator rounded every float default to four decimals and vector defaults came out as `None`, so `g.Arc()` built a node whose sweep angle was `5.4978` instead of Blender's `7π/4`, and `to_python` then exported every untouched Arc (and any node with a rounded default such as `MeshToPoints(radius=0.05)`) as if it had been edited. Constructor defaults now use the same float formatting as `to_python` (`nodebpy.export._floats`, shared by the generator without importing the package it generates): the shortest literal that rebuilds exactly the float32 Blender stores, or a `math.pi` / `math.tau` / `math.e` expression for its rational multiples (`sweep_angle: InputFloat = 7 * math.pi / 4`). Vector, colour and rotation sockets now show their real default tuples instead of `None`, and the export's default comparison works at float32 precision, so a fresh node exports without spurious keyword arguments.
+- `InputVector` accepts 2- and 4-component tuples for the 2D / 4D vector sockets Blender exposes (Blank Image's size, motion-blur velocity), and `InputIntegerVector` accepts tuples; Blank Image's `size` is typed as an integer vector instead of an integer.
+
 ## 520.28.0 - 2026-09-19
 
 ### Enhancements
