@@ -500,6 +500,246 @@ print(f"```python\n{code}\n```")
 This is the migration path: wire a tree up by hand in the GUI where that's fastest, then `to_python()` it into version-controlled, reviewable, diffable source. It also makes snapshot-testing node trees trivial.
 :::
 
+# Assets as Code
+
+## Blender's own assets are `.blend` files
+
+The essentials libraries live in `blender/blender-assets`, tracked with Git LFS. Every pull request is the same diff:
+
+```diff
+--- a/work/bundled/nodes/geometry_nodes_essentials.blend
++++ b/work/bundled/nodes/geometry_nodes_essentials.blend
+@@ -1,3 +1,3 @@
+ version https://git-lfs.github.com/spec/v1
+-oid sha256:5cff38c3aa43238df1dc79722a98d84a7b6967243fbfa0b4700019230eb05930
+-size 892387
++oid sha256:4cec3e3848fc8e673308e2c7053634f520f8c18f5b057ef26e0647ab80d898f8
++size 891869
+```
+
+::: {.incremental}
+- Reviewers get a description and before / after screenshots
+- Nothing says which of the 28 assets changed, or what changed inside them
+:::
+
+::: {.notes}
+This is PR #94, "Preserve Normals reverted to False for assets". The whole story of that PR is on the next few slides, and none of it is visible here.
+:::
+
+## Dump the library, diff the source {.smaller}
+
+```bash
+git show 0a12785:work/bundled/nodes/geometry_nodes_essentials.blend | git lfs smudge > before.blend
+git show b665a97:work/bundled/nodes/geometry_nodes_essentials.blend | git lfs smudge > after.blend
+
+python -m nodebpy.assets dump before.blend before/
+python -m nodebpy.assets dump after.blend  after/
+diff -ru before/ after/
+```
+
+::: {.incremental}
+- 28 assets → 4,335 lines of Python, in 2.4 seconds
+- One module per asset; helpers shared between assets go to `_shared/`
+- Frames become `with g.Frame(...)`, the interface becomes `tree.inputs.*`, catalog and metadata travel in a module footer
+- The dumper's `bpy` must be at least the file's version: 5.2 silently dropped the 5.3-only sockets and two of the PRs below diffed to *nothing*
+:::
+
+## Eight real PRs, twice {.smaller}
+
+| PR | Title | `git diff` | dumped diff | files |
+|:--|:--|--:|--:|:--|
+| #82 | Preserve normals in mirrored modifier assets | 2 / 2 | +10 / −8 | 3 |
+| #91 | Add Miter Scale inputs to Curve to Tube | 2 / 2 | +29 / −10 | **4** |
+| #94 | Preserve Normals reverted to False for assets | 2 / 2 | +10 / −8 | 3 |
+| #85 | Seed input for the guide mask, all hair guide nodes | 2 / 2 | +64 / −36 | 4 |
+| #84 | Curve to Tube: don't merge uncapped endpoints | 2 / 2 | +102 / −70 | 1 |
+| #66 | Array: handle single curve consistently | 2 / 2 | +59 / −54 | 1 |
+| #63 | Array: rotation alignment options | 2 / 2 | +85 / −164 | 1 |
+| #78 | Move Capture Rest Geometry to Geometry › Write | 2 / 2 | +1 / −1 | 1 |
+
+::: {.notes}
+Dumped with the 5.3 branch of nodebpy on the bpy 5.3 alpha wheel. Row #91 is the one to watch: a PR about one asset that changes four files.
+:::
+
+## PR #82: preserve normals when realizing {.smaller}
+
+One keyword on the internal Realize Instances node, in three modifier assets:
+
+```diff
+--- before/geometry/array.py
++++ after/geometry/array.py
+@@ -825,7 +825,7 @@
+         with g.Frame("Merge Instances"):
+             realize_instances_1 = g.RealizeInstances(
+-                geometry=switch_16, realize_to_point_domain=True
++                geometry=switch_16, preserve_normals=True, realize_to_point_domain=True
+             )
+--- before/geometry/scatter_on_surface.py
++++ after/geometry/scatter_on_surface.py
+@@ -520,10 +520,10 @@
+-        switch_20 = realize_instances.switch.geometry(
+-            switch_19,
+-            g.RealizeInstances(geometry=switch_19, realize_to_point_domain=True),
++        realize_instances_1 = g.RealizeInstances(
++            geometry=switch_19, preserve_normals=True, realize_to_point_domain=True
+         )
++        switch_20 = realize_instances.switch.geometry(switch_19, realize_instances_1)
+```
+
+`instance_on_elements.py` gets the same change.
+
+## PR #91: add Miter Scale to Curve to Tube {.smaller}
+
+The part the description talks about:
+
+```diff
+--- before/geometry/curve_to_tube.py
++++ after/geometry/curve_to_tube.py
+@@ -215,6 +215,25 @@
++            with tree.inputs.panel("Miter Scale", default_closed=True, ...):
++                miter_scale = tree.inputs.boolean(
++                    "Miter Scale", True, is_panel_toggle=True, ...
++                )
++                miter_scale_limit = tree.inputs.float(
++                    "Miter Scale Limit", 3 * math.pi / 4,
++                    min_value=0.0, max_value=math.pi, subtype="ANGLE", ...
++                )
+@@ -715,6 +734,8 @@
+                 profile_curve=capture_8.o.geometry,
+                 scale=radius.output,
+                 fill_caps=switch_2,
++                miter_scale=miter_scale,
++                miter_scale_limit=miter_scale_limit,
+             )
+```
+
+## PR #91: …and three files it never mentions {.smaller}
+
+```diff
+--- before/geometry/array.py
++++ after/geometry/array.py
+@@ -825,7 +825,7 @@
+             realize_instances_1 = g.RealizeInstances(
+-                geometry=switch_16, preserve_normals=True, realize_to_point_domain=True
++                geometry=switch_16, realize_to_point_domain=True
+             )
+--- before/geometry/instance_on_elements.py
++++ after/geometry/instance_on_elements.py
+-        realize_instances_1 = g.RealizeInstances(
+-            geometry=translate_instances,
+-            preserve_normals=True,
+-            realize_to_point_domain=True,
+-        )
+--- before/geometry/scatter_on_surface.py
++++ after/geometry/scatter_on_surface.py
+-        realize_instances_1 = g.RealizeInstances(
+-            geometry=switch_19, preserve_normals=True, realize_to_point_domain=True
+```
+
+::: {.incremental}
+- The author started from a `.blend` saved before #82 landed
+- PR #94, two commits later, is #82's diff applied a second time
+:::
+
+## What each workflow would have shown
+
+::: {.incremental}
+- **Binary:** the regression was found by rendering the assets and noticing the shading was wrong
+- **Dumped source:** a "4 files changed" header on a PR whose title names one asset
+- **Source as the tracked artefact:** a merge conflict, not a regression
+- Every diff on these slides came from `git show | git lfs smudge | dump | diff`. The missing piece is a CI job that does it per PR
+:::
+
+::: {.notes}
+Nobody did anything wrong here. The binary workflow gives a reviewer no way to see that a change to one asset carried three unrelated reverts.
+:::
+
+## The tree, for scale
+
+![](images/talk/Array.png)
+
+`array.py` is 858 lines. PR #82 changed one keyword in it. `python -m nodebpy.assets plot` rendered this headlessly.
+
+## Where the noise comes from {.smaller}
+
+Bigger PRs look bigger than they are: inserting one node renumbers every later auto-named `switch_N`.
+
+| PR | changed lines | ignoring `_N` suffixes |
+|:--|--:|--:|
+| #84 Curve to Tube caps | 172 | 70 |
+| #66 Array single curve | 113 | 25 |
+| #63 Array rotation | 244 | 172 |
+| #85 Hair seed | 100 | 100 |
+
+::: {.incremental}
+- Labelled nodes dump under their label, so a labelled switch keeps its name
+- One authoring habit turns #66 into the 25-line diff it actually is
+:::
+
+## Reading the trees as text {.smaller}
+
+Ten minutes of `grep` over the dumped sources at HEAD:
+
+::: {.incremental}
+- **A dead modifier input.** Displace Hair Curves declares `Surface UV Map`; no node reads it. The dumper marks it `_surface_uv_map`
+- **Two typos** that the proofreading PR missed: a tooltip says *displacemement*, an Array frame is labelled *Line Gismoz*
+- **The same Domain Size node built twice**, three lines apart, in Array (since #66)
+- **Two inputs named "Scale"** on Randomize Transforms, so Array and Scatter on Surface link them positionally
+- **Start and end caps tested two different ways** in Curve to Tube's custom-cap merge (#84)
+- Frame labels: *segment length* next to *Segment Length*
+:::
+
+::: {.notes}
+None of these is visible in a screenshot of the node editor unless you are looking at exactly the right node. All of them are one grep away in the source.
+:::
+
+## It found a nodebpy bug as well {.smaller}
+
+The generator rounded float defaults to four decimals, so an untouched Curve to Mesh (Miter Scale Limit exactly 3π/4) compared as *edited*:
+
+```diff
+-                fill_caps=switch_2,
+-                miter_scale_limit=3 * math.pi / 4,
++                fill_caps=switch_2,
+```
+
+::: {.incremental}
+- 18 spurious keyword arguments across the essentials and hair libraries: `radius=0.1`, `length=0.1`, `radius=0.05`, `distance=0.001`, `miter_scale_limit=…`
+- Fixed in 520.29: constructor defaults are now Blender's exact float32 values, or `math.pi` expressions for its rational multiples
+- Diffing real libraries is the test suite that finds this
+:::
+
+## Molecular Nodes: the workflow in production {.smaller}
+
+344 node modules are the source of truth; `nodes.blend` is a build product. `check` in CI proves build → dump reproduces them exactly.
+
+PR #1239: three bugs found *reading the source*, each with a numeric test that fails on `main`:
+
+```diff
+ # simulate_elastic_network.py — inverse mass stored 2·m instead of 1/m
+-            geometry_1.current, name="inverse_mass", value=Mass().o.mass / 0.5
++            geometry_1.current, name="inverse_mass", value=1.0 / Mass()
+
+ # XPBD Solve Edges — partner weight sampled at the edge index, not the partner point
+-            w2=inverse_mass.o.w.point.at(edge_info.o.edge_index),
++            w2=inverse_mass.o.w.point.at(edge_info.o.point_index),
+```
+
+The third was an OKLab matrix built from the XYZ → LMS constants instead of sRGB → LMS: blue clipped, white mapped to `(1.003, 0.027, 0.015)`.
+
+::: {.notes}
+Nobody opened a node editor to find these. The constants were wrong in the source, and the numbers were checkable against the reference paper.
+:::
+
+## Agents, skills and a policy
+
+::: {.incremental}
+- `AGENTS.md` + `skills/mn-nodes`: edit the `.py` → `build` → `dump` → read the diff → numeric test
+- A new node (Segment ID, #1224) is one 60-line module, a test and a docs entry
+- MN's AI policy allows agent-authored node changes *because* the diff, the tests and `check` make a tree reviewable regardless of who or what wrote it
+- The same three tools would work for `blender-assets` today
+:::
+
 # How It's Built
 
 ## Generated from the live node registry
