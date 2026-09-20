@@ -51,7 +51,7 @@ class Reroute(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, input: InputColor = None):
+    def __init__(self, input: InputColor = (0.0, 0.0, 0.0, 1.0)):
         super().__init__()
         key_args = {"Input": input}
 

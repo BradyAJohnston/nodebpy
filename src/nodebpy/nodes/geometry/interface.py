@@ -113,8 +113,8 @@ class DialGizmo(BaseNode):
     def __init__(
         self,
         value: InputFloat = 0.0,
-        position: InputVector = None,
-        up: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
+        up: InputVector = (0.0, 0.0, 1.0),
         screen_space: InputBoolean = True,
         radius: InputFloat = 1.0,
         *,
@@ -238,21 +238,21 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def vector(
-        cls, enable: InputBoolean = False, value: InputVector = None
+        cls, enable: InputBoolean = False, value: InputVector = (0.0, 0.0, 0.0)
     ) -> "EnableOutput[VectorSocket]":
         """Create Enable Output with operation 'Vector'."""
         return EnableOutput(data_type="VECTOR", enable=enable, value=value)
 
     @classmethod
     def color(
-        cls, enable: InputBoolean = False, value: InputColor = None
+        cls, enable: InputBoolean = False, value: InputColor = (0.8, 0.8, 0.8, 1.0)
     ) -> "EnableOutput[ColorSocket]":
         """Create Enable Output with operation 'Color'."""
         return EnableOutput(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
     def rotation(
-        cls, enable: InputBoolean = False, value: InputRotation = None
+        cls, enable: InputBoolean = False, value: InputRotation = (0.0, 0.0, 0.0)
     ) -> "EnableOutput[RotationSocket]":
         """Create Enable Output with operation 'Rotation'."""
         return EnableOutput(data_type="ROTATION", enable=enable, value=value)
@@ -510,8 +510,8 @@ class LinearGizmo(BaseNode):
     def __init__(
         self,
         value: InputFloat = 0.0,
-        position: InputVector = None,
-        direction: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
+        direction: InputVector = (0.0, 0.0, 1.0),
         *,
         color_id: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"] = "PRIMARY",
         draw_style: Literal["ARROW", "CROSS", "BOX"] = "ARROW",
@@ -592,8 +592,8 @@ class TransformGizmo(BaseNode):
     def __init__(
         self,
         value: InputMatrix = None,
-        position: InputVector = None,
-        rotation: InputRotation = None,
+        position: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputRotation = (0.0, 0.0, 0.0),
         *,
         use_translation_x: bool = False,
         use_translation_y: bool = False,
