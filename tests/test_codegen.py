@@ -4,6 +4,7 @@
 import re
 from pathlib import Path
 
+import bpy
 import pytest
 
 from nodebpy import TreeBuilder
@@ -320,6 +321,32 @@ def test_default_does_not_snapshot_positions():
     code = to_python(tree, format=False)
     assert "arrange=None" not in code
     assert "layout_snapshot" not in code
+
+
+def test_in_place_emits_clear_and_rebuilds_same_datablock():
+    """in_place=True adds clear=True to the header, so running the source
+    twice rebuilds the exported datablock instead of creating copies."""
+    with TreeBuilder("InPlace") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        geo >> g.SetPosition() >> tree.outputs.geometry("Geometry")
+    modifier = bpy.data.objects["Cube"].modifiers.new("GN", "NODES")
+    modifier.node_group = tree.tree
+
+    code = to_python(tree, in_place=True, format=False)
+    assert 'with TreeBuilder("InPlace", clear=True) as tree:' in code
+    assert "clear=True" not in to_python(tree, format=False)
+    # Alongside arrange=None when positions are snapshotted.
+    assert 'TreeBuilder("InPlace", arrange=None, clear=True)' in to_python(
+        tree, in_place=True, snapshot_positions=True, format=False
+    )
+
+    for _ in range(2):
+        ns: dict = {}
+        exec(code, ns)
+        assert ns["tree"].tree == tree.tree
+    assert modifier.node_group == tree.tree
+    assert bpy.data.node_groups.get("InPlace.001") is None
+    assert _structure(tree.tree) == _structure(ns["tree"].tree)
 
 
 def test_format_with_ruff_tidies_output():
