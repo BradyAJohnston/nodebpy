@@ -165,7 +165,7 @@ class AccumulateField[T](BaseNode):
     def face_corner(
         cls, value: InputFloat = 1.0, group_index: InputInteger = 0
     ) -> "AccumulateField[FloatSocket]":
-        """Create Accumulate Field with operation 'Face Corner'. Attribute on mesh face corner"""
+        """Create Accumulate Field with operation 'Face Corner'. Mesh face corner"""
         return AccumulateField(domain="CORNER", value=value, group_index=group_index)
 
     @property
@@ -1137,6 +1137,252 @@ class CombineColor(BaseNode):
         self.node.mode = value
 
 
+class CombineList[T, TList](BaseNode):
+    """
+    Combine an arbitrary number of values into a list
+
+    Parameters
+    ----------
+    item_0 : InputFloat
+        0
+
+    Inputs
+    ------
+    i.item_0 : FloatSocket
+        0
+
+    Outputs
+    -------
+    o.list : FloatSocketList
+        List
+    """
+
+    _bl_idname = "GeometryNodeCombineList"
+    node: bpy.types.GeometryNodeCombineList
+
+    class _Inputs[S, SList](SocketAccessor):
+        item_0: S
+        """0"""
+
+    class _Outputs[S, SList](SocketAccessor):
+        list: SList
+        """List"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[T, TList]: ...
+        @property
+        def o(self) -> _Outputs[T, TList]: ...
+
+    def __init__(
+        self,
+        item_0: InputAny = 0.0,
+        *,
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Item_0": item_0}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, item_0: InputFloat = 0.0
+    ) -> "CombineList[FloatSocket, FloatSocketList]":
+        """Create Combine List with operation 'Float'."""
+        return CombineList(data_type="FLOAT", item_0=item_0)
+
+    @classmethod
+    def integer(
+        cls, item_0: InputInteger = 0
+    ) -> "CombineList[IntegerSocket, IntegerSocketList]":
+        """Create Combine List with operation 'Integer'."""
+        return CombineList(data_type="INT", item_0=item_0)
+
+    @classmethod
+    def boolean(
+        cls, item_0: InputBoolean = False
+    ) -> "CombineList[BooleanSocket, BooleanSocketList]":
+        """Create Combine List with operation 'Boolean'."""
+        return CombineList(data_type="BOOLEAN", item_0=item_0)
+
+    @classmethod
+    def vector(
+        cls, item_0: InputVector = None
+    ) -> "CombineList[VectorSocket, VectorSocketList]":
+        """Create Combine List with operation 'Vector'."""
+        return CombineList(data_type="VECTOR", item_0=item_0)
+
+    @classmethod
+    def color(
+        cls, item_0: InputColor = None
+    ) -> "CombineList[ColorSocket, ColorSocketList]":
+        """Create Combine List with operation 'Color'."""
+        return CombineList(data_type="RGBA", item_0=item_0)
+
+    @classmethod
+    def rotation(
+        cls, item_0: InputRotation = None
+    ) -> "CombineList[RotationSocket, RotationSocketList]":
+        """Create Combine List with operation 'Rotation'."""
+        return CombineList(data_type="ROTATION", item_0=item_0)
+
+    @classmethod
+    def matrix(
+        cls, item_0: InputMatrix = None
+    ) -> "CombineList[MatrixSocket, MatrixSocketList]":
+        """Create Combine List with operation 'Matrix'."""
+        return CombineList(data_type="MATRIX", item_0=item_0)
+
+    @classmethod
+    def string(
+        cls, item_0: InputString = ""
+    ) -> "CombineList[StringSocket, StringSocketList]":
+        """Create Combine List with operation 'String'."""
+        return CombineList(data_type="STRING", item_0=item_0)
+
+    @classmethod
+    def menu(
+        cls, item_0: InputMenu = None
+    ) -> "CombineList[MenuSocket, MenuSocketList]":
+        """Create Combine List with operation 'Menu'."""
+        return CombineList(data_type="MENU", item_0=item_0)
+
+    @classmethod
+    def object(
+        cls, item_0: InputObject = None
+    ) -> "CombineList[ObjectSocket, ObjectSocketList]":
+        """Create Combine List with operation 'Object'."""
+        return CombineList(data_type="OBJECT", item_0=item_0)
+
+    @classmethod
+    def image(
+        cls, item_0: InputImage = None
+    ) -> "CombineList[ImageSocket, ImageSocketList]":
+        """Create Combine List with operation 'Image'."""
+        return CombineList(data_type="IMAGE", item_0=item_0)
+
+    @classmethod
+    def geometry(
+        cls, item_0: InputGeometry = None
+    ) -> "CombineList[GeometrySocket, GeometrySocketList]":
+        """Create Combine List with operation 'Geometry'."""
+        return CombineList(data_type="GEOMETRY", item_0=item_0)
+
+    @classmethod
+    def collection(
+        cls, item_0: InputCollection = None
+    ) -> "CombineList[CollectionSocket, CollectionSocketList]":
+        """Create Combine List with operation 'Collection'."""
+        return CombineList(data_type="COLLECTION", item_0=item_0)
+
+    @classmethod
+    def material(
+        cls, item_0: InputMaterial = None
+    ) -> "CombineList[MaterialSocket, MaterialSocketList]":
+        """Create Combine List with operation 'Material'."""
+        return CombineList(data_type="MATERIAL", item_0=item_0)
+
+    @classmethod
+    def bundle(
+        cls, item_0: InputBundle = None
+    ) -> "CombineList[BundleSocket, BundleSocketList]":
+        """Create Combine List with operation 'Bundle'."""
+        return CombineList(data_type="BUNDLE", item_0=item_0)
+
+    @classmethod
+    def closure(
+        cls, item_0: InputClosure = None
+    ) -> "CombineList[ClosureSocket, ClosureSocketList]":
+        """Create Combine List with operation 'Closure'."""
+        return CombineList(data_type="CLOSURE", item_0=item_0)
+
+    @classmethod
+    def font(
+        cls, item_0: InputFont = None
+    ) -> "CombineList[FontSocket, FontSocketList]":
+        """Create Combine List with operation 'Font'."""
+        return CombineList(data_type="FONT", item_0=item_0)
+
+    @classmethod
+    def sound(
+        cls, item_0: InputSound = None
+    ) -> "CombineList[SoundSocket, SoundSocketList]":
+        """Create Combine List with operation 'Sound'."""
+        return CombineList(data_type="SOUND", item_0=item_0)
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "ROTATION",
+        "MATRIX",
+        "STRING",
+        "MENU",
+        "OBJECT",
+        "IMAGE",
+        "GEOMETRY",
+        "COLLECTION",
+        "MATERIAL",
+        "BUNDLE",
+        "CLOSURE",
+        "FONT",
+        "SOUND",
+    ]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ],
+    ):
+        self.node.data_type = value
+
+
 class CombineMatrix(BaseNode):
     """
     Construct a 4x4 matrix from its individual values
@@ -1548,7 +1794,7 @@ class EvaluateAtIndex[T](BaseNode):
     def face_corner(
         cls, value: InputFloat = 0.0, index: InputInteger = 0
     ) -> "EvaluateAtIndex[FloatSocket]":
-        """Create Evaluate at Index with operation 'Face Corner'. Attribute on mesh face corner"""
+        """Create Evaluate at Index with operation 'Face Corner'. Mesh face corner"""
         return EvaluateAtIndex(domain="CORNER", value=value, index=index)
 
     @classmethod
@@ -1728,7 +1974,7 @@ class EvaluateOnDomain[T](BaseNode):
 
     @classmethod
     def face_corner(cls, value: InputFloat = 0.0) -> "EvaluateOnDomain[FloatSocket]":
-        """Create Evaluate on Domain with operation 'Face Corner'. Attribute on mesh face corner"""
+        """Create Evaluate on Domain with operation 'Face Corner'. Mesh face corner"""
         return EvaluateOnDomain(domain="CORNER", value=value)
 
     @classmethod
@@ -1897,7 +2143,7 @@ class FieldAverage[T](BaseNode):
     def face_corner(
         cls, value: InputFloat = 0.0, group_index: InputInteger = 0
     ) -> "FieldAverage[FloatSocket]":
-        """Create Field Average with operation 'Face Corner'. Attribute on mesh face corner"""
+        """Create Field Average with operation 'Face Corner'. Mesh face corner"""
         return FieldAverage(domain="CORNER", value=value, group_index=group_index)
 
     @property
@@ -2018,7 +2264,7 @@ class FieldMinAndMax[T](BaseNode):
     def face_corner(
         cls, value: InputFloat = 0.0, group_index: InputInteger = 0
     ) -> "FieldMinAndMax[FloatSocket]":
-        """Create Field Min & Max with operation 'Face Corner'. Attribute on mesh face corner"""
+        """Create Field Min & Max with operation 'Face Corner'. Mesh face corner"""
         return FieldMinAndMax(domain="CORNER", value=value, group_index=group_index)
 
     @property
@@ -2147,7 +2393,7 @@ class FieldVariance[T](BaseNode):
     def face_corner(
         cls, value: InputFloat = 0.0, group_index: InputInteger = 0
     ) -> "FieldVariance[FloatSocket]":
-        """Create Field Variance with operation 'Face Corner'. Attribute on mesh face corner"""
+        """Create Field Variance with operation 'Face Corner'. Mesh face corner"""
         return FieldVariance(domain="CORNER", value=value, group_index=group_index)
 
     @property
@@ -3506,6 +3752,61 @@ class GetNestedBundlePaths(BaseNode):
             "Bundle Type": bundle_type,
             "Data Type": data_type,
         }
+
+        self._establish_links(**key_args)
+
+
+class GetVectorComponent(BaseNode):
+    """
+    Get the X, Y or Z component of a vector by index
+
+    Parameters
+    ----------
+    vector : InputVector
+        Vector
+    index : InputInteger
+        Index
+
+    Inputs
+    ------
+    i.vector : VectorSocket
+        Vector
+    i.index : IntegerSocket
+        Index
+
+    Outputs
+    -------
+    o.value : FloatSocket
+        Value
+    """
+
+    _bl_idname = "FunctionNodeGetVectorComponent"
+    node: bpy.types.FunctionNodeGetVectorComponent
+
+    class _Inputs(SocketAccessor):
+        vector: VectorSocket
+        """Vector"""
+        index: IntegerSocket
+        """Index"""
+
+    class _Outputs(SocketAccessor):
+        value: FloatSocket
+        """Value"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        vector: InputVector = None,
+        index: InputInteger = 0,
+    ):
+        super().__init__()
+        key_args = {"Vector": vector, "Index": index}
 
         self._establish_links(**key_args)
 

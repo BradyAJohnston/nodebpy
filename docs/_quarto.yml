@@ -154,6 +154,7 @@ quartodoc:
         - nodes.shader.grid
         - nodes.shader.group
         - nodes.shader.input
+        - nodes.shader.interface
         - nodes.shader.manual
         - nodes.shader.output
         - nodes.shader.script

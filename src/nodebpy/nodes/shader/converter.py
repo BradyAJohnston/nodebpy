@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Literal
 
 import bpy
 
-from ...builder import BaseNode, SocketAccessor
+from ...builder import BaseNode, Socket, SocketAccessor
 from ...builder.socket import (
     BooleanSocket,
     BundleSocket,
@@ -15,6 +15,7 @@ from ...builder.socket import (
     MenuSocket,
     RotationSocket,
     ShaderSocket,
+    StringSocket,
     VectorSocket,
 )
 from ...types import (
@@ -25,9 +26,11 @@ from ...types import (
     InputColor,
     InputFloat,
     InputInteger,
+    InputLinkable,
     InputMenu,
     InputRotation,
     InputShader,
+    InputString,
     InputVector,
 )
 
@@ -173,6 +176,7 @@ class ImplicitConversion[T](BaseNode):
             "BOOLEAN",
             "VECTOR",
             "RGBA",
+            "STRING",
             "MENU",
             "SHADER",
             "BUNDLE",
@@ -212,6 +216,11 @@ class ImplicitConversion[T](BaseNode):
         return ImplicitConversion(data_type="RGBA", value=value)
 
     @classmethod
+    def string(cls, value: InputString = "") -> "ImplicitConversion[StringSocket]":
+        """Create Implicit Conversion with operation 'String'."""
+        return ImplicitConversion(data_type="STRING", value=value)
+
+    @classmethod
     def menu(cls, value: InputMenu = None) -> "ImplicitConversion[MenuSocket]":
         """Create Implicit Conversion with operation 'Menu'."""
         return ImplicitConversion(data_type="MENU", value=value)
@@ -240,6 +249,7 @@ class ImplicitConversion[T](BaseNode):
         "BOOLEAN",
         "VECTOR",
         "RGBA",
+        "STRING",
         "MENU",
         "SHADER",
         "BUNDLE",
@@ -256,6 +266,266 @@ class ImplicitConversion[T](BaseNode):
             "BOOLEAN",
             "VECTOR",
             "RGBA",
+            "STRING",
+            "MENU",
+            "SHADER",
+            "BUNDLE",
+            "CLOSURE",
+        ],
+    ):
+        self.node.data_type = value
+
+
+class IndexSwitch[T](BaseNode):
+    """
+    Choose between an arbitrary number of values with an index
+
+    Parameters
+    ----------
+    index : InputInteger
+        Index
+    item_0 : InputColor
+        0
+    item_1 : InputColor
+        1
+    extend : InputLinkable
+
+
+    Inputs
+    ------
+    i.index : IntegerSocket
+        Index
+    i.item_0 : ColorSocket
+        0
+    i.item_1 : ColorSocket
+        1
+    i.extend : Socket
+
+
+    Outputs
+    -------
+    o.output : ColorSocket
+        Output
+    """
+
+    _bl_idname = "GeometryNodeIndexSwitch"
+    node: bpy.types.GeometryNodeIndexSwitch
+
+    class _Inputs[S](SocketAccessor):
+        index: IntegerSocket
+        """Index"""
+        item_0: S
+        """0"""
+        item_1: S
+        """1"""
+        extend: Socket
+
+    class _Outputs[S](SocketAccessor):
+        output: S
+        """Output"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[T]: ...
+        @property
+        def o(self) -> _Outputs[T]: ...
+
+    def __init__(
+        self,
+        index: InputInteger = 0,
+        item_0: InputAny = None,
+        item_1: InputAny = None,
+        extend: InputLinkable = None,
+        *,
+        data_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "STRING",
+            "MENU",
+            "SHADER",
+            "BUNDLE",
+            "CLOSURE",
+        ] = "RGBA",
+    ):
+        super().__init__()
+        key_args = {
+            "Index": index,
+            "Item_0": item_0,
+            "Item_1": item_1,
+            "__extend__": extend,
+        }
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputFloat = 0.0,
+        item_1: InputFloat = 0.0,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[FloatSocket]":
+        """Create Index Switch with operation 'Float'."""
+        return IndexSwitch(
+            data_type="FLOAT", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputInteger = 0,
+        item_1: InputInteger = 0,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[IntegerSocket]":
+        """Create Index Switch with operation 'Integer'."""
+        return IndexSwitch(
+            data_type="INT", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputBoolean = False,
+        item_1: InputBoolean = False,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[BooleanSocket]":
+        """Create Index Switch with operation 'Boolean'."""
+        return IndexSwitch(
+            data_type="BOOLEAN",
+            index=index,
+            item_0=item_0,
+            item_1=item_1,
+            extend=extend,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputVector = None,
+        item_1: InputVector = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[VectorSocket]":
+        """Create Index Switch with operation 'Vector'."""
+        return IndexSwitch(
+            data_type="VECTOR", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def color(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputColor = None,
+        item_1: InputColor = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[ColorSocket]":
+        """Create Index Switch with operation 'Color'."""
+        return IndexSwitch(
+            data_type="RGBA", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def string(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputString = "",
+        item_1: InputString = "",
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[StringSocket]":
+        """Create Index Switch with operation 'String'."""
+        return IndexSwitch(
+            data_type="STRING", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def menu(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputMenu = None,
+        item_1: InputMenu = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[MenuSocket]":
+        """Create Index Switch with operation 'Menu'."""
+        return IndexSwitch(
+            data_type="MENU", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def shader(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputShader = None,
+        item_1: InputShader = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[ShaderSocket]":
+        """Create Index Switch with operation 'Shader'."""
+        return IndexSwitch(
+            data_type="SHADER", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def bundle(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputBundle = None,
+        item_1: InputBundle = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[BundleSocket]":
+        """Create Index Switch with operation 'Bundle'."""
+        return IndexSwitch(
+            data_type="BUNDLE", index=index, item_0=item_0, item_1=item_1, extend=extend
+        )
+
+    @classmethod
+    def closure(
+        cls,
+        index: InputInteger = 0,
+        item_0: InputClosure = None,
+        item_1: InputClosure = None,
+        extend: InputLinkable = None,
+    ) -> "IndexSwitch[ClosureSocket]":
+        """Create Index Switch with operation 'Closure'."""
+        return IndexSwitch(
+            data_type="CLOSURE",
+            index=index,
+            item_0=item_0,
+            item_1=item_1,
+            extend=extend,
+        )
+
+    @property
+    def data_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "STRING",
+        "MENU",
+        "SHADER",
+        "BUNDLE",
+        "CLOSURE",
+    ]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "STRING",
             "MENU",
             "SHADER",
             "BUNDLE",
@@ -703,6 +973,216 @@ class ShaderToRGB(BaseNode):
         key_args = {"Shader": shader}
 
         self._establish_links(**key_args)
+
+
+class Switch[T](BaseNode):
+    """
+    Switch between two inputs
+
+    Parameters
+    ----------
+    switch : InputBoolean
+        Switch
+    false : InputColor
+        False
+    true : InputColor
+        True
+
+    Inputs
+    ------
+    i.switch : BooleanSocket
+        Switch
+    i.false : ColorSocket
+        False
+    i.true : ColorSocket
+        True
+
+    Outputs
+    -------
+    o.output : ColorSocket
+        Output
+    """
+
+    _bl_idname = "GeometryNodeSwitch"
+    node: bpy.types.GeometryNodeSwitch
+
+    class _Inputs[S](SocketAccessor):
+        switch: BooleanSocket
+        """Switch"""
+        false: S
+        """False"""
+        true: S
+        """True"""
+
+    class _Outputs[S](SocketAccessor):
+        output: S
+        """Output"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[T]: ...
+        @property
+        def o(self) -> _Outputs[T]: ...
+
+    def __init__(
+        self,
+        switch: InputBoolean = False,
+        false: InputAny = None,
+        true: InputAny = None,
+        *,
+        input_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "STRING",
+            "MENU",
+            "SHADER",
+            "BUNDLE",
+            "CLOSURE",
+        ] = "RGBA",
+    ):
+        super().__init__()
+        key_args = {"Switch": switch, "False": false, "True": true}
+        self.input_type = input_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        switch: InputBoolean = False,
+        false: InputFloat = 0.0,
+        true: InputFloat = 0.0,
+    ) -> "Switch[FloatSocket]":
+        """Create Switch with operation 'Float'."""
+        return Switch(input_type="FLOAT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def integer(
+        cls,
+        switch: InputBoolean = False,
+        false: InputInteger = 0,
+        true: InputInteger = 0,
+    ) -> "Switch[IntegerSocket]":
+        """Create Switch with operation 'Integer'."""
+        return Switch(input_type="INT", switch=switch, false=false, true=true)
+
+    @classmethod
+    def boolean(
+        cls,
+        switch: InputBoolean = False,
+        false: InputBoolean = False,
+        true: InputBoolean = False,
+    ) -> "Switch[BooleanSocket]":
+        """Create Switch with operation 'Boolean'."""
+        return Switch(input_type="BOOLEAN", switch=switch, false=false, true=true)
+
+    @classmethod
+    def vector(
+        cls,
+        switch: InputBoolean = False,
+        false: InputVector = None,
+        true: InputVector = None,
+    ) -> "Switch[VectorSocket]":
+        """Create Switch with operation 'Vector'."""
+        return Switch(input_type="VECTOR", switch=switch, false=false, true=true)
+
+    @classmethod
+    def color(
+        cls,
+        switch: InputBoolean = False,
+        false: InputColor = None,
+        true: InputColor = None,
+    ) -> "Switch[ColorSocket]":
+        """Create Switch with operation 'Color'."""
+        return Switch(input_type="RGBA", switch=switch, false=false, true=true)
+
+    @classmethod
+    def string(
+        cls,
+        switch: InputBoolean = False,
+        false: InputString = "",
+        true: InputString = "",
+    ) -> "Switch[StringSocket]":
+        """Create Switch with operation 'String'."""
+        return Switch(input_type="STRING", switch=switch, false=false, true=true)
+
+    @classmethod
+    def menu(
+        cls,
+        switch: InputBoolean = False,
+        false: InputMenu = None,
+        true: InputMenu = None,
+    ) -> "Switch[MenuSocket]":
+        """Create Switch with operation 'Menu'."""
+        return Switch(input_type="MENU", switch=switch, false=false, true=true)
+
+    @classmethod
+    def shader(
+        cls,
+        switch: InputBoolean = False,
+        false: InputShader = None,
+        true: InputShader = None,
+    ) -> "Switch[ShaderSocket]":
+        """Create Switch with operation 'Shader'."""
+        return Switch(input_type="SHADER", switch=switch, false=false, true=true)
+
+    @classmethod
+    def bundle(
+        cls,
+        switch: InputBoolean = False,
+        false: InputBundle = None,
+        true: InputBundle = None,
+    ) -> "Switch[BundleSocket]":
+        """Create Switch with operation 'Bundle'."""
+        return Switch(input_type="BUNDLE", switch=switch, false=false, true=true)
+
+    @classmethod
+    def closure(
+        cls,
+        switch: InputBoolean = False,
+        false: InputClosure = None,
+        true: InputClosure = None,
+    ) -> "Switch[ClosureSocket]":
+        """Create Switch with operation 'Closure'."""
+        return Switch(input_type="CLOSURE", switch=switch, false=false, true=true)
+
+    @property
+    def input_type(
+        self,
+    ) -> Literal[
+        "FLOAT",
+        "INT",
+        "BOOLEAN",
+        "VECTOR",
+        "RGBA",
+        "STRING",
+        "MENU",
+        "SHADER",
+        "BUNDLE",
+        "CLOSURE",
+    ]:
+        return self.node.input_type  # ty: ignore[invalid-return-type]
+
+    @input_type.setter
+    def input_type(
+        self,
+        value: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "STRING",
+            "MENU",
+            "SHADER",
+            "BUNDLE",
+            "CLOSURE",
+        ],
+    ):
+        self.node.input_type = value
 
 
 class Wavelength(BaseNode):

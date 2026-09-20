@@ -213,6 +213,8 @@ SHADER_CONFIG = TreeTypeConfig(
     output_dir_name="shader",
     nodes_to_skip=[
         "Legacy",
+        # Zone plumbing for the Light Iteration zone; not in the add menu.
+        "LightIterInternal",
     ],
     manually_defined=(
         "MenuSwitch",
