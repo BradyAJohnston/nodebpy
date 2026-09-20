@@ -130,21 +130,21 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def vector(
-        cls, enable: InputBoolean = False, value: InputVector = None
+        cls, enable: InputBoolean = False, value: InputVector = (0.0, 0.0, 0.0)
     ) -> "EnableOutput[VectorSocket]":
         """Create Enable Output with operation 'Vector'."""
         return EnableOutput(data_type="VECTOR", enable=enable, value=value)
 
     @classmethod
     def color(
-        cls, enable: InputBoolean = False, value: InputColor = None
+        cls, enable: InputBoolean = False, value: InputColor = (0.8, 0.8, 0.8, 1.0)
     ) -> "EnableOutput[ColorSocket]":
         """Create Enable Output with operation 'Color'."""
         return EnableOutput(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
     def rotation(
-        cls, enable: InputBoolean = False, value: InputRotation = None
+        cls, enable: InputBoolean = False, value: InputRotation = (0.0, 0.0, 0.0)
     ) -> "EnableOutput[RotationSocket]":
         """Create Enable Output with operation 'Rotation'."""
         return EnableOutput(data_type="ROTATION", enable=enable, value=value)
@@ -193,7 +193,7 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def integer_vector(
-        cls, enable: InputBoolean = False, value: InputIntegerVector = None
+        cls, enable: InputBoolean = False, value: InputIntegerVector = (0, 0, 0)
     ) -> "EnableOutput[IntegerSocket]":
         """Create Enable Output with operation 'Integer Vector'."""
         return EnableOutput(data_type="INT_VECTOR", enable=enable, value=value)

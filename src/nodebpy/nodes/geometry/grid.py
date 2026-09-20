@@ -499,8 +499,8 @@ class CubeGridTopology(BaseNode):
 
     def __init__(
         self,
-        bounds_min: InputVector = None,
-        bounds_max: InputVector = None,
+        bounds_min: InputVector = (-1.0, -1.0, -1.0),
+        bounds_max: InputVector = (1.0, 1.0, 1.0),
         resolution_x: InputInteger = 32,
         resolution_y: InputInteger = 32,
         resolution_z: InputInteger = 32,
@@ -683,7 +683,7 @@ class DistributePointsInGrid(BaseNode):
         grid: InputFloatGrid = None,
         density: InputFloat = 1.0,
         seed: InputInteger = 0,
-        spacing: InputVector = None,
+        spacing: InputVector = (0.3, 0.3, 0.3),
         threshold: InputFloat = 0.1,
         *,
         mode: Literal["DENSITY_RANDOM", "DENSITY_GRID"] = "DENSITY_RANDOM",
@@ -713,7 +713,7 @@ class DistributePointsInGrid(BaseNode):
     def grid(
         cls,
         grid: InputFloatGrid = None,
-        spacing: InputVector = None,
+        spacing: InputVector = (0.3, 0.3, 0.3),
         threshold: InputFloat = 0.1,
     ) -> "DistributePointsInGrid":
         """Create Distribute Points in Grid with operation 'Grid'. Distribute the points in a grid pattern inside of the volume"""
@@ -802,7 +802,7 @@ class DistributePointsInVolume(BaseNode):
         mode: InputMenu | Literal["Random", "Grid"] = "Random",
         density: InputFloat = 1.0,
         seed: InputInteger = 0,
-        spacing: InputVector = None,
+        spacing: InputVector = (0.3, 0.3, 0.3),
         threshold: InputFloat = 0.1,
     ):
         super().__init__()
@@ -2478,7 +2478,7 @@ class PruneGrid[T, TGrid](BaseNode):
         cls,
         grid: InputVectorGrid = None,
         mode: InputMenu | Literal["Inactive", "Threshold", "SDF"] = "Threshold",
-        threshold: InputVector = None,
+        threshold: InputVector = (0.01, 0.01, 0.01),
     ) -> "PruneGrid[VectorSocket, VectorSocketGrid]":
         """Create Prune Grid with operation 'Vector'."""
         return PruneGrid(data_type="VECTOR", grid=grid, mode=mode, threshold=threshold)
@@ -2889,7 +2889,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def __init__(
         self,
         grid: InputAny = None,
-        position: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
         | Literal[
             "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
@@ -2906,7 +2906,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def float(
         cls,
         grid: InputFloatGrid = None,
-        position: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
         | Literal[
             "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
@@ -2921,7 +2921,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def integer(
         cls,
         grid: InputIntegerGrid = None,
-        position: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
         | Literal[
             "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
@@ -2936,7 +2936,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def boolean(
         cls,
         grid: InputBooleanGrid = None,
-        position: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
         | Literal[
             "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
@@ -2954,7 +2954,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def vector(
         cls,
         grid: InputVectorGrid = None,
-        position: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
         | Literal[
             "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
@@ -3216,7 +3216,7 @@ class SetGridBackground[T, TGrid](BaseNode):
     def vector(
         cls,
         grid: InputVectorGrid = None,
-        background: InputVector = None,
+        background: InputVector = (0.0, 0.0, 0.0),
         update_inactive: InputBoolean = False,
     ) -> "SetGridBackground[VectorSocket, VectorSocketGrid]":
         """Create Set Grid Background with operation 'Vector'."""
@@ -3525,8 +3525,8 @@ class VolumeCube(BaseNode):
         self,
         density: InputFloat = 1.0,
         background: InputFloat = 0.0,
-        min: InputVector = None,
-        max: InputVector = None,
+        min: InputVector = (-1.0, -1.0, -1.0),
+        max: InputVector = (1.0, 1.0, 1.0),
         resolution_x: InputInteger = 32,
         resolution_y: InputInteger = 32,
         resolution_z: InputInteger = 32,

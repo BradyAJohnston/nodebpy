@@ -31,7 +31,12 @@ from collections.abc import Callable, Collection, Mapping
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
+import numpy as np
 from bpy.types import ID, FunctionNodeCompare, NodeTree
+
+from ._floats import (
+    fmt_float as _fmt_float,
+)
 
 if TYPE_CHECKING:
     from ..builder.tree import TreeBuilder
@@ -354,111 +359,6 @@ def _stmt_lines(
 # ---------------------------------------------------------------------------
 
 
-def _within_one_ulp(candidate: float, f32) -> bool:
-    """Whether ``candidate`` lands on ``f32`` or its immediate float32
-    neighbour. One ULP is the round-off a value picks up crossing precisions
-    (an authored ``0.15`` surviving as ``0.14999999``), so snapping across it
-    restores the authored constant without moving any genuinely different
-    value."""
-    import numpy as np
-
-    # A candidate beyond float32 range (a huge clamp bound) overflows the
-    # cast to inf with a RuntimeWarning; it is never within one ULP.
-    with np.errstate(over="ignore"):
-        c32 = np.float32(candidate)
-    if not np.isfinite(c32):
-        return False
-    return bool(c32 == f32 or np.nextafter(f32, c32) == c32)
-
-
-def _math_constant_expression(f32) -> str | None:
-    """A ``math.pi``/``math.tau``/``math.e`` expression for a rational
-    multiple of one of those constants, or None.
-
-    Constants authored as expressions (``2 * math.pi``, ``pi / 3``, ``tau``,
-    ``e``) survive in a blend only as float32 values; matching small-fraction
-    multiples (within one ULP) restores the readable form. Numerators up to 48
-    over denominators up to 12 cover the usual turns and subdivisions while
-    keeping a chance coincidence with an ordinary decimal essentially
-    impossible. An even multiple of pi renders in tau form (``math.tau``,
-    ``math.tau / 3``) — with the fraction reduced, halving the numerator is
-    always the simpler expression.
-    """
-    import math
-
-    magnitude = abs(float(f32))
-    if magnitude == 0.0:
-        return None
-    for name, const in (("pi", math.pi), ("e", math.e)):
-        for den in range(1, 13):
-            num = round(magnitude * den / const)
-            if not 1 <= num <= 48 or math.gcd(num, den) != 1:
-                continue
-            if not _within_one_ulp(num * const / den, abs(f32)):
-                continue
-            if name == "pi" and num % 2 == 0:
-                name, num = "tau", num // 2
-            expr = f"math.{name}" if num == 1 else f"{num} * math.{name}"
-            if den > 1:
-                expr = f"{expr} / {den}"
-            return f"-{expr}" if float(f32) < 0 else expr
-    return None
-
-
-def _group_digits(text: str) -> str:
-    """Underscore-group a positional float literal's integer part when it has
-    five or more digits (``10000.0`` → ``10_000.0``)."""
-    sign = ""
-    if text.startswith("-"):
-        sign, text = "-", text[1:]
-    int_part, dot, frac = text.partition(".")
-    if len(int_part) < 5:
-        return sign + text
-    return sign + f"{int(int_part):_}" + dot + frac
-
-
-def _fmt_float(value: float) -> str:
-    """Shortest readable literal for a float32-backed value.
-
-    Blender stores socket values as float32, so reading them back through
-    Python gives noisy float64 reprs (``0.10000000149011612``); the shortest
-    decimal that uniquely identifies the float32 (``0.1``) rebuilds the
-    identical socket value. On top of that, rational multiples of pi, tau
-    and e render as ``math.*`` expressions, a value one ULP off a much shorter decimal
-    snaps to it (``0.14999999`` → ``0.15``), and long integer parts get
-    underscore grouping (``-10_000.0``).
-    """
-    import math
-
-    if not math.isfinite(value):
-        return repr(value)
-    try:
-        import numpy as np
-    except ImportError:  # pragma: no cover - Blender ships numpy
-        return repr(value)
-    f32 = np.float32(value)
-    if float(f32) != value:
-        return repr(value)  # genuine float64 — keep full precision
-    const_expr = _math_constant_expression(f32)
-    if const_expr is not None:
-        return const_expr
-    text = np.format_float_positional(f32, unique=True, trim="0")
-    # Snap to the shortest decimal within one ULP: fewer significant digits
-    # first, so ``0.14999999`` becomes ``0.15`` rather than ``0.1499999``.
-    digits = sum(c.isdigit() for c in text.lstrip("-0."))
-    for sig in range(1, digits):
-        candidate = float(f"%.{sig}g" % float(f32))
-        if not _within_one_ulp(candidate, f32):
-            continue
-        snapped = np.format_float_positional(
-            np.float32(candidate), unique=True, trim="0"
-        )
-        if len(snapped) < len(text):
-            text = snapped
-        break
-    return _group_digits(text)
-
-
 def _fmt(value: Any) -> str:
     """Format a value as a Python literal using double-quoted strings."""
     if isinstance(value, bool):
@@ -507,7 +407,9 @@ def _eq(a: Any, b: Any) -> bool:
                 return False
             return all(_eq(x, y) for x, y in zip(a, b))
         if isinstance(a, (int, float)) and isinstance(b, (int, float)):
-            return float(a) == float(b)
+            # Sockets store float32: a Python default of ``0.05`` reads back
+            # as ``0.05000000074505806``, so compare at that precision.
+            return bool(np.float32(a) == np.float32(b))
         return a == b
     except Exception:  # noqa: BLE001
         return False

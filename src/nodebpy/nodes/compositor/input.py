@@ -21,6 +21,7 @@ from ...types import (
     InputFloat,
     InputFont,
     InputInteger,
+    InputIntegerVector,
     InputMenu,
     InputString,
 )
@@ -34,7 +35,7 @@ class BlankImage(BaseNode):
     ----------
     color : InputColor
         Color
-    size : InputInteger
+    size : InputIntegerVector
         Size
 
     Inputs
@@ -72,8 +73,8 @@ class BlankImage(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
-        size: InputInteger = None,
+        color: InputColor = (0.0, 0.0, 0.0, 1.0),
+        size: InputIntegerVector = (1920, 1080),
     ):
         super().__init__()
         key_args = {"Color": color, "Size": size}
@@ -243,7 +244,7 @@ class ImageCoordinates(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, image: InputColor = None):
+    def __init__(self, image: InputColor = (0.8, 0.8, 0.8, 1.0)):
         super().__init__()
         key_args = {"Image": image}
 
@@ -304,7 +305,7 @@ class ImageInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, image: InputColor = None):
+    def __init__(self, image: InputColor = (0.8, 0.8, 0.8, 1.0)):
         super().__init__()
         key_args = {"Image": image}
 

@@ -7,6 +7,19 @@ from typing import TYPE_CHECKING, Any
 
 from bpy.types import VectorFont
 
+from .config import _load_standalone
+
+# Shared with ``to_python`` export so generated defaults and exported literals
+# spell a float32 the same way (``0.1``, ``3 * math.pi / 4``); loaded from the
+# file so the generator never imports the package it generates.
+_floats = _load_standalone("_nodebpy_floats", "src/nodebpy/export/_floats.py")
+
+
+def fmt_float(value: float) -> str:
+    """The literal that rebuilds exactly this float32 socket default."""
+    return _floats.fmt_float(value, snap=False)
+
+
 if TYPE_CHECKING:
     from .model import SocketInfo
 
@@ -64,10 +77,10 @@ def format_python_value(value: Any) -> str:
     elif isinstance(value, VectorFont):
         return "None"
     elif isinstance(value, float):
-        return str(round(value, 4))
+        return fmt_float(value)
     elif hasattr(value, "__iter__") and not isinstance(value, str):
         try:
-            return "({})".format(", ".join([round(x, 3) for x in value]))
+            return "({})".format(", ".join(format_python_value(x) for x in value))
         except (TypeError, AttributeError):
             return "None"
     else:
