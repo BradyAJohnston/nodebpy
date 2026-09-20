@@ -7,11 +7,14 @@ toc: true
 toc-depth: 1
 format:
   revealjs:
-    theme: dracula
+    theme: [dracula, talk.scss]
+    width: 1280
+    height: 720
     output-file: slides.html
     slide-number: true
     footer: "[bradyajohnston.github.io/nodebpy](https://bradyajohnston.github.io/nodebpy)"
     code-line-numbers: true
+    code-block-height: 540px
   html: default
 
 fig-align: center
@@ -389,7 +392,7 @@ Shared nodes (`Math`, `Mix`, textures…) are defined once and re-exported per e
 
 # Reusable Groups
 
-## Custom node groups as classes
+## Custom node groups as classes {.smaller}
 
 Subclass `CustomGeometryGroup`: `_name`, an `__init__` for the inputs, `_build_group` for the internal graph.
 
@@ -466,7 +469,7 @@ generate_asset_api(
 
 # Nodes → Code
 
-## `to_python()` — the other direction
+## `to_python()` — the other direction {.smaller}
 
 Remember the raw `bpy` tree from the start? Any tree — GUI-built, appended, or raw `bpy` — converts back to `nodebpy` source:
 
@@ -780,7 +783,7 @@ elif _v >= (5, 2, 0):
 
 # Using It in Your Add-on
 
-## `pip install nodebpy`
+## `pip install nodebpy` {.smaller}
 
 ```{python}
 #| output-location: column

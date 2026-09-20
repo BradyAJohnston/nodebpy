@@ -1,0 +1,29 @@
+/*-- scss:defaults --*/
+// Code blocks: 0.55em (22px at 1050 wide) cannot fit a 45-character line in a
+// half-width column. 0.45em keeps ~60 characters per column at 1280 wide.
+$code-block-font-size: 0.5em;
+
+/*-- scss:rules --*/
+// `output-location: column` slides: give the code the wider column, let the
+// node preview take the rest, and never clip code silently — scroll instead.
+.reveal div.column-output-location {
+  gap: 0.6em;
+  align-items: flex-start;
+}
+.reveal div.column-output-location > div.column:first-child {
+  flex: 0 0 56%;
+  width: 56%;
+}
+.reveal div.column-output-location > div.column:last-child {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+.reveal pre {
+  overflow-x: auto;
+}
+// The tree preview (`_repr_html_`) is an inline-styled 480px box; beside code
+// on a 720px-tall slide that pushes any bullets under the cell into the footer.
+.reveal div.column-output-location div[id^="gnwr-"] {
+  height: 320px !important;
+}
