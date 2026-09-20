@@ -1108,11 +1108,28 @@ class TreeBuilder[TreeT: NodeTree]:
         fake_user: bool = False,
         ignore_visibility: bool = False,
         split_inputs: bool | None = None,
+        clear: bool = False,
     ):
+        # ``clear`` rebuilds in place: the tree is emptied (nodes, links and
+        # interface) before the body runs, keeping the datablock so modifiers,
+        # group nodes and pinned editors that reference it stay attached. With
+        # a name, an existing group of that name and tree type is reused
+        # instead of creating a ``Name.001`` duplicate; a group of another
+        # tree type is left alone and a new one is created as usual.
+        # Tree-level properties (description, color_tag, is_tool, fake user,
+        # ...) are kept: only the contents are rebuilt.
         if isinstance(tree, str):
-            self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
+            existing = bpy.data.node_groups.get(tree) if clear else None
+            if existing is not None and existing.bl_idname == tree_type:
+                self.tree = existing
+            else:
+                self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
         else:
             self.tree = tree  # type: ignore
+        if clear:
+            assert self.tree.interface is not None
+            self.tree.nodes.clear()
+            self.tree.interface.clear()
 
         self._menu_defaults: list[_MenuDefault] = []
         self._exited = False
@@ -1133,6 +1150,7 @@ class TreeBuilder[TreeT: NodeTree]:
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         split_inputs: bool | None = None,
+        clear: bool = False,
     ) -> TreeBuilder[GeometryNodeTree]:
         """Create a geometry node tree."""
         return cast(
@@ -1144,6 +1162,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 arrange=arrange,
                 fake_user=fake_user,
                 split_inputs=split_inputs,
+                clear=clear,
             ),
         )
 
@@ -1156,6 +1175,7 @@ class TreeBuilder[TreeT: NodeTree]:
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         split_inputs: bool | None = None,
+        clear: bool = False,
     ) -> TreeBuilder[ShaderNodeTree]:
         """Create a shader node tree."""
         return cast(
@@ -1167,6 +1187,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 arrange=arrange,
                 fake_user=fake_user,
                 split_inputs=split_inputs,
+                clear=clear,
             ),
         )
 
@@ -1179,6 +1200,7 @@ class TreeBuilder[TreeT: NodeTree]:
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         split_inputs: bool | None = None,
+        clear: bool = False,
     ) -> TreeBuilder[CompositorNodeTree]:
         """Create a compositor node tree."""
         return cast(
@@ -1190,6 +1212,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 arrange=arrange,
                 fake_user=fake_user,
                 split_inputs=split_inputs,
+                clear=clear,
             ),
         )
 
@@ -1215,6 +1238,7 @@ class TreeBuilder[TreeT: NodeTree]:
         top_level: Literal["with", "class"] = "with",
         format: bool = True,
         nodebpy_pkg: str = "nodebpy",
+        in_place: bool = False,
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -1232,6 +1256,7 @@ class TreeBuilder[TreeT: NodeTree]:
             top_level=top_level,
             format=format,
             nodebpy_pkg=nodebpy_pkg,
+            in_place=in_place,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:

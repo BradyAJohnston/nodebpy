@@ -306,3 +306,69 @@ def test_nested_tree_panel_reuses_by_parent():
     assert sockets["A"].parent == outer
     assert sockets["B"].parent == inner
     assert sockets["C"].parent == inner  # reused, not duplicated
+
+
+def test_clear_rebuilds_existing_tree_in_place():
+    with g.tree("Rebuild In Place") as tree:
+        (
+            tree.inputs.geometry("Geometry")
+            >> g.SetPosition()
+            >> tree.outputs.geometry("Geometry")
+        )
+    datablock = tree.tree
+    modifier = bpy.data.objects["Cube"].modifiers.new("GN", "NODES")
+    modifier.node_group = datablock
+
+    with TreeBuilder(datablock, clear=True) as rebuilt:
+        rebuilt.inputs.geometry("Geometry") >> rebuilt.outputs.geometry("Geometry")
+        rebuilt.inputs.float("Scale")
+
+    assert rebuilt.tree == datablock
+    assert modifier.node_group == datablock
+    assert {n.bl_idname for n in datablock.nodes} == {
+        "NodeGroupInput",
+        "NodeGroupOutput",
+    }
+    assert [item.name for item in datablock.interface.items_tree] == [
+        "Geometry",
+        "Geometry",
+        "Scale",
+    ]
+
+
+def test_clear_reuses_group_by_name_and_type():
+    with g.tree("Reuse By Name") as first:
+        (
+            first.inputs.geometry("Geometry")
+            >> g.SetPosition()
+            >> first.outputs.geometry("Geometry")
+        )
+    with g.tree("Reuse By Name", clear=True) as second:
+        second.inputs.geometry("Geometry") >> second.outputs.geometry("Geometry")
+
+    assert second.tree == first.tree
+    assert bpy.data.node_groups.get("Reuse By Name.001") is None
+    assert len(second.tree.nodes) == 2
+
+
+def test_clear_with_other_tree_type_creates_new_tree():
+    with TreeBuilder.shader("Type Collision") as shader_tree:
+        shader_tree.inputs.float("Value") >> shader_tree.outputs.float("Value")
+    node_count = len(shader_tree.tree.nodes)
+
+    with g.tree("Type Collision", clear=True) as geo_tree:
+        geo_tree.inputs.geometry("Geometry") >> geo_tree.outputs.geometry("Geometry")
+
+    assert geo_tree.tree != shader_tree.tree
+    assert geo_tree.tree.bl_idname == "GeometryNodeTree"
+    assert geo_tree.tree.name == "Type Collision.001"
+    assert len(shader_tree.tree.nodes) == node_count
+
+
+def test_without_clear_a_name_creates_a_new_tree():
+    with g.tree("Not Cleared") as first:
+        pass
+    with g.tree("Not Cleared") as second:
+        pass
+    assert second.tree != first.tree
+    assert second.tree.name == "Not Cleared.001"
