@@ -208,8 +208,8 @@ css = [
 
 [[package]]
 name = "bpy"
-version = "5.2.0"
-source = { registry = "https://pypi.org/simple" }
+version = "5.3.0a0+202609200949"
+source = { registry = "https://bradyajohnston.github.io/dailybpy" }
 dependencies = [
     { name = "cattrs" },
     { name = "cython" },
@@ -218,10 +218,9 @@ dependencies = [
     { name = "zstandard" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/3a/ebdfeedbefe18641ac541c44bbe433fa363d377fedbabf4fbabb571faf5e/bpy-5.2.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:6b5f9d4e02de90be7100494807a021b60c194c5d5315daef089213b2cdc8cd9d", size = 245126219, upload-time = "2026-07-14T12:14:33.631Z" },
-    { url = "https://files.pythonhosted.org/packages/53/74/827c0930eec8d1b74b8c67d4066bf922f1e15a3d80f0f50ed4a48a2692b1/bpy-5.2.0-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:daae68954f1ab33996aa582861323eff815210e5c56641ac62f855a8365201c2", size = 401306561, upload-time = "2026-07-14T12:13:25.07Z" },
-    { url = "https://files.pythonhosted.org/packages/6f/d5/dd33167ec5540244b170a9f6ee1436e453ee89f0914401831268f69ea0bd/bpy-5.2.0-cp313-cp313-win_amd64.whl", hash = "sha256:d657ee262bb01217343d19156c869819441b2ec436a24b302de8f1fa3a0ef1eb", size = 338722862, upload-time = "2026-07-14T12:14:14.093Z" },
-    { url = "https://files.pythonhosted.org/packages/82/cb/a8d985a59e8e31cf55f6b62144305379a4c3d795633186933059bc91c16a/bpy-5.2.0-cp313-cp313-win_arm64.whl", hash = "sha256:925ae162a1bcde29a514804a5ef3afc5516fccc5ce568e7c8dee95d66a06215a", size = 210627206, upload-time = "2026-07-14T12:13:44.824Z" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-09-20/bpy-5.3.0a0%2B202609200949-cp313-cp313-macosx_13_0_arm64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-09-20/bpy-5.3.0a0%2B202609200949-cp313-cp313-manylinux_2_39_x86_64.whl" },
+    { url = "https://github.com/BradyAJohnston/dailybpy/releases/download/daily-2026-09-20/bpy-5.3.0a0%2B202609200949-cp313-cp313-win_amd64.whl" },
 ]
 
 [[package]]
@@ -702,11 +701,11 @@ wheels = [
 
 [[package]]
 name = "fake-bpy-module"
-version = "20260823"
+version = "20260920"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/54/58/b3f425f5100bfc6810179d80b4f81ac4adc6e793f3a568ec8c8b009b22b8/fake_bpy_module-20260823.tar.gz", hash = "sha256:ef1195ec9d727dfca2b18ed56b9c7a3ed71b9372143b2b5447e4b7c56f754a41", size = 960153, upload-time = "2026-08-23T06:24:53.922Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/20/77/8546169dd46a415e83b3a1ccbc5f121f2f50581aaff6028b9a1005d3927e/fake_bpy_module-20260920.tar.gz", hash = "sha256:be6661490d0611d19ef06429a1ea7e0715f1f554288b0e706e45bd38b47605dd", size = 967991, upload-time = "2026-09-20T10:17:46.026Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/55/165667a823a579787ba925dc54bc8bda12ddcaa929b7b6f33299e217123b/fake_bpy_module-20260823-py3-none-any.whl", hash = "sha256:3b07f7f66878c019a856aea835bf663a20b47a78823b96b4cf65545bc50fdc55", size = 1108186, upload-time = "2026-08-23T06:24:52.189Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/8c/a1b10acf16c659f2984146d7b83004d7fd5eec8d4108e0e2704c6ce3d0e5/fake_bpy_module-20260920-py3-none-any.whl", hash = "sha256:a7d4da2641a0dc814a94f7030e7bd3df4b309a1ca96a6604d9a081adfccccbf7", size = 1116027, upload-time = "2026-09-20T10:17:44.548Z" },
 ]
 
 [[package]]
@@ -1588,7 +1587,7 @@ wheels = [
 
 [[package]]
 name = "nodebpy"
-version = "520.28.0"
+version = "530.0.0"
 source = { editable = "." }
 
 [package.optional-dependencies]
@@ -1628,7 +1627,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bpy", marker = "extra == 'bpy'", specifier = "==5.2.*" },
+    { name = "bpy", marker = "extra == 'bpy'", specifier = "==5.3.*" },
     { name = "matplotlib", marker = "extra == 'plot'", specifier = ">=3.8" },
     { name = "networkx", marker = "extra == 'networkx'", specifier = ">=3.6.1" },
     { name = "ruff", marker = "extra == 'format'", specifier = ">=0.14.11" },

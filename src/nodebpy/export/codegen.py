@@ -4233,6 +4233,7 @@ _TREE_PROP_CANDIDATES = (
     "is_type_curve",
     "is_type_pointcloud",
     "is_type_grease_pencil",
+    "allow_usage_in_scene_compositor_effect",
 )
 
 

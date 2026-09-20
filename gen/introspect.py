@@ -112,6 +112,11 @@ def collect_property_info(node, node_type):
     for prop in node_type.bl_rna.properties:
         if prop.identifier in props_to_ignore:
             continue
+        # Deprecated properties linger in RNA after a node moves the setting onto
+        # a Menu socket of the same name (e.g. Merge Layers' ``mode`` in 5.3),
+        # which would produce a duplicate ``__init__`` parameter.
+        if getattr(prop, "is_deprecated", False):
+            continue
 
         if prop.type == "ENUM":
             # the classes quite often have enums registered with lots of potential items
