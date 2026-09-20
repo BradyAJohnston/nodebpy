@@ -286,9 +286,9 @@ class AlignRotationToVector(BaseNode):
 
     def __init__(
         self,
-        rotation: InputRotation = None,
+        rotation: InputRotation = (0.0, 0.0, 0.0),
         factor: InputFloat = 1.0,
-        vector: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 1.0),
         *,
         axis: Literal["X", "Y", "Z"] = "Z",
         pivot_axis: Literal["AUTO", "X", "Y", "Z"] = "AUTO",
@@ -362,8 +362,8 @@ class AxesToRotation(BaseNode):
 
     def __init__(
         self,
-        primary_axis: InputVector = None,
-        secondary_axis: InputVector = None,
+        primary_axis: InputVector = (0.0, 0.0, 1.0),
+        secondary_axis: InputVector = (1.0, 0.0, 0.0),
         *,
         primary: Literal["X", "Y", "Z"] = "Z",
         secondary: Literal["X", "Y", "Z"] = "X",
@@ -437,7 +437,7 @@ class AxisAngleToRotation(BaseNode):
 
     def __init__(
         self,
-        axis: InputVector = None,
+        axis: InputVector = (0.0, 0.0, 1.0),
         angle: InputFloat = 0.0,
     ):
         super().__init__()
@@ -906,7 +906,7 @@ class ClusterByConnected(BaseNode):
     def __init__(
         self,
         selection: InputBoolean = True,
-        position: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
         distance: InputFloat = 0.001,
     ):
         super().__init__()
@@ -975,7 +975,7 @@ class ClusterByDistance(BaseNode):
         self,
         selection: InputBoolean = True,
         group_id: InputInteger = 0,
-        position: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
         distance: InputFloat = 0.001,
     ):
         super().__init__()
@@ -1359,9 +1359,9 @@ class CombineTransform(BaseNode):
 
     def __init__(
         self,
-        translation: InputVector = None,
-        rotation: InputRotation = None,
-        scale: InputVector = None,
+        translation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputRotation = (0.0, 0.0, 0.0),
+        scale: InputVector = (1.0, 1.0, 1.0),
     ):
         super().__init__()
         key_args = {"Translation": translation, "Rotation": rotation, "Scale": scale}
@@ -1469,7 +1469,7 @@ class EulerToRotation(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, euler: InputVector = None):
+    def __init__(self, euler: InputVector = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {"Euler": euler}
 
@@ -3584,21 +3584,21 @@ class HashValue[T](BaseNode):
 
     @classmethod
     def vector(
-        cls, value: InputVector = None, seed: InputInteger = 0
+        cls, value: InputVector = (0.0, 0.0, 0.0), seed: InputInteger = 0
     ) -> "HashValue[VectorSocket]":
         """Create Hash Value with operation 'Vector'."""
         return HashValue(data_type="VECTOR", value=value, seed=seed)
 
     @classmethod
     def color(
-        cls, value: InputColor = None, seed: InputInteger = 0
+        cls, value: InputColor = (0.8, 0.8, 0.8, 1.0), seed: InputInteger = 0
     ) -> "HashValue[ColorSocket]":
         """Create Hash Value with operation 'Color'."""
         return HashValue(data_type="RGBA", value=value, seed=seed)
 
     @classmethod
     def rotation(
-        cls, value: InputRotation = None, seed: InputInteger = 0
+        cls, value: InputRotation = (0.0, 0.0, 0.0), seed: InputInteger = 0
     ) -> "HashValue[RotationSocket]":
         """Create Hash Value with operation 'Rotation'."""
         return HashValue(data_type="ROTATION", value=value, seed=seed)
@@ -3673,7 +3673,7 @@ class ImplicitConversion[T](BaseNode):
 
     def __init__(
         self,
-        value: InputAny = None,
+        value: InputAny = (0.0, 0.0, 0.0, 1.0),
         *,
         data_type: Literal[
             "FLOAT",
@@ -3719,18 +3719,22 @@ class ImplicitConversion[T](BaseNode):
         return ImplicitConversion(data_type="BOOLEAN", value=value)
 
     @classmethod
-    def vector(cls, value: InputVector = None) -> "ImplicitConversion[VectorSocket]":
+    def vector(
+        cls, value: InputVector = (0.0, 0.0, 0.0)
+    ) -> "ImplicitConversion[VectorSocket]":
         """Create Implicit Conversion with operation 'Vector'."""
         return ImplicitConversion(data_type="VECTOR", value=value)
 
     @classmethod
-    def color(cls, value: InputColor = None) -> "ImplicitConversion[ColorSocket]":
+    def color(
+        cls, value: InputColor = (0.0, 0.0, 0.0, 1.0)
+    ) -> "ImplicitConversion[ColorSocket]":
         """Create Implicit Conversion with operation 'Color'."""
         return ImplicitConversion(data_type="RGBA", value=value)
 
     @classmethod
     def rotation(
-        cls, value: InputRotation = None
+        cls, value: InputRotation = (0.0, 0.0, 0.0)
     ) -> "ImplicitConversion[RotationSocket]":
         """Create Implicit Conversion with operation 'Rotation'."""
         return ImplicitConversion(data_type="ROTATION", value=value)
@@ -3903,7 +3907,7 @@ class IndexOfNearest(BaseNode):
 
     def __init__(
         self,
-        position: InputVector = None,
+        position: InputVector = (0.0, 0.0, 0.0),
         group_id: InputInteger = 0,
     ):
         super().__init__()
@@ -4259,7 +4263,7 @@ class InvertRotation(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, rotation: InputRotation = None):
+    def __init__(self, rotation: InputRotation = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {"Rotation": rotation}
 
@@ -4645,12 +4649,12 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         steps: InputFloat = 4.0,
-        vector: InputVector = None,
-        from_min_float3: InputVector = None,
-        from_max_float3: InputVector = None,
-        to_min_float3: InputVector = None,
-        to_max_float3: InputVector = None,
-        steps_float3: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
+        from_min_float3: InputVector = (0.0, 0.0, 0.0),
+        from_max_float3: InputVector = (1.0, 1.0, 1.0),
+        to_min_float3: InputVector = (0.0, 0.0, 0.0),
+        to_max_float3: InputVector = (1.0, 1.0, 1.0),
+        steps_float3: InputVector = (4.0, 4.0, 4.0),
         *,
         clamp: bool = False,
         interpolation_type: Literal[
@@ -4778,11 +4782,11 @@ class MapRange(BaseNode):
     @classmethod
     def vector(
         cls,
-        vector: InputVector = None,
-        from_min3: InputVector = None,
-        from_max3: InputVector = None,
-        to_min3: InputVector = None,
-        to_max3: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
+        from_min3: InputVector = (0.0, 0.0, 0.0),
+        from_max3: InputVector = (1.0, 1.0, 1.0),
+        to_min3: InputVector = (0.0, 0.0, 0.0),
+        to_max3: InputVector = (1.0, 1.0, 1.0),
     ) -> "MapRange":
         """Create Map Range with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
@@ -5583,14 +5587,14 @@ class PackUVIslands(BaseNode):
 
     def __init__(
         self,
-        uv: InputVector = None,
+        uv: InputVector = (0.0, 0.0, 0.0),
         selection: InputBoolean = True,
         margin: InputFloat = 0.001,
         rotate: InputBoolean = True,
         method: InputMenu
         | Literal["Bounding Box", "Convex Hull", "Exact Shape"] = "Bounding Box",
-        bottom_left: InputVector = None,
-        top_right: InputVector = None,
+        bottom_left: InputVector = (0.0, 0.0),
+        top_right: InputVector = (1.0, 1.0),
     ):
         super().__init__()
         key_args = {
@@ -5652,7 +5656,7 @@ class ProjectPoint(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
         transform: InputMatrix = None,
     ):
         super().__init__()
@@ -5850,8 +5854,8 @@ class RandomValue[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        min: InputVector = None,
-        max: InputVector = None,
+        min: InputVector = (0.0, 0.0, 0.0),
+        max: InputVector = (1.0, 1.0, 1.0),
         id: InputInteger = 0,
         seed: InputInteger = 0,
     ) -> "RandomValue[VectorSocket]":
@@ -6032,8 +6036,8 @@ class RotateEuler(BaseNode):
 
     def __init__(
         self,
-        rotation: InputVector = None,
-        rotate_by: InputVector = None,
+        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotate_by: InputVector = (0.0, 0.0, 0.0),
         axis: InputVector = None,
         angle: InputFloat = None,
         *,
@@ -6057,8 +6061,8 @@ class RotateEuler(BaseNode):
     @classmethod
     def axis_angle(
         cls,
-        rotation: InputVector = None,
-        axis: InputVector = None,
+        rotation: InputVector = (0.0, 0.0, 0.0),
+        axis: InputVector = (0.0, 0.0, 1.0),
         angle: InputFloat = 0.0,
     ) -> "RotateEuler":
         """Create Rotate Euler with operation 'Axis Angle'. Rotate around an axis by an angle"""
@@ -6068,7 +6072,9 @@ class RotateEuler(BaseNode):
 
     @classmethod
     def euler(
-        cls, rotation: InputVector = None, rotate_by: InputVector = None
+        cls,
+        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotate_by: InputVector = (0.0, 0.0, 0.0),
     ) -> "RotateEuler":
         """Create Rotate Euler with operation 'Euler'. Rotate around the X, Y, and Z axes"""
         return cls(rotation_type="EULER", rotation=rotation, rotate_by=rotate_by)
@@ -6136,8 +6142,8 @@ class RotateRotation(BaseNode):
 
     def __init__(
         self,
-        rotation: InputRotation = None,
-        rotate_by: InputRotation = None,
+        rotation: InputRotation = (0.0, 0.0, 0.0),
+        rotate_by: InputRotation = (0.0, 0.0, 0.0),
         *,
         rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
     ):
@@ -6201,8 +6207,8 @@ class RotateVector(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = None,
-        rotation: InputRotation = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputRotation = (0.0, 0.0, 0.0),
     ):
         super().__init__()
         key_args = {"Vector": vector, "Rotation": rotation}
@@ -6252,7 +6258,7 @@ class RotationToAxisAngle(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, rotation: InputRotation = None):
+    def __init__(self, rotation: InputRotation = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {"Rotation": rotation}
 
@@ -6297,7 +6303,7 @@ class RotationToEuler(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, rotation: InputRotation = None):
+    def __init__(self, rotation: InputRotation = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {"Rotation": rotation}
 
@@ -6354,7 +6360,7 @@ class RotationToQuaternion(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, rotation: InputRotation = None):
+    def __init__(self, rotation: InputRotation = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {"Rotation": rotation}
 
@@ -6448,7 +6454,7 @@ class SampleSoundFrequencies(BaseNode):
         all_channels: InputBoolean = True,
         channel: InputInteger = 0,
         low: InputFloat = 0.0,
-        high: InputFloat = 10000.0,
+        high: InputFloat = 10_000.0,
         fft_size: InputMenu
         | Literal[
             "128", "256", "512", "1024", "2048", "4096", "8192", "16384", "32768"
@@ -6564,7 +6570,7 @@ class SeparateColor(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         *,
         mode: Literal["RGB", "HSV", "HSL"] = "RGB",
     ):
@@ -6574,17 +6580,17 @@ class SeparateColor(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def rgb(cls, color: InputColor = None) -> "SeparateColor":
+    def rgb(cls, color: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "SeparateColor":
         """Create Separate Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
         return cls(mode="RGB", color=color)
 
     @classmethod
-    def hsv(cls, color: InputColor = None) -> "SeparateColor":
+    def hsv(cls, color: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "SeparateColor":
         """Create Separate Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
         return cls(mode="HSV", color=color)
 
     @classmethod
-    def hsl(cls, color: InputColor = None) -> "SeparateColor":
+    def hsl(cls, color: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "SeparateColor":
         """Create Separate Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
         return cls(mode="HSL", color=color)
 
@@ -6801,7 +6807,7 @@ class SeparateXYZ(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, vector: InputVector = None):
+    def __init__(self, vector: InputVector = (0.0, 0.0, 0.0)):
         super().__init__()
         key_args = {"Vector": vector}
 
@@ -7549,7 +7555,7 @@ class StoreBundleItem[T](BaseNode):
         cls,
         bundle: InputBundle = None,
         path: InputString = "",
-        item: InputVector = None,
+        item: InputVector = (0.0, 0.0, 0.0),
     ) -> "StoreBundleItem[VectorSocket]":
         """Create Store Bundle Item with operation 'Vector'."""
         return StoreBundleItem(
@@ -7558,7 +7564,10 @@ class StoreBundleItem[T](BaseNode):
 
     @classmethod
     def color(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputColor = None
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputColor = (0.8, 0.8, 0.8, 1.0),
     ) -> "StoreBundleItem[ColorSocket]":
         """Create Store Bundle Item with operation 'Color'."""
         return StoreBundleItem(socket_type="RGBA", bundle=bundle, path=path, item=item)
@@ -7568,7 +7577,7 @@ class StoreBundleItem[T](BaseNode):
         cls,
         bundle: InputBundle = None,
         path: InputString = "",
-        item: InputRotation = None,
+        item: InputRotation = (0.0, 0.0, 0.0),
     ) -> "StoreBundleItem[RotationSocket]":
         """Create Store Bundle Item with operation 'Rotation'."""
         return StoreBundleItem(
@@ -8062,8 +8071,8 @@ class Switch[T](BaseNode):
     def vector(
         cls,
         switch: InputBoolean = False,
-        false: InputVector = None,
-        true: InputVector = None,
+        false: InputVector = (0.0, 0.0, 0.0),
+        true: InputVector = (0.0, 0.0, 0.0),
     ) -> "Switch[VectorSocket]":
         """Create Switch with operation 'Vector'."""
         return Switch(input_type="VECTOR", switch=switch, false=false, true=true)
@@ -8072,8 +8081,8 @@ class Switch[T](BaseNode):
     def color(
         cls,
         switch: InputBoolean = False,
-        false: InputColor = None,
-        true: InputColor = None,
+        false: InputColor = (0.8, 0.8, 0.8, 1.0),
+        true: InputColor = (0.8, 0.8, 0.8, 1.0),
     ) -> "Switch[ColorSocket]":
         """Create Switch with operation 'Color'."""
         return Switch(input_type="RGBA", switch=switch, false=false, true=true)
@@ -8082,8 +8091,8 @@ class Switch[T](BaseNode):
     def rotation(
         cls,
         switch: InputBoolean = False,
-        false: InputRotation = None,
-        true: InputRotation = None,
+        false: InputRotation = (0.0, 0.0, 0.0),
+        true: InputRotation = (0.0, 0.0, 0.0),
     ) -> "Switch[RotationSocket]":
         """Create Switch with operation 'Rotation'."""
         return Switch(input_type="ROTATION", switch=switch, false=false, true=true)
@@ -8361,7 +8370,7 @@ class TransformDirection(BaseNode):
 
     def __init__(
         self,
-        direction: InputVector = None,
+        direction: InputVector = (0.0, 0.0, 0.0),
         transform: InputMatrix = None,
     ):
         super().__init__()
@@ -8416,7 +8425,7 @@ class TransformPoint(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
         transform: InputMatrix = None,
     ):
         super().__init__()

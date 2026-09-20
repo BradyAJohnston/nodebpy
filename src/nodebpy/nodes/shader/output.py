@@ -60,7 +60,7 @@ class AovOutput(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.0, 0.0, 0.0, 1.0),
         value: InputFloat = 0.0,
         *,
         aov_name: str = "",
@@ -193,7 +193,7 @@ class LineStyleOutput(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 0.0, 1.0, 1.0),
         color_fac: InputFloat = 1.0,
         alpha: InputFloat = 1.0,
         alpha_fac: InputFloat = 1.0,
@@ -378,7 +378,7 @@ class MaterialOutput(BaseNode):
         self,
         surface: InputShader = None,
         volume: InputShader = None,
-        displacement: InputVector = None,
+        displacement: InputVector = (0.0, 0.0, 0.0),
         thickness: InputFloat = 0.0,
         *,
         is_active_output: bool = False,

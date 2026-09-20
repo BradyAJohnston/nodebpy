@@ -104,12 +104,19 @@ InputFloat = typing.Union[
 ]
 InputInteger = typing.Union[int, NodeSocketInt, InputLinkable, "IntegerSocket"]
 InputIntegerVector = typing.Union[
-    list[int], NodeSocketIntVector3D, InputLinkable, "IntegerVectorSocket"
+    tuple[int, int],
+    tuple[int, int, int],
+    list[int],
+    NodeSocketIntVector3D,
+    InputLinkable,
+    "IntegerVectorSocket",
 ]
 
 InputBoolean = typing.Union[bool, NodeSocketBool, InputLinkable, "BooleanSocket"]
 InputVector = typing.Union[
+    tuple[float, float],
     tuple[float, float, float],
+    tuple[float, float, float, float],
     float,
     int,
     bool,
