@@ -72,7 +72,7 @@ Both are painful to maintain across Blender versions.
 ## How it compares
 
 |   | approach |   | Node Editors | PyPI |
-|:-----------|:-----------------|-------------|-----------------|:-----:|
+|:--------------|:--------------|---------------|---------------|:-------------:|
 | [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) | JSON Export and Import | Nodes \<-\> `.json` | Geometry, Compositor, Shader | ✓ |
 | [NodeToPython](https://github.com/BrendanParmer/NodeToPython) | Export `bpy` python script | Nodes -\> `.py` | Geoemtry, Compositor, Shader | — |
 | [geometry-script](https://github.com/carson-katri/geometry-script) | decorated functions, method chaining | `.py` -\> Nodes | Geometry | — |
@@ -169,14 +169,16 @@ Sockets are matched automatically, layout is automatic, and every name here is a
 
 ## The pitch
 
-> A text-based version of nodes should bring the convenience of writing code with IDE auto-completion, type hinting, with overall compactness and readability, while staying as close as possible to what building a node tree via the GUI feels like.
+> Writing code should *feel* like creating nodes in a GUI.
+> The code should give an intuitive sense for the layout of the tree; through type hinting, auto-complete and docstrings, as much should be knowable about the tree ahead of time as possible.
 
 ``` bash
 pip install nodebpy
 ```
 
 - Geometry, Shader **and** Compositor trees fully supported
-- Typed & tested, on PyPI, made to be used *inside other add-ons*
+- Robustly typed, tested and documented.
+- Available from PyPI and designed for use in other projects
 
 # Where it came from
 
@@ -209,7 +211,7 @@ with g.tree("NewTree") as tree:
 tree
 ```
 
-- Every node is a class named after the node: 'Random Value' → `g.RandomValue`
+- Class names are node names: 'Set Position' → `g.SetPosition`
 - `>>` links the most compatible socket pair — like Node Wrangler's [Alt]{.kbd} + drag
 
 ## Sockets: `.i` and `.o` accessors
@@ -219,28 +221,56 @@ Constructor arguments *are* the input sockets — or address them explicitly:
 ```{python}
 #| output-location: column
 with g.tree() as tree:
+    cube = g.Cube()
+    pos = g.Position()
     sp = g.SetPosition(
-        g.Cube(),
-        offset=g.RandomValue() * 0.1,
+        cube,
+        position=cube.o.uv_map + pos * 0.5,
     )
-    (g.Position() * 0.5) >> sp.i.position
+    g.RandomValue.vector() * 0.1 >> sp.i.offset
 
 tree
 ```
 
 - `node.i.position` / `node.o.geometry` — typed, autocompleted socket access
-- Vector outputs get `.x` / `.y` / `.z`, colors get `.r/.g/.b/.a`, matrices get `.translation/.rotation/.scale`
+
+## Sockets have convenience accessors
+
+- Vector outputs get `.x` / `.y` / `.z`
+- Colors get `.r/.g/.b/.a`
+- Matrices get `.translation/.rotation/.scale`
+
+```{python}
+#| output-location: column
+with g.tree() as tree:
+    p = g.Position()  # the node
+    ps = p.o.position  # the output `Position` socket
+
+    ps.x - 10
+    g.InstanceTransform().o.transform.rotation.rotate(None)
+
+    ps.normalize().cross().distance().cos()
+
+tree
+```
+
+
 
 ## The tree interface
 
-`tree.inputs.*` / `tree.outputs.*` declare the group's sockets and return them for linking:
+- `tree.inputs.*` / `tree.outputs.*` declare the group's sockets and return them for linking
+- Use `panel()` context to put sockets into a panel
+
 
 ```{python}
 #| output-location: column
 with g.tree() as tree:
     count = tree.inputs.integer("Count", 10)
-    pos = g.RandomValue.vector(min=-1)
+    with tree.panel("Random"):
+        f = tree.inputs.float()
+        id = tree.inputs.integer(default_input="INDEX")
 
+    pos = g.RandomValue.vector(min=-f, max=f, id=id)
     g.Points(count, position=pos) >> tree.outputs.geometry()
 
 
@@ -281,10 +311,10 @@ Comparing plain Python values is evaluated *once*, at build time:
 #| output-location: column
 with g.tree() as tree:
     frame = g.SceneTime().o.frame
-    comp = frame > 50  # Compare[Float].o.result
 
     (
-        comp.switch.geometry(g.Cube(), g.Cone())
+        g.Switch.geometry(frame > 50, g.Cube(), g.Cone())
+        >> g.Switch.geometry(10 == 10, None, ...)
         >> tree.outputs.geometry()
     )
 
@@ -300,16 +330,18 @@ Same mental model as any embedded DSL / expression-template library.
 
 Enum properties (`data_type`, `domain`, `operation`, `mode`) are keyword-only — but common combinations are class methods:
 
-``` python
-g.RandomValue(data_type="FLOAT_VECTOR")   # works
-g.RandomValue.vector()                    # reads better
+```{python}
+#| eval: false
+#| code-line-numbers: "1-2|4-5|7-9|"
+g.RandomValue(data_type="FLOAT_VECTOR")  # works
+g.RandomValue.vector()  # reads better
 
 g.EvaluateOnDomain(domain="EDGE", data_type="FLOAT")
-g.EvaluateOnDomain.edge.float()           # domain, then data_type
+g.EvaluateOnDomain.edge.float()  # domain, then data_type
 
 g.Compare(A=a, B=b, data_type="INT", operation="EQUAL")
 g.Compare.integer.equal(a, b)
-a == b                                    # or just this
+a == b
 ```
 
 All enum values are `Literal[...]`-typed, so both spellings autocomplete and type-check.
@@ -319,30 +351,32 @@ All enum values are `Literal[...]`-typed, so both spellings autocomplete and typ
 Repeat / simulation / for-each zones come as a single object with an `item()` helper for the four sockets each item touches:
 
 ```{python}
+#| eval: false
+#| echo: false
+# fmt: off
+```
+
+```{python}
 #| output-location: column
 with g.tree("Stack") as tree:
     zone = g.RepeatZone(5)
     geo = zone.item("Geometry", g.Cube())
 
-    (
-        geo.current
-        >> g.TransformGeometry(
-            translation=(0, 0, 1.1)
-        )
-        >> geo.next
-    )
-    geo.current >> g.TransformGeometry(translation=(0, 0, 1.1)) >> geo.next
+    (geo.current >> g.TransformGeometry(translation=zone.iteration) >> geo.next)
+
     geo.result >> tree.outputs.geometry()
 
 tree
 ```
+
+
 
 - `item.initial` → `item.current` → `item.next` → `item.result`
 - `zone.iteration`, `zone.delta_time` for the built-in sockets
 
 ## Frames
 
-Organisation survives the round trip to code:
+Create nodes within a frame with from within a context
 
 ```{python}
 #| output-location: column
@@ -365,7 +399,7 @@ with g.tree("Wave") as tree:
 tree
 ```
 
-# Beyond Geometry Nodes
+# Shader & Compositor too!
 
 ## Shader trees & materials
 
@@ -373,16 +407,21 @@ Same API, different module — `s.material()` builds a `bpy.types.Material` dire
 
 ```{python}
 #| output-location: column
+#| code-line-numbers: "|5|8-13|"
 from nodebpy import shader as s
 
 with s.material("BrushedMetal") as mat:
+    mat.tree.nodes.clear()
     noise = s.NoiseTexture(scale=8.0).o.fac
 
-    s.PrincipledBSDF(
-        base_color=(0.8, 0.55, 0.2, 1.0),
-        metallic=1.0,
-        roughness=noise * 0.4 + 0.1,
-    ) >> s.MaterialOutput()
+    (
+        s.PrincipledBSDF(
+            base_color=(0.8, 0.55, 0.2, 1.0),
+            metallic=1.0,
+            roughness=noise * 0.4 + 0.1,
+        )
+        >> s.MaterialOutput()
+    )
 
 mat
 ```
@@ -414,15 +453,19 @@ Shared nodes (`Math`, `Mix`, textures…) are defined once and re-exported per e
 
 ## Custom node groups as classes {.smaller}
 
-Subclass `CustomGeometryGroup`: `_name`, an `__init__` for the inputs, `_build_group` for the internal graph.
+Chains with `>>`, mixes with operators, autocompletes & type-hints
 
 ```{python}
 #| output-location: column
+#| code-line-numbers: "|5-15|17-25|27-28|"
+
 from nodebpy.builder import CustomGeometryGroup
 from nodebpy.types import InputFloat, InputGeometry, InputInteger
 
+
 class Jitter(CustomGeometryGroup):
     """Randomly offset each point."""
+
     _name = "Jitter"
 
     def __init__(
@@ -431,9 +474,7 @@ class Jitter(CustomGeometryGroup):
         amount: InputFloat = 0.2,
         seed: InputInteger = 0,
     ):
-        super().__init__(
-            geometry=geometry, amount=amount, seed=seed
-        )
+        super().__init__(geometry=geometry, amount=amount, seed=seed)
 
     def _build_group(self, tree):
         geometry = tree.inputs.geometry("Geometry")
@@ -441,25 +482,16 @@ class Jitter(CustomGeometryGroup):
         seed = tree.inputs.integer("Seed")
 
         offset = g.RandomValue.vector(min=-1, seed=seed) * amount
-        (
-            geometry
-            >> g.SetPosition(offset=offset)
-            >> tree.outputs.geometry()
-        )
+        (geometry >> g.SetPosition(offset=offset) >> tree.outputs.geometry())
 
 
 with g.tree("JitterDemo") as tree:
-    _ = (
-        g.IcoSphere(subdivisions=4)
-        >> Jitter(amount=0.15)
-        >> tree.outputs.geometry()
-    )
+    _ = g.IcoSphere(subdivisions=4) >> Jitter(amount=0.15) >> tree.outputs.geometry()
 
 tree
 ```
 
-- Built once, cached in `bpy.data.node_groups`; instances are cheap
-- Chains with `>>`, mixes with operators, autocompletes — indistinguishable from a built-in node
+
 
 ## Asset node groups
 
@@ -478,48 +510,39 @@ with g.tree("Assets") as tree:
 tree
 ```
 
-Generate the same for your own add-on's `.blend`:
-
-``` python
-from nodebpy.assets import generate_asset_api, PackageLibrary
-
-generate_asset_api(
-    PackageLibrary(__file__, "data/my_assets.blend"),
-    "my_addon/nodes/assets.py",
-)
-```
 
 # Nodes → Code
 
 ## `to_python()` — the other direction {.smaller}
 
-Remember the raw `bpy` tree from the start?
-Any tree — GUI-built, appended, or raw `bpy` — converts back to `nodebpy` source:
+```{python}
+#| echo: false
+TreeBuilder(nt)
+```
+
+## `to_python()` — the other direction {.smaller}
+
+Convert any node tree to `nodebpy` source code:
 
 ```{python}
+#| output: asis
 from nodebpy.export import to_python
 
 code = to_python(nt)
-```
-
-```{python}
-#| echo: false
-#| output: asis
 print(f"```python\n{code}\n```")
 ```
 
-## Comparison
+## Comparison: `bpy` | `nodebpy`
 
 ![](images/bpy_comparison.png)
 
-## The generator is smart about it
+## Codegen is smart and has options
 
 ::: incremental
-- `Math` set to `SINE` comes back as `g.Math.sine(...)`; multiply nodes come back as `*`; `SeparateXYZ` dissolves into `.x`
+- Uses classmethods `g.Math.sine(...)`; promotes operators (e.g. multiply `*`); `SeparateXYZ` dissolves into `.x`
 - Zones and frames reconstruct through the zone-item and `with g.Frame(...)` APIs
-- `snapshot_positions=True` preserves hand-authored layouts; `top_level="class"` archives whole groups as `CustomGeometryGroup` subclasses
+- `snapshot_positions=True` preserves hand-authored layouts
 - Round-trip stable: convert → run → convert produces identical source
-- Validated against Blender's full bundled essentials libraries — it handles real trees, not just its own
 :::
 
 ::: {.content-visible unless-format="revealjs"}
@@ -802,9 +825,8 @@ Scheme: `BLENDER_VERSION.MINOR.PATCH` — currently **`{{< var version >}}`**
 
 ::: incremental
 - `520.x.y` targets Blender 5.2 — forward-compatible, not backward
-- Vendor multiple versions in your add-on and switch on `bpy.app.version` at import time
 - You always know exactly which Blender a release targets
-:::
+- Vendor multiple versions in your add-on and switch on `bpy.app.version` at import time
 
 ``` python
 _v = bpy.app.version
@@ -813,35 +835,7 @@ if _v >= (5, 3, 0):
 elif _v >= (5, 2, 0):
     from ._520.src.nodebpy import *
 ```
-
-# Using It in Your Add-on
-
-## `pip install nodebpy` {.smaller}
-
-```{python}
-#| output-location: column
-from bpy.types import GeometryNodeTree
-
-def default_tree(count: int = 10) -> GeometryNodeTree:
-    with g.tree("Default Tree") as tree:
-        (
-            tree.inputs.integer("Count", count)
-            >> g.Points(
-                position=g.RandomValue.vector()
-            )
-            >> g.InstanceOnPoints(
-                instance=g.IcoSphere()
-            )
-            >> tree.outputs.geometry("Result")
-        )
-    return tree.tree
-
-from nodebpy import TreeBuilder
-TreeBuilder(default_tree())
-```
-
-- Bundle as a `.whl` per the [extension guidelines](https://docs.blender.org/manual/en/latest/advanced/extensions/addons.html#bundle-dependencies), or vendor it
-- Your node setups become reviewable Python instead of binary `.blend` payloads
+:::
 
 ## One more thing about these slides
 
