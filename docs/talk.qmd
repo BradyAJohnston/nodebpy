@@ -69,6 +69,21 @@ Set up the two existing options: bundled .blend assets (opaque, un-diffable) or 
 Both are painful to maintain across Blender versions.
 :::
 
+## How it compares
+
+|   | approach |   | Node Editors | PyPI |
+|:-----------|:-----------------|-------------|-----------------|:-----:|
+| [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) | JSON Export and Import | Nodes \<-\> `.json` | Geometry, Compositor, Shader | ✓ |
+| [NodeToPython](https://github.com/BrendanParmer/NodeToPython) | Export `bpy` python script | Nodes -\> `.py` | Geoemtry, Compositor, Shader | — |
+| [geometry-script](https://github.com/carson-katri/geometry-script) | decorated functions, method chaining | `.py` -\> Nodes | Geometry | — |
+| [geonodes](https://github.com/al1brn/geonodes) | context-based, shared node wrappers, socket method chaining | `.py` -\> Nodes | Geometry, Shader | — |
+| **nodebpy** | context-based, one node per class, override `>>` for linking | `.py` \<-\> Nodes | Geometry, Compositor, Shader | ✓ |
+
+::: {.content-visible unless-format="revealjs"}
+Side-by-side reproductions of examples from each project's own documentation are in the [comparisons page](comparisons.qmd) of the docs.
+The short version: the storage-oriented tools are great at persistence but not authoring; the authoring tools each made different API trade-offs, and `nodebpy` is the only one distributed on PyPI for use as a dependency in other projects.
+:::
+
 ## The raw `bpy` API {.smaller}
 
 What does this node tree do?
@@ -827,20 +842,6 @@ TreeBuilder(default_tree())
 
 - Bundle as a `.whl` per the [extension guidelines](https://docs.blender.org/manual/en/latest/advanced/extensions/addons.html#bundle-dependencies), or vendor it
 - Your node setups become reviewable Python instead of binary `.blend` payloads
-
-## How it compares
-
-|   | approach | on PyPI |
-|:---------------------|:---------------------|:---------------------------:|
-| [NodeToPython](https://github.com/BrendanParmer/NodeToPython) / [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) | trees → storage (`bpy` calls / JSON) | — |
-| [geometry-script](https://github.com/carson-katri/geometry-script) | decorated functions, method chaining | — |
-| [geonodes](https://github.com/al1brn/geonodes) | context-based, shared node wrappers | — |
-| **nodebpy** | context + one typed class per node | ✓ |
-
-::: {.content-visible unless-format="revealjs"}
-Side-by-side reproductions of examples from each project's own documentation are in the [comparisons page](comparisons.qmd) of the docs.
-The short version: the storage-oriented tools are great at persistence but not authoring; the authoring tools each made different API trade-offs, and `nodebpy` is the only one distributed on PyPI for use as a dependency in other projects.
-:::
 
 ## One more thing about these slides
 

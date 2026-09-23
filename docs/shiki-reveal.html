@@ -86,8 +86,10 @@
     }
 
     async function rehighlightCode(code, lang) {
+        // Pandoc names lines `cb3-7`; the line-highlight plugin's clones get
+        // `cb3-7-2`. Both must keep their spans, which carry `highlight-line`.
         const lineSpans = [...code.children].filter(
-            (el) => el.tagName === "SPAN" && /^cb\d+-\d+$/.test(el.id),
+            (el) => el.tagName === "SPAN" && /^cb\d+-\d+(-\d+)?$/.test(el.id),
         );
         const text = lineSpans.length
             ? lineSpans.map((el) => el.textContent).join("\n")
