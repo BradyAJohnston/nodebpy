@@ -151,3 +151,24 @@ def test_fresh_asset_node_exports_without_default_kwargs():
         g.RandomRotation()
     lines = [ln.strip() for ln in to_python(tree.tree).splitlines()]
     assert "_random_rotation = RandomRotation()" in lines
+
+
+def test_default_cannot_be_linked():
+    """A fallback marker is not a socket: linking it explicitly is an error,
+    not a silent no-op, on either end of the link."""
+    with g.tree("Default Link"):
+        cube = g.Cube()
+        node = g.SetPosition()
+        with pytest.raises(TypeError, match="fallback"):
+            node._link(Default.POSITION, node.i.position)
+        with pytest.raises(TypeError, match="fallback"):
+            node._link(cube.o.mesh, Default.attribute("UVMap"))
+
+
+def test_iterable_and_factory_inputs_skip_default():
+    with g.tree("Default Iterable") as tree:
+        join = g.JoinGeometry([g.Cube(), Default.POSITION])
+        boolean = g.SDFGridBoolean.difference(grid_1=Default.POSITION)
+    into_join = [l for l in tree.tree.links if l.to_node == join.node]
+    assert len(into_join) == 1
+    assert not [l for l in tree.tree.links if l.to_node == boolean.node]
