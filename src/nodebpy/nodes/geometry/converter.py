@@ -148,7 +148,7 @@ class AccumulateField[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 1.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"] = "FLOAT",
         domain: Literal[
@@ -163,7 +163,7 @@ class AccumulateField[T](BaseNode):
 
     @classmethod
     def face_corner(
-        cls, value: InputFloat = 1.0, group_index: InputInteger = 0
+        cls, value: InputFloat = 1.0, group_index: InputInteger = None
     ) -> "AccumulateField[FloatSocket]":
         """Create Accumulate Field with operation 'Face Corner'. Attribute on mesh face corner"""
         return AccumulateField(domain="CORNER", value=value, group_index=group_index)
@@ -286,7 +286,7 @@ class AlignRotationToVector(BaseNode):
 
     def __init__(
         self,
-        rotation: InputRotation = (0.0, 0.0, 0.0),
+        rotation: InputRotation = None,
         factor: InputFloat = 1.0,
         vector: InputVector = (0.0, 0.0, 1.0),
         *,
@@ -905,8 +905,8 @@ class ClusterByConnected(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         distance: InputFloat = 0.001,
     ):
         super().__init__()
@@ -973,9 +973,9 @@ class ClusterByDistance(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        position: InputVector = None,
         distance: InputFloat = 0.001,
     ):
         super().__init__()
@@ -1522,7 +1522,7 @@ class EvaluateAtIndex[T](BaseNode):
 
     def __init__(
         self,
-        value: InputAny = 0.0,
+        value: InputAny = None,
         index: InputInteger = 0,
         *,
         domain: Literal[
@@ -1546,7 +1546,7 @@ class EvaluateAtIndex[T](BaseNode):
 
     @classmethod
     def face_corner(
-        cls, value: InputFloat = 0.0, index: InputInteger = 0
+        cls, value: InputFloat = None, index: InputInteger = 0
     ) -> "EvaluateAtIndex[FloatSocket]":
         """Create Evaluate at Index with operation 'Face Corner'. Attribute on mesh face corner"""
         return EvaluateAtIndex(domain="CORNER", value=value, index=index)
@@ -1880,7 +1880,7 @@ class FieldAverage[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -1895,7 +1895,7 @@ class FieldAverage[T](BaseNode):
 
     @classmethod
     def face_corner(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+        cls, value: InputFloat = 0.0, group_index: InputInteger = None
     ) -> "FieldAverage[FloatSocket]":
         """Create Field Average with operation 'Face Corner'. Attribute on mesh face corner"""
         return FieldAverage(domain="CORNER", value=value, group_index=group_index)
@@ -2001,7 +2001,7 @@ class FieldMinAndMax[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -2016,7 +2016,7 @@ class FieldMinAndMax[T](BaseNode):
 
     @classmethod
     def face_corner(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+        cls, value: InputFloat = 0.0, group_index: InputInteger = None
     ) -> "FieldMinAndMax[FloatSocket]":
         """Create Field Min & Max with operation 'Face Corner'. Attribute on mesh face corner"""
         return FieldMinAndMax(domain="CORNER", value=value, group_index=group_index)
@@ -2130,7 +2130,7 @@ class FieldVariance[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -2145,7 +2145,7 @@ class FieldVariance[T](BaseNode):
 
     @classmethod
     def face_corner(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
+        cls, value: InputFloat = 0.0, group_index: InputInteger = None
     ) -> "FieldVariance[FloatSocket]":
         """Create Field Variance with operation 'Face Corner'. Attribute on mesh face corner"""
         return FieldVariance(domain="CORNER", value=value, group_index=group_index)
@@ -2284,7 +2284,7 @@ class FilterList[T](BaseNode):
     def __init__(
         self,
         list: InputAny = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         *,
         socket_type: Literal[
             "FLOAT",
@@ -2314,126 +2314,126 @@ class FilterList[T](BaseNode):
 
     @classmethod
     def float(
-        cls, list: InputFloatList = None, selection: InputBoolean = True
+        cls, list: InputFloatList = None, selection: InputBoolean = None
     ) -> "FilterList[FloatSocketList]":
         """Create Filter List with operation 'Float'."""
         return FilterList(socket_type="FLOAT", list=list, selection=selection)
 
     @classmethod
     def integer(
-        cls, list: InputIntegerList = None, selection: InputBoolean = True
+        cls, list: InputIntegerList = None, selection: InputBoolean = None
     ) -> "FilterList[IntegerSocketList]":
         """Create Filter List with operation 'Integer'."""
         return FilterList(socket_type="INT", list=list, selection=selection)
 
     @classmethod
     def boolean(
-        cls, list: InputBooleanList = None, selection: InputBoolean = True
+        cls, list: InputBooleanList = None, selection: InputBoolean = None
     ) -> "FilterList[BooleanSocketList]":
         """Create Filter List with operation 'Boolean'."""
         return FilterList(socket_type="BOOLEAN", list=list, selection=selection)
 
     @classmethod
     def vector(
-        cls, list: InputVectorList = None, selection: InputBoolean = True
+        cls, list: InputVectorList = None, selection: InputBoolean = None
     ) -> "FilterList[VectorSocketList]":
         """Create Filter List with operation 'Vector'."""
         return FilterList(socket_type="VECTOR", list=list, selection=selection)
 
     @classmethod
     def color(
-        cls, list: InputColorList = None, selection: InputBoolean = True
+        cls, list: InputColorList = None, selection: InputBoolean = None
     ) -> "FilterList[ColorSocketList]":
         """Create Filter List with operation 'Color'."""
         return FilterList(socket_type="RGBA", list=list, selection=selection)
 
     @classmethod
     def rotation(
-        cls, list: InputRotationList = None, selection: InputBoolean = True
+        cls, list: InputRotationList = None, selection: InputBoolean = None
     ) -> "FilterList[RotationSocketList]":
         """Create Filter List with operation 'Rotation'."""
         return FilterList(socket_type="ROTATION", list=list, selection=selection)
 
     @classmethod
     def matrix(
-        cls, list: InputMatrixList = None, selection: InputBoolean = True
+        cls, list: InputMatrixList = None, selection: InputBoolean = None
     ) -> "FilterList[MatrixSocketList]":
         """Create Filter List with operation 'Matrix'."""
         return FilterList(socket_type="MATRIX", list=list, selection=selection)
 
     @classmethod
     def string(
-        cls, list: InputStringList = None, selection: InputBoolean = True
+        cls, list: InputStringList = None, selection: InputBoolean = None
     ) -> "FilterList[StringSocketList]":
         """Create Filter List with operation 'String'."""
         return FilterList(socket_type="STRING", list=list, selection=selection)
 
     @classmethod
     def menu(
-        cls, list: InputMenuList = None, selection: InputBoolean = True
+        cls, list: InputMenuList = None, selection: InputBoolean = None
     ) -> "FilterList[MenuSocketList]":
         """Create Filter List with operation 'Menu'."""
         return FilterList(socket_type="MENU", list=list, selection=selection)
 
     @classmethod
     def object(
-        cls, list: InputObjectList = None, selection: InputBoolean = True
+        cls, list: InputObjectList = None, selection: InputBoolean = None
     ) -> "FilterList[ObjectSocketList]":
         """Create Filter List with operation 'Object'."""
         return FilterList(socket_type="OBJECT", list=list, selection=selection)
 
     @classmethod
     def image(
-        cls, list: InputImageList = None, selection: InputBoolean = True
+        cls, list: InputImageList = None, selection: InputBoolean = None
     ) -> "FilterList[ImageSocketList]":
         """Create Filter List with operation 'Image'."""
         return FilterList(socket_type="IMAGE", list=list, selection=selection)
 
     @classmethod
     def geometry(
-        cls, list: InputGeometryList = None, selection: InputBoolean = True
+        cls, list: InputGeometryList = None, selection: InputBoolean = None
     ) -> "FilterList[GeometrySocketList]":
         """Create Filter List with operation 'Geometry'."""
         return FilterList(socket_type="GEOMETRY", list=list, selection=selection)
 
     @classmethod
     def collection(
-        cls, list: InputCollectionList = None, selection: InputBoolean = True
+        cls, list: InputCollectionList = None, selection: InputBoolean = None
     ) -> "FilterList[CollectionSocketList]":
         """Create Filter List with operation 'Collection'."""
         return FilterList(socket_type="COLLECTION", list=list, selection=selection)
 
     @classmethod
     def material(
-        cls, list: InputMaterialList = None, selection: InputBoolean = True
+        cls, list: InputMaterialList = None, selection: InputBoolean = None
     ) -> "FilterList[MaterialSocketList]":
         """Create Filter List with operation 'Material'."""
         return FilterList(socket_type="MATERIAL", list=list, selection=selection)
 
     @classmethod
     def bundle(
-        cls, list: InputBundleList = None, selection: InputBoolean = True
+        cls, list: InputBundleList = None, selection: InputBoolean = None
     ) -> "FilterList[BundleSocketList]":
         """Create Filter List with operation 'Bundle'."""
         return FilterList(socket_type="BUNDLE", list=list, selection=selection)
 
     @classmethod
     def closure(
-        cls, list: InputClosureList = None, selection: InputBoolean = True
+        cls, list: InputClosureList = None, selection: InputBoolean = None
     ) -> "FilterList[ClosureSocketList]":
         """Create Filter List with operation 'Closure'."""
         return FilterList(socket_type="CLOSURE", list=list, selection=selection)
 
     @classmethod
     def font(
-        cls, list: InputFontList = None, selection: InputBoolean = True
+        cls, list: InputFontList = None, selection: InputBoolean = None
     ) -> "FilterList[FontSocketList]":
         """Create Filter List with operation 'Font'."""
         return FilterList(socket_type="FONT", list=list, selection=selection)
 
     @classmethod
     def sound(
-        cls, list: InputSoundList = None, selection: InputBoolean = True
+        cls, list: InputSoundList = None, selection: InputBoolean = None
     ) -> "FilterList[SoundSocketList]":
         """Create Filter List with operation 'Sound'."""
         return FilterList(socket_type="SOUND", list=list, selection=selection)
@@ -3907,8 +3907,8 @@ class IndexOfNearest(BaseNode):
 
     def __init__(
         self,
-        position: InputVector = (0.0, 0.0, 0.0),
-        group_id: InputInteger = 0,
+        position: InputVector = None,
+        group_id: InputInteger = None,
     ):
         super().__init__()
         key_args = {"Position": position, "Group ID": group_id}
@@ -4649,7 +4649,7 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         steps: InputFloat = 4.0,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         from_min_float3: InputVector = (0.0, 0.0, 0.0),
         from_max_float3: InputVector = (1.0, 1.0, 1.0),
         to_min_float3: InputVector = (0.0, 0.0, 0.0),
@@ -4782,7 +4782,7 @@ class MapRange(BaseNode):
     @classmethod
     def vector(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         from_min3: InputVector = (0.0, 0.0, 0.0),
         from_max3: InputVector = (1.0, 1.0, 1.0),
         to_min3: InputVector = (0.0, 0.0, 0.0),
@@ -5587,8 +5587,8 @@ class PackUVIslands(BaseNode):
 
     def __init__(
         self,
-        uv: InputVector = (0.0, 0.0, 0.0),
-        selection: InputBoolean = True,
+        uv: InputVector = None,
+        selection: InputBoolean = None,
         margin: InputFloat = 0.001,
         rotate: InputBoolean = True,
         method: InputMenu
@@ -5800,7 +5800,7 @@ class RandomValue[T](BaseNode):
         self,
         min: InputAny = 0.0,
         max: InputAny = 1.0,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
         probability: InputFloat = None,
         *,
@@ -5825,7 +5825,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputFloat = 0.0,
         max: InputFloat = 1.0,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[FloatSocket]":
         """Create Random Value with operation 'Float'. Floating-point value"""
@@ -5836,7 +5836,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputInteger = 0,
         max: InputInteger = 100,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[IntegerSocket]":
         """Create Random Value with operation 'Integer'. 32-bit integer"""
@@ -5844,7 +5844,10 @@ class RandomValue[T](BaseNode):
 
     @classmethod
     def boolean(
-        cls, probability: InputFloat = 0.5, id: InputInteger = 0, seed: InputInteger = 0
+        cls,
+        probability: InputFloat = 0.5,
+        id: InputInteger = None,
+        seed: InputInteger = 0,
     ) -> "RandomValue[BooleanSocket]":
         """Create Random Value with operation 'Boolean'. True or false"""
         return RandomValue(
@@ -5856,7 +5859,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputVector = (0.0, 0.0, 0.0),
         max: InputVector = (1.0, 1.0, 1.0),
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[VectorSocket]":
         """Create Random Value with operation 'Vector'. 3D vector with floating-point values"""
@@ -6036,7 +6039,7 @@ class RotateEuler(BaseNode):
 
     def __init__(
         self,
-        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = None,
         rotate_by: InputVector = (0.0, 0.0, 0.0),
         axis: InputVector = None,
         angle: InputFloat = None,
@@ -6061,7 +6064,7 @@ class RotateEuler(BaseNode):
     @classmethod
     def axis_angle(
         cls,
-        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = None,
         axis: InputVector = (0.0, 0.0, 1.0),
         angle: InputFloat = 0.0,
     ) -> "RotateEuler":
@@ -6072,9 +6075,7 @@ class RotateEuler(BaseNode):
 
     @classmethod
     def euler(
-        cls,
-        rotation: InputVector = (0.0, 0.0, 0.0),
-        rotate_by: InputVector = (0.0, 0.0, 0.0),
+        cls, rotation: InputVector = None, rotate_by: InputVector = (0.0, 0.0, 0.0)
     ) -> "RotateEuler":
         """Create Rotate Euler with operation 'Euler'. Rotate around the X, Y, and Z axes"""
         return cls(rotation_type="EULER", rotation=rotation, rotate_by=rotate_by)
@@ -6990,9 +6991,9 @@ class SortList[T](BaseNode):
     def __init__(
         self,
         list: InputAny = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
         *,
         socket_type: Literal[
             "FLOAT",
@@ -7029,9 +7030,9 @@ class SortList[T](BaseNode):
     def float(
         cls,
         list: InputFloatList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[FloatSocketList]":
         """Create Sort List with operation 'Float'."""
         return SortList(
@@ -7046,9 +7047,9 @@ class SortList[T](BaseNode):
     def integer(
         cls,
         list: InputIntegerList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[IntegerSocketList]":
         """Create Sort List with operation 'Integer'."""
         return SortList(
@@ -7063,9 +7064,9 @@ class SortList[T](BaseNode):
     def boolean(
         cls,
         list: InputBooleanList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[BooleanSocketList]":
         """Create Sort List with operation 'Boolean'."""
         return SortList(
@@ -7080,9 +7081,9 @@ class SortList[T](BaseNode):
     def vector(
         cls,
         list: InputVectorList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[VectorSocketList]":
         """Create Sort List with operation 'Vector'."""
         return SortList(
@@ -7097,9 +7098,9 @@ class SortList[T](BaseNode):
     def color(
         cls,
         list: InputColorList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ColorSocketList]":
         """Create Sort List with operation 'Color'."""
         return SortList(
@@ -7114,9 +7115,9 @@ class SortList[T](BaseNode):
     def rotation(
         cls,
         list: InputRotationList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[RotationSocketList]":
         """Create Sort List with operation 'Rotation'."""
         return SortList(
@@ -7131,9 +7132,9 @@ class SortList[T](BaseNode):
     def matrix(
         cls,
         list: InputMatrixList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MatrixSocketList]":
         """Create Sort List with operation 'Matrix'."""
         return SortList(
@@ -7148,9 +7149,9 @@ class SortList[T](BaseNode):
     def string(
         cls,
         list: InputStringList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[StringSocketList]":
         """Create Sort List with operation 'String'."""
         return SortList(
@@ -7165,9 +7166,9 @@ class SortList[T](BaseNode):
     def menu(
         cls,
         list: InputMenuList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MenuSocketList]":
         """Create Sort List with operation 'Menu'."""
         return SortList(
@@ -7182,9 +7183,9 @@ class SortList[T](BaseNode):
     def object(
         cls,
         list: InputObjectList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ObjectSocketList]":
         """Create Sort List with operation 'Object'."""
         return SortList(
@@ -7199,9 +7200,9 @@ class SortList[T](BaseNode):
     def image(
         cls,
         list: InputImageList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ImageSocketList]":
         """Create Sort List with operation 'Image'."""
         return SortList(
@@ -7216,9 +7217,9 @@ class SortList[T](BaseNode):
     def geometry(
         cls,
         list: InputGeometryList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[GeometrySocketList]":
         """Create Sort List with operation 'Geometry'."""
         return SortList(
@@ -7233,9 +7234,9 @@ class SortList[T](BaseNode):
     def collection(
         cls,
         list: InputCollectionList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[CollectionSocketList]":
         """Create Sort List with operation 'Collection'."""
         return SortList(
@@ -7250,9 +7251,9 @@ class SortList[T](BaseNode):
     def material(
         cls,
         list: InputMaterialList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MaterialSocketList]":
         """Create Sort List with operation 'Material'."""
         return SortList(
@@ -7267,9 +7268,9 @@ class SortList[T](BaseNode):
     def bundle(
         cls,
         list: InputBundleList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[BundleSocketList]":
         """Create Sort List with operation 'Bundle'."""
         return SortList(
@@ -7284,9 +7285,9 @@ class SortList[T](BaseNode):
     def closure(
         cls,
         list: InputClosureList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ClosureSocketList]":
         """Create Sort List with operation 'Closure'."""
         return SortList(
@@ -7301,9 +7302,9 @@ class SortList[T](BaseNode):
     def font(
         cls,
         list: InputFontList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[FontSocketList]":
         """Create Sort List with operation 'Font'."""
         return SortList(
@@ -7318,9 +7319,9 @@ class SortList[T](BaseNode):
     def sound(
         cls,
         list: InputSoundList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[SoundSocketList]":
         """Create Sort List with operation 'Sound'."""
         return SortList(
@@ -8637,8 +8638,8 @@ class UVUnwrap(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        seam: InputBoolean = False,
+        selection: InputBoolean = None,
+        seam: InputBoolean = None,
         margin: InputFloat = 0.001,
         fill_holes: InputBoolean = True,
         method: InputMenu

@@ -120,7 +120,7 @@ class BrickTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         color1: InputColor = (0.8, 0.8, 0.8, 1.0),
         color2: InputColor = (0.2, 0.2, 0.2, 1.0),
         mortar: InputColor = (0.0, 0.0, 0.0, 1.0),
@@ -250,7 +250,7 @@ class CheckerTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         color1: InputColor = (0.8, 0.8, 0.8, 1.0),
         color2: InputColor = (0.2, 0.2, 0.2, 1.0),
         scale: InputFloat = 5.0,
@@ -344,7 +344,7 @@ class GaborTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         frequency: InputFloat = 2.0,
         anisotropy: InputFloat = 1.0,
@@ -368,7 +368,7 @@ class GaborTexture(BaseNode):
     @classmethod
     def input_2d(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         frequency: InputFloat = 2.0,
         anisotropy: InputFloat = 1.0,
@@ -387,7 +387,7 @@ class GaborTexture(BaseNode):
     @classmethod
     def input_3d(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         frequency: InputFloat = 2.0,
         anisotropy: InputFloat = 1.0,
@@ -456,7 +456,7 @@ class GradientTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         *,
         gradient_type: Literal[
             "LINEAR",
@@ -474,39 +474,37 @@ class GradientTexture(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def linear(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def linear(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Linear'. Create a linear progression"""
         return cls(gradient_type="LINEAR", vector=vector)
 
     @classmethod
-    def quadratic(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def quadratic(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Quadratic'. Create a quadratic progression"""
         return cls(gradient_type="QUADRATIC", vector=vector)
 
     @classmethod
-    def easing(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def easing(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Easing'. Create a progression easing from one step to the next"""
         return cls(gradient_type="EASING", vector=vector)
 
     @classmethod
-    def diagonal(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def diagonal(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Diagonal'. Create a diagonal progression"""
         return cls(gradient_type="DIAGONAL", vector=vector)
 
     @classmethod
-    def spherical(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def spherical(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Spherical'. Create a spherical progression"""
         return cls(gradient_type="SPHERICAL", vector=vector)
 
     @classmethod
-    def quadratic_sphere(
-        cls, vector: InputVector = (0.0, 0.0, 0.0)
-    ) -> "GradientTexture":
+    def quadratic_sphere(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Quadratic Sphere'. Create a quadratic progression in the shape of a sphere"""
         return cls(gradient_type="QUADRATIC_SPHERE", vector=vector)
 
     @classmethod
-    def radial(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "GradientTexture":
+    def radial(cls, vector: InputVector = None) -> "GradientTexture":
         """Create Gradient Texture with operation 'Radial'. Create a radial progression"""
         return cls(gradient_type="RADIAL", vector=vector)
 
@@ -597,7 +595,7 @@ class ImageTexture(BaseNode):
     def __init__(
         self,
         image: InputImage = None,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         frame: InputInteger = 0,
         *,
         interpolation: Literal["Linear", "Closest", "Cubic"] = "Linear",
@@ -682,7 +680,7 @@ class MagicTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         distortion: InputFloat = 1.0,
         *,
@@ -794,7 +792,7 @@ class NoiseTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         w: InputFloat = 0.0,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
@@ -834,7 +832,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def multifractal(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -855,7 +853,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def ridged_multifractal(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -880,7 +878,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def hybrid_multifractal(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -905,7 +903,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def fbm(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -926,7 +924,7 @@ class NoiseTexture(BaseNode):
     @classmethod
     def hetero_terrain(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         detail: InputFloat = 2.0,
         roughness: InputFloat = 0.5,
@@ -1092,7 +1090,7 @@ class VoronoiTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         w: InputFloat = 0.0,
         scale: InputFloat = 5.0,
         detail: InputFloat = 0.0,
@@ -1249,7 +1247,7 @@ class WaveTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         distortion: InputFloat = 0.0,
         detail: InputFloat = 2.0,
@@ -1281,7 +1279,7 @@ class WaveTexture(BaseNode):
     @classmethod
     def bands(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         distortion: InputFloat = 0.0,
         detail: InputFloat = 2.0,
@@ -1304,7 +1302,7 @@ class WaveTexture(BaseNode):
     @classmethod
     def rings(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         scale: InputFloat = 5.0,
         distortion: InputFloat = 0.0,
         detail: InputFloat = 2.0,
@@ -1407,7 +1405,7 @@ class WhiteNoiseTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         w: InputFloat = 0.0,
         *,
         noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",

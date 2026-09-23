@@ -43,15 +43,30 @@ class SocketInfo:
     always_enabled: bool = True
     menu_items: list[str] = field(default_factory=list)
     structure_type: str = ""
+    hide_value: bool = False
+
+    @property
+    def default_source(self) -> str:
+        """Source for the constructor parameter's default.
+
+        Grid/list-structured sockets have no scalar default. A socket that
+        hides its value (``hide_value``) has one Blender never shows and often
+        ignores — Set Position's *Position* reads the position field when
+        unlinked, a *Selection* means "everything" — so the parameter defaults
+        to ``None`` (leave the socket alone) rather than advertising a value
+        that would be misleading.
+        """
+        if (
+            "GRID" in self.structure_type
+            or "LIST" in self.structure_type
+            or self.hide_value
+        ):
+            return "None"
+        return format_python_value(self.default_value)
 
     def format_argument_string(self) -> str:
         param_name = get_socket_param_name(self)
-        default = (
-            "None"
-            if ("GRID" in self.structure_type or "LIST" in self.structure_type)
-            else format_python_value(self.default_value)
-        )
-        return f"{param_name}: {self.type_hint} = {default}"
+        return f"{param_name}: {self.type_hint} = {self.default_source}"
 
     @property
     def type_hint(self) -> str:
@@ -592,15 +607,8 @@ class NodeInfo:
                         and param_name != ""
                         and param_name != normalize_name(prop.identifier)
                     ):
-                        # Grid/list-structured sockets have no scalar default.
-                        default = (
-                            "None"
-                            if "GRID" in socket.structure_type
-                            or "LIST" in socket.structure_type
-                            else format_python_value(socket.default_value)
-                        )
                         input_params.append(
-                            f"{param_name}: {socket.type_hint} = {default}"
+                            f"{param_name}: {socket.type_hint} = {socket.default_source}"
                         )
                         # Use the same parameter name as in the constructor
                         call_params.append(f"{socket_name}={param_name}")
@@ -703,7 +711,7 @@ class NodeInfo:
 
                 if param_name and param_name != "" and param_name != type_param_name:
                     input_params.append(
-                        f"{param_name}: {socket.type_hint} = {format_python_value(socket.default_value)}"
+                        f"{param_name}: {socket.type_hint} = {socket.default_source}"
                     )
                     call_params.append(f"{socket_name}={param_name}")
 

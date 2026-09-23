@@ -185,6 +185,63 @@ tree
 
 Each custom group appears as a single, named node in the tree -- keeping the graph readable even as the logic grows.
 
+## Fallback Inputs
+
+A group input can read an implicit field, a context value or a named attribute
+when nothing is connected to it — what Blender's interface editor calls the
+*Default Input* and *Default Attribute*. The `tree.inputs.*` factories take
+these as `default_input=` and `default_attribute=`, accepting either Blender's
+identifier strings or the members of `nodebpy.Default`:
+
+```{python}
+from nodebpy import Default
+
+class Displace(CustomGeometryGroup):
+    """Push points along a noise pattern sampled from the UV map."""
+
+    _name = "Displace"
+
+    def __init__(
+        self,
+        geometry: InputGeometry = ...,
+        position: InputVector = Default.POSITION,
+        uv_map: InputVector = Default.attribute("UVMap"),
+        strength: InputFloat = 0.1,
+    ):
+        super().__init__(
+            **{
+                "Geometry": geometry,
+                "Position": position,
+                "UV Map": uv_map,
+                "Strength": strength,
+            }
+        )
+
+    def _build_group(self, tree):
+        geometry = tree.inputs.geometry("Geometry")
+        position = tree.inputs.vector("Position", default_input=Default.POSITION)
+        uv_map = tree.inputs.vector(
+            "UV Map", hide_value=True, default_attribute=Default.attribute("UVMap")
+        )
+        strength = tree.inputs.float("Strength", 0.1)
+
+        offset = g.NoiseTexture(vector=uv_map).o.color * strength
+        result = g.SetPosition(geometry, position=position, offset=offset)
+        _ = result >> tree.outputs.geometry()
+
+
+with g.tree("DisplaceInternal") as tree:
+    _ = Displace()
+
+tree
+```
+
+The constructor mirrors the interface: `Default.POSITION` and
+`Default.attribute("UVMap")` as parameter defaults document the fallback, and
+passing them through leaves the group node's socket untouched so the fallback
+applies. `Default.attribute(...)` also works for `tree.outputs.*`, where it
+names the attribute an output is stored to.
+
 ## Class Options
 
 `CustomGeometryGroup` (via its `NodeGroupBuilder` base class) supports a few class-level options:

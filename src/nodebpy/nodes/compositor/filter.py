@@ -81,7 +81,7 @@ class AntiAliasing(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         threshold: InputFloat = 0.2,
         contrast_limit: InputFloat = 2.0,
         corner_rounding: InputFloat = 0.25,
@@ -155,7 +155,7 @@ class BilateralBlur(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         determinator: InputColor = (1.0, 1.0, 1.0, 1.0),
         size: InputInteger = 0,
         threshold: InputFloat = 0.1,
@@ -235,7 +235,7 @@ class Blur(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         type: InputMenu
         | Literal[
@@ -265,7 +265,7 @@ class Blur(BaseNode):
     @classmethod
     def flat(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         extend_bounds: InputBoolean = False,
         separable: InputBoolean = True,
@@ -282,7 +282,7 @@ class Blur(BaseNode):
     @classmethod
     def tent(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         extend_bounds: InputBoolean = False,
         separable: InputBoolean = True,
@@ -299,7 +299,7 @@ class Blur(BaseNode):
     @classmethod
     def quadratic(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         extend_bounds: InputBoolean = False,
         separable: InputBoolean = True,
@@ -316,7 +316,7 @@ class Blur(BaseNode):
     @classmethod
     def cubic(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         extend_bounds: InputBoolean = False,
         separable: InputBoolean = True,
@@ -333,7 +333,7 @@ class Blur(BaseNode):
     @classmethod
     def gaussian(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         extend_bounds: InputBoolean = False,
         separable: InputBoolean = True,
@@ -350,7 +350,7 @@ class Blur(BaseNode):
     @classmethod
     def fast_gaussian(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         extend_bounds: InputBoolean = False,
         separable: InputBoolean = True,
@@ -367,7 +367,7 @@ class Blur(BaseNode):
     @classmethod
     def catrom(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         extend_bounds: InputBoolean = False,
         separable: InputBoolean = True,
@@ -384,7 +384,7 @@ class Blur(BaseNode):
     @classmethod
     def mitch(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputVector = (0.0, 0.0),
         extend_bounds: InputBoolean = False,
         separable: InputBoolean = True,
@@ -463,7 +463,7 @@ class BokehBlur(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (0.8, 0.8, 0.8, 1.0),
+        image: InputColor = None,
         bokeh: InputColor = (1.0, 1.0, 1.0, 1.0),
         size: InputFloat = 0.0,
         mask: InputFloat = 1.0,
@@ -545,10 +545,10 @@ class Convolve(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (0.8, 0.8, 0.8, 1.0),
+        image: InputColor = None,
         kernel_data_type: InputMenu | Literal["Float", "Color"] = "Float",
-        float_kernel: InputFloat = 0.0,
-        color_kernel: InputColor = (0.8, 0.8, 0.8, 1.0),
+        float_kernel: InputFloat = None,
+        color_kernel: InputColor = None,
         normalize_kernel: InputBoolean = True,
     ):
         super().__init__()
@@ -759,9 +759,9 @@ class Denoise(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
-        albedo: InputColor = (1.0, 1.0, 1.0, 1.0),
-        normal: InputVector = (0.0, 0.0, 0.0),
+        image: InputColor = None,
+        albedo: InputColor = None,
+        normal: InputVector = None,
         hdr: InputBoolean = True,
         prefilter: InputMenu | Literal["None", "Fast", "Accurate"] = "Accurate",
         quality: InputMenu
@@ -838,7 +838,7 @@ class Despeckle(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         fac: InputFloat = 1.0,
         color_threshold: InputFloat = 0.5,
         neighbor_threshold: InputFloat = 0.5,
@@ -1049,7 +1049,7 @@ class DirectionalBlur(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         samples: InputInteger = 1,
         center: InputVector = (0.5, 0.5),
         rotation: InputFloat = 0.0,
@@ -1123,7 +1123,7 @@ class Filter(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         fac: InputFloat = 1.0,
         type: InputMenu
         | Literal[
@@ -1143,58 +1143,44 @@ class Filter(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def soften(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), fac: InputFloat = 1.0
-    ) -> "Filter":
+    def soften(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
         """Create Filter node with type 'Soften'."""
         return cls(image=image, fac=fac, type="Soften")
 
     @classmethod
-    def box_sharpen(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), fac: InputFloat = 1.0
-    ) -> "Filter":
+    def box_sharpen(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
         """Create Filter node with type 'Box Sharpen'."""
         return cls(image=image, fac=fac, type="Box Sharpen")
 
     @classmethod
     def diamond_sharpen(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), fac: InputFloat = 1.0
+        cls, image: InputColor = None, fac: InputFloat = 1.0
     ) -> "Filter":
         """Create Filter node with type 'Diamond Sharpen'."""
         return cls(image=image, fac=fac, type="Diamond Sharpen")
 
     @classmethod
-    def laplace(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), fac: InputFloat = 1.0
-    ) -> "Filter":
+    def laplace(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
         """Create Filter node with type 'Laplace'."""
         return cls(image=image, fac=fac, type="Laplace")
 
     @classmethod
-    def sobel(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), fac: InputFloat = 1.0
-    ) -> "Filter":
+    def sobel(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
         """Create Filter node with type 'Sobel'."""
         return cls(image=image, fac=fac, type="Sobel")
 
     @classmethod
-    def prewitt(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), fac: InputFloat = 1.0
-    ) -> "Filter":
+    def prewitt(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
         """Create Filter node with type 'Prewitt'."""
         return cls(image=image, fac=fac, type="Prewitt")
 
     @classmethod
-    def kirsch(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), fac: InputFloat = 1.0
-    ) -> "Filter":
+    def kirsch(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
         """Create Filter node with type 'Kirsch'."""
         return cls(image=image, fac=fac, type="Kirsch")
 
     @classmethod
-    def shadow(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), fac: InputFloat = 1.0
-    ) -> "Filter":
+    def shadow(cls, image: InputColor = None, fac: InputFloat = 1.0) -> "Filter":
         """Create Filter node with type 'Shadow'."""
         return cls(image=image, fac=fac, type="Shadow")
 
@@ -1373,7 +1359,7 @@ class Glare(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         type: InputMenu
         | Literal[
             "Bloom",
@@ -1402,8 +1388,8 @@ class Glare(BaseNode):
         sun_position: InputVector = (0.5, 0.5),
         jitter: InputFloat = 0.0,
         kernel_data_type: InputMenu | Literal["Float", "Color"] = "Float",
-        float_kernel: InputFloat = 0.0,
-        color_kernel: InputColor = (0.8, 0.8, 0.8, 1.0),
+        float_kernel: InputFloat = None,
+        color_kernel: InputColor = None,
     ):
         super().__init__()
         key_args = {
@@ -1436,7 +1422,7 @@ class Glare(BaseNode):
     @classmethod
     def bloom(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
@@ -1465,7 +1451,7 @@ class Glare(BaseNode):
     @classmethod
     def ghosts(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
@@ -1496,7 +1482,7 @@ class Glare(BaseNode):
     @classmethod
     def streaks(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
@@ -1533,7 +1519,7 @@ class Glare(BaseNode):
     @classmethod
     def fog_glow(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
@@ -1562,7 +1548,7 @@ class Glare(BaseNode):
     @classmethod
     def simple_star(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
@@ -1595,7 +1581,7 @@ class Glare(BaseNode):
     @classmethod
     def sun_beams(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
@@ -1628,7 +1614,7 @@ class Glare(BaseNode):
     @classmethod
     def kernel(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
         highlights_threshold: InputFloat = 1.0,
         highlights_smoothness: InputFloat = 0.1,
@@ -1638,7 +1624,7 @@ class Glare(BaseNode):
         saturation: InputFloat = 1.0,
         tint: InputColor = (1.0, 1.0, 1.0, 1.0),
         kernel_data_type: InputMenu | Literal["Float", "Color"] = "Float",
-        float_kernel: InputFloat = 0.0,
+        float_kernel: InputFloat = None,
     ) -> "Glare":
         """Create Glare node with type 'Kernel'."""
         return cls(
@@ -1703,7 +1689,7 @@ class Inpaint(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputInteger = 0,
     ):
         super().__init__()
@@ -1788,7 +1774,7 @@ class Kuwahara(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputFloat = 6.0,
         type: InputMenu | Literal["Classic", "Anisotropic"] = "Anisotropic",
         uniformity: InputInteger = 4,
@@ -1812,7 +1798,7 @@ class Kuwahara(BaseNode):
     @classmethod
     def classic(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputFloat = 6.0,
         high_precision: InputBoolean = False,
     ) -> "Kuwahara":
@@ -1824,7 +1810,7 @@ class Kuwahara(BaseNode):
     @classmethod
     def anisotropic(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         size: InputFloat = 6.0,
         uniformity: InputInteger = 4,
         sharpness: InputFloat = 1.0,
@@ -1883,7 +1869,7 @@ class MaskToSDF(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, mask: InputBoolean = False):
+    def __init__(self, mask: InputBoolean = None):
         super().__init__()
         key_args = {"Mask": mask}
 
@@ -1936,7 +1922,7 @@ class Pixelate(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = (0.8, 0.8, 0.8, 1.0),
+        color: InputColor = None,
         size: InputInteger = 1,
     ):
         super().__init__()
@@ -2009,7 +1995,7 @@ class VectorBlur(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         speed: InputVector = (0.0, 0.0, 0.0, 0.0),
         z: InputFloat = 0.0,
         samples: InputInteger = 32,

@@ -74,6 +74,7 @@ def collect_socket_info(
             is_output=is_output,
             is_multi_input=getattr(socket, "is_multi_input", False),
             structure_type=_socket_structure_type(socket),
+            hide_value=bool(getattr(socket, "hide_value", False)),
             menu_items=_collect_socket_menu_items(socket)
             if socket.type == "MENU" and cast(Any, socket).default_value != ""
             else [],

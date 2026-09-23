@@ -205,7 +205,7 @@ class BrightnessContrast(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         bright: InputFloat = 0.0,
         contrast: InputFloat = 0.0,
     ):
@@ -363,7 +363,7 @@ class ColorBalance(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         fac: InputFloat = 1.0,
         type: InputMenu
         | Literal[
@@ -418,7 +418,7 @@ class ColorBalance(BaseNode):
     @classmethod
     def lift_gamma_gain(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         fac: InputFloat = 1.0,
         base_lift: InputFloat = 0.0,
         color_lift: InputColor = (1.0, 1.0, 1.0, 1.0),
@@ -443,7 +443,7 @@ class ColorBalance(BaseNode):
     @classmethod
     def offset_power_slope_asc_cdl(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         fac: InputFloat = 1.0,
         base_offset: InputFloat = 0.0,
         color_offset: InputColor = (0.0, 0.0, 0.0, 1.0),
@@ -468,7 +468,7 @@ class ColorBalance(BaseNode):
     @classmethod
     def white_point(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         fac: InputFloat = 1.0,
         input_temperature: InputFloat = 6500.0,
         input_tint: InputFloat = 10.0,
@@ -699,7 +699,7 @@ class ColorCorrection(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         mask: InputFloat = 1.0,
         master_saturation: InputFloat = 1.0,
         master_contrast: InputFloat = 1.0,
@@ -901,7 +901,7 @@ class Exposure(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         exposure: InputFloat = 0.0,
     ):
         super().__init__()
@@ -1029,7 +1029,7 @@ class HueSaturationValue(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         hue: InputFloat = 0.5,
         saturation: InputFloat = 1.0,
         value: InputFloat = 1.0,
@@ -1105,7 +1105,7 @@ class InvertColor(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = (1.0, 1.0, 1.0, 1.0),
+        color: InputColor = None,
         fac: InputFloat = 1.0,
         invert_color: InputBoolean = True,
         invert_alpha: InputBoolean = False,
@@ -1167,7 +1167,7 @@ class Posterize(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         steps: InputFloat = 8.0,
     ):
         super().__init__()
@@ -1338,7 +1338,7 @@ class Tonemap(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         type: InputMenu
         | Literal["R/D Photoreceptor", "Rh Simple"] = "R/D Photoreceptor",
         key: InputFloat = 0.18,
@@ -1367,7 +1367,7 @@ class Tonemap(BaseNode):
     @classmethod
     def r_d_photoreceptor(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         intensity: InputFloat = 0.0,
         contrast: InputFloat = 0.0,
         light_adaptation: InputFloat = 0.0,
@@ -1386,7 +1386,7 @@ class Tonemap(BaseNode):
     @classmethod
     def rh_simple(
         cls,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         key: InputFloat = 0.18,
         balance: InputFloat = 1.0,
         gamma: InputFloat = 1.0,

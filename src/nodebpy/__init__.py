@@ -9,9 +9,11 @@ from .builder import (
     default_sugiyama_options,
 )
 from .nodes import compositor, geometry, shader
+from .types import Default
 
 __all__ = [
     "ArrangeMethod",
+    "Default",
     "SimpleOptions",
     "SugiyamaOptions",
     "TreeBuilder",

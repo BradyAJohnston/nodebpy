@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import enum
 import typing
+from dataclasses import dataclass
 from types import EllipsisType
 from typing import Literal
 
@@ -90,8 +92,96 @@ def _is_default_value(value: InputAny):
     return isinstance(value, (int, float, str, bool, tuple, list, Euler))
 
 
+class Default(enum.Enum):
+    """What an unconnected input reads instead of a stored value.
+
+    Blender lets a group input (and a few built-in inputs, such as Set
+    Position's *Position*) fall back to an implicit field or context value when
+    nothing is linked to it: the socket shows no value in the UI and its stored
+    ``default_value`` is ignored. The members mirror the ``default_input``
+    identifiers of ``bpy.types.NodeTreeInterfaceSocket``.
+
+    A generated asset class spells such a parameter as, for example,
+    ``position: InputVector = Default.POSITION``, so the fallback shows in the
+    signature and the docs. Passing a member to a node constructor leaves the
+    socket untouched — it does not add a link — exactly like ``None``. The
+    same members are accepted by the ``default_input=`` argument of the
+    ``tree.inputs.*`` socket factories, and :meth:`attribute` names the
+    attribute a group input reads when unconnected (``default_attribute=``).
+    """
+
+    INDEX = "INDEX"
+    ID_OR_INDEX = "ID_OR_INDEX"
+    NORMAL = "NORMAL"
+    POSITION = "POSITION"
+    INSTANCE_TRANSFORM = "INSTANCE_TRANSFORM"
+    HANDLE_LEFT = "HANDLE_LEFT"
+    HANDLE_RIGHT = "HANDLE_RIGHT"
+    SCENE_FRAME = "SCENE_FRAME"
+    UNIFORM_IMAGE_COORDINATES = "UNIFORM_IMAGE_COORDINATES"
+    SELF_OBJECT = "SELF_OBJECT"
+
+    @staticmethod
+    def attribute(name: str) -> DefaultAttribute:
+        """The fallback that reads the named attribute of the geometry."""
+        return DefaultAttribute(name)
+
+    @property
+    def description(self) -> str:
+        """A phrase for docstrings: what the input reads when unconnected."""
+        return _DEFAULT_DESCRIPTIONS[self]
+
+    def __repr__(self) -> str:
+        return f"Default.{self.name}"
+
+    __str__ = __repr__
+
+
+_DEFAULT_DESCRIPTIONS: dict[Default, str] = {
+    Default.INDEX: "the index field",
+    Default.ID_OR_INDEX: "the ID field, or the index when there is no ID",
+    Default.NORMAL: "the normal field",
+    Default.POSITION: "the position field",
+    Default.INSTANCE_TRANSFORM: "the instance transform field",
+    Default.HANDLE_LEFT: "the left handle position field",
+    Default.HANDLE_RIGHT: "the right handle position field",
+    Default.SCENE_FRAME: "the current scene frame",
+    Default.UNIFORM_IMAGE_COORDINATES: "uniform image coordinates",
+    Default.SELF_OBJECT: "the object the modifier is on",
+}
+
+
+@dataclass(frozen=True, slots=True)
+class DefaultAttribute:
+    """The fallback of an input that reads a named attribute when unconnected.
+
+    Create one with :meth:`Default.attribute`; it prints as
+    ``Default.attribute("UVMap")`` so it reads the same in a generated
+    signature as in source.
+    """
+
+    name: str
+
+    @property
+    def description(self) -> str:
+        return f'the "{self.name}" attribute'
+
+    def __repr__(self) -> str:
+        return f"Default.attribute({self.name!r})"
+
+    __str__ = __repr__
+
+
 # Type aliases for node inputs using typing.Union for runtime compatibility
-InputLinkable = typing.Union["BaseNode", "SocketLinker", NodeSocket, None, EllipsisType]
+InputLinkable = typing.Union[
+    "BaseNode",
+    "SocketLinker",
+    NodeSocket,
+    None,
+    EllipsisType,
+    Default,
+    DefaultAttribute,
+]
 
 InputFloat = typing.Union[
     float,

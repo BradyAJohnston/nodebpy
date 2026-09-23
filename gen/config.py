@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import enum
 import importlib.util
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -22,6 +23,9 @@ def _load_standalone(name: str, relative_path: str):
     spec = importlib.util.spec_from_file_location(name, _REPO_ROOT / relative_path)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
+    # Registered before executing: a ``@dataclass`` with postponed annotations
+    # resolves its field types through ``sys.modules[cls.__module__]``.
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 

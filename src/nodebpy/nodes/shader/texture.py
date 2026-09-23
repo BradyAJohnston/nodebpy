@@ -58,7 +58,7 @@ class EnvironmentTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         *,
         projection: Literal["EQUIRECTANGULAR", "MIRROR_BALL"] = "EQUIRECTANGULAR",
         interpolation: Literal["Linear", "Closest", "Cubic", "Smart"] = "Linear",
@@ -132,7 +132,7 @@ class IesTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         strength: InputFloat = 1.0,
         *,
         filepath: str = "",
@@ -146,14 +146,14 @@ class IesTexture(BaseNode):
 
     @classmethod
     def internal(
-        cls, vector: InputVector = (0.0, 0.0, 0.0), strength: InputFloat = 1.0
+        cls, vector: InputVector = None, strength: InputFloat = 1.0
     ) -> "IesTexture":
         """Create IES Texture with operation 'Internal'. Use internal text data-block"""
         return cls(mode="INTERNAL", vector=vector, strength=strength)
 
     @classmethod
     def external(
-        cls, vector: InputVector = (0.0, 0.0, 0.0), strength: InputFloat = 1.0
+        cls, vector: InputVector = None, strength: InputFloat = 1.0
     ) -> "IesTexture":
         """Create IES Texture with operation 'External'. Use external .ies file"""
         return cls(mode="EXTERNAL", vector=vector, strength=strength)
@@ -219,7 +219,7 @@ class ImageTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         *,
         projection: Literal["FLAT", "BOX", "SPHERE", "TUBE"] = "FLAT",
         interpolation: Literal["Linear", "Closest", "Cubic", "Smart"] = "Linear",
@@ -307,7 +307,7 @@ class SkyTexture(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         *,
         sky_type: Literal[
             "SINGLE_SCATTERING", "MULTIPLE_SCATTERING", "PREETHAM", "HOSEK_WILKIE"
@@ -353,12 +353,12 @@ class SkyTexture(BaseNode):
         return cls(sky_type="MULTIPLE_SCATTERING")
 
     @classmethod
-    def preetham(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "SkyTexture":
+    def preetham(cls, vector: InputVector = None) -> "SkyTexture":
         """Create Sky Texture with operation 'Preetham'. Preetham 1999 (Legacy)"""
         return cls(sky_type="PREETHAM", vector=vector)
 
     @classmethod
-    def hosek_wilkie(cls, vector: InputVector = (0.0, 0.0, 0.0)) -> "SkyTexture":
+    def hosek_wilkie(cls, vector: InputVector = None) -> "SkyTexture":
         """Create Sky Texture with operation 'Hosek / Wilkie'. Hosek / Wilkie 2012 (Legacy)"""
         return cls(sky_type="HOSEK_WILKIE", vector=vector)
 

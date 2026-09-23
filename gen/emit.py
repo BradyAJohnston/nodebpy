@@ -12,7 +12,7 @@ from .config import (
 )
 from .customizations import _CUSTOMIZATIONS
 from .model import NodeInfo, PropertyInfo, SocketInfo
-from .util import format_python_value, get_socket_param_name, normalize_name
+from .util import get_socket_param_name, normalize_name
 
 
 def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
@@ -81,13 +81,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         else:
             type_hint = socket.type_hint
 
-        if "GRID" in socket.structure_type or "LIST" in socket.structure_type:
-            default = "None"
-        elif hasattr(socket, "default_value"):
-            default = format_python_value(socket.default_value)
-        else:
-            default = "None"
-        init_params.append(f"{param_name}: {type_hint} = {default}")
+        init_params.append(f"{param_name}: {type_hint} = {socket.default_source}")
         establish_links_params.append((param_name, socket))
 
     # Add sockets that only appear in certain enum states (e.g. mode="FREE" reveals

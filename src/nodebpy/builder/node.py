@@ -25,7 +25,7 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
-from ..types import SOCKET_COMPATIBILITY, InputAny
+from ..types import SOCKET_COMPATIBILITY, Default, DefaultAttribute, InputAny
 from ._utils import SocketError, _NodeLike, _SocketLike
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
@@ -207,6 +207,11 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         lets callers address one of several same-named sockets unambiguously.
         """
         named = isinstance(target, str)
+        # A ``Default`` member stands for the socket's own fallback (an implicit
+        # field or attribute Blender reads when nothing is linked): nothing to
+        # set or link, the same as ``None``.
+        if isinstance(value, (Default, DefaultAttribute)):
+            return
         # TODO: don't like these manual overrides for particular nodes, but best I can do for now
         if value is None or (
             named

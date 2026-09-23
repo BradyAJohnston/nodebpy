@@ -649,7 +649,7 @@ class VectorRotate(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         center: InputVector = (0.0, 0.0, 0.0),
         axis: InputVector = (0.0, 0.0, 1.0),
         angle: InputFloat = 0.0,
@@ -675,7 +675,7 @@ class VectorRotate(BaseNode):
     @classmethod
     def axis_angle(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         center: InputVector = (0.0, 0.0, 0.0),
         axis: InputVector = (0.0, 0.0, 1.0),
         angle: InputFloat = 0.0,
@@ -692,7 +692,7 @@ class VectorRotate(BaseNode):
     @classmethod
     def x_axis(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         center: InputVector = (0.0, 0.0, 0.0),
         angle: InputFloat = 0.0,
     ) -> "VectorRotate":
@@ -702,7 +702,7 @@ class VectorRotate(BaseNode):
     @classmethod
     def y_axis(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         center: InputVector = (0.0, 0.0, 0.0),
         angle: InputFloat = 0.0,
     ) -> "VectorRotate":
@@ -712,7 +712,7 @@ class VectorRotate(BaseNode):
     @classmethod
     def z_axis(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         center: InputVector = (0.0, 0.0, 0.0),
         angle: InputFloat = 0.0,
     ) -> "VectorRotate":
@@ -722,7 +722,7 @@ class VectorRotate(BaseNode):
     @classmethod
     def euler(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         center: InputVector = (0.0, 0.0, 0.0),
         rotation: InputVector = (0.0, 0.0, 0.0),
     ) -> "VectorRotate":

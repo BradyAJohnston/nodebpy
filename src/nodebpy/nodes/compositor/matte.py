@@ -230,7 +230,7 @@ class ChannelKey(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         minimum: InputFloat = 0.0,
         maximum: InputFloat = 1.0,
         color_space: InputMenu | Literal["RGB", "HSV", "YUV", "YCbCr"] = "RGB",
@@ -332,7 +332,7 @@ class ChromaKey(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         key_color: InputColor = (1.0, 1.0, 1.0, 1.0),
         minimum: InputFloat = 0.17453292,
         maximum: InputFloat = math.pi / 6,
@@ -418,7 +418,7 @@ class ColorKey(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         key_color: InputColor = (1.0, 1.0, 1.0, 1.0),
         hue: InputFloat = 0.01,
         saturation: InputFloat = 0.1,
@@ -688,7 +688,7 @@ class DistanceKey(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         key_color: InputColor = (1.0, 1.0, 1.0, 1.0),
         color_space: InputMenu | Literal["RGB", "YCC"] = "RGB",
         tolerance: InputFloat = 0.1,
@@ -1008,7 +1008,7 @@ class Keying(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (0.8, 0.8, 0.8, 1.0),
+        image: InputColor = None,
         key_color: InputColor = (1.0, 1.0, 1.0, 1.0),
         preprocess_blur_size: InputInteger = 0,
         key_balance: InputFloat = 0.5,
@@ -1165,7 +1165,7 @@ class LuminanceKey(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         minimum: InputFloat = 0.0,
         maximum: InputFloat = 1.0,
     ):
