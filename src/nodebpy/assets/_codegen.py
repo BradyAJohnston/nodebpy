@@ -24,6 +24,7 @@ import bpy
 from ..builder import AssetLibrary, BundledLibrary, asset_group_base
 from ..builder._utils import normalize_name, typed_param_names
 from ..export.codegen import GroupInterface, _fmt
+from ..types import Default, DefaultAttribute
 
 # bl_socket_type substring → (Socket accessor class, Input* parameter type).
 # Order matters: more specific keys (IntVector before Int) come first.
@@ -143,11 +144,20 @@ class _Socket:
     attr: str  # normalized accessor/param name
     description: str = ""  # interface tooltip, if the asset author set one
     menu_items: tuple[str, ...] = ()  # menu sockets only: the selectable items
+    fallback: str = ""  # what an unconnected input reads, for the docstring
 
     @property
     def doc(self) -> str:
         """Documentation line for this socket — its tooltip, else its name."""
         return _clean_doc(self.description or self.name)
+
+    @property
+    def param_doc(self) -> str:
+        """The parameter's documentation line: the tooltip plus, for an input
+        with a fallback, what it reads when nothing is connected."""
+        if not self.fallback:
+            return self.doc
+        return f"{self.doc.rstrip('.')}. When unconnected, reads {self.fallback}."
 
     @property
     def param_type(self) -> str:
@@ -179,13 +189,18 @@ def _collect(
     sockets,
     descriptions: dict[str, str] | None = None,
     menus: bool = False,
+    fallbacks: dict[str, Default | DefaultAttribute] | None = None,
 ) -> list[_Socket]:
     """Introspect ``sockets`` into records.
 
     ``menus`` resolves menu sockets to their items — only worth doing for the
-    group's *inputs*, whose parameters are typed from them.
+    group's *inputs*, whose parameters are typed from them. ``fallbacks`` maps
+    an input's identifier to what it reads when unconnected (the interface's
+    ``default_input`` field or ``default_attribute_name``); such a parameter
+    defaults to the matching ``Default`` member instead of a stored value.
     """
     descriptions = descriptions or {}
+    fallbacks = fallbacks or {}
     # Keep inactive sockets: socket-usage inference deactivates inputs that the
     # current node options (e.g. a menu selection) leave unused, but a caller
     # may set those options differently, so the API must expose every input.
@@ -202,19 +217,42 @@ def _collect(
         attr = (
             norm_name if name_counts[norm_name] == 1 else normalize_name(s.identifier)
         )
+        fallback = fallbacks.get(s.identifier)
         out.append(
             _Socket(
                 name=s.name,
                 identifier=s.identifier,
                 socket_class=socket_class,
                 input_type=input_type,
-                default=_format_default(s),
+                default=repr(fallback) if fallback else _format_default(s),
                 attr=attr,
                 description=descriptions.get(s.identifier, ""),
                 menu_items=menu_items,
+                fallback=fallback.description if fallback else "",
             )
         )
     return out
+
+
+def _interface_fallbacks(group) -> dict[str, Default | DefaultAttribute]:
+    """What each group input reads when unconnected, by socket identifier.
+
+    An interface input with a ``default_input`` other than ``VALUE`` reads an
+    implicit field or context value; one with a ``default_attribute_name``
+    reads that attribute of the geometry. Either replaces the stored default
+    as the parameter's fallback (the field wins when both are set, as in
+    Blender). Inputs with neither are left out.
+    """
+    fallbacks: dict[str, Default | DefaultAttribute] = {}
+    for item in group.interface.items_tree:
+        if item.item_type != "SOCKET" or item.in_out != "INPUT":
+            continue
+        default_input = getattr(item, "default_input", "VALUE")
+        if default_input != "VALUE":
+            fallbacks[item.identifier] = Default(default_input)
+        elif getattr(item, "default_attribute_name", ""):
+            fallbacks[item.identifier] = Default.attribute(item.default_attribute_name)
+    return fallbacks
 
 
 def _introspect_group(group, name: str, library_source: str) -> _AssetClass:
@@ -253,7 +291,12 @@ def _introspect_group(group, name: str, library_source: str) -> _AssetClass:
             description=(group.description or name).strip(),
             library_source=library_source,
             tree_idname=group.bl_idname,
-            inputs=_collect(node.inputs, descriptions, menus=True),
+            inputs=_collect(
+                node.inputs,
+                descriptions,
+                menus=True,
+                fallbacks=_interface_fallbacks(group),
+            ),
             outputs=_collect(node.outputs, descriptions),
         )
     finally:
@@ -320,7 +363,7 @@ def _class_docstring(cls: _AssetClass) -> str:
     if cls.inputs:
         lines += ["Parameters", "----------"]
         for s in cls.inputs:
-            lines += [f"{s.attr} : {s.param_type}", f"    {s.doc}"]
+            lines += [f"{s.attr} : {s.param_type}", f"    {s.param_doc}"]
         lines.append("")
         lines += ["Inputs", "------"]
         for s in cls.inputs:
@@ -469,6 +512,8 @@ def interface_parts(
     ]
     if any("math." in s.default for s in cls.inputs):
         import_lines.insert(0, "import math")
+    if any(s.default.startswith("Default.") for s in cls.inputs):
+        input_types.append("Default")
     if input_types:
         import_lines.append(f"from {nodebpy_pkg}.types import {', '.join(input_types)}")
 
@@ -489,6 +534,8 @@ def _render_module(
         {s.socket_class for c in classes for s in c.inputs + c.outputs}
     )
     input_types = sorted({s.input_type for c in classes for s in c.inputs})
+    if any(s.default.startswith("Default.") for c in classes for s in c.inputs):
+        input_types.insert(0, "Default")
     bases = sorted({asset_group_base(c.tree_idname).__name__ for c in classes})
     libraries = sorted(
         {

@@ -84,8 +84,8 @@ class Bump(BaseNode):
         strength: InputFloat = 1.0,
         distance: InputFloat = 0.001,
         filter_width: InputFloat = 0.1,
-        height: InputFloat = 1.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        height: InputFloat = None,
+        normal: InputVector = None,
         *,
         invert: bool = False,
     ):
@@ -170,7 +170,7 @@ class Displacement(BaseNode):
         height: InputFloat = 0.0,
         midlevel: InputFloat = 0.5,
         scale: InputFloat = 0.01,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         *,
         space: Literal["OBJECT", "WORLD"] = "OBJECT",
     ):
@@ -534,7 +534,7 @@ class VectorDisplacement(BaseNode):
 
     def __init__(
         self,
-        vector: InputColor = (0.8, 0.8, 0.8, 1.0),
+        vector: InputColor = None,
         midlevel: InputFloat = 0.0,
         scale: InputFloat = 0.01,
         *,

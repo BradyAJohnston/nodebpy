@@ -93,6 +93,20 @@ def __init__(
     ...
 ```
 
+An input that reads an implicit field, a context value or a named attribute
+when unconnected (the interface's *Default Input* / *Default Attribute*) is
+spelled with the matching `nodebpy.Default` member instead of a stored value,
+and its docstring line says what it reads:
+
+```{python}
+# | eval: false
+def __init__(
+    self,
+    position: InputVector = Default.POSITION,
+    uv_map: InputVector = Default.attribute("UVMap"),
+    ...
+```
+
 Pass `docstrings=False` (or `--no-docstrings` on the command line) for a terser
 module without the class docstrings.
 

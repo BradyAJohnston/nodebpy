@@ -68,6 +68,11 @@ invalid-argument-type = "ignore"
 [tool.ruff.lint]
 ignore = ["SIM117", "RUF059"]
 
+[tool.ruff.lint.flake8-bugbear]
+# ``Default.attribute("UVMap")`` builds a frozen sentinel, safe as a parameter
+# default (generated asset classes spell attribute fallbacks this way).
+extend-immutable-calls = ["nodebpy.types.Default.attribute"]
+
 [tool.ruff.lint.per-file-ignores]
 "tests/test_codegen.py" = ["S102"]
 "tests/test_assets.py" = ["S102"]

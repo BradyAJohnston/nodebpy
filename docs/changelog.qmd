@@ -4,6 +4,10 @@ title: Changelog
 
 ## 520.29.0 - 2026-09-20
 
+### Enhancements
+
+- **`Default` spells an input's fallback** — Blender lets an input read an implicit field, a context value or a named attribute when nothing is connected (a group interface's *Default Input* / *Default Attribute*, or a built-in such as Set Position's *Position*), hiding the stored value. `nodebpy.Default` mirrors the default-input identifiers (`Default.POSITION`, `Default.ID_OR_INDEX`, `Default.SELF_OBJECT`, …) and `Default.attribute("UVMap")` names an attribute. Generated asset classes use them as parameter defaults (`id: InputInteger = Default.ID_OR_INDEX`) and say in the docstring what the input reads when unconnected; passing a member to any node constructor leaves the socket untouched, like `None`, and `to_python` treats such a default as "nothing to export". The `tree.inputs.*` / `tree.outputs.*` factories accept the members for `default_input=` and `default_attribute=` alongside the identifier strings. Built-in node inputs whose value Blender hides (`hide_value`: Set Position's *Position*, every *Selection*, …) now default to `None` instead of advertising a value Blender never shows.
+
 ### Fixes
 
 - **Generated defaults are Blender's exact socket defaults** — the node-class generator rounded every float default to four decimals and vector defaults came out as `None`, so `g.Arc()` built a node whose sweep angle was `5.4978` instead of Blender's `7π/4`, and `to_python` then exported every untouched Arc (and any node with a rounded default such as `MeshToPoints(radius=0.05)`) as if it had been edited. Constructor defaults now use the same float formatting as `to_python` (`nodebpy.export._floats`, shared by the generator without importing the package it generates): the shortest literal that rebuilds exactly the float32 Blender stores, or a `math.pi` / `math.tau` / `math.e` expression for its rational multiples (`sweep_angle: InputFloat = 7 * math.pi / 4`). Vector, colour and rotation sockets now show their real default tuples instead of `None`, and the export's default comparison works at float32 precision, so a fresh node exports without spurious keyword arguments.

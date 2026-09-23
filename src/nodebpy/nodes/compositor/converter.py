@@ -83,7 +83,7 @@ class AlphaConvert(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         type: InputMenu
         | Literal["To Premultiplied", "To Straight"] = "To Premultiplied",
     ):
@@ -93,14 +93,12 @@ class AlphaConvert(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def to_premultiplied(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)
-    ) -> "AlphaConvert":
+    def to_premultiplied(cls, image: InputColor = None) -> "AlphaConvert":
         """Create Alpha Convert node with type 'To Premultiplied'."""
         return cls(image=image, type="To Premultiplied")
 
     @classmethod
-    def to_straight(cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "AlphaConvert":
+    def to_straight(cls, image: InputColor = None) -> "AlphaConvert":
         """Create Alpha Convert node with type 'To Straight'."""
         return cls(image=image, type="To Straight")
 
@@ -1216,7 +1214,7 @@ class SetAlpha(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         alpha: InputFloat = 1.0,
         type: InputMenu | Literal["Apply Mask", "Replace Alpha"] = "Apply Mask",
     ):
@@ -1227,14 +1225,14 @@ class SetAlpha(BaseNode):
 
     @classmethod
     def apply_mask(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), alpha: InputFloat = 1.0
+        cls, image: InputColor = None, alpha: InputFloat = 1.0
     ) -> "SetAlpha":
         """Create Set Alpha node with type 'Apply Mask'."""
         return cls(image=image, alpha=alpha, type="Apply Mask")
 
     @classmethod
     def replace_alpha(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), alpha: InputFloat = 1.0
+        cls, image: InputColor = None, alpha: InputFloat = 1.0
     ) -> "SetAlpha":
         """Create Set Alpha node with type 'Replace Alpha'."""
         return cls(image=image, alpha=alpha, type="Replace Alpha")

@@ -34,6 +34,7 @@ from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 import numpy as np
 from bpy.types import ID, FunctionNodeCompare, NodeTree
 
+from ..types import Default, DefaultAttribute
 from ._floats import (
     fmt_float as _fmt_float,
 )
@@ -1788,8 +1789,12 @@ def _factory_call(
                 if param in call_kwargs or key == skip_key:
                     continue
                 default = factory.param_defaults.get(param, inspect.Parameter.empty)
-                if default is inspect.Parameter.empty or default is None:
-                    continue  # None means "leave the socket untouched"
+                if (
+                    default is inspect.Parameter.empty
+                    or default is None
+                    or isinstance(default, (Default, DefaultAttribute))
+                ):
+                    continue  # None / Default.* mean "leave the socket untouched"
                 socket = _input_socket_by_kwarg(node, key)
                 if socket is None:
                     faithful = False

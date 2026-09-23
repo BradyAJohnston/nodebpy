@@ -244,7 +244,7 @@ class ImageCoordinates(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, image: InputColor = (0.8, 0.8, 0.8, 1.0)):
+    def __init__(self, image: InputColor = None):
         super().__init__()
         key_args = {"Image": image}
 
@@ -305,7 +305,7 @@ class ImageInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, image: InputColor = (0.8, 0.8, 0.8, 1.0)):
+    def __init__(self, image: InputColor = None):
         super().__init__()
         key_args = {"Image": image}
 

@@ -1241,7 +1241,7 @@ class CurvesToGreasePencil(BaseNode):
     def __init__(
         self,
         curves: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         instances_as_layers: InputBoolean = True,
     ):
         super().__init__()
@@ -1509,7 +1509,7 @@ class DeleteGeometry(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         *,
         mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
         domain: Literal[
@@ -1524,63 +1524,63 @@ class DeleteGeometry(BaseNode):
 
     @classmethod
     def all(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'All'."""
         return cls(mode="ALL", geometry=geometry, selection=selection)
 
     @classmethod
     def only_edges_faces(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Only Edges & Faces'."""
         return cls(mode="EDGE_FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def only_faces(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Only Faces'."""
         return cls(mode="ONLY_FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def point(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Point'. Attribute on point"""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Spline'. Attribute on spline"""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def instance(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Instance'. Attribute on instance"""
         return cls(domain="INSTANCE", geometry=geometry, selection=selection)
 
     @classmethod
     def layer(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(domain="LAYER", geometry=geometry, selection=selection)
@@ -1689,7 +1689,7 @@ class DistributePointsOnFaces(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         distance_min: InputFloat = 0.0,
         density_max: InputFloat = 10.0,
         density: InputFloat = 10.0,
@@ -1842,7 +1842,7 @@ class DuplicateElements(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         amount: InputInteger = 1,
         *,
         domain: Literal[
@@ -1858,7 +1858,7 @@ class DuplicateElements(BaseNode):
     def point(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Point'."""
@@ -1870,7 +1870,7 @@ class DuplicateElements(BaseNode):
     def edge(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Edge'."""
@@ -1880,7 +1880,7 @@ class DuplicateElements(BaseNode):
     def face(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Face'."""
@@ -1890,7 +1890,7 @@ class DuplicateElements(BaseNode):
     def spline(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Spline'."""
@@ -1902,7 +1902,7 @@ class DuplicateElements(BaseNode):
     def layer(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Layer'."""
@@ -1914,7 +1914,7 @@ class DuplicateElements(BaseNode):
     def instance(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         amount: InputInteger = 1,
     ) -> "DuplicateElements":
         """Create Duplicate Elements with operation 'Instance'."""
@@ -1986,8 +1986,8 @@ class EdgePathsToCurves(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        start_vertices: InputBoolean = True,
-        next_vertex_index: InputInteger = -1,
+        start_vertices: InputBoolean = None,
+        next_vertex_index: InputInteger = None,
     ):
         super().__init__()
         key_args = {
@@ -2072,8 +2072,8 @@ class ExtrudeMesh(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        offset: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        offset: InputVector = None,
         offset_scale: InputFloat = 1.0,
         individual: InputBoolean = True,
         *,
@@ -2094,8 +2094,8 @@ class ExtrudeMesh(BaseNode):
     def vertices(
         cls,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        offset: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        offset: InputVector = None,
         offset_scale: InputFloat = 1.0,
     ) -> "ExtrudeMesh":
         """Create Extrude Mesh with operation 'Vertices'."""
@@ -2111,8 +2111,8 @@ class ExtrudeMesh(BaseNode):
     def edges(
         cls,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        offset: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        offset: InputVector = None,
         offset_scale: InputFloat = 1.0,
     ) -> "ExtrudeMesh":
         """Create Extrude Mesh with operation 'Edges'."""
@@ -2128,8 +2128,8 @@ class ExtrudeMesh(BaseNode):
     def faces(
         cls,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        offset: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        offset: InputVector = None,
         offset_scale: InputFloat = 1.0,
         individual: InputBoolean = True,
     ) -> "ExtrudeMesh":
@@ -2211,7 +2211,7 @@ class FillCurve(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        group_id: InputInteger = 0,
+        group_id: InputInteger = None,
         mode: InputMenu | Literal["Triangles", "N-gons"] = "Triangles",
         fill_rule: InputMenu | Literal["Even-Odd", "Non-Zero"] = "Even-Odd",
     ):
@@ -2355,7 +2355,7 @@ class FlipFaces(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Selection": selection}
@@ -2430,9 +2430,9 @@ class GeometryProximity(BaseNode):
     def __init__(
         self,
         target: InputGeometry = None,
-        group_id: InputInteger = 0,
-        source_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        group_id: InputInteger = None,
+        source_position: InputVector = None,
+        sample_group_id: InputInteger = None,
         *,
         target_element: Literal["POINTS", "EDGES", "FACES"] = "FACES",
     ):
@@ -2682,7 +2682,7 @@ class GreasePencilToCurves(BaseNode):
     def __init__(
         self,
         grease_pencil: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         layers_as_instances: InputBoolean = True,
     ):
         super().__init__()
@@ -2909,10 +2909,10 @@ class InstanceOnPoints(BaseNode):
     def __init__(
         self,
         points: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         instance: InputGeometry = None,
         pick_instance: InputBoolean = False,
-        instance_index: InputInteger = 0,
+        instance_index: InputInteger = None,
         rotation: InputRotation = (0.0, 0.0, 0.0),
         scale: InputVector = (1.0, 1.0, 1.0),
     ):
@@ -2990,8 +2990,8 @@ class InstancesToPoints(BaseNode):
     def __init__(
         self,
         instances: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         radius: InputFloat = 0.05,
     ):
         super().__init__()
@@ -3090,11 +3090,11 @@ class InterpolateCurves(BaseNode):
     def __init__(
         self,
         guide_curves: InputGeometry = None,
-        guide_up: InputVector = (0.0, 0.0, 0.0),
-        guide_group_id: InputInteger = 0,
+        guide_up: InputVector = None,
+        guide_group_id: InputInteger = None,
         points: InputGeometry = None,
-        point_up: InputVector = (0.0, 0.0, 0.0),
-        point_group_id: InputInteger = 0,
+        point_up: InputVector = None,
+        point_group_id: InputInteger = None,
         max_neighbors: InputInteger = 4,
     ):
         super().__init__()
@@ -3209,8 +3209,8 @@ class MergeLayers(BaseNode):
     def __init__(
         self,
         grease_pencil: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
         *,
         mode: Literal["MERGE_BY_NAME", "MERGE_BY_ID"] = "MERGE_BY_NAME",
     ):
@@ -3225,7 +3225,7 @@ class MergeLayers(BaseNode):
 
     @classmethod
     def by_name(
-        cls, grease_pencil: InputGeometry = None, selection: InputBoolean = True
+        cls, grease_pencil: InputGeometry = None, selection: InputBoolean = None
     ) -> "MergeLayers":
         """Create Merge Layers with operation 'By Name'. Combine all layers which have the same name"""
         return cls(
@@ -3236,8 +3236,8 @@ class MergeLayers(BaseNode):
     def by_group_id(
         cls,
         grease_pencil: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
     ) -> "MergeLayers":
         """Create Merge Layers with operation 'By Group ID'. Provide a custom group ID for each layer and all layers with the same ID will be merged into one"""
         return cls(
@@ -3309,8 +3309,8 @@ class MergePoints(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        merge_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        merge_id: InputInteger = None,
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Selection": selection, "Merge ID": merge_id}
@@ -3377,7 +3377,7 @@ class MergeByDistance(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         mode: InputMenu | Literal["All", "Connected"] = "All",
         distance: InputFloat = 0.001,
     ):
@@ -3521,7 +3521,7 @@ class MeshBevel(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         affect_kind: InputMenu | Literal["Vertices", "Edges"] = "Edges",
         start_left_offset: InputFloat = 0.1,
         start_right_offset: InputFloat = 0.1,
@@ -3805,7 +3805,7 @@ class MeshToCurve(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         *,
         mode: Literal["EDGES", "FACES"] = "EDGES",
     ):
@@ -3816,14 +3816,14 @@ class MeshToCurve(BaseNode):
 
     @classmethod
     def edges(
-        cls, mesh: InputGeometry = None, selection: InputBoolean = True
+        cls, mesh: InputGeometry = None, selection: InputBoolean = None
     ) -> "MeshToCurve":
         """Create Mesh to Curve with operation 'Edges'. Convert mesh edges to curve segments. Attributes are propagated to curve points."""
         return cls(mode="EDGES", mesh=mesh, selection=selection)
 
     @classmethod
     def faces(
-        cls, mesh: InputGeometry = None, selection: InputBoolean = True
+        cls, mesh: InputGeometry = None, selection: InputBoolean = None
     ) -> "MeshToCurve":
         """Create Mesh to Curve with operation 'Faces'. Convert each mesh face to a cyclic curve. Face attributes are propagated to curves."""
         return cls(mode="FACES", mesh=mesh, selection=selection)
@@ -3896,8 +3896,8 @@ class MeshToPoints(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         radius: InputFloat = 0.05,
         *,
         mode: Literal["VERTICES", "EDGES", "FACES", "CORNERS"] = "VERTICES",
@@ -3916,8 +3916,8 @@ class MeshToPoints(BaseNode):
     def vertices(
         cls,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         radius: InputFloat = 0.05,
     ) -> "MeshToPoints":
         """Create Mesh to Points with operation 'Vertices'. Create a point in the point cloud for each selected vertex"""
@@ -3933,8 +3933,8 @@ class MeshToPoints(BaseNode):
     def edges(
         cls,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         radius: InputFloat = 0.05,
     ) -> "MeshToPoints":
         """Create Mesh to Points with operation 'Edges'. Create a point in the point cloud for each selected edge"""
@@ -3950,8 +3950,8 @@ class MeshToPoints(BaseNode):
     def faces(
         cls,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         radius: InputFloat = 0.05,
     ) -> "MeshToPoints":
         """Create Mesh to Points with operation 'Faces'. Create a point in the point cloud for each selected face"""
@@ -3967,8 +3967,8 @@ class MeshToPoints(BaseNode):
     def corners(
         cls,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         radius: InputFloat = 0.05,
     ) -> "MeshToPoints":
         """Create Mesh to Points with operation 'Corners'. Create a point in the point cloud for each selected face corner"""
@@ -4104,8 +4104,8 @@ class PointsToCurves(BaseNode):
     def __init__(
         self,
         points: InputGeometry = None,
-        curve_group_id: InputInteger = 0,
-        weight: InputFloat = 0.0,
+        curve_group_id: InputInteger = None,
+        weight: InputFloat = None,
     ):
         super().__init__()
         key_args = {
@@ -4164,7 +4164,7 @@ class PointsToVertices(BaseNode):
     def __init__(
         self,
         points: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
     ):
         super().__init__()
         key_args = {"Points": points, "Selection": selection}
@@ -4540,9 +4540,9 @@ class Raycast[T](BaseNode):
     def __init__(
         self,
         target_geometry: InputGeometry = None,
-        attribute: InputAny = 0.0,
+        attribute: InputAny = None,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: InputVector = (0.0, 0.0, 0.0),
+        source_position: InputVector = None,
         ray_direction: InputVector = (0.0, 0.0, -1.0),
         ray_length: InputFloat = 100.0,
         *,
@@ -4572,9 +4572,9 @@ class Raycast[T](BaseNode):
     def float(
         cls,
         target_geometry: InputGeometry = None,
-        attribute: InputFloat = 0.0,
+        attribute: InputFloat = None,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: InputVector = (0.0, 0.0, 0.0),
+        source_position: InputVector = None,
         ray_direction: InputVector = (0.0, 0.0, -1.0),
         ray_length: InputFloat = 100.0,
     ) -> "Raycast[FloatSocket]":
@@ -4593,9 +4593,9 @@ class Raycast[T](BaseNode):
     def integer(
         cls,
         target_geometry: InputGeometry = None,
-        attribute: InputInteger = 0,
+        attribute: InputInteger = None,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: InputVector = (0.0, 0.0, 0.0),
+        source_position: InputVector = None,
         ray_direction: InputVector = (0.0, 0.0, -1.0),
         ray_length: InputFloat = 100.0,
     ) -> "Raycast[IntegerSocket]":
@@ -4614,9 +4614,9 @@ class Raycast[T](BaseNode):
     def boolean(
         cls,
         target_geometry: InputGeometry = None,
-        attribute: InputBoolean = False,
+        attribute: InputBoolean = None,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: InputVector = (0.0, 0.0, 0.0),
+        source_position: InputVector = None,
         ray_direction: InputVector = (0.0, 0.0, -1.0),
         ray_length: InputFloat = 100.0,
     ) -> "Raycast[BooleanSocket]":
@@ -4635,9 +4635,9 @@ class Raycast[T](BaseNode):
     def vector(
         cls,
         target_geometry: InputGeometry = None,
-        attribute: InputVector = (0.0, 0.0, 0.0),
+        attribute: InputVector = None,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: InputVector = (0.0, 0.0, 0.0),
+        source_position: InputVector = None,
         ray_direction: InputVector = (0.0, 0.0, -1.0),
         ray_length: InputFloat = 100.0,
     ) -> "Raycast[VectorSocket]":
@@ -4656,9 +4656,9 @@ class Raycast[T](BaseNode):
     def color(
         cls,
         target_geometry: InputGeometry = None,
-        attribute: InputColor = (0.8, 0.8, 0.8, 1.0),
+        attribute: InputColor = None,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: InputVector = (0.0, 0.0, 0.0),
+        source_position: InputVector = None,
         ray_direction: InputVector = (0.0, 0.0, -1.0),
         ray_length: InputFloat = 100.0,
     ) -> "Raycast[ColorSocket]":
@@ -4677,9 +4677,9 @@ class Raycast[T](BaseNode):
     def quaternion(
         cls,
         target_geometry: InputGeometry = None,
-        attribute: InputRotation = (0.0, 0.0, 0.0),
+        attribute: InputRotation = None,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: InputVector = (0.0, 0.0, 0.0),
+        source_position: InputVector = None,
         ray_direction: InputVector = (0.0, 0.0, -1.0),
         ray_length: InputFloat = 100.0,
     ) -> "Raycast[RotationSocket]":
@@ -4700,7 +4700,7 @@ class Raycast[T](BaseNode):
         target_geometry: InputGeometry = None,
         attribute: InputMatrix = None,
         interpolation: InputMenu | Literal["Interpolated", "Nearest"] = "Interpolated",
-        source_position: InputVector = (0.0, 0.0, 0.0),
+        source_position: InputVector = None,
         ray_direction: InputVector = (0.0, 0.0, -1.0),
         ray_length: InputFloat = 100.0,
     ) -> "Raycast[MatrixSocket]":
@@ -4804,7 +4804,7 @@ class RealizeInstances(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         realize_all: InputBoolean = True,
         depth: InputInteger = 0,
         *,
@@ -5038,7 +5038,7 @@ class ResampleCurve(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         mode: InputMenu | Literal["Evaluated", "Count", "Length"] = "Count",
         count: InputInteger = 10,
         length: InputFloat = 0.1,
@@ -5112,7 +5112,7 @@ class ReverseCurve(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
     ):
         super().__init__()
         key_args = {"Curve": curve, "Selection": selection}
@@ -5185,7 +5185,7 @@ class RotateInstances(BaseNode):
     def __init__(
         self,
         instances: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         rotation: InputRotation = (0.0, 0.0, 0.0),
         pivot_point: InputVector = (0.0, 0.0, 0.0),
         local_space: InputBoolean = True,
@@ -5249,7 +5249,7 @@ class SampleNearest(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
+        sample_position: InputVector = None,
         *,
         domain: Literal["POINT", "EDGE", "FACE", "CORNER"] = "POINT",
     ):
@@ -5260,36 +5260,28 @@ class SampleNearest(BaseNode):
 
     @classmethod
     def point(
-        cls,
-        geometry: InputGeometry = None,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
+        cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Point'. Attribute on point"""
         return cls(domain="POINT", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def edge(
-        cls,
-        geometry: InputGeometry = None,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
+        cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def face(
-        cls,
-        geometry: InputGeometry = None,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
+        cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def face_corner(
-        cls,
-        geometry: InputGeometry = None,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
+        cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
         """Create Sample Nearest with operation 'Face Corner'. Attribute on mesh face corner"""
         return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
@@ -5372,10 +5364,10 @@ class SampleNearestSurface[T](BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        value: InputAny = 0.0,
-        group_id: InputInteger = 0,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        value: InputAny = None,
+        group_id: InputInteger = None,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = None,
         *,
         data_type: Literal[
             "FLOAT",
@@ -5402,10 +5394,10 @@ class SampleNearestSurface[T](BaseNode):
     def float(
         cls,
         mesh: InputGeometry = None,
-        value: InputFloat = 0.0,
-        group_id: InputInteger = 0,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        value: InputFloat = None,
+        group_id: InputInteger = None,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = None,
     ) -> "SampleNearestSurface[FloatSocket]":
         """Create Sample Nearest Surface with operation 'Float'. Floating-point value"""
         return SampleNearestSurface(
@@ -5421,10 +5413,10 @@ class SampleNearestSurface[T](BaseNode):
     def integer(
         cls,
         mesh: InputGeometry = None,
-        value: InputInteger = 0,
-        group_id: InputInteger = 0,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        value: InputInteger = None,
+        group_id: InputInteger = None,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = None,
     ) -> "SampleNearestSurface[IntegerSocket]":
         """Create Sample Nearest Surface with operation 'Integer'. 32-bit integer"""
         return SampleNearestSurface(
@@ -5440,10 +5432,10 @@ class SampleNearestSurface[T](BaseNode):
     def boolean(
         cls,
         mesh: InputGeometry = None,
-        value: InputBoolean = False,
-        group_id: InputInteger = 0,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        value: InputBoolean = None,
+        group_id: InputInteger = None,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = None,
     ) -> "SampleNearestSurface[BooleanSocket]":
         """Create Sample Nearest Surface with operation 'Boolean'. True or false"""
         return SampleNearestSurface(
@@ -5459,10 +5451,10 @@ class SampleNearestSurface[T](BaseNode):
     def vector(
         cls,
         mesh: InputGeometry = None,
-        value: InputVector = (0.0, 0.0, 0.0),
-        group_id: InputInteger = 0,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        value: InputVector = None,
+        group_id: InputInteger = None,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = None,
     ) -> "SampleNearestSurface[VectorSocket]":
         """Create Sample Nearest Surface with operation 'Vector'. 3D vector with floating-point values"""
         return SampleNearestSurface(
@@ -5478,10 +5470,10 @@ class SampleNearestSurface[T](BaseNode):
     def color(
         cls,
         mesh: InputGeometry = None,
-        value: InputColor = (0.8, 0.8, 0.8, 1.0),
-        group_id: InputInteger = 0,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        value: InputColor = None,
+        group_id: InputInteger = None,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = None,
     ) -> "SampleNearestSurface[ColorSocket]":
         """Create Sample Nearest Surface with operation 'Color'. RGBA color with 32-bit floating-point values"""
         return SampleNearestSurface(
@@ -5497,10 +5489,10 @@ class SampleNearestSurface[T](BaseNode):
     def quaternion(
         cls,
         mesh: InputGeometry = None,
-        value: InputRotation = (0.0, 0.0, 0.0),
-        group_id: InputInteger = 0,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        value: InputRotation = None,
+        group_id: InputInteger = None,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = None,
     ) -> "SampleNearestSurface[RotationSocket]":
         """Create Sample Nearest Surface with operation 'Quaternion'. Floating point quaternion rotation"""
         return SampleNearestSurface(
@@ -5517,9 +5509,9 @@ class SampleNearestSurface[T](BaseNode):
         cls,
         mesh: InputGeometry = None,
         value: InputMatrix = None,
-        group_id: InputInteger = 0,
-        sample_position: InputVector = (0.0, 0.0, 0.0),
-        sample_group_id: InputInteger = 0,
+        group_id: InputInteger = None,
+        sample_position: InputVector = None,
+        sample_group_id: InputInteger = None,
     ) -> "SampleNearestSurface[MatrixSocket]":
         """Create Sample Nearest Surface with operation '4x4 Matrix'. Floating point matrix"""
         return SampleNearestSurface(
@@ -5624,8 +5616,8 @@ class SampleUVSurface[T](BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        value: InputAny = 0.0,
-        source_uv_map: InputVector = (0.0, 0.0, 0.0),
+        value: InputAny = None,
+        source_uv_map: InputVector = None,
         sample_uv: InputVector = (0.0, 0.0, 0.0),
         *,
         data_type: Literal[
@@ -5652,8 +5644,8 @@ class SampleUVSurface[T](BaseNode):
     def float(
         cls,
         mesh: InputGeometry = None,
-        value: InputFloat = 0.0,
-        source_uv_map: InputVector = (0.0, 0.0, 0.0),
+        value: InputFloat = None,
+        source_uv_map: InputVector = None,
         sample_uv: InputVector = (0.0, 0.0, 0.0),
     ) -> "SampleUVSurface[FloatSocket]":
         """Create Sample UV Surface with operation 'Float'. Floating-point value"""
@@ -5669,8 +5661,8 @@ class SampleUVSurface[T](BaseNode):
     def integer(
         cls,
         mesh: InputGeometry = None,
-        value: InputInteger = 0,
-        source_uv_map: InputVector = (0.0, 0.0, 0.0),
+        value: InputInteger = None,
+        source_uv_map: InputVector = None,
         sample_uv: InputVector = (0.0, 0.0, 0.0),
     ) -> "SampleUVSurface[IntegerSocket]":
         """Create Sample UV Surface with operation 'Integer'. 32-bit integer"""
@@ -5686,8 +5678,8 @@ class SampleUVSurface[T](BaseNode):
     def boolean(
         cls,
         mesh: InputGeometry = None,
-        value: InputBoolean = False,
-        source_uv_map: InputVector = (0.0, 0.0, 0.0),
+        value: InputBoolean = None,
+        source_uv_map: InputVector = None,
         sample_uv: InputVector = (0.0, 0.0, 0.0),
     ) -> "SampleUVSurface[BooleanSocket]":
         """Create Sample UV Surface with operation 'Boolean'. True or false"""
@@ -5703,8 +5695,8 @@ class SampleUVSurface[T](BaseNode):
     def vector(
         cls,
         mesh: InputGeometry = None,
-        value: InputVector = (0.0, 0.0, 0.0),
-        source_uv_map: InputVector = (0.0, 0.0, 0.0),
+        value: InputVector = None,
+        source_uv_map: InputVector = None,
         sample_uv: InputVector = (0.0, 0.0, 0.0),
     ) -> "SampleUVSurface[VectorSocket]":
         """Create Sample UV Surface with operation 'Vector'. 3D vector with floating-point values"""
@@ -5720,8 +5712,8 @@ class SampleUVSurface[T](BaseNode):
     def color(
         cls,
         mesh: InputGeometry = None,
-        value: InputColor = (0.8, 0.8, 0.8, 1.0),
-        source_uv_map: InputVector = (0.0, 0.0, 0.0),
+        value: InputColor = None,
+        source_uv_map: InputVector = None,
         sample_uv: InputVector = (0.0, 0.0, 0.0),
     ) -> "SampleUVSurface[ColorSocket]":
         """Create Sample UV Surface with operation 'Color'. RGBA color with 32-bit floating-point values"""
@@ -5737,8 +5729,8 @@ class SampleUVSurface[T](BaseNode):
     def quaternion(
         cls,
         mesh: InputGeometry = None,
-        value: InputRotation = (0.0, 0.0, 0.0),
-        source_uv_map: InputVector = (0.0, 0.0, 0.0),
+        value: InputRotation = None,
+        source_uv_map: InputVector = None,
         sample_uv: InputVector = (0.0, 0.0, 0.0),
     ) -> "SampleUVSurface[RotationSocket]":
         """Create Sample UV Surface with operation 'Quaternion'. Floating point quaternion rotation"""
@@ -5755,7 +5747,7 @@ class SampleUVSurface[T](BaseNode):
         cls,
         mesh: InputGeometry = None,
         value: InputMatrix = None,
-        source_uv_map: InputVector = (0.0, 0.0, 0.0),
+        source_uv_map: InputVector = None,
         sample_uv: InputVector = (0.0, 0.0, 0.0),
     ) -> "SampleUVSurface[MatrixSocket]":
         """Create Sample UV Surface with operation '4x4 Matrix'. Floating point matrix"""
@@ -5868,9 +5860,9 @@ class ScaleElements(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         scale: InputFloat = 1.0,
-        center: InputVector = (0.0, 0.0, 0.0),
+        center: InputVector = None,
         scale_mode: InputMenu | Literal["Uniform", "Single Axis"] = "Uniform",
         axis: InputVector = (1.0, 0.0, 0.0),
         *,
@@ -5892,9 +5884,9 @@ class ScaleElements(BaseNode):
     def face(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         scale: InputFloat = 1.0,
-        center: InputVector = (0.0, 0.0, 0.0),
+        center: InputVector = None,
         scale_mode: InputMenu | Literal["Uniform", "Single Axis"] = "Uniform",
     ) -> "ScaleElements":
         """Create Scale Elements with operation 'Face'. Scale individual faces or neighboring face islands"""
@@ -5911,9 +5903,9 @@ class ScaleElements(BaseNode):
     def edge(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         scale: InputFloat = 1.0,
-        center: InputVector = (0.0, 0.0, 0.0),
+        center: InputVector = None,
         scale_mode: InputMenu | Literal["Uniform", "Single Axis"] = "Uniform",
     ) -> "ScaleElements":
         """Create Scale Elements with operation 'Edge'. Scale individual edges or neighboring edge islands"""
@@ -6000,7 +5992,7 @@ class ScaleInstances(BaseNode):
     def __init__(
         self,
         instances: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         scale: InputVector = (1.0, 1.0, 1.0),
         center: InputVector = (0.0, 0.0, 0.0),
         local_space: InputBoolean = True,
@@ -6133,7 +6125,7 @@ class SeparateGeometry(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         *,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
@@ -6146,42 +6138,42 @@ class SeparateGeometry(BaseNode):
 
     @classmethod
     def point(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Point'. Attribute on point"""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Edge'. Attribute on mesh edge"""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Face'. Attribute on mesh faces"""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Spline'. Attribute on spline"""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def instance(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Instance'. Attribute on instance"""
         return cls(domain="INSTANCE", geometry=geometry, selection=selection)
 
     @classmethod
     def layer(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
         """Create Separate Geometry with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(domain="LAYER", geometry=geometry, selection=selection)
@@ -6256,7 +6248,7 @@ class SetCurveNormal(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         mode: InputMenu | Literal["Minimum Twist", "Z Up", "Free"] = "Minimum Twist",
         normal: InputVector = (0.0, 0.0, 1.0),
     ):
@@ -6324,7 +6316,7 @@ class SetCurveRadius(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         radius: InputFloat = 0.005,
     ):
         super().__init__()
@@ -6386,7 +6378,7 @@ class SetCurveTilt(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         tilt: InputFloat = 0.0,
     ):
         super().__init__()
@@ -6448,8 +6440,8 @@ class SetFaceSet(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
-        face_set: InputInteger = 0,
+        selection: InputBoolean = None,
+        face_set: InputInteger = None,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Selection": selection, "Face Set": face_set}
@@ -6626,7 +6618,7 @@ class SetGreasePencilColor(BaseNode):
     def __init__(
         self,
         grease_pencil: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         opacity: InputFloat = 1.0,
         *,
@@ -6646,7 +6638,7 @@ class SetGreasePencilColor(BaseNode):
     def stroke(
         cls,
         grease_pencil: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         opacity: InputFloat = 1.0,
     ) -> "SetGreasePencilColor":
@@ -6663,7 +6655,7 @@ class SetGreasePencilColor(BaseNode):
     def fill(
         cls,
         grease_pencil: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         opacity: InputFloat = 1.0,
     ) -> "SetGreasePencilColor":
@@ -6796,7 +6788,7 @@ class SetGreasePencilSoftness(BaseNode):
     def __init__(
         self,
         grease_pencil: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         softness: InputFloat = 0.0,
     ):
         super().__init__()
@@ -6868,8 +6860,8 @@ class SetHandlePositions(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         offset: InputVector = (0.0, 0.0, 0.0),
         *,
         mode: Literal["LEFT", "RIGHT"] = "LEFT",
@@ -6888,8 +6880,8 @@ class SetHandlePositions(BaseNode):
     def left(
         cls,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         offset: InputVector = (0.0, 0.0, 0.0),
     ) -> "SetHandlePositions":
         """Create Set Handle Positions with operation 'Left'. Use the left handles"""
@@ -6905,8 +6897,8 @@ class SetHandlePositions(BaseNode):
     def right(
         cls,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         offset: InputVector = (0.0, 0.0, 0.0),
     ) -> "SetHandlePositions":
         """Create Set Handle Positions with operation 'Right'. Use the right handles"""
@@ -6973,28 +6965,28 @@ class SetHandleType(_HandleModeMixin, BaseNode):
 
     @classmethod
     def free(
-        cls, curve: InputGeometry = None, selection: InputBoolean = True
+        cls, curve: InputGeometry = None, selection: InputBoolean = None
     ) -> "SetHandleType":
         """Create Set Handle Type with operation 'Free'. The handle can be moved anywhere, and does not influence the point's other handle"""
         return cls(handle_type="FREE", curve=curve, selection=selection)
 
     @classmethod
     def auto(
-        cls, curve: InputGeometry = None, selection: InputBoolean = True
+        cls, curve: InputGeometry = None, selection: InputBoolean = None
     ) -> "SetHandleType":
         """Create Set Handle Type with operation 'Auto'. The location is automatically calculated to be smooth"""
         return cls(handle_type="AUTO", curve=curve, selection=selection)
 
     @classmethod
     def vector(
-        cls, curve: InputGeometry = None, selection: InputBoolean = True
+        cls, curve: InputGeometry = None, selection: InputBoolean = None
     ) -> "SetHandleType":
         """Create Set Handle Type with operation 'Vector'. The location is calculated to point to the next/previous control point"""
         return cls(handle_type="VECTOR", curve=curve, selection=selection)
 
     @classmethod
     def align(
-        cls, curve: InputGeometry = None, selection: InputBoolean = True
+        cls, curve: InputGeometry = None, selection: InputBoolean = None
     ) -> "SetHandleType":
         """Create Set Handle Type with operation 'Align'. The location is constrained to point in the opposite direction as the other handle"""
         return cls(handle_type="ALIGN", curve=curve, selection=selection)
@@ -7076,8 +7068,8 @@ class SetID(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        id: InputInteger = 0,
+        selection: InputBoolean = None,
+        id: InputInteger = None,
     ):
         super().__init__()
         key_args = {"Geometry": geometry, "Selection": selection, "ID": id}
@@ -7138,7 +7130,7 @@ class SetInstanceTransform(BaseNode):
     def __init__(
         self,
         instances: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         transform: InputMatrix = None,
     ):
         super().__init__()
@@ -7204,7 +7196,7 @@ class SetMaterial(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         material: InputMaterial = None,
     ):
         super().__init__()
@@ -7266,7 +7258,7 @@ class SetMaterialIndex(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         material_index: InputInteger = 0,
     ):
         super().__init__()
@@ -7386,14 +7378,14 @@ class SetMeshNormal(BaseNode):
 
     @classmethod
     def free(
-        cls, mesh: InputGeometry = None, custom_normal: InputVector = (0.0, 0.0, 0.0)
+        cls, mesh: InputGeometry = None, custom_normal: InputVector = None
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Free'. Store custom normals as simple vectors in the local space of the mesh. Values are not necessarily updated automatically later on as the mesh is deformed."""
         return cls(mode="FREE", mesh=mesh, custom_normal=custom_normal)
 
     @classmethod
     def tangent_space(
-        cls, mesh: InputGeometry = None, custom_normal: InputVector = (0.0, 0.0, 0.0)
+        cls, mesh: InputGeometry = None, custom_normal: InputVector = None
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Tangent Space'. Store normals in a deformation dependent custom transformation space. This method is slower, but can be better when subsequent operations change the mesh without handling normals specifically."""
         return cls(mode="TANGENT_SPACE", mesh=mesh, custom_normal=custom_normal)
@@ -7519,7 +7511,7 @@ class SetNurbsOrder(BaseNode):
     def __init__(
         self,
         curves: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         order: InputInteger = 4,
     ):
         super().__init__()
@@ -7581,7 +7573,7 @@ class SetNurbsWeight(BaseNode):
     def __init__(
         self,
         curves: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         weight: InputFloat = 1.0,
     ):
         super().__init__()
@@ -7643,7 +7635,7 @@ class SetPointRadius(BaseNode):
     def __init__(
         self,
         points: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         radius: InputFloat = 0.05,
     ):
         super().__init__()
@@ -7711,8 +7703,8 @@ class SetPosition(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         offset: InputVector = (0.0, 0.0, 0.0),
     ):
         super().__init__()
@@ -7900,7 +7892,7 @@ class SetShadeSmooth(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         shade_smooth: InputBoolean = True,
         *,
         domain: Literal["EDGE", "FACE"] = "FACE",
@@ -7918,7 +7910,7 @@ class SetShadeSmooth(BaseNode):
     def edge(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         shade_smooth: InputBoolean = True,
     ) -> "SetShadeSmooth":
         """Create Set Shade Smooth with operation 'Edge'. Attribute on mesh edge"""
@@ -7933,7 +7925,7 @@ class SetShadeSmooth(BaseNode):
     def face(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         shade_smooth: InputBoolean = True,
     ) -> "SetShadeSmooth":
         """Create Set Shade Smooth with operation 'Face'. Attribute on mesh faces"""
@@ -8006,7 +7998,7 @@ class SetSplineCyclic(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         cyclic: InputBoolean = False,
     ):
         super().__init__()
@@ -8068,7 +8060,7 @@ class SetSplineResolution(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         resolution: InputInteger = 12,
     ):
         super().__init__()
@@ -8128,7 +8120,7 @@ class SetSplineType(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         *,
         spline_type: Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"] = "POLY",
     ):
@@ -8139,28 +8131,28 @@ class SetSplineType(BaseNode):
 
     @classmethod
     def catmull_rom(
-        cls, curve: InputGeometry = None, selection: InputBoolean = True
+        cls, curve: InputGeometry = None, selection: InputBoolean = None
     ) -> "SetSplineType":
         """Create Set Spline Type with operation 'Catmull Rom'."""
         return cls(spline_type="CATMULL_ROM", curve=curve, selection=selection)
 
     @classmethod
     def poly(
-        cls, curve: InputGeometry = None, selection: InputBoolean = True
+        cls, curve: InputGeometry = None, selection: InputBoolean = None
     ) -> "SetSplineType":
         """Create Set Spline Type with operation 'Poly'."""
         return cls(spline_type="POLY", curve=curve, selection=selection)
 
     @classmethod
     def bezier(
-        cls, curve: InputGeometry = None, selection: InputBoolean = True
+        cls, curve: InputGeometry = None, selection: InputBoolean = None
     ) -> "SetSplineType":
         """Create Set Spline Type with operation 'Bézier'."""
         return cls(spline_type="BEZIER", curve=curve, selection=selection)
 
     @classmethod
     def nurbs(
-        cls, curve: InputGeometry = None, selection: InputBoolean = True
+        cls, curve: InputGeometry = None, selection: InputBoolean = None
     ) -> "SetSplineType":
         """Create Set Spline Type with operation 'NURBS'."""
         return cls(spline_type="NURBS", curve=curve, selection=selection)
@@ -8233,9 +8225,9 @@ class SortElements(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
         *,
         domain: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE"] = "POINT",
     ):
@@ -8253,9 +8245,9 @@ class SortElements(BaseNode):
     def point(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Point'. Attribute on point"""
         return cls(
@@ -8270,9 +8262,9 @@ class SortElements(BaseNode):
     def edge(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Edge'. Attribute on mesh edge"""
         return cls(
@@ -8287,9 +8279,9 @@ class SortElements(BaseNode):
     def face(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Face'. Attribute on mesh faces"""
         return cls(
@@ -8304,9 +8296,9 @@ class SortElements(BaseNode):
     def spline(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Spline'. Attribute on spline"""
         return cls(
@@ -8321,9 +8313,9 @@ class SortElements(BaseNode):
     def instance(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortElements":
         """Create Sort Elements with operation 'Instance'. Attribute on instance"""
         return cls(
@@ -8480,7 +8472,7 @@ class SplitEdges(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Selection": selection}
@@ -8545,8 +8537,8 @@ class SplitToInstances(BaseNode):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
         *,
         domain: Literal[
             "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
@@ -8561,8 +8553,8 @@ class SplitToInstances(BaseNode):
     def point(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Point'. Attribute on point"""
         return cls(
@@ -8573,8 +8565,8 @@ class SplitToInstances(BaseNode):
     def edge(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Edge'. Attribute on mesh edge"""
         return cls(
@@ -8585,8 +8577,8 @@ class SplitToInstances(BaseNode):
     def face(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Face'. Attribute on mesh faces"""
         return cls(
@@ -8597,8 +8589,8 @@ class SplitToInstances(BaseNode):
     def spline(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Spline'. Attribute on spline"""
         return cls(
@@ -8609,8 +8601,8 @@ class SplitToInstances(BaseNode):
     def instance(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Instance'. Attribute on instance"""
         return cls(
@@ -8621,8 +8613,8 @@ class SplitToInstances(BaseNode):
     def layer(
         cls,
         geometry: InputGeometry = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
     ) -> "SplitToInstances":
         """Create Split to Instances with operation 'Layer'. Attribute on Grease Pencil layer"""
         return cls(
@@ -9251,19 +9243,19 @@ class TransferAttributes(BaseNode):
     def __init__(
         self,
         target: InputGeometry = None,
-        target_point_id: InputInteger = 0,
-        target_edge_id: InputInteger = 0,
-        target_face_id: InputInteger = 0,
-        target_corner_id: InputInteger = 0,
-        target_curve_id: InputInteger = 0,
-        target_instance_id: InputInteger = 0,
+        target_point_id: InputInteger = None,
+        target_edge_id: InputInteger = None,
+        target_face_id: InputInteger = None,
+        target_corner_id: InputInteger = None,
+        target_curve_id: InputInteger = None,
+        target_instance_id: InputInteger = None,
         source: InputGeometry = None,
-        source_point_id: InputInteger = 0,
-        source_edge_id: InputInteger = 0,
-        source_face_id: InputInteger = 0,
-        source_corner_id: InputInteger = 0,
-        source_curve_id: InputInteger = 0,
-        source_instance_id: InputInteger = 0,
+        source_point_id: InputInteger = None,
+        source_edge_id: InputInteger = None,
+        source_face_id: InputInteger = None,
+        source_corner_id: InputInteger = None,
+        source_curve_id: InputInteger = None,
+        source_instance_id: InputInteger = None,
         pattern_mode: InputMenu | Literal["Exact", "Wildcard"] = "Wildcard",
         attribute_names: InputStringList = None,
         exclude_names: InputBoolean = False,
@@ -9441,7 +9433,7 @@ class TranslateInstances(BaseNode):
     def __init__(
         self,
         instances: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         translation: InputVector = (0.0, 0.0, 0.0),
         local_space: InputBoolean = True,
     ):
@@ -9515,7 +9507,7 @@ class Triangulate(BaseNode):
     def __init__(
         self,
         mesh: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         quad_method: InputMenu
         | Literal[
             "Beauty",
@@ -9608,7 +9600,7 @@ class TrimCurve(BaseNode):
     def __init__(
         self,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         start: InputFloat = 0.0,
         end: InputFloat = 1.0,
         start_001: InputFloat = 0.0,
@@ -9632,7 +9624,7 @@ class TrimCurve(BaseNode):
     def factor(
         cls,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         start: InputFloat = 0.0,
         end: InputFloat = 1.0,
     ) -> "TrimCurve":
@@ -9645,7 +9637,7 @@ class TrimCurve(BaseNode):
     def length(
         cls,
         curve: InputGeometry = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         start_001: InputFloat = 0.0,
         end_001: InputFloat = 1.0,
     ) -> "TrimCurve":
