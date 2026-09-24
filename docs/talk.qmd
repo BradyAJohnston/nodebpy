@@ -305,9 +305,9 @@ tree
 
 ## Sockets accessors and methods
 
-- Vector outputs get `.x` / `.y` / `.z`
-- Colors get `.r/.g/.b/.a`
+- Vector outputs get `.x` / `.y` / `.z`, colors get `.r/.g/.b/.a`
 - Matrices get `.translation/.rotation/.scale`
+- Socket methods for common typed operations
 
 ```{python}
 #| output-location: column
@@ -541,7 +541,7 @@ Chains with `>>`, mixes with operators, autocompletes & type-hints
 
 ```{python}
 #| output-location: column
-#| code-line-numbers: "|5-15|17-25|27-28|"
+#| code-line-numbers: "|5-15|17-25|27-32|"
 
 from nodebpy.builder import CustomGeometryGroup
 from nodebpy.types import InputFloat, InputGeometry, InputInteger
@@ -570,7 +570,11 @@ class Jitter(CustomGeometryGroup):
 
 
 with g.tree("JitterDemo") as tree:
-    _ = g.IcoSphere(subdivisions=4) >> Jitter(amount=0.15) >> tree.outputs.geometry()
+    (
+        g.IcoSphere(subdivisions=4)
+        >> Jitter(amount=0.15, seed=g.Index())
+        >> tree.outputs.geometry()
+    )
 
 tree
 ```
