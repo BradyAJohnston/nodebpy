@@ -72,3 +72,8 @@ ignore = ["SIM117", "RUF059"]
 "tests/test_codegen.py" = ["S102"]
 "tests/test_assets.py" = ["S102"]
 "tests/test_layout_snapshot.py" = ["S102"]
+
+[tool.uv.workspace]
+members = [
+    "docs/bcon",
+]
