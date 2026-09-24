@@ -145,17 +145,42 @@ python -m nodebpy.assets dump my_assets.blend my_assets_src/
 python -m nodebpy.assets build my_assets_src/ my_assets.blend
 ```
 
-Node groups can also be rendered to PNG images headlessly — for reviewing
-layouts or posting graphs in pull requests — selected by exact name or
-wildcard (`plot_library` in Python):
+Dumping a whole library takes a while, so while iterating on a few assets
+pass `--names` (`names=` in Python) with exact names or wildcards, as for
+`plot` below:
+
+```bash
+python -m nodebpy.assets dump my_assets.blend my_assets_src/ --names "Style *" "Sample Radius"
+```
+
+Only the matching assets' modules are rewritten — plus the `_shared/` helper
+and `materials/` modules they depend on — byte-identical to what a full dump
+would write, since the whole library is still read to decide what is shared.
+Other assets' files are left untouched, so edits to them are not picked up:
+a full dump, or the `check` subcommand in CI, catches those.
+
+Node groups can also be rendered to PNG images headlessly, styled like
+Blender's node editor — for reviewing new or edited nodes in pull requests
+without opening Blender — selected by exact name or wildcard (`plot_library`
+in Python):
 
 ```bash
 python -m nodebpy.assets plot my_assets.blend plots/ "Style *"
 ```
 
-By default each tree is drawn at its stored layout; pass `--arrange` (plus
-any of the arrangement flags shared with `build`, e.g. `--add-reroutes`) to
-re-arrange before plotting.
+Each group gets two images: `<name>.png` shows its internals (header colours
+per node class, socket markers by type, value widgets, property dropdowns,
+frames, zones and socket-coloured links) and `<name>_node.png` shows the
+group node as a user sees it when adding the group to a tree, with its
+interface sockets and default values, with interface panels in their default
+open or closed state (`--open-panels` expands them all). `--tree-only` /
+`--node-only` keep just one. By default the internals are drawn at their stored layout; pass
+`--arrange` (plus any of the arrangement flags shared with `build`, e.g.
+`--add-reroutes`) to re-arrange before plotting. From Python,
+`nodebpy.export.to_plot(tree, path)` draws the internals and
+`to_plot(tree, path, node=True)` the group node (`axes=True` frames either
+with axes ticked in node-location units), and any `TreeBuilder` offers the
+same as `tree.to_plot(path, ...)`.
 
 Each asset becomes one module holding its group as a class; helper groups used
 by a single asset are embedded, groups shared between assets get their own
@@ -170,9 +195,14 @@ the dumped classes. On the build side the automatic layout is tunable:
 `--add-reroutes` / `add_reroutes=True` arranges the rebuilt trees with
 reroute nodes routing long links around nodes (the node-arrange addon's
 behaviour), and `--spacing`, `--iterations` (crossing reduction),
-`--direction`, `--socket-alignment` and the other `SugiyamaOptions` fields
-(`arrange=SugiyamaOptions(...)` in Python) override the defaults; sources
-dumped with `snapshot_positions` keep their authored layout regardless.
+`--direction`, `--socket-alignment`, `--no-sequential-frames`,
+`--no-balance-heights`, `--balance-aspect` and the other `SugiyamaOptions` fields
+(`arrange=SugiyamaOptions(...)` in Python) override the defaults;
+`--split-inputs` / `split_inputs=True` gives each consumer node its own
+Group Input instance — named and labelled after the interface sockets it
+uses, unused sockets hidden — instead of a single Group Input trailing long
+noodles. Sources dumped with `snapshot_positions` keep their authored layout
+regardless.
 
 Round-trip fidelity is checked with `nodebpy.export.compare_libraries` /
 `serialize_library` (or `python -m nodebpy.export.parity a.blend b.blend`),

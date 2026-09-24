@@ -85,7 +85,7 @@ class Bump(BaseNode):
         distance: InputFloat = 0.001,
         filter_width: InputFloat = 0.1,
         height: InputFloat = 1.0,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         *,
         invert: bool = False,
     ):
@@ -170,7 +170,7 @@ class Displacement(BaseNode):
         height: InputFloat = 0.0,
         midlevel: InputFloat = 0.5,
         scale: InputFloat = 0.01,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         *,
         space: Literal["OBJECT", "WORLD"] = "OBJECT",
     ):
@@ -251,10 +251,10 @@ class Mapping(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = None,
-        location: InputVector = None,
-        rotation: InputVector = None,
-        scale: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
+        location: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = (0.0, 0.0, 0.0),
+        scale: InputVector = (1.0, 1.0, 1.0),
         *,
         vector_type: Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"] = "POINT",
     ):
@@ -271,10 +271,10 @@ class Mapping(BaseNode):
     @classmethod
     def point(
         cls,
-        vector: InputVector = None,
-        location: InputVector = None,
-        rotation: InputVector = None,
-        scale: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
+        location: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = (0.0, 0.0, 0.0),
+        scale: InputVector = (1.0, 1.0, 1.0),
     ) -> "Mapping":
         """Create Mapping with operation 'Point'. Transform a point"""
         return cls(
@@ -288,10 +288,10 @@ class Mapping(BaseNode):
     @classmethod
     def texture(
         cls,
-        vector: InputVector = None,
-        location: InputVector = None,
-        rotation: InputVector = None,
-        scale: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
+        location: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = (0.0, 0.0, 0.0),
+        scale: InputVector = (1.0, 1.0, 1.0),
     ) -> "Mapping":
         """Create Mapping with operation 'Texture'. Transform a texture by inverse mapping the texture coordinate"""
         return cls(
@@ -305,9 +305,9 @@ class Mapping(BaseNode):
     @classmethod
     def vector(
         cls,
-        vector: InputVector = None,
-        rotation: InputVector = None,
-        scale: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = (0.0, 0.0, 0.0),
+        scale: InputVector = (1.0, 1.0, 1.0),
     ) -> "Mapping":
         """Create Mapping with operation 'Vector'. Transform a direction vector (Location is ignored)"""
         return cls(vector_type="VECTOR", vector=vector, rotation=rotation, scale=scale)
@@ -315,9 +315,9 @@ class Mapping(BaseNode):
     @classmethod
     def normal(
         cls,
-        vector: InputVector = None,
-        rotation: InputVector = None,
-        scale: InputVector = None,
+        vector: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = (0.0, 0.0, 0.0),
+        scale: InputVector = (1.0, 1.0, 1.0),
     ) -> "Mapping":
         """Create Mapping with operation 'Normal'. Transform a unit normal vector (Location is ignored)"""
         return cls(vector_type="NORMAL", vector=vector, rotation=rotation, scale=scale)
@@ -373,7 +373,7 @@ class Normal(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, normal: InputVector = None):
+    def __init__(self, normal: InputVector = (0.0, 0.0, 1.0)):
         super().__init__()
         key_args = {"Normal": normal}
 
@@ -427,7 +427,7 @@ class NormalMap(BaseNode):
     def __init__(
         self,
         strength: InputFloat = 1.0,
-        color: InputColor = None,
+        color: InputColor = (0.5, 0.5, 1.0, 1.0),
         *,
         space: Literal[
             "TANGENT", "OBJECT", "WORLD", "BLENDER_OBJECT", "BLENDER_WORLD"
@@ -534,7 +534,7 @@ class VectorDisplacement(BaseNode):
 
     def __init__(
         self,
-        vector: InputColor = None,
+        vector: InputColor = (0.8, 0.8, 0.8, 1.0),
         midlevel: InputFloat = 0.0,
         scale: InputFloat = 0.01,
         *,
@@ -594,7 +594,7 @@ class VectorTransform(BaseNode):
 
     def __init__(
         self,
-        vector: InputVector = None,
+        vector: InputVector = (0.5, 0.5, 0.5),
         *,
         vector_type: Literal["POINT", "VECTOR", "NORMAL"] = "VECTOR",
         convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",
@@ -608,17 +608,17 @@ class VectorTransform(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def point(cls, vector: InputVector = None) -> "VectorTransform":
+    def point(cls, vector: InputVector = (0.5, 0.5, 0.5)) -> "VectorTransform":
         """Create Vector Transform with operation 'Point'. Transform a point"""
         return cls(vector_type="POINT", vector=vector)
 
     @classmethod
-    def vector(cls, vector: InputVector = None) -> "VectorTransform":
+    def vector(cls, vector: InputVector = (0.5, 0.5, 0.5)) -> "VectorTransform":
         """Create Vector Transform with operation 'Vector'. Transform a direction vector"""
         return cls(vector_type="VECTOR", vector=vector)
 
     @classmethod
-    def normal(cls, vector: InputVector = None) -> "VectorTransform":
+    def normal(cls, vector: InputVector = (0.5, 0.5, 0.5)) -> "VectorTransform":
         """Create Vector Transform with operation 'Normal'. Transform a normal vector with unit length"""
         return cls(vector_type="NORMAL", vector=vector)
 

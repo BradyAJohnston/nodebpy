@@ -4,6 +4,7 @@
 import re
 from pathlib import Path
 
+import bpy
 import pytest
 
 from nodebpy import TreeBuilder
@@ -322,6 +323,32 @@ def test_default_does_not_snapshot_positions():
     assert "layout_snapshot" not in code
 
 
+def test_in_place_emits_clear_and_rebuilds_same_datablock():
+    """in_place=True adds clear=True to the header, so running the source
+    twice rebuilds the exported datablock instead of creating copies."""
+    with TreeBuilder("InPlace") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        geo >> g.SetPosition() >> tree.outputs.geometry("Geometry")
+    modifier = bpy.data.objects["Cube"].modifiers.new("GN", "NODES")
+    modifier.node_group = tree.tree
+
+    code = to_python(tree, in_place=True, format=False)
+    assert 'with TreeBuilder("InPlace", clear=True) as tree:' in code
+    assert "clear=True" not in to_python(tree, format=False)
+    # Alongside arrange=None when positions are snapshotted.
+    assert 'TreeBuilder("InPlace", arrange=None, clear=True)' in to_python(
+        tree, in_place=True, snapshot_positions=True, format=False
+    )
+
+    for _ in range(2):
+        ns: dict = {}
+        exec(code, ns)
+        assert ns["tree"].tree == tree.tree
+    assert modifier.node_group == tree.tree
+    assert bpy.data.node_groups.get("InPlace.001") is None
+    assert _structure(tree.tree) == _structure(ns["tree"].tree)
+
+
 def test_format_with_ruff_tidies_output():
     """format=True (the default) runs the output through ruff when installed,
     tidying long lines the generator left unwrapped; format=False returns the
@@ -609,6 +636,7 @@ def test_snapshot_positions_preserves_group_input_splits():
         # way an artist splits inputs to shorten noodles.
         extra = tree.tree.nodes.new("NodeGroupInput")
         extra.location = (-321.0, -123.0)
+        extra.label = "B input"
         link = next(
             l
             for l in tree.tree.links
@@ -628,6 +656,7 @@ def test_snapshot_positions_preserves_group_input_splits():
     instances = [n for n in rebuilt.nodes if n.bl_idname == "NodeGroupInput"]
     assert len(instances) == 2
     split = rebuilt.nodes[extra.name]
+    assert split.label == "B input"
     assert split.outputs["B"].is_linked
     assert split.outputs["A"].hide and not split.outputs["A"].is_linked
     assert tuple(round(v, 1) for v in split.location) == (-321.0, -123.0)
@@ -3316,3 +3345,36 @@ def test_class_mode_snapshot_emits_group_input_splits():
         tree.split_group_inputs()
     code = to_python(tree, top_level="class", snapshot_positions=True, format=False)
     assert "tree.group_input_splits = [" in code
+
+
+def test_round_trip_fixpoint_with_split_inputs():
+    """dump → build → dump must be a fixpoint when the tree holds several
+    Group Input instances (split inputs). The instances' socket-derived
+    names must not gate their consumers' readiness in the lexicographic
+    topological sort: which instance feeds a consumer follows link creation
+    order — i.e. the previous emission — so letting the names in would make
+    same-type twins swap statements on every round trip, forever."""
+    import bpy
+
+    from nodebpy.builder import default_split_inputs
+
+    with TreeBuilder("SplitFixpoint", split_inputs=True) as builder:
+        gid = builder.inputs.integer("Group ID")
+        ev = g.EdgeVertices()
+        e1 = gid.point.at(ev.o.vertex_index_1)
+        e2 = gid.point.at(ev.o.vertex_index_2)
+        g.Compare.integer.equal(e1, e2) >> builder.outputs.boolean("Is Equal")
+        abs(e1 - e2) >> builder.outputs.integer("Difference")
+
+    codes = []
+    current = builder
+    for _ in range(3):
+        code = to_python(current, format=False)
+        codes.append(code)
+        bpy.data.node_groups.remove(current.tree)
+        ns: dict = {}
+        with default_split_inputs():
+            exec(code, ns)
+        current = ns["tree"]
+    bpy.data.node_groups.remove(current.tree)
+    assert codes[0] == codes[1] == codes[2]

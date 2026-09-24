@@ -31,7 +31,12 @@ from collections.abc import Callable, Collection, Mapping
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
+import numpy as np
 from bpy.types import ID, FunctionNodeCompare, NodeTree
+
+from ._floats import (
+    fmt_float as _fmt_float,
+)
 
 if TYPE_CHECKING:
     from ..builder.tree import TreeBuilder
@@ -354,111 +359,6 @@ def _stmt_lines(
 # ---------------------------------------------------------------------------
 
 
-def _within_one_ulp(candidate: float, f32) -> bool:
-    """Whether ``candidate`` lands on ``f32`` or its immediate float32
-    neighbour. One ULP is the round-off a value picks up crossing precisions
-    (an authored ``0.15`` surviving as ``0.14999999``), so snapping across it
-    restores the authored constant without moving any genuinely different
-    value."""
-    import numpy as np
-
-    # A candidate beyond float32 range (a huge clamp bound) overflows the
-    # cast to inf with a RuntimeWarning; it is never within one ULP.
-    with np.errstate(over="ignore"):
-        c32 = np.float32(candidate)
-    if not np.isfinite(c32):
-        return False
-    return bool(c32 == f32 or np.nextafter(f32, c32) == c32)
-
-
-def _math_constant_expression(f32) -> str | None:
-    """A ``math.pi``/``math.tau``/``math.e`` expression for a rational
-    multiple of one of those constants, or None.
-
-    Constants authored as expressions (``2 * math.pi``, ``pi / 3``, ``tau``,
-    ``e``) survive in a blend only as float32 values; matching small-fraction
-    multiples (within one ULP) restores the readable form. Numerators up to 48
-    over denominators up to 12 cover the usual turns and subdivisions while
-    keeping a chance coincidence with an ordinary decimal essentially
-    impossible. An even multiple of pi renders in tau form (``math.tau``,
-    ``math.tau / 3``) — with the fraction reduced, halving the numerator is
-    always the simpler expression.
-    """
-    import math
-
-    magnitude = abs(float(f32))
-    if magnitude == 0.0:
-        return None
-    for name, const in (("pi", math.pi), ("e", math.e)):
-        for den in range(1, 13):
-            num = round(magnitude * den / const)
-            if not 1 <= num <= 48 or math.gcd(num, den) != 1:
-                continue
-            if not _within_one_ulp(num * const / den, abs(f32)):
-                continue
-            if name == "pi" and num % 2 == 0:
-                name, num = "tau", num // 2
-            expr = f"math.{name}" if num == 1 else f"{num} * math.{name}"
-            if den > 1:
-                expr = f"{expr} / {den}"
-            return f"-{expr}" if float(f32) < 0 else expr
-    return None
-
-
-def _group_digits(text: str) -> str:
-    """Underscore-group a positional float literal's integer part when it has
-    five or more digits (``10000.0`` → ``10_000.0``)."""
-    sign = ""
-    if text.startswith("-"):
-        sign, text = "-", text[1:]
-    int_part, dot, frac = text.partition(".")
-    if len(int_part) < 5:
-        return sign + text
-    return sign + f"{int(int_part):_}" + dot + frac
-
-
-def _fmt_float(value: float) -> str:
-    """Shortest readable literal for a float32-backed value.
-
-    Blender stores socket values as float32, so reading them back through
-    Python gives noisy float64 reprs (``0.10000000149011612``); the shortest
-    decimal that uniquely identifies the float32 (``0.1``) rebuilds the
-    identical socket value. On top of that, rational multiples of pi, tau
-    and e render as ``math.*`` expressions, a value one ULP off a much shorter decimal
-    snaps to it (``0.14999999`` → ``0.15``), and long integer parts get
-    underscore grouping (``-10_000.0``).
-    """
-    import math
-
-    if not math.isfinite(value):
-        return repr(value)
-    try:
-        import numpy as np
-    except ImportError:  # pragma: no cover - Blender ships numpy
-        return repr(value)
-    f32 = np.float32(value)
-    if float(f32) != value:
-        return repr(value)  # genuine float64 — keep full precision
-    const_expr = _math_constant_expression(f32)
-    if const_expr is not None:
-        return const_expr
-    text = np.format_float_positional(f32, unique=True, trim="0")
-    # Snap to the shortest decimal within one ULP: fewer significant digits
-    # first, so ``0.14999999`` becomes ``0.15`` rather than ``0.1499999``.
-    digits = sum(c.isdigit() for c in text.lstrip("-0."))
-    for sig in range(1, digits):
-        candidate = float(f"%.{sig}g" % float(f32))
-        if not _within_one_ulp(candidate, f32):
-            continue
-        snapped = np.format_float_positional(
-            np.float32(candidate), unique=True, trim="0"
-        )
-        if len(snapped) < len(text):
-            text = snapped
-        break
-    return _group_digits(text)
-
-
 def _fmt(value: Any) -> str:
     """Format a value as a Python literal using double-quoted strings."""
     if isinstance(value, bool):
@@ -507,7 +407,9 @@ def _eq(a: Any, b: Any) -> bool:
                 return False
             return all(_eq(x, y) for x, y in zip(a, b))
         if isinstance(a, (int, float)) and isinstance(b, (int, float)):
-            return float(a) == float(b)
+            # Sockets store float32: a Python default of ``0.05`` reads back
+            # as ``0.05000000074505806``, so compare at that precision.
+            return bool(np.float32(a) == np.float32(b))
         return a == b
     except Exception:  # noqa: BLE001
         return False
@@ -812,6 +714,15 @@ def _make_var(label: str, counter: dict[str, int]) -> str:
     return f"{base}_{counter[base]}"
 
 
+def _node_var_label(node) -> str:
+    """The stem for a node's generated variable name. A group node's
+    ``bl_label`` is just "Group", so it reads as its group's name instead
+    (``inverse_mass = InverseMass()``)."""
+    if node.bl_idname in _GROUP_BASES and node.node_tree is not None:
+        return node.node_tree.name
+    return node.bl_label or "node"
+
+
 # ---------------------------------------------------------------------------
 # Graph utilities
 # ---------------------------------------------------------------------------
@@ -937,9 +848,20 @@ def _ordering_edges(node_tree, keep_reroutes: bool = False):
     """(from, to) node pairs that must hold in emission order: effective
     links (canonical order, reroutes collapsed) plus a synthetic edge from
     each zone input node to its paired output, so the zone wrapper is
-    declared before the output side is emitted."""
+    declared before the output side is emitted.
+
+    Links from Group Input nodes impose no order: they render as interface
+    references (bound in the interface block, before any node emits), and
+    a tree holding several instances (split inputs) must not let the
+    instances' names gate their consumers' readiness in the lexicographic
+    topological sort — which instance feeds a consumer follows link
+    creation order, so emission order would depend on the previous
+    emission and oscillate across dump → build round trips."""
     for link in _effective_links(node_tree, keep_reroutes):
-        if link.from_node != link.to_node:
+        if (
+            link.from_node != link.to_node
+            and link.from_node.bl_idname != "NodeGroupInput"
+        ):
             yield link.from_node, link.to_node
     for node in node_tree.nodes:
         paired = getattr(node, "paired_output", None)
@@ -1203,7 +1125,7 @@ class EmitContext:
         vector feeding ``vec.x`` / ``vec.y``). The assignment is queued on
         ``pending_lines`` and flushed before the consuming statement.
         """
-        label = link.from_socket.name or link.from_node.bl_label or "value"
+        label = link.from_socket.name or _node_var_label(link.from_node)
         var = _make_var(label, self.counter)
         self.pending_lines.append(f"    {var} = {expr.render()}")
         ref = Ref(var)
@@ -3704,6 +3626,7 @@ def to_python(
     external_groups: Collection[str] | None = None,
     typed_groups: Collection[str] | None = None,
     root_interface: GroupInterface | None = None,
+    in_place: bool = False,
 ) -> str:
     """Generate Python code that recreates the given node tree using nodebpy.
 
@@ -3774,6 +3697,17 @@ def to_python(
         Typed-interface parts (docstring, class attributes, accessors and
         ``__init__``) spliced into the top-level tree's class in ``class``
         mode, ahead of ``_build_group``.
+    in_place: bool
+        If True, the ``with`` header is emitted as
+        ``with g.tree("Name", clear=True) as tree:`` so running the source
+        rebuilds the exported tree in place — the same datablock, emptied
+        first — instead of creating a ``Name.001`` copy, keeping modifiers,
+        group nodes and pinned editors attached across re-runs. Only the
+        top-level tree is rebuilt this way: nested groups are emitted as
+        ``Custom*Group`` classes whose ``create_group()`` reuses an existing
+        tree of the same name, so edits to them only take effect through
+        :func:`nodebpy.live.run_source`. Ignored with ``top_level="class"``
+        (a class is rebuilt by ``run_source``, not by a header).
 
     Returns
     -------
@@ -3856,6 +3790,8 @@ def to_python(
         # for either option.
         if snapshot_positions or keep_reroutes:
             ctor_args.append("arrange=None")
+        if in_place:
+            ctor_args.append("clear=True")
         lines.append(f"with {constructor}({', '.join(ctor_args)}) as tree:")
         lines.extend(_assemble_tree_body(emission))
 
@@ -3930,6 +3866,8 @@ def _group_input_split_lines(
         parent = _fmt(node.parent.name) if node.parent is not None else "None"
         lines.append(f"{indent}    {{")
         lines.append(f'{indent}        "name": {_fmt(node.name)},')
+        if node.label:
+            lines.append(f'{indent}        "label": {_fmt(node.label)},')
         lines.append(f'{indent}        "location": {_fmt(loc)},')
         lines.append(f'{indent}        "parent": {parent},')
         lines.append(f'{indent}        "links": [')
@@ -4489,7 +4427,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
                         f"Cannot generate code: {message}. Register an emitter "
                         "with register_emitter() or pass strict=False."
                     )
-                var = _make_var(node.bl_label or "node", ctx.counter)
+                var = _make_var(_node_var_label(node), ctx.counter)
                 if not ctx.outgoing.get(name):
                     var = "_" + var
                 ctx.var_map[name] = _Val(Ref(var))
@@ -4575,7 +4513,7 @@ def _emit_tree(node_tree, collector: _GroupCollector) -> _TreeEmission:
             consumed_out_links.add(id(link))
             continue
 
-        var = _make_var(node.bl_label or "node", ctx.counter)
+        var = _make_var(_node_var_label(node), ctx.counter)
         # A node created purely for its side effect (a gizmo, a dangling
         # node) is never referenced again — prefix its variable so the
         # generated module passes lint (F841).

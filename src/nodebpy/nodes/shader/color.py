@@ -67,7 +67,7 @@ class BrightnessContrast(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         bright: InputFloat = 0.0,
         contrast: InputFloat = 0.0,
     ):
@@ -145,7 +145,7 @@ class HueSaturationValue(BaseNode):
         saturation: InputFloat = 1.0,
         value: InputFloat = 1.0,
         fac: InputFloat = 1.0,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
     ):
         super().__init__()
         key_args = {
@@ -206,7 +206,7 @@ class InvertColor(BaseNode):
     def __init__(
         self,
         fac: InputFloat = 1.0,
-        color: InputColor = None,
+        color: InputColor = (0.0, 0.0, 0.0, 1.0),
     ):
         super().__init__()
         key_args = {"Fac": fac, "Color": color}

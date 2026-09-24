@@ -84,8 +84,8 @@ class AlphaOver(BaseNode):
 
     def __init__(
         self,
-        background: InputColor = None,
-        foreground: InputColor = None,
+        background: InputColor = (1.0, 1.0, 1.0, 1.0),
+        foreground: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         type: InputMenu | Literal["Over", "Disjoint Over", "Conjoint Over"] = "Over",
         straight_alpha: InputBoolean = False,
@@ -104,8 +104,8 @@ class AlphaOver(BaseNode):
     @classmethod
     def over(
         cls,
-        background: InputColor = None,
-        foreground: InputColor = None,
+        background: InputColor = (1.0, 1.0, 1.0, 1.0),
+        foreground: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         straight_alpha: InputBoolean = False,
     ) -> "AlphaOver":
@@ -121,8 +121,8 @@ class AlphaOver(BaseNode):
     @classmethod
     def disjoint_over(
         cls,
-        background: InputColor = None,
-        foreground: InputColor = None,
+        background: InputColor = (1.0, 1.0, 1.0, 1.0),
+        foreground: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         straight_alpha: InputBoolean = False,
     ) -> "AlphaOver":
@@ -138,8 +138,8 @@ class AlphaOver(BaseNode):
     @classmethod
     def conjoint_over(
         cls,
-        background: InputColor = None,
-        foreground: InputColor = None,
+        background: InputColor = (1.0, 1.0, 1.0, 1.0),
+        foreground: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         straight_alpha: InputBoolean = False,
     ) -> "AlphaOver":
@@ -205,7 +205,7 @@ class BrightnessContrast(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         bright: InputFloat = 0.0,
         contrast: InputFloat = 0.0,
     ):
@@ -363,24 +363,24 @@ class ColorBalance(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         type: InputMenu
         | Literal[
             "Lift/Gamma/Gain", "Offset/Power/Slope (ASC-CDL)", "White Point"
         ] = "Lift/Gamma/Gain",
         base_lift: InputFloat = 0.0,
-        color_lift: InputColor = None,
+        color_lift: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_gamma: InputFloat = 1.0,
-        color_gamma: InputColor = None,
+        color_gamma: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_gain: InputFloat = 1.0,
-        color_gain: InputColor = None,
+        color_gain: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_offset: InputFloat = 0.0,
-        color_offset: InputColor = None,
+        color_offset: InputColor = (0.0, 0.0, 0.0, 1.0),
         base_power: InputFloat = 1.0,
-        color_power: InputColor = None,
+        color_power: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_slope: InputFloat = 1.0,
-        color_slope: InputColor = None,
+        color_slope: InputColor = (1.0, 1.0, 1.0, 1.0),
         input_temperature: InputFloat = 6500.0,
         input_tint: InputFloat = 10.0,
         output_temperature: InputFloat = 6500.0,
@@ -418,14 +418,14 @@ class ColorBalance(BaseNode):
     @classmethod
     def lift_gamma_gain(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         base_lift: InputFloat = 0.0,
-        color_lift: InputColor = None,
+        color_lift: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_gamma: InputFloat = 1.0,
-        color_gamma: InputColor = None,
+        color_gamma: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_gain: InputFloat = 1.0,
-        color_gain: InputColor = None,
+        color_gain: InputColor = (1.0, 1.0, 1.0, 1.0),
     ) -> "ColorBalance":
         """Create Color Balance node with type 'Lift/Gamma/Gain'."""
         return cls(
@@ -443,14 +443,14 @@ class ColorBalance(BaseNode):
     @classmethod
     def offset_power_slope_asc_cdl(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         base_offset: InputFloat = 0.0,
-        color_offset: InputColor = None,
+        color_offset: InputColor = (0.0, 0.0, 0.0, 1.0),
         base_power: InputFloat = 1.0,
-        color_power: InputColor = None,
+        color_power: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_slope: InputFloat = 1.0,
-        color_slope: InputColor = None,
+        color_slope: InputColor = (1.0, 1.0, 1.0, 1.0),
     ) -> "ColorBalance":
         """Create Color Balance node with type 'Offset/Power/Slope (ASC-CDL)'."""
         return cls(
@@ -468,7 +468,7 @@ class ColorBalance(BaseNode):
     @classmethod
     def white_point(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         input_temperature: InputFloat = 6500.0,
         input_tint: InputFloat = 10.0,
@@ -699,7 +699,7 @@ class ColorCorrection(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         mask: InputFloat = 1.0,
         master_saturation: InputFloat = 1.0,
         master_contrast: InputFloat = 1.0,
@@ -835,9 +835,9 @@ class DepthCombine(BaseNode):
 
     def __init__(
         self,
-        a: InputColor = None,
+        a: InputColor = (1.0, 1.0, 1.0, 1.0),
         depth_a: InputFloat = 1.0,
-        b: InputColor = None,
+        b: InputColor = (1.0, 1.0, 1.0, 1.0),
         depth_b: InputFloat = 1.0,
         use_alpha: InputBoolean = False,
         anti_alias: InputBoolean = True,
@@ -901,7 +901,7 @@ class Exposure(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         exposure: InputFloat = 0.0,
     ):
         super().__init__()
@@ -956,7 +956,7 @@ class HueCorrect(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
     ):
         super().__init__()
@@ -1029,7 +1029,7 @@ class HueSaturationValue(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         hue: InputFloat = 0.5,
         saturation: InputFloat = 1.0,
         value: InputFloat = 1.0,
@@ -1105,7 +1105,7 @@ class InvertColor(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
         invert_color: InputBoolean = True,
         invert_alpha: InputBoolean = False,
@@ -1167,7 +1167,7 @@ class Posterize(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         steps: InputFloat = 8.0,
     ):
         super().__init__()
@@ -1234,10 +1234,10 @@ class RGBCurves(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         fac: InputFloat = 1.0,
-        black_level: InputColor = None,
-        white_level: InputColor = None,
+        black_level: InputColor = (0.0, 0.0, 0.0, 1.0),
+        white_level: InputColor = (1.0, 1.0, 1.0, 1.0),
     ):
         super().__init__()
         key_args = {
@@ -1338,7 +1338,7 @@ class Tonemap(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         type: InputMenu
         | Literal["R/D Photoreceptor", "Rh Simple"] = "R/D Photoreceptor",
         key: InputFloat = 0.18,
@@ -1367,7 +1367,7 @@ class Tonemap(BaseNode):
     @classmethod
     def r_d_photoreceptor(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         intensity: InputFloat = 0.0,
         contrast: InputFloat = 0.0,
         light_adaptation: InputFloat = 0.0,
@@ -1386,7 +1386,7 @@ class Tonemap(BaseNode):
     @classmethod
     def rh_simple(
         cls,
-        image: InputColor = None,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
         key: InputFloat = 0.18,
         balance: InputFloat = 1.0,
         gamma: InputFloat = 1.0,

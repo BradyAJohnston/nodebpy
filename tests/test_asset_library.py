@@ -191,6 +191,88 @@ def test_dump_names_filter(library_blend, tmp_path):
         dump_library(library_blend, tmp_path / "src", names={"No Such Asset"})
 
 
+def test_dump_names_accepts_wildcards(nested_library_blend, tmp_path):
+    """``names`` takes fnmatch patterns as well as exact names, like ``plot``;
+    a pattern matching nothing raises even when the others match."""
+    written = dump_library(nested_library_blend, tmp_path / "src", names=["Outer *"])
+    assert set(written) == {"Outer A", "Outer B"}
+    written = dump_library(
+        nested_library_blend, tmp_path / "src2", names=["Inner*", "Outer B"]
+    )
+    assert set(written) == {"Inner Widget", "Outer B"}
+    with pytest.raises(KeyError, match=r"\['Nope \*'\]"):
+        dump_library(
+            nested_library_blend, tmp_path / "src3", names=["Outer *", "Nope *"]
+        )
+
+
+def test_filtered_dump_keeps_the_full_dumps_sharing_structure(
+    nested_library_blend, tmp_path
+):
+    """Dumping a single asset writes its module exactly as the full dump does
+    — a helper it shares with *unselected* assets stays in ``_shared`` and an
+    unselected nested asset stays imported — plus the ``_shared`` modules it
+    depends on, and nothing else."""
+    full = tmp_path / "full"
+    dump_library(nested_library_blend, full)
+    full_files = {p.relative_to(full) for p in full.rglob("*.py")}
+    assert Path("geometry/_shared/doubler.py") in full_files
+
+    expected = {
+        "Outer A": {"geometry/outer_a.py", "geometry/_shared/doubler.py"},
+        "Outer B": {"geometry/outer_b.py", "geometry/_shared/doubler.py"},
+        "Inner Widget": {"geometry/inner_widget.py", "geometry/_shared/doubler.py"},
+    }
+    for name, modules in expected.items():
+        out = tmp_path / name.replace(" ", "_")
+        written = dump_library(nested_library_blend, out, names={name})
+        assert set(written) == {name}
+        files = {p.relative_to(out) for p in out.rglob("*.py")}
+        assert {f.as_posix() for f in files if f.name != "__init__.py"} == modules
+        for rel in files:
+            assert (out / rel).read_bytes() == (full / rel).read_bytes(), rel
+
+    code = (tmp_path / "Outer_A" / "geometry" / "outer_a.py").read_text("utf-8")
+    assert "from ._shared.doubler import Doubler" in code
+    assert "from .inner_widget import InnerWidget" in code
+    assert "class Doubler" not in code
+    assert "class InnerWidget" not in code
+    # Dumping cleans every appended group (selected or not) back out.
+    assert not bpy.data.node_groups
+
+
+def test_filtered_dump_writes_referenced_materials(material_library_blend, tmp_path):
+    """A filtered dump also (re)writes the materials/ modules its assets
+    reference, byte-identical to the full dump's."""
+    full = tmp_path / "full"
+    dump_library(material_library_blend, full)
+    out = tmp_path / "part"
+    written = dump_library(material_library_blend, out, names=["Glowing *"])
+    assert set(written) == {"Glowing Grid"}
+    material = out / "materials" / "test_glow.py"
+    assert material.is_file()
+    assert material.read_bytes() == (full / "materials" / "test_glow.py").read_bytes()
+
+
+def test_filtered_typed_api_dump_exports_only_modules_on_disk(
+    nested_library_blend, tmp_path
+):
+    """The typed-API ``__init__.py`` of a tree directory only re-exports asset
+    modules that exist there, so a filtered dump into a fresh directory stays
+    importable; after a full dump it lists every asset as before."""
+    out = tmp_path / "src"
+    dump_library(nested_library_blend, out, names={"Outer A"}, typed_api=True)
+    init = (out / "geometry" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .outer_a import OuterA" in init
+    assert "OuterB" not in init
+    assert "InnerWidget" not in init
+
+    dump_library(nested_library_blend, out, typed_api=True)
+    init = (out / "geometry" / "__init__.py").read_text(encoding="utf-8")
+    assert "from .outer_b import OuterB" in init
+    assert "from .inner_widget import InnerWidget" in init
+
+
 def test_dump_refuses_clashing_session_groups(library_blend, tmp_path):
     with TreeBuilder("Scale Up"):
         pass
@@ -251,6 +333,42 @@ def test_build_add_reroutes(tmp_path):
     assert reroute_count() > 0
 
 
+def test_build_split_inputs(tmp_path):
+    """build_library(split_inputs=True) — the CLI's --split-inputs — gives
+    each consumer node its own Group Input instance named after the sockets
+    it uses; the default build keeps the single primary node."""
+    with TreeBuilder("Splittable") as tree:
+        a = tree.inputs.float("Radius")
+        b = tree.inputs.float("Height")
+        math = g.Math.add(a, 1.0)
+        g.CombineXYZ(x=math, y=b).o.vector.length() >> tree.outputs.float("Out")
+    tree.tree.asset_mark()
+    blend = tmp_path / "library.blend"
+    bpy.data.libraries.write(str(blend), {tree.tree}, fake_user=True)
+    _clear_node_groups()
+
+    src = tmp_path / "src"
+    dump_library(blend, src)
+
+    def input_nodes():
+        return [
+            n
+            for n in bpy.data.node_groups["Splittable"].nodes
+            if n.bl_idname == "NodeGroupInput"
+        ]
+
+    build_library(src, tmp_path / "plain.blend")
+    assert len(input_nodes()) == 1
+    _clear_node_groups()
+
+    build_library(src, tmp_path / "split.blend", split_inputs=True)
+    instances = input_nodes()
+    assert len(instances) == 2
+    named = next(n for n in instances if n.name != "Group Input")
+    assert named.name == named.label == "Height"
+    assert named.outputs["Radius"].hide and not named.outputs["Radius"].is_linked
+
+
 def test_build_arrange_options(library_blend, tmp_path):
     """build_library(arrange=...) tunes the built trees' layout: wider
     spacing spreads the same tree further apart."""
@@ -283,10 +401,18 @@ def test_plot_library(library_blend, tmp_path):
 
     out = tmp_path / "plots"
     written = plot_library(library_blend, out, ["Scale *"])
-    assert set(written) == {"Scale Up"}
+    assert set(written) == {"Scale Up", "Scale Up (node)"}
     assert written["Scale Up"] == out / "Scale_Up.png"
     assert written["Scale Up"].stat().st_size > 5_000
+    assert written["Scale Up (node)"] == out / "Scale_Up_node.png"
+    assert written["Scale Up (node)"].stat().st_size > 5_000
     assert not bpy.data.node_groups  # appended groups removed again
+
+    # Either render can be skipped.
+    written = plot_library(library_blend, out, ["Scale *"], node=False)
+    assert set(written) == {"Scale Up"}
+    written = plot_library(library_blend, out, ["Scale *"], tree=False)
+    assert set(written) == {"Scale Up (node)"}
 
     # No names: every group in the file, including the non-asset helper —
     # and re-arranging before plotting works.
@@ -326,6 +452,10 @@ def test_cli_arrange_options_mapping():
         stack_collapsed=True,
         stack_margin_y_fac=None,
         optimize_sizes=False,
+        sequential_frames=True,
+        balance_heights=True,
+        balance_aspect=None,
+        reroute_margin_y_fac=None,
     )
     assert _arrange_options_from_args(defaults) is None
 
@@ -338,6 +468,10 @@ def test_cli_arrange_options_mapping():
         stack_collapsed=False,
         stack_margin_y_fac=0.25,
         optimize_sizes=True,
+        sequential_frames=False,
+        balance_heights=False,
+        balance_aspect=2.0,
+        reroute_margin_y_fac=0.5,
     )
     assert _arrange_options_from_args(tuned) == SugiyamaOptions(
         margin=(50.0, 40.0),
@@ -348,6 +482,10 @@ def test_cli_arrange_options_mapping():
         stack_collapsed=False,
         stack_margin_y_fac=0.25,
         optimize_sizes=True,
+        sequential_frames=False,
+        balance_heights=False,
+        balance_aspect=2.0,
+        reroute_margin_y_fac=0.5,
     )
 
 
@@ -570,6 +708,169 @@ def test_build_in_presence_of_datablocks(material_library_blend, tmp_path):
     assert names == ["Glowing Grid"]
     assert bpy.data.materials["Test Glow"] is material  # reused, not rebuilt
     assert bpy.data.images["Grid Tex"] is image
+
+
+def _write_material_asset_library(path: Path) -> None:
+    """Write a library with three materials: "Preset Glass" is asset-marked
+    (description, catalog, tag) but referenced by nothing, "Shared Metal" is
+    asset-marked *and* referenced by the geometry asset, and "Plain Rubber"
+    is referenced only. Leaves the session clean."""
+
+    def _material(name: str, color) -> bpy.types.Material:
+        material = bpy.data.materials.new(name)
+        assert material.node_tree is not None
+        material.node_tree.nodes.clear()
+        with TreeBuilder(material.node_tree):
+            emission = s.Emission(color=color)
+            s.MaterialOutput(surface=emission)
+        return material
+
+    glass = _material("Preset Glass", (0.2, 0.4, 1.0, 1.0))
+    glass.asset_mark()
+    assert glass.asset_data is not None
+    glass.asset_data.description = "A preset glass material"
+    glass.asset_data.catalog_id = CATALOG_ID
+    glass.asset_data.tags.new("preset")
+
+    metal = _material("Shared Metal", (0.8, 0.8, 0.8, 1.0))
+    metal.asset_mark()
+    assert metal.asset_data is not None
+    metal.asset_data.description = "Shared metal"
+
+    rubber = _material("Plain Rubber", (0.1, 0.1, 0.1, 1.0))
+
+    with TreeBuilder("Painted Cube") as tree:
+        geo = tree.inputs.geometry("Geometry")
+        set_metal = g.SetMaterial(geometry=geo, material=metal)
+        set_rubber = g.SetMaterial(geometry=set_metal, material=rubber)
+        set_rubber >> tree.outputs.geometry("Geometry")
+    tree.tree.asset_mark()
+
+    bpy.data.libraries.write(str(path), {tree.tree, glass}, fake_user=True)
+    _clear_node_groups()
+    for material in (glass, metal, rubber):
+        bpy.data.materials.remove(material)
+
+
+@pytest.fixture
+def material_asset_library_blend(tmp_path):
+    path = tmp_path / "material_asset_library.blend"
+    _write_material_asset_library(path)
+    return path
+
+
+def test_dump_material_assets_become_roots(material_asset_library_blend, tmp_path):
+    """Asset-marked materials are dump roots: each gets a materials/ module
+    carrying its metadata as a MATERIAL_ASSET_METADATA footer, an unreferenced
+    one included; a referenced-only material dumps without the footer; and a
+    material both referenced and asset-marked yields exactly one module."""
+    out = tmp_path / "src"
+    written = dump_library(material_asset_library_blend, out)
+    assert set(written) == {"Painted Cube", "Preset Glass", "Shared Metal"}
+    assert written["Preset Glass"] == out / "materials" / "preset_glass.py"
+
+    glass = written["Preset Glass"].read_text(encoding="utf-8")
+    assert "MATERIAL = PresetGlass" in glass
+    assert 'MATERIAL_NAME = "Preset Glass"' in glass
+    assert '"description": "A preset glass material"' in glass
+    assert f'"catalog_id": "{CATALOG_ID}"' in glass
+    assert '"tags": ("preset",)' in glass
+    assert "ASSET =" not in glass  # a material module keeps the MATERIAL marker
+
+    # Referenced *and* asset-marked: exactly one module, with the footer.
+    metal_files = sorted((out / "materials").glob("shared_metal*.py"))
+    assert metal_files == [written["Shared Metal"]]
+    metal = written["Shared Metal"].read_text(encoding="utf-8")
+    assert '"description": "Shared metal"' in metal
+    assert "MATERIAL_ASSET_METADATA" in metal
+
+    # Referenced-only materials stay pure dependencies: no footer.
+    rubber = (out / "materials" / "plain_rubber.py").read_text(encoding="utf-8")
+    assert "MATERIAL = PlainRubber" in rubber
+    assert "MATERIAL_ASSET_METADATA" not in rubber
+
+    # The dump cleans the appended asset materials back out of the session.
+    assert not bpy.data.node_groups
+    for name in ("Preset Glass", "Shared Metal", "Plain Rubber"):
+        assert name not in bpy.data.materials
+
+
+def test_roundtrip_material_asset_library(material_asset_library_blend, tmp_path):
+    """Asset materials rebuild marked, with metadata and tags applied, survive
+    into the written .blend as assets, and a re-dump of the rebuilt library
+    reproduces the sources byte-for-byte."""
+    first = tmp_path / "first"
+    dump_library(material_asset_library_blend, first)
+
+    rebuilt = tmp_path / "rebuilt.blend"
+    names = build_library(first, rebuilt)
+    assert names == ["Painted Cube"]
+
+    glass = bpy.data.materials["Preset Glass"]
+    assert glass.asset_data is not None
+    assert glass.asset_data.description == "A preset glass material"
+    assert glass.asset_data.catalog_id == CATALOG_ID
+    assert {t.name for t in glass.asset_data.tags} == {"preset"}
+    assert bpy.data.materials["Shared Metal"].asset_data is not None
+    assert bpy.data.materials["Plain Rubber"].asset_data is None  # unmarked
+
+    # The written .blend exposes exactly the asset-marked materials as assets,
+    # with their asset data intact.
+    _clear_node_groups()
+    for name in ("Preset Glass", "Shared Metal", "Plain Rubber"):
+        bpy.data.materials.remove(bpy.data.materials[name])
+    with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+        str(rebuilt), link=False, assets_only=True
+    ) as (src_lib, dst):
+        assert set(src_lib.materials) == {"Preset Glass", "Shared Metal"}
+        dst.materials = ["Preset Glass"]
+    reloaded = bpy.data.materials["Preset Glass"]
+    assert reloaded.asset_data is not None
+    assert reloaded.asset_data.catalog_id == CATALOG_ID
+    bpy.data.materials.remove(reloaded)
+
+    # dump → build → dump is a fixed point for material modules too.
+    second = tmp_path / "second"
+    dump_library(rebuilt, second)
+    first_files = sorted(p.relative_to(first) for p in first.rglob("*.py"))
+    second_files = sorted(p.relative_to(second) for p in second.rglob("*.py"))
+    assert first_files == second_files
+    for rel in first_files:
+        assert (second / rel).read_text(encoding="utf-8") == (first / rel).read_text(
+            encoding="utf-8"
+        ), rel
+
+
+def test_dump_names_filter_matches_material_assets(
+    material_asset_library_blend, tmp_path
+):
+    """names/--names matches material asset names alongside node-group asset
+    names; a name matching neither still raises."""
+    out = tmp_path / "src"
+    written = dump_library(material_asset_library_blend, out, names={"Preset Glass"})
+    assert set(written) == {"Preset Glass"}
+    assert (out / "materials" / "preset_glass.py").is_file()
+    with pytest.raises(KeyError, match="No Such Asset"):
+        dump_library(
+            material_asset_library_blend, tmp_path / "src2", names={"No Such Asset"}
+        )
+
+
+def test_full_dump_removes_stale_material_modules(
+    material_asset_library_blend, tmp_path
+):
+    """A module left over from a formerly-asset-marked material is cleared by
+    the next full dump; a filtered dump leaves it in place."""
+    src = tmp_path / "src"
+    dump_library(material_asset_library_blend, src)
+    stale = src / "materials" / "old_mat.py"
+    stale.write_text("MATERIAL = None\n", encoding="utf-8")
+
+    dump_library(material_asset_library_blend, src, names={"Preset Glass"})
+    assert stale.exists()  # filtered dump: other files untouched
+
+    dump_library(material_asset_library_blend, src)
+    assert not stale.exists()
 
 
 def test_nested_dump_is_stable_across_a_roundtrip(nested_library_blend, tmp_path):

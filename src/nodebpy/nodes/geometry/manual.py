@@ -152,8 +152,9 @@ def tree(
     *,
     collapse: bool = False,
     arrange: ArrangeMethod = "sugiyama",
+    clear: bool = False,
 ) -> TreeBuilder[GeometryNodeTree]:
-    return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange)
+    return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange, clear=clear)
 
 
 _ColorRampColorInterpolations = Literal[

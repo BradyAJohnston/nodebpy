@@ -40,17 +40,17 @@
   '''
   ```{mermaid}
   graph LR
-      N0("Position"):::input-node
-      N1("Volume Cube<br/><small>(-1,-1,-1)</small>"):::geometry-node
-      N2("Vector Math<br/><small>(SCALE)</small><br/><small>×2</small>"):::vector-node
-      N3("Get Named Grid"):::geometry-node
+      N0("Volume Cube<br/><small>(-1,-1,-1)</small>"):::geometry-node
+      N1("Position"):::input-node
+      N2("Get Named Grid"):::geometry-node
+      N3("Vector Math<br/><small>(SCALE)</small><br/><small>×2</small>"):::vector-node
       N4("Position"):::input-node
       N5("Vector Math<br/><small>(ADD)</small><br/><small>(1e+01,1e+01,1e+01)</small>"):::vector-node
       N6("Field to Grid"):::geometry-node
-      N1 -->|"Volume->Volume"| N3
-      N0 -->|"Position->Vector"| N2
-      N2 -->|"Vector->Vector"| N5
-      N3 -->|"Grid->Topology"| N6
+      N0 -->|"Volume->Volume"| N2
+      N1 -->|"Position->Vector"| N3
+      N3 -->|"Vector->Vector"| N5
+      N2 -->|"Grid->Topology"| N6
       N4 -->|"Position->Position"| N6
       N5 -->|"Vector->value"| N6
   ```

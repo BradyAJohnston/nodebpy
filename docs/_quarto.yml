@@ -102,6 +102,7 @@ quartodoc:
         - arrange
         - SugiyamaOptions
         - SimpleOptions
+        - default_split_inputs
         - default_sugiyama_options
     - title: Assets
       desc: Generating classes from pre-build assets
@@ -122,6 +123,15 @@ quartodoc:
         - export.to_plot
         - export.serialize_library
         - export.compare_libraries
+    - title: Live
+      desc: Re-running source safely in a live session.
+      contents:
+        - live.run_source
+        - live.RunResult
+        - live.preserve_modifier_inputs
+        - live.stash_groups
+        - live.GroupStash
+        - live.group_names_in_source
 
     - title: Geometry Nodes
       desc: Nodes use in Geometry Nodes trees.
