@@ -3,8 +3,11 @@ title: Write Your Nodes With Code
 subtitle: (using `nodebpy`)
 author: Brady Johnston
 date: 2026-07-28
-toc: true
+toc: false
 toc-depth: 1
+resources:
+  - images/talk/iso_google_keynote.mp4
+  - bcon/animation.mp4
 format:
   revealjs:
     theme: [dracula, talk.scss]
@@ -43,7 +46,7 @@ The slides are embedded below, or available directly at [this link](slides.html)
 {{< revealjs "slides.html" >}}
 :::
 
-::: {.content-visible when-format="revealjs"}
+::: {.content-visible unless-format="revealjs"}
 ## Slides are Available
 
 [bradyajohnston.github.io/nodebpy/talk.html](https://bradyajohnston.github.io/nodebpy/talk.html)
@@ -60,7 +63,7 @@ The slides are embedded below, or available directly at [this link](slides.html)
   - very difficult to read & reason over what the node tree will look like
 - More and more core assets are becoming node trees
   - A `.blend` file is a binary blob
-  - : no diffs, no code review, minimal version control
+    - no diffs, no code review, minimal version control
 - The raw `bpy` API technically works…
 :::
 
@@ -69,20 +72,31 @@ Set up the two existing options: bundled .blend assets (opaque, un-diffable) or 
 Both are painful to maintain across Blender versions.
 :::
 
-## How it compares
+## How it compares {.smaller .compact-table}
 
-|   | approach |   | Node Editors | PyPI |
+|Project | Approach | Direction  | Nodes | PyPI |
 |:--------------|:--------------|---------------|---------------|:-------------:|
-| [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) | JSON Export and Import | Nodes \<-\> `.json` | Geometry, Compositor, Shader | ✓ |
-| [NodeToPython](https://github.com/BrendanParmer/NodeToPython) | Export `bpy` python script | Nodes -\> `.py` | Geoemtry, Compositor, Shader | — |
-| [geometry-script](https://github.com/carson-katri/geometry-script) | decorated functions, method chaining | `.py` -\> Nodes | Geometry | — |
-| [geonodes](https://github.com/al1brn/geonodes) | context-based, shared node wrappers, socket method chaining | `.py` -\> Nodes | Geometry, Shader | — |
 | **nodebpy** | context-based, one node per class, override `>>` for linking | `.py` \<-\> Nodes | Geometry, Compositor, Shader | ✓ |
+| [NodeToPython](https://github.com/BrendanParmer/NodeToPython) | Export `bpy` python script | Nodes-\>`.py` | Geoemtry, Compositor, Shader | X |
+| [geonodes](https://github.com/al1brn/geonodes) | context-based, shared node wrappers, socket method chaining | `.py`-\>Nodes | Geometry, Shader | X |
+| [geometry-script](https://github.com/carson-katri/geometry-script) | decorated functions, method chaining | `.py`-\>Nodes | Geometry | X |
+| [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) | JSON Export and Import | Nodes \<-\> `.json` | Geometry, Compositor, Shader | ✓ |
+| [Copy Paste Nodes](https://extensions.blender.org/add-ons/copy-paste-nodes/) | JSON Export and Import | Nodes \<-\> `.json` | Geometry, Compositor, Shader | X |
+| [Node Exporter](https://extensions.blender.org/add-ons/node-exporter/) | JSON Export for HTML | Nodes -\> `.json` | Geometry, Shader | X |
+| [Node Group Presets](https://extensions.blender.org/add-ons/node-group-presets/) | JSON Export and Import | Nodes \<-\> `.json` | Geometry | X |
+
+: {tbl-colwidths="[20,38,20,14,8]"}
 
 ::: {.content-visible unless-format="revealjs"}
 Side-by-side reproductions of examples from each project's own documentation are in the [comparisons page](comparisons.qmd) of the docs.
 The short version: the storage-oriented tools are great at persistence but not authoring; the authoring tools each made different API trade-offs, and `nodebpy` is the only one distributed on PyPI for use as a dependency in other projects.
 :::
+
+```{python}
+#| echo: false
+import molecularnodes as mn
+canvas = mn.Canvas()
+```
 
 ## The raw `bpy` API {.smaller}
 
@@ -122,9 +136,10 @@ nt.links.new(real.outputs["Geometry"], n_out.inputs["Geometry"])
 
 ```{python}
 #| echo: false
-from nodebpy.builder import TreeBuilder
+from nodebpy import TreeBuilder
 
-TreeBuilder(nt)
+example_tree = TreeBuilder(nt, arrange=None)
+example_tree
 ```
 
 ## What's wrong with that?
@@ -133,15 +148,15 @@ TreeBuilder(nt)
 - Verbose
 - Stringly-typed everything:
   - `"GeometryNodeDistributePointsOnFaces"`, `"NodeSocketGeometry"`, `outputs["Geometry"]`
-- No autocomplete, minimal type checking, lots of typos = `RuntimeError`
-- The code reads in plumbing order, not data-flow order
+- No autocomplete, minimal type checking, typos = `RuntimeError`
+- Code doesn't represent the data flow of the tree, or the layout of the nodes
 :::
 
 ## The same tree in `nodebpy`
 
 ```{python}
 #| code-line-numbers: "|1|3-5|8|9|10|11|12|"
-from nodebpy import geometry as g # shader as s, compositor as c
+from nodebpy import geometry as g
 
 with g.tree("Scatter2") as tree:
     geo = tree.inputs.geometry()
@@ -167,20 +182,40 @@ with g.tree("Scatter2") as tree:
 Sockets are matched automatically, layout is automatic, and every name here is a typed Python identifier your IDE can autocomplete and your type checker can verify.
 :::
 
+## The Nodes
+
+```{python}
+#| echo: false
+example_tree
+```
+
 ## The pitch
 
-> Writing code should *feel* like creating nodes in a GUI.
-> The code should give an intuitive sense for the layout of the tree; through type hinting, auto-complete and docstrings, as much should be knowable about the tree ahead of time as possible.
+> Writing code should *feel* like creating nodes in a GUI
 
-``` bash
-pip install nodebpy
-```
+> (just with the benefits of an IDE)
 
 - Geometry, Shader **and** Compositor trees fully supported
 - Robustly typed, tested and documented.
 - Available from PyPI and designed for use in other projects
 
+``` bash
+pip install nodebpy
+```
+
 # Where it came from
+
+## Molecular Nodes
+
+![](images/talk/mn_talk.jpg)
+
+## Molecular Nodes
+
+<video class="r-stretch" src="images/talk/iso_google_keynote.mp4" data-autoplay autoplay loop muted playsinline></video>
+
+## Molecular Nodes
+
+![](images/talk/molecular_nodes_gallery.png)
 
 ## Molecular Nodes
 
@@ -193,9 +228,42 @@ pip install nodebpy
 - Like [`databpy`](https://github.com/BradyAJohnston/databpy): started as an internal tool, broken out into its own typed & tested package
 :::
 
-::: notes
-The origin story matters to this audience: this isn't a toy, it's extracted from a production add-on with the explicit goal that other add-ons can depend on it.
-:::
+## Molecular Nodes (also a python package?)
+
+```{python}
+#| eval: false
+import molecularnodes as mn
+
+canvas = mn.Canvas()
+
+mol = mn.Molecule.fetch("1bna")
+mol.add_style("spheres", selection="nucleic")
+
+canvas.look_at(mol)
+canvas.snapshot()
+```
+
+## Molecular Nodes (also a python package?)
+
+![](images/paste-5.png)
+
+## Giving Access to the Node API
+
+<video class="r-stretch" src="bcon/animation.mp4" data-autoplay autoplay loop muted playsinline></video>
+
+## Giving Access to the Node API
+
+![](bcon/animation_nodes_example.png)
+
+## Giving Acces to the Node API {.smaller}
+
+```{.python include="bcon/main.py"}
+```
+
+
+## Giving Access to the Node API
+
+<video class="r-stretch" src="bcon/animation.mp4" data-autoplay autoplay loop muted playsinline></video>
 
 # Core API
 
@@ -223,18 +291,19 @@ Constructor arguments *are* the input sockets — or address them explicitly:
 with g.tree() as tree:
     cube = g.Cube()
     pos = g.Position()
+    rand = g.RandomValue.vector(min=-1, max=1)
     sp = g.SetPosition(
         cube,
         position=cube.o.uv_map + pos * 0.5,
     )
-    g.RandomValue.vector() * 0.1 >> sp.i.offset
+    rand.o.value.normalize() * 0.1 >> sp.i.offset
 
 tree
 ```
 
 - `node.i.position` / `node.o.geometry` — typed, autocompleted socket access
 
-## Sockets have convenience accessors
+## Sockets accessors and methods
 
 - Vector outputs get `.x` / `.y` / `.z`
 - Colors get `.r/.g/.b/.a`
@@ -242,25 +311,24 @@ tree
 
 ```{python}
 #| output-location: column
+#| node-line-numbers: "|3-5|7|8|9|"
+import math
 with g.tree() as tree:
-    p = g.Position()  # the node
-    ps = p.o.position  # the output `Position` socket
+    p = g.Position()
+    ps = p.o.position # `Position` output socket
+    it = g.InstanceTransform().o.transform
 
     ps.x - 10
-    g.InstanceTransform().o.transform.rotation.rotate(None)
-
-    ps.normalize().cross().distance().cos()
+    it.rotation.rotate((0, math.pi, 0)).to_axis_angle().angle
+    ps.normalize().cross().length().cos()
 
 tree
 ```
-
-
 
 ## The tree interface
 
 - `tree.inputs.*` / `tree.outputs.*` declare the group's sockets and return them for linking
 - Use `panel()` context to put sockets into a panel
-
 
 ```{python}
 #| output-location: column
@@ -369,8 +437,6 @@ with g.tree("Stack") as tree:
 tree
 ```
 
-
-
 - `item.initial` → `item.current` → `item.next` → `item.result`
 - `zone.iteration`, `zone.delta_time` for the built-in sockets
 
@@ -451,6 +517,24 @@ Shared nodes (`Math`, `Mix`, textures…) are defined once and re-exported per e
 
 # Reusable Groups
 
+## Asset node groups
+
+Blender's bundled "essentials" (and *your* asset libraries) become typed classes too — instantiating one appends the group at runtime:
+
+```{python}
+#| output-location: column
+with g.tree("Assets") as tree:
+    (
+        g.IcoSphere()
+        >> g.SmoothByAngle(angle=0.6)
+        >> g.Array(count=4)
+        >> tree.outputs.geometry()
+    )
+
+tree
+```
+
+
 ## Custom node groups as classes {.smaller}
 
 Chains with `>>`, mixes with operators, autocompletes & type-hints
@@ -492,32 +576,13 @@ tree
 ```
 
 
-
-## Asset node groups
-
-Blender's bundled "essentials" (and *your* asset libraries) become typed classes too — instantiating one appends the group at runtime:
-
-```{python}
-#| output-location: column
-with g.tree("Assets") as tree:
-    (
-        g.IcoSphere()
-        >> g.SmoothByAngle(angle=0.6)
-        >> g.Array(count=4)
-        >> tree.outputs.geometry()
-    )
-
-tree
-```
-
-
 # Nodes → Code
 
 ## `to_python()` — the other direction {.smaller}
 
 ```{python}
 #| echo: false
-TreeBuilder(nt)
+example_tree
 ```
 
 ## `to_python()` — the other direction {.smaller}
@@ -525,14 +590,32 @@ TreeBuilder(nt)
 Convert any node tree to `nodebpy` source code:
 
 ```{python}
+#| echo: false
+with g.tree("Scatter2") as tree:
+    geo = tree.inputs.geometry()
+    count = tree.inputs.integer("Count", 100)
+
+    (
+        geo
+        >> g.DistributePointsOnFaces(density=count)
+        >> g.InstanceOnPoints(instance=g.IcoSphere())
+        >> g.RealizeInstances()
+        >> tree.outputs.geometry()
+    )
+
+nt = tree.tree
+```
+
+```{python}
 #| output: asis
+#| echo: false
 from nodebpy.export import to_python
 
 code = to_python(nt)
 print(f"```python\n{code}\n```")
 ```
 
-## Comparison: `bpy` | `nodebpy`
+## Comparison: `bpy` \| `nodebpy`
 
 ![](images/bpy_comparison.png)
 
@@ -595,7 +678,7 @@ diff -ru before/ after/
 - The dumper's `bpy` must be at least the file's version: 5.2 silently dropped the 5.3-only sockets and two of the PRs below diffed to *nothing*
 :::
 
-## Eight real PRs, twice {.smaller}
+## Eight real PRs, twice {.smaller .compact-table}
 
 | PR | Title | `git diff` | dumped diff | files |
 |:--------------|:--------------|--------------:|--------------:|:--------------|
@@ -707,64 +790,30 @@ Nobody did anything wrong here.
 The binary workflow gives a reviewer no way to see that a change to one asset carried three unrelated reverts.
 :::
 
-## The tree, for scale
 
-![](images/talk/Array.png)
-
-`array.py` is 858 lines.
-PR #82 changed one keyword in it.
-`python -m nodebpy.assets plot` rendered this headlessly.
-
-## Where the noise comes from {.smaller}
-
-Bigger PRs look bigger than they are: inserting one node renumbers every later auto-named `switch_N`.
-
-| PR                     | changed lines | ignoring `_N` suffixes |
-|:-----------------------|--------------:|-----------------------:|
-| #84 Curve to Tube caps |           172 |                     70 |
-| #66 Array single curve |           113 |                     25 |
-| #63 Array rotation     |           244 |                    172 |
-| #85 Hair seed          |           100 |                    100 |
+## Agents, skills and nodes
 
 ::: incremental
-- Labelled nodes dump under their label, so a labelled switch keeps its name
-- One authoring habit turns #66 into the 25-line diff it actually is
+- `AGENTS.md` + `skills/mn-nodes`: edit the `.py` → `build` → `dump` → read the diff → numeric test
+- Agents can read and write `.py` quite well these days
+- Agents can now read and write node trees with `nodebpy` (as it's _just_ python)
+- Confidence in AI-assisted changes, because of concise diffs and clean code review
+- Agents can successfully 1-shot (relatively simple) node trees from a prompt, and 1-shot a diff to find and fix bugs in larger node trees
 :::
 
-## Reading the trees as text {.smaller}
+## `blender/blender-assets` {.smaller}
 
-Ten minutes of `grep` over the dumped sources at HEAD:
+Dump all of Blender's asset library to `.py` files, ask an LLM to find any obvious errors
 
 ::: incremental
 - **A dead modifier input.** Displace Hair Curves declares `Surface UV Map`; no node reads it. The dumper marks it `_surface_uv_map`
-- ![](images/paste-4.png)
+- ![](images/paste-4.png){width=300px}
 - **Two typos** that the proofreading PR missed: a tooltip says *displacemement*, an Array frame is labelled *Line Gismoz*
 - **The same Domain Size node built twice**, three lines apart, in Array (since #66)
 - **Two inputs named "Scale"** on Randomize Transforms, so Array and Scatter on Surface link them positionally
 - **Start and end caps tested two different ways** in Curve to Tube's custom-cap merge (#84)
-- Frame labels: *segment length* next to *Segment Length*
 :::
 
-::: notes
-None of these is visible in a screenshot of the node editor unless you are looking at exactly the right node.
-All of them are one grep away in the source.
-:::
-
-## It found a nodebpy bug as well {.smaller}
-
-The generator rounded float defaults to four decimals, so an untouched Curve to Mesh (Miter Scale Limit exactly 3π/4) compared as *edited*:
-
-``` diff
--                fill_caps=switch_2,
--                miter_scale_limit=3 * math.pi / 4,
-+                fill_caps=switch_2,
-```
-
-::: incremental
-- 18 spurious keyword arguments across the essentials and hair libraries: `radius=0.1`, `length=0.1`, `radius=0.05`, `distance=0.001`, `miter_scale_limit=…`
-- Fixed in 520.29: constructor defaults are now Blender's exact float32 values, or `math.pi` expressions for its rational multiples
-- Diffing real libraries is the test suite that finds this
-:::
 
 ## Molecular Nodes: the workflow in production {.smaller}
 
@@ -785,23 +834,9 @@ PR #1239: three bugs found *reading the source*, each with a numeric test that f
 
 The third was an OKLab matrix built from the XYZ → LMS constants instead of sRGB → LMS: blue clipped, white mapped to `(1.003, 0.027, 0.015)`.
 
-::: notes
-Nobody opened a node editor to find these.
-The constants were wrong in the source, and the numbers were checkable against the reference paper.
-:::
-
-## Agents, skills and a policy
-
-::: incremental
-- `AGENTS.md` + `skills/mn-nodes`: edit the `.py` → `build` → `dump` → read the diff → numeric test
-- A new node (Segment ID, #1224) is one 60-line module, a test and a docs entry
-- MN's AI policy allows agent-authored node changes *because* the diff, the tests and `check` make a tree reviewable regardless of who or what wrote it
-- The same three tools would work for `blender-assets` today
-:::
-
 # How It's Built
 
-## Generated from the live node registry
+## Generated from `bpy`
 
 ::: incremental
 - Most of `src/nodebpy/nodes/` is auto-generated by introspecting Blender's live node registry — signatures, socket types, enum `Literal`s, docstrings
@@ -841,14 +876,25 @@ elif _v >= (5, 2, 0):
 
 ::: incremental
 - Every node graph you've seen was **rendered live from the code on the slide**
-- The `_repr_html_` of a tree exports via [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) and renders with `geonodes-web-render`
-- The same repr works in Jupyter notebooks and the Quarto docs — docs that can never drift from the code
+- The `_repr_html_` of a tree exports via [TreeClipper](https://github.com/Algebraic-UG/tree_clipper) and renders with `geonodes-web-render` (Thanks Jan-Hendrik Müller)
 :::
+
+```{python}
+#| output-location: column
+with g.tree() as tree:
+    (
+        g.Cube()
+        >> g.SmoothByAngle(angle=0.6)
+        >> g.Array(count=4)
+        >> tree.outputs.geometry()
+    )
+
+tree
+```
 
 ## Thanks!
 
 - `@bradyajohnston` everywhere
-- docs: [bradyajohnston.github.io/nodebpy](https://bradyajohnston.github.io/nodebpy)
-- source: [github.com/BradyAJohnston/nodebpy](https://github.com/BradyAJohnston/nodebpy)
+- [github.com/BradyAJohnston/nodebpy](https://github.com/BradyAJohnston/nodebpy)
 
-{{< qrcode https://bradyajohnston.github.io/nodebpy width=300 height=300 >}}
+{{< qrcode https://github.com/BradyAJohnston/nodebpy width=300 height=300 >}}

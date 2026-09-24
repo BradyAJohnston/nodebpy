@@ -29,3 +29,8 @@ $code-block-font-size: 0.5em;
 .reveal div.column-output-location div[id^="gnwr-"] {
   height: 320px !important;
 }
+// Five-column comparison table: even at `.smaller` the wrapped rows run past
+// 720px tall, so it gets one more step down.
+.reveal .slides section.compact-table table {
+  font-size: 0.8em;
+}
