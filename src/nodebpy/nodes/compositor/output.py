@@ -116,7 +116,7 @@ class Viewer(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = None,
+        image: InputColor = (0.0, 0.0, 0.0, 1.0),
         *,
         ui_shortcut: int = 0,
     ):

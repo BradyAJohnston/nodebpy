@@ -27,7 +27,73 @@ def get_nesting_graph(CG: ClusterGraph) -> nx.MultiDiGraph[Node]:
             else:
                 H.add_edges_from(((u.left, v.left), (v.right, u.right)))
 
+    if CG.state.settings.sequential_frames:
+        add_frame_sequence_edges(CG, H)
+
     return H
+
+
+def _top_level_unit(v: Node, root: Cluster) -> Node | Cluster:
+    """The outermost frame (a child of *root*) containing *v*, or *v* itself
+    when it sits directly in the root."""
+    unit: Node | Cluster = v
+    c = v.cluster
+    while c is not None and c is not root:
+        unit = c
+        c = c.cluster
+    return unit
+
+
+def add_frame_sequence_edges(CG: ClusterGraph, H: nx.MultiDiGraph[Node]) -> None:
+    """Rank frames as stages of the flow (nodebpy divergence).
+
+    With plain nesting constraints a frame only has to enclose its own
+    members, so a downstream frame's first nodes are ranked right next to the
+    upstream frame's last ones and the two frames share columns — which
+    forces them to be stacked vertically, producing a staircase of frames
+    instead of a left-to-right flow. This adds, for every link between two
+    top-level units (a frame, or a node outside every frame), a constraint
+    from the source unit's right border to the target unit's left border:
+    every node of a frame comes after every node of the frame (or the
+    intermediate node) feeding it. Nodes without predecessors (inputs and
+    values serving one consumer) and without successors are exempt so they
+    stay next to their consumer / producer; units on a cycle of the quotient
+    graph are left to the plain nesting constraints.
+    """
+    G = CG.G
+    root = next(c for c in CG.S if not CG.T.pred[c])
+    unit_of = {v: _top_level_unit(v, root) for v in G}
+
+    Q: nx.DiGraph[Node | Cluster] = nx.DiGraph()
+    Q.add_nodes_from(set(unit_of.values()))
+    for u, v in G.edges():
+        a, b = unit_of[u], unit_of[v]
+        if a is not b:
+            Q.add_edge(a, b)
+
+    scc_of = {
+        n: i for i, comp in enumerate(nx.strongly_connected_components(Q)) for n in comp
+    }
+    for a, b in Q.edges():
+        if scc_of[a] == scc_of[b]:
+            continue
+        a_is_frame = isinstance(a, Cluster)
+        b_is_frame = isinstance(b, Cluster)
+        if not a_is_frame and not b_is_frame:
+            continue
+        if not a_is_frame and not G.pred[a]:
+            continue
+        if not b_is_frame and not G.succ[b]:
+            continue
+        tail = a.right if isinstance(a, Cluster) else a
+        head = b.left if isinstance(b, Cluster) else b
+        H.add_edge(tail, head)
+        CG.state.frame_sequence.append(
+            (
+                frozenset(v for v in G if unit_of[v] is a),
+                frozenset(v for v in G if unit_of[v] is b),
+            )
+        )
 
 
 @cache

@@ -332,8 +332,9 @@ def test_locations_are_quantized():
 
 class TestSocketOffsets:
     def test_outputs_above_inputs(self):
+        """A conventionally drawn node lists its outputs above its inputs."""
         tree = bpy.data.node_groups.new("Offsets", "GeometryNodeTree")
-        node = tree.nodes.new("GeometryNodeSetPosition")
+        node = tree.nodes.new("ShaderNodeMath")
 
         output_offsets = [
             calculate_socket_offset_y(s) for s in node.outputs if s.enabled
@@ -342,6 +343,17 @@ class TestSocketOffsets:
 
         assert all(offset < 0 for offset in output_offsets + input_offsets)
         assert max(input_offsets) < min(output_offsets)
+
+    def test_aligned_output_shares_input_row(self):
+        """Set Position is drawn from its declaration: the Geometry output
+        sits on the Geometry input's row, above the remaining inputs."""
+        tree = bpy.data.node_groups.new("OffsetsAligned", "GeometryNodeTree")
+        node = tree.nodes.new("GeometryNodeSetPosition")
+
+        geometry_out = calculate_socket_offset_y(node.outputs["Geometry"])
+        input_offsets = [calculate_socket_offset_y(s) for s in node.inputs if s.enabled]
+        assert geometry_out == input_offsets[0]
+        assert all(offset < geometry_out for offset in input_offsets[1:])
 
     def test_inputs_ordered_top_to_bottom(self):
         tree = bpy.data.node_groups.new("OffsetsOrder", "GeometryNodeTree")
@@ -390,3 +402,157 @@ def test_fallback_warns_and_arranges(monkeypatch):
     builder = _build_chain("FallbackRaise")
     with pytest.raises(ImportError, match="something else"):
         arrange(builder.tree, "sugiyama")
+
+
+def _span(nodes) -> tuple[float, float]:
+    xs = [n.location.x for n in nodes]
+    ys = [n.location.y for n in nodes]
+    return max(xs) - min(xs), max(ys) - min(ys)
+
+
+def _members(tree, frame_name: str):
+    frame = tree.nodes[frame_name]
+    return [n for n in tree.nodes if n.parent == frame]
+
+
+def test_sequential_frames_line_up_left_to_right():
+    """Two frames linked in sequence occupy disjoint column ranges — every
+    node of the downstream frame sits right of every node of the upstream
+    one and of the node between them — instead of sharing columns and
+    stacking; without the option the frames overlap horizontally."""
+
+    def build(name: str):
+        with TreeBuilder(name, arrange=None) as tree:
+            geo = tree.inputs.geometry()
+            with g.Frame("Stage A") as a:
+                x = g.SetPosition(geometry=geo, offset=(0.0, 0.0, 1.0))
+                x = g.SetPosition(geometry=x, offset=(0.0, 1.0, 0.0))
+            between = g.RealizeInstances(geometry=x)
+            with g.Frame("Stage B") as b:
+                y = g.SetPosition(geometry=between, offset=(1.0, 0.0, 0.0))
+                y = g.SetPosition(geometry=y, offset=(0.0, 0.0, 2.0))
+                y = g.SetPosition(geometry=y, offset=(0.0, 0.0, 3.0))
+            y >> tree.outputs.geometry()
+        return tree.tree, a.node.name, b.node.name, between.node
+
+    tree, a_name, b_name, between = build("SeqFrames")
+    arrange(tree, SugiyamaOptions(sequential_frames=True))
+    a_right = max(n.location.x + n.width for n in _members(tree, a_name))
+    b_left = min(n.location.x for n in _members(tree, b_name))
+    assert a_right < between.location.x < b_left
+
+    tree, a_name, b_name, between = build("SeqFramesOff")
+    arrange(tree, SugiyamaOptions(sequential_frames=False))
+    a_right = max(n.location.x + n.width for n in _members(tree, a_name))
+    b_left = min(n.location.x for n in _members(tree, b_name))
+    # Plain nesting only keeps each frame around its own nodes: B's first
+    # node ranks right after the node between, next to A's last column.
+    assert b_left < between.location.x + between.width + 200
+
+
+def test_sequential_frames_keep_parallel_frames_stacked():
+    """Frames with no links between them are parallel branches: they still
+    share columns (stack vertically) rather than being pushed apart."""
+    with TreeBuilder("ParallelFrames", arrange=None) as tree:
+        geo = tree.inputs.geometry()
+        with g.Frame("Branch A") as a:
+            x = g.SetPosition(geometry=geo, offset=(0.0, 0.0, 1.0))
+        with g.Frame("Branch B") as b:
+            y = g.SetPosition(geometry=geo, offset=(0.0, 1.0, 0.0))
+        g.JoinGeometry(geometry=[x, y]) >> tree.outputs.geometry()
+    arrange(tree.tree)
+    (ax,) = {round(n.location.x) for n in _members(tree.tree, a.node.name)}
+    (bx,) = {round(n.location.x) for n in _members(tree.tree, b.node.name)}
+    assert ax == bx
+
+
+def _fan_in(name: str, feeders: int):
+    """A group node with ``feeders`` float inputs, each fed by its own
+    Value -> Math chain: network-simplex ranking stacks every Math node in
+    the column before the group node."""
+    with TreeBuilder(f"{name} Inner", arrange=None) as inner:
+        total = None
+        for k in range(feeders):
+            value = inner.inputs.float(f"In {k}", 0.0)
+            total = value if total is None else total + value
+        assert total is not None
+        total >> inner.outputs.float("Sum")
+
+    with TreeBuilder(name, arrange=None) as outer:
+        group = g.Group()
+        group.node.node_tree = inner.tree
+        for k in range(feeders):
+            g.Math.multiply(g.Value(float(k)), 2.0) >> group.i[f"In {k}"]
+        group.o["Sum"] >> outer.outputs.float("Sum")
+    return outer.tree
+
+
+def test_balance_heights_spreads_fan_in():
+    """With balancing, the Math nodes of a wide fan-in spread over several
+    columns (their Value feeders moving with them) and the drawing is
+    shorter and closer to landscape than the single tall column plain
+    ranking gives."""
+    plain = _fan_in("FanInPlain", 12)
+    arrange(plain, SugiyamaOptions(balance_heights=False, add_reroutes=True))
+    math_x = {
+        round(n.location.x) for n in plain.nodes if n.bl_idname == "ShaderNodeMath"
+    }
+    assert len(math_x) == 1
+    _, plain_height = _span([n for n in plain.nodes if n.bl_idname != "NodeReroute"])
+
+    balanced = _fan_in("FanInBalanced", 12)
+    arrange(balanced, SugiyamaOptions(balance_heights=True, add_reroutes=True))
+    math_x = {
+        round(n.location.x) for n in balanced.nodes if n.bl_idname == "ShaderNodeMath"
+    }
+    assert len(math_x) > 1
+    real = [n for n in balanced.nodes if n.bl_idname != "NodeReroute"]
+    width, height = _span(real)
+    assert height < plain_height
+    # Every link still flows left to right.
+    for link in balanced.links:
+        assert link.from_node.location.x < link.to_node.location.x
+
+
+def test_reroute_gap_is_a_fraction_of_the_margin():
+    """Consecutive reroutes / dummy nodes in a column are spaced by the
+    reroute fraction of the vertical margin; anything involving a real node
+    keeps the full margin."""
+    from mathutils import Vector
+
+    from nodebpy.lib.nodearrange.arrange.graph import Kind, Node
+    from nodebpy.lib.nodearrange.arrange.y_coords import vertical_gap
+    from nodebpy.lib.nodearrange.config import LayoutState, Settings
+
+    tree = bpy.data.node_groups.new("GapProbe", "GeometryNodeTree")
+    state = LayoutState(ntree=tree, settings=Settings(reroute_margin_y_fac=0.25))
+    state.margin = Vector((30.0, 40.0))
+    dummy_a, dummy_b = Node(type=Kind.DUMMY), Node(type=Kind.DUMMY)
+    real = Node(tree.nodes.new("GeometryNodeInputIndex"))
+    assert vertical_gap(dummy_a, dummy_b, state) == pytest.approx(10.0)
+    assert vertical_gap(real, dummy_a, state) == pytest.approx(40.0)
+    assert vertical_gap(dummy_b, real, state) == pytest.approx(40.0)
+    bpy.data.node_groups.remove(tree)
+
+
+def test_links_into_collapsed_panels_order_nodes():
+    """A link into a socket of a closed panel (``is_hidden`` for Blender)
+    still places its producer before the consumer."""
+    with TreeBuilder("PanelInner", arrange=None) as inner:
+        geo = inner.inputs.geometry()
+        with inner.inputs.panel("Tuning", default_closed=True):
+            factor = inner.inputs.float("Factor", 1.0)
+        g.SetPosition(geometry=geo, offset=g.CombineXYZ(x=factor)) >> (
+            inner.outputs.geometry()
+        )
+
+    with TreeBuilder("PanelOuter", arrange=None) as outer:
+        group = g.Group()
+        group.node.node_tree = inner.tree
+        outer.inputs.geometry() >> group.i["Geometry"]
+        producer = g.Math.add(g.Value(1.0), 2.0)
+        producer >> group.i["Factor"]
+        group.o["Geometry"] >> outer.outputs.geometry()
+
+    arrange(outer.tree)
+    assert producer.node.location.x + producer.node.width < group.node.location.x

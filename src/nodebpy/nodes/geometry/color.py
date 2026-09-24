@@ -61,7 +61,7 @@ class Gamma(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         gamma: InputFloat = 1.0,
     ):
         super().__init__()
@@ -117,7 +117,7 @@ class RGBCurves(BaseNode):
     def __init__(
         self,
         fac: InputFloat = 1.0,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
     ):
         super().__init__()
         key_args = {"Fac": fac, "Color": color}

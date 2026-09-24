@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, ClassVar, Literal, Self, TypeVar, cast
 
 import bpy
@@ -31,7 +32,7 @@ from ._utils import (
     resolve_socket_key,
     socket_key,
 )
-from .layout import ArrangeMethod
+from .layout import _DEFAULT_SPLIT_INPUTS, ArrangeMethod
 from .layout import arrange as _arrange_nodes
 from .socket import (
     BooleanSocket,
@@ -1106,12 +1107,29 @@ class TreeBuilder[TreeT: NodeTree]:
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         ignore_visibility: bool = False,
-        split_inputs: bool = False,
+        split_inputs: bool | None = None,
+        clear: bool = False,
     ):
+        # ``clear`` rebuilds in place: the tree is emptied (nodes, links and
+        # interface) before the body runs, keeping the datablock so modifiers,
+        # group nodes and pinned editors that reference it stay attached. With
+        # a name, an existing group of that name and tree type is reused
+        # instead of creating a ``Name.001`` duplicate; a group of another
+        # tree type is left alone and a new one is created as usual.
+        # Tree-level properties (description, color_tag, is_tool, fake user,
+        # ...) are kept: only the contents are rebuilt.
         if isinstance(tree, str):
-            self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
+            existing = bpy.data.node_groups.get(tree) if clear else None
+            if existing is not None and existing.bl_idname == tree_type:
+                self.tree = existing
+            else:
+                self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
         else:
             self.tree = tree  # type: ignore
+        if clear:
+            assert self.tree.interface is not None
+            self.tree.nodes.clear()
+            self.tree.interface.clear()
 
         self._menu_defaults: list[_MenuDefault] = []
         self._exited = False
@@ -1131,7 +1149,8 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
-        split_inputs: bool = False,
+        split_inputs: bool | None = None,
+        clear: bool = False,
     ) -> TreeBuilder[GeometryNodeTree]:
         """Create a geometry node tree."""
         return cast(
@@ -1143,6 +1162,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 arrange=arrange,
                 fake_user=fake_user,
                 split_inputs=split_inputs,
+                clear=clear,
             ),
         )
 
@@ -1154,7 +1174,8 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
-        split_inputs: bool = False,
+        split_inputs: bool | None = None,
+        clear: bool = False,
     ) -> TreeBuilder[ShaderNodeTree]:
         """Create a shader node tree."""
         return cast(
@@ -1166,6 +1187,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 arrange=arrange,
                 fake_user=fake_user,
                 split_inputs=split_inputs,
+                clear=clear,
             ),
         )
 
@@ -1177,7 +1199,8 @@ class TreeBuilder[TreeT: NodeTree]:
         collapse: bool = False,
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
-        split_inputs: bool = False,
+        split_inputs: bool | None = None,
+        clear: bool = False,
     ) -> TreeBuilder[CompositorNodeTree]:
         """Create a compositor node tree."""
         return cast(
@@ -1189,6 +1212,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 arrange=arrange,
                 fake_user=fake_user,
                 split_inputs=split_inputs,
+                clear=clear,
             ),
         )
 
@@ -1214,6 +1238,7 @@ class TreeBuilder[TreeT: NodeTree]:
         top_level: Literal["with", "class"] = "with",
         format: bool = True,
         nodebpy_pkg: str = "nodebpy",
+        in_place: bool = False,
     ) -> str:
         """Generate Python source that recreates this tree using nodebpy.
 
@@ -1231,6 +1256,7 @@ class TreeBuilder[TreeT: NodeTree]:
             top_level=top_level,
             format=format,
             nodebpy_pkg=nodebpy_pkg,
+            in_place=in_place,
         )
 
     def to_mermaid(self, fenced: bool = True) -> str:
@@ -1252,6 +1278,37 @@ class TreeBuilder[TreeT: NodeTree]:
 
         return to_mermaid(self, fenced=fenced)
 
+    def to_plot(
+        self,
+        filepath: str | Path,
+        *,
+        title: str | None = None,
+        dpi: int = 150,
+        node: bool = False,
+        open_panels: bool = False,
+        width: float | None = None,
+        axes: bool = False,
+    ) -> Path:
+        """Draw this tree to an image, styled like Blender's node editor,
+        for headless review (``pip install nodebpy[plot]``): its internals,
+        or with ``node=True`` the single group node a user adds to another
+        tree, showing the interface sockets with their default values.
+
+        See :func:`nodebpy.export.to_plot`.
+        """
+        from ..export import to_plot
+
+        return to_plot(
+            self.tree,
+            filepath,
+            title=title,
+            dpi=dpi,
+            node=node,
+            open_panels=open_panels,
+            width=width,
+            axes=axes,
+        )
+
     def activate_tree(self) -> None:
         """Make this tree the active tree for all new node creation."""
         TreeBuilder._tree_contexts.append(self)
@@ -1268,7 +1325,14 @@ class TreeBuilder[TreeT: NodeTree]:
     def __exit__(self, *args):
         # Split before auto-layout, so the created instances get arranged
         # next to their consumers.
-        if self._split_inputs:
+        split = self._split_inputs
+        if split is None:
+            # The ambient default (see default_split_inputs) only reaches
+            # auto-arranged trees: snapshot-positions dumps disable
+            # arrangement and their authored layout — including any authored
+            # Group Input splits — must survive untouched.
+            split = self._arrange is not None and _DEFAULT_SPLIT_INPUTS.get()
+        if split:
             self.split_group_inputs()
         if self._arrange is not None:
             self.arrange()
@@ -1425,10 +1489,11 @@ class TreeBuilder[TreeT: NodeTree]:
     @property
     def group_input_splits(self) -> list[dict]:
         """The extra Group Input instances beyond the primary one, each as
-        ``{"name": ..., "links": [(interface input name, consumer node name,
-        consumer socket key), ...], "location": ..., "parent": ...}`` — the
-        editor convention of several input nodes near their consumers
-        instead of one node trailing long noodles. See the setter."""
+        ``{"name": ..., "label": ..., "links": [(interface input name,
+        consumer node name, consumer socket key), ...], "location": ...,
+        "parent": ...}`` — the editor convention of several input nodes near
+        their consumers instead of one node trailing long noodles. See the
+        setter."""
         splits: list[dict] = []
         for node in self.tree.nodes:
             if node.bl_idname != "NodeGroupInput" or node.name == "Group Input":
@@ -1442,6 +1507,7 @@ class TreeBuilder[TreeT: NodeTree]:
             splits.append(
                 {
                     "name": node.name,
+                    "label": node.label,
                     "links": links,
                     "location": (node.location.x, node.location.y),
                     "parent": node.parent.name if node.parent is not None else None,
@@ -1469,6 +1535,8 @@ class TreeBuilder[TreeT: NodeTree]:
             instance = self.tree.nodes.new("NodeGroupInput")
             assert instance is not None
             instance.name = split["name"]
+            if label := split.get("label"):
+                instance.label = label
             # Authored placement (parent before location — locations are
             # parent-relative); older snapshots without these keys leave the
             # instance where auto-layout or the caller puts it.
@@ -1533,10 +1601,15 @@ class TreeBuilder[TreeT: NodeTree]:
     def split_group_inputs(self) -> None:
         """Split the Group Input node into one instance per consumer node,
         with unused sockets hidden — regenerating the editor style that
-        avoids a single input node trailing long noodles. Runs automatically
-        on context exit (before auto-layout, so the instances are arranged
-        next to their consumers) when the builder was created with
-        ``split_inputs=True``."""
+        avoids a single input node trailing long noodles. Each instance is
+        named (and labelled, so the editor header shows it) after the
+        interface sockets it carries, making it easy to spot when scanning
+        the tree (Blender de-duplicates repeated names with ``.001``
+        suffixes as usual), and parented into its consumer's frame so the
+        arranger's frame clustering keeps the pair together. Runs automatically on context exit (before auto-layout, so
+        the instances are arranged next to their consumers) when the builder
+        was created with ``split_inputs=True``, or inside a
+        :func:`~nodebpy.builder.default_split_inputs` scope."""
         primary = self.tree.nodes.get("Group Input")
         if primary is None:
             return
@@ -1546,11 +1619,27 @@ class TreeBuilder[TreeT: NodeTree]:
                 by_consumer.setdefault(link.to_node.name, []).append(
                     (socket.name, link.to_node.name, socket_key(link.to_socket))
                 )
+
+        def socket_names(links: list[tuple[str, str, str]]) -> str:
+            return ", ".join(dict.fromkeys(name for name, _, _ in links))
+
+        def parent_frame(consumer: str) -> str | None:
+            parent = self.tree.nodes[consumer].parent
+            return parent.name if parent is not None else None
+
         # The first consumer keeps the primary node; each further consumer
-        # gets its own instance (named like Blender would on duplication).
+        # gets its own instance, named after the sockets it carries and
+        # parented into the consumer's frame — frame clustering would
+        # otherwise push an unparented instance away from its consumer when
+        # the tree is arranged.
         self.group_input_splits = [
-            {"name": f"Group Input.{index:03d}", "links": by_consumer[consumer]}
-            for index, consumer in enumerate(list(by_consumer)[1:], start=1)
+            {
+                "name": socket_names(by_consumer[consumer]),
+                "label": socket_names(by_consumer[consumer]),
+                "parent": parent_frame(consumer),
+                "links": by_consumer[consumer],
+            }
+            for consumer in list(by_consumer)[1:]
         ]
         self._hide_unused_input_sockets()
 

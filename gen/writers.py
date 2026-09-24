@@ -43,15 +43,17 @@ class ModuleWriter:
 
     def generate_content(self, config: TreeTypeConfig) -> str:
         print(f"Generating {self.filename} with {len(self.nodes)} nodes...")
-        string = generate_file_header(self.nodes, config)
-        string += "\n\n"
-
+        body = ""
         for node_info in self.nodes:
-            class_code = generate_node_class(node_info, config)
-            string += class_code
-            string += "\n\n"
+            body += generate_node_class(node_info, config)
+            body += "\n\n"
 
-        return string
+        header = generate_file_header(self.nodes, config)
+        if "math." in body:
+            # Defaults that are multiples of pi/tau/e are spelled as
+            # ``math.*`` expressions (see ``nodebpy.export._floats``).
+            header = header.replace("import bpy\n", "import bpy\nimport math\n", 1)
+        return header + "\n\n" + body
 
     @property
     def nodes(self):

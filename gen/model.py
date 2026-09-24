@@ -17,7 +17,12 @@ from .config import (
     TreeTypeConfig,
     class_name_for,
 )
-from .util import format_python_value, get_socket_param_name, normalize_name
+from .util import (
+    fmt_float,
+    format_python_value,
+    get_socket_param_name,
+    normalize_name,
+)
 
 
 @dataclass
@@ -61,7 +66,7 @@ class SocketInfo:
         """Get the Python type hint for a socket."""
         type_map = {
             "NodeSocketFloat": "InputFloat",
-            "NodeSocketIntVector3D": "InputIntegerVector",
+            "NodeSocketIntVector": "InputIntegerVector",
             "NodeSocketInt": "InputInteger",
             "NodeSocketBool": "InputBoolean",
             "NodeSocketVector": "InputVector",
@@ -194,7 +199,7 @@ class PropertyInfo:
                     case "EULER" | "XYZ" | "DIRECTION":
                         default = self.default
                     case _:
-                        default = round(self.default, 3)
+                        default = fmt_float(self.default)
             case "STRING":
                 default = f'"{self.default}"'
             case _:

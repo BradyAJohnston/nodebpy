@@ -129,7 +129,7 @@ class Background(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
         strength: InputFloat = 1.0,
         weight: InputFloat = 0.0,
     ):
@@ -197,9 +197,9 @@ class DiffuseBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
         roughness: InputFloat = 0.0,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
     ):
         super().__init__()
@@ -265,7 +265,7 @@ class Emission(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         strength: InputFloat = 1.0,
         weight: InputFloat = 0.0,
     ):
@@ -351,10 +351,10 @@ class GlassBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         roughness: InputFloat = 0.0,
         ior: InputFloat = 1.5,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
@@ -459,12 +459,12 @@ class GlossyBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
         roughness: InputFloat = 0.5,
         anisotropy: InputFloat = 0.0,
         rotation: InputFloat = 0.0,
-        normal: InputVector = None,
-        tangent: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
+        tangent: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         *,
         distribution: Literal[
@@ -567,11 +567,11 @@ class HairBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
         offset: InputFloat = 0.0,
         roughnessu: InputFloat = 0.1,
         roughnessv: InputFloat = 1.0,
-        tangent: InputVector = None,
+        tangent: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         *,
         component: Literal["Reflection", "Transmission"] = "Reflection",
@@ -749,15 +749,15 @@ class MetallicBSDF(BaseNode):
 
     def __init__(
         self,
-        base_color: InputColor = None,
-        edge_tint: InputColor = None,
-        ior: InputVector = None,
-        extinction: InputVector = None,
+        base_color: InputColor = (0.617, 0.577, 0.54, 1.0),
+        edge_tint: InputColor = (0.695, 0.726, 0.77, 1.0),
+        ior: InputVector = (2.757, 2.513, 2.231),
+        extinction: InputVector = (3.867, 3.404, 3.009),
         roughness: InputFloat = 0.5,
         anisotropy: InputFloat = 0.0,
         rotation: InputFloat = 0.0,
-        normal: InputVector = None,
-        tangent: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
+        tangent: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
@@ -787,13 +787,13 @@ class MetallicBSDF(BaseNode):
     @classmethod
     def physical_conductor(
         cls,
-        ior: InputVector = None,
-        extinction: InputVector = None,
+        ior: InputVector = (2.757, 2.513, 2.231),
+        extinction: InputVector = (3.867, 3.404, 3.009),
         roughness: InputFloat = 0.5,
         anisotropy: InputFloat = 0.0,
         rotation: InputFloat = 0.0,
-        normal: InputVector = None,
-        tangent: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
+        tangent: InputVector = (0.0, 0.0, 0.0),
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
     ) -> "MetallicBSDF":
@@ -814,13 +814,13 @@ class MetallicBSDF(BaseNode):
     @classmethod
     def f82_tint(
         cls,
-        base_color: InputColor = None,
-        edge_tint: InputColor = None,
+        base_color: InputColor = (0.617, 0.577, 0.54, 1.0),
+        edge_tint: InputColor = (0.695, 0.726, 0.77, 1.0),
         roughness: InputFloat = 0.5,
         anisotropy: InputFloat = 0.0,
         rotation: InputFloat = 0.0,
-        normal: InputVector = None,
-        tangent: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
+        tangent: InputVector = (0.0, 0.0, 0.0),
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
     ) -> "MetallicBSDF":
@@ -1143,35 +1143,35 @@ class PrincipledBSDF(BaseNode):
 
     def __init__(
         self,
-        base_color: InputColor = None,
+        base_color: InputColor = (0.8, 0.8, 0.8, 1.0),
         metallic: InputFloat = 0.0,
         roughness: InputFloat = 0.5,
         ior: InputFloat = 1.5,
         alpha: InputFloat = 1.0,
         thin_wall: InputBoolean = False,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         diffuse_roughness: InputFloat = 0.0,
         subsurface_weight: InputFloat = 0.0,
-        subsurface_radius: InputVector = None,
+        subsurface_radius: InputVector = (1.0, 0.2, 0.1),
         subsurface_scale: InputFloat = 0.005,
         subsurface_ior: InputFloat = 1.4,
         subsurface_anisotropy: InputFloat = 0.0,
         specular_ior_level: InputFloat = 0.5,
-        specular_tint: InputColor = None,
+        specular_tint: InputColor = (1.0, 1.0, 1.0, 1.0),
         anisotropic: InputFloat = 0.0,
         anisotropic_rotation: InputFloat = 0.0,
-        tangent: InputVector = None,
+        tangent: InputVector = (0.0, 0.0, 0.0),
         transmission_weight: InputFloat = 0.0,
         coat_weight: InputFloat = 0.0,
         coat_roughness: InputFloat = 0.03,
         coat_ior: InputFloat = 1.5,
-        coat_tint: InputColor = None,
-        coat_normal: InputVector = None,
+        coat_tint: InputColor = (1.0, 1.0, 1.0, 1.0),
+        coat_normal: InputVector = (0.0, 0.0, 0.0),
         sheen_weight: InputFloat = 0.0,
         sheen_roughness: InputFloat = 0.5,
-        sheen_tint: InputColor = None,
-        emission_color: InputColor = None,
+        sheen_tint: InputColor = (1.0, 1.0, 1.0, 1.0),
+        emission_color: InputColor = (1.0, 1.0, 1.0, 1.0),
         emission_strength: InputFloat = 0.0,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
@@ -1386,17 +1386,17 @@ class PrincipledHairBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.017513, 0.005763, 0.002059, 1.0),
         melanin: InputFloat = 0.8,
         melanin_redness: InputFloat = 1.0,
-        tint: InputColor = None,
-        absorption_coefficient: InputVector = None,
+        tint: InputColor = (1.0, 1.0, 1.0, 1.0),
+        absorption_coefficient: InputVector = (0.245531, 0.52, 1.365),
         aspect_ratio: InputFloat = 0.85,
         roughness: InputFloat = 0.3,
         radial_roughness: InputFloat = 0.3,
         coat: InputFloat = 0.0,
         ior: InputFloat = 1.55,
-        offset: InputFloat = 0.0349,
+        offset: InputFloat = 0.034906585,
         random_color: InputFloat = 0.0,
         random_roughness: InputFloat = 0.0,
         random: InputFloat = 0.0,
@@ -1508,9 +1508,9 @@ class RayPortalBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
-        position: InputVector = None,
-        direction: InputVector = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
+        position: InputVector = (0.0, 0.0, 0.0),
+        direction: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
     ):
         super().__init__()
@@ -1588,10 +1588,10 @@ class RefractionBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         roughness: InputFloat = 0.0,
         ior: InputFloat = 1.45,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         *,
         distribution: Literal["BECKMANN", "GGX"] = "BECKMANN",
@@ -1675,9 +1675,9 @@ class SheenBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
         roughness: InputFloat = 0.5,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         *,
         distribution: Literal["ASHIKHMIN", "MICROFIBER"] = "MICROFIBER",
@@ -1795,15 +1795,15 @@ class SpecularBSDF(BaseNode):
 
     def __init__(
         self,
-        base_color: InputColor = None,
-        specular: InputColor = None,
+        base_color: InputColor = (0.8, 0.8, 0.8, 1.0),
+        specular: InputColor = (0.03, 0.03, 0.03, 1.0),
         roughness: InputFloat = 0.2,
-        emissive_color: InputColor = None,
+        emissive_color: InputColor = (0.0, 0.0, 0.0, 1.0),
         transparency: InputFloat = 0.0,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         clear_coat: InputFloat = 0.0,
         clear_coat_roughness: InputFloat = 0.0,
-        clear_coat_normal: InputVector = None,
+        clear_coat_normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
     ):
         super().__init__()
@@ -1906,13 +1906,13 @@ class SubsurfaceScattering(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
         scale: InputFloat = 0.005,
-        radius: InputVector = None,
+        radius: InputVector = (1.0, 0.2, 0.1),
         ior: InputFloat = 1.4,
         roughness: InputFloat = 1.0,
         anisotropy: InputFloat = 0.0,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         *,
         falloff: Literal[
@@ -2013,10 +2013,10 @@ class ToonBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
         size: InputFloat = 0.5,
         smooth: InputFloat = 0.0,
-        normal: InputVector = None,
+        normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         *,
         component: Literal["DIFFUSE", "GLOSSY"] = "DIFFUSE",
@@ -2093,8 +2093,8 @@ class TranslucentBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
-        normal: InputVector = None,
+        color: InputColor = (0.8, 0.8, 0.8, 1.0),
+        normal: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
     ):
         super().__init__()
@@ -2149,7 +2149,7 @@ class TransparentBSDF(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = None,
+        color: InputColor = (1.0, 1.0, 1.0, 1.0),
         weight: InputFloat = 0.0,
     ):
         super().__init__()
