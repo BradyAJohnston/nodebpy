@@ -59,12 +59,11 @@ The slides are embedded below, or available directly at [this link](slides.html)
 ## Nodes are great. Writing them with code isn't
 
 ::: incremental
-- Creating a 'runtime' node group requires a large amount of `bpy` code
-  - very difficult to read & reason over what the node tree will look like
+- Creating a node group with python requires _a lot_ of `bpy` code
+  - difficult to read & reason over what the node tree will look like
 - More and more core assets are becoming node trees
   - A `.blend` file is a binary blob
     - no diffs, no code review, minimal version control
-- The raw `bpy` API technically works…
 :::
 
 ::: notes
@@ -72,7 +71,7 @@ Set up the two existing options: bundled .blend assets (opaque, un-diffable) or 
 Both are painful to maintain across Blender versions.
 :::
 
-## How it compares {.smaller .compact-table}
+## Many attempts at solving this {.smaller .compact-table}
 
 |Project | Approach | Direction  | Nodes | PyPI |
 |:--------------|:--------------|---------------|---------------|:-------------:|
