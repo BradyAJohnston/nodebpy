@@ -40,7 +40,6 @@
 - [Using `nodebpy`](using.llms.md)
 - [Node API Design](node-api.llms.md)
 - [Comparing the API](comparisons.llms.md)
-- [Write Your Nodes With Code](talk.llms.md)
 - [index](index.llms.md)
 - [Asset Node Groups](assets.llms.md)
 - [Writing Node Trees](introduction.llms.md)
