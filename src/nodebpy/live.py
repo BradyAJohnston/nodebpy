@@ -327,6 +327,8 @@ def run_source(
         and ``bpy``). A ``tree`` it carries over from an earlier run's
         :attr:`RunResult.namespace` is not mistaken for this run's tree.
 
+    Notes
+    -----
     A run that fails partway through a ``with g.tree(..., clear=True)`` body
     leaves that tree half built (the class form is atomic: the old build is
     restored). Groups the failed run created under other names are left
