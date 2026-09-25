@@ -46,9 +46,22 @@ Exporting node trees to code.
 |----|----|
 | [export.to_python](../reference/export.to_python.llms.md#nodebpy.export.to_python) | Generate Python code that recreates the given node tree using nodebpy. |
 | [export.to_mermaid](../reference/export.to_mermaid.llms.md#nodebpy.export.to_mermaid) | Generate a Mermaid diagram string from a node tree. |
-| [export.to_plot](../reference/export.to_plot.llms.md#nodebpy.export.to_plot) | Draw the tree’s current layout to an image file. |
+| [export.to_plot](../reference/export.to_plot.llms.md#nodebpy.export.to_plot) | Draw a node tree to an image file, Blender-style. |
 | [export.serialize_library](../reference/export.serialize_library.llms.md#nodebpy.export.serialize_library) | `tree_clipper` JSON data for each tree in `trees` (nested groups |
 | [export.compare_libraries](../reference/export.compare_libraries.llms.md#nodebpy.export.compare_libraries) | Differences between two :func:`serialize_library` captures. |
+
+## Live
+
+Re-running source safely in a live session.
+
+|  |  |
+|----|----|
+| [live.run_source](../reference/live.run_source.llms.md#nodebpy.live.run_source) | Execute nodebpy source for a live re-run. |
+| [live.RunResult](../reference/live.RunResult.llms.md#nodebpy.live.RunResult) | What :func:`run_source` produced. |
+| [live.preserve_modifier_inputs](../reference/live.preserve_modifier_inputs.llms.md#nodebpy.live.preserve_modifier_inputs) | Keep Geometry Nodes modifier input values across an interface rebuild. |
+| [live.stash_groups](../reference/live.stash_groups.llms.md#nodebpy.live.stash_groups) | Rename each existing `bpy.data.node_groups[name]` to `"<name>.stale"` |
+| [live.GroupStash](../reference/live.GroupStash.llms.md#nodebpy.live.GroupStash) | Existing node groups renamed out of the way before a run. |
+| [live.group_names_in_source](../reference/live.group_names_in_source.llms.md#nodebpy.live.group_names_in_source) | Literal `_name` values assigned in class bodies of `code`. |
 
 ## Geometry Nodes
 

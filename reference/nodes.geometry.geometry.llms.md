@@ -114,12 +114,12 @@
 ``` python
 Arc(
     resolution=16,
-    start=None,
-    middle=None,
-    end=None,
+    start=(-1.0, 0.0, 0.0),
+    middle=(0.0, 2.0, 0.0),
+    end=(1.0, 0.0, 0.0),
     radius=1.0,
     start_angle=0.0,
-    sweep_angle=5.4978,
+    sweep_angle=7 * math.pi / 4,
     offset_angle=0.0,
     connect_center=False,
     invert_arc=False,
@@ -132,18 +132,18 @@ Generate a poly spline arc
 
 #### Parameters
 
-| Name           | Type         | Description    | Default  |
-|----------------|--------------|----------------|----------|
-| resolution     | InputInteger | Resolution     | `16`     |
-| start          | InputVector  | Start          | `None`   |
-| middle         | InputVector  | Middle         | `None`   |
-| end            | InputVector  | End            | `None`   |
-| radius         | InputFloat   | Radius         | `1.0`    |
-| start_angle    | InputFloat   | Start Angle    | `0.0`    |
-| sweep_angle    | InputFloat   | Sweep Angle    | `5.4978` |
-| offset_angle   | InputFloat   | Offset Angle   | `0.0`    |
-| connect_center | InputBoolean | Connect Center | `False`  |
-| invert_arc     | InputBoolean | Invert Arc     | `False`  |
+| Name           | Type         | Description    | Default            |
+|----------------|--------------|----------------|--------------------|
+| resolution     | InputInteger | Resolution     | `16`               |
+| start          | InputVector  | Start          | `(-1.0, 0.0, 0.0)` |
+| middle         | InputVector  | Middle         | `(0.0, 2.0, 0.0)`  |
+| end            | InputVector  | End            | `(1.0, 0.0, 0.0)`  |
+| radius         | InputFloat   | Radius         | `1.0`              |
+| start_angle    | InputFloat   | Start Angle    | `0.0`              |
+| sweep_angle    | InputFloat   | Sweep Angle    | `7 * math.pi / 4`  |
+| offset_angle   | InputFloat   | Offset Angle   | `0.0`              |
+| connect_center | InputBoolean | Connect Center | `False`            |
+| invert_arc     | InputBoolean | Invert Arc     | `False`            |
 
 #### Attributes
 
@@ -169,9 +169,9 @@ Generate a poly spline arc
 ``` python
 points(
     resolution=16,
-    start=None,
-    middle=None,
-    end=None,
+    start=(-1.0, 0.0, 0.0),
+    middle=(0.0, 2.0, 0.0),
+    end=(1.0, 0.0, 0.0),
     offset_angle=0.0,
     connect_center=False,
     invert_arc=False,
@@ -187,7 +187,7 @@ radius(
     resolution=16,
     radius=1.0,
     start_angle=0.0,
-    sweep_angle=5.4978,
+    sweep_angle=7 * math.pi / 4,
     connect_center=False,
     invert_arc=False,
 )
@@ -282,10 +282,10 @@ The item is auto-named after the source socket unless `name` is given.
 ``` python
 BezierSegment(
     resolution=16,
-    start=None,
-    start_handle=None,
-    end_handle=None,
-    end=None,
+    start=(-1.0, 0.0, 0.0),
+    start_handle=(-0.5, 0.5, 0.0),
+    end_handle=(0.0, 0.0, 0.0),
+    end=(1.0, 0.0, 0.0),
     *,
     mode='POSITION',
 )
@@ -295,13 +295,13 @@ Generate a 2D Bézier spline from the given control points and handles
 
 #### Parameters
 
-| Name         | Type         | Description  | Default |
-|--------------|--------------|--------------|---------|
-| resolution   | InputInteger | Resolution   | `16`    |
-| start        | InputVector  | Start        | `None`  |
-| start_handle | InputVector  | Start Handle | `None`  |
-| end_handle   | InputVector  | End Handle   | `None`  |
-| end          | InputVector  | End          | `None`  |
+| Name         | Type         | Description  | Default            |
+|--------------|--------------|--------------|--------------------|
+| resolution   | InputInteger | Resolution   | `16`               |
+| start        | InputVector  | Start        | `(-1.0, 0.0, 0.0)` |
+| start_handle | InputVector  | Start Handle | `(-0.5, 0.5, 0.0)` |
+| end_handle   | InputVector  | End Handle   | `(0.0, 0.0, 0.0)`  |
+| end          | InputVector  | End          | `(1.0, 0.0, 0.0)`  |
 
 #### Attributes
 
@@ -325,7 +325,13 @@ Generate a 2D Bézier spline from the given control points and handles
 ##### offset
 
 ``` python
-offset(resolution=16, start=None, start_handle=None, end_handle=None, end=None)
+offset(
+    resolution=16,
+    start=(-1.0, 0.0, 0.0),
+    start_handle=(-0.5, 0.5, 0.0),
+    end_handle=(0.0, 0.0, 0.0),
+    end=(1.0, 0.0, 0.0),
+)
 ```
 
 Create Bézier Segment with operation ‘Offset’. The start and end handles are offsets from the spline’s control points
@@ -335,10 +341,10 @@ Create Bézier Segment with operation ‘Offset’. The start and end handles ar
 ``` python
 position(
     resolution=16,
-    start=None,
-    start_handle=None,
-    end_handle=None,
-    end=None,
+    start=(-1.0, 0.0, 0.0),
+    start_handle=(-0.5, 0.5, 0.0),
+    end_handle=(0.0, 0.0, 0.0),
+    end=(1.0, 0.0, 0.0),
 )
 ```
 
@@ -548,19 +554,19 @@ Create a mesh that encloses all points in the input geometry with the smallest n
 ### Cube
 
 ``` python
-Cube(size=None, vertices_x=2, vertices_y=2, vertices_z=2)
+Cube(size=(1.0, 1.0, 1.0), vertices_x=2, vertices_y=2, vertices_z=2)
 ```
 
 Generate a cuboid mesh with variable side lengths and subdivisions
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| size       | InputVector  | Size        | `None`  |
-| vertices_x | InputInteger | Vertices X  | `2`     |
-| vertices_y | InputInteger | Vertices Y  | `2`     |
-| vertices_z | InputInteger | Vertices Z  | `2`     |
+| Name       | Type         | Description | Default           |
+|------------|--------------|-------------|-------------------|
+| size       | InputVector  | Size        | `(1.0, 1.0, 1.0)` |
+| vertices_x | InputInteger | Vertices X  | `2`               |
+| vertices_y | InputInteger | Vertices Y  | `2`               |
+| vertices_z | InputInteger | Vertices Z  | `2`               |
 
 #### Attributes
 
@@ -594,9 +600,9 @@ Generate a cuboid mesh with variable side lengths and subdivisions
 ``` python
 CurveCircle(
     resolution=32,
-    point_1=None,
-    point_2=None,
-    point_3=None,
+    point_1=(-1.0, 0.0, 0.0),
+    point_2=(0.0, 1.0, 0.0),
+    point_3=(1.0, 0.0, 0.0),
     radius=1.0,
     *,
     mode='RADIUS',
@@ -607,13 +613,13 @@ Generate a poly spline circle
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| resolution | InputInteger | Resolution  | `32`    |
-| point_1    | InputVector  | Point 1     | `None`  |
-| point_2    | InputVector  | Point 2     | `None`  |
-| point_3    | InputVector  | Point 3     | `None`  |
-| radius     | InputFloat   | Radius      | `1.0`   |
+| Name       | Type         | Description | Default            |
+|------------|--------------|-------------|--------------------|
+| resolution | InputInteger | Resolution  | `32`               |
+| point_1    | InputVector  | Point 1     | `(-1.0, 0.0, 0.0)` |
+| point_2    | InputVector  | Point 2     | `(0.0, 1.0, 0.0)`  |
+| point_3    | InputVector  | Point 3     | `(1.0, 0.0, 0.0)`  |
+| radius     | InputFloat   | Radius      | `1.0`              |
 
 #### Attributes
 
@@ -637,7 +643,12 @@ Generate a poly spline circle
 ##### points
 
 ``` python
-points(resolution=32, point_1=None, point_2=None, point_3=None)
+points(
+    resolution=32,
+    point_1=(-1.0, 0.0, 0.0),
+    point_2=(0.0, 1.0, 0.0),
+    point_3=(1.0, 0.0, 0.0),
+)
 ```
 
 Create Curve Circle with operation ‘Points’. Define the radius and location with three points
@@ -707,19 +718,26 @@ Retrieve the length of all splines added together
 ### CurveLine
 
 ``` python
-CurveLine(start=None, end=None, direction=None, length=1.0, *, mode='POINTS')
+CurveLine(
+    start=(0.0, 0.0, 0.0),
+    end=(0.0, 0.0, 1.0),
+    direction=(0.0, 0.0, 1.0),
+    length=1.0,
+    *,
+    mode='POINTS',
+)
 ```
 
 Generate a poly spline line with two points
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| start     | InputVector | Start       | `None`  |
-| end       | InputVector | End         | `None`  |
-| direction | InputVector | Direction   | `None`  |
-| length    | InputFloat  | Length      | `1.0`   |
+| Name      | Type        | Description | Default           |
+|-----------|-------------|-------------|-------------------|
+| start     | InputVector | Start       | `(0.0, 0.0, 0.0)` |
+| end       | InputVector | End         | `(0.0, 0.0, 1.0)` |
+| direction | InputVector | Direction   | `(0.0, 0.0, 1.0)` |
+| length    | InputFloat  | Length      | `1.0`             |
 
 #### Attributes
 
@@ -743,7 +761,7 @@ Generate a poly spline line with two points
 ##### direction
 
 ``` python
-direction(start=None, direction=None, length=1.0)
+direction(start=(0.0, 0.0, 0.0), direction=(0.0, 0.0, 1.0), length=1.0)
 ```
 
 Create Curve Line with operation ‘Direction’. Define a line with a start point, direction and length
@@ -751,7 +769,7 @@ Create Curve Line with operation ‘Direction’. Define a line with a start poi
 ##### points
 
 ``` python
-points(start=None, end=None)
+points(start=(0.0, 0.0, 0.0), end=(0.0, 0.0, 1.0))
 ```
 
 Create Curve Line with operation ‘Points’. Define the start and end points of the line
@@ -1438,7 +1456,7 @@ Output curves following paths across mesh edges
 ExtrudeMesh(
     mesh=None,
     selection=True,
-    offset=None,
+    offset=(0.0, 0.0, 0.0),
     offset_scale=1.0,
     individual=True,
     *,
@@ -1450,13 +1468,13 @@ Generate new vertices, edges, or faces from selected elements and move them base
 
 #### Parameters
 
-| Name         | Type          | Description  | Default |
-|--------------|---------------|--------------|---------|
-| mesh         | InputGeometry | Mesh         | `None`  |
-| selection    | InputBoolean  | Selection    | `True`  |
-| offset       | InputVector   | Offset       | `None`  |
-| offset_scale | InputFloat    | Offset Scale | `1.0`   |
-| individual   | InputBoolean  | Individual   | `True`  |
+| Name         | Type          | Description  | Default           |
+|--------------|---------------|--------------|-------------------|
+| mesh         | InputGeometry | Mesh         | `None`            |
+| selection    | InputBoolean  | Selection    | `True`            |
+| offset       | InputVector   | Offset       | `(0.0, 0.0, 0.0)` |
+| offset_scale | InputFloat    | Offset Scale | `1.0`             |
+| individual   | InputBoolean  | Individual   | `True`            |
 
 #### Attributes
 
@@ -1481,7 +1499,7 @@ Generate new vertices, edges, or faces from selected elements and move them base
 ##### edges
 
 ``` python
-edges(mesh=None, selection=True, offset=None, offset_scale=1.0)
+edges(mesh=None, selection=True, offset=(0.0, 0.0, 0.0), offset_scale=1.0)
 ```
 
 Create Extrude Mesh with operation ‘Edges’.
@@ -1489,7 +1507,13 @@ Create Extrude Mesh with operation ‘Edges’.
 ##### faces
 
 ``` python
-faces(mesh=None, selection=True, offset=None, offset_scale=1.0, individual=True)
+faces(
+    mesh=None,
+    selection=True,
+    offset=(0.0, 0.0, 0.0),
+    offset_scale=1.0,
+    individual=True,
+)
 ```
 
 Create Extrude Mesh with operation ‘Faces’.
@@ -1497,7 +1521,7 @@ Create Extrude Mesh with operation ‘Faces’.
 ##### vertices
 
 ``` python
-vertices(mesh=None, selection=True, offset=None, offset_scale=1.0)
+vertices(mesh=None, selection=True, offset=(0.0, 0.0, 0.0), offset_scale=1.0)
 ```
 
 Create Extrude Mesh with operation ‘Vertices’.
@@ -1653,7 +1677,7 @@ Reverse the order of the vertices and edges of selected faces, flipping their no
 GeometryProximity(
     target=None,
     group_id=0,
-    source_position=None,
+    source_position=(0.0, 0.0, 0.0),
     sample_group_id=0,
     *,
     target_element='FACES',
@@ -1664,12 +1688,12 @@ Compute the closest location on the target geometry
 
 #### Parameters
 
-| Name            | Type          | Description     | Default |
-|-----------------|---------------|-----------------|---------|
-| target          | InputGeometry | Geometry        | `None`  |
-| group_id        | InputInteger  | Group ID        | `0`     |
-| source_position | InputVector   | Sample Position | `None`  |
-| sample_group_id | InputInteger  | Sample Group ID | `0`     |
+| Name            | Type          | Description     | Default           |
+|-----------------|---------------|-----------------|-------------------|
+| target          | InputGeometry | Geometry        | `None`            |
+| group_id        | InputInteger  | Group ID        | `0`               |
+| source_position | InputVector   | Sample Position | `(0.0, 0.0, 0.0)` |
+| sample_group_id | InputInteger  | Sample Group ID | `0`               |
 
 #### Attributes
 
@@ -1980,8 +2004,8 @@ InstanceOnPoints(
     instance=None,
     pick_instance=False,
     instance_index=0,
-    rotation=None,
-    scale=None,
+    rotation=(0.0, 0.0, 0.0),
+    scale=(1.0, 1.0, 1.0),
 )
 ```
 
@@ -1989,15 +2013,15 @@ Generate a reference to geometry at each of the input points, without duplicatin
 
 #### Parameters
 
-| Name           | Type          | Description    | Default |
-|----------------|---------------|----------------|---------|
-| points         | InputGeometry | Points         | `None`  |
-| selection      | InputBoolean  | Selection      | `True`  |
-| instance       | InputGeometry | Instance       | `None`  |
-| pick_instance  | InputBoolean  | Pick Instance  | `False` |
-| instance_index | InputInteger  | Instance Index | `0`     |
-| rotation       | InputRotation | Rotation       | `None`  |
-| scale          | InputVector   | Scale          | `None`  |
+| Name           | Type          | Description    | Default           |
+|----------------|---------------|----------------|-------------------|
+| points         | InputGeometry | Points         | `None`            |
+| selection      | InputBoolean  | Selection      | `True`            |
+| instance       | InputGeometry | Instance       | `None`            |
+| pick_instance  | InputBoolean  | Pick Instance  | `False`           |
+| instance_index | InputInteger  | Instance Index | `0`               |
+| rotation       | InputRotation | Rotation       | `(0.0, 0.0, 0.0)` |
+| scale          | InputVector   | Scale          | `(1.0, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -2031,7 +2055,12 @@ Generate a reference to geometry at each of the input points, without duplicatin
 ### InstancesToPoints
 
 ``` python
-InstancesToPoints(instances=None, selection=True, position=None, radius=0.05)
+InstancesToPoints(
+    instances=None,
+    selection=True,
+    position=(0.0, 0.0, 0.0),
+    radius=0.05,
+)
 ```
 
     Generate points at the origins of instances.
@@ -2081,10 +2110,10 @@ Note: Nested instances are not affected by this node
 ``` python
 InterpolateCurves(
     guide_curves=None,
-    guide_up=None,
+    guide_up=(0.0, 0.0, 0.0),
     guide_group_id=0,
     points=None,
-    point_up=None,
+    point_up=(0.0, 0.0, 0.0),
     point_group_id=0,
     max_neighbors=4,
 )
@@ -2094,15 +2123,15 @@ Generate new curves on points by interpolating between existing curves
 
 #### Parameters
 
-| Name           | Type          | Description    | Default |
-|----------------|---------------|----------------|---------|
-| guide_curves   | InputGeometry | Guide Curves   | `None`  |
-| guide_up       | InputVector   | Guide Up       | `None`  |
-| guide_group_id | InputInteger  | Guide Group ID | `0`     |
-| points         | InputGeometry | Points         | `None`  |
-| point_up       | InputVector   | Point Up       | `None`  |
-| point_group_id | InputInteger  | Point Group ID | `0`     |
-| max_neighbors  | InputInteger  | Max Neighbors  | `4`     |
+| Name           | Type          | Description    | Default           |
+|----------------|---------------|----------------|-------------------|
+| guide_curves   | InputGeometry | Guide Curves   | `None`            |
+| guide_up       | InputVector   | Guide Up       | `(0.0, 0.0, 0.0)` |
+| guide_group_id | InputInteger  | Guide Group ID | `0`               |
+| points         | InputGeometry | Points         | `None`            |
+| point_up       | InputVector   | Point Up       | `(0.0, 0.0, 0.0)` |
+| point_group_id | InputInteger  | Point Group ID | `0`               |
+| max_neighbors  | InputInteger  | Max Neighbors  | `4`               |
 
 #### Attributes
 
@@ -2484,8 +2513,8 @@ Create Mesh Circle with operation ‘Triangles’.
 MeshLine(
     count=10,
     resolution=1.0,
-    start_location=None,
-    offset=None,
+    start_location=(0.0, 0.0, 0.0),
+    offset=(0.0, 0.0, 1.0),
     *,
     mode='OFFSET',
     count_mode='TOTAL',
@@ -2496,12 +2525,12 @@ Generate vertices in a line and connect them with edges
 
 #### Parameters
 
-| Name           | Type         | Description    | Default |
-|----------------|--------------|----------------|---------|
-| count          | InputInteger | Count          | `10`    |
-| resolution     | InputFloat   | Resolution     | `1.0`   |
-| start_location | InputVector  | Start Location | `None`  |
-| offset         | InputVector  | Offset         | `None`  |
+| Name           | Type         | Description    | Default           |
+|----------------|--------------|----------------|-------------------|
+| count          | InputInteger | Count          | `10`              |
+| resolution     | InputFloat   | Resolution     | `1.0`             |
+| start_location | InputVector  | Start Location | `(0.0, 0.0, 0.0)` |
+| offset         | InputVector  | Offset         | `(0.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -2526,7 +2555,7 @@ Generate vertices in a line and connect them with edges
 ##### end_points
 
 ``` python
-end_points(count=10, start_location=None, offset=None)
+end_points(count=10, start_location=(0.0, 0.0, 0.0), offset=(0.0, 0.0, 1.0))
 ```
 
 Create Mesh Line with operation ‘End Points’. Specify the line’s start and end points
@@ -2534,7 +2563,7 @@ Create Mesh Line with operation ‘End Points’. Specify the line’s start and
 ##### offset
 
 ``` python
-offset(count=10, start_location=None, offset=None)
+offset(count=10, start_location=(0.0, 0.0, 0.0), offset=(0.0, 0.0, 1.0))
 ```
 
 Create Mesh Line with operation ‘Offset’. Specify the offset from one vertex to the next
@@ -2623,7 +2652,7 @@ Create Mesh to Curve with operation ‘Faces’. Convert each mesh face to a cyc
 MeshToPoints(
     mesh=None,
     selection=True,
-    position=None,
+    position=(0.0, 0.0, 0.0),
     radius=0.05,
     *,
     mode='VERTICES',
@@ -2634,12 +2663,12 @@ Generate a point cloud from a mesh’s vertices
 
 #### Parameters
 
-| Name      | Type          | Description | Default |
-|-----------|---------------|-------------|---------|
-| mesh      | InputGeometry | Mesh        | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
-| position  | InputVector   | Position    | `None`  |
-| radius    | InputFloat    | Radius      | `0.05`  |
+| Name      | Type          | Description | Default           |
+|-----------|---------------|-------------|-------------------|
+| mesh      | InputGeometry | Mesh        | `None`            |
+| selection | InputBoolean  | Selection   | `True`            |
+| position  | InputVector   | Position    | `(0.0, 0.0, 0.0)` |
+| radius    | InputFloat    | Radius      | `0.05`            |
 
 #### Attributes
 
@@ -2665,7 +2694,7 @@ Generate a point cloud from a mesh’s vertices
 ##### corners
 
 ``` python
-corners(mesh=None, selection=True, position=None, radius=0.05)
+corners(mesh=None, selection=True, position=(0.0, 0.0, 0.0), radius=0.05)
 ```
 
 Create Mesh to Points with operation ‘Corners’. Create a point in the point cloud for each selected face corner
@@ -2673,7 +2702,7 @@ Create Mesh to Points with operation ‘Corners’. Create a point in the point 
 ##### edges
 
 ``` python
-edges(mesh=None, selection=True, position=None, radius=0.05)
+edges(mesh=None, selection=True, position=(0.0, 0.0, 0.0), radius=0.05)
 ```
 
 Create Mesh to Points with operation ‘Edges’. Create a point in the point cloud for each selected edge
@@ -2681,7 +2710,7 @@ Create Mesh to Points with operation ‘Edges’. Create a point in the point cl
 ##### faces
 
 ``` python
-faces(mesh=None, selection=True, position=None, radius=0.05)
+faces(mesh=None, selection=True, position=(0.0, 0.0, 0.0), radius=0.05)
 ```
 
 Create Mesh to Points with operation ‘Faces’. Create a point in the point cloud for each selected face
@@ -2689,7 +2718,7 @@ Create Mesh to Points with operation ‘Faces’. Create a point in the point cl
 ##### vertices
 
 ``` python
-vertices(mesh=None, selection=True, position=None, radius=0.05)
+vertices(mesh=None, selection=True, position=(0.0, 0.0, 0.0), radius=0.05)
 ```
 
 Create Mesh to Points with operation ‘Vertices’. Create a point in the point cloud for each selected vertex
@@ -2712,18 +2741,18 @@ Create Mesh to Points with operation ‘Vertices’. Create a point in the point
 ### Points
 
 ``` python
-Points(count=1, position=None, radius=0.1)
+Points(count=1, position=(0.0, 0.0, 0.0), radius=0.1)
 ```
 
 Generate a point cloud with positions and radii defined by fields
 
 #### Parameters
 
-| Name     | Type         | Description | Default |
-|----------|--------------|-------------|---------|
-| count    | InputInteger | Count       | `1`     |
-| position | InputVector  | Position    | `None`  |
-| radius   | InputFloat   | Radius      | `0.1`   |
+| Name     | Type         | Description | Default           |
+|----------|--------------|-------------|-------------------|
+| count    | InputInteger | Count       | `1`               |
+| position | InputVector  | Position    | `(0.0, 0.0, 0.0)` |
+| radius   | InputFloat   | Radius      | `0.1`             |
 
 #### Attributes
 
@@ -2833,19 +2862,24 @@ Generate a mesh vertex for each point cloud point
 ### QuadraticBezier
 
 ``` python
-QuadraticBezier(resolution=16, start=None, middle=None, end=None)
+QuadraticBezier(
+    resolution=16,
+    start=(-1.0, 0.0, 0.0),
+    middle=(0.0, 2.0, 0.0),
+    end=(1.0, 0.0, 0.0),
+)
 ```
 
 Generate a poly spline in a parabola shape with control points positions
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| resolution | InputInteger | Resolution  | `16`    |
-| start      | InputVector  | Start       | `None`  |
-| middle     | InputVector  | Middle      | `None`  |
-| end        | InputVector  | End         | `None`  |
+| Name       | Type         | Description | Default            |
+|------------|--------------|-------------|--------------------|
+| resolution | InputInteger | Resolution  | `16`               |
+| start      | InputVector  | Start       | `(-1.0, 0.0, 0.0)` |
+| middle     | InputVector  | Middle      | `(0.0, 2.0, 0.0)`  |
+| end        | InputVector  | End         | `(1.0, 0.0, 0.0)`  |
 
 #### Attributes
 
@@ -2884,10 +2918,10 @@ Quadrilateral(
     offset=1.0,
     bottom_height=3.0,
     top_height=1.0,
-    point_1=None,
-    point_2=None,
-    point_3=None,
-    point_4=None,
+    point_1=(-1.0, -1.0, 0.0),
+    point_2=(1.0, -1.0, 0.0),
+    point_3=(1.0, 1.0, 0.0),
+    point_4=(-1.0, 1.0, 0.0),
     *,
     mode='RECTANGLE',
 )
@@ -2897,19 +2931,19 @@ Generate a polygon with four points
 
 #### Parameters
 
-| Name          | Type        | Description   | Default |
-|---------------|-------------|---------------|---------|
-| width         | InputFloat  | Width         | `2.0`   |
-| height        | InputFloat  | Height        | `2.0`   |
-| bottom_width  | InputFloat  | Bottom Width  | `4.0`   |
-| top_width     | InputFloat  | Top Width     | `2.0`   |
-| offset        | InputFloat  | Offset        | `1.0`   |
-| bottom_height | InputFloat  | Bottom Height | `3.0`   |
-| top_height    | InputFloat  | Top Height    | `1.0`   |
-| point_1       | InputVector | Point 1       | `None`  |
-| point_2       | InputVector | Point 2       | `None`  |
-| point_3       | InputVector | Point 3       | `None`  |
-| point_4       | InputVector | Point 4       | `None`  |
+| Name          | Type        | Description   | Default             |
+|---------------|-------------|---------------|---------------------|
+| width         | InputFloat  | Width         | `2.0`               |
+| height        | InputFloat  | Height        | `2.0`               |
+| bottom_width  | InputFloat  | Bottom Width  | `4.0`               |
+| top_width     | InputFloat  | Top Width     | `2.0`               |
+| offset        | InputFloat  | Offset        | `1.0`               |
+| bottom_height | InputFloat  | Bottom Height | `3.0`               |
+| top_height    | InputFloat  | Top Height    | `1.0`               |
+| point_1       | InputVector | Point 1       | `(-1.0, -1.0, 0.0)` |
+| point_2       | InputVector | Point 2       | `(1.0, -1.0, 0.0)`  |
+| point_3       | InputVector | Point 3       | `(1.0, 1.0, 0.0)`   |
+| point_4       | InputVector | Point 4       | `(-1.0, 1.0, 0.0)`  |
 
 #### Attributes
 
@@ -2952,7 +2986,12 @@ Create Quadrilateral with operation ‘Parallelogram’. Create a parallelogram
 ##### points
 
 ``` python
-points(point_1=None, point_2=None, point_3=None, point_4=None)
+points(
+    point_1=(-1.0, -1.0, 0.0),
+    point_2=(1.0, -1.0, 0.0),
+    point_3=(1.0, 1.0, 0.0),
+    point_4=(-1.0, 1.0, 0.0),
+)
 ```
 
 Create Quadrilateral with operation ‘Points’. Create a quadrilateral from four points
@@ -3002,8 +3041,8 @@ Raycast(
     target_geometry=None,
     attribute=0.0,
     interpolation='Interpolated',
-    source_position=None,
-    ray_direction=None,
+    source_position=(0.0, 0.0, 0.0),
+    ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
     *,
     data_type='FLOAT',
@@ -3019,8 +3058,8 @@ Cast rays from the context geometry onto a target geometry, and retrieve informa
 | target_geometry | InputGeometry | Target Geometry | `None` |
 | attribute | InputFloat | Attribute | `0.0` |
 | interpolation | InputMenu \| Literal\['Interpolated', 'Nearest'\] | Interpolation | `'Interpolated'` |
-| source_position | InputVector | Source Position | `None` |
-| ray_direction | InputVector | Ray Direction | `None` |
+| source_position | InputVector | Source Position | `(0.0, 0.0, 0.0)` |
+| ray_direction | InputVector | Ray Direction | `(0.0, 0.0, -1.0)` |
 | ray_length | InputFloat | Ray Length | `100.0` |
 
 #### Attributes
@@ -3054,8 +3093,8 @@ boolean(
     target_geometry=None,
     attribute=False,
     interpolation='Interpolated',
-    source_position=None,
-    ray_direction=None,
+    source_position=(0.0, 0.0, 0.0),
+    ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
 ```
@@ -3067,10 +3106,10 @@ Create Raycast with operation ‘Boolean’. True or false
 ``` python
 color(
     target_geometry=None,
-    attribute=None,
+    attribute=(0.8, 0.8, 0.8, 1.0),
     interpolation='Interpolated',
-    source_position=None,
-    ray_direction=None,
+    source_position=(0.0, 0.0, 0.0),
+    ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
 ```
@@ -3084,8 +3123,8 @@ float(
     target_geometry=None,
     attribute=0.0,
     interpolation='Interpolated',
-    source_position=None,
-    ray_direction=None,
+    source_position=(0.0, 0.0, 0.0),
+    ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
 ```
@@ -3099,8 +3138,8 @@ input_4x4_matrix(
     target_geometry=None,
     attribute=None,
     interpolation='Interpolated',
-    source_position=None,
-    ray_direction=None,
+    source_position=(0.0, 0.0, 0.0),
+    ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
 ```
@@ -3114,8 +3153,8 @@ integer(
     target_geometry=None,
     attribute=0,
     interpolation='Interpolated',
-    source_position=None,
-    ray_direction=None,
+    source_position=(0.0, 0.0, 0.0),
+    ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
 ```
@@ -3127,10 +3166,10 @@ Create Raycast with operation ‘Integer’. 32-bit integer
 ``` python
 quaternion(
     target_geometry=None,
-    attribute=None,
+    attribute=(0.0, 0.0, 0.0),
     interpolation='Interpolated',
-    source_position=None,
-    ray_direction=None,
+    source_position=(0.0, 0.0, 0.0),
+    ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
 ```
@@ -3142,10 +3181,10 @@ Create Raycast with operation ‘Quaternion’. Floating point quaternion rotati
 ``` python
 vector(
     target_geometry=None,
-    attribute=None,
+    attribute=(0.0, 0.0, 0.0),
     interpolation='Interpolated',
-    source_position=None,
-    ray_direction=None,
+    source_position=(0.0, 0.0, 0.0),
+    ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
 ```
@@ -3409,8 +3448,8 @@ Change the direction of curves by swapping their start and end data
 RotateInstances(
     instances=None,
     selection=True,
-    rotation=None,
-    pivot_point=None,
+    rotation=(0.0, 0.0, 0.0),
+    pivot_point=(0.0, 0.0, 0.0),
     local_space=True,
 )
 ```
@@ -3419,13 +3458,13 @@ Rotate geometry instances in local or global space
 
 #### Parameters
 
-| Name        | Type          | Description | Default |
-|-------------|---------------|-------------|---------|
-| instances   | InputGeometry | Instances   | `None`  |
-| selection   | InputBoolean  | Selection   | `True`  |
-| rotation    | InputRotation | Rotation    | `None`  |
-| pivot_point | InputVector   | Pivot Point | `None`  |
-| local_space | InputBoolean  | Local Space | `True`  |
+| Name        | Type          | Description | Default           |
+|-------------|---------------|-------------|-------------------|
+| instances   | InputGeometry | Instances   | `None`            |
+| selection   | InputBoolean  | Selection   | `True`            |
+| rotation    | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
+| pivot_point | InputVector   | Pivot Point | `(0.0, 0.0, 0.0)` |
+| local_space | InputBoolean  | Local Space | `True`            |
 
 #### Attributes
 
@@ -3457,17 +3496,17 @@ Rotate geometry instances in local or global space
 ### SampleNearest
 
 ``` python
-SampleNearest(geometry=None, sample_position=None, *, domain='POINT')
+SampleNearest(geometry=None, sample_position=(0.0, 0.0, 0.0), *, domain='POINT')
 ```
 
 Find the element of a geometry closest to a position. Similar to the “Index of Nearest” node
 
 #### Parameters
 
-| Name            | Type          | Description     | Default |
-|-----------------|---------------|-----------------|---------|
-| geometry        | InputGeometry | Geometry        | `None`  |
-| sample_position | InputVector   | Sample Position | `None`  |
+| Name            | Type          | Description     | Default           |
+|-----------------|---------------|-----------------|-------------------|
+| geometry        | InputGeometry | Geometry        | `None`            |
+| sample_position | InputVector   | Sample Position | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -3493,7 +3532,7 @@ Find the element of a geometry closest to a position. Similar to the “Index of
 ##### edge
 
 ``` python
-edge(geometry=None, sample_position=None)
+edge(geometry=None, sample_position=(0.0, 0.0, 0.0))
 ```
 
 Create Sample Nearest with operation ‘Edge’. Attribute on mesh edge
@@ -3501,7 +3540,7 @@ Create Sample Nearest with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, sample_position=None)
+face(geometry=None, sample_position=(0.0, 0.0, 0.0))
 ```
 
 Create Sample Nearest with operation ‘Face’. Attribute on mesh faces
@@ -3509,7 +3548,7 @@ Create Sample Nearest with operation ‘Face’. Attribute on mesh faces
 ##### face_corner
 
 ``` python
-face_corner(geometry=None, sample_position=None)
+face_corner(geometry=None, sample_position=(0.0, 0.0, 0.0))
 ```
 
 Create Sample Nearest with operation ‘Face Corner’. Attribute on mesh face corner
@@ -3517,7 +3556,7 @@ Create Sample Nearest with operation ‘Face Corner’. Attribute on mesh face c
 ##### point
 
 ``` python
-point(geometry=None, sample_position=None)
+point(geometry=None, sample_position=(0.0, 0.0, 0.0))
 ```
 
 Create Sample Nearest with operation ‘Point’. Attribute on point
@@ -3542,7 +3581,7 @@ SampleNearestSurface(
     mesh=None,
     value=0.0,
     group_id=0,
-    sample_position=None,
+    sample_position=(0.0, 0.0, 0.0),
     sample_group_id=0,
     *,
     data_type='FLOAT',
@@ -3553,13 +3592,13 @@ Calculate the interpolated value of a mesh attribute on the closest point of its
 
 #### Parameters
 
-| Name            | Type          | Description     | Default |
-|-----------------|---------------|-----------------|---------|
-| mesh            | InputGeometry | Mesh            | `None`  |
-| value           | InputFloat    | Value           | `0.0`   |
-| group_id        | InputInteger  | Group ID        | `0`     |
-| sample_position | InputVector   | Sample Position | `None`  |
-| sample_group_id | InputInteger  | Sample Group ID | `0`     |
+| Name            | Type          | Description     | Default           |
+|-----------------|---------------|-----------------|-------------------|
+| mesh            | InputGeometry | Mesh            | `None`            |
+| value           | InputFloat    | Value           | `0.0`             |
+| group_id        | InputInteger  | Group ID        | `0`               |
+| sample_position | InputVector   | Sample Position | `(0.0, 0.0, 0.0)` |
+| sample_group_id | InputInteger  | Sample Group ID | `0`               |
 
 #### Attributes
 
@@ -3592,7 +3631,7 @@ boolean(
     mesh=None,
     value=False,
     group_id=0,
-    sample_position=None,
+    sample_position=(0.0, 0.0, 0.0),
     sample_group_id=0,
 )
 ```
@@ -3604,9 +3643,9 @@ Create Sample Nearest Surface with operation ‘Boolean’. True or false
 ``` python
 color(
     mesh=None,
-    value=None,
+    value=(0.8, 0.8, 0.8, 1.0),
     group_id=0,
-    sample_position=None,
+    sample_position=(0.0, 0.0, 0.0),
     sample_group_id=0,
 )
 ```
@@ -3616,7 +3655,13 @@ Create Sample Nearest Surface with operation ‘Color’. RGBA color with 32-bit
 ##### float
 
 ``` python
-float(mesh=None, value=0.0, group_id=0, sample_position=None, sample_group_id=0)
+float(
+    mesh=None,
+    value=0.0,
+    group_id=0,
+    sample_position=(0.0, 0.0, 0.0),
+    sample_group_id=0,
+)
 ```
 
 Create Sample Nearest Surface with operation ‘Float’. Floating-point value
@@ -3628,7 +3673,7 @@ input_4x4_matrix(
     mesh=None,
     value=None,
     group_id=0,
-    sample_position=None,
+    sample_position=(0.0, 0.0, 0.0),
     sample_group_id=0,
 )
 ```
@@ -3638,7 +3683,13 @@ Create Sample Nearest Surface with operation ‘4x4 Matrix’. Floating point ma
 ##### integer
 
 ``` python
-integer(mesh=None, value=0, group_id=0, sample_position=None, sample_group_id=0)
+integer(
+    mesh=None,
+    value=0,
+    group_id=0,
+    sample_position=(0.0, 0.0, 0.0),
+    sample_group_id=0,
+)
 ```
 
 Create Sample Nearest Surface with operation ‘Integer’. 32-bit integer
@@ -3648,9 +3699,9 @@ Create Sample Nearest Surface with operation ‘Integer’. 32-bit integer
 ``` python
 quaternion(
     mesh=None,
-    value=None,
+    value=(0.0, 0.0, 0.0),
     group_id=0,
-    sample_position=None,
+    sample_position=(0.0, 0.0, 0.0),
     sample_group_id=0,
 )
 ```
@@ -3662,9 +3713,9 @@ Create Sample Nearest Surface with operation ‘Quaternion’. Floating point qu
 ``` python
 vector(
     mesh=None,
-    value=None,
+    value=(0.0, 0.0, 0.0),
     group_id=0,
-    sample_position=None,
+    sample_position=(0.0, 0.0, 0.0),
     sample_group_id=0,
 )
 ```
@@ -3694,8 +3745,8 @@ Create Sample Nearest Surface with operation ‘Vector’. 3D vector with floati
 SampleUVSurface(
     mesh=None,
     value=0.0,
-    source_uv_map=None,
-    sample_uv=None,
+    source_uv_map=(0.0, 0.0, 0.0),
+    sample_uv=(0.0, 0.0, 0.0),
     *,
     data_type='FLOAT',
 )
@@ -3705,12 +3756,12 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 
 #### Parameters
 
-| Name          | Type          | Description | Default |
-|---------------|---------------|-------------|---------|
-| mesh          | InputGeometry | Mesh        | `None`  |
-| value         | InputFloat    | Value       | `0.0`   |
-| source_uv_map | InputVector   | UV Map      | `None`  |
-| sample_uv     | InputVector   | Sample UV   | `None`  |
+| Name          | Type          | Description | Default           |
+|---------------|---------------|-------------|-------------------|
+| mesh          | InputGeometry | Mesh        | `None`            |
+| value         | InputFloat    | Value       | `0.0`             |
+| source_uv_map | InputVector   | UV Map      | `(0.0, 0.0, 0.0)` |
+| sample_uv     | InputVector   | Sample UV   | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -3739,7 +3790,12 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 ##### boolean
 
 ``` python
-boolean(mesh=None, value=False, source_uv_map=None, sample_uv=None)
+boolean(
+    mesh=None,
+    value=False,
+    source_uv_map=(0.0, 0.0, 0.0),
+    sample_uv=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Sample UV Surface with operation ‘Boolean’. True or false
@@ -3747,7 +3803,12 @@ Create Sample UV Surface with operation ‘Boolean’. True or false
 ##### color
 
 ``` python
-color(mesh=None, value=None, source_uv_map=None, sample_uv=None)
+color(
+    mesh=None,
+    value=(0.8, 0.8, 0.8, 1.0),
+    source_uv_map=(0.0, 0.0, 0.0),
+    sample_uv=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Sample UV Surface with operation ‘Color’. RGBA color with 32-bit floating-point values
@@ -3755,7 +3816,12 @@ Create Sample UV Surface with operation ‘Color’. RGBA color with 32-bit floa
 ##### float
 
 ``` python
-float(mesh=None, value=0.0, source_uv_map=None, sample_uv=None)
+float(
+    mesh=None,
+    value=0.0,
+    source_uv_map=(0.0, 0.0, 0.0),
+    sample_uv=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Sample UV Surface with operation ‘Float’. Floating-point value
@@ -3763,7 +3829,12 @@ Create Sample UV Surface with operation ‘Float’. Floating-point value
 ##### input_4x4_matrix
 
 ``` python
-input_4x4_matrix(mesh=None, value=None, source_uv_map=None, sample_uv=None)
+input_4x4_matrix(
+    mesh=None,
+    value=None,
+    source_uv_map=(0.0, 0.0, 0.0),
+    sample_uv=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix
@@ -3771,7 +3842,12 @@ Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix
 ##### integer
 
 ``` python
-integer(mesh=None, value=0, source_uv_map=None, sample_uv=None)
+integer(
+    mesh=None,
+    value=0,
+    source_uv_map=(0.0, 0.0, 0.0),
+    sample_uv=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Sample UV Surface with operation ‘Integer’. 32-bit integer
@@ -3779,7 +3855,12 @@ Create Sample UV Surface with operation ‘Integer’. 32-bit integer
 ##### quaternion
 
 ``` python
-quaternion(mesh=None, value=None, source_uv_map=None, sample_uv=None)
+quaternion(
+    mesh=None,
+    value=(0.0, 0.0, 0.0),
+    source_uv_map=(0.0, 0.0, 0.0),
+    sample_uv=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Sample UV Surface with operation ‘Quaternion’. Floating point quaternion rotation
@@ -3787,7 +3868,12 @@ Create Sample UV Surface with operation ‘Quaternion’. Floating point quatern
 ##### vector
 
 ``` python
-vector(mesh=None, value=None, source_uv_map=None, sample_uv=None)
+vector(
+    mesh=None,
+    value=(0.0, 0.0, 0.0),
+    source_uv_map=(0.0, 0.0, 0.0),
+    sample_uv=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Sample UV Surface with operation ‘Vector’. 3D vector with floating-point values
@@ -3815,9 +3901,9 @@ ScaleElements(
     geometry=None,
     selection=True,
     scale=1.0,
-    center=None,
+    center=(0.0, 0.0, 0.0),
     scale_mode='Uniform',
-    axis=None,
+    axis=(1.0, 0.0, 0.0),
     *,
     domain='FACE',
 )
@@ -3832,9 +3918,9 @@ Scale groups of connected edges and faces
 | geometry | InputGeometry | Geometry | `None` |
 | selection | InputBoolean | Selection | `True` |
 | scale | InputFloat | Scale | `1.0` |
-| center | InputVector | Center | `None` |
+| center | InputVector | Center | `(0.0, 0.0, 0.0)` |
 | scale_mode | InputMenu \| Literal\['Uniform', 'Single Axis'\] | Scale Mode | `'Uniform'` |
-| axis | InputVector | Axis | `None` |
+| axis | InputVector | Axis | `(1.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -3862,7 +3948,7 @@ edge(
     geometry=None,
     selection=True,
     scale=1.0,
-    center=None,
+    center=(0.0, 0.0, 0.0),
     scale_mode='Uniform',
 )
 ```
@@ -3876,7 +3962,7 @@ face(
     geometry=None,
     selection=True,
     scale=1.0,
-    center=None,
+    center=(0.0, 0.0, 0.0),
     scale_mode='Uniform',
 )
 ```
@@ -3906,8 +3992,8 @@ Create Scale Elements with operation ‘Face’. Scale individual faces or neigh
 ScaleInstances(
     instances=None,
     selection=True,
-    scale=None,
-    center=None,
+    scale=(1.0, 1.0, 1.0),
+    center=(0.0, 0.0, 0.0),
     local_space=True,
 )
 ```
@@ -3916,13 +4002,13 @@ Scale geometry instances in local or global space
 
 #### Parameters
 
-| Name        | Type          | Description | Default |
-|-------------|---------------|-------------|---------|
-| instances   | InputGeometry | Instances   | `None`  |
-| selection   | InputBoolean  | Selection   | `True`  |
-| scale       | InputVector   | Scale       | `None`  |
-| center      | InputVector   | Center      | `None`  |
-| local_space | InputBoolean  | Local Space | `True`  |
+| Name        | Type          | Description | Default           |
+|-------------|---------------|-------------|-------------------|
+| instances   | InputGeometry | Instances   | `None`            |
+| selection   | InputBoolean  | Selection   | `True`            |
+| scale       | InputVector   | Scale       | `(1.0, 1.0, 1.0)` |
+| center      | InputVector   | Center      | `(0.0, 0.0, 0.0)` |
+| local_space | InputBoolean  | Local Space | `True`            |
 
 #### Attributes
 
@@ -4096,7 +4182,12 @@ Create Separate Geometry with operation ‘Spline’. Attribute on spline
 ### SetCurveNormal
 
 ``` python
-SetCurveNormal(curve=None, selection=True, mode='Minimum Twist', normal=None)
+SetCurveNormal(
+    curve=None,
+    selection=True,
+    mode='Minimum Twist',
+    normal=(0.0, 0.0, 1.0),
+)
 ```
 
 Set the evaluation mode for curve normals
@@ -4108,7 +4199,7 @@ Set the evaluation mode for curve normals
 | curve | InputGeometry | Curve | `None` |
 | selection | InputBoolean | Selection | `True` |
 | mode | InputMenu \| Literal\['Minimum Twist', 'Z Up', 'Free'\] | Mode | `'Minimum Twist'` |
-| normal | InputVector | Normal | `None` |
+| normal | InputVector | Normal | `(0.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -4343,7 +4434,7 @@ Set the name of a geometry for easier debugging
 SetGreasePencilColor(
     grease_pencil=None,
     selection=True,
-    color=None,
+    color=(1.0, 1.0, 1.0, 1.0),
     opacity=1.0,
     *,
     mode='STROKE',
@@ -4354,12 +4445,12 @@ Set color and opacity attributes on Grease Pencil geometry
 
 #### Parameters
 
-| Name          | Type          | Description   | Default |
-|---------------|---------------|---------------|---------|
-| grease_pencil | InputGeometry | Grease Pencil | `None`  |
-| selection     | InputBoolean  | Selection     | `True`  |
-| color         | InputColor    | Color         | `None`  |
-| opacity       | InputFloat    | Opacity       | `1.0`   |
+| Name          | Type          | Description   | Default                |
+|---------------|---------------|---------------|------------------------|
+| grease_pencil | InputGeometry | Grease Pencil | `None`                 |
+| selection     | InputBoolean  | Selection     | `True`                 |
+| color         | InputColor    | Color         | `(1.0, 1.0, 1.0, 1.0)` |
+| opacity       | InputFloat    | Opacity       | `1.0`                  |
 
 #### Attributes
 
@@ -4383,7 +4474,12 @@ Set color and opacity attributes on Grease Pencil geometry
 ##### fill
 
 ``` python
-fill(grease_pencil=None, selection=True, color=None, opacity=1.0)
+fill(
+    grease_pencil=None,
+    selection=True,
+    color=(1.0, 1.0, 1.0, 1.0),
+    opacity=1.0,
+)
 ```
 
 Create Set Grease Pencil Color with operation ‘Fill’. Set the color and opacity for the stroke fills
@@ -4391,7 +4487,12 @@ Create Set Grease Pencil Color with operation ‘Fill’. Set the color and opac
 ##### stroke
 
 ``` python
-stroke(grease_pencil=None, selection=True, color=None, opacity=1.0)
+stroke(
+    grease_pencil=None,
+    selection=True,
+    color=(1.0, 1.0, 1.0, 1.0),
+    opacity=1.0,
+)
 ```
 
 Create Set Grease Pencil Color with operation ‘Stroke’. Set the color and opacity for the points of the stroke
@@ -4496,8 +4597,8 @@ Set softness attribute on Grease Pencil geometry
 SetHandlePositions(
     curve=None,
     selection=True,
-    position=None,
-    offset=None,
+    position=(0.0, 0.0, 0.0),
+    offset=(0.0, 0.0, 0.0),
     *,
     mode='LEFT',
 )
@@ -4507,12 +4608,12 @@ Set the positions for the handles of Bézier curves
 
 #### Parameters
 
-| Name      | Type          | Description | Default |
-|-----------|---------------|-------------|---------|
-| curve     | InputGeometry | Curve       | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
-| position  | InputVector   | Position    | `None`  |
-| offset    | InputVector   | Offset      | `None`  |
+| Name      | Type          | Description | Default           |
+|-----------|---------------|-------------|-------------------|
+| curve     | InputGeometry | Curve       | `None`            |
+| selection | InputBoolean  | Selection   | `True`            |
+| position  | InputVector   | Position    | `(0.0, 0.0, 0.0)` |
+| offset    | InputVector   | Offset      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -4536,7 +4637,12 @@ Set the positions for the handles of Bézier curves
 ##### left
 
 ``` python
-left(curve=None, selection=True, position=None, offset=None)
+left(
+    curve=None,
+    selection=True,
+    position=(0.0, 0.0, 0.0),
+    offset=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Set Handle Positions with operation ‘Left’. Use the left handles
@@ -4544,7 +4650,12 @@ Create Set Handle Positions with operation ‘Left’. Use the left handles
 ##### right
 
 ``` python
-right(curve=None, selection=True, position=None, offset=None)
+right(
+    curve=None,
+    selection=True,
+    position=(0.0, 0.0, 0.0),
+    offset=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Set Handle Positions with operation ‘Right’. Use the right handles
@@ -4894,7 +5005,7 @@ Create Set Mesh Normal with operation ‘Face Corner’. Attribute on mesh face 
 ##### free
 
 ``` python
-free(mesh=None, custom_normal=None)
+free(mesh=None, custom_normal=(0.0, 0.0, 0.0))
 ```
 
 Create Set Mesh Normal with operation ‘Free’. Store custom normals as simple vectors in the local space of the mesh. Values are not necessarily updated automatically later on as the mesh is deformed.
@@ -4923,7 +5034,7 @@ Create Set Mesh Normal with operation ‘Sharpness’. Store the sharpness of ea
 ##### tangent_space
 
 ``` python
-tangent_space(mesh=None, custom_normal=None)
+tangent_space(mesh=None, custom_normal=(0.0, 0.0, 0.0))
 ```
 
 Create Set Mesh Normal with operation ‘Tangent Space’. Store normals in a deformation dependent custom transformation space. This method is slower, but can be better when subsequent operations change the mesh without handling normals specifically.
@@ -5070,19 +5181,24 @@ Set the display size of point cloud points
 ### SetPosition
 
 ``` python
-SetPosition(geometry=None, selection=True, position=None, offset=None)
+SetPosition(
+    geometry=None,
+    selection=True,
+    position=(0.0, 0.0, 0.0),
+    offset=(0.0, 0.0, 0.0),
+)
 ```
 
 Set the location of each point
 
 #### Parameters
 
-| Name      | Type          | Description | Default |
-|-----------|---------------|-------------|---------|
-| geometry  | InputGeometry | Geometry    | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
-| position  | InputVector   | Position    | `None`  |
-| offset    | InputVector   | Offset      | `None`  |
+| Name      | Type          | Description | Default           |
+|-----------|---------------|-------------|-------------------|
+| geometry  | InputGeometry | Geometry    | `None`            |
+| selection | InputBoolean  | Selection   | `True`            |
+| position  | InputVector   | Position    | `(0.0, 0.0, 0.0)` |
+| offset    | InputVector   | Offset      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -6098,9 +6214,9 @@ Copy attributes from one geometry to another
 TransformGeometry(
     geometry=None,
     mode='Components',
-    translation=None,
-    rotation=None,
-    scale=None,
+    translation=(0.0, 0.0, 0.0),
+    rotation=(0.0, 0.0, 0.0),
+    scale=(1.0, 1.0, 1.0),
     transform=None,
 )
 ```
@@ -6113,9 +6229,9 @@ Translate, rotate or scale the geometry
 |----|----|----|----|
 | geometry | InputGeometry | Geometry | `None` |
 | mode | InputMenu \| Literal\['Components', 'Matrix'\] | Mode | `'Components'` |
-| translation | InputVector | Translation | `None` |
-| rotation | InputRotation | Rotation | `None` |
-| scale | InputVector | Scale | `None` |
+| translation | InputVector | Translation | `(0.0, 0.0, 0.0)` |
+| rotation | InputRotation | Rotation | `(0.0, 0.0, 0.0)` |
+| scale | InputVector | Scale | `(1.0, 1.0, 1.0)` |
 | transform | InputMatrix | Transform | `None` |
 
 #### Attributes
@@ -6152,7 +6268,7 @@ Translate, rotate or scale the geometry
 TranslateInstances(
     instances=None,
     selection=True,
-    translation=None,
+    translation=(0.0, 0.0, 0.0),
     local_space=True,
 )
 ```
@@ -6161,12 +6277,12 @@ Move top-level geometry instances in local or global space
 
 #### Parameters
 
-| Name        | Type          | Description | Default |
-|-------------|---------------|-------------|---------|
-| instances   | InputGeometry | Instances   | `None`  |
-| selection   | InputBoolean  | Selection   | `True`  |
-| translation | InputVector   | Translation | `None`  |
-| local_space | InputBoolean  | Local Space | `True`  |
+| Name        | Type          | Description | Default           |
+|-------------|---------------|-------------|-------------------|
+| instances   | InputGeometry | Instances   | `None`            |
+| selection   | InputBoolean  | Selection   | `True`            |
+| translation | InputVector   | Translation | `(0.0, 0.0, 0.0)` |
+| local_space | InputBoolean  | Local Space | `True`            |
 
 #### Attributes
 

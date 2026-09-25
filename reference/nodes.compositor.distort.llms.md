@@ -24,11 +24,11 @@
 
 ``` python
 CornerPin(
-    image=None,
-    upper_left=None,
-    upper_right=None,
-    lower_left=None,
-    lower_right=None,
+    image=(1.0, 1.0, 1.0, 1.0),
+    upper_left=(0.0, 1.0),
+    upper_right=(1.0, 1.0),
+    lower_left=(0.0, 0.0),
+    lower_right=(1.0, 0.0),
     interpolation='Bilinear',
     extension_x='Clip',
     extension_y='Clip',
@@ -41,11 +41,11 @@ Plane warp transformation using explicit corner values
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
-| upper_left | InputVector | Upper Left | `None` |
-| upper_right | InputVector | Upper Right | `None` |
-| lower_left | InputVector | Lower Left | `None` |
-| lower_right | InputVector | Lower Right | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| upper_left | InputVector | Upper Left | `(0.0, 1.0)` |
+| upper_right | InputVector | Upper Right | `(1.0, 1.0)` |
+| lower_left | InputVector | Lower Left | `(0.0, 0.0)` |
+| lower_right | InputVector | Lower Right | `(1.0, 0.0)` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
 | extension_y | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension Y | `'Clip'` |
@@ -84,21 +84,28 @@ Plane warp transformation using explicit corner values
 ### Crop
 
 ``` python
-Crop(image=None, x=0, y=0, width=1920, height=1080, alpha_crop=False)
+Crop(
+    image=(1.0, 1.0, 1.0, 1.0),
+    x=0,
+    y=0,
+    width=1920,
+    height=1080,
+    alpha_crop=False,
+)
 ```
 
 Crops image to a smaller region, either making the cropped area transparent or resizing the image
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| image      | InputColor   | Image       | `None`  |
-| x          | InputInteger | X           | `0`     |
-| y          | InputInteger | Y           | `0`     |
-| width      | InputInteger | Width       | `1920`  |
-| height     | InputInteger | Height      | `1080`  |
-| alpha_crop | InputBoolean | Alpha Crop  | `False` |
+| Name       | Type         | Description | Default                |
+|------------|--------------|-------------|------------------------|
+| image      | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| x          | InputInteger | X           | `0`                    |
+| y          | InputInteger | Y           | `0`                    |
+| width      | InputInteger | Width       | `1920`                 |
+| height     | InputInteger | Height      | `1080`                 |
+| alpha_crop | InputBoolean | Alpha Crop  | `False`                |
 
 #### Attributes
 
@@ -132,8 +139,8 @@ Crops image to a smaller region, either making the cropped area transparent or r
 
 ``` python
 Displace(
-    image=None,
-    displacement=None,
+    image=(1.0, 1.0, 1.0, 1.0),
+    displacement=(0.0, 0.0),
     interpolation='Bilinear',
     extension_x='Clip',
     extension_y='Clip',
@@ -146,8 +153,8 @@ Displace pixel position using an offset vector
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
-| displacement | InputVector | Displacement | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| displacement | InputVector | Displacement | `(0.0, 0.0)` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
 | extension_y | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension Y | `'Clip'` |
@@ -182,18 +189,18 @@ Displace pixel position using an offset vector
 ### Flip
 
 ``` python
-Flip(image=None, flip_x=False, flip_y=False)
+Flip(image=(1.0, 1.0, 1.0, 1.0), flip_x=False, flip_y=False)
 ```
 
 Flip an image along a defined axis
 
 #### Parameters
 
-| Name   | Type         | Description | Default |
-|--------|--------------|-------------|---------|
-| image  | InputColor   | Image       | `None`  |
-| flip_x | InputBoolean | Flip X      | `False` |
-| flip_y | InputBoolean | Flip Y      | `False` |
+| Name   | Type         | Description | Default                |
+|--------|--------------|-------------|------------------------|
+| image  | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| flip_x | InputBoolean | Flip X      | `False`                |
+| flip_y | InputBoolean | Flip Y      | `False`                |
 
 #### Attributes
 
@@ -224,7 +231,7 @@ Flip an image along a defined axis
 
 ``` python
 LensDistortion(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     type='Radial',
     distortion=0.0,
     dispersion=0.0,
@@ -239,7 +246,7 @@ Simulate distortion and dispersion from camera lenses
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | type | InputMenu \| Literal\['Radial', 'Horizontal'\] | Type | `'Radial'` |
 | distortion | InputFloat | Distortion | `0.0` |
 | dispersion | InputFloat | Dispersion | `0.0` |
@@ -267,7 +274,7 @@ Simulate distortion and dispersion from camera lenses
 ##### horizontal
 
 ``` python
-horizontal(image=None, dispersion=0.0)
+horizontal(image=(1.0, 1.0, 1.0, 1.0), dispersion=0.0)
 ```
 
 Create Lens Distortion node with type ‘Horizontal’.
@@ -275,7 +282,13 @@ Create Lens Distortion node with type ‘Horizontal’.
 ##### radial
 
 ``` python
-radial(image=None, distortion=0.0, dispersion=0.0, jitter=False, fit=False)
+radial(
+    image=(1.0, 1.0, 1.0, 1.0),
+    distortion=0.0,
+    dispersion=0.0,
+    jitter=False,
+    fit=False,
+)
 ```
 
 Create Lens Distortion node with type ‘Radial’.
@@ -301,8 +314,8 @@ Create Lens Distortion node with type ‘Radial’.
 
 ``` python
 MapUV(
-    image=None,
-    uv=None,
+    image=(1.0, 1.0, 1.0, 1.0),
+    uv=(1.0, 0.0, 0.0),
     interpolation='Bilinear',
     extension_x='Clip',
     extension_y='Clip',
@@ -315,8 +328,8 @@ Map a texture using UV coordinates, to apply a texture to objects in compositing
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
-| uv | InputVector | UV | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| uv | InputVector | UV | `(1.0, 0.0, 0.0)` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
 | extension_y | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension Y | `'Clip'` |
@@ -351,7 +364,7 @@ Map a texture using UV coordinates, to apply a texture to objects in compositing
 ### MovieDistortion
 
 ``` python
-MovieDistortion(image=None, type='Undistort')
+MovieDistortion(image=(0.8, 0.8, 0.8, 1.0), type='Undistort')
 ```
 
 Remove lens distortion from footage, using motion tracking camera lens settings
@@ -360,7 +373,7 @@ Remove lens distortion from footage, using motion tracking camera lens settings
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
 | type | InputMenu \| Literal\['Undistort', 'Distort'\] | Type | `'Undistort'` |
 
 #### Attributes
@@ -384,7 +397,7 @@ Remove lens distortion from footage, using motion tracking camera lens settings
 ##### distort
 
 ``` python
-distort(image=None)
+distort(image=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Movie Distortion node with type ‘Distort’.
@@ -392,7 +405,7 @@ Create Movie Distortion node with type ‘Distort’.
 ##### undistort
 
 ``` python
-undistort(image=None)
+undistort(image=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Movie Distortion node with type ‘Undistort’.
@@ -414,7 +427,7 @@ Create Movie Distortion node with type ‘Undistort’.
 
 ``` python
 PlaneTrackDeform(
-    image=None,
+    image=(0.8, 0.8, 0.8, 1.0),
     motion_blur=False,
     motion_blur_samples=16,
     motion_blur_shutter=0.5,
@@ -428,12 +441,12 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 
 #### Parameters
 
-| Name                | Type         | Description | Default |
-|---------------------|--------------|-------------|---------|
-| image               | InputColor   | Image       | `None`  |
-| motion_blur         | InputBoolean | Motion Blur | `False` |
-| motion_blur_samples | InputInteger | Samples     | `16`    |
-| motion_blur_shutter | InputFloat   | Shutter     | `0.5`   |
+| Name                | Type         | Description | Default                |
+|---------------------|--------------|-------------|------------------------|
+| image               | InputColor   | Image       | `(0.8, 0.8, 0.8, 1.0)` |
+| motion_blur         | InputBoolean | Motion Blur | `False`                |
+| motion_blur_samples | InputInteger | Samples     | `16`                   |
+| motion_blur_shutter | InputFloat   | Shutter     | `0.5`                  |
 
 #### Attributes
 
@@ -468,7 +481,7 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 
 ``` python
 Rotate(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     angle=0.0,
     interpolation='Bilinear',
     extension_x='Clip',
@@ -482,7 +495,7 @@ Rotate image by specified angle
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | angle | InputFloat | Angle | `0.0` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
@@ -519,7 +532,7 @@ Rotate image by specified angle
 
 ``` python
 Scale(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     type='Relative',
     x=1.0,
     y=1.0,
@@ -536,7 +549,7 @@ Change the size of the image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | type | InputMenu \| Literal\['Relative', 'Absolute', 'Scene Size', 'Render Size'\] | Type | `'Relative'` |
 | x | InputFloat | X | `1.0` |
 | y | InputFloat | Y | `1.0` |
@@ -569,7 +582,7 @@ Change the size of the image
 
 ``` python
 absolute(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     x=1.0,
     y=1.0,
     interpolation='Bilinear',
@@ -584,7 +597,7 @@ Create Scale node with type ‘Absolute’.
 
 ``` python
 relative(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     x=1.0,
     y=1.0,
     interpolation='Bilinear',
@@ -599,7 +612,7 @@ Create Scale node with type ‘Relative’.
 
 ``` python
 render_size(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     frame_type='Stretch',
     interpolation='Bilinear',
     extension_x='Clip',
@@ -613,7 +626,7 @@ Create Scale node with type ‘Render Size’.
 
 ``` python
 scene_size(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     interpolation='Bilinear',
     extension_x='Clip',
     extension_y='Clip',
@@ -645,7 +658,7 @@ Create Scale node with type ‘Scene Size’.
 
 ``` python
 Stabilize2D(
-    image=None,
+    image=(0.8, 0.8, 0.8, 1.0),
     frame=0,
     invert=False,
     interpolation='Bilinear',
@@ -660,7 +673,7 @@ Stabilize footage using 2D stabilization motion tracking settings
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
 | frame | InputInteger | Frame | `0` |
 | invert | InputBoolean | Invert | `False` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
@@ -699,7 +712,7 @@ Stabilize footage using 2D stabilization motion tracking settings
 
 ``` python
 Transform(
-    image=None,
+    image=(0.8, 0.8, 0.8, 1.0),
     x=0.0,
     y=0.0,
     angle=0.0,
@@ -716,7 +729,7 @@ Scale, translate and rotate an image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
 | x | InputFloat | X | `0.0` |
 | y | InputFloat | Y | `0.0` |
 | angle | InputFloat | Angle | `0.0` |
@@ -759,7 +772,7 @@ Scale, translate and rotate an image
 
 ``` python
 Translate(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     x=0.0,
     y=0.0,
     interpolation='Bilinear',
@@ -774,7 +787,7 @@ Offset an image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | x | InputFloat | X | `0.0` |
 | y | InputFloat | Y | `0.0` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |

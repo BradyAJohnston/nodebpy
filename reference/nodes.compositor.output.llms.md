@@ -40,16 +40,16 @@ Write image file to disk
 ### Viewer
 
 ``` python
-Viewer(image=None, *, ui_shortcut=0)
+Viewer(image=(0.0, 0.0, 0.0, 1.0), *, ui_shortcut=0)
 ```
 
 Visualize data from inside a node graph, in the image editor or as a backdrop
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| image | InputColor | Image       | `(0.0, 0.0, 0.0, 1.0)` |
 
 #### Attributes
 

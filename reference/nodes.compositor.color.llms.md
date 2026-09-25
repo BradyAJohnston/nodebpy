@@ -23,8 +23,8 @@
 
 ``` python
 AlphaOver(
-    background=None,
-    foreground=None,
+    background=(1.0, 1.0, 1.0, 1.0),
+    foreground=(1.0, 1.0, 1.0, 1.0),
     fac=1.0,
     type='Over',
     straight_alpha=False,
@@ -37,8 +37,8 @@ Overlay a foreground image onto a background image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| background | InputColor | Background | `None` |
-| foreground | InputColor | Foreground | `None` |
+| background | InputColor | Background | `(1.0, 1.0, 1.0, 1.0)` |
+| foreground | InputColor | Foreground | `(1.0, 1.0, 1.0, 1.0)` |
 | fac | InputFloat | Factor | `1.0` |
 | type | InputMenu \| Literal\['Over', 'Disjoint Over', 'Conjoint Over'\] | Type | `'Over'` |
 | straight_alpha | InputBoolean | Straight Alpha | `False` |
@@ -65,7 +65,12 @@ Overlay a foreground image onto a background image
 ##### conjoint_over
 
 ``` python
-conjoint_over(background=None, foreground=None, fac=1.0, straight_alpha=False)
+conjoint_over(
+    background=(1.0, 1.0, 1.0, 1.0),
+    foreground=(1.0, 1.0, 1.0, 1.0),
+    fac=1.0,
+    straight_alpha=False,
+)
 ```
 
 Create Alpha Over node with type ‘Conjoint Over’.
@@ -73,7 +78,12 @@ Create Alpha Over node with type ‘Conjoint Over’.
 ##### disjoint_over
 
 ``` python
-disjoint_over(background=None, foreground=None, fac=1.0, straight_alpha=False)
+disjoint_over(
+    background=(1.0, 1.0, 1.0, 1.0),
+    foreground=(1.0, 1.0, 1.0, 1.0),
+    fac=1.0,
+    straight_alpha=False,
+)
 ```
 
 Create Alpha Over node with type ‘Disjoint Over’.
@@ -81,7 +91,12 @@ Create Alpha Over node with type ‘Disjoint Over’.
 ##### over
 
 ``` python
-over(background=None, foreground=None, fac=1.0, straight_alpha=False)
+over(
+    background=(1.0, 1.0, 1.0, 1.0),
+    foreground=(1.0, 1.0, 1.0, 1.0),
+    fac=1.0,
+    straight_alpha=False,
+)
 ```
 
 Create Alpha Over node with type ‘Over’.
@@ -105,18 +120,18 @@ Create Alpha Over node with type ‘Over’.
 ### BrightnessContrast
 
 ``` python
-BrightnessContrast(image=None, bright=0.0, contrast=0.0)
+BrightnessContrast(image=(1.0, 1.0, 1.0, 1.0), bright=0.0, contrast=0.0)
 ```
 
 Adjust brightness and contrast
 
 #### Parameters
 
-| Name     | Type       | Description | Default |
-|----------|------------|-------------|---------|
-| image    | InputColor | Image       | `None`  |
-| bright   | InputFloat | Brightness  | `0.0`   |
-| contrast | InputFloat | Contrast    | `0.0`   |
+| Name     | Type       | Description | Default                |
+|----------|------------|-------------|------------------------|
+| image    | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| bright   | InputFloat | Brightness  | `0.0`                  |
+| contrast | InputFloat | Contrast    | `0.0`                  |
 
 #### Attributes
 
@@ -147,21 +162,21 @@ Adjust brightness and contrast
 
 ``` python
 ColorBalance(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     fac=1.0,
     type='Lift/Gamma/Gain',
     base_lift=0.0,
-    color_lift=None,
+    color_lift=(1.0, 1.0, 1.0, 1.0),
     base_gamma=1.0,
-    color_gamma=None,
+    color_gamma=(1.0, 1.0, 1.0, 1.0),
     base_gain=1.0,
-    color_gain=None,
+    color_gain=(1.0, 1.0, 1.0, 1.0),
     base_offset=0.0,
-    color_offset=None,
+    color_offset=(0.0, 0.0, 0.0, 1.0),
     base_power=1.0,
-    color_power=None,
+    color_power=(1.0, 1.0, 1.0, 1.0),
     base_slope=1.0,
-    color_slope=None,
+    color_slope=(1.0, 1.0, 1.0, 1.0),
     input_temperature=6500.0,
     input_tint=10.0,
     output_temperature=6500.0,
@@ -178,21 +193,21 @@ Adjust color and values
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | fac | InputFloat | Factor | `1.0` |
 | type | InputMenu \| Literal\['Lift/Gamma/Gain', 'Offset/Power/Slope (ASC-CDL)', 'White Point'\] | Type | `'Lift/Gamma/Gain'` |
 | base_lift | InputFloat | Lift | `0.0` |
-| color_lift | InputColor | Lift | `None` |
+| color_lift | InputColor | Lift | `(1.0, 1.0, 1.0, 1.0)` |
 | base_gamma | InputFloat | Gamma | `1.0` |
-| color_gamma | InputColor | Gamma | `None` |
+| color_gamma | InputColor | Gamma | `(1.0, 1.0, 1.0, 1.0)` |
 | base_gain | InputFloat | Gain | `1.0` |
-| color_gain | InputColor | Gain | `None` |
+| color_gain | InputColor | Gain | `(1.0, 1.0, 1.0, 1.0)` |
 | base_offset | InputFloat | Offset | `0.0` |
-| color_offset | InputColor | Offset | `None` |
+| color_offset | InputColor | Offset | `(0.0, 0.0, 0.0, 1.0)` |
 | base_power | InputFloat | Power | `1.0` |
-| color_power | InputColor | Power | `None` |
+| color_power | InputColor | Power | `(1.0, 1.0, 1.0, 1.0)` |
 | base_slope | InputFloat | Slope | `1.0` |
-| color_slope | InputColor | Slope | `None` |
+| color_slope | InputColor | Slope | `(1.0, 1.0, 1.0, 1.0)` |
 | input_temperature | InputFloat | Temperature | `6500.0` |
 | input_tint | InputFloat | Tint | `10.0` |
 | output_temperature | InputFloat | Temperature | `6500.0` |
@@ -223,14 +238,14 @@ Adjust color and values
 
 ``` python
 lift_gamma_gain(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     fac=1.0,
     base_lift=0.0,
-    color_lift=None,
+    color_lift=(1.0, 1.0, 1.0, 1.0),
     base_gamma=1.0,
-    color_gamma=None,
+    color_gamma=(1.0, 1.0, 1.0, 1.0),
     base_gain=1.0,
-    color_gain=None,
+    color_gain=(1.0, 1.0, 1.0, 1.0),
 )
 ```
 
@@ -240,14 +255,14 @@ Create Color Balance node with type ‘Lift/Gamma/Gain’.
 
 ``` python
 offset_power_slope_asc_cdl(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     fac=1.0,
     base_offset=0.0,
-    color_offset=None,
+    color_offset=(0.0, 0.0, 0.0, 1.0),
     base_power=1.0,
-    color_power=None,
+    color_power=(1.0, 1.0, 1.0, 1.0),
     base_slope=1.0,
-    color_slope=None,
+    color_slope=(1.0, 1.0, 1.0, 1.0),
 )
 ```
 
@@ -257,7 +272,7 @@ Create Color Balance node with type ‘Offset/Power/Slope (ASC-CDL)’.
 
 ``` python
 white_point(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     fac=1.0,
     input_temperature=6500.0,
     input_tint=10.0,
@@ -302,7 +317,7 @@ Create Color Balance node with type ‘White Point’.
 
 ``` python
 ColorCorrection(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     mask=1.0,
     master_saturation=1.0,
     master_contrast=1.0,
@@ -336,35 +351,35 @@ Adjust the color of an image, separately in several tonal ranges (highlights, mi
 
 #### Parameters
 
-| Name                  | Type         | Description    | Default |
-|-----------------------|--------------|----------------|---------|
-| image                 | InputColor   | Image          | `None`  |
-| mask                  | InputFloat   | Mask           | `1.0`   |
-| master_saturation     | InputFloat   | Saturation     | `1.0`   |
-| master_contrast       | InputFloat   | Contrast       | `1.0`   |
-| master_gamma          | InputFloat   | Gamma          | `1.0`   |
-| master_gain           | InputFloat   | Gain           | `1.0`   |
-| master_offset         | InputFloat   | Offset         | `0.0`   |
-| highlights_saturation | InputFloat   | Saturation     | `1.0`   |
-| highlights_contrast   | InputFloat   | Contrast       | `1.0`   |
-| highlights_gamma      | InputFloat   | Gamma          | `1.0`   |
-| highlights_gain       | InputFloat   | Gain           | `1.0`   |
-| highlights_offset     | InputFloat   | Offset         | `0.0`   |
-| midtones_saturation   | InputFloat   | Saturation     | `1.0`   |
-| midtones_contrast     | InputFloat   | Contrast       | `1.0`   |
-| midtones_gamma        | InputFloat   | Gamma          | `1.0`   |
-| midtones_gain         | InputFloat   | Gain           | `1.0`   |
-| midtones_offset       | InputFloat   | Offset         | `0.0`   |
-| shadows_saturation    | InputFloat   | Saturation     | `1.0`   |
-| shadows_contrast      | InputFloat   | Contrast       | `1.0`   |
-| shadows_gamma         | InputFloat   | Gamma          | `1.0`   |
-| shadows_gain          | InputFloat   | Gain           | `1.0`   |
-| shadows_offset        | InputFloat   | Offset         | `0.0`   |
-| midtones_start        | InputFloat   | Midtones Start | `0.2`   |
-| midtones_end          | InputFloat   | Midtones End   | `0.7`   |
-| apply_on_red          | InputBoolean | Red            | `True`  |
-| apply_on_green        | InputBoolean | Green          | `True`  |
-| apply_on_blue         | InputBoolean | Blue           | `True`  |
+| Name                  | Type         | Description    | Default                |
+|-----------------------|--------------|----------------|------------------------|
+| image                 | InputColor   | Image          | `(1.0, 1.0, 1.0, 1.0)` |
+| mask                  | InputFloat   | Mask           | `1.0`                  |
+| master_saturation     | InputFloat   | Saturation     | `1.0`                  |
+| master_contrast       | InputFloat   | Contrast       | `1.0`                  |
+| master_gamma          | InputFloat   | Gamma          | `1.0`                  |
+| master_gain           | InputFloat   | Gain           | `1.0`                  |
+| master_offset         | InputFloat   | Offset         | `0.0`                  |
+| highlights_saturation | InputFloat   | Saturation     | `1.0`                  |
+| highlights_contrast   | InputFloat   | Contrast       | `1.0`                  |
+| highlights_gamma      | InputFloat   | Gamma          | `1.0`                  |
+| highlights_gain       | InputFloat   | Gain           | `1.0`                  |
+| highlights_offset     | InputFloat   | Offset         | `0.0`                  |
+| midtones_saturation   | InputFloat   | Saturation     | `1.0`                  |
+| midtones_contrast     | InputFloat   | Contrast       | `1.0`                  |
+| midtones_gamma        | InputFloat   | Gamma          | `1.0`                  |
+| midtones_gain         | InputFloat   | Gain           | `1.0`                  |
+| midtones_offset       | InputFloat   | Offset         | `0.0`                  |
+| shadows_saturation    | InputFloat   | Saturation     | `1.0`                  |
+| shadows_contrast      | InputFloat   | Contrast       | `1.0`                  |
+| shadows_gamma         | InputFloat   | Gamma          | `1.0`                  |
+| shadows_gain          | InputFloat   | Gain           | `1.0`                  |
+| shadows_offset        | InputFloat   | Offset         | `0.0`                  |
+| midtones_start        | InputFloat   | Midtones Start | `0.2`                  |
+| midtones_end          | InputFloat   | Midtones End   | `0.7`                  |
+| apply_on_red          | InputBoolean | Red            | `True`                 |
+| apply_on_green        | InputBoolean | Green          | `True`                 |
+| apply_on_blue         | InputBoolean | Blue           | `True`                 |
 
 #### Attributes
 
@@ -419,9 +434,9 @@ Adjust the color of an image, separately in several tonal ranges (highlights, mi
 
 ``` python
 DepthCombine(
-    a=None,
+    a=(1.0, 1.0, 1.0, 1.0),
     depth_a=1.0,
-    b=None,
+    b=(1.0, 1.0, 1.0, 1.0),
     depth_b=1.0,
     use_alpha=False,
     anti_alias=True,
@@ -432,14 +447,14 @@ Combine two images using depth maps
 
 #### Parameters
 
-| Name       | Type         | Description | Default |
-|------------|--------------|-------------|---------|
-| a          | InputColor   | A           | `None`  |
-| depth_a    | InputFloat   | Depth A     | `1.0`   |
-| b          | InputColor   | B           | `None`  |
-| depth_b    | InputFloat   | Depth B     | `1.0`   |
-| use_alpha  | InputBoolean | Use Alpha   | `False` |
-| anti_alias | InputBoolean | Anti-Alias  | `True`  |
+| Name       | Type         | Description | Default                |
+|------------|--------------|-------------|------------------------|
+| a          | InputColor   | A           | `(1.0, 1.0, 1.0, 1.0)` |
+| depth_a    | InputFloat   | Depth A     | `1.0`                  |
+| b          | InputColor   | B           | `(1.0, 1.0, 1.0, 1.0)` |
+| depth_b    | InputFloat   | Depth B     | `1.0`                  |
+| use_alpha  | InputBoolean | Use Alpha   | `False`                |
+| anti_alias | InputBoolean | Anti-Alias  | `True`                 |
 
 #### Attributes
 
@@ -473,17 +488,17 @@ Combine two images using depth maps
 ### Exposure
 
 ``` python
-Exposure(image=None, exposure=0.0)
+Exposure(image=(1.0, 1.0, 1.0, 1.0), exposure=0.0)
 ```
 
 Adjust brightness using a camera exposure parameter
 
 #### Parameters
 
-| Name     | Type       | Description | Default |
-|----------|------------|-------------|---------|
-| image    | InputColor | Image       | `None`  |
-| exposure | InputFloat | Exposure    | `0.0`   |
+| Name     | Type       | Description | Default                |
+|----------|------------|-------------|------------------------|
+| image    | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| exposure | InputFloat | Exposure    | `0.0`                  |
 
 #### Attributes
 
@@ -512,17 +527,17 @@ Adjust brightness using a camera exposure parameter
 ### HueCorrect
 
 ``` python
-HueCorrect(image=None, fac=1.0)
+HueCorrect(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Adjust hue, saturation, and value with a curve
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
-| fac   | InputFloat | Factor      | `1.0`   |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| image | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| fac   | InputFloat | Factor      | `1.0`                  |
 
 #### Attributes
 
@@ -551,20 +566,26 @@ Adjust hue, saturation, and value with a curve
 ### HueSaturationValue
 
 ``` python
-HueSaturationValue(image=None, hue=0.5, saturation=1.0, value=1.0, fac=1.0)
+HueSaturationValue(
+    image=(1.0, 1.0, 1.0, 1.0),
+    hue=0.5,
+    saturation=1.0,
+    value=1.0,
+    fac=1.0,
+)
 ```
 
 Apply a color transformation in the HSV color model
 
 #### Parameters
 
-| Name       | Type       | Description | Default |
-|------------|------------|-------------|---------|
-| image      | InputColor | Image       | `None`  |
-| hue        | InputFloat | Hue         | `0.5`   |
-| saturation | InputFloat | Saturation  | `1.0`   |
-| value      | InputFloat | Value       | `1.0`   |
-| fac        | InputFloat | Factor      | `1.0`   |
+| Name       | Type       | Description | Default                |
+|------------|------------|-------------|------------------------|
+| image      | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| hue        | InputFloat | Hue         | `0.5`                  |
+| saturation | InputFloat | Saturation  | `1.0`                  |
+| value      | InputFloat | Value       | `1.0`                  |
+| fac        | InputFloat | Factor      | `1.0`                  |
 
 #### Attributes
 
@@ -596,19 +617,24 @@ Apply a color transformation in the HSV color model
 ### InvertColor
 
 ``` python
-InvertColor(color=None, fac=1.0, invert_color=True, invert_alpha=False)
+InvertColor(
+    color=(1.0, 1.0, 1.0, 1.0),
+    fac=1.0,
+    invert_color=True,
+    invert_alpha=False,
+)
 ```
 
 Invert colors, producing a negative
 
 #### Parameters
 
-| Name         | Type         | Description  | Default |
-|--------------|--------------|--------------|---------|
-| color        | InputColor   | Color        | `None`  |
-| fac          | InputFloat   | Factor       | `1.0`   |
-| invert_color | InputBoolean | Invert Color | `True`  |
-| invert_alpha | InputBoolean | Invert Alpha | `False` |
+| Name         | Type         | Description  | Default                |
+|--------------|--------------|--------------|------------------------|
+| color        | InputColor   | Color        | `(1.0, 1.0, 1.0, 1.0)` |
+| fac          | InputFloat   | Factor       | `1.0`                  |
+| invert_color | InputBoolean | Invert Color | `True`                 |
+| invert_alpha | InputBoolean | Invert Alpha | `False`                |
 
 #### Attributes
 
@@ -639,17 +665,17 @@ Invert colors, producing a negative
 ### Posterize
 
 ``` python
-Posterize(image=None, steps=8.0)
+Posterize(image=(1.0, 1.0, 1.0, 1.0), steps=8.0)
 ```
 
 Reduce number of colors in an image, converting smooth gradients into sharp transitions
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
-| steps | InputFloat | Steps       | `8.0`   |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| image | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| steps | InputFloat | Steps       | `8.0`                  |
 
 #### Attributes
 
@@ -678,19 +704,24 @@ Reduce number of colors in an image, converting smooth gradients into sharp tran
 ### RGBCurves
 
 ``` python
-RGBCurves(image=None, fac=1.0, black_level=None, white_level=None)
+RGBCurves(
+    image=(1.0, 1.0, 1.0, 1.0),
+    fac=1.0,
+    black_level=(0.0, 0.0, 0.0, 1.0),
+    white_level=(1.0, 1.0, 1.0, 1.0),
+)
 ```
 
 Perform level adjustments on each color channel of an image
 
 #### Parameters
 
-| Name        | Type       | Description | Default |
-|-------------|------------|-------------|---------|
-| image       | InputColor | Image       | `None`  |
-| fac         | InputFloat | Factor      | `1.0`   |
-| black_level | InputColor | Black Level | `None`  |
-| white_level | InputColor | White Level | `None`  |
+| Name        | Type       | Description | Default                |
+|-------------|------------|-------------|------------------------|
+| image       | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| fac         | InputFloat | Factor      | `1.0`                  |
+| black_level | InputColor | Black Level | `(0.0, 0.0, 0.0, 1.0)` |
+| white_level | InputColor | White Level | `(1.0, 1.0, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -722,7 +753,7 @@ Perform level adjustments on each color channel of an image
 
 ``` python
 Tonemap(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     type='R/D Photoreceptor',
     key=0.18,
     balance=1.0,
@@ -740,7 +771,7 @@ Map one set of colors to another in order to approximate the appearance of high 
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | type | InputMenu \| Literal\['R/D Photoreceptor', 'Rh Simple'\] | Type | `'R/D Photoreceptor'` |
 | key | InputFloat | Key | `0.18` |
 | balance | InputFloat | Balance | `1.0` |
@@ -772,7 +803,7 @@ Map one set of colors to another in order to approximate the appearance of high 
 
 ``` python
 r_d_photoreceptor(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     intensity=0.0,
     contrast=0.0,
     light_adaptation=0.0,
@@ -785,7 +816,7 @@ Create Tonemap node with type ‘R/D Photoreceptor’.
 ##### rh_simple
 
 ``` python
-rh_simple(image=None, key=0.18, balance=1.0, gamma=1.0)
+rh_simple(image=(1.0, 1.0, 1.0, 1.0), key=0.18, balance=1.0, gamma=1.0)
 ```
 
 Create Tonemap node with type ‘Rh Simple’.

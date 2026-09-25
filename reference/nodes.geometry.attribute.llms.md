@@ -51,7 +51,7 @@ Mix attribute values of neighboring elements
 ##### color
 
 ``` python
-color(value=None, iterations=1, weight=1.0)
+color(value=(0.8, 0.8, 0.8, 1.0), iterations=1, weight=1.0)
 ```
 
 Create Blur Attribute with operation ‘Color’. RGBA color with 32-bit floating-point values
@@ -75,7 +75,7 @@ Create Blur Attribute with operation ‘Integer’. 32-bit integer
 ##### vector
 
 ``` python
-vector(value=None, iterations=1, weight=1.0)
+vector(value=(0.0, 0.0, 0.0), iterations=1, weight=1.0)
 ```
 
 Create Blur Attribute with operation ‘Vector’. 3D vector with floating-point values

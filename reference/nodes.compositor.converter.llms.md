@@ -24,7 +24,7 @@
 ### AlphaConvert
 
 ``` python
-AlphaConvert(image=None, type='To Premultiplied')
+AlphaConvert(image=(1.0, 1.0, 1.0, 1.0), type='To Premultiplied')
 ```
 
 Convert to and from premultiplied (associated) alpha
@@ -33,7 +33,7 @@ Convert to and from premultiplied (associated) alpha
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | type | InputMenu \| Literal\['To Premultiplied', 'To Straight'\] | Type | `'To Premultiplied'` |
 
 #### Attributes
@@ -57,7 +57,7 @@ Convert to and from premultiplied (associated) alpha
 ##### to_premultiplied
 
 ``` python
-to_premultiplied(image=None)
+to_premultiplied(image=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Alpha Convert node with type ‘To Premultiplied’.
@@ -65,7 +65,7 @@ Create Alpha Convert node with type ‘To Premultiplied’.
 ##### to_straight
 
 ``` python
-to_straight(image=None)
+to_straight(image=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Alpha Convert node with type ‘To Straight’.
@@ -189,17 +189,17 @@ Create Combine Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) 
 ### ConvertToDisplay
 
 ``` python
-ConvertToDisplay(image=None, invert=False)
+ConvertToDisplay(image=(1.0, 1.0, 1.0, 1.0), invert=False)
 ```
 
 Convert from scene linear to display color space, with a view transform and look for tone mapping
 
 #### Parameters
 
-| Name   | Type         | Description | Default |
-|--------|--------------|-------------|---------|
-| image  | InputColor   | Image       | `None`  |
-| invert | InputBoolean | Invert      | `False` |
+| Name   | Type         | Description | Default                |
+|--------|--------------|-------------|------------------------|
+| image  | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| invert | InputBoolean | Invert      | `False`                |
 
 #### Attributes
 
@@ -269,16 +269,16 @@ Create a matte from an object or material index pass
 ### ImplicitConversion
 
 ``` python
-ImplicitConversion(value=None, *, data_type='RGBA')
+ImplicitConversion(value=(0.0, 0.0, 0.0, 1.0), *, data_type='RGBA')
 ```
 
 Implicitly convert the input value to a fixed socket type
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| value | InputColor | Value       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| value | InputColor | Value       | `(0.0, 0.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -320,7 +320,7 @@ Create Implicit Conversion with operation ‘Boolean’.
 ##### color
 
 ``` python
-color(value=None)
+color(value=(0.0, 0.0, 0.0, 1.0))
 ```
 
 Create Implicit Conversion with operation ‘Color’.
@@ -352,7 +352,7 @@ Create Implicit Conversion with operation ‘Integer’.
 ##### integer_vector
 
 ``` python
-integer_vector(value=None)
+integer_vector(value=(0, 0, 0))
 ```
 
 Create Implicit Conversion with operation ‘Integer Vector’.
@@ -384,7 +384,7 @@ Create Implicit Conversion with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(value=None)
+rotation(value=(0.0, 0.0, 0.0))
 ```
 
 Create Implicit Conversion with operation ‘Rotation’.
@@ -400,7 +400,7 @@ Create Implicit Conversion with operation ‘String’.
 ##### vector
 
 ``` python
-vector(value=None)
+vector(value=(0.0, 0.0, 0.0))
 ```
 
 Create Implicit Conversion with operation ‘Vector’.
@@ -420,19 +420,26 @@ Create Implicit Conversion with operation ‘Vector’.
 ### IndexSwitch
 
 ``` python
-IndexSwitch(index=0, item_0=None, item_1=None, extend=None, *, data_type='RGBA')
+IndexSwitch(
+    index=0,
+    item_0=(0.8, 0.8, 0.8, 1.0),
+    item_1=(0.8, 0.8, 0.8, 1.0),
+    extend=None,
+    *,
+    data_type='RGBA',
+)
 ```
 
 Choose between an arbitrary number of values with an index
 
 #### Parameters
 
-| Name   | Type          | Description | Default |
-|--------|---------------|-------------|---------|
-| index  | InputInteger  | Index       | `0`     |
-| item_0 | InputColor    | 0           | `None`  |
-| item_1 | InputColor    | 1           | `None`  |
-| extend | InputLinkable |             | `None`  |
+| Name   | Type          | Description | Default                |
+|--------|---------------|-------------|------------------------|
+| index  | InputInteger  | Index       | `0`                    |
+| item_0 | InputColor    | 0           | `(0.8, 0.8, 0.8, 1.0)` |
+| item_1 | InputColor    | 1           | `(0.8, 0.8, 0.8, 1.0)` |
+| extend | InputLinkable |             | `None`                 |
 
 #### Attributes
 
@@ -474,7 +481,12 @@ Create Index Switch with operation ‘Boolean’.
 ##### color
 
 ``` python
-color(index=0, item_0=None, item_1=None, extend=None)
+color(
+    index=0,
+    item_0=(0.8, 0.8, 0.8, 1.0),
+    item_1=(0.8, 0.8, 0.8, 1.0),
+    extend=None,
+)
 ```
 
 Create Index Switch with operation ‘Color’.
@@ -506,7 +518,7 @@ Create Index Switch with operation ‘Integer’.
 ##### integer_vector
 
 ``` python
-integer_vector(index=0, item_0=None, item_1=None, extend=None)
+integer_vector(index=0, item_0=(0, 0, 0), item_1=(0, 0, 0), extend=None)
 ```
 
 Create Index Switch with operation ‘Integer Vector’.
@@ -538,7 +550,7 @@ Create Index Switch with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(index=0, item_0=None, item_1=None, extend=None)
+rotation(index=0, item_0=(0.0, 0.0, 0.0), item_1=(0.0, 0.0, 0.0), extend=None)
 ```
 
 Create Index Switch with operation ‘Rotation’.
@@ -554,7 +566,7 @@ Create Index Switch with operation ‘String’.
 ##### vector
 
 ``` python
-vector(index=0, item_0=None, item_1=None, extend=None)
+vector(index=0, item_0=(0.0, 0.0, 0.0), item_1=(0.0, 0.0, 0.0), extend=None)
 ```
 
 Create Index Switch with operation ‘Vector’.
@@ -577,7 +589,7 @@ Create Index Switch with operation ‘Vector’.
 ### Levels
 
 ``` python
-Levels(image=None, channel='Combined')
+Levels(image=(0.0, 0.0, 0.0, 1.0), channel='Combined')
 ```
 
 Compute average and standard deviation of pixel values
@@ -586,7 +598,7 @@ Compute average and standard deviation of pixel values
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(0.0, 0.0, 0.0, 1.0)` |
 | channel | InputMenu \| Literal\['Combined', 'Red', 'Green', 'Blue', 'Luminance'\] | Channel | `'Combined'` |
 
 #### Attributes
@@ -619,16 +631,16 @@ Compute average and standard deviation of pixel values
 ### RGBToBW
 
 ``` python
-RGBToBW(image=None)
+RGBToBW(image=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Convert RGB input into grayscale using luminance
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| image | InputColor | Image       | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 
@@ -657,9 +669,9 @@ Convert RGB input into grayscale using luminance
 
 ``` python
 RelativeToPixel(
-    vector_value=None,
+    vector_value=(0.0, 0.0),
     float_value=0.0,
-    image=None,
+    image=(0.8, 0.8, 0.8, 1.0),
     *,
     data_type='FLOAT',
     reference_dimension='X',
@@ -670,11 +682,11 @@ Converts values that are relative to the image size to be in terms of pixels
 
 #### Parameters
 
-| Name         | Type        | Description | Default |
-|--------------|-------------|-------------|---------|
-| vector_value | InputVector | Value       | `None`  |
-| float_value  | InputFloat  | Value       | `0.0`   |
-| image        | InputColor  | Image       | `None`  |
+| Name         | Type        | Description | Default                |
+|--------------|-------------|-------------|------------------------|
+| vector_value | InputVector | Value       | `(0.0, 0.0)`           |
+| float_value  | InputFloat  | Value       | `0.0`                  |
+| image        | InputColor  | Image       | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 
@@ -699,7 +711,7 @@ Converts values that are relative to the image size to be in terms of pixels
 ##### float
 
 ``` python
-float(float_value=0.0, image=None)
+float(float_value=0.0, image=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Relative To Pixel with operation ‘Float’. Float value
@@ -707,7 +719,7 @@ Create Relative To Pixel with operation ‘Float’. Float value
 ##### vector
 
 ``` python
-vector(vector_value=None, image=None)
+vector(vector_value=(0.0, 0.0), image=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Relative To Pixel with operation ‘Vector’. Vector value
@@ -730,16 +742,16 @@ Create Relative To Pixel with operation ‘Vector’. Vector value
 ### SeparateColor
 
 ``` python
-SeparateColor(image=None, *, mode='RGB', ycc_mode='ITUBT709')
+SeparateColor(image=(1.0, 1.0, 1.0, 1.0), *, mode='RGB', ycc_mode='ITUBT709')
 ```
 
 Split an image into its composite color channels
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| image | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -767,7 +779,7 @@ Split an image into its composite color channels
 ##### hsl
 
 ``` python
-hsl(image=None)
+hsl(image=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing
@@ -775,7 +787,7 @@ Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightn
 ##### hsv
 
 ``` python
-hsv(image=None)
+hsv(image=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing
@@ -783,7 +795,7 @@ Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value)
 ##### rgb
 
 ``` python
-rgb(image=None)
+rgb(image=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing
@@ -791,7 +803,7 @@ Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color
 ##### ycbcr
 
 ``` python
-ycbcr(image=None)
+ycbcr(image=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Separate Color with operation ‘YCbCr’. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing
@@ -799,7 +811,7 @@ Create Separate Color with operation ‘YCbCr’. Use YCbCr (Y - luma, Cb - blue
 ##### yuv
 
 ``` python
-yuv(image=None)
+yuv(image=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Separate Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) color processing
@@ -822,7 +834,7 @@ Create Separate Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma)
 ### SetAlpha
 
 ``` python
-SetAlpha(image=None, alpha=1.0, type='Apply Mask')
+SetAlpha(image=(1.0, 1.0, 1.0, 1.0), alpha=1.0, type='Apply Mask')
 ```
 
 Add an alpha channel to an image
@@ -831,7 +843,7 @@ Add an alpha channel to an image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | alpha | InputFloat | Alpha | `1.0` |
 | type | InputMenu \| Literal\['Apply Mask', 'Replace Alpha'\] | Type | `'Apply Mask'` |
 
@@ -856,7 +868,7 @@ Add an alpha channel to an image
 ##### apply_mask
 
 ``` python
-apply_mask(image=None, alpha=1.0)
+apply_mask(image=(1.0, 1.0, 1.0, 1.0), alpha=1.0)
 ```
 
 Create Set Alpha node with type ‘Apply Mask’.
@@ -864,7 +876,7 @@ Create Set Alpha node with type ‘Apply Mask’.
 ##### replace_alpha
 
 ``` python
-replace_alpha(image=None, alpha=1.0)
+replace_alpha(image=(1.0, 1.0, 1.0, 1.0), alpha=1.0)
 ```
 
 Create Set Alpha node with type ‘Replace Alpha’.
@@ -886,19 +898,24 @@ Create Set Alpha node with type ‘Replace Alpha’.
 ### Split
 
 ``` python
-Split(position=None, rotation=0.7854, image=None, image_001=None)
+Split(
+    position=(0.5, 0.5),
+    rotation=math.pi / 4,
+    image=(0.8, 0.8, 0.8, 1.0),
+    image_001=(0.8, 0.8, 0.8, 1.0),
+)
 ```
 
 Combine two images for side-by-side display. Typically used in combination with a Viewer node
 
 #### Parameters
 
-| Name      | Type        | Description | Default  |
-|-----------|-------------|-------------|----------|
-| position  | InputVector | Position    | `None`   |
-| rotation  | InputFloat  | Rotation    | `0.7854` |
-| image     | InputColor  | Image       | `None`   |
-| image_001 | InputColor  | Image       | `None`   |
+| Name      | Type        | Description | Default                |
+|-----------|-------------|-------------|------------------------|
+| position  | InputVector | Position    | `(0.5, 0.5)`           |
+| rotation  | InputFloat  | Rotation    | `math.pi / 4`          |
+| image     | InputColor  | Image       | `(0.8, 0.8, 0.8, 1.0)` |
+| image_001 | InputColor  | Image       | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 
@@ -929,18 +946,18 @@ Combine two images for side-by-side display. Typically used in combination with 
 ### Switch
 
 ``` python
-Switch(switch=False, off=None, on=None)
+Switch(switch=False, off=(0.8, 0.8, 0.8, 1.0), on=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Switch between two images using a checkbox
 
 #### Parameters
 
-| Name   | Type         | Description | Default |
-|--------|--------------|-------------|---------|
-| switch | InputBoolean | Switch      | `False` |
-| off    | InputColor   | Off         | `None`  |
-| on     | InputColor   | On          | `None`  |
+| Name   | Type         | Description | Default                |
+|--------|--------------|-------------|------------------------|
+| switch | InputBoolean | Switch      | `False`                |
+| off    | InputColor   | Off         | `(0.8, 0.8, 0.8, 1.0)` |
+| on     | InputColor   | On          | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 
@@ -970,17 +987,17 @@ Switch between two images using a checkbox
 ### SwitchView
 
 ``` python
-SwitchView(left=None, right=None)
+SwitchView(left=(0.0, 0.0, 0.0, 1.0), right=(0.0, 0.0, 0.0, 1.0))
 ```
 
 Combine the views (left and right) into a single stereo 3D output
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| left  | InputColor | left        | `None`  |
-| right | InputColor | right       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| left  | InputColor | left        | `(0.0, 0.0, 0.0, 1.0)` |
+| right | InputColor | right       | `(0.0, 0.0, 0.0, 1.0)` |
 
 #### Attributes
 

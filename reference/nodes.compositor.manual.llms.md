@@ -166,5 +166,6 @@ tree(
     collapse=False,
     arrange='sugiyama',
     fake_user=False,
+    clear=False,
 )
 ```

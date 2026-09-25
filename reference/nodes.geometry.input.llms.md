@@ -2593,17 +2593,17 @@ Provide a string value that can be connected to other nodes in the tree
 ### UVTangent
 
 ``` python
-UVTangent(method='Exact', uv=None)
+UVTangent(method='Exact', uv=(0.0, 0.0))
 ```
 
 Generate tangent directions based on a UV map
 
 #### Parameters
 
-| Name   | Type                                    | Description | Default   |
-|--------|-----------------------------------------|-------------|-----------|
-| method | InputMenu \| Literal\['Exact', 'Fast'\] | Method      | `'Exact'` |
-| uv     | InputVector                             | UV          | `None`    |
+| Name   | Type                                    | Description | Default      |
+|--------|-----------------------------------------|-------------|--------------|
+| method | InputMenu \| Literal\['Exact', 'Fast'\] | Method      | `'Exact'`    |
+| uv     | InputVector                             | UV          | `(0.0, 0.0)` |
 
 #### Attributes
 

@@ -16,16 +16,16 @@
 
 ``` python
 PrincipledVolume(
-    color=None,
+    color=(0.5, 0.5, 0.5, 1.0),
     color_attribute='',
     density=1.0,
     density_attribute='density',
     anisotropy=0.0,
-    absorption_color=None,
+    absorption_color=(0.0, 0.0, 0.0, 1.0),
     emission_strength=0.0,
-    emission_color=None,
+    emission_color=(1.0, 1.0, 1.0, 1.0),
     blackbody_intensity=0.0,
-    blackbody_tint=None,
+    blackbody_tint=(1.0, 1.0, 1.0, 1.0),
     temperature=1000.0,
     temperature_attribute='temperature',
     weight=0.0,
@@ -36,21 +36,21 @@ Combine all volume shading components into a single easy to use node
 
 #### Parameters
 
-| Name                  | Type        | Description           | Default         |
-|-----------------------|-------------|-----------------------|-----------------|
-| color                 | InputColor  | Color                 | `None`          |
-| color_attribute       | InputString | Color Attribute       | `''`            |
-| density               | InputFloat  | Density               | `1.0`           |
-| density_attribute     | InputString | Density Attribute     | `'density'`     |
-| anisotropy            | InputFloat  | Anisotropy            | `0.0`           |
-| absorption_color      | InputColor  | Absorption Color      | `None`          |
-| emission_strength     | InputFloat  | Emission Strength     | `0.0`           |
-| emission_color        | InputColor  | Emission Color        | `None`          |
-| blackbody_intensity   | InputFloat  | Blackbody Intensity   | `0.0`           |
-| blackbody_tint        | InputColor  | Blackbody Tint        | `None`          |
-| temperature           | InputFloat  | Temperature           | `1000.0`        |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| color | InputColor | Color | `(0.5, 0.5, 0.5, 1.0)` |
+| color_attribute | InputString | Color Attribute | `''` |
+| density | InputFloat | Density | `1.0` |
+| density_attribute | InputString | Density Attribute | `'density'` |
+| anisotropy | InputFloat | Anisotropy | `0.0` |
+| absorption_color | InputColor | Absorption Color | `(0.0, 0.0, 0.0, 1.0)` |
+| emission_strength | InputFloat | Emission Strength | `0.0` |
+| emission_color | InputColor | Emission Color | `(1.0, 1.0, 1.0, 1.0)` |
+| blackbody_intensity | InputFloat | Blackbody Intensity | `0.0` |
+| blackbody_tint | InputColor | Blackbody Tint | `(1.0, 1.0, 1.0, 1.0)` |
+| temperature | InputFloat | Temperature | `1000.0` |
 | temperature_attribute | InputString | Temperature Attribute | `'temperature'` |
-| weight                | InputFloat  | Weight                | `0.0`           |
+| weight | InputFloat | Weight | `0.0` |
 
 #### Attributes
 
@@ -90,18 +90,18 @@ Combine all volume shading components into a single easy to use node
 ### VolumeAbsorption
 
 ``` python
-VolumeAbsorption(color=None, density=1.0, weight=0.0)
+VolumeAbsorption(color=(0.8, 0.8, 0.8, 1.0), density=1.0, weight=0.0)
 ```
 
 Absorb light as it passes through the volume
 
 #### Parameters
 
-| Name    | Type       | Description | Default |
-|---------|------------|-------------|---------|
-| color   | InputColor | Color       | `None`  |
-| density | InputFloat | Density     | `1.0`   |
-| weight  | InputFloat | Weight      | `0.0`   |
+| Name    | Type       | Description | Default                |
+|---------|------------|-------------|------------------------|
+| color   | InputColor | Color       | `(0.8, 0.8, 0.8, 1.0)` |
+| density | InputFloat | Density     | `1.0`                  |
+| weight  | InputFloat | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -133,14 +133,14 @@ Absorb light as it passes through the volume
 ``` python
 VolumeCoefficients(
     weight=0.0,
-    absorption_coefficients=None,
-    scatter_coefficients=None,
+    absorption_coefficients=(1.0, 1.0, 1.0),
+    scatter_coefficients=(1.0, 1.0, 1.0),
     anisotropy=0.0,
     ior=1.33,
     backscatter=0.1,
     alpha=0.5,
     diameter=20.0,
-    emission_coefficients=None,
+    emission_coefficients=(0.0, 0.0, 0.0),
     *,
     phase='HENYEY_GREENSTEIN',
 )
@@ -150,17 +150,17 @@ Model all three physical processes in a volume, represented by their coefficient
 
 #### Parameters
 
-| Name                    | Type        | Description             | Default |
-|-------------------------|-------------|-------------------------|---------|
-| weight                  | InputFloat  | Weight                  | `0.0`   |
-| absorption_coefficients | InputVector | Absorption Coefficients | `None`  |
-| scatter_coefficients    | InputVector | Scatter Coefficients    | `None`  |
-| anisotropy              | InputFloat  | Anisotropy              | `0.0`   |
-| ior                     | InputFloat  | IOR                     | `1.33`  |
-| backscatter             | InputFloat  | Backscatter             | `0.1`   |
-| alpha                   | InputFloat  | Alpha                   | `0.5`   |
-| diameter                | InputFloat  | Diameter                | `20.0`  |
-| emission_coefficients   | InputVector | Emission Coefficients   | `None`  |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| weight | InputFloat | Weight | `0.0` |
+| absorption_coefficients | InputVector | Absorption Coefficients | `(1.0, 1.0, 1.0)` |
+| scatter_coefficients | InputVector | Scatter Coefficients | `(1.0, 1.0, 1.0)` |
+| anisotropy | InputFloat | Anisotropy | `0.0` |
+| ior | InputFloat | IOR | `1.33` |
+| backscatter | InputFloat | Backscatter | `0.1` |
+| alpha | InputFloat | Alpha | `0.5` |
+| diameter | InputFloat | Diameter | `20.0` |
+| emission_coefficients | InputVector | Emission Coefficients | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -226,7 +226,7 @@ Read volume data attributes from volume grids
 
 ``` python
 VolumeScatter(
-    color=None,
+    color=(0.8, 0.8, 0.8, 1.0),
     density=1.0,
     anisotropy=0.0,
     ior=1.33,
@@ -243,16 +243,16 @@ Scatter light as it passes through the volume, often used to add fog to a scene
 
 #### Parameters
 
-| Name        | Type       | Description | Default |
-|-------------|------------|-------------|---------|
-| color       | InputColor | Color       | `None`  |
-| density     | InputFloat | Density     | `1.0`   |
-| anisotropy  | InputFloat | Anisotropy  | `0.0`   |
-| ior         | InputFloat | IOR         | `1.33`  |
-| backscatter | InputFloat | Backscatter | `0.1`   |
-| alpha       | InputFloat | Alpha       | `0.5`   |
-| diameter    | InputFloat | Diameter    | `20.0`  |
-| weight      | InputFloat | Weight      | `0.0`   |
+| Name        | Type       | Description | Default                |
+|-------------|------------|-------------|------------------------|
+| color       | InputColor | Color       | `(0.8, 0.8, 0.8, 1.0)` |
+| density     | InputFloat | Density     | `1.0`                  |
+| anisotropy  | InputFloat | Anisotropy  | `0.0`                  |
+| ior         | InputFloat | IOR         | `1.33`                 |
+| backscatter | InputFloat | Backscatter | `0.1`                  |
+| alpha       | InputFloat | Alpha       | `0.5`                  |
+| diameter    | InputFloat | Diameter    | `20.0`                 |
+| weight      | InputFloat | Weight      | `0.0`                  |
 
 #### Attributes
 

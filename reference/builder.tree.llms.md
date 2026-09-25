@@ -812,6 +812,7 @@ MaterialBuilder(
 | [shader](#nodebpy.builder.tree.MaterialBuilder.shader) | Create a shader node tree. |
 | [split_group_inputs](#nodebpy.builder.tree.MaterialBuilder.split_group_inputs) | Split the Group Input node into one instance per consumer node, |
 | [to_mermaid](#nodebpy.builder.tree.MaterialBuilder.to_mermaid) | Generate a Mermaid diagram that represents this tree. |
+| [to_plot](#nodebpy.builder.tree.MaterialBuilder.to_plot) | Draw this tree to an image, styled like Blender’s node editor, |
 | [to_python](#nodebpy.builder.tree.MaterialBuilder.to_python) | Generate Python source that recreates this tree using nodebpy. |
 
 ##### activate_tree
@@ -844,6 +845,7 @@ compositor(
     arrange='sugiyama',
     fake_user=False,
     split_inputs=None,
+    clear=False,
 )
 ```
 
@@ -875,6 +877,7 @@ geometry(
     arrange='sugiyama',
     fake_user=False,
     split_inputs=None,
+    clear=False,
 )
 ```
 
@@ -904,6 +907,7 @@ shader(
     arrange='sugiyama',
     fake_user=False,
     split_inputs=None,
+    clear=False,
 )
 ```
 
@@ -938,6 +942,25 @@ This can be used for documentation or visualization purposes. The Mermaid syntax
 |----|----|----|
 |  | A string containing the Mermaid diagram syntax representing this node tree. |  |
 
+##### to_plot
+
+``` python
+to_plot(
+    filepath,
+    *,
+    title=None,
+    dpi=150,
+    node=False,
+    open_panels=False,
+    width=None,
+    axes=False,
+)
+```
+
+Draw this tree to an image, styled like Blender’s node editor, for headless review (`pip install nodebpy[plot]`): its internals, or with `node=True` the single group node a user adds to another tree, showing the interface sockets with their default values.
+
+See :func:`nodebpy.export.to_plot`.
+
 ##### to_python
 
 ``` python
@@ -950,6 +973,7 @@ to_python(
     top_level='with',
     format=True,
     nodebpy_pkg='nodebpy',
+    in_place=False,
 )
 ```
 
@@ -1727,6 +1751,7 @@ TreeBuilder(
     fake_user=False,
     ignore_visibility=False,
     split_inputs=None,
+    clear=False,
 )
 ```
 
@@ -1765,6 +1790,7 @@ Supports geometry, shader, and compositor node trees.
 | [shader](#nodebpy.builder.tree.TreeBuilder.shader) | Create a shader node tree. |
 | [split_group_inputs](#nodebpy.builder.tree.TreeBuilder.split_group_inputs) | Split the Group Input node into one instance per consumer node, |
 | [to_mermaid](#nodebpy.builder.tree.TreeBuilder.to_mermaid) | Generate a Mermaid diagram that represents this tree. |
+| [to_plot](#nodebpy.builder.tree.TreeBuilder.to_plot) | Draw this tree to an image, styled like Blender’s node editor, |
 | [to_python](#nodebpy.builder.tree.TreeBuilder.to_python) | Generate Python source that recreates this tree using nodebpy. |
 
 ##### activate_tree
@@ -1797,6 +1823,7 @@ compositor(
     arrange='sugiyama',
     fake_user=False,
     split_inputs=None,
+    clear=False,
 )
 ```
 
@@ -1828,6 +1855,7 @@ geometry(
     arrange='sugiyama',
     fake_user=False,
     split_inputs=None,
+    clear=False,
 )
 ```
 
@@ -1857,6 +1885,7 @@ shader(
     arrange='sugiyama',
     fake_user=False,
     split_inputs=None,
+    clear=False,
 )
 ```
 
@@ -1891,6 +1920,25 @@ This can be used for documentation or visualization purposes. The Mermaid syntax
 |----|----|----|
 |  | A string containing the Mermaid diagram syntax representing this node tree. |  |
 
+##### to_plot
+
+``` python
+to_plot(
+    filepath,
+    *,
+    title=None,
+    dpi=150,
+    node=False,
+    open_panels=False,
+    width=None,
+    axes=False,
+)
+```
+
+Draw this tree to an image, styled like Blender’s node editor, for headless review (`pip install nodebpy[plot]`): its internals, or with `node=True` the single group node a user adds to another tree, showing the interface sockets with their default values.
+
+See :func:`nodebpy.export.to_plot`.
+
 ##### to_python
 
 ``` python
@@ -1903,6 +1951,7 @@ to_python(
     top_level='with',
     format=True,
     nodebpy_pkg='nodebpy',
+    in_place=False,
 )
 ```
 

@@ -26,8 +26,8 @@ BoxMask(
     operation='Add',
     mask=0.0,
     value=1.0,
-    position=None,
-    size=None,
+    position=(0.5, 0.5),
+    size=(0.2, 0.1),
     rotation=0.0,
 )
 ```
@@ -41,8 +41,8 @@ Create rectangular mask suitable for use as a simple matte
 | operation | InputMenu \| Literal\['Add', 'Subtract', 'Multiply', 'Not'\] | Operation | `'Add'` |
 | mask | InputFloat | Mask | `0.0` |
 | value | InputFloat | Value | `1.0` |
-| position | InputVector | Position | `None` |
-| size | InputVector | Size | `None` |
+| position | InputVector | Position | `(0.5, 0.5)` |
+| size | InputVector | Size | `(0.2, 0.1)` |
 | rotation | InputFloat | Rotation | `0.0` |
 
 #### Attributes
@@ -77,7 +77,7 @@ Create rectangular mask suitable for use as a simple matte
 
 ``` python
 ChannelKey(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     minimum=0.0,
     maximum=1.0,
     color_space='RGB',
@@ -99,7 +99,7 @@ Create matte based on differences in color channels
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | minimum | InputFloat | Minimum | `0.0` |
 | maximum | InputFloat | Maximum | `1.0` |
 | color_space | InputMenu \| Literal\['RGB', 'HSV', 'YUV', 'YCbCr'\] | Color Space | `'RGB'` |
@@ -153,10 +153,10 @@ Create matte based on differences in color channels
 
 ``` python
 ChromaKey(
-    image=None,
-    key_color=None,
-    minimum=0.1745,
-    maximum=0.5236,
+    image=(1.0, 1.0, 1.0, 1.0),
+    key_color=(1.0, 1.0, 1.0, 1.0),
+    minimum=0.17453292,
+    maximum=math.pi / 6,
     falloff=1.0,
 )
 ```
@@ -165,13 +165,13 @@ Create matte based on chroma values
 
 #### Parameters
 
-| Name      | Type       | Description | Default  |
-|-----------|------------|-------------|----------|
-| image     | InputColor | Image       | `None`   |
-| key_color | InputColor | Key Color   | `None`   |
-| minimum   | InputFloat | Minimum     | `0.1745` |
-| maximum   | InputFloat | Maximum     | `0.5236` |
-| falloff   | InputFloat | Falloff     | `1.0`    |
+| Name      | Type       | Description | Default                |
+|-----------|------------|-------------|------------------------|
+| image     | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| key_color | InputColor | Key Color   | `(1.0, 1.0, 1.0, 1.0)` |
+| minimum   | InputFloat | Minimum     | `0.17453292`           |
+| maximum   | InputFloat | Maximum     | `math.pi / 6`          |
+| falloff   | InputFloat | Falloff     | `1.0`                  |
 
 #### Attributes
 
@@ -204,20 +204,26 @@ Create matte based on chroma values
 ### ColorKey
 
 ``` python
-ColorKey(image=None, key_color=None, hue=0.01, saturation=0.1, value=0.1)
+ColorKey(
+    image=(1.0, 1.0, 1.0, 1.0),
+    key_color=(1.0, 1.0, 1.0, 1.0),
+    hue=0.01,
+    saturation=0.1,
+    value=0.1,
+)
 ```
 
 Create matte using a given color, for green or blue screen footage
 
 #### Parameters
 
-| Name       | Type       | Description | Default |
-|------------|------------|-------------|---------|
-| image      | InputColor | Image       | `None`  |
-| key_color  | InputColor | Key Color   | `None`  |
-| hue        | InputFloat | Hue         | `0.01`  |
-| saturation | InputFloat | Saturation  | `0.1`   |
-| value      | InputFloat | Value       | `0.1`   |
+| Name       | Type       | Description | Default                |
+|------------|------------|-------------|------------------------|
+| image      | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| key_color  | InputColor | Key Color   | `(1.0, 1.0, 1.0, 1.0)` |
+| hue        | InputFloat | Hue         | `0.01`                 |
+| saturation | InputFloat | Saturation  | `0.1`                  |
+| value      | InputFloat | Value       | `0.1`                  |
 
 #### Attributes
 
@@ -251,14 +257,14 @@ Create matte using a given color, for green or blue screen footage
 
 ``` python
 ColorSpill(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     fac=1.0,
     spill_channel='G',
     limit_method='Single',
     limit_channel='R',
     limit_strength=1.0,
     use_spill_strength=False,
-    spill_strength=None,
+    spill_strength=(0.0, 1.0, 0.0, 1.0),
 )
 ```
 
@@ -268,14 +274,14 @@ Remove colors from a blue or green screen, by reducing one RGB channel compared 
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | fac | InputFloat | Factor | `1.0` |
 | spill_channel | InputMenu \| Literal\['R', 'G', 'B'\] | Spill Channel | `'G'` |
 | limit_method | InputMenu \| Literal\['Single', 'Average'\] | Limit Method | `'Single'` |
 | limit_channel | InputMenu \| Literal\['R', 'G', 'B'\] | Limit Channel | `'R'` |
 | limit_strength | InputFloat | Limit Strength | `1.0` |
 | use_spill_strength | InputBoolean | Use Spill Strength | `False` |
-| spill_strength | InputColor | Strength | `None` |
+| spill_strength | InputColor | Strength | `(0.0, 1.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -310,19 +316,24 @@ Remove colors from a blue or green screen, by reducing one RGB channel compared 
 ### DifferenceKey
 
 ``` python
-DifferenceKey(image_1=None, image_2=None, tolerance=0.1, falloff=0.1)
+DifferenceKey(
+    image_1=(1.0, 1.0, 1.0, 1.0),
+    image_2=(1.0, 1.0, 1.0, 1.0),
+    tolerance=0.1,
+    falloff=0.1,
+)
 ```
 
 Produce a matte that isolates foreground content by comparing it with a reference background image
 
 #### Parameters
 
-| Name      | Type       | Description | Default |
-|-----------|------------|-------------|---------|
-| image_1   | InputColor | Image 1     | `None`  |
-| image_2   | InputColor | Image 2     | `None`  |
-| tolerance | InputFloat | Tolerance   | `0.1`   |
-| falloff   | InputFloat | Falloff     | `0.1`   |
+| Name      | Type       | Description | Default                |
+|-----------|------------|-------------|------------------------|
+| image_1   | InputColor | Image 1     | `(1.0, 1.0, 1.0, 1.0)` |
+| image_2   | InputColor | Image 2     | `(1.0, 1.0, 1.0, 1.0)` |
+| tolerance | InputFloat | Tolerance   | `0.1`                  |
+| falloff   | InputFloat | Falloff     | `0.1`                  |
 
 #### Attributes
 
@@ -355,8 +366,8 @@ Produce a matte that isolates foreground content by comparing it with a referenc
 
 ``` python
 DistanceKey(
-    image=None,
-    key_color=None,
+    image=(1.0, 1.0, 1.0, 1.0),
+    key_color=(1.0, 1.0, 1.0, 1.0),
     color_space='RGB',
     tolerance=0.1,
     falloff=0.1,
@@ -367,13 +378,13 @@ Create matte based on 3D distance between colors
 
 #### Parameters
 
-| Name        | Type                                 | Description | Default |
-|-------------|--------------------------------------|-------------|---------|
-| image       | InputColor                           | Image       | `None`  |
-| key_color   | InputColor                           | Key Color   | `None`  |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| key_color | InputColor | Key Color | `(1.0, 1.0, 1.0, 1.0)` |
 | color_space | InputMenu \| Literal\['RGB', 'YCC'\] | Color Space | `'RGB'` |
-| tolerance   | InputFloat                           | Tolerance   | `0.1`   |
-| falloff     | InputFloat                           | Falloff     | `0.1`   |
+| tolerance | InputFloat | Tolerance | `0.1` |
+| falloff | InputFloat | Falloff | `0.1` |
 
 #### Attributes
 
@@ -458,8 +469,8 @@ EllipseMask(
     operation='Add',
     mask=0.0,
     value=1.0,
-    position=None,
-    size=None,
+    position=(0.5, 0.5),
+    size=(0.2, 0.1),
     rotation=0.0,
 )
 ```
@@ -473,8 +484,8 @@ Create elliptical mask suitable for use as a simple matte or vignette mask
 | operation | InputMenu \| Literal\['Add', 'Subtract', 'Multiply', 'Not'\] | Operation | `'Add'` |
 | mask | InputFloat | Mask | `0.0` |
 | value | InputFloat | Value | `1.0` |
-| position | InputVector | Position | `None` |
-| size | InputVector | Size | `None` |
+| position | InputVector | Position | `(0.5, 0.5)` |
+| size | InputVector | Size | `(0.2, 0.1)` |
 | rotation | InputFloat | Rotation | `0.0` |
 
 #### Attributes
@@ -509,8 +520,8 @@ Create elliptical mask suitable for use as a simple matte or vignette mask
 
 ``` python
 Keying(
-    image=None,
-    key_color=None,
+    image=(0.8, 0.8, 0.8, 1.0),
+    key_color=(1.0, 1.0, 1.0, 1.0),
     preprocess_blur_size=0,
     key_balance=0.5,
     black_level=0.0,
@@ -534,8 +545,8 @@ Perform both chroma keying (to remove the backdrop) and despill (to correct colo
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
-| key_color | InputColor | Key Color | `None` |
+| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
+| key_color | InputColor | Key Color | `(1.0, 1.0, 1.0, 1.0)` |
 | preprocess_blur_size | InputInteger | Blur Size | `0` |
 | key_balance | InputFloat | Balance | `0.5` |
 | black_level | InputFloat | Black Level | `0.0` |
@@ -632,18 +643,18 @@ Create plates for use as a color reference for keying nodes
 ### LuminanceKey
 
 ``` python
-LuminanceKey(image=None, minimum=0.0, maximum=1.0)
+LuminanceKey(image=(1.0, 1.0, 1.0, 1.0), minimum=0.0, maximum=1.0)
 ```
 
 Create a matte based on luminance (brightness) difference
 
 #### Parameters
 
-| Name    | Type       | Description | Default |
-|---------|------------|-------------|---------|
-| image   | InputColor | Image       | `None`  |
-| minimum | InputFloat | Minimum     | `0.0`   |
-| maximum | InputFloat | Maximum     | `1.0`   |
+| Name    | Type       | Description | Default                |
+|---------|------------|-------------|------------------------|
+| image   | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| minimum | InputFloat | Minimum     | `0.0`                  |
+| maximum | InputFloat | Maximum     | `1.0`                  |
 
 #### Attributes
 

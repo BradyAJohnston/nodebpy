@@ -152,9 +152,9 @@ Create Accumulate Field with operation ‘Face Corner’. Attribute on mesh face
 
 ``` python
 AlignRotationToVector(
-    rotation=None,
+    rotation=(0.0, 0.0, 0.0),
     factor=1.0,
-    vector=None,
+    vector=(0.0, 0.0, 1.0),
     *,
     axis='Z',
     pivot_axis='AUTO',
@@ -165,11 +165,11 @@ Orient a rotation along the given direction
 
 #### Parameters
 
-| Name     | Type          | Description | Default |
-|----------|---------------|-------------|---------|
-| rotation | InputRotation | Rotation    | `None`  |
-| factor   | InputFloat    | Factor      | `1.0`   |
-| vector   | InputVector   | Vector      | `None`  |
+| Name     | Type          | Description | Default           |
+|----------|---------------|-------------|-------------------|
+| rotation | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
+| factor   | InputFloat    | Factor      | `1.0`             |
+| vector   | InputVector   | Vector      | `(0.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -202,8 +202,8 @@ Orient a rotation along the given direction
 
 ``` python
 AxesToRotation(
-    primary_axis=None,
-    secondary_axis=None,
+    primary_axis=(0.0, 0.0, 1.0),
+    secondary_axis=(1.0, 0.0, 0.0),
     *,
     primary='Z',
     secondary='X',
@@ -214,10 +214,10 @@ Create a rotation from a primary and (ideally orthogonal) secondary axis
 
 #### Parameters
 
-| Name           | Type        | Description    | Default |
-|----------------|-------------|----------------|---------|
-| primary_axis   | InputVector | Primary Axis   | `None`  |
-| secondary_axis | InputVector | Secondary Axis | `None`  |
+| Name           | Type        | Description    | Default           |
+|----------------|-------------|----------------|-------------------|
+| primary_axis   | InputVector | Primary Axis   | `(0.0, 0.0, 1.0)` |
+| secondary_axis | InputVector | Secondary Axis | `(1.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -248,17 +248,17 @@ Create a rotation from a primary and (ideally orthogonal) secondary axis
 ### AxisAngleToRotation
 
 ``` python
-AxisAngleToRotation(axis=None, angle=0.0)
+AxisAngleToRotation(axis=(0.0, 0.0, 1.0), angle=0.0)
 ```
 
 Build a rotation from an axis and a rotation around that axis
 
 #### Parameters
 
-| Name  | Type        | Description | Default |
-|-------|-------------|-------------|---------|
-| axis  | InputVector | Axis        | `None`  |
-| angle | InputFloat  | Angle       | `0.0`   |
+| Name  | Type        | Description | Default           |
+|-------|-------------|-------------|-------------------|
+| axis  | InputVector | Axis        | `(0.0, 0.0, 1.0)` |
+| angle | InputFloat  | Angle       | `0.0`             |
 
 #### Attributes
 
@@ -650,18 +650,18 @@ Create a list of values
 ### ClusterByConnected
 
 ``` python
-ClusterByConnected(selection=True, position=None, distance=0.001)
+ClusterByConnected(selection=True, position=(0.0, 0.0, 0.0), distance=0.001)
 ```
 
 Group mesh vertices connected by edges when they are within a specified distance
 
 #### Parameters
 
-| Name      | Type         | Description | Default |
-|-----------|--------------|-------------|---------|
-| selection | InputBoolean | Selection   | `True`  |
-| position  | InputVector  | Position    | `None`  |
-| distance  | InputFloat   | Distance    | `0.001` |
+| Name      | Type         | Description | Default           |
+|-----------|--------------|-------------|-------------------|
+| selection | InputBoolean | Selection   | `True`            |
+| position  | InputVector  | Position    | `(0.0, 0.0, 0.0)` |
+| distance  | InputFloat   | Distance    | `0.001`           |
 
 #### Attributes
 
@@ -691,19 +691,24 @@ Group mesh vertices connected by edges when they are within a specified distance
 ### ClusterByDistance
 
 ``` python
-ClusterByDistance(selection=True, group_id=0, position=None, distance=0.001)
+ClusterByDistance(
+    selection=True,
+    group_id=0,
+    position=(0.0, 0.0, 0.0),
+    distance=0.001,
+)
 ```
 
 Group elements into integer IDs based on proximity of vector values
 
 #### Parameters
 
-| Name      | Type         | Description | Default |
-|-----------|--------------|-------------|---------|
-| selection | InputBoolean | Selection   | `True`  |
-| group_id  | InputInteger | Group ID    | `0`     |
-| position  | InputVector  | Position    | `None`  |
-| distance  | InputFloat   | Distance    | `0.001` |
+| Name      | Type         | Description | Default           |
+|-----------|--------------|-------------|-------------------|
+| selection | InputBoolean | Selection   | `True`            |
+| group_id  | InputInteger | Group ID    | `0`               |
+| position  | InputVector  | Position    | `(0.0, 0.0, 0.0)` |
+| distance  | InputFloat   | Distance    | `0.001`           |
 
 #### Attributes
 
@@ -921,18 +926,22 @@ Construct a 4x4 matrix from its individual values
 ### CombineTransform
 
 ``` python
-CombineTransform(translation=None, rotation=None, scale=None)
+CombineTransform(
+    translation=(0.0, 0.0, 0.0),
+    rotation=(0.0, 0.0, 0.0),
+    scale=(1.0, 1.0, 1.0),
+)
 ```
 
 Combine a translation vector, a rotation, and a scale vector into a transformation matrix
 
 #### Parameters
 
-| Name        | Type          | Description | Default |
-|-------------|---------------|-------------|---------|
-| translation | InputVector   | Translation | `None`  |
-| rotation    | InputRotation | Rotation    | `None`  |
-| scale       | InputVector   | Scale       | `None`  |
+| Name        | Type          | Description | Default           |
+|-------------|---------------|-------------|-------------------|
+| translation | InputVector   | Translation | `(0.0, 0.0, 0.0)` |
+| rotation    | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
+| scale       | InputVector   | Scale       | `(1.0, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -1003,16 +1012,16 @@ Create a vector from X, Y, and Z components
 ### EulerToRotation
 
 ``` python
-EulerToRotation(euler=None)
+EulerToRotation(euler=(0.0, 0.0, 0.0))
 ```
 
 Build a rotation from separate angles around each axis
 
 #### Parameters
 
-| Name  | Type        | Description | Default |
-|-------|-------------|-------------|---------|
-| euler | InputVector | Euler       | `None`  |
+| Name  | Type        | Description | Default           |
+|-------|-------------|-------------|-------------------|
+| euler | InputVector | Euler       | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -2490,7 +2499,7 @@ Generate a randomized integer using the given input value as a seed
 ##### color
 
 ``` python
-color(value=None, seed=0)
+color(value=(0.8, 0.8, 0.8, 1.0), seed=0)
 ```
 
 Create Hash Value with operation ‘Color’.
@@ -2522,7 +2531,7 @@ Create Hash Value with operation ‘Matrix’.
 ##### rotation
 
 ``` python
-rotation(value=None, seed=0)
+rotation(value=(0.0, 0.0, 0.0), seed=0)
 ```
 
 Create Hash Value with operation ‘Rotation’.
@@ -2538,7 +2547,7 @@ Create Hash Value with operation ‘String’.
 ##### vector
 
 ``` python
-vector(value=None, seed=0)
+vector(value=(0.0, 0.0, 0.0), seed=0)
 ```
 
 Create Hash Value with operation ‘Vector’.
@@ -2559,16 +2568,16 @@ Create Hash Value with operation ‘Vector’.
 ### ImplicitConversion
 
 ``` python
-ImplicitConversion(value=None, *, data_type='RGBA')
+ImplicitConversion(value=(0.0, 0.0, 0.0, 1.0), *, data_type='RGBA')
 ```
 
 Implicitly convert the input value to a fixed socket type
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| value | InputColor | Value       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| value | InputColor | Value       | `(0.0, 0.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -2640,7 +2649,7 @@ Create Implicit Conversion with operation ‘Collection’.
 ##### color
 
 ``` python
-color(value=None)
+color(value=(0.0, 0.0, 0.0, 1.0))
 ```
 
 Create Implicit Conversion with operation ‘Color’.
@@ -2720,7 +2729,7 @@ Create Implicit Conversion with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(value=None)
+rotation(value=(0.0, 0.0, 0.0))
 ```
 
 Create Implicit Conversion with operation ‘Rotation’.
@@ -2744,7 +2753,7 @@ Create Implicit Conversion with operation ‘String’.
 ##### vector
 
 ``` python
-vector(value=None)
+vector(value=(0.0, 0.0, 0.0))
 ```
 
 Create Implicit Conversion with operation ‘Vector’.
@@ -2764,17 +2773,17 @@ Create Implicit Conversion with operation ‘Vector’.
 ### IndexOfNearest
 
 ``` python
-IndexOfNearest(position=None, group_id=0)
+IndexOfNearest(position=(0.0, 0.0, 0.0), group_id=0)
 ```
 
 Find the nearest element in a group. Similar to the “Sample Nearest” node
 
 #### Parameters
 
-| Name     | Type         | Description | Default |
-|----------|--------------|-------------|---------|
-| position | InputVector  | Position    | `None`  |
-| group_id | InputInteger | Group ID    | `0`     |
+| Name     | Type         | Description | Default           |
+|----------|--------------|-------------|-------------------|
+| position | InputVector  | Position    | `(0.0, 0.0, 0.0)` |
+| group_id | InputInteger | Group ID    | `0`               |
 
 #### Attributes
 
@@ -3051,16 +3060,16 @@ Compute the inverse of the given matrix, if one exists
 ### InvertRotation
 
 ``` python
-InvertRotation(rotation=None)
+InvertRotation(rotation=(0.0, 0.0, 0.0))
 ```
 
 Compute the inverse of the given rotation
 
 #### Parameters
 
-| Name     | Type          | Description | Default |
-|----------|---------------|-------------|---------|
-| rotation | InputRotation | Rotation    | `None`  |
+| Name     | Type          | Description | Default           |
+|----------|---------------|-------------|-------------------|
+| rotation | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -3337,12 +3346,12 @@ MapRange(
     to_min=0.0,
     to_max=1.0,
     steps=4.0,
-    vector=None,
-    from_min_float3=None,
-    from_max_float3=None,
-    to_min_float3=None,
-    to_max_float3=None,
-    steps_float3=None,
+    vector=(0.0, 0.0, 0.0),
+    from_min_float3=(0.0, 0.0, 0.0),
+    from_max_float3=(1.0, 1.0, 1.0),
+    to_min_float3=(0.0, 0.0, 0.0),
+    to_max_float3=(1.0, 1.0, 1.0),
+    steps_float3=(4.0, 4.0, 4.0),
     *,
     clamp=False,
     interpolation_type='LINEAR',
@@ -3354,20 +3363,20 @@ Remap a value from a range to a target range
 
 #### Parameters
 
-| Name            | Type        | Description | Default |
-|-----------------|-------------|-------------|---------|
-| value           | InputFloat  | Value       | `1.0`   |
-| from_min        | InputFloat  | From Min    | `0.0`   |
-| from_max        | InputFloat  | From Max    | `1.0`   |
-| to_min          | InputFloat  | To Min      | `0.0`   |
-| to_max          | InputFloat  | To Max      | `1.0`   |
-| steps           | InputFloat  | Steps       | `4.0`   |
-| vector          | InputVector | Vector      | `None`  |
-| from_min_float3 | InputVector | From Min    | `None`  |
-| from_max_float3 | InputVector | From Max    | `None`  |
-| to_min_float3   | InputVector | To Min      | `None`  |
-| to_max_float3   | InputVector | To Max      | `None`  |
-| steps_float3    | InputVector | Steps       | `None`  |
+| Name            | Type        | Description | Default           |
+|-----------------|-------------|-------------|-------------------|
+| value           | InputFloat  | Value       | `1.0`             |
+| from_min        | InputFloat  | From Min    | `0.0`             |
+| from_max        | InputFloat  | From Max    | `1.0`             |
+| to_min          | InputFloat  | To Min      | `0.0`             |
+| to_max          | InputFloat  | To Max      | `1.0`             |
+| steps           | InputFloat  | Steps       | `4.0`             |
+| vector          | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| from_min_float3 | InputVector | From Min    | `(0.0, 0.0, 0.0)` |
+| from_max_float3 | InputVector | From Max    | `(1.0, 1.0, 1.0)` |
+| to_min_float3   | InputVector | To Min      | `(0.0, 0.0, 0.0)` |
+| to_max_float3   | InputVector | To Max      | `(1.0, 1.0, 1.0)` |
+| steps_float3    | InputVector | Steps       | `(4.0, 4.0, 4.0)` |
 
 #### Attributes
 
@@ -3444,7 +3453,13 @@ Create Map Range with operation ‘Stepped Linear’. Stepped linear interpolati
 ##### vector
 
 ``` python
-vector(vector=None, from_min3=None, from_max3=None, to_min3=None, to_max3=None)
+vector(
+    vector=(0.0, 0.0, 0.0),
+    from_min3=(0.0, 0.0, 0.0),
+    from_max3=(1.0, 1.0, 1.0),
+    to_min3=(0.0, 0.0, 0.0),
+    to_max3=(1.0, 1.0, 1.0),
+)
 ```
 
 Create Map Range with operation ‘Vector’. 3D vector with floating-point values
@@ -4057,13 +4072,13 @@ Perform a matrix multiplication on two input matrices
 
 ``` python
 PackUVIslands(
-    uv=None,
+    uv=(0.0, 0.0, 0.0),
     selection=True,
     margin=0.001,
     rotate=True,
     method='Bounding Box',
-    bottom_left=None,
-    top_right=None,
+    bottom_left=(0.0, 0.0),
+    top_right=(1.0, 1.0),
 )
 ```
 
@@ -4073,13 +4088,13 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| uv | InputVector | UV | `None` |
+| uv | InputVector | UV | `(0.0, 0.0, 0.0)` |
 | selection | InputBoolean | Selection | `True` |
 | margin | InputFloat | Margin | `0.001` |
 | rotate | InputBoolean | Rotate | `True` |
 | method | InputMenu \| Literal\['Bounding Box', 'Convex Hull', 'Exact Shape'\] | Method | `'Bounding Box'` |
-| bottom_left | InputVector | Bottom Left | `None` |
-| top_right | InputVector | Top Right | `None` |
+| bottom_left | InputVector | Bottom Left | `(0.0, 0.0)` |
+| top_right | InputVector | Top Right | `(1.0, 1.0)` |
 
 #### Attributes
 
@@ -4113,17 +4128,17 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 ### ProjectPoint
 
 ``` python
-ProjectPoint(vector=None, transform=None)
+ProjectPoint(vector=(0.0, 0.0, 0.0), transform=None)
 ```
 
 Project a point using a matrix, using location, rotation, scale, and perspective divide
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| vector    | InputVector | Vector      | `None`  |
-| transform | InputMatrix | Transform   | `None`  |
+| Name      | Type        | Description | Default           |
+|-----------|-------------|-------------|-------------------|
+| vector    | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| transform | InputMatrix | Transform   | `None`            |
 
 #### Attributes
 
@@ -4266,7 +4281,7 @@ Create Random Value with operation ‘Integer’. 32-bit integer
 ##### vector
 
 ``` python
-vector(min=None, max=None, id=0, seed=0)
+vector(min=(0.0, 0.0, 0.0), max=(1.0, 1.0, 1.0), id=0, seed=0)
 ```
 
 Create Random Value with operation ‘Vector’. 3D vector with floating-point values
@@ -4369,8 +4384,8 @@ Reverse the order of the characters in a string
 
 ``` python
 RotateEuler(
-    rotation=None,
-    rotate_by=None,
+    rotation=(0.0, 0.0, 0.0),
+    rotate_by=(0.0, 0.0, 0.0),
     axis=None,
     angle=None,
     *,
@@ -4383,12 +4398,12 @@ Apply a secondary Euler rotation to a given Euler rotation
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| rotation  | InputVector | Rotation    | `None`  |
-| rotate_by | InputVector | Rotate By   | `None`  |
-| axis      | InputVector | Axis        | `None`  |
-| angle     | InputFloat  | Angle       | `None`  |
+| Name      | Type        | Description | Default           |
+|-----------|-------------|-------------|-------------------|
+| rotation  | InputVector | Rotation    | `(0.0, 0.0, 0.0)` |
+| rotate_by | InputVector | Rotate By   | `(0.0, 0.0, 0.0)` |
+| axis      | InputVector | Axis        | `None`            |
+| angle     | InputFloat  | Angle       | `None`            |
 
 #### Attributes
 
@@ -4413,7 +4428,7 @@ Apply a secondary Euler rotation to a given Euler rotation
 ##### axis_angle
 
 ``` python
-axis_angle(rotation=None, axis=None, angle=0.0)
+axis_angle(rotation=(0.0, 0.0, 0.0), axis=(0.0, 0.0, 1.0), angle=0.0)
 ```
 
 Create Rotate Euler with operation ‘Axis Angle’. Rotate around an axis by an angle
@@ -4421,7 +4436,7 @@ Create Rotate Euler with operation ‘Axis Angle’. Rotate around an axis by an
 ##### euler
 
 ``` python
-euler(rotation=None, rotate_by=None)
+euler(rotation=(0.0, 0.0, 0.0), rotate_by=(0.0, 0.0, 0.0))
 ```
 
 Create Rotate Euler with operation ‘Euler’. Rotate around the X, Y, and Z axes
@@ -4444,17 +4459,22 @@ Create Rotate Euler with operation ‘Euler’. Rotate around the X, Y, and Z ax
 ### RotateRotation
 
 ``` python
-RotateRotation(rotation=None, rotate_by=None, *, rotation_space='GLOBAL')
+RotateRotation(
+    rotation=(0.0, 0.0, 0.0),
+    rotate_by=(0.0, 0.0, 0.0),
+    *,
+    rotation_space='GLOBAL',
+)
 ```
 
 Apply a secondary rotation to a given rotation value
 
 #### Parameters
 
-| Name      | Type          | Description | Default |
-|-----------|---------------|-------------|---------|
-| rotation  | InputRotation | Rotation    | `None`  |
-| rotate_by | InputRotation | Rotate By   | `None`  |
+| Name      | Type          | Description | Default           |
+|-----------|---------------|-------------|-------------------|
+| rotation  | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
+| rotate_by | InputRotation | Rotate By   | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -4484,17 +4504,17 @@ Apply a secondary rotation to a given rotation value
 ### RotateVector
 
 ``` python
-RotateVector(vector=None, rotation=None)
+RotateVector(vector=(0.0, 0.0, 0.0), rotation=(0.0, 0.0, 0.0))
 ```
 
 Apply a rotation to a given vector
 
 #### Parameters
 
-| Name     | Type          | Description | Default |
-|----------|---------------|-------------|---------|
-| vector   | InputVector   | Vector      | `None`  |
-| rotation | InputRotation | Rotation    | `None`  |
+| Name     | Type          | Description | Default           |
+|----------|---------------|-------------|-------------------|
+| vector   | InputVector   | Vector      | `(0.0, 0.0, 0.0)` |
+| rotation | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -4523,16 +4543,16 @@ Apply a rotation to a given vector
 ### RotationToAxisAngle
 
 ``` python
-RotationToAxisAngle(rotation=None)
+RotationToAxisAngle(rotation=(0.0, 0.0, 0.0))
 ```
 
 Convert a rotation to axis angle components
 
 #### Parameters
 
-| Name     | Type          | Description | Default |
-|----------|---------------|-------------|---------|
-| rotation | InputRotation | Rotation    | `None`  |
+| Name     | Type          | Description | Default           |
+|----------|---------------|-------------|-------------------|
+| rotation | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -4561,16 +4581,16 @@ Convert a rotation to axis angle components
 ### RotationToEuler
 
 ``` python
-RotationToEuler(rotation=None)
+RotationToEuler(rotation=(0.0, 0.0, 0.0))
 ```
 
 Convert a standard rotation value to an Euler rotation
 
 #### Parameters
 
-| Name     | Type          | Description | Default |
-|----------|---------------|-------------|---------|
-| rotation | InputRotation | Rotation    | `None`  |
+| Name     | Type          | Description | Default           |
+|----------|---------------|-------------|-------------------|
+| rotation | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -4598,16 +4618,16 @@ Convert a standard rotation value to an Euler rotation
 ### RotationToQuaternion
 
 ``` python
-RotationToQuaternion(rotation=None)
+RotationToQuaternion(rotation=(0.0, 0.0, 0.0))
 ```
 
 Retrieve the quaternion components representing a rotation
 
 #### Parameters
 
-| Name     | Type          | Description | Default |
-|----------|---------------|-------------|---------|
-| rotation | InputRotation | Rotation    | `None`  |
+| Name     | Type          | Description | Default           |
+|----------|---------------|-------------|-------------------|
+| rotation | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -4731,16 +4751,16 @@ Split a bundle into multiple sockets.
 ### SeparateColor
 
 ``` python
-SeparateColor(color=None, *, mode='RGB')
+SeparateColor(color=(1.0, 1.0, 1.0, 1.0), *, mode='RGB')
 ```
 
 Split a color into separate channels, based on a particular color model
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| color | InputColor | Color       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| color | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -4765,7 +4785,7 @@ Split a color into separate channels, based on a particular color model
 ##### hsl
 
 ``` python
-hsl(color=None)
+hsl(color=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing
@@ -4773,7 +4793,7 @@ Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightn
 ##### hsv
 
 ``` python
-hsv(color=None)
+hsv(color=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing
@@ -4781,7 +4801,7 @@ Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value)
 ##### rgb
 
 ``` python
-rgb(color=None)
+rgb(color=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing
@@ -4895,16 +4915,16 @@ Split a transformation matrix into a translation vector, a rotation, and a scale
 ### SeparateXYZ
 
 ``` python
-SeparateXYZ(vector=None)
+SeparateXYZ(vector=(0.0, 0.0, 0.0))
 ```
 
 Split a vector into its X, Y, and Z components
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| vector | InputVector | Vector      | `None`  |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -5376,7 +5396,7 @@ Create Store Bundle Item with operation ‘Collection’.
 ##### color
 
 ``` python
-color(bundle=None, path='', item=None)
+color(bundle=None, path='', item=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Store Bundle Item with operation ‘Color’.
@@ -5488,7 +5508,7 @@ Create Store Bundle Item with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(bundle=None, path='', item=None)
+rotation(bundle=None, path='', item=(0.0, 0.0, 0.0))
 ```
 
 Create Store Bundle Item with operation ‘Rotation’.
@@ -5520,7 +5540,7 @@ Create Store Bundle Item with operation ‘String’.
 ##### vector
 
 ``` python
-vector(bundle=None, path='', item=None)
+vector(bundle=None, path='', item=(0.0, 0.0, 0.0))
 ```
 
 Create Store Bundle Item with operation ‘Vector’.
@@ -5726,7 +5746,7 @@ Create Switch with operation ‘Collection’.
 ##### color
 
 ``` python
-color(switch=False, false=None, true=None)
+color(switch=False, false=(0.8, 0.8, 0.8, 1.0), true=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Switch with operation ‘Color’.
@@ -5806,7 +5826,7 @@ Create Switch with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(switch=False, false=None, true=None)
+rotation(switch=False, false=(0.0, 0.0, 0.0), true=(0.0, 0.0, 0.0))
 ```
 
 Create Switch with operation ‘Rotation’.
@@ -5830,7 +5850,7 @@ Create Switch with operation ‘String’.
 ##### vector
 
 ``` python
-vector(switch=False, false=None, true=None)
+vector(switch=False, false=(0.0, 0.0, 0.0), true=(0.0, 0.0, 0.0))
 ```
 
 Create Switch with operation ‘Vector’.
@@ -5891,17 +5911,17 @@ Check if a filter string matches a list of tags
 ### TransformDirection
 
 ``` python
-TransformDirection(direction=None, transform=None)
+TransformDirection(direction=(0.0, 0.0, 0.0), transform=None)
 ```
 
 Apply a transformation matrix (excluding translation) to the given vector
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| direction | InputVector | Direction   | `None`  |
-| transform | InputMatrix | Transform   | `None`  |
+| Name      | Type        | Description | Default           |
+|-----------|-------------|-------------|-------------------|
+| direction | InputVector | Direction   | `(0.0, 0.0, 0.0)` |
+| transform | InputMatrix | Transform   | `None`            |
 
 #### Attributes
 
@@ -5930,17 +5950,17 @@ Apply a transformation matrix (excluding translation) to the given vector
 ### TransformPoint
 
 ``` python
-TransformPoint(vector=None, transform=None)
+TransformPoint(vector=(0.0, 0.0, 0.0), transform=None)
 ```
 
 Apply a transformation matrix to the given vector
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| vector    | InputVector | Vector      | `None`  |
-| transform | InputMatrix | Transform   | `None`  |
+| Name      | Type        | Description | Default           |
+|-----------|-------------|-------------|-------------------|
+| vector    | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| transform | InputMatrix | Transform   | `None`            |
 
 #### Attributes
 

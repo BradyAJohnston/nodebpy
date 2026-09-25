@@ -91,16 +91,16 @@ Create Combine Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color 
 ### ImplicitConversion
 
 ``` python
-ImplicitConversion(value=None, *, data_type='RGBA')
+ImplicitConversion(value=(0.0, 0.0, 0.0, 1.0), *, data_type='RGBA')
 ```
 
 Implicitly convert the input value to a fixed socket type
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| value | InputColor | Value       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| value | InputColor | Value       | `(0.0, 0.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -155,7 +155,7 @@ Create Implicit Conversion with operation ‘Closure’.
 ##### color
 
 ``` python
-color(value=None)
+color(value=(0.0, 0.0, 0.0, 1.0))
 ```
 
 Create Implicit Conversion with operation ‘Color’.
@@ -195,7 +195,7 @@ Create Implicit Conversion with operation ‘Shader’.
 ##### vector
 
 ``` python
-vector(value=None)
+vector(value=(0.0, 0.0, 0.0))
 ```
 
 Create Implicit Conversion with operation ‘Vector’.
@@ -217,15 +217,15 @@ Create Implicit Conversion with operation ‘Vector’.
 ``` python
 Mix(
     factor_float=1.0,
-    factor_vector=None,
+    factor_vector=(0.5, 0.5, 0.5),
     a_float=0.0,
     b_float=0.0,
-    a_vector=None,
-    b_vector=None,
-    a_color=None,
-    b_color=None,
-    a_rotation=None,
-    b_rotation=None,
+    a_vector=(0.0, 0.0, 0.0),
+    b_vector=(0.0, 0.0, 0.0),
+    a_color=(0.5, 0.5, 0.5, 1.0),
+    b_color=(0.5, 0.5, 0.5, 1.0),
+    a_rotation=(0.0, 0.0, 0.0),
+    b_rotation=(0.0, 0.0, 0.0),
     *,
     data_type='FLOAT',
     factor_mode='UNIFORM',
@@ -239,18 +239,18 @@ Mix values by a factor
 
 #### Parameters
 
-| Name          | Type          | Description | Default |
-|---------------|---------------|-------------|---------|
-| factor_float  | InputFloat    | Factor      | `1.0`   |
-| factor_vector | InputVector   | Factor      | `None`  |
-| a_float       | InputFloat    | A           | `0.0`   |
-| b_float       | InputFloat    | B           | `0.0`   |
-| a_vector      | InputVector   | A           | `None`  |
-| b_vector      | InputVector   | B           | `None`  |
-| a_color       | InputColor    | A           | `None`  |
-| b_color       | InputColor    | B           | `None`  |
-| a_rotation    | InputRotation | A           | `None`  |
-| b_rotation    | InputRotation | B           | `None`  |
+| Name          | Type          | Description | Default                |
+|---------------|---------------|-------------|------------------------|
+| factor_float  | InputFloat    | Factor      | `1.0`                  |
+| factor_vector | InputVector   | Factor      | `(0.5, 0.5, 0.5)`      |
+| a_float       | InputFloat    | A           | `0.0`                  |
+| b_float       | InputFloat    | B           | `0.0`                  |
+| a_vector      | InputVector   | A           | `(0.0, 0.0, 0.0)`      |
+| b_vector      | InputVector   | B           | `(0.0, 0.0, 0.0)`      |
+| a_color       | InputColor    | A           | `(0.5, 0.5, 0.5, 1.0)` |
+| b_color       | InputColor    | B           | `(0.5, 0.5, 0.5, 1.0)` |
+| a_rotation    | InputRotation | A           | `(0.0, 0.0, 0.0)`      |
+| b_rotation    | InputRotation | B           | `(0.0, 0.0, 0.0)`      |
 
 #### Attributes
 
@@ -279,7 +279,7 @@ Mix values by a factor
 ##### color
 
 ``` python
-color(factor=1.0, b_color=None)
+color(factor=1.0, b_color=(0.5, 0.5, 0.5, 1.0))
 ```
 
 Create Mix with operation ‘Color’.
@@ -295,7 +295,7 @@ Create Mix with operation ‘Float’.
 ##### vector
 
 ``` python
-vector(factor=1.0, b=None)
+vector(factor=1.0, b=(0.0, 0.0, 0.0))
 ```
 
 Create Mix with operation ‘Vector’.
@@ -327,16 +327,16 @@ Create Mix with operation ‘Vector’.
 ### RGBToBW
 
 ``` python
-RGBToBW(color=None)
+RGBToBW(color=(0.5, 0.5, 0.5, 1.0))
 ```
 
 Convert a color’s luminance to a grayscale value
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| color | InputColor | Color       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| color | InputColor | Color       | `(0.5, 0.5, 0.5, 1.0)` |
 
 #### Attributes
 
@@ -364,16 +364,16 @@ Convert a color’s luminance to a grayscale value
 ### SeparateColor
 
 ``` python
-SeparateColor(color=None, *, mode='RGB')
+SeparateColor(color=(0.8, 0.8, 0.8, 1.0), *, mode='RGB')
 ```
 
 Split a color into its individual components using multiple models
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| color | InputColor | Color       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| color | InputColor | Color       | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 
@@ -398,7 +398,7 @@ Split a color into its individual components using multiple models
 ##### hsl
 
 ``` python
-hsl(color=None)
+hsl(color=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing
@@ -406,7 +406,7 @@ Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightn
 ##### hsv
 
 ``` python
-hsv(color=None)
+hsv(color=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing
@@ -414,7 +414,7 @@ Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value)
 ##### rgb
 
 ``` python
-rgb(color=None)
+rgb(color=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing

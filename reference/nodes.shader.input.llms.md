@@ -30,9 +30,9 @@
 
 ``` python
 AmbientOcclusion(
-    color=None,
+    color=(1.0, 1.0, 1.0, 1.0),
     distance=1.0,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     *,
     samples=0,
     inside=False,
@@ -86,7 +86,7 @@ Note: For Cycles, this may slow down renders significantly
 ### Bevel
 
 ``` python
-Bevel(radius=0.05, normal=None, *, samples=0)
+Bevel(radius=0.05, normal=(0.0, 0.0, 0.0), *, samples=0)
 ```
 
     Generates normals with round corners.
@@ -236,7 +236,7 @@ Retrieve hair curve information
 ### Fresnel
 
 ``` python
-Fresnel(ior=1.5, normal=None)
+Fresnel(ior=1.5, normal=(0.0, 0.0, 0.0))
 ```
 
     Produce a blending factor depending on the angle between the surface normal and the view direction using Fresnel equations.
@@ -309,7 +309,7 @@ Retrieve geometric information about the current shading point
 ### LayerWeight
 
 ``` python
-LayerWeight(blend=0.5, normal=None)
+LayerWeight(blend=0.5, normal=(0.0, 0.0, 0.0))
 ```
 
     Produce a blending factor depending on the angle between the surface normal and the view direction.
@@ -494,18 +494,24 @@ Retrieve information about points in a point cloud
 ### Raycast
 
 ``` python
-Raycast(position=None, direction=None, length=1.0, *, only_local=False)
+Raycast(
+    position=(0.0, 0.0, 0.0),
+    direction=(0.0, 0.0, 0.0),
+    length=1.0,
+    *,
+    only_local=False,
+)
 ```
 
 Cast rays and retrieve information from the hit point
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| position  | InputVector | Position    | `None`  |
-| direction | InputVector | Direction   | `None`  |
-| length    | InputFloat  | Length      | `1.0`   |
+| Name      | Type        | Description | Default           |
+|-----------|-------------|-------------|-------------------|
+| position  | InputVector | Position    | `(0.0, 0.0, 0.0)` |
+| direction | InputVector | Direction   | `(0.0, 0.0, 0.0)` |
+| length    | InputFloat  | Length      | `1.0`             |
 
 #### Attributes
 

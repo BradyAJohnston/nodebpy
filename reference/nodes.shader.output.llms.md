@@ -15,7 +15,7 @@
 ### AovOutput
 
 ``` python
-AovOutput(color=None, value=0.0, *, aov_name='')
+AovOutput(color=(0.0, 0.0, 0.0, 1.0), value=0.0, *, aov_name='')
 ```
 
     Arbitrary Output Variables.
@@ -85,7 +85,7 @@ Output light information to a light object
 
 ``` python
 LineStyleOutput(
-    color=None,
+    color=(1.0, 0.0, 1.0, 1.0),
     color_fac=1.0,
     alpha=1.0,
     alpha_fac=1.0,
@@ -102,12 +102,12 @@ Control the mixing of texture information into the base color of line styles
 
 #### Parameters
 
-| Name      | Type       | Description | Default |
-|-----------|------------|-------------|---------|
-| color     | InputColor | Color       | `None`  |
-| color_fac | InputFloat | Color Fac   | `1.0`   |
-| alpha     | InputFloat | Alpha       | `1.0`   |
-| alpha_fac | InputFloat | Alpha Fac   | `1.0`   |
+| Name      | Type       | Description | Default                |
+|-----------|------------|-------------|------------------------|
+| color     | InputColor | Color       | `(1.0, 0.0, 1.0, 1.0)` |
+| color_fac | InputFloat | Color Fac   | `1.0`                  |
+| alpha     | InputFloat | Alpha       | `1.0`                  |
+| alpha_fac | InputFloat | Alpha Fac   | `1.0`                  |
 
 #### Attributes
 
@@ -140,7 +140,7 @@ Control the mixing of texture information into the base color of line styles
 MaterialOutput(
     surface=None,
     volume=None,
-    displacement=None,
+    displacement=(0.0, 0.0, 0.0),
     thickness=0.0,
     *,
     is_active_output=False,
@@ -152,12 +152,12 @@ Output surface material information for use in rendering
 
 #### Parameters
 
-| Name         | Type        | Description  | Default |
-|--------------|-------------|--------------|---------|
-| surface      | InputShader | Surface      | `None`  |
-| volume       | InputShader | Volume       | `None`  |
-| displacement | InputVector | Displacement | `None`  |
-| thickness    | InputFloat  | Thickness    | `0.0`   |
+| Name         | Type        | Description  | Default           |
+|--------------|-------------|--------------|-------------------|
+| surface      | InputShader | Surface      | `None`            |
+| volume       | InputShader | Volume       | `None`            |
+| displacement | InputVector | Displacement | `(0.0, 0.0, 0.0)` |
+| thickness    | InputFloat  | Thickness    | `0.0`             |
 
 #### Attributes
 

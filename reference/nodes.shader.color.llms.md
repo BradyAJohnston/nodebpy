@@ -14,18 +14,18 @@
 ### BrightnessContrast
 
 ``` python
-BrightnessContrast(color=None, bright=0.0, contrast=0.0)
+BrightnessContrast(color=(1.0, 1.0, 1.0, 1.0), bright=0.0, contrast=0.0)
 ```
 
 Control the brightness and contrast of the input color
 
 #### Parameters
 
-| Name     | Type       | Description | Default |
-|----------|------------|-------------|---------|
-| color    | InputColor | Color       | `None`  |
-| bright   | InputFloat | Brightness  | `0.0`   |
-| contrast | InputFloat | Contrast    | `0.0`   |
+| Name     | Type       | Description | Default                |
+|----------|------------|-------------|------------------------|
+| color    | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
+| bright   | InputFloat | Brightness  | `0.0`                  |
+| contrast | InputFloat | Contrast    | `0.0`                  |
 
 #### Attributes
 
@@ -55,20 +55,26 @@ Control the brightness and contrast of the input color
 ### HueSaturationValue
 
 ``` python
-HueSaturationValue(hue=0.5, saturation=1.0, value=1.0, fac=1.0, color=None)
+HueSaturationValue(
+    hue=0.5,
+    saturation=1.0,
+    value=1.0,
+    fac=1.0,
+    color=(0.8, 0.8, 0.8, 1.0),
+)
 ```
 
 Apply a color transformation in the HSV color model
 
 #### Parameters
 
-| Name       | Type       | Description | Default |
-|------------|------------|-------------|---------|
-| hue        | InputFloat | Hue         | `0.5`   |
-| saturation | InputFloat | Saturation  | `1.0`   |
-| value      | InputFloat | Value       | `1.0`   |
-| fac        | InputFloat | Factor      | `1.0`   |
-| color      | InputColor | Color       | `None`  |
+| Name       | Type       | Description | Default                |
+|------------|------------|-------------|------------------------|
+| hue        | InputFloat | Hue         | `0.5`                  |
+| saturation | InputFloat | Saturation  | `1.0`                  |
+| value      | InputFloat | Value       | `1.0`                  |
+| fac        | InputFloat | Factor      | `1.0`                  |
+| color      | InputColor | Color       | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 
@@ -100,17 +106,17 @@ Apply a color transformation in the HSV color model
 ### InvertColor
 
 ``` python
-InvertColor(fac=1.0, color=None)
+InvertColor(fac=1.0, color=(0.0, 0.0, 0.0, 1.0))
 ```
 
 Invert a color, producing a negative
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| fac   | InputFloat | Factor      | `1.0`   |
-| color | InputColor | Color       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| fac   | InputFloat | Factor      | `1.0`                  |
+| color | InputColor | Color       | `(0.0, 0.0, 0.0, 1.0)` |
 
 #### Attributes
 

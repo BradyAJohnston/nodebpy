@@ -306,27 +306,27 @@ with TreeBuilder("Wave Deform.001", arrange=None) as tree:
 tree.layout_snapshot = {
     "Combine XYZ": (
         "ShaderNodeCombineXYZ",
-        (0.0, -49.0),
+        (0.0, -32.67),
         None,
         (("Z", "Separate XYZ", "X"),),
     ),
-    "Group Input": ("NodeGroupInput", (0.0, 49.0), None, ()),
+    "Group Input": ("NodeGroupInput", (0.0, 65.33), None, ()),
     "Group Output": (
         "NodeGroupOutput",
-        (340.0, 49.0),
+        (340.0, 16.33),
         None,
         (("Geometry", "Set Position", "Geometry"),),
     ),
-    "Position": ("GeometryNodeInputPosition", (-340.0, -49.0), None, ()),
+    "Position": ("GeometryNodeInputPosition", (-340.0, -32.67), None, ()),
     "Separate XYZ": (
         "ShaderNodeSeparateXYZ",
-        (-170.0, -49.0),
+        (-170.0, -32.67),
         None,
         (("Vector", "Position", "Position"),),
     ),
     "Set Position": (
         "GeometryNodeSetPosition",
-        (170.0, 49.0),
+        (170.0, 16.33),
         None,
         (
             ("Geometry", "Group Input", "Geometry"),
@@ -484,3 +484,29 @@ rebuilt
 (With `top_level="class"` there is no `tree` variable — call the generated class’s `create_group()` instead.)
 
 Because `to_python()` output is itself valid `nodebpy` code, converting a tree, running the result, and converting again produces identical source — handy for snapshotting node trees in tests or committing them to version control. The generator is validated against Blender’s full bundled geometry, shader and compositor essentials asset libraries, so it handles real-world trees, not just ones built with `nodebpy`.
+
+### In place
+
+By default the generated header names the tree, so each run creates a *new* datablock (`Name.001`, `Name.002`, …) and anything that used the original — a modifier, a group node, a pinned editor — keeps pointing at the old one. `in_place=True` emits `clear=True` in the header instead, which empties the existing tree of that name and rebuilds it in the same datablock:
+
+``` python
+code = tree.to_python(in_place=True)
+print(next(line for line in code.splitlines() if line.startswith("with ")))
+```
+
+    with TreeBuilder("Wave Deform.002", clear=True) as tree:
+
+Running that source any number of times rebuilds the one tree, with its users still attached:
+
+``` python
+namespace = {}
+exec(code, namespace)
+exec(code, namespace)
+namespace["tree"].tree == tree.tree
+```
+
+    True
+
+`clear=True` works the same way when writing code by hand — `g.tree("Name", clear=True)` is “get-or-create, then empty”, and `TreeBuilder(existing_tree, clear=True)` rebuilds a tree you already hold. A group of the same name but another tree type is left alone and a new tree is created as usual. Only the tree’s contents are rebuilt: tree-level properties such as its description, colour tag and tool/modifier flags are kept.
+
+Only the top-level tree is rebuilt in place. Nested groups are emitted as `Custom*Group` classes, and `create_group()` reuses an existing group of the same name, so running the source with a plain `exec` leaves an edited nested group unchanged. [`run_source`](using.llms.md#re-running-code-in-a-live-session) handles that case by rebuilding the groups the classes name.

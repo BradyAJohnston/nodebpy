@@ -1,5 +1,59 @@
 # Changelog
 
+## 520.29.0 - 2026-09-20
+
+### Fixes
+
+- **Generated defaults are Blender’s exact socket defaults** — the node-class generator rounded every float default to four decimals and vector defaults came out as `None`, so `g.Arc()` built a node whose sweep angle was `5.4978` instead of Blender’s `7π/4`, and `to_python` then exported every untouched Arc (and any node with a rounded default such as `MeshToPoints(radius=0.05)`) as if it had been edited. Constructor defaults now use the same float formatting as `to_python` (`nodebpy.export._floats`, shared by the generator without importing the package it generates): the shortest literal that rebuilds exactly the float32 Blender stores, or a `math.pi` / `math.tau` / `math.e` expression for its rational multiples (`sweep_angle: InputFloat = 7 * math.pi / 4`). Vector, colour and rotation sockets now show their real default tuples instead of `None`, and the export’s default comparison works at float32 precision, so a fresh node exports without spurious keyword arguments.
+- `InputVector` accepts 2- and 4-component tuples for the 2D / 4D vector sockets Blender exposes (Blank Image’s size, motion-blur velocity), and `InputIntegerVector` accepts tuples; Blank Image’s `size` is typed as an integer vector instead of an integer.
+
+## 520.28.0 - 2026-09-19
+
+### Enhancements
+
+- **Rebuild a tree in place** — `TreeBuilder(tree, clear=True)` (also on `TreeBuilder.geometry/shader/compositor` and `g.tree` / `s.tree` / `c.tree`) empties the tree’s nodes, links and interface before the body runs and keeps the datablock, so modifiers, group nodes and pinned editors that reference it stay attached. Given a name, an existing group of that name and tree type is reused instead of creating a `Name.001` duplicate; a group of another tree type is left alone. `to_python(in_place=True)` emits the `clear=True` header so an exported tree’s source rebuilds the same datablock when re-run.
+- **`nodebpy.live`** — `run_source(code, filename=...)` executes nodebpy source for a live editor that re-runs on every change: node groups the code’s classes claim by `_name` are stashed as `<name>.stale` so `create_group()` builds fresh, then their users are remapped onto the rebuilt trees and the old ones removed (or, on failure, the old names restored and the original exception re-raised); Geometry Nodes modifier input values (including attribute-driven inputs) are preserved across the interface rebuild, matched by socket name, also when the run fails; and the produced tree is returned in a `RunResult`. The pieces — `stash_groups` / `GroupStash`, `preserve_modifier_inputs`, `group_names_in_source` — are public for callers that need only one of them.
+
+## 520.27.0 - 2026-09-16
+
+### Enhancements
+
+- **Dump a subset of assets** — `python -m nodebpy.assets dump --names` (and `dump_library(names=...)`) takes fnmatch wildcards like `plot` does (`--names "Style *"`), for quick iteration on a few assets without regenerating the whole library. A filtered dump now writes exactly what the full dump would for those assets: the whole library is still read to decide what is shared, so a helper also used by an unselected asset stays in `_shared/` (previously it was embedded into the selected asset’s module) and an unselected nested asset stays imported from its own module (previously its class was duplicated into the importer). The `_shared/` and `materials/` modules the selection depends on are rewritten alongside; other assets’ files are left untouched, so `check` remains the authority on the full sources.
+
+## 520.26.0 - 2026-09-14
+
+### Enhancements
+
+- **Layouts read left to right with less dead space** — three additions to the Sugiyama arrangement, all on by default and each a `SugiyamaOptions` field / `build` flag / `[tool.nodebpy.assets]` key:
+  - `sequential_frames` ranks frames as stages of the flow: every node of a frame comes after every node of the frame (or intermediate node) feeding it, so successive frames — closure bodies, processing stages — line up left to right instead of sharing columns and stacking into a staircase (MolecularNodes’ *Style Surface* halves in height). Frames with no links between them still stack vertically as parallel branches.
+  - `balance_heights` counters the tall sliver a node with many inputs produces: after ranking, nodes of the tallest columns are promoted, together with everything upstream of them, into emptier columns while the drawing gets closer to a screen-shaped box (`balance_aspect`, default 1.6 wide per unit of height). The longer links are routed through reroutes / dummy nodes, which now pack at `reroute_margin_y_fac` (0.35) of the vertical margin instead of a full node gap.
+  - The default `direction` is now `BALANCED` (the average of the four Brandes–Köpf extremes), which is shorter than `RIGHT_UP` on every MolecularNodes style tree and centres the flow vertically.
+- Links into a collapsed panel’s sockets (`is_hidden` in Blender’s terms) now count for the layout, so a producer feeding a panel socket is placed before its consumer instead of drifting off as a disconnected node.
+
+### Fixes
+
+- Zones in plots are drawn as Blender draws them: a rounded convex hull around the zone’s input and output nodes and every node fed from the zone input; a node that only feeds into the zone from outside stays outside.
+
+## 520.25.0 - 2026-09-14
+
+### Enhancements
+
+- **Blender-styled node plots** — `nodebpy.export.to_plot` now reproduces what the node editor would show instead of bare labelled rectangles: header colours per node class and title (a Math node reads “Multiply”), socket markers coloured and shaped by type (circles, field diamonds, geometry bars), value widgets for unlinked inputs (sliders, vector rows, checkboxes, text fields, colour swatches), property dropdowns, frames with their labels, simulation / repeat / for-each zones, and socket-coloured links (dashed for fields, red for muted or invalid), all on the editor’s dotted background. Colours come from Blender’s active theme. One UI unit is drawn as one point, so text and widgets keep their real proportions at any `dpi`.
+- **Group-node renders** — `to_plot(tree, path, node=True)` draws a node group as the single group node a user sees when adding it: its interface inputs with default values and its outputs (`width=` sets the node width). `python -m nodebpy.assets plot` now writes both images per group (`<name>.png` and `<name>_node.png`; `--tree-only` / `--node-only` keep one), and `TreeBuilder` gained `to_plot()`. `axes=True` frames a render with axes ticked in Blender UI units, as the old plots were, for reading off node distances.
+- **Layout rows follow Blender’s declared socket order** — the row model behind `calculate_node_dimensions` / `calculate_socket_offset_y` (and so the arranger and the plots) is now one function, `nodebpy.builder.layout.node_rows`. Blender draws some 180 node types from their declaration rather than outputs-then-inputs: inputs and outputs interleaved, an output *aligned* with the input before it on one row (Set Position’s Geometry in/out, a Menu Switch item’s value input and its “chosen” output, every zone item), buttons where the declaration places them, and collapsible panels. RNA exposes none of that, so the order is recorded in the generated `nodebpy.builder._socket_order` table (`python -m gen.socket_order`, parsed from the Blender sources matching the installed `bpy`). Group nodes draw their interface panels the same way. Panels honour each node’s `panel_states` and the declared `default_closed`: a header row per panel, sockets beneath it while open, and only linked sockets folded onto the header while closed (links anchor there); panel-toggle inputs draw in the header. The model also stops counting RNA bookkeeping as drawn property rows (a zone’s `paired_output`, item collections, `is_active_output`, `inspection_index`, active item indices, …), draws vector-valued properties as one row per component, and no longer expands `hide_value` vector inputs such as Set Position’s *Position*. `to_plot(node=True, open_panels=True)` / `plot --open-panels` expand every panel for review.
+
+## 520.24.0 - 2026-09-13
+
+### Fixes
+
+- **Deterministic emission order with split Group Inputs** — dumped sources oscillated forever across `build` → `dump` round trips (the same node groups re-shuffling on every rebuild): links from Group Input nodes gated their consumers’ readiness in codegen’s lexicographic topological sort, so a tree holding several instances (`split_inputs`) emitted consumers in an order depending on the instances’ socket-derived *names* — and which instance feeds a consumer follows link creation order, i.e. the previous emission. Group Input links now impose no emission order (they render as interface references, bound before any node emits), making dump → build → dump a fixpoint; expect a one-time re-normalization diff on the next dump of an affected library.
+
+## 520.23.0 - 2026-09-13
+
+### Enhancements
+
+- **Group nodes read as their group in generated code** — codegen names a group node’s variable after its node group (`inverse_mass = InverseMass()`) instead of the generic `group` / `group_1` a group node’s “Group” label used to produce.
+
 ## v520.22.0 - 2026-09-13
 
 ### Enhancements

@@ -22,7 +22,7 @@ Bump(
     distance=0.001,
     filter_width=0.1,
     height=1.0,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     *,
     invert=False,
 )
@@ -32,13 +32,13 @@ Generate a perturbed normal from a height texture for bump mapping. Typically us
 
 #### Parameters
 
-| Name         | Type        | Description  | Default |
-|--------------|-------------|--------------|---------|
-| strength     | InputFloat  | Strength     | `1.0`   |
-| distance     | InputFloat  | Distance     | `0.001` |
-| filter_width | InputFloat  | Filter Width | `0.1`   |
-| height       | InputFloat  | Height       | `1.0`   |
-| normal       | InputVector | Normal       | `None`  |
+| Name         | Type        | Description  | Default           |
+|--------------|-------------|--------------|-------------------|
+| strength     | InputFloat  | Strength     | `1.0`             |
+| distance     | InputFloat  | Distance     | `0.001`           |
+| filter_width | InputFloat  | Filter Width | `0.1`             |
+| height       | InputFloat  | Height       | `1.0`             |
+| normal       | InputVector | Normal       | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -75,7 +75,7 @@ Displacement(
     height=0.0,
     midlevel=0.5,
     scale=0.01,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     *,
     space='OBJECT',
 )
@@ -85,12 +85,12 @@ Displace the surface along the surface normal
 
 #### Parameters
 
-| Name     | Type        | Description | Default |
-|----------|-------------|-------------|---------|
-| height   | InputFloat  | Height      | `0.0`   |
-| midlevel | InputFloat  | Midlevel    | `0.5`   |
-| scale    | InputFloat  | Scale       | `0.01`  |
-| normal   | InputVector | Normal      | `None`  |
+| Name     | Type        | Description | Default           |
+|----------|-------------|-------------|-------------------|
+| height   | InputFloat  | Height      | `0.0`             |
+| midlevel | InputFloat  | Midlevel    | `0.5`             |
+| scale    | InputFloat  | Scale       | `0.01`            |
+| normal   | InputVector | Normal      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -123,10 +123,10 @@ Displace the surface along the surface normal
 
 ``` python
 Mapping(
-    vector=None,
-    location=None,
-    rotation=None,
-    scale=None,
+    vector=(0.0, 0.0, 0.0),
+    location=(0.0, 0.0, 0.0),
+    rotation=(0.0, 0.0, 0.0),
+    scale=(1.0, 1.0, 1.0),
     *,
     vector_type='POINT',
 )
@@ -136,12 +136,12 @@ Transform the input vector by applying translation, rotation, and scale
 
 #### Parameters
 
-| Name     | Type        | Description | Default |
-|----------|-------------|-------------|---------|
-| vector   | InputVector | Vector      | `None`  |
-| location | InputVector | Location    | `None`  |
-| rotation | InputVector | Rotation    | `None`  |
-| scale    | InputVector | Scale       | `None`  |
+| Name     | Type        | Description | Default           |
+|----------|-------------|-------------|-------------------|
+| vector   | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| location | InputVector | Location    | `(0.0, 0.0, 0.0)` |
+| rotation | InputVector | Rotation    | `(0.0, 0.0, 0.0)` |
+| scale    | InputVector | Scale       | `(1.0, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -167,7 +167,7 @@ Transform the input vector by applying translation, rotation, and scale
 ##### normal
 
 ``` python
-normal(vector=None, rotation=None, scale=None)
+normal(vector=(0.0, 0.0, 0.0), rotation=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0))
 ```
 
 Create Mapping with operation ‘Normal’. Transform a unit normal vector (Location is ignored)
@@ -175,7 +175,12 @@ Create Mapping with operation ‘Normal’. Transform a unit normal vector (Loca
 ##### point
 
 ``` python
-point(vector=None, location=None, rotation=None, scale=None)
+point(
+    vector=(0.0, 0.0, 0.0),
+    location=(0.0, 0.0, 0.0),
+    rotation=(0.0, 0.0, 0.0),
+    scale=(1.0, 1.0, 1.0),
+)
 ```
 
 Create Mapping with operation ‘Point’. Transform a point
@@ -183,7 +188,12 @@ Create Mapping with operation ‘Point’. Transform a point
 ##### texture
 
 ``` python
-texture(vector=None, location=None, rotation=None, scale=None)
+texture(
+    vector=(0.0, 0.0, 0.0),
+    location=(0.0, 0.0, 0.0),
+    rotation=(0.0, 0.0, 0.0),
+    scale=(1.0, 1.0, 1.0),
+)
 ```
 
 Create Mapping with operation ‘Texture’. Transform a texture by inverse mapping the texture coordinate
@@ -191,7 +201,7 @@ Create Mapping with operation ‘Texture’. Transform a texture by inverse mapp
 ##### vector
 
 ``` python
-vector(vector=None, rotation=None, scale=None)
+vector(vector=(0.0, 0.0, 0.0), rotation=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0))
 ```
 
 Create Mapping with operation ‘Vector’. Transform a direction vector (Location is ignored)
@@ -214,16 +224,16 @@ Create Mapping with operation ‘Vector’. Transform a direction vector (Locati
 ### Normal
 
 ``` python
-Normal(normal=None)
+Normal(normal=(0.0, 0.0, 1.0))
 ```
 
 Generate a normal vector and a dot product
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| normal | InputVector | Normal      | `None`  |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| normal | InputVector | Normal      | `(0.0, 0.0, 1.0)` |
 
 #### Attributes
 
@@ -254,7 +264,7 @@ Generate a normal vector and a dot product
 ``` python
 NormalMap(
     strength=1.0,
-    color=None,
+    color=(0.5, 0.5, 1.0, 1.0),
     *,
     space='TANGENT',
     uv_map='',
@@ -267,10 +277,10 @@ Generate a perturbed normal from an RGB normal map image. Typically used for fak
 
 #### Parameters
 
-| Name     | Type       | Description | Default |
-|----------|------------|-------------|---------|
-| strength | InputFloat | Strength    | `1.0`   |
-| color    | InputColor | Color       | `None`  |
+| Name     | Type       | Description | Default                |
+|----------|------------|-------------|------------------------|
+| strength | InputFloat | Strength    | `1.0`                  |
+| color    | InputColor | Color       | `(0.5, 0.5, 1.0, 1.0)` |
 
 #### Attributes
 
@@ -303,18 +313,24 @@ Generate a perturbed normal from an RGB normal map image. Typically used for fak
 ### VectorDisplacement
 
 ``` python
-VectorDisplacement(vector=None, midlevel=0.0, scale=0.01, *, space='TANGENT')
+VectorDisplacement(
+    vector=(0.8, 0.8, 0.8, 1.0),
+    midlevel=0.0,
+    scale=0.01,
+    *,
+    space='TANGENT',
+)
 ```
 
 Displace the surface along an arbitrary direction
 
 #### Parameters
 
-| Name     | Type       | Description | Default |
-|----------|------------|-------------|---------|
-| vector   | InputColor | Vector      | `None`  |
-| midlevel | InputFloat | Midlevel    | `0.0`   |
-| scale    | InputFloat | Scale       | `0.01`  |
+| Name     | Type       | Description | Default                |
+|----------|------------|-------------|------------------------|
+| vector   | InputColor | Vector      | `(0.8, 0.8, 0.8, 1.0)` |
+| midlevel | InputFloat | Midlevel    | `0.0`                  |
+| scale    | InputFloat | Scale       | `0.01`                 |
 
 #### Attributes
 
@@ -346,7 +362,7 @@ Displace the surface along an arbitrary direction
 
 ``` python
 VectorTransform(
-    vector=None,
+    vector=(0.5, 0.5, 0.5),
     *,
     vector_type='VECTOR',
     convert_from='WORLD',
@@ -358,9 +374,9 @@ Convert a vector, point, or normal between world, camera, and object coordinate 
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| vector | InputVector | Vector      | `None`  |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| vector | InputVector | Vector      | `(0.5, 0.5, 0.5)` |
 
 #### Attributes
 
@@ -387,7 +403,7 @@ Convert a vector, point, or normal between world, camera, and object coordinate 
 ##### normal
 
 ``` python
-normal(vector=None)
+normal(vector=(0.5, 0.5, 0.5))
 ```
 
 Create Vector Transform with operation ‘Normal’. Transform a normal vector with unit length
@@ -395,7 +411,7 @@ Create Vector Transform with operation ‘Normal’. Transform a normal vector w
 ##### point
 
 ``` python
-point(vector=None)
+point(vector=(0.5, 0.5, 0.5))
 ```
 
 Create Vector Transform with operation ‘Point’. Transform a point
@@ -403,7 +419,7 @@ Create Vector Transform with operation ‘Point’. Transform a point
 ##### vector
 
 ``` python
-vector(vector=None)
+vector(vector=(0.5, 0.5, 0.5))
 ```
 
 Create Vector Transform with operation ‘Vector’. Transform a direction vector

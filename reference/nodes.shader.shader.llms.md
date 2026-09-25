@@ -69,7 +69,7 @@ Add two Shaders together
 ### Background
 
 ``` python
-Background(color=None, strength=1.0, weight=0.0)
+Background(color=(0.8, 0.8, 0.8, 1.0), strength=1.0, weight=0.0)
 ```
 
     Add background light emission.
@@ -113,19 +113,24 @@ Note: This node should only be used for the world surface output
 ### DiffuseBSDF
 
 ``` python
-DiffuseBSDF(color=None, roughness=0.0, normal=None, weight=0.0)
+DiffuseBSDF(
+    color=(0.8, 0.8, 0.8, 1.0),
+    roughness=0.0,
+    normal=(0.0, 0.0, 0.0),
+    weight=0.0,
+)
 ```
 
 Lambertian and Oren-Nayar diffuse reflection
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| color     | InputColor  | Color       | `None`  |
-| roughness | InputFloat  | Roughness   | `0.0`   |
-| normal    | InputVector | Normal      | `None`  |
-| weight    | InputFloat  | Weight      | `0.0`   |
+| Name      | Type        | Description | Default                |
+|-----------|-------------|-------------|------------------------|
+| color     | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
+| roughness | InputFloat  | Roughness   | `0.0`                  |
+| normal    | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -156,18 +161,18 @@ Lambertian and Oren-Nayar diffuse reflection
 ### Emission
 
 ``` python
-Emission(color=None, strength=1.0, weight=0.0)
+Emission(color=(1.0, 1.0, 1.0, 1.0), strength=1.0, weight=0.0)
 ```
 
 Lambertian emission shader
 
 #### Parameters
 
-| Name     | Type       | Description | Default |
-|----------|------------|-------------|---------|
-| color    | InputColor | Color       | `None`  |
-| strength | InputFloat | Strength    | `1.0`   |
-| weight   | InputFloat | Weight      | `0.0`   |
+| Name     | Type       | Description | Default                |
+|----------|------------|-------------|------------------------|
+| color    | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
+| strength | InputFloat | Strength    | `1.0`                  |
+| weight   | InputFloat | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -198,10 +203,10 @@ Lambertian emission shader
 
 ``` python
 GlassBSDF(
-    color=None,
+    color=(1.0, 1.0, 1.0, 1.0),
     roughness=0.0,
     ior=1.5,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     weight=0.0,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
@@ -214,15 +219,15 @@ Glass-like shader mixing refraction and reflection at grazing angles
 
 #### Parameters
 
-| Name                | Type        | Description         | Default |
-|---------------------|-------------|---------------------|---------|
-| color               | InputColor  | Color               | `None`  |
-| roughness           | InputFloat  | Roughness           | `0.0`   |
-| ior                 | InputFloat  | IOR                 | `1.5`   |
-| normal              | InputVector | Normal              | `None`  |
-| weight              | InputFloat  | Weight              | `0.0`   |
-| thin_film_thickness | InputFloat  | Thin Film Thickness | `0.0`   |
-| thin_film_ior       | InputFloat  | Thin Film IOR       | `1.33`  |
+| Name                | Type        | Description         | Default                |
+|---------------------|-------------|---------------------|------------------------|
+| color               | InputColor  | Color               | `(1.0, 1.0, 1.0, 1.0)` |
+| roughness           | InputFloat  | Roughness           | `0.0`                  |
+| ior                 | InputFloat  | IOR                 | `1.5`                  |
+| normal              | InputVector | Normal              | `(0.0, 0.0, 0.0)`      |
+| weight              | InputFloat  | Weight              | `0.0`                  |
+| thin_film_thickness | InputFloat  | Thin Film Thickness | `0.0`                  |
+| thin_film_ior       | InputFloat  | Thin Film IOR       | `1.33`                 |
 
 #### Attributes
 
@@ -258,12 +263,12 @@ Glass-like shader mixing refraction and reflection at grazing angles
 
 ``` python
 GlossyBSDF(
-    color=None,
+    color=(0.8, 0.8, 0.8, 1.0),
     roughness=0.5,
     anisotropy=0.0,
     rotation=0.0,
-    normal=None,
-    tangent=None,
+    normal=(0.0, 0.0, 0.0),
+    tangent=(0.0, 0.0, 0.0),
     weight=0.0,
     *,
     distribution='MULTI_GGX',
@@ -274,15 +279,15 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 
 #### Parameters
 
-| Name       | Type        | Description | Default |
-|------------|-------------|-------------|---------|
-| color      | InputColor  | Color       | `None`  |
-| roughness  | InputFloat  | Roughness   | `0.5`   |
-| anisotropy | InputFloat  | Anisotropy  | `0.0`   |
-| rotation   | InputFloat  | Rotation    | `0.0`   |
-| normal     | InputVector | Normal      | `None`  |
-| tangent    | InputVector | Tangent     | `None`  |
-| weight     | InputFloat  | Weight      | `0.0`   |
+| Name       | Type        | Description | Default                |
+|------------|-------------|-------------|------------------------|
+| color      | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
+| roughness  | InputFloat  | Roughness   | `0.5`                  |
+| anisotropy | InputFloat  | Anisotropy  | `0.0`                  |
+| rotation   | InputFloat  | Rotation    | `0.0`                  |
+| normal     | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| tangent    | InputVector | Tangent     | `(0.0, 0.0, 0.0)`      |
+| weight     | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -318,11 +323,11 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 
 ``` python
 HairBSDF(
-    color=None,
+    color=(0.8, 0.8, 0.8, 1.0),
     offset=0.0,
     roughnessu=0.1,
     roughnessv=1.0,
-    tangent=None,
+    tangent=(0.0, 0.0, 0.0),
     weight=0.0,
     *,
     component='Reflection',
@@ -333,14 +338,14 @@ Reflection and transmission shaders optimized for hair rendering
 
 #### Parameters
 
-| Name       | Type        | Description | Default |
-|------------|-------------|-------------|---------|
-| color      | InputColor  | Color       | `None`  |
-| offset     | InputFloat  | Offset      | `0.0`   |
-| roughnessu | InputFloat  | RoughnessU  | `0.1`   |
-| roughnessv | InputFloat  | RoughnessV  | `1.0`   |
-| tangent    | InputVector | Tangent     | `None`  |
-| weight     | InputFloat  | Weight      | `0.0`   |
+| Name       | Type        | Description | Default                |
+|------------|-------------|-------------|------------------------|
+| color      | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
+| offset     | InputFloat  | Offset      | `0.0`                  |
+| roughnessu | InputFloat  | RoughnessU  | `0.1`                  |
+| roughnessv | InputFloat  | RoughnessV  | `1.0`                  |
+| tangent    | InputVector | Tangent     | `(0.0, 0.0, 0.0)`      |
+| weight     | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -411,15 +416,15 @@ Note: the holdout shader can only create alpha when transparency is enabled in t
 
 ``` python
 MetallicBSDF(
-    base_color=None,
-    edge_tint=None,
-    ior=None,
-    extinction=None,
+    base_color=(0.617, 0.577, 0.54, 1.0),
+    edge_tint=(0.695, 0.726, 0.77, 1.0),
+    ior=(2.757, 2.513, 2.231),
+    extinction=(3.867, 3.404, 3.009),
     roughness=0.5,
     anisotropy=0.0,
     rotation=0.0,
-    normal=None,
-    tangent=None,
+    normal=(0.0, 0.0, 0.0),
+    tangent=(0.0, 0.0, 0.0),
     weight=0.0,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
@@ -433,20 +438,20 @@ Metallic reflection with microfacet distribution, and metallic fresnel
 
 #### Parameters
 
-| Name                | Type        | Description         | Default |
-|---------------------|-------------|---------------------|---------|
-| base_color          | InputColor  | Base Color          | `None`  |
-| edge_tint           | InputColor  | Edge Tint           | `None`  |
-| ior                 | InputVector | IOR                 | `None`  |
-| extinction          | InputVector | Extinction          | `None`  |
-| roughness           | InputFloat  | Roughness           | `0.5`   |
-| anisotropy          | InputFloat  | Anisotropy          | `0.0`   |
-| rotation            | InputFloat  | Rotation            | `0.0`   |
-| normal              | InputVector | Normal              | `None`  |
-| tangent             | InputVector | Tangent             | `None`  |
-| weight              | InputFloat  | Weight              | `0.0`   |
-| thin_film_thickness | InputFloat  | Thin Film Thickness | `0.0`   |
-| thin_film_ior       | InputFloat  | Thin Film IOR       | `1.33`  |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| base_color | InputColor | Base Color | `(0.617, 0.577, 0.54, 1.0)` |
+| edge_tint | InputColor | Edge Tint | `(0.695, 0.726, 0.77, 1.0)` |
+| ior | InputVector | IOR | `(2.757, 2.513, 2.231)` |
+| extinction | InputVector | Extinction | `(3.867, 3.404, 3.009)` |
+| roughness | InputFloat | Roughness | `0.5` |
+| anisotropy | InputFloat | Anisotropy | `0.0` |
+| rotation | InputFloat | Rotation | `0.0` |
+| normal | InputVector | Normal | `(0.0, 0.0, 0.0)` |
+| tangent | InputVector | Tangent | `(0.0, 0.0, 0.0)` |
+| weight | InputFloat | Weight | `0.0` |
+| thin_film_thickness | InputFloat | Thin Film Thickness | `0.0` |
+| thin_film_ior | InputFloat | Thin Film IOR | `1.33` |
 
 #### Attributes
 
@@ -472,13 +477,13 @@ Metallic reflection with microfacet distribution, and metallic fresnel
 
 ``` python
 f82_tint(
-    base_color=None,
-    edge_tint=None,
+    base_color=(0.617, 0.577, 0.54, 1.0),
+    edge_tint=(0.695, 0.726, 0.77, 1.0),
     roughness=0.5,
     anisotropy=0.0,
     rotation=0.0,
-    normal=None,
-    tangent=None,
+    normal=(0.0, 0.0, 0.0),
+    tangent=(0.0, 0.0, 0.0),
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
 )
@@ -490,13 +495,13 @@ Create Metallic BSDF with operation ‘F82 Tint’. An approximation of the Fres
 
 ``` python
 physical_conductor(
-    ior=None,
-    extinction=None,
+    ior=(2.757, 2.513, 2.231),
+    extinction=(3.867, 3.404, 3.009),
     roughness=0.5,
     anisotropy=0.0,
     rotation=0.0,
-    normal=None,
-    tangent=None,
+    normal=(0.0, 0.0, 0.0),
+    tangent=(0.0, 0.0, 0.0),
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
 )
@@ -572,35 +577,35 @@ Mix two shaders together. Typically used for material layering
 
 ``` python
 PrincipledBSDF(
-    base_color=None,
+    base_color=(0.8, 0.8, 0.8, 1.0),
     metallic=0.0,
     roughness=0.5,
     ior=1.5,
     alpha=1.0,
     thin_wall=False,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     weight=0.0,
     diffuse_roughness=0.0,
     subsurface_weight=0.0,
-    subsurface_radius=None,
+    subsurface_radius=(1.0, 0.2, 0.1),
     subsurface_scale=0.005,
     subsurface_ior=1.4,
     subsurface_anisotropy=0.0,
     specular_ior_level=0.5,
-    specular_tint=None,
+    specular_tint=(1.0, 1.0, 1.0, 1.0),
     anisotropic=0.0,
     anisotropic_rotation=0.0,
-    tangent=None,
+    tangent=(0.0, 0.0, 0.0),
     transmission_weight=0.0,
     coat_weight=0.0,
     coat_roughness=0.03,
     coat_ior=1.5,
-    coat_tint=None,
-    coat_normal=None,
+    coat_tint=(1.0, 1.0, 1.0, 1.0),
+    coat_normal=(0.0, 0.0, 0.0),
     sheen_weight=0.0,
     sheen_roughness=0.5,
-    sheen_tint=None,
-    emission_color=None,
+    sheen_tint=(1.0, 1.0, 1.0, 1.0),
+    emission_color=(1.0, 1.0, 1.0, 1.0),
     emission_strength=0.0,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
@@ -614,40 +619,40 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 
 #### Parameters
 
-| Name                  | Type         | Description           | Default |
-|-----------------------|--------------|-----------------------|---------|
-| base_color            | InputColor   | Base Color            | `None`  |
-| metallic              | InputFloat   | Metallic              | `0.0`   |
-| roughness             | InputFloat   | Roughness             | `0.5`   |
-| ior                   | InputFloat   | IOR                   | `1.5`   |
-| alpha                 | InputFloat   | Alpha                 | `1.0`   |
-| thin_wall             | InputBoolean | Thin Wall             | `False` |
-| normal                | InputVector  | Normal                | `None`  |
-| weight                | InputFloat   | Weight                | `0.0`   |
-| diffuse_roughness     | InputFloat   | Diffuse Roughness     | `0.0`   |
-| subsurface_weight     | InputFloat   | Subsurface Weight     | `0.0`   |
-| subsurface_radius     | InputVector  | Subsurface Radius     | `None`  |
-| subsurface_scale      | InputFloat   | Subsurface Scale      | `0.005` |
-| subsurface_ior        | InputFloat   | Subsurface IOR        | `1.4`   |
-| subsurface_anisotropy | InputFloat   | Subsurface Anisotropy | `0.0`   |
-| specular_ior_level    | InputFloat   | Specular IOR Level    | `0.5`   |
-| specular_tint         | InputColor   | Specular Tint         | `None`  |
-| anisotropic           | InputFloat   | Anisotropic           | `0.0`   |
-| anisotropic_rotation  | InputFloat   | Anisotropic Rotation  | `0.0`   |
-| tangent               | InputVector  | Tangent               | `None`  |
-| transmission_weight   | InputFloat   | Transmission Weight   | `0.0`   |
-| coat_weight           | InputFloat   | Coat Weight           | `0.0`   |
-| coat_roughness        | InputFloat   | Coat Roughness        | `0.03`  |
-| coat_ior              | InputFloat   | Coat IOR              | `1.5`   |
-| coat_tint             | InputColor   | Coat Tint             | `None`  |
-| coat_normal           | InputVector  | Coat Normal           | `None`  |
-| sheen_weight          | InputFloat   | Sheen Weight          | `0.0`   |
-| sheen_roughness       | InputFloat   | Sheen Roughness       | `0.5`   |
-| sheen_tint            | InputColor   | Sheen Tint            | `None`  |
-| emission_color        | InputColor   | Emission Color        | `None`  |
-| emission_strength     | InputFloat   | Emission Strength     | `0.0`   |
-| thin_film_thickness   | InputFloat   | Thin Film Thickness   | `0.0`   |
-| thin_film_ior         | InputFloat   | Thin Film IOR         | `1.33`  |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| base_color | InputColor | Base Color | `(0.8, 0.8, 0.8, 1.0)` |
+| metallic | InputFloat | Metallic | `0.0` |
+| roughness | InputFloat | Roughness | `0.5` |
+| ior | InputFloat | IOR | `1.5` |
+| alpha | InputFloat | Alpha | `1.0` |
+| thin_wall | InputBoolean | Thin Wall | `False` |
+| normal | InputVector | Normal | `(0.0, 0.0, 0.0)` |
+| weight | InputFloat | Weight | `0.0` |
+| diffuse_roughness | InputFloat | Diffuse Roughness | `0.0` |
+| subsurface_weight | InputFloat | Subsurface Weight | `0.0` |
+| subsurface_radius | InputVector | Subsurface Radius | `(1.0, 0.2, 0.1)` |
+| subsurface_scale | InputFloat | Subsurface Scale | `0.005` |
+| subsurface_ior | InputFloat | Subsurface IOR | `1.4` |
+| subsurface_anisotropy | InputFloat | Subsurface Anisotropy | `0.0` |
+| specular_ior_level | InputFloat | Specular IOR Level | `0.5` |
+| specular_tint | InputColor | Specular Tint | `(1.0, 1.0, 1.0, 1.0)` |
+| anisotropic | InputFloat | Anisotropic | `0.0` |
+| anisotropic_rotation | InputFloat | Anisotropic Rotation | `0.0` |
+| tangent | InputVector | Tangent | `(0.0, 0.0, 0.0)` |
+| transmission_weight | InputFloat | Transmission Weight | `0.0` |
+| coat_weight | InputFloat | Coat Weight | `0.0` |
+| coat_roughness | InputFloat | Coat Roughness | `0.03` |
+| coat_ior | InputFloat | Coat IOR | `1.5` |
+| coat_tint | InputColor | Coat Tint | `(1.0, 1.0, 1.0, 1.0)` |
+| coat_normal | InputVector | Coat Normal | `(0.0, 0.0, 0.0)` |
+| sheen_weight | InputFloat | Sheen Weight | `0.0` |
+| sheen_roughness | InputFloat | Sheen Roughness | `0.5` |
+| sheen_tint | InputColor | Sheen Tint | `(1.0, 1.0, 1.0, 1.0)` |
+| emission_color | InputColor | Emission Color | `(1.0, 1.0, 1.0, 1.0)` |
+| emission_strength | InputFloat | Emission Strength | `0.0` |
+| thin_film_thickness | InputFloat | Thin Film Thickness | `0.0` |
+| thin_film_ior | InputFloat | Thin Film IOR | `1.33` |
 
 #### Attributes
 
@@ -709,17 +714,17 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 
 ``` python
 PrincipledHairBSDF(
-    color=None,
+    color=(0.017513, 0.005763, 0.002059, 1.0),
     melanin=0.8,
     melanin_redness=1.0,
-    tint=None,
-    absorption_coefficient=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
+    absorption_coefficient=(0.245531, 0.52, 1.365),
     aspect_ratio=0.85,
     roughness=0.3,
     radial_roughness=0.3,
     coat=0.0,
     ior=1.55,
-    offset=0.0349,
+    offset=0.034906585,
     random_color=0.0,
     random_roughness=0.0,
     random=0.0,
@@ -737,26 +742,26 @@ Physically-based, easy-to-use shader for rendering hair and fur
 
 #### Parameters
 
-| Name                   | Type        | Description            | Default  |
-|------------------------|-------------|------------------------|----------|
-| color                  | InputColor  | Color                  | `None`   |
-| melanin                | InputFloat  | Melanin                | `0.8`    |
-| melanin_redness        | InputFloat  | Melanin Redness        | `1.0`    |
-| tint                   | InputColor  | Tint                   | `None`   |
-| absorption_coefficient | InputVector | Absorption Coefficient | `None`   |
-| aspect_ratio           | InputFloat  | Aspect Ratio           | `0.85`   |
-| roughness              | InputFloat  | Roughness              | `0.3`    |
-| radial_roughness       | InputFloat  | Radial Roughness       | `0.3`    |
-| coat                   | InputFloat  | Coat                   | `0.0`    |
-| ior                    | InputFloat  | IOR                    | `1.55`   |
-| offset                 | InputFloat  | Offset                 | `0.0349` |
-| random_color           | InputFloat  | Random Color           | `0.0`    |
-| random_roughness       | InputFloat  | Random Roughness       | `0.0`    |
-| random                 | InputFloat  | Random                 | `0.0`    |
-| weight                 | InputFloat  | Weight                 | `0.0`    |
-| r_lobe                 | InputFloat  | Reflection             | `1.0`    |
-| tt_lobe                | InputFloat  | Transmission           | `1.0`    |
-| trt_lobe               | InputFloat  | Secondary Reflection   | `1.0`    |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| color | InputColor | Color | `(0.017513, 0.005763, 0.002059, 1.0)` |
+| melanin | InputFloat | Melanin | `0.8` |
+| melanin_redness | InputFloat | Melanin Redness | `1.0` |
+| tint | InputColor | Tint | `(1.0, 1.0, 1.0, 1.0)` |
+| absorption_coefficient | InputVector | Absorption Coefficient | `(0.245531, 0.52, 1.365)` |
+| aspect_ratio | InputFloat | Aspect Ratio | `0.85` |
+| roughness | InputFloat | Roughness | `0.3` |
+| radial_roughness | InputFloat | Radial Roughness | `0.3` |
+| coat | InputFloat | Coat | `0.0` |
+| ior | InputFloat | IOR | `1.55` |
+| offset | InputFloat | Offset | `0.034906585` |
+| random_color | InputFloat | Random Color | `0.0` |
+| random_roughness | InputFloat | Random Roughness | `0.0` |
+| random | InputFloat | Random | `0.0` |
+| weight | InputFloat | Weight | `0.0` |
+| r_lobe | InputFloat | Reflection | `1.0` |
+| tt_lobe | InputFloat | Transmission | `1.0` |
+| trt_lobe | InputFloat | Secondary Reflection | `1.0` |
 
 #### Attributes
 
@@ -803,19 +808,24 @@ Physically-based, easy-to-use shader for rendering hair and fur
 ### RayPortalBSDF
 
 ``` python
-RayPortalBSDF(color=None, position=None, direction=None, weight=0.0)
+RayPortalBSDF(
+    color=(1.0, 1.0, 1.0, 1.0),
+    position=(0.0, 0.0, 0.0),
+    direction=(0.0, 0.0, 0.0),
+    weight=0.0,
+)
 ```
 
 Continue tracing from an arbitrary new position and in a new direction
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| color     | InputColor  | Color       | `None`  |
-| position  | InputVector | Position    | `None`  |
-| direction | InputVector | Direction   | `None`  |
-| weight    | InputFloat  | Weight      | `0.0`   |
+| Name      | Type        | Description | Default                |
+|-----------|-------------|-------------|------------------------|
+| color     | InputColor  | Color       | `(1.0, 1.0, 1.0, 1.0)` |
+| position  | InputVector | Position    | `(0.0, 0.0, 0.0)`      |
+| direction | InputVector | Direction   | `(0.0, 0.0, 0.0)`      |
+| weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -847,10 +857,10 @@ Continue tracing from an arbitrary new position and in a new direction
 
 ``` python
 RefractionBSDF(
-    color=None,
+    color=(1.0, 1.0, 1.0, 1.0),
     roughness=0.0,
     ior=1.45,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     weight=0.0,
     *,
     distribution='BECKMANN',
@@ -861,13 +871,13 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| color     | InputColor  | Color       | `None`  |
-| roughness | InputFloat  | Roughness   | `0.0`   |
-| ior       | InputFloat  | IOR         | `1.45`  |
-| normal    | InputVector | Normal      | `None`  |
-| weight    | InputFloat  | Weight      | `0.0`   |
+| Name      | Type        | Description | Default                |
+|-----------|-------------|-------------|------------------------|
+| color     | InputColor  | Color       | `(1.0, 1.0, 1.0, 1.0)` |
+| roughness | InputFloat  | Roughness   | `0.0`                  |
+| ior       | InputFloat  | IOR         | `1.45`                 |
+| normal    | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -901,9 +911,9 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 
 ``` python
 SheenBSDF(
-    color=None,
+    color=(0.8, 0.8, 0.8, 1.0),
     roughness=0.5,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     weight=0.0,
     *,
     distribution='MICROFIBER',
@@ -957,15 +967,15 @@ Typically mixed with other shaders (such as a Diffuse Shader) and is not particu
 
 ``` python
 SpecularBSDF(
-    base_color=None,
-    specular=None,
+    base_color=(0.8, 0.8, 0.8, 1.0),
+    specular=(0.03, 0.03, 0.03, 1.0),
     roughness=0.2,
-    emissive_color=None,
+    emissive_color=(0.0, 0.0, 0.0, 1.0),
     transparency=0.0,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     clear_coat=0.0,
     clear_coat_roughness=0.0,
-    clear_coat_normal=None,
+    clear_coat_normal=(0.0, 0.0, 0.0),
     weight=0.0,
 )
 ```
@@ -974,18 +984,18 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 
 #### Parameters
 
-| Name                 | Type        | Description          | Default |
-|----------------------|-------------|----------------------|---------|
-| base_color           | InputColor  | Base Color           | `None`  |
-| specular             | InputColor  | Specular             | `None`  |
-| roughness            | InputFloat  | Roughness            | `0.2`   |
-| emissive_color       | InputColor  | Emissive Color       | `None`  |
-| transparency         | InputFloat  | Transparency         | `0.0`   |
-| normal               | InputVector | Normal               | `None`  |
-| clear_coat           | InputFloat  | Clear Coat           | `0.0`   |
-| clear_coat_roughness | InputFloat  | Clear Coat Roughness | `0.0`   |
-| clear_coat_normal    | InputVector | Clear Coat Normal    | `None`  |
-| weight               | InputFloat  | Weight               | `0.0`   |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| base_color | InputColor | Base Color | `(0.8, 0.8, 0.8, 1.0)` |
+| specular | InputColor | Specular | `(0.03, 0.03, 0.03, 1.0)` |
+| roughness | InputFloat | Roughness | `0.2` |
+| emissive_color | InputColor | Emissive Color | `(0.0, 0.0, 0.0, 1.0)` |
+| transparency | InputFloat | Transparency | `0.0` |
+| normal | InputVector | Normal | `(0.0, 0.0, 0.0)` |
+| clear_coat | InputFloat | Clear Coat | `0.0` |
+| clear_coat_roughness | InputFloat | Clear Coat Roughness | `0.0` |
+| clear_coat_normal | InputVector | Clear Coat Normal | `(0.0, 0.0, 0.0)` |
+| weight | InputFloat | Weight | `0.0` |
 
 #### Attributes
 
@@ -1023,13 +1033,13 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 
 ``` python
 SubsurfaceScattering(
-    color=None,
+    color=(0.8, 0.8, 0.8, 1.0),
     scale=0.005,
-    radius=None,
+    radius=(1.0, 0.2, 0.1),
     ior=1.4,
     roughness=1.0,
     anisotropy=0.0,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     weight=0.0,
     *,
     falloff='RANDOM_WALK',
@@ -1099,10 +1109,10 @@ Typically used for materials such as skin, wax, marble or milk
 
 ``` python
 ToonBSDF(
-    color=None,
+    color=(0.8, 0.8, 0.8, 1.0),
     size=0.5,
     smooth=0.0,
-    normal=None,
+    normal=(0.0, 0.0, 0.0),
     weight=0.0,
     *,
     component='DIFFUSE',
@@ -1113,13 +1123,13 @@ Diffuse and Glossy shaders with cartoon light effects
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| color  | InputColor  | Color       | `None`  |
-| size   | InputFloat  | Size        | `0.5`   |
-| smooth | InputFloat  | Smooth      | `0.0`   |
-| normal | InputVector | Normal      | `None`  |
-| weight | InputFloat  | Weight      | `0.0`   |
+| Name   | Type        | Description | Default                |
+|--------|-------------|-------------|------------------------|
+| color  | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
+| size   | InputFloat  | Size        | `0.5`                  |
+| smooth | InputFloat  | Smooth      | `0.0`                  |
+| normal | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| weight | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -1152,18 +1162,18 @@ Diffuse and Glossy shaders with cartoon light effects
 ### TranslucentBSDF
 
 ``` python
-TranslucentBSDF(color=None, normal=None, weight=0.0)
+TranslucentBSDF(color=(0.8, 0.8, 0.8, 1.0), normal=(0.0, 0.0, 0.0), weight=0.0)
 ```
 
 Lambertian diffuse transmission
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| color  | InputColor  | Color       | `None`  |
-| normal | InputVector | Normal      | `None`  |
-| weight | InputFloat  | Weight      | `0.0`   |
+| Name   | Type        | Description | Default                |
+|--------|-------------|-------------|------------------------|
+| color  | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
+| normal | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| weight | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
 
@@ -1193,17 +1203,17 @@ Lambertian diffuse transmission
 ### TransparentBSDF
 
 ``` python
-TransparentBSDF(color=None, weight=0.0)
+TransparentBSDF(color=(1.0, 1.0, 1.0, 1.0), weight=0.0)
 ```
 
 Transparency without refraction, passing straight through the surface as if there were no geometry
 
 #### Parameters
 
-| Name   | Type       | Description | Default |
-|--------|------------|-------------|---------|
-| color  | InputColor | Color       | `None`  |
-| weight | InputFloat | Weight      | `0.0`   |
+| Name   | Type       | Description | Default                |
+|--------|------------|-------------|------------------------|
+| color  | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
+| weight | InputFloat | Weight      | `0.0`                  |
 
 #### Attributes
 

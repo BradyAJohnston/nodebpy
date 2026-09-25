@@ -12,17 +12,17 @@
 ### Gamma
 
 ``` python
-Gamma(color=None, gamma=1.0)
+Gamma(color=(1.0, 1.0, 1.0, 1.0), gamma=1.0)
 ```
 
 Apply a gamma correction
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| color | InputColor | Color       | `None`  |
-| gamma | InputFloat | Gamma       | `1.0`   |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| color | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
+| gamma | InputFloat | Gamma       | `1.0`                  |
 
 #### Attributes
 
@@ -51,17 +51,17 @@ Apply a gamma correction
 ### RGBCurves
 
 ``` python
-RGBCurves(fac=1.0, color=None)
+RGBCurves(fac=1.0, color=(1.0, 1.0, 1.0, 1.0))
 ```
 
 Apply color corrections for each color channel
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| fac   | InputFloat | Factor      | `1.0`   |
-| color | InputColor | Color       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| fac   | InputFloat | Factor      | `1.0`                  |
+| color | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
 
 #### Attributes
 

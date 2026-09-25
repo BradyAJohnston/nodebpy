@@ -21,10 +21,10 @@
 
 ``` python
 BrickTexture(
-    vector=None,
-    color1=None,
-    color2=None,
-    mortar=None,
+    vector=(0.0, 0.0, 0.0),
+    color1=(0.8, 0.8, 0.8, 1.0),
+    color2=(0.2, 0.2, 0.2, 1.0),
+    mortar=(0.0, 0.0, 0.0, 1.0),
     scale=5.0,
     mortar_size=0.02,
     mortar_smooth=0.1,
@@ -43,18 +43,18 @@ Generate a procedural texture producing bricks
 
 #### Parameters
 
-| Name          | Type        | Description   | Default |
-|---------------|-------------|---------------|---------|
-| vector        | InputVector | Vector        | `None`  |
-| color1        | InputColor  | Color1        | `None`  |
-| color2        | InputColor  | Color2        | `None`  |
-| mortar        | InputColor  | Mortar        | `None`  |
-| scale         | InputFloat  | Scale         | `5.0`   |
-| mortar_size   | InputFloat  | Mortar Size   | `0.02`  |
-| mortar_smooth | InputFloat  | Mortar Smooth | `0.1`   |
-| bias          | InputFloat  | Bias          | `0.0`   |
-| brick_width   | InputFloat  | Brick Width   | `0.5`   |
-| row_height    | InputFloat  | Row Height    | `0.25`  |
+| Name          | Type        | Description   | Default                |
+|---------------|-------------|---------------|------------------------|
+| vector        | InputVector | Vector        | `(0.0, 0.0, 0.0)`      |
+| color1        | InputColor  | Color1        | `(0.8, 0.8, 0.8, 1.0)` |
+| color2        | InputColor  | Color2        | `(0.2, 0.2, 0.2, 1.0)` |
+| mortar        | InputColor  | Mortar        | `(0.0, 0.0, 0.0, 1.0)` |
+| scale         | InputFloat  | Scale         | `5.0`                  |
+| mortar_size   | InputFloat  | Mortar Size   | `0.02`                 |
+| mortar_smooth | InputFloat  | Mortar Smooth | `0.1`                  |
+| bias          | InputFloat  | Bias          | `0.0`                  |
+| brick_width   | InputFloat  | Brick Width   | `0.5`                  |
+| row_height    | InputFloat  | Row Height    | `0.25`                 |
 
 #### Attributes
 
@@ -96,19 +96,24 @@ Generate a procedural texture producing bricks
 ### CheckerTexture
 
 ``` python
-CheckerTexture(vector=None, color1=None, color2=None, scale=5.0)
+CheckerTexture(
+    vector=(0.0, 0.0, 0.0),
+    color1=(0.8, 0.8, 0.8, 1.0),
+    color2=(0.2, 0.2, 0.2, 1.0),
+    scale=5.0,
+)
 ```
 
 Generate a checkerboard texture
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| vector | InputVector | Vector      | `None`  |
-| color1 | InputColor  | Color1      | `None`  |
-| color2 | InputColor  | Color2      | `None`  |
-| scale  | InputFloat  | Scale       | `5.0`   |
+| Name   | Type        | Description | Default                |
+|--------|-------------|-------------|------------------------|
+| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)`      |
+| color1 | InputColor  | Color1      | `(0.8, 0.8, 0.8, 1.0)` |
+| color2 | InputColor  | Color2      | `(0.2, 0.2, 0.2, 1.0)` |
+| scale  | InputFloat  | Scale       | `5.0`                  |
 
 #### Attributes
 
@@ -141,12 +146,12 @@ Generate a checkerboard texture
 
 ``` python
 GaborTexture(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     frequency=2.0,
     anisotropy=1.0,
-    orientation_2d=0.7854,
-    orientation_3d=None,
+    orientation_2d=math.pi / 4,
+    orientation_3d=(1.4142135, 1.4142135, 0.0),
     *,
     gabor_type='2D',
 )
@@ -156,14 +161,14 @@ Generate Gabor noise
 
 #### Parameters
 
-| Name           | Type        | Description | Default  |
-|----------------|-------------|-------------|----------|
-| vector         | InputVector | Vector      | `None`   |
-| scale          | InputFloat  | Scale       | `5.0`    |
-| frequency      | InputFloat  | Frequency   | `2.0`    |
-| anisotropy     | InputFloat  | Anisotropy  | `1.0`    |
-| orientation_2d | InputFloat  | Orientation | `0.7854` |
-| orientation_3d | InputVector | Orientation | `None`   |
+| Name           | Type        | Description | Default                       |
+|----------------|-------------|-------------|-------------------------------|
+| vector         | InputVector | Vector      | `(0.0, 0.0, 0.0)`             |
+| scale          | InputFloat  | Scale       | `5.0`                         |
+| frequency      | InputFloat  | Frequency   | `2.0`                         |
+| anisotropy     | InputFloat  | Anisotropy  | `1.0`                         |
+| orientation_2d | InputFloat  | Orientation | `math.pi / 4`                 |
+| orientation_3d | InputVector | Orientation | `(1.4142135, 1.4142135, 0.0)` |
 
 #### Attributes
 
@@ -188,11 +193,11 @@ Generate Gabor noise
 
 ``` python
 input_2d(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     frequency=2.0,
     anisotropy=1.0,
-    orientation_2d=0.7854,
+    orientation_2d=math.pi / 4,
 )
 ```
 
@@ -202,11 +207,11 @@ Create Gabor Texture with operation ‘2D’. Use the 2D vector (X, Y) as input.
 
 ``` python
 input_3d(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     frequency=2.0,
     anisotropy=1.0,
-    orientation_3d=None,
+    orientation_3d=(1.4142135, 1.4142135, 0.0),
 )
 ```
 
@@ -234,16 +239,16 @@ Create Gabor Texture with operation ‘3D’. Use the 3D vector (X, Y, Z) as inp
 ### GradientTexture
 
 ``` python
-GradientTexture(vector=None, *, gradient_type='LINEAR')
+GradientTexture(vector=(0.0, 0.0, 0.0), *, gradient_type='LINEAR')
 ```
 
 Generate interpolated color and intensity values based on the input vector
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| vector | InputVector | Vector      | `None`  |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -272,7 +277,7 @@ Generate interpolated color and intensity values based on the input vector
 ##### diagonal
 
 ``` python
-diagonal(vector=None)
+diagonal(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Gradient Texture with operation ‘Diagonal’. Create a diagonal progression
@@ -280,7 +285,7 @@ Create Gradient Texture with operation ‘Diagonal’. Create a diagonal progres
 ##### easing
 
 ``` python
-easing(vector=None)
+easing(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Gradient Texture with operation ‘Easing’. Create a progression easing from one step to the next
@@ -288,7 +293,7 @@ Create Gradient Texture with operation ‘Easing’. Create a progression easing
 ##### linear
 
 ``` python
-linear(vector=None)
+linear(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Gradient Texture with operation ‘Linear’. Create a linear progression
@@ -296,7 +301,7 @@ Create Gradient Texture with operation ‘Linear’. Create a linear progression
 ##### quadratic
 
 ``` python
-quadratic(vector=None)
+quadratic(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Gradient Texture with operation ‘Quadratic’. Create a quadratic progression
@@ -304,7 +309,7 @@ Create Gradient Texture with operation ‘Quadratic’. Create a quadratic progr
 ##### quadratic_sphere
 
 ``` python
-quadratic_sphere(vector=None)
+quadratic_sphere(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Gradient Texture with operation ‘Quadratic Sphere’. Create a quadratic progression in the shape of a sphere
@@ -312,7 +317,7 @@ Create Gradient Texture with operation ‘Quadratic Sphere’. Create a quadrati
 ##### radial
 
 ``` python
-radial(vector=None)
+radial(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Gradient Texture with operation ‘Radial’. Create a radial progression
@@ -320,7 +325,7 @@ Create Gradient Texture with operation ‘Radial’. Create a radial progression
 ##### spherical
 
 ``` python
-spherical(vector=None)
+spherical(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Gradient Texture with operation ‘Spherical’. Create a spherical progression
@@ -343,7 +348,7 @@ Create Gradient Texture with operation ‘Spherical’. Create a spherical progr
 ``` python
 ImageTexture(
     image=None,
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     frame=0,
     *,
     interpolation='Linear',
@@ -355,11 +360,11 @@ Sample values from an image texture
 
 #### Parameters
 
-| Name   | Type         | Description | Default |
-|--------|--------------|-------------|---------|
-| image  | InputImage   | Image       | `None`  |
-| vector | InputVector  | Vector      | `None`  |
-| frame  | InputInteger | Frame       | `0`     |
+| Name   | Type         | Description | Default           |
+|--------|--------------|-------------|-------------------|
+| image  | InputImage   | Image       | `None`            |
+| vector | InputVector  | Vector      | `(0.0, 0.0, 0.0)` |
+| frame  | InputInteger | Frame       | `0`               |
 
 #### Attributes
 
@@ -392,18 +397,24 @@ Sample values from an image texture
 ### MagicTexture
 
 ``` python
-MagicTexture(vector=None, scale=5.0, distortion=1.0, *, turbulence_depth=0)
+MagicTexture(
+    vector=(0.0, 0.0, 0.0),
+    scale=5.0,
+    distortion=1.0,
+    *,
+    turbulence_depth=0,
+)
 ```
 
 Generate a psychedelic color texture
 
 #### Parameters
 
-| Name       | Type        | Description | Default |
-|------------|-------------|-------------|---------|
-| vector     | InputVector | Vector      | `None`  |
-| scale      | InputFloat  | Scale       | `5.0`   |
-| distortion | InputFloat  | Distortion  | `1.0`   |
+| Name       | Type        | Description | Default           |
+|------------|-------------|-------------|-------------------|
+| vector     | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| scale      | InputFloat  | Scale       | `5.0`             |
+| distortion | InputFloat  | Distortion  | `1.0`             |
 
 #### Attributes
 
@@ -436,7 +447,7 @@ Generate a psychedelic color texture
 
 ``` python
 NoiseTexture(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     w=0.0,
     scale=5.0,
     detail=2.0,
@@ -456,17 +467,17 @@ Generate fractal Perlin noise
 
 #### Parameters
 
-| Name       | Type        | Description | Default |
-|------------|-------------|-------------|---------|
-| vector     | InputVector | Vector      | `None`  |
-| w          | InputFloat  | W           | `0.0`   |
-| scale      | InputFloat  | Scale       | `5.0`   |
-| detail     | InputFloat  | Detail      | `2.0`   |
-| roughness  | InputFloat  | Roughness   | `0.5`   |
-| lacunarity | InputFloat  | Lacunarity  | `2.0`   |
-| offset     | InputFloat  | Offset      | `0.0`   |
-| gain       | InputFloat  | Gain        | `1.0`   |
-| distortion | InputFloat  | Distortion  | `0.0`   |
+| Name       | Type        | Description | Default           |
+|------------|-------------|-------------|-------------------|
+| vector     | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| w          | InputFloat  | W           | `0.0`             |
+| scale      | InputFloat  | Scale       | `5.0`             |
+| detail     | InputFloat  | Detail      | `2.0`             |
+| roughness  | InputFloat  | Roughness   | `0.5`             |
+| lacunarity | InputFloat  | Lacunarity  | `2.0`             |
+| offset     | InputFloat  | Offset      | `0.0`             |
+| gain       | InputFloat  | Gain        | `1.0`             |
+| distortion | InputFloat  | Distortion  | `0.0`             |
 
 #### Attributes
 
@@ -496,7 +507,7 @@ Generate fractal Perlin noise
 
 ``` python
 fbm(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     detail=2.0,
     roughness=0.5,
@@ -511,7 +522,7 @@ Create Noise Texture with operation ‘fBM’. The standard fractal Perlin noise
 
 ``` python
 hetero_terrain(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     detail=2.0,
     roughness=0.5,
@@ -527,7 +538,7 @@ Create Noise Texture with operation ‘Hetero Terrain’. Similar to Hybrid Mult
 
 ``` python
 hybrid_multifractal(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     detail=2.0,
     roughness=0.5,
@@ -544,7 +555,7 @@ Create Noise Texture with operation ‘Hybrid Multifractal’. Create peaks and 
 
 ``` python
 multifractal(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     detail=2.0,
     roughness=0.5,
@@ -559,7 +570,7 @@ Create Noise Texture with operation ‘Multifractal’. More uneven result (vari
 
 ``` python
 ridged_multifractal(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     detail=2.0,
     roughness=0.5,
@@ -597,7 +608,7 @@ Create Noise Texture with operation ‘Ridged Multifractal’. Create sharp peak
 
 ``` python
 VoronoiTexture(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     w=0.0,
     scale=5.0,
     detail=0.0,
@@ -618,17 +629,17 @@ Generate Worley noise based on the distance to random points. Typically used to 
 
 #### Parameters
 
-| Name       | Type        | Description | Default |
-|------------|-------------|-------------|---------|
-| vector     | InputVector | Vector      | `None`  |
-| w          | InputFloat  | W           | `0.0`   |
-| scale      | InputFloat  | Scale       | `5.0`   |
-| detail     | InputFloat  | Detail      | `0.0`   |
-| roughness  | InputFloat  | Roughness   | `0.5`   |
-| lacunarity | InputFloat  | Lacunarity  | `2.0`   |
-| smoothness | InputFloat  | Smoothness  | `1.0`   |
-| exponent   | InputFloat  | Exponent    | `0.5`   |
-| randomness | InputFloat  | Randomness  | `1.0`   |
+| Name       | Type        | Description | Default           |
+|------------|-------------|-------------|-------------------|
+| vector     | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| w          | InputFloat  | W           | `0.0`             |
+| scale      | InputFloat  | Scale       | `5.0`             |
+| detail     | InputFloat  | Detail      | `0.0`             |
+| roughness  | InputFloat  | Roughness   | `0.5`             |
+| lacunarity | InputFloat  | Lacunarity  | `2.0`             |
+| smoothness | InputFloat  | Smoothness  | `1.0`             |
+| exponent   | InputFloat  | Exponent    | `0.5`             |
+| randomness | InputFloat  | Randomness  | `1.0`             |
 
 #### Attributes
 
@@ -673,7 +684,7 @@ Generate Worley noise based on the distance to random points. Typically used to 
 
 ``` python
 WaveTexture(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     distortion=0.0,
     detail=2.0,
@@ -692,15 +703,15 @@ Generate procedural bands or rings with noise
 
 #### Parameters
 
-| Name             | Type        | Description      | Default |
-|------------------|-------------|------------------|---------|
-| vector           | InputVector | Vector           | `None`  |
-| scale            | InputFloat  | Scale            | `5.0`   |
-| distortion       | InputFloat  | Distortion       | `0.0`   |
-| detail           | InputFloat  | Detail           | `2.0`   |
-| detail_scale     | InputFloat  | Detail Scale     | `1.0`   |
-| detail_roughness | InputFloat  | Detail Roughness | `0.5`   |
-| phase_offset     | InputFloat  | Phase Offset     | `0.0`   |
+| Name             | Type        | Description      | Default           |
+|------------------|-------------|------------------|-------------------|
+| vector           | InputVector | Vector           | `(0.0, 0.0, 0.0)` |
+| scale            | InputFloat  | Scale            | `5.0`             |
+| distortion       | InputFloat  | Distortion       | `0.0`             |
+| detail           | InputFloat  | Detail           | `2.0`             |
+| detail_scale     | InputFloat  | Detail Scale     | `1.0`             |
+| detail_roughness | InputFloat  | Detail Roughness | `0.5`             |
+| phase_offset     | InputFloat  | Phase Offset     | `0.0`             |
 
 #### Attributes
 
@@ -728,7 +739,7 @@ Generate procedural bands or rings with noise
 
 ``` python
 bands(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     distortion=0.0,
     detail=2.0,
@@ -744,7 +755,7 @@ Create Wave Texture with operation ‘Bands’. Use standard wave texture in ban
 
 ``` python
 rings(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     scale=5.0,
     distortion=0.0,
     detail=2.0,
@@ -778,17 +789,17 @@ Create Wave Texture with operation ‘Rings’. Use wave texture in rings
 ### WhiteNoiseTexture
 
 ``` python
-WhiteNoiseTexture(vector=None, w=0.0, *, noise_dimensions='3D')
+WhiteNoiseTexture(vector=(0.0, 0.0, 0.0), w=0.0, *, noise_dimensions='3D')
 ```
 
 Calculate a random value or color based on an input seed
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| vector | InputVector | Vector      | `None`  |
-| w      | InputFloat  | W           | `0.0`   |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| w      | InputFloat  | W           | `0.0`             |
 
 #### Attributes
 

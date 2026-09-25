@@ -63,7 +63,7 @@ Create Enable Output with operation ‘Boolean’.
 ##### color
 
 ``` python
-color(enable=False, value=None)
+color(enable=False, value=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Create Enable Output with operation ‘Color’.
@@ -95,7 +95,7 @@ Create Enable Output with operation ‘Integer’.
 ##### integer_vector
 
 ``` python
-integer_vector(enable=False, value=None)
+integer_vector(enable=False, value=(0, 0, 0))
 ```
 
 Create Enable Output with operation ‘Integer Vector’.
@@ -127,7 +127,7 @@ Create Enable Output with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(enable=False, value=None)
+rotation(enable=False, value=(0.0, 0.0, 0.0))
 ```
 
 Create Enable Output with operation ‘Rotation’.
@@ -143,7 +143,7 @@ Create Enable Output with operation ‘String’.
 ##### vector
 
 ``` python
-vector(enable=False, value=None)
+vector(enable=False, value=(0.0, 0.0, 0.0))
 ```
 
 Create Enable Output with operation ‘Vector’.

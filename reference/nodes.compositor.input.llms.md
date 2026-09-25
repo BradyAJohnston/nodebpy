@@ -24,17 +24,17 @@
 ### BlankImage
 
 ``` python
-BlankImage(color=None, size=None)
+BlankImage(color=(0.0, 0.0, 0.0, 1.0), size=(1920, 1080))
 ```
 
 Returns an image with the given size and constant color
 
 #### Parameters
 
-| Name  | Type         | Description | Default |
-|-------|--------------|-------------|---------|
-| color | InputColor   | Color       | `None`  |
-| size  | InputInteger | Size        | `None`  |
+| Name  | Type               | Description | Default                |
+|-------|--------------------|-------------|------------------------|
+| color | InputColor         | Color       | `(0.0, 0.0, 0.0, 1.0)` |
+| size  | InputIntegerVector | Size        | `(1920, 1080)`         |
 
 #### Attributes
 
@@ -139,16 +139,16 @@ A color picker
 ### ImageCoordinates
 
 ``` python
-ImageCoordinates(image=None)
+ImageCoordinates(image=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Returns the coordinates of the pixels of an image
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| image | InputColor | Image       | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 
@@ -178,16 +178,16 @@ Returns the coordinates of the pixels of an image
 ### ImageInfo
 
 ``` python
-ImageInfo(image=None)
+ImageInfo(image=(0.8, 0.8, 0.8, 1.0))
 ```
 
 Returns information about an image
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| image | InputColor | Image       | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 

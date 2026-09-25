@@ -15,7 +15,7 @@
 
 ``` python
 EnvironmentTexture(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     *,
     projection='EQUIRECTANGULAR',
     interpolation='Linear',
@@ -26,9 +26,9 @@ Sample an image file as an environment texture. Typically used to light the scen
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| vector | InputVector | Vector      | `None`  |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -58,17 +58,23 @@ Sample an image file as an environment texture. Typically used to light the scen
 ### IesTexture
 
 ``` python
-IesTexture(vector=None, strength=1.0, *, filepath='', mode='INTERNAL')
+IesTexture(
+    vector=(0.0, 0.0, 0.0),
+    strength=1.0,
+    *,
+    filepath='',
+    mode='INTERNAL',
+)
 ```
 
 Match real world lights with IES files, which store the directional intensity distribution of light sources
 
 #### Parameters
 
-| Name     | Type        | Description | Default |
-|----------|-------------|-------------|---------|
-| vector   | InputVector | Vector      | `None`  |
-| strength | InputFloat  | Strength    | `1.0`   |
+| Name     | Type        | Description | Default           |
+|----------|-------------|-------------|-------------------|
+| vector   | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| strength | InputFloat  | Strength    | `1.0`             |
 
 #### Attributes
 
@@ -93,7 +99,7 @@ Match real world lights with IES files, which store the directional intensity di
 ##### external
 
 ``` python
-external(vector=None, strength=1.0)
+external(vector=(0.0, 0.0, 0.0), strength=1.0)
 ```
 
 Create IES Texture with operation ‘External’. Use external .ies file
@@ -101,7 +107,7 @@ Create IES Texture with operation ‘External’. Use external .ies file
 ##### internal
 
 ``` python
-internal(vector=None, strength=1.0)
+internal(vector=(0.0, 0.0, 0.0), strength=1.0)
 ```
 
 Create IES Texture with operation ‘Internal’. Use internal text data-block
@@ -123,7 +129,7 @@ Create IES Texture with operation ‘Internal’. Use internal text data-block
 
 ``` python
 ImageTexture(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     *,
     projection='FLAT',
     interpolation='Linear',
@@ -136,9 +142,9 @@ Sample an image file as a texture
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| vector | InputVector | Vector      | `None`  |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -172,13 +178,13 @@ Sample an image file as a texture
 
 ``` python
 SkyTexture(
-    vector=None,
+    vector=(0.0, 0.0, 0.0),
     *,
     sky_type='MULTIPLE_SCATTERING',
     sun_disc=True,
-    sun_size=0.01,
+    sun_size=0.0095120445,
     sun_intensity=1.0,
-    sun_elevation=0.262,
+    sun_elevation=math.pi / 12,
     sun_rotation=0.0,
     altitude=100.0,
     air_density=1.0,
@@ -194,9 +200,9 @@ Generate a procedural sky texture
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| vector | InputVector | Vector      | `None`  |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -234,7 +240,7 @@ Generate a procedural sky texture
 ##### hosek_wilkie
 
 ``` python
-hosek_wilkie(vector=None)
+hosek_wilkie(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Sky Texture with operation ‘Hosek / Wilkie’. Hosek / Wilkie 2012 (Legacy)
@@ -250,7 +256,7 @@ Create Sky Texture with operation ‘Multiple Scattering’. Multiple scattering
 ##### preetham
 
 ``` python
-preetham(vector=None)
+preetham(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Sky Texture with operation ‘Preetham’. Preetham 1999 (Legacy)

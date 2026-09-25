@@ -252,8 +252,8 @@ Create Clip Grid with operation ‘Vector’.
 
 ``` python
 CubeGridTopology(
-    bounds_min=None,
-    bounds_max=None,
+    bounds_min=(-1.0, -1.0, -1.0),
+    bounds_max=(1.0, 1.0, 1.0),
     resolution_x=32,
     resolution_y=32,
     resolution_z=32,
@@ -267,16 +267,16 @@ Create a boolean grid topology with the given dimensions, for use with the Field
 
 #### Parameters
 
-| Name         | Type         | Description  | Default |
-|--------------|--------------|--------------|---------|
-| bounds_min   | InputVector  | Bounds Min   | `None`  |
-| bounds_max   | InputVector  | Bounds Max   | `None`  |
-| resolution_x | InputInteger | Resolution X | `32`    |
-| resolution_y | InputInteger | Resolution Y | `32`    |
-| resolution_z | InputInteger | Resolution Z | `32`    |
-| min_x        | InputInteger | Min X        | `0`     |
-| min_y        | InputInteger | Min Y        | `0`     |
-| min_z        | InputInteger | Min Z        | `0`     |
+| Name         | Type         | Description  | Default              |
+|--------------|--------------|--------------|----------------------|
+| bounds_min   | InputVector  | Bounds Min   | `(-1.0, -1.0, -1.0)` |
+| bounds_max   | InputVector  | Bounds Max   | `(1.0, 1.0, 1.0)`    |
+| resolution_x | InputInteger | Resolution X | `32`                 |
+| resolution_y | InputInteger | Resolution Y | `32`                 |
+| resolution_z | InputInteger | Resolution Z | `32`                 |
+| min_x        | InputInteger | Min X        | `0`                  |
+| min_y        | InputInteger | Min Y        | `0`                  |
+| min_z        | InputInteger | Min Z        | `0`                  |
 
 #### Attributes
 
@@ -315,7 +315,7 @@ DistributePointsInGrid(
     grid=None,
     density=1.0,
     seed=0,
-    spacing=None,
+    spacing=(0.3, 0.3, 0.3),
     threshold=0.1,
     *,
     mode='DENSITY_RANDOM',
@@ -326,13 +326,13 @@ Generate points inside a volume grid
 
 #### Parameters
 
-| Name      | Type           | Description | Default |
-|-----------|----------------|-------------|---------|
-| grid      | InputFloatGrid | Grid        | `None`  |
-| density   | InputFloat     | Density     | `1.0`   |
-| seed      | InputInteger   | Seed        | `0`     |
-| spacing   | InputVector    | Spacing     | `None`  |
-| threshold | InputFloat     | Threshold   | `0.1`   |
+| Name      | Type           | Description | Default           |
+|-----------|----------------|-------------|-------------------|
+| grid      | InputFloatGrid | Grid        | `None`            |
+| density   | InputFloat     | Density     | `1.0`             |
+| seed      | InputInteger   | Seed        | `0`               |
+| spacing   | InputVector    | Spacing     | `(0.3, 0.3, 0.3)` |
+| threshold | InputFloat     | Threshold   | `0.1`             |
 
 #### Attributes
 
@@ -356,7 +356,7 @@ Generate points inside a volume grid
 ##### grid
 
 ``` python
-grid(grid=None, spacing=None, threshold=0.1)
+grid(grid=None, spacing=(0.3, 0.3, 0.3), threshold=0.1)
 ```
 
 Create Distribute Points in Grid with operation ‘Grid’. Distribute the points in a grid pattern inside of the volume
@@ -393,7 +393,7 @@ DistributePointsInVolume(
     mode='Random',
     density=1.0,
     seed=0,
-    spacing=None,
+    spacing=(0.3, 0.3, 0.3),
     threshold=0.1,
 )
 ```
@@ -402,14 +402,14 @@ Generate points inside a volume
 
 #### Parameters
 
-| Name      | Type                                     | Description | Default    |
-|-----------|------------------------------------------|-------------|------------|
-| volume    | InputGeometry                            | Volume      | `None`     |
-| mode      | InputMenu \| Literal\['Random', 'Grid'\] | Mode        | `'Random'` |
-| density   | InputFloat                               | Density     | `1.0`      |
-| seed      | InputInteger                             | Seed        | `0`        |
-| spacing   | InputVector                              | Spacing     | `None`     |
-| threshold | InputFloat                               | Threshold   | `0.1`      |
+| Name | Type | Description | Default |
+|----|----|----|----|
+| volume | InputGeometry | Volume | `None` |
+| mode | InputMenu \| Literal\['Random', 'Grid'\] | Mode | `'Random'` |
+| density | InputFloat | Density | `1.0` |
+| seed | InputInteger | Seed | `0` |
+| spacing | InputVector | Spacing | `(0.3, 0.3, 0.3)` |
+| threshold | InputFloat | Threshold | `0.1` |
 
 #### Attributes
 
@@ -1414,7 +1414,7 @@ Create Prune Grid with operation ‘Integer’.
 ##### vector
 
 ``` python
-vector(grid=None, mode='Threshold', threshold=None)
+vector(grid=None, mode='Threshold', threshold=(0.01, 0.01, 0.01))
 ```
 
 Create Prune Grid with operation ‘Vector’.
@@ -1676,7 +1676,7 @@ Offset a signed distance field surface by a world-space distance. Dilates (posit
 ``` python
 SampleGrid(
     grid=None,
-    position=None,
+    position=(0.0, 0.0, 0.0),
     interpolation='Trilinear',
     *,
     data_type='FLOAT',
@@ -1690,7 +1690,7 @@ Retrieve values from the specified volume grid
 | Name | Type | Description | Default |
 |----|----|----|----|
 | grid | InputFloatGrid | Grid | `None` |
-| position | InputVector | Position | `None` |
+| position | InputVector | Position | `(0.0, 0.0, 0.0)` |
 | interpolation | InputMenu \| Literal\['Nearest Neighbor', 'Trilinear', 'Triquadratic'\] | Interpolation | `'Trilinear'` |
 
 #### Attributes
@@ -1717,7 +1717,7 @@ Retrieve values from the specified volume grid
 ##### boolean
 
 ``` python
-boolean(grid=None, position=None, interpolation='Trilinear')
+boolean(grid=None, position=(0.0, 0.0, 0.0), interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Boolean’.
@@ -1725,7 +1725,7 @@ Create Sample Grid with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=None, position=None, interpolation='Trilinear')
+float(grid=None, position=(0.0, 0.0, 0.0), interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Float’.
@@ -1733,7 +1733,7 @@ Create Sample Grid with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=None, position=None, interpolation='Trilinear')
+integer(grid=None, position=(0.0, 0.0, 0.0), interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Integer’.
@@ -1741,7 +1741,7 @@ Create Sample Grid with operation ‘Integer’.
 ##### vector
 
 ``` python
-vector(grid=None, position=None, interpolation='Trilinear')
+vector(grid=None, position=(0.0, 0.0, 0.0), interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Vector’.
@@ -1915,7 +1915,7 @@ Create Set Grid Background with operation ‘Integer’.
 ##### vector
 
 ``` python
-vector(grid=None, background=None, update_inactive=False)
+vector(grid=None, background=(0.0, 0.0, 0.0), update_inactive=False)
 ```
 
 Create Set Grid Background with operation ‘Vector’.
@@ -2105,8 +2105,8 @@ Create Store Named Grid with operation ‘Vector’. 3D float vector
 VolumeCube(
     density=1.0,
     background=0.0,
-    min=None,
-    max=None,
+    min=(-1.0, -1.0, -1.0),
+    max=(1.0, 1.0, 1.0),
     resolution_x=32,
     resolution_y=32,
     resolution_z=32,
@@ -2117,15 +2117,15 @@ Generate a dense volume with a field that controls the density at each grid voxe
 
 #### Parameters
 
-| Name         | Type         | Description  | Default |
-|--------------|--------------|--------------|---------|
-| density      | InputFloat   | Density      | `1.0`   |
-| background   | InputFloat   | Background   | `0.0`   |
-| min          | InputVector  | Min          | `None`  |
-| max          | InputVector  | Max          | `None`  |
-| resolution_x | InputInteger | Resolution X | `32`    |
-| resolution_y | InputInteger | Resolution Y | `32`    |
-| resolution_z | InputInteger | Resolution Z | `32`    |
+| Name         | Type         | Description  | Default              |
+|--------------|--------------|--------------|----------------------|
+| density      | InputFloat   | Density      | `1.0`                |
+| background   | InputFloat   | Background   | `0.0`                |
+| min          | InputVector  | Min          | `(-1.0, -1.0, -1.0)` |
+| max          | InputVector  | Max          | `(1.0, 1.0, 1.0)`    |
+| resolution_x | InputInteger | Resolution X | `32`                 |
+| resolution_y | InputInteger | Resolution Y | `32`                 |
+| resolution_z | InputInteger | Resolution Z | `32`                 |
 
 #### Attributes
 

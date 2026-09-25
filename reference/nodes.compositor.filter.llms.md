@@ -28,7 +28,7 @@
 
 ``` python
 AntiAliasing(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     threshold=0.2,
     contrast_limit=2.0,
     corner_rounding=0.25,
@@ -39,12 +39,12 @@ Smooth away jagged edges
 
 #### Parameters
 
-| Name            | Type       | Description     | Default |
-|-----------------|------------|-----------------|---------|
-| image           | InputColor | Image           | `None`  |
-| threshold       | InputFloat | Threshold       | `0.2`   |
-| contrast_limit  | InputFloat | Contrast Limit  | `2.0`   |
-| corner_rounding | InputFloat | Corner Rounding | `0.25`  |
+| Name            | Type       | Description     | Default                |
+|-----------------|------------|-----------------|------------------------|
+| image           | InputColor | Image           | `(1.0, 1.0, 1.0, 1.0)` |
+| threshold       | InputFloat | Threshold       | `0.2`                  |
+| contrast_limit  | InputFloat | Contrast Limit  | `2.0`                  |
+| corner_rounding | InputFloat | Corner Rounding | `0.25`                 |
 
 #### Attributes
 
@@ -75,19 +75,24 @@ Smooth away jagged edges
 ### BilateralBlur
 
 ``` python
-BilateralBlur(image=None, determinator=None, size=0, threshold=0.1)
+BilateralBlur(
+    image=(1.0, 1.0, 1.0, 1.0),
+    determinator=(1.0, 1.0, 1.0, 1.0),
+    size=0,
+    threshold=0.1,
+)
 ```
 
 Adaptively blur image, while retaining sharp edges
 
 #### Parameters
 
-| Name         | Type         | Description  | Default |
-|--------------|--------------|--------------|---------|
-| image        | InputColor   | Image        | `None`  |
-| determinator | InputColor   | Determinator | `None`  |
-| size         | InputInteger | Size         | `0`     |
-| threshold    | InputFloat   | Threshold    | `0.1`   |
+| Name         | Type         | Description  | Default                |
+|--------------|--------------|--------------|------------------------|
+| image        | InputColor   | Image        | `(1.0, 1.0, 1.0, 1.0)` |
+| determinator | InputColor   | Determinator | `(1.0, 1.0, 1.0, 1.0)` |
+| size         | InputInteger | Size         | `0`                    |
+| threshold    | InputFloat   | Threshold    | `0.1`                  |
 
 #### Attributes
 
@@ -119,8 +124,8 @@ Adaptively blur image, while retaining sharp edges
 
 ``` python
 Blur(
-    image=None,
-    size=None,
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
     type='Gaussian',
     extend_bounds=False,
     separable=True,
@@ -133,8 +138,8 @@ Blur an image, using several blur modes
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
-| size | InputVector | Size | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| size | InputVector | Size | `(0.0, 0.0)` |
 | type | InputMenu \| Literal\['Flat', 'Tent', 'Quadratic', 'Cubic', 'Gaussian', 'Fast Gaussian', 'Catrom', 'Mitch'\] | Type | `'Gaussian'` |
 | extend_bounds | InputBoolean | Extend Bounds | `False` |
 | separable | InputBoolean | Separable | `True` |
@@ -166,7 +171,12 @@ Blur an image, using several blur modes
 ##### catrom
 
 ``` python
-catrom(image=None, size=None, extend_bounds=False, separable=True)
+catrom(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
+    extend_bounds=False,
+    separable=True,
+)
 ```
 
 Create Blur node with type ‘Catrom’.
@@ -174,7 +184,12 @@ Create Blur node with type ‘Catrom’.
 ##### cubic
 
 ``` python
-cubic(image=None, size=None, extend_bounds=False, separable=True)
+cubic(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
+    extend_bounds=False,
+    separable=True,
+)
 ```
 
 Create Blur node with type ‘Cubic’.
@@ -182,7 +197,12 @@ Create Blur node with type ‘Cubic’.
 ##### fast_gaussian
 
 ``` python
-fast_gaussian(image=None, size=None, extend_bounds=False, separable=True)
+fast_gaussian(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
+    extend_bounds=False,
+    separable=True,
+)
 ```
 
 Create Blur node with type ‘Fast Gaussian’.
@@ -190,7 +210,12 @@ Create Blur node with type ‘Fast Gaussian’.
 ##### flat
 
 ``` python
-flat(image=None, size=None, extend_bounds=False, separable=True)
+flat(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
+    extend_bounds=False,
+    separable=True,
+)
 ```
 
 Create Blur node with type ‘Flat’.
@@ -198,7 +223,12 @@ Create Blur node with type ‘Flat’.
 ##### gaussian
 
 ``` python
-gaussian(image=None, size=None, extend_bounds=False, separable=True)
+gaussian(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
+    extend_bounds=False,
+    separable=True,
+)
 ```
 
 Create Blur node with type ‘Gaussian’.
@@ -206,7 +236,12 @@ Create Blur node with type ‘Gaussian’.
 ##### mitch
 
 ``` python
-mitch(image=None, size=None, extend_bounds=False, separable=True)
+mitch(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
+    extend_bounds=False,
+    separable=True,
+)
 ```
 
 Create Blur node with type ‘Mitch’.
@@ -214,7 +249,12 @@ Create Blur node with type ‘Mitch’.
 ##### quadratic
 
 ``` python
-quadratic(image=None, size=None, extend_bounds=False, separable=True)
+quadratic(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
+    extend_bounds=False,
+    separable=True,
+)
 ```
 
 Create Blur node with type ‘Quadratic’.
@@ -222,7 +262,12 @@ Create Blur node with type ‘Quadratic’.
 ##### tent
 
 ``` python
-tent(image=None, size=None, extend_bounds=False, separable=True)
+tent(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=(0.0, 0.0),
+    extend_bounds=False,
+    separable=True,
+)
 ```
 
 Create Blur node with type ‘Tent’.
@@ -246,20 +291,26 @@ Create Blur node with type ‘Tent’.
 ### BokehBlur
 
 ``` python
-BokehBlur(image=None, bokeh=None, size=0.0, mask=1.0, extend_bounds=False)
+BokehBlur(
+    image=(0.8, 0.8, 0.8, 1.0),
+    bokeh=(1.0, 1.0, 1.0, 1.0),
+    size=0.0,
+    mask=1.0,
+    extend_bounds=False,
+)
 ```
 
 Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region is defined in the compositor
 
 #### Parameters
 
-| Name          | Type         | Description   | Default |
-|---------------|--------------|---------------|---------|
-| image         | InputColor   | Image         | `None`  |
-| bokeh         | InputColor   | Bokeh         | `None`  |
-| size          | InputFloat   | Size          | `0.0`   |
-| mask          | InputFloat   | Mask          | `1.0`   |
-| extend_bounds | InputBoolean | Extend Bounds | `False` |
+| Name          | Type         | Description   | Default                |
+|---------------|--------------|---------------|------------------------|
+| image         | InputColor   | Image         | `(0.8, 0.8, 0.8, 1.0)` |
+| bokeh         | InputColor   | Bokeh         | `(1.0, 1.0, 1.0, 1.0)` |
+| size          | InputFloat   | Size          | `0.0`                  |
+| mask          | InputFloat   | Mask          | `1.0`                  |
+| extend_bounds | InputBoolean | Extend Bounds | `False`                |
 
 #### Attributes
 
@@ -292,10 +343,10 @@ Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region
 
 ``` python
 Convolve(
-    image=None,
+    image=(0.8, 0.8, 0.8, 1.0),
     kernel_data_type='Float',
     float_kernel=0.0,
-    color_kernel=None,
+    color_kernel=(0.8, 0.8, 0.8, 1.0),
     normalize_kernel=True,
 )
 ```
@@ -306,10 +357,10 @@ Convolves an image with a kernel
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
 | kernel_data_type | InputMenu \| Literal\['Float', 'Color'\] | Kernel Data Type | `'Float'` |
 | float_kernel | InputFloat | Kernel | `0.0` |
-| color_kernel | InputColor | Kernel | `None` |
+| color_kernel | InputColor | Kernel | `(0.8, 0.8, 0.8, 1.0)` |
 | normalize_kernel | InputBoolean | Normalize Kernel | `True` |
 
 #### Attributes
@@ -343,7 +394,7 @@ Convolves an image with a kernel
 
 ``` python
 Defocus(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     z=1.0,
     *,
     bokeh='CIRCLE',
@@ -359,10 +410,10 @@ Apply depth of field in 2D, using a Z depth map or mask
 
 #### Parameters
 
-| Name  | Type       | Description | Default |
-|-------|------------|-------------|---------|
-| image | InputColor | Image       | `None`  |
-| z     | InputFloat | Z           | `1.0`   |
+| Name  | Type       | Description | Default                |
+|-------|------------|-------------|------------------------|
+| image | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| z     | InputFloat | Z           | `1.0`                  |
 
 #### Attributes
 
@@ -398,9 +449,9 @@ Apply depth of field in 2D, using a Z depth map or mask
 
 ``` python
 Denoise(
-    image=None,
-    albedo=None,
-    normal=None,
+    image=(1.0, 1.0, 1.0, 1.0),
+    albedo=(1.0, 1.0, 1.0, 1.0),
+    normal=(0.0, 0.0, 0.0),
     hdr=True,
     prefilter='Accurate',
     quality='Follow Scene',
@@ -413,9 +464,9 @@ Denoise renders from Cycles and other ray tracing renderers
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
-| albedo | InputColor | Albedo | `None` |
-| normal | InputVector | Normal | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| albedo | InputColor | Albedo | `(1.0, 1.0, 1.0, 1.0)` |
+| normal | InputVector | Normal | `(0.0, 0.0, 0.0)` |
 | hdr | InputBoolean | HDR | `True` |
 | prefilter | InputMenu \| Literal\['None', 'Fast', 'Accurate'\] | Prefilter | `'Accurate'` |
 | quality | InputMenu \| Literal\['Follow Scene', 'High', 'Balanced', 'Fast'\] | Quality | `'Follow Scene'` |
@@ -451,19 +502,24 @@ Denoise renders from Cycles and other ray tracing renderers
 ### Despeckle
 
 ``` python
-Despeckle(image=None, fac=1.0, color_threshold=0.5, neighbor_threshold=0.5)
+Despeckle(
+    image=(1.0, 1.0, 1.0, 1.0),
+    fac=1.0,
+    color_threshold=0.5,
+    neighbor_threshold=0.5,
+)
 ```
 
 Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched
 
 #### Parameters
 
-| Name               | Type       | Description        | Default |
-|--------------------|------------|--------------------|---------|
-| image              | InputColor | Image              | `None`  |
-| fac                | InputFloat | Factor             | `1.0`   |
-| color_threshold    | InputFloat | Color Threshold    | `0.5`   |
-| neighbor_threshold | InputFloat | Neighbor Threshold | `0.5`   |
+| Name               | Type       | Description        | Default                |
+|--------------------|------------|--------------------|------------------------|
+| image              | InputColor | Image              | `(1.0, 1.0, 1.0, 1.0)` |
+| fac                | InputFloat | Factor             | `1.0`                  |
+| color_threshold    | InputFloat | Color Threshold    | `0.5`                  |
+| neighbor_threshold | InputFloat | Neighbor Threshold | `0.5`                  |
 
 #### Attributes
 
@@ -581,9 +637,9 @@ Create Dilate/Erode node with type ‘Threshold’.
 
 ``` python
 DirectionalBlur(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     samples=1,
-    center=None,
+    center=(0.5, 0.5),
     rotation=0.0,
     scale=1.0,
     translation_amount=0.0,
@@ -595,15 +651,15 @@ Blur an image along a direction
 
 #### Parameters
 
-| Name                  | Type         | Description | Default |
-|-----------------------|--------------|-------------|---------|
-| image                 | InputColor   | Image       | `None`  |
-| samples               | InputInteger | Samples     | `1`     |
-| center                | InputVector  | Center      | `None`  |
-| rotation              | InputFloat   | Rotation    | `0.0`   |
-| scale                 | InputFloat   | Scale       | `1.0`   |
-| translation_amount    | InputFloat   | Amount      | `0.0`   |
-| translation_direction | InputFloat   | Direction   | `0.0`   |
+| Name                  | Type         | Description | Default                |
+|-----------------------|--------------|-------------|------------------------|
+| image                 | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| samples               | InputInteger | Samples     | `1`                    |
+| center                | InputVector  | Center      | `(0.5, 0.5)`           |
+| rotation              | InputFloat   | Rotation    | `0.0`                  |
+| scale                 | InputFloat   | Scale       | `1.0`                  |
+| translation_amount    | InputFloat   | Amount      | `0.0`                  |
+| translation_direction | InputFloat   | Direction   | `0.0`                  |
 
 #### Attributes
 
@@ -637,7 +693,7 @@ Blur an image along a direction
 ### Filter
 
 ``` python
-Filter(image=None, fac=1.0, type='Soften')
+Filter(image=(1.0, 1.0, 1.0, 1.0), fac=1.0, type='Soften')
 ```
 
 Apply common image enhancement filters
@@ -646,7 +702,7 @@ Apply common image enhancement filters
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | fac | InputFloat | Factor | `1.0` |
 | type | InputMenu \| Literal\['Soften', 'Box Sharpen', 'Diamond Sharpen', 'Laplace', 'Sobel', 'Prewitt', 'Kirsch', 'Shadow'\] | Type | `'Soften'` |
 
@@ -677,7 +733,7 @@ Apply common image enhancement filters
 ##### box_sharpen
 
 ``` python
-box_sharpen(image=None, fac=1.0)
+box_sharpen(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Create Filter node with type ‘Box Sharpen’.
@@ -685,7 +741,7 @@ Create Filter node with type ‘Box Sharpen’.
 ##### diamond_sharpen
 
 ``` python
-diamond_sharpen(image=None, fac=1.0)
+diamond_sharpen(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Create Filter node with type ‘Diamond Sharpen’.
@@ -693,7 +749,7 @@ Create Filter node with type ‘Diamond Sharpen’.
 ##### kirsch
 
 ``` python
-kirsch(image=None, fac=1.0)
+kirsch(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Create Filter node with type ‘Kirsch’.
@@ -701,7 +757,7 @@ Create Filter node with type ‘Kirsch’.
 ##### laplace
 
 ``` python
-laplace(image=None, fac=1.0)
+laplace(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Create Filter node with type ‘Laplace’.
@@ -709,7 +765,7 @@ Create Filter node with type ‘Laplace’.
 ##### prewitt
 
 ``` python
-prewitt(image=None, fac=1.0)
+prewitt(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Create Filter node with type ‘Prewitt’.
@@ -717,7 +773,7 @@ Create Filter node with type ‘Prewitt’.
 ##### shadow
 
 ``` python
-shadow(image=None, fac=1.0)
+shadow(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Create Filter node with type ‘Shadow’.
@@ -725,7 +781,7 @@ Create Filter node with type ‘Shadow’.
 ##### sobel
 
 ``` python
-sobel(image=None, fac=1.0)
+sobel(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Create Filter node with type ‘Sobel’.
@@ -733,7 +789,7 @@ Create Filter node with type ‘Sobel’.
 ##### soften
 
 ``` python
-soften(image=None, fac=1.0)
+soften(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
 ```
 
 Create Filter node with type ‘Soften’.
@@ -756,7 +812,7 @@ Create Filter node with type ‘Soften’.
 
 ``` python
 Glare(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     type='Streaks',
     quality='Medium',
     highlights_threshold=1.0,
@@ -765,7 +821,7 @@ Glare(
     maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
-    tint=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
     size=0.5,
     streaks=4,
     streaks_angle=0.0,
@@ -773,11 +829,11 @@ Glare(
     fade=0.9,
     color_modulation=0.25,
     diagonal_star=True,
-    sun_position=None,
+    sun_position=(0.5, 0.5),
     jitter=0.0,
     kernel_data_type='Float',
     float_kernel=0.0,
-    color_kernel=None,
+    color_kernel=(0.8, 0.8, 0.8, 1.0),
 )
 ```
 
@@ -787,7 +843,7 @@ Add lens flares, fog and glows around bright parts of the image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | type | InputMenu \| Literal\['Bloom', 'Ghosts', 'Streaks', 'Fog Glow', 'Simple Star', 'Sun Beams', 'Kernel'\] | Type | `'Streaks'` |
 | quality | InputMenu \| Literal\['High', 'Medium', 'Low'\] | Quality | `'Medium'` |
 | highlights_threshold | InputFloat | Threshold | `1.0` |
@@ -796,7 +852,7 @@ Add lens flares, fog and glows around bright parts of the image
 | maximum_highlights | InputFloat | Maximum | `10.0` |
 | strength | InputFloat | Strength | `1.0` |
 | saturation | InputFloat | Saturation | `1.0` |
-| tint | InputColor | Tint | `None` |
+| tint | InputColor | Tint | `(1.0, 1.0, 1.0, 1.0)` |
 | size | InputFloat | Size | `0.5` |
 | streaks | InputInteger | Streaks | `4` |
 | streaks_angle | InputFloat | Streaks Angle | `0.0` |
@@ -804,11 +860,11 @@ Add lens flares, fog and glows around bright parts of the image
 | fade | InputFloat | Fade | `0.9` |
 | color_modulation | InputFloat | Color Modulation | `0.25` |
 | diagonal_star | InputBoolean | Diagonal | `True` |
-| sun_position | InputVector | Sun Position | `None` |
+| sun_position | InputVector | Sun Position | `(0.5, 0.5)` |
 | jitter | InputFloat | Jitter | `0.0` |
 | kernel_data_type | InputMenu \| Literal\['Float', 'Color'\] | Kernel Data Type | `'Float'` |
 | float_kernel | InputFloat | Kernel | `0.0` |
-| color_kernel | InputColor | Kernel | `None` |
+| color_kernel | InputColor | Kernel | `(0.8, 0.8, 0.8, 1.0)` |
 
 #### Attributes
 
@@ -837,7 +893,7 @@ Add lens flares, fog and glows around bright parts of the image
 
 ``` python
 bloom(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -845,7 +901,7 @@ bloom(
     maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
-    tint=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
     size=0.5,
 )
 ```
@@ -856,7 +912,7 @@ Create Glare node with type ‘Bloom’.
 
 ``` python
 fog_glow(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -864,7 +920,7 @@ fog_glow(
     maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
-    tint=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
     size=0.5,
 )
 ```
@@ -875,7 +931,7 @@ Create Glare node with type ‘Fog Glow’.
 
 ``` python
 ghosts(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -883,7 +939,7 @@ ghosts(
     maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
-    tint=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
     iterations=3,
     color_modulation=0.25,
 )
@@ -895,7 +951,7 @@ Create Glare node with type ‘Ghosts’.
 
 ``` python
 kernel(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -903,7 +959,7 @@ kernel(
     maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
-    tint=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
     kernel_data_type='Float',
     float_kernel=0.0,
 )
@@ -915,7 +971,7 @@ Create Glare node with type ‘Kernel’.
 
 ``` python
 simple_star(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -923,7 +979,7 @@ simple_star(
     maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
-    tint=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
     iterations=3,
     fade=0.9,
     diagonal_star=True,
@@ -936,7 +992,7 @@ Create Glare node with type ‘Simple Star’.
 
 ``` python
 streaks(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -944,7 +1000,7 @@ streaks(
     maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
-    tint=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
     streaks=4,
     streaks_angle=0.0,
     iterations=3,
@@ -959,7 +1015,7 @@ Create Glare node with type ‘Streaks’.
 
 ``` python
 sun_beams(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -967,9 +1023,9 @@ sun_beams(
     maximum_highlights=10.0,
     strength=1.0,
     saturation=1.0,
-    tint=None,
+    tint=(1.0, 1.0, 1.0, 1.0),
     size=0.5,
-    sun_position=None,
+    sun_position=(0.5, 0.5),
     jitter=0.0,
 )
 ```
@@ -1014,17 +1070,17 @@ Create Glare node with type ‘Sun Beams’.
 ### Inpaint
 
 ``` python
-Inpaint(image=None, size=0)
+Inpaint(image=(1.0, 1.0, 1.0, 1.0), size=0)
 ```
 
 Extend borders of an image into transparent or masked regions
 
 #### Parameters
 
-| Name  | Type         | Description | Default |
-|-------|--------------|-------------|---------|
-| image | InputColor   | Image       | `None`  |
-| size  | InputInteger | Size        | `0`     |
+| Name  | Type         | Description | Default                |
+|-------|--------------|-------------|------------------------|
+| image | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| size  | InputInteger | Size        | `0`                    |
 
 #### Attributes
 
@@ -1054,7 +1110,7 @@ Extend borders of an image into transparent or masked regions
 
 ``` python
 Kuwahara(
-    image=None,
+    image=(1.0, 1.0, 1.0, 1.0),
     size=6.0,
     type='Anisotropic',
     uniformity=4,
@@ -1070,7 +1126,7 @@ Apply smoothing filter that preserves edges, for stylized and painterly effects
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `None` |
+| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
 | size | InputFloat | Size | `6.0` |
 | type | InputMenu \| Literal\['Classic', 'Anisotropic'\] | Type | `'Anisotropic'` |
 | uniformity | InputInteger | Uniformity | `4` |
@@ -1099,7 +1155,13 @@ Apply smoothing filter that preserves edges, for stylized and painterly effects
 ##### anisotropic
 
 ``` python
-anisotropic(image=None, size=6.0, uniformity=4, sharpness=1.0, eccentricity=1.0)
+anisotropic(
+    image=(1.0, 1.0, 1.0, 1.0),
+    size=6.0,
+    uniformity=4,
+    sharpness=1.0,
+    eccentricity=1.0,
+)
 ```
 
 Create Kuwahara node with type ‘Anisotropic’.
@@ -1107,7 +1169,7 @@ Create Kuwahara node with type ‘Anisotropic’.
 ##### classic
 
 ``` python
-classic(image=None, size=6.0, high_precision=False)
+classic(image=(1.0, 1.0, 1.0, 1.0), size=6.0, high_precision=False)
 ```
 
 Create Kuwahara node with type ‘Classic’.
@@ -1171,17 +1233,17 @@ Computes a signed distance field from the given mask
 ### Pixelate
 
 ``` python
-Pixelate(color=None, size=1)
+Pixelate(color=(0.8, 0.8, 0.8, 1.0), size=1)
 ```
 
 Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance
 
 #### Parameters
 
-| Name  | Type         | Description | Default |
-|-------|--------------|-------------|---------|
-| color | InputColor   | Color       | `None`  |
-| size  | InputInteger | Size        | `1`     |
+| Name  | Type         | Description | Default                |
+|-------|--------------|-------------|------------------------|
+| color | InputColor   | Color       | `(0.8, 0.8, 0.8, 1.0)` |
+| size  | InputInteger | Size        | `1`                    |
 
 #### Attributes
 
@@ -1210,20 +1272,26 @@ Reduce detail in an image by making individual pixels more prominent, for a bloc
 ### VectorBlur
 
 ``` python
-VectorBlur(image=None, speed=None, z=0.0, samples=32, shutter=0.5)
+VectorBlur(
+    image=(1.0, 1.0, 1.0, 1.0),
+    speed=(0.0, 0.0, 0.0, 0.0),
+    z=0.0,
+    samples=32,
+    shutter=0.5,
+)
 ```
 
 Uses the vector speed render pass to blur the image pixels in 2D
 
 #### Parameters
 
-| Name    | Type         | Description | Default |
-|---------|--------------|-------------|---------|
-| image   | InputColor   | Image       | `None`  |
-| speed   | InputVector  | Speed       | `None`  |
-| z       | InputFloat   | Depth       | `0.0`   |
-| samples | InputInteger | Samples     | `32`    |
-| shutter | InputFloat   | Shutter     | `0.5`   |
+| Name    | Type         | Description | Default                |
+|---------|--------------|-------------|------------------------|
+| image   | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| speed   | InputVector  | Speed       | `(0.0, 0.0, 0.0, 0.0)` |
+| z       | InputFloat   | Depth       | `0.0`                  |
+| samples | InputInteger | Samples     | `32`                   |
+| shutter | InputFloat   | Shutter     | `0.5`                  |
 
 #### Attributes
 

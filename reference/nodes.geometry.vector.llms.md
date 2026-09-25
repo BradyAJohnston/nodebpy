@@ -14,18 +14,18 @@
 ### RadialTiling
 
 ``` python
-RadialTiling(vector=None, sides=5.0, roundness=0.0, *, normalize=False)
+RadialTiling(vector=(0.0, 0.0), sides=5.0, roundness=0.0, *, normalize=False)
 ```
 
 Transform Coordinate System for Radial Tiling
 
 #### Parameters
 
-| Name      | Type        | Description | Default |
-|-----------|-------------|-------------|---------|
-| vector    | InputVector | Vector      | `None`  |
-| sides     | InputFloat  | Sides       | `5.0`   |
-| roundness | InputFloat  | Roundness   | `0.0`   |
+| Name      | Type        | Description | Default      |
+|-----------|-------------|-------------|--------------|
+| vector    | InputVector | Vector      | `(0.0, 0.0)` |
+| sides     | InputFloat  | Sides       | `5.0`        |
+| roundness | InputFloat  | Roundness   | `0.0`        |
 
 #### Attributes
 
@@ -59,17 +59,17 @@ Transform Coordinate System for Radial Tiling
 ### VectorCurves
 
 ``` python
-VectorCurves(fac=1.0, vector=None)
+VectorCurves(fac=1.0, vector=(0.0, 0.0, 0.0))
 ```
 
 Map input vector components with curves
 
 #### Parameters
 
-| Name   | Type        | Description | Default |
-|--------|-------------|-------------|---------|
-| fac    | InputFloat  | Factor      | `1.0`   |
-| vector | InputVector | Vector      | `None`  |
+| Name   | Type        | Description | Default           |
+|--------|-------------|-------------|-------------------|
+| fac    | InputFloat  | Factor      | `1.0`             |
+| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -99,9 +99,9 @@ Map input vector components with curves
 
 ``` python
 VectorMath(
-    vector=None,
-    vector_001=None,
-    vector_002=None,
+    vector=(0.0, 0.0, 0.0),
+    vector_001=(0.0, 0.0, 0.0),
+    vector_002=(0.0, 0.0, 0.0),
     scale=1.0,
     *,
     operation='ADD',
@@ -112,12 +112,12 @@ Perform vector math operation
 
 #### Parameters
 
-| Name       | Type        | Description | Default |
-|------------|-------------|-------------|---------|
-| vector     | InputVector | Vector      | `None`  |
-| vector_001 | InputVector | Vector      | `None`  |
-| vector_002 | InputVector | Vector      | `None`  |
-| scale      | InputFloat  | Scale       | `1.0`   |
+| Name       | Type        | Description | Default           |
+|------------|-------------|-------------|-------------------|
+| vector     | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| vector_001 | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| vector_002 | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| scale      | InputFloat  | Scale       | `1.0`             |
 
 #### Attributes
 
@@ -169,7 +169,7 @@ Perform vector math operation
 ##### absolute
 
 ``` python
-absolute(vector=None)
+absolute(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Absolute’. Entry-wise absolute
@@ -177,7 +177,7 @@ Create Vector Math with operation ‘Absolute’. Entry-wise absolute
 ##### add
 
 ``` python
-add(vector=None, vector_001=None)
+add(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Add’. A + B
@@ -185,7 +185,7 @@ Create Vector Math with operation ‘Add’. A + B
 ##### ceil
 
 ``` python
-ceil(vector=None)
+ceil(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Ceil’. Entry-wise ceil
@@ -193,7 +193,7 @@ Create Vector Math with operation ‘Ceil’. Entry-wise ceil
 ##### cosine
 
 ``` python
-cosine(vector=None)
+cosine(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Cosine’. Entry-wise cos(A)
@@ -201,7 +201,7 @@ Create Vector Math with operation ‘Cosine’. Entry-wise cos(A)
 ##### cross_product
 
 ``` python
-cross_product(vector=None, vector_001=None)
+cross_product(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Cross Product’. A cross B
@@ -209,7 +209,7 @@ Create Vector Math with operation ‘Cross Product’. A cross B
 ##### distance
 
 ``` python
-distance(vector=None, vector_001=None)
+distance(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Distance’. Distance between A and B
@@ -217,7 +217,7 @@ Create Vector Math with operation ‘Distance’. Distance between A and B
 ##### divide
 
 ``` python
-divide(vector=None, vector_001=None)
+divide(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Divide’. Entry-wise divide
@@ -225,7 +225,7 @@ Create Vector Math with operation ‘Divide’. Entry-wise divide
 ##### dot_product
 
 ``` python
-dot_product(vector=None, vector_001=None)
+dot_product(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Dot Product’. A dot B
@@ -233,7 +233,11 @@ Create Vector Math with operation ‘Dot Product’. A dot B
 ##### faceforward
 
 ``` python
-faceforward(vector=None, vector_001=None, vector_002=None)
+faceforward(
+    vector=(0.0, 0.0, 0.0),
+    vector_001=(0.0, 0.0, 0.0),
+    vector_002=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Vector Math with operation ‘Faceforward’. Orients a vector A to point away from a surface B as defined by its normal C. Returns (dot(B, C) \< 0) ? A : -A
@@ -241,7 +245,7 @@ Create Vector Math with operation ‘Faceforward’. Orients a vector A to point
 ##### floor
 
 ``` python
-floor(vector=None)
+floor(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Floor’. Entry-wise floor
@@ -249,7 +253,7 @@ Create Vector Math with operation ‘Floor’. Entry-wise floor
 ##### fraction
 
 ``` python
-fraction(vector=None)
+fraction(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Fraction’. The fraction part of A entry-wise
@@ -257,7 +261,7 @@ Create Vector Math with operation ‘Fraction’. The fraction part of A entry-w
 ##### length
 
 ``` python
-length(vector=None)
+length(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Length’. Length of A
@@ -265,7 +269,7 @@ Create Vector Math with operation ‘Length’. Length of A
 ##### maximum
 
 ``` python
-maximum(vector=None, vector_001=None)
+maximum(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Maximum’. Entry-wise maximum
@@ -273,7 +277,7 @@ Create Vector Math with operation ‘Maximum’. Entry-wise maximum
 ##### minimum
 
 ``` python
-minimum(vector=None, vector_001=None)
+minimum(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Minimum’. Entry-wise minimum
@@ -281,7 +285,7 @@ Create Vector Math with operation ‘Minimum’. Entry-wise minimum
 ##### modulo
 
 ``` python
-modulo(vector=None, vector_001=None)
+modulo(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Modulo’. Entry-wise modulo using fmod(A,B)
@@ -289,7 +293,7 @@ Create Vector Math with operation ‘Modulo’. Entry-wise modulo using fmod(A,B
 ##### multiply
 
 ``` python
-multiply(vector=None, vector_001=None)
+multiply(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Multiply’. Entry-wise multiply
@@ -297,7 +301,11 @@ Create Vector Math with operation ‘Multiply’. Entry-wise multiply
 ##### multiply_add
 
 ``` python
-multiply_add(vector=None, vector_001=None, vector_002=None)
+multiply_add(
+    vector=(0.0, 0.0, 0.0),
+    vector_001=(0.0, 0.0, 0.0),
+    vector_002=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Vector Math with operation ‘Multiply Add’. A \* B + C
@@ -305,7 +313,7 @@ Create Vector Math with operation ‘Multiply Add’. A \* B + C
 ##### normalize
 
 ``` python
-normalize(vector=None)
+normalize(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Normalize’. Normalize A
@@ -313,7 +321,7 @@ Create Vector Math with operation ‘Normalize’. Normalize A
 ##### power
 
 ``` python
-power(vector=None, vector_001=None)
+power(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Power’. Entry-wise power
@@ -321,7 +329,7 @@ Create Vector Math with operation ‘Power’. Entry-wise power
 ##### project
 
 ``` python
-project(vector=None, vector_001=None)
+project(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Project’. Project A onto B
@@ -329,7 +337,7 @@ Create Vector Math with operation ‘Project’. Project A onto B
 ##### reflect
 
 ``` python
-reflect(vector=None, vector_001=None)
+reflect(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Reflect’. Reflect A around the normal B. B does not need to be normalized.
@@ -337,7 +345,7 @@ Create Vector Math with operation ‘Reflect’. Reflect A around the normal B. 
 ##### refract
 
 ``` python
-refract(vector=None, vector_001=None, scale=1.0)
+refract(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0), scale=1.0)
 ```
 
 Create Vector Math with operation ‘Refract’. For a given incident vector A, surface normal B and ratio of indices of refraction, Ior, refract returns the refraction vector, R
@@ -345,7 +353,7 @@ Create Vector Math with operation ‘Refract’. For a given incident vector A, 
 ##### round
 
 ``` python
-round(vector=None)
+round(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Round’. Entry-wise round to the nearest integer. Round upward if the fraction part is 0.5
@@ -353,7 +361,7 @@ Create Vector Math with operation ‘Round’. Entry-wise round to the nearest i
 ##### scale
 
 ``` python
-scale(vector=None, scale=1.0)
+scale(vector=(0.0, 0.0, 0.0), scale=1.0)
 ```
 
 Create Vector Math with operation ‘Scale’. A multiplied by Scale
@@ -361,7 +369,7 @@ Create Vector Math with operation ‘Scale’. A multiplied by Scale
 ##### sign
 
 ``` python
-sign(vector=None)
+sign(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Sign’. Entry-wise sign
@@ -369,7 +377,7 @@ Create Vector Math with operation ‘Sign’. Entry-wise sign
 ##### sine
 
 ``` python
-sine(vector=None)
+sine(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Sine’. Entry-wise sin(A)
@@ -377,7 +385,7 @@ Create Vector Math with operation ‘Sine’. Entry-wise sin(A)
 ##### snap
 
 ``` python
-snap(vector=None, vector_001=None)
+snap(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Snap’. Round A to the largest integer multiple of B less than or equal A
@@ -385,7 +393,7 @@ Create Vector Math with operation ‘Snap’. Round A to the largest integer mul
 ##### subtract
 
 ``` python
-subtract(vector=None, vector_001=None)
+subtract(vector=(0.0, 0.0, 0.0), vector_001=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Subtract’. A - B
@@ -393,7 +401,7 @@ Create Vector Math with operation ‘Subtract’. A - B
 ##### tangent
 
 ``` python
-tangent(vector=None)
+tangent(vector=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Math with operation ‘Tangent’. Entry-wise tan(A)
@@ -401,7 +409,11 @@ Create Vector Math with operation ‘Tangent’. Entry-wise tan(A)
 ##### wrap
 
 ``` python
-wrap(vector=None, vector_001=None, vector_002=None)
+wrap(
+    vector=(0.0, 0.0, 0.0),
+    vector_001=(0.0, 0.0, 0.0),
+    vector_002=(0.0, 0.0, 0.0),
+)
 ```
 
 Create Vector Math with operation ‘Wrap’. Entry-wise wrap(A,B)
@@ -426,11 +438,11 @@ Create Vector Math with operation ‘Wrap’. Entry-wise wrap(A,B)
 
 ``` python
 VectorRotate(
-    vector=None,
-    center=None,
-    axis=None,
+    vector=(0.0, 0.0, 0.0),
+    center=(0.0, 0.0, 0.0),
+    axis=(0.0, 0.0, 1.0),
     angle=0.0,
-    rotation=None,
+    rotation=(0.0, 0.0, 0.0),
     *,
     rotation_type='AXIS_ANGLE',
     invert=False,
@@ -441,13 +453,13 @@ Rotate a vector around a pivot point (center)
 
 #### Parameters
 
-| Name     | Type        | Description | Default |
-|----------|-------------|-------------|---------|
-| vector   | InputVector | Vector      | `None`  |
-| center   | InputVector | Center      | `None`  |
-| axis     | InputVector | Axis        | `None`  |
-| angle    | InputFloat  | Angle       | `0.0`   |
-| rotation | InputVector | Rotation    | `None`  |
+| Name     | Type        | Description | Default           |
+|----------|-------------|-------------|-------------------|
+| vector   | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| center   | InputVector | Center      | `(0.0, 0.0, 0.0)` |
+| axis     | InputVector | Axis        | `(0.0, 0.0, 1.0)` |
+| angle    | InputFloat  | Angle       | `0.0`             |
+| rotation | InputVector | Rotation    | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
 
@@ -475,7 +487,12 @@ Rotate a vector around a pivot point (center)
 ##### axis_angle
 
 ``` python
-axis_angle(vector=None, center=None, axis=None, angle=0.0)
+axis_angle(
+    vector=(0.0, 0.0, 0.0),
+    center=(0.0, 0.0, 0.0),
+    axis=(0.0, 0.0, 1.0),
+    angle=0.0,
+)
 ```
 
 Create Vector Rotate with operation ‘Axis Angle’. Rotate a point using axis angle
@@ -483,7 +500,7 @@ Create Vector Rotate with operation ‘Axis Angle’. Rotate a point using axis 
 ##### euler
 
 ``` python
-euler(vector=None, center=None, rotation=None)
+euler(vector=(0.0, 0.0, 0.0), center=(0.0, 0.0, 0.0), rotation=(0.0, 0.0, 0.0))
 ```
 
 Create Vector Rotate with operation ‘Euler’. Rotate a point using XYZ order
@@ -491,7 +508,7 @@ Create Vector Rotate with operation ‘Euler’. Rotate a point using XYZ order
 ##### x_axis
 
 ``` python
-x_axis(vector=None, center=None, angle=0.0)
+x_axis(vector=(0.0, 0.0, 0.0), center=(0.0, 0.0, 0.0), angle=0.0)
 ```
 
 Create Vector Rotate with operation ‘X Axis’. Rotate a point using X axis
@@ -499,7 +516,7 @@ Create Vector Rotate with operation ‘X Axis’. Rotate a point using X axis
 ##### y_axis
 
 ``` python
-y_axis(vector=None, center=None, angle=0.0)
+y_axis(vector=(0.0, 0.0, 0.0), center=(0.0, 0.0, 0.0), angle=0.0)
 ```
 
 Create Vector Rotate with operation ‘Y Axis’. Rotate a point using Y axis
@@ -507,7 +524,7 @@ Create Vector Rotate with operation ‘Y Axis’. Rotate a point using Y axis
 ##### z_axis
 
 ``` python
-z_axis(vector=None, center=None, angle=0.0)
+z_axis(vector=(0.0, 0.0, 0.0), center=(0.0, 0.0, 0.0), angle=0.0)
 ```
 
 Create Vector Rotate with operation ‘Z Axis’. Rotate a point using Z axis
