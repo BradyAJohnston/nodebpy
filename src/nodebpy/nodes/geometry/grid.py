@@ -523,6 +523,99 @@ class CubeGridTopology(BaseNode):
         self._establish_links(**key_args)
 
 
+class DeactivateVoxels[T](BaseNode):
+    """
+    Deactivate selected voxels and tiles
+
+    Parameters
+    ----------
+    grid : InputFloatGrid
+        Grid
+    selection : InputBoolean
+        Selection
+
+    Inputs
+    ------
+    i.grid : FloatSocketGrid
+        Grid
+    i.selection : BooleanSocket
+        Selection
+
+    Outputs
+    -------
+    o.grid : FloatSocketGrid
+        Grid
+    """
+
+    _bl_idname = "GeometryNodeGridDeactivateVoxels"
+    node: bpy.types.GeometryNodeGridDeactivateVoxels
+
+    class _Inputs[S](SocketAccessor):
+        grid: S
+        """Grid"""
+        selection: BooleanSocket
+        """Selection"""
+
+    class _Outputs[S](SocketAccessor):
+        grid: S
+        """Grid"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[T]: ...
+        @property
+        def o(self) -> _Outputs[T]: ...
+
+    def __init__(
+        self,
+        grid: InputAny = None,
+        selection: InputBoolean = True,
+        *,
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Grid": grid, "Selection": selection}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, grid: InputFloatGrid = None, selection: InputBoolean = True
+    ) -> "DeactivateVoxels[FloatSocketGrid]":
+        """Create Deactivate Voxels with operation 'Float'."""
+        return DeactivateVoxels(data_type="FLOAT", grid=grid, selection=selection)
+
+    @classmethod
+    def integer(
+        cls, grid: InputIntegerGrid = None, selection: InputBoolean = True
+    ) -> "DeactivateVoxels[IntegerSocketGrid]":
+        """Create Deactivate Voxels with operation 'Integer'."""
+        return DeactivateVoxels(data_type="INT", grid=grid, selection=selection)
+
+    @classmethod
+    def boolean(
+        cls, grid: InputBooleanGrid = None, selection: InputBoolean = True
+    ) -> "DeactivateVoxels[BooleanSocketGrid]":
+        """Create Deactivate Voxels with operation 'Boolean'."""
+        return DeactivateVoxels(data_type="BOOLEAN", grid=grid, selection=selection)
+
+    @classmethod
+    def vector(
+        cls, grid: InputVectorGrid = None, selection: InputBoolean = True
+    ) -> "DeactivateVoxels[VectorSocketGrid]":
+        """Create Deactivate Voxels with operation 'Vector'."""
+        return DeactivateVoxels(data_type="VECTOR", grid=grid, selection=selection)
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+        self.node.data_type = value
+
+
 class DistributePointsInGrid(BaseNode):
     """
     Generate points inside a volume grid
@@ -1476,6 +1569,265 @@ class GridMedian[T](BaseNode):
 
     @data_type.setter
     def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
+        self.node.data_type = value
+
+
+class GridSolvePoisson(BaseNode):
+    """
+    Solve the Poisson equation for a scalar field. Computes a grid whose Laplacian equals the input scalar grid.
+
+    Parameters
+    ----------
+    grid : InputFloatGrid
+        Grid
+    max_iterations : InputInteger
+        Max Iterations
+    error_threshold : InputFloat
+        Error Threshold
+    threshold_mode : InputMenu | Literal['Relative', 'Absolute']
+        Threshold Mode
+    boundary : InputMenu | Literal['Fixed', 'Gradient', 'Mixed']
+        Boundary
+    boundary_value : InputFloat
+        Boundary Value
+    boundary_gradient : InputVector
+        Boundary Gradient
+    boundary_factor : InputFloat
+        Boundary Factor
+
+    Inputs
+    ------
+    i.grid : FloatSocketGrid
+        Grid
+    i.max_iterations : IntegerSocket
+        Max Iterations
+    i.error_threshold : FloatSocket
+        Error Threshold
+    i.threshold_mode : MenuSocket
+        Threshold Mode
+    i.boundary : MenuSocket
+        Boundary
+    i.boundary_value : FloatSocket
+        Boundary Value
+    i.boundary_gradient : VectorSocket
+        Boundary Gradient
+    i.boundary_factor : FloatSocket
+        Boundary Factor
+
+    Outputs
+    -------
+    o.solution : FloatSocketGrid
+        Solution
+    o.success : BooleanSocket
+        Success
+    o.iterations : IntegerSocket
+        Iterations
+    o.absolute_error : FloatSocket
+        Absolute Error
+    o.relative_error : FloatSocket
+        Relative Error
+    o.debug_boundary_value : FloatSocketGrid
+        Debug Boundary Value
+    o.debug_boundary_gradient : VectorSocketGrid
+        Debug Boundary Gradient
+    o.debug_boundary_factor : FloatSocketGrid
+        Debug Boundary Factor
+    """
+
+    _bl_idname = "GeometryNodeGridSolvePoisson"
+    node: bpy.types.GeometryNodeGridSolvePoisson
+
+    class _Inputs(SocketAccessor):
+        grid: FloatSocketGrid
+        """Grid"""
+        max_iterations: IntegerSocket
+        """Max Iterations"""
+        error_threshold: FloatSocket
+        """Error Threshold"""
+        threshold_mode: MenuSocket
+        """Threshold Mode"""
+        boundary: MenuSocket
+        """Boundary"""
+        boundary_value: FloatSocket
+        """Boundary Value"""
+        boundary_gradient: VectorSocket
+        """Boundary Gradient"""
+        boundary_factor: FloatSocket
+        """Boundary Factor"""
+
+    class _Outputs(SocketAccessor):
+        solution: FloatSocketGrid
+        """Solution"""
+        success: BooleanSocket
+        """Success"""
+        iterations: IntegerSocket
+        """Iterations"""
+        absolute_error: FloatSocket
+        """Absolute Error"""
+        relative_error: FloatSocket
+        """Relative Error"""
+        debug_boundary_value: FloatSocketGrid
+        """Debug Boundary Value"""
+        debug_boundary_gradient: VectorSocketGrid
+        """Debug Boundary Gradient"""
+        debug_boundary_factor: FloatSocketGrid
+        """Debug Boundary Factor"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        grid: InputFloatGrid = None,
+        max_iterations: InputInteger = 100,
+        error_threshold: InputFloat = 0.001,
+        threshold_mode: InputMenu | Literal["Relative", "Absolute"] = "Relative",
+        boundary: InputMenu | Literal["Fixed", "Gradient", "Mixed"] = "Fixed",
+        boundary_value: InputFloat = 0.0,
+        boundary_gradient: InputVector = (0.0, 0.0, 0.0),
+        boundary_factor: InputFloat = 0.0,
+    ):
+        super().__init__()
+        key_args = {
+            "Grid": grid,
+            "Max Iterations": max_iterations,
+            "Error Threshold": error_threshold,
+            "Threshold Mode": threshold_mode,
+            "Boundary": boundary,
+            "Boundary Value": boundary_value,
+            "Boundary Gradient": boundary_gradient,
+            "Boundary Factor": boundary_factor,
+        }
+
+        self._establish_links(**key_args)
+
+
+class GridTopologyBoolean[T](BaseNode):
+    """
+    Combine the topology of multiple grids
+
+    Parameters
+    ----------
+    operation : InputMenu | Literal['Intersect', 'Union', 'Difference']
+        Operation
+    grid_1 : InputFloatGrid
+        Grid 1
+    grid_2 : InputFloatGrid
+        Grid 2
+
+    Inputs
+    ------
+    i.operation : MenuSocket
+        Operation
+    i.grid_1 : FloatSocketGrid
+        Grid 1
+    i.grid_2 : FloatSocketGrid
+        Grid 2
+
+    Outputs
+    -------
+    o.grid : FloatSocketGrid
+        Grid
+    """
+
+    _bl_idname = "GeometryNodeGridTopologyBoolean"
+    node: bpy.types.GeometryNodeGridTopologyBoolean
+
+    class _Inputs[S](SocketAccessor):
+        operation: MenuSocket
+        """Operation"""
+        grid_1: S
+        """Grid 1"""
+        grid_2: S
+        """Grid 2"""
+
+    class _Outputs[S](SocketAccessor):
+        grid: S
+        """Grid"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs[T]: ...
+        @property
+        def o(self) -> _Outputs[T]: ...
+
+    def __init__(
+        self,
+        operation: InputMenu
+        | Literal["Intersect", "Union", "Difference"] = "Intersect",
+        grid_1: InputAny = None,
+        grid_2: InputAny = None,
+        *,
+        data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
+    ):
+        super().__init__()
+        key_args = {"Operation": operation, "Grid 1": grid_1, "Grid 2": grid_2}
+        self.data_type = data_type
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        operation: InputMenu
+        | Literal["Intersect", "Union", "Difference"] = "Intersect",
+        grid_1: InputFloatGrid = None,
+        grid_2: InputFloatGrid = None,
+    ) -> "GridTopologyBoolean[FloatSocketGrid]":
+        """Create Grid Topology Boolean with operation 'Float'."""
+        return GridTopologyBoolean(
+            data_type="FLOAT", operation=operation, grid_1=grid_1, grid_2=grid_2
+        )
+
+    @classmethod
+    def integer(
+        cls,
+        operation: InputMenu
+        | Literal["Intersect", "Union", "Difference"] = "Intersect",
+        grid_1: InputIntegerGrid = None,
+        grid_2: InputIntegerGrid = None,
+    ) -> "GridTopologyBoolean[IntegerSocketGrid]":
+        """Create Grid Topology Boolean with operation 'Integer'."""
+        return GridTopologyBoolean(
+            data_type="INT", operation=operation, grid_1=grid_1, grid_2=grid_2
+        )
+
+    @classmethod
+    def boolean(
+        cls,
+        operation: InputMenu
+        | Literal["Intersect", "Union", "Difference"] = "Intersect",
+        grid_1: InputBooleanGrid = None,
+        grid_2: InputBooleanGrid = None,
+    ) -> "GridTopologyBoolean[BooleanSocketGrid]":
+        """Create Grid Topology Boolean with operation 'Boolean'."""
+        return GridTopologyBoolean(
+            data_type="BOOLEAN", operation=operation, grid_1=grid_1, grid_2=grid_2
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        operation: InputMenu
+        | Literal["Intersect", "Union", "Difference"] = "Intersect",
+        grid_1: InputVectorGrid = None,
+        grid_2: InputVectorGrid = None,
+    ) -> "GridTopologyBoolean[VectorSocketGrid]":
+        """Create Grid Topology Boolean with operation 'Vector'."""
+        return GridTopologyBoolean(
+            data_type="VECTOR", operation=operation, grid_1=grid_1, grid_2=grid_2
+        )
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]:
+        return self.node.data_type  # ty: ignore[invalid-return-type]
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
         self.node.data_type = value
 
 
@@ -2494,7 +2846,7 @@ class SampleGrid[T, TGrid](BaseNode):
         Grid
     position : InputVector
         Position
-    interpolation : InputMenu | Literal['Nearest Neighbor', 'Trilinear', 'Triquadratic']
+    interpolation : InputMenu | Literal['Nearest Neighbor', 'Trilinear', 'Triquadratic', 'Tricubic']
         Interpolation
 
     Inputs
@@ -2539,7 +2891,9 @@ class SampleGrid[T, TGrid](BaseNode):
         grid: InputAny = None,
         position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
-        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
+        | Literal[
+            "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
+        ] = "Trilinear",
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -2554,7 +2908,9 @@ class SampleGrid[T, TGrid](BaseNode):
         grid: InputFloatGrid = None,
         position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
-        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
+        | Literal[
+            "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
+        ] = "Trilinear",
     ) -> "SampleGrid[FloatSocket, FloatSocketGrid]":
         """Create Sample Grid with operation 'Float'."""
         return SampleGrid(
@@ -2567,7 +2923,9 @@ class SampleGrid[T, TGrid](BaseNode):
         grid: InputIntegerGrid = None,
         position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
-        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
+        | Literal[
+            "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
+        ] = "Trilinear",
     ) -> "SampleGrid[IntegerSocket, IntegerSocketGrid]":
         """Create Sample Grid with operation 'Integer'."""
         return SampleGrid(
@@ -2580,7 +2938,9 @@ class SampleGrid[T, TGrid](BaseNode):
         grid: InputBooleanGrid = None,
         position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
-        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
+        | Literal[
+            "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
+        ] = "Trilinear",
     ) -> "SampleGrid[BooleanSocket, BooleanSocketGrid]":
         """Create Sample Grid with operation 'Boolean'."""
         return SampleGrid(
@@ -2596,7 +2956,9 @@ class SampleGrid[T, TGrid](BaseNode):
         grid: InputVectorGrid = None,
         position: InputVector = (0.0, 0.0, 0.0),
         interpolation: InputMenu
-        | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
+        | Literal[
+            "Nearest Neighbor", "Trilinear", "Triquadratic", "Tricubic"
+        ] = "Trilinear",
     ) -> "SampleGrid[VectorSocket, VectorSocketGrid]":
         """Create Sample Grid with operation 'Vector'."""
         return SampleGrid(

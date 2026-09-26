@@ -8,14 +8,12 @@ from ...builder import BaseNode, SocketAccessor
 from ...builder.socket import (
     BooleanSocket,
     BundleSocket,
+    ClosureSocket,
     ColorSocket,
     FloatSocket,
-    FontSocket,
     IntegerSocket,
-    MatrixSocket,
     MenuSocket,
-    ObjectSocket,
-    RotationSocket,
+    ShaderSocket,
     StringSocket,
     VectorSocket,
 )
@@ -23,15 +21,12 @@ from ...types import (
     InputAny,
     InputBoolean,
     InputBundle,
+    InputClosure,
     InputColor,
     InputFloat,
-    InputFont,
     InputInteger,
-    InputIntegerVector,
-    InputMatrix,
     InputMenu,
-    InputObject,
-    InputRotation,
+    InputShader,
     InputString,
     InputVector,
 )
@@ -92,14 +87,11 @@ class EnableOutput[T](BaseNode):
             "BOOLEAN",
             "VECTOR",
             "RGBA",
-            "ROTATION",
-            "MATRIX",
             "STRING",
             "MENU",
-            "OBJECT",
+            "SHADER",
             "BUNDLE",
-            "FONT",
-            "INT_VECTOR",
+            "CLOSURE",
         ] = "FLOAT",
     ):
         super().__init__()
@@ -143,20 +135,6 @@ class EnableOutput[T](BaseNode):
         return EnableOutput(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
-    def rotation(
-        cls, enable: InputBoolean = False, value: InputRotation = (0.0, 0.0, 0.0)
-    ) -> "EnableOutput[RotationSocket]":
-        """Create Enable Output with operation 'Rotation'."""
-        return EnableOutput(data_type="ROTATION", enable=enable, value=value)
-
-    @classmethod
-    def matrix(
-        cls, enable: InputBoolean = False, value: InputMatrix = None
-    ) -> "EnableOutput[MatrixSocket]":
-        """Create Enable Output with operation 'Matrix'."""
-        return EnableOutput(data_type="MATRIX", enable=enable, value=value)
-
-    @classmethod
     def string(
         cls, enable: InputBoolean = False, value: InputString = ""
     ) -> "EnableOutput[StringSocket]":
@@ -171,11 +149,11 @@ class EnableOutput[T](BaseNode):
         return EnableOutput(data_type="MENU", enable=enable, value=value)
 
     @classmethod
-    def object(
-        cls, enable: InputBoolean = False, value: InputObject = None
-    ) -> "EnableOutput[ObjectSocket]":
-        """Create Enable Output with operation 'Object'."""
-        return EnableOutput(data_type="OBJECT", enable=enable, value=value)
+    def shader(
+        cls, enable: InputBoolean = False, value: InputShader = None
+    ) -> "EnableOutput[ShaderSocket]":
+        """Create Enable Output with operation 'Shader'."""
+        return EnableOutput(data_type="SHADER", enable=enable, value=value)
 
     @classmethod
     def bundle(
@@ -185,18 +163,11 @@ class EnableOutput[T](BaseNode):
         return EnableOutput(data_type="BUNDLE", enable=enable, value=value)
 
     @classmethod
-    def font(
-        cls, enable: InputBoolean = False, value: InputFont = None
-    ) -> "EnableOutput[FontSocket]":
-        """Create Enable Output with operation 'Font'."""
-        return EnableOutput(data_type="FONT", enable=enable, value=value)
-
-    @classmethod
-    def integer_vector(
-        cls, enable: InputBoolean = False, value: InputIntegerVector = (0, 0, 0)
-    ) -> "EnableOutput[IntegerSocket]":
-        """Create Enable Output with operation 'Integer Vector'."""
-        return EnableOutput(data_type="INT_VECTOR", enable=enable, value=value)
+    def closure(
+        cls, enable: InputBoolean = False, value: InputClosure = None
+    ) -> "EnableOutput[ClosureSocket]":
+        """Create Enable Output with operation 'Closure'."""
+        return EnableOutput(data_type="CLOSURE", enable=enable, value=value)
 
     @property
     def data_type(
@@ -207,14 +178,11 @@ class EnableOutput[T](BaseNode):
         "BOOLEAN",
         "VECTOR",
         "RGBA",
-        "ROTATION",
-        "MATRIX",
         "STRING",
         "MENU",
-        "OBJECT",
+        "SHADER",
         "BUNDLE",
-        "FONT",
-        "INT_VECTOR",
+        "CLOSURE",
     ]:
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
@@ -227,14 +195,11 @@ class EnableOutput[T](BaseNode):
             "BOOLEAN",
             "VECTOR",
             "RGBA",
-            "ROTATION",
-            "MATRIX",
             "STRING",
             "MENU",
-            "OBJECT",
+            "SHADER",
             "BUNDLE",
-            "FONT",
-            "INT_VECTOR",
+            "CLOSURE",
         ],
     ):
         self.node.data_type = value

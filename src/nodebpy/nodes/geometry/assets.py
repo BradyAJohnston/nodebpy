@@ -735,6 +735,8 @@ class BraidHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     guide_mask : InputFloat
         Mask for which curves are eligible to be selected as guides
+    seed : InputInteger
+        Random seed for the guide map
     existing_guide_map : InputBoolean
         Use the existing guide map attribute if available
 
@@ -784,6 +786,8 @@ class BraidHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     i.guide_mask : FloatSocket
         Mask for which curves are eligible to be selected as guides
+    i.seed : IntegerSocket
+        Random seed for the guide map
     i.existing_guide_map : BooleanSocket
         Use the existing guide map attribute if available
 
@@ -848,6 +852,8 @@ class BraidHairCurves(AssetGeometryGroup):
         """Minimum distance between two guides for new guide map"""
         guide_mask: FloatSocket
         """Mask for which curves are eligible to be selected as guides"""
+        seed: IntegerSocket
+        """Random seed for the guide map"""
         existing_guide_map: BooleanSocket
         """Use the existing guide map attribute if available"""
 
@@ -892,6 +898,7 @@ class BraidHairCurves(AssetGeometryGroup):
         guide_index: InputInteger = -987654,
         guide_distance: InputFloat = 0.1,
         guide_mask: InputFloat = 1.0,
+        seed: InputInteger = 0,
         existing_guide_map: InputBoolean = True,
     ):
         super().__init__(
@@ -917,6 +924,7 @@ class BraidHairCurves(AssetGeometryGroup):
             Input_25=guide_index,
             Input_4=guide_distance,
             Input_22=guide_mask,
+            Socket_5=seed,
             Input_3=existing_guide_map,
         )
 
@@ -1222,7 +1230,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         Falloff distance for the clumping effect (0 means no falloff)
     distance_threshold : InputFloat
         Distance threshold for the falloff around the guide
-    seed : InputInteger
+    input_14 : InputInteger
         Random seed for the operation
     preserve_length : InputBoolean
         Preserve each curve's length during deformation
@@ -1232,6 +1240,8 @@ class ClumpHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     guide_mask : InputFloat
         Mask for which curves are eligible to be selected as guides
+    socket_1 : InputInteger
+        Random seed for the guide map
     existing_guide_map : InputBoolean
         Use the existing guide map attribute if available
 
@@ -1251,7 +1261,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         Falloff distance for the clumping effect (0 means no falloff)
     i.distance_threshold : FloatSocket
         Distance threshold for the falloff around the guide
-    i.seed : IntegerSocket
+    i.input_14 : IntegerSocket
         Random seed for the operation
     i.preserve_length : BooleanSocket
         Preserve each curve's length during deformation
@@ -1261,6 +1271,8 @@ class ClumpHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     i.guide_mask : FloatSocket
         Mask for which curves are eligible to be selected as guides
+    i.socket_1 : IntegerSocket
+        Random seed for the guide map
     i.existing_guide_map : BooleanSocket
         Use the existing guide map attribute if available
 
@@ -1291,7 +1303,7 @@ class ClumpHairCurves(AssetGeometryGroup):
         """Falloff distance for the clumping effect (0 means no falloff)"""
         distance_threshold: FloatSocket
         """Distance threshold for the falloff around the guide"""
-        seed: IntegerSocket
+        input_14: IntegerSocket
         """Random seed for the operation"""
         preserve_length: BooleanSocket
         """Preserve each curve's length during deformation"""
@@ -1301,6 +1313,8 @@ class ClumpHairCurves(AssetGeometryGroup):
         """Minimum distance between two guides for new guide map"""
         guide_mask: FloatSocket
         """Mask for which curves are eligible to be selected as guides"""
+        socket_1: IntegerSocket
+        """Random seed for the guide map"""
         existing_guide_map: BooleanSocket
         """Use the existing guide map attribute if available"""
 
@@ -1326,11 +1340,12 @@ class ClumpHairCurves(AssetGeometryGroup):
         clump_offset: InputFloat = 0.0,
         distance_falloff: InputFloat = 0.0,
         distance_threshold: InputFloat = 0.0,
-        seed: InputInteger = 0,
+        input_14: InputInteger = 0,
         preserve_length: InputBoolean = False,
         guide_index: InputInteger = -987654,
         guide_distance: InputFloat = 0.1,
         guide_mask: InputFloat = 1.0,
+        socket_1: InputInteger = 0,
         existing_guide_map: InputBoolean = True,
     ):
         super().__init__(
@@ -1341,11 +1356,12 @@ class ClumpHairCurves(AssetGeometryGroup):
             Input_13=clump_offset,
             Input_12=distance_falloff,
             Input_11=distance_threshold,
-            Input_14=seed,
+            Input_14=input_14,
             Input_15=preserve_length,
             Input_16=guide_index,
             Input_9=guide_distance,
             Input_19=guide_mask,
+            Socket_1=socket_1,
             Input_8=existing_guide_map,
         )
 
@@ -1602,6 +1618,8 @@ class CreateGuideIndexMap(AssetGeometryGroup):
         Mask for which curves are eligible to be selected as guides
     group_id : InputInteger
         ID to group curves together for guide map creation
+    seed : InputInteger
+        Random seed for the guide map
 
     Inputs
     ------
@@ -1615,6 +1633,8 @@ class CreateGuideIndexMap(AssetGeometryGroup):
         Mask for which curves are eligible to be selected as guides
     i.group_id : IntegerSocket
         ID to group curves together for guide map creation
+    i.seed : IntegerSocket
+        Random seed for the guide map
 
     Outputs
     -------
@@ -1643,6 +1663,8 @@ class CreateGuideIndexMap(AssetGeometryGroup):
         """Mask for which curves are eligible to be selected as guides"""
         group_id: IntegerSocket
         """ID to group curves together for guide map creation"""
+        seed: IntegerSocket
+        """Random seed for the guide map"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
@@ -1668,6 +1690,7 @@ class CreateGuideIndexMap(AssetGeometryGroup):
         guide_distance: InputFloat = 0.0,
         guide_mask: InputFloat = 1.0,
         group_id: InputInteger = 0,
+        seed: InputInteger = 0,
     ):
         super().__init__(
             Input_0=geometry,
@@ -1675,6 +1698,7 @@ class CreateGuideIndexMap(AssetGeometryGroup):
             Input_3=guide_distance,
             Input_11=guide_mask,
             Input_12=group_id,
+            Socket_0=seed,
         )
 
 
@@ -1702,7 +1726,7 @@ class CurlHairCurves(AssetGeometryGroup):
         Frequency factor of the curls
     random_offset : InputFloat
         Amount of random offset per curve
-    seed : InputInteger
+    input_15 : InputInteger
         Random seed for the operation
     guide_index : InputInteger
         Guide index map to use. This input has priority.
@@ -1710,6 +1734,8 @@ class CurlHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     guide_mask : InputFloat
         Mask for which curves are eligible to be selected as guides
+    socket_1 : InputInteger
+        Random seed for the guide map
     existing_guide_map : InputBoolean
         Use the existing guide map attribute if available
 
@@ -1733,7 +1759,7 @@ class CurlHairCurves(AssetGeometryGroup):
         Frequency factor of the curls
     i.random_offset : FloatSocket
         Amount of random offset per curve
-    i.seed : IntegerSocket
+    i.input_15 : IntegerSocket
         Random seed for the operation
     i.guide_index : IntegerSocket
         Guide index map to use. This input has priority.
@@ -1741,6 +1767,8 @@ class CurlHairCurves(AssetGeometryGroup):
         Minimum distance between two guides for new guide map
     i.guide_mask : FloatSocket
         Mask for which curves are eligible to be selected as guides
+    i.socket_1 : IntegerSocket
+        Random seed for the guide map
     i.existing_guide_map : BooleanSocket
         Use the existing guide map attribute if available
 
@@ -1775,7 +1803,7 @@ class CurlHairCurves(AssetGeometryGroup):
         """Frequency factor of the curls"""
         random_offset: FloatSocket
         """Amount of random offset per curve"""
-        seed: IntegerSocket
+        input_15: IntegerSocket
         """Random seed for the operation"""
         guide_index: IntegerSocket
         """Guide index map to use. This input has priority."""
@@ -1783,6 +1811,8 @@ class CurlHairCurves(AssetGeometryGroup):
         """Minimum distance between two guides for new guide map"""
         guide_mask: FloatSocket
         """Mask for which curves are eligible to be selected as guides"""
+        socket_1: IntegerSocket
+        """Random seed for the guide map"""
         existing_guide_map: BooleanSocket
         """Use the existing guide map attribute if available"""
 
@@ -1810,10 +1840,11 @@ class CurlHairCurves(AssetGeometryGroup):
         factor_end: InputFloat = 1.0,
         frequency: InputFloat = 1.0,
         random_offset: InputFloat = 0.25,
-        seed: InputInteger = 0,
+        input_15: InputInteger = 0,
         guide_index: InputInteger = -987654,
         guide_distance: InputFloat = 0.1,
         guide_mask: InputFloat = 1.0,
+        socket_1: InputInteger = 0,
         existing_guide_map: InputBoolean = True,
     ):
         super().__init__(
@@ -1826,10 +1857,11 @@ class CurlHairCurves(AssetGeometryGroup):
             Input_10=factor_end,
             Input_11=frequency,
             Input_16=random_offset,
-            Input_15=seed,
+            Input_15=input_15,
             Input_19=guide_index,
             Input_4=guide_distance,
             Input_18=guide_mask,
+            Socket_1=socket_1,
             Input_3=existing_guide_map,
         )
 
@@ -2036,6 +2068,10 @@ class CurveToTube(AssetGeometryGroup):
         Number of points on the profile circle. Also defines the round cap resolution.
     shade_smooth : InputBoolean
         Use smooth vertex normals instead of face normals for the result mesh
+    miter_scale : InputBoolean
+        Scale the profile along the axis of the corner's turn to maintain a constant visual width
+    miter_scale_limit : InputFloat
+        Angle at which the miter scale stops increasing
     resample : InputBoolean
         Resample the input curve before meshing
     resample_mode : InputMenu | Literal["Evaluated", "Auto", "Count", "Length"]
@@ -2099,6 +2135,10 @@ class CurveToTube(AssetGeometryGroup):
         Number of points on the profile circle. Also defines the round cap resolution.
     i.shade_smooth : BooleanSocket
         Use smooth vertex normals instead of face normals for the result mesh
+    i.miter_scale : BooleanSocket
+        Scale the profile along the axis of the corner's turn to maintain a constant visual width
+    i.miter_scale_limit : FloatSocket
+        Angle at which the miter scale stops increasing
     i.resample : BooleanSocket
         Resample the input curve before meshing
     i.resample_mode : MenuSocket
@@ -2171,6 +2211,10 @@ class CurveToTube(AssetGeometryGroup):
         """Number of points on the profile circle. Also defines the round cap resolution."""
         shade_smooth: BooleanSocket
         """Use smooth vertex normals instead of face normals for the result mesh"""
+        miter_scale: BooleanSocket
+        """Scale the profile along the axis of the corner's turn to maintain a constant visual width"""
+        miter_scale_limit: FloatSocket
+        """Angle at which the miter scale stops increasing"""
         resample: BooleanSocket
         """Resample the input curve before meshing"""
         resample_mode: MenuSocket
@@ -2237,6 +2281,8 @@ class CurveToTube(AssetGeometryGroup):
         profile_geometry: InputGeometry = None,
         profile_resolution: InputInteger = 8,
         shade_smooth: InputBoolean = True,
+        miter_scale: InputBoolean = True,
+        miter_scale_limit: InputFloat = 3 * math.pi / 4,
         resample: InputBoolean = True,
         resample_mode: InputMenu
         | Literal["Evaluated", "Auto", "Count", "Length"] = "Evaluated",
@@ -2270,6 +2316,8 @@ class CurveToTube(AssetGeometryGroup):
             Socket_27=profile_geometry,
             Socket_2=profile_resolution,
             Socket_11=shade_smooth,
+            Socket_40=miter_scale,
+            Socket_41=miter_scale_limit,
             Socket_36=resample,
             Socket_32=resample_mode,
             Socket_33=resample_count,

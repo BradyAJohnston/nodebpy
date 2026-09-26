@@ -9,6 +9,7 @@ from ...builder.socket import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
+    IntegerSocket,
     ShaderSocket,
     VectorSocket,
 )
@@ -16,6 +17,7 @@ from ...types import (
     InputBoolean,
     InputColor,
     InputFloat,
+    InputInteger,
     InputShader,
     InputVector,
 )
@@ -285,10 +287,16 @@ class GlassBSDF(BaseNode):
         Color
     roughness : InputFloat
         Roughness
+    anisotropy : InputFloat
+        Anisotropy
+    rotation : InputFloat
+        Rotation
     ior : InputFloat
         IOR
     normal : InputVector
         Normal
+    tangent : InputVector
+        Tangent
     weight : InputFloat
         Weight
     thin_film_thickness : InputFloat
@@ -302,10 +310,16 @@ class GlassBSDF(BaseNode):
         Color
     i.roughness : FloatSocket
         Roughness
+    i.anisotropy : FloatSocket
+        Anisotropy
+    i.rotation : FloatSocket
+        Rotation
     i.ior : FloatSocket
         IOR
     i.normal : VectorSocket
         Normal
+    i.tangent : VectorSocket
+        Tangent
     i.weight : FloatSocket
         Weight
     i.thin_film_thickness : FloatSocket
@@ -327,10 +341,16 @@ class GlassBSDF(BaseNode):
         """Color"""
         roughness: FloatSocket
         """Roughness"""
+        anisotropy: FloatSocket
+        """Anisotropy"""
+        rotation: FloatSocket
+        """Rotation"""
         ior: FloatSocket
         """IOR"""
         normal: VectorSocket
         """Normal"""
+        tangent: VectorSocket
+        """Tangent"""
         weight: FloatSocket
         """Weight"""
         thin_film_thickness: FloatSocket
@@ -353,8 +373,11 @@ class GlassBSDF(BaseNode):
         self,
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         roughness: InputFloat = 0.0,
+        anisotropy: InputFloat = 0.0,
+        rotation: InputFloat = 0.0,
         ior: InputFloat = 1.5,
         normal: InputVector = (0.0, 0.0, 0.0),
+        tangent: InputVector = (0.0, 0.0, 0.0),
         weight: InputFloat = 0.0,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
@@ -365,8 +388,11 @@ class GlassBSDF(BaseNode):
         key_args = {
             "Color": color,
             "Roughness": roughness,
+            "Anisotropy": anisotropy,
+            "Rotation": rotation,
             "IOR": ior,
             "Normal": normal,
+            "Tangent": tangent,
             "Weight": weight,
             "Thin Film Thickness": thin_film_thickness,
             "Thin Film IOR": thin_film_ior,
@@ -639,6 +665,113 @@ class Holdout(BaseNode):
     def __init__(self, weight: InputFloat = 0.0):
         super().__init__()
         key_args = {"Weight": weight}
+
+        self._establish_links(**key_args)
+
+
+class LightAccumulation(BaseNode):
+    """
+        Adds the result of all the evaluated lights and stores each input into its respective Compositing Pass.
+    The combined result is computed as (Diffuse Light * Diffuse Color) + (Glossy Light * Glossy Color)
+
+        Parameters
+        ----------
+        lightindex : InputInteger
+            LightIndex
+        diffuse_light : InputColor
+            Diffuse Light
+        diffuse_color : InputColor
+            Diffuse Color
+        glossy_light : InputColor
+            Glossy Light
+        glossy_color : InputColor
+            Glossy Color
+        transmission_light : InputColor
+            Transmission Light
+        transmission_color : InputColor
+            Transmission Color
+        weight : InputFloat
+            Weight
+
+        Inputs
+        ------
+        i.lightindex : IntegerSocket
+            LightIndex
+        i.diffuse_light : ColorSocket
+            Diffuse Light
+        i.diffuse_color : ColorSocket
+            Diffuse Color
+        i.glossy_light : ColorSocket
+            Glossy Light
+        i.glossy_color : ColorSocket
+            Glossy Color
+        i.transmission_light : ColorSocket
+            Transmission Light
+        i.transmission_color : ColorSocket
+            Transmission Color
+        i.weight : FloatSocket
+            Weight
+
+        Outputs
+        -------
+        o.shader : ShaderSocket
+            Shader
+    """
+
+    _bl_idname = "ShaderNodeLightAccumulation"
+    node: bpy.types.ShaderNodeLightAccumulation
+
+    class _Inputs(SocketAccessor):
+        lightindex: IntegerSocket
+        """LightIndex"""
+        diffuse_light: ColorSocket
+        """Diffuse Light"""
+        diffuse_color: ColorSocket
+        """Diffuse Color"""
+        glossy_light: ColorSocket
+        """Glossy Light"""
+        glossy_color: ColorSocket
+        """Glossy Color"""
+        transmission_light: ColorSocket
+        """Transmission Light"""
+        transmission_color: ColorSocket
+        """Transmission Color"""
+        weight: FloatSocket
+        """Weight"""
+
+    class _Outputs(SocketAccessor):
+        shader: ShaderSocket
+        """Shader"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        lightindex: InputInteger = 0,
+        diffuse_light: InputColor = (0.0, 0.0, 0.0, 1.0),
+        diffuse_color: InputColor = (1.0, 1.0, 1.0, 1.0),
+        glossy_light: InputColor = (0.0, 0.0, 0.0, 1.0),
+        glossy_color: InputColor = (1.0, 1.0, 1.0, 1.0),
+        transmission_light: InputColor = (0.0, 0.0, 0.0, 1.0),
+        transmission_color: InputColor = (1.0, 1.0, 1.0, 1.0),
+        weight: InputFloat = 0.0,
+    ):
+        super().__init__()
+        key_args = {
+            "LightIndex": lightindex,
+            "Diffuse Light": diffuse_light,
+            "Diffuse Color": diffuse_color,
+            "Glossy Light": glossy_light,
+            "Glossy Color": glossy_color,
+            "Transmission Light": transmission_light,
+            "Transmission Color": transmission_color,
+            "Weight": weight,
+        }
 
         self._establish_links(**key_args)
 
@@ -963,6 +1096,10 @@ class PrincipledBSDF(BaseNode):
         Tangent
     transmission_weight : InputFloat
         Transmission Weight
+    transmission_dispersion_scale : InputFloat
+        Transmission Dispersion Scale
+    transmission_dispersion_abbe_number : InputFloat
+        Transmission Dispersion Abbe Number
     coat_weight : InputFloat
         Coat Weight
     coat_roughness : InputFloat
@@ -1030,6 +1167,10 @@ class PrincipledBSDF(BaseNode):
         Tangent
     i.transmission_weight : FloatSocket
         Transmission Weight
+    i.transmission_dispersion_scale : FloatSocket
+        Transmission Dispersion Scale
+    i.transmission_dispersion_abbe_number : FloatSocket
+        Transmission Dispersion Abbe Number
     i.coat_weight : FloatSocket
         Coat Weight
     i.coat_roughness : FloatSocket
@@ -1105,6 +1246,10 @@ class PrincipledBSDF(BaseNode):
         """Tangent"""
         transmission_weight: FloatSocket
         """Transmission Weight"""
+        transmission_dispersion_scale: FloatSocket
+        """Transmission Dispersion Scale"""
+        transmission_dispersion_abbe_number: FloatSocket
+        """Transmission Dispersion Abbe Number"""
         coat_weight: FloatSocket
         """Coat Weight"""
         coat_roughness: FloatSocket
@@ -1163,6 +1308,8 @@ class PrincipledBSDF(BaseNode):
         anisotropic_rotation: InputFloat = 0.0,
         tangent: InputVector = (0.0, 0.0, 0.0),
         transmission_weight: InputFloat = 0.0,
+        transmission_dispersion_scale: InputFloat = 0.0,
+        transmission_dispersion_abbe_number: InputFloat = 20.0,
         coat_weight: InputFloat = 0.0,
         coat_roughness: InputFloat = 0.03,
         coat_ior: InputFloat = 1.5,
@@ -1203,6 +1350,8 @@ class PrincipledBSDF(BaseNode):
             "Anisotropic Rotation": anisotropic_rotation,
             "Tangent": tangent,
             "Transmission Weight": transmission_weight,
+            "Transmission Dispersion Scale": transmission_dispersion_scale,
+            "Transmission Dispersion Abbe Number": transmission_dispersion_abbe_number,
             "Coat Weight": coat_weight,
             "Coat Roughness": coat_roughness,
             "Coat IOR": coat_ior,

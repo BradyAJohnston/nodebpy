@@ -2,6 +2,13 @@
 title: Changelog
 ---
 
+## 530.0.0 - 2026-09-20
+
+### Enhancements
+
+- **Blender 5.3 (alpha)** — `bpy` tracks the 5.3 daily builds from the [dailybpy](https://bradyajohnston.github.io/dailybpy) index and the node classes and bundled-essentials asset APIs were regenerated against it. New nodes: `Comment` (every tree), `CombineList`, `GetVectorComponent`, `GridSolvePoisson`, `GridTopologyBoolean`, `DeactivateVoxels`, `ImportSpz`, `RasterizePoints`, `SetPointCloudType`, `GeometryMaterials`, `NurbsOrder`, `NurbsWeight`, the Grease Pencil attribute inputs (`GreasePencilColor`, `GreasePencilOpacity`, `GreasePencilDrawTime`, `GreasePencilFillID`, `GreasePencilStrokeSoftness`, `GreasePencilStrokeVisibility`) and the EEVEE light shader nodes (`LightEvaluation`, `LightInfo`, `LightAccumulation`, `ShadowRaycast`). Shader trees gained `Switch` / `IndexSwitch`, compositor trees `Compare` / `GetBundleItem` / `StoreBundleItem`, and the shader `Attribute` node its new `light()` attribute type.
+- Merge Layers, Set Grease Pencil Color and Set Grease Pencil Depth take their mode as a Menu socket in 5.3; the generator now skips the deprecated enum properties Blender keeps alongside, which previously collided with the socket parameter.
+- `allow_usage_in_scene_compositor_effect` joined the round-tripped tree-level properties.
 ## 520.29.0 - 2026-09-20
 
 ### Fixes

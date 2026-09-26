@@ -48,6 +48,42 @@ from ...types import (
 )
 
 
+class Comment(BaseNode):
+    """
+    Add explanations to the node group
+    """
+
+    _bl_idname = "NodeComment"
+    node: bpy.types.NodeComment
+
+    class _Inputs(SocketAccessor):
+        pass
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, text: str = ""):
+        super().__init__()
+        key_args = {}
+        self.text = text
+        self._establish_links(**key_args)
+
+    @property
+    def text(self) -> str:
+        return self.node.text
+
+    @text.setter
+    def text(self, value: str):
+        self.node.text = value
+
+
 class DialGizmo(BaseNode):
     """
     Show a dial gizmo in the viewport for a value

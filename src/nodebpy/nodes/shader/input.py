@@ -8,11 +8,13 @@ from ...builder import BaseNode, SocketAccessor
 from ...builder.socket import (
     ColorSocket,
     FloatSocket,
+    IntegerSocket,
     VectorSocket,
 )
 from ...types import (
     InputColor,
     InputFloat,
+    InputInteger,
     InputVector,
 )
 
@@ -538,6 +540,174 @@ class LayerWeight(BaseNode):
         self._establish_links(**key_args)
 
 
+class LightEvaluation(BaseNode):
+    """
+    Light Evaluation
+
+    Parameters
+    ----------
+    lightindex : InputInteger
+        LightIndex
+    position : InputVector
+        Position
+    normal : InputVector
+        Normal
+    roughness : InputFloat
+        Roughness
+
+    Inputs
+    ------
+    i.lightindex : IntegerSocket
+        LightIndex
+    i.position : VectorSocket
+        Position
+    i.normal : VectorSocket
+        Normal
+    i.roughness : FloatSocket
+        Roughness
+
+    Outputs
+    -------
+    o.factor : FloatSocket
+        Factor
+    o.mask : FloatSocket
+        Mask
+    o.direction : VectorSocket
+        Direction
+    o.distance : FloatSocket
+        Distance
+    """
+
+    _bl_idname = "ShaderNodeLightEvaluation"
+    node: bpy.types.ShaderNodeLightEvaluation
+
+    class _Inputs(SocketAccessor):
+        lightindex: IntegerSocket
+        """LightIndex"""
+        position: VectorSocket
+        """Position"""
+        normal: VectorSocket
+        """Normal"""
+        roughness: FloatSocket
+        """Roughness"""
+
+    class _Outputs(SocketAccessor):
+        factor: FloatSocket
+        """Factor"""
+        mask: FloatSocket
+        """Mask"""
+        direction: VectorSocket
+        """Direction"""
+        distance: FloatSocket
+        """Distance"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        lightindex: InputInteger = 0,
+        position: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = (0.0, 0.0, 0.0),
+        roughness: InputFloat = 0.5,
+        *,
+        mode: Literal["DIFFUSE", "GLOSSY"] = "DIFFUSE",
+    ):
+        super().__init__()
+        key_args = {
+            "LightIndex": lightindex,
+            "Position": position,
+            "Normal": normal,
+            "Roughness": roughness,
+        }
+        self.mode = mode
+        self._establish_links(**key_args)
+
+    @classmethod
+    def diffuse(
+        cls,
+        position: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = (0.0, 0.0, 0.0),
+    ) -> "LightEvaluation":
+        """Create Light Evaluation with operation 'Diffuse'."""
+        return cls(mode="DIFFUSE", position=position, normal=normal)
+
+    @classmethod
+    def glossy(
+        cls,
+        position: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = (0.0, 0.0, 0.0),
+        roughness: InputFloat = 0.5,
+    ) -> "LightEvaluation":
+        """Create Light Evaluation with operation 'Glossy'."""
+        return cls(mode="GLOSSY", position=position, normal=normal, roughness=roughness)
+
+    @property
+    def mode(self) -> Literal["DIFFUSE", "GLOSSY"]:
+        return self.node.mode
+
+    @mode.setter
+    def mode(self, value: Literal["DIFFUSE", "GLOSSY"]):
+        self.node.mode = value
+
+
+class LightInfo(BaseNode):
+    """
+    Exposes physical properties of the light being evaluated and computes basic information relative to the evaluation position
+
+    Parameters
+    ----------
+    lightindex : InputInteger
+        LightIndex
+
+    Inputs
+    ------
+    i.lightindex : IntegerSocket
+        LightIndex
+
+    Outputs
+    -------
+    o.color : ColorSocket
+        Color
+    o.power : FloatSocket
+        Power
+    o.position : VectorSocket
+        Position
+    """
+
+    _bl_idname = "ShaderNodeLightInfo"
+    node: bpy.types.ShaderNodeLightInfo
+
+    class _Inputs(SocketAccessor):
+        lightindex: IntegerSocket
+        """LightIndex"""
+
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+        power: FloatSocket
+        """Power"""
+        position: VectorSocket
+        """Position"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(self, lightindex: InputInteger = 0):
+        super().__init__()
+        key_args = {"LightIndex": lightindex}
+
+        self._establish_links(**key_args)
+
+
 class LightPath(BaseNode):
     """
         Retrieve the type of incoming ray for which the shader is being executed.
@@ -873,6 +1043,72 @@ class Raycast(BaseNode):
     @only_local.setter
     def only_local(self, value: bool):
         self.node.only_local = value
+
+
+class ShadowRaycast(BaseNode):
+    """
+    Shadow Raycast
+
+    Parameters
+    ----------
+    lightindex : InputInteger
+        LightIndex
+    position : InputVector
+        Position
+    softness : InputFloat
+        Softness
+
+    Inputs
+    ------
+    i.lightindex : IntegerSocket
+        LightIndex
+    i.position : VectorSocket
+        Position
+    i.softness : FloatSocket
+        Softness
+
+    Outputs
+    -------
+    o.color : ColorSocket
+        Color
+    """
+
+    _bl_idname = "ShaderNodeShadowRaycast"
+    node: bpy.types.ShaderNodeShadowRaycast
+
+    class _Inputs(SocketAccessor):
+        lightindex: IntegerSocket
+        """LightIndex"""
+        position: VectorSocket
+        """Position"""
+        softness: FloatSocket
+        """Softness"""
+
+    class _Outputs(SocketAccessor):
+        color: ColorSocket
+        """Color"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        lightindex: InputInteger = 0,
+        position: InputVector = (0.0, 0.0, 0.0),
+        softness: InputFloat = 1.0,
+    ):
+        super().__init__()
+        key_args = {
+            "LightIndex": lightindex,
+            "Position": position,
+            "Softness": softness,
+        }
+
+        self._establish_links(**key_args)
 
 
 class Tangent(BaseNode):
