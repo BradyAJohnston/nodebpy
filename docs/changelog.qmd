@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+## 520.29.1 - 2026-09-26
+
+### Fixes
+
+- **Deterministic arrangement** — the Sugiyama arranger iterated sets ordered by memory address (layout nodes hashed by `id()`, bpy sockets by pointer), so the same tree could get different node locations, link order and multi-input sort ids from one run to the next. Arrangement is now reproducible, and an asset library built twice from the same sources differs only in the fields Blender itself randomises per session.
+
 ## 520.29.0 - 2026-09-20
 
 ### Fixes
