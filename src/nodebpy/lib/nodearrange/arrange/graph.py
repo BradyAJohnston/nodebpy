@@ -6,7 +6,7 @@ from collections.abc import Callable, Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from functools import cached_property
-from itertools import chain, pairwise, product
+from itertools import chain, count, pairwise, product
 from math import inf
 from typing import TYPE_CHECKING, Any, Literal, TypeGuard
 
@@ -30,6 +30,16 @@ if TYPE_CHECKING:
     from ..config import LayoutState
 
 # -------------------------------------------------------------------
+
+# Nodes and clusters hash by creation order rather than id(), so iterating a
+# set of them (here or inside networkx) doesn't depend on memory addresses and
+# a layout is reproducible between runs. Reset per run by sugiyama_layout().
+_serials = count()
+
+
+def reset_serials() -> None:
+    global _serials
+    _serials = count()
 
 
 class Kind(Enum):
@@ -86,6 +96,8 @@ class Node:
     sink: Node
     shift: float
 
+    _serial: int
+
     __slots__ = tuple(__annotations__)
 
     def __init__(
@@ -124,9 +136,10 @@ class Node:
 
         self.x = None  # type: ignore
         self.bk_reset()
+        self._serial = next(_serials)
 
     def __hash__(self) -> int:
-        return id(self)
+        return self._serial
 
     def bk_reset(self) -> None:
         self.root = self
@@ -171,13 +184,15 @@ class Cluster:
     cr: CrossingReduction = field(default_factory=CrossingReduction)
     left: Node = field(init=False)
     right: Node = field(init=False)
+    _serial: int = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
+        self._serial = next(_serials)
         self.left = Node(None, self, Kind.HORIZONTAL_BORDER)
         self.right = Node(None, self, Kind.HORIZONTAL_BORDER)
 
     def __hash__(self) -> int:
-        return id(self)
+        return self._serial
 
     @property
     def type(self) -> Literal[Kind.CLUSTER]:
@@ -359,7 +374,8 @@ class ClusterGraph:
                 state.linked_sockets.pop(socket, None)
 
             for val in state.linked_sockets.values():
-                val -= sockets
+                for socket in sockets:
+                    val.pop(socket, None)
 
             state.selected.remove(v.node)
             state.ntree.nodes.remove(v.node)

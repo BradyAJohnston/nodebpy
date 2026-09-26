@@ -60,8 +60,10 @@ class LayoutState:
     settings: Settings = field(default_factory=Settings)
     margin: Vector = field(default_factory=lambda: Vector(DEFAULT_MARGIN))
     selected: list[BlenderNode] = field(default_factory=list)
-    linked_sockets: defaultdict[NodeSocket, set[NodeSocket]] = field(
-        default_factory=lambda: defaultdict(set)
+    # Values are insertion-ordered sets (dict keys): bpy sockets hash by
+    # pointer, so iterating a real set would follow memory addresses.
+    linked_sockets: defaultdict[NodeSocket, dict[NodeSocket, None]] = field(
+        default_factory=lambda: defaultdict(dict)
     )
     multi_input_sort_ids: defaultdict[Socket, list[tuple[Socket, int]]] = field(
         default_factory=lambda: defaultdict(list)
