@@ -182,7 +182,11 @@ def restore_multi_input_orders(G: nx.MultiDiGraph[Node], state: LayoutState) -> 
             if link.to_socket == multi_input and link.from_socket is not None
         }
 
-        for output in {s.bpy for s in H.pred[socket]} - as_links.keys():
+        # In graph order, not a set: bpy sockets hash by pointer, and the
+        # creation order of these links sets their sort ids.
+        for output in dict.fromkeys(s.bpy for s in H.pred[socket]):
+            if output in as_links:
+                continue
             assert output
             new_link = links.new(output, multi_input)
             assert new_link is not None
