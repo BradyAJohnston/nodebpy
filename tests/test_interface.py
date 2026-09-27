@@ -1765,3 +1765,10 @@ def test_menu_default_assignment_after_context_exit():
     mode.default_value = "B"  # after exit: applied immediately, not lost
     assert iface_default() == "B"
     assert mode.default_value == "B"
+
+
+def test_default_value_on_output_socket_error_names_input_sockets():
+    with g.tree() as tree:
+        value = tree.inputs.float("F")
+        with pytest.raises(RuntimeError, match="only available on input sockets"):
+            value.default_value = 1.0

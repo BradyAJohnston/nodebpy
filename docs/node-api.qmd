@@ -210,7 +210,7 @@ a == b
 
 
 ### Comparing Node Objects
-In this instance `comp` will be a `g.Compare` node, set with the `operation="GREATER_THAN"` and `data_type="INT"`.
+In this instance `comp` will be the output of a `g.Compare` node, set with `operation="GREATER_THAN"` and `data_type="FLOAT"` (the Scene Time `frame` output is a float, which takes precedence over the integer).
 
 As this is a node within the node graph, the inputs have the potential to change during node tree evaluation meaning the result of the comparison could change. During playback on an animation the output will be `Cube` at frames <=50 and `Cone` when above that value.
 
