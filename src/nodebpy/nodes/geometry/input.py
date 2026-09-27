@@ -2706,7 +2706,7 @@ class NamedAttribute[T](BaseNode):
         return NamedAttribute(data_type="QUATERNION", name=name)
 
     @classmethod
-    def input_4x4_matrix(cls, name: InputString = "") -> "NamedAttribute[MatrixSocket]":
+    def matrix(cls, name: InputString = "") -> "NamedAttribute[MatrixSocket]":
         """Create Named Attribute with operation '4x4 Matrix'. Floating point matrix"""
         return NamedAttribute(data_type="FLOAT4X4", name=name)
 
