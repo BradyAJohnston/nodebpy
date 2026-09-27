@@ -2555,3 +2555,23 @@ def test_font_sound_bundle_items():
         assert isinstance(sf, FontSocket)
         assert isinstance(ss, SoundSocket)
         assert [i.socket_type for i in sb.node.bundle_items] == ["FONT", "SOUND"]
+
+
+def test_factory_methods_take_node_properties():
+    # non-socket properties are keyword-only on factory methods (#54)
+    with g.tree():
+        noise = g.NoiseTexture.fbm(noise_dimensions="4D", normalize=True)
+        assert noise.noise_type == "FBM"
+        assert noise.noise_dimensions == "4D"
+        assert noise.normalize
+        assert g.Math.add(1.0, 2.0, use_clamp=True).use_clamp
+
+
+def test_factory_methods_omit_properties_hidden_for_the_variant():
+    import inspect
+
+    fbm = inspect.signature(g.NoiseTexture.fbm).parameters
+    ridged = inspect.signature(g.NoiseTexture.ridged_multifractal).parameters
+    assert "normalize" in fbm
+    assert "normalize" not in ridged
+    assert "noise_dimensions" in ridged
