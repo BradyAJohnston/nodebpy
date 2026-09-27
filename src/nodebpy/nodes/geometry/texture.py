@@ -366,7 +366,7 @@ class GaborTexture(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def two_d(
+    def input_2d(
         cls,
         vector: InputVector = (0.0, 0.0, 0.0),
         scale: InputFloat = 5.0,
@@ -385,7 +385,7 @@ class GaborTexture(BaseNode):
         )
 
     @classmethod
-    def three_d(
+    def input_3d(
         cls,
         vector: InputVector = (0.0, 0.0, 0.0),
         scale: InputFloat = 5.0,

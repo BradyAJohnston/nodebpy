@@ -2587,21 +2587,13 @@ def _classmethod_names(cls):
     }
 
 
-def test_no_generated_factory_names_start_with_input_prefix():
-    # "4x4 Matrix" / "2D" labels used to become input_4x4_matrix / input_2d
-    from nodebpy import compositor, shader
-
-    offenders = [
-        f"{cls.__name__}.{name}"
-        for module in (g, shader, compositor)
-        for cls in vars(module).values()
-        if isinstance(cls, type) and hasattr(cls, "_bl_idname")
-        for name in _classmethod_names(cls)
-        if name.startswith("input_")
-    ]
-    assert offenders == []
-    assert "matrix" in _classmethod_names(g.NamedAttribute)
-    assert {"two_d", "three_d"} <= _classmethod_names(g.GaborTexture)
+def test_factory_names_rename_type_labels():
+    # "4x4 Matrix" was mangled to input_4x4_matrix; labels that are only a
+    # number ("2D") keep the input_ prefix
+    names = _classmethod_names(g.NamedAttribute)
+    assert "matrix" in names
+    assert "input_4x4_matrix" not in names
+    assert {"input_2d", "input_3d"} <= _classmethod_names(g.GaborTexture)
 
 
 @pytest.mark.parametrize(
