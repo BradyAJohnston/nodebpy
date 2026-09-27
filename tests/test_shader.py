@@ -142,3 +142,37 @@ def test_specific_shader_nodes():
         assert sub.falloff == "RANDOM_WALK"
         sub.falloff = "BURLEY"
         assert sub.falloff == "BURLEY"
+
+
+def test_material_starts_without_default_nodes():
+    with s.material("Starts Empty") as mat:
+        s.Emission() >> s.MaterialOutput()
+    assert sorted(n.bl_idname for n in mat.material.node_tree.nodes) == [
+        "ShaderNodeEmission",
+        "ShaderNodeOutputMaterial",
+    ]
+
+
+def test_material_clear_rebuilds_in_place():
+    with s.material("Rebuilt Material") as first:
+        s.PrincipledBSDF() >> s.MaterialOutput()
+    bpy.data.objects["Cube"].data.materials.append(first.material)
+
+    with s.material("Rebuilt Material", clear=True) as second:
+        s.Emission() >> s.MaterialOutput()
+
+    assert second.material == first.material
+    assert bpy.data.materials.get("Rebuilt Material.001") is None
+    assert bpy.data.objects["Cube"].data.materials[-1] == second.material
+    assert "ShaderNodeBsdfPrincipled" not in {
+        n.bl_idname for n in second.material.node_tree.nodes
+    }
+
+
+def test_material_without_clear_creates_a_new_material():
+    with s.material("Not Cleared Material") as first:
+        pass
+    with s.material("Not Cleared Material") as second:
+        pass
+    assert second.material != first.material
+    assert second.material.name == "Not Cleared Material.001"

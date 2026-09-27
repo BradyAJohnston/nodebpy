@@ -65,9 +65,10 @@ def material(
     collapse: bool = False,
     arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
+    clear: bool = False,
 ) -> MaterialBuilder:
     return MaterialBuilder(
-        name, collapse=collapse, arrange=arrange, fake_user=fake_user
+        name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
     )
 
 
