@@ -14,6 +14,7 @@ import bpy
 from .config import (
     _OUTPUT_SOCKET_CLASSES,
     GEOMETRY_CONFIG,
+    VARIANT_ONLY_PROPERTIES,
     TreeTypeConfig,
     class_name_for,
 )
@@ -520,6 +521,39 @@ class NodeInfo:
                         return finish(cls)
         return "Socket"
 
+    def _passthrough_properties(
+        self,
+        exclude: str | None,
+        value: str | None,
+        input_params: list[str],
+        suppress: frozenset[str],
+    ) -> tuple[list[str], list[str]]:
+        """Keyword-only parameters (and call arguments) for a factory method.
+
+        Every node property other than the one the factory fixes (``exclude``,
+        set to ``value``) is passed through to the constructor, so
+        ``NoiseTexture.fbm()`` can still take ``normalize=`` and
+        ``noise_dimensions=``. Skipped: names already used by a socket
+        parameter, properties a customization suppresses, and properties
+        Blender only shows for other values of ``exclude``
+        (``VARIANT_ONLY_PROPERTIES``).
+        """
+        taken = {param.split(":")[0].strip() for param in input_params}
+        conditional = VARIANT_ONLY_PROPERTIES.get(self.bl_idname, {}).get(
+            exclude or "", {}
+        )
+        params, calls = [], []
+        for prop in self.properties:
+            name = prop.format_name()
+            if prop.identifier == exclude or name in taken or name in suppress:
+                continue
+            shown_for = conditional.get(prop.identifier)
+            if shown_for is not None and value not in shown_for:
+                continue
+            params.append(prop.format_property_argument())
+            calls.append(f"{name}={name}")
+        return (["*", *params] if params else []), calls
+
     def generate_enum_class_methods(
         self,
         config: TreeTypeConfig | None = None,
@@ -609,6 +643,12 @@ class NodeInfo:
                         )
                         # Use the same parameter name as in the constructor
                         call_params.append(f"{socket_name}={param_name}")
+
+                extra_params, extra_calls = self._passthrough_properties(
+                    prop.identifier, enum.identifier, input_params, suppress
+                )
+                input_params += extra_params
+                call_params += extra_calls
 
                 params_str = ",\n        ".join(input_params)
                 call_params_str = ", ".join(call_params)
@@ -711,6 +751,12 @@ class NodeInfo:
                         f"{param_name}: {socket.type_hint} = {format_python_value(socket.default_value)}"
                     )
                     call_params.append(f"{socket_name}={param_name}")
+
+            extra_params, extra_calls = self._passthrough_properties(
+                None, None, input_params, suppress
+            )
+            input_params += extra_params
+            call_params += extra_calls
 
             params_str = ",\n        ".join(input_params)
             call_params_str = ", ".join(call_params)

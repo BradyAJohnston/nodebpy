@@ -1547,6 +1547,7 @@ class _Factory(NamedTuple):
     props: dict[str, Any]  # constant constructor kwargs the factory sets
     socket_params: dict[str, str]  # normalized socket kwarg → factory param name
     param_defaults: dict[str, Any]  # factory param name → default (sig order)
+    prop_params: dict[str, str]  # passed-through property → keyword-only param
 
 
 _FACTORY_CACHE: dict[type, list[_Factory]] = {}
@@ -1697,7 +1698,22 @@ def _class_factories(cls: type) -> list[_Factory]:
         if defaults is None:
             continue
         props, socket_params = parsed
-        factories.append(_Factory(path, props, socket_params, defaults))
+        # Keyword-only parameters forward node properties (generated factories
+        # take ``*, normalize=..., noise_dimensions=...``), not sockets.
+        keyword_only = {
+            name
+            for name, param in inspect.signature(func).parameters.items()
+            if param.kind is inspect.Parameter.KEYWORD_ONLY
+        }
+        prop_params = {
+            key: param for key, param in socket_params.items() if param in keyword_only
+        }
+        socket_params = {
+            key: param
+            for key, param in socket_params.items()
+            if param not in keyword_only
+        }
+        factories.append(_Factory(path, props, socket_params, defaults, prop_params))
     _FACTORY_CACHE[cls] = factories
     return factories
 
@@ -1763,7 +1779,12 @@ def _factory_call(
         if not _factory_state_matches(node, factory.props):
             continue
         covered = {_normalize(key) for key in factory.props}
-        if set(prop_values) - set(factory.props):
+        passed = {
+            key: value
+            for key, value in prop_values.items()
+            if key not in factory.props and _normalize(key) in factory.prop_params
+        }
+        if set(prop_values) - set(factory.props) - set(passed):
             continue  # leftover props can't be passed to the factory
         if not (
             (factory.props and set(factory.props) <= _TYPE_FACTORY_PROPS)
@@ -1772,7 +1793,10 @@ def _factory_call(
         ):
             continue  # nothing gained over the plain constructor
 
-        call_kwargs: dict[str, Expr] = {}
+        call_kwargs: dict[str, Expr] = {
+            factory.prop_params[_normalize(key)]: Lit(value)
+            for key, value in passed.items()
+        }
         for key, expr in socket_kwargs.items():
             if key in covered:
                 continue  # constant already baked into the factory
@@ -1812,8 +1836,9 @@ def _factory_call(
     # Leading consecutive parameters render positionally (g.Math.sine(x)),
     # matching how factory shortcuts are written by hand.
     args: list[Expr] = []
+    keyword_only = set(factory.prop_params.values())
     for param in factory.param_defaults:
-        if param not in call_kwargs:
+        if param not in call_kwargs or param in keyword_only:
             break
         args.append(call_kwargs.pop(param))
     return Call(f"{func_prefix}.{factory.path}", args=args, kwargs=call_kwargs)
