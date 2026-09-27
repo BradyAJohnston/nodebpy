@@ -679,6 +679,8 @@ class VectorRotate(BaseNode):
         center: InputVector = (0.0, 0.0, 0.0),
         axis: InputVector = (0.0, 0.0, 1.0),
         angle: InputFloat = 0.0,
+        *,
+        invert: bool = False,
     ) -> "VectorRotate":
         """Create Vector Rotate with operation 'Axis Angle'. Rotate a point using axis angle"""
         return cls(
@@ -687,6 +689,7 @@ class VectorRotate(BaseNode):
             center=center,
             axis=axis,
             angle=angle,
+            invert=invert,
         )
 
     @classmethod
@@ -695,9 +698,17 @@ class VectorRotate(BaseNode):
         vector: InputVector = (0.0, 0.0, 0.0),
         center: InputVector = (0.0, 0.0, 0.0),
         angle: InputFloat = 0.0,
+        *,
+        invert: bool = False,
     ) -> "VectorRotate":
         """Create Vector Rotate with operation 'X Axis'. Rotate a point using X axis"""
-        return cls(rotation_type="X_AXIS", vector=vector, center=center, angle=angle)
+        return cls(
+            rotation_type="X_AXIS",
+            vector=vector,
+            center=center,
+            angle=angle,
+            invert=invert,
+        )
 
     @classmethod
     def y_axis(
@@ -705,9 +716,17 @@ class VectorRotate(BaseNode):
         vector: InputVector = (0.0, 0.0, 0.0),
         center: InputVector = (0.0, 0.0, 0.0),
         angle: InputFloat = 0.0,
+        *,
+        invert: bool = False,
     ) -> "VectorRotate":
         """Create Vector Rotate with operation 'Y Axis'. Rotate a point using Y axis"""
-        return cls(rotation_type="Y_AXIS", vector=vector, center=center, angle=angle)
+        return cls(
+            rotation_type="Y_AXIS",
+            vector=vector,
+            center=center,
+            angle=angle,
+            invert=invert,
+        )
 
     @classmethod
     def z_axis(
@@ -715,9 +734,17 @@ class VectorRotate(BaseNode):
         vector: InputVector = (0.0, 0.0, 0.0),
         center: InputVector = (0.0, 0.0, 0.0),
         angle: InputFloat = 0.0,
+        *,
+        invert: bool = False,
     ) -> "VectorRotate":
         """Create Vector Rotate with operation 'Z Axis'. Rotate a point using Z axis"""
-        return cls(rotation_type="Z_AXIS", vector=vector, center=center, angle=angle)
+        return cls(
+            rotation_type="Z_AXIS",
+            vector=vector,
+            center=center,
+            angle=angle,
+            invert=invert,
+        )
 
     @classmethod
     def euler(
@@ -725,10 +752,16 @@ class VectorRotate(BaseNode):
         vector: InputVector = (0.0, 0.0, 0.0),
         center: InputVector = (0.0, 0.0, 0.0),
         rotation: InputVector = (0.0, 0.0, 0.0),
+        *,
+        invert: bool = False,
     ) -> "VectorRotate":
         """Create Vector Rotate with operation 'Euler'. Rotate a point using XYZ order"""
         return cls(
-            rotation_type="EULER_XYZ", vector=vector, center=center, rotation=rotation
+            rotation_type="EULER_XYZ",
+            vector=vector,
+            center=center,
+            rotation=rotation,
+            invert=invert,
         )
 
     @property
