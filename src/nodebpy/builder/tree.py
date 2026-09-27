@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from contextlib import AbstractContextManager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, ClassVar, Literal, Self, TypeVar, cast
@@ -1123,7 +1124,10 @@ class TreeBuilder[TreeT: NodeTree]:
         # instead of creating a ``Name.001`` duplicate; a group of another
         # tree type is left alone and a new one is created as usual.
         # Tree-level properties (description, color_tag, is_tool, fake user,
-        # ...) are kept: only the contents are rebuilt.
+        # ...) are kept: only the contents are rebuilt. Rebuilding the
+        # interface gives its sockets new identifiers, which is what
+        # Geometry Nodes modifiers key their input values by, so those values
+        # are snapshotted by socket name here and reapplied on exit.
         if isinstance(tree, str):
             existing = bpy.data.node_groups.get(tree) if clear else None
             if existing is not None and existing.bl_idname == tree_type:
@@ -1132,8 +1136,13 @@ class TreeBuilder[TreeT: NodeTree]:
                 self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
         else:
             self.tree = tree  # type: ignore
+        self._preserved_inputs: AbstractContextManager[None] | None = None
         if clear:
+            from ..live import preserve_modifier_inputs
+
             assert self.tree.interface is not None
+            self._preserved_inputs = preserve_modifier_inputs([self.tree])
+            self._preserved_inputs.__enter__()
             self.tree.nodes.clear()
             self.tree.interface.clear()
 
@@ -1343,6 +1352,9 @@ class TreeBuilder[TreeT: NodeTree]:
         if self._arrange is not None:
             self.arrange()
         self._apply_input_defaults()
+        if self._preserved_inputs is not None:
+            self._preserved_inputs.__exit__(None, None, None)
+            self._preserved_inputs = None
         # Interface-menu defaults assigned from here on can't wait for a
         # context exit that already happened — apply them immediately
         # (see MenuSocket.default_value).
@@ -1789,8 +1801,15 @@ class MaterialBuilder(TreeBuilder):
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         ignore_visibility: bool = False,
+        clear: bool = False,
     ):
-        material = bpy.data.materials.new(name)
+        # With ``clear`` an existing material of that name is rebuilt in place
+        # (objects keep it assigned) instead of creating ``Name.001``. A new
+        # material starts with Blender's default Principled BSDF and Material
+        # Output nodes, which are removed so the body builds from empty.
+        material = bpy.data.materials.get(name) if clear else None
+        if material is None:
+            material = bpy.data.materials.new(name)
         assert material is not None
         self.material = material
         self.material.use_fake_user = fake_user
@@ -1801,4 +1820,5 @@ class MaterialBuilder(TreeBuilder):
             arrange=arrange,
             fake_user=fake_user,
             ignore_visibility=ignore_visibility,
+            clear=True,
         )

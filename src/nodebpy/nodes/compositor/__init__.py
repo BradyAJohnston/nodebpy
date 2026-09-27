@@ -20,6 +20,7 @@ from ..geometry.converter import (
     MatchString,
     Math,
     MatrixDeterminant,
+    Mix,
     MultiplyMatrices,
     ProjectPoint,
     QuaternionToRotation,
@@ -64,7 +65,6 @@ from ..geometry.manual import (
     FloatCurve,
     IntegerVector,
     Menu,
-    Mix,
     Object,
     Value,
 )

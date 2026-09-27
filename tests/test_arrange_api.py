@@ -322,6 +322,61 @@ def test_options_do_not_leak_between_runs():
     assert locations(repeat) == locations(reference)
 
 
+@pytest.mark.skipif(
+    not _ESSENTIALS.is_file(), reason="bundled geometry essentials not installed"
+)
+@pytest.mark.parametrize("tree_name", ["Is UV Split", "Transform and Project"])
+def test_arrangement_is_deterministic(tree_name):
+    """Arranging the same tree gives the same layout regardless of where the
+    layout's objects land in memory (sets iterated in id() order made the
+    result vary between runs and processes)."""
+    layouts = set()
+    ballast = []
+    for run in range(8):
+        existing = set(bpy.data.node_groups)
+        with bpy.data.libraries.load(  # ty: ignore[invalid-context-manager]
+            str(_ESSENTIALS), link=False
+        ) as (src, dst):
+            dst.node_groups = [tree_name]
+        tree = dst.node_groups[0]
+        assert tree is not None
+        # Shift the heap so the layout's objects get different addresses.
+        ballast.append([object() for _ in range(997 * (run + 1))])
+        arrange(tree, SugiyamaOptions(add_reroutes=True))
+        locations = sorted((n.name, tuple(n.location)) for n in tree.nodes)
+        links = sorted(
+            (
+                link.from_node.name,
+                link.from_socket.identifier,
+                link.to_node.name,
+                link.to_socket.identifier,
+                link.multi_input_sort_id,
+            )
+            for link in tree.links
+        )
+        layouts.add((tuple(locations), tuple(links)))
+        for group in set(bpy.data.node_groups) - existing:
+            bpy.data.node_groups.remove(group)
+    assert len(layouts) == 1
+
+
+def test_layout_graph_hashes_follow_creation_order():
+    """Layout-graph nodes and clusters hash by creation order, so the sets the
+    arranger iterates come out in the same order on every run. (The trees that
+    exercise this end to end, e.g. 'Curve to Tube', are too slow for a test.)"""
+    from nodebpy.lib.nodearrange.arrange.graph import Cluster, Node, reset_serials
+
+    def hashes():
+        reset_serials()
+        cluster = Cluster(None, None)
+        nodes = [Node() for _ in range(5)]
+        return [hash(cluster), hash(cluster.left), *map(hash, nodes)]
+
+    first = hashes()
+    ballast = [object() for _ in range(10_000)]  # noqa: F841 - shifts the heap
+    assert hashes() == first
+
+
 def test_locations_are_quantized():
     """Arranged locations round-trip through the 2-decimal dump precision."""
     builder = _build_chain("Quantized", "sugiyama")

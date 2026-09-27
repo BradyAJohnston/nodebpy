@@ -61,6 +61,14 @@ break headless operation.
     collapsed panel's sockets), which still order the nodes; and
     `x_coords.assign_x_coords()` skips a column left empty by dissolved
     dummies.
+- **Deterministic iteration order.** Upstream hashes `graph.Node` and
+  `graph.Cluster` by `id()` and keeps `linked_sockets` values as sets of bpy
+  sockets (which hash by pointer), so set iteration followed memory addresses
+  and the same tree could lay out differently between runs. Here they hash by
+  a creation serial (`graph._serials`, reset per run in `sugiyama_layout`),
+  `linked_sockets` values are insertion-ordered dicts, and
+  `realize.restore_multi_input_orders` creates missing links in graph order
+  rather than from a set of bpy sockets.
 - `structs.py` uses explicit `_fields_` lists (upstream builds them from
   annotations, formerly via `eval`) and additionally binds `bNode` /
   `bNodeRuntime` / `rctf`, which upstream does not have.

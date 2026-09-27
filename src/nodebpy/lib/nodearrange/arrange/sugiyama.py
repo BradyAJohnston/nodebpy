@@ -26,6 +26,7 @@ from .graph import (
     get_reroute_paths,
     is_real,
     node_name,
+    reset_serials,
 )
 from .ordering import minimize_crossings
 from .ranking import compute_ranks
@@ -110,8 +111,8 @@ def precompute_links(state: LayoutState) -> None:
         if link.is_valid:
             assert link.from_socket
             assert link.to_socket
-            state.linked_sockets[link.to_socket].add(link.from_socket)
-            state.linked_sockets[link.from_socket].add(link.to_socket)
+            state.linked_sockets[link.to_socket][link.from_socket] = None
+            state.linked_sockets[link.from_socket][link.to_socket] = None
 
 
 def get_multidigraph(state: LayoutState) -> nx.MultiDiGraph[Node]:
@@ -287,6 +288,7 @@ def sugiyama_layout(
     settings: Settings | None = None,
     margin: Vector | None = None,
 ) -> None:
+    reset_serials()
     state = LayoutState(ntree=ntree, settings=settings or Settings())
     if margin is not None:
         state.margin = margin
