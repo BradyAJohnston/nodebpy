@@ -199,7 +199,10 @@ def test_preserve_modifier_inputs_ignores_other_trees():
     with g.tree("Unrelated") as unrelated:
         pass
     with preserve_modifier_inputs([unrelated.tree]):
-        with TreeBuilder(other.tree, clear=True) as rebuilt:
+        # rebuild the interface by hand: clear=True would preserve the values
+        other.tree.nodes.clear()
+        other.tree.interface.clear()
+        with TreeBuilder(other.tree) as rebuilt:
             rebuilt.inputs.geometry("Geometry") >> rebuilt.outputs.geometry("Geometry")
             rebuilt.inputs.float("Scale")
     assert _input_value(modifier, "Scale") == 0.0
