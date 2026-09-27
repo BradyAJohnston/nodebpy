@@ -1073,3 +1073,20 @@ class TestColorArithmetic:
             result = t.inputs.color("c", (0.2, 0.4, 0.6, 1.0)) * 2.0
         assert result.node.bl_idname == "ShaderNodeVectorMath"
         assert result.node.operation == "SCALE"
+
+
+@pytest.mark.parametrize(
+    "expr, operation",
+    [
+        (lambda x: x * (0, 0, -9.8), "SCALE"),
+        (lambda x: (0, 0, -9.8) * x, "SCALE"),
+        (lambda x: x + (1, 2, 3), "ADD"),
+        (lambda x: (1, 2, 3) - x, "SUBTRACT"),
+    ],
+)
+@pytest.mark.parametrize("scalar", [lambda: g.Value(2.0), lambda: g.Integer(2)])
+def test_scalar_socket_with_vector_tuple_uses_vector_math(expr, operation, scalar):
+    with TreeBuilder():
+        result = expr(scalar())
+        assert result.node.bl_idname == "ShaderNodeVectorMath"
+        assert result.node.operation == operation

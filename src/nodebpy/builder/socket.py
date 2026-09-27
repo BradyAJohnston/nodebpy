@@ -218,8 +218,8 @@ class BaseSocket:
             socket = self._socket
         if socket.is_output:
             raise RuntimeError(
-                f"'{method}' is only available on output sockets, "
-                f"not input socket '{socket.name}'."
+                f"'{method}' is only available on input sockets, "
+                f"not output socket '{socket.name}'."
             )
 
     @property
@@ -304,6 +304,13 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         """Scalar math dispatch (float). Uses the Math node."""
         from ..nodes.geometry.converter import Math
 
+        if isinstance(other, (list, tuple)) and len(other) == 3:
+            # a vector literal promotes the scalar to Vector Math
+            if operation == "multiply":
+                from ..nodes.geometry import VectorMath
+
+                return VectorMath.scale(other, self.socket).o.vector
+            return _dispatch_vector_math(self.socket, other, operation, reverse)
         values = (self.socket, other) if not reverse else (other, self.socket)
         math_operation = "floored_modulo" if operation == "modulo" else operation
         return getattr(Math, math_operation)(*values).o.value
