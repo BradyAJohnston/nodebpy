@@ -5456,6 +5456,294 @@ class MatrixSVD(BaseNode):
         self._establish_links(**key_args)
 
 
+class Mix(BaseNode):
+    """
+    Mix values by a factor
+
+    Parameters
+    ----------
+    factor_float : InputFloat
+        Factor
+    factor_vector : InputVector
+        Factor
+    a_float : InputFloat
+        A
+    b_float : InputFloat
+        B
+    a_vector : InputVector
+        A
+    b_vector : InputVector
+        B
+    a_color : InputColor
+        A
+    b_color : InputColor
+        B
+    a_rotation : InputRotation
+        A
+    b_rotation : InputRotation
+        B
+
+    Inputs
+    ------
+    i.factor_float : FloatSocket
+        Factor
+    i.factor_vector : VectorSocket
+        Factor
+    i.a_float : FloatSocket
+        A
+    i.b_float : FloatSocket
+        B
+    i.a_vector : VectorSocket
+        A
+    i.b_vector : VectorSocket
+        B
+    i.a_color : ColorSocket
+        A
+    i.b_color : ColorSocket
+        B
+    i.a_rotation : RotationSocket
+        A
+    i.b_rotation : RotationSocket
+        B
+
+    Outputs
+    -------
+    o.result_float : FloatSocket
+        Result
+    o.result_vector : VectorSocket
+        Result
+    o.result_color : ColorSocket
+        Result
+    o.result_rotation : RotationSocket
+        Result
+    """
+
+    _bl_idname = "ShaderNodeMix"
+    node: bpy.types.ShaderNodeMix
+
+    class _Inputs(SocketAccessor):
+        factor_float: FloatSocket
+        """Factor"""
+        factor_vector: VectorSocket
+        """Factor"""
+        a_float: FloatSocket
+        """A"""
+        b_float: FloatSocket
+        """B"""
+        a_vector: VectorSocket
+        """A"""
+        b_vector: VectorSocket
+        """B"""
+        a_color: ColorSocket
+        """A"""
+        b_color: ColorSocket
+        """B"""
+        a_rotation: RotationSocket
+        """A"""
+        b_rotation: RotationSocket
+        """B"""
+
+    class _Outputs(SocketAccessor):
+        result_float: FloatSocket
+        """Result"""
+        result_vector: VectorSocket
+        """Result"""
+        result_color: ColorSocket
+        """Result"""
+        result_rotation: RotationSocket
+        """Result"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        factor_float: InputFloat = 1.0,
+        factor_vector: InputVector = (0.5, 0.5, 0.5),
+        a_float: InputFloat = 0.0,
+        b_float: InputFloat = 0.0,
+        a_vector: InputVector = (0.0, 0.0, 0.0),
+        b_vector: InputVector = (0.0, 0.0, 0.0),
+        a_color: InputColor = (0.5, 0.5, 0.5, 1.0),
+        b_color: InputColor = (0.5, 0.5, 0.5, 1.0),
+        a_rotation: InputRotation = (0.0, 0.0, 0.0),
+        b_rotation: InputRotation = (0.0, 0.0, 0.0),
+        *,
+        data_type: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"] = "FLOAT",
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Factor_Float": factor_float,
+            "Factor_Vector": factor_vector,
+            "A_Float": a_float,
+            "B_Float": b_float,
+            "A_Vector": a_vector,
+            "B_Vector": b_vector,
+            "A_Color": a_color,
+            "B_Color": b_color,
+            "A_Rotation": a_rotation,
+            "B_Rotation": b_rotation,
+        }
+        self.data_type = data_type
+        self.factor_mode = factor_mode
+        self.blend_type = blend_type
+        self.clamp_factor = clamp_factor
+        self.clamp_result = clamp_result
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls, factor: InputFloat = 1.0, a: InputFloat = 0.0, b: InputFloat = 0.0
+    ) -> "Mix":
+        """Create Mix with operation 'Float'."""
+        return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
+
+    @classmethod
+    def vector(
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputVector = (0.0, 0.0, 0.0),
+        b: InputVector = (0.0, 0.0, 0.0),
+    ) -> "Mix":
+        """Create Mix with operation 'Vector'."""
+        return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
+
+    @classmethod
+    def color(
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputColor = (0.5, 0.5, 0.5, 1.0),
+        b: InputColor = (0.5, 0.5, 0.5, 1.0),
+    ) -> "Mix":
+        """Create Mix with operation 'Color'."""
+        return cls(data_type="RGBA", factor_float=factor, a_color=a, b_color=b)
+
+    @classmethod
+    def rotation(
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputRotation = (0.0, 0.0, 0.0),
+        b: InputRotation = (0.0, 0.0, 0.0),
+    ) -> "Mix":
+        """Create Mix with operation 'Rotation'."""
+        return cls(
+            data_type="ROTATION", factor_float=factor, a_rotation=a, b_rotation=b
+        )
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]):
+        self.node.data_type = value
+
+    @property
+    def factor_mode(self) -> Literal["UNIFORM", "NON_UNIFORM"]:
+        return self.node.factor_mode
+
+    @factor_mode.setter
+    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]):
+        self.node.factor_mode = value
+
+    @property
+    def blend_type(
+        self,
+    ) -> Literal[
+        "MIX",
+        "DARKEN",
+        "MULTIPLY",
+        "BURN",
+        "LIGHTEN",
+        "SCREEN",
+        "DODGE",
+        "ADD",
+        "OVERLAY",
+        "SOFT_LIGHT",
+        "LINEAR_LIGHT",
+        "DIFFERENCE",
+        "EXCLUSION",
+        "SUBTRACT",
+        "DIVIDE",
+        "HUE",
+        "SATURATION",
+        "COLOR",
+        "VALUE",
+    ]:
+        return self.node.blend_type
+
+    @blend_type.setter
+    def blend_type(
+        self,
+        value: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ],
+    ):
+        self.node.blend_type = value
+
+    @property
+    def clamp_factor(self) -> bool:
+        return self.node.clamp_factor
+
+    @clamp_factor.setter
+    def clamp_factor(self, value: bool):
+        self.node.clamp_factor = value
+
+    @property
+    def clamp_result(self) -> bool:
+        return self.node.clamp_result
+
+    @clamp_result.setter
+    def clamp_result(self, value: bool):
+        self.node.clamp_result = value
+
+
 class MultiplyMatrices(BaseNode):
     """
     Perform a matrix multiplication on two input matrices
