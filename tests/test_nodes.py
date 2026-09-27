@@ -2588,12 +2588,12 @@ def _classmethod_names(cls):
 
 
 def test_factory_names_rename_type_labels():
-    # "4x4 Matrix" was mangled to input_4x4_matrix; labels that are only a
-    # number ("2D") keep the input_ prefix
+    # "4x4 Matrix" was mangled to input_4x4_matrix; a digit-led label is
+    # prefixed with its property's name (gabor_type "2D" -> type_2d)
     names = _classmethod_names(g.NamedAttribute)
     assert "matrix" in names
     assert "input_4x4_matrix" not in names
-    assert {"input_2d", "input_3d"} <= _classmethod_names(g.GaborTexture)
+    assert {"type_2d", "type_3d"} <= _classmethod_names(g.GaborTexture)
 
 
 @pytest.mark.parametrize(

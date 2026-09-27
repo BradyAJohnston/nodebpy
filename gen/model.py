@@ -44,13 +44,20 @@ _TYPE_SUFFIX = re.compile(r"_(Float|Vector|Color|Rotation|FLOAT3)$")
 _COUNTER_SUFFIX = re.compile(r"_\d{3}$")
 
 
-def variant_method_name(label: str) -> str:
-    """The factory classmethod name for an enum item or menu value label."""
+def variant_method_name(label: str, prop_identifier: str) -> str:
+    """The factory classmethod name for an enum item or menu value label.
+
+    A label that still starts with a digit after the renames is prefixed with
+    the last word of the property it belongs to (Gabor Texture's ``gabor_type``
+    "2D" → ``type_2d``).
+    """
     name = normalize_name(label)
     if label[:1].isdigit():
         name = name.removeprefix("input_")
     name = _METHOD_RENAMES.get(name, name)
-    return f"input_{name}" if name[:1].isdigit() else name
+    if name[:1].isdigit():
+        name = f"{prop_identifier.rsplit('_', 1)[-1]}_{name}"
+    return name
 
 
 def variant_param_names(sockets: list[SocketInfo]) -> dict[str, str]:
@@ -633,7 +640,7 @@ class NodeInfo:
 
             # assert operation_enum.enum_items
             for enum in prop.enum_items:
-                method_name = variant_method_name(enum.name)
+                method_name = variant_method_name(enum.name, prop.identifier)
 
                 # Generate method signature based on node inputs (excluding operation socket)
                 input_params = ["cls"]
@@ -737,7 +744,7 @@ class NodeInfo:
 
         for enum in self.type_socket_enums:
             item_value = enum.identifier
-            method_name = variant_method_name(item_value)
+            method_name = variant_method_name(item_value, type_param_name)
 
             input_params = ["cls"]
             call_params = []
