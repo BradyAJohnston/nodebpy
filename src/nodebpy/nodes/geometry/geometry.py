@@ -4735,7 +4735,7 @@ class Raycast[T](BaseNode):
         )
 
     @classmethod
-    def input_4x4_matrix(
+    def matrix(
         cls,
         target_geometry: InputGeometry = None,
         attribute: InputMatrix = None,
@@ -5553,7 +5553,7 @@ class SampleNearestSurface[T](BaseNode):
         )
 
     @classmethod
-    def input_4x4_matrix(
+    def matrix(
         cls,
         mesh: InputGeometry = None,
         value: InputMatrix = None,
@@ -5791,7 +5791,7 @@ class SampleUVSurface[T](BaseNode):
         )
 
     @classmethod
-    def input_4x4_matrix(
+    def matrix(
         cls,
         mesh: InputGeometry = None,
         value: InputMatrix = None,
@@ -9749,16 +9749,16 @@ class TrimCurve(BaseNode):
         cls,
         curve: InputGeometry = None,
         selection: InputBoolean = True,
-        start_001: InputFloat = 0.0,
-        end_001: InputFloat = 1.0,
+        start: InputFloat = 0.0,
+        end: InputFloat = 1.0,
     ) -> "TrimCurve":
         """Create Trim Curve with operation 'Length'. Find the endpoint positions using a length from the start of each spline"""
         return cls(
             mode="LENGTH",
             curve=curve,
             selection=selection,
-            start_001=start_001,
-            end_001=end_001,
+            start_001=start,
+            end_001=end,
         )
 
     @property

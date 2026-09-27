@@ -31,6 +31,10 @@ class NodeCustomization:
         replaces them. May include property accessor names, enum factory method
         names, and the special token ``"__init__"`` to drop the generated
         constructor.
+    suppress_factories_for:
+        Enum property identifiers (``"domain"``, ``"data_type"``) whose flat
+        factory classmethods are all omitted, whatever they are named, because
+        a mixin or ``extra_body`` provides the factories for that property.
     extra_body:
         Source appended verbatim to the class body (already indented four
         spaces). Used for a bespoke ``__init__`` or methods that reference the
@@ -45,6 +49,7 @@ class NodeCustomization:
     bases: tuple[str, ...] = ()
     imports: tuple[str, ...] = ()
     suppress: frozenset[str] = field(default_factory=frozenset)
+    suppress_factories_for: frozenset[str] = field(default_factory=frozenset)
     extra_body: str = ""
     class_name: str | None = None
 
@@ -203,8 +208,7 @@ _DOMAINS: dict[str, str] = {
 # The generator emits flat per-domain (point/edge/…) and per-data-type
 # (float/integer/…) classmethods for these nodes' enums; the nested
 # `<node>.<domain>.<dtype>()` factory below is the real (and only) public API,
-# so suppress both sets of flat factories.
-_SUPPRESS_METHODS = frozenset(_DOMAINS) | {method for method, _ in _DATA_TYPE.values()}
+# so every flat factory for ``domain`` and ``data_type`` is suppressed.
 
 
 def _domain_factory_typed(
@@ -247,7 +251,7 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeAccumulateField",
         imports=("from ...types import _AttributeDomains",),
-        suppress=_SUPPRESS_METHODS,
+        suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed(
             "AccumulateField", ["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
         ),
@@ -259,7 +263,7 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldAtIndex",  # EvaluateAtIndex
         imports=("from ...types import _AttributeDomains",),
-        suppress=_SUPPRESS_METHODS,
+        suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed(
             "EvaluateAtIndex",
             [
@@ -280,7 +284,7 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldAverage",
         imports=("from ...types import _AttributeDomains",),
-        suppress=_SUPPRESS_METHODS,
+        suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed("FieldAverage", ["FLOAT", "FLOAT_VECTOR"]),
     )
 )
@@ -290,7 +294,7 @@ register_customization(
         bl_idname="GeometryNodeFieldMinAndMax",
         class_name="FieldMinAndMax",  # Blender display name is "Field Min & Max"
         imports=("from ...types import _AttributeDomains",),
-        suppress=_SUPPRESS_METHODS,
+        suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed(
             "FieldMinAndMax", ["FLOAT", "INT", "FLOAT_VECTOR"]
         ),
@@ -301,7 +305,7 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldOnDomain",  # EvaluateOnDomain
         imports=("from ...types import _AttributeDomains",),
-        suppress=_SUPPRESS_METHODS,
+        suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed(
             "EvaluateOnDomain",
             [
@@ -322,7 +326,7 @@ register_customization(
     NodeCustomization(
         bl_idname="GeometryNodeFieldVariance",
         imports=("from ...types import _AttributeDomains",),
-        suppress=_SUPPRESS_METHODS,
+        suppress_factories_for=frozenset({"domain", "data_type"}),
         extra_body=_domain_factory_typed("FieldVariance", ["FLOAT", "FLOAT_VECTOR"]),
     )
 )
