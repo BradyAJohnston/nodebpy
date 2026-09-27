@@ -161,19 +161,6 @@ class AccumulateField[T](BaseNode):
         self.domain = domain
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls,
-        value: InputFloat = 1.0,
-        group_index: InputInteger = 0,
-        *,
-        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"] = "FLOAT",
-    ) -> "AccumulateField[FloatSocket]":
-        """Create Accumulate Field with operation 'Face Corner'. Attribute on mesh face corner"""
-        return AccumulateField(
-            domain="CORNER", value=value, group_index=group_index, data_type=data_type
-        )
-
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]:
         return self.node.data_type
@@ -1550,42 +1537,6 @@ class EvaluateAtIndex[T](BaseNode):
         self.data_type = data_type
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls,
-        value: InputFloat = 0.0,
-        index: InputInteger = 0,
-        *,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-        ] = "FLOAT",
-    ) -> "EvaluateAtIndex[FloatSocket]":
-        """Create Evaluate at Index with operation 'Face Corner'. Attribute on mesh face corner"""
-        return EvaluateAtIndex(
-            domain="CORNER", value=value, index=index, data_type=data_type
-        )
-
-    @classmethod
-    def input_4x4_matrix(
-        cls,
-        value: InputMatrix = None,
-        index: InputInteger = 0,
-        *,
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-    ) -> "EvaluateAtIndex[MatrixSocket]":
-        """Create Evaluate at Index with operation '4x4 Matrix'. Floating point matrix"""
-        return EvaluateAtIndex(
-            data_type="FLOAT4X4", value=value, index=index, domain=domain
-        )
-
     @property
     def domain(
         self,
@@ -1754,36 +1705,6 @@ class EvaluateOnDomain[T](BaseNode):
         self.data_type = data_type
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls,
-        value: InputFloat = 0.0,
-        *,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "FLOAT_VECTOR",
-            "FLOAT_COLOR",
-            "QUATERNION",
-            "FLOAT4X4",
-        ] = "FLOAT",
-    ) -> "EvaluateOnDomain[FloatSocket]":
-        """Create Evaluate on Domain with operation 'Face Corner'. Attribute on mesh face corner"""
-        return EvaluateOnDomain(domain="CORNER", value=value, data_type=data_type)
-
-    @classmethod
-    def input_4x4_matrix(
-        cls,
-        value: InputMatrix = None,
-        *,
-        domain: Literal[
-            "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
-        ] = "POINT",
-    ) -> "EvaluateOnDomain[MatrixSocket]":
-        """Create Evaluate on Domain with operation '4x4 Matrix'. Floating point matrix"""
-        return EvaluateOnDomain(data_type="FLOAT4X4", value=value, domain=domain)
-
     @property
     def domain(
         self,
@@ -1939,19 +1860,6 @@ class FieldAverage[T](BaseNode):
         self.domain = domain
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls,
-        value: InputFloat = 0.0,
-        group_index: InputInteger = 0,
-        *,
-        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
-    ) -> "FieldAverage[FloatSocket]":
-        """Create Field Average with operation 'Face Corner'. Attribute on mesh face corner"""
-        return FieldAverage(
-            domain="CORNER", value=value, group_index=group_index, data_type=data_type
-        )
-
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
         return self.node.data_type
@@ -2065,19 +1973,6 @@ class FieldMinAndMax[T](BaseNode):
         self.data_type = data_type
         self.domain = domain
         self._establish_links(**key_args)
-
-    @classmethod
-    def face_corner(
-        cls,
-        value: InputFloat = 0.0,
-        group_index: InputInteger = 0,
-        *,
-        data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
-    ) -> "FieldMinAndMax[FloatSocket]":
-        """Create Field Min & Max with operation 'Face Corner'. Attribute on mesh face corner"""
-        return FieldMinAndMax(
-            domain="CORNER", value=value, group_index=group_index, data_type=data_type
-        )
 
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR"]:
@@ -2200,19 +2095,6 @@ class FieldVariance[T](BaseNode):
         self.data_type = data_type
         self.domain = domain
         self._establish_links(**key_args)
-
-    @classmethod
-    def face_corner(
-        cls,
-        value: InputFloat = 0.0,
-        group_index: InputInteger = 0,
-        *,
-        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
-    ) -> "FieldVariance[FloatSocket]":
-        """Create Field Variance with operation 'Face Corner'. Attribute on mesh face corner"""
-        return FieldVariance(
-            domain="CORNER", value=value, group_index=group_index, data_type=data_type
-        )
 
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
@@ -5476,10 +5358,10 @@ class MapRange(BaseNode):
     def vector(
         cls,
         vector: InputVector = (0.0, 0.0, 0.0),
-        from_min3: InputVector = (0.0, 0.0, 0.0),
-        from_max3: InputVector = (1.0, 1.0, 1.0),
-        to_min3: InputVector = (0.0, 0.0, 0.0),
-        to_max3: InputVector = (1.0, 1.0, 1.0),
+        from_min: InputVector = (0.0, 0.0, 0.0),
+        from_max: InputVector = (1.0, 1.0, 1.0),
+        to_min: InputVector = (0.0, 0.0, 0.0),
+        to_max: InputVector = (1.0, 1.0, 1.0),
         *,
         clamp: bool = False,
         interpolation_type: Literal[
@@ -5490,10 +5372,10 @@ class MapRange(BaseNode):
         return cls(
             data_type="FLOAT_VECTOR",
             vector=vector,
-            from_min_float3=from_min3,
-            from_max_float3=from_max3,
-            to_min_float3=to_min3,
-            to_max_float3=to_max3,
+            from_min_float3=from_min,
+            from_max_float3=from_max,
+            to_min_float3=to_min,
+            to_max_float3=to_max,
             clamp=clamp,
             interpolation_type=interpolation_type,
         )

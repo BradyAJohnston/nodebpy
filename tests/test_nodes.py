@@ -2575,3 +2575,57 @@ def test_factory_methods_omit_properties_hidden_for_the_variant():
     assert "normalize" in fbm
     assert "normalize" not in ridged
     assert "noise_dimensions" in ridged
+
+
+def _classmethod_names(cls):
+    import inspect
+
+    return {
+        name
+        for name, attr in vars(cls).items()
+        if isinstance(inspect.getattr_static(cls, name), classmethod)
+    }
+
+
+def test_factory_names_rename_type_labels():
+    # "4x4 Matrix" was mangled to input_4x4_matrix; a digit-led label is
+    # prefixed with its property's name (gabor_type "2D" -> type_2d)
+    names = _classmethod_names(g.NamedAttribute)
+    assert "matrix" in names
+    assert "input_4x4_matrix" not in names
+    assert {"type_2d", "type_3d"} <= _classmethod_names(g.GaborTexture)
+
+
+@pytest.mark.parametrize(
+    "cls",
+    [
+        g.AccumulateField,
+        g.EvaluateAtIndex,
+        g.EvaluateOnDomain,
+        g.FieldAverage,
+        g.FieldMinAndMax,
+        g.FieldVariance,
+    ],
+)
+def test_field_nodes_expose_only_nested_domain_factories(cls):
+    # the nested cls.<domain>.<data_type>() factories are the API; no flat
+    # per-domain or per-data-type classmethods should leak onto the class
+    flat = _classmethod_names(cls) - {"create_group"}
+    assert not flat & {"face_corner", "corner", "point", "matrix", "float"}
+
+
+def test_variant_param_names_drop_type_and_counter_suffixes():
+    import inspect
+
+    assert list(inspect.signature(g.TrimCurve.length).parameters)[2:] == [
+        "start",
+        "end",
+    ]
+    assert list(inspect.signature(g.MapRange.vector).parameters)[1:5] == [
+        "from_min",
+        "from_max",
+        "to_min",
+        "to_max",
+    ]
+    # a counter that tells two sockets apart is kept
+    assert "value_001" in inspect.signature(g.Math.add).parameters
