@@ -73,6 +73,25 @@ def test_color_shader():
             _ = s.Mix.color(0.5, mix_shader)
 
 
+
+@pytest.mark.parametrize(
+    "variant, a, b, a_id, b_id",
+    [
+        ("float", "a", "b", "A_Float", "B_Float"),
+        ("vector", "a", "b", "A_Vector", "B_Vector"),
+        ("color", "a_color", "b_color", "A_Color", "B_Color"),
+    ],
+)
+def test_mix_variants_take_a_and_b(variant, a, b, a_id, b_id):
+    # A is usage-inactive at the default Factor of 1.0; the variant must still
+    # expose it (it was dropped by the generator, #175)
+    with s.tree():
+        first, second = s.Value(), s.Value()
+        mix = getattr(s.Mix, variant)(0.5, **{a: first, b: second})
+        inputs = {socket.identifier: socket for socket in mix.node.inputs}
+        assert inputs[a_id].links[0].from_node == first.node
+        assert inputs[b_id].links[0].from_node == second.node
+
 def test_material_node_cartoon():
     with s.material("Cartoon", fake_user=True) as mat:
         mat.nodes.clear()
