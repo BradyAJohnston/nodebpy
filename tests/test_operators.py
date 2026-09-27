@@ -1083,8 +1083,11 @@ class TestColorArithmetic:
         (lambda x: x + (1, 2, 3), "ADD"),
         (lambda x: (1, 2, 3) - x, "SUBTRACT"),
     ],
+    ids=["mul", "rmul", "add", "rsub"],
 )
-@pytest.mark.parametrize("scalar", [lambda: g.Value(2.0), lambda: g.Integer(2)])
+@pytest.mark.parametrize(
+    "scalar", [lambda: g.Value(2.0), lambda: g.Integer(2)], ids=["float", "int"]
+)
 def test_scalar_socket_with_vector_tuple_uses_vector_math(expr, operation, scalar):
     with TreeBuilder():
         result = expr(scalar())
