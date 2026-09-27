@@ -6,6 +6,8 @@ methods that render their own fragments of the generated source.
 
 from __future__ import annotations
 
+import re
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any, Literal, cast
 
@@ -24,6 +26,54 @@ from .util import (
     get_socket_param_name,
     normalize_name,
 )
+
+# Factory method names for enum items whose label does not make a good
+# identifier on its own (keys are normalized labels, digits not yet prefixed).
+_METHOD_RENAMES = {
+    "4x4_matrix": "matrix",
+    "8_bit_integer": "integer_8bit",
+    "2d_vector": "vector_2d",
+    "2d": "two_d",
+    "3d": "three_d",
+    "and": "l_and",
+    "or": "l_or",
+    "not": "l_not",
+}
+
+
+# Data-type suffixes Blender puts on socket identifiers that differ only by type.
+_TYPE_SUFFIX = re.compile(r"_(Float|Vector|Color|Rotation|FLOAT3)$")
+_COUNTER_SUFFIX = re.compile(r"_\d{3}$")
+
+
+def variant_method_name(label: str) -> str:
+    """The factory classmethod name for an enum item or menu value label."""
+    name = normalize_name(label)
+    if label[:1].isdigit():
+        name = name.removeprefix("input_")
+    name = _METHOD_RENAMES.get(name, name)
+    return f"input_{name}" if name[:1].isdigit() else name
+
+
+def variant_param_names(sockets: list[SocketInfo]) -> dict[str, str]:
+    """Factory parameter names for a variant's sockets, by identifier.
+
+    Names come from the socket identifier with a trailing data-type suffix
+    removed (Mix's ``A_Color`` and Map Range's ``From_Min_FLOAT3``) and, when
+    the name stays unique within the variant, a trailing ``_001``-style
+    counter (Trim Curve's length-mode ``Start_001``). A counter that is needed
+    to tell two sockets apart is kept (Math's ``value`` / ``value_001``).
+    """
+    typed = {
+        s.identifier: normalize_name(_TYPE_SUFFIX.sub("", s.identifier))
+        for s in sockets
+    }
+    bare = {ident: _COUNTER_SUFFIX.sub("", name) for ident, name in typed.items()}
+    counts = Counter(bare.values())
+    return {
+        ident: bare[ident] if bare[ident] and counts[bare[ident]] == 1 else name
+        for ident, name in typed.items()
+    }
 
 
 @dataclass
@@ -558,10 +608,12 @@ class NodeInfo:
         self,
         config: TreeTypeConfig | None = None,
         suppress: frozenset[str] = frozenset(),
+        suppress_props: frozenset[str] = frozenset(),
     ) -> str:
         """Generate @classmethod convenience methods for enum operations.
 
-        ``suppress`` names factory methods to omit (a registered customization
+        ``suppress`` names factory methods to omit and ``suppress_props`` enum
+        properties whose factories are all omitted (a registered customization
         replaces them).
         """
         methods = []
@@ -577,54 +629,22 @@ class NodeInfo:
                 ]
                 and "type" not in prop.identifier
                 or prop.identifier in ["blend_type", "direction_type"]
+                or prop.identifier in suppress_props
             ):
                 continue
 
             # assert operation_enum.enum_items
             for enum in prop.enum_items:
-                # Handle special cases for better naming
-                method_name = normalize_name(
-                    enum.name.replace("4x4_matrix", "matrix")
-                    .replace("8_bit_integer", "int8")
-                    .replace("2d_vector", "vector2")
-                )
-                # method_name = method_name.replace("_", "")
-                if method_name == "and":
-                    method_name = "l_and"
-                elif method_name == "or":
-                    method_name = "l_or"
-                elif method_name == "not":
-                    method_name = "l_not"
-                else:
-                    # Add underscore suffix to avoid Python keyword conflicts for others
-                    method_name = f"{method_name}"
-
-                # # Skip invalid method names
-                # if not method_name.replace("_", "").replace("l", "").isalnum():
-                #     continue
+                method_name = variant_method_name(enum.name)
 
                 # Generate method signature based on node inputs (excluding operation socket)
                 input_params = ["cls"]
                 call_params = []
 
-                all_labels = [socket.identifier for socket in enum.sockets]
-                sockets_use_same_name = all(
-                    label == all_labels[0] for label in all_labels
-                )
+                param_names = variant_param_names(enum.sockets)
                 for socket in enum.sockets:
-                    # Use label-based parameter naming
-                    socket_name = get_socket_param_name(socket, sockets_use_same_name)
-                    suffixes_to_remove = ["_float", "_vector"]
-                    param_name = socket_name
-                    if socket_name.startswith(("min", "max")):
-                        suffixes_to_remove += ["_001", "_002"]
-                    for suffix in suffixes_to_remove:
-                        param_name = param_name.replace(suffix, "")
-                    # data-type suffixed identifiers (Mix's "A_Color"), not
-                    # names that merely end in colour ("Base Color")
-                    for type_suffix in ("_Color", "_Rotation"):
-                        if socket.identifier.endswith(type_suffix):
-                            param_name = param_name.removesuffix(type_suffix.lower())
+                    socket_name = get_socket_param_name(socket)
+                    param_name = param_names[socket.identifier]
 
                     if (
                         param_name
@@ -719,32 +739,15 @@ class NodeInfo:
 
         for enum in self.type_socket_enums:
             item_value = enum.identifier
-            method_name = normalize_name(item_value)
-            if method_name == "and":
-                method_name = "l_and"
-            elif method_name == "or":
-                method_name = "l_or"
-            elif method_name == "not":
-                method_name = "l_not"
+            method_name = variant_method_name(item_value)
 
             input_params = ["cls"]
             call_params = []
 
-            all_identifiers = [s.identifier for s in enum.sockets]
-            sockets_use_same_name = (
-                all(ident == all_identifiers[0] for ident in all_identifiers)
-                if all_identifiers
-                else False
-            )
-
+            param_names = variant_param_names(enum.sockets)
             for socket in enum.sockets:
-                socket_name = get_socket_param_name(socket, sockets_use_same_name)
-                suffixes_to_remove = ["_float", "_vector"]
-                param_name = socket_name
-                if socket_name.startswith(("min", "max")):
-                    suffixes_to_remove += ["_001", "_002"]
-                for suffix in suffixes_to_remove:
-                    param_name = param_name.replace(suffix, "")
+                socket_name = get_socket_param_name(socket)
+                param_name = param_names[socket.identifier]
 
                 if param_name and param_name != "" and param_name != type_param_name:
                     input_params.append(
