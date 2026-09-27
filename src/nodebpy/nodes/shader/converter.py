@@ -433,23 +433,31 @@ class Mix(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, factor: InputFloat = 1.0, b: InputFloat = 0.0) -> "Mix":
+    def float(
+        cls, factor: InputFloat = 1.0, a: InputFloat = 0.0, b: InputFloat = 0.0
+    ) -> "Mix":
         """Create Mix with operation 'Float'."""
-        return cls(data_type="FLOAT", factor_float=factor, b_float=b)
+        return cls(data_type="FLOAT", factor_float=factor, a_float=a, b_float=b)
 
     @classmethod
     def vector(
-        cls, factor: InputFloat = 1.0, b: InputVector = (0.0, 0.0, 0.0)
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputVector = (0.0, 0.0, 0.0),
+        b: InputVector = (0.0, 0.0, 0.0),
     ) -> "Mix":
         """Create Mix with operation 'Vector'."""
-        return cls(data_type="VECTOR", factor_float=factor, b_vector=b)
+        return cls(data_type="VECTOR", factor_float=factor, a_vector=a, b_vector=b)
 
     @classmethod
     def color(
-        cls, factor: InputFloat = 1.0, b_color: InputColor = (0.5, 0.5, 0.5, 1.0)
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputColor = (0.5, 0.5, 0.5, 1.0),
+        b: InputColor = (0.5, 0.5, 0.5, 1.0),
     ) -> "Mix":
         """Create Mix with operation 'Color'."""
-        return cls(data_type="RGBA", factor_float=factor, b_color=b_color)
+        return cls(data_type="RGBA", factor_float=factor, a_color=a, b_color=b)
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
