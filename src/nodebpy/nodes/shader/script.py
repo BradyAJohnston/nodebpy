@@ -47,14 +47,27 @@ class Script(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def internal(cls) -> "Script":
+    def internal(cls, *, bytecode: str = "", bytecode_hash: str = "") -> "Script":
         """Create Script with operation 'Internal'. Use internal text data-block"""
-        return cls(mode="INTERNAL")
+        return cls(mode="INTERNAL", bytecode=bytecode, bytecode_hash=bytecode_hash)
 
     @classmethod
-    def external(cls) -> "Script":
+    def external(
+        cls,
+        *,
+        filepath: str = "",
+        use_auto_update: bool = False,
+        bytecode: str = "",
+        bytecode_hash: str = "",
+    ) -> "Script":
         """Create Script with operation 'External'. Use external .osl or .oso file"""
-        return cls(mode="EXTERNAL")
+        return cls(
+            mode="EXTERNAL",
+            filepath=filepath,
+            use_auto_update=use_auto_update,
+            bytecode=bytecode,
+            bytecode_hash=bytecode_hash,
+        )
 
     @property
     def filepath(self) -> str:

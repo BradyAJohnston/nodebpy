@@ -251,4 +251,61 @@ COMPOSITOR_CONFIG = TreeTypeConfig(
     ],
 )
 
+
+# Properties Blender only draws for some values of the enum a factory
+# classmethod fixes (from each node's ``draw_buttons`` in the Blender source).
+# A factory for any other value leaves them out of its keyword-only parameters,
+# so ``NoiseTexture.ridged_multifractal()`` does not offer ``normalize``.
+# ``bl_idname -> variant property -> {conditional property: values it shows for}``
+VARIANT_ONLY_PROPERTIES: dict[str, dict[str, dict[str, frozenset[str]]]] = {
+    "ShaderNodeTexNoise": {"noise_type": {"normalize": frozenset({"FBM"})}},
+    "ShaderNodeTexWave": {
+        "wave_type": {
+            "bands_direction": frozenset({"BANDS"}),
+            "rings_direction": frozenset({"RINGS"}),
+        }
+    },
+    "ShaderNodeTexSky": {
+        "sky_type": {
+            **dict.fromkeys(
+                ("sun_direction", "turbidity"),
+                frozenset({"PREETHAM", "HOSEK_WILKIE"}),
+            ),
+            "ground_albedo": frozenset({"HOSEK_WILKIE"}),
+            **dict.fromkeys(
+                (
+                    "sun_disc",
+                    "sun_size",
+                    "sun_intensity",
+                    "sun_elevation",
+                    "sun_rotation",
+                    "altitude",
+                    "air_density",
+                    "aerosol_density",
+                    "ozone_density",
+                ),
+                frozenset({"SINGLE_SCATTERING", "MULTIPLE_SCATTERING"}),
+            ),
+        }
+    },
+    "GeometryNodeMeshLine": {"mode": {"count_mode": frozenset({"END_POINTS"})}},
+    "GeometryNodeSetMeshNormal": {"mode": {"domain": frozenset({"FREE"})}},
+    "GeometryNodeDeleteGeometry": {
+        "domain": {"mode": frozenset({"POINT", "EDGE", "FACE"})}
+    },
+    "ShaderNodeTexIES": {
+        "mode": {
+            "ies": frozenset({"INTERNAL"}),
+            "filepath": frozenset({"EXTERNAL"}),
+        }
+    },
+    "ShaderNodeScript": {
+        "mode": {
+            "script": frozenset({"INTERNAL"}),
+            "filepath": frozenset({"EXTERNAL"}),
+            "use_auto_update": frozenset({"EXTERNAL"}),
+        }
+    },
+}
+
 ALL_CONFIGS = [GEOMETRY_CONFIG, SHADER_CONFIG, COMPOSITOR_CONFIG]
