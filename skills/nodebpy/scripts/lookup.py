@@ -98,7 +98,13 @@ def show(name: str, trees: list[str]) -> None:
         if methods:
             print("\n  variants:")
             for m in methods:
-                params = ", ".join(inspect.signature(getattr(cls, m)).parameters)
+                params, keyword_only = [], False
+                for param in inspect.signature(getattr(cls, m)).parameters.values():
+                    if param.kind is param.KEYWORD_ONLY and not keyword_only:
+                        params.append("*")
+                        keyword_only = True
+                    params.append(param.name)
+                params = ", ".join(params)
                 print(f"    {name}.{m}({params})")
         for subs, attrs in factories.items():
             left = attrs[0] if len(attrs) == 1 else "{" + ",".join(attrs) + "}"
