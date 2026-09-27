@@ -608,19 +608,52 @@ class VectorTransform(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def point(cls, vector: InputVector = (0.5, 0.5, 0.5)) -> "VectorTransform":
+    def point(
+        cls,
+        vector: InputVector = (0.5, 0.5, 0.5),
+        *,
+        convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",
+        convert_to: Literal["WORLD", "OBJECT", "CAMERA"] = "OBJECT",
+    ) -> "VectorTransform":
         """Create Vector Transform with operation 'Point'. Transform a point"""
-        return cls(vector_type="POINT", vector=vector)
+        return cls(
+            vector_type="POINT",
+            vector=vector,
+            convert_from=convert_from,
+            convert_to=convert_to,
+        )
 
     @classmethod
-    def vector(cls, vector: InputVector = (0.5, 0.5, 0.5)) -> "VectorTransform":
+    def vector(
+        cls,
+        vector: InputVector = (0.5, 0.5, 0.5),
+        *,
+        convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",
+        convert_to: Literal["WORLD", "OBJECT", "CAMERA"] = "OBJECT",
+    ) -> "VectorTransform":
         """Create Vector Transform with operation 'Vector'. Transform a direction vector"""
-        return cls(vector_type="VECTOR", vector=vector)
+        return cls(
+            vector_type="VECTOR",
+            vector=vector,
+            convert_from=convert_from,
+            convert_to=convert_to,
+        )
 
     @classmethod
-    def normal(cls, vector: InputVector = (0.5, 0.5, 0.5)) -> "VectorTransform":
+    def normal(
+        cls,
+        vector: InputVector = (0.5, 0.5, 0.5),
+        *,
+        convert_from: Literal["WORLD", "OBJECT", "CAMERA"] = "WORLD",
+        convert_to: Literal["WORLD", "OBJECT", "CAMERA"] = "OBJECT",
+    ) -> "VectorTransform":
         """Create Vector Transform with operation 'Normal'. Transform a normal vector with unit length"""
-        return cls(vector_type="NORMAL", vector=vector)
+        return cls(
+            vector_type="NORMAL",
+            vector=vector,
+            convert_from=convert_from,
+            convert_to=convert_to,
+        )
 
     @property
     def vector_type(self) -> Literal["POINT", "VECTOR", "NORMAL"]:

@@ -796,6 +796,8 @@ class MetallicBSDF(BaseNode):
         tangent: InputVector = None,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
+        *,
+        distribution: Literal["BECKMANN", "GGX", "MULTI_GGX"] = "MULTI_GGX",
     ) -> "MetallicBSDF":
         """Create Metallic BSDF with operation 'Physical Conductor'. Fresnel conductor based on the complex refractive index per color channel"""
         return cls(
@@ -809,6 +811,7 @@ class MetallicBSDF(BaseNode):
             tangent=tangent,
             thin_film_thickness=thin_film_thickness,
             thin_film_ior=thin_film_ior,
+            distribution=distribution,
         )
 
     @classmethod
@@ -823,6 +826,8 @@ class MetallicBSDF(BaseNode):
         tangent: InputVector = None,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
+        *,
+        distribution: Literal["BECKMANN", "GGX", "MULTI_GGX"] = "MULTI_GGX",
     ) -> "MetallicBSDF":
         """Create Metallic BSDF with operation 'F82 Tint'. An approximation of the Fresnel conductor curve based on the colors at perpendicular and near-grazing (roughly 82°) angles"""
         return cls(
@@ -836,6 +841,7 @@ class MetallicBSDF(BaseNode):
             tangent=tangent,
             thin_film_thickness=thin_film_thickness,
             thin_film_ior=thin_film_ior,
+            distribution=distribution,
         )
 
     @property

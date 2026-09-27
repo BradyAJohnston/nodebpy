@@ -366,7 +366,7 @@ class GaborTexture(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def input_2d(
+    def type_2d(
         cls,
         vector: InputVector = None,
         scale: InputFloat = 5.0,
@@ -385,7 +385,7 @@ class GaborTexture(BaseNode):
         )
 
     @classmethod
-    def input_3d(
+    def type_3d(
         cls,
         vector: InputVector = None,
         scale: InputFloat = 5.0,
@@ -838,6 +838,8 @@ class NoiseTexture(BaseNode):
         roughness: InputFloat = 0.5,
         lacunarity: InputFloat = 2.0,
         distortion: InputFloat = 0.0,
+        *,
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Multifractal'. More uneven result (varies with location), more similar to a real terrain"""
         return cls(
@@ -848,6 +850,7 @@ class NoiseTexture(BaseNode):
             roughness=roughness,
             lacunarity=lacunarity,
             distortion=distortion,
+            noise_dimensions=noise_dimensions,
         )
 
     @classmethod
@@ -861,6 +864,8 @@ class NoiseTexture(BaseNode):
         offset: InputFloat = 0.0,
         gain: InputFloat = 1.0,
         distortion: InputFloat = 0.0,
+        *,
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Ridged Multifractal'. Create sharp peaks"""
         return cls(
@@ -873,6 +878,7 @@ class NoiseTexture(BaseNode):
             offset=offset,
             gain=gain,
             distortion=distortion,
+            noise_dimensions=noise_dimensions,
         )
 
     @classmethod
@@ -886,6 +892,8 @@ class NoiseTexture(BaseNode):
         offset: InputFloat = 0.0,
         gain: InputFloat = 1.0,
         distortion: InputFloat = 0.0,
+        *,
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Hybrid Multifractal'. Create peaks and valleys with different roughness values"""
         return cls(
@@ -898,6 +906,7 @@ class NoiseTexture(BaseNode):
             offset=offset,
             gain=gain,
             distortion=distortion,
+            noise_dimensions=noise_dimensions,
         )
 
     @classmethod
@@ -909,6 +918,9 @@ class NoiseTexture(BaseNode):
         roughness: InputFloat = 0.5,
         lacunarity: InputFloat = 2.0,
         distortion: InputFloat = 0.0,
+        *,
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
+        normalize: bool = False,
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'fBM'. The standard fractal Perlin noise"""
         return cls(
@@ -919,6 +931,8 @@ class NoiseTexture(BaseNode):
             roughness=roughness,
             lacunarity=lacunarity,
             distortion=distortion,
+            noise_dimensions=noise_dimensions,
+            normalize=normalize,
         )
 
     @classmethod
@@ -931,6 +945,8 @@ class NoiseTexture(BaseNode):
         lacunarity: InputFloat = 2.0,
         offset: InputFloat = 0.0,
         distortion: InputFloat = 0.0,
+        *,
+        noise_dimensions: Literal["1D", "2D", "3D", "4D"] = "3D",
     ) -> "NoiseTexture":
         """Create Noise Texture with operation 'Hetero Terrain'. Similar to Hybrid Multifractal creates a heterogeneous terrain, but with the likeness of river channels"""
         return cls(
@@ -942,6 +958,7 @@ class NoiseTexture(BaseNode):
             lacunarity=lacunarity,
             offset=offset,
             distortion=distortion,
+            noise_dimensions=noise_dimensions,
         )
 
     @property
@@ -1286,6 +1303,9 @@ class WaveTexture(BaseNode):
         detail_scale: InputFloat = 1.0,
         detail_roughness: InputFloat = 0.5,
         phase_offset: InputFloat = 0.0,
+        *,
+        bands_direction: Literal["X", "Y", "Z", "DIAGONAL"] = "X",
+        wave_profile: Literal["SIN", "SAW", "TRI"] = "SIN",
     ) -> "WaveTexture":
         """Create Wave Texture with operation 'Bands'. Use standard wave texture in bands"""
         return cls(
@@ -1297,6 +1317,8 @@ class WaveTexture(BaseNode):
             detail_scale=detail_scale,
             detail_roughness=detail_roughness,
             phase_offset=phase_offset,
+            bands_direction=bands_direction,
+            wave_profile=wave_profile,
         )
 
     @classmethod
@@ -1309,6 +1331,9 @@ class WaveTexture(BaseNode):
         detail_scale: InputFloat = 1.0,
         detail_roughness: InputFloat = 0.5,
         phase_offset: InputFloat = 0.0,
+        *,
+        rings_direction: Literal["X", "Y", "Z", "SPHERICAL"] = "X",
+        wave_profile: Literal["SIN", "SAW", "TRI"] = "SIN",
     ) -> "WaveTexture":
         """Create Wave Texture with operation 'Rings'. Use wave texture in rings"""
         return cls(
@@ -1320,6 +1345,8 @@ class WaveTexture(BaseNode):
             detail_scale=detail_scale,
             detail_roughness=detail_roughness,
             phase_offset=phase_offset,
+            rings_direction=rings_direction,
+            wave_profile=wave_profile,
         )
 
     @property

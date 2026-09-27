@@ -426,6 +426,9 @@ class ColorBalance(BaseNode):
         color_gamma: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_gain: InputFloat = 1.0,
         color_gain: InputColor = (1.0, 1.0, 1.0, 1.0),
+        *,
+        input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
     ) -> "ColorBalance":
         """Create Color Balance node with type 'Lift/Gamma/Gain'."""
         return cls(
@@ -437,6 +440,8 @@ class ColorBalance(BaseNode):
             color_gamma=color_gamma,
             base_gain=base_gain,
             color_gain=color_gain,
+            input_whitepoint=input_whitepoint,
+            output_whitepoint=output_whitepoint,
             type="Lift/Gamma/Gain",
         )
 
@@ -451,6 +456,9 @@ class ColorBalance(BaseNode):
         color_power: InputColor = (1.0, 1.0, 1.0, 1.0),
         base_slope: InputFloat = 1.0,
         color_slope: InputColor = (1.0, 1.0, 1.0, 1.0),
+        *,
+        input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
     ) -> "ColorBalance":
         """Create Color Balance node with type 'Offset/Power/Slope (ASC-CDL)'."""
         return cls(
@@ -462,6 +470,8 @@ class ColorBalance(BaseNode):
             color_power=color_power,
             base_slope=base_slope,
             color_slope=color_slope,
+            input_whitepoint=input_whitepoint,
+            output_whitepoint=output_whitepoint,
             type="Offset/Power/Slope (ASC-CDL)",
         )
 
@@ -474,6 +484,9 @@ class ColorBalance(BaseNode):
         input_tint: InputFloat = 10.0,
         output_temperature: InputFloat = 6500.0,
         output_tint: InputFloat = 10.0,
+        *,
+        input_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
+        output_whitepoint: tuple[float, float, float] = (0.735, 0.735, 0.735),
     ) -> "ColorBalance":
         """Create Color Balance node with type 'White Point'."""
         return cls(
@@ -483,6 +496,8 @@ class ColorBalance(BaseNode):
             input_tint=input_tint,
             output_temperature=output_temperature,
             output_tint=output_tint,
+            input_whitepoint=input_whitepoint,
+            output_whitepoint=output_whitepoint,
             type="White Point",
         )
 

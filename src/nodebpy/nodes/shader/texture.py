@@ -153,10 +153,14 @@ class IesTexture(BaseNode):
 
     @classmethod
     def external(
-        cls, vector: InputVector = None, strength: InputFloat = 1.0
+        cls,
+        vector: InputVector = None,
+        strength: InputFloat = 1.0,
+        *,
+        filepath: str = "",
     ) -> "IesTexture":
         """Create IES Texture with operation 'External'. Use external .ies file"""
-        return cls(mode="EXTERNAL", vector=vector, strength=strength)
+        return cls(mode="EXTERNAL", vector=vector, strength=strength, filepath=filepath)
 
     @property
     def filepath(self) -> str:
@@ -343,24 +347,94 @@ class SkyTexture(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def single_scattering(cls) -> "SkyTexture":
+    def single_scattering(
+        cls,
+        *,
+        sun_disc: bool = True,
+        sun_size: float = 0.0095120445,
+        sun_intensity: float = 1.0,
+        sun_elevation: float = math.pi / 12,
+        sun_rotation: float = 0.0,
+        altitude: float = 100.0,
+        air_density: float = 1.0,
+        aerosol_density: float = 1.0,
+        ozone_density: float = 1.0,
+    ) -> "SkyTexture":
         """Create Sky Texture with operation 'Single Scattering'. Single scattering sky model"""
-        return cls(sky_type="SINGLE_SCATTERING")
+        return cls(
+            sky_type="SINGLE_SCATTERING",
+            sun_disc=sun_disc,
+            sun_size=sun_size,
+            sun_intensity=sun_intensity,
+            sun_elevation=sun_elevation,
+            sun_rotation=sun_rotation,
+            altitude=altitude,
+            air_density=air_density,
+            aerosol_density=aerosol_density,
+            ozone_density=ozone_density,
+        )
 
     @classmethod
-    def multiple_scattering(cls) -> "SkyTexture":
+    def multiple_scattering(
+        cls,
+        *,
+        sun_disc: bool = True,
+        sun_size: float = 0.0095120445,
+        sun_intensity: float = 1.0,
+        sun_elevation: float = math.pi / 12,
+        sun_rotation: float = 0.0,
+        altitude: float = 100.0,
+        air_density: float = 1.0,
+        aerosol_density: float = 1.0,
+        ozone_density: float = 1.0,
+    ) -> "SkyTexture":
         """Create Sky Texture with operation 'Multiple Scattering'. Multiple scattering sky model (more accurate)"""
-        return cls(sky_type="MULTIPLE_SCATTERING")
+        return cls(
+            sky_type="MULTIPLE_SCATTERING",
+            sun_disc=sun_disc,
+            sun_size=sun_size,
+            sun_intensity=sun_intensity,
+            sun_elevation=sun_elevation,
+            sun_rotation=sun_rotation,
+            altitude=altitude,
+            air_density=air_density,
+            aerosol_density=aerosol_density,
+            ozone_density=ozone_density,
+        )
 
     @classmethod
-    def preetham(cls, vector: InputVector = None) -> "SkyTexture":
+    def preetham(
+        cls,
+        vector: InputVector = None,
+        *,
+        sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
+        turbidity: float = 0.0,
+    ) -> "SkyTexture":
         """Create Sky Texture with operation 'Preetham'. Preetham 1999 (Legacy)"""
-        return cls(sky_type="PREETHAM", vector=vector)
+        return cls(
+            sky_type="PREETHAM",
+            vector=vector,
+            sun_direction=sun_direction,
+            turbidity=turbidity,
+        )
 
     @classmethod
-    def hosek_wilkie(cls, vector: InputVector = None) -> "SkyTexture":
+    def hosek_wilkie(
+        cls,
+        vector: InputVector = None,
+        *,
+        sun_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
+        turbidity: float = 0.0,
+        ground_albedo: float = 0.0,
+    ) -> "SkyTexture":
         """Create Sky Texture with operation 'Hosek / Wilkie'. Hosek / Wilkie 2012 (Legacy)"""
-        return cls(sky_type="HOSEK_WILKIE", vector=vector)
+        return cls(
+            sky_type="HOSEK_WILKIE",
+            vector=vector,
+            sun_direction=sun_direction,
+            turbidity=turbidity,
+            ground_albedo=ground_albedo,
+        )
 
     @property
     def sky_type(
