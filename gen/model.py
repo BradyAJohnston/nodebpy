@@ -33,8 +33,6 @@ _METHOD_RENAMES = {
     "4x4_matrix": "matrix",
     "8_bit_integer": "integer_8bit",
     "2d_vector": "vector_2d",
-    "2d": "two_d",
-    "3d": "three_d",
     "and": "l_and",
     "or": "l_or",
     "not": "l_not",
