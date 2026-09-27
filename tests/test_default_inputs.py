@@ -113,10 +113,11 @@ def test_asset_codegen_spells_fallbacks_as_default():
     )
     assert "Position. When unconnected, reads the position field." in parts.docstring
     assert 'UV Map. When unconnected, reads the "UVMap" attribute.' in parts.docstring
-    assert any(
-        line.startswith("from nodebpy.types import ") and "Default" in line
-        for line in imports
-    )
+    (types_line,) = [l for l in imports if l.startswith("from nodebpy.types import ")]
+    names = types_line.removeprefix("from nodebpy.types import ").split(", ")
+    # dump only runs ruff format, so the names must already be isort-ordered
+    assert names[0] == "Default"
+    assert names == sorted(names)
 
 
 def test_asset_codegen_without_fallbacks_does_not_import_default():

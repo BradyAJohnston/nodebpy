@@ -513,7 +513,7 @@ def interface_parts(
     if any("math." in s.default for s in cls.inputs):
         import_lines.insert(0, "import math")
     if any(s.default.startswith("Default.") for s in cls.inputs):
-        input_types.append("Default")
+        input_types.insert(0, "Default")  # sorts before the Input* names
     if input_types:
         import_lines.append(f"from {nodebpy_pkg}.types import {', '.join(input_types)}")
 
