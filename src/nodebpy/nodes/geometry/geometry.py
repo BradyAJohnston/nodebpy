@@ -1524,45 +1524,79 @@ class DeleteGeometry(BaseNode):
 
     @classmethod
     def all(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'All'."""
-        return cls(mode="ALL", geometry=geometry, selection=selection)
+        return cls(mode="ALL", geometry=geometry, selection=selection, domain=domain)
 
     @classmethod
     def only_edges_faces(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Only Edges & Faces'."""
-        return cls(mode="EDGE_FACE", geometry=geometry, selection=selection)
+        return cls(
+            mode="EDGE_FACE", geometry=geometry, selection=selection, domain=domain
+        )
 
     @classmethod
     def only_faces(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        domain: Literal[
+            "POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"
+        ] = "POINT",
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Only Faces'."""
-        return cls(mode="ONLY_FACE", geometry=geometry, selection=selection)
+        return cls(
+            mode="ONLY_FACE", geometry=geometry, selection=selection, domain=domain
+        )
 
     @classmethod
     def point(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Point'. Attribute on point"""
-        return cls(domain="POINT", geometry=geometry, selection=selection)
+        return cls(domain="POINT", geometry=geometry, selection=selection, mode=mode)
 
     @classmethod
     def edge(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Edge'. Attribute on mesh edge"""
-        return cls(domain="EDGE", geometry=geometry, selection=selection)
+        return cls(domain="EDGE", geometry=geometry, selection=selection, mode=mode)
 
     @classmethod
     def face(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
     ) -> "DeleteGeometry":
         """Create Delete Geometry with operation 'Face'. Attribute on mesh faces"""
-        return cls(domain="FACE", geometry=geometry, selection=selection)
+        return cls(domain="FACE", geometry=geometry, selection=selection, mode=mode)
 
     @classmethod
     def spline(
@@ -3735,10 +3769,16 @@ class MeshLine(BaseNode):
         count: InputInteger = 10,
         start_location: InputVector = (0.0, 0.0, 0.0),
         offset: InputVector = (0.0, 0.0, 1.0),
+        *,
+        count_mode: Literal["TOTAL", "RESOLUTION"] = "TOTAL",
     ) -> "MeshLine":
         """Create Mesh Line with operation 'End Points'. Specify the line's start and end points"""
         return cls(
-            mode="END_POINTS", count=count, start_location=start_location, offset=offset
+            mode="END_POINTS",
+            count=count,
+            start_location=start_location,
+            offset=offset,
+            count_mode=count_mode,
         )
 
     @property
@@ -4695,7 +4735,7 @@ class Raycast[T](BaseNode):
         )
 
     @classmethod
-    def input_4x4_matrix(
+    def matrix(
         cls,
         target_geometry: InputGeometry = None,
         attribute: InputMatrix = None,
@@ -5513,7 +5553,7 @@ class SampleNearestSurface[T](BaseNode):
         )
 
     @classmethod
-    def input_4x4_matrix(
+    def matrix(
         cls,
         mesh: InputGeometry = None,
         value: InputMatrix = None,
@@ -5751,7 +5791,7 @@ class SampleUVSurface[T](BaseNode):
         )
 
     @classmethod
-    def input_4x4_matrix(
+    def matrix(
         cls,
         mesh: InputGeometry = None,
         value: InputMatrix = None,
@@ -7386,10 +7426,14 @@ class SetMeshNormal(BaseNode):
 
     @classmethod
     def free(
-        cls, mesh: InputGeometry = None, custom_normal: InputVector = (0.0, 0.0, 0.0)
+        cls,
+        mesh: InputGeometry = None,
+        custom_normal: InputVector = (0.0, 0.0, 0.0),
+        *,
+        domain: Literal["POINT", "FACE", "CORNER"] = "POINT",
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Free'. Store custom normals as simple vectors in the local space of the mesh. Values are not necessarily updated automatically later on as the mesh is deformed."""
-        return cls(mode="FREE", mesh=mesh, custom_normal=custom_normal)
+        return cls(mode="FREE", mesh=mesh, custom_normal=custom_normal, domain=domain)
 
     @classmethod
     def tangent_space(
@@ -7405,6 +7449,8 @@ class SetMeshNormal(BaseNode):
         remove_custom: InputBoolean = True,
         edge_sharpness: InputBoolean = False,
         face_sharpness: InputBoolean = False,
+        *,
+        mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Point'. Attribute on point"""
         return cls(
@@ -7413,6 +7459,7 @@ class SetMeshNormal(BaseNode):
             remove_custom=remove_custom,
             edge_sharpness=edge_sharpness,
             face_sharpness=face_sharpness,
+            mode=mode,
         )
 
     @classmethod
@@ -7422,6 +7469,8 @@ class SetMeshNormal(BaseNode):
         remove_custom: InputBoolean = True,
         edge_sharpness: InputBoolean = False,
         face_sharpness: InputBoolean = False,
+        *,
+        mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Face'. Attribute on mesh faces"""
         return cls(
@@ -7430,6 +7479,7 @@ class SetMeshNormal(BaseNode):
             remove_custom=remove_custom,
             edge_sharpness=edge_sharpness,
             face_sharpness=face_sharpness,
+            mode=mode,
         )
 
     @classmethod
@@ -7439,6 +7489,8 @@ class SetMeshNormal(BaseNode):
         remove_custom: InputBoolean = True,
         edge_sharpness: InputBoolean = False,
         face_sharpness: InputBoolean = False,
+        *,
+        mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
     ) -> "SetMeshNormal":
         """Create Set Mesh Normal with operation 'Face Corner'. Attribute on mesh face corner"""
         return cls(
@@ -7447,6 +7499,7 @@ class SetMeshNormal(BaseNode):
             remove_custom=remove_custom,
             edge_sharpness=edge_sharpness,
             face_sharpness=face_sharpness,
+            mode=mode,
         )
 
     @property
@@ -7786,48 +7839,98 @@ class SetSelection[T](BaseNode):
 
     @classmethod
     def point(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Point'. Attribute on point"""
-        return SetSelection(domain="POINT", geometry=geometry, selection=selection)
+        return SetSelection(
+            domain="POINT",
+            geometry=geometry,
+            selection=selection,
+            selection_type=selection_type,
+        )
 
     @classmethod
     def edge(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Edge'. Attribute on mesh edge"""
-        return SetSelection(domain="EDGE", geometry=geometry, selection=selection)
+        return SetSelection(
+            domain="EDGE",
+            geometry=geometry,
+            selection=selection,
+            selection_type=selection_type,
+        )
 
     @classmethod
     def face(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Face'. Attribute on mesh faces"""
-        return SetSelection(domain="FACE", geometry=geometry, selection=selection)
+        return SetSelection(
+            domain="FACE",
+            geometry=geometry,
+            selection=selection,
+            selection_type=selection_type,
+        )
 
     @classmethod
     def spline(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Spline'. Attribute on spline"""
-        return SetSelection(domain="CURVE", geometry=geometry, selection=selection)
+        return SetSelection(
+            domain="CURVE",
+            geometry=geometry,
+            selection=selection,
+            selection_type=selection_type,
+        )
 
     @classmethod
     def boolean(
-        cls, geometry: InputGeometry = None, selection: InputBoolean = True
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputBoolean = True,
+        *,
+        domain: Literal["POINT", "EDGE", "FACE", "CURVE"] = "POINT",
     ) -> "SetSelection[BooleanSocket]":
         """Create Set Selection with operation 'Boolean'. Store true or false selection values in edit mode"""
         return SetSelection(
-            selection_type="BOOLEAN", geometry=geometry, selection=selection
+            selection_type="BOOLEAN",
+            geometry=geometry,
+            selection=selection,
+            domain=domain,
         )
 
     @classmethod
     def float(
-        cls, geometry: InputGeometry = None, selection: InputFloat = 1.0
+        cls,
+        geometry: InputGeometry = None,
+        selection: InputFloat = 1.0,
+        *,
+        domain: Literal["POINT", "EDGE", "FACE", "CURVE"] = "POINT",
     ) -> "SetSelection[FloatSocket]":
         """Create Set Selection with operation 'Float'. Store floating point selection values. For mesh geometry, stored inverted as the sculpt mode mask"""
         return SetSelection(
-            selection_type="FLOAT", geometry=geometry, selection=selection
+            selection_type="FLOAT",
+            geometry=geometry,
+            selection=selection,
+            domain=domain,
         )
 
     @property
@@ -9646,16 +9749,16 @@ class TrimCurve(BaseNode):
         cls,
         curve: InputGeometry = None,
         selection: InputBoolean = True,
-        start_001: InputFloat = 0.0,
-        end_001: InputFloat = 1.0,
+        start: InputFloat = 0.0,
+        end: InputFloat = 1.0,
     ) -> "TrimCurve":
         """Create Trim Curve with operation 'Length'. Find the endpoint positions using a length from the start of each spline"""
         return cls(
             mode="LENGTH",
             curve=curve,
             selection=selection,
-            start_001=start_001,
-            end_001=end_001,
+            start_001=start,
+            end_001=end,
         )
 
     @property

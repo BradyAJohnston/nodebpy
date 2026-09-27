@@ -154,14 +154,20 @@ def test_interface_default_value():
 
 
 def test_non_default_property():
-    """A non-default property with no factory equivalent is emitted as a kwarg."""
+    """A non-default property is emitted as a kwarg of the factory."""
     with TreeBuilder("WithProp") as tree:
         g.Math(operation="MULTIPLY", use_clamp=True)
     code = to_python(tree)
-    # use_clamp has no factory shortcut, so the plain constructor is used
-    # and both non-default properties appear explicitly.
-    assert 'operation="MULTIPLY"' in code
-    assert "use_clamp=True" in code
+    assert "g.Math.multiply(use_clamp=True)" in code
+
+
+def test_factory_skips_props_it_does_not_take():
+    """A prop Blender hides for the factory's variant forces the constructor."""
+    with TreeBuilder("NoiseNormalize") as tree:
+        g.NoiseTexture(noise_type="RIDGED_MULTIFRACTAL", normalize=True)
+    code = to_python(tree)
+    assert "g.NoiseTexture.ridged_multifractal(" not in code
+    assert "normalize=True" in code
 
 
 def test_default_property_omitted():
@@ -1368,13 +1374,13 @@ def test_factory_nested_instance_path():
     assert 'data_type="INT"' not in code
 
 
-def test_factory_fallback_when_props_not_covered():
-    """A non-default prop outside the factory signature forces the constructor."""
+def test_factory_passes_through_non_default_props():
+    """A non-default prop the factory takes as a keyword is passed to it."""
     with TreeBuilder("MathClamp") as tree:
         val = tree.inputs.float("Value", 1.0)
         g.Math(val, operation="SINE", use_clamp=True) >> tree.outputs.float("Out")
     code = _assert_roundtrip(tree)
-    assert 'g.Math(value=value, operation="SINE", use_clamp=True)' in code
+    assert "g.Math.sine(value, use_clamp=True)" in code
 
 
 def test_factory_keeps_default_prop_constructor():
