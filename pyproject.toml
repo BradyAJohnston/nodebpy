@@ -9,9 +9,6 @@ authors = [
 requires-python = ">=3.13"
 license = { text = "GPL-3.0-or-later" }
 
-[project.scripts]
-nodebpy = "nodebpy:main"
-
 [project.optional-dependencies]
 networkx = [
     "networkx>=3.6.1",
