@@ -586,6 +586,10 @@ class NodeInfo:
                         suffixes_to_remove += ["_001", "_002"]
                     for suffix in suffixes_to_remove:
                         param_name = param_name.replace(suffix, "")
+                    # data-type suffixed identifiers (Mix's "A_Color"), not
+                    # names that merely end in colour ("Base Color")
+                    if socket.identifier.endswith("_Color"):
+                        param_name = param_name.removesuffix("_color")
 
                     if (
                         param_name

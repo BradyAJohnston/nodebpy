@@ -453,13 +453,11 @@ class Mix(BaseNode):
     def color(
         cls,
         factor: InputFloat = 1.0,
-        a_color: InputColor = (0.5, 0.5, 0.5, 1.0),
-        b_color: InputColor = (0.5, 0.5, 0.5, 1.0),
+        a: InputColor = (0.5, 0.5, 0.5, 1.0),
+        b: InputColor = (0.5, 0.5, 0.5, 1.0),
     ) -> "Mix":
         """Create Mix with operation 'Color'."""
-        return cls(
-            data_type="RGBA", factor_float=factor, a_color=a_color, b_color=b_color
-        )
+        return cls(data_type="RGBA", factor_float=factor, a_color=a, b_color=b)
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:

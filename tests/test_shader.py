@@ -79,7 +79,7 @@ def test_color_shader():
     [
         ("float", "a", "b", "A_Float", "B_Float"),
         ("vector", "a", "b", "A_Vector", "B_Vector"),
-        ("color", "a_color", "b_color", "A_Color", "B_Color"),
+        ("color", "a", "b", "A_Color", "B_Color"),
     ],
 )
 def test_mix_variants_take_a_and_b(variant, a, b, a_id, b_id):
