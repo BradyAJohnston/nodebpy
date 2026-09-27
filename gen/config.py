@@ -188,7 +188,6 @@ GEOMETRY_CONFIG = TreeTypeConfig(
         "Value",
         "MeshBoolean",
         "Compare",
-        "Mix",
         "AttributeStatistic",
         "SampleIndex",
         "IntegerVector",

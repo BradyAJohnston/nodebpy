@@ -588,8 +588,9 @@ class NodeInfo:
                         param_name = param_name.replace(suffix, "")
                     # data-type suffixed identifiers (Mix's "A_Color"), not
                     # names that merely end in colour ("Base Color")
-                    if socket.identifier.endswith("_Color"):
-                        param_name = param_name.removesuffix("_color")
+                    for type_suffix in ("_Color", "_Rotation"):
+                        if socket.identifier.endswith(type_suffix):
+                            param_name = param_name.removesuffix(type_suffix.lower())
 
                     if (
                         param_name
