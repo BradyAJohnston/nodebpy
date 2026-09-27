@@ -187,11 +187,13 @@ Each custom group appears as a single, named node in the tree -- keeping the gra
 
 ## Fallback Inputs
 
-A group input can read an implicit field, a context value or a named attribute
-when nothing is connected to it — what Blender's interface editor calls the
-*Default Input* and *Default Attribute*. The `tree.inputs.*` factories take
-these as `default_input=` and `default_attribute=`, accepting either Blender's
-identifier strings or the members of `nodebpy.Default`:
+A group input can read an implicit field or a context value when nothing is
+connected to it — what Blender's interface editor calls the *Default Input*.
+The `tree.inputs.*` factories take it as `default_input=`, accepting either
+Blender's identifier strings or the members of `nodebpy.Default`. A *Default
+Attribute* (`default_attribute=`) is different: it only applies when the group
+is used directly as a Geometry Nodes modifier, where the input starts out
+reading that attribute. As a node inside another tree the input uses its value.
 
 ```{python}
 from nodebpy import Default
@@ -205,7 +207,7 @@ class Displace(CustomGeometryGroup):
         self,
         geometry: InputGeometry = ...,
         position: InputVector = Default.POSITION,
-        uv_map: InputVector = Default.attribute("UVMap"),
+        uv_map: InputVector = None,
         strength: InputFloat = 0.1,
     ):
         super().__init__(
@@ -220,9 +222,7 @@ class Displace(CustomGeometryGroup):
     def _build_group(self, tree):
         geometry = tree.inputs.geometry("Geometry")
         position = tree.inputs.vector("Position", default_input=Default.POSITION)
-        uv_map = tree.inputs.vector(
-            "UV Map", hide_value=True, default_attribute=Default.attribute("UVMap")
-        )
+        uv_map = tree.inputs.vector("UV Map", default_attribute="UVMap")
         strength = tree.inputs.float("Strength", 0.1)
 
         offset = g.NoiseTexture(vector=uv_map).o.color * strength
@@ -236,11 +236,9 @@ with g.tree("DisplaceInternal") as tree:
 tree
 ```
 
-The constructor mirrors the interface: `Default.POSITION` and
-`Default.attribute("UVMap")` as parameter defaults document the fallback, and
-passing them through leaves the group node's socket untouched so the fallback
-applies. `Default.attribute(...)` also works for `tree.outputs.*`, where it
-names the attribute an output is stored to.
+The constructor mirrors the interface: `Default.POSITION` as a parameter default
+documents the fallback, and passing it through leaves the group node's socket
+untouched so the fallback applies.
 
 ## Class Options
 

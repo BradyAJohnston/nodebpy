@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import enum
 import typing
-from dataclasses import dataclass
 from types import EllipsisType
 from typing import Literal
 
@@ -106,8 +105,7 @@ class Default(enum.Enum):
     signature and the docs. Passing a member to a node constructor leaves the
     socket untouched — it does not add a link — exactly like ``None``. The
     same members are accepted by the ``default_input=`` argument of the
-    ``tree.inputs.*`` socket factories, and :meth:`attribute` names the
-    attribute a group input reads when unconnected (``default_attribute=``).
+    ``tree.inputs.*`` socket factories.
     """
 
     INDEX = "INDEX"
@@ -120,11 +118,6 @@ class Default(enum.Enum):
     SCENE_FRAME = "SCENE_FRAME"
     UNIFORM_IMAGE_COORDINATES = "UNIFORM_IMAGE_COORDINATES"
     SELF_OBJECT = "SELF_OBJECT"
-
-    @staticmethod
-    def attribute(name: str) -> DefaultAttribute:
-        """The fallback that reads the named attribute of the geometry."""
-        return DefaultAttribute(name)
 
     @property
     def description(self) -> str:
@@ -151,27 +144,6 @@ _DEFAULT_DESCRIPTIONS: dict[Default, str] = {
 }
 
 
-@dataclass(frozen=True, slots=True)
-class DefaultAttribute:
-    """The fallback of an input that reads a named attribute when unconnected.
-
-    Create one with :meth:`Default.attribute`; it prints as
-    ``Default.attribute("UVMap")`` so it reads the same in a generated
-    signature as in source.
-    """
-
-    name: str
-
-    @property
-    def description(self) -> str:
-        return f'the "{self.name}" attribute'
-
-    def __repr__(self) -> str:
-        return f"Default.attribute({self.name!r})"
-
-    __str__ = __repr__
-
-
 # Type aliases for node inputs using typing.Union for runtime compatibility
 InputLinkable = typing.Union[
     "BaseNode",
@@ -180,7 +152,6 @@ InputLinkable = typing.Union[
     None,
     EllipsisType,
     Default,
-    DefaultAttribute,
 ]
 
 InputFloat = typing.Union[

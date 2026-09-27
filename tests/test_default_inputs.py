@@ -17,7 +17,6 @@ from nodebpy import Default, TreeBuilder
 from nodebpy import geometry as g
 from nodebpy.assets import BundledLibrary, _codegen, generate_asset_api
 from nodebpy.export.codegen import to_python
-from nodebpy.types import DefaultAttribute
 
 _ESSENTIALS = BundledLibrary("geometry_nodes_essentials.blend")
 _needs_essentials = pytest.mark.skipif(
@@ -34,20 +33,11 @@ def test_members_mirror_blender_identifiers():
     assert Default.POSITION.description == "the position field"
 
 
-def test_attribute_fallback():
-    uv = Default.attribute("UVMap")
-    assert isinstance(uv, DefaultAttribute)
-    assert uv == DefaultAttribute("UVMap")
-    assert repr(uv) == "Default.attribute('UVMap')"
-    assert uv.description == 'the "UVMap" attribute'
-
-
 def test_constructor_leaves_the_socket_untouched():
     with g.tree("Default Inputs") as tree:
         node = g.SetPosition(
             g.Cube(),
             position=Default.POSITION,
-            offset=Default.attribute("offset"),
             selection=Default.INDEX,
         )
     linked = {
@@ -71,11 +61,9 @@ def test_tree_factories_accept_default():
     with TreeBuilder.geometry("Fallbacks") as tree:
         tree.inputs.vector("Position", default_input=Default.POSITION)
         tree.inputs.integer("ID", default_input="ID_OR_INDEX")
-        tree.inputs.vector(
-            "UV Map", hide_value=True, default_attribute=Default.attribute("UVMap")
-        )
+        tree.inputs.vector("UV Map", hide_value=True, default_attribute="UVMap")
         tree.inputs.object("Object", default_input=Default.SELF_OBJECT)
-        tree.outputs.vector("Rest", default_attribute=Default.attribute("rest"))
+        tree.outputs.vector("Rest", default_attribute="rest")
         tree.outputs.geometry()
     items = {item.name: item for item in tree.tree.interface.items_tree}
     assert items["Position"].default_input == "POSITION"
@@ -92,8 +80,8 @@ def _fallback_group():
         tree.inputs.integer(
             "ID", 3, description="Per-point seed", default_input="ID_OR_INDEX"
         )
-        tree.inputs.vector(
-            "UV Map", hide_value=True, default_attribute=Default.attribute("UVMap")
+        tree.inputs.float(
+            "Weight", 0.5, description="Blend weight", default_attribute="weight"
         )
         tree.inputs.float("Scale", 2.0)
         geometry >> tree.outputs.geometry()
@@ -104,7 +92,9 @@ def test_asset_codegen_spells_fallbacks_as_default():
     parts, imports = _codegen.interface_parts(_fallback_group(), library_source=None)
     assert "position: InputVector = Default.POSITION" in parts.body
     assert "id: InputInteger = Default.ID_OR_INDEX" in parts.body
-    assert "uv_map: InputVector = Default.attribute('UVMap')" in parts.body
+    # A default attribute only applies to a modifier input: the parameter keeps
+    # its stored value and the docstring notes the attribute.
+    assert "weight: InputFloat = 0.5" in parts.body
     assert "scale: InputFloat = 2.0" in parts.body
     # The docstring says what the input reads when nothing is connected.
     assert (
@@ -112,7 +102,10 @@ def test_asset_codegen_spells_fallbacks_as_default():
         in parts.docstring
     )
     assert "Position. When unconnected, reads the position field." in parts.docstring
-    assert 'UV Map. When unconnected, reads the "UVMap" attribute.' in parts.docstring
+    assert (
+        'Blend weight. As a modifier input, reads the "weight" attribute by default.'
+        in parts.docstring
+    )
     (types_line,) = [l for l in imports if l.startswith("from nodebpy.types import ")]
     names = types_line.removeprefix("from nodebpy.types import ").split(", ")
     # dump only runs ruff format, so the names must already be isort-ordered
@@ -163,7 +156,7 @@ def test_default_cannot_be_linked():
         with pytest.raises(TypeError, match="fallback"):
             node._link(Default.POSITION, node.i.position)
         with pytest.raises(TypeError, match="fallback"):
-            node._link(cube.o.mesh, Default.attribute("UVMap"))
+            node._link(cube.o.mesh, Default.NORMAL)
 
 
 def test_iterable_and_factory_inputs_skip_default():

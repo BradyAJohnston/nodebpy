@@ -378,7 +378,7 @@ class AttachHairCurvesToSurface(AssetGeometryGroup):
     surface_object : InputObject
         Surface Object to attach to
     surface_uv_map : InputVector
-        Surface UV map used for attachment. When unconnected, reads the "UVMap" attribute.
+        Surface UV map used for attachment. As a modifier input, reads the "UVMap" attribute by default.
     resting_surface : InputBoolean
         Use the surface's resting state to preserve stability under deformation
     use_existing_attachment : InputBoolean
@@ -470,7 +470,7 @@ class AttachHairCurvesToSurface(AssetGeometryGroup):
         surface_source: InputMenu | Literal["Attached", "Input", "Object"] = "Object",
         surface_geometry: InputGeometry = None,
         surface_object: InputObject = None,
-        surface_uv_map: InputVector = Default.attribute("UVMap"),
+        surface_uv_map: InputVector = None,
         resting_surface: InputBoolean = False,
         use_existing_attachment: InputBoolean = False,
         snap_to_surface: InputBoolean = True,
@@ -984,7 +984,7 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
     geometry : InputGeometry
         The static cloth mesh.
     pin_group : InputFloat
-        How strong each vertex is pinned to its input position. When unconnected, reads the "Group" attribute.
+        How strong each vertex is pinned to its input position. As a modifier input, reads the "Group" attribute by default.
     invert_pin_group : InputBoolean
         Invert which vertices are pinned and which are not.
     stretchiness : InputFloat
@@ -1014,7 +1014,7 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
     tearing_mode : InputMenu | Literal["All", "Custom", "Voronoi"]
         How to choose which edges are allowed to tear.
     tearing_edge_group : InputBoolean
-        Selection of edges which are allowed to tear. When unconnected, reads the "tear" attribute.
+        Selection of edges which are allowed to tear. As a modifier input, reads the "tear" attribute by default.
     tearing_threshold : InputFloat
         The higher the value, the stronger the stress required to tear an edge.
     tearing_voronoi_scale : InputFloat
@@ -1153,7 +1153,7 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        pin_group: InputFloat = Default.attribute("Group"),
+        pin_group: InputFloat = 0.0,
         invert_pin_group: InputBoolean = False,
         stretchiness: InputFloat = 0.0,
         bendiness: InputFloat = 0.0,
@@ -1168,7 +1168,7 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
         socket_3: InputVector = None,
         tearing: InputBoolean = False,
         tearing_mode: InputMenu | Literal["All", "Custom", "Voronoi"] = "All",
-        tearing_edge_group: InputBoolean = Default.attribute("tear"),
+        tearing_edge_group: InputBoolean = True,
         tearing_threshold: InputFloat = 1.2,
         tearing_voronoi_scale: InputFloat = 0.5,
         effectors_collection: InputCollection = None,
@@ -2646,7 +2646,7 @@ class DisplaceHairCurves(AssetGeometryGroup):
     input_4 : InputObject
         Surface object used to sample the normal for displacement
     surface_uv_map : InputVector
-        Surface UV map used to sample the normal for displacement. When unconnected, reads the "UVMap" attribute.
+        Surface UV map used to sample the normal for displacement. As a modifier input, reads the "UVMap" attribute by default.
     surface_normal_distance : InputFloat
         Amount of displacemement along the surface normal
 
@@ -2731,7 +2731,7 @@ class DisplaceHairCurves(AssetGeometryGroup):
         surface_input_type: InputMenu | Literal["Object", "Geometry"] = "Object",
         input_5: InputGeometry = None,
         input_4: InputObject = None,
-        surface_uv_map: InputVector = Default.attribute("UVMap"),
+        surface_uv_map: InputVector = None,
         surface_normal_distance: InputFloat = 0.0,
     ):
         super().__init__(
@@ -3038,7 +3038,7 @@ class GenerateHairCurves(AssetGeometryGroup):
     surface : InputObject
         Surface object for generation (needs matching transforms)
     surface_uv_map : InputVector
-        Surface UV map used for attachment. When unconnected, reads the "UVMap" attribute.
+        Surface UV map used for attachment. As a modifier input, reads the "UVMap" attribute by default.
     resting_surface : InputBoolean
         Use the surface's resting state to preserve stability under deformation
     attach_to_surface : InputBoolean
@@ -3161,7 +3161,7 @@ class GenerateHairCurves(AssetGeometryGroup):
         hair_surface: InputGeometry = None,
         surface_source: InputMenu | Literal["Attached", "Input", "Object"] = "Attached",
         surface: InputObject = None,
-        surface_uv_map: InputVector = Default.attribute("UVMap"),
+        surface_uv_map: InputVector = None,
         resting_surface: InputBoolean = True,
         attach_to_surface: InputBoolean = True,
         hair_length: InputFloat = 1.0,
@@ -4734,7 +4734,7 @@ class RestoreCurveSegmentLength(AssetGeometryGroup):
     factor : InputFloat
         Factor to blend overall effect
     reference_position : InputVector
-        Reference position before deformation. When unconnected, reads the "rest_position" attribute.
+        Reference position before deformation. As a modifier input, reads the "rest_position" attribute by default.
     pin_at_parameter : InputFloat
         Pin each curve at a certain point for the operation
 
@@ -4789,7 +4789,7 @@ class RestoreCurveSegmentLength(AssetGeometryGroup):
         curves: InputGeometry = None,
         selection: InputBoolean = True,
         factor: InputFloat = 1.0,
-        reference_position: InputVector = Default.attribute("rest_position"),
+        reference_position: InputVector = None,
         pin_at_parameter: InputFloat = 0.0,
     ):
         super().__init__(
@@ -5118,7 +5118,7 @@ class ScatterOnSurface(AssetGeometryGroup):
     image_mask : InputImage
         Grayscale image texture used to remove scattered instances
     uv_map : InputVector
-        Texture coordinates used to map the image on the surface. When unconnected, reads the position field.
+        Texture coordinates used to map the image on the surface. When unconnected, reads the position field. As a modifier input, reads the "UVMap" attribute by default.
 
     Inputs
     ------

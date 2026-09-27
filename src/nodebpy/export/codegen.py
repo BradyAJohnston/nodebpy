@@ -34,7 +34,7 @@ from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 import numpy as np
 from bpy.types import ID, FunctionNodeCompare, NodeTree
 
-from ..types import Default, DefaultAttribute
+from ..types import Default
 from ._floats import (
     fmt_float as _fmt_float,
 )
@@ -1816,7 +1816,7 @@ def _factory_call(
                 if (
                     default is inspect.Parameter.empty
                     or default is None
-                    or isinstance(default, (Default, DefaultAttribute))
+                    or isinstance(default, Default)
                 ):
                     continue  # None / Default.* mean "leave the socket untouched"
                 socket = _input_socket_by_kwarg(node, key)

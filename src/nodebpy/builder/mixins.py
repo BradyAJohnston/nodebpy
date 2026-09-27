@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Self, TypeVar, cast, overload
 
 from bpy.types import NodeLink, NodeSocket
 
-from ..types import Default, DefaultAttribute
+from ..types import Default
 from ._registry import _wrap_socket
 from ._utils import SocketError, _resolve_promotion, _SocketLike
 
@@ -263,7 +263,7 @@ class LinkingMixin:
 
     def _source_socket(self, node: InputLinkable | Socket | NodeSocket) -> NodeSocket:
         assert node is not None
-        if isinstance(node, (Default, DefaultAttribute)):
+        if isinstance(node, Default):
             raise TypeError(f"{node} marks an input's fallback, it cannot be linked")
         if isinstance(node, NodeSocket):
             return node
@@ -274,7 +274,7 @@ class LinkingMixin:
 
     def _target_socket(self, node: InputLinkable | Socket | NodeSocket) -> NodeSocket:
         assert node is not None
-        if isinstance(node, (Default, DefaultAttribute)):
+        if isinstance(node, Default):
             raise TypeError(f"{node} marks an input's fallback, it cannot be linked")
         if isinstance(node, NodeSocket):
             return node

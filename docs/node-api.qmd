@@ -42,7 +42,7 @@ Some inputs read something other than their stored value when nothing is
 connected. Blender hides the value of such sockets in the editor: Set
 Position's *Position* reads the position field, its *Selection* means every
 element, and many group assets declare a *Default Input* (an implicit field or
-context value) or a *Default Attribute* for an input. A constructor parameter
+context value) for an input. A constructor parameter
 whose value Blender hides defaults to `None`, which leaves the socket alone.
 
 For generated asset classes the fallback is spelled out with `Default`, so it
@@ -60,8 +60,7 @@ The members mirror Blender's default-input identifiers (`Default.POSITION`,
 `Default.NORMAL`, `Default.INDEX`, `Default.ID_OR_INDEX`,
 `Default.INSTANCE_TRANSFORM`, `Default.HANDLE_LEFT`, `Default.HANDLE_RIGHT`,
 `Default.SCENE_FRAME`, `Default.UNIFORM_IMAGE_COORDINATES`,
-`Default.SELF_OBJECT`), and `Default.attribute("UVMap")` names an attribute
-the input reads. Passing a member to any constructor is the same as passing
+`Default.SELF_OBJECT`). Passing a member to any constructor is the same as passing
 `None`: nothing is set or linked, the socket keeps its own fallback.
 
 ```{python}
