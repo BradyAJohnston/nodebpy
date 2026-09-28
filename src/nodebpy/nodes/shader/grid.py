@@ -357,7 +357,7 @@ class VolumeCoefficients(BaseNode):
         value: Literal[
             "HENYEY_GREENSTEIN", "FOURNIER_FORAND", "DRAINE", "RAYLEIGH", "MIE"
         ],
-    ):
+    ) -> None:
         self.node.phase = value
 
 
@@ -400,7 +400,7 @@ class VolumeInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -528,5 +528,5 @@ class VolumeScatter(BaseNode):
         value: Literal[
             "HENYEY_GREENSTEIN", "FOURNIER_FORAND", "DRAINE", "RAYLEIGH", "MIE"
         ],
-    ):
+    ) -> None:
         self.node.phase = value

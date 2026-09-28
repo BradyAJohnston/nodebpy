@@ -4,10 +4,13 @@
 from __future__ import annotations
 
 import contextlib
-from typing import cast
+from typing import TYPE_CHECKING, Any, cast
 
 import bpy
 from bpy.types import Node, NodeTree
+
+if TYPE_CHECKING:
+    from ..builder.tree import TreeBuilder
 
 _COLOR_CLASS_MAP = {
     "GEOMETRY": "geometry-node",
@@ -81,7 +84,7 @@ def _sorted_nodes(node_tree: NodeTree, reroute_names: set) -> list[Node]:
     return input_nodes + sorted_regular + output_nodes
 
 
-def to_mermaid(tree, fenced=True) -> str:
+def to_mermaid(tree: TreeBuilder[Any] | NodeTree, fenced: bool = True) -> str:
     """Generate a Mermaid diagram string from a node tree.
 
     Arguments
@@ -95,7 +98,7 @@ def to_mermaid(tree, fenced=True) -> str:
     -------
         A string containing the Mermaid diagram as a possibly fenced markdown code block
     """
-    node_tree = tree.tree if hasattr(tree, "tree") else tree
+    node_tree = tree if isinstance(tree, NodeTree) else tree.tree
 
     reroute_names = {n.name for n in node_tree.nodes if n.bl_idname == "NodeReroute"}
     sorted_nodes = _sorted_nodes(node_tree, reroute_names)

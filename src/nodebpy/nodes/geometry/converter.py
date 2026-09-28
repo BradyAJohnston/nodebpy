@@ -166,7 +166,9 @@ class AccumulateField[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]):
+    def data_type(
+        self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
+    ) -> None:
         self.node.data_type = value
 
     @property
@@ -179,7 +181,7 @@ class AccumulateField[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _AccumulateFieldDomainFactory:
@@ -218,13 +220,13 @@ class AccumulateField[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="TRANSFORM"
             )
 
-    point = _AccumulateFieldDomainFactory("POINT")
-    edge = _AccumulateFieldDomainFactory("EDGE")
-    face = _AccumulateFieldDomainFactory("FACE")
-    corner = _AccumulateFieldDomainFactory("CORNER")
-    spline = _AccumulateFieldDomainFactory("CURVE")
-    instance = _AccumulateFieldDomainFactory("INSTANCE")
-    layer = _AccumulateFieldDomainFactory("LAYER")
+    point: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("POINT")
+    edge: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("EDGE")
+    face: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("FACE")
+    corner: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("CORNER")
+    spline: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("CURVE")
+    instance: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("INSTANCE")
+    layer: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("LAYER")
 
 
 class AlignRotationToVector(BaseNode):
@@ -297,7 +299,7 @@ class AlignRotationToVector(BaseNode):
         return self.node.axis
 
     @axis.setter
-    def axis(self, value: Literal["X", "Y", "Z"]):
+    def axis(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.axis = value
 
     @property
@@ -305,7 +307,7 @@ class AlignRotationToVector(BaseNode):
         return self.node.pivot_axis
 
     @pivot_axis.setter
-    def pivot_axis(self, value: Literal["AUTO", "X", "Y", "Z"]):
+    def pivot_axis(self, value: Literal["AUTO", "X", "Y", "Z"]) -> None:
         self.node.pivot_axis = value
 
 
@@ -372,7 +374,7 @@ class AxesToRotation(BaseNode):
         return self.node.primary_axis
 
     @primary.setter
-    def primary(self, value: Literal["X", "Y", "Z"]):
+    def primary(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.primary_axis = value
 
     @property
@@ -380,7 +382,7 @@ class AxesToRotation(BaseNode):
         return self.node.secondary_axis
 
     @secondary.setter
-    def secondary(self, value: Literal["X", "Y", "Z"]):
+    def secondary(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.secondary_axis = value
 
 
@@ -537,7 +539,9 @@ class BitMath(BaseNode):
         return self.node.operation
 
     @operation.setter
-    def operation(self, value: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"]):
+    def operation(
+        self, value: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"]
+    ) -> None:
         self.node.operation = value
 
 
@@ -717,7 +721,7 @@ class BooleanMath(BaseNode):
         value: Literal[
             "AND", "OR", "NOT", "NAND", "NOR", "XNOR", "XOR", "IMPLY", "NIMPLY"
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
 
@@ -803,7 +807,7 @@ class Clamp(BaseNode):
         return self.node.clamp_type
 
     @clamp_type.setter
-    def clamp_type(self, value: Literal["MINMAX", "RANGE"]):
+    def clamp_type(self, value: Literal["MINMAX", "RANGE"]) -> None:
         self.node.clamp_type = value
 
 
@@ -1014,7 +1018,7 @@ class CombineBundle(_CombineBundleMixin, BaseNode):
         return self.node.define_signature
 
     @define_signature.setter
-    def define_signature(self, value: bool):
+    def define_signature(self, value: bool) -> None:
         self.node.define_signature = value
 
 
@@ -1126,7 +1130,7 @@ class CombineColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 
@@ -1547,7 +1551,7 @@ class EvaluateAtIndex[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     @property
@@ -1576,7 +1580,7 @@ class EvaluateAtIndex[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
     class _EvaluateAtIndexDomainFactory:
@@ -1635,13 +1639,13 @@ class EvaluateAtIndex[T](BaseNode):
                 value, index, domain=self._domain, data_type="FLOAT4X4"
             )
 
-    point = _EvaluateAtIndexDomainFactory("POINT")
-    edge = _EvaluateAtIndexDomainFactory("EDGE")
-    face = _EvaluateAtIndexDomainFactory("FACE")
-    corner = _EvaluateAtIndexDomainFactory("CORNER")
-    spline = _EvaluateAtIndexDomainFactory("CURVE")
-    instance = _EvaluateAtIndexDomainFactory("INSTANCE")
-    layer = _EvaluateAtIndexDomainFactory("LAYER")
+    point: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("POINT")
+    edge: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("EDGE")
+    face: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("FACE")
+    corner: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("CORNER")
+    spline: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("CURVE")
+    instance: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("INSTANCE")
+    layer: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("LAYER")
 
 
 class EvaluateOnDomain[T](BaseNode):
@@ -1715,7 +1719,7 @@ class EvaluateOnDomain[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     @property
@@ -1744,7 +1748,7 @@ class EvaluateOnDomain[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
     class _EvaluateOnDomainDomainFactory:
@@ -1787,13 +1791,15 @@ class EvaluateOnDomain[T](BaseNode):
             """Create 'EvaluateOnDomain' on this domain with 'FLOAT4X4' data type."""
             return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT4X4")
 
-    point = _EvaluateOnDomainDomainFactory("POINT")
-    edge = _EvaluateOnDomainDomainFactory("EDGE")
-    face = _EvaluateOnDomainDomainFactory("FACE")
-    corner = _EvaluateOnDomainDomainFactory("CORNER")
-    spline = _EvaluateOnDomainDomainFactory("CURVE")
-    instance = _EvaluateOnDomainDomainFactory("INSTANCE")
-    layer = _EvaluateOnDomainDomainFactory("LAYER")
+    point: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("POINT")
+    edge: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("EDGE")
+    face: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("FACE")
+    corner: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("CORNER")
+    spline: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("CURVE")
+    instance: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory(
+        "INSTANCE"
+    )
+    layer: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("LAYER")
 
 
 class FieldAverage[T](BaseNode):
@@ -1865,7 +1871,7 @@ class FieldAverage[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -1878,7 +1884,7 @@ class FieldAverage[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldAverageDomainFactory:
@@ -1901,13 +1907,13 @@ class FieldAverage[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldAverageDomainFactory("POINT")
-    edge = _FieldAverageDomainFactory("EDGE")
-    face = _FieldAverageDomainFactory("FACE")
-    corner = _FieldAverageDomainFactory("CORNER")
-    spline = _FieldAverageDomainFactory("CURVE")
-    instance = _FieldAverageDomainFactory("INSTANCE")
-    layer = _FieldAverageDomainFactory("LAYER")
+    point: _FieldAverageDomainFactory = _FieldAverageDomainFactory("POINT")
+    edge: _FieldAverageDomainFactory = _FieldAverageDomainFactory("EDGE")
+    face: _FieldAverageDomainFactory = _FieldAverageDomainFactory("FACE")
+    corner: _FieldAverageDomainFactory = _FieldAverageDomainFactory("CORNER")
+    spline: _FieldAverageDomainFactory = _FieldAverageDomainFactory("CURVE")
+    instance: _FieldAverageDomainFactory = _FieldAverageDomainFactory("INSTANCE")
+    layer: _FieldAverageDomainFactory = _FieldAverageDomainFactory("LAYER")
 
 
 class FieldMinAndMax[T](BaseNode):
@@ -1979,7 +1985,7 @@ class FieldMinAndMax[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -1992,7 +1998,7 @@ class FieldMinAndMax[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldMinAndMaxDomainFactory:
@@ -2023,13 +2029,13 @@ class FieldMinAndMax[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldMinAndMaxDomainFactory("POINT")
-    edge = _FieldMinAndMaxDomainFactory("EDGE")
-    face = _FieldMinAndMaxDomainFactory("FACE")
-    corner = _FieldMinAndMaxDomainFactory("CORNER")
-    spline = _FieldMinAndMaxDomainFactory("CURVE")
-    instance = _FieldMinAndMaxDomainFactory("INSTANCE")
-    layer = _FieldMinAndMaxDomainFactory("LAYER")
+    point: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("POINT")
+    edge: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("EDGE")
+    face: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("FACE")
+    corner: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("CORNER")
+    spline: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("CURVE")
+    instance: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("INSTANCE")
+    layer: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("LAYER")
 
 
 class FieldVariance[T](BaseNode):
@@ -2101,7 +2107,7 @@ class FieldVariance[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -2114,7 +2120,7 @@ class FieldVariance[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldVarianceDomainFactory:
@@ -2137,13 +2143,13 @@ class FieldVariance[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldVarianceDomainFactory("POINT")
-    edge = _FieldVarianceDomainFactory("EDGE")
-    face = _FieldVarianceDomainFactory("FACE")
-    corner = _FieldVarianceDomainFactory("CORNER")
-    spline = _FieldVarianceDomainFactory("CURVE")
-    instance = _FieldVarianceDomainFactory("INSTANCE")
-    layer = _FieldVarianceDomainFactory("LAYER")
+    point: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("POINT")
+    edge: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("EDGE")
+    face: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("FACE")
+    corner: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("CORNER")
+    spline: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("CURVE")
+    instance: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("INSTANCE")
+    layer: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("LAYER")
 
 
 class FieldToList(_FieldToListMixin, BaseNode):
@@ -2432,7 +2438,7 @@ class FilterList[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
 
@@ -2556,7 +2562,9 @@ class FloatToInteger(BaseNode):
         return self.node.rounding_mode
 
     @rounding_mode.setter
-    def rounding_mode(self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]):
+    def rounding_mode(
+        self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]
+    ) -> None:
         self.node.rounding_mode = value
 
 
@@ -3323,7 +3331,7 @@ class GetBundleItem[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -3335,7 +3343,7 @@ class GetBundleItem[T](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -3940,7 +3948,7 @@ class GetListItem[T, TList](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -3952,7 +3960,7 @@ class GetListItem[T, TList](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -4177,7 +4185,7 @@ class HashValue[T](BaseNode):
         value: Literal[
             "FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -4401,7 +4409,7 @@ class ImplicitConversion[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -4720,7 +4728,7 @@ class IntegerMath(BaseNode):
             "GCD",
             "LCM",
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
 
@@ -5077,7 +5085,7 @@ class ListLength[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -5385,7 +5393,7 @@ class MapRange(BaseNode):
         return self.node.clamp
 
     @clamp.setter
-    def clamp(self, value: bool):
+    def clamp(self, value: bool) -> None:
         self.node.clamp = value
 
     @property
@@ -5397,7 +5405,7 @@ class MapRange(BaseNode):
     @interpolation_type.setter
     def interpolation_type(
         self, value: Literal["LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"]
-    ):
+    ) -> None:
         self.node.interpolation_type = value
 
     @property
@@ -5405,7 +5413,7 @@ class MapRange(BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -6077,7 +6085,7 @@ class Math(BaseNode):
             "RADIANS",
             "DEGREES",
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
     @property
@@ -6085,7 +6093,7 @@ class Math(BaseNode):
         return self.node.use_clamp
 
     @use_clamp.setter
-    def use_clamp(self, value: bool):
+    def use_clamp(self, value: bool) -> None:
         self.node.use_clamp = value
 
 
@@ -6531,7 +6539,7 @@ class Mix(BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]):
+    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]) -> None:
         self.node.data_type = value
 
     @property
@@ -6539,7 +6547,7 @@ class Mix(BaseNode):
         return self.node.factor_mode
 
     @factor_mode.setter
-    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]):
+    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]) -> None:
         self.node.factor_mode = value
 
     @property
@@ -6592,7 +6600,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ],
-    ):
+    ) -> None:
         self.node.blend_type = value
 
     @property
@@ -6600,7 +6608,7 @@ class Mix(BaseNode):
         return self.node.clamp_factor
 
     @clamp_factor.setter
-    def clamp_factor(self, value: bool):
+    def clamp_factor(self, value: bool) -> None:
         self.node.clamp_factor = value
 
     @property
@@ -6608,7 +6616,7 @@ class Mix(BaseNode):
         return self.node.clamp_result
 
     @clamp_result.setter
-    def clamp_result(self, value: bool):
+    def clamp_result(self, value: bool) -> None:
         self.node.clamp_result = value
 
 
@@ -7023,7 +7031,9 @@ class RandomValue[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]):
+    def data_type(
+        self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
+    ) -> None:
         self.node.data_type = value
 
 
@@ -7250,7 +7260,7 @@ class RotateEuler(BaseNode):
         return self.node.rotation_type
 
     @rotation_type.setter
-    def rotation_type(self, value: Literal["AXIS_ANGLE", "EULER"]):
+    def rotation_type(self, value: Literal["AXIS_ANGLE", "EULER"]) -> None:
         self.node.rotation_type = value
 
     @property
@@ -7258,7 +7268,7 @@ class RotateEuler(BaseNode):
         return self.node.space
 
     @space.setter
-    def space(self, value: Literal["OBJECT", "LOCAL"]):
+    def space(self, value: Literal["OBJECT", "LOCAL"]) -> None:
         self.node.space = value
 
 
@@ -7323,7 +7333,7 @@ class RotateRotation(BaseNode):
         return self.node.rotation_space
 
     @rotation_space.setter
-    def rotation_space(self, value: Literal["GLOBAL", "LOCAL"]):
+    def rotation_space(self, value: Literal["GLOBAL", "LOCAL"]) -> None:
         self.node.rotation_space = value
 
 
@@ -7680,7 +7690,7 @@ class SeparateBundle(_SeparateBundleMixin, BaseNode):
         return self.node.define_signature
 
     @define_signature.setter
-    def define_signature(self, value: bool):
+    def define_signature(self, value: bool) -> None:
         self.node.define_signature = value
 
 
@@ -7765,7 +7775,7 @@ class SeparateColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 
@@ -8545,7 +8555,7 @@ class SortList[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
 
@@ -9320,7 +9330,7 @@ class StoreBundleItem[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -9332,7 +9342,7 @@ class StoreBundleItem[T](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -9458,7 +9468,7 @@ class StringToValue[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT"]):
+    def data_type(self, value: Literal["FLOAT", "INT"]) -> None:
         self.node.data_type = value
 
 
@@ -9772,7 +9782,7 @@ class Switch[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.input_type = value
 
 
@@ -10261,5 +10271,5 @@ class ValueToString[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT"]):
+    def data_type(self, value: Literal["FLOAT", "INT"]) -> None:
         self.node.data_type = value

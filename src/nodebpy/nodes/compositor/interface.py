@@ -224,5 +224,5 @@ class EnableOutput[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value

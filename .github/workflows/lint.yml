@@ -28,3 +28,16 @@ jobs:
 
       - name: ty check
         run: uv run ty check src/
+
+  typecheck-consumer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Type-check the installed wheel with mypy, pyright, basedpyright, pyrefly and ty
+        run: ./tests/typing/run.sh

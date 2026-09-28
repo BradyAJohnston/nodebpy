@@ -379,7 +379,7 @@ class GlassBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]):
+    def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]) -> None:
         self.node.distribution = value
 
 
@@ -493,7 +493,7 @@ class GlossyBSDF(BaseNode):
     @distribution.setter
     def distribution(
         self, value: Literal["BECKMANN", "GGX", "ASHIKHMIN_SHIRLEY", "MULTI_GGX"]
-    ):
+    ) -> None:
         self.node.distribution = value
 
 
@@ -593,7 +593,7 @@ class HairBSDF(BaseNode):
         return self.node.component
 
     @component.setter
-    def component(self, value: Literal["Reflection", "Transmission"]):
+    def component(self, value: Literal["Reflection", "Transmission"]) -> None:
         self.node.component = value
 
 
@@ -849,7 +849,7 @@ class MetallicBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]):
+    def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]) -> None:
         self.node.distribution = value
 
     @property
@@ -857,7 +857,7 @@ class MetallicBSDF(BaseNode):
         return self.node.fresnel_type
 
     @fresnel_type.setter
-    def fresnel_type(self, value: Literal["PHYSICAL_CONDUCTOR", "F82"]):
+    def fresnel_type(self, value: Literal["PHYSICAL_CONDUCTOR", "F82"]) -> None:
         self.node.fresnel_type = value
 
 
@@ -1231,7 +1231,7 @@ class PrincipledBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["GGX", "MULTI_GGX"]):
+    def distribution(self, value: Literal["GGX", "MULTI_GGX"]) -> None:
         self.node.distribution = value
 
     @property
@@ -1246,7 +1246,7 @@ class PrincipledBSDF(BaseNode):
         value: Literal[
             "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
         ],
-    ):
+    ) -> None:
         self.node.subsurface_method = value
 
 
@@ -1444,7 +1444,7 @@ class PrincipledHairBSDF(BaseNode):
         return self.node.model
 
     @model.setter
-    def model(self, value: Literal["CHIANG", "HUANG"]):
+    def model(self, value: Literal["CHIANG", "HUANG"]) -> None:
         self.node.model = value
 
     @property
@@ -1452,7 +1452,7 @@ class PrincipledHairBSDF(BaseNode):
         return self.node.parametrization
 
     @parametrization.setter
-    def parametrization(self, value: Literal["ABSORPTION", "MELANIN", "COLOR"]):
+    def parametrization(self, value: Literal["ABSORPTION", "MELANIN", "COLOR"]) -> None:
         self.node.parametrization = value
 
 
@@ -1618,7 +1618,7 @@ class RefractionBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["BECKMANN", "GGX"]):
+    def distribution(self, value: Literal["BECKMANN", "GGX"]) -> None:
         self.node.distribution = value
 
 
@@ -1703,7 +1703,7 @@ class SheenBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["ASHIKHMIN", "MICROFIBER"]):
+    def distribution(self, value: Literal["ASHIKHMIN", "MICROFIBER"]) -> None:
         self.node.distribution = value
 
 
@@ -1951,7 +1951,7 @@ class SubsurfaceScattering(BaseNode):
         value: Literal[
             "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
         ],
-    ):
+    ) -> None:
         self.node.falloff = value
 
 
@@ -2043,7 +2043,7 @@ class ToonBSDF(BaseNode):
         return self.node.component
 
     @component.setter
-    def component(self, value: Literal["DIFFUSE", "GLOSSY"]):
+    def component(self, value: Literal["DIFFUSE", "GLOSSY"]) -> None:
         self.node.component = value
 
 

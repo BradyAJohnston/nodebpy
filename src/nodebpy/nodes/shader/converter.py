@@ -121,7 +121,7 @@ class CombineColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 
@@ -265,7 +265,7 @@ class ImplicitConversion[T](BaseNode):
             "BUNDLE",
             "CLOSURE",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -569,7 +569,7 @@ class Mix(BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA"]):
+    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA"]) -> None:
         self.node.data_type = value
 
     @property
@@ -577,7 +577,7 @@ class Mix(BaseNode):
         return self.node.factor_mode
 
     @factor_mode.setter
-    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]):
+    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]) -> None:
         self.node.factor_mode = value
 
     @property
@@ -630,7 +630,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ],
-    ):
+    ) -> None:
         self.node.blend_type = value
 
     @property
@@ -638,7 +638,7 @@ class Mix(BaseNode):
         return self.node.clamp_factor
 
     @clamp_factor.setter
-    def clamp_factor(self, value: bool):
+    def clamp_factor(self, value: bool) -> None:
         self.node.clamp_factor = value
 
     @property
@@ -646,7 +646,7 @@ class Mix(BaseNode):
         return self.node.clamp_result
 
     @clamp_result.setter
-    def clamp_result(self, value: bool):
+    def clamp_result(self, value: bool) -> None:
         self.node.clamp_result = value
 
 
@@ -772,7 +772,7 @@ class SeparateColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 
