@@ -178,9 +178,11 @@ class ColorRamp(BaseNode):
     ----------
     fac : InputFloat
         Factor: Which is used to sample the ColorRamp for the output color.
-    items : Iterable[tuple[float, tuple[float, float, float float]]]
+    items : Iterable[tuple[float, tuple[float, float, float float]] | tuple[float, float, float, float, float]]
         Iterable of items which contain (position, color) which position being a
         4-component float for values RGBA. Position is a value betwen `0..1`.
+        Items can also be flat `(position, r, g, b, a)`, so an `(N, 5)` numpy
+        array works.
         Defaults to black at 0.0 and white at 1.0. At least one item is required.
 
 
@@ -223,6 +225,7 @@ class ColorRamp(BaseNode):
         *,
         items: Iterable[
             tuple[float, tuple[float, float, float, float]]
+            | tuple[float, float, float, float, float]
         ] = _COLOR_RAMP_DEFAULT_ITEMS,
         color_interpolation: _ColorRampColorInterpolations = "LINEAR",
         hue_interpolation: _ColorRampHueInterpolations = "NEAR",
@@ -247,8 +250,8 @@ class ColorRamp(BaseNode):
             els.new(0.0)
         for i in range(len(stops) - 1, -1, -1):
             els[i].position = stops[i][0]
-        for i, (_, color) in enumerate(stops):
-            els[i].color = color
+        for i, item in enumerate(stops):
+            els[i].color = item[1] if len(item) == 2 else item[1:]
 
         self._establish_links(**key_args)
         self.color_interpolation = color_interpolation

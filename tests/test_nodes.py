@@ -2192,12 +2192,13 @@ def test_color_ramp_items_sorted():
         for element, (_, color) in zip(cr.elements, stops):
             assert tuple(element.color) == pytest.approx(color)
 
-        # A numpy array works like a list.
-        stops_array = np.array(
-            [(0.8, (1.0, 1.0, 1.0, 1.0)), (0.2, (0.0, 0.0, 0.0, 1.0))], dtype=object
+        # Flat (position, r, g, b, a) items, e.g. an (N, 5) numpy array.
+        from_array = g.ColorRamp(
+            items=np.array([(0.8, 1.0, 0.5, 0.25, 1.0), (0.2, 0.0, 0.0, 0.0, 0.5)])
         )
-        from_array = g.ColorRamp(items=stops_array)
         assert [e.position for e in from_array.elements] == pytest.approx([0.2, 0.8])
+        assert tuple(from_array.elements[0].color) == pytest.approx((0, 0, 0, 0.5))
+        assert tuple(from_array.elements[1].color) == pytest.approx((1, 0.5, 0.25, 1))
 
         single = g.ColorRamp(items=[(0.4, (0.1, 0.2, 0.3, 1.0))])
         assert len(single.elements) == 1
