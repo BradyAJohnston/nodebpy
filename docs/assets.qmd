@@ -93,6 +93,21 @@ def __init__(
     ...
 ```
 
+An input that reads an implicit field or a context value when unconnected (the
+interface's *Default Input*) is spelled with the matching `nodebpy.Default`
+member instead of a stored value, and its docstring line says what it reads.
+An input with a *Default Attribute* keeps its stored value, since Blender only
+reads that attribute when the group is used directly as a modifier; its
+docstring line notes the attribute:
+
+```{python}
+# | eval: false
+def __init__(
+    self,
+    position: InputVector = Default.POSITION,
+    ...
+```
+
 Pass `docstrings=False` (or `--no-docstrings` on the command line) for a terser
 module without the class docstrings.
 

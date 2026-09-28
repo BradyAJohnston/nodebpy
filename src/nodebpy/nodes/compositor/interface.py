@@ -82,7 +82,7 @@ class EnableOutput[T](BaseNode):
     def __init__(
         self,
         enable: InputBoolean = False,
-        value: InputAny = 0.0,
+        value: InputAny = None,
         *,
         data_type: Literal[
             "FLOAT",
@@ -106,42 +106,42 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def float(
-        cls, enable: InputBoolean = False, value: InputFloat = 0.0
+        cls, enable: InputBoolean = False, value: InputFloat = None
     ) -> "EnableOutput[FloatSocket]":
         """Create Enable Output with operation 'Float'."""
         return EnableOutput(data_type="FLOAT", enable=enable, value=value)
 
     @classmethod
     def integer(
-        cls, enable: InputBoolean = False, value: InputInteger = 0
+        cls, enable: InputBoolean = False, value: InputInteger = None
     ) -> "EnableOutput[IntegerSocket]":
         """Create Enable Output with operation 'Integer'."""
         return EnableOutput(data_type="INT", enable=enable, value=value)
 
     @classmethod
     def boolean(
-        cls, enable: InputBoolean = False, value: InputBoolean = False
+        cls, enable: InputBoolean = False, value: InputBoolean = None
     ) -> "EnableOutput[BooleanSocket]":
         """Create Enable Output with operation 'Boolean'."""
         return EnableOutput(data_type="BOOLEAN", enable=enable, value=value)
 
     @classmethod
     def vector(
-        cls, enable: InputBoolean = False, value: InputVector = (0.0, 0.0, 0.0)
+        cls, enable: InputBoolean = False, value: InputVector = None
     ) -> "EnableOutput[VectorSocket]":
         """Create Enable Output with operation 'Vector'."""
         return EnableOutput(data_type="VECTOR", enable=enable, value=value)
 
     @classmethod
     def color(
-        cls, enable: InputBoolean = False, value: InputColor = (0.8, 0.8, 0.8, 1.0)
+        cls, enable: InputBoolean = False, value: InputColor = None
     ) -> "EnableOutput[ColorSocket]":
         """Create Enable Output with operation 'Color'."""
         return EnableOutput(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
     def rotation(
-        cls, enable: InputBoolean = False, value: InputRotation = (0.0, 0.0, 0.0)
+        cls, enable: InputBoolean = False, value: InputRotation = None
     ) -> "EnableOutput[RotationSocket]":
         """Create Enable Output with operation 'Rotation'."""
         return EnableOutput(data_type="ROTATION", enable=enable, value=value)
@@ -155,7 +155,7 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def string(
-        cls, enable: InputBoolean = False, value: InputString = ""
+        cls, enable: InputBoolean = False, value: InputString = None
     ) -> "EnableOutput[StringSocket]":
         """Create Enable Output with operation 'String'."""
         return EnableOutput(data_type="STRING", enable=enable, value=value)
@@ -183,7 +183,7 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def integer_vector(
-        cls, enable: InputBoolean = False, value: InputIntegerVector = (0, 0, 0)
+        cls, enable: InputBoolean = False, value: InputIntegerVector = None
     ) -> "EnableOutput[IntegerSocket]":
         """Create Enable Output with operation 'Integer Vector'."""
         return EnableOutput(data_type="INT_VECTOR", enable=enable, value=value)

@@ -615,8 +615,8 @@ class CornersOfEdge(BaseNode):
 
     def __init__(
         self,
-        edge_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        edge_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -685,8 +685,8 @@ class CornersOfFace(BaseNode):
 
     def __init__(
         self,
-        face_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        face_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -755,8 +755,8 @@ class CornersOfVertex(BaseNode):
 
     def __init__(
         self,
-        vertex_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        vertex_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -928,7 +928,7 @@ class CurveOfPoint(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, point_index: InputInteger = 0):
+    def __init__(self, point_index: InputInteger = None):
         super().__init__()
         key_args = {"Point Index": point_index}
 
@@ -1053,8 +1053,8 @@ class EdgePathsToSelection(BaseNode):
 
     def __init__(
         self,
-        start_vertices: InputBoolean = True,
-        next_vertex_index: InputInteger = -1,
+        start_vertices: InputBoolean = None,
+        next_vertex_index: InputInteger = None,
     ):
         super().__init__()
         key_args = {
@@ -1153,7 +1153,7 @@ class EdgesOfCorner(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, corner_index: InputInteger = 0):
+    def __init__(self, corner_index: InputInteger = None):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 
@@ -1216,8 +1216,8 @@ class EdgesOfVertex(BaseNode):
 
     def __init__(
         self,
-        vertex_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        vertex_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -1268,7 +1268,7 @@ class EdgesToFaceGroups(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, boundary_edges: InputBoolean = True):
+    def __init__(self, boundary_edges: InputBoolean = None):
         super().__init__()
         key_args = {"Boundary Edges": boundary_edges}
 
@@ -1402,7 +1402,7 @@ class FaceGroupBoundaries(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, face_set: InputInteger = 0):
+    def __init__(self, face_set: InputInteger = None):
         super().__init__()
         key_args = {"Face Set": face_set}
 
@@ -1527,7 +1527,7 @@ class FaceOfCorner(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, corner_index: InputInteger = 0):
+    def __init__(self, corner_index: InputInteger = None):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 
@@ -2958,7 +2958,7 @@ class OffsetCornerInFace(BaseNode):
 
     def __init__(
         self,
-        corner_index: InputInteger = 0,
+        corner_index: InputInteger = None,
         offset: InputInteger = 0,
     ):
         super().__init__()
@@ -3017,7 +3017,7 @@ class OffsetPointInCurve(BaseNode):
 
     def __init__(
         self,
-        point_index: InputInteger = 0,
+        point_index: InputInteger = None,
         offset: InputInteger = 0,
     ):
         super().__init__()
@@ -3082,8 +3082,8 @@ class PointsOfCurve(BaseNode):
 
     def __init__(
         self,
-        curve_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        curve_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -3366,8 +3366,8 @@ class ShortestEdgePaths(BaseNode):
 
     def __init__(
         self,
-        end_vertex: InputBoolean = False,
-        edge_cost: InputFloat = 1.0,
+        end_vertex: InputBoolean = None,
+        edge_cost: InputFloat = None,
     ):
         super().__init__()
         key_args = {"End Vertex": end_vertex, "Edge Cost": edge_cost}
@@ -3755,7 +3755,7 @@ class VertexOfCorner(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, corner_index: InputInteger = 0):
+    def __init__(self, corner_index: InputInteger = None):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 
