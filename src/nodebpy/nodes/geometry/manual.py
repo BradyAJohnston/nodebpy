@@ -216,21 +216,31 @@ class ColorRamp(BaseNode):
         self,
         fac: InputFloat = 0.5,
         *,
-        items: Iterable[tuple[float, tuple[float, float, float, float]]] = (),
-        color_interpolation: _ColorRampColorInterpolations = "EASE",
+        items: Iterable[tuple[float, tuple[float, float, float, float]]] | None = None,
+        color_interpolation: _ColorRampColorInterpolations = "LINEAR",
         hue_interpolation: _ColorRampHueInterpolations = "NEAR",
         mode: _ColorModes = "RGB",
     ):
         super().__init__()
         key_args = {"Fac": fac}
-        for i, item in enumerate(items):
-            if i < 2:
-                point = self.elements[i]
-            else:
-                point = self.elements.new(0.0)
-            assert point is not None
-            point.position = item[0]
-            point.color = item[1]
+        stops = sorted(items or (), key=lambda item: item[0])
+        if stops:
+            # The elements must stay in position order for the ramp to
+            # evaluate correctly, but assigning ``position`` doesn't re-sort
+            # them. New elements are inserted at 0.0 (the front), then
+            # positions are assigned from the last index down so each one
+            # lands between its neighbours and the order holds throughout.
+            # Elements are re-indexed each time, as ``new()``/``remove()``
+            # can invalidate references to existing items.
+            els = self.elements
+            while len(els) > len(stops):
+                els.remove(els[len(els) - 1])
+            while len(els) < len(stops):
+                els.new(0.0)
+            for i in range(len(stops) - 1, -1, -1):
+                els[i].position = stops[i][0]
+            for i, (_, color) in enumerate(stops):
+                els[i].color = color
 
         self._establish_links(**key_args)
         self.color_interpolation = color_interpolation

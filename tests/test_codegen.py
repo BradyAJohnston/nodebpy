@@ -3321,6 +3321,64 @@ def test_rgb_curves_mapping_roundtrip():
     assert _mapping_state(rebuilt_node.mapping) == _mapping_state(curves.node.mapping)
 
 
+def _color_ramp_state(node_tree):
+    node = next(n for n in node_tree.nodes if n.bl_idname == "ShaderNodeValToRGB")
+    ramp = node.color_ramp
+    return (
+        [
+            (round(e.position, 5), tuple(round(c, 5) for c in e.color))
+            for e in ramp.elements
+        ],
+        ramp.interpolation,
+        ramp.hue_interpolation,
+        ramp.color_mode,
+    )
+
+
+def test_color_ramp_roundtrip():
+    """A ColorRamp's stops and interpolation settings are emitted and rebuild
+    the same ramp (#189)."""
+    stops = [
+        (0.0, (1.0, 0.0, 0.0, 1.0)),
+        (0.25, (1.0, 1.0, 0.0, 1.0)),
+        (0.5, (0.0, 1.0, 0.0, 1.0)),
+        (0.75, (0.0, 1.0, 1.0, 0.5)),
+        (1.0, (0.0, 0.0, 1.0, 1.0)),
+    ]
+    with TreeBuilder("Ramp") as tree:
+        fac = tree.inputs.float("Fac")
+        g.ColorRamp(
+            fac,
+            items=stops,
+            color_interpolation="CONSTANT",
+            hue_interpolation="CCW",
+            mode="HSV",
+        ) >> tree.outputs.color("Color")
+
+    code = _assert_roundtrip(tree)
+    assert "items=(" in code
+    assert 'color_interpolation="CONSTANT"' in code
+    assert 'hue_interpolation="CCW"' in code
+    assert 'mode="HSV"' in code
+    ns: dict = {}
+    exec(code, ns)
+    assert _color_ramp_state(ns["tree"].tree) == _color_ramp_state(tree.tree)
+
+
+def test_color_ramp_defaults_omitted():
+    """A ColorRamp with default stops and settings emits a bare constructor,
+    and a non-default setting is kept."""
+    with TreeBuilder("RampDefault") as tree:
+        ramp = g.ColorRamp()
+    code = to_python(tree, format=False)
+    assert "g.ColorRamp()" in code
+
+    ramp.node.color_ramp.interpolation = "EASE"
+    code = to_python(tree, format=False)
+    assert 'g.ColorRamp(color_interpolation="EASE")' in code
+    assert "items=" not in code
+
+
 def test_unwired_viewer_gets_throwaway_variable():
     """A Viewer with nothing wired into it still emits (side effect only),
     bound to an underscore variable so the module passes lint."""

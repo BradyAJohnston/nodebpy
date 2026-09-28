@@ -5159,6 +5159,38 @@ def _emit_set_handle_type(node, ctx: EmitContext) -> Expr | _Val | None:
     return call
 
 
+# A fresh ColorRamp's stops: black at 0.0, white at 1.0.
+_COLOR_RAMP_DEFAULT_STOPS = ((0.0, (0.0, 0.0, 0.0, 1.0)), (1.0, (1.0, 1.0, 1.0, 1.0)))
+
+# ColorRamp constructor param → attribute on ``node.color_ramp``.
+_COLOR_RAMP_SETTINGS = {
+    "color_interpolation": "interpolation",
+    "hue_interpolation": "hue_interpolation",
+    "mode": "color_mode",
+}
+
+
+@register_emitter("ShaderNodeValToRGB")
+def _emit_color_ramp(node, ctx: EmitContext) -> Expr | _Val | None:
+    """ColorRamp's stops and settings live on ``node.color_ramp``, not on the
+    node, so the generic ``_non_default_props`` can't see them. Append
+    ``items=`` when the stops differ from a fresh ramp's, and each setting
+    that differs from the constructor's default."""
+    call = ctx.constructor(node)
+    ramp = node.color_ramp
+    stops = tuple((element.position, tuple(element.color)) for element in ramp.elements)
+    if _norm_floats(stops) != _COLOR_RAMP_DEFAULT_STOPS:
+        call.kwargs["items"] = Lit(stops)
+    found = _find_cls(node.bl_idname)
+    assert found is not None
+    params = inspect.signature(found[1].__init__).parameters
+    for param, attr in _COLOR_RAMP_SETTINGS.items():
+        value = getattr(ramp, attr)
+        if value != params[param].default:
+            call.kwargs[param] = Lit(value)
+    return call
+
+
 @register_emitter("NodeReroute")
 def _emit_reroute(node, ctx: EmitContext) -> Expr | _Val | None:
     """A reroute (only kept in the graph under ``keep_reroutes``) is a
