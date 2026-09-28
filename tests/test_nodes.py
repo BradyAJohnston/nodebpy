@@ -3,6 +3,7 @@ from typing import cast
 
 import bpy
 import pytest
+import numpy as np
 from numpy import random
 
 from nodebpy import TreeBuilder
@@ -2130,6 +2131,39 @@ def test_float_curve():
         assert fc.points[1].handle_type == "VECTOR"
 
 
+def test_float_curve_items_sorted():
+    """Points given out of order end up in x order, each with its own handle
+    type, and keep locations outside the clip range."""
+    points = [
+        (-0.5, 1.5, "VECTOR"),
+        (0.25, 0.6),
+        (0.5, 0.2, "AUTO_CLAMPED"),
+        (0.75, 0.9),
+        (2.0, -1.0, "VECTOR"),
+    ]
+    shuffled = [points[3], points[0], points[4], points[1], points[2]]
+    with g.tree():
+        fc = g.FloatCurve(items=shuffled)
+        locations = [v for p in fc.points for v in p.location]
+        assert locations == pytest.approx([v for p in points for v in p[:2]])
+        assert [p.handle_type for p in fc.points] == [
+            "VECTOR",
+            "AUTO",
+            "AUTO_CLAMPED",
+            "AUTO",
+            "VECTOR",
+        ]
+        assert not any(p.select for p in fc.points)
+
+        default = g.FloatCurve()
+        assert [tuple(p.location) for p in default.points] == [(0.0, 0.0), (1.0, 1.0)]
+
+        # A curve needs at least two points.
+        for too_few in ((), None, [(0.5, 0.5)]):
+            with pytest.raises(ValueError, match="at least two items"):
+                g.FloatCurve(items=too_few)
+
+
 def test_color_ramp():
     with g.tree():
         rand = random.rand(16).reshape((4, 4))
@@ -2157,6 +2191,14 @@ def test_color_ramp_items_sorted():
         assert [e.position for e in cr.elements] == pytest.approx([p for p, _ in stops])
         for element, (_, color) in zip(cr.elements, stops):
             assert tuple(element.color) == pytest.approx(color)
+
+        # Flat (position, r, g, b, a) items, e.g. an (N, 5) numpy array.
+        from_array = g.ColorRamp(
+            items=np.array([(0.8, 1.0, 0.5, 0.25, 1.0), (0.2, 0.0, 0.0, 0.0, 0.5)])
+        )
+        assert [e.position for e in from_array.elements] == pytest.approx([0.2, 0.8])
+        assert tuple(from_array.elements[0].color) == pytest.approx((0, 0, 0, 0.5))
+        assert tuple(from_array.elements[1].color) == pytest.approx((1, 0.5, 0.25, 1))
 
         single = g.ColorRamp(items=[(0.4, (0.1, 0.2, 0.3, 1.0))])
         assert len(single.elements) == 1

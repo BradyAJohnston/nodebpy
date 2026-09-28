@@ -157,6 +157,8 @@ _ColorRampHueInterpolations = Literal["NEAR", "FAR", "CW", "CCW"]
 _ColorModes = Literal["RGB", "HSV", "HSL"]
 # A fresh ramp's stops: black at 0.0, white at 1.0.
 _COLOR_RAMP_DEFAULT_ITEMS = ((0.0, (0.0, 0.0, 0.0, 1.0)), (1.0, (1.0, 1.0, 1.0, 1.0)))
+# A fresh curve's points: a straight line from (0, 0) to (1, 1).
+_FLOAT_CURVE_DEFAULT_ITEMS = ((0.0, 0.0), (1.0, 1.0))
 
 
 class ColorRamp(BaseNode):
@@ -167,9 +169,11 @@ class ColorRamp(BaseNode):
     ----------
     fac : InputFloat
         Factor: Which is used to sample the ColorRamp for the output color.
-    items : Iterable[tuple[float, tuple[float, float, float float]]]
+    items : Iterable[tuple[float, tuple[float, float, float float]] | tuple[float, float, float, float, float]]
         Iterable of items which contain (position, color) which position being a
         4-component float for values RGBA. Position is a value betwen `0..1`.
+        Items can also be flat `(position, r, g, b, a)`, so an `(N, 5)` numpy
+        array works.
         Defaults to black at 0.0 and white at 1.0. At least one item is required.
 
 
@@ -212,6 +216,7 @@ class ColorRamp(BaseNode):
         *,
         items: Iterable[
             tuple[float, tuple[float, float, float, float]]
+            | tuple[float, float, float, float, float]
         ] = _COLOR_RAMP_DEFAULT_ITEMS,
         color_interpolation: _ColorRampColorInterpolations = "LINEAR",
         hue_interpolation: _ColorRampHueInterpolations = "NEAR",
@@ -219,7 +224,7 @@ class ColorRamp(BaseNode):
     ):
         super().__init__()
         key_args = {"Fac": fac}
-        stops = sorted(items or (), key=lambda item: item[0])
+        stops = sorted(() if items is None else items, key=lambda item: item[0])
         if not stops:
             raise ValueError("ColorRamp requires at least one item")
         # The elements must stay in position order for the ramp to evaluate
@@ -236,8 +241,8 @@ class ColorRamp(BaseNode):
             els.new(0.0)
         for i in range(len(stops) - 1, -1, -1):
             els[i].position = stops[i][0]
-        for i, (_, color) in enumerate(stops):
-            els[i].color = color
+        for i, item in enumerate(stops):
+            els[i].color = item[1] if len(item) == 2 else item[1:]
 
         self._establish_links(**key_args)
         self.color_interpolation = color_interpolation
@@ -291,6 +296,7 @@ class FloatCurve(BaseNode):
     items : Iterable[tuple[float, float] | tuple[float, float, Literal["AUTO", "AUTO_CLAMPED", "VECTOR"]]]
         An iterable which contains items `(x, y, Optional[handle_type])`. The position values are between
         `0..1` and map the input `value` to the output `value` from the resulting curve interpolation.
+        Defaults to a straight line from `(0, 0)` to `(1, 1)`. At least two items are required.
 
     Inputs
     ------
@@ -333,20 +339,29 @@ class FloatCurve(BaseNode):
         items: Iterable[
             tuple[float, float]
             | tuple[float, float, Literal["AUTO", "AUTO_CLAMPED", "VECTOR"]]
-        ] = (),
+        ] = _FLOAT_CURVE_DEFAULT_ITEMS,
     ):
         super().__init__()
         key_args = {"Factor": factor, "Value": value}
-
+        items = sorted(() if items is None else items, key=lambda item: item[0])
+        if len(items) < 2:
+            raise ValueError("FloatCurve requires at least two items")
+        # A fresh curve has two points. Assigning ``location`` doesn't re-sort
+        # the points, so they are assigned by index in x order. Points are
+        # re-indexed each time, as ``new()`` can invalidate references to
+        # existing items. ``new()`` selects the point it adds and ``update()``
+        # clamps selected points to the clip range, so every point is
+        # deselected (as on a fresh node) to keep the given locations as-is.
+        points = self.points
+        while len(points) < len(items):
+            points.new(0.0, 0.0)
         for i, item in enumerate(items):
-            if i < 2:
-                point = self.points[i]
-                point.location = item[:2]
-            else:
-                point = self.points.new(*item[:2])
-            assert point is not None
-            if len(item) > 2:
-                point.handle_type = item[2]  # ty: ignore[index-out-of-bounds]
+            points[i].location = item[:2]
+            points[i].handle_type = item[2] if len(item) > 2 else "AUTO"  # ty: ignore[index-out-of-bounds]
+            points[i].select = False
+        mapping = self.node.mapping
+        assert mapping
+        mapping.update()
 
         self._establish_links(**key_args)
 

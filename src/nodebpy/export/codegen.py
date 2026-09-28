@@ -4252,6 +4252,10 @@ def _norm_floats(value):
 
 _FRESH_MAPPING_CACHE: dict[tuple[str, str], tuple | None] = {}
 
+# Nodes whose constructor takes the curve points as ``items=`` (written by the
+# node's emitter), so only the mapping's other settings need statements.
+_MAPPING_POINTS_AS_ITEMS = {"ShaderNodeFloatCurve"}
+
 
 def _fresh_mapping_state(tree_idname: str, bl_idname: str) -> tuple | None:
     key = (tree_idname, bl_idname)
@@ -4273,7 +4277,14 @@ def _has_custom_mapping(node, tree_idname: str) -> bool:
     mapping = getattr(node, "mapping", None)
     if mapping is None or not hasattr(mapping, "curves"):
         return False
-    return _mapping_state(mapping) != _fresh_mapping_state(tree_idname, node.bl_idname)
+    state = _mapping_state(mapping)
+    fresh = _fresh_mapping_state(tree_idname, node.bl_idname)
+    if node.bl_idname in _MAPPING_POINTS_AS_ITEMS:
+        # ``items=`` carries the points; only other settings and selection
+        # (the constructor deselects every point) need statements.
+        selected = any(select for curve in state[1] for _, _, select in curve)
+        return fresh is None or state[0] != fresh[0] or selected
+    return state != fresh
 
 
 def _node_mapping_lines(
@@ -4298,7 +4309,8 @@ def _node_mapping_lines(
             lines.append(f"{map_ref}.{name} = {_fmt(value)}")
     fresh_curves = fresh[1] if fresh is not None else None
     state_curves = _mapping_state(mapping)[1]
-    for index, curve in enumerate(mapping.curves):
+    curves = () if node.bl_idname in _MAPPING_POINTS_AS_ITEMS else mapping.curves
+    for index, curve in enumerate(curves):
         if (
             fresh_curves is not None
             and index < len(fresh_curves)
@@ -4327,6 +4339,12 @@ def _node_mapping_lines(
             # select what it creates), so it is always written out.
             lines.append(f"{var}.points[{j}].select = {point.select}")
     lines.append(f"{map_ref}.update()")
+    if node.bl_idname in _MAPPING_POINTS_AS_ITEMS:
+        # Selected after ``update()`` so it can't clamp them to the clip range.
+        for index, curve in enumerate(mapping.curves):
+            for j, point in enumerate(curve.points):
+                if point.select:
+                    lines.append(f"{map_ref}.curves[{index}].points[{j}].select = True")
     return lines
 
 
@@ -5190,6 +5208,27 @@ def _emit_color_ramp(node, ctx: EmitContext) -> Expr | _Val | None:
         value = getattr(ramp, attr)
         if value != params[param].default:
             call.kwargs[param] = Lit(value)
+    return call
+
+
+@register_emitter("ShaderNodeFloatCurve")
+def _emit_float_curve(node, ctx: EmitContext) -> Expr | _Val | None:
+    """FloatCurve's points live on ``node.mapping``: append ``items=`` when
+    they differ from the constructor's default, with a point's handle type
+    only when it isn't ``AUTO``. The mapping's other settings are written
+    after the constructor by ``_node_mapping_lines``."""
+    call = ctx.constructor(node)
+    found = _find_cls(node.bl_idname)
+    assert found is not None
+    default = inspect.signature(found[1].__init__).parameters["items"].default
+    points = tuple(
+        tuple(point.location)
+        if point.handle_type == "AUTO"
+        else (*point.location, point.handle_type)
+        for point in node.mapping.curves[0].points
+    )
+    if _norm_floats(points) != _norm_floats(default):
+        call.kwargs["items"] = Lit(points)
     return call
 
 
