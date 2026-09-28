@@ -4,11 +4,9 @@ from bpy.types import (
     CompositorNodeConvertColorSpace,
     CompositorNodeCryptomatteV2,
     CompositorNodeImage,
-    CompositorNodeTree,
 )
 
 from ...builder import (
-    ArrangeMethod,
     BaseNode,
     BooleanSocket,
     ColorSocket,
@@ -36,17 +34,7 @@ from ..geometry.manual import Float, Frame, MenuItems, _MenuSwitchBase
 __all__ = ["Float", "Frame", "MenuSwitch", "tree"]
 
 
-def tree(
-    name: str = "Compositor Nodes",
-    *,
-    collapse: bool = False,
-    arrange: ArrangeMethod = "sugiyama",
-    fake_user: bool = False,
-    clear: bool = False,
-) -> TreeBuilder[CompositorNodeTree]:
-    return TreeBuilder.compositor(
-        name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
-    )
+tree = TreeBuilder.compositor
 
 
 class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):

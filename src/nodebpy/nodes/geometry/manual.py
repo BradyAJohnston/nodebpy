@@ -14,14 +14,12 @@ import bpy.types
 from bpy.types import (
     ColorRampElements,
     CurveMapPoints,
-    GeometryNodeTree,
     NodeEvaluateClosure,
     NodeSocket,
     NodeSocketString,
 )
 
 from ...builder import (
-    ArrangeMethod,
     BaseNode,
     BooleanSocket,
     BooleanSocketGrid,
@@ -148,16 +146,7 @@ __all__ = (
     "Value",
 )
 
-
-def tree(
-    name: str = "Geometry Node Group",
-    *,
-    collapse: bool = False,
-    arrange: ArrangeMethod = "sugiyama",
-    clear: bool = False,
-) -> TreeBuilder[GeometryNodeTree]:
-    return TreeBuilder.geometry(name, collapse=collapse, arrange=arrange, clear=clear)
-
+tree = TreeBuilder.geometry
 
 _ColorRampColorInterpolations = Literal[
     "EASE", "CARDINAL", "LINEAR", "B_SPLINE", "CONSTANT"
