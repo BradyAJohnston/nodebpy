@@ -2165,7 +2165,7 @@ def test_color_ramp_items_sorted():
         # A ramp needs at least one stop.
         for empty in ((), None):
             with pytest.raises(ValueError, match="at least one item"):
-                g.ColorRamp(items=empty)  # ty: ignore[invalid-argument-type]
+                g.ColorRamp(items=empty)
 
 
 def test_float_to_integer():
