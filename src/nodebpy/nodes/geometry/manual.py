@@ -65,6 +65,7 @@ from ...builder.socket import BaseSocket
 from ...builder.tree import _MenuDefault
 from ...types import (
     SOCKET_TYPES,
+    Default,
     InputAny,
     InputBoolean,
     InputBooleanGrid,
@@ -1346,6 +1347,8 @@ class JoinGeometry(BaseNode):
         super().__init__()
         for source in reversed(list(geometry)):
             assert source
+            if isinstance(source, Default):
+                continue  # a fallback marker: nothing to link
             self._link(*self._find_best_socket_pair(source, self))
 
 
@@ -2204,7 +2207,7 @@ class SDFGridBoolean(BaseNode):
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
-        if grid_1 is not None:
+        if grid_1 is not None and not isinstance(grid_1, Default):
             node._link_from(*node._find_best_socket_pair(grid_1, node.i["Grid 1"]))
         for grid in grids:
             assert grid

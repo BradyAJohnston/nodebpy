@@ -2537,7 +2537,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def __init__(
         self,
         grid: InputAny = None,
-        position: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
         *,
@@ -2552,7 +2552,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def float(
         cls,
         grid: InputFloatGrid = None,
-        position: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid[FloatSocket, FloatSocketGrid]":
@@ -2565,7 +2565,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def integer(
         cls,
         grid: InputIntegerGrid = None,
-        position: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid[IntegerSocket, IntegerSocketGrid]":
@@ -2578,7 +2578,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def boolean(
         cls,
         grid: InputBooleanGrid = None,
-        position: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid[BooleanSocket, BooleanSocketGrid]":
@@ -2594,7 +2594,7 @@ class SampleGrid[T, TGrid](BaseNode):
     def vector(
         cls,
         grid: InputVectorGrid = None,
-        position: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
         interpolation: InputMenu
         | Literal["Nearest Neighbor", "Trilinear", "Triquadratic"] = "Trilinear",
     ) -> "SampleGrid[VectorSocket, VectorSocketGrid]":

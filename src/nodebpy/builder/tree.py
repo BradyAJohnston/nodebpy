@@ -20,6 +20,7 @@ from bpy.types import (
 
 from ..types import (
     SOCKET_COMPATIBILITY,
+    Default,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
     StringInterfaceSubtypes,
@@ -273,6 +274,8 @@ class SocketContext:
             elif key == "default_attribute":
                 # the bpy property is named default_attribute_name
                 interface_socket.default_attribute_name = value
+            elif key == "default_input" and isinstance(value, Default):
+                interface_socket.default_input = value.value
             else:
                 setattr(interface_socket, key, value)
 
@@ -310,7 +313,7 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
-        default_input: _FloatDefaultInputs = "VALUE",
+        default_input: _FloatDefaultInputs | Default = "VALUE",
     ) -> FloatSocket:
         iface = self._add_socket("NodeSocketFloat", name, description)
         self._set_props(
@@ -342,7 +345,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: _IntegerDefaultInputs = "VALUE",
+        default_input: _IntegerDefaultInputs | Default = "VALUE",
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
@@ -416,7 +419,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
-        default_input: _VectorDefaultInputs = "VALUE",
+        default_input: _VectorDefaultInputs | Default = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         force_non_field: bool = False,
     ) -> VectorSocket:
@@ -512,7 +515,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: _MatrixDefaultInputs = "VALUE",
+        default_input: _MatrixDefaultInputs | Default = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
@@ -594,7 +597,7 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _ObjectDefaultInputs = "VALUE",
+        default_input: _ObjectDefaultInputs | Default = "VALUE",
     ) -> ObjectSocket:
         iface = self._add_socket("NodeSocketObject", name, description)
         self._set_props(

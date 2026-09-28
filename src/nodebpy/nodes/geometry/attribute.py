@@ -81,7 +81,7 @@ class BlurAttribute[T](BaseNode):
 
     def __init__(
         self,
-        value: InputAny = 0.0,
+        value: InputAny = None,
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
         *,
@@ -95,7 +95,7 @@ class BlurAttribute[T](BaseNode):
     @classmethod
     def float(
         cls,
-        value: InputFloat = 0.0,
+        value: InputFloat = None,
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
     ) -> "BlurAttribute[FloatSocket]":
@@ -107,7 +107,7 @@ class BlurAttribute[T](BaseNode):
     @classmethod
     def integer(
         cls,
-        value: InputInteger = 0,
+        value: InputInteger = None,
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
     ) -> "BlurAttribute[IntegerSocket]":
@@ -119,7 +119,7 @@ class BlurAttribute[T](BaseNode):
     @classmethod
     def vector(
         cls,
-        value: InputVector = (0.0, 0.0, 0.0),
+        value: InputVector = None,
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
     ) -> "BlurAttribute[VectorSocket]":
@@ -131,7 +131,7 @@ class BlurAttribute[T](BaseNode):
     @classmethod
     def color(
         cls,
-        value: InputColor = (0.8, 0.8, 0.8, 1.0),
+        value: InputColor = None,
         iterations: InputInteger = 1,
         weight: InputFloat = 1.0,
     ) -> "BlurAttribute[ColorSocket]":
