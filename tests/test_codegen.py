@@ -3321,6 +3321,56 @@ def test_rgb_curves_mapping_roundtrip():
     assert _mapping_state(rebuilt_node.mapping) == _mapping_state(curves.node.mapping)
 
 
+def test_float_curve_roundtrip():
+    """A FloatCurve's points and handle types export as ``items=`` and its
+    other mapping settings and point selection as statements, and they
+    round-trip."""
+    from nodebpy.export.codegen import _mapping_state
+
+    with TreeBuilder("FloatCurveMap") as tree:
+        value = tree.inputs.float("Value")
+        fc = g.FloatCurve(
+            value=value,
+            items=[(0.75, 0.9), (0.0, 0.1, "VECTOR"), (1.0, 0.0), (0.3, 0.5)],
+        )
+        mapping = fc.node.mapping
+        mapping.use_clip = False
+        mapping.extend = "HORIZONTAL"
+        mapping.clip_max_y = 2.0
+        mapping.curves[0].points[1].select = True
+        fc >> tree.outputs.float("Out")
+
+    code = _assert_roundtrip(tree)
+    assert 'items=((0.0, 0.1, "VECTOR"), (0.3, 0.5), (0.75, 0.9), (1.0, 0.0))' in code
+    assert ".handle_type" not in code
+    assert ".location" not in code
+    assert ".points[1].select = True" in code
+    assert ".use_clip = False" in code
+    assert '.extend = "HORIZONTAL"' in code
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    rebuilt_node = next(
+        n for n in rebuilt.nodes if n.bl_idname == "ShaderNodeFloatCurve"
+    )
+    assert _mapping_state(rebuilt_node.mapping) == _mapping_state(mapping)
+
+
+def test_float_curve_default_bare():
+    """A default FloatCurve, built with nodebpy or added directly, exports as
+    a bare constructor."""
+    with TreeBuilder("FloatCurveDefault") as tree:
+        g.FloatCurve()
+    assert "g.FloatCurve()" in to_python(tree, format=False)
+    assert ".mapping" not in to_python(tree, format=False)
+
+    node_tree = bpy.data.node_groups.new("FloatCurveRaw", "GeometryNodeTree")
+    node_tree.nodes.new("ShaderNodeFloatCurve")
+    code = to_python(node_tree, format=False)
+    assert "g.FloatCurve()" in code
+    assert ".mapping" not in code
+
+
 def _color_ramp_state(node_tree):
     node = next(n for n in node_tree.nodes if n.bl_idname == "ShaderNodeValToRGB")
     ramp = node.color_ramp
