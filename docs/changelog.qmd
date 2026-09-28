@@ -11,12 +11,16 @@ title: Changelog
 - **Rebuild materials in place** — `s.material(name, clear=True)` rebuilds an existing material and keeps the datablock. `TreeBuilder(..., clear=True)` now also keeps Geometry Nodes modifier input values, matched by socket name.
 - **Typed package** — nodebpy ships `py.typed`, and the wheel is checked with mypy (strict), pyright, basedpyright, pyrefly and ty.
 - A float or integer socket combined with a 3-tuple now uses Vector Math (Scale for multiply) instead of raising.
+- `g.tree` / `s.tree` / `c.tree` are now `TreeBuilder.geometry` / `.shader` / `.compositor` themselves, so they take every option those do (`split_inputs`, `fake_user`, …).
+- `ColorRamp` accepts flat `(position, r, g, b, a)` items, so an `(N, 5)` numpy array works like `FloatCurve`'s `(N, 2)`.
 
 ### Breaking Changes
 
 - Shader `Mix` variants take `(factor, a, b)`, so positional `s.Mix.color(f, x)` now sets A instead of B. The geometry `Mix` is now generated.
 - Factory and parameter renames: `input_4x4_matrix` factories are now `matrix`, `GaborTexture.type_2d` / `type_3d`, and variant parameters drop type suffixes and `_001` counters (`MapRange.vector(from_min, …)`, `TrimCurve.length(start, end)`). The leaked `face_corner` / `input_4x4_matrix` factories on field nodes are removed.
 - `ColorRamp`'s `color_interpolation` defaults to `LINEAR` to match Blender, and `items` defaults to Blender's black-to-white stops; empty `items` raises `ValueError`.
+- `FloatCurve`'s `items` defaults to Blender's `((0.0, 0.0), (1.0, 1.0))`; fewer than two items raises `ValueError`.
+- `g.tree()`'s default name is now `"Geometry Nodes"` (was `"Geometry Node Group"`), matching Blender.
 - New materials start empty instead of with a Principled BSDF and Material Output.
 - The broken `nodebpy` console script is removed.
 
@@ -24,6 +28,7 @@ title: Changelog
 
 - **Deterministic arrangement** — the Sugiyama arranger iterated sets ordered by memory address (layout nodes hashed by `id()`, bpy sockets by pointer), so the same tree could get different node locations, link order and multi-input sort ids from one run to the next. Arrangement is now reproducible, and an asset library built twice from the same sources differs only in the fields Blender itself randomises per session.
 - **Color Ramp stops** — `ColorRamp(items=...)` with more than two stops left them out of position order, and `to_python` dropped a ramp's stops and interpolation settings. Both now round-trip.
+- **Float Curve points** — `FloatCurve(items=...)` left unsorted points out of x order and kept added points selected, so a later mapping update clamped only those to the clip range. Points are now sorted and deselected, and `to_python` exports them as `items=` like `ColorRamp`, with the mapping's other settings and any point selection written after the constructor.
 - Generated variants keep sockets Blender marks inactive only because of current values (Mix's A at Factor 1.0).
 - The `.default_value` error on an output socket now says an input socket is needed.
 
