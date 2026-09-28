@@ -4,6 +4,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
+    Final,
     Literal,
     Self,
     cast,
@@ -146,7 +147,7 @@ __all__ = (
     "Value",
 )
 
-tree = TreeBuilder.geometry
+tree: Final = TreeBuilder.geometry
 
 _ColorRampColorInterpolations = Literal[
     "EASE", "CARDINAL", "LINEAR", "B_SPLINE", "CONSTANT"

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Final, Literal
 
 from bpy.types import ShaderNodeAttribute
 
@@ -45,7 +45,7 @@ __all__ = [
     "tree",
 ]
 
-tree = TreeBuilder.shader
+tree: Final = TreeBuilder.shader
 
 
 def material(

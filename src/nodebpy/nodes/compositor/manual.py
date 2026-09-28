@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Final, Literal
 
 from bpy.types import (
     CompositorNodeConvertColorSpace,
@@ -34,7 +34,7 @@ from ..geometry.manual import Float, Frame, MenuItems, _MenuSwitchBase
 __all__ = ["Float", "Frame", "MenuSwitch", "tree"]
 
 
-tree = TreeBuilder.compositor
+tree: Final = TreeBuilder.compositor
 
 
 class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
