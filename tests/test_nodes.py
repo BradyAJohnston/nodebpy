@@ -2162,10 +2162,10 @@ def test_color_ramp_items_sorted():
         assert len(single.elements) == 1
         assert single.elements[0].position == pytest.approx(0.4)
 
-        # No stops keeps the default black-to-white ramp.
-        for empty in (None, ()):
-            default = g.ColorRamp(items=empty)
-            assert [e.position for e in default.elements] == pytest.approx([0.0, 1.0])
+        # A ramp needs at least one stop.
+        for empty in ((), None):
+            with pytest.raises(ValueError, match="at least one item"):
+                g.ColorRamp(items=empty)  # ty: ignore[invalid-argument-type]
 
 
 def test_float_to_integer():
