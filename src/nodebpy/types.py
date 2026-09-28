@@ -131,16 +131,16 @@ class Default(enum.Enum):
 
 
 _DEFAULT_DESCRIPTIONS: dict[Default, str] = {
-    Default.INDEX: "the index field",
-    Default.ID_OR_INDEX: "the ID field, or the index when there is no ID",
-    Default.NORMAL: "the normal field",
-    Default.POSITION: "the position field",
-    Default.INSTANCE_TRANSFORM: "the instance transform field",
-    Default.HANDLE_LEFT: "the left handle position field",
-    Default.HANDLE_RIGHT: "the right handle position field",
-    Default.SCENE_FRAME: "the current scene frame",
-    Default.UNIFORM_IMAGE_COORDINATES: "uniform image coordinates",
-    Default.SELF_OBJECT: "the object the modifier is on",
+    Default.INDEX: "The index from the context.",
+    Default.ID_OR_INDEX: 'The "id" attribute if available, otherwise the index.',
+    Default.NORMAL: "The geometry's normal direction.",
+    Default.POSITION: "The position from the context.",
+    Default.INSTANCE_TRANSFORM: "Transformation of each instace from the geometry context.",
+    Default.HANDLE_LEFT: "The left Bezier control point handle from the context.",
+    Default.HANDLE_RIGHT: "The right Bezier control point handle from the context.",
+    Default.SCENE_FRAME: "The current frame in the scene.",
+    Default.UNIFORM_IMAGE_COORDINATES: "The uniform image coordinates of the compositing scene.",
+    Default.SELF_OBJECT: "The object the modifier is on.",
 }
 
 
