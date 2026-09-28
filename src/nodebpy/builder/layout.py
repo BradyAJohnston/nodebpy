@@ -39,7 +39,9 @@ def _is_layoutable(node: bpy.types.Node) -> bool:
 
 def build_dependency_graph(
     tree: bpy.types.NodeTree,
-) -> tuple[dict[bpy.types.Node, set[bpy.types.Node]], Counter]:
+) -> tuple[
+    dict[bpy.types.Node, set[bpy.types.Node]], Counter[bpy.types.NodeSocket | None]
+]:
     """Build a graph of node dependencies and count input connections.
 
     Only layoutable nodes (excluding frames and reroutes) are included.
@@ -48,7 +50,7 @@ def build_dependency_graph(
     dependency_graph: dict[bpy.types.Node, set[bpy.types.Node]] = {
         node: set() for node in layoutable
     }
-    socket_input_connection_count: Counter = Counter()
+    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] = Counter()
 
     for link in tree.links:
         if link.from_node in layoutable and link.to_node in layoutable:
@@ -181,7 +183,7 @@ def _socket_visible(socket: bpy.types.NodeSocket) -> bool:
 
 def _is_expanded_vector(
     socket: bpy.types.NodeSocket,
-    socket_input_connection_count: Counter | None,
+    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None,
 ) -> bool:
     """Whether an input draws the expanded 3-component vector widget: an
     unlinked vector whose value is shown (``hide_value`` sockets, such as
@@ -266,7 +268,7 @@ def _interface_panels(node: bpy.types.Node) -> tuple[list[Any], dict[int, bool]]
 
 def node_rows(
     node: bpy.types.Node,
-    socket_input_connection_count: Counter | None = None,
+    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None = None,
 ) -> list[NodeRow]:
     """The rows Blender draws below an expanded node's header, top to bottom.
 
@@ -376,7 +378,7 @@ def node_rows(
 def _rows_from_order(
     node: bpy.types.Node,
     order: tuple[tuple, ...],
-    socket_input_connection_count: Counter | None,
+    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None,
 ) -> list[NodeRow]:
     """Rows of a node drawn from its declaration (see ``_socket_order``)."""
     rows: list[NodeRow] = []
@@ -584,7 +586,7 @@ def _rows_from_order(
 
 def calculate_node_dimensions(
     node: bpy.types.Node,
-    socket_input_connection_count: Counter | None = None,
+    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None = None,
     interface_scale: float = 1.0,
 ) -> tuple[float, float]:
     """Calculate the visual dimensions of a node.
@@ -744,7 +746,7 @@ def _reduce_crossings(
 
 def position_nodes_in_columns(
     columns: list[list[bpy.types.Node]],
-    connection_counts: Counter,
+    connection_counts: Counter[bpy.types.NodeSocket | None],
     spacing: tuple[float, float] = (50, 25),
 ) -> None:
     """Position nodes column-by-column with the given spacing.

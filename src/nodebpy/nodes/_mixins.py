@@ -95,7 +95,10 @@ class _BakeMixin(ItemsMixin):
     _socket_data_types = _BakedDataTypeValues
 
     def __init__(
-        self, *args, items: dict[str, InputLinkable | str] | None = None, **kwargs
+        self,
+        *args: InputLinkable | str,
+        items: dict[str, InputLinkable | str] | None = None,
+        **kwargs: InputLinkable | str,
     ):
         super().__init__()
         key_args = dict(items or {})
@@ -138,7 +141,7 @@ class _CombineBundleMixin:
 
     if TYPE_CHECKING:
         node: bpy.types.NodeCombineBundle
-        tree: TreeBuilder
+        tree: TreeBuilder[Any]
 
         def _source_socket(self, node) -> bpy.types.NodeSocket: ...
 
@@ -447,7 +450,7 @@ class _HandleModeMixin:
         return "LEFT" in self.node.mode
 
     @left.setter
-    def left(self, value: bool):
+    def left(self, value: bool) -> None:
         self.node.mode = (
             (self.node.mode | {"LEFT"}) if value else (self.node.mode - {"LEFT"})
         )
@@ -457,7 +460,7 @@ class _HandleModeMixin:
         return "RIGHT" in self.node.mode
 
     @right.setter
-    def right(self, value: bool):
+    def right(self, value: bool) -> None:
         self.node.mode = (
             (self.node.mode | {"RIGHT"}) if value else (self.node.mode - {"RIGHT"})
         )
@@ -467,5 +470,5 @@ class _HandleModeMixin:
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: set[Literal["LEFT", "RIGHT"]]):
+    def mode(self, value: set[Literal["LEFT", "RIGHT"]]) -> None:
         self.node.mode = value

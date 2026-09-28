@@ -111,7 +111,7 @@ class _AssetGroupMixin:
         return cls._build_group is not _AssetGroupMixin._build_group
 
     @classmethod
-    def create_group(cls):
+    def create_group(cls) -> Any:
         """Append the named asset group from the library and return its tree,
         reusing a previously-appended group of the same name and tree type.
 

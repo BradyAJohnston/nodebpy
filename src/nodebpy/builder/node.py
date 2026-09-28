@@ -91,7 +91,8 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     """Base class for all node wrappers."""
 
     _bl_idname: str
-    _tree: TreeBuilder
+    _tree: TreeBuilder[Any]
+    node: Node
     _default_input_id: str | None = None
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
@@ -113,7 +114,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         self.node = node if node else self._tree.add(self.__class__._bl_idname)
 
     @property
-    def tree(self) -> TreeBuilder:
+    def tree(self) -> TreeBuilder[Any]:
         """The `TreeBuilder` instance this node belongs to and is being built within."""
         return self._tree
 
@@ -231,7 +232,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             self._link_from(value, target)
         elif isinstance(value, _NodeLike):
             target_type = target.type if not named else self.i._get(target).type
-            self._link_from(value.o._best_match(target_type), target)  # type: ignore
+            self._link_from(value.o._best_match(target_type), target)
         else:
             # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
             # but this needs to be a more generic solution for sockets which aren't available
@@ -422,7 +423,7 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
     # fresh tree's defaults belong here; codegen fills it when exporting.
     _tree_properties: ClassVar[dict[str, Any]] = {}
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any):
         super().__init__()
         self._setup_node_group()
         self.node.show_options = False

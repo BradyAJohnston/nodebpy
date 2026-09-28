@@ -195,7 +195,7 @@ class Attribute(BaseNode):
     @attribute_type.setter
     def attribute_type(
         self, value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]
-    ):
+    ) -> None:
         self.node.attribute_type = value
 
     @property
@@ -203,5 +203,5 @@ class Attribute(BaseNode):
         return self.node.attribute_name
 
     @attribute_name.setter
-    def attribute_name(self, value: str):
+    def attribute_name(self, value: str) -> None:
         self.node.attribute_name = value

@@ -12,6 +12,10 @@ socket-order:
 test:
 	uv run pytest -n 4
 
+# Type-check the built wheel as a consumer with every major type checker.
+typecheck:
+	./tests/typing/run.sh
+
 format:
 	uv run ruff format
 	uv run ruff check --fix

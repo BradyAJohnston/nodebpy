@@ -32,7 +32,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 import numpy as np
-from bpy.types import ID, FunctionNodeCompare, NodeTree
+from bpy.types import ID, FunctionNodeCompare, Node, NodeSocket, NodeTree
 
 from ._floats import (
     fmt_float as _fmt_float,
@@ -304,6 +304,7 @@ class BinOp(Expr):
     op: str
     lhs: Expr
     rhs: Expr
+    prec: int = field(default=_ATOM_PREC, init=False)
 
     def __post_init__(self) -> None:
         self.prec = _BINOP_PREC[self.op]
@@ -1069,7 +1070,7 @@ class EmitContext:
     # only populated once the consuming MenuSwitch has been created and linked.
     iface_deferred: list[str] = field(default_factory=list)
 
-    def input_link(self, node, identifier: str) -> _Link | None:
+    def input_link(self, node: Node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
         for link in self.incoming.get(node.name, ()):
             if link.to_socket.identifier == identifier:
@@ -1135,7 +1136,7 @@ class EmitContext:
             )
         return ref
 
-    def input_expr(self, node, socket) -> Expr | None:
+    def input_expr(self, node: Node, socket: NodeSocket) -> Expr | None:
         """Expression for an input socket: upstream reference or literal default."""
         link = self.input_link(node, socket.identifier)
         if link is not None:
@@ -1144,7 +1145,7 @@ class EmitContext:
             return Lit(socket.default_value)
         return None
 
-    def constructor(self, node, skip_input_id: str | None = None) -> Call:
+    def constructor(self, node: Node, skip_input_id: str | None = None) -> Call:
         """``alias.ClassName(...)`` call for a node.
 
         Linked inputs become kwargs referencing upstream expressions, unlinked
@@ -3638,7 +3639,7 @@ def _format_with_ruff(code: str) -> str:
 
 
 def to_python(
-    tree: NodeTree | TreeBuilder,
+    tree: NodeTree | TreeBuilder[Any],
     min_chain_length: int = 3,
     strict: bool = True,
     max_inline_width: int | None = 88,
@@ -3657,7 +3658,7 @@ def to_python(
 
     Parameters
     ----------
-    tree: TreeBuilder | bpy.types.NodeTree
+    tree: TreeBuilder[Any] | bpy.types.NodeTree
         The node tree to export.
     min_chain_length: int
         Minimum number of items (including interface endpoints) for a linear
@@ -4076,7 +4077,7 @@ class _GroupCollector:
     # bpy.types names the emitted ``tree: TreeBuilder[...]`` annotations need.
     tree_param_types: set[str] = field(default_factory=set)
 
-    def register(self, node_tree) -> str:
+    def register(self, node_tree: NodeTree) -> str:
         """Ensure a class exists for ``node_tree`` and return its name."""
         existing = self.names_by_tree.get(node_tree.name)
         if existing is not None:
