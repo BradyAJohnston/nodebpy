@@ -2141,6 +2141,33 @@ def test_color_ramp():
         assert len(cr.elements) == 4
 
 
+def test_color_ramp_items_sorted():
+    """More than two stops, given out of order, end up in position order with
+    each colour on its own stop (#189)."""
+    stops = [
+        (0.0, (1.0, 0.0, 0.0, 1.0)),
+        (0.25, (1.0, 1.0, 0.0, 1.0)),
+        (0.5, (0.0, 1.0, 0.0, 1.0)),
+        (0.75, (0.0, 1.0, 1.0, 1.0)),
+        (1.0, (0.0, 0.0, 1.0, 1.0)),
+    ]
+    shuffled = [stops[3], stops[0], stops[4], stops[1], stops[2]]
+    with g.tree():
+        cr = g.ColorRamp(items=shuffled)
+        assert [e.position for e in cr.elements] == pytest.approx([p for p, _ in stops])
+        for element, (_, color) in zip(cr.elements, stops):
+            assert tuple(element.color) == pytest.approx(color)
+
+        single = g.ColorRamp(items=[(0.4, (0.1, 0.2, 0.3, 1.0))])
+        assert len(single.elements) == 1
+        assert single.elements[0].position == pytest.approx(0.4)
+
+        # A ramp needs at least one stop.
+        for empty in ((), None):
+            with pytest.raises(ValueError, match="at least one item"):
+                g.ColorRamp(items=empty)
+
+
 def test_float_to_integer():
     with g.tree():
         fti = g.FloatToInteger()
@@ -2197,7 +2224,7 @@ def test_store_named_attribute():
         cr = g.ColorRamp(hue_interpolation="CCW", mode="HSL")
         assert cr.hue_interpolation == "CCW"
         assert cr.mode == "HSL"
-        assert cr.color_interpolation == "EASE"
+        assert cr.color_interpolation == "LINEAR"
 
 
 def test_string_split():
