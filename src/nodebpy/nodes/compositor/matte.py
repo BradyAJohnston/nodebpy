@@ -1105,7 +1105,7 @@ class KeyingScreen(BaseNode):
         return self.node.tracking_object
 
     @tracking_object.setter
-    def tracking_object(self, value: str):
+    def tracking_object(self, value: str) -> None:
         self.node.tracking_object = value
 
 

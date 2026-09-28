@@ -1883,7 +1883,7 @@ class CurveInfo(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -1927,7 +1927,7 @@ class CurveRoot(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -1967,7 +1967,7 @@ class CurveSegment(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -2011,7 +2011,7 @@ class CurveTip(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -2885,7 +2885,7 @@ class EdgeLength(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -2921,7 +2921,7 @@ class FaceCornerAngle(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -4144,7 +4144,7 @@ class IsEdgeBoundary(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -4176,7 +4176,7 @@ class IsEdgeLoose(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -4208,7 +4208,7 @@ class IsEdgeManifold(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 

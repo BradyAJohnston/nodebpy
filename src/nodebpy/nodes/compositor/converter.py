@@ -255,7 +255,7 @@ class CombineColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]) -> None:
         self.node.mode = value
 
     @property
@@ -263,7 +263,7 @@ class CombineColor(BaseNode):
         return self.node.ycc_mode
 
     @ycc_mode.setter
-    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]):
+    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]) -> None:
         self.node.ycc_mode = value
 
 
@@ -552,7 +552,7 @@ class ImplicitConversion[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -847,7 +847,7 @@ class IndexSwitch[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -1080,7 +1080,7 @@ class RelativeToPixel(BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -1093,7 +1093,7 @@ class RelativeToPixel(BaseNode):
     def reference_dimension(
         self,
         value: Literal["PER_DIMENSION", "X", "Y", "Greater", "Smaller", "Diagonal"],
-    ):
+    ) -> None:
         self.node.reference_dimension = value
 
 
@@ -1215,7 +1215,7 @@ class SeparateColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]) -> None:
         self.node.mode = value
 
     @property
@@ -1223,7 +1223,7 @@ class SeparateColor(BaseNode):
         return self.node.ycc_mode
 
     @ycc_mode.setter
-    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]):
+    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]) -> None:
         self.node.ycc_mode = value
 
 

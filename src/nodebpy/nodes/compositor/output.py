@@ -54,7 +54,7 @@ class FileOutput(BaseNode):
         return self.node.directory
 
     @directory.setter
-    def directory(self, value: str):
+    def directory(self, value: str) -> None:
         self.node.directory = value
 
     @property
@@ -62,7 +62,7 @@ class FileOutput(BaseNode):
         return self.node.file_name
 
     @file_name.setter
-    def file_name(self, value: str):
+    def file_name(self, value: str) -> None:
         self.node.file_name = value
 
     @property
@@ -70,7 +70,7 @@ class FileOutput(BaseNode):
         return self.node.save_as_render
 
     @save_as_render.setter
-    def save_as_render(self, value: bool):
+    def save_as_render(self, value: bool) -> None:
         self.node.save_as_render = value
 
     @property
@@ -78,7 +78,7 @@ class FileOutput(BaseNode):
         return self.node.use_file_extension
 
     @use_file_extension.setter
-    def use_file_extension(self, value: bool):
+    def use_file_extension(self, value: bool) -> None:
         self.node.use_file_extension = value
 
 
@@ -130,5 +130,5 @@ class Viewer(BaseNode):
         return self.node.ui_shortcut
 
     @ui_shortcut.setter
-    def ui_shortcut(self, value: int):
+    def ui_shortcut(self, value: int) -> None:
         self.node.ui_shortcut = value

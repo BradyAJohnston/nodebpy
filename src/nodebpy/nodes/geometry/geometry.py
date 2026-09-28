@@ -226,7 +226,7 @@ class Arc(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["POINTS", "RADIUS"]):
+    def mode(self, value: Literal["POINTS", "RADIUS"]) -> None:
         self.node.mode = value
 
 
@@ -441,7 +441,7 @@ class BezierSegment(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["POSITION", "OFFSET"]):
+    def mode(self, value: Literal["POSITION", "OFFSET"]) -> None:
         self.node.mode = value
 
 
@@ -618,7 +618,7 @@ class Cone(BaseNode):
         return self.node.fill_type
 
     @fill_type.setter
-    def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]):
+    def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]) -> None:
         self.node.fill_type = value
 
 
@@ -861,7 +861,7 @@ class CurveCircle(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["POINTS", "RADIUS"]):
+    def mode(self, value: Literal["POINTS", "RADIUS"]) -> None:
         self.node.mode = value
 
 
@@ -1007,7 +1007,7 @@ class CurveLine(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["POINTS", "DIRECTION"]):
+    def mode(self, value: Literal["POINTS", "DIRECTION"]) -> None:
         self.node.mode = value
 
 
@@ -1184,7 +1184,7 @@ class CurveToPoints(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["EVALUATED", "COUNT", "LENGTH"]):
+    def mode(self, value: Literal["EVALUATED", "COUNT", "LENGTH"]) -> None:
         self.node.mode = value
 
 
@@ -1413,7 +1413,7 @@ class Cylinder(BaseNode):
         return self.node.fill_type
 
     @fill_type.setter
-    def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]):
+    def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]) -> None:
         self.node.fill_type = value
 
 
@@ -1624,7 +1624,7 @@ class DeleteGeometry(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["ALL", "EDGE_FACE", "ONLY_FACE"]):
+    def mode(self, value: Literal["ALL", "EDGE_FACE", "ONLY_FACE"]) -> None:
         self.node.mode = value
 
     @property
@@ -1634,7 +1634,7 @@ class DeleteGeometry(BaseNode):
     @domain.setter
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]
-    ):
+    ) -> None:
         self.node.domain = value
 
 
@@ -1752,7 +1752,7 @@ class DistributePointsOnFaces(BaseNode):
         return self.node.distribute_method
 
     @distribute_method.setter
-    def distribute_method(self, value: Literal["RANDOM", "POISSON"]):
+    def distribute_method(self, value: Literal["RANDOM", "POISSON"]) -> None:
         self.node.distribute_method = value
 
     @property
@@ -1760,7 +1760,7 @@ class DistributePointsOnFaces(BaseNode):
         return self.node.use_legacy_normal
 
     @use_legacy_normal.setter
-    def use_legacy_normal(self, value: bool):
+    def use_legacy_normal(self, value: bool) -> None:
         self.node.use_legacy_normal = value
 
 
@@ -1963,7 +1963,7 @@ class DuplicateElements(BaseNode):
     @domain.setter
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "SPLINE", "LAYER", "INSTANCE"]
-    ):
+    ) -> None:
         self.node.domain = value
 
 
@@ -2182,7 +2182,7 @@ class ExtrudeMesh(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["VERTICES", "EDGES", "FACES"]):
+    def mode(self, value: Literal["VERTICES", "EDGES", "FACES"]) -> None:
         self.node.mode = value
 
 
@@ -2485,7 +2485,7 @@ class GeometryProximity(BaseNode):
         return self.node.target_element
 
     @target_element.setter
-    def target_element(self, value: Literal["POINTS", "EDGES", "FACES"]):
+    def target_element(self, value: Literal["POINTS", "EDGES", "FACES"]) -> None:
         self.node.target_element = value
 
 
@@ -3286,7 +3286,7 @@ class MergeLayers(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["MERGE_BY_NAME", "MERGE_BY_ID"]):
+    def mode(self, value: Literal["MERGE_BY_NAME", "MERGE_BY_ID"]) -> None:
         self.node.mode = value
 
 
@@ -3670,7 +3670,7 @@ class MeshCircle(BaseNode):
         return self.node.fill_type
 
     @fill_type.setter
-    def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]):
+    def fill_type(self, value: Literal["NONE", "NGON", "TRIANGLE_FAN"]) -> None:
         self.node.fill_type = value
 
 
@@ -3786,7 +3786,7 @@ class MeshLine(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["OFFSET", "END_POINTS"]):
+    def mode(self, value: Literal["OFFSET", "END_POINTS"]) -> None:
         self.node.mode = value
 
     @property
@@ -3794,7 +3794,7 @@ class MeshLine(BaseNode):
         return self.node.count_mode
 
     @count_mode.setter
-    def count_mode(self, value: Literal["TOTAL", "RESOLUTION"]):
+    def count_mode(self, value: Literal["TOTAL", "RESOLUTION"]) -> None:
         self.node.count_mode = value
 
 
@@ -3873,7 +3873,7 @@ class MeshToCurve(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["EDGES", "FACES"]):
+    def mode(self, value: Literal["EDGES", "FACES"]) -> None:
         self.node.mode = value
 
 
@@ -4025,7 +4025,7 @@ class MeshToPoints(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["VERTICES", "EDGES", "FACES", "CORNERS"]):
+    def mode(self, value: Literal["VERTICES", "EDGES", "FACES", "CORNERS"]) -> None:
         self.node.mode = value
 
 
@@ -4489,7 +4489,7 @@ class Quadrilateral(BaseNode):
     def mode(
         self,
         value: Literal["RECTANGLE", "PARALLELOGRAM", "TRAPEZOID", "KITE", "POINTS"],
-    ):
+    ) -> None:
         self.node.mode = value
 
 
@@ -4781,7 +4781,7 @@ class Raycast[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -4865,7 +4865,7 @@ class RealizeInstances(BaseNode):
         return self.node.realize_to_point_domain
 
     @realize_to_point_domain.setter
-    def realize_to_point_domain(self, value: bool):
+    def realize_to_point_domain(self, value: bool) -> None:
         self.node.realize_to_point_domain = value
 
 
@@ -5101,7 +5101,7 @@ class ResampleCurve(BaseNode):
         return self.node.keep_last_segment
 
     @keep_last_segment.setter
-    def keep_last_segment(self, value: bool):
+    def keep_last_segment(self, value: bool) -> None:
         self.node.keep_last_segment = value
 
 
@@ -5331,7 +5331,7 @@ class SampleNearest(BaseNode):
         return self.node.domain
 
     @domain.setter
-    def domain(self, value: Literal["POINT", "EDGE", "FACE", "CORNER"]):
+    def domain(self, value: Literal["POINT", "EDGE", "FACE", "CORNER"]) -> None:
         self.node.domain = value
 
 
@@ -5589,7 +5589,7 @@ class SampleNearestSurface[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -5825,7 +5825,7 @@ class SampleUVSurface[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -5963,7 +5963,7 @@ class ScaleElements(BaseNode):
         return self.node.domain
 
     @domain.setter
-    def domain(self, value: Literal["FACE", "EDGE"]):
+    def domain(self, value: Literal["FACE", "EDGE"]) -> None:
         self.node.domain = value
 
 
@@ -6225,7 +6225,7 @@ class SeparateGeometry(BaseNode):
     @domain.setter
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]
-    ):
+    ) -> None:
         self.node.domain = value
 
 
@@ -6713,7 +6713,7 @@ class SetGreasePencilColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["STROKE", "FILL"]):
+    def mode(self, value: Literal["STROKE", "FILL"]) -> None:
         self.node.mode = value
 
 
@@ -6771,7 +6771,7 @@ class SetGreasePencilDepth(BaseNode):
         return self.node.depth_order
 
     @depth_order.setter
-    def depth_order(self, value: Literal["2D", "3D"]):
+    def depth_order(self, value: Literal["2D", "3D"]) -> None:
         self.node.depth_order = value
 
 
@@ -6955,7 +6955,7 @@ class SetHandlePositions(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["LEFT", "RIGHT"]):
+    def mode(self, value: Literal["LEFT", "RIGHT"]) -> None:
         self.node.mode = value
 
 
@@ -7036,7 +7036,7 @@ class SetHandleType(_HandleModeMixin, BaseNode):
         return self.node.handle_type
 
     @handle_type.setter
-    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
+    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]) -> None:
         self.node.handle_type = value
 
     def __init__(
@@ -7499,7 +7499,7 @@ class SetMeshNormal(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"]):
+    def mode(self, value: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"]) -> None:
         self.node.mode = value
 
     @property
@@ -7507,7 +7507,7 @@ class SetMeshNormal(BaseNode):
         return self.node.domain
 
     @domain.setter
-    def domain(self, value: Literal["POINT", "FACE", "CORNER"]):
+    def domain(self, value: Literal["POINT", "FACE", "CORNER"]) -> None:
         self.node.domain = value
 
 
@@ -7930,7 +7930,7 @@ class SetSelection[T](BaseNode):
         return self.node.domain
 
     @domain.setter
-    def domain(self, value: Literal["POINT", "EDGE", "FACE", "CURVE"]):
+    def domain(self, value: Literal["POINT", "EDGE", "FACE", "CURVE"]) -> None:
         self.node.domain = value
 
     @property
@@ -7938,7 +7938,7 @@ class SetSelection[T](BaseNode):
         return self.node.selection_type
 
     @selection_type.setter
-    def selection_type(self, value: Literal["BOOLEAN", "FLOAT"]):
+    def selection_type(self, value: Literal["BOOLEAN", "FLOAT"]) -> None:
         self.node.selection_type = value
 
 
@@ -8044,7 +8044,7 @@ class SetShadeSmooth(BaseNode):
         return self.node.domain
 
     @domain.setter
-    def domain(self, value: Literal["EDGE", "FACE"]):
+    def domain(self, value: Literal["EDGE", "FACE"]) -> None:
         self.node.domain = value
 
 
@@ -8265,7 +8265,9 @@ class SetSplineType(BaseNode):
         return self.node.spline_type
 
     @spline_type.setter
-    def spline_type(self, value: Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"]):
+    def spline_type(
+        self, value: Literal["CATMULL_ROM", "POLY", "BEZIER", "NURBS"]
+    ) -> None:
         self.node.spline_type = value
 
 
@@ -8434,7 +8436,9 @@ class SortElements(BaseNode):
         return self.node.domain
 
     @domain.setter
-    def domain(self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE"]):
+    def domain(
+        self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE"]
+    ) -> None:
         self.node.domain = value
 
 
@@ -8731,7 +8735,7 @@ class SplitToInstances(BaseNode):
     @domain.setter
     def domain(
         self, value: Literal["POINT", "EDGE", "FACE", "CURVE", "INSTANCE", "LAYER"]
-    ):
+    ) -> None:
         self.node.domain = value
 
 
@@ -9758,7 +9762,7 @@ class TrimCurve(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["FACTOR", "LENGTH"]):
+    def mode(self, value: Literal["FACTOR", "LENGTH"]) -> None:
         self.node.mode = value
 
 

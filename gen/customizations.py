@@ -243,7 +243,9 @@ def _domain_factory_typed(
             f'            return {node_name}(value{idx_arg}, domain=self._domain, data_type="{dtype}")',
         ]
     lines.append("")
-    lines += [f'    {attr} = {factory}("{dom}")' for attr, dom in _DOMAINS.items()]
+    lines += [
+        f'    {attr}: {factory} = {factory}("{dom}")' for attr, dom in _DOMAINS.items()
+    ]
     return "\n".join(lines)
 
 

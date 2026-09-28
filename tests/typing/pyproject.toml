@@ -1,0 +1,9 @@
+# Checker config for run.sh, copied next to consumer.py in its temp dir.
+# basedpyright reads this section too.
+[tool.pyright]
+# fake-bpy-module ships stubs only; the real bpy runtime isn't needed to type-check.
+reportMissingModuleSource = false
+# `a >> b` link statements are the idiomatic way to wire nodes.
+reportUnusedExpression = false
+# basedpyright only: every assert_type() call is a bare expression statement.
+reportUnusedCallResult = false

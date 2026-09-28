@@ -145,7 +145,9 @@ class BlurAttribute[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]):
+    def data_type(
+        self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "FLOAT_COLOR"]
+    ) -> None:
         self.node.data_type = value
 
 
@@ -233,7 +235,7 @@ class DomainSize(BaseNode):
     @component.setter
     def component(
         self, value: Literal["MESH", "POINTCLOUD", "CURVE", "INSTANCES", "GREASEPENCIL"]
-    ):
+    ) -> None:
         self.node.component = value
 
 

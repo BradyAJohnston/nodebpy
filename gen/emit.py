@@ -310,7 +310,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     if "__init__" in suppress:
         init_block = ""
     else:
-        init_block = f"""    def __init__{init_signature}:
+        # A bare ``(self)`` needs ``-> None`` or mypy treats the class as untyped.
+        init_return = " -> None" if init_signature == "(self)" else ""
+        init_block = f"""    def __init__{init_signature}{init_return}:
         super().__init__(){init_body}
         self._establish_links(**key_args)
 """

@@ -74,7 +74,7 @@ class Script(BaseNode):
         return self.node.filepath
 
     @filepath.setter
-    def filepath(self, value: str):
+    def filepath(self, value: str) -> None:
         self.node.filepath = value
 
     @property
@@ -82,7 +82,7 @@ class Script(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["INTERNAL", "EXTERNAL"]):
+    def mode(self, value: Literal["INTERNAL", "EXTERNAL"]) -> None:
         self.node.mode = value
 
     @property
@@ -90,7 +90,7 @@ class Script(BaseNode):
         return self.node.use_auto_update
 
     @use_auto_update.setter
-    def use_auto_update(self, value: bool):
+    def use_auto_update(self, value: bool) -> None:
         self.node.use_auto_update = value
 
     @property
@@ -98,7 +98,7 @@ class Script(BaseNode):
         return self.node.bytecode
 
     @bytecode.setter
-    def bytecode(self, value: str):
+    def bytecode(self, value: str) -> None:
         self.node.bytecode = value
 
     @property
@@ -106,5 +106,5 @@ class Script(BaseNode):
         return self.node.bytecode_hash
 
     @bytecode_hash.setter
-    def bytecode_hash(self, value: str):
+    def bytecode_hash(self, value: str) -> None:
         self.node.bytecode_hash = value

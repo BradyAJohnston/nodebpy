@@ -326,7 +326,7 @@ class PropertyInfo:
         return self.node.{self.identifier}{ignore}
 
     @{name}.setter
-    def {name}(self, value: {setter_type}):
+    def {name}(self, value: {setter_type}) -> None:
         self.node.{self.identifier} = value{setter_ignore}
 """
 

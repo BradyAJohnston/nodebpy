@@ -645,7 +645,7 @@ class Defocus(BaseNode):
         value: Literal[
             "OCTAGON", "HEPTAGON", "HEXAGON", "PENTAGON", "SQUARE", "TRIANGLE", "CIRCLE"
         ],
-    ):
+    ) -> None:
         self.node.bokeh = value
 
     @property
@@ -653,7 +653,7 @@ class Defocus(BaseNode):
         return self.node.angle
 
     @angle.setter
-    def angle(self, value: float):
+    def angle(self, value: float) -> None:
         self.node.angle = value
 
     @property
@@ -661,7 +661,7 @@ class Defocus(BaseNode):
         return self.node.f_stop
 
     @f_stop.setter
-    def f_stop(self, value: float):
+    def f_stop(self, value: float) -> None:
         self.node.f_stop = value
 
     @property
@@ -669,7 +669,7 @@ class Defocus(BaseNode):
         return self.node.blur_max
 
     @blur_max.setter
-    def blur_max(self, value: float):
+    def blur_max(self, value: float) -> None:
         self.node.blur_max = value
 
     @property
@@ -677,7 +677,7 @@ class Defocus(BaseNode):
         return self.node.use_zbuffer
 
     @use_zbuffer.setter
-    def use_zbuffer(self, value: bool):
+    def use_zbuffer(self, value: bool) -> None:
         self.node.use_zbuffer = value
 
     @property
@@ -685,7 +685,7 @@ class Defocus(BaseNode):
         return self.node.z_scale
 
     @z_scale.setter
-    def z_scale(self, value: float):
+    def z_scale(self, value: float) -> None:
         self.node.z_scale = value
 
 

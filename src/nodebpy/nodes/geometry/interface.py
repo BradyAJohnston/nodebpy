@@ -136,7 +136,7 @@ class DialGizmo(BaseNode):
         return self.node.color_id
 
     @color_id.setter
-    def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]):
+    def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]) -> None:
         self.node.color_id = value
 
 
@@ -389,7 +389,7 @@ class EnableOutput[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -414,7 +414,7 @@ class GroupInput(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -453,7 +453,7 @@ class GroupOutput(BaseNode):
         return self.node.is_active_output
 
     @is_active_output.setter
-    def is_active_output(self, value: bool):
+    def is_active_output(self, value: bool) -> None:
         self.node.is_active_output = value
 
 
@@ -527,7 +527,7 @@ class LinearGizmo(BaseNode):
         return self.node.color_id
 
     @color_id.setter
-    def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]):
+    def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]) -> None:
         self.node.color_id = value
 
     @property
@@ -535,7 +535,7 @@ class LinearGizmo(BaseNode):
         return self.node.draw_style
 
     @draw_style.setter
-    def draw_style(self, value: Literal["ARROW", "CROSS", "BOX"]):
+    def draw_style(self, value: Literal["ARROW", "CROSS", "BOX"]) -> None:
         self.node.draw_style = value
 
 
@@ -623,7 +623,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_translation_x
 
     @use_translation_x.setter
-    def use_translation_x(self, value: bool):
+    def use_translation_x(self, value: bool) -> None:
         self.node.use_translation_x = value
 
     @property
@@ -631,7 +631,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_translation_y
 
     @use_translation_y.setter
-    def use_translation_y(self, value: bool):
+    def use_translation_y(self, value: bool) -> None:
         self.node.use_translation_y = value
 
     @property
@@ -639,7 +639,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_translation_z
 
     @use_translation_z.setter
-    def use_translation_z(self, value: bool):
+    def use_translation_z(self, value: bool) -> None:
         self.node.use_translation_z = value
 
     @property
@@ -647,7 +647,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_rotation_x
 
     @use_rotation_x.setter
-    def use_rotation_x(self, value: bool):
+    def use_rotation_x(self, value: bool) -> None:
         self.node.use_rotation_x = value
 
     @property
@@ -655,7 +655,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_rotation_y
 
     @use_rotation_y.setter
-    def use_rotation_y(self, value: bool):
+    def use_rotation_y(self, value: bool) -> None:
         self.node.use_rotation_y = value
 
     @property
@@ -663,7 +663,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_rotation_z
 
     @use_rotation_z.setter
-    def use_rotation_z(self, value: bool):
+    def use_rotation_z(self, value: bool) -> None:
         self.node.use_rotation_z = value
 
     @property
@@ -671,7 +671,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_scale_x
 
     @use_scale_x.setter
-    def use_scale_x(self, value: bool):
+    def use_scale_x(self, value: bool) -> None:
         self.node.use_scale_x = value
 
     @property
@@ -679,7 +679,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_scale_y
 
     @use_scale_y.setter
-    def use_scale_y(self, value: bool):
+    def use_scale_y(self, value: bool) -> None:
         self.node.use_scale_y = value
 
     @property
@@ -687,7 +687,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_scale_z
 
     @use_scale_z.setter
-    def use_scale_z(self, value: bool):
+    def use_scale_z(self, value: bool) -> None:
         self.node.use_scale_z = value
 
 
@@ -767,5 +767,5 @@ class Warning(BaseNode):
         return self.node.warning_type
 
     @warning_type.setter
-    def warning_type(self, value: Literal["ERROR", "WARNING", "INFO"]):
+    def warning_type(self, value: Literal["ERROR", "WARNING", "INFO"]) -> None:
         self.node.warning_type = value

@@ -1,15 +1,17 @@
 from collections.abc import Iterable, Mapping
+from types import TracebackType
 from typing import (
     TYPE_CHECKING,
+    Any,
     ClassVar,
     Literal,
+    Self,
     cast,
 )
 
 import bpy
 import bpy.types
 from bpy.types import (
-    ColorRamp,
     ColorRampElements,
     CurveMapPoints,
     GeometryNodeTree,
@@ -237,7 +239,7 @@ class ColorRamp(BaseNode):
         self.mode = mode
 
     @property
-    def _color_ramp(self) -> ColorRamp:
+    def _color_ramp(self) -> bpy.types.ColorRamp:
         assert self.node.color_ramp
         return self.node.color_ramp
 
@@ -572,13 +574,23 @@ class StoreNamedAttribute[T: BaseSocket](BaseNode):
                 domain=self._domain,
             )
 
-    point = _StoreNamedAttributeDomainFactory("POINT")
-    edge = _StoreNamedAttributeDomainFactory("EDGE")
-    face = _StoreNamedAttributeDomainFactory("FACE")
-    corner = _StoreNamedAttributeDomainFactory("CORNER")
-    spline = _StoreNamedAttributeDomainFactory("CURVE")
-    instance = _StoreNamedAttributeDomainFactory("INSTANCE")
-    layer = _StoreNamedAttributeDomainFactory("LAYER")
+    point: _StoreNamedAttributeDomainFactory = _StoreNamedAttributeDomainFactory(
+        "POINT"
+    )
+    edge: _StoreNamedAttributeDomainFactory = _StoreNamedAttributeDomainFactory("EDGE")
+    face: _StoreNamedAttributeDomainFactory = _StoreNamedAttributeDomainFactory("FACE")
+    corner: _StoreNamedAttributeDomainFactory = _StoreNamedAttributeDomainFactory(
+        "CORNER"
+    )
+    spline: _StoreNamedAttributeDomainFactory = _StoreNamedAttributeDomainFactory(
+        "CURVE"
+    )
+    instance: _StoreNamedAttributeDomainFactory = _StoreNamedAttributeDomainFactory(
+        "INSTANCE"
+    )
+    layer: _StoreNamedAttributeDomainFactory = _StoreNamedAttributeDomainFactory(
+        "LAYER"
+    )
 
     class _Inputs[S](SocketAccessor):
         geometry: GeometrySocket
@@ -597,7 +609,7 @@ class StoreNamedAttribute[T: BaseSocket](BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[T]: ...
         @property
         def o(self) -> _Outputs: ...
 
@@ -632,7 +644,7 @@ class StoreNamedAttribute[T: BaseSocket](BaseNode):
     def data_type(
         self,
         value: _NamedAttributeDataTypes,
-    ):
+    ) -> None:
         self.node.data_type = value
 
     @property
@@ -645,7 +657,7 @@ class StoreNamedAttribute[T: BaseSocket](BaseNode):
     def domain(
         self,
         value: _AttributeDomains,
-    ):
+    ) -> None:
         self.node.domain = value
 
 
@@ -762,7 +774,7 @@ class EvaluateClosure(BaseNode):
         return self.node.define_signature
 
     @define_signature.setter
-    def define_signature(self, value: bool):
+    def define_signature(self, value: bool) -> None:
         self.node.define_signature = value
 
     @property
@@ -770,7 +782,7 @@ class EvaluateClosure(BaseNode):
         return cast("int", self.node.active_input_index)
 
     @active_input_index.setter
-    def active_input_index(self, value: int):
+    def active_input_index(self, value: int) -> None:
         self.node.active_input_index = value
 
     @property
@@ -778,7 +790,7 @@ class EvaluateClosure(BaseNode):
         return cast("int", self.node.active_output_index)
 
     @active_output_index.setter
-    def active_output_index(self, value: int):
+    def active_output_index(self, value: int) -> None:
         self.node.active_output_index = value
 
     @property
@@ -823,7 +835,7 @@ class Frame(BaseNode):
         return self.node.label
 
     @label.setter
-    def label(self, value: str | None):
+    def label(self, value: str | None) -> None:
         if value is not None:
             self.node.label = value
 
@@ -832,7 +844,7 @@ class Frame(BaseNode):
         return self.node.shrink
 
     @shrink.setter
-    def shrink(self, value: bool):
+    def shrink(self, value: bool) -> None:
         self.node.shrink = value
 
     @property
@@ -840,15 +852,20 @@ class Frame(BaseNode):
         return self.node.text
 
     @text.setter
-    def text(self, value: bpy.types.Text | None):
+    def text(self, value: bpy.types.Text | None) -> None:
         if value is not None:
             self.node.text = value
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         TreeBuilder._frame_contexts.append(self.node)
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         TreeBuilder._frame_contexts.pop()
 
 
@@ -922,7 +939,7 @@ class Collection(BaseNode):
         return self.node.collection
 
     @collection.setter
-    def collection(self, value: bpy.types.Collection | None):
+    def collection(self, value: bpy.types.Collection | None) -> None:
         self.node.collection = value
 
 
@@ -952,7 +969,7 @@ class Material(BaseNode):
         return self.node.material
 
     @material.setter
-    def material(self, value: bpy.types.Material | None):
+    def material(self, value: bpy.types.Material | None) -> None:
         self.node.material = value
 
 
@@ -982,7 +999,7 @@ class Object(BaseNode):
         return self.node.object
 
     @object.setter
-    def object(self, value: bpy.types.Object | None):
+    def object(self, value: bpy.types.Object | None) -> None:
         self.node.object = value
 
 
@@ -1017,7 +1034,7 @@ class Value(BaseNode):
         return self.node.outputs[0].default_value
 
     @value.setter
-    def value(self, value: float):
+    def value(self, value: float) -> None:
         assert self.node.outputs is not None
         self.node.outputs[0].default_value = value
 
@@ -1055,7 +1072,7 @@ class Menu(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
         self._establish_links(**key_args)
@@ -1065,7 +1082,7 @@ class Menu(BaseNode):
         return self.node.value
 
     @value.setter
-    def value(self, value: str):
+    def value(self, value: str) -> None:
         self.node.value = value
 
 
@@ -1112,7 +1129,7 @@ class IntegerVector(BaseNode):
         return list(self.node.vector)
 
     @vector.setter
-    def vector(self, value: tuple[int, int, int] | list[int]):
+    def vector(self, value: tuple[int, int, int] | list[int]) -> None:
         self.node.vector = value
 
     @property
@@ -1120,7 +1137,7 @@ class IntegerVector(BaseNode):
         return self.node.vector_dimensions
 
     @vector_dimensions.setter
-    def vector_dimensions(self, value: Literal[2, 3]):
+    def vector_dimensions(self, value: Literal[2, 3]) -> None:
         self.node.vector_dimensions = value
 
 
@@ -1289,7 +1306,7 @@ class MeshBoolean(BaseNode):
         return self.node.operation
 
     @operation.setter
-    def operation(self, value: Literal["INTERSECT", "UNION", "DIFFERENCE"]):
+    def operation(self, value: Literal["INTERSECT", "UNION", "DIFFERENCE"]) -> None:
         self.node.operation = value
 
     @property
@@ -1297,7 +1314,7 @@ class MeshBoolean(BaseNode):
         return self.node.solver
 
     @solver.setter
-    def solver(self, value: Literal["EXACT", "FLOAT", "MANIFOLD"]):
+    def solver(self, value: Literal["EXACT", "FLOAT", "MANIFOLD"]) -> None:
         self.node.solver = value
 
 
@@ -1517,7 +1534,7 @@ class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: SOCKET_TYPES):
+    def data_type(self, value: SOCKET_TYPES) -> None:
         """Input socket: Data Type"""
         self.node.data_type = value
 
@@ -1686,7 +1703,7 @@ class _MenuSwitchBase[T: BaseSocket](ItemsMixin, BaseNode):
         return self.node.data_type  # type: ignore
 
     @data_type.setter
-    def data_type(self, value: SOCKET_TYPES):
+    def data_type(self, value: SOCKET_TYPES) -> None:
         """Input socket: Data Type"""
         self.node.data_type = value
 
@@ -1878,13 +1895,13 @@ class CaptureAttribute(ItemsMixin, BaseNode):
                 geometry=geometry, selection=selection, domain=self._domain, items=items
             )
 
-    point = _DomainFactory("POINT")
-    edge = _DomainFactory("EDGE")
-    face = _DomainFactory("FACE")
-    corner = _DomainFactory("CORNER")
-    curve = _DomainFactory("CURVE")
-    instance = _DomainFactory("INSTANCE")
-    layer = _DomainFactory("LAYER")
+    point: _DomainFactory = _DomainFactory("POINT")
+    edge: _DomainFactory = _DomainFactory("EDGE")
+    face: _DomainFactory = _DomainFactory("FACE")
+    corner: _DomainFactory = _DomainFactory("CORNER")
+    curve: _DomainFactory = _DomainFactory("CURVE")
+    instance: _DomainFactory = _DomainFactory("INSTANCE")
+    layer: _DomainFactory = _DomainFactory("LAYER")
 
     class _Inputs(SocketAccessor):
         geometry: GeometrySocket
@@ -1935,7 +1952,7 @@ class CaptureAttribute(ItemsMixin, BaseNode):
     def domain(
         self,
         value: _AttributeDomains,
-    ):
+    ) -> None:
         self.node.domain = value
 
 
@@ -2084,7 +2101,7 @@ class FieldToGrid[T: BaseSocket](ItemsMixin, BaseNode):
     def data_type(
         self,
         value: _GridDataTypes,
-    ):
+    ) -> None:
         self.node.data_type = value
 
     # def _declare_item(
@@ -2131,13 +2148,13 @@ class SDFGridBoolean(BaseNode):
     node: bpy.types.GeometryNodeSDFGridBoolean
 
     class _Inputs(SocketAccessor):
-        grid_1: SocketLinker
+        grid_1: FloatSocketGrid
         """First SDF grid input."""
-        grid_2: SocketLinker
+        grid_2: FloatSocketGrid
         """Second SDF grid input."""
 
     class _Outputs(SocketAccessor):
-        grid: SocketLinker
+        grid: FloatSocketGrid
         """Resulting SDF grid."""
 
     if TYPE_CHECKING:
@@ -2157,7 +2174,7 @@ class SDFGridBoolean(BaseNode):
     @classmethod
     def intersect(
         cls,
-        grids: Iterable[InputGrid] = (),
+        grids: Iterable[InputFloatGrid] = (),
     ) -> "SDFGridBoolean":
         node = cls(operation="INTERSECT")
         for grid in grids:
@@ -2168,7 +2185,7 @@ class SDFGridBoolean(BaseNode):
     @classmethod
     def union(
         cls,
-        grids: Iterable[InputGrid] = (),
+        grids: Iterable[InputFloatGrid] = (),
     ) -> "SDFGridBoolean":
         node = cls(operation="UNION")
         for grid in grids:
@@ -2179,8 +2196,8 @@ class SDFGridBoolean(BaseNode):
     @classmethod
     def difference(
         cls,
-        grid_1: InputLinkable = None,
-        grids: Iterable[InputGrid] = (),
+        grid_1: InputFloatGrid = None,
+        grids: Iterable[InputFloatGrid] = (),
     ) -> "SDFGridBoolean":
         """Create SDF Grid Boolean with operation 'Difference'."""
         node = cls(operation="DIFFERENCE")
@@ -2196,7 +2213,7 @@ class SDFGridBoolean(BaseNode):
         return self.node.operation
 
     @operation.setter
-    def operation(self, value: Literal["INTERSECT", "UNION", "DIFFERENCE"]):
+    def operation(self, value: Literal["INTERSECT", "UNION", "DIFFERENCE"]) -> None:
         self.node.operation = value
 
 
@@ -2530,17 +2547,17 @@ class Compare[T: BaseSocket](BaseNode):
         ) -> "Compare[SoundSocket]":
             return Compare(operation="NOT_EQUAL", data_type="SOUND", A=a, B=b)
 
-    float = _FloatFactory()
-    integer = _IntegerFactory()
-    vector = _VectorFactory()
-    color = _ColorFactory()
-    string = _StringFactory()
-    object = _ObjectFactory()
-    image = _ImageFactory()
-    collection = _CollectionFactory()
-    material = _MaterialFactory()
-    font = _FontFactory()
-    sound = _SoundFactory()
+    float: _FloatFactory = _FloatFactory()
+    integer: _IntegerFactory = _IntegerFactory()
+    vector: _VectorFactory = _VectorFactory()
+    color: _ColorFactory = _ColorFactory()
+    string: _StringFactory = _StringFactory()
+    object: _ObjectFactory = _ObjectFactory()
+    image: _ImageFactory = _ImageFactory()
+    collection: _CollectionFactory = _CollectionFactory()
+    material: _MaterialFactory = _MaterialFactory()
+    font: _FontFactory = _FontFactory()
+    sound: _SoundFactory = _SoundFactory()
 
     class _Inputs[S](SocketAccessor):
         _bpy_node: "bpy.types.FunctionNodeCompare"
@@ -2572,7 +2589,7 @@ class Compare[T: BaseSocket](BaseNode):
         self,
         operation: _CompareOperations = "GREATER_THAN",
         data_type: _CompareDataTypes = "FLOAT",
-        **kwargs,
+        **kwargs: Any,
     ):
         super().__init__()
         self.data_type = data_type
@@ -2591,7 +2608,7 @@ class Compare[T: BaseSocket](BaseNode):
     def operation(
         self,
         value: _CompareOperations,
-    ):
+    ) -> None:
         self.node.operation = value
 
     @property
@@ -2604,7 +2621,7 @@ class Compare[T: BaseSocket](BaseNode):
     def data_type(
         self,
         value: _CompareDataTypes,
-    ):
+    ) -> None:
         self.node.data_type = value
 
     @property
@@ -2617,7 +2634,7 @@ class Compare[T: BaseSocket](BaseNode):
     def mode(
         self,
         value: _CompareVectorModes,
-    ):
+    ) -> None:
         self.node.mode = value
 
 
@@ -2662,13 +2679,15 @@ class AttributeStatistic[T: BaseSocket](BaseNode):
                 domain=self._domain,
             )
 
-    point = _AttributeStatisticDomainFactor("POINT")
-    edge = _AttributeStatisticDomainFactor("EDGE")
-    face = _AttributeStatisticDomainFactor("FACE")
-    corner = _AttributeStatisticDomainFactor("CORNER")
-    spline = _AttributeStatisticDomainFactor("CURVE")
-    instance = _AttributeStatisticDomainFactor("INSTANCE")
-    layer = _AttributeStatisticDomainFactor("LAYER")
+    point: _AttributeStatisticDomainFactor = _AttributeStatisticDomainFactor("POINT")
+    edge: _AttributeStatisticDomainFactor = _AttributeStatisticDomainFactor("EDGE")
+    face: _AttributeStatisticDomainFactor = _AttributeStatisticDomainFactor("FACE")
+    corner: _AttributeStatisticDomainFactor = _AttributeStatisticDomainFactor("CORNER")
+    spline: _AttributeStatisticDomainFactor = _AttributeStatisticDomainFactor("CURVE")
+    instance: _AttributeStatisticDomainFactor = _AttributeStatisticDomainFactor(
+        "INSTANCE"
+    )
+    layer: _AttributeStatisticDomainFactor = _AttributeStatisticDomainFactor("LAYER")
 
     class _Inputs[S](SocketAccessor):
         geometry: GeometrySocket
@@ -2699,10 +2718,10 @@ class AttributeStatistic[T: BaseSocket](BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[T]: ...
 
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> _Outputs[T]: ...
 
     def __init__(
         self,
@@ -2717,7 +2736,7 @@ class AttributeStatistic[T: BaseSocket](BaseNode):
         domain: Literal[
             "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ] = "POINT",
-        **kwargs,
+        **kwargs: InputAny,
     ):
         super().__init__()
         key_args = {
@@ -2746,7 +2765,7 @@ class AttributeStatistic[T: BaseSocket](BaseNode):
             "FLOAT",
             "FLOAT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
     @property
@@ -2759,7 +2778,7 @@ class AttributeStatistic[T: BaseSocket](BaseNode):
     def domain(
         self,
         value: _AttributeDomains,
-    ):
+    ) -> None:
         self.node.domain = value
 
 
@@ -3098,8 +3117,8 @@ class SampleCurve[T: BaseSocket](BaseNode):
                 use_all_curves=use_all_curves,
             )
 
-    length = _SampleCurveLengthFactory()
-    factor = _SampleCurveFactorFactory()
+    length: _SampleCurveLengthFactory = _SampleCurveLengthFactory()
+    factor: _SampleCurveFactorFactory = _SampleCurveFactorFactory()
 
     _bl_idname = "GeometryNodeSampleCurve"
     node: bpy.types.GeometryNodeSampleCurve
@@ -3129,9 +3148,9 @@ class SampleCurve[T: BaseSocket](BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[T]: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> _Outputs[T]: ...
 
     def __init__(
         self,
@@ -3163,7 +3182,7 @@ class SampleCurve[T: BaseSocket](BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["FACTOR", "LENGTH"]):
+    def mode(self, value: Literal["FACTOR", "LENGTH"]) -> None:
         self.node.mode = value
 
     @property
@@ -3171,7 +3190,7 @@ class SampleCurve[T: BaseSocket](BaseNode):
         return self.node.use_all_curves
 
     @use_all_curves.setter
-    def use_all_curves(self, value: bool):
+    def use_all_curves(self, value: bool) -> None:
         self.node.use_all_curves = value
 
     @property
@@ -3184,7 +3203,7 @@ class SampleCurve[T: BaseSocket](BaseNode):
     def data_type(
         self,
         value: _SampleCurveDataTypes,
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -3349,13 +3368,13 @@ class SampleIndex[T: BaseSocket](BaseNode):
                 clamp=clamp,
             )
 
-    point = _SampleIndexDomainFactory("POINT")
-    edge = _SampleIndexDomainFactory("EDGE")
-    face = _SampleIndexDomainFactory("FACE")
-    face_corner = _SampleIndexDomainFactory("CORNER")
-    spline = _SampleIndexDomainFactory("CURVE")
-    instance = _SampleIndexDomainFactory("INSTANCE")
-    layer = _SampleIndexDomainFactory("LAYER")
+    point: _SampleIndexDomainFactory = _SampleIndexDomainFactory("POINT")
+    edge: _SampleIndexDomainFactory = _SampleIndexDomainFactory("EDGE")
+    face: _SampleIndexDomainFactory = _SampleIndexDomainFactory("FACE")
+    face_corner: _SampleIndexDomainFactory = _SampleIndexDomainFactory("CORNER")
+    spline: _SampleIndexDomainFactory = _SampleIndexDomainFactory("CURVE")
+    instance: _SampleIndexDomainFactory = _SampleIndexDomainFactory("INSTANCE")
+    layer: _SampleIndexDomainFactory = _SampleIndexDomainFactory("LAYER")
 
     _bl_idname = "GeometryNodeSampleIndex"
     node: bpy.types.GeometryNodeSampleIndex
@@ -3375,9 +3394,9 @@ class SampleIndex[T: BaseSocket](BaseNode):
     if TYPE_CHECKING:
 
         @property
-        def i(self) -> _Inputs: ...
+        def i(self) -> _Inputs[T]: ...
         @property
-        def o(self) -> _Outputs: ...
+        def o(self) -> _Outputs[T]: ...
 
     def __init__(
         self,
@@ -3416,7 +3435,7 @@ class SampleIndex[T: BaseSocket](BaseNode):
     def data_type(
         self,
         value: _SampleCurveDataTypes,
-    ):
+    ) -> None:
         self.node.data_type = value
 
     @property
@@ -3429,7 +3448,7 @@ class SampleIndex[T: BaseSocket](BaseNode):
     def domain(
         self,
         value: _AttributeDomains,
-    ):
+    ) -> None:
         self.node.domain = value
 
     @property
@@ -3437,5 +3456,5 @@ class SampleIndex[T: BaseSocket](BaseNode):
         return self.node.clamp
 
     @clamp.setter
-    def clamp(self, value: bool):
+    def clamp(self, value: bool) -> None:
         self.node.clamp = value

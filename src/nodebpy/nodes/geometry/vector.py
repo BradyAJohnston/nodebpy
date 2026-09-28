@@ -95,7 +95,7 @@ class RadialTiling(BaseNode):
         return self.node.normalize
 
     @normalize.setter
-    def normalize(self, value: bool):
+    def normalize(self, value: bool) -> None:
         self.node.normalize = value
 
 
@@ -581,7 +581,7 @@ class VectorMath(BaseNode):
             "COSINE",
             "TANGENT",
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
 
@@ -773,7 +773,7 @@ class VectorRotate(BaseNode):
     @rotation_type.setter
     def rotation_type(
         self, value: Literal["AXIS_ANGLE", "X_AXIS", "Y_AXIS", "Z_AXIS", "EULER_XYZ"]
-    ):
+    ) -> None:
         self.node.rotation_type = value
 
     @property
@@ -781,5 +781,5 @@ class VectorRotate(BaseNode):
         return self.node.invert
 
     @invert.setter
-    def invert(self, value: bool):
+    def invert(self, value: bool) -> None:
         self.node.invert = value

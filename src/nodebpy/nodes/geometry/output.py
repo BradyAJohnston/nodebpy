@@ -86,7 +86,7 @@ class Viewer(BaseNode):
         return self.node.ui_shortcut
 
     @ui_shortcut.setter
-    def ui_shortcut(self, value: int):
+    def ui_shortcut(self, value: int) -> None:
         self.node.ui_shortcut = value
 
     @property
@@ -103,5 +103,5 @@ class Viewer(BaseNode):
         value: Literal[
             "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ],
-    ):
+    ) -> None:
         self.node.domain = value

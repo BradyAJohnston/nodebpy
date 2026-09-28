@@ -97,7 +97,7 @@ class PanelContext:
         self._default_closed = default_closed
         self._panel: bpy.types.NodeTreeInterfacePanel | None = None
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         interface = self._socket_context.interface
         self._panel = interface.new_panel(
             self._name,
@@ -114,7 +114,7 @@ class PanelContext:
         self._socket_context._active_panel = self._panel
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         self._socket_context._active_panel = self._previous
 
 
@@ -128,7 +128,7 @@ class TreePanelContext:
 
     def __init__(
         self,
-        builder: TreeBuilder,
+        builder: TreeBuilder[Any],
         name: str | bpy.types.NodeTreeInterfacePanel,
         *,
         description: str = "",
@@ -142,7 +142,7 @@ class TreePanelContext:
         self._reuse = reuse
         self.panel: bpy.types.NodeTreeInterfacePanel | None = None
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         interface = self._builder.tree.interface
         assert interface is not None
         # Entered inside another panel context → nest under it. A mixed panel
@@ -200,7 +200,7 @@ class TreePanelContext:
         self._builder.outputs._active_panel = self.panel
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         self._builder.inputs._active_panel = self._previous_inputs
         self._builder.outputs._active_panel = self._previous_outputs
 
@@ -208,7 +208,7 @@ class TreePanelContext:
 class SocketContext:
     _direction: Literal["INPUT", "OUTPUT"] | None
 
-    def __init__(self, tree_builder: TreeBuilder):
+    def __init__(self, tree_builder: TreeBuilder[Any]):
         self.builder = tree_builder
         self._active_panel: bpy.types.NodeTreeInterfacePanel | None = None
 
@@ -1145,8 +1145,8 @@ class TreeBuilder[TreeT: NodeTree]:
 
         self._menu_defaults: list[_MenuDefault] = []
         self._exited = False
-        self.inputs = InputInterfaceContext(self)
-        self.outputs = OutputInterfaceContext(self)
+        self.inputs: InputInterfaceContext = InputInterfaceContext(self)
+        self.outputs: OutputInterfaceContext = OutputInterfaceContext(self)
         self._arrange = arrange
         self.collapse = collapse
         self.fake_user = fake_user
@@ -1334,7 +1334,7 @@ class TreeBuilder[TreeT: NodeTree]:
         self._exited = False
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         # Split before auto-layout, so the created instances get arranged
         # next to their consumers.
         split = self._split_inputs
@@ -1502,14 +1502,14 @@ class TreeBuilder[TreeT: NodeTree]:
             node.name = old_name  # re-suffixed by Blender on collision
 
     @property
-    def group_input_splits(self) -> list[dict]:
+    def group_input_splits(self) -> list[dict[str, Any]]:
         """The extra Group Input instances beyond the primary one, each as
         ``{"name": ..., "label": ..., "links": [(interface input name,
         consumer node name, consumer socket key), ...], "location": ...,
         "parent": ...}`` — the editor convention of several input nodes near
         their consumers instead of one node trailing long noodles. See the
         setter."""
-        splits: list[dict] = []
+        splits: list[dict[str, Any]] = []
         for node in self.tree.nodes:
             if node.bl_idname != "NodeGroupInput" or node.name == "Group Input":
                 continue
@@ -1531,7 +1531,7 @@ class TreeBuilder[TreeT: NodeTree]:
         return splits
 
     @group_input_splits.setter
-    def group_input_splits(self, splits: list[dict]) -> None:
+    def group_input_splits(self, splits: list[dict[str, Any]]) -> None:
         """Split the Group Input node into several instances: each entry
         creates one instance carrying the listed links (moved off whichever
         input node holds them — exactly one per entry, so parallel links from
@@ -1669,7 +1669,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 if not socket.identifier.startswith("__extend__"):
                     socket.hide = not socket.is_linked
 
-    def arrange(self):
+    def arrange(self) -> None:
         _arrange_nodes(self.tree, self._arrange)
 
     def _repr_markdown_(self) -> str | None:
@@ -1789,7 +1789,7 @@ class TreeBuilder[TreeT: NodeTree]:
         return node
 
 
-class MaterialBuilder(TreeBuilder):
+class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
     def __init__(
         self,
         name: str = "New Material",

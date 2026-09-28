@@ -439,7 +439,7 @@ def _render_class(cls: _AssetClass, docstrings: bool = False) -> str:
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__{signature}:
+    def __init__{signature}{" -> None" if signature == "(self)" else ""}:
         super().__init__(**{{{key_args}}})
 """
 
@@ -498,7 +498,8 @@ def interface_parts(
         args.append("**{" + ", ".join(keyed) + "}")
     if pairs:
         args.append("_named_links=[" + ", ".join(pairs) + "]")
-    init = f"    def __init__{signature}:\n        super().__init__({', '.join(args)})"
+    init_return = " -> None" if signature == "(self)" else ""
+    init = f"    def __init__{signature}{init_return}:\n        super().__init__({', '.join(args)})"
 
     type_checking = (
         "    if TYPE_CHECKING:\n"

@@ -105,7 +105,7 @@ class Bump(BaseNode):
         return self.node.invert
 
     @invert.setter
-    def invert(self, value: bool):
+    def invert(self, value: bool) -> None:
         self.node.invert = value
 
 
@@ -189,7 +189,7 @@ class Displacement(BaseNode):
         return self.node.space
 
     @space.setter
-    def space(self, value: Literal["OBJECT", "WORLD"]):
+    def space(self, value: Literal["OBJECT", "WORLD"]) -> None:
         self.node.space = value
 
 
@@ -327,7 +327,9 @@ class Mapping(BaseNode):
         return self.node.vector_type
 
     @vector_type.setter
-    def vector_type(self, value: Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"]):
+    def vector_type(
+        self, value: Literal["POINT", "TEXTURE", "VECTOR", "NORMAL"]
+    ) -> None:
         self.node.vector_type = value
 
 
@@ -454,7 +456,7 @@ class NormalMap(BaseNode):
     def space(
         self,
         value: Literal["TANGENT", "OBJECT", "WORLD", "BLENDER_OBJECT", "BLENDER_WORLD"],
-    ):
+    ) -> None:
         self.node.space = value
 
     @property
@@ -462,7 +464,7 @@ class NormalMap(BaseNode):
         return self.node.uv_map
 
     @uv_map.setter
-    def uv_map(self, value: str):
+    def uv_map(self, value: str) -> None:
         self.node.uv_map = value
 
     @property
@@ -470,7 +472,7 @@ class NormalMap(BaseNode):
         return self.node.convention
 
     @convention.setter
-    def convention(self, value: Literal["OPENGL", "DIRECTX"]):
+    def convention(self, value: Literal["OPENGL", "DIRECTX"]) -> None:
         self.node.convention = value
 
     @property
@@ -478,7 +480,7 @@ class NormalMap(BaseNode):
         return self.node.base
 
     @base.setter
-    def base(self, value: Literal["ORIGINAL", "DISPLACED"]):
+    def base(self, value: Literal["ORIGINAL", "DISPLACED"]) -> None:
         self.node.base = value
 
 
@@ -550,7 +552,7 @@ class VectorDisplacement(BaseNode):
         return self.node.space
 
     @space.setter
-    def space(self, value: Literal["TANGENT", "OBJECT", "WORLD"]):
+    def space(self, value: Literal["TANGENT", "OBJECT", "WORLD"]) -> None:
         self.node.space = value
 
 
@@ -660,7 +662,7 @@ class VectorTransform(BaseNode):
         return self.node.vector_type
 
     @vector_type.setter
-    def vector_type(self, value: Literal["POINT", "VECTOR", "NORMAL"]):
+    def vector_type(self, value: Literal["POINT", "VECTOR", "NORMAL"]) -> None:
         self.node.vector_type = value
 
     @property
@@ -668,7 +670,7 @@ class VectorTransform(BaseNode):
         return self.node.convert_from
 
     @convert_from.setter
-    def convert_from(self, value: Literal["WORLD", "OBJECT", "CAMERA"]):
+    def convert_from(self, value: Literal["WORLD", "OBJECT", "CAMERA"]) -> None:
         self.node.convert_from = value
 
     @property
@@ -676,5 +678,5 @@ class VectorTransform(BaseNode):
         return self.node.convert_to
 
     @convert_to.setter
-    def convert_to(self, value: Literal["WORLD", "OBJECT", "CAMERA"]):
+    def convert_to(self, value: Literal["WORLD", "OBJECT", "CAMERA"]) -> None:
         self.node.convert_to = value

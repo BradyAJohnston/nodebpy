@@ -506,7 +506,7 @@ class ColorBalance(BaseNode):
         return self.node.input_whitepoint
 
     @input_whitepoint.setter
-    def input_whitepoint(self, value: Color | tuple[float, float, float]):
+    def input_whitepoint(self, value: Color | tuple[float, float, float]) -> None:
         self.node.input_whitepoint = value
 
     @property
@@ -514,7 +514,7 @@ class ColorBalance(BaseNode):
         return self.node.output_whitepoint
 
     @output_whitepoint.setter
-    def output_whitepoint(self, value: Color | tuple[float, float, float]):
+    def output_whitepoint(self, value: Color | tuple[float, float, float]) -> None:
         self.node.output_whitepoint = value
 
 
