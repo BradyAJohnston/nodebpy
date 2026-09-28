@@ -24,6 +24,7 @@ import bpy
 from ..builder import AssetLibrary, BundledLibrary, asset_group_base
 from ..builder._utils import normalize_name, typed_param_names
 from ..export.codegen import GroupInterface, _fmt
+from ..types import Default
 
 # bl_socket_type substring → (Socket accessor class, Input* parameter type).
 # Order matters: more specific keys (IntVector before Int) come first.
@@ -143,11 +144,28 @@ class _Socket:
     attr: str  # normalized accessor/param name
     description: str = ""  # interface tooltip, if the asset author set one
     menu_items: tuple[str, ...] = ()  # menu sockets only: the selectable items
+    fallback: str = ""  # what an unconnected input reads, for the docstring
+    modifier_attribute: str = ""  # attribute a modifier input defaults to reading
 
     @property
     def doc(self) -> str:
         """Documentation line for this socket — its tooltip, else its name."""
         return _clean_doc(self.description or self.name)
+
+    @property
+    def param_doc(self) -> str:
+        """The parameter's documentation line: the tooltip plus, for an input
+        with a fallback, what it reads when nothing is connected, and for one
+        with a default attribute, what a modifier input reads by default."""
+        doc = self.doc
+        if self.fallback:
+            doc = f"{doc.rstrip('.')}. When unconnected: {self.fallback}"
+        if self.modifier_attribute:
+            doc = (
+                f"{doc.rstrip('.')}. As a modifier input, reads the "
+                f'"{self.modifier_attribute}" attribute by default.'
+            )
+        return doc
 
     @property
     def param_type(self) -> str:
@@ -179,13 +197,22 @@ def _collect(
     sockets,
     descriptions: dict[str, str] | None = None,
     menus: bool = False,
+    fallbacks: dict[str, Default] | None = None,
+    modifier_attributes: dict[str, str] | None = None,
 ) -> list[_Socket]:
     """Introspect ``sockets`` into records.
 
     ``menus`` resolves menu sockets to their items — only worth doing for the
-    group's *inputs*, whose parameters are typed from them.
+    group's *inputs*, whose parameters are typed from them. ``fallbacks`` maps
+    an input's identifier to what it reads when unconnected (the interface's
+    ``default_input`` field); such a parameter defaults to the matching
+    ``Default`` member instead of a stored value. ``modifier_attributes``
+    maps an input to its default attribute name, which only a Geometry Nodes
+    modifier uses, so it is documented but does not change the default.
     """
     descriptions = descriptions or {}
+    fallbacks = fallbacks or {}
+    modifier_attributes = modifier_attributes or {}
     # Keep inactive sockets: socket-usage inference deactivates inputs that the
     # current node options (e.g. a menu selection) leave unused, but a caller
     # may set those options differently, so the API must expose every input.
@@ -202,19 +229,56 @@ def _collect(
         attr = (
             norm_name if name_counts[norm_name] == 1 else normalize_name(s.identifier)
         )
+        fallback = fallbacks.get(s.identifier)
         out.append(
             _Socket(
                 name=s.name,
                 identifier=s.identifier,
                 socket_class=socket_class,
                 input_type=input_type,
-                default=_format_default(s),
+                default=repr(fallback) if fallback else _format_default(s),
                 attr=attr,
                 description=descriptions.get(s.identifier, ""),
                 menu_items=menu_items,
+                fallback=fallback.description if fallback else "",
+                modifier_attribute=modifier_attributes.get(s.identifier, ""),
             )
         )
     return out
+
+
+def _interface_fallbacks(group) -> dict[str, Default]:
+    """What each group input reads when unconnected, by socket identifier.
+
+    An interface input with a ``default_input`` other than ``VALUE`` reads an
+    implicit field or context value instead of its stored default, whether
+    the group is a modifier or a node in another tree. Other inputs are left
+    out.
+    """
+    fallbacks: dict[str, Default] = {}
+    for item in group.interface.items_tree:
+        if item.item_type != "SOCKET" or item.in_out != "INPUT":
+            continue
+        default_input = getattr(item, "default_input", "VALUE")
+        if default_input != "VALUE":
+            fallbacks[item.identifier] = Default(default_input)
+    return fallbacks
+
+
+def _interface_modifier_attributes(group) -> dict[str, str]:
+    """Each group input's default attribute name, by socket identifier.
+
+    Blender only applies it when the group is a Geometry Nodes modifier (the
+    input starts in attribute mode reading that name); as a node inside
+    another tree the input still uses its stored value.
+    """
+    return {
+        item.identifier: item.default_attribute_name
+        for item in group.interface.items_tree
+        if item.item_type == "SOCKET"
+        and item.in_out == "INPUT"
+        and getattr(item, "default_attribute_name", "")
+    }
 
 
 def _introspect_group(group, name: str, library_source: str) -> _AssetClass:
@@ -253,7 +317,13 @@ def _introspect_group(group, name: str, library_source: str) -> _AssetClass:
             description=(group.description or name).strip(),
             library_source=library_source,
             tree_idname=group.bl_idname,
-            inputs=_collect(node.inputs, descriptions, menus=True),
+            inputs=_collect(
+                node.inputs,
+                descriptions,
+                menus=True,
+                fallbacks=_interface_fallbacks(group),
+                modifier_attributes=_interface_modifier_attributes(group),
+            ),
             outputs=_collect(node.outputs, descriptions),
         )
     finally:
@@ -320,7 +390,7 @@ def _class_docstring(cls: _AssetClass) -> str:
     if cls.inputs:
         lines += ["Parameters", "----------"]
         for s in cls.inputs:
-            lines += [f"{s.attr} : {s.param_type}", f"    {s.doc}"]
+            lines += [f"{s.attr} : {s.param_type}", f"    {s.param_doc}"]
         lines.append("")
         lines += ["Inputs", "------"]
         for s in cls.inputs:
@@ -470,6 +540,8 @@ def interface_parts(
     ]
     if any("math." in s.default for s in cls.inputs):
         import_lines.insert(0, "import math")
+    if any(s.default.startswith("Default.") for s in cls.inputs):
+        input_types.insert(0, "Default")  # sorts before the Input* names
     if input_types:
         import_lines.append(f"from {nodebpy_pkg}.types import {', '.join(input_types)}")
 
@@ -490,6 +562,8 @@ def _render_module(
         {s.socket_class for c in classes for s in c.inputs + c.outputs}
     )
     input_types = sorted({s.input_type for c in classes for s in c.inputs})
+    if any(s.default.startswith("Default.") for c in classes for s in c.inputs):
+        input_types.insert(0, "Default")
     bases = sorted({asset_group_base(c.tree_idname).__name__ for c in classes})
     libraries = sorted(
         {
