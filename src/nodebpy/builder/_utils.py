@@ -178,9 +178,10 @@ def _resolve_promotion(
 
 @runtime_checkable
 class _NodeLike(Protocol):
-    """Protocol for objects that wrap a Blender node and expose an ``outputs`` accessor."""
+    """Protocol for objects that wrap a Blender node and expose an ``o`` output accessor."""
 
-    outputs: Any  # SocketAccessor at runtime; typed as Any to avoid circular import
+    @property
+    def o(self) -> Any: ...  # SocketAccessor at runtime; Any avoids a circular import
 
 
 @runtime_checkable

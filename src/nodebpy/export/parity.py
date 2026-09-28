@@ -94,7 +94,7 @@ class ParityFinding:
         return f"{self.tree}: [{self.context}] {self.path} — {self.detail}"
 
 
-def serialize_library(trees: Iterable[Any]) -> dict[str, dict]:
+def serialize_library(trees: Iterable[Any]) -> dict[str, dict[str, Any]]:
     """``tree_clipper`` JSON data for each tree in ``trees`` (nested groups
     included), keyed by tree name. The trees must be in the current session:
     the capture is enriched from the live data with what the JSON alone
@@ -106,7 +106,7 @@ def serialize_library(trees: Iterable[Any]) -> dict[str, dict]:
     from ..builder import TreeBuilder
     from .web_render import to_tree_clipper_payload
 
-    out: dict[str, dict] = {}
+    out: dict[str, dict[str, Any]] = {}
     for tree in trees:
         builder = TreeBuilder(tree)
         owner = None
@@ -453,8 +453,8 @@ def _compare_tree(
 
 
 def compare_libraries(
-    a: dict[str, dict],
-    b: dict[str, dict],
+    a: dict[str, dict[str, Any]],
+    b: dict[str, dict[str, Any]],
     *,
     ignore: Collection[str] = frozenset(),
 ) -> list[ParityFinding]:
@@ -490,7 +490,7 @@ def format_report(findings: list[ParityFinding]) -> str:
     return "\n".join(lines)
 
 
-def _serialize_blend_assets(blend_path: str) -> dict[str, dict]:
+def _serialize_blend_assets(blend_path: str) -> dict[str, dict[str, Any]]:
     """Load a .blend's node-group assets, serialize them, and clean the
     session back up — including dependency datablocks, or the second blend's
     same-named materials/objects/collections would load renamed (".001") and

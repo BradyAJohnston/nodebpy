@@ -213,7 +213,7 @@ class AdvectGrid[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -413,7 +413,7 @@ class ClipGrid[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -631,7 +631,7 @@ class DistributePointsInGrid(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["DENSITY_RANDOM", "DENSITY_GRID"]):
+    def mode(self, value: Literal["DENSITY_RANDOM", "DENSITY_GRID"]) -> None:
         self.node.mode = value
 
 
@@ -839,7 +839,7 @@ class GetNamedGrid[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -1036,7 +1036,7 @@ class GridDilateErode[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -1216,7 +1216,7 @@ class GridInfo[T, TGrid](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -1367,7 +1367,7 @@ class GridMean[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -1475,7 +1475,7 @@ class GridMedian[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -1647,7 +1647,7 @@ class GridToPoints[T, TGrid](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -2136,7 +2136,7 @@ class PruneGrid[T, TGrid](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -2611,7 +2611,7 @@ class SampleGrid[T, TGrid](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -2734,7 +2734,7 @@ class SampleGridIndex[T, TGrid](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -2870,7 +2870,7 @@ class SetGridBackground[T, TGrid](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -2967,7 +2967,7 @@ class SetGridTransform[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -3081,7 +3081,9 @@ class StoreNamedGrid[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]):
+    def data_type(
+        self, value: Literal["BOOLEAN", "FLOAT", "INT", "VECTOR_FLOAT"]
+    ) -> None:
         self.node.data_type = value
 
 
@@ -3351,5 +3353,5 @@ class VoxelizeGrid[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value

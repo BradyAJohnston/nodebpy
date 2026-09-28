@@ -200,7 +200,7 @@ class ItemsMixin(DynamicInputsMixin):
 
     if TYPE_CHECKING:
         node: Node
-        tree: TreeBuilder
+        tree: TreeBuilder[Any]
 
         def _establish_links(self, **kwargs: Any) -> None: ...
 

@@ -74,7 +74,7 @@ class EnvironmentTexture(BaseNode):
         return self.node.projection
 
     @projection.setter
-    def projection(self, value: Literal["EQUIRECTANGULAR", "MIRROR_BALL"]):
+    def projection(self, value: Literal["EQUIRECTANGULAR", "MIRROR_BALL"]) -> None:
         self.node.projection = value
 
     @property
@@ -82,7 +82,9 @@ class EnvironmentTexture(BaseNode):
         return self.node.interpolation
 
     @interpolation.setter
-    def interpolation(self, value: Literal["Linear", "Closest", "Cubic", "Smart"]):
+    def interpolation(
+        self, value: Literal["Linear", "Closest", "Cubic", "Smart"]
+    ) -> None:
         self.node.interpolation = value
 
 
@@ -167,7 +169,7 @@ class IesTexture(BaseNode):
         return self.node.filepath
 
     @filepath.setter
-    def filepath(self, value: str):
+    def filepath(self, value: str) -> None:
         self.node.filepath = value
 
     @property
@@ -175,7 +177,7 @@ class IesTexture(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["INTERNAL", "EXTERNAL"]):
+    def mode(self, value: Literal["INTERNAL", "EXTERNAL"]) -> None:
         self.node.mode = value
 
 
@@ -243,7 +245,7 @@ class ImageTexture(BaseNode):
         return self.node.projection
 
     @projection.setter
-    def projection(self, value: Literal["FLAT", "BOX", "SPHERE", "TUBE"]):
+    def projection(self, value: Literal["FLAT", "BOX", "SPHERE", "TUBE"]) -> None:
         self.node.projection = value
 
     @property
@@ -251,7 +253,9 @@ class ImageTexture(BaseNode):
         return self.node.interpolation
 
     @interpolation.setter
-    def interpolation(self, value: Literal["Linear", "Closest", "Cubic", "Smart"]):
+    def interpolation(
+        self, value: Literal["Linear", "Closest", "Cubic", "Smart"]
+    ) -> None:
         self.node.interpolation = value
 
     @property
@@ -259,7 +263,7 @@ class ImageTexture(BaseNode):
         return self.node.projection_blend
 
     @projection_blend.setter
-    def projection_blend(self, value: float):
+    def projection_blend(self, value: float) -> None:
         self.node.projection_blend = value
 
     @property
@@ -267,7 +271,7 @@ class ImageTexture(BaseNode):
         return self.node.extension
 
     @extension.setter
-    def extension(self, value: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]):
+    def extension(self, value: Literal["REPEAT", "EXTEND", "CLIP", "MIRROR"]) -> None:
         self.node.extension = value
 
 
@@ -450,7 +454,7 @@ class SkyTexture(BaseNode):
         value: Literal[
             "SINGLE_SCATTERING", "MULTIPLE_SCATTERING", "PREETHAM", "HOSEK_WILKIE"
         ],
-    ):
+    ) -> None:
         self.node.sky_type = value
 
     @property
@@ -458,7 +462,7 @@ class SkyTexture(BaseNode):
         return self.node.sun_disc
 
     @sun_disc.setter
-    def sun_disc(self, value: bool):
+    def sun_disc(self, value: bool) -> None:
         self.node.sun_disc = value
 
     @property
@@ -466,7 +470,7 @@ class SkyTexture(BaseNode):
         return self.node.sun_size
 
     @sun_size.setter
-    def sun_size(self, value: float):
+    def sun_size(self, value: float) -> None:
         self.node.sun_size = value
 
     @property
@@ -474,7 +478,7 @@ class SkyTexture(BaseNode):
         return self.node.sun_intensity
 
     @sun_intensity.setter
-    def sun_intensity(self, value: float):
+    def sun_intensity(self, value: float) -> None:
         self.node.sun_intensity = value
 
     @property
@@ -482,7 +486,7 @@ class SkyTexture(BaseNode):
         return self.node.sun_elevation
 
     @sun_elevation.setter
-    def sun_elevation(self, value: float):
+    def sun_elevation(self, value: float) -> None:
         self.node.sun_elevation = value
 
     @property
@@ -490,7 +494,7 @@ class SkyTexture(BaseNode):
         return self.node.sun_rotation
 
     @sun_rotation.setter
-    def sun_rotation(self, value: float):
+    def sun_rotation(self, value: float) -> None:
         self.node.sun_rotation = value
 
     @property
@@ -498,7 +502,7 @@ class SkyTexture(BaseNode):
         return self.node.altitude
 
     @altitude.setter
-    def altitude(self, value: float):
+    def altitude(self, value: float) -> None:
         self.node.altitude = value
 
     @property
@@ -506,7 +510,7 @@ class SkyTexture(BaseNode):
         return self.node.air_density
 
     @air_density.setter
-    def air_density(self, value: float):
+    def air_density(self, value: float) -> None:
         self.node.air_density = value
 
     @property
@@ -514,7 +518,7 @@ class SkyTexture(BaseNode):
         return self.node.aerosol_density
 
     @aerosol_density.setter
-    def aerosol_density(self, value: float):
+    def aerosol_density(self, value: float) -> None:
         self.node.aerosol_density = value
 
     @property
@@ -522,7 +526,7 @@ class SkyTexture(BaseNode):
         return self.node.ozone_density
 
     @ozone_density.setter
-    def ozone_density(self, value: float):
+    def ozone_density(self, value: float) -> None:
         self.node.ozone_density = value
 
     @property
@@ -530,7 +534,7 @@ class SkyTexture(BaseNode):
         return self.node.sun_direction
 
     @sun_direction.setter
-    def sun_direction(self, value: Vector | tuple[float, float, float]):
+    def sun_direction(self, value: Vector | tuple[float, float, float]) -> None:
         self.node.sun_direction = value
 
     @property
@@ -538,7 +542,7 @@ class SkyTexture(BaseNode):
         return self.node.turbidity
 
     @turbidity.setter
-    def turbidity(self, value: float):
+    def turbidity(self, value: float) -> None:
         self.node.turbidity = value
 
     @property
@@ -546,5 +550,5 @@ class SkyTexture(BaseNode):
         return self.node.ground_albedo
 
     @ground_albedo.setter
-    def ground_albedo(self, value: float):
+    def ground_albedo(self, value: float) -> None:
         self.node.ground_albedo = value

@@ -12,13 +12,13 @@ _RShiftT = TypeVar("_RShiftT")
 
 if TYPE_CHECKING:
     from ..nodes.geometry import CombineTransform
+    from ..nodes.geometry.converter import BooleanMath
     from ..types import InputLinkable
     from .accessor import SocketAccessor
     from .node import BaseNode
     from .socket import (
         BooleanSocket,
         FloatSocket,
-        IntegerSocket,
         MatrixSocket,
         Position,
         Socket,
@@ -44,74 +44,65 @@ class OperatorMixin:
 
     def _apply_math_operation(
         self, other: Any, operation: str, reverse: bool = False
-    ) -> FloatSocket | VectorSocket | IntegerSocket:
+    ) -> Socket:
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
             reverse,
         )
-        return cast(
-            "FloatSocket | VectorSocket | IntegerSocket",
-            _wrap_socket(socket)._dispatch_math(other, operation, reverse),
-        )
+        return _wrap_socket(socket)._dispatch_math(other, operation, reverse)
 
-    def __mul__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __mul__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "multiply")
 
-    def __rmul__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __rmul__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "multiply", reverse=True)
 
-    def __truediv__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __truediv__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "divide")
 
-    def __rtruediv__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __rtruediv__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "divide", reverse=True)
 
-    def __add__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __add__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "add")
 
-    def __radd__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __radd__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "add", reverse=True)
 
-    def __sub__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __sub__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "subtract")
 
-    def __rsub__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __rsub__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "subtract", reverse=True)
 
-    def __pow__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __pow__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "power")
 
-    def __rpow__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __rpow__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "power", reverse=True)
 
-    def __mod__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __mod__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "modulo")
 
-    def __rmod__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __rmod__(self, other: Any) -> Socket:
         return self._apply_math_operation(other, "modulo", reverse=True)
 
-    def __floordiv__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __floordiv__(self, other: Any) -> Socket:
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
             False,
         )
-        return cast(
-            "FloatSocket | VectorSocket | IntegerSocket",
-            _wrap_socket(socket)._dispatch_floordiv(other, reverse),
-        )
+        return _wrap_socket(socket)._dispatch_floordiv(other, reverse)
 
-    def __rfloordiv__(self, other: Any) -> FloatSocket | VectorSocket | IntegerSocket:
+    def __rfloordiv__(self, other: Any) -> Socket:
         socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
             True,
         )
-        return cast(
-            "FloatSocket | VectorSocket | IntegerSocket",
-            _wrap_socket(socket)._dispatch_floordiv(other, reverse),
-        )
+        return _wrap_socket(socket)._dispatch_floordiv(other, reverse)
 
     def __matmul__(
         self, other: Position | CombineTransform | VectorSocket | MatrixSocket
@@ -143,36 +134,11 @@ class OperatorMixin:
 
         return MultiplyMatrices(other, self).o.matrix  # ty: ignore[invalid-argument-type]
 
-    def __neg__(self) -> FloatSocket | VectorSocket | IntegerSocket:
-        return cast(
-            "FloatSocket | VectorSocket | IntegerSocket",
-            _wrap_socket(self._default_output_socket)._dispatch_unary("negate"),
-        )
+    def __neg__(self) -> Socket:
+        return _wrap_socket(self._default_output_socket)._dispatch_unary("negate")
 
-    def __abs__(self) -> FloatSocket | VectorSocket | IntegerSocket:
-        return cast(
-            "FloatSocket | VectorSocket | IntegerSocket",
-            _wrap_socket(self._default_output_socket)._dispatch_unary("absolute"),
-        )
-
-    if TYPE_CHECKING:
-
-        def __mul__(self, other: Any) -> Self: ...
-        def __rmul__(self, other: Any) -> Self: ...
-        def __truediv__(self, other: Any) -> Self: ...
-        def __rtruediv__(self, other: Any) -> Self: ...
-        def __add__(self, other: Any) -> Self: ...
-        def __radd__(self, other: Any) -> Self: ...
-        def __sub__(self, other: Any) -> Self: ...
-        def __rsub__(self, other: Any) -> Self: ...
-        def __pow__(self, other: Any) -> Self: ...
-        def __rpow__(self, other: Any) -> Self: ...
-        def __mod__(self, other: Any) -> Self: ...
-        def __rmod__(self, other: Any) -> Self: ...
-        def __floordiv__(self, other: Any) -> Self: ...
-        def __rfloordiv__(self, other: Any) -> Self: ...
-        def __neg__(self) -> Self: ...
-        def __abs__(self) -> Self: ...
+    def __abs__(self) -> Socket:
+        return _wrap_socket(self._default_output_socket)._dispatch_unary("absolute")
 
     def _apply_compare_operation(
         self, other: Any, operation: str
@@ -202,36 +168,36 @@ class OperatorMixin:
     def __ne__(self, other: object) -> FloatSocket | BooleanSocket:  # type: ignore
         return self._apply_compare_operation(other, "not_equal")
 
-    def _apply_boolean_operation(self, other: Any, operation: str):
+    def _apply_boolean_operation(self, other: Any, operation: str) -> BooleanMath:
         from ..nodes.geometry.converter import BooleanMath
 
         return getattr(BooleanMath, operation)(self, other)
 
-    def __and__(self, other: Any):
+    def __and__(self, other: Any) -> BooleanMath | Socket:
         return self._apply_boolean_operation(other, "l_and")
 
-    def __rand__(self, other: Any):
+    def __rand__(self, other: Any) -> BooleanMath | Socket:
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_and(other, cast(Any, self))
 
-    def __or__(self, other: Any):
+    def __or__(self, other: Any) -> BooleanMath | Socket:
         return self._apply_boolean_operation(other, "l_or")
 
-    def __ror__(self, other: Any):
+    def __ror__(self, other: Any) -> BooleanMath | Socket:
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_or(other, cast(Any, self))
 
-    def __xor__(self, other: Any):
+    def __xor__(self, other: Any) -> BooleanMath | Socket:
         return self._apply_boolean_operation(other, "not_equal")
 
-    def __rxor__(self, other: Any):
+    def __rxor__(self, other: Any) -> BooleanMath | Socket:
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.not_equal(other, cast(Any, self))
 
-    def __invert__(self):
+    def __invert__(self) -> BooleanMath | Socket:
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_not(cast(Any, self))
@@ -244,7 +210,7 @@ class LinkingMixin:
     and ``_default_input_socket`` on the concrete class.
     """
 
-    tree: TreeBuilder
+    tree: TreeBuilder[Any]
 
     if TYPE_CHECKING:
         import bpy

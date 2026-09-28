@@ -235,7 +235,7 @@ class BaseSocket:
         return self.tree.tree.bl_idname == "CompositorNodeTree"
 
     @property
-    def tree(self) -> TreeBuilder:
+    def tree(self) -> TreeBuilder[Any]:
         if self._tree is None:
             from .tree import TreeBuilder
 
@@ -259,6 +259,26 @@ class Socket(BaseSocket, _SocketLike, OperatorMixin, LinkingMixin):
         The underlying Blender NodeSocket.
 
     """
+
+    # Socket arithmetic keeps the socket's own type (FloatSocket * 2 -> FloatSocket).
+    if TYPE_CHECKING:
+
+        def __mul__(self, other: Any) -> Self: ...
+        def __rmul__(self, other: Any) -> Self: ...
+        def __truediv__(self, other: Any) -> Self: ...
+        def __rtruediv__(self, other: Any) -> Self: ...
+        def __add__(self, other: Any) -> Self: ...
+        def __radd__(self, other: Any) -> Self: ...
+        def __sub__(self, other: Any) -> Self: ...
+        def __rsub__(self, other: Any) -> Self: ...
+        def __pow__(self, other: Any) -> Self: ...
+        def __rpow__(self, other: Any) -> Self: ...
+        def __mod__(self, other: Any) -> Self: ...
+        def __rmod__(self, other: Any) -> Self: ...
+        def __floordiv__(self, other: Any) -> Self: ...
+        def __rfloordiv__(self, other: Any) -> Self: ...
+        def __neg__(self) -> Self: ...
+        def __abs__(self) -> Self: ...
 
     @property
     def builder_node(self) -> BaseNode:
@@ -495,7 +515,7 @@ class _VectorGridOperatorMixin(Socket):
 # ---------------------------------------------------------------------------
 
 
-class _GridSocketMixin[T, TG](Socket):
+class _GridSocketMixin[T, TG: BaseSocket](Socket):
     def _info(self) -> GridInfo[T, TG]:
         from ..nodes.geometry import GridInfo
 
@@ -555,7 +575,7 @@ class _GridSocketMixin[T, TG](Socket):
             data_type=self._socket_dtype,  # ty: ignore[invalid-argument-type]
         ).o.value
 
-    def field_to_grid(self) -> FieldToGrid:
+    def field_to_grid(self) -> FieldToGrid[TG]:
         """Create new grids by evaluating new values on an existing volume grid topology."""
         from ..nodes.geometry import FieldToGrid
 
@@ -838,7 +858,7 @@ class _VectorMixin[
     """Vector-specific properties (.x, .y, .z) and dispatch."""
 
     socket: NodeSocketVector
-    _tree: TreeBuilder
+    _tree: TreeBuilder[Any]
 
     @property
     def _vmath(self) -> type[VectorMath]:
@@ -1492,7 +1512,7 @@ class _FloatMixin[IntegerResult: (IntegerSocket, IntegerSocketGrid, IntegerSocke
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         *,
-        clamp=True,
+        clamp: bool = True,
         interpolation_type: Literal[
             "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
         ] = "LINEAR",
@@ -1680,8 +1700,8 @@ class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)
     """Integer-specific dispatch — uses IntegerMath in geometry trees."""
 
     socket: NodeSocketInt
-    tree: TreeBuilder
-    _tree: TreeBuilder
+    tree: TreeBuilder[Any]
+    _tree: TreeBuilder[Any]
 
     @property
     def _imath(self) -> type[IntegerMath]:
@@ -2382,8 +2402,15 @@ class ColorSocketList(ColorSocket, _ListMixin[ColorSocket]):
 
     # Resolve the base-class conflict explicitly: component access (r/g/b/a)
     # wins over list-element indexing, matching the MRO.
-    __getitem__ = _ColorMixin.__getitem__
-    __len__ = _ColorMixin.__len__
+    @overload
+    def __getitem__(self, key: slice) -> list[FloatSocket]: ...
+    @overload
+    def __getitem__(self, key: int) -> FloatSocket: ...
+    def __getitem__(self, key: int | slice) -> FloatSocket | list[FloatSocket]:
+        return _ColorMixin.__getitem__(self, key)
+
+    def __len__(self) -> int:
+        return _ColorMixin.__len__(self)
 
 
 # -- Integer --

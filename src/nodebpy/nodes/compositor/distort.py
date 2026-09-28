@@ -719,7 +719,7 @@ class PlaneTrackDeform(BaseNode):
         return self.node.tracking_object
 
     @tracking_object.setter
-    def tracking_object(self, value: str):
+    def tracking_object(self, value: str) -> None:
         self.node.tracking_object = value
 
     @property
@@ -727,7 +727,7 @@ class PlaneTrackDeform(BaseNode):
         return self.node.plane_track_name
 
     @plane_track_name.setter
-    def plane_track_name(self, value: str):
+    def plane_track_name(self, value: str) -> None:
         self.node.plane_track_name = value
 
 

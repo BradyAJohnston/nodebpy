@@ -1,5 +1,6 @@
 from abc import ABC
-from typing import TYPE_CHECKING, ClassVar, TypeVar, cast
+from collections.abc import Iterator
+from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, cast
 
 import bpy
 from bpy.types import (
@@ -116,7 +117,9 @@ class ZoneItem(Item[_SocketT]):
     parameterised handles such as ``ZoneItem[GeometrySocket]``.
     """
 
-    def __init__(self, input_node: BaseZoneInput, output_node: BaseZoneOutput, item):
+    def __init__(
+        self, input_node: BaseZoneInput, output_node: BaseZoneOutput, item: Any
+    ):
         super().__init__(output_node, item)
         self._input_node = input_node
 
@@ -159,7 +162,7 @@ class _ZonePair:
         unpaired zone node are inactive."""
         self.input.node.pair_with_output(self.output.node)  # ty: ignore[unresolved-attribute]
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> BaseNode:
         match index:
             case 0:
                 return self.input
@@ -168,7 +171,7 @@ class _ZonePair:
             case _:
                 raise IndexError(f"{type(self).__name__} has only two items")
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[BaseNode]:
         return iter((self.input, self.output))
 
 
@@ -848,7 +851,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     def __init__(
         self,
         domain: _AttributeDomains = "POINT",
-        **kwargs,
+        **kwargs: InputAny,
     ):
         super().__init__()
         key_args = {}
@@ -922,7 +925,7 @@ class ForEachGeometryElementOutput(BaseZoneOutput):
     def domain(
         self,
         value: _AttributeDomains,
-    ):
+    ) -> None:
         self.node.domain = value
 
 
@@ -1092,7 +1095,7 @@ class ClosureInput(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
