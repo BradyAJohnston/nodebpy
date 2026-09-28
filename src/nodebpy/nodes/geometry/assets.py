@@ -2406,13 +2406,13 @@ class CustomForce(AssetGeometryGroup):
     socket_8 : InputMatrix
         Custom geometry space.
     socket_14 : InputObject
-        Object to take the geometry space from. When unconnected, reads the object the modifier is on.
+        Object to take the geometry space from. When unconnected: The object the modifier is on.
     socket_7 : InputMenu | Literal["Custom Space", "World Space", "Object Space"]
         The space the provided force vector is in.
     socket_11 : InputMatrix
         Custom force space.
     socket_15 : InputObject
-        Object to take the force space from. When unconnected, reads the object the modifier is on.
+        Object to take the force space from. When unconnected: The object the modifier is on.
     filter : InputString
         Comma-separated list of tags this effector should be applied to.
 
@@ -3298,7 +3298,7 @@ class GeometryPrincipalComponents(AssetGeometryGroup):
     geometry : InputGeometry
         Geometry to evaluate the given fields and store the resulting attributes on. All geometry types except volumes are supported
     position : InputVector
-        Position. When unconnected, reads the position field.
+        Position. When unconnected: The position from the context.
 
     Inputs
     ------
@@ -4318,7 +4318,7 @@ class PrincipalComponents(AssetGeometryGroup):
     Parameters
     ----------
     position : InputVector
-        Position. When unconnected, reads the position field.
+        Position. When unconnected: The position from the context.
     group_id : InputInteger
         An index used to group values together for multiple separate operations
 
@@ -4483,7 +4483,7 @@ class RandomRotation(AssetGeometryGroup):
     max_zenith : InputFloat
         Upper limit of the tilt away from the +Z direction
     id : InputInteger
-        Identifier per element used for randomization. When unconnected, reads the ID field, or the index when there is no ID.
+        Identifier per element used for randomization. When unconnected: The "id" attribute if available, otherwise the index.
     seed : InputInteger
         Base value to control random variation in a reproducible way
 
@@ -5118,7 +5118,7 @@ class ScatterOnSurface(AssetGeometryGroup):
     image_mask : InputImage
         Grayscale image texture used to remove scattered instances
     uv_map : InputVector
-        Texture coordinates used to map the image on the surface. When unconnected, reads the position field. As a modifier input, reads the "UVMap" attribute by default.
+        Texture coordinates used to map the image on the surface. When unconnected: The position from the context. As a modifier input, reads the "UVMap" attribute by default.
 
     Inputs
     ------

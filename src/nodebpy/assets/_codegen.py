@@ -159,7 +159,7 @@ class _Socket:
         with a default attribute, what a modifier input reads by default."""
         doc = self.doc
         if self.fallback:
-            doc = f"{doc.rstrip('.')}. When unconnected, reads {self.fallback}."
+            doc = f"{doc.rstrip('.')}. When unconnected: {self.fallback}"
         if self.modifier_attribute:
             doc = (
                 f"{doc.rstrip('.')}. As a modifier input, reads the "

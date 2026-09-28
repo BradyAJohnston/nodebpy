@@ -30,7 +30,7 @@ def test_members_mirror_blender_identifiers():
     assert Default.POSITION.value == "POSITION"
     assert repr(Default.POSITION) == "Default.POSITION"
     assert str(Default.ID_OR_INDEX) == "Default.ID_OR_INDEX"
-    assert Default.POSITION.description == "the position field"
+    assert Default.POSITION.description == "The position from the context."
 
 
 def test_constructor_leaves_the_socket_untouched():
@@ -98,10 +98,12 @@ def test_asset_codegen_spells_fallbacks_as_default():
     assert "scale: InputFloat = 2.0" in parts.body
     # The docstring says what the input reads when nothing is connected.
     assert (
-        "Per-point seed. When unconnected, reads the ID field, or the index when there is no ID."
+        'Per-point seed. When unconnected: The "id" attribute if available, otherwise the index.'
         in parts.docstring
     )
-    assert "Position. When unconnected, reads the position field." in parts.docstring
+    assert (
+        "Position. When unconnected: The position from the context." in parts.docstring
+    )
     assert (
         'Blend weight. As a modifier input, reads the "weight" attribute by default.'
         in parts.docstring

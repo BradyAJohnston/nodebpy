@@ -135,7 +135,7 @@ _DEFAULT_DESCRIPTIONS: dict[Default, str] = {
     Default.ID_OR_INDEX: 'The "id" attribute if available, otherwise the index.',
     Default.NORMAL: "The geometry's normal direction.",
     Default.POSITION: "The position from the context.",
-    Default.INSTANCE_TRANSFORM: "Transformation of each instace from the geometry context.",
+    Default.INSTANCE_TRANSFORM: "Transformation of each instance from the geometry context.",
     Default.HANDLE_LEFT: "The left Bezier control point handle from the context.",
     Default.HANDLE_RIGHT: "The right Bezier control point handle from the context.",
     Default.SCENE_FRAME: "The current frame in the scene.",
