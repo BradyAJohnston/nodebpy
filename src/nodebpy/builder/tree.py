@@ -20,6 +20,7 @@ from bpy.types import (
 
 from ..types import (
     SOCKET_COMPATIBILITY,
+    SOCKET_TYPES,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
     StringInterfaceSubtypes,
@@ -808,6 +809,48 @@ class SocketContext:
             force_non_field=force_non_field,
         )
         return self._wrap(ShaderSocket, iface)
+
+    def socket_any(self, socket_type: SOCKET_TYPES, **kwargs: Any) -> Socket:
+        if socket_type == "FLOAT":
+            return self.float(**kwargs)
+        if socket_type == "INT":
+            return self.integer(**kwargs)
+        if socket_type == "BOOLEAN":
+            return self.boolean(**kwargs)
+        if socket_type == "VECTOR":
+            return self.vector(**kwargs)
+        if socket_type == "RGBA":
+            return self.color(**kwargs)
+        if socket_type == "ROTATION":
+            return self.rotation(**kwargs)
+        if socket_type == "MATRIX":
+            return self.matrix(**kwargs)
+        if socket_type == "STRING":
+            return self.string(**kwargs)
+        if socket_type == "MENU":
+            return self.menu(**kwargs)
+        if socket_type == "OBJECT":
+            return self.object(**kwargs)
+        if socket_type == "GEOMETRY":
+            return self.geometry(**kwargs)
+        if socket_type == "COLLECTION":
+            return self.collection(**kwargs)
+        if socket_type == "IMAGE":
+            return self.image(**kwargs)
+        if socket_type == "MATERIAL":
+            return self.material(**kwargs)
+        if socket_type == "BUNDLE":
+            return self.bundle(**kwargs)
+        if socket_type == "CLOSURE":
+            return self.closure(**kwargs)
+        if socket_type == "SHADER":
+            return self.shader(**kwargs)
+        if socket_type == "FONT":
+            return self.font(**kwargs)
+        if socket_type == "SOUND":
+            return self.sound(**kwargs)
+
+        raise SocketError(f"Unsupported socket type {socket_type}")
 
     def __len__(self) -> int:
         assert self.tree.interface is not None
