@@ -39,7 +39,6 @@ Create a color from individual components using multiple models
 | [`name`](#nodebpy.nodes.shader.converter.CombineColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.converter.CombineColor.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.CombineColor.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.converter.CombineColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.converter.CombineColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -111,7 +110,6 @@ Implicitly convert the input value to a fixed socket type
 | [`name`](#nodebpy.nodes.shader.converter.ImplicitConversion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.converter.ImplicitConversion.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.ImplicitConversion.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.converter.ImplicitConversion.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.converter.ImplicitConversion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -265,7 +263,6 @@ Mix values by a factor
 | [`name`](#nodebpy.nodes.shader.converter.Mix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.converter.Mix.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.Mix.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.converter.Mix.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.converter.Mix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -279,7 +276,16 @@ Mix values by a factor
 ##### color
 
 ``` python
-color(factor=1.0, b_color=(0.5, 0.5, 0.5, 1.0))
+color(
+    factor=1.0,
+    a=(0.5, 0.5, 0.5, 1.0),
+    b=(0.5, 0.5, 0.5, 1.0),
+    *,
+    factor_mode='UNIFORM',
+    blend_type='MIX',
+    clamp_factor=False,
+    clamp_result=False,
+)
 ```
 
 Create Mix with operation ‘Color’.
@@ -287,7 +293,16 @@ Create Mix with operation ‘Color’.
 ##### float
 
 ``` python
-float(factor=1.0, b=0.0)
+float(
+    factor=1.0,
+    a=0.0,
+    b=0.0,
+    *,
+    factor_mode='UNIFORM',
+    blend_type='MIX',
+    clamp_factor=False,
+    clamp_result=False,
+)
 ```
 
 Create Mix with operation ‘Float’.
@@ -295,7 +310,16 @@ Create Mix with operation ‘Float’.
 ##### vector
 
 ``` python
-vector(factor=1.0, b=(0.0, 0.0, 0.0))
+vector(
+    factor=1.0,
+    a=(0.0, 0.0, 0.0),
+    b=(0.0, 0.0, 0.0),
+    *,
+    factor_mode='UNIFORM',
+    blend_type='MIX',
+    clamp_factor=False,
+    clamp_result=False,
+)
 ```
 
 Create Mix with operation ‘Vector’.
@@ -346,7 +370,6 @@ Convert a color’s luminance to a grayscale value
 | [`name`](#nodebpy.nodes.shader.converter.RGBToBW.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.converter.RGBToBW.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.RGBToBW.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.converter.RGBToBW.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.converter.RGBToBW.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -384,7 +407,6 @@ Split a color into its individual components using multiple models
 | [`name`](#nodebpy.nodes.shader.converter.SeparateColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.converter.SeparateColor.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.SeparateColor.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.converter.SeparateColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.converter.SeparateColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -468,7 +490,6 @@ Note: only supported in EEVEE
 | [`name`](#nodebpy.nodes.shader.converter.ShaderToRGB.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.converter.ShaderToRGB.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.ShaderToRGB.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.converter.ShaderToRGB.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.converter.ShaderToRGB.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### Wavelength
@@ -493,7 +514,6 @@ Convert a wavelength value to an RGB value
 | [`name`](#nodebpy.nodes.shader.converter.Wavelength.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.converter.Wavelength.node) |  |
 | [`o`](#nodebpy.nodes.shader.converter.Wavelength.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.converter.Wavelength.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.converter.Wavelength.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

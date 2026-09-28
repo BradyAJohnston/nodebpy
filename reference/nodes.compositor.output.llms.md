@@ -32,7 +32,6 @@ Write image file to disk
 | [`name`](#nodebpy.nodes.compositor.output.FileOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.output.FileOutput.node) |  |
 | [`o`](#nodebpy.nodes.compositor.output.FileOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.output.FileOutput.outputs) |  |
 | [`save_as_render`](#nodebpy.nodes.compositor.output.FileOutput.save_as_render) |  |
 | [`tree`](#nodebpy.nodes.compositor.output.FileOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_file_extension`](#nodebpy.nodes.compositor.output.FileOutput.use_file_extension) |  |
@@ -59,7 +58,6 @@ Visualize data from inside a node graph, in the image editor or as a backdrop
 | [`name`](#nodebpy.nodes.compositor.output.Viewer.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.output.Viewer.node) |  |
 | [`o`](#nodebpy.nodes.compositor.output.Viewer.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.output.Viewer.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.output.Viewer.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`ui_shortcut`](#nodebpy.nodes.compositor.output.Viewer.ui_shortcut) |  |
 

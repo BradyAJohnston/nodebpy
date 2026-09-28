@@ -45,7 +45,6 @@ Provide custom render passes for arbitrary shader node outputs
 | [`name`](#nodebpy.nodes.shader.output.AovOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.AovOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.AovOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.output.AovOutput.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.output.AovOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### LightOutput
@@ -71,7 +70,6 @@ Output light information to a light object
 | [`name`](#nodebpy.nodes.shader.output.LightOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.LightOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.LightOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.output.LightOutput.outputs) |  |
 | [`target`](#nodebpy.nodes.shader.output.LightOutput.target) |  |
 | [`tree`](#nodebpy.nodes.shader.output.LightOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -119,7 +117,6 @@ Control the mixing of texture information into the base color of line styles
 | [`name`](#nodebpy.nodes.shader.output.LineStyleOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.LineStyleOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.LineStyleOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.output.LineStyleOutput.outputs) |  |
 | [`target`](#nodebpy.nodes.shader.output.LineStyleOutput.target) |  |
 | [`tree`](#nodebpy.nodes.shader.output.LineStyleOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_alpha`](#nodebpy.nodes.shader.output.LineStyleOutput.use_alpha) |  |
@@ -140,8 +137,8 @@ Control the mixing of texture information into the base color of line styles
 MaterialOutput(
     surface=None,
     volume=None,
-    displacement=(0.0, 0.0, 0.0),
-    thickness=0.0,
+    displacement=None,
+    thickness=None,
     *,
     is_active_output=False,
     target='ALL',
@@ -152,12 +149,12 @@ Output surface material information for use in rendering
 
 #### Parameters
 
-| Name         | Type        | Description  | Default           |
-|--------------|-------------|--------------|-------------------|
-| surface      | InputShader | Surface      | `None`            |
-| volume       | InputShader | Volume       | `None`            |
-| displacement | InputVector | Displacement | `(0.0, 0.0, 0.0)` |
-| thickness    | InputFloat  | Thickness    | `0.0`             |
+| Name         | Type        | Description  | Default |
+|--------------|-------------|--------------|---------|
+| surface      | InputShader | Surface      | `None`  |
+| volume       | InputShader | Volume       | `None`  |
+| displacement | InputVector | Displacement | `None`  |
+| thickness    | InputFloat  | Thickness    | `None`  |
 
 #### Attributes
 
@@ -168,7 +165,6 @@ Output surface material information for use in rendering
 | [`name`](#nodebpy.nodes.shader.output.MaterialOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.MaterialOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.MaterialOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.output.MaterialOutput.outputs) |  |
 | [`target`](#nodebpy.nodes.shader.output.MaterialOutput.target) |  |
 | [`tree`](#nodebpy.nodes.shader.output.MaterialOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -205,7 +201,6 @@ Output light color information to the scene’s World
 | [`name`](#nodebpy.nodes.shader.output.WorldOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.output.WorldOutput.node) |  |
 | [`o`](#nodebpy.nodes.shader.output.WorldOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.output.WorldOutput.outputs) |  |
 | [`target`](#nodebpy.nodes.shader.output.WorldOutput.target) |  |
 | [`tree`](#nodebpy.nodes.shader.output.WorldOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 

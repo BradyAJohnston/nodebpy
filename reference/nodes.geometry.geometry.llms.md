@@ -154,7 +154,6 @@ Generate a poly spline arc
 | [`name`](#nodebpy.nodes.geometry.geometry.Arc.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Arc.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Arc.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Arc.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Arc.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -236,7 +235,6 @@ Cache the incoming data so that it can be used without recomputation
 | [`name`](#nodebpy.nodes.geometry.geometry.Bake.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Bake.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Bake.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Bake.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Bake.tree) |  |
 
 #### Methods
@@ -312,7 +310,6 @@ Generate a 2D Bézier spline from the given control points and handles
 | [`name`](#nodebpy.nodes.geometry.geometry.BezierSegment.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.BezierSegment.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.BezierSegment.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.BezierSegment.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.BezierSegment.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -389,7 +386,6 @@ Calculate the limits of a geometry’s positions and generate a box mesh with th
 | [`name`](#nodebpy.nodes.geometry.geometry.BoundingBox.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.BoundingBox.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.BoundingBox.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.BoundingBox.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.BoundingBox.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -444,7 +440,6 @@ Generate a cone mesh
 | [`name`](#nodebpy.nodes.geometry.geometry.Cone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Cone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Cone.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Cone.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Cone.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -536,7 +531,6 @@ Create a mesh that encloses all points in the input geometry with the smallest n
 | [`name`](#nodebpy.nodes.geometry.geometry.ConvexHull.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.ConvexHull.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.ConvexHull.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.ConvexHull.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.ConvexHull.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -576,7 +570,6 @@ Generate a cuboid mesh with variable side lengths and subdivisions
 | [`name`](#nodebpy.nodes.geometry.geometry.Cube.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Cube.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Cube.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Cube.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Cube.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -630,7 +623,6 @@ Generate a poly spline circle
 | [`name`](#nodebpy.nodes.geometry.geometry.CurveCircle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.CurveCircle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.CurveCircle.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.CurveCircle.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.CurveCircle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -700,7 +692,6 @@ Retrieve the length of all splines added together
 | [`name`](#nodebpy.nodes.geometry.geometry.CurveLength.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.CurveLength.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.CurveLength.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.CurveLength.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.CurveLength.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -748,7 +739,6 @@ Generate a poly spline line with two points
 | [`name`](#nodebpy.nodes.geometry.geometry.CurveLine.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.CurveLine.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.CurveLine.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.CurveLine.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.CurveLine.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -814,7 +804,6 @@ Convert curves into a mesh, optionally with a custom profile shape defined by cu
 | [`name`](#nodebpy.nodes.geometry.geometry.CurveToMesh.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.CurveToMesh.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.CurveToMesh.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.CurveToMesh.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.CurveToMesh.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -857,7 +846,6 @@ Generate a point cloud by sampling positions along curves
 | [`name`](#nodebpy.nodes.geometry.geometry.CurveToPoints.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.CurveToPoints.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.CurveToPoints.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.CurveToPoints.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.CurveToPoints.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -912,7 +900,7 @@ Create Curve to Points with operation ‘Length’. Sample each spline by splitt
 ### CurvesToGreasePencil
 
 ``` python
-CurvesToGreasePencil(curves=None, selection=True, instances_as_layers=True)
+CurvesToGreasePencil(curves=None, selection=None, instances_as_layers=True)
 ```
 
 Convert the curves in each top-level instance into Grease Pencil layer
@@ -922,7 +910,7 @@ Convert the curves in each top-level instance into Grease Pencil layer
 | Name                | Type          | Description         | Default |
 |---------------------|---------------|---------------------|---------|
 | curves              | InputGeometry | Curves              | `None`  |
-| selection           | InputBoolean  | Selection           | `True`  |
+| selection           | InputBoolean  | Selection           | `None`  |
 | instances_as_layers | InputBoolean  | Instances as Layers | `True`  |
 
 #### Attributes
@@ -933,7 +921,6 @@ Convert the curves in each top-level instance into Grease Pencil layer
 | [`name`](#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.CurvesToGreasePencil.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -985,7 +972,6 @@ Generate a cylinder mesh
 | [`name`](#nodebpy.nodes.geometry.geometry.Cylinder.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Cylinder.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Cylinder.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Cylinder.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Cylinder.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1062,7 +1048,6 @@ Translate and rotate curves based on changes between the object’s original and
 | [`name`](#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.DeformCurvesOnSurface.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1080,7 +1065,7 @@ Translate and rotate curves based on changes between the object’s original and
 ### DeleteGeometry
 
 ``` python
-DeleteGeometry(geometry=None, selection=True, *, mode='ALL', domain='POINT')
+DeleteGeometry(geometry=None, selection=None, *, mode='ALL', domain='POINT')
 ```
 
 Remove selected elements of a geometry
@@ -1090,7 +1075,7 @@ Remove selected elements of a geometry
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | geometry  | InputGeometry | Geometry    | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 
 #### Attributes
 
@@ -1102,7 +1087,6 @@ Remove selected elements of a geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.DeleteGeometry.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.DeleteGeometry.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.DeleteGeometry.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.DeleteGeometry.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.DeleteGeometry.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1122,7 +1106,7 @@ Remove selected elements of a geometry
 ##### all
 
 ``` python
-all(geometry=None, selection=True)
+all(geometry=None, selection=None, *, domain='POINT')
 ```
 
 Create Delete Geometry with operation ‘All’.
@@ -1130,7 +1114,7 @@ Create Delete Geometry with operation ‘All’.
 ##### edge
 
 ``` python
-edge(geometry=None, selection=True)
+edge(geometry=None, selection=None, *, mode='ALL')
 ```
 
 Create Delete Geometry with operation ‘Edge’. Attribute on mesh edge
@@ -1138,7 +1122,7 @@ Create Delete Geometry with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, selection=True)
+face(geometry=None, selection=None, *, mode='ALL')
 ```
 
 Create Delete Geometry with operation ‘Face’. Attribute on mesh faces
@@ -1146,7 +1130,7 @@ Create Delete Geometry with operation ‘Face’. Attribute on mesh faces
 ##### instance
 
 ``` python
-instance(geometry=None, selection=True)
+instance(geometry=None, selection=None)
 ```
 
 Create Delete Geometry with operation ‘Instance’. Attribute on instance
@@ -1154,7 +1138,7 @@ Create Delete Geometry with operation ‘Instance’. Attribute on instance
 ##### layer
 
 ``` python
-layer(geometry=None, selection=True)
+layer(geometry=None, selection=None)
 ```
 
 Create Delete Geometry with operation ‘Layer’. Attribute on Grease Pencil layer
@@ -1162,7 +1146,7 @@ Create Delete Geometry with operation ‘Layer’. Attribute on Grease Pencil la
 ##### only_edges_faces
 
 ``` python
-only_edges_faces(geometry=None, selection=True)
+only_edges_faces(geometry=None, selection=None, *, domain='POINT')
 ```
 
 Create Delete Geometry with operation ‘Only Edges & Faces’.
@@ -1170,7 +1154,7 @@ Create Delete Geometry with operation ‘Only Edges & Faces’.
 ##### only_faces
 
 ``` python
-only_faces(geometry=None, selection=True)
+only_faces(geometry=None, selection=None, *, domain='POINT')
 ```
 
 Create Delete Geometry with operation ‘Only Faces’.
@@ -1178,7 +1162,7 @@ Create Delete Geometry with operation ‘Only Faces’.
 ##### point
 
 ``` python
-point(geometry=None, selection=True)
+point(geometry=None, selection=None, *, mode='ALL')
 ```
 
 Create Delete Geometry with operation ‘Point’. Attribute on point
@@ -1186,7 +1170,7 @@ Create Delete Geometry with operation ‘Point’. Attribute on point
 ##### spline
 
 ``` python
-spline(geometry=None, selection=True)
+spline(geometry=None, selection=None)
 ```
 
 Create Delete Geometry with operation ‘Spline’. Attribute on spline
@@ -1209,7 +1193,7 @@ Create Delete Geometry with operation ‘Spline’. Attribute on spline
 ``` python
 DistributePointsOnFaces(
     mesh=None,
-    selection=True,
+    selection=None,
     distance_min=0.0,
     density_max=10.0,
     density=10.0,
@@ -1228,7 +1212,7 @@ Generate points spread out on the surface of a mesh
 | Name           | Type          | Description    | Default |
 |----------------|---------------|----------------|---------|
 | mesh           | InputGeometry | Mesh           | `None`  |
-| selection      | InputBoolean  | Selection      | `True`  |
+| selection      | InputBoolean  | Selection      | `None`  |
 | distance_min   | InputFloat    | Distance Min   | `0.0`   |
 | density_max    | InputFloat    | Density Max    | `10.0`  |
 | density        | InputFloat    | Density        | `10.0`  |
@@ -1244,7 +1228,6 @@ Generate points spread out on the surface of a mesh
 | [`name`](#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_legacy_normal`](#nodebpy.nodes.geometry.geometry.DistributePointsOnFaces.use_legacy_normal) |  |
 
@@ -1291,7 +1274,6 @@ Convert Faces into vertices and vertices into faces
 | [`name`](#nodebpy.nodes.geometry.geometry.DualMesh.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.DualMesh.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.DualMesh.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.DualMesh.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.DualMesh.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1310,7 +1292,7 @@ Convert Faces into vertices and vertices into faces
 ### DuplicateElements
 
 ``` python
-DuplicateElements(geometry=None, selection=True, amount=1, *, domain='POINT')
+DuplicateElements(geometry=None, selection=None, amount=1, *, domain='POINT')
 ```
 
 Generate an arbitrary number copies of each selected input element
@@ -1320,7 +1302,7 @@ Generate an arbitrary number copies of each selected input element
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | geometry  | InputGeometry | Geometry    | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | amount    | InputInteger  | Amount      | `1`     |
 
 #### Attributes
@@ -1332,7 +1314,6 @@ Generate an arbitrary number copies of each selected input element
 | [`name`](#nodebpy.nodes.geometry.geometry.DuplicateElements.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.DuplicateElements.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.DuplicateElements.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.DuplicateElements.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.DuplicateElements.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1349,7 +1330,7 @@ Generate an arbitrary number copies of each selected input element
 ##### edge
 
 ``` python
-edge(geometry=None, selection=True, amount=1)
+edge(geometry=None, selection=None, amount=1)
 ```
 
 Create Duplicate Elements with operation ‘Edge’.
@@ -1357,7 +1338,7 @@ Create Duplicate Elements with operation ‘Edge’.
 ##### face
 
 ``` python
-face(geometry=None, selection=True, amount=1)
+face(geometry=None, selection=None, amount=1)
 ```
 
 Create Duplicate Elements with operation ‘Face’.
@@ -1365,7 +1346,7 @@ Create Duplicate Elements with operation ‘Face’.
 ##### instance
 
 ``` python
-instance(geometry=None, selection=True, amount=1)
+instance(geometry=None, selection=None, amount=1)
 ```
 
 Create Duplicate Elements with operation ‘Instance’.
@@ -1373,7 +1354,7 @@ Create Duplicate Elements with operation ‘Instance’.
 ##### layer
 
 ``` python
-layer(geometry=None, selection=True, amount=1)
+layer(geometry=None, selection=None, amount=1)
 ```
 
 Create Duplicate Elements with operation ‘Layer’.
@@ -1381,7 +1362,7 @@ Create Duplicate Elements with operation ‘Layer’.
 ##### point
 
 ``` python
-point(geometry=None, selection=True, amount=1)
+point(geometry=None, selection=None, amount=1)
 ```
 
 Create Duplicate Elements with operation ‘Point’.
@@ -1389,7 +1370,7 @@ Create Duplicate Elements with operation ‘Point’.
 ##### spline
 
 ``` python
-spline(geometry=None, selection=True, amount=1)
+spline(geometry=None, selection=None, amount=1)
 ```
 
 Create Duplicate Elements with operation ‘Spline’.
@@ -1412,7 +1393,7 @@ Create Duplicate Elements with operation ‘Spline’.
 ### EdgePathsToCurves
 
 ``` python
-EdgePathsToCurves(mesh=None, start_vertices=True, next_vertex_index=-1)
+EdgePathsToCurves(mesh=None, start_vertices=None, next_vertex_index=None)
 ```
 
 Output curves following paths across mesh edges
@@ -1422,8 +1403,8 @@ Output curves following paths across mesh edges
 | Name              | Type          | Description       | Default |
 |-------------------|---------------|-------------------|---------|
 | mesh              | InputGeometry | Mesh              | `None`  |
-| start_vertices    | InputBoolean  | Start Vertices    | `True`  |
-| next_vertex_index | InputInteger  | Next Vertex Index | `-1`    |
+| start_vertices    | InputBoolean  | Start Vertices    | `None`  |
+| next_vertex_index | InputInteger  | Next Vertex Index | `None`  |
 
 #### Attributes
 
@@ -1433,7 +1414,6 @@ Output curves following paths across mesh edges
 | [`name`](#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.EdgePathsToCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1455,8 +1435,8 @@ Output curves following paths across mesh edges
 ``` python
 ExtrudeMesh(
     mesh=None,
-    selection=True,
-    offset=(0.0, 0.0, 0.0),
+    selection=None,
+    offset=None,
     offset_scale=1.0,
     individual=True,
     *,
@@ -1468,13 +1448,13 @@ Generate new vertices, edges, or faces from selected elements and move them base
 
 #### Parameters
 
-| Name         | Type          | Description  | Default           |
-|--------------|---------------|--------------|-------------------|
-| mesh         | InputGeometry | Mesh         | `None`            |
-| selection    | InputBoolean  | Selection    | `True`            |
-| offset       | InputVector   | Offset       | `(0.0, 0.0, 0.0)` |
-| offset_scale | InputFloat    | Offset Scale | `1.0`             |
-| individual   | InputBoolean  | Individual   | `True`            |
+| Name         | Type          | Description  | Default |
+|--------------|---------------|--------------|---------|
+| mesh         | InputGeometry | Mesh         | `None`  |
+| selection    | InputBoolean  | Selection    | `None`  |
+| offset       | InputVector   | Offset       | `None`  |
+| offset_scale | InputFloat    | Offset Scale | `1.0`   |
+| individual   | InputBoolean  | Individual   | `True`  |
 
 #### Attributes
 
@@ -1485,7 +1465,6 @@ Generate new vertices, edges, or faces from selected elements and move them base
 | [`name`](#nodebpy.nodes.geometry.geometry.ExtrudeMesh.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.ExtrudeMesh.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.ExtrudeMesh.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.ExtrudeMesh.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.ExtrudeMesh.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1499,7 +1478,7 @@ Generate new vertices, edges, or faces from selected elements and move them base
 ##### edges
 
 ``` python
-edges(mesh=None, selection=True, offset=(0.0, 0.0, 0.0), offset_scale=1.0)
+edges(mesh=None, selection=None, offset=None, offset_scale=1.0)
 ```
 
 Create Extrude Mesh with operation ‘Edges’.
@@ -1507,13 +1486,7 @@ Create Extrude Mesh with operation ‘Edges’.
 ##### faces
 
 ``` python
-faces(
-    mesh=None,
-    selection=True,
-    offset=(0.0, 0.0, 0.0),
-    offset_scale=1.0,
-    individual=True,
-)
+faces(mesh=None, selection=None, offset=None, offset_scale=1.0, individual=True)
 ```
 
 Create Extrude Mesh with operation ‘Faces’.
@@ -1521,7 +1494,7 @@ Create Extrude Mesh with operation ‘Faces’.
 ##### vertices
 
 ``` python
-vertices(mesh=None, selection=True, offset=(0.0, 0.0, 0.0), offset_scale=1.0)
+vertices(mesh=None, selection=None, offset=None, offset_scale=1.0)
 ```
 
 Create Extrude Mesh with operation ‘Vertices’.
@@ -1547,7 +1520,7 @@ Create Extrude Mesh with operation ‘Vertices’.
 ### FillCurve
 
 ``` python
-FillCurve(curve=None, group_id=0, mode='Triangles', fill_rule='Even-Odd')
+FillCurve(curve=None, group_id=None, mode='Triangles', fill_rule='Even-Odd')
 ```
 
 Generate a mesh on the XY plane with faces on the inside of input curves
@@ -1557,7 +1530,7 @@ Generate a mesh on the XY plane with faces on the inside of input curves
 | Name | Type | Description | Default |
 |----|----|----|----|
 | curve | InputGeometry | Curve | `None` |
-| group_id | InputInteger | Group ID | `0` |
+| group_id | InputInteger | Group ID | `None` |
 | mode | InputMenu \| Literal\['Triangles', 'N-gons'\] | Mode | `'Triangles'` |
 | fill_rule | InputMenu \| Literal\['Even-Odd', 'Non-Zero'\] | Fill Rule | `'Even-Odd'` |
 
@@ -1569,7 +1542,6 @@ Generate a mesh on the XY plane with faces on the inside of input curves
 | [`name`](#nodebpy.nodes.geometry.geometry.FillCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.FillCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.FillCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.FillCurve.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.FillCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1613,7 +1585,6 @@ Round corners by generating circular arcs on each control point
 | [`name`](#nodebpy.nodes.geometry.geometry.FilletCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.FilletCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.FilletCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.FilletCurve.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.FilletCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1635,7 +1606,7 @@ Round corners by generating circular arcs on each control point
 ### FlipFaces
 
 ``` python
-FlipFaces(mesh=None, selection=True)
+FlipFaces(mesh=None, selection=None)
 ```
 
 Reverse the order of the vertices and edges of selected faces, flipping their normal direction
@@ -1645,7 +1616,7 @@ Reverse the order of the vertices and edges of selected faces, flipping their no
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | mesh      | InputGeometry | Mesh        | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 
 #### Attributes
 
@@ -1655,7 +1626,6 @@ Reverse the order of the vertices and edges of selected faces, flipping their no
 | [`name`](#nodebpy.nodes.geometry.geometry.FlipFaces.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.FlipFaces.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.FlipFaces.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.FlipFaces.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.FlipFaces.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1676,9 +1646,9 @@ Reverse the order of the vertices and edges of selected faces, flipping their no
 ``` python
 GeometryProximity(
     target=None,
-    group_id=0,
-    source_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
+    group_id=None,
+    source_position=None,
+    sample_group_id=None,
     *,
     target_element='FACES',
 )
@@ -1688,12 +1658,12 @@ Compute the closest location on the target geometry
 
 #### Parameters
 
-| Name            | Type          | Description     | Default           |
-|-----------------|---------------|-----------------|-------------------|
-| target          | InputGeometry | Geometry        | `None`            |
-| group_id        | InputInteger  | Group ID        | `0`               |
-| source_position | InputVector   | Sample Position | `(0.0, 0.0, 0.0)` |
-| sample_group_id | InputInteger  | Sample Group ID | `0`               |
+| Name            | Type          | Description     | Default |
+|-----------------|---------------|-----------------|---------|
+| target          | InputGeometry | Geometry        | `None`  |
+| group_id        | InputInteger  | Group ID        | `None`  |
+| source_position | InputVector   | Sample Position | `None`  |
+| sample_group_id | InputInteger  | Sample Group ID | `None`  |
 
 #### Attributes
 
@@ -1703,7 +1673,6 @@ Compute the closest location on the target geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.GeometryProximity.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.GeometryProximity.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.GeometryProximity.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.GeometryProximity.outputs) |  |
 | [`target_element`](#nodebpy.nodes.geometry.geometry.GeometryProximity.target_element) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.GeometryProximity.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -1747,7 +1716,6 @@ Get the bundle of a geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.GetGeometryBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1788,7 +1756,6 @@ Get a single component of a geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.GetGeometryComponent.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1871,7 +1838,7 @@ Create Get Geometry Component node with type ‘Volume’.
 ``` python
 GreasePencilToCurves(
     grease_pencil=None,
-    selection=True,
+    selection=None,
     layers_as_instances=True,
 )
 ```
@@ -1883,7 +1850,7 @@ Convert Grease Pencil layers into curve instances
 | Name                | Type          | Description         | Default |
 |---------------------|---------------|---------------------|---------|
 | grease_pencil       | InputGeometry | Grease Pencil       | `None`  |
-| selection           | InputBoolean  | Selection           | `True`  |
+| selection           | InputBoolean  | Selection           | `None`  |
 | layers_as_instances | InputBoolean  | Layers as Instances | `True`  |
 
 #### Attributes
@@ -1894,7 +1861,6 @@ Convert Grease Pencil layers into curve instances
 | [`name`](#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.GreasePencilToCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1936,7 +1902,6 @@ Generate a planar mesh on the XY plane
 | [`name`](#nodebpy.nodes.geometry.geometry.Grid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Grid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Grid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Grid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Grid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1978,7 +1943,6 @@ Generate a spherical mesh that consists of equally sized triangles
 | [`name`](#nodebpy.nodes.geometry.geometry.IcoSphere.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.IcoSphere.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.IcoSphere.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.IcoSphere.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.IcoSphere.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2000,10 +1964,10 @@ Generate a spherical mesh that consists of equally sized triangles
 ``` python
 InstanceOnPoints(
     points=None,
-    selection=True,
+    selection=None,
     instance=None,
     pick_instance=False,
-    instance_index=0,
+    instance_index=None,
     rotation=(0.0, 0.0, 0.0),
     scale=(1.0, 1.0, 1.0),
 )
@@ -2016,10 +1980,10 @@ Generate a reference to geometry at each of the input points, without duplicatin
 | Name           | Type          | Description    | Default           |
 |----------------|---------------|----------------|-------------------|
 | points         | InputGeometry | Points         | `None`            |
-| selection      | InputBoolean  | Selection      | `True`            |
+| selection      | InputBoolean  | Selection      | `None`            |
 | instance       | InputGeometry | Instance       | `None`            |
 | pick_instance  | InputBoolean  | Pick Instance  | `False`           |
-| instance_index | InputInteger  | Instance Index | `0`               |
+| instance_index | InputInteger  | Instance Index | `None`            |
 | rotation       | InputRotation | Rotation       | `(0.0, 0.0, 0.0)` |
 | scale          | InputVector   | Scale          | `(1.0, 1.0, 1.0)` |
 
@@ -2031,7 +1995,6 @@ Generate a reference to geometry at each of the input points, without duplicatin
 | [`name`](#nodebpy.nodes.geometry.geometry.InstanceOnPoints.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.InstanceOnPoints.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.InstanceOnPoints.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.InstanceOnPoints.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.InstanceOnPoints.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2055,12 +2018,7 @@ Generate a reference to geometry at each of the input points, without duplicatin
 ### InstancesToPoints
 
 ``` python
-InstancesToPoints(
-    instances=None,
-    selection=True,
-    position=(0.0, 0.0, 0.0),
-    radius=0.05,
-)
+InstancesToPoints(instances=None, selection=None, position=None, radius=0.05)
 ```
 
     Generate points at the origins of instances.
@@ -2102,7 +2060,6 @@ Note: Nested instances are not affected by this node
 | [`name`](#nodebpy.nodes.geometry.geometry.InstancesToPoints.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.InstancesToPoints.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.InstancesToPoints.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.InstancesToPoints.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.InstancesToPoints.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### InterpolateCurves
@@ -2110,11 +2067,11 @@ Note: Nested instances are not affected by this node
 ``` python
 InterpolateCurves(
     guide_curves=None,
-    guide_up=(0.0, 0.0, 0.0),
-    guide_group_id=0,
+    guide_up=None,
+    guide_group_id=None,
     points=None,
-    point_up=(0.0, 0.0, 0.0),
-    point_group_id=0,
+    point_up=None,
+    point_group_id=None,
     max_neighbors=4,
 )
 ```
@@ -2123,15 +2080,15 @@ Generate new curves on points by interpolating between existing curves
 
 #### Parameters
 
-| Name           | Type          | Description    | Default           |
-|----------------|---------------|----------------|-------------------|
-| guide_curves   | InputGeometry | Guide Curves   | `None`            |
-| guide_up       | InputVector   | Guide Up       | `(0.0, 0.0, 0.0)` |
-| guide_group_id | InputInteger  | Guide Group ID | `0`               |
-| points         | InputGeometry | Points         | `None`            |
-| point_up       | InputVector   | Point Up       | `(0.0, 0.0, 0.0)` |
-| point_group_id | InputInteger  | Point Group ID | `0`               |
-| max_neighbors  | InputInteger  | Max Neighbors  | `4`               |
+| Name           | Type          | Description    | Default |
+|----------------|---------------|----------------|---------|
+| guide_curves   | InputGeometry | Guide Curves   | `None`  |
+| guide_up       | InputVector   | Guide Up       | `None`  |
+| guide_group_id | InputInteger  | Guide Group ID | `None`  |
+| points         | InputGeometry | Points         | `None`  |
+| point_up       | InputVector   | Point Up       | `None`  |
+| point_group_id | InputInteger  | Point Group ID | `None`  |
+| max_neighbors  | InputInteger  | Max Neighbors  | `4`     |
 
 #### Attributes
 
@@ -2141,7 +2098,6 @@ Generate new curves on points by interpolating between existing curves
 | [`name`](#nodebpy.nodes.geometry.geometry.InterpolateCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.InterpolateCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.InterpolateCurves.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.InterpolateCurves.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.InterpolateCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2186,7 +2142,6 @@ Provide a selection of faces that use the specified material
 | [`name`](#nodebpy.nodes.geometry.geometry.MaterialSelection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MaterialSelection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MaterialSelection.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MaterialSelection.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MaterialSelection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2204,7 +2159,7 @@ Provide a selection of faces that use the specified material
 ### MergeByDistance
 
 ``` python
-MergeByDistance(geometry=None, selection=True, mode='All', distance=0.001)
+MergeByDistance(geometry=None, selection=None, mode='All', distance=0.001)
 ```
 
 Merge vertices or points within a given distance
@@ -2214,7 +2169,7 @@ Merge vertices or points within a given distance
 | Name      | Type                                       | Description | Default |
 |-----------|--------------------------------------------|-------------|---------|
 | geometry  | InputGeometry                              | Geometry    | `None`  |
-| selection | InputBoolean                               | Selection   | `True`  |
+| selection | InputBoolean                               | Selection   | `None`  |
 | mode      | InputMenu \| Literal\['All', 'Connected'\] | Mode        | `'All'` |
 | distance  | InputFloat                                 | Distance    | `0.001` |
 
@@ -2226,7 +2181,6 @@ Merge vertices or points within a given distance
 | [`name`](#nodebpy.nodes.geometry.geometry.MergeByDistance.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MergeByDistance.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MergeByDistance.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MergeByDistance.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MergeByDistance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2249,8 +2203,8 @@ Merge vertices or points within a given distance
 ``` python
 MergeLayers(
     grease_pencil=None,
-    selection=True,
-    group_id=0,
+    selection=None,
+    group_id=None,
     *,
     mode='MERGE_BY_NAME',
 )
@@ -2263,8 +2217,8 @@ Join groups of Grease Pencil layers into one
 | Name          | Type          | Description   | Default |
 |---------------|---------------|---------------|---------|
 | grease_pencil | InputGeometry | Grease Pencil | `None`  |
-| selection     | InputBoolean  | Selection     | `True`  |
-| group_id      | InputInteger  | Group ID      | `0`     |
+| selection     | InputBoolean  | Selection     | `None`  |
+| group_id      | InputInteger  | Group ID      | `None`  |
 
 #### Attributes
 
@@ -2275,7 +2229,6 @@ Join groups of Grease Pencil layers into one
 | [`name`](#nodebpy.nodes.geometry.geometry.MergeLayers.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MergeLayers.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MergeLayers.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MergeLayers.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MergeLayers.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2288,7 +2241,7 @@ Join groups of Grease Pencil layers into one
 ##### by_group_id
 
 ``` python
-by_group_id(grease_pencil=None, selection=True, group_id=0)
+by_group_id(grease_pencil=None, selection=None, group_id=None)
 ```
 
 Create Merge Layers with operation ‘By Group ID’. Provide a custom group ID for each layer and all layers with the same ID will be merged into one
@@ -2296,7 +2249,7 @@ Create Merge Layers with operation ‘By Group ID’. Provide a custom group ID 
 ##### by_name
 
 ``` python
-by_name(grease_pencil=None, selection=True)
+by_name(grease_pencil=None, selection=None)
 ```
 
 Create Merge Layers with operation ‘By Name’. Combine all layers which have the same name
@@ -2318,7 +2271,7 @@ Create Merge Layers with operation ‘By Name’. Combine all layers which have 
 ### MergePoints
 
 ``` python
-MergePoints(geometry=None, selection=True, merge_id=0)
+MergePoints(geometry=None, selection=None, merge_id=None)
 ```
 
 Merge points of a point cloud or mesh based on group ID and selection.
@@ -2328,8 +2281,8 @@ Merge points of a point cloud or mesh based on group ID and selection.
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | geometry  | InputGeometry | Geometry    | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
-| merge_id  | InputInteger  | Merge ID    | `0`     |
+| selection | InputBoolean  | Selection   | `None`  |
+| merge_id  | InputInteger  | Merge ID    | `None`  |
 
 #### Attributes
 
@@ -2339,7 +2292,6 @@ Merge points of a point cloud or mesh based on group ID and selection.
 | [`name`](#nodebpy.nodes.geometry.geometry.MergePoints.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MergePoints.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MergePoints.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MergePoints.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MergePoints.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2361,7 +2313,7 @@ Merge points of a point cloud or mesh based on group ID and selection.
 ``` python
 MeshBevel(
     mesh=None,
-    selection=True,
+    selection=None,
     affect_kind='Edges',
     start_left_offset=0.1,
     start_right_offset=0.1,
@@ -2383,7 +2335,7 @@ Bevel selected edges or vertices
 | Name | Type | Description | Default |
 |----|----|----|----|
 | mesh | InputGeometry | Mesh | `None` |
-| selection | InputBoolean | Selection | `True` |
+| selection | InputBoolean | Selection | `None` |
 | affect_kind | InputMenu \| Literal\['Vertices', 'Edges'\] | Affect Kind | `'Edges'` |
 | start_left_offset | InputFloat | Start Left Offset | `0.1` |
 | start_right_offset | InputFloat | Start Right Offset | `0.1` |
@@ -2404,7 +2356,6 @@ Bevel selected edges or vertices
 | [`name`](#nodebpy.nodes.geometry.geometry.MeshBevel.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MeshBevel.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MeshBevel.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MeshBevel.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MeshBevel.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2459,7 +2410,6 @@ Generate a circular ring of edges
 | [`name`](#nodebpy.nodes.geometry.geometry.MeshCircle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MeshCircle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MeshCircle.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MeshCircle.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MeshCircle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2542,7 +2492,6 @@ Generate vertices in a line and connect them with edges
 | [`name`](#nodebpy.nodes.geometry.geometry.MeshLine.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MeshLine.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MeshLine.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MeshLine.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MeshLine.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2555,7 +2504,13 @@ Generate vertices in a line and connect them with edges
 ##### end_points
 
 ``` python
-end_points(count=10, start_location=(0.0, 0.0, 0.0), offset=(0.0, 0.0, 1.0))
+end_points(
+    count=10,
+    start_location=(0.0, 0.0, 0.0),
+    offset=(0.0, 0.0, 1.0),
+    *,
+    count_mode='TOTAL',
+)
 ```
 
 Create Mesh Line with operation ‘End Points’. Specify the line’s start and end points
@@ -2586,7 +2541,7 @@ Create Mesh Line with operation ‘Offset’. Specify the offset from one vertex
 ### MeshToCurve
 
 ``` python
-MeshToCurve(mesh=None, selection=True, *, mode='EDGES')
+MeshToCurve(mesh=None, selection=None, *, mode='EDGES')
 ```
 
 Generate a curve from a mesh
@@ -2596,7 +2551,7 @@ Generate a curve from a mesh
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | mesh      | InputGeometry | Mesh        | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 
 #### Attributes
 
@@ -2607,7 +2562,6 @@ Generate a curve from a mesh
 | [`name`](#nodebpy.nodes.geometry.geometry.MeshToCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MeshToCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MeshToCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MeshToCurve.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MeshToCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2620,7 +2574,7 @@ Generate a curve from a mesh
 ##### edges
 
 ``` python
-edges(mesh=None, selection=True)
+edges(mesh=None, selection=None)
 ```
 
 Create Mesh to Curve with operation ‘Edges’. Convert mesh edges to curve segments. Attributes are propagated to curve points.
@@ -2628,7 +2582,7 @@ Create Mesh to Curve with operation ‘Edges’. Convert mesh edges to curve seg
 ##### faces
 
 ``` python
-faces(mesh=None, selection=True)
+faces(mesh=None, selection=None)
 ```
 
 Create Mesh to Curve with operation ‘Faces’. Convert each mesh face to a cyclic curve. Face attributes are propagated to curves.
@@ -2651,8 +2605,8 @@ Create Mesh to Curve with operation ‘Faces’. Convert each mesh face to a cyc
 ``` python
 MeshToPoints(
     mesh=None,
-    selection=True,
-    position=(0.0, 0.0, 0.0),
+    selection=None,
+    position=None,
     radius=0.05,
     *,
     mode='VERTICES',
@@ -2663,12 +2617,12 @@ Generate a point cloud from a mesh’s vertices
 
 #### Parameters
 
-| Name      | Type          | Description | Default           |
-|-----------|---------------|-------------|-------------------|
-| mesh      | InputGeometry | Mesh        | `None`            |
-| selection | InputBoolean  | Selection   | `True`            |
-| position  | InputVector   | Position    | `(0.0, 0.0, 0.0)` |
-| radius    | InputFloat    | Radius      | `0.05`            |
+| Name      | Type          | Description | Default |
+|-----------|---------------|-------------|---------|
+| mesh      | InputGeometry | Mesh        | `None`  |
+| selection | InputBoolean  | Selection   | `None`  |
+| position  | InputVector   | Position    | `None`  |
+| radius    | InputFloat    | Radius      | `0.05`  |
 
 #### Attributes
 
@@ -2679,7 +2633,6 @@ Generate a point cloud from a mesh’s vertices
 | [`name`](#nodebpy.nodes.geometry.geometry.MeshToPoints.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.MeshToPoints.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.MeshToPoints.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.MeshToPoints.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.MeshToPoints.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2694,7 +2647,7 @@ Generate a point cloud from a mesh’s vertices
 ##### corners
 
 ``` python
-corners(mesh=None, selection=True, position=(0.0, 0.0, 0.0), radius=0.05)
+corners(mesh=None, selection=None, position=None, radius=0.05)
 ```
 
 Create Mesh to Points with operation ‘Corners’. Create a point in the point cloud for each selected face corner
@@ -2702,7 +2655,7 @@ Create Mesh to Points with operation ‘Corners’. Create a point in the point 
 ##### edges
 
 ``` python
-edges(mesh=None, selection=True, position=(0.0, 0.0, 0.0), radius=0.05)
+edges(mesh=None, selection=None, position=None, radius=0.05)
 ```
 
 Create Mesh to Points with operation ‘Edges’. Create a point in the point cloud for each selected edge
@@ -2710,7 +2663,7 @@ Create Mesh to Points with operation ‘Edges’. Create a point in the point cl
 ##### faces
 
 ``` python
-faces(mesh=None, selection=True, position=(0.0, 0.0, 0.0), radius=0.05)
+faces(mesh=None, selection=None, position=None, radius=0.05)
 ```
 
 Create Mesh to Points with operation ‘Faces’. Create a point in the point cloud for each selected face
@@ -2718,7 +2671,7 @@ Create Mesh to Points with operation ‘Faces’. Create a point in the point cl
 ##### vertices
 
 ``` python
-vertices(mesh=None, selection=True, position=(0.0, 0.0, 0.0), radius=0.05)
+vertices(mesh=None, selection=None, position=None, radius=0.05)
 ```
 
 Create Mesh to Points with operation ‘Vertices’. Create a point in the point cloud for each selected vertex
@@ -2762,7 +2715,6 @@ Generate a point cloud with positions and radii defined by fields
 | [`name`](#nodebpy.nodes.geometry.geometry.Points.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Points.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Points.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Points.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Points.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2782,7 +2734,7 @@ Generate a point cloud with positions and radii defined by fields
 ### PointsToCurves
 
 ``` python
-PointsToCurves(points=None, curve_group_id=0, weight=0.0)
+PointsToCurves(points=None, curve_group_id=None, weight=None)
 ```
 
 Split all points to curve by its group ID and reorder by weight
@@ -2792,8 +2744,8 @@ Split all points to curve by its group ID and reorder by weight
 | Name           | Type          | Description    | Default |
 |----------------|---------------|----------------|---------|
 | points         | InputGeometry | Points         | `None`  |
-| curve_group_id | InputInteger  | Curve Group ID | `0`     |
-| weight         | InputFloat    | Weight         | `0.0`   |
+| curve_group_id | InputInteger  | Curve Group ID | `None`  |
+| weight         | InputFloat    | Weight         | `None`  |
 
 #### Attributes
 
@@ -2803,7 +2755,6 @@ Split all points to curve by its group ID and reorder by weight
 | [`name`](#nodebpy.nodes.geometry.geometry.PointsToCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.PointsToCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.PointsToCurves.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.PointsToCurves.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.PointsToCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2823,7 +2774,7 @@ Split all points to curve by its group ID and reorder by weight
 ### PointsToVertices
 
 ``` python
-PointsToVertices(points=None, selection=True)
+PointsToVertices(points=None, selection=None)
 ```
 
 Generate a mesh vertex for each point cloud point
@@ -2833,7 +2784,7 @@ Generate a mesh vertex for each point cloud point
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | points    | InputGeometry | Points      | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 
 #### Attributes
 
@@ -2843,7 +2794,6 @@ Generate a mesh vertex for each point cloud point
 | [`name`](#nodebpy.nodes.geometry.geometry.PointsToVertices.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.PointsToVertices.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.PointsToVertices.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.PointsToVertices.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.PointsToVertices.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2889,7 +2839,6 @@ Generate a poly spline in a parabola shape with control points positions
 | [`name`](#nodebpy.nodes.geometry.geometry.QuadraticBezier.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.QuadraticBezier.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.QuadraticBezier.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.QuadraticBezier.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.QuadraticBezier.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2954,7 +2903,6 @@ Generate a polygon with four points
 | [`name`](#nodebpy.nodes.geometry.geometry.Quadrilateral.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Quadrilateral.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Quadrilateral.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Quadrilateral.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Quadrilateral.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3039,9 +2987,9 @@ Create Quadrilateral with operation ‘Trapezoid’. Create a trapezoid
 ``` python
 Raycast(
     target_geometry=None,
-    attribute=0.0,
+    attribute=None,
     interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
+    source_position=None,
     ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
     *,
@@ -3056,9 +3004,9 @@ Cast rays from the context geometry onto a target geometry, and retrieve informa
 | Name | Type | Description | Default |
 |----|----|----|----|
 | target_geometry | InputGeometry | Target Geometry | `None` |
-| attribute | InputFloat | Attribute | `0.0` |
+| attribute | InputFloat | Attribute | `None` |
 | interpolation | InputMenu \| Literal\['Interpolated', 'Nearest'\] | Interpolation | `'Interpolated'` |
-| source_position | InputVector | Source Position | `(0.0, 0.0, 0.0)` |
+| source_position | InputVector | Source Position | `None` |
 | ray_direction | InputVector | Ray Direction | `(0.0, 0.0, -1.0)` |
 | ray_length | InputFloat | Ray Length | `100.0` |
 
@@ -3071,7 +3019,6 @@ Cast rays from the context geometry onto a target geometry, and retrieve informa
 | [`name`](#nodebpy.nodes.geometry.geometry.Raycast.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Raycast.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Raycast.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Raycast.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Raycast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3081,8 +3028,8 @@ Cast rays from the context geometry onto a target geometry, and retrieve informa
 | [boolean](#nodebpy.nodes.geometry.geometry.Raycast.boolean) | Create Raycast with operation ‘Boolean’. True or false |
 | [color](#nodebpy.nodes.geometry.geometry.Raycast.color) | Create Raycast with operation ‘Color’. RGBA color with 32-bit floating-point values |
 | [float](#nodebpy.nodes.geometry.geometry.Raycast.float) | Create Raycast with operation ‘Float’. Floating-point value |
-| [input_4x4_matrix](#nodebpy.nodes.geometry.geometry.Raycast.input_4x4_matrix) | Create Raycast with operation ‘4x4 Matrix’. Floating point matrix |
 | [integer](#nodebpy.nodes.geometry.geometry.Raycast.integer) | Create Raycast with operation ‘Integer’. 32-bit integer |
+| [matrix](#nodebpy.nodes.geometry.geometry.Raycast.matrix) | Create Raycast with operation ‘4x4 Matrix’. Floating point matrix |
 | [quaternion](#nodebpy.nodes.geometry.geometry.Raycast.quaternion) | Create Raycast with operation ‘Quaternion’. Floating point quaternion rotation |
 | [vector](#nodebpy.nodes.geometry.geometry.Raycast.vector) | Create Raycast with operation ‘Vector’. 3D vector with floating-point values |
 
@@ -3091,9 +3038,9 @@ Cast rays from the context geometry onto a target geometry, and retrieve informa
 ``` python
 boolean(
     target_geometry=None,
-    attribute=False,
+    attribute=None,
     interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
+    source_position=None,
     ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
@@ -3106,9 +3053,9 @@ Create Raycast with operation ‘Boolean’. True or false
 ``` python
 color(
     target_geometry=None,
-    attribute=(0.8, 0.8, 0.8, 1.0),
+    attribute=None,
     interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
+    source_position=None,
     ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
@@ -3121,9 +3068,9 @@ Create Raycast with operation ‘Color’. RGBA color with 32-bit floating-point
 ``` python
 float(
     target_geometry=None,
-    attribute=0.0,
+    attribute=None,
     interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
+    source_position=None,
     ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
@@ -3131,29 +3078,14 @@ float(
 
 Create Raycast with operation ‘Float’. Floating-point value
 
-##### input_4x4_matrix
-
-``` python
-input_4x4_matrix(
-    target_geometry=None,
-    attribute=None,
-    interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
-    ray_direction=(0.0, 0.0, -1.0),
-    ray_length=100.0,
-)
-```
-
-Create Raycast with operation ‘4x4 Matrix’. Floating point matrix
-
 ##### integer
 
 ``` python
 integer(
     target_geometry=None,
-    attribute=0,
+    attribute=None,
     interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
+    source_position=None,
     ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
@@ -3161,14 +3093,29 @@ integer(
 
 Create Raycast with operation ‘Integer’. 32-bit integer
 
+##### matrix
+
+``` python
+matrix(
+    target_geometry=None,
+    attribute=None,
+    interpolation='Interpolated',
+    source_position=None,
+    ray_direction=(0.0, 0.0, -1.0),
+    ray_length=100.0,
+)
+```
+
+Create Raycast with operation ‘4x4 Matrix’. Floating point matrix
+
 ##### quaternion
 
 ``` python
 quaternion(
     target_geometry=None,
-    attribute=(0.0, 0.0, 0.0),
+    attribute=None,
     interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
+    source_position=None,
     ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
@@ -3181,9 +3128,9 @@ Create Raycast with operation ‘Quaternion’. Floating point quaternion rotati
 ``` python
 vector(
     target_geometry=None,
-    attribute=(0.0, 0.0, 0.0),
+    attribute=None,
     interpolation='Interpolated',
-    source_position=(0.0, 0.0, 0.0),
+    source_position=None,
     ray_direction=(0.0, 0.0, -1.0),
     ray_length=100.0,
 )
@@ -3217,7 +3164,7 @@ Create Raycast with operation ‘Vector’. 3D vector with floating-point values
 ``` python
 RealizeInstances(
     geometry=None,
-    selection=True,
+    selection=None,
     realize_all=True,
     depth=0,
     *,
@@ -3232,7 +3179,7 @@ Convert instances into real geometry data
 | Name        | Type          | Description | Default |
 |-------------|---------------|-------------|---------|
 | geometry    | InputGeometry | Geometry    | `None`  |
-| selection   | InputBoolean  | Selection   | `True`  |
+| selection   | InputBoolean  | Selection   | `None`  |
 | realize_all | InputBoolean  | Realize All | `True`  |
 | depth       | InputInteger  | Depth       | `0`     |
 
@@ -3244,7 +3191,6 @@ Convert instances into real geometry data
 | [`name`](#nodebpy.nodes.geometry.geometry.RealizeInstances.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.RealizeInstances.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.RealizeInstances.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.RealizeInstances.outputs) |  |
 | [`realize_to_point_domain`](#nodebpy.nodes.geometry.geometry.RealizeInstances.realize_to_point_domain) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.RealizeInstances.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -3289,7 +3235,6 @@ Change the name of an attribute
 | [`name`](#nodebpy.nodes.geometry.geometry.RenameAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.RenameAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.RenameAttribute.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.RenameAttribute.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.RenameAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3332,7 +3277,6 @@ Swap one material with another
 | [`name`](#nodebpy.nodes.geometry.geometry.ReplaceMaterial.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.ReplaceMaterial.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.ReplaceMaterial.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.ReplaceMaterial.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.ReplaceMaterial.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3354,7 +3298,7 @@ Swap one material with another
 ``` python
 ResampleCurve(
     curve=None,
-    selection=True,
+    selection=None,
     mode='Count',
     count=10,
     length=0.1,
@@ -3370,7 +3314,7 @@ Generate a poly spline for each input spline
 | Name | Type | Description | Default |
 |----|----|----|----|
 | curve | InputGeometry | Curve | `None` |
-| selection | InputBoolean | Selection | `True` |
+| selection | InputBoolean | Selection | `None` |
 | mode | InputMenu \| Literal\['Evaluated', 'Count', 'Length'\] | Mode | `'Count'` |
 | count | InputInteger | Count | `10` |
 | length | InputFloat | Length | `0.1` |
@@ -3384,7 +3328,6 @@ Generate a poly spline for each input spline
 | [`name`](#nodebpy.nodes.geometry.geometry.ResampleCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.ResampleCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.ResampleCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.ResampleCurve.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.ResampleCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3406,7 +3349,7 @@ Generate a poly spline for each input spline
 ### ReverseCurve
 
 ``` python
-ReverseCurve(curve=None, selection=True)
+ReverseCurve(curve=None, selection=None)
 ```
 
 Change the direction of curves by swapping their start and end data
@@ -3416,7 +3359,7 @@ Change the direction of curves by swapping their start and end data
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | curve     | InputGeometry | Curve       | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 
 #### Attributes
 
@@ -3426,7 +3369,6 @@ Change the direction of curves by swapping their start and end data
 | [`name`](#nodebpy.nodes.geometry.geometry.ReverseCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.ReverseCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.ReverseCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.ReverseCurve.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.ReverseCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3447,7 +3389,7 @@ Change the direction of curves by swapping their start and end data
 ``` python
 RotateInstances(
     instances=None,
-    selection=True,
+    selection=None,
     rotation=(0.0, 0.0, 0.0),
     pivot_point=(0.0, 0.0, 0.0),
     local_space=True,
@@ -3461,7 +3403,7 @@ Rotate geometry instances in local or global space
 | Name        | Type          | Description | Default           |
 |-------------|---------------|-------------|-------------------|
 | instances   | InputGeometry | Instances   | `None`            |
-| selection   | InputBoolean  | Selection   | `True`            |
+| selection   | InputBoolean  | Selection   | `None`            |
 | rotation    | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
 | pivot_point | InputVector   | Pivot Point | `(0.0, 0.0, 0.0)` |
 | local_space | InputBoolean  | Local Space | `True`            |
@@ -3474,7 +3416,6 @@ Rotate geometry instances in local or global space
 | [`name`](#nodebpy.nodes.geometry.geometry.RotateInstances.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.RotateInstances.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.RotateInstances.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.RotateInstances.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.RotateInstances.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3496,17 +3437,17 @@ Rotate geometry instances in local or global space
 ### SampleNearest
 
 ``` python
-SampleNearest(geometry=None, sample_position=(0.0, 0.0, 0.0), *, domain='POINT')
+SampleNearest(geometry=None, sample_position=None, *, domain='POINT')
 ```
 
 Find the element of a geometry closest to a position. Similar to the “Index of Nearest” node
 
 #### Parameters
 
-| Name            | Type          | Description     | Default           |
-|-----------------|---------------|-----------------|-------------------|
-| geometry        | InputGeometry | Geometry        | `None`            |
-| sample_position | InputVector   | Sample Position | `(0.0, 0.0, 0.0)` |
+| Name            | Type          | Description     | Default |
+|-----------------|---------------|-----------------|---------|
+| geometry        | InputGeometry | Geometry        | `None`  |
+| sample_position | InputVector   | Sample Position | `None`  |
 
 #### Attributes
 
@@ -3517,7 +3458,6 @@ Find the element of a geometry closest to a position. Similar to the “Index of
 | [`name`](#nodebpy.nodes.geometry.geometry.SampleNearest.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SampleNearest.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SampleNearest.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SampleNearest.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SampleNearest.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3532,7 +3472,7 @@ Find the element of a geometry closest to a position. Similar to the “Index of
 ##### edge
 
 ``` python
-edge(geometry=None, sample_position=(0.0, 0.0, 0.0))
+edge(geometry=None, sample_position=None)
 ```
 
 Create Sample Nearest with operation ‘Edge’. Attribute on mesh edge
@@ -3540,7 +3480,7 @@ Create Sample Nearest with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, sample_position=(0.0, 0.0, 0.0))
+face(geometry=None, sample_position=None)
 ```
 
 Create Sample Nearest with operation ‘Face’. Attribute on mesh faces
@@ -3548,7 +3488,7 @@ Create Sample Nearest with operation ‘Face’. Attribute on mesh faces
 ##### face_corner
 
 ``` python
-face_corner(geometry=None, sample_position=(0.0, 0.0, 0.0))
+face_corner(geometry=None, sample_position=None)
 ```
 
 Create Sample Nearest with operation ‘Face Corner’. Attribute on mesh face corner
@@ -3556,7 +3496,7 @@ Create Sample Nearest with operation ‘Face Corner’. Attribute on mesh face c
 ##### point
 
 ``` python
-point(geometry=None, sample_position=(0.0, 0.0, 0.0))
+point(geometry=None, sample_position=None)
 ```
 
 Create Sample Nearest with operation ‘Point’. Attribute on point
@@ -3579,10 +3519,10 @@ Create Sample Nearest with operation ‘Point’. Attribute on point
 ``` python
 SampleNearestSurface(
     mesh=None,
-    value=0.0,
-    group_id=0,
-    sample_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
+    value=None,
+    group_id=None,
+    sample_position=None,
+    sample_group_id=None,
     *,
     data_type='FLOAT',
 )
@@ -3592,13 +3532,13 @@ Calculate the interpolated value of a mesh attribute on the closest point of its
 
 #### Parameters
 
-| Name            | Type          | Description     | Default           |
-|-----------------|---------------|-----------------|-------------------|
-| mesh            | InputGeometry | Mesh            | `None`            |
-| value           | InputFloat    | Value           | `0.0`             |
-| group_id        | InputInteger  | Group ID        | `0`               |
-| sample_position | InputVector   | Sample Position | `(0.0, 0.0, 0.0)` |
-| sample_group_id | InputInteger  | Sample Group ID | `0`               |
+| Name            | Type          | Description     | Default |
+|-----------------|---------------|-----------------|---------|
+| mesh            | InputGeometry | Mesh            | `None`  |
+| value           | InputFloat    | Value           | `None`  |
+| group_id        | InputInteger  | Group ID        | `None`  |
+| sample_position | InputVector   | Sample Position | `None`  |
+| sample_group_id | InputInteger  | Sample Group ID | `None`  |
 
 #### Attributes
 
@@ -3609,7 +3549,6 @@ Calculate the interpolated value of a mesh attribute on the closest point of its
 | [`name`](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3619,8 +3558,8 @@ Calculate the interpolated value of a mesh attribute on the closest point of its
 | [boolean](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.boolean) | Create Sample Nearest Surface with operation ‘Boolean’. True or false |
 | [color](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.color) | Create Sample Nearest Surface with operation ‘Color’. RGBA color with 32-bit floating-point values |
 | [float](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.float) | Create Sample Nearest Surface with operation ‘Float’. Floating-point value |
-| [input_4x4_matrix](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.input_4x4_matrix) | Create Sample Nearest Surface with operation ‘4x4 Matrix’. Floating point matrix |
 | [integer](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.integer) | Create Sample Nearest Surface with operation ‘Integer’. 32-bit integer |
+| [matrix](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.matrix) | Create Sample Nearest Surface with operation ‘4x4 Matrix’. Floating point matrix |
 | [quaternion](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.quaternion) | Create Sample Nearest Surface with operation ‘Quaternion’. Floating point quaternion rotation |
 | [vector](#nodebpy.nodes.geometry.geometry.SampleNearestSurface.vector) | Create Sample Nearest Surface with operation ‘Vector’. 3D vector with floating-point values |
 
@@ -3629,10 +3568,10 @@ Calculate the interpolated value of a mesh attribute on the closest point of its
 ``` python
 boolean(
     mesh=None,
-    value=False,
-    group_id=0,
-    sample_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
+    value=None,
+    group_id=None,
+    sample_position=None,
+    sample_group_id=None,
 )
 ```
 
@@ -3643,10 +3582,10 @@ Create Sample Nearest Surface with operation ‘Boolean’. True or false
 ``` python
 color(
     mesh=None,
-    value=(0.8, 0.8, 0.8, 1.0),
-    group_id=0,
-    sample_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
+    value=None,
+    group_id=None,
+    sample_position=None,
+    sample_group_id=None,
 )
 ```
 
@@ -3657,52 +3596,52 @@ Create Sample Nearest Surface with operation ‘Color’. RGBA color with 32-bit
 ``` python
 float(
     mesh=None,
-    value=0.0,
-    group_id=0,
-    sample_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
+    value=None,
+    group_id=None,
+    sample_position=None,
+    sample_group_id=None,
 )
 ```
 
 Create Sample Nearest Surface with operation ‘Float’. Floating-point value
-
-##### input_4x4_matrix
-
-``` python
-input_4x4_matrix(
-    mesh=None,
-    value=None,
-    group_id=0,
-    sample_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
-)
-```
-
-Create Sample Nearest Surface with operation ‘4x4 Matrix’. Floating point matrix
 
 ##### integer
 
 ``` python
 integer(
     mesh=None,
-    value=0,
-    group_id=0,
-    sample_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
+    value=None,
+    group_id=None,
+    sample_position=None,
+    sample_group_id=None,
 )
 ```
 
 Create Sample Nearest Surface with operation ‘Integer’. 32-bit integer
+
+##### matrix
+
+``` python
+matrix(
+    mesh=None,
+    value=None,
+    group_id=None,
+    sample_position=None,
+    sample_group_id=None,
+)
+```
+
+Create Sample Nearest Surface with operation ‘4x4 Matrix’. Floating point matrix
 
 ##### quaternion
 
 ``` python
 quaternion(
     mesh=None,
-    value=(0.0, 0.0, 0.0),
-    group_id=0,
-    sample_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
+    value=None,
+    group_id=None,
+    sample_position=None,
+    sample_group_id=None,
 )
 ```
 
@@ -3713,10 +3652,10 @@ Create Sample Nearest Surface with operation ‘Quaternion’. Floating point qu
 ``` python
 vector(
     mesh=None,
-    value=(0.0, 0.0, 0.0),
-    group_id=0,
-    sample_position=(0.0, 0.0, 0.0),
-    sample_group_id=0,
+    value=None,
+    group_id=None,
+    sample_position=None,
+    sample_group_id=None,
 )
 ```
 
@@ -3744,8 +3683,8 @@ Create Sample Nearest Surface with operation ‘Vector’. 3D vector with floati
 ``` python
 SampleUVSurface(
     mesh=None,
-    value=0.0,
-    source_uv_map=(0.0, 0.0, 0.0),
+    value=None,
+    source_uv_map=None,
     sample_uv=(0.0, 0.0, 0.0),
     *,
     data_type='FLOAT',
@@ -3759,8 +3698,8 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 | Name          | Type          | Description | Default           |
 |---------------|---------------|-------------|-------------------|
 | mesh          | InputGeometry | Mesh        | `None`            |
-| value         | InputFloat    | Value       | `0.0`             |
-| source_uv_map | InputVector   | UV Map      | `(0.0, 0.0, 0.0)` |
+| value         | InputFloat    | Value       | `None`            |
+| source_uv_map | InputVector   | UV Map      | `None`            |
 | sample_uv     | InputVector   | Sample UV   | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
@@ -3772,7 +3711,6 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 | [`name`](#nodebpy.nodes.geometry.geometry.SampleUVSurface.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SampleUVSurface.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SampleUVSurface.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SampleUVSurface.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SampleUVSurface.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3782,20 +3720,15 @@ Calculate the interpolated values of a mesh attribute at a UV coordinate
 | [boolean](#nodebpy.nodes.geometry.geometry.SampleUVSurface.boolean) | Create Sample UV Surface with operation ‘Boolean’. True or false |
 | [color](#nodebpy.nodes.geometry.geometry.SampleUVSurface.color) | Create Sample UV Surface with operation ‘Color’. RGBA color with 32-bit floating-point values |
 | [float](#nodebpy.nodes.geometry.geometry.SampleUVSurface.float) | Create Sample UV Surface with operation ‘Float’. Floating-point value |
-| [input_4x4_matrix](#nodebpy.nodes.geometry.geometry.SampleUVSurface.input_4x4_matrix) | Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix |
 | [integer](#nodebpy.nodes.geometry.geometry.SampleUVSurface.integer) | Create Sample UV Surface with operation ‘Integer’. 32-bit integer |
+| [matrix](#nodebpy.nodes.geometry.geometry.SampleUVSurface.matrix) | Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix |
 | [quaternion](#nodebpy.nodes.geometry.geometry.SampleUVSurface.quaternion) | Create Sample UV Surface with operation ‘Quaternion’. Floating point quaternion rotation |
 | [vector](#nodebpy.nodes.geometry.geometry.SampleUVSurface.vector) | Create Sample UV Surface with operation ‘Vector’. 3D vector with floating-point values |
 
 ##### boolean
 
 ``` python
-boolean(
-    mesh=None,
-    value=False,
-    source_uv_map=(0.0, 0.0, 0.0),
-    sample_uv=(0.0, 0.0, 0.0),
-)
+boolean(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Boolean’. True or false
@@ -3803,12 +3736,7 @@ Create Sample UV Surface with operation ‘Boolean’. True or false
 ##### color
 
 ``` python
-color(
-    mesh=None,
-    value=(0.8, 0.8, 0.8, 1.0),
-    source_uv_map=(0.0, 0.0, 0.0),
-    sample_uv=(0.0, 0.0, 0.0),
-)
+color(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Color’. RGBA color with 32-bit floating-point values
@@ -3816,51 +3744,31 @@ Create Sample UV Surface with operation ‘Color’. RGBA color with 32-bit floa
 ##### float
 
 ``` python
-float(
-    mesh=None,
-    value=0.0,
-    source_uv_map=(0.0, 0.0, 0.0),
-    sample_uv=(0.0, 0.0, 0.0),
-)
+float(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Float’. Floating-point value
 
-##### input_4x4_matrix
-
-``` python
-input_4x4_matrix(
-    mesh=None,
-    value=None,
-    source_uv_map=(0.0, 0.0, 0.0),
-    sample_uv=(0.0, 0.0, 0.0),
-)
-```
-
-Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix
-
 ##### integer
 
 ``` python
-integer(
-    mesh=None,
-    value=0,
-    source_uv_map=(0.0, 0.0, 0.0),
-    sample_uv=(0.0, 0.0, 0.0),
-)
+integer(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Integer’. 32-bit integer
 
+##### matrix
+
+``` python
+matrix(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
+```
+
+Create Sample UV Surface with operation ‘4x4 Matrix’. Floating point matrix
+
 ##### quaternion
 
 ``` python
-quaternion(
-    mesh=None,
-    value=(0.0, 0.0, 0.0),
-    source_uv_map=(0.0, 0.0, 0.0),
-    sample_uv=(0.0, 0.0, 0.0),
-)
+quaternion(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Quaternion’. Floating point quaternion rotation
@@ -3868,12 +3776,7 @@ Create Sample UV Surface with operation ‘Quaternion’. Floating point quatern
 ##### vector
 
 ``` python
-vector(
-    mesh=None,
-    value=(0.0, 0.0, 0.0),
-    source_uv_map=(0.0, 0.0, 0.0),
-    sample_uv=(0.0, 0.0, 0.0),
-)
+vector(mesh=None, value=None, source_uv_map=None, sample_uv=(0.0, 0.0, 0.0))
 ```
 
 Create Sample UV Surface with operation ‘Vector’. 3D vector with floating-point values
@@ -3899,9 +3802,9 @@ Create Sample UV Surface with operation ‘Vector’. 3D vector with floating-po
 ``` python
 ScaleElements(
     geometry=None,
-    selection=True,
+    selection=None,
     scale=1.0,
-    center=(0.0, 0.0, 0.0),
+    center=None,
     scale_mode='Uniform',
     axis=(1.0, 0.0, 0.0),
     *,
@@ -3916,9 +3819,9 @@ Scale groups of connected edges and faces
 | Name | Type | Description | Default |
 |----|----|----|----|
 | geometry | InputGeometry | Geometry | `None` |
-| selection | InputBoolean | Selection | `True` |
+| selection | InputBoolean | Selection | `None` |
 | scale | InputFloat | Scale | `1.0` |
-| center | InputVector | Center | `(0.0, 0.0, 0.0)` |
+| center | InputVector | Center | `None` |
 | scale_mode | InputMenu \| Literal\['Uniform', 'Single Axis'\] | Scale Mode | `'Uniform'` |
 | axis | InputVector | Axis | `(1.0, 0.0, 0.0)` |
 
@@ -3931,7 +3834,6 @@ Scale groups of connected edges and faces
 | [`name`](#nodebpy.nodes.geometry.geometry.ScaleElements.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.ScaleElements.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.ScaleElements.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.ScaleElements.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.ScaleElements.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3946,9 +3848,9 @@ Scale groups of connected edges and faces
 ``` python
 edge(
     geometry=None,
-    selection=True,
+    selection=None,
     scale=1.0,
-    center=(0.0, 0.0, 0.0),
+    center=None,
     scale_mode='Uniform',
 )
 ```
@@ -3960,9 +3862,9 @@ Create Scale Elements with operation ‘Edge’. Scale individual edges or neigh
 ``` python
 face(
     geometry=None,
-    selection=True,
+    selection=None,
     scale=1.0,
-    center=(0.0, 0.0, 0.0),
+    center=None,
     scale_mode='Uniform',
 )
 ```
@@ -3991,7 +3893,7 @@ Create Scale Elements with operation ‘Face’. Scale individual faces or neigh
 ``` python
 ScaleInstances(
     instances=None,
-    selection=True,
+    selection=None,
     scale=(1.0, 1.0, 1.0),
     center=(0.0, 0.0, 0.0),
     local_space=True,
@@ -4005,7 +3907,7 @@ Scale geometry instances in local or global space
 | Name        | Type          | Description | Default           |
 |-------------|---------------|-------------|-------------------|
 | instances   | InputGeometry | Instances   | `None`            |
-| selection   | InputBoolean  | Selection   | `True`            |
+| selection   | InputBoolean  | Selection   | `None`            |
 | scale       | InputVector   | Scale       | `(1.0, 1.0, 1.0)` |
 | center      | InputVector   | Center      | `(0.0, 0.0, 0.0)` |
 | local_space | InputBoolean  | Local Space | `True`            |
@@ -4018,7 +3920,6 @@ Scale geometry instances in local or global space
 | [`name`](#nodebpy.nodes.geometry.geometry.ScaleInstances.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.ScaleInstances.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.ScaleInstances.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.ScaleInstances.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.ScaleInstances.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4059,7 +3960,6 @@ Split a geometry into a separate output for each type of data in the geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.SeparateComponents.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SeparateComponents.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SeparateComponents.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SeparateComponents.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SeparateComponents.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4082,7 +3982,7 @@ Split a geometry into a separate output for each type of data in the geometry
 ### SeparateGeometry
 
 ``` python
-SeparateGeometry(geometry=None, selection=True, *, domain='POINT')
+SeparateGeometry(geometry=None, selection=None, *, domain='POINT')
 ```
 
 Split a geometry into two geometry outputs based on a selection
@@ -4092,7 +3992,7 @@ Split a geometry into two geometry outputs based on a selection
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | geometry  | InputGeometry | Geometry    | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 
 #### Attributes
 
@@ -4103,7 +4003,6 @@ Split a geometry into two geometry outputs based on a selection
 | [`name`](#nodebpy.nodes.geometry.geometry.SeparateGeometry.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SeparateGeometry.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SeparateGeometry.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SeparateGeometry.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SeparateGeometry.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -4120,7 +4019,7 @@ Split a geometry into two geometry outputs based on a selection
 ##### edge
 
 ``` python
-edge(geometry=None, selection=True)
+edge(geometry=None, selection=None)
 ```
 
 Create Separate Geometry with operation ‘Edge’. Attribute on mesh edge
@@ -4128,7 +4027,7 @@ Create Separate Geometry with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, selection=True)
+face(geometry=None, selection=None)
 ```
 
 Create Separate Geometry with operation ‘Face’. Attribute on mesh faces
@@ -4136,7 +4035,7 @@ Create Separate Geometry with operation ‘Face’. Attribute on mesh faces
 ##### instance
 
 ``` python
-instance(geometry=None, selection=True)
+instance(geometry=None, selection=None)
 ```
 
 Create Separate Geometry with operation ‘Instance’. Attribute on instance
@@ -4144,7 +4043,7 @@ Create Separate Geometry with operation ‘Instance’. Attribute on instance
 ##### layer
 
 ``` python
-layer(geometry=None, selection=True)
+layer(geometry=None, selection=None)
 ```
 
 Create Separate Geometry with operation ‘Layer’. Attribute on Grease Pencil layer
@@ -4152,7 +4051,7 @@ Create Separate Geometry with operation ‘Layer’. Attribute on Grease Pencil 
 ##### point
 
 ``` python
-point(geometry=None, selection=True)
+point(geometry=None, selection=None)
 ```
 
 Create Separate Geometry with operation ‘Point’. Attribute on point
@@ -4160,7 +4059,7 @@ Create Separate Geometry with operation ‘Point’. Attribute on point
 ##### spline
 
 ``` python
-spline(geometry=None, selection=True)
+spline(geometry=None, selection=None)
 ```
 
 Create Separate Geometry with operation ‘Spline’. Attribute on spline
@@ -4184,7 +4083,7 @@ Create Separate Geometry with operation ‘Spline’. Attribute on spline
 ``` python
 SetCurveNormal(
     curve=None,
-    selection=True,
+    selection=None,
     mode='Minimum Twist',
     normal=(0.0, 0.0, 1.0),
 )
@@ -4197,7 +4096,7 @@ Set the evaluation mode for curve normals
 | Name | Type | Description | Default |
 |----|----|----|----|
 | curve | InputGeometry | Curve | `None` |
-| selection | InputBoolean | Selection | `True` |
+| selection | InputBoolean | Selection | `None` |
 | mode | InputMenu \| Literal\['Minimum Twist', 'Z Up', 'Free'\] | Mode | `'Minimum Twist'` |
 | normal | InputVector | Normal | `(0.0, 0.0, 1.0)` |
 
@@ -4209,7 +4108,6 @@ Set the evaluation mode for curve normals
 | [`name`](#nodebpy.nodes.geometry.geometry.SetCurveNormal.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetCurveNormal.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetCurveNormal.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetCurveNormal.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetCurveNormal.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4230,7 +4128,7 @@ Set the evaluation mode for curve normals
 ### SetCurveRadius
 
 ``` python
-SetCurveRadius(curve=None, selection=True, radius=0.005)
+SetCurveRadius(curve=None, selection=None, radius=0.005)
 ```
 
 Set the radius of the curve at each control point
@@ -4240,7 +4138,7 @@ Set the radius of the curve at each control point
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | curve     | InputGeometry | Curve       | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | radius    | InputFloat    | Radius      | `0.005` |
 
 #### Attributes
@@ -4251,7 +4149,6 @@ Set the radius of the curve at each control point
 | [`name`](#nodebpy.nodes.geometry.geometry.SetCurveRadius.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetCurveRadius.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetCurveRadius.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetCurveRadius.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetCurveRadius.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4271,7 +4168,7 @@ Set the radius of the curve at each control point
 ### SetCurveTilt
 
 ``` python
-SetCurveTilt(curve=None, selection=True, tilt=0.0)
+SetCurveTilt(curve=None, selection=None, tilt=0.0)
 ```
 
 Set the tilt angle at each curve control point
@@ -4281,7 +4178,7 @@ Set the tilt angle at each curve control point
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | curve     | InputGeometry | Curve       | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | tilt      | InputFloat    | Tilt        | `0.0`   |
 
 #### Attributes
@@ -4292,7 +4189,6 @@ Set the tilt angle at each curve control point
 | [`name`](#nodebpy.nodes.geometry.geometry.SetCurveTilt.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetCurveTilt.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetCurveTilt.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetCurveTilt.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetCurveTilt.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4312,7 +4208,7 @@ Set the tilt angle at each curve control point
 ### SetFaceSet
 
 ``` python
-SetFaceSet(mesh=None, selection=True, face_set=0)
+SetFaceSet(mesh=None, selection=None, face_set=None)
 ```
 
 Set sculpt face set values for faces
@@ -4322,8 +4218,8 @@ Set sculpt face set values for faces
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | mesh      | InputGeometry | Mesh        | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
-| face_set  | InputInteger  | Face Set    | `0`     |
+| selection | InputBoolean  | Selection   | `None`  |
+| face_set  | InputInteger  | Face Set    | `None`  |
 
 #### Attributes
 
@@ -4333,7 +4229,6 @@ Set sculpt face set values for faces
 | [`name`](#nodebpy.nodes.geometry.geometry.SetFaceSet.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetFaceSet.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetFaceSet.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetFaceSet.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetFaceSet.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4373,7 +4268,6 @@ Set the bundle of a geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetGeometryBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4412,7 +4306,6 @@ Set the name of a geometry for easier debugging
 | [`name`](#nodebpy.nodes.geometry.geometry.SetGeometryName.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetGeometryName.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetGeometryName.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetGeometryName.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetGeometryName.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4433,7 +4326,7 @@ Set the name of a geometry for easier debugging
 ``` python
 SetGreasePencilColor(
     grease_pencil=None,
-    selection=True,
+    selection=None,
     color=(1.0, 1.0, 1.0, 1.0),
     opacity=1.0,
     *,
@@ -4448,7 +4341,7 @@ Set color and opacity attributes on Grease Pencil geometry
 | Name          | Type          | Description   | Default                |
 |---------------|---------------|---------------|------------------------|
 | grease_pencil | InputGeometry | Grease Pencil | `None`                 |
-| selection     | InputBoolean  | Selection     | `True`                 |
+| selection     | InputBoolean  | Selection     | `None`                 |
 | color         | InputColor    | Color         | `(1.0, 1.0, 1.0, 1.0)` |
 | opacity       | InputFloat    | Opacity       | `1.0`                  |
 
@@ -4461,7 +4354,6 @@ Set color and opacity attributes on Grease Pencil geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetGreasePencilColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -4476,7 +4368,7 @@ Set color and opacity attributes on Grease Pencil geometry
 ``` python
 fill(
     grease_pencil=None,
-    selection=True,
+    selection=None,
     color=(1.0, 1.0, 1.0, 1.0),
     opacity=1.0,
 )
@@ -4489,7 +4381,7 @@ Create Set Grease Pencil Color with operation ‘Fill’. Set the color and opac
 ``` python
 stroke(
     grease_pencil=None,
-    selection=True,
+    selection=None,
     color=(1.0, 1.0, 1.0, 1.0),
     opacity=1.0,
 )
@@ -4535,7 +4427,6 @@ Set the Grease Pencil depth order to use
 | [`name`](#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetGreasePencilDepth.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4553,7 +4444,7 @@ Set the Grease Pencil depth order to use
 ### SetGreasePencilSoftness
 
 ``` python
-SetGreasePencilSoftness(grease_pencil=None, selection=True, softness=0.0)
+SetGreasePencilSoftness(grease_pencil=None, selection=None, softness=0.0)
 ```
 
 Set softness attribute on Grease Pencil geometry
@@ -4563,7 +4454,7 @@ Set softness attribute on Grease Pencil geometry
 | Name          | Type          | Description   | Default |
 |---------------|---------------|---------------|---------|
 | grease_pencil | InputGeometry | Grease Pencil | `None`  |
-| selection     | InputBoolean  | Selection     | `True`  |
+| selection     | InputBoolean  | Selection     | `None`  |
 | softness      | InputFloat    | Softness      | `0.0`   |
 
 #### Attributes
@@ -4574,7 +4465,6 @@ Set softness attribute on Grease Pencil geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetGreasePencilSoftness.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4596,8 +4486,8 @@ Set softness attribute on Grease Pencil geometry
 ``` python
 SetHandlePositions(
     curve=None,
-    selection=True,
-    position=(0.0, 0.0, 0.0),
+    selection=None,
+    position=None,
     offset=(0.0, 0.0, 0.0),
     *,
     mode='LEFT',
@@ -4611,8 +4501,8 @@ Set the positions for the handles of Bézier curves
 | Name      | Type          | Description | Default           |
 |-----------|---------------|-------------|-------------------|
 | curve     | InputGeometry | Curve       | `None`            |
-| selection | InputBoolean  | Selection   | `True`            |
-| position  | InputVector   | Position    | `(0.0, 0.0, 0.0)` |
+| selection | InputBoolean  | Selection   | `None`            |
+| position  | InputVector   | Position    | `None`            |
 | offset    | InputVector   | Offset      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
@@ -4624,7 +4514,6 @@ Set the positions for the handles of Bézier curves
 | [`name`](#nodebpy.nodes.geometry.geometry.SetHandlePositions.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetHandlePositions.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetHandlePositions.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetHandlePositions.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetHandlePositions.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -4637,12 +4526,7 @@ Set the positions for the handles of Bézier curves
 ##### left
 
 ``` python
-left(
-    curve=None,
-    selection=True,
-    position=(0.0, 0.0, 0.0),
-    offset=(0.0, 0.0, 0.0),
-)
+left(curve=None, selection=None, position=None, offset=(0.0, 0.0, 0.0))
 ```
 
 Create Set Handle Positions with operation ‘Left’. Use the left handles
@@ -4650,12 +4534,7 @@ Create Set Handle Positions with operation ‘Left’. Use the left handles
 ##### right
 
 ``` python
-right(
-    curve=None,
-    selection=True,
-    position=(0.0, 0.0, 0.0),
-    offset=(0.0, 0.0, 0.0),
-)
+right(curve=None, selection=None, position=None, offset=(0.0, 0.0, 0.0))
 ```
 
 Create Set Handle Positions with operation ‘Right’. Use the right handles
@@ -4708,7 +4587,6 @@ Set the handle type for the control points of a Bézier curve
 | [`name`](#nodebpy.nodes.geometry.geometry.SetHandleType.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetHandleType.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetHandleType.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetHandleType.outputs) |  |
 | [`right`](#nodebpy.nodes.geometry.geometry.SetHandleType.right) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetHandleType.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -4724,7 +4602,7 @@ Set the handle type for the control points of a Bézier curve
 ##### align
 
 ``` python
-align(curve=None, selection=True)
+align(curve=None, selection=None)
 ```
 
 Create Set Handle Type with operation ‘Align’. The location is constrained to point in the opposite direction as the other handle
@@ -4732,7 +4610,7 @@ Create Set Handle Type with operation ‘Align’. The location is constrained t
 ##### auto
 
 ``` python
-auto(curve=None, selection=True)
+auto(curve=None, selection=None)
 ```
 
 Create Set Handle Type with operation ‘Auto’. The location is automatically calculated to be smooth
@@ -4740,7 +4618,7 @@ Create Set Handle Type with operation ‘Auto’. The location is automatically 
 ##### free
 
 ``` python
-free(curve=None, selection=True)
+free(curve=None, selection=None)
 ```
 
 Create Set Handle Type with operation ‘Free’. The handle can be moved anywhere, and does not influence the point’s other handle
@@ -4748,7 +4626,7 @@ Create Set Handle Type with operation ‘Free’. The handle can be moved anywhe
 ##### vector
 
 ``` python
-vector(curve=None, selection=True)
+vector(curve=None, selection=None)
 ```
 
 Create Set Handle Type with operation ‘Vector’. The location is calculated to point to the next/previous control point
@@ -4769,7 +4647,7 @@ Create Set Handle Type with operation ‘Vector’. The location is calculated t
 ### SetID
 
 ``` python
-SetID(geometry=None, selection=True, id=0)
+SetID(geometry=None, selection=None, id=None)
 ```
 
 Set the id attribute on the input geometry, mainly used internally for randomizing
@@ -4779,8 +4657,8 @@ Set the id attribute on the input geometry, mainly used internally for randomizi
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | geometry  | InputGeometry | Geometry    | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
-| id        | InputInteger  | ID          | `0`     |
+| selection | InputBoolean  | Selection   | `None`  |
+| id        | InputInteger  | ID          | `None`  |
 
 #### Attributes
 
@@ -4790,7 +4668,6 @@ Set the id attribute on the input geometry, mainly used internally for randomizi
 | [`name`](#nodebpy.nodes.geometry.geometry.SetID.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetID.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetID.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetID.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetID.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4810,7 +4687,7 @@ Set the id attribute on the input geometry, mainly used internally for randomizi
 ### SetInstanceTransform
 
 ``` python
-SetInstanceTransform(instances=None, selection=True, transform=None)
+SetInstanceTransform(instances=None, selection=None, transform=None)
 ```
 
 Set the transformation matrix of every instance
@@ -4820,7 +4697,7 @@ Set the transformation matrix of every instance
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | instances | InputGeometry | Instances   | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | transform | InputMatrix   | Transform   | `None`  |
 
 #### Attributes
@@ -4831,7 +4708,6 @@ Set the transformation matrix of every instance
 | [`name`](#nodebpy.nodes.geometry.geometry.SetInstanceTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetInstanceTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetInstanceTransform.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetInstanceTransform.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetInstanceTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4851,7 +4727,7 @@ Set the transformation matrix of every instance
 ### SetMaterial
 
 ``` python
-SetMaterial(geometry=None, selection=True, material=None)
+SetMaterial(geometry=None, selection=None, material=None)
 ```
 
 Assign a material to geometry elements
@@ -4861,7 +4737,7 @@ Assign a material to geometry elements
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | geometry  | InputGeometry | Geometry    | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | material  | InputMaterial | Material    | `None`  |
 
 #### Attributes
@@ -4872,7 +4748,6 @@ Assign a material to geometry elements
 | [`name`](#nodebpy.nodes.geometry.geometry.SetMaterial.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetMaterial.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetMaterial.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetMaterial.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetMaterial.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4892,7 +4767,7 @@ Assign a material to geometry elements
 ### SetMaterialIndex
 
 ``` python
-SetMaterialIndex(geometry=None, selection=True, material_index=0)
+SetMaterialIndex(geometry=None, selection=None, material_index=0)
 ```
 
 Set the material index for each selected geometry element
@@ -4902,7 +4777,7 @@ Set the material index for each selected geometry element
 | Name           | Type          | Description    | Default |
 |----------------|---------------|----------------|---------|
 | geometry       | InputGeometry | Geometry       | `None`  |
-| selection      | InputBoolean  | Selection      | `True`  |
+| selection      | InputBoolean  | Selection      | `None`  |
 | material_index | InputInteger  | Material Index | `0`     |
 
 #### Attributes
@@ -4913,7 +4788,6 @@ Set the material index for each selected geometry element
 | [`name`](#nodebpy.nodes.geometry.geometry.SetMaterialIndex.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetMaterialIndex.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetMaterialIndex.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetMaterialIndex.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetMaterialIndex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4967,7 +4841,6 @@ Store a normal vector for each mesh element
 | [`name`](#nodebpy.nodes.geometry.geometry.SetMeshNormal.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetMeshNormal.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetMeshNormal.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetMeshNormal.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetMeshNormal.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -4984,7 +4857,14 @@ Store a normal vector for each mesh element
 ##### face
 
 ``` python
-face(mesh=None, remove_custom=True, edge_sharpness=False, face_sharpness=False)
+face(
+    mesh=None,
+    remove_custom=True,
+    edge_sharpness=False,
+    face_sharpness=False,
+    *,
+    mode='SHARPNESS',
+)
 ```
 
 Create Set Mesh Normal with operation ‘Face’. Attribute on mesh faces
@@ -4997,6 +4877,8 @@ face_corner(
     remove_custom=True,
     edge_sharpness=False,
     face_sharpness=False,
+    *,
+    mode='SHARPNESS',
 )
 ```
 
@@ -5005,7 +4887,7 @@ Create Set Mesh Normal with operation ‘Face Corner’. Attribute on mesh face 
 ##### free
 
 ``` python
-free(mesh=None, custom_normal=(0.0, 0.0, 0.0))
+free(mesh=None, custom_normal=None, *, domain='POINT')
 ```
 
 Create Set Mesh Normal with operation ‘Free’. Store custom normals as simple vectors in the local space of the mesh. Values are not necessarily updated automatically later on as the mesh is deformed.
@@ -5013,7 +4895,14 @@ Create Set Mesh Normal with operation ‘Free’. Store custom normals as simple
 ##### point
 
 ``` python
-point(mesh=None, remove_custom=True, edge_sharpness=False, face_sharpness=False)
+point(
+    mesh=None,
+    remove_custom=True,
+    edge_sharpness=False,
+    face_sharpness=False,
+    *,
+    mode='SHARPNESS',
+)
 ```
 
 Create Set Mesh Normal with operation ‘Point’. Attribute on point
@@ -5034,7 +4923,7 @@ Create Set Mesh Normal with operation ‘Sharpness’. Store the sharpness of ea
 ##### tangent_space
 
 ``` python
-tangent_space(mesh=None, custom_normal=(0.0, 0.0, 0.0))
+tangent_space(mesh=None, custom_normal=None)
 ```
 
 Create Set Mesh Normal with operation ‘Tangent Space’. Store normals in a deformation dependent custom transformation space. This method is slower, but can be better when subsequent operations change the mesh without handling normals specifically.
@@ -5058,7 +4947,7 @@ Create Set Mesh Normal with operation ‘Tangent Space’. Store normals in a de
 ### SetNurbsOrder
 
 ``` python
-SetNurbsOrder(curves=None, selection=True, order=4)
+SetNurbsOrder(curves=None, selection=None, order=4)
 ```
 
 Control how many curve control points influence each evaluated point by changing the “nurbs_order” attribute
@@ -5068,7 +4957,7 @@ Control how many curve control points influence each evaluated point by changing
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | curves    | InputGeometry | Curves      | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | order     | InputInteger  | Order       | `4`     |
 
 #### Attributes
@@ -5079,7 +4968,6 @@ Control how many curve control points influence each evaluated point by changing
 | [`name`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetNurbsOrder.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5099,7 +4987,7 @@ Control how many curve control points influence each evaluated point by changing
 ### SetNurbsWeight
 
 ``` python
-SetNurbsWeight(curves=None, selection=True, weight=1.0)
+SetNurbsWeight(curves=None, selection=None, weight=1.0)
 ```
 
 Control the influence of each NURBS control point on the curve by changing the “nurbs_weight” attribute
@@ -5109,7 +4997,7 @@ Control the influence of each NURBS control point on the curve by changing the �
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | curves    | InputGeometry | Curves      | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | weight    | InputFloat    | Weight      | `1.0`   |
 
 #### Attributes
@@ -5120,7 +5008,6 @@ Control the influence of each NURBS control point on the curve by changing the �
 | [`name`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetNurbsWeight.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5140,7 +5027,7 @@ Control the influence of each NURBS control point on the curve by changing the �
 ### SetPointRadius
 
 ``` python
-SetPointRadius(points=None, selection=True, radius=0.05)
+SetPointRadius(points=None, selection=None, radius=0.05)
 ```
 
 Set the display size of point cloud points
@@ -5150,7 +5037,7 @@ Set the display size of point cloud points
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | points    | InputGeometry | Points      | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | radius    | InputFloat    | Radius      | `0.05`  |
 
 #### Attributes
@@ -5161,7 +5048,6 @@ Set the display size of point cloud points
 | [`name`](#nodebpy.nodes.geometry.geometry.SetPointRadius.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetPointRadius.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetPointRadius.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetPointRadius.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetPointRadius.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5183,8 +5069,8 @@ Set the display size of point cloud points
 ``` python
 SetPosition(
     geometry=None,
-    selection=True,
-    position=(0.0, 0.0, 0.0),
+    selection=None,
+    position=None,
     offset=(0.0, 0.0, 0.0),
 )
 ```
@@ -5196,8 +5082,8 @@ Set the location of each point
 | Name      | Type          | Description | Default           |
 |-----------|---------------|-------------|-------------------|
 | geometry  | InputGeometry | Geometry    | `None`            |
-| selection | InputBoolean  | Selection   | `True`            |
-| position  | InputVector   | Position    | `(0.0, 0.0, 0.0)` |
+| selection | InputBoolean  | Selection   | `None`            |
+| position  | InputVector   | Position    | `None`            |
 | offset    | InputVector   | Offset      | `(0.0, 0.0, 0.0)` |
 
 #### Attributes
@@ -5208,7 +5094,6 @@ Set the location of each point
 | [`name`](#nodebpy.nodes.geometry.geometry.SetPosition.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetPosition.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetPosition.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetPosition.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetPosition.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5256,7 +5141,6 @@ Set selection of the edited geometry, for tool execution
 | [`name`](#nodebpy.nodes.geometry.geometry.SetSelection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetSelection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetSelection.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetSelection.outputs) |  |
 | [`selection_type`](#nodebpy.nodes.geometry.geometry.SetSelection.selection_type) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetSelection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -5274,7 +5158,7 @@ Set selection of the edited geometry, for tool execution
 ##### boolean
 
 ``` python
-boolean(geometry=None, selection=True)
+boolean(geometry=None, selection=True, *, domain='POINT')
 ```
 
 Create Set Selection with operation ‘Boolean’. Store true or false selection values in edit mode
@@ -5282,7 +5166,7 @@ Create Set Selection with operation ‘Boolean’. Store true or false selection
 ##### edge
 
 ``` python
-edge(geometry=None, selection=True)
+edge(geometry=None, selection=True, *, selection_type='BOOLEAN')
 ```
 
 Create Set Selection with operation ‘Edge’. Attribute on mesh edge
@@ -5290,7 +5174,7 @@ Create Set Selection with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, selection=True)
+face(geometry=None, selection=True, *, selection_type='BOOLEAN')
 ```
 
 Create Set Selection with operation ‘Face’. Attribute on mesh faces
@@ -5298,7 +5182,7 @@ Create Set Selection with operation ‘Face’. Attribute on mesh faces
 ##### float
 
 ``` python
-float(geometry=None, selection=1.0)
+float(geometry=None, selection=1.0, *, domain='POINT')
 ```
 
 Create Set Selection with operation ‘Float’. Store floating point selection values. For mesh geometry, stored inverted as the sculpt mode mask
@@ -5306,7 +5190,7 @@ Create Set Selection with operation ‘Float’. Store floating point selection 
 ##### point
 
 ``` python
-point(geometry=None, selection=True)
+point(geometry=None, selection=True, *, selection_type='BOOLEAN')
 ```
 
 Create Set Selection with operation ‘Point’. Attribute on point
@@ -5314,7 +5198,7 @@ Create Set Selection with operation ‘Point’. Attribute on point
 ##### spline
 
 ``` python
-spline(geometry=None, selection=True)
+spline(geometry=None, selection=True, *, selection_type='BOOLEAN')
 ```
 
 Create Set Selection with operation ‘Spline’. Attribute on spline
@@ -5337,7 +5221,7 @@ Create Set Selection with operation ‘Spline’. Attribute on spline
 ``` python
 SetShadeSmooth(
     geometry=None,
-    selection=True,
+    selection=None,
     shade_smooth=True,
     *,
     domain='FACE',
@@ -5351,7 +5235,7 @@ Control the smoothness of mesh normals around each face by changing the “shade
 | Name         | Type          | Description  | Default |
 |--------------|---------------|--------------|---------|
 | geometry     | InputGeometry | Mesh         | `None`  |
-| selection    | InputBoolean  | Selection    | `True`  |
+| selection    | InputBoolean  | Selection    | `None`  |
 | shade_smooth | InputBoolean  | Shade Smooth | `True`  |
 
 #### Attributes
@@ -5363,7 +5247,6 @@ Control the smoothness of mesh normals around each face by changing the “shade
 | [`name`](#nodebpy.nodes.geometry.geometry.SetShadeSmooth.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetShadeSmooth.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetShadeSmooth.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetShadeSmooth.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetShadeSmooth.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -5376,7 +5259,7 @@ Control the smoothness of mesh normals around each face by changing the “shade
 ##### edge
 
 ``` python
-edge(geometry=None, selection=True, shade_smooth=True)
+edge(geometry=None, selection=None, shade_smooth=True)
 ```
 
 Create Set Shade Smooth with operation ‘Edge’. Attribute on mesh edge
@@ -5384,7 +5267,7 @@ Create Set Shade Smooth with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, selection=True, shade_smooth=True)
+face(geometry=None, selection=None, shade_smooth=True)
 ```
 
 Create Set Shade Smooth with operation ‘Face’. Attribute on mesh faces
@@ -5406,7 +5289,7 @@ Create Set Shade Smooth with operation ‘Face’. Attribute on mesh faces
 ### SetSplineCyclic
 
 ``` python
-SetSplineCyclic(geometry=None, selection=True, cyclic=False)
+SetSplineCyclic(geometry=None, selection=None, cyclic=False)
 ```
 
 Control whether each spline loops back on itself by changing the “cyclic” attribute
@@ -5416,7 +5299,7 @@ Control whether each spline loops back on itself by changing the “cyclic” at
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | geometry  | InputGeometry | Curve       | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | cyclic    | InputBoolean  | Cyclic      | `False` |
 
 #### Attributes
@@ -5427,7 +5310,6 @@ Control whether each spline loops back on itself by changing the “cyclic” at
 | [`name`](#nodebpy.nodes.geometry.geometry.SetSplineCyclic.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetSplineCyclic.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetSplineCyclic.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetSplineCyclic.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetSplineCyclic.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5447,7 +5329,7 @@ Control whether each spline loops back on itself by changing the “cyclic” at
 ### SetSplineResolution
 
 ``` python
-SetSplineResolution(geometry=None, selection=True, resolution=12)
+SetSplineResolution(geometry=None, selection=None, resolution=12)
 ```
 
 Control how many evaluated points should be generated on every curve segment
@@ -5457,7 +5339,7 @@ Control how many evaluated points should be generated on every curve segment
 | Name       | Type          | Description | Default |
 |------------|---------------|-------------|---------|
 | geometry   | InputGeometry | Curve       | `None`  |
-| selection  | InputBoolean  | Selection   | `True`  |
+| selection  | InputBoolean  | Selection   | `None`  |
 | resolution | InputInteger  | Resolution  | `12`    |
 
 #### Attributes
@@ -5468,7 +5350,6 @@ Control how many evaluated points should be generated on every curve segment
 | [`name`](#nodebpy.nodes.geometry.geometry.SetSplineResolution.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetSplineResolution.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetSplineResolution.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetSplineResolution.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetSplineResolution.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5488,7 +5369,7 @@ Control how many evaluated points should be generated on every curve segment
 ### SetSplineType
 
 ``` python
-SetSplineType(curve=None, selection=True, *, spline_type='POLY')
+SetSplineType(curve=None, selection=None, *, spline_type='POLY')
 ```
 
 Change the type of curves
@@ -5498,7 +5379,7 @@ Change the type of curves
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | curve     | InputGeometry | Curve       | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 
 #### Attributes
 
@@ -5508,7 +5389,6 @@ Change the type of curves
 | [`name`](#nodebpy.nodes.geometry.geometry.SetSplineType.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SetSplineType.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SetSplineType.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SetSplineType.outputs) |  |
 | [`spline_type`](#nodebpy.nodes.geometry.geometry.SetSplineType.spline_type) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SetSplineType.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -5524,7 +5404,7 @@ Change the type of curves
 ##### bezier
 
 ``` python
-bezier(curve=None, selection=True)
+bezier(curve=None, selection=None)
 ```
 
 Create Set Spline Type with operation ‘Bézier’.
@@ -5532,7 +5412,7 @@ Create Set Spline Type with operation ‘Bézier’.
 ##### catmull_rom
 
 ``` python
-catmull_rom(curve=None, selection=True)
+catmull_rom(curve=None, selection=None)
 ```
 
 Create Set Spline Type with operation ‘Catmull Rom’.
@@ -5540,7 +5420,7 @@ Create Set Spline Type with operation ‘Catmull Rom’.
 ##### nurbs
 
 ``` python
-nurbs(curve=None, selection=True)
+nurbs(curve=None, selection=None)
 ```
 
 Create Set Spline Type with operation ‘NURBS’.
@@ -5548,7 +5428,7 @@ Create Set Spline Type with operation ‘NURBS’.
 ##### poly
 
 ``` python
-poly(curve=None, selection=True)
+poly(curve=None, selection=None)
 ```
 
 Create Set Spline Type with operation ‘Poly’.
@@ -5571,9 +5451,9 @@ Create Set Spline Type with operation ‘Poly’.
 ``` python
 SortElements(
     geometry=None,
-    selection=True,
-    group_id=0,
-    sort_weight=0.0,
+    selection=None,
+    group_id=None,
+    sort_weight=None,
     *,
     domain='POINT',
 )
@@ -5586,9 +5466,9 @@ Rearrange geometry elements, changing their indices
 | Name        | Type          | Description | Default |
 |-------------|---------------|-------------|---------|
 | geometry    | InputGeometry | Geometry    | `None`  |
-| selection   | InputBoolean  | Selection   | `True`  |
-| group_id    | InputInteger  | Group ID    | `0`     |
-| sort_weight | InputFloat    | Sort Weight | `0.0`   |
+| selection   | InputBoolean  | Selection   | `None`  |
+| group_id    | InputInteger  | Group ID    | `None`  |
+| sort_weight | InputFloat    | Sort Weight | `None`  |
 
 #### Attributes
 
@@ -5599,7 +5479,6 @@ Rearrange geometry elements, changing their indices
 | [`name`](#nodebpy.nodes.geometry.geometry.SortElements.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SortElements.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SortElements.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SortElements.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SortElements.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -5615,7 +5494,7 @@ Rearrange geometry elements, changing their indices
 ##### edge
 
 ``` python
-edge(geometry=None, selection=True, group_id=0, sort_weight=0.0)
+edge(geometry=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort Elements with operation ‘Edge’. Attribute on mesh edge
@@ -5623,7 +5502,7 @@ Create Sort Elements with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, selection=True, group_id=0, sort_weight=0.0)
+face(geometry=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort Elements with operation ‘Face’. Attribute on mesh faces
@@ -5631,7 +5510,7 @@ Create Sort Elements with operation ‘Face’. Attribute on mesh faces
 ##### instance
 
 ``` python
-instance(geometry=None, selection=True, group_id=0, sort_weight=0.0)
+instance(geometry=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort Elements with operation ‘Instance’. Attribute on instance
@@ -5639,7 +5518,7 @@ Create Sort Elements with operation ‘Instance’. Attribute on instance
 ##### point
 
 ``` python
-point(geometry=None, selection=True, group_id=0, sort_weight=0.0)
+point(geometry=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort Elements with operation ‘Point’. Attribute on point
@@ -5647,7 +5526,7 @@ Create Sort Elements with operation ‘Point’. Attribute on point
 ##### spline
 
 ``` python
-spline(geometry=None, selection=True, group_id=0, sort_weight=0.0)
+spline(geometry=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort Elements with operation ‘Spline’. Attribute on spline
@@ -5701,7 +5580,6 @@ Generate a poly spline in a spiral shape
 | [`name`](#nodebpy.nodes.geometry.geometry.Spiral.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Spiral.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Spiral.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Spiral.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Spiral.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5724,7 +5602,7 @@ Generate a poly spline in a spiral shape
 ### SplitEdges
 
 ``` python
-SplitEdges(mesh=None, selection=True)
+SplitEdges(mesh=None, selection=None)
 ```
 
 Duplicate mesh edges and break connections with the surrounding faces
@@ -5734,7 +5612,7 @@ Duplicate mesh edges and break connections with the surrounding faces
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | mesh      | InputGeometry | Mesh        | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 
 #### Attributes
 
@@ -5744,7 +5622,6 @@ Duplicate mesh edges and break connections with the surrounding faces
 | [`name`](#nodebpy.nodes.geometry.geometry.SplitEdges.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SplitEdges.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SplitEdges.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SplitEdges.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SplitEdges.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5763,7 +5640,13 @@ Duplicate mesh edges and break connections with the surrounding faces
 ### SplitToInstances
 
 ``` python
-SplitToInstances(geometry=None, selection=True, group_id=0, *, domain='POINT')
+SplitToInstances(
+    geometry=None,
+    selection=None,
+    group_id=None,
+    *,
+    domain='POINT',
+)
 ```
 
 Create separate geometries containing the elements from the same group
@@ -5773,8 +5656,8 @@ Create separate geometries containing the elements from the same group
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | geometry  | InputGeometry | Geometry    | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
-| group_id  | InputInteger  | Group ID    | `0`     |
+| selection | InputBoolean  | Selection   | `None`  |
+| group_id  | InputInteger  | Group ID    | `None`  |
 
 #### Attributes
 
@@ -5785,7 +5668,6 @@ Create separate geometries containing the elements from the same group
 | [`name`](#nodebpy.nodes.geometry.geometry.SplitToInstances.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SplitToInstances.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SplitToInstances.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SplitToInstances.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SplitToInstances.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -5802,7 +5684,7 @@ Create separate geometries containing the elements from the same group
 ##### edge
 
 ``` python
-edge(geometry=None, selection=True, group_id=0)
+edge(geometry=None, selection=None, group_id=None)
 ```
 
 Create Split to Instances with operation ‘Edge’. Attribute on mesh edge
@@ -5810,7 +5692,7 @@ Create Split to Instances with operation ‘Edge’. Attribute on mesh edge
 ##### face
 
 ``` python
-face(geometry=None, selection=True, group_id=0)
+face(geometry=None, selection=None, group_id=None)
 ```
 
 Create Split to Instances with operation ‘Face’. Attribute on mesh faces
@@ -5818,7 +5700,7 @@ Create Split to Instances with operation ‘Face’. Attribute on mesh faces
 ##### instance
 
 ``` python
-instance(geometry=None, selection=True, group_id=0)
+instance(geometry=None, selection=None, group_id=None)
 ```
 
 Create Split to Instances with operation ‘Instance’. Attribute on instance
@@ -5826,7 +5708,7 @@ Create Split to Instances with operation ‘Instance’. Attribute on instance
 ##### layer
 
 ``` python
-layer(geometry=None, selection=True, group_id=0)
+layer(geometry=None, selection=None, group_id=None)
 ```
 
 Create Split to Instances with operation ‘Layer’. Attribute on Grease Pencil layer
@@ -5834,7 +5716,7 @@ Create Split to Instances with operation ‘Layer’. Attribute on Grease Pencil
 ##### point
 
 ``` python
-point(geometry=None, selection=True, group_id=0)
+point(geometry=None, selection=None, group_id=None)
 ```
 
 Create Split to Instances with operation ‘Point’. Attribute on point
@@ -5842,7 +5724,7 @@ Create Split to Instances with operation ‘Point’. Attribute on point
 ##### spline
 
 ``` python
-spline(geometry=None, selection=True, group_id=0)
+spline(geometry=None, selection=None, group_id=None)
 ```
 
 Create Split to Instances with operation ‘Spline’. Attribute on spline
@@ -5887,7 +5769,6 @@ Generate a poly spline in a star pattern by connecting alternating points of two
 | [`name`](#nodebpy.nodes.geometry.geometry.Star.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Star.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Star.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Star.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Star.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5952,7 +5833,6 @@ Generate a paragraph of text with a specific font, using a curve instance to sto
 | [`name`](#nodebpy.nodes.geometry.geometry.StringToCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.StringToCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.StringToCurves.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.StringToCurves.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.StringToCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6005,7 +5885,6 @@ Dividing each curve segment into a specified number of pieces
 | [`name`](#nodebpy.nodes.geometry.geometry.SubdivideCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SubdivideCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SubdivideCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SubdivideCurve.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SubdivideCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6044,7 +5923,6 @@ Divide mesh faces into smaller ones without changing the shape or volume, using 
 | [`name`](#nodebpy.nodes.geometry.geometry.SubdivideMesh.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SubdivideMesh.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SubdivideMesh.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SubdivideMesh.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SubdivideMesh.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6098,7 +5976,6 @@ Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision 
 | [`name`](#nodebpy.nodes.geometry.geometry.SubdivisionSurface.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.SubdivisionSurface.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.SubdivisionSurface.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.SubdivisionSurface.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.SubdivisionSurface.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6125,19 +6002,19 @@ Divide mesh faces to form a smooth surface, using the Catmull-Clark subdivision 
 ``` python
 TransferAttributes(
     target=None,
-    target_point_id=0,
-    target_edge_id=0,
-    target_face_id=0,
-    target_corner_id=0,
-    target_curve_id=0,
-    target_instance_id=0,
+    target_point_id=None,
+    target_edge_id=None,
+    target_face_id=None,
+    target_corner_id=None,
+    target_curve_id=None,
+    target_instance_id=None,
     source=None,
-    source_point_id=0,
-    source_edge_id=0,
-    source_face_id=0,
-    source_corner_id=0,
-    source_curve_id=0,
-    source_instance_id=0,
+    source_point_id=None,
+    source_edge_id=None,
+    source_face_id=None,
+    source_corner_id=None,
+    source_curve_id=None,
+    source_instance_id=None,
     pattern_mode='Wildcard',
     attribute_names=None,
     exclude_names=False,
@@ -6151,19 +6028,19 @@ Copy attributes from one geometry to another
 | Name | Type | Description | Default |
 |----|----|----|----|
 | target | InputGeometry | Target | `None` |
-| target_point_id | InputInteger | Target Point ID | `0` |
-| target_edge_id | InputInteger | Target Edge ID | `0` |
-| target_face_id | InputInteger | Target Face ID | `0` |
-| target_corner_id | InputInteger | Target Corner ID | `0` |
-| target_curve_id | InputInteger | Target Curve ID | `0` |
-| target_instance_id | InputInteger | Target Instance ID | `0` |
+| target_point_id | InputInteger | Target Point ID | `None` |
+| target_edge_id | InputInteger | Target Edge ID | `None` |
+| target_face_id | InputInteger | Target Face ID | `None` |
+| target_corner_id | InputInteger | Target Corner ID | `None` |
+| target_curve_id | InputInteger | Target Curve ID | `None` |
+| target_instance_id | InputInteger | Target Instance ID | `None` |
 | source | InputGeometry | Source | `None` |
-| source_point_id | InputInteger | Source Point ID | `0` |
-| source_edge_id | InputInteger | Source Edge ID | `0` |
-| source_face_id | InputInteger | Source Face ID | `0` |
-| source_corner_id | InputInteger | Source Corner ID | `0` |
-| source_curve_id | InputInteger | Source Curve ID | `0` |
-| source_instance_id | InputInteger | Source Instance ID | `0` |
+| source_point_id | InputInteger | Source Point ID | `None` |
+| source_edge_id | InputInteger | Source Edge ID | `None` |
+| source_face_id | InputInteger | Source Face ID | `None` |
+| source_corner_id | InputInteger | Source Corner ID | `None` |
+| source_curve_id | InputInteger | Source Curve ID | `None` |
+| source_instance_id | InputInteger | Source Instance ID | `None` |
 | pattern_mode | InputMenu \| Literal\['Exact', 'Wildcard'\] | Pattern Mode | `'Wildcard'` |
 | attribute_names | InputStringList | Attribute Names | `None` |
 | exclude_names | InputBoolean | Exclude Names | `False` |
@@ -6176,7 +6053,6 @@ Copy attributes from one geometry to another
 | [`name`](#nodebpy.nodes.geometry.geometry.TransferAttributes.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.TransferAttributes.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.TransferAttributes.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.TransferAttributes.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.TransferAttributes.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6242,7 +6118,6 @@ Translate, rotate or scale the geometry
 | [`name`](#nodebpy.nodes.geometry.geometry.TransformGeometry.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.TransformGeometry.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.TransformGeometry.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.TransformGeometry.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.TransformGeometry.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6267,7 +6142,7 @@ Translate, rotate or scale the geometry
 ``` python
 TranslateInstances(
     instances=None,
-    selection=True,
+    selection=None,
     translation=(0.0, 0.0, 0.0),
     local_space=True,
 )
@@ -6280,7 +6155,7 @@ Move top-level geometry instances in local or global space
 | Name        | Type          | Description | Default           |
 |-------------|---------------|-------------|-------------------|
 | instances   | InputGeometry | Instances   | `None`            |
-| selection   | InputBoolean  | Selection   | `True`            |
+| selection   | InputBoolean  | Selection   | `None`            |
 | translation | InputVector   | Translation | `(0.0, 0.0, 0.0)` |
 | local_space | InputBoolean  | Local Space | `True`            |
 
@@ -6292,7 +6167,6 @@ Move top-level geometry instances in local or global space
 | [`name`](#nodebpy.nodes.geometry.geometry.TranslateInstances.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.TranslateInstances.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.TranslateInstances.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.TranslateInstances.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.TranslateInstances.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6315,7 +6189,7 @@ Move top-level geometry instances in local or global space
 ``` python
 Triangulate(
     mesh=None,
-    selection=True,
+    selection=None,
     quad_method='Shortest Diagonal',
     n_gon_method='Beauty',
 )
@@ -6328,7 +6202,7 @@ Convert all faces in a mesh to triangular faces
 | Name | Type | Description | Default |
 |----|----|----|----|
 | mesh | InputGeometry | Mesh | `None` |
-| selection | InputBoolean | Selection | `True` |
+| selection | InputBoolean | Selection | `None` |
 | quad_method | InputMenu \| Literal\['Beauty', 'Fixed', 'Fixed Alternate', 'Shortest Diagonal', 'Longest Diagonal'\] | Quad Method | `'Shortest Diagonal'` |
 | n_gon_method | InputMenu \| Literal\['Beauty', 'Clip'\] | N-gon Method | `'Beauty'` |
 
@@ -6340,7 +6214,6 @@ Convert all faces in a mesh to triangular faces
 | [`name`](#nodebpy.nodes.geometry.geometry.Triangulate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.Triangulate.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.Triangulate.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.Triangulate.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.Triangulate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6363,7 +6236,7 @@ Convert all faces in a mesh to triangular faces
 ``` python
 TrimCurve(
     curve=None,
-    selection=True,
+    selection=None,
     start=0.0,
     end=1.0,
     start_001=0.0,
@@ -6380,7 +6253,7 @@ Shorten curves by removing portions at the start or end
 | Name      | Type          | Description | Default |
 |-----------|---------------|-------------|---------|
 | curve     | InputGeometry | Curve       | `None`  |
-| selection | InputBoolean  | Selection   | `True`  |
+| selection | InputBoolean  | Selection   | `None`  |
 | start     | InputFloat    | Start       | `0.0`   |
 | end       | InputFloat    | End         | `1.0`   |
 | start_001 | InputFloat    | Start       | `0.0`   |
@@ -6395,7 +6268,6 @@ Shorten curves by removing portions at the start or end
 | [`name`](#nodebpy.nodes.geometry.geometry.TrimCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.TrimCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.TrimCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.TrimCurve.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.TrimCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -6408,7 +6280,7 @@ Shorten curves by removing portions at the start or end
 ##### factor
 
 ``` python
-factor(curve=None, selection=True, start=0.0, end=1.0)
+factor(curve=None, selection=None, start=0.0, end=1.0)
 ```
 
 Create Trim Curve with operation ‘Factor’. Find the endpoint positions using a factor of each spline’s length
@@ -6416,7 +6288,7 @@ Create Trim Curve with operation ‘Factor’. Find the endpoint positions using
 ##### length
 
 ``` python
-length(curve=None, selection=True, start_001=0.0, end_001=1.0)
+length(curve=None, selection=None, start=0.0, end=1.0)
 ```
 
 Create Trim Curve with operation ‘Length’. Find the endpoint positions using a length from the start of each spline
@@ -6462,7 +6334,6 @@ Generate a spherical mesh with quads, except for triangles at the top and bottom
 | [`name`](#nodebpy.nodes.geometry.geometry.UVSphere.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.UVSphere.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.UVSphere.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.UVSphere.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.UVSphere.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6520,7 +6391,6 @@ Simulate physics using the XPBD framework
 | [`name`](#nodebpy.nodes.geometry.geometry.XpbdSolver.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.geometry.XpbdSolver.node) |  |
 | [`o`](#nodebpy.nodes.geometry.geometry.XpbdSolver.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.geometry.XpbdSolver.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.geometry.XpbdSolver.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

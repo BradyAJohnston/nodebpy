@@ -777,6 +777,7 @@ MaterialBuilder(
     arrange='sugiyama',
     fake_user=False,
     ignore_visibility=False,
+    clear=False,
 )
 ```
 

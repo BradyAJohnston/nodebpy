@@ -2,6 +2,12 @@
 
 `manual`
 
+## Attributes
+
+| Name                                            | Description |
+|-------------------------------------------------|-------------|
+| [`tree`](#nodebpy.nodes.compositor.manual.tree) |             |
+
 ## Classes
 
 | Name | Description |
@@ -25,7 +31,6 @@ Node builder for the Menu Switch node (Compositor tree)
 | [`name`](#nodebpy.nodes.compositor.manual.MenuSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.manual.MenuSwitch.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.manual.MenuSwitch.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.manual.MenuSwitch.tree) |  |
 
 #### Methods
@@ -149,23 +154,4 @@ string(menu=None, items=None)
 
 ``` python
 vector(menu=None, items=None)
-```
-
-## Functions
-
-| Name                                          | Description |
-|-----------------------------------------------|-------------|
-| [tree](#nodebpy.nodes.compositor.manual.tree) |             |
-
-### tree
-
-``` python
-tree(
-    name='Compositor Nodes',
-    *,
-    collapse=False,
-    arrange='sugiyama',
-    fake_user=False,
-    clear=False,
-)
 ```

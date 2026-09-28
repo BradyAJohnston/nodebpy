@@ -21,7 +21,7 @@
 
 ``` python
 BrickTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     color1=(0.8, 0.8, 0.8, 1.0),
     color2=(0.2, 0.2, 0.2, 1.0),
     mortar=(0.0, 0.0, 0.0, 1.0),
@@ -45,7 +45,7 @@ Generate a procedural texture producing bricks
 
 | Name          | Type        | Description   | Default                |
 |---------------|-------------|---------------|------------------------|
-| vector        | InputVector | Vector        | `(0.0, 0.0, 0.0)`      |
+| vector        | InputVector | Vector        | `None`                 |
 | color1        | InputColor  | Color1        | `(0.8, 0.8, 0.8, 1.0)` |
 | color2        | InputColor  | Color2        | `(0.2, 0.2, 0.2, 1.0)` |
 | mortar        | InputColor  | Mortar        | `(0.0, 0.0, 0.0, 1.0)` |
@@ -66,7 +66,6 @@ Generate a procedural texture producing bricks
 | [`o`](#nodebpy.nodes.geometry.texture.BrickTexture.o) |  |
 | [`offset`](#nodebpy.nodes.geometry.texture.BrickTexture.offset) |  |
 | [`offset_frequency`](#nodebpy.nodes.geometry.texture.BrickTexture.offset_frequency) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.BrickTexture.outputs) |  |
 | [`squash`](#nodebpy.nodes.geometry.texture.BrickTexture.squash) |  |
 | [`squash_frequency`](#nodebpy.nodes.geometry.texture.BrickTexture.squash_frequency) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.BrickTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -97,7 +96,7 @@ Generate a procedural texture producing bricks
 
 ``` python
 CheckerTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     color1=(0.8, 0.8, 0.8, 1.0),
     color2=(0.2, 0.2, 0.2, 1.0),
     scale=5.0,
@@ -110,7 +109,7 @@ Generate a checkerboard texture
 
 | Name   | Type        | Description | Default                |
 |--------|-------------|-------------|------------------------|
-| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)`      |
+| vector | InputVector | Vector      | `None`                 |
 | color1 | InputColor  | Color1      | `(0.8, 0.8, 0.8, 1.0)` |
 | color2 | InputColor  | Color2      | `(0.2, 0.2, 0.2, 1.0)` |
 | scale  | InputFloat  | Scale       | `5.0`                  |
@@ -123,7 +122,6 @@ Generate a checkerboard texture
 | [`name`](#nodebpy.nodes.geometry.texture.CheckerTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.CheckerTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.CheckerTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.CheckerTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.CheckerTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -146,7 +144,7 @@ Generate a checkerboard texture
 
 ``` python
 GaborTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     frequency=2.0,
     anisotropy=1.0,
@@ -163,7 +161,7 @@ Generate Gabor noise
 
 | Name           | Type        | Description | Default                       |
 |----------------|-------------|-------------|-------------------------------|
-| vector         | InputVector | Vector      | `(0.0, 0.0, 0.0)`             |
+| vector         | InputVector | Vector      | `None`                        |
 | scale          | InputFloat  | Scale       | `5.0`                         |
 | frequency      | InputFloat  | Frequency   | `2.0`                         |
 | anisotropy     | InputFloat  | Anisotropy  | `1.0`                         |
@@ -179,21 +177,20 @@ Generate Gabor noise
 | [`name`](#nodebpy.nodes.geometry.texture.GaborTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.GaborTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.GaborTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.GaborTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.GaborTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
 
 | Name | Description |
 |----|----|
-| [input_2d](#nodebpy.nodes.geometry.texture.GaborTexture.input_2d) | Create Gabor Texture with operation ‘2D’. Use the 2D vector (X, Y) as input. The Z component is ignored. |
-| [input_3d](#nodebpy.nodes.geometry.texture.GaborTexture.input_3d) | Create Gabor Texture with operation ‘3D’. Use the 3D vector (X, Y, Z) as input |
+| [type_2d](#nodebpy.nodes.geometry.texture.GaborTexture.type_2d) | Create Gabor Texture with operation ‘2D’. Use the 2D vector (X, Y) as input. The Z component is ignored. |
+| [type_3d](#nodebpy.nodes.geometry.texture.GaborTexture.type_3d) | Create Gabor Texture with operation ‘3D’. Use the 3D vector (X, Y, Z) as input |
 
-##### input_2d
+##### type_2d
 
 ``` python
-input_2d(
-    vector=(0.0, 0.0, 0.0),
+type_2d(
+    vector=None,
     scale=5.0,
     frequency=2.0,
     anisotropy=1.0,
@@ -203,11 +200,11 @@ input_2d(
 
 Create Gabor Texture with operation ‘2D’. Use the 2D vector (X, Y) as input. The Z component is ignored.
 
-##### input_3d
+##### type_3d
 
 ``` python
-input_3d(
-    vector=(0.0, 0.0, 0.0),
+type_3d(
+    vector=None,
     scale=5.0,
     frequency=2.0,
     anisotropy=1.0,
@@ -239,16 +236,16 @@ Create Gabor Texture with operation ‘3D’. Use the 3D vector (X, Y, Z) as inp
 ### GradientTexture
 
 ``` python
-GradientTexture(vector=(0.0, 0.0, 0.0), *, gradient_type='LINEAR')
+GradientTexture(vector=None, *, gradient_type='LINEAR')
 ```
 
 Generate interpolated color and intensity values based on the input vector
 
 #### Parameters
 
-| Name   | Type        | Description | Default           |
-|--------|-------------|-------------|-------------------|
-| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| vector | InputVector | Vector      | `None`  |
 
 #### Attributes
 
@@ -259,7 +256,6 @@ Generate interpolated color and intensity values based on the input vector
 | [`name`](#nodebpy.nodes.geometry.texture.GradientTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.GradientTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.GradientTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.GradientTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.GradientTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -277,7 +273,7 @@ Generate interpolated color and intensity values based on the input vector
 ##### diagonal
 
 ``` python
-diagonal(vector=(0.0, 0.0, 0.0))
+diagonal(vector=None)
 ```
 
 Create Gradient Texture with operation ‘Diagonal’. Create a diagonal progression
@@ -285,7 +281,7 @@ Create Gradient Texture with operation ‘Diagonal’. Create a diagonal progres
 ##### easing
 
 ``` python
-easing(vector=(0.0, 0.0, 0.0))
+easing(vector=None)
 ```
 
 Create Gradient Texture with operation ‘Easing’. Create a progression easing from one step to the next
@@ -293,7 +289,7 @@ Create Gradient Texture with operation ‘Easing’. Create a progression easing
 ##### linear
 
 ``` python
-linear(vector=(0.0, 0.0, 0.0))
+linear(vector=None)
 ```
 
 Create Gradient Texture with operation ‘Linear’. Create a linear progression
@@ -301,7 +297,7 @@ Create Gradient Texture with operation ‘Linear’. Create a linear progression
 ##### quadratic
 
 ``` python
-quadratic(vector=(0.0, 0.0, 0.0))
+quadratic(vector=None)
 ```
 
 Create Gradient Texture with operation ‘Quadratic’. Create a quadratic progression
@@ -309,7 +305,7 @@ Create Gradient Texture with operation ‘Quadratic’. Create a quadratic progr
 ##### quadratic_sphere
 
 ``` python
-quadratic_sphere(vector=(0.0, 0.0, 0.0))
+quadratic_sphere(vector=None)
 ```
 
 Create Gradient Texture with operation ‘Quadratic Sphere’. Create a quadratic progression in the shape of a sphere
@@ -317,7 +313,7 @@ Create Gradient Texture with operation ‘Quadratic Sphere’. Create a quadrati
 ##### radial
 
 ``` python
-radial(vector=(0.0, 0.0, 0.0))
+radial(vector=None)
 ```
 
 Create Gradient Texture with operation ‘Radial’. Create a radial progression
@@ -325,7 +321,7 @@ Create Gradient Texture with operation ‘Radial’. Create a radial progression
 ##### spherical
 
 ``` python
-spherical(vector=(0.0, 0.0, 0.0))
+spherical(vector=None)
 ```
 
 Create Gradient Texture with operation ‘Spherical’. Create a spherical progression
@@ -348,7 +344,7 @@ Create Gradient Texture with operation ‘Spherical’. Create a spherical progr
 ``` python
 ImageTexture(
     image=None,
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     frame=0,
     *,
     interpolation='Linear',
@@ -360,11 +356,11 @@ Sample values from an image texture
 
 #### Parameters
 
-| Name   | Type         | Description | Default           |
-|--------|--------------|-------------|-------------------|
-| image  | InputImage   | Image       | `None`            |
-| vector | InputVector  | Vector      | `(0.0, 0.0, 0.0)` |
-| frame  | InputInteger | Frame       | `0`               |
+| Name   | Type         | Description | Default |
+|--------|--------------|-------------|---------|
+| image  | InputImage   | Image       | `None`  |
+| vector | InputVector  | Vector      | `None`  |
+| frame  | InputInteger | Frame       | `0`     |
 
 #### Attributes
 
@@ -376,7 +372,6 @@ Sample values from an image texture
 | [`name`](#nodebpy.nodes.geometry.texture.ImageTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.ImageTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.ImageTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.ImageTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.ImageTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -397,24 +392,18 @@ Sample values from an image texture
 ### MagicTexture
 
 ``` python
-MagicTexture(
-    vector=(0.0, 0.0, 0.0),
-    scale=5.0,
-    distortion=1.0,
-    *,
-    turbulence_depth=0,
-)
+MagicTexture(vector=None, scale=5.0, distortion=1.0, *, turbulence_depth=0)
 ```
 
 Generate a psychedelic color texture
 
 #### Parameters
 
-| Name       | Type        | Description | Default           |
-|------------|-------------|-------------|-------------------|
-| vector     | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
-| scale      | InputFloat  | Scale       | `5.0`             |
-| distortion | InputFloat  | Distortion  | `1.0`             |
+| Name       | Type        | Description | Default |
+|------------|-------------|-------------|---------|
+| vector     | InputVector | Vector      | `None`  |
+| scale      | InputFloat  | Scale       | `5.0`   |
+| distortion | InputFloat  | Distortion  | `1.0`   |
 
 #### Attributes
 
@@ -424,7 +413,6 @@ Generate a psychedelic color texture
 | [`name`](#nodebpy.nodes.geometry.texture.MagicTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.MagicTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.MagicTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.MagicTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.MagicTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`turbulence_depth`](#nodebpy.nodes.geometry.texture.MagicTexture.turbulence_depth) |  |
 
@@ -447,7 +435,7 @@ Generate a psychedelic color texture
 
 ``` python
 NoiseTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     w=0.0,
     scale=5.0,
     detail=2.0,
@@ -467,17 +455,17 @@ Generate fractal Perlin noise
 
 #### Parameters
 
-| Name       | Type        | Description | Default           |
-|------------|-------------|-------------|-------------------|
-| vector     | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
-| w          | InputFloat  | W           | `0.0`             |
-| scale      | InputFloat  | Scale       | `5.0`             |
-| detail     | InputFloat  | Detail      | `2.0`             |
-| roughness  | InputFloat  | Roughness   | `0.5`             |
-| lacunarity | InputFloat  | Lacunarity  | `2.0`             |
-| offset     | InputFloat  | Offset      | `0.0`             |
-| gain       | InputFloat  | Gain        | `1.0`             |
-| distortion | InputFloat  | Distortion  | `0.0`             |
+| Name       | Type        | Description | Default |
+|------------|-------------|-------------|---------|
+| vector     | InputVector | Vector      | `None`  |
+| w          | InputFloat  | W           | `0.0`   |
+| scale      | InputFloat  | Scale       | `5.0`   |
+| detail     | InputFloat  | Detail      | `2.0`   |
+| roughness  | InputFloat  | Roughness   | `0.5`   |
+| lacunarity | InputFloat  | Lacunarity  | `2.0`   |
+| offset     | InputFloat  | Offset      | `0.0`   |
+| gain       | InputFloat  | Gain        | `1.0`   |
+| distortion | InputFloat  | Distortion  | `0.0`   |
 
 #### Attributes
 
@@ -490,7 +478,6 @@ Generate fractal Perlin noise
 | [`noise_type`](#nodebpy.nodes.geometry.texture.NoiseTexture.noise_type) |  |
 | [`normalize`](#nodebpy.nodes.geometry.texture.NoiseTexture.normalize) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.NoiseTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.NoiseTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.NoiseTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -507,12 +494,15 @@ Generate fractal Perlin noise
 
 ``` python
 fbm(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     detail=2.0,
     roughness=0.5,
     lacunarity=2.0,
     distortion=0.0,
+    *,
+    noise_dimensions='3D',
+    normalize=False,
 )
 ```
 
@@ -522,13 +512,15 @@ Create Noise Texture with operation ‘fBM’. The standard fractal Perlin noise
 
 ``` python
 hetero_terrain(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     detail=2.0,
     roughness=0.5,
     lacunarity=2.0,
     offset=0.0,
     distortion=0.0,
+    *,
+    noise_dimensions='3D',
 )
 ```
 
@@ -538,7 +530,7 @@ Create Noise Texture with operation ‘Hetero Terrain’. Similar to Hybrid Mult
 
 ``` python
 hybrid_multifractal(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     detail=2.0,
     roughness=0.5,
@@ -546,6 +538,8 @@ hybrid_multifractal(
     offset=0.0,
     gain=1.0,
     distortion=0.0,
+    *,
+    noise_dimensions='3D',
 )
 ```
 
@@ -555,12 +549,14 @@ Create Noise Texture with operation ‘Hybrid Multifractal’. Create peaks and 
 
 ``` python
 multifractal(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     detail=2.0,
     roughness=0.5,
     lacunarity=2.0,
     distortion=0.0,
+    *,
+    noise_dimensions='3D',
 )
 ```
 
@@ -570,7 +566,7 @@ Create Noise Texture with operation ‘Multifractal’. More uneven result (vari
 
 ``` python
 ridged_multifractal(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     detail=2.0,
     roughness=0.5,
@@ -578,6 +574,8 @@ ridged_multifractal(
     offset=0.0,
     gain=1.0,
     distortion=0.0,
+    *,
+    noise_dimensions='3D',
 )
 ```
 
@@ -608,7 +606,7 @@ Create Noise Texture with operation ‘Ridged Multifractal’. Create sharp peak
 
 ``` python
 VoronoiTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     w=0.0,
     scale=5.0,
     detail=0.0,
@@ -629,17 +627,17 @@ Generate Worley noise based on the distance to random points. Typically used to 
 
 #### Parameters
 
-| Name       | Type        | Description | Default           |
-|------------|-------------|-------------|-------------------|
-| vector     | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
-| w          | InputFloat  | W           | `0.0`             |
-| scale      | InputFloat  | Scale       | `5.0`             |
-| detail     | InputFloat  | Detail      | `0.0`             |
-| roughness  | InputFloat  | Roughness   | `0.5`             |
-| lacunarity | InputFloat  | Lacunarity  | `2.0`             |
-| smoothness | InputFloat  | Smoothness  | `1.0`             |
-| exponent   | InputFloat  | Exponent    | `0.5`             |
-| randomness | InputFloat  | Randomness  | `1.0`             |
+| Name       | Type        | Description | Default |
+|------------|-------------|-------------|---------|
+| vector     | InputVector | Vector      | `None`  |
+| w          | InputFloat  | W           | `0.0`   |
+| scale      | InputFloat  | Scale       | `5.0`   |
+| detail     | InputFloat  | Detail      | `0.0`   |
+| roughness  | InputFloat  | Roughness   | `0.5`   |
+| lacunarity | InputFloat  | Lacunarity  | `2.0`   |
+| smoothness | InputFloat  | Smoothness  | `1.0`   |
+| exponent   | InputFloat  | Exponent    | `0.5`   |
+| randomness | InputFloat  | Randomness  | `1.0`   |
 
 #### Attributes
 
@@ -652,7 +650,6 @@ Generate Worley noise based on the distance to random points. Typically used to 
 | [`node`](#nodebpy.nodes.geometry.texture.VoronoiTexture.node) |  |
 | [`normalize`](#nodebpy.nodes.geometry.texture.VoronoiTexture.normalize) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.VoronoiTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.VoronoiTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.VoronoiTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`voronoi_dimensions`](#nodebpy.nodes.geometry.texture.VoronoiTexture.voronoi_dimensions) |  |
 
@@ -684,7 +681,7 @@ Generate Worley noise based on the distance to random points. Typically used to 
 
 ``` python
 WaveTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     distortion=0.0,
     detail=2.0,
@@ -703,15 +700,15 @@ Generate procedural bands or rings with noise
 
 #### Parameters
 
-| Name             | Type        | Description      | Default           |
-|------------------|-------------|------------------|-------------------|
-| vector           | InputVector | Vector           | `(0.0, 0.0, 0.0)` |
-| scale            | InputFloat  | Scale            | `5.0`             |
-| distortion       | InputFloat  | Distortion       | `0.0`             |
-| detail           | InputFloat  | Detail           | `2.0`             |
-| detail_scale     | InputFloat  | Detail Scale     | `1.0`             |
-| detail_roughness | InputFloat  | Detail Roughness | `0.5`             |
-| phase_offset     | InputFloat  | Phase Offset     | `0.0`             |
+| Name             | Type        | Description      | Default |
+|------------------|-------------|------------------|---------|
+| vector           | InputVector | Vector           | `None`  |
+| scale            | InputFloat  | Scale            | `5.0`   |
+| distortion       | InputFloat  | Distortion       | `0.0`   |
+| detail           | InputFloat  | Detail           | `2.0`   |
+| detail_scale     | InputFloat  | Detail Scale     | `1.0`   |
+| detail_roughness | InputFloat  | Detail Roughness | `0.5`   |
+| phase_offset     | InputFloat  | Phase Offset     | `0.0`   |
 
 #### Attributes
 
@@ -722,7 +719,6 @@ Generate procedural bands or rings with noise
 | [`name`](#nodebpy.nodes.geometry.texture.WaveTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.texture.WaveTexture.node) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.WaveTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.WaveTexture.outputs) |  |
 | [`rings_direction`](#nodebpy.nodes.geometry.texture.WaveTexture.rings_direction) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.WaveTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`wave_profile`](#nodebpy.nodes.geometry.texture.WaveTexture.wave_profile) |  |
@@ -739,13 +735,16 @@ Generate procedural bands or rings with noise
 
 ``` python
 bands(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     distortion=0.0,
     detail=2.0,
     detail_scale=1.0,
     detail_roughness=0.5,
     phase_offset=0.0,
+    *,
+    bands_direction='X',
+    wave_profile='SIN',
 )
 ```
 
@@ -755,13 +754,16 @@ Create Wave Texture with operation ‘Bands’. Use standard wave texture in ban
 
 ``` python
 rings(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     scale=5.0,
     distortion=0.0,
     detail=2.0,
     detail_scale=1.0,
     detail_roughness=0.5,
     phase_offset=0.0,
+    *,
+    rings_direction='X',
+    wave_profile='SIN',
 )
 ```
 
@@ -789,17 +791,17 @@ Create Wave Texture with operation ‘Rings’. Use wave texture in rings
 ### WhiteNoiseTexture
 
 ``` python
-WhiteNoiseTexture(vector=(0.0, 0.0, 0.0), w=0.0, *, noise_dimensions='3D')
+WhiteNoiseTexture(vector=None, w=0.0, *, noise_dimensions='3D')
 ```
 
 Calculate a random value or color based on an input seed
 
 #### Parameters
 
-| Name   | Type        | Description | Default           |
-|--------|-------------|-------------|-------------------|
-| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
-| w      | InputFloat  | W           | `0.0`             |
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| vector | InputVector | Vector      | `None`  |
+| w      | InputFloat  | W           | `0.0`   |
 
 #### Attributes
 
@@ -810,7 +812,6 @@ Calculate a random value or color based on an input seed
 | [`node`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.node) |  |
 | [`noise_dimensions`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.noise_dimensions) |  |
 | [`o`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.texture.WhiteNoiseTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

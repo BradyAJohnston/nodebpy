@@ -56,7 +56,6 @@ Calculate statistics about a data set from a field evaluated on a geometry
 | [`name`](#nodebpy.nodes.geometry.manual.AttributeStatistic.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.AttributeStatistic.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.AttributeStatistic.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.AttributeStatistic.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.AttributeStatistic.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.AttributeStatistic.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.AttributeStatistic.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -85,7 +84,6 @@ Store the result of a field on a geometry and output the data as a node socket. 
 | [`name`](#nodebpy.nodes.geometry.manual.CaptureAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.CaptureAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.CaptureAttribute.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.CaptureAttribute.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.CaptureAttribute.point) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.CaptureAttribute.tree) |  |
 
@@ -133,8 +131,8 @@ The item is auto-named after the source socket unless `name` is given.
 ColorRamp(
     fac=0.5,
     *,
-    items=(),
-    color_interpolation='EASE',
+    items=_COLOR_RAMP_DEFAULT_ITEMS,
+    color_interpolation='LINEAR',
     hue_interpolation='NEAR',
     mode='RGB',
 )
@@ -147,7 +145,7 @@ Map values to colors with the use of a gradient
 | Name | Type | Description | Default |
 |----|----|----|----|
 | fac | InputFloat | Factor: Which is used to sample the ColorRamp for the output color. | `0.5` |
-| items | Iterable\[tuple\[float, tuple\[float, float, float float\]\]\] | Iterable of items which contain (position, color) which position being a 4-component float for values RGBA. Position is a value betwen `0..1`. | `()` |
+| items | Iterable\[tuple\[float, tuple\[float, float, float float\]\] \| tuple\[float, float, float, float, float\]\] | Iterable of items which contain (position, color) which position being a 4-component float for values RGBA. Position is a value betwen `0..1`. Items can also be flat `(position, r, g, b, a)`, so an `(N, 5)` numpy array works. Defaults to black at 0.0 and white at 1.0. At least one item is required. | `_COLOR_RAMP_DEFAULT_ITEMS` |
 
 #### Attributes
 
@@ -161,7 +159,6 @@ Map values to colors with the use of a gradient
 | [`name`](#nodebpy.nodes.geometry.manual.ColorRamp.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.ColorRamp.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.ColorRamp.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.ColorRamp.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.ColorRamp.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -204,7 +201,6 @@ Perform a comparison operation on the two given inputs
 | [`o`](#nodebpy.nodes.geometry.manual.Compare.o) |  |
 | [`object`](#nodebpy.nodes.geometry.manual.Compare.object) |  |
 | [`operation`](#nodebpy.nodes.geometry.manual.Compare.operation) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.Compare.outputs) |  |
 | [`sound`](#nodebpy.nodes.geometry.manual.Compare.sound) |  |
 | [`string`](#nodebpy.nodes.geometry.manual.Compare.string) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.Compare.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -289,7 +285,6 @@ topology: InputLinkable The grid which contains the topology to evaluate the dif
 | [`name`](#nodebpy.nodes.geometry.manual.FieldToGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FieldToGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FieldToGrid.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.manual.FieldToGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.FieldToGrid.tree) |  |
 
 #### Methods
@@ -410,14 +405,13 @@ Input numerical values to other nodes in the tree. A ‘type-hinted’ wrapper o
 | [`name`](#nodebpy.nodes.geometry.manual.Float.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Float.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Float.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.Float.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.Float.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`value`](#nodebpy.nodes.geometry.manual.Float.value) | Input socket: Value |
 
 ### FloatCurve
 
 ``` python
-FloatCurve(factor=1.0, value=1.0, *, items=())
+FloatCurve(factor=1.0, value=1.0, *, items=_FLOAT_CURVE_DEFAULT_ITEMS)
 ```
 
 Map an input float to a curve and outputs a float value
@@ -428,7 +422,7 @@ Map an input float to a curve and outputs a float value
 |----|----|----|----|
 | factor | InputFloat | Factor | `1.0` |
 | value | InputFloat | Value | `1.0` |
-| items | Iterable\[tuple\[float, float\] \| tuple\[float, float, Literal\['AUTO', 'AUTO_CLAMPED', 'VECTOR'\]\]\] | An iterable which contains items `(x, y, Optional[handle_type])`. The position values are between `0..1` and map the input `value` to the output `value` from the resulting curve interpolation. | `()` |
+| items | Iterable\[tuple\[float, float\] \| tuple\[float, float, Literal\['AUTO', 'AUTO_CLAMPED', 'VECTOR'\]\]\] | An iterable which contains items `(x, y, Optional[handle_type])`. The position values are between `0..1` and map the input `value` to the output `value` from the resulting curve interpolation. Defaults to a straight line from `(0, 0)` to `(1, 1)`. At least two items are required. | `_FLOAT_CURVE_DEFAULT_ITEMS` |
 
 #### Attributes
 
@@ -438,7 +432,6 @@ Map an input float to a curve and outputs a float value
 | [`name`](#nodebpy.nodes.geometry.manual.FloatCurve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.FloatCurve.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.FloatCurve.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.FloatCurve.outputs) |  |
 | [`points`](#nodebpy.nodes.geometry.manual.FloatCurve.points) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.FloatCurve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -472,7 +465,6 @@ Frame for visually grouping nodes in the editor.
 | [`name`](#nodebpy.nodes.geometry.manual.Frame.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Frame.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Frame.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.manual.Frame.outputs) |  |
 | [`shrink`](#nodebpy.nodes.geometry.manual.Frame.shrink) |  |
 | [`text`](#nodebpy.nodes.geometry.manual.Frame.text) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.Frame.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -493,7 +485,6 @@ Convert each input geometry into an instance, which can be much faster than the 
 | [`name`](#nodebpy.nodes.geometry.manual.GeometryToInstance.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.GeometryToInstance.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.GeometryToInstance.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.GeometryToInstance.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.GeometryToInstance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -525,7 +516,6 @@ Node builder for the Index Switch node
 | [`name`](#nodebpy.nodes.geometry.manual.IndexSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.IndexSwitch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.IndexSwitch.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.IndexSwitch.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.IndexSwitch.tree) |  |
 
 #### Methods
@@ -708,7 +698,6 @@ Merge separately generated geometries into a single one
 | [`name`](#nodebpy.nodes.geometry.manual.JoinGeometry.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.JoinGeometry.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.JoinGeometry.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.JoinGeometry.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.JoinGeometry.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### JoinStrings
@@ -727,7 +716,6 @@ Combine any number of input strings
 | [`name`](#nodebpy.nodes.geometry.manual.JoinStrings.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.JoinStrings.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.JoinStrings.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.JoinStrings.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.JoinStrings.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### MenuSwitch
@@ -747,7 +735,6 @@ Node builder for the Menu Switch node
 | [`name`](#nodebpy.nodes.geometry.manual.MenuSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.MenuSwitch.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.MenuSwitch.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.MenuSwitch.tree) |  |
 
 #### Methods
@@ -975,7 +962,6 @@ Cut, subtract, or join multiple mesh inputs
 | [`node`](#nodebpy.nodes.geometry.manual.MeshBoolean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.MeshBoolean.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.manual.MeshBoolean.operation) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.MeshBoolean.outputs) |  |
 | [`solver`](#nodebpy.nodes.geometry.manual.MeshBoolean.solver) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.MeshBoolean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -1035,7 +1021,6 @@ Cut, subtract, or join multiple SDF volume grid inputs
 | [`node`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.operation) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.SDFGridBoolean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1106,7 +1091,6 @@ Store the result of a field on a geometry as an attribute with the specified nam
 | [`name`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.StoreNamedAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -1142,6 +1126,5 @@ Input numerical values to other nodes in the tree
 | [`name`](#nodebpy.nodes.geometry.manual.Value.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.manual.Value.node) |  |
 | [`o`](#nodebpy.nodes.geometry.manual.Value.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.manual.Value.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.manual.Value.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`value`](#nodebpy.nodes.geometry.manual.Value.value) | Input socket: Value |

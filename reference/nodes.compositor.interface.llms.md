@@ -11,7 +11,7 @@
 ### EnableOutput
 
 ``` python
-EnableOutput(enable=False, value=0.0, *, data_type='FLOAT')
+EnableOutput(enable=False, value=None, *, data_type='FLOAT')
 ```
 
 Either pass through the input value or output the fallback value
@@ -21,7 +21,7 @@ Either pass through the input value or output the fallback value
 | Name   | Type         | Description | Default |
 |--------|--------------|-------------|---------|
 | enable | InputBoolean | Enable      | `False` |
-| value  | InputFloat   | Value       | `0.0`   |
+| value  | InputFloat   | Value       | `None`  |
 
 #### Attributes
 
@@ -32,7 +32,6 @@ Either pass through the input value or output the fallback value
 | [`name`](#nodebpy.nodes.compositor.interface.EnableOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.interface.EnableOutput.node) |  |
 | [`o`](#nodebpy.nodes.compositor.interface.EnableOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.interface.EnableOutput.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.interface.EnableOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -55,7 +54,7 @@ Either pass through the input value or output the fallback value
 ##### boolean
 
 ``` python
-boolean(enable=False, value=False)
+boolean(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘Boolean’.
@@ -63,7 +62,7 @@ Create Enable Output with operation ‘Boolean’.
 ##### color
 
 ``` python
-color(enable=False, value=(0.8, 0.8, 0.8, 1.0))
+color(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘Color’.
@@ -71,7 +70,7 @@ Create Enable Output with operation ‘Color’.
 ##### float
 
 ``` python
-float(enable=False, value=0.0)
+float(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘Float’.
@@ -87,7 +86,7 @@ Create Enable Output with operation ‘Font’.
 ##### integer
 
 ``` python
-integer(enable=False, value=0)
+integer(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘Integer’.
@@ -95,7 +94,7 @@ Create Enable Output with operation ‘Integer’.
 ##### integer_vector
 
 ``` python
-integer_vector(enable=False, value=(0, 0, 0))
+integer_vector(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘Integer Vector’.
@@ -127,7 +126,7 @@ Create Enable Output with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(enable=False, value=(0.0, 0.0, 0.0))
+rotation(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘Rotation’.
@@ -135,7 +134,7 @@ Create Enable Output with operation ‘Rotation’.
 ##### string
 
 ``` python
-string(enable=False, value='')
+string(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘String’.
@@ -143,7 +142,7 @@ Create Enable Output with operation ‘String’.
 ##### vector
 
 ``` python
-vector(enable=False, value=(0.0, 0.0, 0.0))
+vector(enable=False, value=None)
 ```
 
 Create Enable Output with operation ‘Vector’.

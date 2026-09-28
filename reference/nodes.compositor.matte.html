@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.29.0</span>
+    <span class="navbar-title">nodebpy 520.30.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -937,10 +937,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.BoxMask.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.BoxMask.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1010,7 +1006,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.matte.ChannelKey" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.ChannelKey">ChannelKey</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ChannelKey(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    minimum<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    color_space<span class="op">=</span><span class="st">'RGB'</span>,</span>
@@ -1029,10 +1025,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 16%">
-<col style="width: 48%">
-<col style="width: 16%">
 <col style="width: 18%">
+<col style="width: 53%">
+<col style="width: 18%">
+<col style="width: 9%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1047,7 +1043,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>minimum</td>
@@ -1151,10 +1147,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ChannelKey.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1264,7 +1256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.matte.ChromaKey" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.ChromaKey">ChromaKey</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ChromaKey(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    key_color<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    minimum<span class="op">=</span><span class="fl">0.17453292</span>,</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    maximum<span class="op">=</span>math.pi <span class="op">/</span> <span class="dv">6</span>,</span>
@@ -1287,7 +1279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>key_color</td>
@@ -1343,10 +1335,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ChromaKey.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1416,7 +1404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.matte.ColorKey" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.ColorKey">ColorKey</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ColorKey(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    key_color<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="fl">0.01</span>,</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -1439,7 +1427,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>key_color</td>
@@ -1495,10 +1483,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorKey.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorKey.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1674,10 +1658,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.ColorSpill.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1829,10 +1809,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DifferenceKey.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1897,7 +1873,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.matte.DistanceKey" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.DistanceKey">DistanceKey</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>DistanceKey(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    key_color<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    color_space<span class="op">=</span><span class="st">'RGB'</span>,</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    tolerance<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -1926,7 +1902,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>key_color</td>
@@ -1982,10 +1958,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DistanceKey.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2127,10 +2099,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.DoubleEdgeMask.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2282,10 +2250,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.EllipseMask.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2355,7 +2319,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.matte.Keying" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.Keying">Keying</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Keying(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    key_color<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    preprocess_blur_size<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    key_balance<span class="op">=</span><span class="fl">0.5</span>,</span>
@@ -2395,7 +2359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(0.8, 0.8, 0.8, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>key_color</td>
@@ -2517,10 +2481,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.Keying.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.Keying.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2699,14 +2659,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.tracking_object"><code>tracking_object</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.KeyingScreen.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2750,7 +2706,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.matte.LuminanceKey" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.matte.LuminanceKey">LuminanceKey</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>LuminanceKey(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), minimum<span class="op">=</span><span class="fl">0.0</span>, maximum<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>LuminanceKey(image<span class="op">=</span><span class="va">None</span>, minimum<span class="op">=</span><span class="fl">0.0</span>, maximum<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create a matte based on luminance (brightness) difference</p>
 <section id="parameters-11" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-11">Parameters</h4>
@@ -2768,7 +2724,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>minimum</td>
@@ -2812,10 +2768,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.matte.LuminanceKey.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>

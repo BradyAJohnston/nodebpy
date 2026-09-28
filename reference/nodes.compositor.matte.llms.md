@@ -53,7 +53,6 @@ Create rectangular mask suitable for use as a simple matte
 | [`name`](#nodebpy.nodes.compositor.matte.BoxMask.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.BoxMask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.BoxMask.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.BoxMask.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.BoxMask.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -77,7 +76,7 @@ Create rectangular mask suitable for use as a simple matte
 
 ``` python
 ChannelKey(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     minimum=0.0,
     maximum=1.0,
     color_space='RGB',
@@ -99,7 +98,7 @@ Create matte based on differences in color channels
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | minimum | InputFloat | Minimum | `0.0` |
 | maximum | InputFloat | Maximum | `1.0` |
 | color_space | InputMenu \| Literal\['RGB', 'HSV', 'YUV', 'YCbCr'\] | Color Space | `'RGB'` |
@@ -121,7 +120,6 @@ Create matte based on differences in color channels
 | [`name`](#nodebpy.nodes.compositor.matte.ChannelKey.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.ChannelKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.ChannelKey.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.ChannelKey.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.ChannelKey.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -153,7 +151,7 @@ Create matte based on differences in color channels
 
 ``` python
 ChromaKey(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     key_color=(1.0, 1.0, 1.0, 1.0),
     minimum=0.17453292,
     maximum=math.pi / 6,
@@ -167,7 +165,7 @@ Create matte based on chroma values
 
 | Name      | Type       | Description | Default                |
 |-----------|------------|-------------|------------------------|
-| image     | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| image     | InputColor | Image       | `None`                 |
 | key_color | InputColor | Key Color   | `(1.0, 1.0, 1.0, 1.0)` |
 | minimum   | InputFloat | Minimum     | `0.17453292`           |
 | maximum   | InputFloat | Maximum     | `math.pi / 6`          |
@@ -181,7 +179,6 @@ Create matte based on chroma values
 | [`name`](#nodebpy.nodes.compositor.matte.ChromaKey.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.ChromaKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.ChromaKey.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.ChromaKey.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.ChromaKey.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -205,7 +202,7 @@ Create matte based on chroma values
 
 ``` python
 ColorKey(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     key_color=(1.0, 1.0, 1.0, 1.0),
     hue=0.01,
     saturation=0.1,
@@ -219,7 +216,7 @@ Create matte using a given color, for green or blue screen footage
 
 | Name       | Type       | Description | Default                |
 |------------|------------|-------------|------------------------|
-| image      | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| image      | InputColor | Image       | `None`                 |
 | key_color  | InputColor | Key Color   | `(1.0, 1.0, 1.0, 1.0)` |
 | hue        | InputFloat | Hue         | `0.01`                 |
 | saturation | InputFloat | Saturation  | `0.1`                  |
@@ -233,7 +230,6 @@ Create matte using a given color, for green or blue screen footage
 | [`name`](#nodebpy.nodes.compositor.matte.ColorKey.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.ColorKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.ColorKey.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.ColorKey.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.ColorKey.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -291,7 +287,6 @@ Remove colors from a blue or green screen, by reducing one RGB channel compared 
 | [`name`](#nodebpy.nodes.compositor.matte.ColorSpill.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.ColorSpill.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.ColorSpill.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.ColorSpill.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.ColorSpill.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -343,7 +338,6 @@ Produce a matte that isolates foreground content by comparing it with a referenc
 | [`name`](#nodebpy.nodes.compositor.matte.DifferenceKey.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.DifferenceKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.DifferenceKey.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.DifferenceKey.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.DifferenceKey.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -366,7 +360,7 @@ Produce a matte that isolates foreground content by comparing it with a referenc
 
 ``` python
 DistanceKey(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     key_color=(1.0, 1.0, 1.0, 1.0),
     color_space='RGB',
     tolerance=0.1,
@@ -380,7 +374,7 @@ Create matte based on 3D distance between colors
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | key_color | InputColor | Key Color | `(1.0, 1.0, 1.0, 1.0)` |
 | color_space | InputMenu \| Literal\['RGB', 'YCC'\] | Color Space | `'RGB'` |
 | tolerance | InputFloat | Tolerance | `0.1` |
@@ -394,7 +388,6 @@ Create matte based on 3D distance between colors
 | [`name`](#nodebpy.nodes.compositor.matte.DistanceKey.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.DistanceKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.DistanceKey.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.DistanceKey.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.DistanceKey.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -444,7 +437,6 @@ Create a gradient between two masks
 | [`name`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.DoubleEdgeMask.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -496,7 +488,6 @@ Create elliptical mask suitable for use as a simple matte or vignette mask
 | [`name`](#nodebpy.nodes.compositor.matte.EllipseMask.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.EllipseMask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.EllipseMask.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.EllipseMask.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.EllipseMask.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -520,7 +511,7 @@ Create elliptical mask suitable for use as a simple matte or vignette mask
 
 ``` python
 Keying(
-    image=(0.8, 0.8, 0.8, 1.0),
+    image=None,
     key_color=(1.0, 1.0, 1.0, 1.0),
     preprocess_blur_size=0,
     key_balance=0.5,
@@ -545,7 +536,7 @@ Perform both chroma keying (to remove the backdrop) and despill (to correct colo
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
+| image | InputColor | Image | `None` |
 | key_color | InputColor | Key Color | `(1.0, 1.0, 1.0, 1.0)` |
 | preprocess_blur_size | InputInteger | Blur Size | `0` |
 | key_balance | InputFloat | Balance | `0.5` |
@@ -570,7 +561,6 @@ Perform both chroma keying (to remove the backdrop) and despill (to correct colo
 | [`name`](#nodebpy.nodes.compositor.matte.Keying.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.Keying.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.Keying.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.Keying.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.Keying.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -624,7 +614,6 @@ Create plates for use as a color reference for keying nodes
 | [`name`](#nodebpy.nodes.compositor.matte.KeyingScreen.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.KeyingScreen.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.KeyingScreen.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.KeyingScreen.outputs) |  |
 | [`tracking_object`](#nodebpy.nodes.compositor.matte.KeyingScreen.tracking_object) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.KeyingScreen.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -643,18 +632,18 @@ Create plates for use as a color reference for keying nodes
 ### LuminanceKey
 
 ``` python
-LuminanceKey(image=(1.0, 1.0, 1.0, 1.0), minimum=0.0, maximum=1.0)
+LuminanceKey(image=None, minimum=0.0, maximum=1.0)
 ```
 
 Create a matte based on luminance (brightness) difference
 
 #### Parameters
 
-| Name    | Type       | Description | Default                |
-|---------|------------|-------------|------------------------|
-| image   | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| minimum | InputFloat | Minimum     | `0.0`                  |
-| maximum | InputFloat | Maximum     | `1.0`                  |
+| Name    | Type       | Description | Default |
+|---------|------------|-------------|---------|
+| image   | InputColor | Image       | `None`  |
+| minimum | InputFloat | Minimum     | `0.0`   |
+| maximum | InputFloat | Maximum     | `1.0`   |
 
 #### Attributes
 
@@ -664,7 +653,6 @@ Create a matte based on luminance (brightness) difference
 | [`name`](#nodebpy.nodes.compositor.matte.LuminanceKey.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.matte.LuminanceKey.node) |  |
 | [`o`](#nodebpy.nodes.compositor.matte.LuminanceKey.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.matte.LuminanceKey.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.matte.LuminanceKey.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

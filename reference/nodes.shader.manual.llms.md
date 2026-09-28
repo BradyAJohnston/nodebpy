@@ -2,6 +2,12 @@
 
 `manual`
 
+## Attributes
+
+| Name                                        | Description |
+|---------------------------------------------|-------------|
+| [`tree`](#nodebpy.nodes.shader.manual.tree) |             |
+
 ## Classes
 
 | Name | Description |
@@ -27,7 +33,6 @@ Retrieve attributes attached to objects or geometry
 | [`name`](#nodebpy.nodes.shader.manual.Attribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.manual.Attribute.node) |  |
 | [`o`](#nodebpy.nodes.shader.manual.Attribute.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.manual.Attribute.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.manual.Attribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -88,7 +93,6 @@ Node builder for the Menu Switch node (Shader tree)
 | [`name`](#nodebpy.nodes.shader.manual.MenuSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.manual.MenuSwitch.node) |  |
 | [`o`](#nodebpy.nodes.shader.manual.MenuSwitch.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.manual.MenuSwitch.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.manual.MenuSwitch.tree) |  |
 
 #### Methods
@@ -233,25 +237,12 @@ vector(menu=None, items=None)
 | Name                                              | Description |
 |---------------------------------------------------|-------------|
 | [material](#nodebpy.nodes.shader.manual.material) |             |
-| [tree](#nodebpy.nodes.shader.manual.tree)         |             |
 
 ### material
 
 ``` python
 material(
     name='New Material',
-    *,
-    collapse=False,
-    arrange='sugiyama',
-    fake_user=False,
-)
-```
-
-### tree
-
-``` python
-tree(
-    name='Shader Nodes',
     *,
     collapse=False,
     arrange='sugiyama',

@@ -39,7 +39,6 @@ BaseRepeatZone(node=None)
 | [`name`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.BaseRepeatZone.tree) |  |
 
 #### Methods
@@ -94,7 +93,6 @@ BaseSimulationZone(node=None)
 | [`name`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.BaseSimulationZone.tree) |  |
 
 #### Methods
@@ -149,7 +147,6 @@ BaseZone(node=None)
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZone.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZone.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZone.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.zone.BaseZone.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.BaseZone.tree) |  |
 
 #### Methods
@@ -207,7 +204,6 @@ Base class for zone input nodes
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZoneInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZoneInput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
 | [`output`](#nodebpy.nodes.geometry.zone.BaseZoneInput.output) |  |
-| [`outputs`](#nodebpy.nodes.geometry.zone.BaseZoneInput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.BaseZoneInput.tree) |  |
 
 #### Methods
@@ -264,7 +260,6 @@ Base class for zone output nodes
 | [`name`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.BaseZoneOutput.tree) |  |
 
 #### Methods
@@ -321,7 +316,6 @@ Closure Input node
 | [`name`](#nodebpy.nodes.geometry.zone.ClosureInput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.ClosureInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.ClosureInput.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.zone.ClosureInput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.ClosureInput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -353,7 +347,6 @@ Closure Output node
 | [`name`](#nodebpy.nodes.geometry.zone.ClosureOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.ClosureOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.ClosureOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.zone.ClosureOutput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.ClosureOutput.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -441,7 +434,6 @@ For Each Geometry Element Input node
 | [`node`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.o) |  |
 | [`output`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.output) |  |
-| [`outputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementInput.tree) |  |
 
 #### Methods
@@ -500,7 +492,6 @@ For Each Geometry Element Output node
 | [`name`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.ForEachGeometryElementOutput.tree) |  |
 
 #### Methods
@@ -629,7 +620,6 @@ Repeat Input node
 | [`node`](#nodebpy.nodes.geometry.zone.RepeatInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.RepeatInput.o) |  |
 | [`output`](#nodebpy.nodes.geometry.zone.RepeatInput.output) |  |
-| [`outputs`](#nodebpy.nodes.geometry.zone.RepeatInput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.RepeatInput.tree) |  |
 
 #### Methods
@@ -686,7 +676,6 @@ Repeat Output node
 | [`name`](#nodebpy.nodes.geometry.zone.RepeatOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.RepeatOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.RepeatOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.zone.RepeatOutput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.RepeatOutput.tree) |  |
 
 #### Methods
@@ -775,7 +764,6 @@ Simulation Input node
 | [`node`](#nodebpy.nodes.geometry.zone.SimulationInput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.SimulationInput.o) |  |
 | [`output`](#nodebpy.nodes.geometry.zone.SimulationInput.output) |  |
-| [`outputs`](#nodebpy.nodes.geometry.zone.SimulationInput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.SimulationInput.tree) |  |
 
 #### Methods
@@ -832,7 +820,6 @@ Simulation Output node
 | [`name`](#nodebpy.nodes.geometry.zone.SimulationOutput.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.zone.SimulationOutput.node) |  |
 | [`o`](#nodebpy.nodes.geometry.zone.SimulationOutput.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.zone.SimulationOutput.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.zone.SimulationOutput.tree) |  |
 
 #### Methods

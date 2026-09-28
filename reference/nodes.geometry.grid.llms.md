@@ -78,7 +78,6 @@ Move grid values through a velocity field using numerical integration. Supports 
 | [`name`](#nodebpy.nodes.geometry.grid.AdvectGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.AdvectGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.AdvectGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.AdvectGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.AdvectGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -186,7 +185,6 @@ Deactivate grid voxels outside minimum and maximum coordinates, setting them to 
 | [`name`](#nodebpy.nodes.geometry.grid.ClipGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.ClipGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.ClipGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.ClipGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.ClipGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -286,7 +284,6 @@ Create a boolean grid topology with the given dimensions, for use with the Field
 | [`name`](#nodebpy.nodes.geometry.grid.CubeGridTopology.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.CubeGridTopology.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.CubeGridTopology.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.CubeGridTopology.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.CubeGridTopology.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -343,7 +340,6 @@ Generate points inside a volume grid
 | [`name`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.DistributePointsInGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -419,7 +415,6 @@ Generate points inside a volume
 | [`name`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.DistributePointsInVolume.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -464,7 +459,6 @@ Get volume grid from a volume geometry with the specified name
 | [`name`](#nodebpy.nodes.geometry.grid.GetNamedGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GetNamedGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GetNamedGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GetNamedGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GetNamedGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -545,7 +539,6 @@ Calculate the magnitude and direction of circulation of a directional vector gri
 | [`name`](#nodebpy.nodes.geometry.grid.GridCurl.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridCurl.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridCurl.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridCurl.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridCurl.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -593,7 +586,6 @@ Dilate or erode the active regions of a grid. This changes which voxels are acti
 | [`name`](#nodebpy.nodes.geometry.grid.GridDilateErode.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridDilateErode.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridDilateErode.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridDilateErode.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridDilateErode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -674,7 +666,6 @@ Calculate the flow into and out of each point of a directional vector grid
 | [`name`](#nodebpy.nodes.geometry.grid.GridDivergence.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridDivergence.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridDivergence.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridDivergence.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridDivergence.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -711,7 +702,6 @@ Calculate the direction and magnitude of the change in values of a scalar grid
 | [`name`](#nodebpy.nodes.geometry.grid.GridGradient.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridGradient.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridGradient.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridGradient.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridGradient.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -749,7 +739,6 @@ Retrieve information about a volume grid
 | [`name`](#nodebpy.nodes.geometry.grid.GridInfo.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridInfo.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridInfo.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridInfo.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridInfo.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -828,7 +817,6 @@ Compute the divergence of the gradient of the input grid
 | [`name`](#nodebpy.nodes.geometry.grid.GridLaplacian.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridLaplacian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridLaplacian.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridLaplacian.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridLaplacian.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -868,7 +856,6 @@ Apply mean (box) filter smoothing to a voxel. The mean value from surrounding vo
 | [`name`](#nodebpy.nodes.geometry.grid.GridMean.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridMean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridMean.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridMean.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridMean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -942,7 +929,6 @@ Apply median (box) filter smoothing to a voxel. The median value from surroundin
 | [`name`](#nodebpy.nodes.geometry.grid.GridMedian.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridMedian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridMedian.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridMedian.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridMedian.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1015,7 +1001,6 @@ Generate a mesh on the “surface” of a volume grid
 | [`name`](#nodebpy.nodes.geometry.grid.GridToMesh.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridToMesh.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridToMesh.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridToMesh.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridToMesh.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1055,7 +1040,6 @@ Generate a point cloud from a volume grid’s active voxels
 | [`name`](#nodebpy.nodes.geometry.grid.GridToPoints.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.GridToPoints.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.GridToPoints.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.GridToPoints.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.GridToPoints.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1142,7 +1126,6 @@ Create a filled volume grid from a mesh
 | [`name`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.MeshToDensityGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1184,7 +1167,6 @@ Create a signed distance volume grid from a mesh
 | [`name`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.MeshToSDFGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1235,7 +1217,6 @@ Create a fog volume with the shape of the input mesh’s surface
 | [`name`](#nodebpy.nodes.geometry.grid.MeshToVolume.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.MeshToVolume.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.MeshToVolume.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.MeshToVolume.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.MeshToVolume.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1279,7 +1260,6 @@ Create a signed distance volume grid from points
 | [`name`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.PointsToSDFGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1330,7 +1310,6 @@ Generate a fog volume sphere around every point
 | [`name`](#nodebpy.nodes.geometry.grid.PointsToVolume.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.PointsToVolume.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.PointsToVolume.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.PointsToVolume.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.PointsToVolume.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1375,7 +1354,6 @@ Make the storage of a volume grid more efficient by collapsing data into tiles o
 | [`name`](#nodebpy.nodes.geometry.grid.PruneGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.PruneGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.PruneGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.PruneGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.PruneGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1456,7 +1434,6 @@ Round off concave internal corners in a signed distance field. Only affects area
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridFillet.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridFillet.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridFillet.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SDFGridFillet.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridFillet.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1495,7 +1472,6 @@ Apply Laplacian flow smoothing to a signed distance field. Computationally effic
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridLaplacian.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1535,7 +1511,6 @@ Apply mean (box) filter smoothing to a signed distance field. Fast separable ave
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridMean.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridMean.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMean.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SDFGridMean.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridMean.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1575,7 +1550,6 @@ Apply mean curvature flow smoothing to a signed distance field. Evolves the surf
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridMeanCurvature.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1615,7 +1589,6 @@ Apply median filter to a signed distance field. Reduces noise while preserving s
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridMedian.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridMedian.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridMedian.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SDFGridMedian.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridMedian.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1655,7 +1628,6 @@ Offset a signed distance field surface by a world-space distance. Dilates (posit
 | [`name`](#nodebpy.nodes.geometry.grid.SDFGridOffset.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SDFGridOffset.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SDFGridOffset.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SDFGridOffset.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SDFGridOffset.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1676,7 +1648,7 @@ Offset a signed distance field surface by a world-space distance. Dilates (posit
 ``` python
 SampleGrid(
     grid=None,
-    position=(0.0, 0.0, 0.0),
+    position=None,
     interpolation='Trilinear',
     *,
     data_type='FLOAT',
@@ -1690,7 +1662,7 @@ Retrieve values from the specified volume grid
 | Name | Type | Description | Default |
 |----|----|----|----|
 | grid | InputFloatGrid | Grid | `None` |
-| position | InputVector | Position | `(0.0, 0.0, 0.0)` |
+| position | InputVector | Position | `None` |
 | interpolation | InputMenu \| Literal\['Nearest Neighbor', 'Trilinear', 'Triquadratic'\] | Interpolation | `'Trilinear'` |
 
 #### Attributes
@@ -1702,7 +1674,6 @@ Retrieve values from the specified volume grid
 | [`name`](#nodebpy.nodes.geometry.grid.SampleGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SampleGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SampleGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SampleGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SampleGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1717,7 +1688,7 @@ Retrieve values from the specified volume grid
 ##### boolean
 
 ``` python
-boolean(grid=None, position=(0.0, 0.0, 0.0), interpolation='Trilinear')
+boolean(grid=None, position=None, interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Boolean’.
@@ -1725,7 +1696,7 @@ Create Sample Grid with operation ‘Boolean’.
 ##### float
 
 ``` python
-float(grid=None, position=(0.0, 0.0, 0.0), interpolation='Trilinear')
+float(grid=None, position=None, interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Float’.
@@ -1733,7 +1704,7 @@ Create Sample Grid with operation ‘Float’.
 ##### integer
 
 ``` python
-integer(grid=None, position=(0.0, 0.0, 0.0), interpolation='Trilinear')
+integer(grid=None, position=None, interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Integer’.
@@ -1741,7 +1712,7 @@ Create Sample Grid with operation ‘Integer’.
 ##### vector
 
 ``` python
-vector(grid=None, position=(0.0, 0.0, 0.0), interpolation='Trilinear')
+vector(grid=None, position=None, interpolation='Trilinear')
 ```
 
 Create Sample Grid with operation ‘Vector’.
@@ -1786,7 +1757,6 @@ Retrieve volume grid values at specific voxels
 | [`name`](#nodebpy.nodes.geometry.grid.SampleGridIndex.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SampleGridIndex.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SampleGridIndex.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SampleGridIndex.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SampleGridIndex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1876,7 +1846,6 @@ Set the background value used for inactive voxels and tiles
 | [`name`](#nodebpy.nodes.geometry.grid.SetGridBackground.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SetGridBackground.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SetGridBackground.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SetGridBackground.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SetGridBackground.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1958,7 +1927,6 @@ Set the transform for the grid from index space into object space.
 | [`name`](#nodebpy.nodes.geometry.grid.SetGridTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.SetGridTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.SetGridTransform.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.SetGridTransform.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.SetGridTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2041,7 +2009,6 @@ Store grid data in a volume geometry with the specified name
 | [`name`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.StoreNamedGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2135,7 +2102,6 @@ Generate a dense volume with a field that controls the density at each grid voxe
 | [`name`](#nodebpy.nodes.geometry.grid.VolumeCube.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.VolumeCube.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.VolumeCube.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.VolumeCube.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.VolumeCube.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2190,7 +2156,6 @@ Generate a mesh on the “surface” of a volume
 | [`name`](#nodebpy.nodes.geometry.grid.VolumeToMesh.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.VolumeToMesh.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.VolumeToMesh.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.VolumeToMesh.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.VolumeToMesh.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2233,7 +2198,6 @@ Remove sparseness from a volume grid by making the active tiles into voxels
 | [`name`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.node) |  |
 | [`o`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.grid.VoxelizeGrid.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods

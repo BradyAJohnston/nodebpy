@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.29.0</span>
+    <span class="navbar-title">nodebpy 520.30.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -870,7 +870,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.AntiAliasing" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.AntiAliasing">AntiAliasing</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AntiAliasing(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.2</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    contrast_limit<span class="op">=</span><span class="fl">2.0</span>,</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    corner_rounding<span class="op">=</span><span class="fl">0.25</span>,</span>
@@ -879,12 +879,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 24%">
-<col style="width: 17%">
-<col style="width: 24%">
-<col style="width: 34%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Name</th>
@@ -898,7 +892,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>threshold</td>
@@ -948,10 +942,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.AntiAliasing.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.AntiAliasing.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1011,7 +1001,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.BilateralBlur" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.BilateralBlur">BilateralBlur</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>BilateralBlur(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    determinator<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -1033,7 +1023,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>determinator</td>
@@ -1083,10 +1073,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.BilateralBlur.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.BilateralBlur.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1146,7 +1132,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Blur" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur">Blur</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Blur(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">'Gaussian'</span>,</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
@@ -1158,9 +1144,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
-<col style="width: 70%">
+<col style="width: 74%">
 <col style="width: 8%">
-<col style="width: 13%">
+<col style="width: 8%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1175,7 +1161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>size</td>
@@ -1231,10 +1217,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Blur.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Blur.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1287,82 +1269,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.filter.Blur.catrom" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur.catrom">catrom</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>catrom(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    separable<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>catrom(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), extend_bounds<span class="op">=</span><span class="va">False</span>, separable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur node with type ‘Catrom’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Blur.cubic" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur.cubic">cubic</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cubic(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    separable<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cubic(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), extend_bounds<span class="op">=</span><span class="va">False</span>, separable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur node with type ‘Cubic’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Blur.fast_gaussian" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur.fast_gaussian">fast_gaussian</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fast_gaussian(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    separable<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fast_gaussian(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), extend_bounds<span class="op">=</span><span class="va">False</span>, separable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur node with type ‘Fast Gaussian’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Blur.flat" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur.flat">flat</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>flat(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    separable<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>flat(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), extend_bounds<span class="op">=</span><span class="va">False</span>, separable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur node with type ‘Flat’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Blur.gaussian" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur.gaussian">gaussian</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>gaussian(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    separable<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>gaussian(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), extend_bounds<span class="op">=</span><span class="va">False</span>, separable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur node with type ‘Gaussian’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Blur.mitch" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur.mitch">mitch</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mitch(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    separable<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mitch(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), extend_bounds<span class="op">=</span><span class="va">False</span>, separable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur node with type ‘Mitch’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Blur.quadratic" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur.quadratic">quadratic</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>quadratic(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    separable<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>quadratic(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), extend_bounds<span class="op">=</span><span class="va">False</span>, separable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur node with type ‘Quadratic’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Blur.tent" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Blur.tent">tent</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tent(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    extend_bounds<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    separable<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tent(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), extend_bounds<span class="op">=</span><span class="va">False</span>, separable<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Blur node with type ‘Tent’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1424,7 +1366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.BokehBlur" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.BokehBlur">BokehBlur</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>BokehBlur(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    bokeh<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    mask<span class="op">=</span><span class="fl">1.0</span>,</span>
@@ -1453,7 +1395,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(0.8, 0.8, 0.8, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>bokeh</td>
@@ -1509,10 +1451,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.BokehBlur.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.BokehBlur.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1577,10 +1515,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Convolve" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Convolve">Convolve</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Convolve(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    kernel_data_type<span class="op">=</span><span class="st">'Float'</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    float_kernel<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    color_kernel<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    float_kernel<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    color_kernel<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    normalize_kernel<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convolves an image with a kernel</p>
@@ -1588,10 +1526,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-4">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 16%">
-<col style="width: 43%">
-<col style="width: 16%">
-<col style="width: 22%">
+<col style="width: 19%">
+<col style="width: 49%">
+<col style="width: 19%">
+<col style="width: 11%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1606,7 +1544,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(0.8, 0.8, 0.8, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>kernel_data_type</td>
@@ -1618,13 +1556,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>float_kernel</td>
 <td>InputFloat</td>
 <td>Kernel</td>
-<td><code>0.0</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>color_kernel</td>
 <td>InputColor</td>
 <td>Kernel</td>
-<td><code>(0.8, 0.8, 0.8, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>normalize_kernel</td>
@@ -1662,10 +1600,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Convolve.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Convolve.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1811,18 +1745,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Defocus.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Defocus.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Defocus.use_zbuffer"><code>use_zbuffer</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.filter.Defocus.z_scale"><code>z_scale</code></a></td>
 <td></td>
 </tr>
@@ -1872,9 +1802,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Denoise" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Denoise">Denoise</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Denoise(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    albedo<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    albedo<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    hdr<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    prefilter<span class="op">=</span><span class="st">'Accurate'</span>,</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Follow Scene'</span>,</span>
@@ -1884,10 +1814,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-6">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 8%">
-<col style="width: 60%">
-<col style="width: 11%">
-<col style="width: 19%">
+<col style="width: 9%">
+<col style="width: 63%">
+<col style="width: 12%">
+<col style="width: 15%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1902,19 +1832,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>albedo</td>
 <td>InputColor</td>
 <td>Albedo</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>hdr</td>
@@ -1964,10 +1894,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Denoise.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Denoise.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2036,22 +1962,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.filter.Despeckle" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Despeckle">Despeckle</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Despeckle(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    fac<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    color_threshold<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    neighbor_threshold<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Despeckle(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>, color_threshold<span class="op">=</span><span class="fl">0.5</span>, neighbor_threshold<span class="op">=</span><span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched</p>
 <section id="parameters-7" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-7">Parameters</h4>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 26%">
-<col style="width: 15%">
-<col style="width: 26%">
-<col style="width: 31%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Name</th>
@@ -2065,7 +1980,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>fac</td>
@@ -2115,10 +2030,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Despeckle.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Despeckle.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2257,10 +2168,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.DilateErode.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.DilateErode.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2374,7 +2281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.DirectionalBlur" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.DirectionalBlur">DirectionalBlur</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>DirectionalBlur(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    samples<span class="op">=</span><span class="dv">1</span>,</span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    center<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>),</span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
@@ -2386,12 +2293,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="parameters-9" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-9">Parameters</h4>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 30%">
-<col style="width: 18%">
-<col style="width: 19%">
-<col style="width: 31%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Name</th>
@@ -2405,7 +2306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>samples</td>
@@ -2473,10 +2374,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.DirectionalBlur.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.DirectionalBlur.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2550,16 +2447,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter">Filter</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Filter(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'Soften'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Filter(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'Soften'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Apply common image enhancement filters</p>
 <section id="parameters-10" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 4%">
-<col style="width: 74%">
+<col style="width: 79%">
 <col style="width: 8%">
-<col style="width: 13%">
+<col style="width: 7%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -2574,7 +2471,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>fac</td>
@@ -2618,10 +2515,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Filter.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Filter.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2674,42 +2567,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.filter.Filter.box_sharpen" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.box_sharpen">box_sharpen</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>box_sharpen(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>box_sharpen(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Box Sharpen’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.diamond_sharpen" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.diamond_sharpen">diamond_sharpen</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>diamond_sharpen(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>diamond_sharpen(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Diamond Sharpen’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.kirsch" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.kirsch">kirsch</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>kirsch(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>kirsch(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Kirsch’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.laplace" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.laplace">laplace</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>laplace(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>laplace(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Laplace’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.prewitt" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.prewitt">prewitt</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>prewitt(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>prewitt(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Prewitt’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.shadow" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.shadow">shadow</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>shadow(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>shadow(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Shadow’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.sobel" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.sobel">sobel</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sobel(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sobel(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Sobel’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Filter.soften" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Filter.soften">soften</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>soften(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>soften(image<span class="op">=</span><span class="va">None</span>, fac<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Filter node with type ‘Soften’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -2761,7 +2654,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Glare" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Glare">Glare</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>Glare(</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">'Streaks'</span>,</span>
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
@@ -2781,8 +2674,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    sun_position<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>),</span>
 <span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>    jitter<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    kernel_data_type<span class="op">=</span><span class="st">'Float'</span>,</span>
-<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    float_kernel<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    color_kernel<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    float_kernel<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    color_kernel<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Add lens flares, fog and glows around bright parts of the image</p>
 <section id="parameters-11" class="level4 doc-section doc-section-parameters">
@@ -2807,7 +2700,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>type</td>
@@ -2927,13 +2820,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>float_kernel</td>
 <td>InputFloat</td>
 <td>Kernel</td>
-<td><code>0.0</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>color_kernel</td>
 <td>InputColor</td>
 <td>Kernel</td>
-<td><code>(0.8, 0.8, 0.8, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>
@@ -2965,10 +2858,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Glare.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Glare.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3018,7 +2907,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Glare.bloom" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Glare.bloom">bloom</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>bloom(</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -3034,7 +2923,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Glare.fog_glow" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Glare.fog_glow">fog_glow</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>fog_glow(</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -3050,7 +2939,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Glare.ghosts" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Glare.ghosts">ghosts</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ghosts(</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -3067,7 +2956,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Glare.kernel" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Glare.kernel">kernel</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>kernel(</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -3077,14 +2966,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    saturation<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    kernel_data_type<span class="op">=</span><span class="st">'Float'</span>,</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    float_kernel<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    float_kernel<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Glare node with type ‘Kernel’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Glare.simple_star" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Glare.simple_star">simple_star</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>simple_star(</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
 <span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -3102,7 +2991,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Glare.streaks" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Glare.streaks">streaks</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>streaks(</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -3122,7 +3011,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Glare.sun_beams" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Glare.sun_beams">sun_beams</h5>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>sun_beams(</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">=</span><span class="st">'Medium'</span>,</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    highlights_threshold<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    highlights_smoothness<span class="op">=</span><span class="fl">0.1</span>,</span>
@@ -3290,7 +3179,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.filter.Inpaint" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Inpaint">Inpaint</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>Inpaint(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), size<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>Inpaint(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Extend borders of an image into transparent or masked regions</p>
 <section id="parameters-12" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-12">Parameters</h4>
@@ -3308,7 +3197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>size</td>
@@ -3346,10 +3235,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Inpaint.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Inpaint.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3399,7 +3284,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.Kuwahara" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Kuwahara">Kuwahara</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>Kuwahara(</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="fl">6.0</span>,</span>
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">type</span><span class="op">=</span><span class="st">'Anisotropic'</span>,</span>
 <span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    uniformity<span class="op">=</span><span class="dv">4</span>,</span>
@@ -3412,10 +3297,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-13">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 14%">
-<col style="width: 49%">
-<col style="width: 14%">
-<col style="width: 21%">
+<col style="width: 15%">
+<col style="width: 52%">
+<col style="width: 15%">
+<col style="width: 16%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -3430,7 +3315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>size</td>
@@ -3498,10 +3383,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Kuwahara.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Kuwahara.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3530,18 +3411,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.filter.Kuwahara.anisotropic" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Kuwahara.anisotropic">anisotropic</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>anisotropic(</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="fl">6.0</span>,</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    uniformity<span class="op">=</span><span class="dv">4</span>,</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    sharpness<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    eccentricity<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>anisotropic(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span><span class="fl">6.0</span>, uniformity<span class="op">=</span><span class="dv">4</span>, sharpness<span class="op">=</span><span class="fl">1.0</span>, eccentricity<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Kuwahara node with type ‘Anisotropic’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.filter.Kuwahara.classic" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Kuwahara.classic">classic</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>classic(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), size<span class="op">=</span><span class="fl">6.0</span>, high_precision<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>classic(image<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span><span class="fl">6.0</span>, high_precision<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Kuwahara node with type ‘Classic’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -3612,7 +3487,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.filter.MaskToSDF" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.MaskToSDF">MaskToSDF</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>MaskToSDF(mask<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>MaskToSDF(mask<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Computes a signed distance field from the given mask</p>
 <section id="parameters-14" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-14">Parameters</h4>
@@ -3630,7 +3505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>mask</td>
 <td>InputBoolean</td>
 <td>Mask</td>
-<td><code>False</code></td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>
@@ -3662,10 +3537,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.MaskToSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3714,7 +3585,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.filter.Pixelate" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.Pixelate">Pixelate</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>Pixelate(color<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), size<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>Pixelate(color<span class="op">=</span><span class="va">None</span>, size<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance</p>
 <section id="parameters-15" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-15">Parameters</h4>
@@ -3732,7 +3603,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>color</td>
 <td>InputColor</td>
 <td>Color</td>
-<td><code>(0.8, 0.8, 0.8, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>size</td>
@@ -3770,10 +3641,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.Pixelate.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.Pixelate.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3823,7 +3690,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nodebpy.nodes.compositor.filter.VectorBlur" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.filter.VectorBlur">VectorBlur</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>VectorBlur(</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    speed<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    z<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    samples<span class="op">=</span><span class="dv">32</span>,</span>
@@ -3846,7 +3713,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>speed</td>
@@ -3902,10 +3769,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.filter.VectorBlur.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.filter.VectorBlur.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>

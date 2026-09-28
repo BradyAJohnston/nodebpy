@@ -36,7 +36,6 @@ Transform Coordinate System for Radial Tiling
 | [`node`](#nodebpy.nodes.geometry.vector.RadialTiling.node) |  |
 | [`normalize`](#nodebpy.nodes.geometry.vector.RadialTiling.normalize) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.RadialTiling.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.vector.RadialTiling.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.vector.RadialTiling.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -79,7 +78,6 @@ Map input vector components with curves
 | [`name`](#nodebpy.nodes.geometry.vector.VectorCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.vector.VectorCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.VectorCurves.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.vector.VectorCurves.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.vector.VectorCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -128,7 +126,6 @@ Perform vector math operation
 | [`node`](#nodebpy.nodes.geometry.vector.VectorMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.VectorMath.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.vector.VectorMath.operation) |  |
-| [`outputs`](#nodebpy.nodes.geometry.vector.VectorMath.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.vector.VectorMath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -438,7 +435,7 @@ Create Vector Math with operation ‘Wrap’. Entry-wise wrap(A,B)
 
 ``` python
 VectorRotate(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     center=(0.0, 0.0, 0.0),
     axis=(0.0, 0.0, 1.0),
     angle=0.0,
@@ -455,7 +452,7 @@ Rotate a vector around a pivot point (center)
 
 | Name     | Type        | Description | Default           |
 |----------|-------------|-------------|-------------------|
-| vector   | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| vector   | InputVector | Vector      | `None`            |
 | center   | InputVector | Center      | `(0.0, 0.0, 0.0)` |
 | axis     | InputVector | Axis        | `(0.0, 0.0, 1.0)` |
 | angle    | InputFloat  | Angle       | `0.0`             |
@@ -470,7 +467,6 @@ Rotate a vector around a pivot point (center)
 | [`name`](#nodebpy.nodes.geometry.vector.VectorRotate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.vector.VectorRotate.node) |  |
 | [`o`](#nodebpy.nodes.geometry.vector.VectorRotate.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.vector.VectorRotate.outputs) |  |
 | [`rotation_type`](#nodebpy.nodes.geometry.vector.VectorRotate.rotation_type) |  |
 | [`tree`](#nodebpy.nodes.geometry.vector.VectorRotate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -488,10 +484,12 @@ Rotate a vector around a pivot point (center)
 
 ``` python
 axis_angle(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     center=(0.0, 0.0, 0.0),
     axis=(0.0, 0.0, 1.0),
     angle=0.0,
+    *,
+    invert=False,
 )
 ```
 
@@ -500,7 +498,13 @@ Create Vector Rotate with operation ‘Axis Angle’. Rotate a point using axis 
 ##### euler
 
 ``` python
-euler(vector=(0.0, 0.0, 0.0), center=(0.0, 0.0, 0.0), rotation=(0.0, 0.0, 0.0))
+euler(
+    vector=None,
+    center=(0.0, 0.0, 0.0),
+    rotation=(0.0, 0.0, 0.0),
+    *,
+    invert=False,
+)
 ```
 
 Create Vector Rotate with operation ‘Euler’. Rotate a point using XYZ order
@@ -508,7 +512,7 @@ Create Vector Rotate with operation ‘Euler’. Rotate a point using XYZ order
 ##### x_axis
 
 ``` python
-x_axis(vector=(0.0, 0.0, 0.0), center=(0.0, 0.0, 0.0), angle=0.0)
+x_axis(vector=None, center=(0.0, 0.0, 0.0), angle=0.0, *, invert=False)
 ```
 
 Create Vector Rotate with operation ‘X Axis’. Rotate a point using X axis
@@ -516,7 +520,7 @@ Create Vector Rotate with operation ‘X Axis’. Rotate a point using X axis
 ##### y_axis
 
 ``` python
-y_axis(vector=(0.0, 0.0, 0.0), center=(0.0, 0.0, 0.0), angle=0.0)
+y_axis(vector=None, center=(0.0, 0.0, 0.0), angle=0.0, *, invert=False)
 ```
 
 Create Vector Rotate with operation ‘Y Axis’. Rotate a point using Y axis
@@ -524,7 +528,7 @@ Create Vector Rotate with operation ‘Y Axis’. Rotate a point using Y axis
 ##### z_axis
 
 ``` python
-z_axis(vector=(0.0, 0.0, 0.0), center=(0.0, 0.0, 0.0), angle=0.0)
+z_axis(vector=None, center=(0.0, 0.0, 0.0), angle=0.0, *, invert=False)
 ```
 
 Create Vector Rotate with operation ‘Z Axis’. Rotate a point using Z axis

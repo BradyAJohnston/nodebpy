@@ -50,7 +50,6 @@ Add two Shaders together
 | [`name`](#nodebpy.nodes.shader.shader.AddShader.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.AddShader.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.AddShader.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.AddShader.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.AddShader.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -107,18 +106,12 @@ Note: This node should only be used for the world surface output
 | [`name`](#nodebpy.nodes.shader.shader.Background.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.Background.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.Background.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.Background.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.Background.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### DiffuseBSDF
 
 ``` python
-DiffuseBSDF(
-    color=(0.8, 0.8, 0.8, 1.0),
-    roughness=0.0,
-    normal=(0.0, 0.0, 0.0),
-    weight=0.0,
-)
+DiffuseBSDF(color=(0.8, 0.8, 0.8, 1.0), roughness=0.0, normal=None, weight=0.0)
 ```
 
 Lambertian and Oren-Nayar diffuse reflection
@@ -129,7 +122,7 @@ Lambertian and Oren-Nayar diffuse reflection
 |-----------|-------------|-------------|------------------------|
 | color     | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
 | roughness | InputFloat  | Roughness   | `0.0`                  |
-| normal    | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| normal    | InputVector | Normal      | `None`                 |
 | weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
@@ -140,7 +133,6 @@ Lambertian and Oren-Nayar diffuse reflection
 | [`name`](#nodebpy.nodes.shader.shader.DiffuseBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.DiffuseBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.DiffuseBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.DiffuseBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.DiffuseBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -182,7 +174,6 @@ Lambertian emission shader
 | [`name`](#nodebpy.nodes.shader.shader.Emission.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.Emission.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.Emission.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.Emission.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.Emission.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -206,7 +197,7 @@ GlassBSDF(
     color=(1.0, 1.0, 1.0, 1.0),
     roughness=0.0,
     ior=1.5,
-    normal=(0.0, 0.0, 0.0),
+    normal=None,
     weight=0.0,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
@@ -224,7 +215,7 @@ Glass-like shader mixing refraction and reflection at grazing angles
 | color               | InputColor  | Color               | `(1.0, 1.0, 1.0, 1.0)` |
 | roughness           | InputFloat  | Roughness           | `0.0`                  |
 | ior                 | InputFloat  | IOR                 | `1.5`                  |
-| normal              | InputVector | Normal              | `(0.0, 0.0, 0.0)`      |
+| normal              | InputVector | Normal              | `None`                 |
 | weight              | InputFloat  | Weight              | `0.0`                  |
 | thin_film_thickness | InputFloat  | Thin Film Thickness | `0.0`                  |
 | thin_film_ior       | InputFloat  | Thin Film IOR       | `1.33`                 |
@@ -238,7 +229,6 @@ Glass-like shader mixing refraction and reflection at grazing angles
 | [`name`](#nodebpy.nodes.shader.shader.GlassBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.GlassBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.GlassBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.GlassBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.GlassBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -267,8 +257,8 @@ GlossyBSDF(
     roughness=0.5,
     anisotropy=0.0,
     rotation=0.0,
-    normal=(0.0, 0.0, 0.0),
-    tangent=(0.0, 0.0, 0.0),
+    normal=None,
+    tangent=None,
     weight=0.0,
     *,
     distribution='MULTI_GGX',
@@ -285,8 +275,8 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 | roughness  | InputFloat  | Roughness   | `0.5`                  |
 | anisotropy | InputFloat  | Anisotropy  | `0.0`                  |
 | rotation   | InputFloat  | Rotation    | `0.0`                  |
-| normal     | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
-| tangent    | InputVector | Tangent     | `(0.0, 0.0, 0.0)`      |
+| normal     | InputVector | Normal      | `None`                 |
+| tangent    | InputVector | Tangent     | `None`                 |
 | weight     | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
@@ -298,7 +288,6 @@ Reflection with microfacet distribution, used for materials such as metal or mir
 | [`name`](#nodebpy.nodes.shader.shader.GlossyBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.GlossyBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.GlossyBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.GlossyBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.GlossyBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -327,7 +316,7 @@ HairBSDF(
     offset=0.0,
     roughnessu=0.1,
     roughnessv=1.0,
-    tangent=(0.0, 0.0, 0.0),
+    tangent=None,
     weight=0.0,
     *,
     component='Reflection',
@@ -344,7 +333,7 @@ Reflection and transmission shaders optimized for hair rendering
 | offset     | InputFloat  | Offset      | `0.0`                  |
 | roughnessu | InputFloat  | RoughnessU  | `0.1`                  |
 | roughnessv | InputFloat  | RoughnessV  | `1.0`                  |
-| tangent    | InputVector | Tangent     | `(0.0, 0.0, 0.0)`      |
+| tangent    | InputVector | Tangent     | `None`                 |
 | weight     | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
@@ -356,7 +345,6 @@ Reflection and transmission shaders optimized for hair rendering
 | [`name`](#nodebpy.nodes.shader.shader.HairBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.HairBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.HairBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.HairBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.HairBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -409,7 +397,6 @@ Note: the holdout shader can only create alpha when transparency is enabled in t
 | [`name`](#nodebpy.nodes.shader.shader.Holdout.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.Holdout.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.Holdout.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.Holdout.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.Holdout.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### MetallicBSDF
@@ -423,8 +410,8 @@ MetallicBSDF(
     roughness=0.5,
     anisotropy=0.0,
     rotation=0.0,
-    normal=(0.0, 0.0, 0.0),
-    tangent=(0.0, 0.0, 0.0),
+    normal=None,
+    tangent=None,
     weight=0.0,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
@@ -447,8 +434,8 @@ Metallic reflection with microfacet distribution, and metallic fresnel
 | roughness | InputFloat | Roughness | `0.5` |
 | anisotropy | InputFloat | Anisotropy | `0.0` |
 | rotation | InputFloat | Rotation | `0.0` |
-| normal | InputVector | Normal | `(0.0, 0.0, 0.0)` |
-| tangent | InputVector | Tangent | `(0.0, 0.0, 0.0)` |
+| normal | InputVector | Normal | `None` |
+| tangent | InputVector | Tangent | `None` |
 | weight | InputFloat | Weight | `0.0` |
 | thin_film_thickness | InputFloat | Thin Film Thickness | `0.0` |
 | thin_film_ior | InputFloat | Thin Film IOR | `1.33` |
@@ -463,7 +450,6 @@ Metallic reflection with microfacet distribution, and metallic fresnel
 | [`name`](#nodebpy.nodes.shader.shader.MetallicBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.MetallicBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.MetallicBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.MetallicBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.MetallicBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -482,10 +468,12 @@ f82_tint(
     roughness=0.5,
     anisotropy=0.0,
     rotation=0.0,
-    normal=(0.0, 0.0, 0.0),
-    tangent=(0.0, 0.0, 0.0),
+    normal=None,
+    tangent=None,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
+    *,
+    distribution='MULTI_GGX',
 )
 ```
 
@@ -500,10 +488,12 @@ physical_conductor(
     roughness=0.5,
     anisotropy=0.0,
     rotation=0.0,
-    normal=(0.0, 0.0, 0.0),
-    tangent=(0.0, 0.0, 0.0),
+    normal=None,
+    tangent=None,
     thin_film_thickness=0.0,
     thin_film_ior=1.33,
+    *,
+    distribution='MULTI_GGX',
 )
 ```
 
@@ -556,7 +546,6 @@ Mix two shaders together. Typically used for material layering
 | [`name`](#nodebpy.nodes.shader.shader.MixShader.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.MixShader.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.MixShader.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.MixShader.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.MixShader.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -583,7 +572,7 @@ PrincipledBSDF(
     ior=1.5,
     alpha=1.0,
     thin_wall=False,
-    normal=(0.0, 0.0, 0.0),
+    normal=None,
     weight=0.0,
     diffuse_roughness=0.0,
     subsurface_weight=0.0,
@@ -595,13 +584,13 @@ PrincipledBSDF(
     specular_tint=(1.0, 1.0, 1.0, 1.0),
     anisotropic=0.0,
     anisotropic_rotation=0.0,
-    tangent=(0.0, 0.0, 0.0),
+    tangent=None,
     transmission_weight=0.0,
     coat_weight=0.0,
     coat_roughness=0.03,
     coat_ior=1.5,
     coat_tint=(1.0, 1.0, 1.0, 1.0),
-    coat_normal=(0.0, 0.0, 0.0),
+    coat_normal=None,
     sheen_weight=0.0,
     sheen_roughness=0.5,
     sheen_tint=(1.0, 1.0, 1.0, 1.0),
@@ -627,7 +616,7 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 | ior | InputFloat | IOR | `1.5` |
 | alpha | InputFloat | Alpha | `1.0` |
 | thin_wall | InputBoolean | Thin Wall | `False` |
-| normal | InputVector | Normal | `(0.0, 0.0, 0.0)` |
+| normal | InputVector | Normal | `None` |
 | weight | InputFloat | Weight | `0.0` |
 | diffuse_roughness | InputFloat | Diffuse Roughness | `0.0` |
 | subsurface_weight | InputFloat | Subsurface Weight | `0.0` |
@@ -639,13 +628,13 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 | specular_tint | InputColor | Specular Tint | `(1.0, 1.0, 1.0, 1.0)` |
 | anisotropic | InputFloat | Anisotropic | `0.0` |
 | anisotropic_rotation | InputFloat | Anisotropic Rotation | `0.0` |
-| tangent | InputVector | Tangent | `(0.0, 0.0, 0.0)` |
+| tangent | InputVector | Tangent | `None` |
 | transmission_weight | InputFloat | Transmission Weight | `0.0` |
 | coat_weight | InputFloat | Coat Weight | `0.0` |
 | coat_roughness | InputFloat | Coat Roughness | `0.03` |
 | coat_ior | InputFloat | Coat IOR | `1.5` |
 | coat_tint | InputColor | Coat Tint | `(1.0, 1.0, 1.0, 1.0)` |
-| coat_normal | InputVector | Coat Normal | `(0.0, 0.0, 0.0)` |
+| coat_normal | InputVector | Coat Normal | `None` |
 | sheen_weight | InputFloat | Sheen Weight | `0.0` |
 | sheen_roughness | InputFloat | Sheen Roughness | `0.5` |
 | sheen_tint | InputColor | Sheen Tint | `(1.0, 1.0, 1.0, 1.0)` |
@@ -663,7 +652,6 @@ Physically-based, easy-to-use shader for rendering surface materials, based on t
 | [`name`](#nodebpy.nodes.shader.shader.PrincipledBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.PrincipledBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.PrincipledBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.PrincipledBSDF.outputs) |  |
 | [`subsurface_method`](#nodebpy.nodes.shader.shader.PrincipledBSDF.subsurface_method) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.PrincipledBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -727,7 +715,7 @@ PrincipledHairBSDF(
     offset=0.034906585,
     random_color=0.0,
     random_roughness=0.0,
-    random=0.0,
+    random=None,
     weight=0.0,
     r_lobe=1.0,
     tt_lobe=1.0,
@@ -757,7 +745,7 @@ Physically-based, easy-to-use shader for rendering hair and fur
 | offset | InputFloat | Offset | `0.034906585` |
 | random_color | InputFloat | Random Color | `0.0` |
 | random_roughness | InputFloat | Random Roughness | `0.0` |
-| random | InputFloat | Random | `0.0` |
+| random | InputFloat | Random | `None` |
 | weight | InputFloat | Weight | `0.0` |
 | r_lobe | InputFloat | Reflection | `1.0` |
 | tt_lobe | InputFloat | Transmission | `1.0` |
@@ -772,7 +760,6 @@ Physically-based, easy-to-use shader for rendering hair and fur
 | [`name`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.outputs) |  |
 | [`parametrization`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.parametrization) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.PrincipledHairBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -810,8 +797,8 @@ Physically-based, easy-to-use shader for rendering hair and fur
 ``` python
 RayPortalBSDF(
     color=(1.0, 1.0, 1.0, 1.0),
-    position=(0.0, 0.0, 0.0),
-    direction=(0.0, 0.0, 0.0),
+    position=None,
+    direction=None,
     weight=0.0,
 )
 ```
@@ -823,8 +810,8 @@ Continue tracing from an arbitrary new position and in a new direction
 | Name      | Type        | Description | Default                |
 |-----------|-------------|-------------|------------------------|
 | color     | InputColor  | Color       | `(1.0, 1.0, 1.0, 1.0)` |
-| position  | InputVector | Position    | `(0.0, 0.0, 0.0)`      |
-| direction | InputVector | Direction   | `(0.0, 0.0, 0.0)`      |
+| position  | InputVector | Position    | `None`                 |
+| direction | InputVector | Direction   | `None`                 |
 | weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
@@ -835,7 +822,6 @@ Continue tracing from an arbitrary new position and in a new direction
 | [`name`](#nodebpy.nodes.shader.shader.RayPortalBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.RayPortalBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.RayPortalBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.RayPortalBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.RayPortalBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -860,7 +846,7 @@ RefractionBSDF(
     color=(1.0, 1.0, 1.0, 1.0),
     roughness=0.0,
     ior=1.45,
-    normal=(0.0, 0.0, 0.0),
+    normal=None,
     weight=0.0,
     *,
     distribution='BECKMANN',
@@ -876,7 +862,7 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 | color     | InputColor  | Color       | `(1.0, 1.0, 1.0, 1.0)` |
 | roughness | InputFloat  | Roughness   | `0.0`                  |
 | ior       | InputFloat  | IOR         | `1.45`                 |
-| normal    | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| normal    | InputVector | Normal      | `None`                 |
 | weight    | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
@@ -888,7 +874,6 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 | [`name`](#nodebpy.nodes.shader.shader.RefractionBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.RefractionBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.RefractionBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.RefractionBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.RefractionBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -913,7 +898,7 @@ Glossy refraction with sharp or microfacet distribution, typically used for mate
 SheenBSDF(
     color=(0.8, 0.8, 0.8, 1.0),
     roughness=0.5,
-    normal=(0.0, 0.0, 0.0),
+    normal=None,
     weight=0.0,
     *,
     distribution='MICROFIBER',
@@ -960,7 +945,6 @@ Typically mixed with other shaders (such as a Diffuse Shader) and is not particu
 | [`name`](#nodebpy.nodes.shader.shader.SheenBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.SheenBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SheenBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.SheenBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.SheenBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### SpecularBSDF
@@ -972,10 +956,10 @@ SpecularBSDF(
     roughness=0.2,
     emissive_color=(0.0, 0.0, 0.0, 1.0),
     transparency=0.0,
-    normal=(0.0, 0.0, 0.0),
+    normal=None,
     clear_coat=0.0,
     clear_coat_roughness=0.0,
-    clear_coat_normal=(0.0, 0.0, 0.0),
+    clear_coat_normal=None,
     weight=0.0,
 )
 ```
@@ -991,10 +975,10 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 | roughness | InputFloat | Roughness | `0.2` |
 | emissive_color | InputColor | Emissive Color | `(0.0, 0.0, 0.0, 1.0)` |
 | transparency | InputFloat | Transparency | `0.0` |
-| normal | InputVector | Normal | `(0.0, 0.0, 0.0)` |
+| normal | InputVector | Normal | `None` |
 | clear_coat | InputFloat | Clear Coat | `0.0` |
 | clear_coat_roughness | InputFloat | Clear Coat Roughness | `0.0` |
-| clear_coat_normal | InputVector | Clear Coat Normal | `(0.0, 0.0, 0.0)` |
+| clear_coat_normal | InputVector | Clear Coat Normal | `None` |
 | weight | InputFloat | Weight | `0.0` |
 
 #### Attributes
@@ -1005,7 +989,6 @@ Similar to the Principled BSDF node but uses the specular workflow instead of me
 | [`name`](#nodebpy.nodes.shader.shader.SpecularBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.SpecularBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SpecularBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.SpecularBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.SpecularBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1039,7 +1022,7 @@ SubsurfaceScattering(
     ior=1.4,
     roughness=1.0,
     anisotropy=0.0,
-    normal=(0.0, 0.0, 0.0),
+    normal=None,
     weight=0.0,
     *,
     falloff='RANDOM_WALK',
@@ -1102,7 +1085,6 @@ Typically used for materials such as skin, wax, marble or milk
 | [`name`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.SubsurfaceScattering.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### ToonBSDF
@@ -1112,7 +1094,7 @@ ToonBSDF(
     color=(0.8, 0.8, 0.8, 1.0),
     size=0.5,
     smooth=0.0,
-    normal=(0.0, 0.0, 0.0),
+    normal=None,
     weight=0.0,
     *,
     component='DIFFUSE',
@@ -1128,7 +1110,7 @@ Diffuse and Glossy shaders with cartoon light effects
 | color  | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
 | size   | InputFloat  | Size        | `0.5`                  |
 | smooth | InputFloat  | Smooth      | `0.0`                  |
-| normal | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| normal | InputVector | Normal      | `None`                 |
 | weight | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
@@ -1140,7 +1122,6 @@ Diffuse and Glossy shaders with cartoon light effects
 | [`name`](#nodebpy.nodes.shader.shader.ToonBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.ToonBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.ToonBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.ToonBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.ToonBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1162,7 +1143,7 @@ Diffuse and Glossy shaders with cartoon light effects
 ### TranslucentBSDF
 
 ``` python
-TranslucentBSDF(color=(0.8, 0.8, 0.8, 1.0), normal=(0.0, 0.0, 0.0), weight=0.0)
+TranslucentBSDF(color=(0.8, 0.8, 0.8, 1.0), normal=None, weight=0.0)
 ```
 
 Lambertian diffuse transmission
@@ -1172,7 +1153,7 @@ Lambertian diffuse transmission
 | Name   | Type        | Description | Default                |
 |--------|-------------|-------------|------------------------|
 | color  | InputColor  | Color       | `(0.8, 0.8, 0.8, 1.0)` |
-| normal | InputVector | Normal      | `(0.0, 0.0, 0.0)`      |
+| normal | InputVector | Normal      | `None`                 |
 | weight | InputFloat  | Weight      | `0.0`                  |
 
 #### Attributes
@@ -1183,7 +1164,6 @@ Lambertian diffuse transmission
 | [`name`](#nodebpy.nodes.shader.shader.TranslucentBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.TranslucentBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.TranslucentBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.TranslucentBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.TranslucentBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1223,7 +1203,6 @@ Transparency without refraction, passing straight through the surface as if ther
 | [`name`](#nodebpy.nodes.shader.shader.TransparentBSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.shader.TransparentBSDF.node) |  |
 | [`o`](#nodebpy.nodes.shader.shader.TransparentBSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.shader.TransparentBSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.shader.TransparentBSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

@@ -29,7 +29,6 @@ Base class for all node wrappers.
 | [`name`](#nodebpy.builder.node.BaseNode.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.builder.node.BaseNode.node) |  |
 | [`o`](#nodebpy.builder.node.BaseNode.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.builder.node.BaseNode.outputs) |  |
 | [`tree`](#nodebpy.builder.node.BaseNode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 ### CustomCompositorGroup
@@ -49,7 +48,6 @@ Node group in a Compositor node tree.
 | [`node`](#nodebpy.builder.node.CustomCompositorGroup.node) |  |
 | [`node_tree`](#nodebpy.builder.node.CustomCompositorGroup.node_tree) |  |
 | [`o`](#nodebpy.builder.node.CustomCompositorGroup.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.builder.node.CustomCompositorGroup.outputs) |  |
 | [`tree`](#nodebpy.builder.node.CustomCompositorGroup.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -85,7 +83,6 @@ Node group in a Geometry Nodes tree.
 | [`node`](#nodebpy.builder.node.CustomGeometryGroup.node) |  |
 | [`node_tree`](#nodebpy.builder.node.CustomGeometryGroup.node_tree) |  |
 | [`o`](#nodebpy.builder.node.CustomGeometryGroup.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.builder.node.CustomGeometryGroup.outputs) |  |
 | [`tree`](#nodebpy.builder.node.CustomGeometryGroup.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -121,7 +118,6 @@ Node group in a Shader (Material) node tree.
 | [`node`](#nodebpy.builder.node.CustomShaderGroup.node) |  |
 | [`node_tree`](#nodebpy.builder.node.CustomShaderGroup.node_tree) |  |
 | [`o`](#nodebpy.builder.node.CustomShaderGroup.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.builder.node.CustomShaderGroup.outputs) |  |
 | [`tree`](#nodebpy.builder.node.CustomShaderGroup.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -165,7 +161,6 @@ Subclasses implement :meth:`_build_group` with the node-graph logic. Subclass on
 | [`node`](#nodebpy.builder.node.NodeGroupBuilder.node) |  |
 | [`node_tree`](#nodebpy.builder.node.NodeGroupBuilder.node_tree) | The internal node tree for this group node. |
 | [`o`](#nodebpy.builder.node.NodeGroupBuilder.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.builder.node.NodeGroupBuilder.outputs) |  |
 | [`tree`](#nodebpy.builder.node.NodeGroupBuilder.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods

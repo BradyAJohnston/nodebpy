@@ -21,8 +21,8 @@ Bump(
     strength=1.0,
     distance=0.001,
     filter_width=0.1,
-    height=1.0,
-    normal=(0.0, 0.0, 0.0),
+    height=None,
+    normal=None,
     *,
     invert=False,
 )
@@ -32,13 +32,13 @@ Generate a perturbed normal from a height texture for bump mapping. Typically us
 
 #### Parameters
 
-| Name         | Type        | Description  | Default           |
-|--------------|-------------|--------------|-------------------|
-| strength     | InputFloat  | Strength     | `1.0`             |
-| distance     | InputFloat  | Distance     | `0.001`           |
-| filter_width | InputFloat  | Filter Width | `0.1`             |
-| height       | InputFloat  | Height       | `1.0`             |
-| normal       | InputVector | Normal       | `(0.0, 0.0, 0.0)` |
+| Name         | Type        | Description  | Default |
+|--------------|-------------|--------------|---------|
+| strength     | InputFloat  | Strength     | `1.0`   |
+| distance     | InputFloat  | Distance     | `0.001` |
+| filter_width | InputFloat  | Filter Width | `0.1`   |
+| height       | InputFloat  | Height       | `None`  |
+| normal       | InputVector | Normal       | `None`  |
 
 #### Attributes
 
@@ -49,7 +49,6 @@ Generate a perturbed normal from a height texture for bump mapping. Typically us
 | [`name`](#nodebpy.nodes.shader.vector.Bump.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.Bump.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.Bump.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.vector.Bump.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.Bump.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -75,7 +74,7 @@ Displacement(
     height=0.0,
     midlevel=0.5,
     scale=0.01,
-    normal=(0.0, 0.0, 0.0),
+    normal=None,
     *,
     space='OBJECT',
 )
@@ -85,12 +84,12 @@ Displace the surface along the surface normal
 
 #### Parameters
 
-| Name     | Type        | Description | Default           |
-|----------|-------------|-------------|-------------------|
-| height   | InputFloat  | Height      | `0.0`             |
-| midlevel | InputFloat  | Midlevel    | `0.5`             |
-| scale    | InputFloat  | Scale       | `0.01`            |
-| normal   | InputVector | Normal      | `(0.0, 0.0, 0.0)` |
+| Name     | Type        | Description | Default |
+|----------|-------------|-------------|---------|
+| height   | InputFloat  | Height      | `0.0`   |
+| midlevel | InputFloat  | Midlevel    | `0.5`   |
+| scale    | InputFloat  | Scale       | `0.01`  |
+| normal   | InputVector | Normal      | `None`  |
 
 #### Attributes
 
@@ -100,7 +99,6 @@ Displace the surface along the surface normal
 | [`name`](#nodebpy.nodes.shader.vector.Displacement.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.Displacement.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.Displacement.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.vector.Displacement.outputs) |  |
 | [`space`](#nodebpy.nodes.shader.vector.Displacement.space) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.Displacement.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -151,7 +149,6 @@ Transform the input vector by applying translation, rotation, and scale
 | [`name`](#nodebpy.nodes.shader.vector.Mapping.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.Mapping.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.Mapping.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.vector.Mapping.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.Mapping.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`vector_type`](#nodebpy.nodes.shader.vector.Mapping.vector_type) |  |
 
@@ -243,7 +240,6 @@ Generate a normal vector and a dot product
 | [`name`](#nodebpy.nodes.shader.vector.Normal.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.Normal.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.Normal.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.vector.Normal.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.Normal.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -292,7 +288,6 @@ Generate a perturbed normal from an RGB normal map image. Typically used for fak
 | [`name`](#nodebpy.nodes.shader.vector.NormalMap.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.NormalMap.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.NormalMap.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.vector.NormalMap.outputs) |  |
 | [`space`](#nodebpy.nodes.shader.vector.NormalMap.space) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.NormalMap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`uv_map`](#nodebpy.nodes.shader.vector.NormalMap.uv_map) |  |
@@ -313,24 +308,18 @@ Generate a perturbed normal from an RGB normal map image. Typically used for fak
 ### VectorDisplacement
 
 ``` python
-VectorDisplacement(
-    vector=(0.8, 0.8, 0.8, 1.0),
-    midlevel=0.0,
-    scale=0.01,
-    *,
-    space='TANGENT',
-)
+VectorDisplacement(vector=None, midlevel=0.0, scale=0.01, *, space='TANGENT')
 ```
 
 Displace the surface along an arbitrary direction
 
 #### Parameters
 
-| Name     | Type       | Description | Default                |
-|----------|------------|-------------|------------------------|
-| vector   | InputColor | Vector      | `(0.8, 0.8, 0.8, 1.0)` |
-| midlevel | InputFloat | Midlevel    | `0.0`                  |
-| scale    | InputFloat | Scale       | `0.01`                 |
+| Name     | Type       | Description | Default |
+|----------|------------|-------------|---------|
+| vector   | InputColor | Vector      | `None`  |
+| midlevel | InputFloat | Midlevel    | `0.0`   |
+| scale    | InputFloat | Scale       | `0.01`  |
 
 #### Attributes
 
@@ -340,7 +329,6 @@ Displace the surface along an arbitrary direction
 | [`name`](#nodebpy.nodes.shader.vector.VectorDisplacement.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.VectorDisplacement.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.VectorDisplacement.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.vector.VectorDisplacement.outputs) |  |
 | [`space`](#nodebpy.nodes.shader.vector.VectorDisplacement.space) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.VectorDisplacement.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -388,7 +376,6 @@ Convert a vector, point, or normal between world, camera, and object coordinate 
 | [`name`](#nodebpy.nodes.shader.vector.VectorTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.vector.VectorTransform.node) |  |
 | [`o`](#nodebpy.nodes.shader.vector.VectorTransform.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.vector.VectorTransform.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.vector.VectorTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`vector_type`](#nodebpy.nodes.shader.vector.VectorTransform.vector_type) |  |
 
@@ -403,7 +390,7 @@ Convert a vector, point, or normal between world, camera, and object coordinate 
 ##### normal
 
 ``` python
-normal(vector=(0.5, 0.5, 0.5))
+normal(vector=(0.5, 0.5, 0.5), *, convert_from='WORLD', convert_to='OBJECT')
 ```
 
 Create Vector Transform with operation ‘Normal’. Transform a normal vector with unit length
@@ -411,7 +398,7 @@ Create Vector Transform with operation ‘Normal’. Transform a normal vector w
 ##### point
 
 ``` python
-point(vector=(0.5, 0.5, 0.5))
+point(vector=(0.5, 0.5, 0.5), *, convert_from='WORLD', convert_to='OBJECT')
 ```
 
 Create Vector Transform with operation ‘Point’. Transform a point
@@ -419,7 +406,7 @@ Create Vector Transform with operation ‘Point’. Transform a point
 ##### vector
 
 ``` python
-vector(vector=(0.5, 0.5, 0.5))
+vector(vector=(0.5, 0.5, 0.5), *, convert_from='WORLD', convert_to='OBJECT')
 ```
 
 Create Vector Transform with operation ‘Vector’. Transform a direction vector

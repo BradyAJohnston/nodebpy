@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.29.0</span>
+    <span class="navbar-title">nodebpy 520.30.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -857,10 +857,6 @@ i.value : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.AovOutput.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.output.AovOutput.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -924,14 +920,10 @@ i.value : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.LightOutput.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.output.LightOutput.target"><code>target</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.output.LightOutput.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1045,22 +1037,18 @@ i.value : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.target"><code>target</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.use_alpha"><code>use_alpha</code></a></td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="#nodebpy.nodes.shader.output.LineStyleOutput.use_clamp"><code>use_clamp</code></a></td>
 <td></td>
 </tr>
@@ -1105,8 +1093,8 @@ i.value : FloatSocket
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>MaterialOutput(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    surface<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    volume<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    displacement<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    displacement<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    thickness<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    is_active_output<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ALL'</span>,</span>
@@ -1140,13 +1128,13 @@ i.value : FloatSocket
 <td>displacement</td>
 <td>InputVector</td>
 <td>Displacement</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>thickness</td>
 <td>InputFloat</td>
 <td>Thickness</td>
-<td><code>0.0</code></td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>
@@ -1182,14 +1170,10 @@ i.value : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.MaterialOutput.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.output.MaterialOutput.target"><code>target</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.output.MaterialOutput.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1291,14 +1275,10 @@ i.value : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.output.WorldOutput.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.output.WorldOutput.target"><code>target</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.output.WorldOutput.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>

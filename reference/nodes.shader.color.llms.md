@@ -35,7 +35,6 @@ Control the brightness and contrast of the input color
 | [`name`](#nodebpy.nodes.shader.color.BrightnessContrast.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.color.BrightnessContrast.node) |  |
 | [`o`](#nodebpy.nodes.shader.color.BrightnessContrast.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.color.BrightnessContrast.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.color.BrightnessContrast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -84,7 +83,6 @@ Apply a color transformation in the HSV color model
 | [`name`](#nodebpy.nodes.shader.color.HueSaturationValue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.color.HueSaturationValue.node) |  |
 | [`o`](#nodebpy.nodes.shader.color.HueSaturationValue.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.color.HueSaturationValue.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.color.HueSaturationValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -126,7 +124,6 @@ Invert a color, producing a negative
 | [`name`](#nodebpy.nodes.shader.color.InvertColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.color.InvertColor.node) |  |
 | [`o`](#nodebpy.nodes.shader.color.InvertColor.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.color.InvertColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.color.InvertColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -165,7 +162,6 @@ Manipulate how light intensity decreases over distance. Typically used for non-p
 | [`name`](#nodebpy.nodes.shader.color.LightFalloff.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.color.LightFalloff.node) |  |
 | [`o`](#nodebpy.nodes.shader.color.LightFalloff.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.color.LightFalloff.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.color.LightFalloff.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

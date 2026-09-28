@@ -51,7 +51,6 @@ Overlay a foreground image onto a background image
 | [`name`](#nodebpy.nodes.compositor.color.AlphaOver.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.AlphaOver.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.AlphaOver.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.AlphaOver.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.AlphaOver.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -120,18 +119,18 @@ Create Alpha Over node with type ‘Over’.
 ### BrightnessContrast
 
 ``` python
-BrightnessContrast(image=(1.0, 1.0, 1.0, 1.0), bright=0.0, contrast=0.0)
+BrightnessContrast(image=None, bright=0.0, contrast=0.0)
 ```
 
 Adjust brightness and contrast
 
 #### Parameters
 
-| Name     | Type       | Description | Default                |
-|----------|------------|-------------|------------------------|
-| image    | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| bright   | InputFloat | Brightness  | `0.0`                  |
-| contrast | InputFloat | Contrast    | `0.0`                  |
+| Name     | Type       | Description | Default |
+|----------|------------|-------------|---------|
+| image    | InputColor | Image       | `None`  |
+| bright   | InputFloat | Brightness  | `0.0`   |
+| contrast | InputFloat | Contrast    | `0.0`   |
 
 #### Attributes
 
@@ -141,7 +140,6 @@ Adjust brightness and contrast
 | [`name`](#nodebpy.nodes.compositor.color.BrightnessContrast.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.BrightnessContrast.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.BrightnessContrast.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.BrightnessContrast.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.BrightnessContrast.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -162,7 +160,7 @@ Adjust brightness and contrast
 
 ``` python
 ColorBalance(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     fac=1.0,
     type='Lift/Gamma/Gain',
     base_lift=0.0,
@@ -193,7 +191,7 @@ Adjust color and values
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | fac | InputFloat | Factor | `1.0` |
 | type | InputMenu \| Literal\['Lift/Gamma/Gain', 'Offset/Power/Slope (ASC-CDL)', 'White Point'\] | Type | `'Lift/Gamma/Gain'` |
 | base_lift | InputFloat | Lift | `0.0` |
@@ -223,7 +221,6 @@ Adjust color and values
 | [`node`](#nodebpy.nodes.compositor.color.ColorBalance.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.ColorBalance.o) |  |
 | [`output_whitepoint`](#nodebpy.nodes.compositor.color.ColorBalance.output_whitepoint) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.ColorBalance.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.ColorBalance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -238,7 +235,7 @@ Adjust color and values
 
 ``` python
 lift_gamma_gain(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     fac=1.0,
     base_lift=0.0,
     color_lift=(1.0, 1.0, 1.0, 1.0),
@@ -246,6 +243,9 @@ lift_gamma_gain(
     color_gamma=(1.0, 1.0, 1.0, 1.0),
     base_gain=1.0,
     color_gain=(1.0, 1.0, 1.0, 1.0),
+    *,
+    input_whitepoint=(0.735, 0.735, 0.735),
+    output_whitepoint=(0.735, 0.735, 0.735),
 )
 ```
 
@@ -255,7 +255,7 @@ Create Color Balance node with type ‘Lift/Gamma/Gain’.
 
 ``` python
 offset_power_slope_asc_cdl(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     fac=1.0,
     base_offset=0.0,
     color_offset=(0.0, 0.0, 0.0, 1.0),
@@ -263,6 +263,9 @@ offset_power_slope_asc_cdl(
     color_power=(1.0, 1.0, 1.0, 1.0),
     base_slope=1.0,
     color_slope=(1.0, 1.0, 1.0, 1.0),
+    *,
+    input_whitepoint=(0.735, 0.735, 0.735),
+    output_whitepoint=(0.735, 0.735, 0.735),
 )
 ```
 
@@ -272,12 +275,15 @@ Create Color Balance node with type ‘Offset/Power/Slope (ASC-CDL)’.
 
 ``` python
 white_point(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     fac=1.0,
     input_temperature=6500.0,
     input_tint=10.0,
     output_temperature=6500.0,
     output_tint=10.0,
+    *,
+    input_whitepoint=(0.735, 0.735, 0.735),
+    output_whitepoint=(0.735, 0.735, 0.735),
 )
 ```
 
@@ -317,7 +323,7 @@ Create Color Balance node with type ‘White Point’.
 
 ``` python
 ColorCorrection(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     mask=1.0,
     master_saturation=1.0,
     master_contrast=1.0,
@@ -351,35 +357,35 @@ Adjust the color of an image, separately in several tonal ranges (highlights, mi
 
 #### Parameters
 
-| Name                  | Type         | Description    | Default                |
-|-----------------------|--------------|----------------|------------------------|
-| image                 | InputColor   | Image          | `(1.0, 1.0, 1.0, 1.0)` |
-| mask                  | InputFloat   | Mask           | `1.0`                  |
-| master_saturation     | InputFloat   | Saturation     | `1.0`                  |
-| master_contrast       | InputFloat   | Contrast       | `1.0`                  |
-| master_gamma          | InputFloat   | Gamma          | `1.0`                  |
-| master_gain           | InputFloat   | Gain           | `1.0`                  |
-| master_offset         | InputFloat   | Offset         | `0.0`                  |
-| highlights_saturation | InputFloat   | Saturation     | `1.0`                  |
-| highlights_contrast   | InputFloat   | Contrast       | `1.0`                  |
-| highlights_gamma      | InputFloat   | Gamma          | `1.0`                  |
-| highlights_gain       | InputFloat   | Gain           | `1.0`                  |
-| highlights_offset     | InputFloat   | Offset         | `0.0`                  |
-| midtones_saturation   | InputFloat   | Saturation     | `1.0`                  |
-| midtones_contrast     | InputFloat   | Contrast       | `1.0`                  |
-| midtones_gamma        | InputFloat   | Gamma          | `1.0`                  |
-| midtones_gain         | InputFloat   | Gain           | `1.0`                  |
-| midtones_offset       | InputFloat   | Offset         | `0.0`                  |
-| shadows_saturation    | InputFloat   | Saturation     | `1.0`                  |
-| shadows_contrast      | InputFloat   | Contrast       | `1.0`                  |
-| shadows_gamma         | InputFloat   | Gamma          | `1.0`                  |
-| shadows_gain          | InputFloat   | Gain           | `1.0`                  |
-| shadows_offset        | InputFloat   | Offset         | `0.0`                  |
-| midtones_start        | InputFloat   | Midtones Start | `0.2`                  |
-| midtones_end          | InputFloat   | Midtones End   | `0.7`                  |
-| apply_on_red          | InputBoolean | Red            | `True`                 |
-| apply_on_green        | InputBoolean | Green          | `True`                 |
-| apply_on_blue         | InputBoolean | Blue           | `True`                 |
+| Name                  | Type         | Description    | Default |
+|-----------------------|--------------|----------------|---------|
+| image                 | InputColor   | Image          | `None`  |
+| mask                  | InputFloat   | Mask           | `1.0`   |
+| master_saturation     | InputFloat   | Saturation     | `1.0`   |
+| master_contrast       | InputFloat   | Contrast       | `1.0`   |
+| master_gamma          | InputFloat   | Gamma          | `1.0`   |
+| master_gain           | InputFloat   | Gain           | `1.0`   |
+| master_offset         | InputFloat   | Offset         | `0.0`   |
+| highlights_saturation | InputFloat   | Saturation     | `1.0`   |
+| highlights_contrast   | InputFloat   | Contrast       | `1.0`   |
+| highlights_gamma      | InputFloat   | Gamma          | `1.0`   |
+| highlights_gain       | InputFloat   | Gain           | `1.0`   |
+| highlights_offset     | InputFloat   | Offset         | `0.0`   |
+| midtones_saturation   | InputFloat   | Saturation     | `1.0`   |
+| midtones_contrast     | InputFloat   | Contrast       | `1.0`   |
+| midtones_gamma        | InputFloat   | Gamma          | `1.0`   |
+| midtones_gain         | InputFloat   | Gain           | `1.0`   |
+| midtones_offset       | InputFloat   | Offset         | `0.0`   |
+| shadows_saturation    | InputFloat   | Saturation     | `1.0`   |
+| shadows_contrast      | InputFloat   | Contrast       | `1.0`   |
+| shadows_gamma         | InputFloat   | Gamma          | `1.0`   |
+| shadows_gain          | InputFloat   | Gain           | `1.0`   |
+| shadows_offset        | InputFloat   | Offset         | `0.0`   |
+| midtones_start        | InputFloat   | Midtones Start | `0.2`   |
+| midtones_end          | InputFloat   | Midtones End   | `0.7`   |
+| apply_on_red          | InputBoolean | Red            | `True`  |
+| apply_on_green        | InputBoolean | Green          | `True`  |
+| apply_on_blue         | InputBoolean | Blue           | `True`  |
 
 #### Attributes
 
@@ -389,7 +395,6 @@ Adjust the color of an image, separately in several tonal ranges (highlights, mi
 | [`name`](#nodebpy.nodes.compositor.color.ColorCorrection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.ColorCorrection.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.ColorCorrection.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.ColorCorrection.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.ColorCorrection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -464,7 +469,6 @@ Combine two images using depth maps
 | [`name`](#nodebpy.nodes.compositor.color.DepthCombine.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.DepthCombine.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.DepthCombine.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.DepthCombine.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.DepthCombine.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -488,17 +492,17 @@ Combine two images using depth maps
 ### Exposure
 
 ``` python
-Exposure(image=(1.0, 1.0, 1.0, 1.0), exposure=0.0)
+Exposure(image=None, exposure=0.0)
 ```
 
 Adjust brightness using a camera exposure parameter
 
 #### Parameters
 
-| Name     | Type       | Description | Default                |
-|----------|------------|-------------|------------------------|
-| image    | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| exposure | InputFloat | Exposure    | `0.0`                  |
+| Name     | Type       | Description | Default |
+|----------|------------|-------------|---------|
+| image    | InputColor | Image       | `None`  |
+| exposure | InputFloat | Exposure    | `0.0`   |
 
 #### Attributes
 
@@ -508,7 +512,6 @@ Adjust brightness using a camera exposure parameter
 | [`name`](#nodebpy.nodes.compositor.color.Exposure.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.Exposure.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Exposure.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.Exposure.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.Exposure.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -547,7 +550,6 @@ Adjust hue, saturation, and value with a curve
 | [`name`](#nodebpy.nodes.compositor.color.HueCorrect.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.HueCorrect.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.HueCorrect.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.HueCorrect.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.HueCorrect.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -566,26 +568,20 @@ Adjust hue, saturation, and value with a curve
 ### HueSaturationValue
 
 ``` python
-HueSaturationValue(
-    image=(1.0, 1.0, 1.0, 1.0),
-    hue=0.5,
-    saturation=1.0,
-    value=1.0,
-    fac=1.0,
-)
+HueSaturationValue(image=None, hue=0.5, saturation=1.0, value=1.0, fac=1.0)
 ```
 
 Apply a color transformation in the HSV color model
 
 #### Parameters
 
-| Name       | Type       | Description | Default                |
-|------------|------------|-------------|------------------------|
-| image      | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| hue        | InputFloat | Hue         | `0.5`                  |
-| saturation | InputFloat | Saturation  | `1.0`                  |
-| value      | InputFloat | Value       | `1.0`                  |
-| fac        | InputFloat | Factor      | `1.0`                  |
+| Name       | Type       | Description | Default |
+|------------|------------|-------------|---------|
+| image      | InputColor | Image       | `None`  |
+| hue        | InputFloat | Hue         | `0.5`   |
+| saturation | InputFloat | Saturation  | `1.0`   |
+| value      | InputFloat | Value       | `1.0`   |
+| fac        | InputFloat | Factor      | `1.0`   |
 
 #### Attributes
 
@@ -595,7 +591,6 @@ Apply a color transformation in the HSV color model
 | [`name`](#nodebpy.nodes.compositor.color.HueSaturationValue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.HueSaturationValue.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.HueSaturationValue.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.HueSaturationValue.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.HueSaturationValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -617,24 +612,19 @@ Apply a color transformation in the HSV color model
 ### InvertColor
 
 ``` python
-InvertColor(
-    color=(1.0, 1.0, 1.0, 1.0),
-    fac=1.0,
-    invert_color=True,
-    invert_alpha=False,
-)
+InvertColor(color=None, fac=1.0, invert_color=True, invert_alpha=False)
 ```
 
 Invert colors, producing a negative
 
 #### Parameters
 
-| Name         | Type         | Description  | Default                |
-|--------------|--------------|--------------|------------------------|
-| color        | InputColor   | Color        | `(1.0, 1.0, 1.0, 1.0)` |
-| fac          | InputFloat   | Factor       | `1.0`                  |
-| invert_color | InputBoolean | Invert Color | `True`                 |
-| invert_alpha | InputBoolean | Invert Alpha | `False`                |
+| Name         | Type         | Description  | Default |
+|--------------|--------------|--------------|---------|
+| color        | InputColor   | Color        | `None`  |
+| fac          | InputFloat   | Factor       | `1.0`   |
+| invert_color | InputBoolean | Invert Color | `True`  |
+| invert_alpha | InputBoolean | Invert Alpha | `False` |
 
 #### Attributes
 
@@ -644,7 +634,6 @@ Invert colors, producing a negative
 | [`name`](#nodebpy.nodes.compositor.color.InvertColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.InvertColor.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.InvertColor.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.InvertColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.InvertColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -665,17 +654,17 @@ Invert colors, producing a negative
 ### Posterize
 
 ``` python
-Posterize(image=(1.0, 1.0, 1.0, 1.0), steps=8.0)
+Posterize(image=None, steps=8.0)
 ```
 
 Reduce number of colors in an image, converting smooth gradients into sharp transitions
 
 #### Parameters
 
-| Name  | Type       | Description | Default                |
-|-------|------------|-------------|------------------------|
-| image | InputColor | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| steps | InputFloat | Steps       | `8.0`                  |
+| Name  | Type       | Description | Default |
+|-------|------------|-------------|---------|
+| image | InputColor | Image       | `None`  |
+| steps | InputFloat | Steps       | `8.0`   |
 
 #### Attributes
 
@@ -685,7 +674,6 @@ Reduce number of colors in an image, converting smooth gradients into sharp tran
 | [`name`](#nodebpy.nodes.compositor.color.Posterize.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.Posterize.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Posterize.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.Posterize.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.Posterize.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -731,7 +719,6 @@ Perform level adjustments on each color channel of an image
 | [`name`](#nodebpy.nodes.compositor.color.RGBCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.RGBCurves.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.RGBCurves.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.RGBCurves.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.RGBCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -753,7 +740,7 @@ Perform level adjustments on each color channel of an image
 
 ``` python
 Tonemap(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     type='R/D Photoreceptor',
     key=0.18,
     balance=1.0,
@@ -771,7 +758,7 @@ Map one set of colors to another in order to approximate the appearance of high 
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | type | InputMenu \| Literal\['R/D Photoreceptor', 'Rh Simple'\] | Type | `'R/D Photoreceptor'` |
 | key | InputFloat | Key | `0.18` |
 | balance | InputFloat | Balance | `1.0` |
@@ -789,7 +776,6 @@ Map one set of colors to another in order to approximate the appearance of high 
 | [`name`](#nodebpy.nodes.compositor.color.Tonemap.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.color.Tonemap.node) |  |
 | [`o`](#nodebpy.nodes.compositor.color.Tonemap.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.color.Tonemap.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.color.Tonemap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -803,7 +789,7 @@ Map one set of colors to another in order to approximate the appearance of high 
 
 ``` python
 r_d_photoreceptor(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     intensity=0.0,
     contrast=0.0,
     light_adaptation=0.0,
@@ -816,7 +802,7 @@ Create Tonemap node with type ‘R/D Photoreceptor’.
 ##### rh_simple
 
 ``` python
-rh_simple(image=(1.0, 1.0, 1.0, 1.0), key=0.18, balance=1.0, gamma=1.0)
+rh_simple(image=None, key=0.18, balance=1.0, gamma=1.0)
 ```
 
 Create Tonemap node with type ‘Rh Simple’.

@@ -12,17 +12,17 @@
 ### Gamma
 
 ``` python
-Gamma(color=(1.0, 1.0, 1.0, 1.0), gamma=1.0)
+Gamma(color=None, gamma=1.0)
 ```
 
 Apply a gamma correction
 
 #### Parameters
 
-| Name  | Type       | Description | Default                |
-|-------|------------|-------------|------------------------|
-| color | InputColor | Color       | `(1.0, 1.0, 1.0, 1.0)` |
-| gamma | InputFloat | Gamma       | `1.0`                  |
+| Name  | Type       | Description | Default |
+|-------|------------|-------------|---------|
+| color | InputColor | Color       | `None`  |
+| gamma | InputFloat | Gamma       | `1.0`   |
 
 #### Attributes
 
@@ -32,7 +32,6 @@ Apply a gamma correction
 | [`name`](#nodebpy.nodes.geometry.color.Gamma.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.color.Gamma.node) |  |
 | [`o`](#nodebpy.nodes.geometry.color.Gamma.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.color.Gamma.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.color.Gamma.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -71,7 +70,6 @@ Apply color corrections for each color channel
 | [`name`](#nodebpy.nodes.geometry.color.RGBCurves.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.color.RGBCurves.node) |  |
 | [`o`](#nodebpy.nodes.geometry.color.RGBCurves.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.color.RGBCurves.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.color.RGBCurves.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

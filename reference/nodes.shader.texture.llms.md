@@ -15,7 +15,7 @@
 
 ``` python
 EnvironmentTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     *,
     projection='EQUIRECTANGULAR',
     interpolation='Linear',
@@ -26,9 +26,9 @@ Sample an image file as an environment texture. Typically used to light the scen
 
 #### Parameters
 
-| Name   | Type        | Description | Default           |
-|--------|-------------|-------------|-------------------|
-| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| vector | InputVector | Vector      | `None`  |
 
 #### Attributes
 
@@ -39,7 +39,6 @@ Sample an image file as an environment texture. Typically used to light the scen
 | [`name`](#nodebpy.nodes.shader.texture.EnvironmentTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.EnvironmentTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.EnvironmentTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.texture.EnvironmentTexture.outputs) |  |
 | [`projection`](#nodebpy.nodes.shader.texture.EnvironmentTexture.projection) |  |
 | [`tree`](#nodebpy.nodes.shader.texture.EnvironmentTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -58,23 +57,17 @@ Sample an image file as an environment texture. Typically used to light the scen
 ### IesTexture
 
 ``` python
-IesTexture(
-    vector=(0.0, 0.0, 0.0),
-    strength=1.0,
-    *,
-    filepath='',
-    mode='INTERNAL',
-)
+IesTexture(vector=None, strength=1.0, *, filepath='', mode='INTERNAL')
 ```
 
 Match real world lights with IES files, which store the directional intensity distribution of light sources
 
 #### Parameters
 
-| Name     | Type        | Description | Default           |
-|----------|-------------|-------------|-------------------|
-| vector   | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
-| strength | InputFloat  | Strength    | `1.0`             |
+| Name     | Type        | Description | Default |
+|----------|-------------|-------------|---------|
+| vector   | InputVector | Vector      | `None`  |
+| strength | InputFloat  | Strength    | `1.0`   |
 
 #### Attributes
 
@@ -86,7 +79,6 @@ Match real world lights with IES files, which store the directional intensity di
 | [`name`](#nodebpy.nodes.shader.texture.IesTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.IesTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.IesTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.texture.IesTexture.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.texture.IesTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -99,7 +91,7 @@ Match real world lights with IES files, which store the directional intensity di
 ##### external
 
 ``` python
-external(vector=(0.0, 0.0, 0.0), strength=1.0)
+external(vector=None, strength=1.0, *, filepath='')
 ```
 
 Create IES Texture with operation ‘External’. Use external .ies file
@@ -107,7 +99,7 @@ Create IES Texture with operation ‘External’. Use external .ies file
 ##### internal
 
 ``` python
-internal(vector=(0.0, 0.0, 0.0), strength=1.0)
+internal(vector=None, strength=1.0)
 ```
 
 Create IES Texture with operation ‘Internal’. Use internal text data-block
@@ -129,7 +121,7 @@ Create IES Texture with operation ‘Internal’. Use internal text data-block
 
 ``` python
 ImageTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     *,
     projection='FLAT',
     interpolation='Linear',
@@ -142,9 +134,9 @@ Sample an image file as a texture
 
 #### Parameters
 
-| Name   | Type        | Description | Default           |
-|--------|-------------|-------------|-------------------|
-| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| vector | InputVector | Vector      | `None`  |
 
 #### Attributes
 
@@ -156,7 +148,6 @@ Sample an image file as a texture
 | [`name`](#nodebpy.nodes.shader.texture.ImageTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.ImageTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.ImageTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.texture.ImageTexture.outputs) |  |
 | [`projection`](#nodebpy.nodes.shader.texture.ImageTexture.projection) |  |
 | [`projection_blend`](#nodebpy.nodes.shader.texture.ImageTexture.projection_blend) |  |
 | [`tree`](#nodebpy.nodes.shader.texture.ImageTexture.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -178,7 +169,7 @@ Sample an image file as a texture
 
 ``` python
 SkyTexture(
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     *,
     sky_type='MULTIPLE_SCATTERING',
     sun_disc=True,
@@ -200,9 +191,9 @@ Generate a procedural sky texture
 
 #### Parameters
 
-| Name   | Type        | Description | Default           |
-|--------|-------------|-------------|-------------------|
-| vector | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| Name   | Type        | Description | Default |
+|--------|-------------|-------------|---------|
+| vector | InputVector | Vector      | `None`  |
 
 #### Attributes
 
@@ -216,7 +207,6 @@ Generate a procedural sky texture
 | [`name`](#nodebpy.nodes.shader.texture.SkyTexture.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.texture.SkyTexture.node) |  |
 | [`o`](#nodebpy.nodes.shader.texture.SkyTexture.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.texture.SkyTexture.outputs) |  |
 | [`ozone_density`](#nodebpy.nodes.shader.texture.SkyTexture.ozone_density) |  |
 | [`sky_type`](#nodebpy.nodes.shader.texture.SkyTexture.sky_type) |  |
 | [`sun_direction`](#nodebpy.nodes.shader.texture.SkyTexture.sun_direction) |  |
@@ -240,7 +230,13 @@ Generate a procedural sky texture
 ##### hosek_wilkie
 
 ``` python
-hosek_wilkie(vector=(0.0, 0.0, 0.0))
+hosek_wilkie(
+    vector=None,
+    *,
+    sun_direction=(0.0, 0.0, 1.0),
+    turbidity=0.0,
+    ground_albedo=0.0,
+)
 ```
 
 Create Sky Texture with operation ‘Hosek / Wilkie’. Hosek / Wilkie 2012 (Legacy)
@@ -248,7 +244,17 @@ Create Sky Texture with operation ‘Hosek / Wilkie’. Hosek / Wilkie 2012 (Leg
 ##### multiple_scattering
 
 ``` python
-multiple_scattering()
+multiple_scattering(
+    sun_disc=True,
+    sun_size=0.0095120445,
+    sun_intensity=1.0,
+    sun_elevation=math.pi / 12,
+    sun_rotation=0.0,
+    altitude=100.0,
+    air_density=1.0,
+    aerosol_density=1.0,
+    ozone_density=1.0,
+)
 ```
 
 Create Sky Texture with operation ‘Multiple Scattering’. Multiple scattering sky model (more accurate)
@@ -256,7 +262,7 @@ Create Sky Texture with operation ‘Multiple Scattering’. Multiple scattering
 ##### preetham
 
 ``` python
-preetham(vector=(0.0, 0.0, 0.0))
+preetham(vector=None, *, sun_direction=(0.0, 0.0, 1.0), turbidity=0.0)
 ```
 
 Create Sky Texture with operation ‘Preetham’. Preetham 1999 (Legacy)
@@ -264,7 +270,17 @@ Create Sky Texture with operation ‘Preetham’. Preetham 1999 (Legacy)
 ##### single_scattering
 
 ``` python
-single_scattering()
+single_scattering(
+    sun_disc=True,
+    sun_size=0.0095120445,
+    sun_intensity=1.0,
+    sun_elevation=math.pi / 12,
+    sun_rotation=0.0,
+    altitude=100.0,
+    air_density=1.0,
+    aerosol_density=1.0,
+    ozone_density=1.0,
+)
 ```
 
 Create Sky Texture with operation ‘Single Scattering’. Single scattering sky model

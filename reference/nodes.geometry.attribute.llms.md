@@ -14,7 +14,7 @@
 ### BlurAttribute
 
 ``` python
-BlurAttribute(value=0.0, iterations=1, weight=1.0, *, data_type='FLOAT')
+BlurAttribute(value=None, iterations=1, weight=1.0, *, data_type='FLOAT')
 ```
 
 Mix attribute values of neighboring elements
@@ -23,7 +23,7 @@ Mix attribute values of neighboring elements
 
 | Name       | Type         | Description | Default |
 |------------|--------------|-------------|---------|
-| value      | InputFloat   | Value       | `0.0`   |
+| value      | InputFloat   | Value       | `None`  |
 | iterations | InputInteger | Iterations  | `1`     |
 | weight     | InputFloat   | Weight      | `1.0`   |
 
@@ -36,7 +36,6 @@ Mix attribute values of neighboring elements
 | [`name`](#nodebpy.nodes.geometry.attribute.BlurAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.attribute.BlurAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.BlurAttribute.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.attribute.BlurAttribute.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.attribute.BlurAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -51,7 +50,7 @@ Mix attribute values of neighboring elements
 ##### color
 
 ``` python
-color(value=(0.8, 0.8, 0.8, 1.0), iterations=1, weight=1.0)
+color(value=None, iterations=1, weight=1.0)
 ```
 
 Create Blur Attribute with operation ‘Color’. RGBA color with 32-bit floating-point values
@@ -59,7 +58,7 @@ Create Blur Attribute with operation ‘Color’. RGBA color with 32-bit floatin
 ##### float
 
 ``` python
-float(value=0.0, iterations=1, weight=1.0)
+float(value=None, iterations=1, weight=1.0)
 ```
 
 Create Blur Attribute with operation ‘Float’. Floating-point value
@@ -67,7 +66,7 @@ Create Blur Attribute with operation ‘Float’. Floating-point value
 ##### integer
 
 ``` python
-integer(value=0, iterations=1, weight=1.0)
+integer(value=None, iterations=1, weight=1.0)
 ```
 
 Create Blur Attribute with operation ‘Integer’. 32-bit integer
@@ -75,7 +74,7 @@ Create Blur Attribute with operation ‘Integer’. 32-bit integer
 ##### vector
 
 ``` python
-vector(value=(0.0, 0.0, 0.0), iterations=1, weight=1.0)
+vector(value=None, iterations=1, weight=1.0)
 ```
 
 Create Blur Attribute with operation ‘Vector’. 3D vector with floating-point values
@@ -117,7 +116,6 @@ Retrieve the number of elements in a geometry for each attribute domain
 | [`name`](#nodebpy.nodes.geometry.attribute.DomainSize.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.attribute.DomainSize.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.DomainSize.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.attribute.DomainSize.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.attribute.DomainSize.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -170,7 +168,6 @@ Retrieves attribute names as a list of strings
 | [`name`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.attribute.GetAttributeNames.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -213,7 +210,6 @@ Delete an attribute with a specified name from a geometry. Typically used to opt
 | [`name`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.node) |  |
 | [`o`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.attribute.RemoveNamedAttribute.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

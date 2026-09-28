@@ -24,7 +24,7 @@
 ### AlphaConvert
 
 ``` python
-AlphaConvert(image=(1.0, 1.0, 1.0, 1.0), type='To Premultiplied')
+AlphaConvert(image=None, type='To Premultiplied')
 ```
 
 Convert to and from premultiplied (associated) alpha
@@ -33,7 +33,7 @@ Convert to and from premultiplied (associated) alpha
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | type | InputMenu \| Literal\['To Premultiplied', 'To Straight'\] | Type | `'To Premultiplied'` |
 
 #### Attributes
@@ -44,7 +44,6 @@ Convert to and from premultiplied (associated) alpha
 | [`name`](#nodebpy.nodes.compositor.converter.AlphaConvert.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.AlphaConvert.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.AlphaConvert.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.AlphaConvert.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.AlphaConvert.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -57,7 +56,7 @@ Convert to and from premultiplied (associated) alpha
 ##### to_premultiplied
 
 ``` python
-to_premultiplied(image=(1.0, 1.0, 1.0, 1.0))
+to_premultiplied(image=None)
 ```
 
 Create Alpha Convert node with type ‘To Premultiplied’.
@@ -65,7 +64,7 @@ Create Alpha Convert node with type ‘To Premultiplied’.
 ##### to_straight
 
 ``` python
-to_straight(image=(1.0, 1.0, 1.0, 1.0))
+to_straight(image=None)
 ```
 
 Create Alpha Convert node with type ‘To Straight’.
@@ -117,7 +116,6 @@ Combine an image from its composite color channels
 | [`name`](#nodebpy.nodes.compositor.converter.CombineColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.CombineColor.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.CombineColor.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.CombineColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.CombineColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`ycc_mode`](#nodebpy.nodes.compositor.converter.CombineColor.ycc_mode) |  |
 
@@ -134,7 +132,7 @@ Combine an image from its composite color channels
 ##### hsl
 
 ``` python
-hsl(red=0.0, green=0.0, blue=0.0, alpha=1.0)
+hsl(red=0.0, green=0.0, blue=0.0, alpha=1.0, *, ycc_mode='ITUBT709')
 ```
 
 Create Combine Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing
@@ -142,7 +140,7 @@ Create Combine Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightne
 ##### hsv
 
 ``` python
-hsv(red=0.0, green=0.0, blue=0.0, alpha=1.0)
+hsv(red=0.0, green=0.0, blue=0.0, alpha=1.0, *, ycc_mode='ITUBT709')
 ```
 
 Create Combine Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing
@@ -150,7 +148,7 @@ Create Combine Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) 
 ##### rgb
 
 ``` python
-rgb(red=0.0, green=0.0, blue=0.0, alpha=1.0)
+rgb(red=0.0, green=0.0, blue=0.0, alpha=1.0, *, ycc_mode='ITUBT709')
 ```
 
 Create Combine Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing
@@ -158,7 +156,7 @@ Create Combine Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color 
 ##### ycbcr
 
 ``` python
-ycbcr(red=0.0, green=0.0, blue=0.0, alpha=1.0)
+ycbcr(red=0.0, green=0.0, blue=0.0, alpha=1.0, *, ycc_mode='ITUBT709')
 ```
 
 Create Combine Color with operation ‘YCbCr’. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing
@@ -166,7 +164,7 @@ Create Combine Color with operation ‘YCbCr’. Use YCbCr (Y - luma, Cb - blue-
 ##### yuv
 
 ``` python
-yuv(red=0.0, green=0.0, blue=0.0, alpha=1.0)
+yuv(red=0.0, green=0.0, blue=0.0, alpha=1.0, *, ycc_mode='ITUBT709')
 ```
 
 Create Combine Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) color processing
@@ -209,7 +207,6 @@ Convert from scene linear to display color space, with a view transform and look
 | [`name`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.ConvertToDisplay.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -249,7 +246,6 @@ Create a matte from an object or material index pass
 | [`name`](#nodebpy.nodes.compositor.converter.IDMask.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.IDMask.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.IDMask.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.IDMask.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.IDMask.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -289,7 +285,6 @@ Implicitly convert the input value to a fixed socket type
 | [`name`](#nodebpy.nodes.compositor.converter.ImplicitConversion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.ImplicitConversion.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.ImplicitConversion.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.ImplicitConversion.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.ImplicitConversion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -450,7 +445,6 @@ Choose between an arbitrary number of values with an index
 | [`name`](#nodebpy.nodes.compositor.converter.IndexSwitch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.IndexSwitch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.IndexSwitch.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.IndexSwitch.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.IndexSwitch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -609,7 +603,6 @@ Compute average and standard deviation of pixel values
 | [`name`](#nodebpy.nodes.compositor.converter.Levels.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.Levels.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Levels.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.Levels.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.Levels.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -650,7 +643,6 @@ Convert RGB input into grayscale using luminance
 | [`name`](#nodebpy.nodes.compositor.converter.RGBToBW.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.RGBToBW.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.RGBToBW.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.RGBToBW.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.RGBToBW.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -697,7 +689,6 @@ Converts values that are relative to the image size to be in terms of pixels
 | [`name`](#nodebpy.nodes.compositor.converter.RelativeToPixel.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.RelativeToPixel.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.RelativeToPixel.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.RelativeToPixel.outputs) |  |
 | [`reference_dimension`](#nodebpy.nodes.compositor.converter.RelativeToPixel.reference_dimension) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.RelativeToPixel.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -711,7 +702,7 @@ Converts values that are relative to the image size to be in terms of pixels
 ##### float
 
 ``` python
-float(float_value=0.0, image=(0.8, 0.8, 0.8, 1.0))
+float(float_value=0.0, image=(0.8, 0.8, 0.8, 1.0), *, reference_dimension='X')
 ```
 
 Create Relative To Pixel with operation ‘Float’. Float value
@@ -719,7 +710,12 @@ Create Relative To Pixel with operation ‘Float’. Float value
 ##### vector
 
 ``` python
-vector(vector_value=(0.0, 0.0), image=(0.8, 0.8, 0.8, 1.0))
+vector(
+    vector_value=(0.0, 0.0),
+    image=(0.8, 0.8, 0.8, 1.0),
+    *,
+    reference_dimension='X',
+)
 ```
 
 Create Relative To Pixel with operation ‘Vector’. Vector value
@@ -762,7 +758,6 @@ Split an image into its composite color channels
 | [`name`](#nodebpy.nodes.compositor.converter.SeparateColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.SeparateColor.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.SeparateColor.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.SeparateColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.SeparateColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`ycc_mode`](#nodebpy.nodes.compositor.converter.SeparateColor.ycc_mode) |  |
 
@@ -779,7 +774,7 @@ Split an image into its composite color channels
 ##### hsl
 
 ``` python
-hsl(image=(1.0, 1.0, 1.0, 1.0))
+hsl(image=(1.0, 1.0, 1.0, 1.0), *, ycc_mode='ITUBT709')
 ```
 
 Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing
@@ -787,7 +782,7 @@ Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightn
 ##### hsv
 
 ``` python
-hsv(image=(1.0, 1.0, 1.0, 1.0))
+hsv(image=(1.0, 1.0, 1.0, 1.0), *, ycc_mode='ITUBT709')
 ```
 
 Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing
@@ -795,7 +790,7 @@ Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value)
 ##### rgb
 
 ``` python
-rgb(image=(1.0, 1.0, 1.0, 1.0))
+rgb(image=(1.0, 1.0, 1.0, 1.0), *, ycc_mode='ITUBT709')
 ```
 
 Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing
@@ -803,7 +798,7 @@ Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color
 ##### ycbcr
 
 ``` python
-ycbcr(image=(1.0, 1.0, 1.0, 1.0))
+ycbcr(image=(1.0, 1.0, 1.0, 1.0), *, ycc_mode='ITUBT709')
 ```
 
 Create Separate Color with operation ‘YCbCr’. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing
@@ -811,7 +806,7 @@ Create Separate Color with operation ‘YCbCr’. Use YCbCr (Y - luma, Cb - blue
 ##### yuv
 
 ``` python
-yuv(image=(1.0, 1.0, 1.0, 1.0))
+yuv(image=(1.0, 1.0, 1.0, 1.0), *, ycc_mode='ITUBT709')
 ```
 
 Create Separate Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) color processing
@@ -834,7 +829,7 @@ Create Separate Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma)
 ### SetAlpha
 
 ``` python
-SetAlpha(image=(1.0, 1.0, 1.0, 1.0), alpha=1.0, type='Apply Mask')
+SetAlpha(image=None, alpha=1.0, type='Apply Mask')
 ```
 
 Add an alpha channel to an image
@@ -843,7 +838,7 @@ Add an alpha channel to an image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | alpha | InputFloat | Alpha | `1.0` |
 | type | InputMenu \| Literal\['Apply Mask', 'Replace Alpha'\] | Type | `'Apply Mask'` |
 
@@ -855,7 +850,6 @@ Add an alpha channel to an image
 | [`name`](#nodebpy.nodes.compositor.converter.SetAlpha.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.SetAlpha.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.SetAlpha.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.SetAlpha.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.SetAlpha.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -868,7 +862,7 @@ Add an alpha channel to an image
 ##### apply_mask
 
 ``` python
-apply_mask(image=(1.0, 1.0, 1.0, 1.0), alpha=1.0)
+apply_mask(image=None, alpha=1.0)
 ```
 
 Create Set Alpha node with type ‘Apply Mask’.
@@ -876,7 +870,7 @@ Create Set Alpha node with type ‘Apply Mask’.
 ##### replace_alpha
 
 ``` python
-replace_alpha(image=(1.0, 1.0, 1.0, 1.0), alpha=1.0)
+replace_alpha(image=None, alpha=1.0)
 ```
 
 Create Set Alpha node with type ‘Replace Alpha’.
@@ -925,7 +919,6 @@ Combine two images for side-by-side display. Typically used in combination with 
 | [`name`](#nodebpy.nodes.compositor.converter.Split.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.Split.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Split.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.Split.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.Split.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -967,7 +960,6 @@ Switch between two images using a checkbox
 | [`name`](#nodebpy.nodes.compositor.converter.Switch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.Switch.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.Switch.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.Switch.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.Switch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1007,7 +999,6 @@ Combine the views (left and right) into a single stereo 3D output
 | [`name`](#nodebpy.nodes.compositor.converter.SwitchView.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.converter.SwitchView.node) |  |
 | [`o`](#nodebpy.nodes.compositor.converter.SwitchView.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.converter.SwitchView.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.converter.SwitchView.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

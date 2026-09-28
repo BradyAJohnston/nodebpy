@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.29.0</span>
+    <span class="navbar-title">nodebpy 520.30.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -854,16 +854,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.converter.AlphaConvert" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.AlphaConvert">AlphaConvert</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AlphaConvert(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), <span class="bu">type</span><span class="op">=</span><span class="st">'To Premultiplied'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>AlphaConvert(image<span class="op">=</span><span class="va">None</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'To Premultiplied'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert to and from premultiplied (associated) alpha</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 7%">
-<col style="width: 57%">
+<col style="width: 58%">
 <col style="width: 13%">
-<col style="width: 21%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -878,7 +878,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>type</td>
@@ -916,10 +916,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.AlphaConvert.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -948,12 +944,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.converter.AlphaConvert.to_premultiplied" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.AlphaConvert.to_premultiplied">to_premultiplied</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>to_premultiplied(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>to_premultiplied(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Alpha Convert node with type ‘To Premultiplied’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.AlphaConvert.to_straight" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.AlphaConvert.to_straight">to_straight</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>to_straight(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>to_straight(image<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Alpha Convert node with type ‘To Straight’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1079,14 +1075,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.CombineColor.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.converter.CombineColor.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.converter.CombineColor.ycc_mode"><code>ycc_mode</code></a></td>
 <td></td>
 </tr>
@@ -1127,27 +1119,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.converter.CombineColor.hsl" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.CombineColor.hsl">hsl</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hsl(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hsl(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Combine Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.CombineColor.hsv" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.CombineColor.hsv">hsv</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hsv(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hsv(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Combine Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.CombineColor.rgb" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.CombineColor.rgb">rgb</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rgb(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rgb(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Combine Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.CombineColor.ycbcr" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.CombineColor.ycbcr">ycbcr</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ycbcr(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ycbcr(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Combine Color with operation ‘YCbCr’. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.CombineColor.yuv" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.CombineColor.yuv">yuv</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>yuv(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>yuv(red<span class="op">=</span><span class="fl">0.0</span>, green<span class="op">=</span><span class="fl">0.0</span>, blue<span class="op">=</span><span class="fl">0.0</span>, alpha<span class="op">=</span><span class="fl">1.0</span>, <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Combine Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) color processing</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -1259,10 +1251,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.ConvertToDisplay.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1373,10 +1361,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.IDMask.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.IDMask.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1484,10 +1468,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.ImplicitConversion.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.converter.ImplicitConversion.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1731,10 +1711,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.IndexSwitch.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.converter.IndexSwitch.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1981,10 +1957,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Levels.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.Levels.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2098,10 +2070,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.RGBToBW.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.RGBToBW.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2218,14 +2186,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.reference_dimension"><code>reference_dimension</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.converter.RelativeToPixel.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2254,12 +2218,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.converter.RelativeToPixel.float" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.RelativeToPixel.float">float</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(float_value<span class="op">=</span><span class="fl">0.0</span>, image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="bu">float</span>(float_value<span class="op">=</span><span class="fl">0.0</span>, image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), <span class="op">*</span>, reference_dimension<span class="op">=</span><span class="st">'X'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Relative To Pixel with operation ‘Float’. Float value</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.RelativeToPixel.vector" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.RelativeToPixel.vector">vector</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>vector(vector_value<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>vector(</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    vector_value<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    image<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    reference_dimension<span class="op">=</span><span class="st">'X'</span>,</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Relative To Pixel with operation ‘Vector’. Vector value</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -2369,14 +2338,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.compositor.converter.SeparateColor.ycc_mode"><code>ycc_mode</code></a></td>
 <td></td>
 </tr>
@@ -2417,27 +2382,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.converter.SeparateColor.hsl" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SeparateColor.hsl">hsl</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>hsl(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>hsl(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Separate Color with operation ‘HSL’. Use HSL (Hue, Saturation, Lightness) color processing</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.SeparateColor.hsv" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SeparateColor.hsv">hsv</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>hsv(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>hsv(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Separate Color with operation ‘HSV’. Use HSV (Hue, Saturation, Value) color processing</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.SeparateColor.rgb" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SeparateColor.rgb">rgb</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rgb(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rgb(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Separate Color with operation ‘RGB’. Use RGB (Red, Green, Blue) color processing</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.SeparateColor.ycbcr" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SeparateColor.ycbcr">ycbcr</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>ycbcr(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>ycbcr(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Separate Color with operation ‘YCbCr’. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.SeparateColor.yuv" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SeparateColor.yuv">yuv</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>yuv(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>yuv(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), <span class="op">*</span>, ycc_mode<span class="op">=</span><span class="st">'ITUBT709'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Separate Color with operation ‘YUV’. Use YUV (Y - luma, U V - chroma) color processing</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -2493,16 +2458,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="nodebpy.nodes.compositor.converter.SetAlpha" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SetAlpha">SetAlpha</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>SetAlpha(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), alpha<span class="op">=</span><span class="fl">1.0</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'Apply Mask'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>SetAlpha(image<span class="op">=</span><span class="va">None</span>, alpha<span class="op">=</span><span class="fl">1.0</span>, <span class="bu">type</span><span class="op">=</span><span class="st">'Apply Mask'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Add an alpha channel to an image</p>
 <section id="parameters-10" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-10">Parameters</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 7%">
-<col style="width: 55%">
-<col style="width: 14%">
-<col style="width: 22%">
+<col style="width: 8%">
+<col style="width: 60%">
+<col style="width: 15%">
+<col style="width: 16%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -2517,7 +2482,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>image</td>
 <td>InputColor</td>
 <td>Image</td>
-<td><code>(1.0, 1.0, 1.0, 1.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>alpha</td>
@@ -2561,10 +2526,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.SetAlpha.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2593,12 +2554,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <section id="nodebpy.nodes.compositor.converter.SetAlpha.apply_mask" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SetAlpha.apply_mask">apply_mask</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>apply_mask(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>apply_mask(image<span class="op">=</span><span class="va">None</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Alpha node with type ‘Apply Mask’.</p>
 </section>
 <section id="nodebpy.nodes.compositor.converter.SetAlpha.replace_alpha" class="level5">
 <h5 class="anchored" data-anchor-id="nodebpy.nodes.compositor.converter.SetAlpha.replace_alpha">replace_alpha</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>replace_alpha(image<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>), alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>replace_alpha(image<span class="op">=</span><span class="va">None</span>, alpha<span class="op">=</span><span class="fl">1.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Set Alpha node with type ‘Replace Alpha’.</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -2722,10 +2683,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Split.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.Split.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2846,10 +2803,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.Switch.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.Switch.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2959,10 +2912,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.compositor.converter.SwitchView.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.compositor.converter.SwitchView.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>

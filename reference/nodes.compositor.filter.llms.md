@@ -28,7 +28,7 @@
 
 ``` python
 AntiAliasing(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     threshold=0.2,
     contrast_limit=2.0,
     corner_rounding=0.25,
@@ -39,12 +39,12 @@ Smooth away jagged edges
 
 #### Parameters
 
-| Name            | Type       | Description     | Default                |
-|-----------------|------------|-----------------|------------------------|
-| image           | InputColor | Image           | `(1.0, 1.0, 1.0, 1.0)` |
-| threshold       | InputFloat | Threshold       | `0.2`                  |
-| contrast_limit  | InputFloat | Contrast Limit  | `2.0`                  |
-| corner_rounding | InputFloat | Corner Rounding | `0.25`                 |
+| Name            | Type       | Description     | Default |
+|-----------------|------------|-----------------|---------|
+| image           | InputColor | Image           | `None`  |
+| threshold       | InputFloat | Threshold       | `0.2`   |
+| contrast_limit  | InputFloat | Contrast Limit  | `2.0`   |
+| corner_rounding | InputFloat | Corner Rounding | `0.25`  |
 
 #### Attributes
 
@@ -54,7 +54,6 @@ Smooth away jagged edges
 | [`name`](#nodebpy.nodes.compositor.filter.AntiAliasing.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.AntiAliasing.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.AntiAliasing.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.AntiAliasing.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.AntiAliasing.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -76,7 +75,7 @@ Smooth away jagged edges
 
 ``` python
 BilateralBlur(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     determinator=(1.0, 1.0, 1.0, 1.0),
     size=0,
     threshold=0.1,
@@ -89,7 +88,7 @@ Adaptively blur image, while retaining sharp edges
 
 | Name         | Type         | Description  | Default                |
 |--------------|--------------|--------------|------------------------|
-| image        | InputColor   | Image        | `(1.0, 1.0, 1.0, 1.0)` |
+| image        | InputColor   | Image        | `None`                 |
 | determinator | InputColor   | Determinator | `(1.0, 1.0, 1.0, 1.0)` |
 | size         | InputInteger | Size         | `0`                    |
 | threshold    | InputFloat   | Threshold    | `0.1`                  |
@@ -102,7 +101,6 @@ Adaptively blur image, while retaining sharp edges
 | [`name`](#nodebpy.nodes.compositor.filter.BilateralBlur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.BilateralBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.BilateralBlur.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.BilateralBlur.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.BilateralBlur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -124,7 +122,7 @@ Adaptively blur image, while retaining sharp edges
 
 ``` python
 Blur(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     size=(0.0, 0.0),
     type='Gaussian',
     extend_bounds=False,
@@ -138,7 +136,7 @@ Blur an image, using several blur modes
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | size | InputVector | Size | `(0.0, 0.0)` |
 | type | InputMenu \| Literal\['Flat', 'Tent', 'Quadratic', 'Cubic', 'Gaussian', 'Fast Gaussian', 'Catrom', 'Mitch'\] | Type | `'Gaussian'` |
 | extend_bounds | InputBoolean | Extend Bounds | `False` |
@@ -152,7 +150,6 @@ Blur an image, using several blur modes
 | [`name`](#nodebpy.nodes.compositor.filter.Blur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Blur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Blur.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Blur.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Blur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -171,12 +168,7 @@ Blur an image, using several blur modes
 ##### catrom
 
 ``` python
-catrom(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=(0.0, 0.0),
-    extend_bounds=False,
-    separable=True,
-)
+catrom(image=None, size=(0.0, 0.0), extend_bounds=False, separable=True)
 ```
 
 Create Blur node with type ‘Catrom’.
@@ -184,12 +176,7 @@ Create Blur node with type ‘Catrom’.
 ##### cubic
 
 ``` python
-cubic(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=(0.0, 0.0),
-    extend_bounds=False,
-    separable=True,
-)
+cubic(image=None, size=(0.0, 0.0), extend_bounds=False, separable=True)
 ```
 
 Create Blur node with type ‘Cubic’.
@@ -197,12 +184,7 @@ Create Blur node with type ‘Cubic’.
 ##### fast_gaussian
 
 ``` python
-fast_gaussian(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=(0.0, 0.0),
-    extend_bounds=False,
-    separable=True,
-)
+fast_gaussian(image=None, size=(0.0, 0.0), extend_bounds=False, separable=True)
 ```
 
 Create Blur node with type ‘Fast Gaussian’.
@@ -210,12 +192,7 @@ Create Blur node with type ‘Fast Gaussian’.
 ##### flat
 
 ``` python
-flat(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=(0.0, 0.0),
-    extend_bounds=False,
-    separable=True,
-)
+flat(image=None, size=(0.0, 0.0), extend_bounds=False, separable=True)
 ```
 
 Create Blur node with type ‘Flat’.
@@ -223,12 +200,7 @@ Create Blur node with type ‘Flat’.
 ##### gaussian
 
 ``` python
-gaussian(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=(0.0, 0.0),
-    extend_bounds=False,
-    separable=True,
-)
+gaussian(image=None, size=(0.0, 0.0), extend_bounds=False, separable=True)
 ```
 
 Create Blur node with type ‘Gaussian’.
@@ -236,12 +208,7 @@ Create Blur node with type ‘Gaussian’.
 ##### mitch
 
 ``` python
-mitch(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=(0.0, 0.0),
-    extend_bounds=False,
-    separable=True,
-)
+mitch(image=None, size=(0.0, 0.0), extend_bounds=False, separable=True)
 ```
 
 Create Blur node with type ‘Mitch’.
@@ -249,12 +216,7 @@ Create Blur node with type ‘Mitch’.
 ##### quadratic
 
 ``` python
-quadratic(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=(0.0, 0.0),
-    extend_bounds=False,
-    separable=True,
-)
+quadratic(image=None, size=(0.0, 0.0), extend_bounds=False, separable=True)
 ```
 
 Create Blur node with type ‘Quadratic’.
@@ -262,12 +224,7 @@ Create Blur node with type ‘Quadratic’.
 ##### tent
 
 ``` python
-tent(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=(0.0, 0.0),
-    extend_bounds=False,
-    separable=True,
-)
+tent(image=None, size=(0.0, 0.0), extend_bounds=False, separable=True)
 ```
 
 Create Blur node with type ‘Tent’.
@@ -292,7 +249,7 @@ Create Blur node with type ‘Tent’.
 
 ``` python
 BokehBlur(
-    image=(0.8, 0.8, 0.8, 1.0),
+    image=None,
     bokeh=(1.0, 1.0, 1.0, 1.0),
     size=0.0,
     mask=1.0,
@@ -306,7 +263,7 @@ Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region
 
 | Name          | Type         | Description   | Default                |
 |---------------|--------------|---------------|------------------------|
-| image         | InputColor   | Image         | `(0.8, 0.8, 0.8, 1.0)` |
+| image         | InputColor   | Image         | `None`                 |
 | bokeh         | InputColor   | Bokeh         | `(1.0, 1.0, 1.0, 1.0)` |
 | size          | InputFloat   | Size          | `0.0`                  |
 | mask          | InputFloat   | Mask          | `1.0`                  |
@@ -320,7 +277,6 @@ Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region
 | [`name`](#nodebpy.nodes.compositor.filter.BokehBlur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.BokehBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.BokehBlur.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.BokehBlur.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.BokehBlur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -343,10 +299,10 @@ Generate a bokeh type blur similar to Defocus. Unlike defocus an in-focus region
 
 ``` python
 Convolve(
-    image=(0.8, 0.8, 0.8, 1.0),
+    image=None,
     kernel_data_type='Float',
-    float_kernel=0.0,
-    color_kernel=(0.8, 0.8, 0.8, 1.0),
+    float_kernel=None,
+    color_kernel=None,
     normalize_kernel=True,
 )
 ```
@@ -357,10 +313,10 @@ Convolves an image with a kernel
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
+| image | InputColor | Image | `None` |
 | kernel_data_type | InputMenu \| Literal\['Float', 'Color'\] | Kernel Data Type | `'Float'` |
-| float_kernel | InputFloat | Kernel | `0.0` |
-| color_kernel | InputColor | Kernel | `(0.8, 0.8, 0.8, 1.0)` |
+| float_kernel | InputFloat | Kernel | `None` |
+| color_kernel | InputColor | Kernel | `None` |
 | normalize_kernel | InputBoolean | Normalize Kernel | `True` |
 
 #### Attributes
@@ -371,7 +327,6 @@ Convolves an image with a kernel
 | [`name`](#nodebpy.nodes.compositor.filter.Convolve.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Convolve.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Convolve.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Convolve.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Convolve.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -427,7 +382,6 @@ Apply depth of field in 2D, using a Z depth map or mask
 | [`name`](#nodebpy.nodes.compositor.filter.Defocus.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Defocus.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Defocus.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Defocus.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Defocus.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_zbuffer`](#nodebpy.nodes.compositor.filter.Defocus.use_zbuffer) |  |
 | [`z_scale`](#nodebpy.nodes.compositor.filter.Defocus.z_scale) |  |
@@ -449,9 +403,9 @@ Apply depth of field in 2D, using a Z depth map or mask
 
 ``` python
 Denoise(
-    image=(1.0, 1.0, 1.0, 1.0),
-    albedo=(1.0, 1.0, 1.0, 1.0),
-    normal=(0.0, 0.0, 0.0),
+    image=None,
+    albedo=None,
+    normal=None,
     hdr=True,
     prefilter='Accurate',
     quality='Follow Scene',
@@ -464,9 +418,9 @@ Denoise renders from Cycles and other ray tracing renderers
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
-| albedo | InputColor | Albedo | `(1.0, 1.0, 1.0, 1.0)` |
-| normal | InputVector | Normal | `(0.0, 0.0, 0.0)` |
+| image | InputColor | Image | `None` |
+| albedo | InputColor | Albedo | `None` |
+| normal | InputVector | Normal | `None` |
 | hdr | InputBoolean | HDR | `True` |
 | prefilter | InputMenu \| Literal\['None', 'Fast', 'Accurate'\] | Prefilter | `'Accurate'` |
 | quality | InputMenu \| Literal\['Follow Scene', 'High', 'Balanced', 'Fast'\] | Quality | `'Follow Scene'` |
@@ -479,7 +433,6 @@ Denoise renders from Cycles and other ray tracing renderers
 | [`name`](#nodebpy.nodes.compositor.filter.Denoise.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Denoise.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Denoise.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Denoise.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Denoise.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -502,24 +455,19 @@ Denoise renders from Cycles and other ray tracing renderers
 ### Despeckle
 
 ``` python
-Despeckle(
-    image=(1.0, 1.0, 1.0, 1.0),
-    fac=1.0,
-    color_threshold=0.5,
-    neighbor_threshold=0.5,
-)
+Despeckle(image=None, fac=1.0, color_threshold=0.5, neighbor_threshold=0.5)
 ```
 
 Smooth areas of an image in which noise is noticeable, while leaving complex areas untouched
 
 #### Parameters
 
-| Name               | Type       | Description        | Default                |
-|--------------------|------------|--------------------|------------------------|
-| image              | InputColor | Image              | `(1.0, 1.0, 1.0, 1.0)` |
-| fac                | InputFloat | Factor             | `1.0`                  |
-| color_threshold    | InputFloat | Color Threshold    | `0.5`                  |
-| neighbor_threshold | InputFloat | Neighbor Threshold | `0.5`                  |
+| Name               | Type       | Description        | Default |
+|--------------------|------------|--------------------|---------|
+| image              | InputColor | Image              | `None`  |
+| fac                | InputFloat | Factor             | `1.0`   |
+| color_threshold    | InputFloat | Color Threshold    | `0.5`   |
+| neighbor_threshold | InputFloat | Neighbor Threshold | `0.5`   |
 
 #### Attributes
 
@@ -529,7 +477,6 @@ Smooth areas of an image in which noise is noticeable, while leaving complex are
 | [`name`](#nodebpy.nodes.compositor.filter.Despeckle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Despeckle.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Despeckle.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Despeckle.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Despeckle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -573,7 +520,6 @@ Expand and shrink masks
 | [`name`](#nodebpy.nodes.compositor.filter.DilateErode.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.DilateErode.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.DilateErode.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.DilateErode.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.DilateErode.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -637,7 +583,7 @@ Create Dilate/Erode node with type ‘Threshold’.
 
 ``` python
 DirectionalBlur(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     samples=1,
     center=(0.5, 0.5),
     rotation=0.0,
@@ -651,15 +597,15 @@ Blur an image along a direction
 
 #### Parameters
 
-| Name                  | Type         | Description | Default                |
-|-----------------------|--------------|-------------|------------------------|
-| image                 | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| samples               | InputInteger | Samples     | `1`                    |
-| center                | InputVector  | Center      | `(0.5, 0.5)`           |
-| rotation              | InputFloat   | Rotation    | `0.0`                  |
-| scale                 | InputFloat   | Scale       | `1.0`                  |
-| translation_amount    | InputFloat   | Amount      | `0.0`                  |
-| translation_direction | InputFloat   | Direction   | `0.0`                  |
+| Name                  | Type         | Description | Default      |
+|-----------------------|--------------|-------------|--------------|
+| image                 | InputColor   | Image       | `None`       |
+| samples               | InputInteger | Samples     | `1`          |
+| center                | InputVector  | Center      | `(0.5, 0.5)` |
+| rotation              | InputFloat   | Rotation    | `0.0`        |
+| scale                 | InputFloat   | Scale       | `1.0`        |
+| translation_amount    | InputFloat   | Amount      | `0.0`        |
+| translation_direction | InputFloat   | Direction   | `0.0`        |
 
 #### Attributes
 
@@ -669,7 +615,6 @@ Blur an image along a direction
 | [`name`](#nodebpy.nodes.compositor.filter.DirectionalBlur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.DirectionalBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.DirectionalBlur.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.DirectionalBlur.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.DirectionalBlur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -693,7 +638,7 @@ Blur an image along a direction
 ### Filter
 
 ``` python
-Filter(image=(1.0, 1.0, 1.0, 1.0), fac=1.0, type='Soften')
+Filter(image=None, fac=1.0, type='Soften')
 ```
 
 Apply common image enhancement filters
@@ -702,7 +647,7 @@ Apply common image enhancement filters
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | fac | InputFloat | Factor | `1.0` |
 | type | InputMenu \| Literal\['Soften', 'Box Sharpen', 'Diamond Sharpen', 'Laplace', 'Sobel', 'Prewitt', 'Kirsch', 'Shadow'\] | Type | `'Soften'` |
 
@@ -714,7 +659,6 @@ Apply common image enhancement filters
 | [`name`](#nodebpy.nodes.compositor.filter.Filter.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Filter.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Filter.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Filter.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Filter.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -733,7 +677,7 @@ Apply common image enhancement filters
 ##### box_sharpen
 
 ``` python
-box_sharpen(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+box_sharpen(image=None, fac=1.0)
 ```
 
 Create Filter node with type ‘Box Sharpen’.
@@ -741,7 +685,7 @@ Create Filter node with type ‘Box Sharpen’.
 ##### diamond_sharpen
 
 ``` python
-diamond_sharpen(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+diamond_sharpen(image=None, fac=1.0)
 ```
 
 Create Filter node with type ‘Diamond Sharpen’.
@@ -749,7 +693,7 @@ Create Filter node with type ‘Diamond Sharpen’.
 ##### kirsch
 
 ``` python
-kirsch(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+kirsch(image=None, fac=1.0)
 ```
 
 Create Filter node with type ‘Kirsch’.
@@ -757,7 +701,7 @@ Create Filter node with type ‘Kirsch’.
 ##### laplace
 
 ``` python
-laplace(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+laplace(image=None, fac=1.0)
 ```
 
 Create Filter node with type ‘Laplace’.
@@ -765,7 +709,7 @@ Create Filter node with type ‘Laplace’.
 ##### prewitt
 
 ``` python
-prewitt(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+prewitt(image=None, fac=1.0)
 ```
 
 Create Filter node with type ‘Prewitt’.
@@ -773,7 +717,7 @@ Create Filter node with type ‘Prewitt’.
 ##### shadow
 
 ``` python
-shadow(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+shadow(image=None, fac=1.0)
 ```
 
 Create Filter node with type ‘Shadow’.
@@ -781,7 +725,7 @@ Create Filter node with type ‘Shadow’.
 ##### sobel
 
 ``` python
-sobel(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+sobel(image=None, fac=1.0)
 ```
 
 Create Filter node with type ‘Sobel’.
@@ -789,7 +733,7 @@ Create Filter node with type ‘Sobel’.
 ##### soften
 
 ``` python
-soften(image=(1.0, 1.0, 1.0, 1.0), fac=1.0)
+soften(image=None, fac=1.0)
 ```
 
 Create Filter node with type ‘Soften’.
@@ -812,7 +756,7 @@ Create Filter node with type ‘Soften’.
 
 ``` python
 Glare(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     type='Streaks',
     quality='Medium',
     highlights_threshold=1.0,
@@ -832,8 +776,8 @@ Glare(
     sun_position=(0.5, 0.5),
     jitter=0.0,
     kernel_data_type='Float',
-    float_kernel=0.0,
-    color_kernel=(0.8, 0.8, 0.8, 1.0),
+    float_kernel=None,
+    color_kernel=None,
 )
 ```
 
@@ -843,7 +787,7 @@ Add lens flares, fog and glows around bright parts of the image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | type | InputMenu \| Literal\['Bloom', 'Ghosts', 'Streaks', 'Fog Glow', 'Simple Star', 'Sun Beams', 'Kernel'\] | Type | `'Streaks'` |
 | quality | InputMenu \| Literal\['High', 'Medium', 'Low'\] | Quality | `'Medium'` |
 | highlights_threshold | InputFloat | Threshold | `1.0` |
@@ -863,8 +807,8 @@ Add lens flares, fog and glows around bright parts of the image
 | sun_position | InputVector | Sun Position | `(0.5, 0.5)` |
 | jitter | InputFloat | Jitter | `0.0` |
 | kernel_data_type | InputMenu \| Literal\['Float', 'Color'\] | Kernel Data Type | `'Float'` |
-| float_kernel | InputFloat | Kernel | `0.0` |
-| color_kernel | InputColor | Kernel | `(0.8, 0.8, 0.8, 1.0)` |
+| float_kernel | InputFloat | Kernel | `None` |
+| color_kernel | InputColor | Kernel | `None` |
 
 #### Attributes
 
@@ -874,7 +818,6 @@ Add lens flares, fog and glows around bright parts of the image
 | [`name`](#nodebpy.nodes.compositor.filter.Glare.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Glare.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Glare.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Glare.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Glare.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -893,7 +836,7 @@ Add lens flares, fog and glows around bright parts of the image
 
 ``` python
 bloom(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -912,7 +855,7 @@ Create Glare node with type ‘Bloom’.
 
 ``` python
 fog_glow(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -931,7 +874,7 @@ Create Glare node with type ‘Fog Glow’.
 
 ``` python
 ghosts(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -951,7 +894,7 @@ Create Glare node with type ‘Ghosts’.
 
 ``` python
 kernel(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -961,7 +904,7 @@ kernel(
     saturation=1.0,
     tint=(1.0, 1.0, 1.0, 1.0),
     kernel_data_type='Float',
-    float_kernel=0.0,
+    float_kernel=None,
 )
 ```
 
@@ -971,7 +914,7 @@ Create Glare node with type ‘Kernel’.
 
 ``` python
 simple_star(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -992,7 +935,7 @@ Create Glare node with type ‘Simple Star’.
 
 ``` python
 streaks(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -1015,7 +958,7 @@ Create Glare node with type ‘Streaks’.
 
 ``` python
 sun_beams(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     quality='Medium',
     highlights_threshold=1.0,
     highlights_smoothness=0.1,
@@ -1070,17 +1013,17 @@ Create Glare node with type ‘Sun Beams’.
 ### Inpaint
 
 ``` python
-Inpaint(image=(1.0, 1.0, 1.0, 1.0), size=0)
+Inpaint(image=None, size=0)
 ```
 
 Extend borders of an image into transparent or masked regions
 
 #### Parameters
 
-| Name  | Type         | Description | Default                |
-|-------|--------------|-------------|------------------------|
-| image | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| size  | InputInteger | Size        | `0`                    |
+| Name  | Type         | Description | Default |
+|-------|--------------|-------------|---------|
+| image | InputColor   | Image       | `None`  |
+| size  | InputInteger | Size        | `0`     |
 
 #### Attributes
 
@@ -1090,7 +1033,6 @@ Extend borders of an image into transparent or masked regions
 | [`name`](#nodebpy.nodes.compositor.filter.Inpaint.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Inpaint.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Inpaint.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Inpaint.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Inpaint.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1110,7 +1052,7 @@ Extend borders of an image into transparent or masked regions
 
 ``` python
 Kuwahara(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     size=6.0,
     type='Anisotropic',
     uniformity=4,
@@ -1126,7 +1068,7 @@ Apply smoothing filter that preserves edges, for stylized and painterly effects
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | size | InputFloat | Size | `6.0` |
 | type | InputMenu \| Literal\['Classic', 'Anisotropic'\] | Type | `'Anisotropic'` |
 | uniformity | InputInteger | Uniformity | `4` |
@@ -1142,7 +1084,6 @@ Apply smoothing filter that preserves edges, for stylized and painterly effects
 | [`name`](#nodebpy.nodes.compositor.filter.Kuwahara.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Kuwahara.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Kuwahara.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Kuwahara.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Kuwahara.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -1155,13 +1096,7 @@ Apply smoothing filter that preserves edges, for stylized and painterly effects
 ##### anisotropic
 
 ``` python
-anisotropic(
-    image=(1.0, 1.0, 1.0, 1.0),
-    size=6.0,
-    uniformity=4,
-    sharpness=1.0,
-    eccentricity=1.0,
-)
+anisotropic(image=None, size=6.0, uniformity=4, sharpness=1.0, eccentricity=1.0)
 ```
 
 Create Kuwahara node with type ‘Anisotropic’.
@@ -1169,7 +1104,7 @@ Create Kuwahara node with type ‘Anisotropic’.
 ##### classic
 
 ``` python
-classic(image=(1.0, 1.0, 1.0, 1.0), size=6.0, high_precision=False)
+classic(image=None, size=6.0, high_precision=False)
 ```
 
 Create Kuwahara node with type ‘Classic’.
@@ -1195,7 +1130,7 @@ Create Kuwahara node with type ‘Classic’.
 ### MaskToSDF
 
 ``` python
-MaskToSDF(mask=False)
+MaskToSDF(mask=None)
 ```
 
 Computes a signed distance field from the given mask
@@ -1204,7 +1139,7 @@ Computes a signed distance field from the given mask
 
 | Name | Type         | Description | Default |
 |------|--------------|-------------|---------|
-| mask | InputBoolean | Mask        | `False` |
+| mask | InputBoolean | Mask        | `None`  |
 
 #### Attributes
 
@@ -1214,7 +1149,6 @@ Computes a signed distance field from the given mask
 | [`name`](#nodebpy.nodes.compositor.filter.MaskToSDF.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.MaskToSDF.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.MaskToSDF.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.MaskToSDF.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.MaskToSDF.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1233,17 +1167,17 @@ Computes a signed distance field from the given mask
 ### Pixelate
 
 ``` python
-Pixelate(color=(0.8, 0.8, 0.8, 1.0), size=1)
+Pixelate(color=None, size=1)
 ```
 
 Reduce detail in an image by making individual pixels more prominent, for a blocky or mosaic-like appearance
 
 #### Parameters
 
-| Name  | Type         | Description | Default                |
-|-------|--------------|-------------|------------------------|
-| color | InputColor   | Color       | `(0.8, 0.8, 0.8, 1.0)` |
-| size  | InputInteger | Size        | `1`                    |
+| Name  | Type         | Description | Default |
+|-------|--------------|-------------|---------|
+| color | InputColor   | Color       | `None`  |
+| size  | InputInteger | Size        | `1`     |
 
 #### Attributes
 
@@ -1253,7 +1187,6 @@ Reduce detail in an image by making individual pixels more prominent, for a bloc
 | [`name`](#nodebpy.nodes.compositor.filter.Pixelate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.Pixelate.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.Pixelate.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.Pixelate.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.Pixelate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1273,7 +1206,7 @@ Reduce detail in an image by making individual pixels more prominent, for a bloc
 
 ``` python
 VectorBlur(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     speed=(0.0, 0.0, 0.0, 0.0),
     z=0.0,
     samples=32,
@@ -1287,7 +1220,7 @@ Uses the vector speed render pass to blur the image pixels in 2D
 
 | Name    | Type         | Description | Default                |
 |---------|--------------|-------------|------------------------|
-| image   | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
+| image   | InputColor   | Image       | `None`                 |
 | speed   | InputVector  | Speed       | `(0.0, 0.0, 0.0, 0.0)` |
 | z       | InputFloat   | Depth       | `0.0`                  |
 | samples | InputInteger | Samples     | `32`                   |
@@ -1301,7 +1234,6 @@ Uses the vector speed render pass to blur the image pixels in 2D
 | [`name`](#nodebpy.nodes.compositor.filter.VectorBlur.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.filter.VectorBlur.node) |  |
 | [`o`](#nodebpy.nodes.compositor.filter.VectorBlur.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.filter.VectorBlur.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.filter.VectorBlur.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

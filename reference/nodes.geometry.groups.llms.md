@@ -28,7 +28,6 @@ ClipFieldToBox(box_object=None, invert=False)
 | [`node`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.node_tree) |  |
 | [`o`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.o) | Output socket accessor. Subclasses narrow the return type via TYPE_CHECKING. |
-| [`outputs`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.groups.ClipFieldToBox.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -62,7 +61,6 @@ GeometryPrincipalComponents(geometry=None, position=None)
 | [`node`](#nodebpy.nodes.geometry.groups.GeometryPrincipalComponents.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.GeometryPrincipalComponents.node_tree) |  |
 | [`o`](#nodebpy.nodes.geometry.groups.GeometryPrincipalComponents.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.groups.GeometryPrincipalComponents.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.groups.GeometryPrincipalComponents.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -98,7 +96,6 @@ Evaluate a given vector field at an offset to the current `Index`.
 | [`node`](#nodebpy.nodes.geometry.groups.OffsetVector.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.OffsetVector.node_tree) |  |
 | [`o`](#nodebpy.nodes.geometry.groups.OffsetVector.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.groups.OffsetVector.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.groups.OffsetVector.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -134,7 +131,6 @@ Given a vertex and an edge number from that vertex, returns the other vertex of 
 | [`node`](#nodebpy.nodes.geometry.groups.OtherVertex.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.OtherVertex.node_tree) |  |
 | [`o`](#nodebpy.nodes.geometry.groups.OtherVertex.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.groups.OtherVertex.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.groups.OtherVertex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -170,7 +166,6 @@ Compute PCA on a given vector field.
 | [`node`](#nodebpy.nodes.geometry.groups.PrincipalComponents.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.PrincipalComponents.node_tree) |  |
 | [`o`](#nodebpy.nodes.geometry.groups.PrincipalComponents.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.groups.PrincipalComponents.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.groups.PrincipalComponents.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -206,7 +201,6 @@ Converts a python slice to a list of indices.
 | [`node`](#nodebpy.nodes.geometry.groups.SliceToIndices.node) |  |
 | [`node_tree`](#nodebpy.nodes.geometry.groups.SliceToIndices.node_tree) |  |
 | [`o`](#nodebpy.nodes.geometry.groups.SliceToIndices.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.groups.SliceToIndices.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.groups.SliceToIndices.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods

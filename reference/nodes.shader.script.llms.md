@@ -36,7 +36,6 @@ Note: OSL shaders are not supported on all GPU backends
 | [`name`](#nodebpy.nodes.shader.script.Script.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.shader.script.Script.node) |  |
 | [`o`](#nodebpy.nodes.shader.script.Script.o) |  |
-| [`outputs`](#nodebpy.nodes.shader.script.Script.outputs) |  |
 | [`tree`](#nodebpy.nodes.shader.script.Script.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_auto_update`](#nodebpy.nodes.shader.script.Script.use_auto_update) |  |
 
@@ -50,7 +49,7 @@ Note: OSL shaders are not supported on all GPU backends
 ##### external
 
 ``` python
-external()
+external(filepath='', use_auto_update=False, bytecode='', bytecode_hash='')
 ```
 
 Create Script with operation ‘External’. Use external .osl or .oso file
@@ -58,7 +57,7 @@ Create Script with operation ‘External’. Use external .osl or .oso file
 ##### internal
 
 ``` python
-internal()
+internal(bytecode='', bytecode_hash='')
 ```
 
 Create Script with operation ‘Internal’. Use internal text data-block

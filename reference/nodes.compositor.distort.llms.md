@@ -24,7 +24,7 @@
 
 ``` python
 CornerPin(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     upper_left=(0.0, 1.0),
     upper_right=(1.0, 1.0),
     lower_left=(0.0, 0.0),
@@ -41,7 +41,7 @@ Plane warp transformation using explicit corner values
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | upper_left | InputVector | Upper Left | `(0.0, 1.0)` |
 | upper_right | InputVector | Upper Right | `(1.0, 1.0)` |
 | lower_left | InputVector | Lower Left | `(0.0, 0.0)` |
@@ -58,7 +58,6 @@ Plane warp transformation using explicit corner values
 | [`name`](#nodebpy.nodes.compositor.distort.CornerPin.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.CornerPin.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.CornerPin.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.CornerPin.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.CornerPin.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -84,28 +83,21 @@ Plane warp transformation using explicit corner values
 ### Crop
 
 ``` python
-Crop(
-    image=(1.0, 1.0, 1.0, 1.0),
-    x=0,
-    y=0,
-    width=1920,
-    height=1080,
-    alpha_crop=False,
-)
+Crop(image=None, x=0, y=0, width=1920, height=1080, alpha_crop=False)
 ```
 
 Crops image to a smaller region, either making the cropped area transparent or resizing the image
 
 #### Parameters
 
-| Name       | Type         | Description | Default                |
-|------------|--------------|-------------|------------------------|
-| image      | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| x          | InputInteger | X           | `0`                    |
-| y          | InputInteger | Y           | `0`                    |
-| width      | InputInteger | Width       | `1920`                 |
-| height     | InputInteger | Height      | `1080`                 |
-| alpha_crop | InputBoolean | Alpha Crop  | `False`                |
+| Name       | Type         | Description | Default |
+|------------|--------------|-------------|---------|
+| image      | InputColor   | Image       | `None`  |
+| x          | InputInteger | X           | `0`     |
+| y          | InputInteger | Y           | `0`     |
+| width      | InputInteger | Width       | `1920`  |
+| height     | InputInteger | Height      | `1080`  |
+| alpha_crop | InputBoolean | Alpha Crop  | `False` |
 
 #### Attributes
 
@@ -115,7 +107,6 @@ Crops image to a smaller region, either making the cropped area transparent or r
 | [`name`](#nodebpy.nodes.compositor.distort.Crop.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Crop.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Crop.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Crop.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.Crop.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -139,7 +130,7 @@ Crops image to a smaller region, either making the cropped area transparent or r
 
 ``` python
 Displace(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     displacement=(0.0, 0.0),
     interpolation='Bilinear',
     extension_x='Clip',
@@ -153,7 +144,7 @@ Displace pixel position using an offset vector
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | displacement | InputVector | Displacement | `(0.0, 0.0)` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
@@ -167,7 +158,6 @@ Displace pixel position using an offset vector
 | [`name`](#nodebpy.nodes.compositor.distort.Displace.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Displace.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Displace.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Displace.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.Displace.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -189,18 +179,18 @@ Displace pixel position using an offset vector
 ### Flip
 
 ``` python
-Flip(image=(1.0, 1.0, 1.0, 1.0), flip_x=False, flip_y=False)
+Flip(image=None, flip_x=False, flip_y=False)
 ```
 
 Flip an image along a defined axis
 
 #### Parameters
 
-| Name   | Type         | Description | Default                |
-|--------|--------------|-------------|------------------------|
-| image  | InputColor   | Image       | `(1.0, 1.0, 1.0, 1.0)` |
-| flip_x | InputBoolean | Flip X      | `False`                |
-| flip_y | InputBoolean | Flip Y      | `False`                |
+| Name   | Type         | Description | Default |
+|--------|--------------|-------------|---------|
+| image  | InputColor   | Image       | `None`  |
+| flip_x | InputBoolean | Flip X      | `False` |
+| flip_y | InputBoolean | Flip Y      | `False` |
 
 #### Attributes
 
@@ -210,7 +200,6 @@ Flip an image along a defined axis
 | [`name`](#nodebpy.nodes.compositor.distort.Flip.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Flip.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Flip.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Flip.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.Flip.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -231,7 +220,7 @@ Flip an image along a defined axis
 
 ``` python
 LensDistortion(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     type='Radial',
     distortion=0.0,
     dispersion=0.0,
@@ -246,7 +235,7 @@ Simulate distortion and dispersion from camera lenses
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | type | InputMenu \| Literal\['Radial', 'Horizontal'\] | Type | `'Radial'` |
 | distortion | InputFloat | Distortion | `0.0` |
 | dispersion | InputFloat | Dispersion | `0.0` |
@@ -261,7 +250,6 @@ Simulate distortion and dispersion from camera lenses
 | [`name`](#nodebpy.nodes.compositor.distort.LensDistortion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.LensDistortion.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.LensDistortion.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.LensDistortion.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.LensDistortion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -274,7 +262,7 @@ Simulate distortion and dispersion from camera lenses
 ##### horizontal
 
 ``` python
-horizontal(image=(1.0, 1.0, 1.0, 1.0), dispersion=0.0)
+horizontal(image=None, dispersion=0.0)
 ```
 
 Create Lens Distortion node with type ‘Horizontal’.
@@ -282,13 +270,7 @@ Create Lens Distortion node with type ‘Horizontal’.
 ##### radial
 
 ``` python
-radial(
-    image=(1.0, 1.0, 1.0, 1.0),
-    distortion=0.0,
-    dispersion=0.0,
-    jitter=False,
-    fit=False,
-)
+radial(image=None, distortion=0.0, dispersion=0.0, jitter=False, fit=False)
 ```
 
 Create Lens Distortion node with type ‘Radial’.
@@ -314,7 +296,7 @@ Create Lens Distortion node with type ‘Radial’.
 
 ``` python
 MapUV(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     uv=(1.0, 0.0, 0.0),
     interpolation='Bilinear',
     extension_x='Clip',
@@ -328,7 +310,7 @@ Map a texture using UV coordinates, to apply a texture to objects in compositing
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | uv | InputVector | UV | `(1.0, 0.0, 0.0)` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
@@ -342,7 +324,6 @@ Map a texture using UV coordinates, to apply a texture to objects in compositing
 | [`name`](#nodebpy.nodes.compositor.distort.MapUV.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.MapUV.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.MapUV.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.MapUV.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.MapUV.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -384,7 +365,6 @@ Remove lens distortion from footage, using motion tracking camera lens settings
 | [`name`](#nodebpy.nodes.compositor.distort.MovieDistortion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.MovieDistortion.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.MovieDistortion.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.MovieDistortion.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.MovieDistortion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -427,7 +407,7 @@ Create Movie Distortion node with type ‘Undistort’.
 
 ``` python
 PlaneTrackDeform(
-    image=(0.8, 0.8, 0.8, 1.0),
+    image=None,
     motion_blur=False,
     motion_blur_samples=16,
     motion_blur_shutter=0.5,
@@ -441,12 +421,12 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 
 #### Parameters
 
-| Name                | Type         | Description | Default                |
-|---------------------|--------------|-------------|------------------------|
-| image               | InputColor   | Image       | `(0.8, 0.8, 0.8, 1.0)` |
-| motion_blur         | InputBoolean | Motion Blur | `False`                |
-| motion_blur_samples | InputInteger | Samples     | `16`                   |
-| motion_blur_shutter | InputFloat   | Shutter     | `0.5`                  |
+| Name                | Type         | Description | Default |
+|---------------------|--------------|-------------|---------|
+| image               | InputColor   | Image       | `None`  |
+| motion_blur         | InputBoolean | Motion Blur | `False` |
+| motion_blur_samples | InputInteger | Samples     | `16`    |
+| motion_blur_shutter | InputFloat   | Shutter     | `0.5`   |
 
 #### Attributes
 
@@ -456,7 +436,6 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 | [`name`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.outputs) |  |
 | [`plane_track_name`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.plane_track_name) |  |
 | [`tracking_object`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tracking_object) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.PlaneTrackDeform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -481,7 +460,7 @@ Replace flat planes in footage by another image, detected by plane tracks from m
 
 ``` python
 Rotate(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     angle=0.0,
     interpolation='Bilinear',
     extension_x='Clip',
@@ -495,7 +474,7 @@ Rotate image by specified angle
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | angle | InputFloat | Angle | `0.0` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
@@ -509,7 +488,6 @@ Rotate image by specified angle
 | [`name`](#nodebpy.nodes.compositor.distort.Rotate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Rotate.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Rotate.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Rotate.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.Rotate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -532,7 +510,7 @@ Rotate image by specified angle
 
 ``` python
 Scale(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     type='Relative',
     x=1.0,
     y=1.0,
@@ -549,7 +527,7 @@ Change the size of the image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | type | InputMenu \| Literal\['Relative', 'Absolute', 'Scene Size', 'Render Size'\] | Type | `'Relative'` |
 | x | InputFloat | X | `1.0` |
 | y | InputFloat | Y | `1.0` |
@@ -566,7 +544,6 @@ Change the size of the image
 | [`name`](#nodebpy.nodes.compositor.distort.Scale.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Scale.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Scale.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Scale.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.Scale.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -582,7 +559,7 @@ Change the size of the image
 
 ``` python
 absolute(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     x=1.0,
     y=1.0,
     interpolation='Bilinear',
@@ -597,7 +574,7 @@ Create Scale node with type ‘Absolute’.
 
 ``` python
 relative(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     x=1.0,
     y=1.0,
     interpolation='Bilinear',
@@ -612,7 +589,7 @@ Create Scale node with type ‘Relative’.
 
 ``` python
 render_size(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     frame_type='Stretch',
     interpolation='Bilinear',
     extension_x='Clip',
@@ -626,7 +603,7 @@ Create Scale node with type ‘Render Size’.
 
 ``` python
 scene_size(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     interpolation='Bilinear',
     extension_x='Clip',
     extension_y='Clip',
@@ -658,8 +635,8 @@ Create Scale node with type ‘Scene Size’.
 
 ``` python
 Stabilize2D(
-    image=(0.8, 0.8, 0.8, 1.0),
-    frame=0,
+    image=None,
+    frame=None,
     invert=False,
     interpolation='Bilinear',
     extension_x='Clip',
@@ -673,8 +650,8 @@ Stabilize footage using 2D stabilization motion tracking settings
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
-| frame | InputInteger | Frame | `0` |
+| image | InputColor | Image | `None` |
+| frame | InputInteger | Frame | `None` |
 | invert | InputBoolean | Invert | `False` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
 | extension_x | InputMenu \| Literal\['Clip', 'Extend', 'Repeat'\] | Extension X | `'Clip'` |
@@ -688,7 +665,6 @@ Stabilize footage using 2D stabilization motion tracking settings
 | [`name`](#nodebpy.nodes.compositor.distort.Stabilize2D.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Stabilize2D.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Stabilize2D.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Stabilize2D.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.Stabilize2D.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -712,7 +688,7 @@ Stabilize footage using 2D stabilization motion tracking settings
 
 ``` python
 Transform(
-    image=(0.8, 0.8, 0.8, 1.0),
+    image=None,
     x=0.0,
     y=0.0,
     angle=0.0,
@@ -729,7 +705,7 @@ Scale, translate and rotate an image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(0.8, 0.8, 0.8, 1.0)` |
+| image | InputColor | Image | `None` |
 | x | InputFloat | X | `0.0` |
 | y | InputFloat | Y | `0.0` |
 | angle | InputFloat | Angle | `0.0` |
@@ -746,7 +722,6 @@ Scale, translate and rotate an image
 | [`name`](#nodebpy.nodes.compositor.distort.Transform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Transform.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Transform.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Transform.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.Transform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -772,7 +747,7 @@ Scale, translate and rotate an image
 
 ``` python
 Translate(
-    image=(1.0, 1.0, 1.0, 1.0),
+    image=None,
     x=0.0,
     y=0.0,
     interpolation='Bilinear',
@@ -787,7 +762,7 @@ Offset an image
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| image | InputColor | Image | `(1.0, 1.0, 1.0, 1.0)` |
+| image | InputColor | Image | `None` |
 | x | InputFloat | X | `0.0` |
 | y | InputFloat | Y | `0.0` |
 | interpolation | InputMenu \| Literal\['Nearest', 'Bilinear', 'Bicubic', 'Anisotropic'\] | Interpolation | `'Bilinear'` |
@@ -802,7 +777,6 @@ Offset an image
 | [`name`](#nodebpy.nodes.compositor.distort.Translate.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.compositor.distort.Translate.node) |  |
 | [`o`](#nodebpy.nodes.compositor.distort.Translate.o) |  |
-| [`outputs`](#nodebpy.nodes.compositor.distort.Translate.outputs) |  |
 | [`tree`](#nodebpy.nodes.compositor.distort.Translate.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**

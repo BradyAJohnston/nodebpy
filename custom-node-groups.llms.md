@@ -180,6 +180,53 @@ tree
 
 Each custom group appears as a single, named node in the tree – keeping the graph readable even as the logic grows.
 
+## Fallback Inputs
+
+A group input can read an implicit field or a context value when nothing is connected to it — what Blender’s interface editor calls the *Default Input*. The `tree.inputs.*` factories take it as `default_input=`, accepting either Blender’s identifier strings or the members of `nodebpy.Default`. A *Default Attribute* (`default_attribute=`) is different: it only applies when the group is used directly as a Geometry Nodes modifier, where the input starts out reading that attribute. As a node inside another tree the input uses its value.
+
+``` python
+from nodebpy import Default
+
+class Displace(CustomGeometryGroup):
+    """Push points along a noise pattern sampled from the UV map."""
+
+    _name = "Displace"
+
+    def __init__(
+        self,
+        geometry: InputGeometry = ...,
+        position: InputVector = Default.POSITION,
+        uv_map: InputVector = None,
+        strength: InputFloat = 0.1,
+    ):
+        super().__init__(
+            **{
+                "Geometry": geometry,
+                "Position": position,
+                "UV Map": uv_map,
+                "Strength": strength,
+            }
+        )
+
+    def _build_group(self, tree):
+        geometry = tree.inputs.geometry("Geometry")
+        position = tree.inputs.vector("Position", default_input=Default.POSITION)
+        uv_map = tree.inputs.vector("UV Map", default_attribute="UVMap")
+        strength = tree.inputs.float("Strength", 0.1)
+
+        offset = g.NoiseTexture(vector=uv_map).o.color * strength
+        result = g.SetPosition(geometry, position=position, offset=offset)
+        _ = result >> tree.outputs.geometry()
+
+
+with g.tree("DisplaceInternal") as tree:
+    _ = Displace()
+
+tree
+```
+
+The constructor mirrors the interface: `Default.POSITION` as a parameter default documents the fallback, and passing it through leaves the group node’s socket untouched so the fallback applies.
+
 ## Class Options
 
 `CustomGeometryGroup` (via its `NodeGroupBuilder` base class) supports a few class-level options:

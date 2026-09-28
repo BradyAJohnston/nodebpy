@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">nodebpy 520.29.0</span>
+    <span class="navbar-title">nodebpy 520.30.0</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -940,10 +940,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.AddShader.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.AddShader.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1045,10 +1041,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.Background.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.Background.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1058,12 +1050,7 @@ i.weight : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.shader.DiffuseBSDF" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.shader.DiffuseBSDF">DiffuseBSDF</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>DiffuseBSDF(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>DiffuseBSDF(color<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), roughness<span class="op">=</span><span class="fl">0.0</span>, normal<span class="op">=</span><span class="va">None</span>, weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Lambertian and Oren-Nayar diffuse reflection</p>
 <section id="parameters-2" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
@@ -1093,7 +1080,7 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>weight</td>
@@ -1131,10 +1118,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.DiffuseBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.DiffuseBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1255,10 +1238,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.Emission.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.Emission.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1316,7 +1295,7 @@ i.weight : FloatSocket
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    ior<span class="op">=</span><span class="fl">1.5</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    thin_film_thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    thin_film_ior<span class="op">=</span><span class="fl">1.33</span>,</span>
@@ -1364,7 +1343,7 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>weight</td>
@@ -1418,10 +1397,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.GlassBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.GlassBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1500,8 +1475,8 @@ i.weight : FloatSocket
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    anisotropy<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    distribution<span class="op">=</span><span class="st">'MULTI_GGX'</span>,</span>
@@ -1547,13 +1522,13 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>tangent</td>
 <td>InputVector</td>
 <td>Tangent</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>weight</td>
@@ -1595,10 +1570,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.GlossyBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.GlossyBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1677,7 +1648,7 @@ i.weight : FloatSocket
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    roughnessu<span class="op">=</span><span class="fl">0.1</span>,</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    roughnessv<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    component<span class="op">=</span><span class="st">'Reflection'</span>,</span>
@@ -1723,7 +1694,7 @@ i.weight : FloatSocket
 <td>tangent</td>
 <td>InputVector</td>
 <td>Tangent</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>weight</td>
@@ -1765,10 +1736,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.HairBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.HairBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1882,10 +1849,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.Holdout.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.Holdout.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -1903,8 +1866,8 @@ i.weight : FloatSocket
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    anisotropy<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    thin_film_thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    thin_film_ior<span class="op">=</span><span class="fl">1.33</span>,</span>
@@ -1977,13 +1940,13 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>tangent</td>
 <td>InputVector</td>
 <td>Tangent</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>weight</td>
@@ -2041,10 +2004,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.MetallicBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.MetallicBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2079,11 +2038,13 @@ i.weight : FloatSocket
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    anisotropy<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    thin_film_thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    thin_film_ior<span class="op">=</span><span class="fl">1.33</span>,</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    distribution<span class="op">=</span><span class="st">'MULTI_GGX'</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Metallic BSDF with operation ‘F82 Tint’. An approximation of the Fresnel conductor curve based on the colors at perpendicular and near-grazing (roughly 82°) angles</p>
 </section>
 <section id="nodebpy.nodes.shader.shader.MetallicBSDF.physical_conductor" class="level5">
@@ -2094,11 +2055,13 @@ i.weight : FloatSocket
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    anisotropy<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    thin_film_thickness<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    thin_film_ior<span class="op">=</span><span class="fl">1.33</span>,</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    distribution<span class="op">=</span><span class="st">'MULTI_GGX'</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Create Metallic BSDF with operation ‘Physical Conductor’. Fresnel conductor based on the complex refractive index per color channel</p>
 <p><strong>Inputs</strong></p>
 <table class="caption-top table">
@@ -2256,10 +2219,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.MixShader.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.MixShader.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2320,7 +2279,7 @@ i.weight : FloatSocket
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    ior<span class="op">=</span><span class="fl">1.5</span>,</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    thin_wall<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    diffuse_roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    subsurface_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
@@ -2332,13 +2291,13 @@ i.weight : FloatSocket
 <span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    specular_tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    anisotropic<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    anisotropic_rotation<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    tangent<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    transmission_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    coat_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    coat_roughness<span class="op">=</span><span class="fl">0.03</span>,</span>
 <span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>    coat_ior<span class="op">=</span><span class="fl">1.5</span>,</span>
 <span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>    coat_tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    coat_normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    coat_normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    sheen_weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>    sheen_roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>    sheen_tint<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
@@ -2409,7 +2368,7 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>weight</td>
@@ -2481,7 +2440,7 @@ i.weight : FloatSocket
 <td>tangent</td>
 <td>InputVector</td>
 <td>Tangent</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>transmission_weight</td>
@@ -2517,7 +2476,7 @@ i.weight : FloatSocket
 <td>coat_normal</td>
 <td>InputVector</td>
 <td>Coat Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>sheen_weight</td>
@@ -2595,14 +2554,10 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.PrincipledBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.PrincipledBSDF.subsurface_method"><code>subsurface_method</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.PrincipledBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -2815,7 +2770,7 @@ i.weight : FloatSocket
 <span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="fl">0.034906585</span>,</span>
 <span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    random_color<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    random_roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    random<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    random<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    r_lobe<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    tt_lobe<span class="op">=</span><span class="fl">1.0</span>,</span>
@@ -2925,7 +2880,7 @@ i.weight : FloatSocket
 <td>random</td>
 <td>InputFloat</td>
 <td>Random</td>
-<td><code>0.0</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>weight</td>
@@ -2985,14 +2940,10 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.PrincipledHairBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.PrincipledHairBSDF.parametrization"><code>parametrization</code></a></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.PrincipledHairBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3123,8 +3074,8 @@ i.weight : FloatSocket
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.shader.RayPortalBSDF">RayPortalBSDF</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>RayPortalBSDF(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    position<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    direction<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    position<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    direction<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Continue tracing from an arbitrary new position and in a new direction</p>
@@ -3150,13 +3101,13 @@ i.weight : FloatSocket
 <td>position</td>
 <td>InputVector</td>
 <td>Position</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>direction</td>
 <td>InputVector</td>
 <td>Direction</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>weight</td>
@@ -3194,10 +3145,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.RayPortalBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.RayPortalBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3260,7 +3207,7 @@ i.weight : FloatSocket
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>(<span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    ior<span class="op">=</span><span class="fl">1.45</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    distribution<span class="op">=</span><span class="st">'BECKMANN'</span>,</span>
@@ -3300,7 +3247,7 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>weight</td>
@@ -3342,10 +3289,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.RefractionBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.RefractionBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3412,7 +3355,7 @@ i.weight : FloatSocket
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>SheenBSDF(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    distribution<span class="op">=</span><span class="st">'MICROFIBER'</span>,</span>
@@ -3477,10 +3420,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.SheenBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.SheenBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3496,10 +3435,10 @@ i.weight : FloatSocket
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">0.2</span>,</span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    emissive_color<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>),</span>
 <span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    transparency<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    clear_coat<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    clear_coat_roughness<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    clear_coat_normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    clear_coat_normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Similar to the Principled BSDF node but uses the specular workflow instead of metallic, which functions by specifying the facing (along normal) reflection color. Energy is not conserved, so the result may not be physically accurate</p>
@@ -3555,7 +3494,7 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>clear_coat</td>
@@ -3573,7 +3512,7 @@ i.weight : FloatSocket
 <td>clear_coat_normal</td>
 <td>InputVector</td>
 <td>Clear Coat Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td>weight</td>
@@ -3611,10 +3550,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.SpecularBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.SpecularBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3710,7 +3645,7 @@ i.weight : FloatSocket
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    ior<span class="op">=</span><span class="fl">1.4</span>,</span>
 <span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    roughness<span class="op">=</span><span class="fl">1.0</span>,</span>
 <span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    anisotropy<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    falloff<span class="op">=</span><span class="st">'RANDOM_WALK'</span>,</span>
@@ -3791,10 +3726,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.SubsurfaceScattering.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.SubsurfaceScattering.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3808,7 +3739,7 @@ i.weight : FloatSocket
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>),</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    smooth<span class="op">=</span><span class="fl">0.0</span>,</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    normal<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    weight<span class="op">=</span><span class="fl">0.0</span>,</span>
 <span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
 <span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    component<span class="op">=</span><span class="st">'DIFFUSE'</span>,</span>
@@ -3848,7 +3779,7 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>weight</td>
@@ -3890,10 +3821,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#nodebpy.nodes.shader.shader.ToonBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="odd">
 <td><a href="#nodebpy.nodes.shader.shader.ToonBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -3957,7 +3884,7 @@ i.weight : FloatSocket
 </section>
 <section id="nodebpy.nodes.shader.shader.TranslucentBSDF" class="level3">
 <h3 class="anchored" data-anchor-id="nodebpy.nodes.shader.shader.TranslucentBSDF">TranslucentBSDF</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>TranslucentBSDF(color<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), normal<span class="op">=</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>), weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>TranslucentBSDF(color<span class="op">=</span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span>), normal<span class="op">=</span><span class="va">None</span>, weight<span class="op">=</span><span class="fl">0.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Lambertian diffuse transmission</p>
 <section id="parameters-18" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-18">Parameters</h4>
@@ -3981,7 +3908,7 @@ i.weight : FloatSocket
 <td>normal</td>
 <td>InputVector</td>
 <td>Normal</td>
-<td><code>(0.0, 0.0, 0.0)</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="odd">
 <td>weight</td>
@@ -4019,10 +3946,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.TranslucentBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.TranslucentBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>
@@ -4132,10 +4055,6 @@ i.weight : FloatSocket
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#nodebpy.nodes.shader.shader.TransparentBSDF.outputs"><code>outputs</code></a></td>
-<td></td>
-</tr>
-<tr class="even">
 <td><a href="#nodebpy.nodes.shader.shader.TransparentBSDF.tree"><code>tree</code></a></td>
 <td>The <code>TreeBuilder</code> instance this node belongs to and is being built within.</td>
 </tr>

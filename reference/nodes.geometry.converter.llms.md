@@ -49,6 +49,7 @@
 | [Math](#nodebpy.nodes.geometry.converter.Math) | Perform math operations |
 | [MatrixDeterminant](#nodebpy.nodes.geometry.converter.MatrixDeterminant) | Compute the determinant of the given matrix |
 | [MatrixSVD](#nodebpy.nodes.geometry.converter.MatrixSVD) | Compute the singular value decomposition of the 3x3 part of a matrix |
+| [Mix](#nodebpy.nodes.geometry.converter.Mix) | Mix values by a factor |
 | [MultiplyMatrices](#nodebpy.nodes.geometry.converter.MultiplyMatrices) | Perform a matrix multiplication on two input matrices |
 | [PackUVIslands](#nodebpy.nodes.geometry.converter.PackUVIslands) | Scale islands of a UV map and move them so they fill the UV space as much as possible |
 | [ProjectPoint](#nodebpy.nodes.geometry.converter.ProjectPoint) | Project a point using a matrix, using location, rotation, scale, and perspective divide |
@@ -87,7 +88,13 @@
 ### AccumulateField
 
 ``` python
-AccumulateField(value=1.0, group_index=0, *, data_type='FLOAT', domain='POINT')
+AccumulateField(
+    value=1.0,
+    group_index=None,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
 ```
 
 Add the values of an evaluated field together and output the running total for each element
@@ -97,7 +104,7 @@ Add the values of an evaluated field together and output the running total for e
 | Name        | Type         | Description | Default |
 |-------------|--------------|-------------|---------|
 | value       | InputFloat   | Value       | `1.0`   |
-| group_index | InputInteger | Group ID    | `0`     |
+| group_index | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -114,24 +121,9 @@ Add the values of an evaluated field together and output the running total for e
 | [`name`](#nodebpy.nodes.geometry.converter.AccumulateField.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.AccumulateField.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AccumulateField.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.AccumulateField.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.converter.AccumulateField.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.converter.AccumulateField.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.AccumulateField.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [face_corner](#nodebpy.nodes.geometry.converter.AccumulateField.face_corner) | Create Accumulate Field with operation ‘Face Corner’. Attribute on mesh face corner |
-
-##### face_corner
-
-``` python
-face_corner(value=1.0, group_index=0)
-```
-
-Create Accumulate Field with operation ‘Face Corner’. Attribute on mesh face corner
 
 **Inputs**
 
@@ -152,7 +144,7 @@ Create Accumulate Field with operation ‘Face Corner’. Attribute on mesh face
 
 ``` python
 AlignRotationToVector(
-    rotation=(0.0, 0.0, 0.0),
+    rotation=None,
     factor=1.0,
     vector=(0.0, 0.0, 1.0),
     *,
@@ -167,7 +159,7 @@ Orient a rotation along the given direction
 
 | Name     | Type          | Description | Default           |
 |----------|---------------|-------------|-------------------|
-| rotation | InputRotation | Rotation    | `(0.0, 0.0, 0.0)` |
+| rotation | InputRotation | Rotation    | `None`            |
 | factor   | InputFloat    | Factor      | `1.0`             |
 | vector   | InputVector   | Vector      | `(0.0, 0.0, 1.0)` |
 
@@ -180,7 +172,6 @@ Orient a rotation along the given direction
 | [`name`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.outputs) |  |
 | [`pivot_axis`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.pivot_axis) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.AlignRotationToVector.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -227,7 +218,6 @@ Create a rotation from a primary and (ideally orthogonal) secondary axis
 | [`name`](#nodebpy.nodes.geometry.converter.AxesToRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.AxesToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AxesToRotation.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.AxesToRotation.outputs) |  |
 | [`primary`](#nodebpy.nodes.geometry.converter.AxesToRotation.primary) |  |
 | [`secondary`](#nodebpy.nodes.geometry.converter.AxesToRotation.secondary) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.AxesToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -268,7 +258,6 @@ Build a rotation from an axis and a rotation around that axis
 | [`name`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.AxisAngleToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -309,7 +298,6 @@ Perform bitwise operations on 32-bit integers
 | [`node`](#nodebpy.nodes.geometry.converter.BitMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.BitMath.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.converter.BitMath.operation) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.BitMath.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.BitMath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -407,7 +395,6 @@ Convert a blackbody temperature to an RGB value
 | [`name`](#nodebpy.nodes.geometry.converter.Blackbody.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.Blackbody.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Blackbody.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.Blackbody.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.Blackbody.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -446,7 +433,6 @@ Perform a logical operation on the given boolean inputs
 | [`node`](#nodebpy.nodes.geometry.converter.BooleanMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.BooleanMath.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.converter.BooleanMath.operation) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.BooleanMath.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.BooleanMath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -573,7 +559,6 @@ Clamp a value between a minimum and a maximum
 | [`name`](#nodebpy.nodes.geometry.converter.Clamp.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.Clamp.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Clamp.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.Clamp.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.Clamp.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -637,7 +622,6 @@ Create a list of values
 | [`name`](#nodebpy.nodes.geometry.converter.ClosureToList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ClosureToList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ClosureToList.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ClosureToList.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ClosureToList.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -650,18 +634,18 @@ Create a list of values
 ### ClusterByConnected
 
 ``` python
-ClusterByConnected(selection=True, position=(0.0, 0.0, 0.0), distance=0.001)
+ClusterByConnected(selection=None, position=None, distance=0.001)
 ```
 
 Group mesh vertices connected by edges when they are within a specified distance
 
 #### Parameters
 
-| Name      | Type         | Description | Default           |
-|-----------|--------------|-------------|-------------------|
-| selection | InputBoolean | Selection   | `True`            |
-| position  | InputVector  | Position    | `(0.0, 0.0, 0.0)` |
-| distance  | InputFloat   | Distance    | `0.001`           |
+| Name      | Type         | Description | Default |
+|-----------|--------------|-------------|---------|
+| selection | InputBoolean | Selection   | `None`  |
+| position  | InputVector  | Position    | `None`  |
+| distance  | InputFloat   | Distance    | `0.001` |
 
 #### Attributes
 
@@ -671,7 +655,6 @@ Group mesh vertices connected by edges when they are within a specified distance
 | [`name`](#nodebpy.nodes.geometry.converter.ClusterByConnected.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ClusterByConnected.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ClusterByConnected.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ClusterByConnected.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ClusterByConnected.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -691,24 +674,19 @@ Group mesh vertices connected by edges when they are within a specified distance
 ### ClusterByDistance
 
 ``` python
-ClusterByDistance(
-    selection=True,
-    group_id=0,
-    position=(0.0, 0.0, 0.0),
-    distance=0.001,
-)
+ClusterByDistance(selection=None, group_id=None, position=None, distance=0.001)
 ```
 
 Group elements into integer IDs based on proximity of vector values
 
 #### Parameters
 
-| Name      | Type         | Description | Default           |
-|-----------|--------------|-------------|-------------------|
-| selection | InputBoolean | Selection   | `True`            |
-| group_id  | InputInteger | Group ID    | `0`               |
-| position  | InputVector  | Position    | `(0.0, 0.0, 0.0)` |
-| distance  | InputFloat   | Distance    | `0.001`           |
+| Name      | Type         | Description | Default |
+|-----------|--------------|-------------|---------|
+| selection | InputBoolean | Selection   | `None`  |
+| group_id  | InputInteger | Group ID    | `None`  |
+| position  | InputVector  | Position    | `None`  |
+| distance  | InputFloat   | Distance    | `0.001` |
 
 #### Attributes
 
@@ -718,7 +696,6 @@ Group elements into integer IDs based on proximity of vector values
 | [`name`](#nodebpy.nodes.geometry.converter.ClusterByDistance.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ClusterByDistance.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ClusterByDistance.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ClusterByDistance.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ClusterByDistance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -754,7 +731,6 @@ Combine multiple socket values into one.
 | [`name`](#nodebpy.nodes.geometry.converter.CombineBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineBundle.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.CombineBundle.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.CombineBundle.tree) |  |
 
 **Outputs**
@@ -789,7 +765,6 @@ Combine four channels into a single color, based on a particular color model
 | [`name`](#nodebpy.nodes.geometry.converter.CombineColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineColor.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineColor.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.CombineColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.CombineColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -893,7 +868,6 @@ Construct a 4x4 matrix from its individual values
 | [`name`](#nodebpy.nodes.geometry.converter.CombineMatrix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineMatrix.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.CombineMatrix.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.CombineMatrix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -951,7 +925,6 @@ Combine a translation vector, a rotation, and a scale vector into a transformati
 | [`name`](#nodebpy.nodes.geometry.converter.CombineTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineTransform.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.CombineTransform.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.CombineTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -992,7 +965,6 @@ Create a vector from X, Y, and Z components
 | [`name`](#nodebpy.nodes.geometry.converter.CombineXYZ.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.CombineXYZ.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.CombineXYZ.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.CombineXYZ.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.CombineXYZ.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1031,7 +1003,6 @@ Build a rotation from separate angles around each axis
 | [`name`](#nodebpy.nodes.geometry.converter.EulerToRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.EulerToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.EulerToRotation.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.EulerToRotation.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.EulerToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1049,7 +1020,7 @@ Build a rotation from separate angles around each axis
 ### EvaluateAtIndex
 
 ``` python
-EvaluateAtIndex(value=0.0, index=0, *, domain='POINT', data_type='FLOAT')
+EvaluateAtIndex(value=None, index=0, *, domain='POINT', data_type='FLOAT')
 ```
 
 Retrieve data of other elements in the context’s geometry
@@ -1058,7 +1029,7 @@ Retrieve data of other elements in the context’s geometry
 
 | Name  | Type         | Description | Default |
 |-------|--------------|-------------|---------|
-| value | InputFloat   | Value       | `0.0`   |
+| value | InputFloat   | Value       | `None`  |
 | index | InputInteger | Index       | `0`     |
 
 #### Attributes
@@ -1076,33 +1047,9 @@ Retrieve data of other elements in the context’s geometry
 | [`name`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [face_corner](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.face_corner) | Create Evaluate at Index with operation ‘Face Corner’. Attribute on mesh face corner |
-| [input_4x4_matrix](#nodebpy.nodes.geometry.converter.EvaluateAtIndex.input_4x4_matrix) | Create Evaluate at Index with operation ‘4x4 Matrix’. Floating point matrix |
-
-##### face_corner
-
-``` python
-face_corner(value=0.0, index=0)
-```
-
-Create Evaluate at Index with operation ‘Face Corner’. Attribute on mesh face corner
-
-##### input_4x4_matrix
-
-``` python
-input_4x4_matrix(value=None, index=0)
-```
-
-Create Evaluate at Index with operation ‘4x4 Matrix’. Floating point matrix
 
 **Inputs**
 
@@ -1146,33 +1093,9 @@ Retrieve values from a field on a different domain besides the domain from the c
 | [`name`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [face_corner](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.face_corner) | Create Evaluate on Domain with operation ‘Face Corner’. Attribute on mesh face corner |
-| [input_4x4_matrix](#nodebpy.nodes.geometry.converter.EvaluateOnDomain.input_4x4_matrix) | Create Evaluate on Domain with operation ‘4x4 Matrix’. Floating point matrix |
-
-##### face_corner
-
-``` python
-face_corner(value=0.0)
-```
-
-Create Evaluate on Domain with operation ‘Face Corner’. Attribute on mesh face corner
-
-##### input_4x4_matrix
-
-``` python
-input_4x4_matrix(value=None)
-```
-
-Create Evaluate on Domain with operation ‘4x4 Matrix’. Floating point matrix
 
 **Inputs**
 
@@ -1189,7 +1112,7 @@ Create Evaluate on Domain with operation ‘4x4 Matrix’. Floating point matrix
 ### FieldAverage
 
 ``` python
-FieldAverage(value=0.0, group_index=0, *, data_type='FLOAT', domain='POINT')
+FieldAverage(value=0.0, group_index=None, *, data_type='FLOAT', domain='POINT')
 ```
 
 Calculate the mean and median of a given field
@@ -1199,7 +1122,7 @@ Calculate the mean and median of a given field
 | Name        | Type         | Description | Default |
 |-------------|--------------|-------------|---------|
 | value       | InputFloat   | Value       | `0.0`   |
-| group_index | InputInteger | Group ID    | `0`     |
+| group_index | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -1216,24 +1139,9 @@ Calculate the mean and median of a given field
 | [`name`](#nodebpy.nodes.geometry.converter.FieldAverage.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FieldAverage.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FieldAverage.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FieldAverage.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.converter.FieldAverage.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.converter.FieldAverage.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.FieldAverage.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [face_corner](#nodebpy.nodes.geometry.converter.FieldAverage.face_corner) | Create Field Average with operation ‘Face Corner’. Attribute on mesh face corner |
-
-##### face_corner
-
-``` python
-face_corner(value=0.0, group_index=0)
-```
-
-Create Field Average with operation ‘Face Corner’. Attribute on mesh face corner
 
 **Inputs**
 
@@ -1252,7 +1160,13 @@ Create Field Average with operation ‘Face Corner’. Attribute on mesh face co
 ### FieldMinAndMax
 
 ``` python
-FieldMinAndMax(value=0.0, group_index=0, *, data_type='FLOAT', domain='POINT')
+FieldMinAndMax(
+    value=0.0,
+    group_index=None,
+    *,
+    data_type='FLOAT',
+    domain='POINT',
+)
 ```
 
 Calculate the minimum and maximum of a given field
@@ -1262,7 +1176,7 @@ Calculate the minimum and maximum of a given field
 | Name        | Type         | Description | Default |
 |-------------|--------------|-------------|---------|
 | value       | InputFloat   | Value       | `0.0`   |
-| group_index | InputInteger | Group ID    | `0`     |
+| group_index | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -1279,24 +1193,9 @@ Calculate the minimum and maximum of a given field
 | [`name`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.FieldMinAndMax.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [face_corner](#nodebpy.nodes.geometry.converter.FieldMinAndMax.face_corner) | Create Field Min & Max with operation ‘Face Corner’. Attribute on mesh face corner |
-
-##### face_corner
-
-``` python
-face_corner(value=0.0, group_index=0)
-```
-
-Create Field Min & Max with operation ‘Face Corner’. Attribute on mesh face corner
 
 **Inputs**
 
@@ -1334,7 +1233,6 @@ Create a list of values
 | [`name`](#nodebpy.nodes.geometry.converter.FieldToList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FieldToList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FieldToList.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FieldToList.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.FieldToList.tree) |  |
 
 #### Methods
@@ -1447,7 +1345,7 @@ vector(input=(0, 0, 0), name=None)
 ### FieldVariance
 
 ``` python
-FieldVariance(value=0.0, group_index=0, *, data_type='FLOAT', domain='POINT')
+FieldVariance(value=0.0, group_index=None, *, data_type='FLOAT', domain='POINT')
 ```
 
 Calculate the standard deviation and variance of a given field
@@ -1457,7 +1355,7 @@ Calculate the standard deviation and variance of a given field
 | Name        | Type         | Description | Default |
 |-------------|--------------|-------------|---------|
 | value       | InputFloat   | Value       | `0.0`   |
-| group_index | InputInteger | Group ID    | `0`     |
+| group_index | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -1474,24 +1372,9 @@ Calculate the standard deviation and variance of a given field
 | [`name`](#nodebpy.nodes.geometry.converter.FieldVariance.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FieldVariance.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FieldVariance.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FieldVariance.outputs) |  |
 | [`point`](#nodebpy.nodes.geometry.converter.FieldVariance.point) |  |
 | [`spline`](#nodebpy.nodes.geometry.converter.FieldVariance.spline) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.FieldVariance.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
-
-#### Methods
-
-| Name | Description |
-|----|----|
-| [face_corner](#nodebpy.nodes.geometry.converter.FieldVariance.face_corner) | Create Field Variance with operation ‘Face Corner’. Attribute on mesh face corner |
-
-##### face_corner
-
-``` python
-face_corner(value=0.0, group_index=0)
-```
-
-Create Field Variance with operation ‘Face Corner’. Attribute on mesh face corner
 
 **Inputs**
 
@@ -1510,7 +1393,7 @@ Create Field Variance with operation ‘Face Corner’. Attribute on mesh face c
 ### FilterList
 
 ``` python
-FilterList(list=None, selection=True, *, socket_type='FLOAT')
+FilterList(list=None, selection=None, *, socket_type='FLOAT')
 ```
 
 Remove items from a list
@@ -1520,7 +1403,7 @@ Remove items from a list
 | Name      | Type           | Description | Default |
 |-----------|----------------|-------------|---------|
 | list      | InputFloatList | List        | `None`  |
-| selection | InputBoolean   | Selection   | `True`  |
+| selection | InputBoolean   | Selection   | `None`  |
 
 #### Attributes
 
@@ -1530,7 +1413,6 @@ Remove items from a list
 | [`name`](#nodebpy.nodes.geometry.converter.FilterList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FilterList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FilterList.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FilterList.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.FilterList.socket_type) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.FilterList.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -1560,7 +1442,7 @@ Remove items from a list
 ##### boolean
 
 ``` python
-boolean(list=None, selection=True)
+boolean(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Boolean’.
@@ -1568,7 +1450,7 @@ Create Filter List with operation ‘Boolean’.
 ##### bundle
 
 ``` python
-bundle(list=None, selection=True)
+bundle(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Bundle’.
@@ -1576,7 +1458,7 @@ Create Filter List with operation ‘Bundle’.
 ##### closure
 
 ``` python
-closure(list=None, selection=True)
+closure(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Closure’.
@@ -1584,7 +1466,7 @@ Create Filter List with operation ‘Closure’.
 ##### collection
 
 ``` python
-collection(list=None, selection=True)
+collection(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Collection’.
@@ -1592,7 +1474,7 @@ Create Filter List with operation ‘Collection’.
 ##### color
 
 ``` python
-color(list=None, selection=True)
+color(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Color’.
@@ -1600,7 +1482,7 @@ Create Filter List with operation ‘Color’.
 ##### float
 
 ``` python
-float(list=None, selection=True)
+float(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Float’.
@@ -1608,7 +1490,7 @@ Create Filter List with operation ‘Float’.
 ##### font
 
 ``` python
-font(list=None, selection=True)
+font(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Font’.
@@ -1616,7 +1498,7 @@ Create Filter List with operation ‘Font’.
 ##### geometry
 
 ``` python
-geometry(list=None, selection=True)
+geometry(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Geometry’.
@@ -1624,7 +1506,7 @@ Create Filter List with operation ‘Geometry’.
 ##### image
 
 ``` python
-image(list=None, selection=True)
+image(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Image’.
@@ -1632,7 +1514,7 @@ Create Filter List with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(list=None, selection=True)
+integer(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Integer’.
@@ -1640,7 +1522,7 @@ Create Filter List with operation ‘Integer’.
 ##### material
 
 ``` python
-material(list=None, selection=True)
+material(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Material’.
@@ -1648,7 +1530,7 @@ Create Filter List with operation ‘Material’.
 ##### matrix
 
 ``` python
-matrix(list=None, selection=True)
+matrix(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Matrix’.
@@ -1656,7 +1538,7 @@ Create Filter List with operation ‘Matrix’.
 ##### menu
 
 ``` python
-menu(list=None, selection=True)
+menu(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Menu’.
@@ -1664,7 +1546,7 @@ Create Filter List with operation ‘Menu’.
 ##### object
 
 ``` python
-object(list=None, selection=True)
+object(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Object’.
@@ -1672,7 +1554,7 @@ Create Filter List with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(list=None, selection=True)
+rotation(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Rotation’.
@@ -1680,7 +1562,7 @@ Create Filter List with operation ‘Rotation’.
 ##### sound
 
 ``` python
-sound(list=None, selection=True)
+sound(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Sound’.
@@ -1688,7 +1570,7 @@ Create Filter List with operation ‘Sound’.
 ##### string
 
 ``` python
-string(list=None, selection=True)
+string(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘String’.
@@ -1696,7 +1578,7 @@ Create Filter List with operation ‘String’.
 ##### vector
 
 ``` python
-vector(list=None, selection=True)
+vector(list=None, selection=None)
 ```
 
 Create Filter List with operation ‘Vector’.
@@ -1739,7 +1621,6 @@ Find the number of times a given string occurs in another string and the positio
 | [`name`](#nodebpy.nodes.geometry.converter.FindInString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FindInString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FindInString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FindInString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.FindInString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -1779,7 +1660,6 @@ Convert the given floating-point number to an integer, with a choice of methods
 | [`name`](#nodebpy.nodes.geometry.converter.FloatToInteger.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FloatToInteger.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FloatToInteger.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FloatToInteger.outputs) |  |
 | [`rounding_mode`](#nodebpy.nodes.geometry.converter.FloatToInteger.rounding_mode) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.FloatToInteger.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -1818,7 +1698,6 @@ Insert values into a string using a Python and path template compatible formatti
 | [`name`](#nodebpy.nodes.geometry.converter.FormatString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.FormatString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.FormatString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.FormatString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.FormatString.tree) |  |
 
 #### Methods
@@ -1902,7 +1781,6 @@ Retrieve a bundle item by path.
 | [`name`](#nodebpy.nodes.geometry.converter.GetBundleItem.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.GetBundleItem.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.GetBundleItem.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.GetBundleItem.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.GetBundleItem.socket_type) |  |
 | [`structure_type`](#nodebpy.nodes.geometry.converter.GetBundleItem.structure_type) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.GetBundleItem.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -1939,7 +1817,7 @@ Retrieve a bundle item by path.
 ##### auto
 
 ``` python
-auto(bundle=None, path='', remove=False)
+auto(bundle=None, path='', remove=False, *, socket_type='FLOAT')
 ```
 
 Create Get Bundle Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used
@@ -1947,7 +1825,7 @@ Create Get Bundle Item with operation ‘Auto’. Automatically detect a good st
 ##### boolean
 
 ``` python
-boolean(bundle=None, path='', remove=False)
+boolean(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Boolean’.
@@ -1955,7 +1833,7 @@ Create Get Bundle Item with operation ‘Boolean’.
 ##### bundle
 
 ``` python
-bundle(bundle=None, path='', remove=False)
+bundle(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Bundle’.
@@ -1963,7 +1841,7 @@ Create Get Bundle Item with operation ‘Bundle’.
 ##### closure
 
 ``` python
-closure(bundle=None, path='', remove=False)
+closure(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Closure’.
@@ -1971,7 +1849,7 @@ Create Get Bundle Item with operation ‘Closure’.
 ##### collection
 
 ``` python
-collection(bundle=None, path='', remove=False)
+collection(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Collection’.
@@ -1979,7 +1857,7 @@ Create Get Bundle Item with operation ‘Collection’.
 ##### color
 
 ``` python
-color(bundle=None, path='', remove=False)
+color(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Color’.
@@ -1987,7 +1865,7 @@ Create Get Bundle Item with operation ‘Color’.
 ##### dynamic
 
 ``` python
-dynamic(bundle=None, path='', remove=False)
+dynamic(bundle=None, path='', remove=False, *, socket_type='FLOAT')
 ```
 
 Create Get Bundle Item with operation ‘Dynamic’. Socket can work with different kinds of structures
@@ -1995,7 +1873,7 @@ Create Get Bundle Item with operation ‘Dynamic’. Socket can work with differ
 ##### field
 
 ``` python
-field(bundle=None, path='', remove=False)
+field(bundle=None, path='', remove=False, *, socket_type='FLOAT')
 ```
 
 Create Get Bundle Item with operation ‘Field’. Socket expects a field
@@ -2003,7 +1881,7 @@ Create Get Bundle Item with operation ‘Field’. Socket expects a field
 ##### float
 
 ``` python
-float(bundle=None, path='', remove=False)
+float(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Float’.
@@ -2011,7 +1889,7 @@ Create Get Bundle Item with operation ‘Float’.
 ##### font
 
 ``` python
-font(bundle=None, path='', remove=False)
+font(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Font’.
@@ -2019,7 +1897,7 @@ Create Get Bundle Item with operation ‘Font’.
 ##### geometry
 
 ``` python
-geometry(bundle=None, path='', remove=False)
+geometry(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Geometry’.
@@ -2027,7 +1905,7 @@ Create Get Bundle Item with operation ‘Geometry’.
 ##### grid
 
 ``` python
-grid(bundle=None, path='', remove=False)
+grid(bundle=None, path='', remove=False, *, socket_type='FLOAT')
 ```
 
 Create Get Bundle Item with operation ‘Grid’. Socket expects a grid
@@ -2035,7 +1913,7 @@ Create Get Bundle Item with operation ‘Grid’. Socket expects a grid
 ##### image
 
 ``` python
-image(bundle=None, path='', remove=False)
+image(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Image’.
@@ -2043,7 +1921,7 @@ Create Get Bundle Item with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(bundle=None, path='', remove=False)
+integer(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Integer’.
@@ -2051,7 +1929,7 @@ Create Get Bundle Item with operation ‘Integer’.
 ##### list
 
 ``` python
-list(bundle=None, path='', remove=False)
+list(bundle=None, path='', remove=False, *, socket_type='FLOAT')
 ```
 
 Create Get Bundle Item with operation ‘List’. Socket expects a list
@@ -2059,7 +1937,7 @@ Create Get Bundle Item with operation ‘List’. Socket expects a list
 ##### material
 
 ``` python
-material(bundle=None, path='', remove=False)
+material(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Material’.
@@ -2067,7 +1945,7 @@ Create Get Bundle Item with operation ‘Material’.
 ##### matrix
 
 ``` python
-matrix(bundle=None, path='', remove=False)
+matrix(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Matrix’.
@@ -2075,7 +1953,7 @@ Create Get Bundle Item with operation ‘Matrix’.
 ##### menu
 
 ``` python
-menu(bundle=None, path='', remove=False)
+menu(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Menu’.
@@ -2083,7 +1961,7 @@ Create Get Bundle Item with operation ‘Menu’.
 ##### object
 
 ``` python
-object(bundle=None, path='', remove=False)
+object(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Object’.
@@ -2091,7 +1969,7 @@ Create Get Bundle Item with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(bundle=None, path='', remove=False)
+rotation(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Rotation’.
@@ -2099,7 +1977,7 @@ Create Get Bundle Item with operation ‘Rotation’.
 ##### single
 
 ``` python
-single(bundle=None, path='', remove=False)
+single(bundle=None, path='', remove=False, *, socket_type='FLOAT')
 ```
 
 Create Get Bundle Item with operation ‘Single’. Socket expects a single value
@@ -2107,7 +1985,7 @@ Create Get Bundle Item with operation ‘Single’. Socket expects a single valu
 ##### sound
 
 ``` python
-sound(bundle=None, path='', remove=False)
+sound(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Sound’.
@@ -2115,7 +1993,7 @@ Create Get Bundle Item with operation ‘Sound’.
 ##### string
 
 ``` python
-string(bundle=None, path='', remove=False)
+string(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘String’.
@@ -2123,7 +2001,7 @@ Create Get Bundle Item with operation ‘String’.
 ##### vector
 
 ``` python
-vector(bundle=None, path='', remove=False)
+vector(bundle=None, path='', remove=False, *, structure_type='AUTO')
 ```
 
 Create Get Bundle Item with operation ‘Vector’.
@@ -2167,7 +2045,6 @@ Retrieve a value from a list
 | [`name`](#nodebpy.nodes.geometry.converter.GetListItem.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.GetListItem.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.GetListItem.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.GetListItem.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.GetListItem.socket_type) |  |
 | [`structure_type`](#nodebpy.nodes.geometry.converter.GetListItem.structure_type) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.GetListItem.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -2204,7 +2081,7 @@ Retrieve a value from a list
 ##### auto
 
 ``` python
-auto(list=None, index=0)
+auto(list=None, index=0, *, socket_type='FLOAT')
 ```
 
 Create Get List Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used
@@ -2212,7 +2089,7 @@ Create Get List Item with operation ‘Auto’. Automatically detect a good stru
 ##### boolean
 
 ``` python
-boolean(list=None, index=0)
+boolean(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Boolean’.
@@ -2220,7 +2097,7 @@ Create Get List Item with operation ‘Boolean’.
 ##### bundle
 
 ``` python
-bundle(list=None, index=0)
+bundle(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Bundle’.
@@ -2228,7 +2105,7 @@ Create Get List Item with operation ‘Bundle’.
 ##### closure
 
 ``` python
-closure(list=None, index=0)
+closure(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Closure’.
@@ -2236,7 +2113,7 @@ Create Get List Item with operation ‘Closure’.
 ##### collection
 
 ``` python
-collection(list=None, index=0)
+collection(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Collection’.
@@ -2244,7 +2121,7 @@ Create Get List Item with operation ‘Collection’.
 ##### color
 
 ``` python
-color(list=None, index=0)
+color(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Color’.
@@ -2252,7 +2129,7 @@ Create Get List Item with operation ‘Color’.
 ##### dynamic
 
 ``` python
-dynamic(list=None, index=0)
+dynamic(list=None, index=0, *, socket_type='FLOAT')
 ```
 
 Create Get List Item with operation ‘Dynamic’. Socket can work with different kinds of structures
@@ -2260,7 +2137,7 @@ Create Get List Item with operation ‘Dynamic’. Socket can work with differen
 ##### field
 
 ``` python
-field(list=None, index=0)
+field(list=None, index=0, *, socket_type='FLOAT')
 ```
 
 Create Get List Item with operation ‘Field’. Socket expects a field
@@ -2268,7 +2145,7 @@ Create Get List Item with operation ‘Field’. Socket expects a field
 ##### float
 
 ``` python
-float(list=None, index=0)
+float(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Float’.
@@ -2276,7 +2153,7 @@ Create Get List Item with operation ‘Float’.
 ##### font
 
 ``` python
-font(list=None, index=0)
+font(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Font’.
@@ -2284,7 +2161,7 @@ Create Get List Item with operation ‘Font’.
 ##### geometry
 
 ``` python
-geometry(list=None, index=0)
+geometry(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Geometry’.
@@ -2292,7 +2169,7 @@ Create Get List Item with operation ‘Geometry’.
 ##### grid
 
 ``` python
-grid(list=None, index=0)
+grid(list=None, index=0, *, socket_type='FLOAT')
 ```
 
 Create Get List Item with operation ‘Grid’. Socket expects a grid
@@ -2300,7 +2177,7 @@ Create Get List Item with operation ‘Grid’. Socket expects a grid
 ##### image
 
 ``` python
-image(list=None, index=0)
+image(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Image’.
@@ -2308,7 +2185,7 @@ Create Get List Item with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(list=None, index=0)
+integer(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Integer’.
@@ -2316,7 +2193,7 @@ Create Get List Item with operation ‘Integer’.
 ##### list
 
 ``` python
-list(list=None, index=0)
+list(list=None, index=0, *, socket_type='FLOAT')
 ```
 
 Create Get List Item with operation ‘List’. Socket expects a list
@@ -2324,7 +2201,7 @@ Create Get List Item with operation ‘List’. Socket expects a list
 ##### material
 
 ``` python
-material(list=None, index=0)
+material(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Material’.
@@ -2332,7 +2209,7 @@ Create Get List Item with operation ‘Material’.
 ##### matrix
 
 ``` python
-matrix(list=None, index=0)
+matrix(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Matrix’.
@@ -2340,7 +2217,7 @@ Create Get List Item with operation ‘Matrix’.
 ##### menu
 
 ``` python
-menu(list=None, index=0)
+menu(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Menu’.
@@ -2348,7 +2225,7 @@ Create Get List Item with operation ‘Menu’.
 ##### object
 
 ``` python
-object(list=None, index=0)
+object(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Object’.
@@ -2356,7 +2233,7 @@ Create Get List Item with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(list=None, index=0)
+rotation(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Rotation’.
@@ -2364,7 +2241,7 @@ Create Get List Item with operation ‘Rotation’.
 ##### single
 
 ``` python
-single(list=None, index=0)
+single(list=None, index=0, *, socket_type='FLOAT')
 ```
 
 Create Get List Item with operation ‘Single’. Socket expects a single value
@@ -2372,7 +2249,7 @@ Create Get List Item with operation ‘Single’. Socket expects a single value
 ##### sound
 
 ``` python
-sound(list=None, index=0)
+sound(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Sound’.
@@ -2380,7 +2257,7 @@ Create Get List Item with operation ‘Sound’.
 ##### string
 
 ``` python
-string(list=None, index=0)
+string(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘String’.
@@ -2388,7 +2265,7 @@ Create Get List Item with operation ‘String’.
 ##### vector
 
 ``` python
-vector(list=None, index=0)
+vector(list=None, index=0, *, structure_type='AUTO')
 ```
 
 Create Get List Item with operation ‘Vector’.
@@ -2438,7 +2315,6 @@ Get paths to items in a nested bundle with a filter
 | [`name`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.GetNestedBundlePaths.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2481,7 +2357,6 @@ Generate a randomized integer using the given input value as a seed
 | [`name`](#nodebpy.nodes.geometry.converter.HashValue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.HashValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.HashValue.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.HashValue.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.HashValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2588,7 +2463,6 @@ Implicitly convert the input value to a fixed socket type
 | [`name`](#nodebpy.nodes.geometry.converter.ImplicitConversion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ImplicitConversion.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ImplicitConversion.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ImplicitConversion.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ImplicitConversion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -2773,17 +2647,17 @@ Create Implicit Conversion with operation ‘Vector’.
 ### IndexOfNearest
 
 ``` python
-IndexOfNearest(position=(0.0, 0.0, 0.0), group_id=0)
+IndexOfNearest(position=None, group_id=None)
 ```
 
 Find the nearest element in a group. Similar to the “Sample Nearest” node
 
 #### Parameters
 
-| Name     | Type         | Description | Default           |
-|----------|--------------|-------------|-------------------|
-| position | InputVector  | Position    | `(0.0, 0.0, 0.0)` |
-| group_id | InputInteger | Group ID    | `0`               |
+| Name     | Type         | Description | Default |
+|----------|--------------|-------------|---------|
+| position | InputVector  | Position    | `None`  |
+| group_id | InputInteger | Group ID    | `None`  |
 
 #### Attributes
 
@@ -2793,7 +2667,6 @@ Find the nearest element in a group. Similar to the “Sample Nearest” node
 | [`name`](#nodebpy.nodes.geometry.converter.IndexOfNearest.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.IndexOfNearest.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.IndexOfNearest.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.IndexOfNearest.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.IndexOfNearest.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -2835,7 +2708,6 @@ Perform various math operations on the given integer inputs
 | [`node`](#nodebpy.nodes.geometry.converter.IntegerMath.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.IntegerMath.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.converter.IntegerMath.operation) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.IntegerMath.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.IntegerMath.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3041,7 +2913,6 @@ Compute the inverse of the given matrix, if one exists
 | [`name`](#nodebpy.nodes.geometry.converter.InvertMatrix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.InvertMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.InvertMatrix.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.InvertMatrix.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.InvertMatrix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3079,7 +2950,6 @@ Compute the inverse of the given rotation
 | [`name`](#nodebpy.nodes.geometry.converter.InvertRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.InvertRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.InvertRotation.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.InvertRotation.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.InvertRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3116,7 +2986,6 @@ Join multiple bundles together
 | [`name`](#nodebpy.nodes.geometry.converter.JoinBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.JoinBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.JoinBundle.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.JoinBundle.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.JoinBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3154,7 +3023,6 @@ Count how many items are in a given list
 | [`name`](#nodebpy.nodes.geometry.converter.ListLength.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ListLength.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ListLength.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ListLength.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ListLength.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3346,7 +3214,7 @@ MapRange(
     to_min=0.0,
     to_max=1.0,
     steps=4.0,
-    vector=(0.0, 0.0, 0.0),
+    vector=None,
     from_min_float3=(0.0, 0.0, 0.0),
     from_max_float3=(1.0, 1.0, 1.0),
     to_min_float3=(0.0, 0.0, 0.0),
@@ -3371,7 +3239,7 @@ Remap a value from a range to a target range
 | to_min          | InputFloat  | To Min      | `0.0`             |
 | to_max          | InputFloat  | To Max      | `1.0`             |
 | steps           | InputFloat  | Steps       | `4.0`             |
-| vector          | InputVector | Vector      | `(0.0, 0.0, 0.0)` |
+| vector          | InputVector | Vector      | `None`            |
 | from_min_float3 | InputVector | From Min    | `(0.0, 0.0, 0.0)` |
 | from_max_float3 | InputVector | From Max    | `(1.0, 1.0, 1.0)` |
 | to_min_float3   | InputVector | To Min      | `(0.0, 0.0, 0.0)` |
@@ -3389,7 +3257,6 @@ Remap a value from a range to a target range
 | [`name`](#nodebpy.nodes.geometry.converter.MapRange.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MapRange.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MapRange.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.MapRange.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.MapRange.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -3406,7 +3273,16 @@ Remap a value from a range to a target range
 ##### float
 
 ``` python
-float(value=1.0, from_min=0.0, from_max=1.0, to_min=0.0, to_max=1.0)
+float(
+    value=1.0,
+    from_min=0.0,
+    from_max=1.0,
+    to_min=0.0,
+    to_max=1.0,
+    *,
+    clamp=False,
+    interpolation_type='LINEAR',
+)
 ```
 
 Create Map Range with operation ‘Float’. Floating-point value
@@ -3414,7 +3290,16 @@ Create Map Range with operation ‘Float’. Floating-point value
 ##### linear
 
 ``` python
-linear(value=1.0, from_min=0.0, from_max=1.0, to_min=0.0, to_max=1.0)
+linear(
+    value=1.0,
+    from_min=0.0,
+    from_max=1.0,
+    to_min=0.0,
+    to_max=1.0,
+    *,
+    clamp=False,
+    data_type='FLOAT',
+)
 ```
 
 Create Map Range with operation ‘Linear’. Linear interpolation between From Min and From Max values
@@ -3422,7 +3307,16 @@ Create Map Range with operation ‘Linear’. Linear interpolation between From 
 ##### smooth_step
 
 ``` python
-smooth_step(value=1.0, from_min=0.0, from_max=1.0, to_min=0.0, to_max=1.0)
+smooth_step(
+    value=1.0,
+    from_min=0.0,
+    from_max=1.0,
+    to_min=0.0,
+    to_max=1.0,
+    *,
+    clamp=False,
+    data_type='FLOAT',
+)
 ```
 
 Create Map Range with operation ‘Smooth Step’. Smooth Hermite edge interpolation between From Min and From Max values
@@ -3430,7 +3324,16 @@ Create Map Range with operation ‘Smooth Step’. Smooth Hermite edge interpola
 ##### smoother_step
 
 ``` python
-smoother_step(value=1.0, from_min=0.0, from_max=1.0, to_min=0.0, to_max=1.0)
+smoother_step(
+    value=1.0,
+    from_min=0.0,
+    from_max=1.0,
+    to_min=0.0,
+    to_max=1.0,
+    *,
+    clamp=False,
+    data_type='FLOAT',
+)
 ```
 
 Create Map Range with operation ‘Smoother Step’. Smoother Hermite edge interpolation between From Min and From Max values
@@ -3445,6 +3348,9 @@ stepped_linear(
     to_min=0.0,
     to_max=1.0,
     steps=4.0,
+    *,
+    clamp=False,
+    data_type='FLOAT',
 )
 ```
 
@@ -3454,11 +3360,14 @@ Create Map Range with operation ‘Stepped Linear’. Stepped linear interpolati
 
 ``` python
 vector(
-    vector=(0.0, 0.0, 0.0),
-    from_min3=(0.0, 0.0, 0.0),
-    from_max3=(1.0, 1.0, 1.0),
-    to_min3=(0.0, 0.0, 0.0),
-    to_max3=(1.0, 1.0, 1.0),
+    vector=None,
+    from_min=(0.0, 0.0, 0.0),
+    from_max=(1.0, 1.0, 1.0),
+    to_min=(0.0, 0.0, 0.0),
+    to_max=(1.0, 1.0, 1.0),
+    *,
+    clamp=False,
+    interpolation_type='LINEAR',
 )
 ```
 
@@ -3512,7 +3421,6 @@ Check if a given string exists within another string
 | [`name`](#nodebpy.nodes.geometry.converter.MatchString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MatchString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatchString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.MatchString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.MatchString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -3561,7 +3469,6 @@ Perform math operations
 | [`node`](#nodebpy.nodes.geometry.converter.Math.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Math.o) |  |
 | [`operation`](#nodebpy.nodes.geometry.converter.Math.operation) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.Math.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.Math.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 | [`use_clamp`](#nodebpy.nodes.geometry.converter.Math.use_clamp) |  |
 
@@ -3614,7 +3521,7 @@ Perform math operations
 ##### absolute
 
 ``` python
-absolute(value=0.5)
+absolute(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Absolute’. Magnitude of A
@@ -3622,7 +3529,7 @@ Create Math with operation ‘Absolute’. Magnitude of A
 ##### add
 
 ``` python
-add(value=0.5, value_001=0.5)
+add(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Add’. A + B
@@ -3630,7 +3537,7 @@ Create Math with operation ‘Add’. A + B
 ##### arccosine
 
 ``` python
-arccosine(value=0.5)
+arccosine(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Arccosine’. arccos(A)
@@ -3638,7 +3545,7 @@ Create Math with operation ‘Arccosine’. arccos(A)
 ##### arcsine
 
 ``` python
-arcsine(value=0.5)
+arcsine(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Arcsine’. arcsin(A)
@@ -3646,7 +3553,7 @@ Create Math with operation ‘Arcsine’. arcsin(A)
 ##### arctan2
 
 ``` python
-arctan2(value=0.5, value_001=0.5)
+arctan2(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Arctan2’. The signed angle arctan(A / B)
@@ -3654,7 +3561,7 @@ Create Math with operation ‘Arctan2’. The signed angle arctan(A / B)
 ##### arctangent
 
 ``` python
-arctangent(value=0.5)
+arctangent(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Arctangent’. arctan(A)
@@ -3662,7 +3569,7 @@ Create Math with operation ‘Arctangent’. arctan(A)
 ##### ceil
 
 ``` python
-ceil(value=0.5)
+ceil(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Ceil’. The smallest integer greater than or equal A
@@ -3670,7 +3577,7 @@ Create Math with operation ‘Ceil’. The smallest integer greater than or equa
 ##### compare
 
 ``` python
-compare(value=0.5, value_001=0.5, value_002=0.5)
+compare(value=0.5, value_001=0.5, value_002=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Compare’. 1 if (A == B) within tolerance C else 0
@@ -3678,7 +3585,7 @@ Create Math with operation ‘Compare’. 1 if (A == B) within tolerance C else 
 ##### cosine
 
 ``` python
-cosine(value=0.5)
+cosine(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Cosine’. cos(A)
@@ -3686,7 +3593,7 @@ Create Math with operation ‘Cosine’. cos(A)
 ##### divide
 
 ``` python
-divide(value=0.5, value_001=0.5)
+divide(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Divide’. A / B
@@ -3694,7 +3601,7 @@ Create Math with operation ‘Divide’. A / B
 ##### exponent
 
 ``` python
-exponent(value=0.5)
+exponent(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Exponent’. exp(A)
@@ -3702,7 +3609,7 @@ Create Math with operation ‘Exponent’. exp(A)
 ##### floor
 
 ``` python
-floor(value=0.5)
+floor(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Floor’. The largest integer smaller than or equal A
@@ -3710,7 +3617,7 @@ Create Math with operation ‘Floor’. The largest integer smaller than or equa
 ##### floored_modulo
 
 ``` python
-floored_modulo(value=0.5, value_001=0.5)
+floored_modulo(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Floored Modulo’. The remainder of floored division
@@ -3718,7 +3625,7 @@ Create Math with operation ‘Floored Modulo’. The remainder of floored divisi
 ##### fraction
 
 ``` python
-fraction(value=0.5)
+fraction(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Fraction’. The fraction part of A
@@ -3726,7 +3633,7 @@ Create Math with operation ‘Fraction’. The fraction part of A
 ##### greater_than
 
 ``` python
-greater_than(value=0.5, value_001=0.5)
+greater_than(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Greater Than’. 1 if A \> B else 0
@@ -3734,7 +3641,7 @@ Create Math with operation ‘Greater Than’. 1 if A \> B else 0
 ##### hyperbolic_cosine
 
 ``` python
-hyperbolic_cosine(value=0.5)
+hyperbolic_cosine(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Hyperbolic Cosine’. cosh(A)
@@ -3742,7 +3649,7 @@ Create Math with operation ‘Hyperbolic Cosine’. cosh(A)
 ##### hyperbolic_sine
 
 ``` python
-hyperbolic_sine(value=0.5)
+hyperbolic_sine(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Hyperbolic Sine’. sinh(A)
@@ -3750,7 +3657,7 @@ Create Math with operation ‘Hyperbolic Sine’. sinh(A)
 ##### hyperbolic_tangent
 
 ``` python
-hyperbolic_tangent(value=0.5)
+hyperbolic_tangent(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Hyperbolic Tangent’. tanh(A)
@@ -3758,7 +3665,7 @@ Create Math with operation ‘Hyperbolic Tangent’. tanh(A)
 ##### inverse_square_root
 
 ``` python
-inverse_square_root(value=0.5)
+inverse_square_root(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Inverse Square Root’. 1 / Square root of A
@@ -3766,7 +3673,7 @@ Create Math with operation ‘Inverse Square Root’. 1 / Square root of A
 ##### less_than
 
 ``` python
-less_than(value=0.5, value_001=0.5)
+less_than(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Less Than’. 1 if A \< B else 0
@@ -3774,7 +3681,7 @@ Create Math with operation ‘Less Than’. 1 if A \< B else 0
 ##### logarithm
 
 ``` python
-logarithm(value=0.5, value_001=0.5)
+logarithm(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Logarithm’. Logarithm A base B
@@ -3782,7 +3689,7 @@ Create Math with operation ‘Logarithm’. Logarithm A base B
 ##### maximum
 
 ``` python
-maximum(value=0.5, value_001=0.5)
+maximum(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Maximum’. The maximum from A and B
@@ -3790,7 +3697,7 @@ Create Math with operation ‘Maximum’. The maximum from A and B
 ##### minimum
 
 ``` python
-minimum(value=0.5, value_001=0.5)
+minimum(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Minimum’. The minimum from A and B
@@ -3798,7 +3705,7 @@ Create Math with operation ‘Minimum’. The minimum from A and B
 ##### multiply
 
 ``` python
-multiply(value=0.5, value_001=0.5)
+multiply(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Multiply’. A \* B
@@ -3806,7 +3713,7 @@ Create Math with operation ‘Multiply’. A \* B
 ##### multiply_add
 
 ``` python
-multiply_add(value=0.5, value_001=0.5, value_002=0.5)
+multiply_add(value=0.5, value_001=0.5, value_002=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Multiply Add’. A \* B + C
@@ -3814,7 +3721,7 @@ Create Math with operation ‘Multiply Add’. A \* B + C
 ##### ping_pong
 
 ``` python
-ping_pong(value=0.5, value_001=0.5)
+ping_pong(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Ping-Pong’. Wraps a value and reverses every other cycle (A,B)
@@ -3822,7 +3729,7 @@ Create Math with operation ‘Ping-Pong’. Wraps a value and reverses every oth
 ##### power
 
 ``` python
-power(value=0.5, value_001=0.5)
+power(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Power’. A power B
@@ -3830,7 +3737,7 @@ Create Math with operation ‘Power’. A power B
 ##### round
 
 ``` python
-round(value=0.5)
+round(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Round’. Round A to the nearest integer. Round upward if the fraction part is 0.5
@@ -3838,7 +3745,7 @@ Create Math with operation ‘Round’. Round A to the nearest integer. Round up
 ##### sign
 
 ``` python
-sign(value=0.5)
+sign(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Sign’. Returns the sign of A
@@ -3846,7 +3753,7 @@ Create Math with operation ‘Sign’. Returns the sign of A
 ##### sine
 
 ``` python
-sine(value=0.5)
+sine(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Sine’. sin(A)
@@ -3854,7 +3761,7 @@ Create Math with operation ‘Sine’. sin(A)
 ##### smooth_maximum
 
 ``` python
-smooth_maximum(value=0.5, value_001=0.5, value_002=0.5)
+smooth_maximum(value=0.5, value_001=0.5, value_002=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Smooth Maximum’. The maximum from A and B with smoothing C
@@ -3862,7 +3769,7 @@ Create Math with operation ‘Smooth Maximum’. The maximum from A and B with s
 ##### smooth_minimum
 
 ``` python
-smooth_minimum(value=0.5, value_001=0.5, value_002=0.5)
+smooth_minimum(value=0.5, value_001=0.5, value_002=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Smooth Minimum’. The minimum from A and B with smoothing C
@@ -3870,7 +3777,7 @@ Create Math with operation ‘Smooth Minimum’. The minimum from A and B with s
 ##### snap
 
 ``` python
-snap(value=0.5, value_001=0.5)
+snap(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Snap’. Snap to increment, snap(A,B)
@@ -3878,7 +3785,7 @@ Create Math with operation ‘Snap’. Snap to increment, snap(A,B)
 ##### square_root
 
 ``` python
-square_root(value=0.5)
+square_root(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Square Root’. Square root of A
@@ -3886,7 +3793,7 @@ Create Math with operation ‘Square Root’. Square root of A
 ##### subtract
 
 ``` python
-subtract(value=0.5, value_001=0.5)
+subtract(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Subtract’. A - B
@@ -3894,7 +3801,7 @@ Create Math with operation ‘Subtract’. A - B
 ##### tangent
 
 ``` python
-tangent(value=0.5)
+tangent(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Tangent’. tan(A)
@@ -3902,7 +3809,7 @@ Create Math with operation ‘Tangent’. tan(A)
 ##### to_degrees
 
 ``` python
-to_degrees(value=0.5)
+to_degrees(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘To Degrees’. Convert from radians to degrees
@@ -3910,7 +3817,7 @@ Create Math with operation ‘To Degrees’. Convert from radians to degrees
 ##### to_radians
 
 ``` python
-to_radians(value=0.5)
+to_radians(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘To Radians’. Convert from degrees to radians
@@ -3918,7 +3825,7 @@ Create Math with operation ‘To Radians’. Convert from degrees to radians
 ##### truncate
 
 ``` python
-truncate(value=0.5)
+truncate(value=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Truncate’. The integer part of A, removing fractional digits
@@ -3926,7 +3833,7 @@ Create Math with operation ‘Truncate’. The integer part of A, removing fract
 ##### truncated_modulo
 
 ``` python
-truncated_modulo(value=0.5, value_001=0.5)
+truncated_modulo(value=0.5, value_001=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Truncated Modulo’. The remainder of truncated division using fmod(A,B)
@@ -3934,7 +3841,7 @@ Create Math with operation ‘Truncated Modulo’. The remainder of truncated di
 ##### wrap
 
 ``` python
-wrap(value=0.5, value_001=0.5, value_002=0.5)
+wrap(value=0.5, value_001=0.5, value_002=0.5, *, use_clamp=False)
 ```
 
 Create Math with operation ‘Wrap’. Wrap value to range, wrap(A,B)
@@ -3975,7 +3882,6 @@ Compute the determinant of the given matrix
 | [`name`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.MatrixDeterminant.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4012,7 +3918,6 @@ Compute the singular value decomposition of the 3x3 part of a matrix
 | [`name`](#nodebpy.nodes.geometry.converter.MatrixSVD.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MatrixSVD.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MatrixSVD.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.MatrixSVD.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.MatrixSVD.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4028,6 +3933,162 @@ Compute the singular value decomposition of the 3x3 part of a matrix
 | `o.u`     | `MatrixSocket` | U           |
 | `o.s`     | `VectorSocket` | S           |
 | `o.v`     | `MatrixSocket` | V           |
+
+### Mix
+
+``` python
+Mix(
+    factor_float=1.0,
+    factor_vector=(0.5, 0.5, 0.5),
+    a_float=0.0,
+    b_float=0.0,
+    a_vector=(0.0, 0.0, 0.0),
+    b_vector=(0.0, 0.0, 0.0),
+    a_color=(0.5, 0.5, 0.5, 1.0),
+    b_color=(0.5, 0.5, 0.5, 1.0),
+    a_rotation=(0.0, 0.0, 0.0),
+    b_rotation=(0.0, 0.0, 0.0),
+    *,
+    data_type='FLOAT',
+    factor_mode='UNIFORM',
+    blend_type='MIX',
+    clamp_factor=False,
+    clamp_result=False,
+)
+```
+
+Mix values by a factor
+
+#### Parameters
+
+| Name          | Type          | Description | Default                |
+|---------------|---------------|-------------|------------------------|
+| factor_float  | InputFloat    | Factor      | `1.0`                  |
+| factor_vector | InputVector   | Factor      | `(0.5, 0.5, 0.5)`      |
+| a_float       | InputFloat    | A           | `0.0`                  |
+| b_float       | InputFloat    | B           | `0.0`                  |
+| a_vector      | InputVector   | A           | `(0.0, 0.0, 0.0)`      |
+| b_vector      | InputVector   | B           | `(0.0, 0.0, 0.0)`      |
+| a_color       | InputColor    | A           | `(0.5, 0.5, 0.5, 1.0)` |
+| b_color       | InputColor    | B           | `(0.5, 0.5, 0.5, 1.0)` |
+| a_rotation    | InputRotation | A           | `(0.0, 0.0, 0.0)`      |
+| b_rotation    | InputRotation | B           | `(0.0, 0.0, 0.0)`      |
+
+#### Attributes
+
+| Name | Description |
+|----|----|
+| [`blend_type`](#nodebpy.nodes.geometry.converter.Mix.blend_type) |  |
+| [`clamp_factor`](#nodebpy.nodes.geometry.converter.Mix.clamp_factor) |  |
+| [`clamp_result`](#nodebpy.nodes.geometry.converter.Mix.clamp_result) |  |
+| [`data_type`](#nodebpy.nodes.geometry.converter.Mix.data_type) |  |
+| [`factor_mode`](#nodebpy.nodes.geometry.converter.Mix.factor_mode) |  |
+| [`i`](#nodebpy.nodes.geometry.converter.Mix.i) |  |
+| [`name`](#nodebpy.nodes.geometry.converter.Mix.name) | The name of the node being wrapped by this instance. |
+| [`node`](#nodebpy.nodes.geometry.converter.Mix.node) |  |
+| [`o`](#nodebpy.nodes.geometry.converter.Mix.o) |  |
+| [`tree`](#nodebpy.nodes.geometry.converter.Mix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
+
+#### Methods
+
+| Name | Description |
+|----|----|
+| [color](#nodebpy.nodes.geometry.converter.Mix.color) | Create Mix with operation ‘Color’. |
+| [float](#nodebpy.nodes.geometry.converter.Mix.float) | Create Mix with operation ‘Float’. |
+| [rotation](#nodebpy.nodes.geometry.converter.Mix.rotation) | Create Mix with operation ‘Rotation’. |
+| [vector](#nodebpy.nodes.geometry.converter.Mix.vector) | Create Mix with operation ‘Vector’. |
+
+##### color
+
+``` python
+color(
+    factor=1.0,
+    a=(0.5, 0.5, 0.5, 1.0),
+    b=(0.5, 0.5, 0.5, 1.0),
+    *,
+    factor_mode='UNIFORM',
+    blend_type='MIX',
+    clamp_factor=False,
+    clamp_result=False,
+)
+```
+
+Create Mix with operation ‘Color’.
+
+##### float
+
+``` python
+float(
+    factor=1.0,
+    a=0.0,
+    b=0.0,
+    *,
+    factor_mode='UNIFORM',
+    blend_type='MIX',
+    clamp_factor=False,
+    clamp_result=False,
+)
+```
+
+Create Mix with operation ‘Float’.
+
+##### rotation
+
+``` python
+rotation(
+    factor=1.0,
+    a=(0.0, 0.0, 0.0),
+    b=(0.0, 0.0, 0.0),
+    *,
+    factor_mode='UNIFORM',
+    blend_type='MIX',
+    clamp_factor=False,
+    clamp_result=False,
+)
+```
+
+Create Mix with operation ‘Rotation’.
+
+##### vector
+
+``` python
+vector(
+    factor=1.0,
+    a=(0.0, 0.0, 0.0),
+    b=(0.0, 0.0, 0.0),
+    *,
+    factor_mode='UNIFORM',
+    blend_type='MIX',
+    clamp_factor=False,
+    clamp_result=False,
+)
+```
+
+Create Mix with operation ‘Vector’.
+
+**Inputs**
+
+| Attribute         | Type             | Description |
+|-------------------|------------------|-------------|
+| `i.factor_float`  | `FloatSocket`    | Factor      |
+| `i.factor_vector` | `VectorSocket`   | Factor      |
+| `i.a_float`       | `FloatSocket`    | A           |
+| `i.b_float`       | `FloatSocket`    | B           |
+| `i.a_vector`      | `VectorSocket`   | A           |
+| `i.b_vector`      | `VectorSocket`   | B           |
+| `i.a_color`       | `ColorSocket`    | A           |
+| `i.b_color`       | `ColorSocket`    | B           |
+| `i.a_rotation`    | `RotationSocket` | A           |
+| `i.b_rotation`    | `RotationSocket` | B           |
+
+**Outputs**
+
+| Attribute           | Type             | Description |
+|---------------------|------------------|-------------|
+| `o.result_float`    | `FloatSocket`    | Result      |
+| `o.result_vector`   | `VectorSocket`   | Result      |
+| `o.result_color`    | `ColorSocket`    | Result      |
+| `o.result_rotation` | `RotationSocket` | Result      |
 
 ### MultiplyMatrices
 
@@ -4052,7 +4113,6 @@ Perform a matrix multiplication on two input matrices
 | [`name`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.MultiplyMatrices.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4072,8 +4132,8 @@ Perform a matrix multiplication on two input matrices
 
 ``` python
 PackUVIslands(
-    uv=(0.0, 0.0, 0.0),
-    selection=True,
+    uv=None,
+    selection=None,
     margin=0.001,
     rotate=True,
     method='Bounding Box',
@@ -4088,8 +4148,8 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| uv | InputVector | UV | `(0.0, 0.0, 0.0)` |
-| selection | InputBoolean | Selection | `True` |
+| uv | InputVector | UV | `None` |
+| selection | InputBoolean | Selection | `None` |
 | margin | InputFloat | Margin | `0.001` |
 | rotate | InputBoolean | Rotate | `True` |
 | method | InputMenu \| Literal\['Bounding Box', 'Convex Hull', 'Exact Shape'\] | Method | `'Bounding Box'` |
@@ -4104,7 +4164,6 @@ Scale islands of a UV map and move them so they fill the UV space as much as pos
 | [`name`](#nodebpy.nodes.geometry.converter.PackUVIslands.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.PackUVIslands.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.PackUVIslands.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.PackUVIslands.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.PackUVIslands.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4148,7 +4207,6 @@ Project a point using a matrix, using location, rotation, scale, and perspective
 | [`name`](#nodebpy.nodes.geometry.converter.ProjectPoint.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ProjectPoint.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ProjectPoint.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ProjectPoint.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ProjectPoint.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4189,7 +4247,6 @@ Build a rotation from quaternion components
 | [`name`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.QuaternionToRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4213,7 +4270,7 @@ Build a rotation from quaternion components
 RandomValue(
     min=0.0,
     max=1.0,
-    id=0,
+    id=None,
     seed=0,
     probability=None,
     *,
@@ -4229,7 +4286,7 @@ Output a randomized value
 |-------------|--------------|-------------|---------|
 | min         | InputFloat   | Min         | `0.0`   |
 | max         | InputFloat   | Max         | `1.0`   |
-| id          | InputInteger | ID          | `0`     |
+| id          | InputInteger | ID          | `None`  |
 | seed        | InputInteger | Seed        | `0`     |
 | probability | InputFloat   | Probability | `None`  |
 
@@ -4242,7 +4299,6 @@ Output a randomized value
 | [`name`](#nodebpy.nodes.geometry.converter.RandomValue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RandomValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RandomValue.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.RandomValue.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.RandomValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -4257,7 +4313,7 @@ Output a randomized value
 ##### boolean
 
 ``` python
-boolean(probability=0.5, id=0, seed=0)
+boolean(probability=0.5, id=None, seed=0)
 ```
 
 Create Random Value with operation ‘Boolean’. True or false
@@ -4265,7 +4321,7 @@ Create Random Value with operation ‘Boolean’. True or false
 ##### float
 
 ``` python
-float(min=0.0, max=1.0, id=0, seed=0)
+float(min=0.0, max=1.0, id=None, seed=0)
 ```
 
 Create Random Value with operation ‘Float’. Floating-point value
@@ -4273,7 +4329,7 @@ Create Random Value with operation ‘Float’. Floating-point value
 ##### integer
 
 ``` python
-integer(min=0, max=100, id=0, seed=0)
+integer(min=0, max=100, id=None, seed=0)
 ```
 
 Create Random Value with operation ‘Integer’. 32-bit integer
@@ -4281,7 +4337,7 @@ Create Random Value with operation ‘Integer’. 32-bit integer
 ##### vector
 
 ``` python
-vector(min=(0.0, 0.0, 0.0), max=(1.0, 1.0, 1.0), id=0, seed=0)
+vector(min=(0.0, 0.0, 0.0), max=(1.0, 1.0, 1.0), id=None, seed=0)
 ```
 
 Create Random Value with operation ‘Vector’. 3D vector with floating-point values
@@ -4326,7 +4382,6 @@ Replace a given string segment with another
 | [`name`](#nodebpy.nodes.geometry.converter.ReplaceString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ReplaceString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ReplaceString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ReplaceString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ReplaceString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4365,7 +4420,6 @@ Reverse the order of the characters in a string
 | [`name`](#nodebpy.nodes.geometry.converter.ReverseString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ReverseString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ReverseString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ReverseString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ReverseString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4384,7 +4438,7 @@ Reverse the order of the characters in a string
 
 ``` python
 RotateEuler(
-    rotation=(0.0, 0.0, 0.0),
+    rotation=None,
     rotate_by=(0.0, 0.0, 0.0),
     axis=None,
     angle=None,
@@ -4400,7 +4454,7 @@ Apply a secondary Euler rotation to a given Euler rotation
 
 | Name      | Type        | Description | Default           |
 |-----------|-------------|-------------|-------------------|
-| rotation  | InputVector | Rotation    | `(0.0, 0.0, 0.0)` |
+| rotation  | InputVector | Rotation    | `None`            |
 | rotate_by | InputVector | Rotate By   | `(0.0, 0.0, 0.0)` |
 | axis      | InputVector | Axis        | `None`            |
 | angle     | InputFloat  | Angle       | `None`            |
@@ -4413,7 +4467,6 @@ Apply a secondary Euler rotation to a given Euler rotation
 | [`name`](#nodebpy.nodes.geometry.converter.RotateEuler.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateEuler.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateEuler.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.RotateEuler.outputs) |  |
 | [`rotation_type`](#nodebpy.nodes.geometry.converter.RotateEuler.rotation_type) |  |
 | [`space`](#nodebpy.nodes.geometry.converter.RotateEuler.space) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.RotateEuler.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -4428,7 +4481,7 @@ Apply a secondary Euler rotation to a given Euler rotation
 ##### axis_angle
 
 ``` python
-axis_angle(rotation=(0.0, 0.0, 0.0), axis=(0.0, 0.0, 1.0), angle=0.0)
+axis_angle(rotation=None, axis=(0.0, 0.0, 1.0), angle=0.0, *, space='OBJECT')
 ```
 
 Create Rotate Euler with operation ‘Axis Angle’. Rotate around an axis by an angle
@@ -4436,7 +4489,7 @@ Create Rotate Euler with operation ‘Axis Angle’. Rotate around an axis by an
 ##### euler
 
 ``` python
-euler(rotation=(0.0, 0.0, 0.0), rotate_by=(0.0, 0.0, 0.0))
+euler(rotation=None, rotate_by=(0.0, 0.0, 0.0), *, space='OBJECT')
 ```
 
 Create Rotate Euler with operation ‘Euler’. Rotate around the X, Y, and Z axes
@@ -4484,7 +4537,6 @@ Apply a secondary rotation to a given rotation value
 | [`name`](#nodebpy.nodes.geometry.converter.RotateRotation.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateRotation.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateRotation.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.RotateRotation.outputs) |  |
 | [`rotation_space`](#nodebpy.nodes.geometry.converter.RotateRotation.rotation_space) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.RotateRotation.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -4524,7 +4576,6 @@ Apply a rotation to a given vector
 | [`name`](#nodebpy.nodes.geometry.converter.RotateVector.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotateVector.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotateVector.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.RotateVector.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.RotateVector.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4562,7 +4613,6 @@ Convert a rotation to axis angle components
 | [`name`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.RotationToAxisAngle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4600,7 +4650,6 @@ Convert a standard rotation value to an Euler rotation
 | [`name`](#nodebpy.nodes.geometry.converter.RotationToEuler.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToEuler.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToEuler.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.RotationToEuler.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.RotationToEuler.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4637,7 +4686,6 @@ Retrieve the quaternion components representing a rotation
 | [`name`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.RotationToQuaternion.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4693,7 +4741,6 @@ Retrieve the amplitude from a sound data-block of a frequency range at a given t
 | [`name`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SampleSoundFrequencies.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4739,7 +4786,6 @@ Split a bundle into multiple sockets.
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateBundle.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateBundle.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateBundle.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SeparateBundle.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SeparateBundle.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4771,7 +4817,6 @@ Split a color into separate channels, based on a particular color model
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateColor.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateColor.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateColor.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SeparateColor.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SeparateColor.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -4843,7 +4888,6 @@ Split a 4x4 matrix into its individual values
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateMatrix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateMatrix.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SeparateMatrix.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SeparateMatrix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4895,7 +4939,6 @@ Split a transformation matrix into a translation vector, a rotation, and a scale
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateTransform.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateTransform.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateTransform.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SeparateTransform.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SeparateTransform.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4934,7 +4977,6 @@ Split a vector into its X, Y, and Z components
 | [`name`](#nodebpy.nodes.geometry.converter.SeparateXYZ.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SeparateXYZ.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SeparateXYZ.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SeparateXYZ.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SeparateXYZ.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -4974,7 +5016,6 @@ Convert the case of a string
 | [`name`](#nodebpy.nodes.geometry.converter.SetStringCase.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SetStringCase.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SetStringCase.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SetStringCase.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SetStringCase.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5014,7 +5055,6 @@ Extract a string segment from a larger string
 | [`name`](#nodebpy.nodes.geometry.converter.SliceString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SliceString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SliceString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SliceString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SliceString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5036,9 +5076,9 @@ Extract a string segment from a larger string
 ``` python
 SortList(
     list=None,
-    selection=True,
-    group_id=0,
-    sort_weight=0.0,
+    selection=None,
+    group_id=None,
+    sort_weight=None,
     *,
     socket_type='FLOAT',
 )
@@ -5051,9 +5091,9 @@ Sort a list based on weights
 | Name        | Type           | Description | Default |
 |-------------|----------------|-------------|---------|
 | list        | InputFloatList | List        | `None`  |
-| selection   | InputBoolean   | Selection   | `True`  |
-| group_id    | InputInteger   | Group ID    | `0`     |
-| sort_weight | InputFloat     | Sort Weight | `0.0`   |
+| selection   | InputBoolean   | Selection   | `None`  |
+| group_id    | InputInteger   | Group ID    | `None`  |
+| sort_weight | InputFloat     | Sort Weight | `None`  |
 
 #### Attributes
 
@@ -5063,7 +5103,6 @@ Sort a list based on weights
 | [`name`](#nodebpy.nodes.geometry.converter.SortList.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SortList.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SortList.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SortList.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.SortList.socket_type) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SortList.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
@@ -5093,7 +5132,7 @@ Sort a list based on weights
 ##### boolean
 
 ``` python
-boolean(list=None, selection=True, group_id=0, sort_weight=0.0)
+boolean(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Boolean’.
@@ -5101,7 +5140,7 @@ Create Sort List with operation ‘Boolean’.
 ##### bundle
 
 ``` python
-bundle(list=None, selection=True, group_id=0, sort_weight=0.0)
+bundle(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Bundle’.
@@ -5109,7 +5148,7 @@ Create Sort List with operation ‘Bundle’.
 ##### closure
 
 ``` python
-closure(list=None, selection=True, group_id=0, sort_weight=0.0)
+closure(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Closure’.
@@ -5117,7 +5156,7 @@ Create Sort List with operation ‘Closure’.
 ##### collection
 
 ``` python
-collection(list=None, selection=True, group_id=0, sort_weight=0.0)
+collection(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Collection’.
@@ -5125,7 +5164,7 @@ Create Sort List with operation ‘Collection’.
 ##### color
 
 ``` python
-color(list=None, selection=True, group_id=0, sort_weight=0.0)
+color(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Color’.
@@ -5133,7 +5172,7 @@ Create Sort List with operation ‘Color’.
 ##### float
 
 ``` python
-float(list=None, selection=True, group_id=0, sort_weight=0.0)
+float(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Float’.
@@ -5141,7 +5180,7 @@ Create Sort List with operation ‘Float’.
 ##### font
 
 ``` python
-font(list=None, selection=True, group_id=0, sort_weight=0.0)
+font(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Font’.
@@ -5149,7 +5188,7 @@ Create Sort List with operation ‘Font’.
 ##### geometry
 
 ``` python
-geometry(list=None, selection=True, group_id=0, sort_weight=0.0)
+geometry(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Geometry’.
@@ -5157,7 +5196,7 @@ Create Sort List with operation ‘Geometry’.
 ##### image
 
 ``` python
-image(list=None, selection=True, group_id=0, sort_weight=0.0)
+image(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Image’.
@@ -5165,7 +5204,7 @@ Create Sort List with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(list=None, selection=True, group_id=0, sort_weight=0.0)
+integer(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Integer’.
@@ -5173,7 +5212,7 @@ Create Sort List with operation ‘Integer’.
 ##### material
 
 ``` python
-material(list=None, selection=True, group_id=0, sort_weight=0.0)
+material(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Material’.
@@ -5181,7 +5220,7 @@ Create Sort List with operation ‘Material’.
 ##### matrix
 
 ``` python
-matrix(list=None, selection=True, group_id=0, sort_weight=0.0)
+matrix(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Matrix’.
@@ -5189,7 +5228,7 @@ Create Sort List with operation ‘Matrix’.
 ##### menu
 
 ``` python
-menu(list=None, selection=True, group_id=0, sort_weight=0.0)
+menu(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Menu’.
@@ -5197,7 +5236,7 @@ Create Sort List with operation ‘Menu’.
 ##### object
 
 ``` python
-object(list=None, selection=True, group_id=0, sort_weight=0.0)
+object(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Object’.
@@ -5205,7 +5244,7 @@ Create Sort List with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(list=None, selection=True, group_id=0, sort_weight=0.0)
+rotation(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Rotation’.
@@ -5213,7 +5252,7 @@ Create Sort List with operation ‘Rotation’.
 ##### sound
 
 ``` python
-sound(list=None, selection=True, group_id=0, sort_weight=0.0)
+sound(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Sound’.
@@ -5221,7 +5260,7 @@ Create Sort List with operation ‘Sound’.
 ##### string
 
 ``` python
-string(list=None, selection=True, group_id=0, sort_weight=0.0)
+string(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘String’.
@@ -5229,7 +5268,7 @@ Create Sort List with operation ‘String’.
 ##### vector
 
 ``` python
-vector(list=None, selection=True, group_id=0, sort_weight=0.0)
+vector(list=None, selection=None, group_id=None, sort_weight=None)
 ```
 
 Create Sort List with operation ‘Vector’.
@@ -5272,7 +5311,6 @@ Split a string into a list using a separator
 | [`name`](#nodebpy.nodes.geometry.converter.SplitString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.SplitString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.SplitString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.SplitString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.SplitString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5319,7 +5357,6 @@ Store a bundle item by path and data type.
 | [`name`](#nodebpy.nodes.geometry.converter.StoreBundleItem.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.StoreBundleItem.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StoreBundleItem.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.StoreBundleItem.outputs) |  |
 | [`socket_type`](#nodebpy.nodes.geometry.converter.StoreBundleItem.socket_type) |  |
 | [`structure_type`](#nodebpy.nodes.geometry.converter.StoreBundleItem.structure_type) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.StoreBundleItem.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
@@ -5356,7 +5393,7 @@ Store a bundle item by path and data type.
 ##### auto
 
 ``` python
-auto(bundle=None, path='', item=0.0)
+auto(bundle=None, path='', item=0.0, *, socket_type='FLOAT')
 ```
 
 Create Store Bundle Item with operation ‘Auto’. Automatically detect a good structure type based on how the socket is used
@@ -5364,7 +5401,7 @@ Create Store Bundle Item with operation ‘Auto’. Automatically detect a good 
 ##### boolean
 
 ``` python
-boolean(bundle=None, path='', item=False)
+boolean(bundle=None, path='', item=False, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Boolean’.
@@ -5372,7 +5409,7 @@ Create Store Bundle Item with operation ‘Boolean’.
 ##### bundle
 
 ``` python
-bundle(bundle=None, path='', item=None)
+bundle(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Bundle’.
@@ -5380,7 +5417,7 @@ Create Store Bundle Item with operation ‘Bundle’.
 ##### closure
 
 ``` python
-closure(bundle=None, path='', item=None)
+closure(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Closure’.
@@ -5388,7 +5425,7 @@ Create Store Bundle Item with operation ‘Closure’.
 ##### collection
 
 ``` python
-collection(bundle=None, path='', item=None)
+collection(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Collection’.
@@ -5396,7 +5433,7 @@ Create Store Bundle Item with operation ‘Collection’.
 ##### color
 
 ``` python
-color(bundle=None, path='', item=(0.8, 0.8, 0.8, 1.0))
+color(bundle=None, path='', item=(0.8, 0.8, 0.8, 1.0), *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Color’.
@@ -5404,7 +5441,7 @@ Create Store Bundle Item with operation ‘Color’.
 ##### dynamic
 
 ``` python
-dynamic(bundle=None, path='', item=0.0)
+dynamic(bundle=None, path='', item=0.0, *, socket_type='FLOAT')
 ```
 
 Create Store Bundle Item with operation ‘Dynamic’. Socket can work with different kinds of structures
@@ -5412,7 +5449,7 @@ Create Store Bundle Item with operation ‘Dynamic’. Socket can work with diff
 ##### field
 
 ``` python
-field(bundle=None, path='', item=0.0)
+field(bundle=None, path='', item=0.0, *, socket_type='FLOAT')
 ```
 
 Create Store Bundle Item with operation ‘Field’. Socket expects a field
@@ -5420,7 +5457,7 @@ Create Store Bundle Item with operation ‘Field’. Socket expects a field
 ##### float
 
 ``` python
-float(bundle=None, path='', item=0.0)
+float(bundle=None, path='', item=0.0, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Float’.
@@ -5428,7 +5465,7 @@ Create Store Bundle Item with operation ‘Float’.
 ##### font
 
 ``` python
-font(bundle=None, path='', item=None)
+font(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Font’.
@@ -5436,7 +5473,7 @@ Create Store Bundle Item with operation ‘Font’.
 ##### geometry
 
 ``` python
-geometry(bundle=None, path='', item=None)
+geometry(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Geometry’.
@@ -5444,7 +5481,7 @@ Create Store Bundle Item with operation ‘Geometry’.
 ##### grid
 
 ``` python
-grid(bundle=None, path='', item=None)
+grid(bundle=None, path='', item=None, *, socket_type='FLOAT')
 ```
 
 Create Store Bundle Item with operation ‘Grid’. Socket expects a grid
@@ -5452,7 +5489,7 @@ Create Store Bundle Item with operation ‘Grid’. Socket expects a grid
 ##### image
 
 ``` python
-image(bundle=None, path='', item=None)
+image(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Image’.
@@ -5460,7 +5497,7 @@ Create Store Bundle Item with operation ‘Image’.
 ##### integer
 
 ``` python
-integer(bundle=None, path='', item=0)
+integer(bundle=None, path='', item=0, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Integer’.
@@ -5468,7 +5505,7 @@ Create Store Bundle Item with operation ‘Integer’.
 ##### list
 
 ``` python
-list(bundle=None, path='', item=None)
+list(bundle=None, path='', item=None, *, socket_type='FLOAT')
 ```
 
 Create Store Bundle Item with operation ‘List’. Socket expects a list
@@ -5476,7 +5513,7 @@ Create Store Bundle Item with operation ‘List’. Socket expects a list
 ##### material
 
 ``` python
-material(bundle=None, path='', item=None)
+material(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Material’.
@@ -5484,7 +5521,7 @@ Create Store Bundle Item with operation ‘Material’.
 ##### matrix
 
 ``` python
-matrix(bundle=None, path='', item=None)
+matrix(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Matrix’.
@@ -5492,7 +5529,7 @@ Create Store Bundle Item with operation ‘Matrix’.
 ##### menu
 
 ``` python
-menu(bundle=None, path='', item=None)
+menu(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Menu’.
@@ -5500,7 +5537,7 @@ Create Store Bundle Item with operation ‘Menu’.
 ##### object
 
 ``` python
-object(bundle=None, path='', item=None)
+object(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Object’.
@@ -5508,7 +5545,7 @@ Create Store Bundle Item with operation ‘Object’.
 ##### rotation
 
 ``` python
-rotation(bundle=None, path='', item=(0.0, 0.0, 0.0))
+rotation(bundle=None, path='', item=(0.0, 0.0, 0.0), *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Rotation’.
@@ -5516,7 +5553,7 @@ Create Store Bundle Item with operation ‘Rotation’.
 ##### single
 
 ``` python
-single(bundle=None, path='', item=0.0)
+single(bundle=None, path='', item=0.0, *, socket_type='FLOAT')
 ```
 
 Create Store Bundle Item with operation ‘Single’. Socket expects a single value
@@ -5524,7 +5561,7 @@ Create Store Bundle Item with operation ‘Single’. Socket expects a single va
 ##### sound
 
 ``` python
-sound(bundle=None, path='', item=None)
+sound(bundle=None, path='', item=None, *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Sound’.
@@ -5532,7 +5569,7 @@ Create Store Bundle Item with operation ‘Sound’.
 ##### string
 
 ``` python
-string(bundle=None, path='', item='')
+string(bundle=None, path='', item='', *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘String’.
@@ -5540,7 +5577,7 @@ Create Store Bundle Item with operation ‘String’.
 ##### vector
 
 ``` python
-vector(bundle=None, path='', item=(0.0, 0.0, 0.0))
+vector(bundle=None, path='', item=(0.0, 0.0, 0.0), *, structure_type='AUTO')
 ```
 
 Create Store Bundle Item with operation ‘Vector’.
@@ -5581,7 +5618,6 @@ Output the number of characters in the given string
 | [`name`](#nodebpy.nodes.geometry.converter.StringLength.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.StringLength.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StringLength.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.StringLength.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.StringLength.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5620,7 +5656,6 @@ Derive a numeric value from a given string representation
 | [`name`](#nodebpy.nodes.geometry.converter.StringToValue.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.StringToValue.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.StringToValue.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.StringToValue.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.StringToValue.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -5685,7 +5720,6 @@ Switch between two inputs
 | [`name`](#nodebpy.nodes.geometry.converter.Switch.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.Switch.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.Switch.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.Switch.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.Switch.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods
@@ -5892,7 +5926,6 @@ Check if a filter string matches a list of tags
 | [`name`](#nodebpy.nodes.geometry.converter.TagFilter.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TagFilter.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TagFilter.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.TagFilter.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.TagFilter.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5931,7 +5964,6 @@ Apply a transformation matrix (excluding translation) to the given vector
 | [`name`](#nodebpy.nodes.geometry.converter.TransformDirection.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TransformDirection.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransformDirection.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.TransformDirection.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.TransformDirection.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -5970,7 +6002,6 @@ Apply a transformation matrix to the given vector
 | [`name`](#nodebpy.nodes.geometry.converter.TransformPoint.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TransformPoint.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransformPoint.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.TransformPoint.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.TransformPoint.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6008,7 +6039,6 @@ Flip a matrix over its diagonal, turning columns into rows and vice-versa
 | [`name`](#nodebpy.nodes.geometry.converter.TransposeMatrix.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TransposeMatrix.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TransposeMatrix.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.TransposeMatrix.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.TransposeMatrix.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6049,7 +6079,6 @@ Remove characters from the beginning and end of a string
 | [`name`](#nodebpy.nodes.geometry.converter.TrimString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.TrimString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.TrimString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.TrimString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.TrimString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6072,8 +6101,8 @@ Remove characters from the beginning and end of a string
 
 ``` python
 UVUnwrap(
-    selection=True,
-    seam=False,
+    selection=None,
+    seam=None,
     margin=0.001,
     fill_holes=True,
     method='Angle Based',
@@ -6088,8 +6117,8 @@ Generate a UV map based on seam edges
 
 | Name | Type | Description | Default |
 |----|----|----|----|
-| selection | InputBoolean | Selection | `True` |
-| seam | InputBoolean | Seam | `False` |
+| selection | InputBoolean | Selection | `None` |
+| seam | InputBoolean | Seam | `None` |
 | margin | InputFloat | Margin | `0.001` |
 | fill_holes | InputBoolean | Fill Holes | `True` |
 | method | InputMenu \| Literal\['Angle Based', 'Conformal', 'Minimum Stretch'\] | Method | `'Angle Based'` |
@@ -6104,7 +6133,6 @@ Generate a UV map based on seam edges
 | [`name`](#nodebpy.nodes.geometry.converter.UVUnwrap.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.UVUnwrap.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.UVUnwrap.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.UVUnwrap.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.UVUnwrap.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 **Inputs**
@@ -6151,7 +6179,6 @@ Generate a string representation of the given input value
 | [`name`](#nodebpy.nodes.geometry.converter.ValueToString.name) | The name of the node being wrapped by this instance. |
 | [`node`](#nodebpy.nodes.geometry.converter.ValueToString.node) |  |
 | [`o`](#nodebpy.nodes.geometry.converter.ValueToString.o) |  |
-| [`outputs`](#nodebpy.nodes.geometry.converter.ValueToString.outputs) |  |
 | [`tree`](#nodebpy.nodes.geometry.converter.ValueToString.tree) | The `TreeBuilder` instance this node belongs to and is being built within. |
 
 #### Methods

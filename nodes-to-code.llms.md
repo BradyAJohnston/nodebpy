@@ -235,7 +235,7 @@ with TreeBuilder("Wave Deform") as tree:
     )
 ```
 
-Note what happened to the math: the `Math` node set to `SINE` becomes `g.Math.sine(...)`, the multiply node becomes the `*` operator, and the `Separate XYZ` node dissolves into `.x` attribute access. Interface sockets are declared with their non-default settings (`min_value=0.0`) preserved.
+Note what happened to the math: the `Math` node set to `SINE` becomes the `.sin()` socket method, the multiply node becomes the `*` operator, and the `Separate XYZ` node dissolves into `.x` attribute access. Interface sockets are declared with their non-default settings (`min_value=0.0`) preserved.
 
 ## Tuning the Output
 
