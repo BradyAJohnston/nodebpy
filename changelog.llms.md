@@ -1,5 +1,11 @@
 # Changelog
 
+## 520.30.1 - 2026-09-29
+
+### Fixes
+
+- Codegen for `g.DeleteGeometry.edge(selection=g.EdgeLength() > 0.5)` was emitting as `g.DeleteGeometry.all(selection=g.EdgeLength() > 0.5, domain="EDGE")`. Tweaked that when there is a tie between property classmethod usage, the option which includes less arguments wins. Potential in the future to have only classmethods for single properties on each node though, but that’s a broader design questions.
+
 ## 520.30.0 - 2026-09-28
 
 ### Enhancements
