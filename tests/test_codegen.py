@@ -1383,6 +1383,20 @@ def test_factory_passes_through_non_default_props():
     assert "g.Math.sine(value, use_clamp=True)" in code
 
 
+def test_factory_prefers_baked_prop_over_passed_through():
+    """The factory baking the non-default prop wins over one passing it."""
+    with TreeBuilder("DeleteEdges") as tree:
+        geo = tree.inputs.geometry()
+        (
+            geo
+            >> g.DeleteGeometry.edge(selection=g.EdgeLength() > 0.5)
+            >> tree.outputs.geometry()
+        )
+    code = _assert_roundtrip(tree)
+    assert "g.DeleteGeometry.edge(" in code
+    assert "DeleteGeometry.all(" not in code
+
+
 def test_factory_keeps_default_prop_constructor():
     """No non-default state to cover → plain constructor, no factory."""
     with TreeBuilder("PlainMath") as tree:
