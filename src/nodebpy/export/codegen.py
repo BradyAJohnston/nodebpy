@@ -1775,7 +1775,7 @@ def _factory_call(
     from the node's value get explicit literal kwargs.
     """
     skip_key = _normalize(skip_input_id) if skip_input_id else None
-    best: tuple[_Factory, dict[str, Expr]] | None = None
+    best: tuple[_Factory, dict[str, Expr], tuple[int, int]] | None = None
 
     for factory in _class_factories(cls):
         if not _factory_state_matches(node, factory.props):
@@ -1828,17 +1828,21 @@ def _factory_call(
                     continue
                 if not _eq(socket.default_value, default):
                     call_kwargs[param] = Lit(socket.default_value)
-            if faithful and (best is None or len(factory.props) > len(best[0].props)):
+            # Prefer the factory baking the most constants; on a tie, the one
+            # passing fewest properties through (``DeleteGeometry.edge()`` over
+            # ``DeleteGeometry.all(domain="EDGE")``).
+            rank = (len(factory.props), -len(passed))
+            if faithful and (best is None or rank > best[2]):
                 ordered = {
                     param: call_kwargs[param]
                     for param in factory.param_defaults
                     if param in call_kwargs
                 }
-                best = (factory, ordered)
+                best = (factory, ordered, rank)
 
     if best is None:
         return None
-    factory, call_kwargs = best
+    factory, call_kwargs, _ = best
     # Leading consecutive parameters render positionally (g.Math.sine(x)),
     # matching how factory shortcuts are written by hand.
     args: list[Expr] = []
