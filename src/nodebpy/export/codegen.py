@@ -1757,6 +1757,7 @@ def _factory_state_matches(node, props: dict[str, Any]) -> bool:
 # baking behavioural props (``operation``, ``mode``, …) keep requiring a
 # non-default state, as before.
 _TYPE_FACTORY_PROPS = frozenset({"data_type", "domain", "input_type", "socket_type"})
+_DATA_TYPE_PROPS = frozenset({"data_type", "input_type", "socket_type"})
 
 
 def _factory_call(
@@ -1775,7 +1776,7 @@ def _factory_call(
     from the node's value get explicit literal kwargs.
     """
     skip_key = _normalize(skip_input_id) if skip_input_id else None
-    best: tuple[_Factory, dict[str, Expr], tuple[int, int]] | None = None
+    best: tuple[_Factory, dict[str, Expr], tuple[bool, int, int]] | None = None
 
     for factory in _class_factories(cls):
         if not _factory_state_matches(node, factory.props):
@@ -1828,10 +1829,15 @@ def _factory_call(
                     continue
                 if not _eq(socket.default_value, default):
                     call_kwargs[param] = Lit(socket.default_value)
-            # Prefer the factory baking the most constants; on a tie, the one
-            # passing fewest properties through (``DeleteGeometry.edge()`` over
-            # ``DeleteGeometry.all(domain="EDGE")``).
-            rank = (len(factory.props), -len(passed))
+            # Prefer a factory baking the data type (``GetBundleItem.float(...,
+            # structure_type="SINGLE")`` over ``GetBundleItem.single(...)``),
+            # then the most constants baked, then the fewest properties passed
+            # through (``DeleteGeometry.edge()`` over ``.all(domain="EDGE")``).
+            rank = (
+                bool(_DATA_TYPE_PROPS & set(factory.props)),
+                len(factory.props),
+                -len(passed),
+            )
             if faithful and (best is None or rank > best[2]):
                 ordered = {
                     param: call_kwargs[param]
