@@ -1,5 +1,25 @@
 # Changelog
 
+## 520.31.0 - 2026-09-29
+
+### Enhancements
+
+- **Generic custom groups** — a `CustomGeometryGroup` (or shader/compositor group) can now build a different inner tree per instance, e.g. one per data type. Override `_group_name()` to name each variant’s tree from state set before `super().__init__()`; each variant is built once and reused. Combined with a generic class (`class MyGroup[T](CustomGeometryGroup)`) and typed factories returning `MyGroup[FloatSocket]`, `node.i.value` narrows like the built-in `GetBundleItem.float()`.
+
+### Breaking Changes
+
+- Building a group node now goes through the instance method `_create_group()` instead of the `create_group()` classmethod. Calling `create_group()` works as before, but subclasses that overrode it to customise how the tree is made should override `_create_group()` instead.
+
+### Fixes
+
+- `>>` into a group node whose matching input is inactive at its current values (a group input only used behind an internal switch, such as a fade at `0`) now links to it, like the UI allows, instead of raising `SocketError`. Active inputs are still preferred, so `>>` into a Switch keeps linking to the branch in use.
+
+## 520.30.2 - 2026-09-29
+
+### Fixes
+
+- When several factory methods fit a node, `to_python` now prefers one setting the data type (`data_type`, `socket_type`, `input_type`), so `g.GetBundleItem.float(..., structure_type="SINGLE")` is no longer emitted as `g.GetBundleItem.single(...)`.
+
 ## 520.30.1 - 2026-09-29
 
 ### Fixes
