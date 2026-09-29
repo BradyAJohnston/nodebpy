@@ -110,8 +110,7 @@ class _AssetGroupMixin:
         (a merged dump class) rather than the appending-only placeholder."""
         return cls._build_group is not _AssetGroupMixin._build_group
 
-    @classmethod
-    def create_group(cls) -> Any:
+    def _create_group(self) -> Any:
         """Append the named asset group from the library and return its tree,
         reusing a previously-appended group of the same name and tree type.
 
@@ -125,15 +124,16 @@ class _AssetGroupMixin:
         when the ``.blend`` is not on disk (a source checkout that hasn't
         built it yet).
         """
+        cls = type(self)
         if _build_from_source_depth and cls._has_build_source():
-            return super().create_group()  # ty: ignore[unresolved-attribute]
+            return super()._create_group()  # ty: ignore[unresolved-attribute]
         existing = bpy.data.node_groups.get(cls._asset_name)
         if existing is not None and existing.bl_idname == cls._tree_idname:
             return existing
         path = cls._library.path()
         if not os.path.exists(path):
             if cls._has_build_source():
-                return super().create_group()  # ty: ignore[unresolved-attribute]
+                return super()._create_group()  # ty: ignore[unresolved-attribute]
             raise FileNotFoundError(f"Asset library not found: {path}")
         with bpy.data.libraries.load(path, link=True, pack=True, assets_only=True) as (  # ty: ignore[invalid-context-manager]
             src,
