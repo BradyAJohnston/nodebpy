@@ -1397,6 +1397,18 @@ def test_factory_prefers_baked_prop_over_passed_through():
     assert "DeleteGeometry.all(" not in code
 
 
+def test_factory_prefers_data_type():
+    """A data_type factory wins over one baking any other prop."""
+    with TreeBuilder("BundleItem") as tree:
+        bundle = tree.inputs.bundle("Bundle")
+        (
+            g.GetBundleItem.float(bundle, "a/b", structure_type="SINGLE").o.item
+            >> tree.outputs.float("Out")
+        )
+    code = _assert_roundtrip(tree)
+    assert 'g.GetBundleItem.float(bundle, "a/b", structure_type="SINGLE")' in code
+
+
 def test_factory_keeps_default_prop_constructor():
     """No non-default state to cover → plain constructor, no factory."""
     with TreeBuilder("PlainMath") as tree:
