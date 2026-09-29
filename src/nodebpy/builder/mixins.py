@@ -259,7 +259,6 @@ class LinkingMixin:
         from ..builder.socket import Socket
         from ..types import PREFER_FIRST_SOCKET, SOCKET_COMPATIBILITY
 
-        possible_combos = []
         if isinstance(source, BaseNode):
             outputs = source.o._available
         elif isinstance(source, NodeSocket):
@@ -286,44 +285,57 @@ class LinkingMixin:
         ):
             return inputs[0], outputs[0]
 
-        # Try first available input first — if the output type matches it exactly,
-        # or is a "preferred" implicit conversion (e.g. float→color, vector→color),
-        # use the first socket rather than searching for a better-typed later one.
-        # This keeps float→Image working in the compositor instead of drifting to
-        # a float Factor socket that scores higher on raw compatibility.
-        # Pairs not in PREFER_FIRST_SOCKET (e.g. VALUE→BOOLEAN, VECTOR→ROTATION)
-        # fall through to the ranked search below.
-        if inputs:
-            first_input = inputs[0]
+        def best_pair(inputs: list[NodeSocket]) -> tuple[NodeSocket, NodeSocket] | None:
+            possible_combos = []
+            # Try first available input first — if the output type matches it exactly,
+            # or is a "preferred" implicit conversion (e.g. float→color, vector→color),
+            # use the first socket rather than searching for a better-typed later one.
+            # This keeps float→Image working in the compositor instead of drifting to
+            # a float Factor socket that scores higher on raw compatibility.
+            # Pairs not in PREFER_FIRST_SOCKET (e.g. VALUE→BOOLEAN, VECTOR→ROTATION)
+            # fall through to the ranked search below.
+            if inputs:
+                first_input = inputs[0]
+                for output in outputs:
+                    if first_input.type == output.type:
+                        return first_input, output
+                    if (output.type, first_input.type) in PREFER_FIRST_SOCKET:
+                        return first_input, output
+
             for output in outputs:
-                if first_input.type == output.type:
-                    return first_input, output
-                if (output.type, first_input.type) in PREFER_FIRST_SOCKET:
-                    return first_input, output
+                compat_sockets = SOCKET_COMPATIBILITY.get(output.type, ())
+                for input in inputs:
+                    if input.type == output.type:
+                        return input, output
 
-        for output in outputs:
-            compat_sockets = SOCKET_COMPATIBILITY.get(output.type, ())
-            for input in inputs:
-                if input.type == output.type:
-                    return input, output
+                    if input.type in compat_sockets:
+                        possible_combos.append(
+                            (compat_sockets.index(input.type), (input, output))
+                        )
 
-                if input.type in compat_sockets:
-                    possible_combos.append(
-                        (compat_sockets.index(input.type), (input, output))
-                    )
+            if possible_combos:
+                return min(possible_combos, key=lambda x: x[0])[1]
 
-        if possible_combos:
-            return min(possible_combos, key=lambda x: x[0])[1]
+            # A node with a virtual ``__extend__`` input (Viewer, …) accepts any
+            # source: linking to it makes Blender create a typed socket. Fall back
+            # to it when nothing else matched, pairing with the source's first
+            # available output.
+            extend = next(
+                (i for i in inputs if i.identifier.startswith("__extend__")), None
+            )
+            if extend is not None and outputs:
+                return extend, outputs[0]
+            return None
 
-        # A node with a virtual ``__extend__`` input (Viewer, …) accepts any
-        # source: linking to it makes Blender create a typed socket. Fall back
-        # to it when nothing else matched, pairing with the source's first
-        # available output.
-        extend = next(
-            (i for i in inputs if i.identifier.startswith("__extend__")), None
-        )
-        if extend is not None and outputs:
-            return extend, outputs[0]
+        pair = best_pair(inputs)
+        # Nothing active fits: fall back to inactive inputs Blender still lets
+        # the user link (a group input unused at the current values).
+        if pair is None and isinstance(target, BaseNode):
+            fallback = target.i._inactive_fallback
+            if fallback:
+                pair = best_pair(fallback)
+        if pair is not None:
+            return pair
 
         src_name = getattr(getattr(source, "node", None), "name", repr(source))
         tgt_name = getattr(getattr(target, "node", None), "name", repr(target))
