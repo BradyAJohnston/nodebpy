@@ -474,28 +474,37 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
         directly (e.g. assigned to a node's ``node_tree``) instead of being
         created by constructing the class inside a tree.
         """
-        existing = bpy.data.node_groups.get(cls._name)
+        # Only the inner tree is needed (no group *node*), so skip __init__,
+        # which would require an active context to create a node.
+        return cls.__new__(cls)._create_group()
+
+    def _group_name(self) -> str:
+        """Name of the inner tree. Override when instance state set before
+        ``super().__init__()`` (e.g. a data type) selects a variant, so each
+        variant builds and reuses its own tree."""
+        return self._name
+
+    def _create_group(self) -> T:
+        name = self._group_name()
+        existing = bpy.data.node_groups.get(name)
         if existing is not None:
-            if existing.bl_idname != cls._tree_idname:
+            if existing.bl_idname != self._tree_idname:
                 raise TypeError(
-                    f"Node group '{cls._name}' already exists as "
-                    f"{existing.bl_idname}, not {cls._tree_idname}. "
+                    f"Node group '{name}' already exists as "
+                    f"{existing.bl_idname}, not {self._tree_idname}. "
                     f"Use a unique _name for this group."
                 )
             return cast(T, existing)
-        # Only the inner tree is needed (no group *node*), so skip __init__,
-        # which would require an active context to create a node.
-        builder = cls.__new__(cls)
-        with TreeBuilder(cls._name, tree_type=cls._tree_idname) as tree:
-            builder._build_group(tree)
-        tree.tree.color_tag = cls._color_tag
-        for key, value in cls._tree_properties.items():
+        with TreeBuilder(name, tree_type=self._tree_idname) as tree:
+            self._build_group(tree)
+        tree.tree.color_tag = self._color_tag
+        for key, value in self._tree_properties.items():
             try:
                 setattr(tree.tree, key, value)
             except (AttributeError, TypeError):
                 # A property this Blender version doesn't have (or types
                 # differently) — skip rather than fail the whole build.
-                print(f"  {cls._name}: skipping tree property {key!r}")
+                print(f"  {name}: skipping tree property {key!r}")
         return cast(T, tree.tree)
 
 
@@ -512,7 +521,7 @@ class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self.create_group()
+        self.node.node_tree = self._create_group()
         self.node.warning_propagation = self._warning_propagation
 
 
@@ -529,7 +538,7 @@ class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self.create_group()
+        self.node.node_tree = self._create_group()
 
 
 class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
@@ -545,4 +554,4 @@ class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self.create_group()
+        self.node.node_tree = self._create_group()
