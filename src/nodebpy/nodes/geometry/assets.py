@@ -23,6 +23,7 @@ from ...builder import (
     VectorSocket,
 )
 from ...types import (
+    Default,
     InputBoolean,
     InputBundle,
     InputClosure,
@@ -377,7 +378,7 @@ class AttachHairCurvesToSurface(AssetGeometryGroup):
     surface_object : InputObject
         Surface Object to attach to
     surface_uv_map : InputVector
-        Surface UV map used for attachment
+        Surface UV map used for attachment. As a modifier input, reads the "UVMap" attribute by default.
     resting_surface : InputBoolean
         Use the surface's resting state to preserve stability under deformation
     use_existing_attachment : InputBoolean
@@ -983,7 +984,7 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
     geometry : InputGeometry
         The static cloth mesh.
     pin_group : InputFloat
-        How strong each vertex is pinned to its input position.
+        How strong each vertex is pinned to its input position. As a modifier input, reads the "Group" attribute by default.
     invert_pin_group : InputBoolean
         Invert which vertices are pinned and which are not.
     stretchiness : InputFloat
@@ -1013,7 +1014,7 @@ class ClothDynamicsExperimental(AssetGeometryGroup):
     tearing_mode : InputMenu | Literal["All", "Custom", "Voronoi"]
         How to choose which edges are allowed to tear.
     tearing_edge_group : InputBoolean
-        Selection of edges which are allowed to tear.
+        Selection of edges which are allowed to tear. As a modifier input, reads the "tear" attribute by default.
     tearing_threshold : InputFloat
         The higher the value, the stronger the stress required to tear an edge.
     tearing_voronoi_scale : InputFloat
@@ -1882,7 +1883,7 @@ class CurveInfo(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -1926,7 +1927,7 @@ class CurveRoot(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -1966,7 +1967,7 @@ class CurveSegment(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -2010,7 +2011,7 @@ class CurveTip(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -2405,13 +2406,13 @@ class CustomForce(AssetGeometryGroup):
     socket_8 : InputMatrix
         Custom geometry space.
     socket_14 : InputObject
-        Object to take the geometry space from.
+        Object to take the geometry space from. When unconnected: The object the modifier is on.
     socket_7 : InputMenu | Literal["Custom Space", "World Space", "Object Space"]
         The space the provided force vector is in.
     socket_11 : InputMatrix
         Custom force space.
     socket_15 : InputObject
-        Object to take the force space from.
+        Object to take the force space from. When unconnected: The object the modifier is on.
     filter : InputString
         Comma-separated list of tags this effector should be applied to.
 
@@ -2494,11 +2495,11 @@ class CustomForce(AssetGeometryGroup):
         socket_6: InputMenu
         | Literal["Custom Space", "World Space", "Object Space"] = "World Space",
         socket_8: InputMatrix = None,
-        socket_14: InputObject = None,
+        socket_14: InputObject = Default.SELF_OBJECT,
         socket_7: InputMenu
         | Literal["Custom Space", "World Space", "Object Space"] = "World Space",
         socket_11: InputMatrix = None,
-        socket_15: InputObject = None,
+        socket_15: InputObject = Default.SELF_OBJECT,
         filter: InputString = "",
     ):
         super().__init__(
@@ -2645,7 +2646,7 @@ class DisplaceHairCurves(AssetGeometryGroup):
     input_4 : InputObject
         Surface object used to sample the normal for displacement
     surface_uv_map : InputVector
-        Surface UV map used to sample the normal for displacement
+        Surface UV map used to sample the normal for displacement. As a modifier input, reads the "UVMap" attribute by default.
     surface_normal_distance : InputFloat
         Amount of displacemement along the surface normal
 
@@ -2884,7 +2885,7 @@ class EdgeLength(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -2920,7 +2921,7 @@ class FaceCornerAngle(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -3037,7 +3038,7 @@ class GenerateHairCurves(AssetGeometryGroup):
     surface : InputObject
         Surface object for generation (needs matching transforms)
     surface_uv_map : InputVector
-        Surface UV map used for attachment
+        Surface UV map used for attachment. As a modifier input, reads the "UVMap" attribute by default.
     resting_surface : InputBoolean
         Use the surface's resting state to preserve stability under deformation
     attach_to_surface : InputBoolean
@@ -3297,7 +3298,7 @@ class GeometryPrincipalComponents(AssetGeometryGroup):
     geometry : InputGeometry
         Geometry to evaluate the given fields and store the resulting attributes on. All geometry types except volumes are supported
     position : InputVector
-        Position
+        Position. When unconnected: The position from the context.
 
     Inputs
     ------
@@ -3356,7 +3357,7 @@ class GeometryPrincipalComponents(AssetGeometryGroup):
     def __init__(
         self,
         geometry: InputGeometry = None,
-        position: InputVector = None,
+        position: InputVector = Default.POSITION,
     ):
         super().__init__(Socket_11=geometry, Socket_0=position)
 
@@ -4143,7 +4144,7 @@ class IsEdgeBoundary(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -4175,7 +4176,7 @@ class IsEdgeLoose(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -4207,7 +4208,7 @@ class IsEdgeManifold(AssetGeometryGroup):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
 
@@ -4317,7 +4318,7 @@ class PrincipalComponents(AssetGeometryGroup):
     Parameters
     ----------
     position : InputVector
-        Position
+        Position. When unconnected: The position from the context.
     group_id : InputInteger
         An index used to group values together for multiple separate operations
 
@@ -4377,7 +4378,7 @@ class PrincipalComponents(AssetGeometryGroup):
 
     def __init__(
         self,
-        position: InputVector = None,
+        position: InputVector = Default.POSITION,
         group_id: InputInteger = 0,
     ):
         super().__init__(Socket_0=position, Socket_3=group_id)
@@ -4482,7 +4483,7 @@ class RandomRotation(AssetGeometryGroup):
     max_zenith : InputFloat
         Upper limit of the tilt away from the +Z direction
     id : InputInteger
-        Identifier per element used for randomization
+        Identifier per element used for randomization. When unconnected: The "id" attribute if available, otherwise the index.
     seed : InputInteger
         Base value to control random variation in a reproducible way
 
@@ -4532,7 +4533,7 @@ class RandomRotation(AssetGeometryGroup):
         self,
         min_zenith: InputFloat = 0.0,
         max_zenith: InputFloat = math.pi,
-        id: InputInteger = 0,
+        id: InputInteger = Default.ID_OR_INDEX,
         seed: InputInteger = 0,
     ):
         super().__init__(
@@ -4733,7 +4734,7 @@ class RestoreCurveSegmentLength(AssetGeometryGroup):
     factor : InputFloat
         Factor to blend overall effect
     reference_position : InputVector
-        Reference position before deformation
+        Reference position before deformation. As a modifier input, reads the "rest_position" attribute by default.
     pin_at_parameter : InputFloat
         Pin each curve at a certain point for the operation
 
@@ -5117,7 +5118,7 @@ class ScatterOnSurface(AssetGeometryGroup):
     image_mask : InputImage
         Grayscale image texture used to remove scattered instances
     uv_map : InputVector
-        Texture coordinates used to map the image on the surface
+        Texture coordinates used to map the image on the surface. When unconnected: The position from the context. As a modifier input, reads the "UVMap" attribute by default.
 
     Inputs
     ------
@@ -5326,7 +5327,7 @@ class ScatterOnSurface(AssetGeometryGroup):
         randomize_seed: InputInteger = 0,
         masking: InputBoolean = False,
         image_mask: InputImage = None,
-        uv_map: InputVector = None,
+        uv_map: InputVector = Default.POSITION,
     ):
         super().__init__(
             Socket_0=mesh,

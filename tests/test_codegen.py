@@ -154,14 +154,20 @@ def test_interface_default_value():
 
 
 def test_non_default_property():
-    """A non-default property with no factory equivalent is emitted as a kwarg."""
+    """A non-default property is emitted as a kwarg of the factory."""
     with TreeBuilder("WithProp") as tree:
         g.Math(operation="MULTIPLY", use_clamp=True)
     code = to_python(tree)
-    # use_clamp has no factory shortcut, so the plain constructor is used
-    # and both non-default properties appear explicitly.
-    assert 'operation="MULTIPLY"' in code
-    assert "use_clamp=True" in code
+    assert "g.Math.multiply(use_clamp=True)" in code
+
+
+def test_factory_skips_props_it_does_not_take():
+    """A prop Blender hides for the factory's variant forces the constructor."""
+    with TreeBuilder("NoiseNormalize") as tree:
+        g.NoiseTexture(noise_type="RIDGED_MULTIFRACTAL", normalize=True)
+    code = to_python(tree)
+    assert "g.NoiseTexture.ridged_multifractal(" not in code
+    assert "normalize=True" in code
 
 
 def test_default_property_omitted():
@@ -1368,13 +1374,39 @@ def test_factory_nested_instance_path():
     assert 'data_type="INT"' not in code
 
 
-def test_factory_fallback_when_props_not_covered():
-    """A non-default prop outside the factory signature forces the constructor."""
+def test_factory_passes_through_non_default_props():
+    """A non-default prop the factory takes as a keyword is passed to it."""
     with TreeBuilder("MathClamp") as tree:
         val = tree.inputs.float("Value", 1.0)
         g.Math(val, operation="SINE", use_clamp=True) >> tree.outputs.float("Out")
     code = _assert_roundtrip(tree)
-    assert 'g.Math(value=value, operation="SINE", use_clamp=True)' in code
+    assert "g.Math.sine(value, use_clamp=True)" in code
+
+
+def test_factory_prefers_baked_prop_over_passed_through():
+    """The factory baking the non-default prop wins over one passing it."""
+    with TreeBuilder("DeleteEdges") as tree:
+        geo = tree.inputs.geometry()
+        (
+            geo
+            >> g.DeleteGeometry.edge(selection=g.EdgeLength() > 0.5)
+            >> tree.outputs.geometry()
+        )
+    code = _assert_roundtrip(tree)
+    assert "g.DeleteGeometry.edge(" in code
+    assert "DeleteGeometry.all(" not in code
+
+
+def test_factory_prefers_data_type():
+    """A data_type factory wins over one baking any other prop."""
+    with TreeBuilder("BundleItem") as tree:
+        bundle = tree.inputs.bundle("Bundle")
+        (
+            g.GetBundleItem.float(bundle, "a/b", structure_type="SINGLE").o.item
+            >> tree.outputs.float("Out")
+        )
+    code = _assert_roundtrip(tree)
+    assert 'g.GetBundleItem.float(bundle, "a/b", structure_type="SINGLE")' in code
 
 
 def test_factory_keeps_default_prop_constructor():
@@ -3313,6 +3345,114 @@ def test_rgb_curves_mapping_roundtrip():
     rebuilt = ns["tree"].tree
     rebuilt_node = next(n for n in rebuilt.nodes if n.bl_idname == "ShaderNodeRGBCurve")
     assert _mapping_state(rebuilt_node.mapping) == _mapping_state(curves.node.mapping)
+
+
+def test_float_curve_roundtrip():
+    """A FloatCurve's points and handle types export as ``items=`` and its
+    other mapping settings and point selection as statements, and they
+    round-trip."""
+    from nodebpy.export.codegen import _mapping_state
+
+    with TreeBuilder("FloatCurveMap") as tree:
+        value = tree.inputs.float("Value")
+        fc = g.FloatCurve(
+            value=value,
+            items=[(0.75, 0.9), (0.0, 0.1, "VECTOR"), (1.0, 0.0), (0.3, 0.5)],
+        )
+        mapping = fc.node.mapping
+        mapping.use_clip = False
+        mapping.extend = "HORIZONTAL"
+        mapping.clip_max_y = 2.0
+        mapping.curves[0].points[1].select = True
+        fc >> tree.outputs.float("Out")
+
+    code = _assert_roundtrip(tree)
+    assert 'items=((0.0, 0.1, "VECTOR"), (0.3, 0.5), (0.75, 0.9), (1.0, 0.0))' in code
+    assert ".handle_type" not in code
+    assert ".location" not in code
+    assert ".points[1].select = True" in code
+    assert ".use_clip = False" in code
+    assert '.extend = "HORIZONTAL"' in code
+    ns: dict = {}
+    exec(code, ns)
+    rebuilt = ns["tree"].tree
+    rebuilt_node = next(
+        n for n in rebuilt.nodes if n.bl_idname == "ShaderNodeFloatCurve"
+    )
+    assert _mapping_state(rebuilt_node.mapping) == _mapping_state(mapping)
+
+
+def test_float_curve_default_bare():
+    """A default FloatCurve, built with nodebpy or added directly, exports as
+    a bare constructor."""
+    with TreeBuilder("FloatCurveDefault") as tree:
+        g.FloatCurve()
+    assert "g.FloatCurve()" in to_python(tree, format=False)
+    assert ".mapping" not in to_python(tree, format=False)
+
+    node_tree = bpy.data.node_groups.new("FloatCurveRaw", "GeometryNodeTree")
+    node_tree.nodes.new("ShaderNodeFloatCurve")
+    code = to_python(node_tree, format=False)
+    assert "g.FloatCurve()" in code
+    assert ".mapping" not in code
+
+
+def _color_ramp_state(node_tree):
+    node = next(n for n in node_tree.nodes if n.bl_idname == "ShaderNodeValToRGB")
+    ramp = node.color_ramp
+    return (
+        [
+            (round(e.position, 5), tuple(round(c, 5) for c in e.color))
+            for e in ramp.elements
+        ],
+        ramp.interpolation,
+        ramp.hue_interpolation,
+        ramp.color_mode,
+    )
+
+
+def test_color_ramp_roundtrip():
+    """A ColorRamp's stops and interpolation settings are emitted and rebuild
+    the same ramp (#189)."""
+    stops = [
+        (0.0, (1.0, 0.0, 0.0, 1.0)),
+        (0.25, (1.0, 1.0, 0.0, 1.0)),
+        (0.5, (0.0, 1.0, 0.0, 1.0)),
+        (0.75, (0.0, 1.0, 1.0, 0.5)),
+        (1.0, (0.0, 0.0, 1.0, 1.0)),
+    ]
+    with TreeBuilder("Ramp") as tree:
+        fac = tree.inputs.float("Fac")
+        g.ColorRamp(
+            fac,
+            items=stops,
+            color_interpolation="CONSTANT",
+            hue_interpolation="CCW",
+            mode="HSV",
+        ) >> tree.outputs.color("Color")
+
+    code = _assert_roundtrip(tree)
+    assert "items=(" in code
+    assert 'color_interpolation="CONSTANT"' in code
+    assert 'hue_interpolation="CCW"' in code
+    assert 'mode="HSV"' in code
+    ns: dict = {}
+    exec(code, ns)
+    assert _color_ramp_state(ns["tree"].tree) == _color_ramp_state(tree.tree)
+
+
+def test_color_ramp_defaults_omitted():
+    """A ColorRamp with default stops and settings emits a bare constructor,
+    and a non-default setting is kept."""
+    with TreeBuilder("RampDefault") as tree:
+        ramp = g.ColorRamp()
+    code = to_python(tree, format=False)
+    assert "g.ColorRamp()" in code
+
+    ramp.node.color_ramp.interpolation = "EASE"
+    code = to_python(tree, format=False)
+    assert 'g.ColorRamp(color_interpolation="EASE")' in code
+    assert "items=" not in code
 
 
 def test_unwired_viewer_gets_throwaway_variable():

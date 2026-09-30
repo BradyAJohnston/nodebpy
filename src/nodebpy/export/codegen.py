@@ -32,8 +32,9 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 import numpy as np
-from bpy.types import ID, FunctionNodeCompare, NodeTree
+from bpy.types import ID, FunctionNodeCompare, Node, NodeSocket, NodeTree
 
+from ..types import Default
 from ._floats import (
     fmt_float as _fmt_float,
 )
@@ -304,6 +305,7 @@ class BinOp(Expr):
     op: str
     lhs: Expr
     rhs: Expr
+    prec: int = field(default=_ATOM_PREC, init=False)
 
     def __post_init__(self) -> None:
         self.prec = _BINOP_PREC[self.op]
@@ -1069,7 +1071,7 @@ class EmitContext:
     # only populated once the consuming MenuSwitch has been created and linked.
     iface_deferred: list[str] = field(default_factory=list)
 
-    def input_link(self, node, identifier: str) -> _Link | None:
+    def input_link(self, node: Node, identifier: str) -> _Link | None:
         """The effective link into ``node``'s socket ``identifier``, if any."""
         for link in self.incoming.get(node.name, ()):
             if link.to_socket.identifier == identifier:
@@ -1135,7 +1137,7 @@ class EmitContext:
             )
         return ref
 
-    def input_expr(self, node, socket) -> Expr | None:
+    def input_expr(self, node: Node, socket: NodeSocket) -> Expr | None:
         """Expression for an input socket: upstream reference or literal default."""
         link = self.input_link(node, socket.identifier)
         if link is not None:
@@ -1144,7 +1146,7 @@ class EmitContext:
             return Lit(socket.default_value)
         return None
 
-    def constructor(self, node, skip_input_id: str | None = None) -> Call:
+    def constructor(self, node: Node, skip_input_id: str | None = None) -> Call:
         """``alias.ClassName(...)`` call for a node.
 
         Linked inputs become kwargs referencing upstream expressions, unlinked
@@ -1547,6 +1549,7 @@ class _Factory(NamedTuple):
     props: dict[str, Any]  # constant constructor kwargs the factory sets
     socket_params: dict[str, str]  # normalized socket kwarg → factory param name
     param_defaults: dict[str, Any]  # factory param name → default (sig order)
+    prop_params: dict[str, str]  # passed-through property → keyword-only param
 
 
 _FACTORY_CACHE: dict[type, list[_Factory]] = {}
@@ -1697,7 +1700,22 @@ def _class_factories(cls: type) -> list[_Factory]:
         if defaults is None:
             continue
         props, socket_params = parsed
-        factories.append(_Factory(path, props, socket_params, defaults))
+        # Keyword-only parameters forward node properties (generated factories
+        # take ``*, normalize=..., noise_dimensions=...``), not sockets.
+        keyword_only = {
+            name
+            for name, param in inspect.signature(func).parameters.items()
+            if param.kind is inspect.Parameter.KEYWORD_ONLY
+        }
+        prop_params = {
+            key: param for key, param in socket_params.items() if param in keyword_only
+        }
+        socket_params = {
+            key: param
+            for key, param in socket_params.items()
+            if param not in keyword_only
+        }
+        factories.append(_Factory(path, props, socket_params, defaults, prop_params))
     _FACTORY_CACHE[cls] = factories
     return factories
 
@@ -1739,6 +1757,7 @@ def _factory_state_matches(node, props: dict[str, Any]) -> bool:
 # baking behavioural props (``operation``, ``mode``, …) keep requiring a
 # non-default state, as before.
 _TYPE_FACTORY_PROPS = frozenset({"data_type", "domain", "input_type", "socket_type"})
+_DATA_TYPE_PROPS = frozenset({"data_type", "input_type", "socket_type"})
 
 
 def _factory_call(
@@ -1757,13 +1776,18 @@ def _factory_call(
     from the node's value get explicit literal kwargs.
     """
     skip_key = _normalize(skip_input_id) if skip_input_id else None
-    best: tuple[_Factory, dict[str, Expr]] | None = None
+    best: tuple[_Factory, dict[str, Expr], tuple[bool, int, int]] | None = None
 
     for factory in _class_factories(cls):
         if not _factory_state_matches(node, factory.props):
             continue
         covered = {_normalize(key) for key in factory.props}
-        if set(prop_values) - set(factory.props):
+        passed = {
+            key: value
+            for key, value in prop_values.items()
+            if key not in factory.props and _normalize(key) in factory.prop_params
+        }
+        if set(prop_values) - set(factory.props) - set(passed):
             continue  # leftover props can't be passed to the factory
         if not (
             (factory.props and set(factory.props) <= _TYPE_FACTORY_PROPS)
@@ -1772,7 +1796,10 @@ def _factory_call(
         ):
             continue  # nothing gained over the plain constructor
 
-        call_kwargs: dict[str, Expr] = {}
+        call_kwargs: dict[str, Expr] = {
+            factory.prop_params[_normalize(key)]: Lit(value)
+            for key, value in passed.items()
+        }
         for key, expr in socket_kwargs.items():
             if key in covered:
                 continue  # constant already baked into the factory
@@ -1788,8 +1815,12 @@ def _factory_call(
                 if param in call_kwargs or key == skip_key:
                     continue
                 default = factory.param_defaults.get(param, inspect.Parameter.empty)
-                if default is inspect.Parameter.empty or default is None:
-                    continue  # None means "leave the socket untouched"
+                if (
+                    default is inspect.Parameter.empty
+                    or default is None
+                    or isinstance(default, Default)
+                ):
+                    continue  # None / Default.* mean "leave the socket untouched"
                 socket = _input_socket_by_kwarg(node, key)
                 if socket is None:
                     faithful = False
@@ -1798,22 +1829,32 @@ def _factory_call(
                     continue
                 if not _eq(socket.default_value, default):
                     call_kwargs[param] = Lit(socket.default_value)
-            if faithful and (best is None or len(factory.props) > len(best[0].props)):
+            # Prefer a factory baking the data type (``GetBundleItem.float(...,
+            # structure_type="SINGLE")`` over ``GetBundleItem.single(...)``),
+            # then the most constants baked, then the fewest properties passed
+            # through (``DeleteGeometry.edge()`` over ``.all(domain="EDGE")``).
+            rank = (
+                bool(_DATA_TYPE_PROPS & set(factory.props)),
+                len(factory.props),
+                -len(passed),
+            )
+            if faithful and (best is None or rank > best[2]):
                 ordered = {
                     param: call_kwargs[param]
                     for param in factory.param_defaults
                     if param in call_kwargs
                 }
-                best = (factory, ordered)
+                best = (factory, ordered, rank)
 
     if best is None:
         return None
-    factory, call_kwargs = best
+    factory, call_kwargs, _ = best
     # Leading consecutive parameters render positionally (g.Math.sine(x)),
     # matching how factory shortcuts are written by hand.
     args: list[Expr] = []
+    keyword_only = set(factory.prop_params.values())
     for param in factory.param_defaults:
-        if param not in call_kwargs:
+        if param not in call_kwargs or param in keyword_only:
             break
         args.append(call_kwargs.pop(param))
     return Call(f"{func_prefix}.{factory.path}", args=args, kwargs=call_kwargs)
@@ -3613,7 +3654,7 @@ def _format_with_ruff(code: str) -> str:
 
 
 def to_python(
-    tree: NodeTree | TreeBuilder,
+    tree: NodeTree | TreeBuilder[Any],
     min_chain_length: int = 3,
     strict: bool = True,
     max_inline_width: int | None = 88,
@@ -3632,7 +3673,7 @@ def to_python(
 
     Parameters
     ----------
-    tree: TreeBuilder | bpy.types.NodeTree
+    tree: TreeBuilder[Any] | bpy.types.NodeTree
         The node tree to export.
     min_chain_length: int
         Minimum number of items (including interface endpoints) for a linear
@@ -4051,7 +4092,7 @@ class _GroupCollector:
     # bpy.types names the emitted ``tree: TreeBuilder[...]`` annotations need.
     tree_param_types: set[str] = field(default_factory=set)
 
-    def register(self, node_tree) -> str:
+    def register(self, node_tree: NodeTree) -> str:
         """Ensure a class exists for ``node_tree`` and return its name."""
         existing = self.names_by_tree.get(node_tree.name)
         if existing is not None:
@@ -4221,6 +4262,10 @@ def _norm_floats(value):
 
 _FRESH_MAPPING_CACHE: dict[tuple[str, str], tuple | None] = {}
 
+# Nodes whose constructor takes the curve points as ``items=`` (written by the
+# node's emitter), so only the mapping's other settings need statements.
+_MAPPING_POINTS_AS_ITEMS = {"ShaderNodeFloatCurve"}
+
 
 def _fresh_mapping_state(tree_idname: str, bl_idname: str) -> tuple | None:
     key = (tree_idname, bl_idname)
@@ -4242,7 +4287,14 @@ def _has_custom_mapping(node, tree_idname: str) -> bool:
     mapping = getattr(node, "mapping", None)
     if mapping is None or not hasattr(mapping, "curves"):
         return False
-    return _mapping_state(mapping) != _fresh_mapping_state(tree_idname, node.bl_idname)
+    state = _mapping_state(mapping)
+    fresh = _fresh_mapping_state(tree_idname, node.bl_idname)
+    if node.bl_idname in _MAPPING_POINTS_AS_ITEMS:
+        # ``items=`` carries the points; only other settings and selection
+        # (the constructor deselects every point) need statements.
+        selected = any(select for curve in state[1] for _, _, select in curve)
+        return fresh is None or state[0] != fresh[0] or selected
+    return state != fresh
 
 
 def _node_mapping_lines(
@@ -4267,7 +4319,8 @@ def _node_mapping_lines(
             lines.append(f"{map_ref}.{name} = {_fmt(value)}")
     fresh_curves = fresh[1] if fresh is not None else None
     state_curves = _mapping_state(mapping)[1]
-    for index, curve in enumerate(mapping.curves):
+    curves = () if node.bl_idname in _MAPPING_POINTS_AS_ITEMS else mapping.curves
+    for index, curve in enumerate(curves):
         if (
             fresh_curves is not None
             and index < len(fresh_curves)
@@ -4296,6 +4349,12 @@ def _node_mapping_lines(
             # select what it creates), so it is always written out.
             lines.append(f"{var}.points[{j}].select = {point.select}")
     lines.append(f"{map_ref}.update()")
+    if node.bl_idname in _MAPPING_POINTS_AS_ITEMS:
+        # Selected after ``update()`` so it can't clamp them to the clip range.
+        for index, curve in enumerate(mapping.curves):
+            for j, point in enumerate(curve.points):
+                if point.select:
+                    lines.append(f"{map_ref}.curves[{index}].points[{j}].select = True")
     return lines
 
 
@@ -5130,6 +5189,56 @@ def _emit_set_handle_type(node, ctx: EmitContext) -> Expr | _Val | None:
         call.kwargs["left"] = Lit(False)
     if "RIGHT" not in node.mode:
         call.kwargs["right"] = Lit(False)
+    return call
+
+
+# ColorRamp constructor param → attribute on ``node.color_ramp``.
+_COLOR_RAMP_SETTINGS = {
+    "color_interpolation": "interpolation",
+    "hue_interpolation": "hue_interpolation",
+    "mode": "color_mode",
+}
+
+
+@register_emitter("ShaderNodeValToRGB")
+def _emit_color_ramp(node, ctx: EmitContext) -> Expr | _Val | None:
+    """ColorRamp's stops and settings live on ``node.color_ramp``, not on the
+    node, so the generic ``_non_default_props`` can't see them. Append
+    ``items=`` and each setting that differs from the constructor's
+    default."""
+    call = ctx.constructor(node)
+    ramp = node.color_ramp
+    found = _find_cls(node.bl_idname)
+    assert found is not None
+    params = inspect.signature(found[1].__init__).parameters
+    stops = tuple((element.position, tuple(element.color)) for element in ramp.elements)
+    if _norm_floats(stops) != _norm_floats(params["items"].default):
+        call.kwargs["items"] = Lit(stops)
+    for param, attr in _COLOR_RAMP_SETTINGS.items():
+        value = getattr(ramp, attr)
+        if value != params[param].default:
+            call.kwargs[param] = Lit(value)
+    return call
+
+
+@register_emitter("ShaderNodeFloatCurve")
+def _emit_float_curve(node, ctx: EmitContext) -> Expr | _Val | None:
+    """FloatCurve's points live on ``node.mapping``: append ``items=`` when
+    they differ from the constructor's default, with a point's handle type
+    only when it isn't ``AUTO``. The mapping's other settings are written
+    after the constructor by ``_node_mapping_lines``."""
+    call = ctx.constructor(node)
+    found = _find_cls(node.bl_idname)
+    assert found is not None
+    default = inspect.signature(found[1].__init__).parameters["items"].default
+    points = tuple(
+        tuple(point.location)
+        if point.handle_type == "AUTO"
+        else (*point.location, point.handle_type)
+        for point in node.mapping.curves[0].points
+    )
+    if _norm_floats(points) != _norm_floats(default):
+        call.kwargs["items"] = Lit(points)
     return call
 
 

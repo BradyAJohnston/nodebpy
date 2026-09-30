@@ -372,3 +372,35 @@ def test_without_clear_a_name_creates_a_new_tree():
         pass
     assert second.tree != first.tree
     assert second.tree.name == "Not Cleared.001"
+
+
+def _modifier_value(modifier, tree, name):
+    identifier = next(
+        item.identifier
+        for item in tree.interface.items_tree
+        if item.item_type == "SOCKET" and item.in_out == "INPUT" and item.name == name
+    )
+    return getattr(modifier.properties.inputs, identifier).value
+
+
+def test_clear_keeps_modifier_input_values():
+    def build():
+        with g.tree("Keep Values", clear=True) as tree:
+            height = tree.inputs.float("Height", 0.3)
+            (
+                tree.inputs.geometry("Geometry")
+                >> g.SetPosition(offset=g.CombineXYZ(z=height))
+                >> tree.outputs.geometry("Geometry")
+            )
+        return tree
+
+    tree = build()
+    modifier = bpy.data.objects["Cube"].modifiers.new("Keep Values", "NODES")
+    modifier.node_group = tree.tree
+    identifier = tree.tree.interface.items_tree["Height"].identifier
+    getattr(modifier.properties.inputs, identifier).value = 0.5
+
+    rebuilt = build()
+
+    assert rebuilt.tree == tree.tree
+    assert _modifier_value(modifier, rebuilt.tree, "Height") == 0.5

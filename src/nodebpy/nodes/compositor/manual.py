@@ -1,14 +1,12 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Final, Literal
 
 from bpy.types import (
     CompositorNodeConvertColorSpace,
     CompositorNodeCryptomatteV2,
     CompositorNodeImage,
-    CompositorNodeTree,
 )
 
 from ...builder import (
-    ArrangeMethod,
     BaseNode,
     BooleanSocket,
     ColorSocket,
@@ -36,17 +34,7 @@ from ..geometry.manual import Float, Frame, MenuItems, _MenuSwitchBase
 __all__ = ["Float", "Frame", "MenuSwitch", "tree"]
 
 
-def tree(
-    name: str = "Compositor Nodes",
-    *,
-    collapse: bool = False,
-    arrange: ArrangeMethod = "sugiyama",
-    fake_user: bool = False,
-    clear: bool = False,
-) -> TreeBuilder[CompositorNodeTree]:
-    return TreeBuilder.compositor(
-        name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
-    )
+tree: Final = TreeBuilder.compositor
 
 
 class MenuSwitch[T: BaseSocket](_MenuSwitchBase[T]):
@@ -156,7 +144,7 @@ class Image(BaseNode):
         return self.node.image
 
     @image.setter
-    def image(self, value: Image | None):
+    def image(self, value: Image | None) -> None:
         self.node.image = value
 
     @property
@@ -164,7 +152,7 @@ class Image(BaseNode):
         return self.node.frame_duration
 
     @frame_duration.setter
-    def frame_duration(self, value: int):
+    def frame_duration(self, value: int) -> None:
         self.node.frame_duration = value
 
     @property
@@ -172,7 +160,7 @@ class Image(BaseNode):
         return self.node.frame_start
 
     @frame_start.setter
-    def frame_start(self, value: int):
+    def frame_start(self, value: int) -> None:
         self.node.frame_start = value
 
     @property
@@ -180,7 +168,7 @@ class Image(BaseNode):
         return self.node.frame_offset
 
     @frame_offset.setter
-    def frame_offset(self, value: int):
+    def frame_offset(self, value: int) -> None:
         self.node.frame_offset = value
 
     @property
@@ -188,7 +176,7 @@ class Image(BaseNode):
         return self.node.use_cyclic
 
     @use_cyclic.setter
-    def use_cyclic(self, value: bool):
+    def use_cyclic(self, value: bool) -> None:
         self.node.use_cyclic = value
 
     @property
@@ -196,7 +184,7 @@ class Image(BaseNode):
         return self.node.use_auto_refresh
 
     @use_auto_refresh.setter
-    def use_auto_refresh(self, value: bool):
+    def use_auto_refresh(self, value: bool) -> None:
         self.node.use_auto_refresh = value
 
     @property
@@ -204,7 +192,7 @@ class Image(BaseNode):
         return self.node.layer
 
     @layer.setter
-    def layer(self, value: str):
+    def layer(self, value: str) -> None:
         self.node.layer = value  # type: ignore
 
     @property
@@ -216,7 +204,7 @@ class Image(BaseNode):
         return self.node.view
 
     @view.setter
-    def view(self, value: str):
+    def view(self, value: str) -> None:
         self.node.view = value  # type: ignore
 
     @property
@@ -307,7 +295,7 @@ class Cryptomatte(BaseNode):
         return self.node.source
 
     @source.setter
-    def source(self, value: Literal["RENDER", "IMAGE"]):
+    def source(self, value: Literal["RENDER", "IMAGE"]) -> None:
         self.node.source = value
 
     @property
@@ -315,7 +303,7 @@ class Cryptomatte(BaseNode):
         return self.node.matte_id
 
     @matte_id.setter
-    def matte_id(self, value: str):
+    def matte_id(self, value: str) -> None:
         self.node.matte_id = value
 
     @property
@@ -323,7 +311,7 @@ class Cryptomatte(BaseNode):
         return self.node.layer_name
 
     @layer_name.setter
-    def layer_name(self, value: str):
+    def layer_name(self, value: str) -> None:
         self.node.layer_name = value  # type: ignore
 
     @property
@@ -331,7 +319,7 @@ class Cryptomatte(BaseNode):
         return self.node.frame_duration
 
     @frame_duration.setter
-    def frame_duration(self, value: int):
+    def frame_duration(self, value: int) -> None:
         self.node.frame_duration = value
 
     @property
@@ -339,7 +327,7 @@ class Cryptomatte(BaseNode):
         return self.node.frame_start
 
     @frame_start.setter
-    def frame_start(self, value: int):
+    def frame_start(self, value: int) -> None:
         self.node.frame_start = value
 
     @property
@@ -347,7 +335,7 @@ class Cryptomatte(BaseNode):
         return self.node.frame_offset
 
     @frame_offset.setter
-    def frame_offset(self, value: int):
+    def frame_offset(self, value: int) -> None:
         self.node.frame_offset = value
 
     @property
@@ -355,7 +343,7 @@ class Cryptomatte(BaseNode):
         return self.node.use_cyclic
 
     @use_cyclic.setter
-    def use_cyclic(self, value: bool):
+    def use_cyclic(self, value: bool) -> None:
         self.node.use_cyclic = value
 
     @property
@@ -363,7 +351,7 @@ class Cryptomatte(BaseNode):
         return self.node.use_auto_refresh
 
     @use_auto_refresh.setter
-    def use_auto_refresh(self, value: bool):
+    def use_auto_refresh(self, value: bool) -> None:
         self.node.use_auto_refresh = value
 
     @property
@@ -371,7 +359,7 @@ class Cryptomatte(BaseNode):
         return self.node.layer
 
     @layer.setter
-    def layer(self, value: str):
+    def layer(self, value: str) -> None:
         self.node.layer = value  # type: ignore
 
     @property
@@ -383,7 +371,7 @@ class Cryptomatte(BaseNode):
         return self.node.view
 
     @view.setter
-    def view(self, value: str):
+    def view(self, value: str) -> None:
         self.node.view = value  # type: ignore
 
     @property
@@ -481,7 +469,7 @@ class ConvertColorspace(BaseNode):
     def from_color_space(
         self,
         value: _ColorSpaces,
-    ):
+    ) -> None:
         self.node.from_color_space = value  # ty: ignore[invalid-assignment]
 
     @property
@@ -494,5 +482,5 @@ class ConvertColorspace(BaseNode):
     def to_color_space(
         self,
         value: _ColorSpaces,
-    ):
+    ) -> None:
         self.node.to_color_space = value  # ty: ignore[invalid-assignment]

@@ -191,7 +191,7 @@ class Color(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -244,7 +244,7 @@ class ImageCoordinates(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, image: InputColor = (0.8, 0.8, 0.8, 1.0)):
+    def __init__(self, image: InputColor = None):
         super().__init__()
         key_args = {"Image": image}
 
@@ -305,7 +305,7 @@ class ImageInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, image: InputColor = (0.8, 0.8, 0.8, 1.0)):
+    def __init__(self, image: InputColor = None):
         super().__init__()
         key_args = {"Image": image}
 
@@ -458,7 +458,7 @@ class MovieClip(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -492,7 +492,7 @@ class Normal(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -541,7 +541,7 @@ class RenderLayers(BaseNode):
         return self.node.layer
 
     @layer.setter
-    def layer(self, value: str):
+    def layer(self, value: str) -> None:
         self.node.layer = value  # ty: ignore[invalid-assignment]
 
 
@@ -576,7 +576,7 @@ class SceneTime(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -626,7 +626,7 @@ class SequencerStripInfo(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -863,7 +863,7 @@ class TrackPosition(BaseNode):
         return self.node.tracking_object
 
     @tracking_object.setter
-    def tracking_object(self, value: str):
+    def tracking_object(self, value: str) -> None:
         self.node.tracking_object = value
 
     @property
@@ -871,5 +871,5 @@ class TrackPosition(BaseNode):
         return self.node.track_name
 
     @track_name.setter
-    def track_name(self, value: str):
+    def track_name(self, value: str) -> None:
         self.node.track_name = value

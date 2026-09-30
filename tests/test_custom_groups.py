@@ -606,3 +606,34 @@ def test_named_links_sequence_matches_socket_arity():
     color_in, vector_in = node.node.inputs[0], node.node.inputs[1]
     assert tuple(round(v, 3) for v in color_in.default_value) == (0.1, 0.2, 0.3, 1.0)
     assert tuple(round(v, 3) for v in vector_in.default_value) == (5.0, 6.0, 7.0)
+
+
+class _FadeGroup(CustomGeometryGroup):
+    """Geometry is only used when Fade > 0, so at 0 Blender polls it inactive."""
+
+    _name = "Test Fade Group"
+
+    def __init__(self, geometry=None, fade=1.0):
+        super().__init__(Geometry=geometry, Fade=fade)
+
+    def _build_group(self, tree):
+        geo = tree.inputs.geometry("Geometry")
+        fade = tree.inputs.float("Fade", 1.0)
+        (fade > 0.0).switch.geometry(None, geo) >> tree.outputs.geometry("Geometry")
+
+
+def test_rshift_links_into_inactive_group_input():
+    with TreeBuilder("HostFade", arrange=None) as tree:
+        geo = tree.inputs.geometry("Geometry")
+        fade = _FadeGroup(fade=0.0)
+        assert fade.node.inputs["Geometry"].is_inactive
+        geo >> fade >> tree.outputs.geometry("Geometry")
+    assert fade.node.inputs["Geometry"].is_linked
+
+
+def test_rshift_prefers_active_switch_input():
+    """The inactive fallback only applies when no active input fits."""
+    with TreeBuilder("HostSwitch", arrange=None) as tree:
+        switch = g.Switch.geometry(True)
+        tree.inputs.geometry("Geometry") >> switch
+    assert [s.name for s in switch.node.inputs if s.is_linked] == ["True"]

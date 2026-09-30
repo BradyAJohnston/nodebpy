@@ -1,6 +1,6 @@
 [project]
 name = "nodebpy"
-version = "520.29.0"
+version = "520.31.0"
 description = "Build nodes trees in Blender more elegantly with code"
 readme = "README.md"
 authors = [
@@ -8,9 +8,6 @@ authors = [
 ]
 requires-python = ">=3.13"
 license = { text = "GPL-3.0-or-later" }
-
-[project.scripts]
-nodebpy = "nodebpy:main"
 
 [project.optional-dependencies]
 networkx = [

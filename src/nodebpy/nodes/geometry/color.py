@@ -61,7 +61,7 @@ class Gamma(BaseNode):
 
     def __init__(
         self,
-        color: InputColor = (1.0, 1.0, 1.0, 1.0),
+        color: InputColor = None,
         gamma: InputFloat = 1.0,
     ):
         super().__init__()

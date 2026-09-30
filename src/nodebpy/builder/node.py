@@ -25,7 +25,7 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
-from ..types import SOCKET_COMPATIBILITY, InputAny
+from ..types import SOCKET_COMPATIBILITY, Default, InputAny
 from ._utils import SocketError, _NodeLike, _SocketLike
 from .accessor import SocketAccessor
 from .mixins import LinkingMixin, OperatorMixin
@@ -91,7 +91,8 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
     """Base class for all node wrappers."""
 
     _bl_idname: str
-    _tree: TreeBuilder
+    _tree: TreeBuilder[Any]
+    node: Node
     _default_input_id: str | None = None
     _default_output_id: str | None = None
     _placeholder_inputs: list[str]
@@ -113,7 +114,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         self.node = node if node else self._tree.add(self.__class__._bl_idname)
 
     @property
-    def tree(self) -> TreeBuilder:
+    def tree(self) -> TreeBuilder[Any]:
         """The `TreeBuilder` instance this node belongs to and is being built within."""
         return self._tree
 
@@ -207,6 +208,11 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         lets callers address one of several same-named sockets unambiguously.
         """
         named = isinstance(target, str)
+        # A ``Default`` member stands for the socket's own fallback (an implicit
+        # field or context value Blender reads when nothing is linked): nothing to
+        # set or link, the same as ``None``.
+        if isinstance(value, Default):
+            return
         # TODO: don't like these manual overrides for particular nodes, but best I can do for now
         if value is None or (
             named
@@ -231,7 +237,7 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
             self._link_from(value, target)
         elif isinstance(value, _NodeLike):
             target_type = target.type if not named else self.i._get(target).type
-            self._link_from(value.o._best_match(target_type), target)  # type: ignore
+            self._link_from(value.o._best_match(target_type), target)
         else:
             # TODO: explicitly skipping the sockets for BooleanMath as they are default false,
             # but this needs to be a more generic solution for sockets which aren't available
@@ -422,7 +428,7 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
     # fresh tree's defaults belong here; codegen fills it when exporting.
     _tree_properties: ClassVar[dict[str, Any]] = {}
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any):
         super().__init__()
         self._setup_node_group()
         self.node.show_options = False
@@ -468,28 +474,37 @@ class NodeGroupBuilder[T: bpy.types.NodeTree](BaseNode, ABC):
         directly (e.g. assigned to a node's ``node_tree``) instead of being
         created by constructing the class inside a tree.
         """
-        existing = bpy.data.node_groups.get(cls._name)
+        # Only the inner tree is needed (no group *node*), so skip __init__,
+        # which would require an active context to create a node.
+        return cls.__new__(cls)._create_group()
+
+    def _group_name(self) -> str:
+        """Name of the inner tree. Override when instance state set before
+        ``super().__init__()`` (e.g. a data type) selects a variant, so each
+        variant builds and reuses its own tree."""
+        return self._name
+
+    def _create_group(self) -> T:
+        name = self._group_name()
+        existing = bpy.data.node_groups.get(name)
         if existing is not None:
-            if existing.bl_idname != cls._tree_idname:
+            if existing.bl_idname != self._tree_idname:
                 raise TypeError(
-                    f"Node group '{cls._name}' already exists as "
-                    f"{existing.bl_idname}, not {cls._tree_idname}. "
+                    f"Node group '{name}' already exists as "
+                    f"{existing.bl_idname}, not {self._tree_idname}. "
                     f"Use a unique _name for this group."
                 )
             return cast(T, existing)
-        # Only the inner tree is needed (no group *node*), so skip __init__,
-        # which would require an active context to create a node.
-        builder = cls.__new__(cls)
-        with TreeBuilder(cls._name, tree_type=cls._tree_idname) as tree:
-            builder._build_group(tree)
-        tree.tree.color_tag = cls._color_tag
-        for key, value in cls._tree_properties.items():
+        with TreeBuilder(name, tree_type=self._tree_idname) as tree:
+            self._build_group(tree)
+        tree.tree.color_tag = self._color_tag
+        for key, value in self._tree_properties.items():
             try:
                 setattr(tree.tree, key, value)
             except (AttributeError, TypeError):
                 # A property this Blender version doesn't have (or types
                 # differently) — skip rather than fail the whole build.
-                print(f"  {cls._name}: skipping tree property {key!r}")
+                print(f"  {name}: skipping tree property {key!r}")
         return cast(T, tree.tree)
 
 
@@ -506,7 +521,7 @@ class CustomGeometryGroup(NodeGroupBuilder[GeometryNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self.create_group()
+        self.node.node_tree = self._create_group()
         self.node.warning_propagation = self._warning_propagation
 
 
@@ -523,7 +538,7 @@ class CustomShaderGroup(NodeGroupBuilder[ShaderNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self.create_group()
+        self.node.node_tree = self._create_group()
 
 
 class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
@@ -539,4 +554,4 @@ class CustomCompositorGroup(NodeGroupBuilder[CompositorNodeTree]):
         return self.node.node_tree
 
     def _setup_node_group(self) -> None:
-        self.node.node_tree = self.create_group()
+        self.node.node_tree = self._create_group()

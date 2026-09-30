@@ -83,7 +83,7 @@ class AlphaConvert(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         type: InputMenu
         | Literal["To Premultiplied", "To Straight"] = "To Premultiplied",
     ):
@@ -93,14 +93,12 @@ class AlphaConvert(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def to_premultiplied(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)
-    ) -> "AlphaConvert":
+    def to_premultiplied(cls, image: InputColor = None) -> "AlphaConvert":
         """Create Alpha Convert node with type 'To Premultiplied'."""
         return cls(image=image, type="To Premultiplied")
 
     @classmethod
-    def to_straight(cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "AlphaConvert":
+    def to_straight(cls, image: InputColor = None) -> "AlphaConvert":
         """Create Alpha Convert node with type 'To Straight'."""
         return cls(image=image, type="To Straight")
 
@@ -184,9 +182,13 @@ class CombineColor(BaseNode):
         green: InputFloat = 0.0,
         blue: InputFloat = 0.0,
         alpha: InputFloat = 1.0,
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
     ) -> "CombineColor":
         """Create Combine Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
-        return cls(mode="RGB", red=red, green=green, blue=blue, alpha=alpha)
+        return cls(
+            mode="RGB", red=red, green=green, blue=blue, alpha=alpha, ycc_mode=ycc_mode
+        )
 
     @classmethod
     def hsv(
@@ -195,9 +197,13 @@ class CombineColor(BaseNode):
         green: InputFloat = 0.0,
         blue: InputFloat = 0.0,
         alpha: InputFloat = 1.0,
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
     ) -> "CombineColor":
         """Create Combine Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
-        return cls(mode="HSV", red=red, green=green, blue=blue, alpha=alpha)
+        return cls(
+            mode="HSV", red=red, green=green, blue=blue, alpha=alpha, ycc_mode=ycc_mode
+        )
 
     @classmethod
     def hsl(
@@ -206,9 +212,13 @@ class CombineColor(BaseNode):
         green: InputFloat = 0.0,
         blue: InputFloat = 0.0,
         alpha: InputFloat = 1.0,
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
     ) -> "CombineColor":
         """Create Combine Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
-        return cls(mode="HSL", red=red, green=green, blue=blue, alpha=alpha)
+        return cls(
+            mode="HSL", red=red, green=green, blue=blue, alpha=alpha, ycc_mode=ycc_mode
+        )
 
     @classmethod
     def ycbcr(
@@ -217,9 +227,13 @@ class CombineColor(BaseNode):
         green: InputFloat = 0.0,
         blue: InputFloat = 0.0,
         alpha: InputFloat = 1.0,
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
     ) -> "CombineColor":
         """Create Combine Color with operation 'YCbCr'. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing"""
-        return cls(mode="YCC", red=red, green=green, blue=blue, alpha=alpha)
+        return cls(
+            mode="YCC", red=red, green=green, blue=blue, alpha=alpha, ycc_mode=ycc_mode
+        )
 
     @classmethod
     def yuv(
@@ -228,16 +242,20 @@ class CombineColor(BaseNode):
         green: InputFloat = 0.0,
         blue: InputFloat = 0.0,
         alpha: InputFloat = 1.0,
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
     ) -> "CombineColor":
         """Create Combine Color with operation 'YUV'. Use YUV (Y - luma, U V - chroma) color processing"""
-        return cls(mode="YUV", red=red, green=green, blue=blue, alpha=alpha)
+        return cls(
+            mode="YUV", red=red, green=green, blue=blue, alpha=alpha, ycc_mode=ycc_mode
+        )
 
     @property
     def mode(self) -> Literal["RGB", "HSV", "HSL", "YCC", "YUV"]:
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]) -> None:
         self.node.mode = value
 
     @property
@@ -245,7 +263,7 @@ class CombineColor(BaseNode):
         return self.node.ycc_mode
 
     @ycc_mode.setter
-    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]):
+    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]) -> None:
         self.node.ycc_mode = value
 
 
@@ -534,7 +552,7 @@ class ImplicitConversion[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -829,7 +847,7 @@ class IndexSwitch[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -1023,26 +1041,46 @@ class RelativeToPixel(BaseNode):
 
     @classmethod
     def float(
-        cls, float_value: InputFloat = 0.0, image: InputColor = (0.8, 0.8, 0.8, 1.0)
+        cls,
+        float_value: InputFloat = 0.0,
+        image: InputColor = (0.8, 0.8, 0.8, 1.0),
+        *,
+        reference_dimension: Literal[
+            "PER_DIMENSION", "X", "Y", "Greater", "Smaller", "Diagonal"
+        ] = "X",
     ) -> "RelativeToPixel":
         """Create Relative To Pixel with operation 'Float'. Float value"""
-        return cls(data_type="FLOAT", float_value=float_value, image=image)
+        return cls(
+            data_type="FLOAT",
+            float_value=float_value,
+            image=image,
+            reference_dimension=reference_dimension,
+        )
 
     @classmethod
     def vector(
         cls,
         vector_value: InputVector = (0.0, 0.0),
         image: InputColor = (0.8, 0.8, 0.8, 1.0),
+        *,
+        reference_dimension: Literal[
+            "PER_DIMENSION", "X", "Y", "Greater", "Smaller", "Diagonal"
+        ] = "X",
     ) -> "RelativeToPixel":
         """Create Relative To Pixel with operation 'Vector'. Vector value"""
-        return cls(data_type="VECTOR", vector_value=vector_value, image=image)
+        return cls(
+            data_type="VECTOR",
+            vector_value=vector_value,
+            image=image,
+            reference_dimension=reference_dimension,
+        )
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -1055,7 +1093,7 @@ class RelativeToPixel(BaseNode):
     def reference_dimension(
         self,
         value: Literal["PER_DIMENSION", "X", "Y", "Greater", "Smaller", "Diagonal"],
-    ):
+    ) -> None:
         self.node.reference_dimension = value
 
 
@@ -1123,36 +1161,61 @@ class SeparateColor(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def rgb(cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "SeparateColor":
+    def rgb(
+        cls,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
+    ) -> "SeparateColor":
         """Create Separate Color with operation 'RGB'. Use RGB (Red, Green, Blue) color processing"""
-        return cls(mode="RGB", image=image)
+        return cls(mode="RGB", image=image, ycc_mode=ycc_mode)
 
     @classmethod
-    def hsv(cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "SeparateColor":
+    def hsv(
+        cls,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
+    ) -> "SeparateColor":
         """Create Separate Color with operation 'HSV'. Use HSV (Hue, Saturation, Value) color processing"""
-        return cls(mode="HSV", image=image)
+        return cls(mode="HSV", image=image, ycc_mode=ycc_mode)
 
     @classmethod
-    def hsl(cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "SeparateColor":
+    def hsl(
+        cls,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
+    ) -> "SeparateColor":
         """Create Separate Color with operation 'HSL'. Use HSL (Hue, Saturation, Lightness) color processing"""
-        return cls(mode="HSL", image=image)
+        return cls(mode="HSL", image=image, ycc_mode=ycc_mode)
 
     @classmethod
-    def ycbcr(cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "SeparateColor":
+    def ycbcr(
+        cls,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
+    ) -> "SeparateColor":
         """Create Separate Color with operation 'YCbCr'. Use YCbCr (Y - luma, Cb - blue-difference chroma, Cr - red-difference chroma) color processing"""
-        return cls(mode="YCC", image=image)
+        return cls(mode="YCC", image=image, ycc_mode=ycc_mode)
 
     @classmethod
-    def yuv(cls, image: InputColor = (1.0, 1.0, 1.0, 1.0)) -> "SeparateColor":
+    def yuv(
+        cls,
+        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        *,
+        ycc_mode: Literal["ITUBT601", "ITUBT709", "JFIF"] = "ITUBT709",
+    ) -> "SeparateColor":
         """Create Separate Color with operation 'YUV'. Use YUV (Y - luma, U V - chroma) color processing"""
-        return cls(mode="YUV", image=image)
+        return cls(mode="YUV", image=image, ycc_mode=ycc_mode)
 
     @property
     def mode(self) -> Literal["RGB", "HSV", "HSL", "YCC", "YUV"]:
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL", "YCC", "YUV"]) -> None:
         self.node.mode = value
 
     @property
@@ -1160,7 +1223,7 @@ class SeparateColor(BaseNode):
         return self.node.ycc_mode
 
     @ycc_mode.setter
-    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]):
+    def ycc_mode(self, value: Literal["ITUBT601", "ITUBT709", "JFIF"]) -> None:
         self.node.ycc_mode = value
 
 
@@ -1216,7 +1279,7 @@ class SetAlpha(BaseNode):
 
     def __init__(
         self,
-        image: InputColor = (1.0, 1.0, 1.0, 1.0),
+        image: InputColor = None,
         alpha: InputFloat = 1.0,
         type: InputMenu | Literal["Apply Mask", "Replace Alpha"] = "Apply Mask",
     ):
@@ -1227,14 +1290,14 @@ class SetAlpha(BaseNode):
 
     @classmethod
     def apply_mask(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), alpha: InputFloat = 1.0
+        cls, image: InputColor = None, alpha: InputFloat = 1.0
     ) -> "SetAlpha":
         """Create Set Alpha node with type 'Apply Mask'."""
         return cls(image=image, alpha=alpha, type="Apply Mask")
 
     @classmethod
     def replace_alpha(
-        cls, image: InputColor = (1.0, 1.0, 1.0, 1.0), alpha: InputFloat = 1.0
+        cls, image: InputColor = None, alpha: InputFloat = 1.0
     ) -> "SetAlpha":
         """Create Set Alpha node with type 'Replace Alpha'."""
         return cls(image=image, alpha=alpha, type="Replace Alpha")

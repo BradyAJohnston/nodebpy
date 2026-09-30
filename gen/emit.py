@@ -12,7 +12,7 @@ from .config import (
 )
 from .customizations import _CUSTOMIZATIONS
 from .model import NodeInfo, PropertyInfo, SocketInfo
-from .util import format_python_value, get_socket_param_name, normalize_name
+from .util import get_socket_param_name, normalize_name
 
 
 def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
@@ -81,13 +81,7 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         else:
             type_hint = socket.type_hint
 
-        if "GRID" in socket.structure_type or "LIST" in socket.structure_type:
-            default = "None"
-        elif hasattr(socket, "default_value"):
-            default = format_python_value(socket.default_value)
-        else:
-            default = "None"
-        init_params.append(f"{param_name}: {type_hint} = {default}")
+        init_params.append(f"{param_name}: {type_hint} = {socket.default_source}")
         establish_links_params.append((param_name, socket))
 
     # Add sockets that only appear in certain enum states (e.g. mode="FREE" reveals
@@ -180,7 +174,11 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
         for prop in node_info.properties
         if prop.format_name() not in suppress
     ]
-    enum_methods = node_info.generate_enum_class_methods(config, suppress)
+    enum_methods = node_info.generate_enum_class_methods(
+        config,
+        suppress,
+        custom.suppress_factories_for if custom else frozenset(),
+    )
 
     # Add node type annotation — always use specific type so property access is typed
     node_type_annotation = f"bpy.types.{node_info.bl_idname}"
@@ -312,7 +310,9 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     if "__init__" in suppress:
         init_block = ""
     else:
-        init_block = f"""    def __init__{init_signature}:
+        # A bare ``(self)`` needs ``-> None`` or mypy treats the class as untyped.
+        init_return = " -> None" if init_signature == "(self)" else ""
+        init_block = f"""    def __init__{init_signature}{init_return}:
         super().__init__(){init_body}
         self._establish_links(**key_args)
 """

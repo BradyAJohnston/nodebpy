@@ -3,6 +3,7 @@ from typing import cast
 
 import bpy
 import pytest
+import numpy as np
 from numpy import random
 
 from nodebpy import TreeBuilder
@@ -2130,6 +2131,39 @@ def test_float_curve():
         assert fc.points[1].handle_type == "VECTOR"
 
 
+def test_float_curve_items_sorted():
+    """Points given out of order end up in x order, each with its own handle
+    type, and keep locations outside the clip range."""
+    points = [
+        (-0.5, 1.5, "VECTOR"),
+        (0.25, 0.6),
+        (0.5, 0.2, "AUTO_CLAMPED"),
+        (0.75, 0.9),
+        (2.0, -1.0, "VECTOR"),
+    ]
+    shuffled = [points[3], points[0], points[4], points[1], points[2]]
+    with g.tree():
+        fc = g.FloatCurve(items=shuffled)
+        locations = [v for p in fc.points for v in p.location]
+        assert locations == pytest.approx([v for p in points for v in p[:2]])
+        assert [p.handle_type for p in fc.points] == [
+            "VECTOR",
+            "AUTO",
+            "AUTO_CLAMPED",
+            "AUTO",
+            "VECTOR",
+        ]
+        assert not any(p.select for p in fc.points)
+
+        default = g.FloatCurve()
+        assert [tuple(p.location) for p in default.points] == [(0.0, 0.0), (1.0, 1.0)]
+
+        # A curve needs at least two points.
+        for too_few in ((), None, [(0.5, 0.5)]):
+            with pytest.raises(ValueError, match="at least two items"):
+                g.FloatCurve(items=too_few)
+
+
 def test_color_ramp():
     with g.tree():
         rand = random.rand(16).reshape((4, 4))
@@ -2139,6 +2173,41 @@ def test_color_ramp():
             items=((i / (rand.shape[0] - 1), x) for i, x in enumerate(rand))
         )
         assert len(cr.elements) == 4
+
+
+def test_color_ramp_items_sorted():
+    """More than two stops, given out of order, end up in position order with
+    each colour on its own stop (#189)."""
+    stops = [
+        (0.0, (1.0, 0.0, 0.0, 1.0)),
+        (0.25, (1.0, 1.0, 0.0, 1.0)),
+        (0.5, (0.0, 1.0, 0.0, 1.0)),
+        (0.75, (0.0, 1.0, 1.0, 1.0)),
+        (1.0, (0.0, 0.0, 1.0, 1.0)),
+    ]
+    shuffled = [stops[3], stops[0], stops[4], stops[1], stops[2]]
+    with g.tree():
+        cr = g.ColorRamp(items=shuffled)
+        assert [e.position for e in cr.elements] == pytest.approx([p for p, _ in stops])
+        for element, (_, color) in zip(cr.elements, stops):
+            assert tuple(element.color) == pytest.approx(color)
+
+        # Flat (position, r, g, b, a) items, e.g. an (N, 5) numpy array.
+        from_array = g.ColorRamp(
+            items=np.array([(0.8, 1.0, 0.5, 0.25, 1.0), (0.2, 0.0, 0.0, 0.0, 0.5)])
+        )
+        assert [e.position for e in from_array.elements] == pytest.approx([0.2, 0.8])
+        assert tuple(from_array.elements[0].color) == pytest.approx((0, 0, 0, 0.5))
+        assert tuple(from_array.elements[1].color) == pytest.approx((1, 0.5, 0.25, 1))
+
+        single = g.ColorRamp(items=[(0.4, (0.1, 0.2, 0.3, 1.0))])
+        assert len(single.elements) == 1
+        assert single.elements[0].position == pytest.approx(0.4)
+
+        # A ramp needs at least one stop.
+        for empty in ((), None):
+            with pytest.raises(ValueError, match="at least one item"):
+                g.ColorRamp(items=empty)
 
 
 def test_float_to_integer():
@@ -2197,7 +2266,7 @@ def test_store_named_attribute():
         cr = g.ColorRamp(hue_interpolation="CCW", mode="HSL")
         assert cr.hue_interpolation == "CCW"
         assert cr.mode == "HSL"
-        assert cr.color_interpolation == "EASE"
+        assert cr.color_interpolation == "LINEAR"
 
 
 def test_string_split():
@@ -2555,3 +2624,77 @@ def test_font_sound_bundle_items():
         assert isinstance(sf, FontSocket)
         assert isinstance(ss, SoundSocket)
         assert [i.socket_type for i in sb.node.bundle_items] == ["FONT", "SOUND"]
+
+
+def test_factory_methods_take_node_properties():
+    # non-socket properties are keyword-only on factory methods (#54)
+    with g.tree():
+        noise = g.NoiseTexture.fbm(noise_dimensions="4D", normalize=True)
+        assert noise.noise_type == "FBM"
+        assert noise.noise_dimensions == "4D"
+        assert noise.normalize
+        assert g.Math.add(1.0, 2.0, use_clamp=True).use_clamp
+
+
+def test_factory_methods_omit_properties_hidden_for_the_variant():
+    import inspect
+
+    fbm = inspect.signature(g.NoiseTexture.fbm).parameters
+    ridged = inspect.signature(g.NoiseTexture.ridged_multifractal).parameters
+    assert "normalize" in fbm
+    assert "normalize" not in ridged
+    assert "noise_dimensions" in ridged
+
+
+def _classmethod_names(cls):
+    import inspect
+
+    return {
+        name
+        for name, attr in vars(cls).items()
+        if isinstance(inspect.getattr_static(cls, name), classmethod)
+    }
+
+
+def test_factory_names_rename_type_labels():
+    # "4x4 Matrix" was mangled to input_4x4_matrix; a digit-led label is
+    # prefixed with its property's name (gabor_type "2D" -> type_2d)
+    names = _classmethod_names(g.NamedAttribute)
+    assert "matrix" in names
+    assert "input_4x4_matrix" not in names
+    assert {"type_2d", "type_3d"} <= _classmethod_names(g.GaborTexture)
+
+
+@pytest.mark.parametrize(
+    "cls",
+    [
+        g.AccumulateField,
+        g.EvaluateAtIndex,
+        g.EvaluateOnDomain,
+        g.FieldAverage,
+        g.FieldMinAndMax,
+        g.FieldVariance,
+    ],
+)
+def test_field_nodes_expose_only_nested_domain_factories(cls):
+    # the nested cls.<domain>.<data_type>() factories are the API; no flat
+    # per-domain or per-data-type classmethods should leak onto the class
+    flat = _classmethod_names(cls) - {"create_group"}
+    assert not flat & {"face_corner", "corner", "point", "matrix", "float"}
+
+
+def test_variant_param_names_drop_type_and_counter_suffixes():
+    import inspect
+
+    assert list(inspect.signature(g.TrimCurve.length).parameters)[2:] == [
+        "start",
+        "end",
+    ]
+    assert list(inspect.signature(g.MapRange.vector).parameters)[1:5] == [
+        "from_min",
+        "from_max",
+        "to_min",
+        "to_max",
+    ]
+    # a counter that tells two sockets apart is kept
+    assert "value_001" in inspect.signature(g.Math.add).parameters
