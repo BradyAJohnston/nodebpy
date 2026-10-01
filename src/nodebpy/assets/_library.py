@@ -1658,7 +1658,7 @@ def _add_build_flags(parser) -> None:  # pragma: no cover
     )
 
 
-def _parse_args(argv: list[str] | None = None, prog: str = "nodebpy"):
+def _parse_args(argv: list[str] | None = None):
     """Build the subcommand parser, parse ``argv``, merge the nearest
     pyproject's ``[tool.nodebpy.assets]`` table into the result (explicit
     arguments always win — see :mod:`._pipeline`), and check that the config
@@ -1666,7 +1666,7 @@ def _parse_args(argv: list[str] | None = None, prog: str = "nodebpy"):
     import argparse
 
     parser = argparse.ArgumentParser(
-        prog=prog,
+        prog="nodebpy",
         description="Round-trip a .blend asset library through Python source.",
         epilog=(
             "Positional arguments and flags can come from a "
@@ -1956,12 +1956,10 @@ def _build_command(args) -> None:
     write_stamp(args.blend, args.source, args.resources, stamp_options(args))
 
 
-def main(
-    argv: list[str] | None = None, prog: str = "nodebpy"
-) -> None:  # pragma: no cover - CLI wrapper
+def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapper
     """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``,
     ``plot`` and ``textconv`` subcommands."""
-    args = _parse_args(argv, prog=prog)
+    args = _parse_args(argv)
     if args.command == "dump":
         _dump_command(args)
     elif args.command == "ensure":
