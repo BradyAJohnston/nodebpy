@@ -2,6 +2,18 @@
 title: Changelog
 ---
 
+## Unreleased
+
+### Enhancements
+
+- **`nodebpy` command** — the asset CLI is now a `nodebpy` console script (also `python -m nodebpy`): `nodebpy dump`, `build`, `ensure`, `check` and `plot`, plus `nodebpy generate` for the typed asset API codegen (formerly the flag-based `python -m nodebpy.assets [-b … -o …]`). Under a full Blender, run `blender -b -P .../nodebpy/__main__.py -- <subcommand>`.
+- **`nodebpy textconv`** — prints a `.blend`'s assets as their dumped Python source, so git can diff asset libraries: set `*.blend diff=blend` in `.gitattributes` and `git config diff.blend.textconv "nodebpy textconv"`. Git LFS pointers are smudged automatically.
+
+### Deprecations
+
+- The `python -m nodebpy.assets` entry point is deprecated and will be removed in nodebpy 530. It forwards to `nodebpy` with a `FutureWarning`: subcommands unchanged (`nodebpy dump …`), flag-only invocations to `nodebpy generate …`. The `nodebpy.assets` module itself is unaffected.
+- Dumped sources now name `nodebpy build` in their header comment. Re-dump checked-in sources after upgrading, or `nodebpy check` reports them as differing.
+
 ## 520.31.0 - 2026-09-29
 
 ### Enhancements
