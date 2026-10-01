@@ -20,7 +20,7 @@ from pathlib import Path
 # ``blender ... -P .../nodebpy/__main__.py`` runs this file as a plain script
 # (no package context): put the package root on sys.path so the absolute
 # imports resolve — a no-op under ``python -m nodebpy``.
-if not __package__:
+if not __package__:  # pragma: no cover - only under blender -P
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 

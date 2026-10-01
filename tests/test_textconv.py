@@ -2,6 +2,7 @@
 """Tests for ``nodebpy textconv``: printing a ``.blend`` library as Python
 source, including through Git LFS as a git diff driver."""
 
+import io
 import os
 import shutil
 import subprocess
@@ -11,7 +12,8 @@ from pathlib import Path
 import pytest
 
 from nodebpy.assets import dump_library
-from nodebpy.assets._textconv import FILE_HEADER, is_lfs_pointer
+from nodebpy.assets._library import _parse_args
+from nodebpy.assets._textconv import FILE_HEADER, is_lfs_pointer, textconv
 
 from .test_asset_library import _write_library
 
@@ -62,6 +64,33 @@ def test_textconv_prints_dump(library_blend, tmp_path):
     assert result.stdout == _expected(library_blend, tmp_path)
 
 
+def test_textconv_in_process(library_blend, tmp_path):
+    """``textconv()`` writes the same text to a given stream, and keeps the
+    dump's own stdout output off it."""
+    out = io.StringIO()
+    textconv(library_blend, out)
+    assert out.getvalue() == _expected(library_blend, tmp_path)
+
+
+def test_parse_textconv_args(tmp_path, monkeypatch):
+    """``textconv`` takes the .blend positional and ignores any
+    [tool.nodebpy.assets] config."""
+    (tmp_path / "pyproject.toml").write_text(
+        '[tool.nodebpy.assets]\nsource = "src"\nblend = "lib.blend"\n'
+    )
+    monkeypatch.chdir(tmp_path)
+    args = _parse_args(["textconv", "other.blend"])
+    assert (args.command, args.blend) == ("textconv", Path("other.blend"))
+
+
+def test_main_module_imports():
+    """``python -m nodebpy`` resolves to an importable module with a
+    ``main``."""
+    import nodebpy.__main__
+
+    assert callable(nodebpy.__main__.main)
+
+
 def test_is_lfs_pointer(library_blend, tmp_path):
     pointer = tmp_path / "pointer"
     pointer.write_text(
@@ -71,17 +100,19 @@ def test_is_lfs_pointer(library_blend, tmp_path):
     assert not is_lfs_pointer(library_blend)
 
 
-@pytest.mark.skipif(
+needs_git_lfs = pytest.mark.skipif(
     shutil.which("git") is None
     or subprocess.run(
         ["git", "lfs", "version"], capture_output=True, check=False
     ).returncode,
     reason="needs git with git-lfs",
 )
-def test_textconv_git_lfs_diff_driver(library_blend, tmp_path):
-    """Configured as a diff driver on an LFS-tracked .blend, git shows the
-    library as Python source: textconv receives the LFS pointer and smudges
-    it itself."""
+
+
+@pytest.fixture
+def lfs_repo(library_blend, tmp_path):
+    """A git repo with ``library.blend`` committed to Git LFS and the textconv
+    driver configured; yields the repo and a ``git`` runner."""
     repo = tmp_path / "repo"
     repo.mkdir()
 
@@ -108,6 +139,30 @@ def test_textconv_git_lfs_diff_driver(library_blend, tmp_path):
     git("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "add")
 
     assert git("cat-file", "blob", "HEAD:library.blend").startswith("version ")
+    return repo, git
+
+
+@needs_git_lfs
+def test_textconv_smudges_lfs_pointer(library_blend, lfs_repo, monkeypatch):
+    """Handed an LFS pointer, ``textconv()`` smudges it to the real .blend
+    through git-lfs before dumping."""
+    repo, git = lfs_repo
+    pointer = repo / "pointer"
+    pointer.write_text(git("cat-file", "blob", "HEAD:library.blend"))
+    monkeypatch.chdir(repo)
+    from_pointer, from_blend = io.StringIO(), io.StringIO()
+    textconv(pointer, from_pointer)
+    textconv(library_blend, from_blend)
+    assert from_pointer.getvalue().startswith("### geometry/scale_up.py\n")
+    assert from_pointer.getvalue() == from_blend.getvalue()
+
+
+@needs_git_lfs
+def test_textconv_git_lfs_diff_driver(library_blend, lfs_repo):
+    """Configured as a diff driver on an LFS-tracked .blend, git shows the
+    library as Python source: textconv receives the LFS pointer and smudges
+    it itself."""
+    repo, git = lfs_repo
     shown = git("show", "--textconv", "HEAD:library.blend")
     # Compared against the CLI run from the same directory: the dump's ruff
     # pass picks up the nearest project's config, so output depends on cwd.
