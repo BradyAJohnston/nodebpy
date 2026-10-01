@@ -44,7 +44,9 @@ def _stdout_to_stderr() -> Iterator[None]:
     Blender's own C-level messages alike — to stderr, keeping stdout clean
     for the textconv output. C stdio buffers are flushed before fd 1 is
     restored, so Blender's buffered messages land on stderr too."""
-    libc = ctypes.CDLL(None)
+    # The C runtime Blender (and CPython) link against: the process's own
+    # symbols on POSIX, the Universal CRT on Windows.
+    libc = ctypes.CDLL("ucrtbase" if sys.platform == "win32" else None)
     sys.stdout.flush()
     saved = os.dup(1)
     os.dup2(2, 1)

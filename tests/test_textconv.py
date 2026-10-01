@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -15,6 +16,9 @@ from nodebpy.assets._textconv import FILE_HEADER, is_lfs_pointer
 from .test_asset_library import _write_library
 
 TEXTCONV = [sys.executable, "-m", "nodebpy", "textconv"]
+# The same as a git config value: git runs it through sh, so quote the
+# interpreter path and use forward slashes (Windows backslashes are escapes).
+TEXTCONV_CONFIG = f'"{Path(sys.executable).as_posix()}" -m nodebpy textconv'
 
 # Importing bpy setenv()s OCIO, which subprocesses inherit (directly, or via
 # xdist workers' os.environ) — and a bpy that finds OCIO set logs "Using
@@ -49,9 +53,10 @@ def test_textconv_prints_dump(library_blend, tmp_path):
         [*TEXTCONV, str(library_blend)],
         capture_output=True,
         text=True,
-        check=True,
+        check=False,
         env=ENV,
     )
+    assert result.returncode == 0, result.stderr
     assert result.stdout.startswith("### ")
     assert "### geometry/scale_up.py\n" in result.stdout
     assert result.stdout == _expected(library_blend, tmp_path)
@@ -81,21 +86,23 @@ def test_textconv_git_lfs_diff_driver(library_blend, tmp_path):
     repo.mkdir()
 
     def git(*args: str) -> str:
-        return subprocess.run(
+        result = subprocess.run(
             ["git", *args],
             cwd=repo,
             capture_output=True,
             text=True,
-            check=True,
+            check=False,
             env=ENV,
-        ).stdout
+        )
+        assert result.returncode == 0, result.stderr
+        return result.stdout
 
     git("init", "-q")
     git("lfs", "install", "--local")
     (repo / ".gitattributes").write_text(
         "*.blend filter=lfs diff=blend merge=lfs -text\n"
     )
-    git("config", "diff.blend.textconv", " ".join(TEXTCONV))
+    git("config", "diff.blend.textconv", TEXTCONV_CONFIG)
     shutil.copy(library_blend, repo / "library.blend")
     git("add", ".")
     git("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "add")
