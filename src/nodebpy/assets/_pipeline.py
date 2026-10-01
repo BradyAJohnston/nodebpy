@@ -512,7 +512,7 @@ def check_roundtrip(args: Namespace) -> None:
                 print(f"  {name}")
             print(
                 "Rebuild and re-dump to normalise them:\n"
-                "  python -m nodebpy.assets build && python -m nodebpy.assets dump"
+                "  nodebpy build && nodebpy dump"
             )
             raise SystemExit(1)
     print(f"Roundtrip OK: {modules} source modules reproduce exactly")

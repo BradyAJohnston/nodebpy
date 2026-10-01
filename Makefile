@@ -1,5 +1,5 @@
 generate:
-	uv run python -m nodebpy.assets
+	uv run nodebpy generate
 	uv run python -m gen
 	make format
 
