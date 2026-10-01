@@ -2,6 +2,13 @@
 title: Changelog
 ---
 
+## Unreleased
+
+### Enhancements
+
+- **`nodebpy` command** — the asset pipeline subcommands are now a `nodebpy` console script (also `python -m nodebpy`): `nodebpy dump`, `build`, `ensure`, `check` and `plot`. `python -m nodebpy.assets <subcommand>` still works for now but will be removed. Under a full Blender, run `blender -b -P .../nodebpy/__main__.py -- <subcommand>`.
+- **`nodebpy textconv`** — prints a `.blend`'s assets as their dumped Python source, so git can diff asset libraries: set `*.blend diff=blend` in `.gitattributes` and `git config diff.blend.textconv "nodebpy textconv"`. Git LFS pointers are smudged automatically.
+
 ## 520.31.0 - 2026-09-29
 
 ### Enhancements

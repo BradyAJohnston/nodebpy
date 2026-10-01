@@ -165,13 +165,15 @@ def main() -> None:  # pragma: no cover - CLI wrapper
     if "--" in sys.argv:
         argv = sys.argv[sys.argv.index("--") + 1 :]
 
-    # The dump/build/ensure/check/plot subcommands (blend ↔ .py round-trip,
-    # staleness stamping, roundtrip verification, PNG renders) have their own
-    # parser; everything else keeps the original flag-based interface.
-    if argv and argv[0] in ("dump", "build", "ensure", "check", "plot"):
+    # The dump/build/ensure/check/plot/textconv subcommands (blend ↔ .py
+    # round-trip, staleness stamping, roundtrip verification, PNG renders,
+    # git diff text) have their own parser, now also reached as ``nodebpy
+    # <subcommand>`` — kept here for backwards compatibility, to be removed.
+    # Everything else keeps the original flag-based interface.
+    if argv and argv[0] in ("dump", "build", "ensure", "check", "plot", "textconv"):
         from nodebpy.assets._library import main as library_main
 
-        library_main(argv)
+        library_main(argv, prog="python -m nodebpy.assets")
         return
 
     args = parse_args(argv)

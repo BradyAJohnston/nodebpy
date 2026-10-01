@@ -1658,7 +1658,7 @@ def _add_build_flags(parser) -> None:  # pragma: no cover
     )
 
 
-def _parse_args(argv: list[str] | None = None):
+def _parse_args(argv: list[str] | None = None, prog: str = "nodebpy"):
     """Build the subcommand parser, parse ``argv``, merge the nearest
     pyproject's ``[tool.nodebpy.assets]`` table into the result (explicit
     arguments always win — see :mod:`._pipeline`), and check that the config
@@ -1666,7 +1666,7 @@ def _parse_args(argv: list[str] | None = None):
     import argparse
 
     parser = argparse.ArgumentParser(
-        prog="python -m nodebpy.assets",
+        prog=prog,
         description="Round-trip a .blend asset library through Python source.",
         epilog=(
             "Positional arguments and flags can come from a "
@@ -1676,7 +1676,7 @@ def _parse_args(argv: list[str] | None = None):
             "relative to the pyproject's directory; explicit arguments "
             "always win. Inside a full Blender (no bpy module), run any "
             "subcommand as: blender -b --factory-startup "
-            "-P <.../nodebpy/assets/__main__.py> -- <subcommand ...>"
+            "-P <.../nodebpy/__main__.py> -- <subcommand ...>"
         ),
     )
     sub = parser.add_subparsers(dest="command", required=True)
@@ -1891,8 +1891,24 @@ def _parse_args(argv: list[str] | None = None):
         "these implies --arrange.",
     )
 
+    textconv = sub.add_parser(
+        "textconv",
+        help="Print a .blend's assets as Python source, for git diff.",
+        description=(
+            "Dump every asset in a .blend and print the modules to stdout, "
+            "each headed by '### <path>', so git can diff .blend files as "
+            "Python source. A Git LFS pointer is smudged to the real .blend "
+            "first. Use as a git diff driver: set 'diff=blend' on *.blend "
+            "in .gitattributes, then 'git config diff.blend.textconv "
+            '"nodebpy textconv"\' (and diff.blend.cachetextconv true).'
+        ),
+    )
+    textconv.add_argument(
+        "blend", type=Path, help="The .blend (or Git LFS pointer to one)."
+    )
+
     args = parser.parse_args(argv)
-    if args.command != "plot":
+    if args.command not in ("plot", "textconv"):
         # Fill positionals and flags from the nearest pyproject's
         # [tool.nodebpy.assets] table; explicit arguments always win.
         apply_config(args)
@@ -1940,10 +1956,12 @@ def _build_command(args) -> None:
     write_stamp(args.blend, args.source, args.resources, stamp_options(args))
 
 
-def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapper
-    """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``
-    and ``plot`` subcommands."""
-    args = _parse_args(argv)
+def main(
+    argv: list[str] | None = None, prog: str = "nodebpy"
+) -> None:  # pragma: no cover - CLI wrapper
+    """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``,
+    ``plot`` and ``textconv`` subcommands."""
+    args = _parse_args(argv, prog=prog)
     if args.command == "dump":
         _dump_command(args)
     elif args.command == "ensure":
@@ -1953,6 +1971,10 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             print(f"{args.blend} is up to date")
     elif args.command == "check":
         check_roundtrip(args)
+    elif args.command == "textconv":
+        from nodebpy.assets._textconv import textconv
+
+        textconv(args.blend)
     elif args.command == "plot":
         options = _arrange_options_from_args(args)
         method: SugiyamaOptions | None = None

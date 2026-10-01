@@ -1,5 +1,5 @@
 """Configuration, staleness stamping and roundtrip checking for the asset
-pipeline CLI (``python -m nodebpy.assets``).
+pipeline CLI (``nodebpy``).
 
 Downstream projects keep a dumped source tree and a built ``.blend`` in fixed
 places, so the CLI's positional arguments and flags can come from a
@@ -397,7 +397,7 @@ def _dump_stage_flags(args: Namespace) -> list[str]:
 
 
 def run_stage(argv: list[str]) -> None:
-    """Run one pipeline stage (any ``nodebpy.assets`` subcommand) in a fresh
+    """Run one pipeline stage (any ``nodebpy`` subcommand) in a fresh
     session — :func:`~nodebpy.assets.build_library` and
     :func:`~nodebpy.assets.dump_library` each require one, so ``check``
     cannot run its stages in this process.
@@ -413,7 +413,7 @@ def run_stage(argv: list[str]) -> None:
     env = os.environ.copy()
     if bpy.app.binary_path:  # pragma: no cover - needs a full Blender
         env["BLENDER_USER_EXTENSIONS"] = tempfile.mkdtemp(prefix="nodebpy-ext-")
-        entry = Path(__file__).with_name("__main__.py")
+        entry = Path(__file__).parents[1] / "__main__.py"
         cmd = [
             bpy.app.binary_path,
             "-b",
@@ -424,7 +424,7 @@ def run_stage(argv: list[str]) -> None:
             *argv,
         ]
     else:
-        cmd = [sys.executable, "-m", "nodebpy.assets", *argv]
+        cmd = [sys.executable, "-m", "nodebpy", *argv]
     subprocess.run(cmd, check=True, env=env)
 
 

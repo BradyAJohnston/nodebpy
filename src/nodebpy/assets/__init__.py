@@ -10,13 +10,15 @@ compositor}.assets`` and are re-exported alongside the built-in nodes.
 ``dump_library`` and ``build_library`` round-trip a ``.blend`` asset library
 through Python source: every asset is dumped to its own ``.py`` file (the
 version-controlled source of truth) and the ``.blend`` is rebuilt from them
-(``python -m nodebpy.assets dump/build``). The CLI adds ``ensure`` (rebuild
+(``nodebpy dump/build``). The CLI adds ``ensure`` (rebuild
 only when the ``.blend`` or its fingerprint stamp is stale) and ``check``
 (verify that build → dump reproduces the sources byte-for-byte), and reads
 its arguments from a ``[tool.nodebpy.assets]`` pyproject table — see
 :mod:`nodebpy.assets._pipeline`. ``plot_library`` renders node groups from a
 ``.blend`` to PNG images by name or wildcard
-(``python -m nodebpy.assets plot``), for review outside Blender.
+(``nodebpy plot``), for review outside Blender, and ``nodebpy textconv``
+prints a library's dumped source for ``git diff`` — see
+:mod:`nodebpy.assets._textconv`.
 """
 
 from ..builder import AssetLibrary, BundledLibrary, PackageLibrary
