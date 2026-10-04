@@ -2,6 +2,18 @@
 title: Changelog
 ---
 
+## Unreleased
+
+### Enhancements
+
+- **The Sugiyama layout no longer needs `networkx`** — the arranger now runs on its own graph structs (`nodebpy.lib.nodearrange.arrange.tree`), shaped after Blender's `bNodeTree` / `bNodeLink` so the layout can later be ported to C++. Layouts are unchanged. `arrange()` therefore always gives the Sugiyama layout when asked for it, instead of falling back to the simple arrangement with a warning when `networkx` was missing (as it usually is inside a Blender extension).
+- **Layout metrics** — `nodebpy.lib.nodearrange.metrics.measure(tree)` counts what makes a layout easy or hard to read (link crossings, straight links, links passing through nodes, overlapping nodes and frames, size) and `LayoutMetrics.cost()` folds them into one number. `make arrange-report` arranges a corpus of trees and prints the metrics, optionally drawing each tree and comparing against a saved run.
+
+### Breaking Changes
+
+- The `networkx` extra (`nodebpy[networkx]`) is now empty and deprecated; it is kept so existing installs keep resolving.
+- `to_python` raises `ValueError` for a tree whose links form a cycle. It previously raised a `networkx` error, or silently left the nodes on the cycle out when `networkx` was not installed.
+
 ## 520.31.0 - 2026-09-29
 
 ### Enhancements

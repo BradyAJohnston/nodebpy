@@ -27,6 +27,11 @@ docs:
 	cd docs && uv run quartodoc interlinks
 	cd docs && uv run quarto render
 
+# Arrange a corpus of trees and print layout-quality metrics; see
+# tests/arrange_report.py for comparing runs and drawing the trees.
+arrange-report:
+	uv run python -m tests.arrange_report --essentials
+
 # List upstream node-arrange commits not yet ported into the vendored copy
 # (see src/nodebpy/lib/nodearrange/VENDORED.md).
 vendor-check:

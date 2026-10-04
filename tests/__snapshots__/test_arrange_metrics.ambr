@@ -1,0 +1,210 @@
+# serializer version: 1
+# name: test_layout_metrics_snapshot[ClipFieldToBox]
+  dict({
+    'backward_links': 0,
+    'crossings': 1,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 277.0,
+    'imbalance': 17.0,
+    'link_length': 1614.0,
+    'link_span_y': 428.0,
+    'links': 10,
+    'links_through_nodes': 2,
+    'node_overlaps': 0,
+    'nodes': 10,
+    'reroutes': 0,
+    'straight_links': 2,
+    'width': 1515.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[GeometryPrincipalComponents]
+  dict({
+    'backward_links': 0,
+    'crossings': 8,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 498.0,
+    'imbalance': 103.0,
+    'link_length': 3420.0,
+    'link_span_y': 2156.0,
+    'links': 21,
+    'links_through_nodes': 3,
+    'node_overlaps': 0,
+    'nodes': 10,
+    'reroutes': 0,
+    'straight_links': 0,
+    'width': 902.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[PrincipalComponents]
+  dict({
+    'backward_links': 1,
+    'crossings': 34,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 585.0,
+    'imbalance': 111.0,
+    'link_length': 10710.0,
+    'link_span_y': 4748.0,
+    'links': 52,
+    'links_through_nodes': 17,
+    'node_overlaps': 0,
+    'nodes': 24,
+    'reroutes': 0,
+    'straight_links': 1,
+    'width': 2435.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[SliceToIndices]
+  dict({
+    'backward_links': 0,
+    'crossings': 3,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 372.0,
+    'imbalance': 13.0,
+    'link_length': 1348.0,
+    'link_span_y': 855.0,
+    'links': 12,
+    'links_through_nodes': 0,
+    'node_overlaps': 0,
+    'nodes': 9,
+    'reroutes': 0,
+    'straight_links': 0,
+    'width': 1020.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[chain]
+  dict({
+    'backward_links': 0,
+    'crossings': 0,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 286.0,
+    'imbalance': 0.0,
+    'link_length': 137.0,
+    'link_span_y': 48.0,
+    'links': 4,
+    'links_through_nodes': 0,
+    'node_overlaps': 0,
+    'nodes': 5,
+    'reroutes': 0,
+    'straight_links': 2,
+    'width': 840.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[diamond]
+  dict({
+    'backward_links': 0,
+    'crossings': 0,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 555.0,
+    'imbalance': 35.0,
+    'link_length': 1271.0,
+    'link_span_y': 798.0,
+    'links': 7,
+    'links_through_nodes': 1,
+    'node_overlaps': 0,
+    'nodes': 6,
+    'reroutes': 0,
+    'straight_links': 1,
+    'width': 850.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[fan_in]
+  dict({
+    'backward_links': 0,
+    'crossings': 0,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 1972.0,
+    'imbalance': 65.0,
+    'link_length': 4345.0,
+    'link_span_y': 4004.0,
+    'links': 16,
+    'links_through_nodes': 0,
+    'node_overlaps': 0,
+    'nodes': 17,
+    'reroutes': 0,
+    'straight_links': 8,
+    'width': 540.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[framed_stages]
+  dict({
+    'backward_links': 0,
+    'crossings': 0,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 434.0,
+    'imbalance': 135.0,
+    'link_length': 1188.0,
+    'link_span_y': 343.0,
+    'links': 11,
+    'links_through_nodes': 0,
+    'node_overlaps': 0,
+    'nodes': 11,
+    'reroutes': 0,
+    'straight_links': 8,
+    'width': 1798.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[long_links]
+  dict({
+    'backward_links': 0,
+    'crossings': 0,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 223.0,
+    'imbalance': 42.0,
+    'link_length': 898.0,
+    'link_span_y': 106.0,
+    'links': 6,
+    'links_through_nodes': 3,
+    'node_overlaps': 0,
+    'nodes': 6,
+    'reroutes': 0,
+    'straight_links': 3,
+    'width': 990.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[nested_frames]
+  dict({
+    'backward_links': 0,
+    'crossings': 0,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 524.0,
+    'imbalance': 129.0,
+    'link_length': 738.0,
+    'link_span_y': 343.0,
+    'links': 6,
+    'links_through_nodes': 0,
+    'node_overlaps': 0,
+    'nodes': 6,
+    'reroutes': 0,
+    'straight_links': 3,
+    'width': 948.0,
+  })
+# ---
+# name: test_layout_metrics_snapshot[trunk_with_feeders]
+  dict({
+    'backward_links': 0,
+    'crossings': 0,
+    'foreign_nodes_in_frames': 0,
+    'frame_overlaps': 0,
+    'height': 680.0,
+    'imbalance': 60.0,
+    'link_length': 948.0,
+    'link_span_y': 846.0,
+    'links': 10,
+    'links_through_nodes': 0,
+    'node_overlaps': 0,
+    'nodes': 11,
+    'reroutes': 0,
+    'straight_links': 1,
+    'width': 1012.0,
+  })
+# ---

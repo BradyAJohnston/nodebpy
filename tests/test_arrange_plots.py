@@ -15,6 +15,7 @@ import pytest
 from nodebpy import SugiyamaOptions, TreeBuilder, arrange
 from nodebpy import geometry as g
 from nodebpy.export import to_plot
+from nodebpy.lib.nodearrange.metrics import measure
 from nodebpy.nodes.geometry.groups import (
     ClipFieldToBox,
     GeometryPrincipalComponents,
@@ -43,15 +44,25 @@ def _plot_stages(tree, name: str) -> None:
         to_plot(tree, PLOT_DIR / f"{name}_0_before.png", title=f"{name} — before")
     ]
 
+    # Each arranged plot is titled with its layout metrics, so the numbers
+    # can be read against the picture.
     arrange(tree, "sugiyama")
     written.append(
-        to_plot(tree, PLOT_DIR / f"{name}_1_sugiyama.png", title=f"{name} — sugiyama")
+        to_plot(
+            tree,
+            PLOT_DIR / f"{name}_1_sugiyama.png",
+            title=f"{name} — sugiyama — {measure(tree).summary()}",
+        )
     )
 
     _reset_locations(tree)
     arrange(tree, "simple")
     written.append(
-        to_plot(tree, PLOT_DIR / f"{name}_2_simple.png", title=f"{name} — simple")
+        to_plot(
+            tree,
+            PLOT_DIR / f"{name}_2_simple.png",
+            title=f"{name} — simple — {measure(tree).summary()}",
+        )
     )
 
     for path in written:
