@@ -2,18 +2,15 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from itertools import chain
 from statistics import fmean
-from typing import cast
-
-from bpy.types import Node as BlenderNode
-from bpy.types import NodeFrame, NodeTree
-from mathutils import Vector
 
 from ..config import LayoutState, Settings
-from ..utils import abs_loc, group_by
+from ..dna import bNodeTree
 from .balancing import balance_column_heights
+from .common import Vec2, f32, group_by
+from .edits import LayoutResult
 from .graph import (
     Cluster,
     ClusterGraph,
@@ -36,87 +33,22 @@ from .y_coords import bk_assign_y_coords
 # -------------------------------------------------------------------
 
 
-def get_display_name_of(node: BlenderNode) -> str:
-    if node.label:
-        return node.label
-
-    if node.bl_idname.endswith("NodeGroup") and (
-        tree := getattr(node, "node_tree", None)
-    ):
-        return tree.name
-
-    if node.bl_idname.endswith("Math") or node.bl_idname == "FunctionNodeCompare":
-        return getattr(node, "operation", node.bl_label)
-
-    relevant_node_types = {
-        "ShaderNodeTexImage",
-        "ShaderNodeTexEnvironment",
-        "CompositorNodeImage",
-    }
-    if node.bl_idname in relevant_node_types and (
-        image := getattr(node, "image", None)
-    ):
-        return image.name
-
-    return node.bl_label
-
-
-NODE_LABEL_SIZE = 11
-LABEL_LEFT_OFFSET = 23
-LABEL_RIGHT_OFFSET = LABEL_LEFT_OFFSET
-
-# Rough advance width per character, as a fraction of the font size. Used when
-# `blf` can't measure text (e.g. the headless `bpy` module without a UI font).
-_FALLBACK_CHAR_WIDTH_FAC = 0.6
-
-
-def _label_width(text: str) -> float:
-    try:
-        import blf
-
-        blf.size(0, NODE_LABEL_SIZE)
-        width: float = blf.dimensions(0, text)[0]
-    except (ImportError, RuntimeError):
-        return len(text) * NODE_LABEL_SIZE * _FALLBACK_CHAR_WIDTH_FAC
-    # Headless builds can report a zero width instead of raising.
-    return (
-        width if width > 0 else len(text) * NODE_LABEL_SIZE * _FALLBACK_CHAR_WIDTH_FAC
-    )
-
-
-def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
-    for node in nodes:
-        if not node.hide:
-            continue
-
-        display_name = get_display_name_of(node)
-        optimized_width = (
-            _label_width(display_name) + LABEL_LEFT_OFFSET + LABEL_RIGHT_OFFSET
-        )
-        node.width = max(optimized_width, node.bl_width_min)
-
-
-# -------------------------------------------------------------------
-
-
 def precompute_links(state: LayoutState) -> None:
-    # Precompute links to ignore invalid/hidden links, and avoid `O(len(ntree.links))` time
+    # Precompute links to ignore invalid links, and avoid `O(len(tree.links))` time
 
     # Headless divergence: links into a collapsed panel's sockets report
     # ``is_hidden`` (Blender draws them to the panel header); they still
     # carry data, so they still order the nodes.
-    for link in state.ntree.links:
+    for link in state.tree.links:
         if link.is_valid:
-            assert link.from_socket
-            assert link.to_socket
-            state.linked_sockets[link.to_socket][link.from_socket] = None
-            state.linked_sockets[link.from_socket][link.to_socket] = None
+            state.linked_sockets[link.tosock][link.fromsock] = None
+            state.linked_sockets[link.fromsock][link.tosock] = None
 
 
 def get_tree(state: LayoutState) -> Tree[Node]:
     parents = {
-        n.parent: Cluster(cast(NodeFrame | None, n.parent), None)  # type: ignore
-        for n in state.ntree.nodes
+        n.parent: Cluster(n.parent, None)  # type: ignore
+        for n in state.tree.nodes
     }
     for c in parents.values():
         if c.node:
@@ -124,37 +56,31 @@ def get_tree(state: LayoutState) -> Tree[Node]:
 
     G: Tree[Node] = Tree()
     G.add_nodes(
-        [
-            Node(n, parents[n.parent])
-            for n in state.selected
-            if n.bl_idname != "NodeFrame"
-        ]
+        [Node(n, parents[n.parent]) for n in state.tree.nodes if not n.is_frame()]
     )
-    # Headless divergence: the addon skips links to unselected nodes; here
-    # the working set is the whole tree, so membership in G is the test.
+    # Headless divergence: the addon arranges the user's selection and skips
+    # links to unselected nodes; here the working set is the whole tree.
     by_node = {v.node: v for v in G}
     for u in G:
         assert is_real(u)
         for i, from_output in enumerate(u.node.outputs):
             for to_input in state.linked_sockets[from_output]:
-                assert to_input.node is not None
                 v = by_node.get(to_input.node)
                 if v is None:
                     continue
 
-                j = to_input.node.inputs[:].index(to_input)
-                G.add_link(u, v, Socket(u, i, True), Socket(v, j, False))
+                G.add_link(u, v, Socket(u, i, True), Socket(v, to_input.index, False))
 
     return G
 
 
 def save_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
-    links = {(link.from_socket, link.to_socket): link for link in state.ntree.links}
+    links = {(link.fromsock, link.tosock): link for link in state.tree.links}
     for edge in G.all_links():
         v, w = edge.fromnode, edge.tonode
         to_socket = edge.tosock
 
-        if not to_socket.bpy.is_multi_input:
+        if not to_socket.dna.is_multi_input:
             continue
 
         if v.is_reroute:
@@ -165,7 +91,7 @@ def save_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
         else:
             base_from_socket = edge.fromsock
 
-        link = links[(edge.fromsock.bpy, to_socket.bpy)]
+        link = links[(edge.fromsock.dna, to_socket.dna)]
         state.multi_input_sort_ids[to_socket].append(
             (base_from_socket, link.multi_input_sort_id)
         )
@@ -176,7 +102,7 @@ def add_columns(G: Tree[Node]) -> None:
     G.columns = columns
 
     def y_loc(v):
-        return abs_loc(v.node).y if is_real(v) and G.degree(v) == 0 else 0
+        return v.node.location[1] if is_real(v) and G.degree(v) == 0 else 0
 
     for col in columns:
         col.sort(key=node_name)
@@ -283,27 +209,26 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
 
 
 def sugiyama_layout(
-    ntree: NodeTree,
+    tree: bNodeTree,
     settings: Settings | None = None,
-    margin: Vector | None = None,
-) -> None:
+    margin: tuple[float, float] | None = None,
+) -> LayoutResult:
+    """Lay out *tree* and return the edits that realise the layout.
+
+    *tree* is only read. *margin* is the horizontal and vertical room to
+    leave between nodes.
+    """
     reset_serials()
-    state = LayoutState(ntree=ntree, settings=settings or Settings())
+    state = LayoutState(tree=tree, settings=settings or Settings())
     if margin is not None:
-        state.margin = margin
-    # Headless divergence: the addon arranges the user's selection, but this
-    # entry point always lays out the whole tree — a library-loaded tree has
-    # no selection at all, which would silently arrange nothing.
-    state.selected = list(ntree.nodes)
-    locs = [abs_loc(n) for n in state.selected if n.bl_idname != "NodeFrame"]
+        state.margin = Vec2(f32(margin[0]), f32(margin[1]))
+    locs = [n.location for n in tree.nodes if not n.is_frame()]
 
     if not locs:
-        return
+        return LayoutResult()
 
-    old_center = Vector(list(map(fmean, zip(*locs))))
-
-    if state.settings.optimize_sizes:
-        optimize_sizes(state.selected)
+    xs, ys = zip(*locs)
+    old_center = Vec2(f32(fmean(xs)), f32(fmean(ys)))
 
     precompute_links(state)
     CG = ClusterGraph(get_tree(state), state)
@@ -344,3 +269,4 @@ def sugiyama_layout(
             expand_node_stack(CG, node_stack)
 
     realize_layout(CG, old_center)
+    return LayoutResult(state.edits)

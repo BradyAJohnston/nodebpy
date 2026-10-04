@@ -23,7 +23,7 @@ from collections import defaultdict
 from collections.abc import Iterable
 
 from ..config import LayoutState
-from ..utils import REROUTE_DIM
+from .common import REROUTE_DIM
 from .graph import Cluster, Kind, Node, Socket
 from .tree import Tree, ancestors
 

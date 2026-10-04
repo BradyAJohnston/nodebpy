@@ -1,26 +1,13 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from collections import defaultdict
-from collections.abc import Callable, Hashable, Iterable
-from functools import cache
-from operator import itemgetter
+"""Reading and moving Blender nodes. The layout itself does not use these:
+it works on the plain data ``extract`` builds with them."""
 
 import bpy
 from bpy.types import Node
 from mathutils import Vector
 
-
-def group_by[T1: Hashable, T2: Hashable](
-    iterable: Iterable[T1],
-    key: Callable[[T1], T2],
-    sort: bool = False,
-) -> dict[tuple[T1, ...], T2]:
-    groups = defaultdict(list)
-    for item in iterable:
-        groups[key(item)].append(item)
-
-    items = sorted(groups.items(), key=itemgetter(0)) if sort else groups.items()
-    return {tuple(g): k for k, g in items}
+from .dna import REROUTE_SIZE
 
 
 def abs_loc(node: Node) -> Vector:
@@ -33,7 +20,7 @@ def abs_loc(node: Node) -> Vector:
     return loc
 
 
-REROUTE_DIM = Vector((8, 8))
+REROUTE_DIM = Vector((REROUTE_SIZE, REROUTE_SIZE))
 
 
 def dimensions(node: Node) -> Vector:
@@ -67,11 +54,6 @@ def get_bottom(node: Node, y_loc: float | None = None) -> float:
     dim_y = dimensions(node).y
     bottom = y_loc - dim_y
     return bottom + dim_y / 2 - _HIDE_OFFSET if node.hide else bottom
-
-
-@cache
-def frame_padding() -> float:
-    return 1.5 * 20.0
 
 
 _MAX_LOC = 100_000

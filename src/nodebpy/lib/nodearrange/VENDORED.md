@@ -42,30 +42,55 @@ break headless operation.
   | `T[c]` (cluster tree)                  | `T.successors(c)`                      |
   | `nx.descendants`, `nx.topological_sort`, … | the functions of the same name in `tree.py` |
 
+- **The layout is pure.** Upstream reads and edits the Blender tree
+  throughout the pipeline. Here that is three stages (see `__init__.py`):
+  `extract.py` copies the tree into plain data (`dna.py`: `bNodeTree`,
+  `bNode`, `bNodeSocket`, `bNodeLink`, named after the Blender structs),
+  measuring node sizes and socket positions; `arrange/` computes the layout
+  from that data alone and returns an ordered list of edits
+  (`arrange/edits.py`); `apply.py` carries them out. Nothing under
+  `arrange/`, nor `dna.py` or `config.py`, may import `bpy` or `mathutils`
+  (a test enforces it). Upstream patches need translating:
+
+  | upstream                                  | here                                  |
+  | ----------------------------------------- | ------------------------------------- |
+  | `v.node` is a `bpy.types.Node`            | a `dna.bNode` (`idname`, `is_collapsed`, `is_reroute()`, `top`, …) |
+  | `socket.bpy`                              | `socket.dna`, a `dna.bNodeSocket`     |
+  | `ntree.nodes.remove(node)`                | `state.edits.append(RemoveNode(node))` |
+  | `ntree.nodes.new("NodeReroute")`          | `dna.new_reroute(parent)` + `AddReroute` |
+  | `links.new(a, b)` / `links.remove(link)`  | `AddLink(a, b)` / `RemoveLink(a, b)`  |
+  | setting `node.location` / `node.parent`   | `MoveNode(node, top_left, parent)`    |
+  | `abs_loc`, `dimensions`, `get_top`, `get_socket_y` | fields of the `dna` structs (those helpers now live in `utils.py` / `extract.py`, for the Blender side only) |
+  | `mathutils.Vector`, `intersect_line_line_2d` | `common.Vec2`, `common.segments_intersect` |
+
+  One consequence: node sizes and socket positions are all read once, before
+  the layout. Upstream reads socket positions lazily, part-way through, after
+  it has already removed reroutes and links from the tree — which matters
+  for collapsed nodes, whose sockets are spread according to how many are
+  linked. Layouts are identical to before except in that case (a collapsed
+  node next to a reroute the layout replaces).
 - **No module globals.** Upstream keeps its working state (`selected`,
   `linked_sockets`, `multi_input_sort_ids`, `SETTINGS`, `MARGIN`) as module
   globals in `config.py`, reset manually per operator invocation. Here that
   is a per-run `config.LayoutState` dataclass, created by
-  `sugiyama_layout(ntree, settings, margin)` and threaded explicitly:
+  `sugiyama_layout(tree, settings, margin)` and threaded explicitly:
   `ClusterGraph` carries it as `.state` for the pipeline, and pure-graph
-  helpers take it as a parameter. Upstream patches that touch `config.*` or
-  `bpy.context` need translating to `state.*` / `state.ntree` accordingly
-  (`utils.get_ntree()` no longer exists).
+  helpers take it as a parameter. It also collects the edits.
 - Headless adaptations — under the headless `bpy` module Blender never draws
   the tree, so UI-derived geometry (`node.dimensions`, socket runtime
   locations) stays zeroed:
-  - `utils.dimensions()` and `graph.get_socket_y()` use the drawn values
+  - `utils.dimensions()` and `extract.get_socket_y()` use the drawn values
     when present and otherwise fall back to estimates from
     `nodebpy.builder.layout` (`calculate_node_dimensions()` /
     `calculate_socket_offset_y()`).
-  - `sugiyama.optimize_sizes()` skips `bpy.ops.wm.redraw_timer` and falls
+  - `extract.optimize_sizes()` skips `bpy.ops.wm.redraw_timer` and falls
     back to a per-character width estimate when `blf` can't measure text.
 - **Selection is ignored.** Upstream arranges the user's selection
   (`config.selected`, and per-link `node.select` gates in
-  `get_multidigraph()` and `realize.is_safe_to_remove()`). Here
-  `sugiyama_layout` always lays out the whole tree — a library-loaded tree
+  `get_multidigraph()`, here `get_tree()`, and `realize.is_safe_to_remove()`). Here
+  `arrange_node_tree` always lays out the whole tree — a library-loaded tree
   has no selection at all, which would silently arrange nothing — so the
-  working set is `list(ntree.nodes)` and the select gates are membership /
+  working set is every node of the tree and the select gates are membership /
   always-true checks. Upstream patches touching `.select` need the same
   translation.
 - **Layout readability additions** (nodebpy-only, each behind a `Settings`
@@ -93,8 +118,8 @@ break headless operation.
   `linked_sockets` values are insertion-ordered dicts, and
   `realize.restore_multi_input_orders` creates missing links in graph order
   rather than from a set of bpy sockets.
-- `structs.py` uses explicit `_fields_` lists (upstream builds them from
-  annotations, formerly via `eval`) and additionally binds `bNode` /
+- `structs.py` (moved up from `arrange/`, since only `extract.py` uses it)
+  uses explicit `_fields_` lists (upstream builds them from annotations, formerly via `eval`) and additionally binds `bNode` /
   `bNodeRuntime` / `rctf`, which upstream does not have.
 - Typing/lint fixes throughout to satisfy `ty` and `ruff` under this repo's
   config.

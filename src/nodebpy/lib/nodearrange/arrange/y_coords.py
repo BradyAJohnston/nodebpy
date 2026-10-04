@@ -104,7 +104,7 @@ def should_use_inner_shift(
     if not is_right:
         v, w = w, v
 
-    if v.height > w.height and not getattr(w.node, "hide", False):
+    if v.height > w.height and not (w.node is not None and w.node.is_collapsed):
         return False
 
     return abs(v.height - w.height) > fmean((v.height, w.height)) / 2

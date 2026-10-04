@@ -3,7 +3,8 @@
 
 These replace the ``networkx`` graphs the arranger used to be built on. They
 are shaped after the structs Blender's node editor already has, so that the
-layout can later be ported to C++ against ``bNodeTree`` directly:
+layout can later be ported to C++ against ``bNodeTree`` directly (the
+layout's input, ``nodearrange.dna``, mirrors the same structs as plain data):
 
 ==================  ===================================================
 here                Blender (``DNA_node_types.h`` / ``BKE_node_runtime.hh``)
@@ -14,10 +15,9 @@ here                Blender (``DNA_node_types.h`` / ``BKE_node_runtime.hh``)
                     the tree's topology cache does.
 :class:`Link`       ``bNodeLink``: ``fromnode`` / ``fromsock`` / ``tonode``
                     / ``tosock``.
-``graph.Node``      ``bNode``: ``x`` / ``y`` (``location``), ``width``,
-                    ``height``, ``cluster`` (``parent``, the frame).
-``graph.Socket``    ``bNodeSocket``: ``owner`` (``owner_node()``), ``idx``
-                    (``index()``), ``is_output``.
+``graph.Node``      a ``bNode`` being laid out (``node`` is the
+                    ``dna.bNode``), or a node the layout made up.
+``graph.Socket``    a ``bNodeSocket`` (``dna``), or a made-up one.
 ``graph.Cluster``   a frame ``bNode`` and its ``direct_children_in_frame``.
 ==================  ===================================================
 

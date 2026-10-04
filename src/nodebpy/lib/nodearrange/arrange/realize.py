@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-from itertools import chain
 from math import isclose
 from statistics import fmean
 
-from bpy.types import Node as BlenderNode
-from mathutils import Vector
-
 from ..config import LayoutState
-from ..utils import move
+from ..dna import new_reroute
+from .common import Vec2, f32
+from .edits import AddLink, AddReroute, MoveNode, ResizeFrame, RestoreMultiInputOrder
 from .graph import (
     Cluster,
     ClusterGraph,
@@ -38,13 +36,7 @@ def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
 
     # Headless divergence: the addon requires the reroute's peers to be in
     # the selection; here the working set is the whole tree.
-    return all(
-        s.node is not None
-        for s in chain(
-            state.linked_sockets[v.node.inputs[0]],
-            state.linked_sockets[v.node.outputs[0]],
-        )
-    )
+    return True
 
 
 def dissolve_reroute_edges(G: Tree[Node], path: list[Node], state: LayoutState) -> None:
@@ -65,10 +57,9 @@ def dissolve_reroute_edges(G: Tree[Node], path: list[Node], state: LayoutState) 
             path.clear()
             return
 
-    links = state.ntree.links
     for i in succ_inputs:
         G.add_link(u, i.owner, o, i)
-        links.new(o.bpy, i.bpy)
+        state.edits.append(AddLink(o.dna, i.dna))
 
 
 def remove_reroutes(CG: ClusterGraph) -> None:
@@ -140,20 +131,17 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
 
 
 def add_reroute(v: Node, state: LayoutState) -> None:
-    reroute = state.ntree.nodes.new(type="NodeReroute")
-    assert reroute is not None
     assert v.cluster
-    reroute.parent = v.cluster.node
-    state.selected.append(reroute)
+    reroute = new_reroute(parent=v.cluster.node)
+    state.edits.append(AddReroute(reroute))
     v.node = reroute
     v.type = Kind.NODE
 
 
 def realize_edges(G: Tree[Node], state: LayoutState) -> None:
-    links = state.ntree.links
     for link in G.all_links():
         if link.fromnode.is_reroute or link.tonode.is_reroute:
-            links.new(link.fromsock.bpy, link.tosock.bpy)
+            state.edits.append(AddLink(link.fromsock.dna, link.tosock.dna))
 
 
 def realize_dummy_nodes(CG: ClusterGraph) -> None:
@@ -170,76 +158,42 @@ def realize_dummy_nodes(CG: ClusterGraph) -> None:
 
 
 def restore_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
-    links = state.ntree.links
+    """Record, for every multi-input socket, which sockets now feed it and
+    the order their links must be put back in."""
     H = socket_graph(G)
     for socket, sort_ids in state.multi_input_sort_ids.items():
-        multi_input = socket.bpy
-        assert multi_input
-
-        as_links = {
-            link.from_socket: link
-            for link in links
-            if link.to_socket == multi_input and link.from_socket is not None
-        }
-
-        # In graph order, not a set: bpy sockets hash by pointer, and the
-        # creation order of these links sets their sort ids.
-        for output in dict.fromkeys(s.bpy for s in H.predecessors(socket)):
-            if output in as_links:
-                continue
-            assert output
-            new_link = links.new(output, multi_input)
-            assert new_link is not None
-            as_links[output] = new_link
-
-        if len(as_links) != len(
-            {link.multi_input_sort_id for link in as_links.values()}
-        ):
-            for link in as_links.values():
-                links.remove(link)
-
-            for output in as_links:
-                new_link = links.new(output, multi_input)
-                assert new_link is not None
-                as_links[output] = new_link
+        outputs = tuple(dict.fromkeys(s.dna for s in H.predecessors(socket)))
 
         SH = H.subgraph(
             {i[0] for i in sort_ids} | {socket} | {v for v in H if v.owner.is_reroute}
         )
         seen = set()
+        order = []
         for base_from_socket, sort_id in sort_ids:
-            other = min(
-                as_links.values(),
-                key=lambda link: abs(link.multi_input_sort_id - sort_id),
-            )
             from_socket = next(
                 s
                 for s, t in edge_dfs(SH, base_from_socket)
                 if t == socket and s not in seen
             )
-            output = from_socket.bpy
-            assert output is not None
-            as_links[output].swap_multi_input_sort_id(other)
+            order.append((from_socket.dna, sort_id))
             seen.add(from_socket)
 
+        state.edits.append(RestoreMultiInputOrder(socket.dna, outputs, tuple(order)))
 
-def realize_locations(G: Tree[Node], old_center: Vector, state: LayoutState) -> None:
-    new_center = (fmean([v.x for v in G]), fmean([v.y for v in G]))
-    offset_x, offset_y = -Vector(new_center) + old_center
+
+def realize_locations(G: Tree[Node], old_center: Vec2, state: LayoutState) -> None:
+    # Keep the layout centred where the nodes were (in single precision,
+    # like the node locations themselves).
+    offset_x = f32(old_center.x - f32(fmean([v.x for v in G])))
+    offset_y = f32(old_center.y - f32(fmean([v.y for v in G])))
 
     for v in G:
-        assert isinstance(v.node, BlenderNode)
+        assert v.node is not None
         assert v.cluster
 
-        # Optimization: avoid using bpy.ops for as many nodes as possible (see `utils.move()`)
-        v.node.parent = None
-
-        x, y = v.node.location
         v.x += offset_x
         v.y += offset_y
-        move(v.node, state.selected, x=v.x - x, y=v.corrected_y() - y)
-
-        v.node.parent = v.cluster.node
+        state.edits.append(MoveNode(v.node, (v.x, v.y), v.cluster.node))
 
 
 def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
@@ -248,19 +202,11 @@ def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
     if not frame or frame.shrink:
         return
 
-    real_children = [v for v in CG.T.successors(cluster) if is_real(v)]
-
-    for v in real_children:
-        v.node.parent = None
-
-    frame.shrink = False
-    frame.shrink = True
-
-    for v in real_children:
-        v.node.parent = frame
+    children = tuple(v.node for v in CG.T.successors(cluster) if is_real(v))
+    CG.state.edits.append(ResizeFrame(frame, children))
 
 
-def realize_layout(CG: ClusterGraph, old_center: Vector) -> None:
+def realize_layout(CG: ClusterGraph, old_center: Vec2) -> None:
     if CG.state.settings.add_reroutes:
         realize_dummy_nodes(CG)
 

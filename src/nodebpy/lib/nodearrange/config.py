@@ -6,9 +6,9 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal
 
-from bpy.types import Node as BlenderNode
-from bpy.types import NodeSocket, NodeTree
-from mathutils import Vector
+from .arrange.common import Vec2
+from .arrange.edits import Edit
+from .dna import bNodeSocket, bNodeTree
 
 if TYPE_CHECKING:
     from .arrange.graph import Node, Socket
@@ -56,13 +56,12 @@ class LayoutState:
     persists between runs.
     """
 
-    ntree: NodeTree
+    tree: bNodeTree
     settings: Settings = field(default_factory=Settings)
-    margin: Vector = field(default_factory=lambda: Vector(DEFAULT_MARGIN))
-    selected: list[BlenderNode] = field(default_factory=list)
-    # Values are insertion-ordered sets (dict keys): bpy sockets hash by
-    # pointer, so iterating a real set would follow memory addresses.
-    linked_sockets: defaultdict[NodeSocket, dict[NodeSocket, None]] = field(
+    margin: Vec2 = field(default_factory=lambda: Vec2(*DEFAULT_MARGIN))
+    # Which sockets each socket is linked to, both ways. The values are
+    # insertion-ordered sets (dict keys).
+    linked_sockets: defaultdict[bNodeSocket, dict[bNodeSocket, None]] = field(
         default_factory=lambda: defaultdict(dict)
     )
     multi_input_sort_ids: defaultdict[Socket, list[tuple[Socket, int]]] = field(
@@ -73,3 +72,6 @@ class LayoutState:
     frame_sequence: list[tuple[frozenset[Node], frozenset[Node]]] = field(
         default_factory=list
     )
+    # The changes to make to the tree, in order. The layout only records
+    # them; `nodearrange.apply` carries them out.
+    edits: list[Edit] = field(default_factory=list)

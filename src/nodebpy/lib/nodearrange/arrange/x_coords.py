@@ -7,10 +7,8 @@ from collections.abc import Collection, Sequence
 from itertools import chain
 from typing import cast
 
-from mathutils.geometry import intersect_line_line_2d
-
 from ..config import LayoutState
-from ..utils import frame_padding, group_by
+from .common import frame_padding, group_by, segments_intersect
 from .graph import (
     Cluster,
     Kind,
@@ -101,7 +99,7 @@ def is_unnecessary_bend_point(
     if nbr.is_reroute:
         return True
 
-    nbr_x_offset, nbr_y_offset = state.margin / 2
+    nbr_x_offset, nbr_y_offset = state.margin.x / 2, state.margin.y / 2
     nbr_y = nbr.y - nbr.height - nbr_y_offset if is_above else nbr.y + nbr_y_offset
 
     assert nbr.cluster
@@ -114,7 +112,7 @@ def is_unnecessary_bend_point(
 
     line_a = ((nbr.x - nbr_x_offset, nbr_y), (nbr.x + nbr.width + nbr_x_offset, nbr_y))
     line_b = ((socket.x, socket.y), (other_socket.x, other_socket.y))
-    return intersect_line_line_2d(*line_a, *line_b) is None
+    return not segments_intersect(*line_a, *line_b)
 
 
 def add_bend_points(
@@ -152,14 +150,14 @@ def node_overlaps_edge(
         return False
 
     top_line = ((v.x, v.y), (v.x + v.width, v.y))
-    if intersect_line_line_2d(*edge_line, *top_line):
+    if segments_intersect(*edge_line, *top_line):
         return True
 
     bottom_line = (
         (v.x, v.y - v.height),
         (v.x + v.width, v.y - v.height),
     )
-    return bool(intersect_line_line_2d(*edge_line, *bottom_line))
+    return segments_intersect(*edge_line, *bottom_line)
 
 
 def route_edges(G: Tree[Node], T: DiGraph[Node | Cluster], state: LayoutState) -> None:

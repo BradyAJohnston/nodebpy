@@ -25,7 +25,8 @@ from typing import TYPE_CHECKING, cast
 import numpy as np
 from bpy.types import Node, NodeSocket, NodeTree
 
-from .utils import abs_loc, dimensions, frame_padding, get_bottom, get_top
+from .arrange.common import frame_padding
+from .utils import abs_loc, dimensions, get_bottom, get_top
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
@@ -177,7 +178,7 @@ def node_rect(node: Node) -> Rect:
 
 def socket_anchor(socket: NodeSocket) -> tuple[float, float]:
     """Where a link attaches to *socket*."""
-    from .arrange.graph import get_socket_y
+    from .extract import get_socket_y
 
     node = socket.node
     assert node is not None

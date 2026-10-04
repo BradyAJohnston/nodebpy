@@ -8,7 +8,6 @@ from dataclasses import dataclass, field
 from math import inf
 from typing import cast
 
-from ..utils import get_top
 from .graph import (
     Cluster,
     ClusterGraph,
@@ -17,7 +16,6 @@ from .graph import (
     MultiEdge,
     Node,
     Socket,
-    get_socket_y,
     is_real,
     node_name,
 )
@@ -198,7 +196,7 @@ def relabel_sockets(
             node_stack.rep_node,
             i,
             is_output,
-            get_socket_y(original.bpy) - get_top(v.node) - y,
+            original.dna.location[1] - v.node.top - y,
         )
         sockets[socket] = original
         setattr(link, attr, socket)
@@ -212,8 +210,8 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
         v
         for v in G
         if is_real(v)
-        and v.node.hide
-        and v.node.bl_idname in {"ShaderNodeMath", "ShaderNodeVectorMath"}
+        and v.node.is_collapsed
+        and v.node.idname in {"ShaderNodeMath", "ShaderNodeVectorMath"}
     ]
     H = G.subgraph(collapsed_math_nodes)
 

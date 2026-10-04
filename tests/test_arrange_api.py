@@ -574,21 +574,22 @@ def test_reroute_gap_is_a_fraction_of_the_margin():
     """Consecutive reroutes / dummy nodes in a column are spaced by the
     reroute fraction of the vertical margin; anything involving a real node
     keeps the full margin."""
-    from mathutils import Vector
-
+    from nodebpy.lib.nodearrange.arrange.common import Vec2
     from nodebpy.lib.nodearrange.arrange.graph import Kind, Node
     from nodebpy.lib.nodearrange.arrange.y_coords import vertical_gap
     from nodebpy.lib.nodearrange.config import LayoutState, Settings
+    from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
 
-    tree = bpy.data.node_groups.new("GapProbe", "GeometryNodeTree")
-    state = LayoutState(ntree=tree, settings=Settings(reroute_margin_y_fac=0.25))
-    state.margin = Vector((30.0, 40.0))
+    state = LayoutState(
+        tree=bNodeTree(),
+        settings=Settings(reroute_margin_y_fac=0.25),
+        margin=Vec2(30.0, 40.0),
+    )
     dummy_a, dummy_b = Node(type=Kind.DUMMY), Node(type=Kind.DUMMY)
-    real = Node(tree.nodes.new("GeometryNodeInputIndex"))
+    real = Node(bNode("Index", "GeometryNodeInputIndex"))
     assert vertical_gap(dummy_a, dummy_b, state) == pytest.approx(10.0)
     assert vertical_gap(real, dummy_a, state) == pytest.approx(40.0)
     assert vertical_gap(dummy_b, real, state) == pytest.approx(40.0)
-    bpy.data.node_groups.remove(tree)
 
 
 def test_links_into_collapsed_panels_order_nodes():

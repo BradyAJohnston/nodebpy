@@ -10,20 +10,9 @@ from itertools import chain, count, pairwise, product
 from math import inf
 from typing import TYPE_CHECKING, Literal, TypeGuard, cast
 
-import bpy
-from bpy.types import Node as BlenderNode
-from bpy.types import NodeFrame, NodeSocket
-
-from ..utils import (
-    REROUTE_DIM,
-    abs_loc,
-    dimensions,
-    frame_padding,
-    get_bottom,
-    get_top,
-    group_by,
-)
-from .structs import bNodeSocket
+from ..dna import bNode, bNodeSocket
+from .common import REROUTE_DIM, frame_padding, group_by
+from .edits import RemoveLink, RemoveNode
 from .tree import (
     DiGraph,
     Link,
@@ -79,7 +68,7 @@ class CrossingReduction:
 
 
 class Node:
-    node: BlenderNode | None
+    node: bNode | None
     cluster: Cluster | None
     type: _NonCluster
 
@@ -110,26 +99,25 @@ class Node:
 
     def __init__(
         self,
-        node: BlenderNode | None = None,
+        node: bNode | None = None,
         cluster: Cluster | None = None,
         type: _NonCluster = Kind.NODE,
         rank: int | None = None,
     ) -> None:
-        real = isinstance(node, BlenderNode)
 
         self.node = node
         self.cluster = cluster
         self.type = type
         self.rank = rank  # type: ignore
 
-        if type == Kind.DUMMY or (real and node.bl_idname == "NodeReroute"):
+        if type == Kind.DUMMY or (node is not None and node.is_reroute()):
             self.is_reroute = True
             self.width = REROUTE_DIM.x
             self.height = REROUTE_DIM.y
-        elif real:
+        elif node is not None:
             self.is_reroute = False
-            self.width = dimensions(node).x
-            self.height = get_top(node) - get_bottom(node)
+            self.width = node.width
+            self.height = node.top - node.bottom
         else:
             self.is_reroute = type == Kind.VERTICAL_BORDER
             self.width = 0
@@ -159,17 +147,15 @@ class Node:
 
         self.y = None  # type: ignore
 
-    def corrected_y(self) -> float:
-        assert is_real(self)
-        return self.y + (abs_loc(self.node).y - get_top(self.node))
-
 
 class _RealNode(Node):
-    node: BlenderNode
+    node: bNode
 
 
 def is_real(v: Node | Cluster) -> TypeGuard[_RealNode]:
-    return isinstance(v.node, BlenderNode)
+    """Whether *v* stands for a node of the tree (a frame, for a cluster),
+    rather than one the layout made up."""
+    return v.node is not None
 
 
 def node_name(v: Node) -> str:
@@ -186,7 +172,7 @@ def opposite(v: Node, e: Edge | MultiEdge) -> Node:
 
 @dataclass(slots=True)
 class Cluster:
-    node: NodeFrame | None
+    node: bNode | None
     cluster: Cluster
     nesting_level: int | None = None
     cr: CrossingReduction = field(default_factory=CrossingReduction)
@@ -283,16 +269,11 @@ def add_dummy_nodes_to_edge(
     if not is_real(u) or not is_real(v):
         return
 
-    links = state.ntree.links
-    if link.tosock.bpy.is_multi_input:
-        target_link = (link.fromsock.bpy, link.tosock.bpy)
-        links.remove(
-            next(
-                link
-                for link in links
-                if (link.from_socket, link.to_socket) == target_link
-            )
-        )
+    # The link is replaced by the chain through the dummy nodes. A plain
+    # input drops its old link when the new one is made; a multi-input
+    # would keep both.
+    if link.tosock.dna.is_multi_input:
+        state.edits.append(RemoveLink(link.fromsock.dna, link.tosock.dna))
 
 
 def assign_clusters(
@@ -394,7 +375,7 @@ class ClusterGraph:
             if not is_real(v):
                 continue
 
-            sockets = {*v.node.inputs, *v.node.outputs}
+            sockets = [*v.node.inputs, *v.node.outputs]
 
             for socket in sockets:
                 state.linked_sockets.pop(socket, None)
@@ -403,8 +384,7 @@ class ClusterGraph:
                 for socket in sockets:
                     val.pop(socket, None)
 
-            state.selected.remove(v.node)
-            state.ntree.nodes.remove(v.node)
+            state.edits.append(RemoveNode(v.node))
 
     def merge_edges(self) -> None:
         G = self.G
@@ -533,24 +513,6 @@ class ClusterGraph:
 # -------------------------------------------------------------------
 
 
-def get_socket_y(socket: NodeSocket) -> float:
-    node = socket.node
-    assert node is not None
-
-    # Socket runtime locations are only written when a node editor draws the
-    # tree; `node.dimensions` being set is the tell. Headless, estimate the
-    # socket's position from the same row model used for node dimensions.
-    if node.dimensions.y > 0:
-        b_socket = bNodeSocket.from_address(socket.as_pointer())
-        preferences = bpy.context.preferences
-        assert preferences is not None
-        return b_socket.runtime.contents.location[1] / preferences.system.ui_scale
-
-    from ....builder.layout import calculate_socket_offset_y
-
-    return get_top(node) + calculate_socket_offset_y(socket)
-
-
 @dataclass(frozen=True)
 class Socket:
     owner: Node
@@ -559,7 +521,8 @@ class Socket:
     prescribed_offset_y: float | None = field(default=None, hash=False, compare=False)
 
     @property
-    def bpy(self) -> NodeSocket | None:
+    def dna(self) -> bNodeSocket | None:
+        """The socket of the tree this stands for, if any."""
         v = self.owner
 
         if not is_real(v):
@@ -585,8 +548,9 @@ class Socket:
         if v.is_reroute or not is_real(v):
             return 0
 
-        assert self.bpy
-        return get_socket_y(self.bpy) - get_top(v.node)
+        socket = self.dna
+        assert socket is not None and socket.location is not None
+        return socket.location[1] - v.node.top
 
     @property
     def y(self) -> float:

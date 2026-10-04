@@ -8,7 +8,7 @@ from functools import cache
 from math import sqrt
 from typing import TYPE_CHECKING
 
-from ..utils import group_by
+from .common import group_by
 from .graph import Cluster, Kind, MultiEdge, Node, opposite
 from .tree import (
     DiGraph,

@@ -970,9 +970,7 @@ def default_split_inputs(split: bool = True) -> Iterator[None]:
 
 
 def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:
-    from mathutils import Vector
-
-    from ..lib.nodearrange.arrange import sugiyama
+    from ..lib.nodearrange import arrange_node_tree
     from ..lib.nodearrange.config import Settings
 
     settings = Settings(
@@ -989,7 +987,7 @@ def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> Non
         balance_aspect=options.balance_aspect,
         reroute_margin_y_fac=options.reroute_margin_y_fac,
     )
-    sugiyama.sugiyama_layout(tree, settings=settings, margin=Vector(options.margin))
+    arrange_node_tree(tree, settings, margin=tuple(options.margin))
 
 
 def arrange(
