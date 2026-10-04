@@ -22,25 +22,24 @@ from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Iterable
 
-import networkx as nx
-
 from ..config import LayoutState
 from ..utils import REROUTE_DIM
-from .graph import FROM_SOCKET, Cluster, Kind, Node, Socket
+from .graph import Cluster, Kind, Node, Socket
+from .tree import Tree, ancestors
 
 _MAX_MOVES = 500
 
 
-def _upstream(G: nx.DiGraph[Node], v: Node) -> set[Node]:
+def _upstream(G: Tree[Node], v: Node) -> set[Node]:
     """Every node *v* depends on. Moving *v* together with its upstream one
     column to the left is always feasible: the set has no predecessor
     outside itself, and links from it to nodes left behind only get
     longer."""
-    return nx.ancestors(G, v)
+    return ancestors(G, v)
 
 
 def _column_heights(
-    G: nx.DiGraph[Node], ranks: dict[Node, int], state: LayoutState
+    G: Tree[Node], ranks: dict[Node, int], state: LayoutState
 ) -> dict[int, float]:
     """Estimated drawn height per rank: real nodes plus the dummy nodes of
     the long edges passing through, each separated by the vertical margin.
@@ -52,9 +51,9 @@ def _column_heights(
         heights[r] += v.height
         counts[r] += 1
     crossings: defaultdict[int, set[Socket]] = defaultdict(set)
-    for u, w, from_socket in G.edges(data=FROM_SOCKET):
-        for r in range(ranks[u] + 1, ranks[w]):
-            crossings[r].add(from_socket)
+    for link in G.all_links():
+        for r in range(ranks[link.fromnode] + 1, ranks[link.tonode]):
+            crossings[r].add(link.fromsock)
     dummy_gap = margin * state.settings.reroute_margin_y_fac
     for r, sources in crossings.items():
         # Dummy chains pack at the reduced reroute gap (see y_coords).
@@ -86,7 +85,7 @@ def _overshoot(heights: dict[int, float], target: float) -> float:
 
 
 def _fit_to_height(
-    G: nx.DiGraph[Node],
+    G: Tree[Node],
     ranks: dict[Node, int],
     target: float,
     state: LayoutState,
@@ -123,7 +122,7 @@ _TARGET_STEP = 0.9
 
 
 def balance_column_heights(
-    G: nx.DiGraph[Node],
+    G: Tree[Node],
     clusters: Iterable[Cluster],
     state: LayoutState,
 ) -> None:

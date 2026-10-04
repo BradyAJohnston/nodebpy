@@ -8,24 +8,31 @@ from functools import cache
 from math import sqrt
 from typing import TYPE_CHECKING
 
-import networkx as nx
-
 from ..utils import group_by
 from .graph import Cluster, Kind, MultiEdge, Node, opposite
+from .tree import (
+    DiGraph,
+    Tree,
+    strongly_connected_components,
+    topological_generations,
+    weakly_connected_components,
+)
 
 if TYPE_CHECKING:
     from .sugiyama import ClusterGraph
 
 
 # https://api.semanticscholar.org/CorpusID:14932050
-def get_nesting_graph(CG: ClusterGraph) -> nx.MultiDiGraph[Node]:
+def get_nesting_graph(CG: ClusterGraph) -> Tree[Node]:
     H = CG.G.copy()
-    for u, v in CG.T.edges:
+    for u, v in CG.T.edges():
         if isinstance(u, Cluster):
             if not isinstance(v, Cluster):
-                H.add_edges_from(((u.left, v), (v, u.right)))
+                H.add_link(u.left, v)
+                H.add_link(v, u.right)
             else:
-                H.add_edges_from(((u.left, v.left), (v.right, u.right)))
+                H.add_link(u.left, v.left)
+                H.add_link(v.right, u.right)
 
     if CG.state.settings.sequential_frames:
         add_frame_sequence_edges(CG, H)
@@ -44,7 +51,7 @@ def _top_level_unit(v: Node, root: Cluster) -> Node | Cluster:
     return unit
 
 
-def add_frame_sequence_edges(CG: ClusterGraph, H: nx.MultiDiGraph[Node]) -> None:
+def add_frame_sequence_edges(CG: ClusterGraph, H: Tree[Node]) -> None:
     """Rank frames as stages of the flow (nodebpy divergence).
 
     With plain nesting constraints a frame only has to enclose its own
@@ -61,18 +68,18 @@ def add_frame_sequence_edges(CG: ClusterGraph, H: nx.MultiDiGraph[Node]) -> None
     graph are left to the plain nesting constraints.
     """
     G = CG.G
-    root = next(c for c in CG.S if not CG.T.pred[c])
+    root = next(c for c in CG.S if not CG.T.predecessors(c))
     unit_of = {v: _top_level_unit(v, root) for v in G}
 
-    Q: nx.DiGraph[Node | Cluster] = nx.DiGraph()
-    Q.add_nodes_from(set(unit_of.values()))
-    for u, v in G.edges():
-        a, b = unit_of[u], unit_of[v]
+    Q: DiGraph[Node | Cluster] = DiGraph()
+    Q.add_nodes(set(unit_of.values()))
+    for link in G.all_links():
+        a, b = unit_of[link.fromnode], unit_of[link.tonode]
         if a is not b:
             Q.add_edge(a, b)
 
     scc_of = {
-        n: i for i, comp in enumerate(nx.strongly_connected_components(Q)) for n in comp
+        n: i for i, comp in enumerate(strongly_connected_components(Q)) for n in comp
     }
     for a, b in Q.edges():
         if scc_of[a] == scc_of[b]:
@@ -81,13 +88,13 @@ def add_frame_sequence_edges(CG: ClusterGraph, H: nx.MultiDiGraph[Node]) -> None
         b_is_frame = isinstance(b, Cluster)
         if not a_is_frame and not b_is_frame:
             continue
-        if not a_is_frame and not G.pred[a]:
+        if not a_is_frame and not G.predecessors(a):
             continue
-        if not b_is_frame and not G.succ[b]:
+        if not b_is_frame and not G.successors(b):
             continue
         tail = a.right if isinstance(a, Cluster) else a
         head = b.left if isinstance(b, Cluster) else b
-        H.add_edge(tail, head)
+        H.add_link(tail, head)
         CG.state.frame_sequence.append(
             (
                 frozenset(v for v in G if unit_of[v] is a),
@@ -97,13 +104,17 @@ def add_frame_sequence_edges(CG: ClusterGraph, H: nx.MultiDiGraph[Node]) -> None
 
 
 @cache
-def get_adj_edges_H(H: nx.MultiDiGraph[Node], v: Node) -> tuple[MultiEdge, ...]:
-    return (*H.in_edges(v, keys=True), *H.out_edges(v, keys=True))
+def get_adj_edges_H(H: Tree[Node], v: Node) -> tuple[MultiEdge, ...]:
+    return tuple(
+        link.ident for links in (H.in_links(v), H.out_links(v)) for link in links
+    )
 
 
 @cache
-def get_adj_edges_T(T: nx.MultiDiGraph[Node], v: Node) -> tuple[MultiEdge, ...]:
-    return (*T.in_edges(v, keys=True), *T.out_edges(v, keys=True))
+def get_adj_edges_T(T: Tree[Node], v: Node) -> tuple[MultiEdge, ...]:
+    return tuple(
+        link.ident for links in (T.in_links(v), T.out_links(v)) for link in links
+    )
 
 
 def get_slack(e: MultiEdge) -> int:
@@ -113,8 +124,8 @@ def get_slack(e: MultiEdge) -> int:
 
 
 def tight_tree(
-    H: nx.MultiDiGraph[Node],
-    T: nx.MultiDiGraph[Node],
+    H: Tree[Node],
+    T: Tree[Node],
     v: Node,
     visited: set[MultiEdge] | None = None,
 ) -> int:
@@ -129,18 +140,18 @@ def tight_tree(
 
         visited.add(e)
 
-        u, w, _ = e
+        u, w, k = e
         other = u if v != u else w
-        if T.has_edge(*e):
+        if T.has_link(u, w, k):
             tight_tree(H, T, other, visited)
         elif other not in T and get_slack(e) == 0:
-            T.add_edge(*e)
+            T.add_link(u, w, key=k)
             tight_tree(H, T, other, visited)
 
     return len(T)
 
 
-def set_post_order_numbers(v: Node, T: nx.MultiDiGraph[Node]) -> None:
+def set_post_order_numbers(v: Node, T: Tree[Node]) -> None:
     visited = set()
     num = 0
 
@@ -162,7 +173,7 @@ def set_post_order_numbers(v: Node, T: nx.MultiDiGraph[Node]) -> None:
     recurse(v)
 
 
-def compute_cut_values(H: nx.MultiDiGraph[Node], T: nx.MultiDiGraph[Node]) -> None:
+def compute_cut_values(H: Tree[Node], T: Tree[Node]) -> None:
     unknown_cut_values = {}
     leaves = []
     for v in H:
@@ -174,41 +185,43 @@ def compute_cut_values(H: nx.MultiDiGraph[Node], T: nx.MultiDiGraph[Node]) -> No
     for v in leaves:
         while len(unknown_cut_values[v]) == 1:
             to_determine = unknown_cut_values[v][0]
-            d = T.edges[to_determine]
-            d["cut_value"] = H.edges[to_determine]["weight"]
+            d = T.link(*to_determine)
+            d.cut_value = H.link(*to_determine).weight
             u, w, _ = to_determine
             for e in get_adj_edges_H(H, v):
                 if e == to_determine:
                     continue
 
-                weight = H.edges[e]["weight"]
-                if T.has_edge(*e):
+                weight = H.link(*e).weight
+                if T.has_link(*e):
                     if u == e[0] or w == e[1]:
-                        d["cut_value"] -= T.edges[e]["cut_value"] - weight
+                        d.cut_value -= T.link(*e).cut_value - weight
                     else:
-                        d["cut_value"] += T.edges[e]["cut_value"] - weight
+                        d.cut_value += T.link(*e).cut_value - weight
                 else:
                     if (v == u and e[0] != v) or (v != u and e[0] == v):
                         weight = -weight
-                    d["cut_value"] += weight
+                    d.cut_value += weight
 
             unknown_cut_values[u].remove(to_determine)
             unknown_cut_values[w].remove(to_determine)
             v = w if u == v else u
 
 
-def feasible_tree(H: nx.MultiDiGraph[Node]) -> nx.MultiDiGraph[Node]:
-    generations = nx.topological_generations(H.reverse(copy=False))
+def feasible_tree(H: Tree[Node]) -> Tree[Node]:
+    generations = topological_generations(H.reversed())
     for i, col in enumerate(reversed(tuple(generations))):
         for v in col:
             v.rank = i
 
-    T = nx.MultiDiGraph()
+    T: Tree[Node] = Tree()
     v_root = next(iter(H))
 
     while tight_tree(H, T, v_root) < len(H):
         incident_edges = [
-            (u, v, k) for u, v, k in H.edges(keys=True) if (u in T) ^ (v in T)
+            link.ident
+            for link in H.all_links()
+            if (link.fromnode in T) ^ (link.tonode in T)
         ]
         e = min(incident_edges, key=get_slack)
         slack = -get_slack(e) if e[1] in T else get_slack(e)
@@ -221,11 +234,8 @@ def feasible_tree(H: nx.MultiDiGraph[Node]) -> nx.MultiDiGraph[Node]:
     return T
 
 
-def leave_edge(T: nx.MultiDiGraph[Node]) -> MultiEdge | None:
-    return next(
-        ((u, v, k) for u, v, k, c in T.edges.data("cut_value", keys=True) if c < 0),
-        None,
-    )
+def leave_edge(T: Tree[Node]) -> MultiEdge | None:
+    return next((link.ident for link in T.all_links() if link.cut_value < 0), None)
 
 
 def is_in_head(v: Node, e: MultiEdge) -> bool:
@@ -242,21 +252,23 @@ def is_in_head(v: Node, e: MultiEdge) -> bool:
     return u.po_num < w.po_num
 
 
-def enter_edge(H: nx.MultiDiGraph[Node], e: MultiEdge) -> MultiEdge:
+def enter_edge(H: Tree[Node], e: MultiEdge) -> MultiEdge:
     edges = [
-        f for f in H.edges(keys=True) if is_in_head(f[0], e) and not is_in_head(f[1], e)
+        link.ident
+        for link in H.all_links()
+        if is_in_head(link.fromnode, e) and not is_in_head(link.tonode, e)
     ]
     return min(edges, key=get_slack)
 
 
 def exchange(
-    H: nx.MultiDiGraph[Node],
-    T: nx.MultiDiGraph[Node],
+    H: Tree[Node],
+    T: Tree[Node],
     leave: MultiEdge,
     enter: MultiEdge,
 ) -> None:
-    T.remove_edge(*leave)
-    T.add_edge(*enter)
+    T.remove_link_between(*leave)
+    T.add_link(enter[0], enter[1], key=enter[2])
 
     slack = get_slack(enter)
     if not is_in_head(enter[1], leave):
@@ -272,8 +284,8 @@ def exchange(
     compute_cut_values(H, T)
 
 
-def normalize_and_balance(CG: ClusterGraph, H: nx.DiGraph[Node]) -> None:
-    for cc in nx.weakly_connected_components(CG.G):
+def normalize_and_balance(CG: ClusterGraph, H: Tree[Node]) -> None:
+    for cc in weakly_connected_components(CG.G):
         c = next(iter(cc)).cluster
         assert c
 
@@ -283,7 +295,7 @@ def normalize_and_balance(CG: ClusterGraph, H: nx.DiGraph[Node]) -> None:
         ranked = group_by(cc, key=lambda v: v.rank, sort=True)
 
         if c.node:
-            start = min(v.rank for v in CG.T[c] if v.type != Kind.CLUSTER)
+            start = min(v.rank for v in CG.T.successors(c) if v.type != Kind.CLUSTER)
         else:
             start = c.left.rank - (max(ranked.values()) - min(ranked.values()))
 
@@ -298,11 +310,13 @@ def normalize_and_balance(CG: ClusterGraph, H: nx.DiGraph[Node]) -> None:
             v.rank = i
 
     for v in H:
-        if len(H.in_edges(v)) != len(H.out_edges(v)):
+        if H.in_degree(v) != H.out_degree(v):
             continue
 
-        start = v.rank - min([v.rank - u.rank for u in H.pred[v]], default=-1) + 1
-        stop = v.rank + min([w.rank - v.rank for w in H[v]], default=-1)
+        start = (
+            v.rank - min([v.rank - u.rank for u in H.predecessors(v)], default=-1) + 1
+        )
+        stop = v.rank + min([w.rank - v.rank for w in H.successors(v)], default=-1)
         new_rank = max(range(start, stop), key=lambda i: col_sizes[i], default=v.rank)
 
         if col_sizes[new_rank] < col_sizes[v.rank]:
@@ -315,13 +329,13 @@ _BASE_ITER_LIMIT = 50
 
 
 def compute_ranks(CG: ClusterGraph) -> None:
-    for i, layer in enumerate(nx.topological_generations(CG.T)):
+    for i, layer in enumerate(topological_generations(CG.T)):
         for c in CG.S.intersection(layer):
             c.nesting_level = i
 
     H = get_nesting_graph(CG)
-    for *_, d in H.edges(data=True):
-        d["weight"] = 1
+    for link in H.all_links():
+        link.weight = 1
 
     T = feasible_tree(H)
     i = 0
@@ -330,6 +344,11 @@ def compute_ranks(CG: ClusterGraph) -> None:
         exchange(H, T, e, enter_edge(H, e))
         i += 1
 
-    root = next(c for c in CG.S if not CG.T.pred[c])
-    H.remove_nodes_from((root.left, root.right))
+    root = next(c for c in CG.S if not CG.T.predecessors(c))
+    H.remove_nodes((root.left, root.right))
     normalize_and_balance(CG, H)
+
+    # The adjacency caches are keyed by the graphs of this run; drop them so
+    # the graphs (and the Blender nodes they reference) can be freed.
+    get_adj_edges_H.cache_clear()
+    get_adj_edges_T.cache_clear()

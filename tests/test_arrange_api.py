@@ -446,8 +446,9 @@ class TestSocketOffsets:
             assert -height <= calculate_socket_offset_y(socket) < 0
 
 
-def test_fallback_warns_and_arranges(monkeypatch):
-    """A non-networkx ImportError propagates instead of falling back."""
+def test_import_error_propagates(monkeypatch):
+    """An ImportError inside the Sugiyama layout propagates: there is no
+    silent fallback to the simple arrangement."""
     import nodebpy.builder.layout as arrange_module
 
     def boom(tree, options):

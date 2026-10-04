@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 import random
-from collections import defaultdict
+from collections import defaultdict, deque
 from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from dataclasses import replace
 from functools import cache
@@ -19,49 +19,61 @@ from operator import itemgetter
 from statistics import fmean
 from typing import cast
 
-import networkx as nx
-
 from ..config import LayoutState
-from .graph import FROM_SOCKET, TO_SOCKET, Cluster, Kind, Node, Socket, socket_graph
+from .graph import Cluster, Kind, Node, Socket, socket_graph
+from .tree import (
+    DiGraph,
+    Tree,
+    ancestors,
+    bfs_edges,
+    descendants,
+    edge_dfs,
+    topological_sort,
+)
 
 # -------------------------------------------------------------------
 
-type _MixedGraph = nx.DiGraph[Node | Cluster]
+type _MixedGraph = DiGraph[Node | Cluster]
 
 
 def get_col_nesting_trees(
     columns: Sequence[Collection[Node]],
     T: _MixedGraph,
 ) -> list[_MixedGraph]:
+    """For each column, the part of the cluster tree above its nodes."""
     trees = []
     for col in columns:
-        LT = nx.DiGraph()
-        edges = nx.edge_bfs(T, col, orientation="reverse")
-        LT.add_edges_from([e[:2] for e in edges])
+        LT: _MixedGraph = DiGraph()
+        nodes = [v for v in col if v in T]
+        visited: set[Node | Cluster] = set(nodes)
+        queue: deque[Node | Cluster] = deque(nodes)
+        while queue:
+            child = queue.popleft()
+            for parent in T.predecessors(child):
+                if parent not in visited:
+                    visited.add(parent)
+                    queue.append(parent)
+
+                LT.add_edge(parent, child)
+
         trees.append(LT)
 
     return trees
 
 
-def expand_multi_inputs(G: nx.MultiDiGraph[Node], state: LayoutState) -> None:
+def expand_multi_inputs(G: Tree[Node], state: LayoutState) -> None:
     H = socket_graph(G)
     reroutes = {v for v in H if v.owner.is_reroute}
     for v in {s.owner for s in state.multi_input_sort_ids}:
         if v not in G:
             continue
-        inputs = sorted(
-            {e[2] for e in G.in_edges(v, data=TO_SOCKET)}, key=lambda s: s.idx
-        )
+        inputs = sorted({link.tosock for link in G.in_links(v)}, key=lambda s: s.idx)
         i = inputs[0].idx
         for socket in inputs:
             if socket not in state.multi_input_sort_ids:
                 if i != socket.idx:
-                    d = next(
-                        d
-                        for *_, d in G.in_edges(v, data=True)
-                        if d[TO_SOCKET] == socket
-                    )
-                    d[TO_SOCKET] = replace(socket, idx=i)
+                    link = next(link for link in G.in_links(v) if link.tosock == socket)
+                    link.tosock = replace(socket, idx=i)
                 i += 1
                 continue
 
@@ -73,56 +85,73 @@ def expand_multi_inputs(G: nx.MultiDiGraph[Node], state: LayoutState) -> None:
             ):
                 from_socket = next(
                     s
-                    for s, t in nx.edge_dfs(SH, base_from_socket)
+                    for s, t in edge_dfs(SH, base_from_socket)
                     if t == socket and s not in seen
                 )
-                d = next(
-                    d
-                    for d in G[from_socket.owner][v].values()
-                    if d[TO_SOCKET] == socket and d[FROM_SOCKET] == from_socket
+                link = next(
+                    link
+                    for link in G.links_between(from_socket.owner, v)
+                    if link.tosock == socket and link.fromsock == from_socket
                 )
-                d[TO_SOCKET] = replace(socket, idx=i)
+                link.tosock = replace(socket, idx=i)
                 seen.add(from_socket)
                 i += 1
 
 
 @cache
 def reflexive_transitive_closure(LT: _MixedGraph) -> _MixedGraph:
-    return cast(_MixedGraph, nx.transitive_closure(LT, reflexive=True))
+    TC = LT.copy()
+    for v in LT:
+        for u in descendants(LT, v) | {v}:
+            if u not in TC.successors(v):
+                TC.add_edge(v, u)
+
+    return TC
 
 
 @cache
 def topologically_sorted_clusters(LT: _MixedGraph) -> list[Cluster]:
-    return [h for h in nx.topological_sort(LT) if isinstance(h, Cluster)]
+    return [h for h in topological_sort(LT) if isinstance(h, Cluster)]
 
 
 def crossing_reduction_graph(
     h: Cluster,
     LT: _MixedGraph,
-    G: nx.MultiDiGraph[Node],
-) -> nx.MultiDiGraph[Node | Cluster]:
-    G_h = nx.MultiDiGraph()
-    G_h.add_nodes_from(LT[h])
+    G: Tree[Node],
+) -> Tree[Node | Cluster]:
+    """The links from the fixed column into the direct children of *h*,
+    with links into a child cluster's members redirected to that cluster.
+    Every link runs from its fixed-column socket to its free-column one,
+    whichever way *G* is oriented."""
+    G_h: Tree[Node | Cluster] = Tree()
+    G_h.add_nodes(LT.successors(h))
     TC = reflexive_transitive_closure(LT)
-    members = [v for v in TC[h] if isinstance(v, Node)]
-    for s, t, k, d in G.in_edges(members, data=True, keys=True):
-        c = next(c for c in TC.pred[t] if c in LT[h])
+    members = [v for v in TC.successors(h) if isinstance(v, Node)]
+    for s, t, link in G.entering(members):
+        c = next(c for c in TC.predecessors(t) if c in LT.successors(h))
 
-        input_k = TO_SOCKET
-        output_k = FROM_SOCKET
-        if d[output_k].owner != s:
-            input_k, output_k = output_k, input_k
+        input_socket: Socket = link.tosock
+        output_socket: Socket = link.fromsock
+        is_reversed = output_socket.owner != s
+        if is_reversed:
+            input_socket, output_socket = output_socket, input_socket
 
-        if G_h.has_edge(s, c, k) and G_h.edges[s, c, k][output_k] == d[output_k]:
-            G_h.edges[s, c, k]["weight"] += 1
-            continue
+        if G_h.has_link(s, c, link.key):
+            merged = G_h.link(s, c, link.key)
+            # NOTE: kept from upstream, which reads the merged link through
+            # the orientation of `G`: on a reversed `G` this compares the
+            # free-column socket, so parallel links only merge going forwards.
+            known = merged.tosock if is_reversed else merged.fromsock
+            if known == output_socket:
+                merged.weight += 1
+                continue
 
         to_socket = (
-            d[input_k]
+            input_socket
             if c.type != Kind.CLUSTER
-            else replace(d[input_k], owner=c, idx=0)
+            else replace(input_socket, owner=c, idx=0)
         )
-        G_h.add_edge(s, c, weight=1, from_socket=d[output_k], to_socket=to_socket)
+        G_h.add_link(s, c, output_socket, to_socket, weight=1)
 
     return G_h
 
@@ -131,7 +160,7 @@ _BALANCING_FAC = 1
 
 
 class _CrossingReductionGraph:
-    graph: nx.MultiDiGraph[Node | Cluster]
+    graph: Tree[Node | Cluster]
 
     fixed_LT: _MixedGraph
     free_LT: _MixedGraph
@@ -157,51 +186,52 @@ class _CrossingReductionGraph:
     def _insert_border_edges(self, is_forwards: bool) -> None:
         self.border_pairs = {}
         free_clusters = {v for v in self.reduced_free_col if v.type == Kind.CLUSTER}
-        for c in free_clusters & self.fixed_LT.nodes:
+        for c in {c for c in free_clusters if c in self.fixed_LT}:
             upper_v = Node(type=Kind.VERTICAL_BORDER)
             lower_v = Node(type=Kind.VERTICAL_BORDER)
             self.expanded_fixed_col.extend((upper_v, lower_v))
 
-            fac = 1 + len(nx.descendants(self.free_LT, c) & self.fixed_LT.nodes)
+            fac = 1 + sum(v in self.fixed_LT for v in descendants(self.free_LT, c))
             for border_v in upper_v, lower_v:
-                self.graph.add_edge(
+                self.graph.add_link(
                     border_v,
                     c,
-                    weight=(0.5 * _BALANCING_FAC) * fac,
-                    from_socket=Socket(border_v, 0, is_forwards),
+                    Socket(border_v, 0, is_forwards),
                     # border sockets use the cluster as an opaque owner
-                    to_socket=Socket(cast("Node", c), 0, not is_forwards),
+                    Socket(cast("Node", c), 0, not is_forwards),
+                    weight=(0.5 * _BALANCING_FAC) * fac,
                 )
 
             bordered_nodes = [
-                v for v in nx.descendants(self.fixed_LT, c) if v.type != Kind.CLUSTER
+                v for v in descendants(self.fixed_LT, c) if v.type != Kind.CLUSTER
             ]
             self.border_pairs[upper_v, lower_v] = bordered_nodes
 
     def _add_bipartite_edges(self) -> None:
-        edges = [(d[FROM_SOCKET], d[TO_SOCKET], d) for *_, d in self.graph.edges.data()]
+        # Links between the same two sockets count once, with the weight of
+        # the last one.
+        B: DiGraph[Socket] = DiGraph()
+        for link in self.graph.all_links():
+            B.add_edge(link.fromsock, link.tosock, link.weight)
 
-        if not edges:
+        if not B:
             self.N = []
             self.S = []
             self.bipartite_edges = []
             return
 
-        B = nx.DiGraph()
-        B.add_edges_from(edges)
-
-        N, S = map(set, zip(*B.edges))
+        N, S = map(set, zip(*B.edges()))
         if len(S) > len(N):
             N, S = S, N
-            B = B.reverse(copy=False)
+            B = B.reversed()
 
         self.N = sorted(N, key=lambda d: d.idx)
         self.S = sorted(S, key=lambda d: d.idx)
-        self.bipartite_edges = list(B.edges.data("weight"))
+        self.bipartite_edges = [(u, v, B.weight(u, v)) for u, v in B.edges()]
 
     def __init__(
         self,
-        G: nx.MultiDiGraph[Node],
+        G: Tree[Node],
         h: Cluster,
         fixed_LT: _MixedGraph,
         free_LT: _MixedGraph,
@@ -217,27 +247,27 @@ class _CrossingReductionGraph:
         self.fixed_col = fixed_col
         self.free_col = next(v.col for v in free_LT if v.type != Kind.CLUSTER)
 
-        G_h.add_nodes_from(fixed_col)
+        G_h.add_nodes(fixed_col)
 
         self.expanded_fixed_col = fixed_col.copy()
 
         def pos(v):
             return v.col.index(v) if v.type != Kind.CLUSTER else inf
 
-        self.reduced_free_col = sorted(free_LT[h], key=pos)
+        self.reduced_free_col = sorted(free_LT.successors(h), key=pos)
 
         self._insert_border_edges(is_forwards)
 
         self.fixed_sockets = {}
         for u in self.expanded_fixed_col:
-            if sockets := {e[2] for e in G_h.out_edges(u, data=FROM_SOCKET)}:
+            if sockets := {link.fromsock for link in G_h.out_links(u)}:
                 self.fixed_sockets[u] = sorted(
                     sockets, key=lambda d: d.idx, reverse=is_forwards
                 )
 
         self.free_sockets = {}
         for v in self.reduced_free_col:
-            self.free_sockets[v] = [e[2] for e in G_h.in_edges(v, data=FROM_SOCKET)]
+            self.free_sockets[v] = [link.fromsock for link in G_h.in_links(v)]
 
         self.constrained_clusters = [
             cast(Cluster, v) for v in self.reduced_free_col if v in fixed_LT
@@ -248,7 +278,7 @@ class _CrossingReductionGraph:
 
 def crossing_reduction_items(
     trees: Iterable[_MixedGraph],
-    G: nx.MultiDiGraph[Node],
+    G: Tree[Node],
     is_forwards: bool,
 ) -> list[list[_CrossingReductionGraph]]:
     items = []
@@ -336,7 +366,7 @@ def fill_in_unknown_barycenters(
 def find_violated_constraint(
     GC: _MixedGraph,
 ) -> tuple[Node | Cluster, Node | Cluster] | None:
-    active = [v for v in GC if GC[v] and not GC.pred[v]]
+    active = [v for v in GC if GC.successors(v) and not GC.predecessors(v)]
     incoming_constraints = defaultdict(list)
     while active:
         v = active.pop(0)
@@ -345,23 +375,36 @@ def find_violated_constraint(
             if c[0].cr.barycenter >= v.cr.barycenter:
                 return c
 
-        for t in GC[v]:
+        for t in GC.successors(v):
             incoming_constraints[t].insert(0, (v, t))
-            if len(incoming_constraints[t]) == GC.in_degree[t]:
+            if len(incoming_constraints[t]) == GC.in_degree(t):
                 active.append(t)
 
     return None
 
 
-def handle_constraints(H: _CrossingReductionGraph) -> None:
-    # Optimization: don't pass constraints to `nx.DiGraph` constructor
-    GC = nx.DiGraph()
-    GC.add_edges_from(pairwise(H.constrained_clusters))
+def merge_constrained(
+    GC: _MixedGraph, s: Node | Cluster, t: Node | Cluster, merged: Node
+) -> None:
+    """Replace *s* and *t* by *merged*, which takes over their constraints
+    (the one between them becomes a self-loop)."""
+    for old in [v for v in GC if v in (s, t)]:
+        GC.add_node(merged)
+        edges: list[tuple[Node | Cluster, Node | Cluster]] = [
+            (merged, merged if w == old else w) for w in GC.successors(old)
+        ]
+        edges += [(merged if u == old else u, merged) for u in GC.predecessors(old)]
+        GC.remove_node(old)
+        GC.add_edges(edges)
 
-    unconstrained = set(H.reduced_free_col) - GC.nodes
+
+def handle_constraints(H: _CrossingReductionGraph) -> None:
+    GC: _MixedGraph = DiGraph(pairwise(H.constrained_clusters))
+
+    unconstrained = {v for v in set(H.reduced_free_col) if v not in GC}
     L = {v: [v] for v in H.reduced_free_col}
 
-    deg = {v: H.graph.degree[v] for v in GC}
+    deg = {v: H.graph.degree(v) for v in GC}
     while c := find_violated_constraint(GC):
         v_c = Node(type=Kind.DUMMY)
         s, t = c
@@ -377,14 +420,14 @@ def handle_constraints(H: _CrossingReductionGraph) -> None:
 
         L[v_c] = L[s] + L[t]
 
-        nx.relabel_nodes(GC, {s: v_c, t: v_c}, copy=False)
-        if (v_c, v_c) in GC.edges:
+        merge_constrained(GC, s, t, v_c)
+        if GC.has_edge(v_c, v_c):
             GC.remove_edge(v_c, v_c)
 
         if v_c not in GC:
             unconstrained.add(v_c)
 
-    groups = sorted(unconstrained | GC.nodes, key=get_barycenter)
+    groups = sorted(set(chain(GC, unconstrained)), key=get_barycenter)
     for i, v in enumerate(chain(*[L[v] for v in groups])):
         v.cr.barycenter = i
 
@@ -439,7 +482,7 @@ def get_cross_count(H: _CrossingReductionGraph) -> int:
 
 def get_new_col_order(v: Node | Cluster, LT: _MixedGraph) -> Iterator[Node | Cluster]:
     if v.type == Kind.CLUSTER:
-        for w in sorted(LT[v], key=get_barycenter):
+        for w in sorted(LT.successors(v), key=get_barycenter):
             yield from get_new_col_order(w, LT)
     else:
         yield v
@@ -447,7 +490,7 @@ def get_new_col_order(v: Node | Cluster, LT: _MixedGraph) -> Iterator[Node | Clu
 
 @cache
 def non_cluster_descendant(T: _MixedGraph, c: Cluster) -> Node:
-    return next(v for _, v in nx.bfs_edges(T, c) if v.type != Kind.CLUSTER)
+    return next(v for _, v in bfs_edges(T, c) if v.type != Kind.CLUSTER)
 
 
 def sort_reduced_free_columns(
@@ -496,7 +539,7 @@ def minimized_cross_count(
                 clusters = {
                     c: j
                     for j, v in enumerate(crossing_reduction_graphs[0].fixed_col)
-                    for c in nx.ancestors(T, v)
+                    for c in ancestors(T, v)
                 }
                 key = cast(Callable[[Cluster], int], clusters.get)
             else:
@@ -529,10 +572,8 @@ def minimized_cross_count(
     return old_cross_count
 
 
-def minimize_crossings(
-    G: nx.MultiDiGraph[Node], T: _MixedGraph, state: LayoutState
-) -> None:
-    columns = G.graph["columns"]
+def minimize_crossings(G: Tree[Node], T: _MixedGraph, state: LayoutState) -> None:
+    columns = G.columns
     trees = get_col_nesting_trees(columns, T)
     G_ = G.copy()
 
@@ -540,7 +581,7 @@ def minimize_crossings(
 
     forward_items = crossing_reduction_items(trees, G_, True)
 
-    G__ = G_.reverse(copy=False)
+    G__ = G_.reversed()
     backward_items = crossing_reduction_items(reversed(trees), G__, False)
 
     # -------------------------------------------------------------------

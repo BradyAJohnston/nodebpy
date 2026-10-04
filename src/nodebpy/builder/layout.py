@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from collections import Counter, deque
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -1002,9 +1001,6 @@ def arrange(
     ``method`` selects the algorithm: ``"sugiyama"`` (or a
     :class:`SugiyamaOptions` instance for tuned settings), ``"simple"`` (or a
     :class:`SimpleOptions` instance), or None to leave the tree untouched.
-
-    The Sugiyama layout requires the optional ``networkx`` dependency; when
-    it is missing, the simple arrangement is used instead (with a warning).
     """
     if method is None:
         return
@@ -1019,17 +1015,7 @@ def arrange(
             if isinstance(method, SugiyamaOptions)
             else _DEFAULT_SUGIYAMA.get() or SugiyamaOptions()
         )
-        try:
-            _arrange_sugiyama(tree, options)
-        except ImportError as e:
-            if "networkx" not in str(e):
-                raise
-            warnings.warn(
-                "networkx is not installed, falling back to simple arrangement. "
-                "Install networkx for the Sugiyama layout: pip install nodebpy[networkx]",
-                stacklevel=2,
-            )
-            arrange_tree(tree)
+        _arrange_sugiyama(tree, options)
 
     # Quantize to the precision node positions are dumped with, so arranged
     # trees round-trip losslessly (and sub-0.01 UI units carry no meaning).

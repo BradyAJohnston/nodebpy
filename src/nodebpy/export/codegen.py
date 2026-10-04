@@ -876,35 +876,27 @@ def _topo_sort(node_tree, keep_reroutes: bool = False) -> list:
     node name — the nodes collection follows creation order, which a rebuild
     shuffles, and a name tie-break keeps emission (and thus re-dumps of a
     rebuilt tree) deterministic."""
-    try:
-        import networkx as nx
-
-        G: nx.DiGraph = nx.DiGraph()
-        for node in node_tree.nodes:
-            G.add_node(node)
-        for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
-            G.add_edge(from_node, to_node)
-        return list(nx.lexicographical_topological_sort(G, key=lambda n: n.name))
-    except ImportError:  # pragma: no cover - networkx ships as a dependency
-        nodes = list(node_tree.nodes)
-        node_by_name = {n.name: n for n in nodes}
-        in_deg: dict[str, int] = {n.name: 0 for n in nodes}
-        adj: dict[str, list[str]] = {n.name: [] for n in nodes}
-        for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
-            fn, tn = from_node.name, to_node.name
-            adj[fn].append(tn)
-            in_deg[tn] += 1
-        heap = [n.name for n in nodes if in_deg[n.name] == 0]
-        heapq.heapify(heap)
-        order = []
-        while heap:
-            name = heapq.heappop(heap)
-            order.append(node_by_name[name])
-            for m_name in adj[name]:
-                in_deg[m_name] -= 1
-                if in_deg[m_name] == 0:
-                    heapq.heappush(heap, m_name)
-        return order
+    nodes = list(node_tree.nodes)
+    node_by_name = {n.name: n for n in nodes}
+    in_deg: dict[str, int] = {n.name: 0 for n in nodes}
+    adj: dict[str, list[str]] = {n.name: [] for n in nodes}
+    for from_node, to_node in _ordering_edges(node_tree, keep_reroutes):
+        fn, tn = from_node.name, to_node.name
+        adj[fn].append(tn)
+        in_deg[tn] += 1
+    heap = [n.name for n in nodes if in_deg[n.name] == 0]
+    heapq.heapify(heap)
+    order = []
+    while heap:
+        name = heapq.heappop(heap)
+        order.append(node_by_name[name])
+        for m_name in adj[name]:
+            in_deg[m_name] -= 1
+            if in_deg[m_name] == 0:
+                heapq.heappush(heap, m_name)
+    if len(order) != len(nodes):
+        raise ValueError(f"Node tree {node_tree.name!r} contains a link cycle")
+    return order
 
 
 def _frame_chain(node) -> list:

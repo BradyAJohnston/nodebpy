@@ -8,10 +8,9 @@ from enum import Enum, auto
 from functools import cached_property
 from itertools import chain, count, pairwise, product
 from math import inf
-from typing import TYPE_CHECKING, Any, Literal, TypeGuard
+from typing import TYPE_CHECKING, Literal, TypeGuard, cast
 
 import bpy
-import networkx as nx
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeFrame, NodeSocket
 
@@ -25,6 +24,15 @@ from ..utils import (
     group_by,
 )
 from .structs import bNodeSocket
+from .tree import (
+    DiGraph,
+    Link,
+    Tree,
+    descendants,
+    simple_digraph,
+    topological_sort,
+    weakly_connected_components,
+)
 
 if TYPE_CHECKING:
     from ..config import LayoutState
@@ -32,7 +40,7 @@ if TYPE_CHECKING:
 # -------------------------------------------------------------------
 
 # Nodes and clusters hash by creation order rather than id(), so iterating a
-# set of them (here or inside networkx) doesn't depend on memory addresses and
+# set of them doesn't depend on memory addresses and
 # a layout is reproducible between runs. Reset per run by sugiyama_layout().
 _serials = count()
 
@@ -218,48 +226,66 @@ def get_nesting_relations(
 
 
 def lowest_common_cluster(
-    T: nx.DiGraph[Node | Cluster],
-    edges: Iterable[tuple[Node, Node, Any]],
+    T: DiGraph[Node | Cluster],
+    links: Iterable[Link[Node]],
 ) -> dict[Edge, Cluster]:
-    pairs = {(u, v) for u, v, _ in edges if u.cluster != v.cluster}
-    return dict(nx.tree_all_pairs_lowest_common_ancestor(T, pairs=iter(pairs)))
+    """The innermost cluster containing both ends of each link whose ends
+    are in different clusters, keyed by ``(fromnode, tonode)``."""
+    lca: dict[Edge, Cluster] = {}
+    for link in links:
+        u, v = link.fromnode, link.tonode
+        if u.cluster == v.cluster or (u, v) in lca:
+            continue
+
+        enclosing: set[Node | Cluster] = set()
+        c: Node | Cluster = u
+        while parents := T.predecessors(c):
+            c = next(iter(parents))
+            enclosing.add(c)
+
+        c = v
+        while c not in enclosing:
+            c = next(iter(T.predecessors(c)))
+
+        lca[u, v] = cast(Cluster, c)
+
+    return lca
 
 
-def add_dummy_edge(G: nx.DiGraph[Node], u: Node, v: Node) -> None:
-    G.add_edge(u, v, from_socket=Socket(u, 0, True), to_socket=Socket(v, 0, False))
+def add_dummy_edge(G: Tree[Node], u: Node, v: Node) -> None:
+    G.add_link(u, v, Socket(u, 0, True), Socket(v, 0, False))
 
 
 def add_dummy_nodes_to_edge(
-    G: nx.MultiDiGraph[Node],
-    edge: MultiEdge,
+    G: Tree[Node],
+    link: Link[Node],
     dummy_nodes: Sequence[Node],
     state: LayoutState,
 ) -> None:
     if not dummy_nodes:
         return
 
-    for pair in pairwise(dummy_nodes):
-        if pair not in G.edges:
-            add_dummy_edge(G, *pair)
+    for a, b in pairwise(dummy_nodes):
+        if not G.has_link(a, b, 0):
+            add_dummy_edge(G, a, b)
 
-    u, v, _ = edge
-    d = G.edges[edge]
+    u, v = link.fromnode, link.tonode
 
     w = dummy_nodes[0]
-    if w not in G[u]:
-        G.add_edge(u, w, from_socket=d[FROM_SOCKET], to_socket=Socket(w, 0, False))
+    if w not in G.successors(u):
+        G.add_link(u, w, link.fromsock, Socket(w, 0, False))
 
     z = dummy_nodes[-1]
-    G.add_edge(z, v, from_socket=Socket(z, 0, True), to_socket=d[TO_SOCKET])
+    G.add_link(z, v, Socket(z, 0, True), link.tosock)
 
-    G.remove_edge(*edge)
+    G.remove_link(link)
 
     if not is_real(u) or not is_real(v):
         return
 
     links = state.ntree.links
-    if d[TO_SOCKET].bpy.is_multi_input:
-        target_link = (d[FROM_SOCKET].bpy, d[TO_SOCKET].bpy)
+    if link.tosock.bpy.is_multi_input:
+        target_link = (link.fromsock.bpy, link.tosock.bpy)
         links.remove(
             next(
                 link
@@ -345,16 +371,16 @@ def improve_cluster_assignment(
 
 # https://api.semanticscholar.org/CorpusID:14932050
 class ClusterGraph:
-    G: nx.MultiDiGraph[Node]
-    T: nx.DiGraph[Node | Cluster]
+    G: Tree[Node]
+    T: DiGraph[Node | Cluster]
     S: set[Cluster]
     state: LayoutState
     __slots__ = tuple(__annotations__)
 
-    def __init__(self, G: nx.MultiDiGraph[Node], state: LayoutState) -> None:
+    def __init__(self, G: Tree[Node], state: LayoutState) -> None:
         self.G = G
         self.state = state
-        self.T = nx.DiGraph(chain(*map(get_nesting_relations, G)))
+        self.T = DiGraph(chain(*map(get_nesting_relations, G)))
         self.S = {v for v in self.T if isinstance(v, Cluster)}
 
     def remove_nodes_from(self, nodes: Iterable[Node]) -> None:
@@ -383,18 +409,21 @@ class ClusterGraph:
     def merge_edges(self) -> None:
         G = self.G
         T = self.T
-        groups = group_by(G.edges, key=lambda e: G.edges[e][FROM_SOCKET])
-        edges: tuple[MultiEdge, ...]
-        for edges, from_socket in groups.items():
-            long_edges = [(u, v, k) for u, v, k in edges if v.rank - u.rank > 1]
+        groups = group_by(G.all_links(), key=lambda link: link.fromsock)
+        links: tuple[Link[Node], ...]
+        for links, from_socket in groups.items():
+            long_edges = [
+                link for link in links if link.tonode.rank - link.fromnode.rank > 1
+            ]
 
             if len(long_edges) < 2:
                 continue
 
-            long_edges.sort(key=lambda e: e[1].rank)
+            long_edges.sort(key=lambda link: link.tonode.rank)
             lca = lowest_common_cluster(T, long_edges)
             dummy_nodes = []
-            for u, v, k in long_edges:
+            for link in long_edges:
+                u, v = link.fromnode, link.tonode
                 if dummy_nodes and dummy_nodes[-1].rank == v.rank - 1:
                     w = dummy_nodes[-1]
                 else:
@@ -403,14 +432,14 @@ class ClusterGraph:
                     w = Node(None, c, Kind.DUMMY, v.rank - 1)
                     dummy_nodes.append(w)
 
-                add_dummy_nodes_to_edge(G, (u, v, k), [w], self.state)
-                G.remove_edge(u, w)
+                add_dummy_nodes_to_edge(G, link, [w], self.state)
+                G.remove_link_between(u, w)
 
             for pair in pairwise(dummy_nodes):
                 add_dummy_edge(G, *pair)
 
             w = dummy_nodes[0]
-            G.add_edge(u, w, from_socket=from_socket, to_socket=Socket(w, 0, False))
+            G.add_link(u, w, from_socket, Socket(w, 0, False))
 
             improve_cluster_assignment((u, v), dummy_nodes, self.state)
             for w in dummy_nodes:
@@ -424,17 +453,18 @@ class ClusterGraph:
         # -------------------------------------------------------------------
 
         for c in self.S:
-            descendants = [v for v in nx.descendants(T, c) if v.type != Kind.CLUSTER]
-            c.left = min(descendants, key=lambda v: v.rank)
-            c.right = max(descendants, key=lambda v: v.rank)
+            members = [v for v in descendants(T, c) if v.type != Kind.CLUSTER]
+            c.left = min(members, key=lambda v: v.rank)
+            c.right = max(members, key=lambda v: v.rank)
 
         # -------------------------------------------------------------------
 
         long_edges = [
-            (u, v, k) for u, v, k in G.edges(keys=True) if v.rank - u.rank > 1
+            link for link in G.all_links() if link.tonode.rank - link.fromnode.rank > 1
         ]
         lca = lowest_common_cluster(T, long_edges)
-        for u, v, k in long_edges:
+        for link in long_edges:
+            u, v = link.fromnode, link.tonode
             assert u.cluster
             c = lca.get((u, v), u.cluster)
             dummy_nodes = []
@@ -443,9 +473,9 @@ class ClusterGraph:
                 dummy_nodes.append(w)
 
             improve_cluster_assignment((u, v), dummy_nodes, self.state)
-            add_dummy_nodes_to_edge(G, (u, v, k), dummy_nodes, self.state)
+            add_dummy_nodes_to_edge(G, link, dummy_nodes, self.state)
 
-        for w in G.nodes - T.nodes:
+        for w in {w for w in G if w not in T}:
             assert w.cluster
             T.add_edge(w.cluster, w)
 
@@ -456,7 +486,7 @@ class ClusterGraph:
                 continue
 
             ranks = sorted(
-                {v.rank for v in nx.descendants(T, c) if v.type != Kind.CLUSTER}
+                {v.rank for v in descendants(T, c) if v.type != Kind.CLUSTER}
             )
             for i, j in pairwise(ranks):
                 for k in range(i + 1, j):
@@ -468,16 +498,16 @@ class ClusterGraph:
     def add_vertical_border_nodes(self) -> None:
         T = self.T
         G = self.G
-        columns = G.graph["columns"]
+        columns = G.columns
         for c in self.S:
             if not c.node:
                 continue
 
-            descendants = [v for v in nx.descendants(T, c) if v.type != Kind.CLUSTER]
+            members = [v for v in descendants(T, c) if v.type != Kind.CLUSTER]
             lower_border_nodes = []
             upper_border_nodes = []
             for subcol in group_by(
-                descendants, key=lambda v: columns.index(v.col), sort=True
+                members, key=lambda v: columns.index(v.col), sort=True
             ):
                 col = subcol[0].col
                 indices = [col.index(v) for v in subcol]
@@ -495,7 +525,7 @@ class ClusterGraph:
                 T.add_edge(c, upper_v)
                 upper_border_nodes.append(upper_v)
 
-            G.add_nodes_from(lower_border_nodes + upper_border_nodes)
+            G.add_nodes(lower_border_nodes + upper_border_nodes)
             for p in *pairwise(lower_border_nodes), *pairwise(upper_border_nodes):
                 add_dummy_edge(G, *p)
 
@@ -563,16 +593,14 @@ class Socket:
         return self.owner.y + self._offset_y
 
 
-FROM_SOCKET = "from_socket"
-TO_SOCKET = "to_socket"
-
-
-def socket_graph(G: nx.MultiDiGraph[Node]) -> nx.DiGraph[Socket]:
-    H = nx.DiGraph()
-    H.add_edges_from([(d[FROM_SOCKET], d[TO_SOCKET]) for *_, d in G.edges.data()])
+def socket_graph(G: Tree[Node]) -> DiGraph[Socket]:
+    """Which socket feeds which: every link, plus each node's inputs to its
+    outputs."""
+    H: DiGraph[Socket] = DiGraph()
+    H.add_edges([(link.fromsock, link.tosock) for link in G.all_links()])
     for sockets in group_by(H, key=lambda s: s.owner):
         outputs = {s for s in sockets if s.is_output}
-        H.add_edges_from(product(set(sockets) - outputs, outputs))
+        H.add_edges(product(set(sockets) - outputs, outputs))
 
     return H
 
@@ -590,33 +618,33 @@ def get_reroute_paths(
 ) -> list[list[Node]]:
     G = CG.G
     reroutes = {v for v in G if v.is_reroute and (not function or function(v))}
-    H = nx.DiGraph(G.subgraph(reroutes))
+    H = simple_digraph(G.subgraph(reroutes))
 
     K = G if linear else H
     for v in H:
-        if K.out_degree[v] > 1:
-            H.remove_edges_from(tuple(H.out_edges(v)))
+        if K.out_degree(v) > 1:
+            H.remove_edges(tuple(H.out_edges(v)))
 
     if preserve_reroute_clusters:
         reroute_clusters = {
             c
             for c in CG.S
-            if all(v.is_reroute for v in CG.T[c] if v.type != Kind.CLUSTER)
+            if all(v.is_reroute for v in CG.T.successors(c) if v.type != Kind.CLUSTER)
         }
-        H.remove_edges_from(
+        H.remove_edges(
             [
                 (u, v)
-                for u, v in H.edges
+                for u, v in H.edges()
                 if u.cluster != v.cluster and {u.cluster, v.cluster} & reroute_clusters
             ]
         )
 
     if aligned:
-        H.remove_edges_from([(u, v) for u, v in H.edges if u.y != v.y])
+        H.remove_edges([(u, v) for u, v in H.edges() if u.y != v.y])
 
-    indicies = {v: i for i, v in enumerate(nx.topological_sort(G)) if v in reroutes}
+    indicies = {v: i for i, v in enumerate(topological_sort(G)) if v in reroutes}
     paths = [
-        sorted(c, key=lambda v: indicies[v]) for c in nx.weakly_connected_components(H)
+        sorted(c, key=lambda v: indicies[v]) for c in weakly_connected_components(H)
     ]
     paths.sort(key=lambda p: sum([indicies[v] for v in p]))
     return paths

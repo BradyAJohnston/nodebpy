@@ -1,69 +1,63 @@
-"""Regression tests for building node trees when networkx is unavailable.
+"""The Sugiyama layout must not need ``networkx``.
 
-When nodebpy is vendored into a Blender extension, the optional ``networkx``
-dependency is frequently absent. The Sugiyama layout should then fall back to
-the simple arrangement instead of crashing.
-
-The subtle failure mode this guards against is order-dependent: the *first*
-arrange attempt raises a clean ``ImportError`` (which is caught and falls back),
-but a *second* attempt used to surface a raw ``KeyError`` from the namespace
-package machinery, escaping the ``except ImportError`` guard. So we must build
-more than one tree in the same process to exercise the real bug.
+nodebpy is often vendored into a Blender extension, where ``networkx`` is
+not available. The layout used to depend on it (falling back to the simple
+arrangement with a warning when it was missing); it now runs on its own
+graph structs, so blocking the import must change nothing.
 """
 
 import sys
 import warnings
-
-import pytest
+from contextlib import contextmanager
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 
+_ARRANGE = "nodebpy.lib.nodearrange"
 
-@pytest.fixture
-def no_networkx():
-    """Simulate a vendored install where networkx cannot be imported.
 
-    Setting ``sys.modules['networkx'] = None`` makes ``import networkx`` raise
-    ``ImportError``. We also evict the cached ``nodebpy.lib.nodearrange``
-    modules so the import is genuinely re-attempted (rebuilding the namespace
-    package path), matching the user's fresh-process scenario.
-    """
+@contextmanager
+def _networkx_blocked():
+    """Make ``import networkx`` raise ``ImportError``, and evict the cached
+    arrange modules so they are imported afresh while it is blocked."""
     blocked = "networkx"
     saved = {
         k: v
         for k, v in sys.modules.items()
-        if k == blocked or k.startswith((blocked + ".", "nodebpy.lib.nodearrange"))
+        if k == blocked or k.startswith((blocked + ".", _ARRANGE))
     }
     for key in saved:
         del sys.modules[key]
-    sys.modules[blocked] = None  # force ImportError on `import networkx`
+    sys.modules[blocked] = None  # ty: ignore[invalid-assignment]
     try:
         yield
     finally:
         del sys.modules[blocked]
+        for key in [k for k in sys.modules if k.startswith(_ARRANGE)]:
+            del sys.modules[key]
         sys.modules.update(saved)
 
 
-def _build(name: str) -> TreeBuilder:
+def _build(name: str) -> dict[str, tuple[float, float]]:
     with TreeBuilder.geometry(name) as tree:  # default arrange="sugiyama"
         geo = tree.inputs.geometry()
         out = tree.outputs.geometry()
         _ = geo >> g.SetPosition() >> g.RealizeInstances() >> out
-    return tree
+    return {n.bl_idname: tuple(n.location) for n in tree.tree.nodes}
 
 
-def test_fallback_without_networkx(no_networkx):
-    """Two sequential sugiyama builds must degrade gracefully without networkx."""
-    # First tree: clean ImportError -> warns + falls back. This works today.
-    with pytest.warns(UserWarning, match="networkx"):
-        _build("FirstNoNX")
+def test_sugiyama_does_not_need_networkx():
+    """With networkx blocked the layout is the same Sugiyama layout, with no
+    fallback warning — for a second tree in the same process too (the old
+    fallback raised a stale-namespace ``KeyError`` there)."""
+    reference = _build("Reference")
+    # A chain of four nodes: four distinct columns.
+    assert len({x for x, _ in reference.values()}) == 4
 
-    # Second tree: this is where the stale namespace path used to raise
-    # KeyError: 'nodebpy.lib.nodearrange', escaping `except ImportError`.
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
+    with _networkx_blocked(), warnings.catch_warnings():
+        warnings.simplefilter("error")
+        first = _build("FirstNoNX")
         second = _build("SecondNoNX")
 
-    # The tree should still have been built and arranged (simple fallback).
-    assert len(second.tree.nodes) > 0
+    assert first == reference
+    assert second == reference

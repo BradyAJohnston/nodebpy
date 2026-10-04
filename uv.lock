@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -1578,15 +1578,6 @@ wheels = [
 ]
 
 [[package]]
-name = "networkx"
-version = "3.6.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6a/51/63fe664f3908c97be9d2e4f1158eb633317598cfa6e1fc14af5383f17512/networkx-3.6.1.tar.gz", hash = "sha256:26b7c357accc0c8cde558ad486283728b65b6a95d85ee1cd66bafab4c8168509", size = 2517025, upload-time = "2025-12-08T17:02:39.908Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/c9/b2622292ea83fbb4ec318f5b9ab867d0a28ab43c5717bb85b0a5f6b3b0a4/networkx-3.6.1-py3-none-any.whl", hash = "sha256:d47fbf302e7d9cbbb9e2555a0d267983d2aa476bac30e90dfbe5669bd57f3762", size = 2068504, upload-time = "2025-12-08T17:02:38.159Z" },
-]
-
-[[package]]
 name = "nodebpy"
 version = "520.31.0"
 source = { editable = "." }
@@ -1597,9 +1588,6 @@ bpy = [
 ]
 format = [
     { name = "ruff" },
-]
-networkx = [
-    { name = "networkx" },
 ]
 plot = [
     { name = "matplotlib" },
@@ -1613,7 +1601,6 @@ dev = [
     { name = "ipython" },
     { name = "jsondiff" },
     { name = "matplotlib" },
-    { name = "networkx" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-xdist" },
@@ -1623,14 +1610,12 @@ dev = [
     { name = "syrupy" },
     { name = "tree-clipper" },
     { name = "ty" },
-    { name = "types-networkx" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "bpy", marker = "extra == 'bpy'", specifier = "==5.2.*" },
     { name = "matplotlib", marker = "extra == 'plot'", specifier = ">=3.8" },
-    { name = "networkx", marker = "extra == 'networkx'", specifier = ">=3.6.1" },
     { name = "ruff", marker = "extra == 'format'", specifier = ">=0.14.11" },
 ]
 provides-extras = ["networkx", "plot", "bpy", "format"]
@@ -1643,7 +1628,6 @@ dev = [
     { name = "ipython", specifier = ">=8.0.0" },
     { name = "jsondiff", specifier = ">=2.2.1" },
     { name = "matplotlib", specifier = ">=3.11.2" },
-    { name = "networkx", specifier = ">=3.6.1" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7.0.0" },
     { name = "pytest-xdist", specifier = ">=3.8.0" },
@@ -1653,7 +1637,6 @@ dev = [
     { name = "syrupy", specifier = ">=5.0.0" },
     { name = "tree-clipper", specifier = ">=0.1.6" },
     { name = "ty", specifier = "==0.0.74" },
-    { name = "types-networkx", specifier = ">=3.6.1.20260728" },
 ]
 
 [[package]]
@@ -2620,18 +2603,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c4/33/a8c12188227e6f74f91853a7374e01ed81d6ad21c16c8b70e92dbebfe46a/ty-0.0.74-py3-none-win32.whl", hash = "sha256:db0bb6a8f098ef9bd1be861f73b4f7c0320d40d4c05c7ae0a8677d4e7aa4f6e5", size = 12130002, upload-time = "2026-08-22T15:05:46.058Z" },
     { url = "https://files.pythonhosted.org/packages/21/5c/064f28ccb9c234cfce5a2f7aa69a256663d5ae5bb0290b3a9706cc4d1e4c/ty-0.0.74-py3-none-win_amd64.whl", hash = "sha256:bebff181515255b3c78bd2e7693ae66fab6064ad4feea2065c68bc01022aa678", size = 12771435, upload-time = "2026-08-22T15:05:48.811Z" },
     { url = "https://files.pythonhosted.org/packages/fe/06/d6becdaca0315346c26b6df97cb0eafa81de4f870945d6989e88704374ed/ty-0.0.74-py3-none-win_arm64.whl", hash = "sha256:1a3469eaaf8c85b1c0a15bede25d36daea4b09fce1d913e965b24e24b3f1d6c6", size = 12558299, upload-time = "2026-08-22T15:05:51.543Z" },
-]
-
-[[package]]
-name = "types-networkx"
-version = "3.6.1.20260728"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ed/8e/9c80373fd5a33c82ac25cbe868afae25c2babf050b65468464933c5f2854/types_networkx-3.6.1.20260728.tar.gz", hash = "sha256:f193e4fc6a41c973c7d687fa3c12f8008d8e7dcd22b0ab62f0300cc47b65eb28", size = 75720, upload-time = "2026-07-28T04:51:49.37Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c2/4a/619f72e3f149b9291c1537ff3aceaecef8ed36877db13ea3698b2841663d/types_networkx-3.6.1.20260728-py3-none-any.whl", hash = "sha256:0be72ff7625dbdfcd2d76ed7662de96987d0d5433b7055c320065d5b3621f9f6", size = 167078, upload-time = "2026-07-28T04:51:48.071Z" },
 ]
 
 [[package]]

@@ -6,15 +6,12 @@ from itertools import chain
 from math import isclose
 from statistics import fmean
 
-import networkx as nx
 from bpy.types import Node as BlenderNode
 from mathutils import Vector
 
 from ..config import LayoutState
 from ..utils import move
 from .graph import (
-    FROM_SOCKET,
-    TO_SOCKET,
     Cluster,
     ClusterGraph,
     Kind,
@@ -25,6 +22,7 @@ from .graph import (
     is_real,
     socket_graph,
 )
+from .tree import Tree, edge_dfs
 
 
 def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
@@ -49,35 +47,35 @@ def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
     )
 
 
-def dissolve_reroute_edges(
-    G: nx.DiGraph[Node], path: list[Node], state: LayoutState
-) -> None:
-    if not G[path[-1]]:
+def dissolve_reroute_edges(G: Tree[Node], path: list[Node], state: LayoutState) -> None:
+    if not G.successors(path[-1]):
         return
 
-    try:
-        u, _, o = next(iter(G.in_edges(path[0], data=FROM_SOCKET)))
-    except StopIteration:
+    first = next(G.in_links(path[0]), None)
+    if first is None:
         return
 
-    succ_inputs = [e[2] for e in G.out_edges(path[-1], data=TO_SOCKET)]
+    u, o = first.fromnode, first.fromsock
+    succ_inputs = [link.tosock for link in G.out_links(path[-1])]
 
     # Check if a reroute has been used to link the same output to the same multi-input multiple
     # times
-    for *_, d in G.out_edges(u, data=True):
-        if d[FROM_SOCKET] == o and d[TO_SOCKET] in succ_inputs:
+    for link in G.out_links(u):
+        if link.fromsock == o and link.tosock in succ_inputs:
             path.clear()
             return
 
     links = state.ntree.links
     for i in succ_inputs:
-        G.add_edge(u, i.owner, from_socket=o, to_socket=i)
+        G.add_link(u, i.owner, o, i)
         links.new(o.bpy, i.bpy)
 
 
 def remove_reroutes(CG: ClusterGraph) -> None:
     reroute_clusters = {
-        c for c in CG.S if all(v.type != Kind.CLUSTER and v.is_reroute for v in CG.T[c])
+        c
+        for c in CG.S
+        if all(v.type != Kind.CLUSTER and v.is_reroute for v in CG.T.successors(c))
     }
     for path in get_reroute_paths(CG, lambda v: is_safe_to_remove(v, CG.state)):
         if path[0].cluster in reroute_clusters:
@@ -96,22 +94,22 @@ _Y_TOL = 5
 def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
     G = CG.G
 
-    def pred_output(w):
-        return next(iter(G.in_edges(w, data=FROM_SOCKET)))[2]
+    def pred_output(w: Node) -> Socket:
+        return next(G.in_links(w)).fromsock
 
-    def succ_input(w):
-        return next(iter(G.out_edges(w, data=TO_SOCKET)))[2]
+    def succ_input(w: Node) -> Socket:
+        return next(G.out_links(w)).tosock
 
     if len(path) == 1:
         v = path[0]
 
-        if not G.pred[v] or G.out_degree[v] != 1 or v.col is None or is_real(v):
+        if not G.predecessors(v) or G.out_degree(v) != 1 or v.col is None or is_real(v):
             return
 
         p = pred_output(v)
         q = succ_input(v)
         if isclose(p.y, q.y, rel_tol=0, abs_tol=_Y_TOL):
-            G.add_edge(p.owner, q.owner, from_socket=p, to_socket=q)
+            G.add_link(p.owner, q.owner, p, q)
             CG.remove_nodes_from(path)
             path.clear()
 
@@ -119,12 +117,14 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
 
     u, *between, v = path
 
-    if G.pred[u] and isclose((p := pred_output(u)).y, u.y, rel_tol=0, abs_tol=_Y_TOL):
+    if G.predecessors(u) and isclose(
+        (p := pred_output(u)).y, u.y, rel_tol=0, abs_tol=_Y_TOL
+    ):
         between.append(u)
     else:
         p = Socket(u, 0, True)
 
-    if G.out_degree[v] == 1 and isclose(
+    if G.out_degree(v) == 1 and isclose(
         v.y, (q := succ_input(v)).y, rel_tol=0, abs_tol=_Y_TOL
     ):
         between.append(v)
@@ -132,7 +132,7 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
         q = Socket(v, 0, False)
 
     if p.owner != u or q.owner != v or between:
-        G.add_edge(p.owner, q.owner, from_socket=p, to_socket=q)
+        G.add_link(p.owner, q.owner, p, q)
 
     CG.remove_nodes_from(between)
     for v in between:
@@ -149,11 +149,11 @@ def add_reroute(v: Node, state: LayoutState) -> None:
     v.type = Kind.NODE
 
 
-def realize_edges(G: nx.DiGraph[Node], state: LayoutState) -> None:
+def realize_edges(G: Tree[Node], state: LayoutState) -> None:
     links = state.ntree.links
-    for u, v, d in G.edges.data():
-        if u.is_reroute or v.is_reroute:
-            links.new(d[FROM_SOCKET].bpy, d[TO_SOCKET].bpy)
+    for link in G.all_links():
+        if link.fromnode.is_reroute or link.tonode.is_reroute:
+            links.new(link.fromsock.bpy, link.tosock.bpy)
 
 
 def realize_dummy_nodes(CG: ClusterGraph) -> None:
@@ -169,7 +169,7 @@ def realize_dummy_nodes(CG: ClusterGraph) -> None:
     realize_edges(CG.G, CG.state)
 
 
-def restore_multi_input_orders(G: nx.MultiDiGraph[Node], state: LayoutState) -> None:
+def restore_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
     links = state.ntree.links
     H = socket_graph(G)
     for socket, sort_ids in state.multi_input_sort_ids.items():
@@ -184,7 +184,7 @@ def restore_multi_input_orders(G: nx.MultiDiGraph[Node], state: LayoutState) -> 
 
         # In graph order, not a set: bpy sockets hash by pointer, and the
         # creation order of these links sets their sort ids.
-        for output in dict.fromkeys(s.bpy for s in H.pred[socket]):
+        for output in dict.fromkeys(s.bpy for s in H.predecessors(socket)):
             if output in as_links:
                 continue
             assert output
@@ -214,16 +214,16 @@ def restore_multi_input_orders(G: nx.MultiDiGraph[Node], state: LayoutState) -> 
             )
             from_socket = next(
                 s
-                for s, t in nx.edge_dfs(SH, base_from_socket)
+                for s, t in edge_dfs(SH, base_from_socket)
                 if t == socket and s not in seen
             )
-            as_links[from_socket.bpy].swap_multi_input_sort_id(other)
+            output = from_socket.bpy
+            assert output is not None
+            as_links[output].swap_multi_input_sort_id(other)
             seen.add(from_socket)
 
 
-def realize_locations(
-    G: nx.DiGraph[Node], old_center: Vector, state: LayoutState
-) -> None:
+def realize_locations(G: Tree[Node], old_center: Vector, state: LayoutState) -> None:
     new_center = (fmean([v.x for v in G]), fmean([v.y for v in G]))
     offset_x, offset_y = -Vector(new_center) + old_center
 
@@ -248,7 +248,7 @@ def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
     if not frame or frame.shrink:
         return
 
-    real_children = [v for v in CG.T[cluster] if is_real(v)]
+    real_children = [v for v in CG.T.successors(cluster) if is_real(v)]
 
     for v in real_children:
         v.node.parent = None

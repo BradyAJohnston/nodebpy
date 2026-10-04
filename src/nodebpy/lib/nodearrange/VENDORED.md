@@ -18,6 +18,30 @@ The Blender-addon shell: `__init__.py` (registration), `operators.py`,
 Keep these in mind when porting upstream commits; a straight file copy will
 break headless operation.
 
+- **No networkx.** Upstream builds its graphs on `networkx`. Here they are
+  the structs in `arrange/tree.py`, shaped after Blender's own so the layout
+  can later be ported to C++: `Tree` (`bNodeTree`) owns the nodes and the
+  `Link`s (`bNodeLink`: `fromnode` / `fromsock` / `tonode` / `tosock`) between
+  them, and `DiGraph` holds auxiliary relations (the frame hierarchy,
+  ordering constraints). The same file has the few graph algorithms the
+  layout needs (topological order, components, reachability, cycle search).
+  Everything iterates in insertion order exactly as the networkx graphs did,
+  so the port produces identical layouts. Upstream patches need translating:
+
+  | networkx                               | here                                   |
+  | -------------------------------------- | -------------------------------------- |
+  | `G.add_edge(u, v, from_socket=p, to_socket=q)` | `G.add_link(u, v, p, q)`       |
+  | `(u, v, k)` edge tuples, `G.edges[e]`  | `Link` objects (`link.ident` is the tuple, `G.link(u, v, k)` looks one up) |
+  | `d[FROM_SOCKET]` / `d[TO_SOCKET]`      | `link.fromsock` / `link.tosock`        |
+  | `G.edges`, `G.in_edges(v)`, `G.out_edges(v)` | `G.all_links()`, `G.in_links(v)`, `G.out_links(v)` |
+  | `G.pred[v]`, `G[v]` / `G.succ[v]`      | `G.predecessors(v)`, `G.successors(v)` |
+  | `G[u][v]`                              | `G.links_between(u, v)`                |
+  | `G.out_degree[v]`                      | `G.out_degree(v)`                      |
+  | `G.reverse(copy=False)`                | `G.reversed()`                         |
+  | `G.graph["columns"]`                   | `G.columns`                            |
+  | `T[c]` (cluster tree)                  | `T.successors(c)`                      |
+  | `nx.descendants`, `nx.topological_sort`, … | the functions of the same name in `tree.py` |
+
 - **No module globals.** Upstream keeps its working state (`selected`,
   `linked_sockets`, `multi_input_sort_ids`, `SETTINGS`, `MARGIN`) as module
   globals in `config.py`, reset manually per operator invocation. Here that

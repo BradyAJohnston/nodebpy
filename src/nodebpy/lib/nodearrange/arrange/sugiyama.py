@@ -7,7 +7,6 @@ from itertools import chain
 from statistics import fmean
 from typing import cast
 
-import networkx as nx
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeFrame, NodeTree
 from mathutils import Vector
@@ -16,8 +15,6 @@ from ..config import LayoutState, Settings
 from ..utils import abs_loc, group_by
 from .balancing import balance_column_heights
 from .graph import (
-    FROM_SOCKET,
-    TO_SOCKET,
     Cluster,
     ClusterGraph,
     Kind,
@@ -32,6 +29,7 @@ from .ordering import minimize_crossings
 from .ranking import compute_ranks
 from .realize import realize_layout, remove_reroutes
 from .stacking import contracted_node_stacks, expand_node_stack
+from .tree import Tree, bfs_edges
 from .x_coords import assign_x_coords, route_edges
 from .y_coords import bk_assign_y_coords
 
@@ -115,7 +113,7 @@ def precompute_links(state: LayoutState) -> None:
             state.linked_sockets[link.from_socket][link.to_socket] = None
 
 
-def get_multidigraph(state: LayoutState) -> nx.MultiDiGraph[Node]:
+def get_tree(state: LayoutState) -> Tree[Node]:
     parents = {
         n.parent: Cluster(cast(NodeFrame | None, n.parent), None)  # type: ignore
         for n in state.ntree.nodes
@@ -124,8 +122,8 @@ def get_multidigraph(state: LayoutState) -> nx.MultiDiGraph[Node]:
         if c.node:
             c.cluster = parents[c.node.parent]
 
-    G = nx.MultiDiGraph()
-    G.add_nodes_from(
+    G: Tree[Node] = Tree()
+    G.add_nodes(
         [
             Node(n, parents[n.parent])
             for n in state.selected
@@ -136,6 +134,7 @@ def get_multidigraph(state: LayoutState) -> nx.MultiDiGraph[Node]:
     # the working set is the whole tree, so membership in G is the test.
     by_node = {v.node: v for v in G}
     for u in G:
+        assert is_real(u)
         for i, from_output in enumerate(u.node.outputs):
             for to_input in state.linked_sockets[from_output]:
                 assert to_input.node is not None
@@ -144,41 +143,40 @@ def get_multidigraph(state: LayoutState) -> nx.MultiDiGraph[Node]:
                     continue
 
                 j = to_input.node.inputs[:].index(to_input)
-                G.add_edge(
-                    u, v, from_socket=Socket(u, i, True), to_socket=Socket(v, j, False)
-                )
+                G.add_link(u, v, Socket(u, i, True), Socket(v, j, False))
 
     return G
 
 
-def save_multi_input_orders(G: nx.MultiDiGraph[Node], state: LayoutState) -> None:
+def save_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
     links = {(link.from_socket, link.to_socket): link for link in state.ntree.links}
-    for v, w, d in G.edges.data():
-        to_socket = d[TO_SOCKET]
+    for edge in G.all_links():
+        v, w = edge.fromnode, edge.tonode
+        to_socket = edge.tosock
 
         if not to_socket.bpy.is_multi_input:
             continue
 
         if v.is_reroute:
-            for z, u in chain([(w, v)], nx.bfs_edges(G, v, reverse=True)):
+            for z, u in chain([(w, v)], bfs_edges(G, v, reverse=True)):
                 if not u.is_reroute:
                     break
-            base_from_socket = G.edges[u, z, 0][FROM_SOCKET]
+            base_from_socket = G.link(u, z, 0).fromsock
         else:
-            base_from_socket = d[FROM_SOCKET]
+            base_from_socket = edge.fromsock
 
-        link = links[(d[FROM_SOCKET].bpy, to_socket.bpy)]
+        link = links[(edge.fromsock.bpy, to_socket.bpy)]
         state.multi_input_sort_ids[to_socket].append(
             (base_from_socket, link.multi_input_sort_id)
         )
 
 
-def add_columns(G: nx.DiGraph[Node]) -> None:
+def add_columns(G: Tree[Node]) -> None:
     columns = [list(c) for c in group_by(G, key=lambda v: v.rank, sort=True)]
-    G.graph["columns"] = columns
+    G.columns = columns
 
     def y_loc(v):
-        return abs_loc(v.node).y if is_real(v) and nx.is_isolate(G, v) else 0
+        return abs_loc(v.node).y if is_real(v) and G.degree(v) == 0 else 0
 
     for col in columns:
         col.sort(key=node_name)
@@ -195,11 +193,12 @@ def dissolve_dummy_nodes(CG: ClusterGraph) -> None:
     )
     G = CG.G
     for path in paths:
-        if G.pred[path[0]]:
-            u, _, o = next(iter(G.in_edges(path[0], data=FROM_SOCKET)))
-            succ_inputs = [e[2] for e in G.out_edges(path[-1], data=TO_SOCKET)]
+        if G.predecessors(path[0]):
+            first = next(G.in_links(path[0]))
+            u, o = first.fromnode, first.fromsock
+            succ_inputs = [link.tosock for link in G.out_links(path[-1])]
             for i in succ_inputs:
-                G.add_edge(u, i.owner, from_socket=o, to_socket=i)
+                G.add_link(u, i.owner, o, i)
 
         CG.remove_nodes_from(path)
 
@@ -207,10 +206,10 @@ def dissolve_dummy_nodes(CG: ClusterGraph) -> None:
 # -------------------------------------------------------------------
 
 
-def get_foreign_sockets_of(path: Sequence[Node], G: nx.DiGraph[Node]) -> list[Socket]:
-    inputs = G.in_edges(path[0], data=FROM_SOCKET)
-    outputs = G.out_edges(path[-1], data=TO_SOCKET)
-    return [e[2] for e in chain(inputs, outputs)]
+def get_foreign_sockets_of(path: Sequence[Node], G: Tree[Node]) -> list[Socket]:
+    inputs = [link.fromsock for link in G.in_links(path[0])]
+    outputs = [link.tosock for link in G.out_links(path[-1])]
+    return inputs + outputs
 
 
 def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
@@ -307,7 +306,7 @@ def sugiyama_layout(
         optimize_sizes(state.selected)
 
     precompute_links(state)
-    CG = ClusterGraph(get_multidigraph(state), state)
+    CG = ClusterGraph(get_tree(state), state)
     G = CG.G
     T = CG.T
 
