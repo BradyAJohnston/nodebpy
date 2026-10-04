@@ -47,6 +47,24 @@ class Settings:
     ordering: str = "layer_sweep"
     placement: str = "brandes_koepf"
     routing: str = "bend_points"
+    # nodebpy divergence: favour the links that carry the tree's main data
+    # (see arrange.priority): "flow" keeps them short and straight, "none"
+    # treats every link alike.
+    link_priority: Literal["flow", "none"] = "flow"
+    # The placement aligns a node first with neighbours linked by a link of
+    # at least this priority, and only then with a median neighbour. 3 is a
+    # link with a flow socket at one end and a main socket at the other.
+    trunk_min_priority: int = 3
+    # Also weigh links by priority in the ranking, so heavier links are
+    # kept shorter.
+    weighted_ranking: bool = False
+    # nodebpy divergence: never split a column of at most this many nodes
+    # when balancing heights, so a few parallel branches stay side by side.
+    balance_min_column: int = 4
+    # nodebpy divergence: put Group Output nodes (outside frames) in the
+    # last column, and Group Input nodes in the first.
+    pin_group_output: bool = True
+    pin_group_input: bool = False
 
 
 DEFAULT_MARGIN = (200.0, 20.0)
@@ -78,6 +96,9 @@ class LayoutState:
     frame_sequence: list[tuple[frozenset[Node], frozenset[Node]]] = field(
         default_factory=list
     )
+    # Priority of the sockets that have one (see arrange.priority); empty
+    # when links are not prioritised.
+    socket_priority: dict[bNodeSocket, int] = field(default_factory=dict)
     # The changes to make to the tree, in order. The layout only records
     # them; `nodearrange.apply` carries them out.
     edits: list[Edit] = field(default_factory=list)

@@ -43,7 +43,7 @@ from . import arrange_cases
 # Columns of the table: (heading, value).
 _COLUMNS = (
     ("cross", lambda m: m.crossings),
-    ("straight", lambda m: f"{m.straight_links}/{m.links}"),
+    ("level", lambda m: f"{m.level_links}/{m.links}"),
     ("through", lambda m: m.links_through_nodes),
     ("overlap", lambda m: m.node_overlaps),
     ("back", lambda m: m.backward_links),
@@ -177,8 +177,8 @@ def print_table(results: dict[str, dict[str, Any]]) -> None:
     print(
         f"\n{len(measured)} trees: "
         f"{sum(r['crossings'] for r in measured)} crossings, "
-        f"{sum(r['straight_links'] for r in measured)}/{sum(r['links'] for r in measured)} "
-        f"links straight, "
+        f"{sum(r['level_links'] for r in measured)}/{sum(r['links'] for r in measured)} "
+        f"links level, "
         f"{sum(r['links_through_nodes'] for r in measured)} links through nodes, "
         f"total cost {sum(r['cost'] for r in measured):.1f}, "
         f"{sum(r['seconds'] for r in measured):.1f}s"

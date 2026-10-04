@@ -19,7 +19,7 @@ reroutes, which the height estimate charges for.
 
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Iterable
 
 from ..config import LayoutState
@@ -101,8 +101,12 @@ def _fit_to_height(
         if current <= 0:
             return ranks
         best: tuple[float, dict[Node, int]] | None = None
+        sizes = Counter(ranks.values())
         for v, upstream in upstream_of.items():
             if not upstream or heights.get(ranks[v], 0.0) <= target:
+                continue
+            # A few parallel branches read best side by side.
+            if sizes[ranks[v]] <= state.settings.balance_min_column:
                 continue
             trial = dict(ranks)
             for w in upstream | {v}:

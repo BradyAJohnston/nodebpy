@@ -35,6 +35,8 @@ class bNodeSocket:
     location: tuple[float, float] | None = None
     """Where links attach (``runtime->location``). Only known for sockets
     that have a link."""
+    idname: str = ""
+    """The socket's type, e.g. ``NodeSocketGeometry``."""
 
 
 @dataclass(eq=False, slots=True)
@@ -70,6 +72,12 @@ class bNode:
     def is_reroute(self) -> bool:
         return self.idname == "NodeReroute"
 
+    def is_group_input(self) -> bool:
+        return self.idname == "NodeGroupInput"
+
+    def is_group_output(self) -> bool:
+        return self.idname == "NodeGroupOutput"
+
     @property
     def top(self) -> float:
         return self.draw_bounds[3]
@@ -84,9 +92,12 @@ class bNode:
         *,
         is_multi_input: bool = False,
         location: tuple[float, float] | None = None,
+        idname: str = "",
     ) -> bNodeSocket:
         sockets = self.outputs if is_output else self.inputs
-        socket = bNodeSocket(self, len(sockets), is_output, is_multi_input, location)
+        socket = bNodeSocket(
+            self, len(sockets), is_output, is_multi_input, location, idname
+        )
         sockets.append(socket)
         return socket
 

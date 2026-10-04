@@ -898,6 +898,26 @@ class SugiyamaOptions:
         connects to. ``"longest_path"`` puts every node as far right as it
         can go: faster, but a node with several consumers ends up far from
         the early ones.
+    straighten_trunk : bool
+        Keep the tree's main line straight. Links carrying the main data
+        (geometry, shader, bundle or closure sockets, from a node's first
+        such output to another's first such input) are aligned before any
+        other, so a chain of geometry nodes is one flat row with the side
+        chains feeding it hung below, and a fork that merges again is laid
+        out symmetrically around its middle branch. Off, every link is
+        treated alike and a node aligns with its median neighbour.
+    weighted_ranking : bool
+        Also weigh links by their importance when assigning columns, so
+        main-data links are kept shorter than the links of side chains.
+    balance_min_column : int
+        ``balance_heights`` never splits a column of at most this many
+        nodes, so a few parallel branches stay side by side instead of
+        being staggered over two columns.
+    pin_group_output : bool
+        Put Group Output nodes (outside frames) in the last column.
+    pin_group_input : bool
+        Put Group Input nodes (outside frames) in the first column, rather
+        than next to the nodes they feed.
     """
 
     # Defaults calibrated against hand-approved node-arrange addon output
@@ -918,6 +938,11 @@ class SugiyamaOptions:
     balance_aspect: float = 1.6
     reroute_margin_y_fac: float = 0.35
     ranking: Literal["network_simplex", "longest_path"] = "network_simplex"
+    straighten_trunk: bool = True
+    weighted_ranking: bool = False
+    balance_min_column: int = 4
+    pin_group_output: bool = True
+    pin_group_input: bool = False
 
 
 type ArrangeMethod = (
@@ -994,6 +1019,11 @@ def _sugiyama_settings(options: SugiyamaOptions):
         balance_aspect=options.balance_aspect,
         reroute_margin_y_fac=options.reroute_margin_y_fac,
         ranking=options.ranking,
+        link_priority="flow" if options.straighten_trunk else "none",
+        weighted_ranking=options.weighted_ranking,
+        balance_min_column=options.balance_min_column,
+        pin_group_output=options.pin_group_output,
+        pin_group_input=options.pin_group_input,
     )
 
 

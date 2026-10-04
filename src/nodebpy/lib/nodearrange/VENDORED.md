@@ -115,6 +115,21 @@ break headless operation.
     `balance_aspect`): after ranking, promotes nodes of the tallest columns
     together with their upstream into emptier columns while the drawing
     gets closer to a screen-shaped box.
+  - `priority.socket_priorities()` / `graph.link_priority()`
+    (`link_priority`, `trunk_min_priority`): links carrying the tree's main
+    data (geometry, shader, bundle, closure) get a priority, and
+    `y_coords.horizontal_alignment()` aligns a node with a neighbour across
+    such a link before falling back to upstream's median neighbour — so the
+    trunk is a straight row. When several nodes want the same neighbour
+    across such links the middle one gets it, which makes a fork that
+    merges again symmetric. `weighted_ranking` also feeds the priorities to
+    the network simplex as link weights. With `link_priority="none"` the
+    alignment is upstream's.
+  - `balancing` skips columns of at most `balance_min_column` nodes, so a
+    few parallel branches are not staggered over two columns.
+  - `sugiyama.pin_interface_nodes()` (`pin_group_output`,
+    `pin_group_input`): a pipeline step after ranking that moves Group
+    Output / Group Input nodes outside frames to the last / first column.
   - `y_coords.vertical_gap()` (`reroute_margin_y_fac`): consecutive
     reroutes / dummy nodes in a column pack at a fraction of the margin.
   - `sugiyama.precompute_links()` keeps `is_hidden` links (links into a

@@ -80,6 +80,7 @@ class Node:
     po_num: int
     lowest_po_num: int
     is_fill_dummy: bool
+    priority: int
 
     col: list[Node]
     cr: CrossingReduction
@@ -126,6 +127,7 @@ class Node:
         self.po_num = None  # type: ignore
         self.lowest_po_num = None  # type: ignore
         self.is_fill_dummy = False
+        self.priority = 0
 
         self.col = None  # type: ignore
         self.cr = CrossingReduction()
@@ -238,6 +240,20 @@ def lowest_common_cluster(
     return lca
 
 
+def link_priority(link: Link[Node], priorities: dict[bNodeSocket, int]) -> int:
+    """The priority of a link of the layout graph. A piece of a long link
+    (one that passes through dummy nodes) has the priority of the whole."""
+    through = [v.priority for v in (link.fromnode, link.tonode) if v.type == Kind.DUMMY]
+    if through:
+        return max(through)
+
+    total = 0
+    for socket in (link.fromsock, link.tosock):
+        if socket is not None and socket.dna is not None:
+            total += priorities.get(socket.dna, 0)
+    return total
+
+
 def add_dummy_edge(G: Tree[Node], u: Node, v: Node) -> None:
     G.add_link(u, v, Socket(u, 0, True), Socket(v, 0, False))
 
@@ -250,6 +266,10 @@ def add_dummy_nodes_to_edge(
 ) -> None:
     if not dummy_nodes:
         return
+
+    priority = link_priority(link, state.socket_priority)
+    for w in dummy_nodes:
+        w.priority = max(w.priority, priority)
 
     for a, b in pairwise(dummy_nodes):
         if not G.has_link(a, b, 0):

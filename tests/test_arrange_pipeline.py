@@ -56,10 +56,12 @@ def _columns(tree: bNodeTree, settings: Settings, **kwargs) -> dict[str, float]:
 def test_default_pipeline_steps():
     pipeline = default_pipeline()
     assert pipeline.names() == [
+        "prioritize_links",
         "save_multi_input_orders",
         "remove_reroutes",
         "contract_stacks",
         "rank",
+        "pin_interface_nodes",
         "balance_heights",
         "merge_edges",
         "insert_dummy_nodes",
@@ -208,7 +210,13 @@ def test_custom_pipeline_steps():
         "after_rank",
         Step("never", lambda L: log.append("never"), enabled=lambda s: False),
     )
-    assert pipeline.names()[3:7] == ["before_rank", "rank", "after_rank", "never"]
+    start = pipeline.index("before_rank")
+    assert pipeline.names()[start : start + 4] == [
+        "before_rank",
+        "rank",
+        "after_rank",
+        "never",
+    ]
     assert sugiyama_layout(tree, settings, pipeline=pipeline).positions() == reference
     assert log == ["before", "after"]
 

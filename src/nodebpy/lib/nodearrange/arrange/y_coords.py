@@ -14,7 +14,8 @@ from statistics import fmean
 from typing import Any, cast
 
 from ..config import LayoutState
-from .graph import Cluster, Edge, Kind, Node, Socket
+from ..dna import bNodeSocket
+from .graph import Cluster, Edge, Kind, Node, Socket, link_priority
 from .pipeline import Layout, register
 from .tree import DiGraph, Tree, descendants
 
@@ -55,29 +56,110 @@ def marked_conflicts(
     return marked_edges
 
 
+def _medians[T](items: Sequence[T]) -> Sequence[T]:
+    """The middle item, or the middle two of an even number."""
+    m = (len(items) - 1) / 2
+    return items[floor(m) : ceil(m) + 1]
+
+
+type _Candidate = tuple[int, Node, int]
+"""A predecessor a node could align with: its index in its column, the
+predecessor, and the priority of the link from it."""
+
+
+def _align_column(
+    G: Tree[Node],
+    col: Sequence[Node],
+    marked_edges: Collection[frozenset[Node]],
+    marked_nodes: Collection[Node],
+    priorities: dict[bNodeSocket, int],
+    min_level: int,
+) -> None:
+    # For each node, its predecessors top to bottom.
+    candidates: list[list[_Candidate]] = []
+    levels: set[int] = set()
+    for v in col:
+        preds = []
+        for u in sorted(G.predecessors(v), key=lambda u: u.col.index(u)):
+            priority = 0
+            if priorities:
+                priority = max(
+                    link_priority(link, priorities) for link in G.links_between(u, v)
+                )
+                levels.add(priority)
+            preds.append((u.col.index(u), u, priority))
+        candidates.append(preds)
+
+    # (index of predecessor, index of node) of the alignments made.
+    aligned: list[tuple[int, int]] = []
+
+    def align(
+        j: int,
+        v: Node,
+        options: Sequence[_Candidate],
+        winners: dict[int, Sequence[int]] | None = None,
+    ) -> None:
+        for i, u, _ in options:
+            if v.aligned != v or {u, v} in marked_edges:
+                continue
+
+            if winners is not None and j not in winners[i]:
+                continue
+
+            # Alignments must not cross.
+            if any((i - i_) * (j - j_) <= 0 for i_, j_ in aligned):
+                continue
+
+            if u.cluster != v.cluster and {u, v} & marked_nodes:  # type: ignore
+                continue
+
+            u.aligned = v
+            v.root = u.root
+            v.aligned = v.root
+            aligned.append((i, j))
+
+    # Links that carry the tree's main data first, heaviest first.
+    for level in sorted((p for p in levels if p >= min_level), reverse=True):
+        options = [
+            _medians([c for c in preds if c[2] == level]) for preds in candidates
+        ]
+        # Several nodes may want the same predecessor (the branches leaving
+        # a fork, seen from the far side). The middle one gets it, so a fork
+        # sits level with its middle branch rather than its first; whoever
+        # is left over takes what remains.
+        claims: defaultdict[int, list[int]] = defaultdict(list)
+        for j, v in enumerate(col):
+            if v.aligned == v:
+                for i, _, _ in options[j]:
+                    claims[i].append(j)
+        winners = {i: _medians(claimants) for i, claimants in claims.items()}
+        for j, v in enumerate(col):
+            align(j, v, options[j], winners)
+        for j, v in enumerate(col):
+            align(j, v, options[j])
+
+    # Then every node still unaligned, with a median predecessor.
+    for j, v in enumerate(col):
+        align(j, v, _medians(candidates[j]))
+
+
 def horizontal_alignment(
     G: Tree[Node],
     marked_edges: Collection[frozenset[Node]],
     marked_nodes: Collection[Node],
+    priorities: dict[bNodeSocket, int],
+    min_level: int = 1,
 ) -> None:
+    """Align each node with one of its predecessors, forming the blocks
+    that are placed as straight lines.
+
+    A node aligns with a median predecessor. With *priorities* (see
+    :mod:`.priority`), predecessors linked by a link of priority *min_level*
+    or more are tried first, heaviest first, so a trunk stays straight
+    where a side chain would otherwise claim the alignment.
+    """
     for col in G.columns:
-        prev_i = -1
-        for v in col:
-            predecessors = sorted(G.predecessors(v), key=lambda u: u.col.index(u))
-            m = (len(predecessors) - 1) / 2
-            for u in predecessors[floor(m) : ceil(m) + 1]:
-                i = u.col.index(u)
-
-                if v.aligned != v or {u, v} in marked_edges or prev_i >= i:
-                    continue
-
-                if u.cluster != v.cluster and {u, v} & marked_nodes:  # type: ignore
-                    continue
-
-                u.aligned = v
-                v.root = u.root
-                v.aligned = v.root
-                prev_i = i
+        _align_column(G, col, marked_edges, marked_nodes, priorities, min_level)
 
 
 def iter_block(start: Node) -> Iterator[Node]:
@@ -331,6 +413,7 @@ def bk_assign_y_coords(
         G, should_ensure_alignment=is_incident_to_vertical_border
     )
 
+    priorities = state.socket_priority
     layouts = []
     for dir_x in (-1, 1):
         G = G.reversed()
@@ -341,7 +424,13 @@ def bk_assign_y_coords(
             is_up = dir_y == 1
             while i < _ITER_LIMIT:
                 i += 1
-                horizontal_alignment(G, marked_edges, marked_nodes)
+                horizontal_alignment(
+                    G,
+                    marked_edges,
+                    marked_nodes,
+                    priorities,
+                    state.settings.trunk_min_priority,
+                )
                 inner_shift(G, dir_x == 1, is_up, state)
                 vertical_compaction(G, is_up, state)
 

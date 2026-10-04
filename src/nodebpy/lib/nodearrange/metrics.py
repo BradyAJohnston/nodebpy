@@ -79,6 +79,9 @@ class LayoutMetrics:
     """Links whose target socket is left of their source socket."""
     straight_links: int
     """Links whose two sockets are at the same height."""
+    level_links: int
+    """Links that are straight, or whose two nodes have their tops at the
+    same height: the nodes read as one row."""
     link_length: float
     """Summed straight-line distance between linked sockets."""
     link_span_y: float
@@ -120,7 +123,7 @@ class LayoutMetrics:
             + w.link_through_node * self.links_through_nodes
             + w.frame_overlap * self.frame_overlaps
             + w.foreign_node_in_frame * self.foreign_nodes_in_frames
-            + w.bent_link * (self.links - self.straight_links)
+            + w.bent_link * (self.links - self.level_links)
             + w.link_length * self.link_length
             + w.link_span_y * self.link_span_y
             + w.area * self.area
@@ -140,7 +143,7 @@ class LayoutMetrics:
         """A one-line digest, e.g. for a plot title."""
         return (
             f"{self.crossings} crossings · "
-            f"{self.straight_links}/{self.links} straight · "
+            f"{self.level_links}/{self.links} level · "
             f"{self.width:.0f}×{self.height:.0f}"
             + (f" · {self.node_overlaps} overlaps" if self.node_overlaps else "")
             + (
@@ -364,6 +367,14 @@ def measure(tree: NodeTree) -> LayoutMetrics:
         -1, 2
     )
     delta = ends - starts
+    straight = np.abs(delta[:, 1]) <= _STRAIGHT_TOL
+    level_tops = np.array(
+        [
+            abs(rect_of[from_node][3] - rect_of[to_node][3]) <= _STRAIGHT_TOL
+            for *_, from_node, to_node in links
+        ],
+        dtype=bool,
+    )
 
     # -- extent -----------------------------------------------------
     extents = [*rect_of.values(), *frames.values()]
@@ -433,7 +444,8 @@ def measure(tree: NodeTree) -> LayoutMetrics:
         height=float(height),
         crossings=crossings,
         backward_links=int(np.count_nonzero(delta[:, 0] < 0)),
-        straight_links=int(np.count_nonzero(np.abs(delta[:, 1]) <= _STRAIGHT_TOL)),
+        straight_links=int(np.count_nonzero(straight)),
+        level_links=int(np.count_nonzero(straight | level_tops)),
         link_length=float(np.hypot(delta[:, 0], delta[:, 1]).sum()),
         link_span_y=float(np.abs(delta[:, 1]).sum()),
         node_overlaps=int(node_overlaps),

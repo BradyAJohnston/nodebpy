@@ -23,6 +23,7 @@ from .graph import (
     reset_serials,
 )
 from .pipeline import Layout, Observer, Pipeline, Step, strategy
+from .priority import socket_priorities
 from .realize import realize_layout, remove_reroutes
 from .stacking import contracted_node_stacks, expand_node_stack
 from .tree import Tree, bfs_edges
@@ -229,6 +230,29 @@ def _remove_frame_borders(layout: Layout) -> None:
     CG.remove_nodes_from([v for v in CG.G if v.type == Kind.VERTICAL_BORDER])
 
 
+def _prioritize_links(layout: Layout) -> None:
+    layout.state.socket_priority = socket_priorities(layout.state.tree)
+
+
+def pin_interface_nodes(layout: Layout) -> None:
+    """Move Group Output nodes to the last column and Group Input nodes to
+    the first, as the settings ask. Only nodes outside frames, which have
+    nothing after (before) them: moving those cannot break a constraint."""
+    settings = layout.settings
+    G = layout.G
+    root = next(c for c in layout.CG.S if not layout.T.predecessors(c))
+    ranks = [v.rank for v in G]
+    first, last = min(ranks), max(ranks)
+    for v in G:
+        if not is_real(v) or v.cluster is not root:
+            continue
+        node = v.node
+        if settings.pin_group_output and node.is_group_output() and not G.successors(v):
+            v.rank = last
+        if settings.pin_group_input and node.is_group_input() and not G.predecessors(v):
+            v.rank = first
+
+
 def default_pipeline(settings: Settings | None = None) -> Pipeline:
     """The standard layout: the steps in order, with the strategy *settings*
     selects for each phase."""
@@ -247,6 +271,11 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
         [
             # Prepare the graph.
             Step(
+                "prioritize_links",
+                _prioritize_links,
+                lambda s: s.link_priority != "none",
+            ),
+            Step(
                 "save_multi_input_orders",
                 lambda L: save_multi_input_orders(L.G, L.state),
             ),
@@ -254,6 +283,11 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
             Step("contract_stacks", _contract_stacks, stacks),
             # Columns.
             Step("rank", strategy("rank", settings.ranking), phase="rank"),
+            Step(
+                "pin_interface_nodes",
+                pin_interface_nodes,
+                lambda s: s.pin_group_output or s.pin_group_input,
+            ),
             Step(
                 "balance_heights",
                 lambda L: balance_column_heights(L.G, L.CG.S, L.state),

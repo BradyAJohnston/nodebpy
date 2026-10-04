@@ -139,9 +139,11 @@ def _extract_node(node: BlenderNode) -> bNode:
         data.draw_bounds = (x, get_bottom(node), x + width, get_top(node))
 
     for socket in node.inputs:
-        data.add_socket(False, is_multi_input=socket.is_multi_input)
-    for _ in node.outputs:
-        data.add_socket(True)
+        data.add_socket(
+            False, is_multi_input=socket.is_multi_input, idname=socket.bl_idname
+        )
+    for socket in node.outputs:
+        data.add_socket(True, idname=socket.bl_idname)
     return data
 
 
