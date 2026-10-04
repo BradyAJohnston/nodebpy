@@ -612,3 +612,22 @@ def test_links_into_collapsed_panels_order_nodes():
 
     arrange(outer.tree)
     assert producer.node.location.x + producer.node.width < group.node.location.x
+
+
+def test_isolated_stack_of_collapsed_math_nodes():
+    """A chain of collapsed Math nodes linked to nothing else is stacked
+    like any other; it used to crash the layout (the stack never entered
+    the layout graph, so it had no column)."""
+    tree = bpy.data.node_groups.new("IsolatedStack", "GeometryNodeTree")
+    first = tree.nodes.new("ShaderNodeMath")
+    second = tree.nodes.new("ShaderNodeMath")
+    first.hide = second.hide = True
+    tree.links.new(first.outputs[0], second.inputs[0])
+    other = tree.nodes.new("GeometryNodeSetPosition")
+
+    arrange(tree, SugiyamaOptions(stack_collapsed=True))
+
+    # Stacked: one above the other in the same column.
+    assert first.location.x == second.location.x
+    assert first.location.y != second.location.y
+    assert other.location.x == first.location.x

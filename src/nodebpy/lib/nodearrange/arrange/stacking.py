@@ -273,6 +273,9 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+        # nodebpy divergence: a stack nothing else links to would otherwise
+        # never enter the graph, and so never get a rank or a column.
+        G.add_node(rep_node)
         for link in (*G.in_links(path), *G.out_links(path)):
             u, v = link.fromnode, link.tonode
             if u in path and v in path:
