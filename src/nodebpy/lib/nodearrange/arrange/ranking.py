@@ -4,12 +4,14 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from functools import cache
 from math import sqrt
 from typing import TYPE_CHECKING
 
 from .common import group_by
 from .graph import Cluster, Kind, MultiEdge, Node, opposite
+from .pipeline import Layout, register
 from .tree import (
     DiGraph,
     Tree,
@@ -208,11 +210,17 @@ def compute_cut_values(H: Tree[Node], T: Tree[Node]) -> None:
             v = w if u == v else u
 
 
-def feasible_tree(H: Tree[Node]) -> Tree[Node]:
+def longest_path_ranks(H: Tree[Node]) -> None:
+    """Rank every node as late as its successors allow: one column before
+    the earliest of them, the nodes without successors in the last column."""
     generations = topological_generations(H.reversed())
     for i, col in enumerate(reversed(tuple(generations))):
         for v in col:
             v.rank = i
+
+
+def feasible_tree(H: Tree[Node]) -> Tree[Node]:
+    longest_path_ranks(H)
 
     T: Tree[Node] = Tree()
     v_root = next(iter(H))
@@ -328,7 +336,31 @@ def normalize_and_balance(CG: ClusterGraph, H: Tree[Node]) -> None:
 _BASE_ITER_LIMIT = 50
 
 
-def compute_ranks(CG: ClusterGraph) -> None:
+def network_simplex_ranks(H: Tree[Node]) -> None:
+    """Rank the nodes so that the total (weighted) length of the links is
+    minimal, by network simplex."""
+    T = feasible_tree(H)
+    i = 0
+    iter_limit = _BASE_ITER_LIMIT * sqrt(len(H))
+    while (e := leave_edge(T)) and i < iter_limit:
+        exchange(H, T, e, enter_edge(H, e))
+        i += 1
+
+    # The adjacency caches are keyed by the graphs of this run; drop them so
+    # the graphs (and the nodes they reference) can be freed.
+    get_adj_edges_H.cache_clear()
+    get_adj_edges_T.cache_clear()
+
+
+def compute_ranks(
+    CG: ClusterGraph, solve: Callable[[Tree[Node]], None] = network_simplex_ranks
+) -> None:
+    """Assign every node its column (``rank``).
+
+    *solve* ranks the nodes of the nesting graph — the layout graph plus
+    border nodes and links that keep each frame's members between the
+    frame's borders — so that every link spans at least one column.
+    """
     for i, layer in enumerate(topological_generations(CG.T)):
         for c in CG.S.intersection(layer):
             c.nesting_level = i
@@ -337,18 +369,22 @@ def compute_ranks(CG: ClusterGraph) -> None:
     for link in H.all_links():
         link.weight = 1
 
-    T = feasible_tree(H)
-    i = 0
-    iter_limit = _BASE_ITER_LIMIT * sqrt(len(H))
-    while (e := leave_edge(T)) and i < iter_limit:
-        exchange(H, T, e, enter_edge(H, e))
-        i += 1
+    solve(H)
 
     root = next(c for c in CG.S if not CG.T.predecessors(c))
     H.remove_nodes((root.left, root.right))
     normalize_and_balance(CG, H)
 
-    # The adjacency caches are keyed by the graphs of this run; drop them so
-    # the graphs (and the Blender nodes they reference) can be freed.
-    get_adj_edges_H.cache_clear()
-    get_adj_edges_T.cache_clear()
+
+@register("rank", "network_simplex")
+def rank_network_simplex(layout: Layout) -> None:
+    """Shortest links overall: nodes sit as close to what they connect to
+    as the frames allow."""
+    compute_ranks(layout.CG, network_simplex_ranks)
+
+
+@register("rank", "longest_path")
+def rank_longest_path(layout: Layout) -> None:
+    """Every node as far right as it can go. Fast and simple, but nodes
+    feeding several consumers end up far from the early ones."""
+    compute_ranks(layout.CG, longest_path_ranks)

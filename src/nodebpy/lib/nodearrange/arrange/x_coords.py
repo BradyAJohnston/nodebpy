@@ -17,6 +17,7 @@ from .graph import (
     add_dummy_nodes_to_edge,
     lowest_common_cluster,
 )
+from .pipeline import Layout, register
 from .tree import DiGraph, Link, Tree, ancestors, dag_longest_path_length
 
 
@@ -216,3 +217,10 @@ def route_edges(G: Tree[Node], T: DiGraph[Node | Cluster], state: LayoutState) -
         for w in dummy_nodes:
             w.cluster = c
             T.add_edge(c, w)
+
+
+@register("route", "bend_points")
+def route_bend_points(layout: Layout) -> None:
+    """Add a bend point beside a node wherever a link would otherwise cut
+    across the node's neighbour in its column."""
+    route_edges(layout.G, layout.T, layout.state)

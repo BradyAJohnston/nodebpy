@@ -9,6 +9,8 @@ change and compare the numbers (and the pictures).
     uv run python -m tests.arrange_report --compare before.json  # what changed
     uv run python -m tests.arrange_report --set direction=BALANCED --set add_reroutes=true
     uv run python -m tests.arrange_report --only 'chain,diamond,Is*' --essentials
+    uv run python -m tests.arrange_report --set ranking=longest_path  # another strategy
+    uv run python -m tests.arrange_report --essentials --timings      # time per step
 
 Each tree is arranged with ``SugiyamaOptions`` (``--set`` overrides a field)
 and measured with :func:`nodebpy.lib.nodearrange.metrics.measure`. The
@@ -31,6 +33,9 @@ import bpy
 from bpy.types import NodeTree
 
 from nodebpy import SugiyamaOptions, arrange
+from nodebpy.builder.layout import _sugiyama_settings
+from nodebpy.lib.nodearrange import arrange_node_tree
+from nodebpy.lib.nodearrange.arrange.pipeline import Layout, Step
 from nodebpy.lib.nodearrange.metrics import LayoutMetrics, measure
 
 from . import arrange_cases
@@ -99,13 +104,31 @@ def run(
     only: list[str],
     with_essentials: bool,
     plots: Path | None,
+    timings: dict[str, float] | None = None,
 ) -> dict[str, dict[str, Any]]:
-    """Arrange and measure the corpus: ``{name: metrics + cost/seconds}``."""
+    """Arrange and measure the corpus: ``{name: metrics + cost/seconds}``.
+    With *timings*, also add up the seconds spent in each layout step."""
+
+    def observer(step: Step, layout: Layout, seconds: float) -> None:
+        assert timings is not None
+        timings[step.name] = timings.get(step.name, 0.0) + seconds
+
     results: dict[str, dict[str, Any]] = {}
     for name, tree in corpus(only, with_essentials):
         start = time.perf_counter()
         try:
-            arrange(tree, options)
+            if timings is None:
+                arrange(tree, options)
+            else:
+                arrange_node_tree(
+                    tree,
+                    _sugiyama_settings(options),
+                    tuple(options.margin),
+                    observer=observer,
+                )
+                for node in tree.nodes:  # as `arrange` does
+                    x, y = node.location
+                    node.location = (round(x, 2), round(y, 2))
         except Exception as error:  # noqa: BLE001 - a crash is a result too
             results[name] = {"error": f"{type(error).__name__}: {error}"}
             continue
@@ -237,13 +260,24 @@ def main(argv: list[str] | None = None) -> None:
         metavar="FILE",
         help="report what changed since the metrics saved in FILE",
     )
+    parser.add_argument(
+        "--timings",
+        action="store_true",
+        help="also print the time spent in each step of the layout",
+    )
     args = parser.parse_args(argv)
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
     only = [pattern for pattern in args.only.split(",") if pattern]
-    results = run(options_from(args.set), only, args.essentials, args.plots)
+    timings: dict[str, float] | None = {} if args.timings else None
+    results = run(options_from(args.set), only, args.essentials, args.plots, timings)
 
     print_table(results)
+    if timings:
+        total = sum(timings.values())
+        print("\nstep                     seconds  share")
+        for name, seconds in timings.items():
+            print(f"{name:24s} {seconds:7.2f}  {seconds / total:5.0%}")
     if args.json:
         args.json.write_text(json.dumps(results, indent=1))
     if args.compare:

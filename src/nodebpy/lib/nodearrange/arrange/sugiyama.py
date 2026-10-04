@@ -22,13 +22,14 @@ from .graph import (
     node_name,
     reset_serials,
 )
-from .ordering import minimize_crossings
-from .ranking import compute_ranks
+from .pipeline import Layout, Observer, Pipeline, Step, strategy
 from .realize import realize_layout, remove_reroutes
 from .stacking import contracted_node_stacks, expand_node_stack
 from .tree import Tree, bfs_edges
-from .x_coords import assign_x_coords, route_edges
-from .y_coords import bk_assign_y_coords
+from .x_coords import assign_x_coords
+
+# Importing these registers their strategies.
+from . import ordering, ranking, y_coords  # noqa: F401  isort: skip
 
 # -------------------------------------------------------------------
 
@@ -208,15 +209,95 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
 # -------------------------------------------------------------------
 
 
+def _contract_stacks(layout: Layout) -> None:
+    layout.node_stacks = contracted_node_stacks(layout.CG)
+
+
+def _expand_stacks(layout: Layout) -> None:
+    for node_stack in layout.node_stacks:
+        expand_node_stack(layout.CG, node_stack)
+
+
+def _add_frame_borders(layout: Layout) -> None:
+    CG = layout.CG
+    CG.add_vertical_border_nodes()
+    CG.remove_nodes_from([v for v in CG.G if v.is_fill_dummy])
+
+
+def _remove_frame_borders(layout: Layout) -> None:
+    CG = layout.CG
+    CG.remove_nodes_from([v for v in CG.G if v.type == Kind.VERTICAL_BORDER])
+
+
+def default_pipeline(settings: Settings | None = None) -> Pipeline:
+    """The standard layout: the steps in order, with the strategy *settings*
+    selects for each phase."""
+    settings = settings or Settings()
+
+    def reroutes(s: Settings) -> bool:
+        return s.add_reroutes
+
+    def no_reroutes(s: Settings) -> bool:
+        return not s.add_reroutes
+
+    def stacks(s: Settings) -> bool:
+        return s.stack_collapsed
+
+    return Pipeline(
+        [
+            # Prepare the graph.
+            Step(
+                "save_multi_input_orders",
+                lambda L: save_multi_input_orders(L.G, L.state),
+            ),
+            Step("remove_reroutes", lambda L: remove_reroutes(L.CG), reroutes),
+            Step("contract_stacks", _contract_stacks, stacks),
+            # Columns.
+            Step("rank", strategy("rank", settings.ranking), phase="rank"),
+            Step(
+                "balance_heights",
+                lambda L: balance_column_heights(L.G, L.CG.S, L.state),
+                lambda s: s.balance_heights,
+            ),
+            Step("merge_edges", lambda L: L.CG.merge_edges()),
+            Step("insert_dummy_nodes", lambda L: L.CG.insert_dummy_nodes()),
+            Step("add_columns", lambda L: add_columns(L.G)),
+            # Order within the columns.
+            Step("order", strategy("order", settings.ordering), phase="order"),
+            # Positions along the columns.
+            Step("add_frame_borders", _add_frame_borders),
+            Step("place", strategy("place", settings.placement), phase="place"),
+            Step(
+                "dissolve_dummy_nodes",
+                lambda L: dissolve_dummy_nodes(L.CG),
+                no_reroutes,
+            ),
+            Step("align_reroutes", lambda L: align_reroutes_with_sockets(L.CG)),
+            Step("remove_frame_borders", _remove_frame_borders),
+            # Positions across the columns, and the links between them.
+            Step("space_columns", lambda L: assign_x_coords(L.G, L.T, L.state)),
+            Step("route", strategy("route", settings.routing), reroutes, phase="route"),
+            # Write the result out.
+            Step("expand_stacks", _expand_stacks, stacks),
+            Step("realize", lambda L: realize_layout(L.CG, L.old_center)),
+        ]
+    )
+
+
 def sugiyama_layout(
     tree: bNodeTree,
     settings: Settings | None = None,
     margin: tuple[float, float] | None = None,
+    *,
+    pipeline: Pipeline | None = None,
+    observer: Observer | None = None,
 ) -> LayoutResult:
     """Lay out *tree* and return the edits that realise the layout.
 
     *tree* is only read. *margin* is the horizontal and vertical room to
-    leave between nodes.
+    leave between nodes. *pipeline* replaces the steps of
+    :func:`default_pipeline`; *observer* is called after each step (see
+    :class:`~.pipeline.Pipeline`).
     """
     reset_serials()
     state = LayoutState(tree=tree, settings=settings or Settings())
@@ -231,42 +312,6 @@ def sugiyama_layout(
     old_center = Vec2(f32(fmean(xs)), f32(fmean(ys)))
 
     precompute_links(state)
-    CG = ClusterGraph(get_tree(state), state)
-    G = CG.G
-    T = CG.T
-
-    save_multi_input_orders(G, state)
-    if state.settings.add_reroutes:
-        remove_reroutes(CG)
-
-    if state.settings.stack_collapsed:
-        node_stacks = contracted_node_stacks(CG)
-
-    compute_ranks(CG)
-    if state.settings.balance_heights:
-        balance_column_heights(G, CG.S, state)
-    CG.merge_edges()
-    CG.insert_dummy_nodes()
-
-    add_columns(G)
-    minimize_crossings(G, T, state)
-
-    CG.add_vertical_border_nodes()
-    CG.remove_nodes_from([v for v in G if v.is_fill_dummy])
-    bk_assign_y_coords(G, T, state)
-
-    if not state.settings.add_reroutes:
-        dissolve_dummy_nodes(CG)
-
-    align_reroutes_with_sockets(CG)
-    CG.remove_nodes_from([v for v in G if v.type == Kind.VERTICAL_BORDER])
-    assign_x_coords(G, T, state)
-    if state.settings.add_reroutes:
-        route_edges(G, T, state)
-
-    if state.settings.stack_collapsed:
-        for node_stack in node_stacks:
-            expand_node_stack(CG, node_stack)
-
-    realize_layout(CG, old_center)
+    layout = Layout(ClusterGraph(get_tree(state), state), old_center)
+    (pipeline or default_pipeline(state.settings)).run(layout, observer)
     return LayoutResult(state.edits)

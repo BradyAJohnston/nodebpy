@@ -15,6 +15,7 @@ from typing import Any, cast
 
 from ..config import LayoutState
 from .graph import Cluster, Edge, Kind, Node, Socket
+from .pipeline import Layout, register
 from .tree import DiGraph, Tree, descendants
 
 
@@ -373,3 +374,10 @@ def bk_assign_y_coords(
         i = _DIRECTION_TO_IDX[state.settings.direction]
         for v, y in zip(G, layouts[i]):
             v.y = y
+
+
+@register("place", "brandes_koepf")
+def place_brandes_koepf(layout: Layout) -> None:
+    """Align each node with a median neighbour into straight blocks, then
+    pack the blocks (Brandes & Köpf)."""
+    bk_assign_y_coords(layout.G, layout.T, layout.state)

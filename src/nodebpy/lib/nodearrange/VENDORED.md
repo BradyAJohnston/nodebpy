@@ -69,6 +69,17 @@ break headless operation.
   for collapsed nodes, whose sockets are spread according to how many are
   linked. Layouts are identical to before except in that case (a collapsed
   node next to a reroute the layout replaces).
+- **The layout is a pipeline.** Upstream's `sugiyama_layout` is one fixed
+  function calling each pass in turn. Here `arrange/pipeline.py` makes it a
+  list of named `Step`s (`sugiyama.default_pipeline()`), run by a
+  `Pipeline` that can be edited (replace / insert / remove a step) and
+  observed (a callback after each step). The four deciding passes are
+  *phases* with registered strategies, selected in `Settings`: `rank`
+  (`ranking`), `order` (`ordering`), `place` (`placement`), `route`
+  (`routing`). An upstream change to the order of passes goes into
+  `default_pipeline()`; a new upstream pass becomes a `Step` there.
+  `ranking.compute_ranks()` takes the solver as an argument, and
+  `"longest_path"` is a second ranking strategy (nodebpy-only).
 - **No module globals.** Upstream keeps its working state (`selected`,
   `linked_sockets`, `multi_input_sort_ids`, `SETTINGS`, `MARGIN`) as module
   globals in `config.py`, reset manually per operator invocation. Here that

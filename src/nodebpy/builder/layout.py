@@ -892,6 +892,12 @@ class SugiyamaOptions:
         Fraction of the vertical margin kept between consecutive reroutes
         (and the dummy nodes long links are routed through) in a column;
         bundles of long links pack tighter than nodes.
+    ranking : str
+        How nodes are assigned to columns. ``"network_simplex"`` keeps
+        links as short as possible overall, so a node sits next to what it
+        connects to. ``"longest_path"`` puts every node as far right as it
+        can go: faster, but a node with several consumers ends up far from
+        the early ones.
     """
 
     # Defaults calibrated against hand-approved node-arrange addon output
@@ -911,6 +917,7 @@ class SugiyamaOptions:
     balance_heights: bool = True
     balance_aspect: float = 1.6
     reroute_margin_y_fac: float = 0.35
+    ranking: Literal["network_simplex", "longest_path"] = "network_simplex"
 
 
 type ArrangeMethod = (
@@ -969,11 +976,11 @@ def default_split_inputs(split: bool = True) -> Iterator[None]:
         _DEFAULT_SPLIT_INPUTS.reset(token)
 
 
-def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:
-    from ..lib.nodearrange import arrange_node_tree
+def _sugiyama_settings(options: SugiyamaOptions):
+    """The arranger's settings for *options*."""
     from ..lib.nodearrange.config import Settings
 
-    settings = Settings(
+    return Settings(
         iterations=options.iterations,
         direction=options.direction,
         socket_alignment=options.socket_alignment,
@@ -986,8 +993,14 @@ def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> Non
         balance_heights=options.balance_heights,
         balance_aspect=options.balance_aspect,
         reroute_margin_y_fac=options.reroute_margin_y_fac,
+        ranking=options.ranking,
     )
-    arrange_node_tree(tree, settings, margin=tuple(options.margin))
+
+
+def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:
+    from ..lib.nodearrange import arrange_node_tree
+
+    arrange_node_tree(tree, _sugiyama_settings(options), margin=tuple(options.margin))
 
 
 def arrange(

@@ -41,6 +41,12 @@ class Settings:
     # consecutive reroutes / dummy nodes in a column (see
     # y_coords.vertical_gap).
     reroute_margin_y_fac: float = 0.35
+    # nodebpy divergence: which strategy runs each phase of the layout (see
+    # arrange.pipeline; `pipeline.strategies(phase)` lists the choices).
+    ranking: str = "network_simplex"
+    ordering: str = "layer_sweep"
+    placement: str = "brandes_koepf"
+    routing: str = "bend_points"
 
 
 DEFAULT_MARGIN = (200.0, 20.0)

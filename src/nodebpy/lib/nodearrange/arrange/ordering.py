@@ -21,6 +21,7 @@ from typing import cast
 
 from ..config import LayoutState
 from .graph import Cluster, Kind, Node, Socket, socket_graph
+from .pipeline import Layout, register
 from .tree import (
     DiGraph,
     Tree,
@@ -600,3 +601,10 @@ def minimize_crossings(G: Tree[Node], T: _MixedGraph, state: LayoutState) -> Non
             for col, best_col in zip(columns, best_columns):
                 col.sort(key=best_col.index)
             sort_reduced_free_columns(forward_items + backward_items)
+
+
+@register("order", "layer_sweep")
+def order_layer_sweep(layout: Layout) -> None:
+    """Sweep back and forth over the columns, ordering each by the average
+    position of its nodes' neighbours in the column before."""
+    minimize_crossings(layout.G, layout.T, layout.state)
