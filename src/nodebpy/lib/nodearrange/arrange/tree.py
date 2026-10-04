@@ -706,7 +706,8 @@ def find_cycle[N: Hashable](G: AnyGraph[N]) -> list[N] | None:
             stack.pop()
             path.pop()
 
-    return None
+    # A component of two or more nodes always has a cycle through `start`.
+    raise AssertionError("unreachable")  # pragma: no cover
 
 
 def edge_dfs[N: Hashable](G: DiGraph[N], source: N) -> Iterator[tuple[N, N]]:

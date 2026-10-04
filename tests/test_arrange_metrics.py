@@ -153,6 +153,10 @@ def test_frames():
     frames[1][0].parent = frames[0][0]
     assert measure(tree).frame_overlaps == 0
 
+    # An empty frame is not drawn, so it cannot overlap anything.
+    tree.nodes.new("NodeFrame")
+    assert measure(tree).frame_overlaps == 0
+
 
 def test_reroutes_are_points():
     tree = _tree("Reroutes")
@@ -167,6 +171,13 @@ def test_reroutes_are_points():
     assert metrics.reroutes == 1
     assert metrics.links == 2
     assert metrics.links_through_nodes == 0
+    # The two links meet at the reroute; that is not a crossing, even when
+    # the second doubles back over the first.
+    assert metrics.crossings == 0
+    reroute.location = (800, -100)
+    doubled_back = measure(tree)
+    assert doubled_back.crossings == 0
+    assert doubled_back.backward_links == 1
 
 
 def test_imbalance():
@@ -201,6 +212,7 @@ def test_cost_weights():
     assert metrics.cost(only_backward) == 7
     assert metrics.cost() > 0
     assert set(metrics.as_dict()) == set(LayoutMetrics.field_names())
+    assert metrics.as_dict(ndigits=None)["link_length"] == metrics.link_length
     assert "0 crossings" in metrics.summary()
     assert "1 backward" in metrics.summary()
 
