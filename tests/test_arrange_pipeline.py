@@ -22,7 +22,7 @@ from nodebpy.lib.nodearrange.arrange.pipeline import (
 )
 from nodebpy.lib.nodearrange.arrange.ranking import compute_ranks, longest_path_ranks
 from nodebpy.lib.nodearrange.arrange.sugiyama import default_pipeline, sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
+from nodebpy.lib.nodearrange.config import CrossingWeights, Settings
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
 from nodebpy.lib.nodearrange.metrics import measure
 
@@ -523,7 +523,7 @@ def _order_and_crossings(tree: bNodeTree, **settings) -> tuple[list[list[str]], 
             columns = layout.G.columns
             seen[step.name] = (
                 [[v.node.name if v.node else "" for v in col] for col in columns],
-                count_crossings(layout.G, columns),
+                count_crossings(layout.G, columns, layout.settings.crossing_weights),
             )
 
     sugiyama_layout(tree, Settings(**settings), observer=observer, verify=True)
@@ -564,6 +564,65 @@ def test_count_crossings():
     for target in "bc":
         tree.add_link(nodes["a"].outputs[0], nodes[target].inputs[0])
     assert _order_and_crossings(tree)[1] == 0
+
+
+def _trade_off() -> bNodeTree:
+    """p1 .. p4 in one column, each in a frame of its own so they keep
+    their order, and x above y in the next. x takes a value from p1 and
+    the geometry from p4; y takes values from p2 and p3. As they stand the
+    geometry link crosses both of y's; with x and y swapped the link from
+    p1 does instead."""
+    tree = bNodeTree()
+    nodes = {name: _node(tree, name) for name in ("p1", "p2", "p3", "p4", "x", "y")}
+    for name in ("p1", "p2", "p3", "p4"):
+        nodes[name].parent = tree.add_node(bNode(f"frame {name}", "NodeFrame"))
+        nodes[name].outputs[0].idname = "NodeSocketFloat"
+    nodes["p4"].outputs[0].idname = "NodeSocketGeometry"
+    for name in ("x", "y"):
+        nodes[name].add_socket(False, location=(0.0, -74.0))
+    for source, target, index in (
+        ("p1", "x", 0),
+        ("p4", "x", 1),
+        ("p2", "y", 0),
+        ("p3", "y", 1),
+    ):
+        tree.add_link(nodes[source].outputs[0], nodes[target].inputs[index])
+    return tree
+
+
+def test_crossings_weighed_by_what_links_carry():
+    """A value crossing the main data costs more than two values crossing,
+    and swapping neighbours goes by the cost."""
+    from nodebpy.lib.nodearrange.arrange.ordering import _transpose, count_crossings
+
+    even = CrossingWeights(1.0, 1.0, 1.0)
+    seen = {}
+
+    def observer(step: Step, layout: Layout, seconds: float) -> None:
+        if step.name != "add_columns":
+            return
+        G, columns = layout.G, layout.G.columns
+        assert [v.node.name for v in columns[1]] == ["x", "y"]
+        seen["count"] = count_crossings(G, columns)
+        seen["even"] = count_crossings(G, columns, even)
+        seen["weighted"] = count_crossings(G, columns, CrossingWeights())
+        seen["flow only"] = count_crossings(G, columns, CrossingWeights(1.0, 0.0, 0.0))
+        seen["even swaps"] = _transpose(G, columns, even)
+        seen["weighted swaps"] = _transpose(G, columns, CrossingWeights())
+        seen["order"] = [v.node.name for v in columns[1]]
+        seen["after"] = count_crossings(G, columns, CrossingWeights())
+
+    sugiyama_layout(_trade_off(), Settings(), observer=observer, verify=True)
+    assert seen == {
+        "count": 2,
+        "even": 2,
+        "weighted": 2 * CrossingWeights().flow_value,
+        "flow only": 0,
+        "even swaps": False,
+        "weighted swaps": True,
+        "order": ["y", "x"],
+        "after": 2,
+    }
 
 
 def test_default_ordering_does_not_depend_on_chance():

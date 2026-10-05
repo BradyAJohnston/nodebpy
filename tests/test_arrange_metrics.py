@@ -85,6 +85,33 @@ def test_crossing_links():
     assert measure(tree).crossings == 1
 
 
+def test_crossings_by_what_links_carry():
+    """A crossing counts as mixed when one link carries geometry and the
+    other does not, and as a flow crossing when both do."""
+
+    def crossed(first: str, second: str):
+        tree = _tree("Kinds")
+        ends = []
+        for kind, (y_from, y_to) in ((first, (0, -400)), (second, (-400, 0))):
+            if kind == "geometry":
+                a = tree.nodes.new("GeometryNodeSetPosition")
+                b = tree.nodes.new("GeometryNodeSetPosition")
+            else:
+                a, b = _math(tree, 0, 0), _math(tree, 0, 0)
+            a.location, b.location = (0, y_from), (400, y_to)
+            ends.append((a, b))
+        for a, b in ends:
+            tree.links.new(a.outputs[0], b.inputs[0])
+        metrics = measure(tree)
+        return metrics.crossings, metrics.flow_crossings, metrics.mixed_crossings
+
+    assert crossed("value", "value") == (1, 0, 0)
+    assert crossed("geometry", "value") == (1, 0, 1)
+    assert crossed("geometry", "geometry") == (1, 1, 0)
+    weights = CostWeights()
+    assert weights.mixed_crossing > 0
+
+
 def test_links_from_one_socket_do_not_cross():
     tree = _tree("FanOut")
     source = _math(tree, 0, 0)

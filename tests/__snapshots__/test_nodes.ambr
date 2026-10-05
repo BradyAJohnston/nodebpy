@@ -62,8 +62,8 @@
   graph LR
       N0("Cube"):::geometry-node
       N1("Position"):::input-node
-      N2("Vector"):::input-node
-      N3("Repeat Input"):::default-node
+      N2("Repeat Input"):::default-node
+      N3("Vector"):::input-node
       N4("Position"):::input-node
       N5("Vector Math<br/><small>(SCALE)</small>"):::vector-node
       N6("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
@@ -71,17 +71,17 @@
       N8("Set Position"):::geometry-node
       N9("Repeat Output"):::default-node
       N10("Set Position"):::geometry-node
-      N0 -->|"Mesh->cube"| N3
-      N1 -->|"Position->Position"| N3
+      N0 -->|"Mesh->cube"| N2
+      N1 -->|"Position->Position"| N2
       N8 -->|"Geometry->cube"| N9
       N6 -->|"Vector->Position"| N9
-      N3 -->|"Position->Vector"| N6
+      N2 -->|"Position->Vector"| N6
       N4 -->|"Position->Vector"| N6
-      N2 -->|"Vector->Vector"| N5
-      N3 -->|"Iteration->Scale"| N5
+      N3 -->|"Vector->Vector"| N5
+      N2 -->|"Iteration->Scale"| N5
       N5 -->|"Vector->Vector"| N7
       N6 -->|"Vector->Vector"| N7
-      N3 -->|"cube->Geometry"| N8
+      N2 -->|"cube->Geometry"| N8
       N7 -->|"Vector->Offset"| N8
       N9 -->|"cube->Geometry"| N10
       N9 -->|"Position->Position"| N10

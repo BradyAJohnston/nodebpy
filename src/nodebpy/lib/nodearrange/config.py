@@ -14,6 +14,18 @@ if TYPE_CHECKING:
     from .arrange.graph import Node, Socket
 
 
+@dataclass(frozen=True, slots=True)
+class CrossingWeights:
+    """What a crossing of two links costs the ordering, by what the links
+    carry: the tree's main data ("flow": geometry, shader, bundle, closure)
+    or anything else ("value"). Branches of the trunk passing each other
+    read easily; a value cutting across the trunk does not."""
+
+    flow_flow: float = 1.0
+    value_value: float = 1.0
+    flow_value: float = 4.0
+
+
 @dataclass
 class Settings:
     spacing: float = 30.0
@@ -58,6 +70,9 @@ class Settings:
     # "main" takes each node's main socket as Blender picks it, of whatever
     # type, so chains of values get a trunk too.
     link_priority: Literal["flow", "main", "none"] = "flow"
+    # nodebpy divergence: what a crossing costs the "layer_sweep" ordering,
+    # by what the two links carry. All equal: every crossing counts alike.
+    crossing_weights: CrossingWeights = field(default_factory=CrossingWeights)
     # nodebpy divergence: never split a column of at most this many nodes
     # when balancing heights, so a few parallel branches stay side by side.
     balance_min_column: int = 4

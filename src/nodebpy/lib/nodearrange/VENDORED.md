@@ -198,6 +198,10 @@ break headless operation.
   by an exact count over sockets (`ordering.count_crossings()`). It reuses
   upstream's sweep for sockets and frames with the random terms left out.
   This is the recipe of Graphviz's dot; a port reproduces it exactly.
+  The count and the swaps weigh each crossing by what its two links carry
+  (`Settings.crossing_weights`, `graph.link_is_flow()`): a value crossing
+  the main data costs four times a crossing of two values or of two
+  branches of the main data.
 - **Robustness** (nodebpy-only):
   - `sugiyama.cycle_links()`: the layout drops the links that close a cycle
     itself rather than rely on Blender having marked one invalid, and

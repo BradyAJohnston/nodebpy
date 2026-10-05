@@ -20,8 +20,16 @@ from random import Random
 from statistics import fmean
 from typing import cast
 
-from ..config import LayoutState
-from .graph import Cluster, Kind, Node, Socket, keep_frames_together, socket_graph
+from ..config import CrossingWeights, LayoutState
+from .graph import (
+    Cluster,
+    Kind,
+    Node,
+    Socket,
+    keep_frames_together,
+    link_is_flow,
+    socket_graph,
+)
 from .pipeline import Layout, register
 from .tree import (
     DiGraph,
@@ -744,31 +752,51 @@ def _depth_first_order(G: Tree[Node], columns: Sequence[list[Node]], forwards: b
     return order
 
 
-def _transpose(G: Tree[Node], columns: Sequence[list[Node]]) -> bool:
-    """Swap neighbours in a column wherever that uncrosses more of their
-    links than it crosses, until no swap helps. Only nodes directly in the
-    same frame are swapped, so frames stay together. Returns whether
+def _pair_cost(weights: CrossingWeights) -> tuple[tuple[float, float], ...]:
+    """Cost of a crossing, indexed by whether each link carries flow."""
+    return (
+        (weights.value_value, weights.flow_value),
+        (weights.flow_value, weights.flow_flow),
+    )
+
+
+type _End = tuple[int, int, bool]
+"""Where the far end of a link is, and what the link carries: position of
+the node in its column, index of the socket, whether it carries flow."""
+
+
+def _transpose(
+    G: Tree[Node], columns: Sequence[list[Node]], weights: CrossingWeights
+) -> bool:
+    """Swap neighbours in a column wherever that lowers the cost of the
+    crossings among their links, until no swap helps. Only nodes directly
+    in the same frame are swapped, so frames stay together. Returns whether
     anything moved.
 
     The sweeps order a column by where its nodes' neighbours are on average;
     this looks at the actual links of two nodes, and so finds the swaps an
     average hides."""
     position = {v: i for col in columns for i, v in enumerate(col)}
+    cost = _pair_cost(weights)
 
-    def ends(v: Node) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
-        # Where the other end of each link of `v` is: (node, socket) order.
-        left = [(position[k.fromnode], k.fromsock.idx) for k in G.in_links(v)]
-        right = [(position[k.tonode], k.tosock.idx) for k in G.out_links(v)]
+    def ends(v: Node) -> tuple[list[_End], list[_End]]:
+        left = [
+            (position[k.fromnode], k.fromsock.idx, link_is_flow(k))
+            for k in G.in_links(v)
+        ]
+        right = [
+            (position[k.tonode], k.tosock.idx, link_is_flow(k)) for k in G.out_links(v)
+        ]
         return left, right
 
-    def gain(upper: Node, lower: Node) -> int:
-        """Crossings between the links of two neighbours now, less those
-        there would be with the two swapped."""
-        total = 0
+    def gain(upper: Node, lower: Node) -> float:
+        """Cost of the crossings between the links of two neighbours now,
+        less what it would be with the two swapped."""
+        total = 0.0
         for above, below in zip(ends(upper), ends(lower)):
             for a in above:
                 for b in below:
-                    total += (a > b) - (a < b)
+                    total += cost[a[2]][b[2]] * ((a[:2] > b[:2]) - (a[:2] < b[:2]))
         return total
 
     moved = False
@@ -788,34 +816,66 @@ def _transpose(G: Tree[Node], columns: Sequence[list[Node]]) -> bool:
     return moved
 
 
-def count_crossings(G: Tree[Node], columns: Sequence[list[Node]]) -> int:
+type _Ends = tuple[tuple[int, int], tuple[int, int]]
+
+
+def _inversions(links: list[_Ends]) -> int:
+    """Pairs of *links* (sorted) that cross. Links from one socket are
+    taken together so they do not count against each other."""
+    total = 0
+    seen: list[tuple[int, int]] = []
+    i = 0
+    while i < len(links):
+        j = i
+        while j < len(links) and links[j][0] == links[i][0]:
+            j += 1
+        for _, right in links[i:j]:
+            total += len(seen) - bisect_right(seen, right)
+        for _, right in links[i:j]:
+            insort(seen, right)
+        i = j
+    return total
+
+
+def count_crossings(
+    G: Tree[Node],
+    columns: Sequence[list[Node]],
+    weights: CrossingWeights | None = None,
+) -> float:
     """Pairs of links between neighbouring columns that cross, going by
     the order of the nodes and of the sockets on each node. Links that
-    share a socket do not cross."""
+    share a socket do not cross.
+
+    With *weights* each pair counts for what a crossing of its kind costs
+    (see :class:`~..config.CrossingWeights`)."""
     position = {v: i for col in columns for i, v in enumerate(col)}
-    total = 0
+    total = 0.0
     for col in columns:
-        links = sorted(
-            (
+        links: list[_Ends] = []
+        flow: list[_Ends] = []
+        values: list[_Ends] = []
+        for k in G.in_links(col):
+            ends = (
                 (position[k.fromnode], k.fromsock.idx),
                 (position[k.tonode], k.tosock.idx),
             )
-            for k in G.in_links(col)
+            links.append(ends)
+            if weights is not None:
+                (flow if link_is_flow(k) else values).append(ends)
+        links.sort()
+        crossings = _inversions(links)
+        if weights is None:
+            total += crossings
+            continue
+        flow.sort()
+        values.sort()
+        of_flow = _inversions(flow)
+        of_values = _inversions(values)
+        total += (
+            weights.flow_flow * of_flow
+            + weights.value_value * of_values
+            + weights.flow_value * (crossings - of_flow - of_values)
         )
-        # Inversions among the right-hand ends, taken in left-hand order;
-        # links from one socket are taken together so they do not count
-        # against each other.
-        seen: list[tuple[int, int]] = []
-        i = 0
-        while i < len(links):
-            j = i
-            while j < len(links) and links[j][0] == links[i][0]:
-                j += 1
-            for _, right in links[i:j]:
-                total += len(seen) - bisect_right(seen, right)
-            for _, right in links[i:j]:
-                insort(seen, right)
-            i = j
     return total
 
 
@@ -835,6 +895,7 @@ def minimize_crossings_deterministic(
     machinery for sockets and frames. Nothing is random, so the same graph
     always gets the same order, and a port can reproduce it."""
     columns = G.columns
+    weights = state.settings.crossing_weights
     trees = get_col_nesting_trees(columns, T)
     G_ = G.copy()
 
@@ -869,7 +930,7 @@ def minimize_crossings_deterministic(
             _set_order(columns, start, items)
             is_forwards = first_forwards
             # The start itself may be as good as it gets.
-            fewest = count_crossings(G_, columns)
+            fewest = count_crossings(G_, columns, weights)
             if fewest < best_cross_count:
                 best_cross_count = fewest
                 best_columns = [col.copy() for col in columns]
@@ -879,9 +940,9 @@ def minimize_crossings_deterministic(
                 is_forwards = not is_forwards
                 # As in dot: polish each sweep's order by swapping
                 # neighbours, and judge it by its actual crossings.
-                _transpose(G_, columns)
+                _transpose(G_, columns, weights)
                 sort_reduced_free_columns(items)
-                cross_count = count_crossings(G_, columns)
+                cross_count = count_crossings(G_, columns, weights)
                 if cross_count < best_cross_count:
                     best_cross_count = cross_count
                     best_columns = [col.copy() for col in columns]

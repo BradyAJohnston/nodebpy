@@ -932,6 +932,11 @@ class SugiyamaOptions:
         by), whatever their type, so a chain of maths or colour nodes is
         straightened too; in trees of many values this aligns more links
         but lets long links cross more nodes when reroutes are off.
+    trunk_crossing_weight : float
+        How much worse the ordering counts a link of values crossing a
+        link of the main data (geometry, shader, bundle or closure) than
+        any other crossing. 1 counts every crossing alike; higher trades a
+        few more crossings overall for fewer across the main line.
     balance_min_column : int
         ``balance_heights`` never splits a column of at most this many
         nodes, so a few parallel branches stay side by side instead of
@@ -967,6 +972,7 @@ class SugiyamaOptions:
     routing: str = "bend_points"
     straighten_trunk: bool = True
     trunk_sockets: Literal["flow", "main"] = "flow"
+    trunk_crossing_weight: float = 4.0
     balance_min_column: int = 4
     pin_group_output: bool = True
     pin_group_input: bool = False
@@ -1030,9 +1036,10 @@ def default_split_inputs(split: bool = True) -> Iterator[None]:
 
 def _sugiyama_settings(options: SugiyamaOptions):
     """The arranger's settings for *options*."""
-    from ..lib.nodearrange.config import Settings
+    from ..lib.nodearrange.config import CrossingWeights, Settings
 
     return Settings(
+        crossing_weights=CrossingWeights(flow_value=options.trunk_crossing_weight),
         iterations=options.iterations,
         direction=options.direction,
         socket_alignment=options.socket_alignment,

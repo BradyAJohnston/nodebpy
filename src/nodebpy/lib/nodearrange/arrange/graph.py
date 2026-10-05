@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Literal, TypeGuard, cast
 from ..dna import bNode, bNodeSocket
 from .common import REROUTE_DIM, frame_padding, group_by
 from .edits import RemoveLink, RemoveNode
+from .priority import FLOW_SOCKETS
 from .tree import (
     DiGraph,
     Link,
@@ -81,6 +82,7 @@ class Node:
     lowest_po_num: int
     is_fill_dummy: bool
     priority: int
+    is_flow: bool
 
     col: list[Node]
     cr: CrossingReduction
@@ -128,6 +130,7 @@ class Node:
         self.lowest_po_num = None  # type: ignore
         self.is_fill_dummy = False
         self.priority = 0
+        self.is_flow = False
 
         self.col = None  # type: ignore
         self.cr = CrossingReduction()
@@ -258,6 +261,17 @@ def link_priority(link: Link[Node], priorities: dict[bNodeSocket, int]) -> int:
     return total
 
 
+def link_is_flow(link: Link[Node]) -> bool:
+    """Whether a link of the layout graph carries the tree's main data
+    (see :data:`.priority.FLOW_SOCKETS`). A piece of a long link carries
+    what the whole does."""
+    u = link.fromnode
+    if u.type == Kind.DUMMY:
+        return u.is_flow
+    socket = link.fromsock.dna if link.fromsock is not None else None
+    return socket is not None and socket.idname in FLOW_SOCKETS
+
+
 def add_dummy_edge(G: Tree[Node], u: Node, v: Node) -> None:
     G.add_link(u, v, Socket(u, 0, True), Socket(v, 0, False))
 
@@ -272,8 +286,10 @@ def add_dummy_nodes_to_edge(
         return
 
     priority = link_priority(link, state.socket_priority)
+    is_flow = link_is_flow(link)
     for w in dummy_nodes:
         w.priority = max(w.priority, priority)
+        w.is_flow = is_flow
 
     for a, b in pairwise(dummy_nodes):
         if not G.has_link(a, b, 0):

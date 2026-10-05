@@ -54,6 +54,9 @@ class CostWeights:
     Blender UI units, so the per-unit weights are small."""
 
     crossing: float = 10.0
+    mixed_crossing: float = 10.0
+    """On top of ``crossing``, for a link of values crossing one that
+    carries the tree's main data."""
     backward_link: float = 20.0
     node_overlap: float = 50.0
     link_through_node: float = 15.0
@@ -114,6 +117,12 @@ class LayoutMetrics:
     """Summed over the nodes where the main data forks (or merges): how far
     the socket the links fan out of (or into) is from the middle height of
     their other ends. Zero when every fork is symmetric."""
+    flow_crossings: int = 0
+    """Crossings between two links that both carry the main data. The
+    easiest kind to read: branches of the trunk passing each other."""
+    mixed_crossings: int = 0
+    """Crossings between a link carrying the main data and one that does
+    not: a value cutting across the trunk. The hardest kind to read."""
 
     @property
     def area(self) -> float:
@@ -134,6 +143,7 @@ class LayoutMetrics:
         w = weights or CostWeights()
         return (
             w.crossing * self.crossings
+            + w.mixed_crossing * self.mixed_crossings
             + w.backward_link * self.backward_links
             + w.node_overlap * self.node_overlaps
             + w.link_through_node * self.links_through_nodes
@@ -287,12 +297,13 @@ def _curves_cross(a: NDArray[np.float64], b: NDArray[np.float64]) -> bool:
     return bool(np.any((d1 * d2 <= 0) & (d3 * d4 <= 0) & ~collinear))
 
 
-def _count_crossings(
+def _crossing_pairs(
     curves: NDArray[np.float64], sockets: list[tuple[bNodeSocket, bNodeSocket]]
-) -> int:
+) -> list[tuple[int, int]]:
+    """The pairs of links (by index) whose curves cross."""
     n = len(curves)
     if n < 2:
-        return 0
+        return []
 
     lo = curves.min(axis=1)
     hi = curves.max(axis=1)
@@ -305,7 +316,7 @@ def _count_crossings(
     )
     candidates = np.argwhere(np.triu(~apart, k=1))
 
-    count = 0
+    pairs = []
     for i, j in candidates:
         from_i, to_i = sockets[i]
         from_j, to_j = sockets[j]
@@ -317,8 +328,8 @@ def _count_crossings(
         if np.any(np.all(ends_i[:, None, :] == ends_j[None, :, :], axis=2)):
             continue
         if _curves_cross(curves[i], curves[j]):
-            count += 1
-    return count
+            pairs.append((int(i), int(j)))
+    return pairs
 
 
 def _curve_hits_rects(
@@ -396,7 +407,7 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
 
     # -- links ------------------------------------------------------
     curves = _link_curves(starts, ends)
-    crossings = _count_crossings(curves, sockets)
+    crossing_pairs = _crossing_pairs(curves, sockets)
 
     links_through_nodes = 0
     if boxes and links:
@@ -494,7 +505,7 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
         links=len(links),
         width=float(width),
         height=float(height),
-        crossings=crossings,
+        crossings=len(crossing_pairs),
         backward_links=int(np.count_nonzero(delta[:, 0] < 0)),
         straight_links=int(np.count_nonzero(straight)),
         level_links=int(np.count_nonzero(level)),
@@ -508,4 +519,6 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
         flow_links=int(np.count_nonzero(is_flow)),
         level_flow_links=int(np.count_nonzero(is_flow & level)),
         fork_imbalance=float(sum(flow_offsets)),
+        flow_crossings=sum(bool(is_flow[i] and is_flow[j]) for i, j in crossing_pairs),
+        mixed_crossings=sum(bool(is_flow[i] != is_flow[j]) for i, j in crossing_pairs),
     )
