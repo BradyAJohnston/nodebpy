@@ -7,6 +7,21 @@ Sugiyama-based node layout, vendored from
 - **Base:** upstream commit `05d7aef` (2026-02-19, "refactor: remove dead code")
 - **Last sync:** upstream commit `8ca5e29` (2026-07-01, "refactor: cleanup") — synced 2026-09-11
 
+## Licensing (as found 2026-10-05)
+
+- Upstream's source files carry `SPDX-License-Identifier: GPL-2.0-or-later`,
+  and the files here keep that header. Upstream's `LICENSE` file is the
+  GPL-3.0 text and its `blender_manifest.toml` says `GPL-3.0-or-later`.
+- For nodebpy (GPL-3.0-or-later) the two agree: either reading allows it.
+- For a port into Blender, whose sources are GPL-2.0-or-later, the file
+  headers are what is needed, but the repository-level statements say
+  otherwise. Ask the author which is meant before contributing a port.
+- Upstream depends on NetworkX (BSD-3-Clause). `arrange/tree.py` replaces
+  it with its own structs and algorithms under the NetworkX function names.
+  If any of those were written from NetworkX's source rather than from the
+  textbook algorithm, NetworkX's copyright notice has to be kept with them;
+  whoever wrote them should confirm which it was.
+
 ## What is not vendored
 
 The Blender-addon shell: `__init__.py` (registration), `operators.py`,
