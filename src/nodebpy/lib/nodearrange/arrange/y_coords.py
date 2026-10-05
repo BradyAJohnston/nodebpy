@@ -17,6 +17,7 @@ from ..config import LayoutState
 from ..dna import bNodeSocket
 from .graph import Cluster, Edge, Kind, Node, Socket, link_priority
 from .pipeline import Layout, register
+from .priority import TRUNK_MIN_PRIORITY
 from .tree import DiGraph, Tree, descendants
 
 
@@ -444,7 +445,7 @@ def bk_assign_y_coords(
                     marked_edges,
                     marked_nodes,
                     priorities,
-                    state.settings.trunk_min_priority,
+                    TRUNK_MIN_PRIORITY,
                 )
                 inner_shift(G, dir_x == 1, is_up, state)
                 vertical_compaction(G, is_up, state)

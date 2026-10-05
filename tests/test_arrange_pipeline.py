@@ -67,8 +67,8 @@ def test_default_pipeline_steps():
         "remove_reroutes",
         "contract_stacks",
         "rank",
-        "pin_interface_nodes",
         "balance_heights",
+        "constrain_layers",
         "merge_edges",
         "insert_dummy_nodes",
         "add_columns",
@@ -302,7 +302,7 @@ def test_default_pipeline_fits_together():
 @pytest.mark.parametrize(
     ("removed", "broken", "fact"),
     [
-        ("rank", "pin_interface_nodes", "ranked"),
+        ("rank", "balance_heights", "ranked"),
         ("insert_dummy_nodes", "order", "proper"),
         ("add_columns", "order", "columns"),
         ("add_frame_borders", "place", "borders"),

@@ -50,19 +50,15 @@ class Settings:
     # nodebpy divergence: favour the links that carry the tree's main data
     # (see arrange.priority): "flow" keeps them short and straight, "none"
     # treats every link alike.
-    link_priority: Literal["flow", "none"] = "flow"
-    # The placement aligns a node first with neighbours linked by a link of
-    # at least this priority, and only then with a median neighbour. 3 is a
-    # link with a flow socket at one end and a main socket at the other.
-    trunk_min_priority: int = 3
-    # Also weigh links by priority in the ranking, so heavier links are
-    # kept shorter.
-    weighted_ranking: bool = False
+    # "main" takes each node's main socket as Blender picks it, of whatever
+    # type, so chains of values get a trunk too.
+    link_priority: Literal["flow", "main", "none"] = "flow"
     # nodebpy divergence: never split a column of at most this many nodes
     # when balancing heights, so a few parallel branches stay side by side.
     balance_min_column: int = 4
     # nodebpy divergence: put Group Output nodes (outside frames) in the
-    # last column, and Group Input nodes in the first.
+    # last column, and Group Input nodes in the first. (Any node can be
+    # held to the first or last column with `dna.bNode.layer`.)
     pin_group_output: bool = True
     pin_group_input: bool = False
 

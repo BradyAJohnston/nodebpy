@@ -129,20 +129,24 @@ break headless operation.
     together with their upstream into emptier columns while the drawing
     gets closer to a screen-shaped box.
   - `priority.socket_priorities()` / `graph.link_priority()`
-    (`link_priority`, `trunk_min_priority`): links carrying the tree's main
-    data (geometry, shader, bundle, closure) get a priority, and
-    `y_coords.horizontal_alignment()` aligns a node with a neighbour across
-    such a link before falling back to upstream's median neighbour — so the
-    trunk is a straight row. When several nodes want the same neighbour
-    across such links the middle one gets it, which makes a fork that
-    merges again symmetric. `weighted_ranking` also feeds the priorities to
-    the network simplex as link weights. With `link_priority="none"` the
-    alignment is upstream's.
+    (`link_priority`): links carrying the tree's main data get a priority,
+    and `y_coords.horizontal_alignment()` aligns a node with a neighbour
+    across such a link (priority at least `priority.TRUNK_MIN_PRIORITY`)
+    before falling back to upstream's median neighbour — so the trunk is a
+    straight row. When several nodes want the same neighbour across such
+    links the middle one gets it, which makes a fork that merges again
+    symmetric. `"flow"` takes geometry, shader, bundle and closure sockets;
+    `"main"` takes each node's main linked socket by Blender's own rule
+    (`priority.main_socket()`, after `get_main_socket_priority` in
+    `node_relationships.cc`; a C++ port would call `get_main_socket`),
+    which also straightens chains of values; `"none"` gives upstream's
+    alignment.
   - `balancing` skips columns of at most `balance_min_column` nodes, so a
     few parallel branches are not staggered over two columns.
-  - `sugiyama.pin_interface_nodes()` (`pin_group_output`,
-    `pin_group_input`): a pipeline step after ranking that moves Group
-    Output / Group Input nodes outside frames to the last / first column.
+  - `sugiyama.constrain_layers()` (`dna.bNode.layer`, `pin_group_output`,
+    `pin_group_input`): a pipeline step, after the balancing, that moves
+    nodes held to the first or last column there: any node whose `layer`
+    says so, and Group Input / Group Output nodes as the settings ask.
   - `y_coords.vertical_gap()` (`reroute_margin_y_fac`): consecutive
     reroutes / dummy nodes in a column pack at a fraction of the margin.
   - `sugiyama.precompute_links()` keeps `is_hidden` links (links into a

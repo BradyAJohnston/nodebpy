@@ -1,6 +1,8 @@
 """Bias controls of the layout: keeping the trunk straight, laying forks out
 symmetrically, pinning the group's interface nodes."""
 
+import itertools
+
 import bpy
 import pytest
 
@@ -253,21 +255,100 @@ def test_pinning_leaves_framed_interface_nodes_alone():
 
 
 # ---------------------------------------------------------------------------
-# Weighted ranking
+# Layer constraints on plain data
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize(
-    "case",
-    # ("annotated" overlaps two frames whatever the ranking; see
-    # test_arrange_metrics.KNOWN_DEFECTS.)
-    [name for name in arrange_cases.CASES if name != "annotated"],
-)
-def test_weighted_ranking_is_sound(case):
-    from nodebpy.lib.nodearrange.metrics import measure
+def _plain(tree: bNodeTree, name: str, idname="GeometryNodeSetPosition") -> bNode:
+    node = tree.add_node(
+        bNode(name, idname, width=140.0, draw_bounds=(0.0, -100.0, 140.0, 0.0))
+    )
+    node.add_socket(True, location=(140.0, -30.0), idname=GEOMETRY)
+    node.add_socket(False, location=(0.0, -52.0), idname=GEOMETRY)
+    return node
 
-    tree = _arranged(arrange_cases.CASES[case], SugiyamaOptions(weighted_ranking=True))
-    metrics = measure(tree)
-    assert metrics.node_overlaps == 0
-    assert metrics.backward_links == 0
-    assert metrics.frame_overlaps == 0
+
+def _columns(tree: bNodeTree, settings=None) -> dict[str, float]:
+    from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
+
+    result = sugiyama_layout(tree, settings, (50.0, 20.0), verify=True)
+    return {node.name: x for node, (x, _) in result.positions().items()}
+
+
+def _output_among_short_chains() -> bNodeTree:
+    """A three-node chain into a Group Output, a longer chain beside it,
+    and eight unrelated pairs that make two columns tall."""
+    tree = bNodeTree()
+    a, b, c = (_plain(tree, name) for name in "abc")
+    out = _plain(tree, "out", "NodeGroupOutput")
+    for u, v in ((a, b), (b, c), (c, out)):
+        tree.add_link(u.outputs[0], v.inputs[0])
+    long = [_plain(tree, f"long{i}") for i in range(6)]
+    for u, v in itertools.pairwise(long):
+        tree.add_link(u.outputs[0], v.inputs[0])
+    for i in range(8):
+        u, v = _plain(tree, f"u{i}"), _plain(tree, f"v{i}")
+        tree.add_link(u.outputs[0], v.inputs[0])
+    return tree
+
+
+def test_pinned_output_survives_height_balancing():
+    """The balancing moves nodes left along with what feeds them; a pinned
+    Group Output still ends up in the last column."""
+    columns = _columns(_output_among_short_chains())
+    assert columns["out"] == max(columns.values())
+
+
+def test_any_node_can_be_held_to_the_first_or_last_column():
+    tree = _output_among_short_chains()
+    nodes = {node.name: node for node in tree.nodes}
+    free = _columns(tree)
+    assert free["a"] > min(free.values())
+    assert free["u4"] > min(free.values())
+    assert free["long0"] < max(free.values())
+
+    nodes["v0"].layer = "last"
+    nodes["long0"].layer = "last"  # has nodes after it: stays
+    nodes["a"].layer = "first"
+    nodes["u4"].layer = "first"
+    # Not possible for a node with something after it: left where it is.
+    nodes["b"].layer = "last"
+    held = _columns(tree)
+
+    assert held["v0"] == max(held.values())
+    assert held["long0"] < held["long1"]
+    assert held["a"] == held["u4"] == min(held.values())
+    assert held["a"] < held["b"] < held["c"] < held["out"]
+
+
+# ---------------------------------------------------------------------------
+# Which links make the trunk
+# ---------------------------------------------------------------------------
+
+
+def test_main_sockets_give_a_chain_of_values_a_trunk():
+    """With flow sockets only geometry-like links are straightened, so a
+    chain of Math nodes is a staircase; with main sockets it is a row."""
+    tree = _arranged(arrange_cases.value_chain)
+    assert len(set(_tops(_by_type(tree, "ShaderNodeMath")))) > 1
+
+    tree = _arranged(arrange_cases.value_chain, SugiyamaOptions(trunk_sockets="main"))
+    assert len(set(_tops(_by_type(tree, "ShaderNodeMath")))) == 1
+
+
+def test_main_socket_is_the_one_blender_picks():
+    from nodebpy.lib.nodearrange.arrange.priority import main_socket
+
+    node = bNode("n", "GeometryNodeSetPosition")
+    kinds = ("Menu", "Bool", "Int", "FloatFactor", "Vector", "Color", "Geometry")
+    sockets = [node.add_socket(False, idname=f"NodeSocket{kind}") for kind in kinds]
+    for count in range(1, len(sockets) + 1):
+        # Each type outranks all the ones before it.
+        assert main_socket(sockets[:count]) is sockets[count - 1]
+    # Among equals the first wins; odd sockets rank last.
+    twice = [node.add_socket(False, idname="NodeSocketFloat") for _ in range(2)]
+    assert main_socket(twice) is twice[0]
+    virtual = node.add_socket(False, idname="NodeSocketVirtual")
+    custom = node.add_socket(False, idname="MyCustomSocket")
+    assert main_socket([virtual, custom, sockets[0]]) is sockets[0]
+    assert main_socket([]) is None

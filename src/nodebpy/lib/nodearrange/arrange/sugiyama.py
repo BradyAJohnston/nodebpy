@@ -292,13 +292,16 @@ def _remove_frame_borders(layout: Layout) -> None:
 
 
 def _prioritize_links(layout: Layout) -> None:
-    layout.state.socket_priority = socket_priorities(layout.state.tree)
+    layout.state.socket_priority = socket_priorities(
+        layout.state.tree, layout.settings.link_priority
+    )
 
 
-def pin_interface_nodes(layout: Layout) -> None:
-    """Move Group Output nodes to the last column and Group Input nodes to
-    the first, as the settings ask. Only nodes outside frames, which have
-    nothing after (before) them: moving those cannot break a constraint."""
+def constrain_layers(layout: Layout) -> None:
+    """Move the nodes held to the first or last column there: those with a
+    ``layer`` of their own, and Group Input / Group Output nodes as the
+    settings ask. Only nodes outside frames with nothing before (after)
+    them: moving those cannot break a constraint."""
     settings = layout.settings
     G = layout.G
     root = next(c for c in layout.CG.S if not layout.T.predecessors(c))
@@ -308,9 +311,14 @@ def pin_interface_nodes(layout: Layout) -> None:
         if not is_real(v) or v.cluster is not root:
             continue
         node = v.node
-        if settings.pin_group_output and node.is_group_output() and not G.successors(v):
+        layer = node.layer
+        if layer is None and settings.pin_group_output and node.is_group_output():
+            layer = "last"
+        if layer is None and settings.pin_group_input and node.is_group_input():
+            layer = "first"
+        if layer == "last" and not G.successors(v):
             v.rank = last
-        if settings.pin_group_input and node.is_group_input() and not G.predecessors(v):
+        if layer == "first" and not G.predecessors(v):
             v.rank = first
 
 
@@ -369,17 +377,14 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
             # Columns.
             step("rank", None, phase="rank", provides=[F.RANKED]),
             step(
-                "pin_interface_nodes",
-                pin_interface_nodes,
-                lambda s: s.pin_group_output or s.pin_group_input,
-                requires=[F.RANKED],
-            ),
-            step(
                 "balance_heights",
                 lambda L: balance_column_heights(L.G, L.CG.S, L.state),
                 lambda s: s.balance_heights,
                 requires=[F.RANKED],
             ),
+            # After the balancing, which would move a held node along with
+            # whatever it moves left.
+            step("constrain_layers", constrain_layers, requires=[F.RANKED]),
             step("merge_edges", lambda L: L.CG.merge_edges(), requires=[F.RANKED]),
             step(
                 "insert_dummy_nodes",

@@ -39,9 +39,52 @@ FLOW_SOCKETS = frozenset(
 FLOW = 2
 MAIN = 1
 
+TRUNK_MIN_PRIORITY = 3
+"""The placement aligns a node first with neighbours across a link of at
+least this priority (a flow socket at one end and a flow or main socket at
+the other), and only then with a median neighbour. Lower, and long links of
+side chains start cutting through nodes."""
 
-def socket_priorities(tree: bNodeTree) -> dict[bNodeSocket, int]:
-    """The priority of every socket that has one (see the module notes)."""
+
+def _type_priority(idname: str) -> int:
+    """How likely a socket of this type is a node's main one: Blender's
+    ``get_main_socket_priority`` (``node_relationships.cc``), by idname."""
+    kind = idname.removeprefix("NodeSocket")
+    if kind.startswith(("Virtual", "Menu")) or not idname.startswith("NodeSocket"):
+        return 1 if kind.startswith("Menu") else 0
+    if kind.startswith("Bool"):
+        return 2
+    if kind.startswith("Int") and not kind.startswith("IntVector"):
+        return 3
+    if kind.startswith("Float"):
+        return 4
+    if kind.startswith("Vector"):
+        return 5
+    if kind.startswith("Color"):
+        return 6
+    return 7
+
+
+def main_socket(sockets: list[bNodeSocket]) -> bNodeSocket | None:
+    """The main socket among a node's inputs (or outputs), as Blender picks
+    it for inserting a node on a link: the first one of the type that ranks
+    highest."""
+    best = None
+    best_priority = -1
+    for socket in sockets:
+        priority = _type_priority(socket.idname)
+        if priority > best_priority:
+            best, best_priority = socket, priority
+    return best
+
+
+def socket_priorities(tree: bNodeTree, mode: str = "flow") -> dict[bNodeSocket, int]:
+    """The priority of every socket that has one.
+
+    *mode* ``"flow"`` is the scheme of the module notes. ``"main"`` instead
+    gives priority 2 to each node's main linked input and main linked output
+    (:func:`main_socket`), whatever its type, so chains of values get a
+    trunk as well."""
     linked: dict[bNodeSocket, None] = {}
     for link in tree.links:
         if link.is_valid:
@@ -53,6 +96,11 @@ def socket_priorities(tree: bNodeTree) -> dict[bNodeSocket, int]:
         for side in (node.inputs, node.outputs):
             used = [socket for socket in side if socket in linked]
             if not used:
+                continue
+            if mode == "main":
+                main = main_socket(used)
+                assert main is not None
+                priorities[main] = FLOW
                 continue
             flow = next((s for s in used if s.idname in FLOW_SOCKETS), None)
             if flow is not None:

@@ -10,7 +10,7 @@ from math import sqrt
 from typing import TYPE_CHECKING, Any
 
 from .common import group_by
-from .graph import Cluster, Kind, MultiEdge, Node, link_priority, opposite
+from .graph import Cluster, Kind, MultiEdge, Node, opposite
 from .pipeline import Layout, register
 from .tree import (
     DiGraph,
@@ -374,15 +374,12 @@ def compute_ranks(
             if isinstance(c, Cluster):
                 c.nesting_level = i
 
-    # Heavier links are kept shorter: a link weighs one more than its
-    # priority, so the trunk stays compact and a node feeding both the trunk
-    # and a side chain sits by the trunk.
-    priorities = CG.state.socket_priority
-    if not CG.state.settings.weighted_ranking:
-        priorities = {}
+    # Every link weighs the same. (Weighing links by priority, so the trunk
+    # is kept shorter than side chains, was tried and made no consistent
+    # difference on the corpus.)
     H = get_nesting_graph(CG)
     for link in H.all_links():
-        link.weight = 1 + link_priority(link, priorities) if priorities else 1
+        link.weight = 1
 
     solve(H)
 

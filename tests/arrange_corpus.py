@@ -13,7 +13,12 @@ trees are kept as they are) and review the diff:
 
     uv run python -m tests.arrange_corpus --update
 
-To rebuild the trees themselves (new cases, or a new Blender version):
+To add the cases that have no file yet, leaving the others alone:
+
+    uv run python -m tests.arrange_corpus --add
+
+To rebuild every tree (a new Blender version; this rewrites every file, as
+the compressed trees are not byte for byte reproducible):
 
     uv run python -m tests.arrange_corpus --rebuild
 """
@@ -165,8 +170,9 @@ def update() -> None:
         _write(name, case["tree"])
 
 
-def rebuild() -> None:
-    """Rebuild every tree, and its layouts."""
+def rebuild(only_missing: bool = False) -> None:
+    """Rebuild every tree, and its layouts; or, with *only_missing*, just
+    those that have no file yet."""
     payloads = {}
     bpy.ops.wm.read_factory_settings(use_empty=True)
     builders = {**arrange_cases.CASES, **arrange_cases.asset_groups()}
@@ -179,20 +185,23 @@ def rebuild() -> None:
         name = "essentials_" + tree.name.lower().replace(" ", "_")
         payloads[name] = tree_to_payload(tree)
 
-    for path in DIRECTORY.glob("*.json"):
-        path.unlink()
+    if not only_missing:
+        for path in DIRECTORY.glob("*.json"):
+            path.unlink()
     for name, payload in payloads.items():
-        _write(name, payload)
+        if not (DIRECTORY / f"{name}.json").exists():
+            _write(name, payload)
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--update", action="store_true", help="recompute the layouts")
+    group.add_argument("--add", action="store_true", help="add the missing cases")
     group.add_argument("--rebuild", action="store_true", help="rebuild the trees too")
     args = parser.parse_args(argv)
-    if args.rebuild:
-        rebuild()
+    if args.rebuild or args.add:
+        rebuild(only_missing=args.add)
     else:
         update()
     files = list(DIRECTORY.glob("*.json"))

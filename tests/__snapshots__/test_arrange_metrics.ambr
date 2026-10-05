@@ -321,6 +321,29 @@
     'width': 1012.0,
   })
 # ---
+# name: test_layout_metrics_snapshot[value_chain]
+  dict({
+    'backward_links': 0,
+    'crossings': 0,
+    'flow_links': 0,
+    'foreign_nodes_in_frames': 0,
+    'fork_imbalance': 0.0,
+    'frame_overlaps': 0,
+    'height': 473.0,
+    'imbalance': 23.0,
+    'level_flow_links': 0,
+    'level_links': 0,
+    'link_length': 786.0,
+    'link_span_y': 645.0,
+    'links': 8,
+    'links_through_nodes': 0,
+    'node_overlaps': 0,
+    'nodes': 9,
+    'reroutes': 0,
+    'straight_links': 0,
+    'width': 850.0,
+  })
+# ---
 # name: test_layout_metrics_snapshot[zones]
   dict({
     'backward_links': 0,

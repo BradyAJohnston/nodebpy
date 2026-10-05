@@ -912,9 +912,14 @@ class SugiyamaOptions:
         chains feeding it hung below, and a fork that merges again is laid
         out symmetrically around its middle branch. Off, every link is
         treated alike and a node aligns with its median neighbour.
-    weighted_ranking : bool
-        Also weigh links by their importance when assigning columns, so
-        main-data links are kept shorter than the links of side chains.
+    trunk_sockets : str
+        Which links ``straighten_trunk`` takes for the main line.
+        ``"flow"``: links between geometry, shader, bundle and closure
+        sockets. ``"main"``: links between each node's main sockets as
+        Blender picks them (the ones a node dropped on a link is connected
+        by), whatever their type, so a chain of maths or colour nodes is
+        straightened too; in trees of many values this aligns more links
+        but lets long links cross more nodes when reroutes are off.
     balance_min_column : int
         ``balance_heights`` never splits a column of at most this many
         nodes, so a few parallel branches stay side by side instead of
@@ -948,7 +953,7 @@ class SugiyamaOptions:
     placement: str = "brandes_koepf"
     routing: str = "bend_points"
     straighten_trunk: bool = True
-    weighted_ranking: bool = False
+    trunk_sockets: Literal["flow", "main"] = "flow"
     balance_min_column: int = 4
     pin_group_output: bool = True
     pin_group_input: bool = False
@@ -1031,8 +1036,7 @@ def _sugiyama_settings(options: SugiyamaOptions):
         ordering=options.ordering,
         placement=options.placement,
         routing=options.routing,
-        link_priority="flow" if options.straighten_trunk else "none",
-        weighted_ranking=options.weighted_ranking,
+        link_priority=options.trunk_sockets if options.straighten_trunk else "none",
         balance_min_column=options.balance_min_column,
         pin_group_output=options.pin_group_output,
         pin_group_input=options.pin_group_input,

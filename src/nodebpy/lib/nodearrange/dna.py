@@ -17,6 +17,7 @@ its frame.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Literal
 
 REROUTE_SIZE = 8.0
 """Width and height the layout gives a reroute."""
@@ -58,6 +59,10 @@ class bNode:
     """The frame the node is in."""
     is_collapsed: bool = False
     """Drawn as a header only (``NODE_COLLAPSED``, Python's ``hide``)."""
+    layer: Literal["first", "last"] | None = None
+    """Hold the node to the first or the last column. Not something Blender
+    stores: a request to the layout, which follows it where nothing comes
+    before (after) the node and the node is not in a frame."""
     inputs: list[bNodeSocket] = field(default_factory=list)
     outputs: list[bNodeSocket] = field(default_factory=list)
 

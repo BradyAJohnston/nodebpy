@@ -274,6 +274,19 @@ def annotated() -> NodeTree:
     return tree
 
 
+def value_chain() -> NodeTree:
+    """Five Math nodes in a chain through their first input, each with a
+    Value node feeding its second: a tree with no geometry at all, whose
+    main line is the chain of values."""
+    tree = _tree("value_chain")
+    maths = [_math(tree) for _ in range(5)]
+    _chain(tree, maths)
+    for node in maths[1:]:
+        value = tree.nodes.new("ShaderNodeValue")
+        tree.links.new(value.outputs[0], node.inputs[1])
+    return tree
+
+
 CASES: dict[str, Callable[[], NodeTree]] = {
     case.__name__: case
     for case in (
@@ -288,6 +301,7 @@ CASES: dict[str, Callable[[], NodeTree]] = {
         compositor_chain,
         zones,
         annotated,
+        value_chain,
     )
 }
 
