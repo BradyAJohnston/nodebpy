@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 from typing import Any
 
@@ -38,10 +38,10 @@ from nodebpy.lib.nodearrange import arrange_node_tree
 from nodebpy.lib.nodearrange.config import Settings
 
 from . import arrange_cases
+from .arrange_data import MARGIN
 
 DIRECTORY = Path(__file__).parent / "arrange_corpus"
 
-MARGIN = (50.0, 20.0)
 
 # The settings each tree is laid out under, as the fields that differ from
 # `Settings()`. `default` is what `SugiyamaOptions()` gives.
@@ -73,6 +73,12 @@ ESSENTIALS = (
     "Randomize Transforms",
     "Geometry Input",
 )
+
+# The largest tree takes seconds to arrange, so it is stored under one of
+# the settings only.
+LAYOUTS_OF: dict[str, tuple[str, ...]] = {
+    "essentials_scatter_on_surface": ("default",),
+}
 
 
 # -------------------------------------------------------------------
@@ -135,14 +141,16 @@ def layout_of(tree: NodeTree) -> dict[str, Any]:
     return {"nodes": nodes, "links": links}
 
 
-def arranged(payload: str) -> Iterator[tuple[str, NodeTree]]:
-    """The tree of *payload* arranged under each of :data:`SETTINGS`, as
-    ``(layout, tree)``. The tree is built once and copied for each layout:
-    building a large one takes seconds."""
+def arranged(
+    payload: str, layouts: Iterable[str] = tuple(SETTINGS)
+) -> Iterator[tuple[str, NodeTree]]:
+    """The tree of *payload* arranged under each of *layouts* (names in
+    :data:`SETTINGS`), as ``(layout, tree)``. The tree is built once and
+    copied for each layout: building a large one takes seconds."""
     original = tree_from_payload(payload)
-    for layout, settings in SETTINGS.items():
+    for layout in layouts:
         tree = original.copy()
-        arrange_node_tree(tree, Settings(**settings), MARGIN)
+        arrange_node_tree(tree, Settings(**SETTINGS[layout]), MARGIN)
         yield layout, tree
 
 
@@ -158,7 +166,7 @@ def _write(name: str, payload: str) -> None:
         "tree": payload,
         "layouts": {
             layout: {"settings": SETTINGS[layout], **layout_of(tree)}
-            for layout, tree in arranged(payload)
+            for layout, tree in arranged(payload, LAYOUTS_OF.get(name, SETTINGS))
         },
     }
     for group in list(bpy.data.node_groups):

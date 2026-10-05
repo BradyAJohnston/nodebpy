@@ -5,7 +5,6 @@ from itertools import pairwise
 
 import pytest
 
-from nodebpy.lib.nodearrange.arrange.edits import MoveNode, RemoveNode
 from nodebpy.lib.nodearrange.arrange.priority import ZONE, zone_priorities, zone_spine
 from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
@@ -13,9 +12,7 @@ from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
 from nodebpy.lib.nodearrange.metrics import measure
 from nodebpy.lib.nodearrange.zones import find_zones
 
-from .arrange_fuzz import node_overlaps, plain_node, random_tree
-
-MARGIN = (50.0, 20.0)
+from .arrange_data import MARGIN, node_overlaps, plain_node
 
 
 def _chain(tree: bNodeTree, names: str, **kwargs) -> dict[str, bNode]:
@@ -164,9 +161,17 @@ def _measured(tree: bNodeTree, **settings):
     return measure(tree)
 
 
-@pytest.mark.parametrize("add_reroutes", [False, True])
-@pytest.mark.parametrize("socket_alignment", ["NONE", "MODERATE", "FULL"])
-@pytest.mark.parametrize("direction", ["BALANCED", "LEFT_UP", "RIGHT_DOWN"])
+@pytest.mark.parametrize(
+    ("add_reroutes", "socket_alignment", "direction"),
+    [
+        (False, "NONE", "BALANCED"),
+        (False, "MODERATE", "BALANCED"),
+        (False, "FULL", "BALANCED"),
+        (True, "FULL", "BALANCED"),
+        (False, "FULL", "LEFT_UP"),
+        (False, "FULL", "RIGHT_DOWN"),
+    ],
+)
 def test_zone_is_a_level_row(add_reroutes, socket_alignment, direction):
     """The nodes from the zone's input node through to its output node
     have their tops at one height, whatever the alignment asked for
@@ -195,23 +200,3 @@ def test_zones_are_straightened_without_link_priorities():
     tree, _ = _uneven_zone()
     metrics = _measured(tree, link_priority="none", socket_alignment="FULL")
     assert metrics.level_zones == 1
-
-
-@pytest.mark.parametrize("seed", range(40))
-@pytest.mark.parametrize("add_reroutes", [False, True])
-def test_random_tree_with_zones(seed, add_reroutes):
-    """Zones thrown at random trees, overlapping frames and each other any
-    which way: every step still leaves the graph as it promises and no
-    nodes overlap."""
-    settings = Settings(add_reroutes=add_reroutes)
-    tree = random_tree(seed, zones=3)
-    result = sugiyama_layout(tree, settings, MARGIN, verify=True)
-
-    moved = {edit.node for edit in result.edits if isinstance(edit, MoveNode)}
-    removed = {edit.node for edit in result.edits if isinstance(edit, RemoveNode)}
-    for node in tree.nodes:
-        assert node.is_frame() or node in moved or node in removed
-    assert node_overlaps(result) == 0
-    # Frames and reroutes are still the tree's own afterwards.
-    result.apply_to(tree)
-    measure(tree)

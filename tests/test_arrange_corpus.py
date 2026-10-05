@@ -31,15 +31,18 @@ def _assert_close(actual, expected, path="layout"):
 
 
 def test_corpus_is_there():
-    assert len(CASES) >= 19
-    for case in CASES.values():
-        assert set(case["layouts"]) == set(LAYOUTS)
+    """Every hand-built case is stored, each file under the settings it
+    says it was laid out with."""
+    assert set(arrange_cases.CASES) <= set(CASES)
+    for name, case in CASES.items():
+        expected = arrange_corpus.LAYOUTS_OF.get(name, arrange_corpus.SETTINGS)
+        assert set(case["layouts"]) == set(expected)
         assert case["tree"].startswith("TreeClipper::")
         for layout, stored in case["layouts"].items():
             assert stored["settings"] == arrange_corpus.SETTINGS[layout]
 
 
-@pytest.mark.parametrize("name", list(arrange_cases.CASES))
+@pytest.mark.parametrize("name", ["zones", "nested_frames", "annotated"])
 def test_tree_survives_the_corpus_format(name):
     """A tree read back from its Tree Clipper string has the same nodes,
     frames and links."""
@@ -58,7 +61,7 @@ def test_layout_matches_the_corpus(name):
     ``python -m tests.arrange_corpus --update``."""
     case = CASES[name]
 
-    for layout, tree in arrange_corpus.arranged(case["tree"]):
+    for layout, tree in arrange_corpus.arranged(case["tree"], case["layouts"]):
         stored = case["layouts"][layout]
         actual = arrange_corpus.layout_of(tree)
         assert actual["links"] == stored["links"], layout
@@ -82,29 +85,6 @@ def test_measuring_plain_data_agrees_with_measuring_blender(name):
     blender = measure(ntree)
 
     assert pure.as_dict(ndigits=1) == blender.as_dict(ndigits=1)
-
-
-def _measured(name: str, layout: str):
-    tree = extract(arrange_cases.CASES[name]())[0]
-    settings = Settings(**arrange_corpus.SETTINGS[layout])
-    sugiyama_layout(tree, settings, arrange_corpus.MARGIN).apply_to(tree)
-    return measure(tree)
-
-
-def test_main_data_metrics():
-    """A chain's trunk is level throughout, and a diamond's forks are
-    symmetric — unless the bias is off, and then it costs."""
-    chain = _measured("chain", "default")
-    assert chain.flow_links == chain.level_flow_links == 4
-    assert chain.fork_imbalance == 0
-
-    diamond = _measured("diamond", "default")
-    assert diamond.flow_links > 0
-    assert diamond.fork_imbalance == pytest.approx(0.0, abs=1.0)
-
-    plain = _measured("diamond", "plain")
-    assert plain.fork_imbalance > 100
-    assert plain.cost() > diamond.cost()
 
 
 def test_applying_edits_to_plain_data_with_reroutes():

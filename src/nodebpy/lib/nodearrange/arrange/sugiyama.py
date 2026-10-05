@@ -11,6 +11,7 @@ from ..dna import bNode, bNodeLink, bNodeTree
 from . import packing
 from .balancing import balance_column_heights
 from .common import Vec2, f32, group_by, segments_intersect
+from .digraph import LayoutGraph, bfs_edges
 from .edits import Edit, LayoutResult, MoveNode, RemoveLink
 from .graph import (
     Cluster,
@@ -37,7 +38,6 @@ from .pipeline import (
 from .priority import socket_priorities, zone_priorities
 from .realize import realize_layout, remove_reroutes
 from .stacking import contracted_node_stacks, expand_node_stack
-from .tree import Tree, bfs_edges
 from .x_coords import assign_x_coords
 
 # Importing these registers their strategies.
@@ -134,7 +134,7 @@ def precompute_links(state: LayoutState) -> None:
         state.linked_sockets[link.fromsock][link.tosock] = None
 
 
-def get_tree(state: LayoutState) -> Tree[Node]:
+def get_tree(state: LayoutState) -> LayoutGraph[Node]:
     parents = {
         n.parent: Cluster(n.parent, None)  # type: ignore
         for n in state.tree.nodes
@@ -143,7 +143,7 @@ def get_tree(state: LayoutState) -> Tree[Node]:
         if c.node:
             c.cluster = parents[c.node.parent]
 
-    G: Tree[Node] = Tree()
+    G: LayoutGraph[Node] = LayoutGraph()
     G.add_nodes(
         [
             Node(n, parents[n.parent])
@@ -168,7 +168,7 @@ def get_tree(state: LayoutState) -> Tree[Node]:
     return G
 
 
-def save_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
+def save_multi_input_orders(G: LayoutGraph[Node], state: LayoutState) -> None:
     links = {(link.fromsock, link.tosock): link for link in state.tree.links}
     for edge in G.all_links():
         v, w = edge.fromnode, edge.tonode
@@ -191,7 +191,7 @@ def save_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
         )
 
 
-def add_columns(G: Tree[Node]) -> None:
+def add_columns(G: LayoutGraph[Node]) -> None:
     columns = [list(c) for c in group_by(G, key=lambda v: v.rank, sort=True)]
     G.columns = columns
 
@@ -302,7 +302,7 @@ def dissolve_clear_dummy_nodes(CG: ClusterGraph) -> None:
 # -------------------------------------------------------------------
 
 
-def get_foreign_sockets_of(path: Sequence[Node], G: Tree[Node]) -> list[Socket]:
+def get_foreign_sockets_of(path: Sequence[Node], G: LayoutGraph[Node]) -> list[Socket]:
     inputs = [link.fromsock for link in G.in_links(path[0])]
     outputs = [link.tosock for link in G.out_links(path[-1])]
     return inputs + outputs
@@ -409,10 +409,9 @@ def _prioritize_links(layout: Layout) -> None:
 
 
 def constrain_layers(layout: Layout) -> None:
-    """Move the nodes held to the first or last column there: those with a
-    ``layer`` of their own, and Group Input / Group Output nodes as the
-    settings ask. Only nodes outside frames with nothing before (after)
-    them: moving those cannot break a constraint."""
+    """Move Group Output nodes to the last column and Group Input nodes to
+    the first, as the settings ask. Only nodes outside frames with nothing
+    after (before) them: moving those cannot break a constraint."""
     settings = layout.settings
     G = layout.G
     root = next(c for c in layout.CG.S if not layout.T.predecessors(c))
@@ -422,21 +421,15 @@ def constrain_layers(layout: Layout) -> None:
         if not is_real(v) or v.cluster is not root:
             continue
         node = v.node
-        layer = node.layer
-        if layer is None and settings.pin_group_output and node.is_group_output():
-            layer = "last"
-        if layer is None and settings.pin_group_input and node.is_group_input():
-            layer = "first"
-        if layer == "last" and not G.successors(v):
+        if settings.pin_group_output and node.is_group_output() and not G.successors(v):
             v.rank = last
-        if layer == "first" and not G.predecessors(v):
+        if settings.pin_group_input and node.is_group_input() and not G.predecessors(v):
             v.rank = first
 
 
-def default_pipeline(settings: Settings | None = None) -> Pipeline:
+def default_pipeline() -> Pipeline:
     """The standard layout: the steps in order. Each phase runs the
-    strategy the settings of the layout select when it gets there.
-    (*settings* is not needed any more and is ignored.)"""
+    strategy the settings of the layout select when it gets there."""
     F = Fact
 
     def step(
@@ -492,7 +485,7 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
             step(
                 "remove_reroutes", lambda L: remove_reroutes(L.CG), replacing_reroutes
             ),
-            step("contract_stacks", _contract_stacks, stacks, provides=[F.STACKED]),
+            step("contract_stacks", _contract_stacks, stacks),
             # Columns.
             step("rank", None, phase="rank", provides=[F.RANKED]),
             step(
@@ -577,7 +570,6 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
                 reroutes,
                 phase="route",
                 requires=[F.X],
-                provides=[F.ROUTED],
                 # Bend points are new nodes, outside the ranks and columns.
                 removes=[F.RANKED, F.PROPER, F.COLUMNS],
             ),
@@ -586,15 +578,14 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
                 "expand_stacks",
                 _expand_stacks,
                 stacks,
-                requires=[F.STACKED, F.X],
+                requires=[F.X],
                 # The nodes of a stack come back without a rank or column.
-                removes=[F.STACKED, F.RANKED, F.PROPER, F.COLUMNS],
+                removes=[F.RANKED, F.PROPER, F.COLUMNS],
             ),
             step(
                 "realize",
                 lambda L: realize_layout(L.CG, L.old_center),
                 requires=[F.X],
-                provides=[F.REALIZED],
                 # Chains of dummy nodes become reroutes, fewer than columns.
                 removes=[F.PROPER],
             ),

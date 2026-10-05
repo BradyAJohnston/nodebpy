@@ -112,6 +112,45 @@ def test_crossings_by_what_links_carry():
     assert weights.mixed_crossing > 0
 
 
+def test_trunk_and_zone_metrics():
+    """Counted on plain data placed by hand: a -> b -> c carrying geometry,
+    with b forking to d as well, and b .. c a zone."""
+    from nodebpy.lib.nodearrange.dna import bNodeTree
+    from nodebpy.lib.nodearrange.zones import find_zones
+
+    from .arrange_data import plain_node
+
+    def place(node, x, y):
+        dx, dy = x - node.draw_bounds[0], y - node.draw_bounds[3]
+        node.location = (x, y)
+        node.draw_bounds = (x, y - 100.0, x + 140.0, y)
+        for socket in (*node.inputs, *node.outputs):
+            socket.location = (socket.location[0] + dx, socket.location[1] + dy)
+
+    tree = bNodeTree()
+    a, b, c, d = (plain_node(tree, name) for name in "abcd")
+    for source, target in ((a, b), (b, c), (b, d)):
+        tree.add_link(source.outputs[0], target.inputs[0])
+    tree.zones = find_zones(tree, [(b, c)])
+    for node, (x, y) in ((a, (0, 0)), (b, (200, 0)), (c, (400, 0)), (d, (400, -300))):
+        place(node, x, y)
+
+    metrics = measure(tree)
+    assert metrics.flow_links == 3
+    assert metrics.level_flow_links == 2  # a -> b and b -> c: tops level
+    assert (metrics.zones, metrics.level_zones) == (1, 1)
+    # b's output is 172 above the middle of the two inputs it fans out to
+    # (150 between the nodes, and an input sits 22 below an output).
+    assert metrics.fork_imbalance == pytest.approx(172)
+
+    place(c, 400, 300)
+    place(d, 400, -300)
+    metrics = measure(tree)
+    assert metrics.fork_imbalance == pytest.approx(22)
+    assert metrics.level_zones == 0
+    assert metrics.level_flow_links == 1
+
+
 def test_links_from_one_socket_do_not_cross():
     tree = _tree("FanOut")
     source = _math(tree, 0, 0)

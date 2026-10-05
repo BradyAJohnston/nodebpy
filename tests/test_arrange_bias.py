@@ -7,13 +7,13 @@ import bpy
 import pytest
 
 from nodebpy import SugiyamaOptions, arrange
+from nodebpy.lib.nodearrange.arrange.digraph import LayoutGraph
 from nodebpy.lib.nodearrange.arrange.graph import Kind, Node, Socket, link_priority
 from nodebpy.lib.nodearrange.arrange.priority import (
     FLOW,
     MAIN,
     socket_priorities,
 )
-from nodebpy.lib.nodearrange.arrange.tree import Tree
 from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
 from nodebpy.lib.nodearrange.extract import extract
@@ -101,7 +101,7 @@ def test_link_priority():
     tree.add_link(x.outputs[0], b.inputs[2])
     priorities = socket_priorities(tree)
 
-    G: Tree[Node] = Tree()
+    G: LayoutGraph[Node] = LayoutGraph()
     u, v, w = Node(a), Node(b), Node(x)
     trunk = G.add_link(u, v, Socket(u, 0, True), Socket(v, 0, False))
     side = G.add_link(w, v, Socket(w, 0, True), Socket(v, 2, False))
@@ -300,28 +300,6 @@ def test_pinned_output_survives_height_balancing():
     Group Output still ends up in the last column."""
     columns = _columns(_output_among_short_chains())
     assert columns["out"] == max(columns.values())
-
-
-def test_any_node_can_be_held_to_the_first_or_last_column():
-    tree = _output_among_short_chains()
-    nodes = {node.name: node for node in tree.nodes}
-    free = _columns(tree)
-    assert free["a"] > min(free.values())
-    assert free["u4"] > min(free.values())
-    assert free["long0"] < max(free.values())
-
-    nodes["v0"].layer = "last"
-    nodes["long0"].layer = "last"  # has nodes after it: stays
-    nodes["a"].layer = "first"
-    nodes["u4"].layer = "first"
-    # Not possible for a node with something after it: left where it is.
-    nodes["b"].layer = "last"
-    held = _columns(tree)
-
-    assert held["v0"] == max(held.values())
-    assert held["long0"] < held["long1"]
-    assert held["a"] == held["u4"] == min(held.values())
-    assert held["a"] < held["b"] < held["c"] < held["out"]
 
 
 # ---------------------------------------------------------------------------

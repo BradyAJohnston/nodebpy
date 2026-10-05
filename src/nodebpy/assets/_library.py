@@ -1439,8 +1439,9 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
         "--iterations",
         type=int,
         help=(
-            "Number of iterations spent reducing crossings between links "
-            "(higher gives fewer crossings, but is slower; default: 50)."
+            "No longer has an effect: the layout is deterministic and "
+            "has no iterations to spend. Accepted so existing commands "
+            "and configurations keep working."
         ),
     )
     layout.add_argument(
@@ -1527,8 +1528,6 @@ def _arrange_options_from_args(args) -> SugiyamaOptions | None:
     overrides: dict = {}
     if args.spacing is not None:
         overrides["margin"] = tuple(args.spacing)
-    if args.iterations is not None:
-        overrides["iterations"] = args.iterations
     if args.direction is not None:
         overrides["direction"] = args.direction
     if args.socket_alignment is not None:

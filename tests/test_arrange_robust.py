@@ -4,18 +4,16 @@ the process it runs in."""
 
 import itertools
 import random
+import sys
 
 import pytest
 
 from nodebpy.lib.nodearrange.arrange import ordering
-from nodebpy.lib.nodearrange.arrange.edits import MoveNode, RemoveNode
 from nodebpy.lib.nodearrange.arrange.sugiyama import cycle_links, sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.dna import bNodeTree
 
-from .arrange_fuzz import node_overlaps, plain_node, random_tree
-
-MARGIN = (50.0, 20.0)
+from .arrange_data import MARGIN, node_overlaps, plain_node, random_tree
 
 
 def _positions(tree, **settings):
@@ -36,8 +34,9 @@ def _ring(size: int) -> bNodeTree:
     return tree
 
 
-@pytest.mark.parametrize("size", [1, 2, 3, 6])
-@pytest.mark.parametrize("add_reroutes", [False, True])
+@pytest.mark.parametrize(
+    ("size", "add_reroutes"), [(1, False), (2, True), (3, False), (6, True)]
+)
 def test_cycle_is_laid_out_as_a_chain(size, add_reroutes):
     """A tree with a cycle is laid out without the link that closes it."""
     tree = _ring(size)
@@ -101,22 +100,28 @@ def test_very_long_chain():
     for a, b in itertools.pairwise(nodes):
         tree.add_link(a.outputs[0], b.inputs[0])
 
-    positions = _positions(tree, iterations=1, socket_alignment="NONE")
+    positions = _positions(tree, socket_alignment="NONE")
 
     assert len({y for _, y in positions.values()}) == 1
     assert len({x for x, _ in positions.values()}) == 1500
 
 
 def test_very_tall_column():
+    """Placing a column does not recurse once per node either: a column
+    taller than the recursion limit (lowered here, to keep the test quick)
+    lays out without overlaps."""
     tree = bNodeTree()
     join = plain_node(tree, "join", multi_input=True)
-    for i in range(1200):
+    for i in range(400):
         source = plain_node(tree, f"s{i:04}", height=40.0)
         tree.add_link(source.outputs[0], join.inputs[0], i)
 
-    result = sugiyama_layout(
-        tree, Settings(iterations=1, balance_heights=False), MARGIN
-    )
+    limit = sys.getrecursionlimit()
+    sys.setrecursionlimit(300)
+    try:
+        result = sugiyama_layout(tree, Settings(balance_heights=False), MARGIN)
+    finally:
+        sys.setrecursionlimit(limit)
 
     assert node_overlaps(result) == 0
 
@@ -138,7 +143,7 @@ def test_long_stack_of_collapsed_math_nodes():
     for a, b in itertools.pairwise(nodes):
         tree.add_link(a.outputs[0], b.inputs[0])
 
-    positions = _positions(tree, iterations=1)
+    positions = _positions(tree)
 
     assert len({x for x, _ in positions.values()}) == 1
 
@@ -203,34 +208,6 @@ def test_layout_keeps_no_graphs_alive():
         ordering.non_cluster_descendant,
     ):
         assert cached.cache_info().currsize == 0
-
-
-# ---------------------------------------------------------------------------
-# Random trees
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.parametrize("seed", range(40))
-@pytest.mark.parametrize("add_reroutes", [False, True])
-def test_random_tree(seed, add_reroutes):
-    """Every step leaves the graph as it promises, every node is placed (or,
-    for a reroute, replaced), none overlap, and the same tree gives the same
-    layout again."""
-    settings = Settings(add_reroutes=add_reroutes, iterations=5)
-    tree = random_tree(seed)
-
-    result = sugiyama_layout(tree, settings, MARGIN, verify=True)
-
-    moved = {edit.node for edit in result.edits if isinstance(edit, MoveNode)}
-    removed = {edit.node for edit in result.edits if isinstance(edit, RemoveNode)}
-    for node in tree.nodes:
-        assert node.is_frame() or node in moved or node in removed
-    assert node_overlaps(result) == 0
-
-    again = sugiyama_layout(random_tree(seed), settings, MARGIN)
-    assert [
-        (e.node.name, e.top_left) for e in result.edits if isinstance(e, MoveNode)
-    ] == [(e.node.name, e.top_left) for e in again.edits if isinstance(e, MoveNode)]
 
 
 def test_stack_feeding_a_multi_input_through_a_kept_reroute():

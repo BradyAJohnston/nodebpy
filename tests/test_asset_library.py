@@ -475,7 +475,6 @@ def test_cli_arrange_options_mapping():
     )
     assert _arrange_options_from_args(tuned) == SugiyamaOptions(
         margin=(50.0, 40.0),
-        iterations=10,
         direction="BALANCED",
         socket_alignment="FULL",
         keep_reroutes_outside_frames=True,

@@ -1,16 +1,16 @@
-"""The arranger's graph structs (``nodebpy.lib.nodearrange.arrange.tree``).
+"""The arranger's graph structs (``nodebpy.lib.nodearrange.arrange.digraph``).
 
-``Tree`` / ``Link`` stand in for Blender's ``bNodeTree`` / ``bNodeLink``;
+``LayoutGraph`` / ``Link`` stand in for Blender's ``bNodeTree`` / ``bNodeLink``;
 ``DiGraph`` holds plain relations. The layout relies on all of them walking
 nodes and neighbours in insertion order.
 """
 
 import pytest
 
-from nodebpy.lib.nodearrange.arrange.tree import (
+from nodebpy.lib.nodearrange.arrange.digraph import (
     CycleError,
     DiGraph,
-    Tree,
+    LayoutGraph,
     ancestors,
     bfs_edges,
     dag_longest_path_length,
@@ -26,24 +26,24 @@ from nodebpy.lib.nodearrange.arrange.tree import (
 )
 
 
-def _tree(*links: tuple[str, str]) -> Tree[str]:
-    tree: Tree[str] = Tree()
+def _tree(*links: tuple[str, str]) -> LayoutGraph[str]:
+    tree: LayoutGraph[str] = LayoutGraph()
     for u, v in links:
         tree.add_link(u, v)
     return tree
 
 
 # ---------------------------------------------------------------------------
-# Tree and Link
+# LayoutGraph and Link
 # ---------------------------------------------------------------------------
 
 
 def test_tree_nodes_keep_insertion_order():
-    tree: Tree[str] = Tree()
+    tree: LayoutGraph[str] = LayoutGraph()
     tree.add_nodes("cab")
     tree.add_node("a")  # already there: stays where it is
     assert list(tree) == ["c", "a", "b"]
-    assert list(tree.all_nodes()) == ["c", "a", "b"]
+    assert list(tree) == ["c", "a", "b"]
     assert len(tree) == 3
     assert "a" in tree
     assert "z" not in tree
@@ -51,7 +51,7 @@ def test_tree_nodes_keep_insertion_order():
 
 
 def test_links_carry_sockets_and_keys():
-    tree: Tree[str] = Tree()
+    tree: LayoutGraph[str] = LayoutGraph()
     first = tree.add_link("a", "b", "out", "in0")
     second = tree.add_link("a", "b", "out", "in1")
     assert (first.fromnode, first.tonode) == ("a", "b")
@@ -71,7 +71,7 @@ def test_links_carry_sockets_and_keys():
 
 
 def test_add_link_with_an_existing_key_updates_that_link():
-    tree: Tree[str] = Tree()
+    tree: LayoutGraph[str] = LayoutGraph()
     link = tree.add_link("a", "b", "out", "in", weight=3)
     same = tree.add_link("a", "b", "other", key=0)
     assert same is link
@@ -81,7 +81,7 @@ def test_add_link_with_an_existing_key_updates_that_link():
 
 
 def test_removing_links():
-    tree: Tree[str] = Tree()
+    tree: LayoutGraph[str] = LayoutGraph()
     first = tree.add_link("a", "b")
     tree.add_link("a", "b")
     third = tree.add_link("a", "b")
@@ -140,7 +140,7 @@ def test_link_iteration_order():
 
 
 def test_copy_is_independent_and_keeps_keys():
-    tree: Tree[str] = Tree()
+    tree: LayoutGraph[str] = LayoutGraph()
     tree.columns = [["a"], ["b"]]
     link = tree.add_link("a", "b", "out", "in", weight=2)
     link.cut_value = -1
@@ -189,7 +189,7 @@ def test_subgraph():
     small = tree.subgraph(["d"])
     assert list(small) == ["d"]
     assert list(small.all_links()) == []
-    assert tree.toposort_left_to_right() == ["a", "b", "c", "d"]
+    assert topological_sort(tree) == ["a", "b", "c", "d"]
 
 
 def test_simple_digraph_merges_parallel_links():
@@ -212,10 +212,9 @@ def test_digraph_basics():
     assert len(graph) == 4
     assert "z" in graph
     assert {} not in graph
-    assert list(graph.all_nodes()) == ["a", "b", "c", "z"]
+    assert list(graph) == ["a", "b", "c", "z"]
     assert list(graph.edges()) == [("a", "b"), ("a", "c"), ("b", "c")]
     assert list(graph.out_edges("a")) == [("a", "b"), ("a", "c")]
-    assert list(graph.in_edges("c")) == [("b", "c"), ("a", "c")]
     assert list(graph.successors("a")) == ["b", "c"]
     assert list(graph.predecessors("c")) == ["b", "a"]
     assert (graph.out_degree("a"), graph.in_degree("c"), graph.degree("b")) == (2, 2, 2)
@@ -329,7 +328,7 @@ def test_find_cycle():
 
     # A dead end (2, which only leads back to 1) is backed out of before
     # the cycle is found.
-    numbers: Tree[int] = Tree()
+    numbers: LayoutGraph[int] = LayoutGraph()
     for u, v in ((0, 1), (1, 2), (2, 1), (1, 3), (3, 0)):
         numbers.add_link(u, v)
     assert find_cycle(numbers) == [0, 1, 3]

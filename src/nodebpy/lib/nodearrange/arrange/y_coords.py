@@ -15,14 +15,14 @@ from typing import Any, cast
 
 from ..config import LayoutState
 from ..dna import bNodeSocket
+from .digraph import DiGraph, LayoutGraph, descendants
 from .graph import Cluster, Edge, Kind, Node, Socket, link_priority
 from .pipeline import Layout, register
 from .priority import SPINE_MIN_PRIORITY, TRUNK_MIN_PRIORITY
-from .tree import DiGraph, Tree, descendants
 
 
 def marked_conflicts(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     *,
     should_ensure_alignment: Callable[[Node], Any],
 ) -> set[frozenset[Node]]:
@@ -69,7 +69,7 @@ predecessor, and the priority of the link from it."""
 
 
 def _align_column(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     col: Sequence[Node],
     marked_edges: Collection[frozenset[Node]],
     marked_nodes: Collection[Node],
@@ -145,7 +145,7 @@ def _align_column(
 
 
 def horizontal_alignment(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     marked_edges: Collection[frozenset[Node]],
     marked_nodes: Collection[Node],
     priorities: dict[bNodeSocket, int],
@@ -194,7 +194,9 @@ def should_use_inner_shift(
     return abs(v.height - w.height) > fmean((v.height, w.height)) / 2
 
 
-def inner_shift(G: Tree[Node], is_right: bool, is_up: bool, state: LayoutState) -> None:
+def inner_shift(
+    G: LayoutGraph[Node], is_right: bool, is_up: bool, state: LayoutState
+) -> None:
     priorities = state.socket_priority
     for root in dict.fromkeys(v.root for v in G):
         for v, w in pairwise(iter_block(root)):
@@ -282,7 +284,7 @@ def _place_block(v: Node, is_up: bool, state: LayoutState) -> Iterator[Node]:
         w.sink = v.sink
 
 
-def vertical_compaction(G: Tree[Node], is_up: bool, state: LayoutState) -> None:
+def vertical_compaction(G: LayoutGraph[Node], is_up: bool, state: LayoutState) -> None:
     for v in G:
         if v.root == v:
             place_block(v, is_up, state)
@@ -351,7 +353,7 @@ def has_large_gaps_in_frame(
 
 
 def get_marked_nodes(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     T: DiGraph[Node | Cluster],
     old_marked_nodes: set[Node],
     is_up: bool,
@@ -402,7 +404,7 @@ def get_marked_nodes(
     return marked_nodes
 
 
-def balance(G: Tree[Node], layouts: list[list[float]]) -> None:
+def balance(G: LayoutGraph[Node], layouts: list[list[float]]) -> None:
     def min_y(layout: Sequence[float]) -> float:
         return min([y - v.height for v, y in zip(G, layout)])
 
@@ -427,7 +429,7 @@ _DIRECTION_TO_IDX = {"RIGHT_DOWN": 0, "RIGHT_UP": 1, "LEFT_DOWN": 2, "LEFT_UP": 
 
 
 def bk_assign_y_coords(
-    G: Tree[Node], T: DiGraph[Node | Cluster], state: LayoutState
+    G: LayoutGraph[Node], T: DiGraph[Node | Cluster], state: LayoutState
 ) -> None:
     columns = G.columns
     for col in columns:

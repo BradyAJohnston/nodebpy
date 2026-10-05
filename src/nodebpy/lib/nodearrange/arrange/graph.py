@@ -12,17 +12,17 @@ from typing import TYPE_CHECKING, Literal, TypeGuard, cast
 
 from ..dna import bNode, bNodeSocket
 from .common import REROUTE_DIM, frame_padding, group_by
-from .edits import RemoveLink, RemoveNode
-from .priority import FLOW_SOCKETS
-from .tree import (
+from .digraph import (
     DiGraph,
+    LayoutGraph,
     Link,
-    Tree,
     descendants,
     simple_digraph,
     topological_sort,
     weakly_connected_components,
 )
+from .edits import RemoveLink, RemoveNode
+from .priority import FLOW_SOCKETS
 
 if TYPE_CHECKING:
     from ..config import LayoutState
@@ -272,12 +272,12 @@ def link_is_flow(link: Link[Node]) -> bool:
     return socket is not None and socket.idname in FLOW_SOCKETS
 
 
-def add_dummy_edge(G: Tree[Node], u: Node, v: Node) -> None:
+def add_dummy_edge(G: LayoutGraph[Node], u: Node, v: Node) -> None:
     G.add_link(u, v, Socket(u, 0, True), Socket(v, 0, False))
 
 
 def add_dummy_nodes_to_edge(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     link: Link[Node],
     dummy_nodes: Sequence[Node],
     state: LayoutState,
@@ -395,13 +395,13 @@ def improve_cluster_assignment(
 
 # https://api.semanticscholar.org/CorpusID:14932050
 class ClusterGraph:
-    G: Tree[Node]
+    G: LayoutGraph[Node]
     T: DiGraph[Node | Cluster]
     S: list[Cluster]
     state: LayoutState
     __slots__ = tuple(__annotations__)
 
-    def __init__(self, G: Tree[Node], state: LayoutState) -> None:
+    def __init__(self, G: LayoutGraph[Node], state: LayoutState) -> None:
         self.G = G
         self.state = state
         self.T = DiGraph(chain(*map(get_nesting_relations, G)))
@@ -624,7 +624,7 @@ def keep_frames_together(col: list[Node]) -> None:
     col.sort(key=lambda v: (*[first[c] for c in chains[v]], position[v]))
 
 
-def socket_graph(G: Tree[Node]) -> DiGraph[Socket]:
+def socket_graph(G: LayoutGraph[Node]) -> DiGraph[Socket]:
     """Which socket feeds which: every link, plus each node's inputs to its
     outputs."""
     H: DiGraph[Socket] = DiGraph()

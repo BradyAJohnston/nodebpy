@@ -14,8 +14,7 @@ from nodebpy.lib.nodearrange.extract import extract
 from nodebpy.lib.nodearrange.metrics import measure
 
 from . import arrange_cases
-
-MARGIN = (50.0, 20.0)
+from .arrange_data import MARGIN
 
 
 def _links(tree) -> list[tuple[int, int, int]]:

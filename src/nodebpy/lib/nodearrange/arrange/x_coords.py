@@ -9,6 +9,7 @@ from typing import cast
 
 from ..config import LayoutState
 from .common import frame_padding, group_by, segments_intersect
+from .digraph import DiGraph, LayoutGraph, Link, ancestors, dag_longest_path_length
 from .graph import (
     Cluster,
     Kind,
@@ -18,7 +19,6 @@ from .graph import (
     lowest_common_cluster,
 )
 from .pipeline import Layout, register
-from .tree import DiGraph, Link, Tree, ancestors, dag_longest_path_length
 
 
 def frame_padding_of_col(
@@ -51,7 +51,7 @@ def frame_padding_of_col(
 
 
 def assign_x_coords(
-    G: Tree[Node], T: DiGraph[Node | Cluster], state: LayoutState
+    G: LayoutGraph[Node], T: DiGraph[Node | Cluster], state: LayoutState
 ) -> None:
     columns: list[list[Node]] = G.columns
     x = 0
@@ -117,7 +117,7 @@ def is_unnecessary_bend_point(
 
 
 def add_bend_points(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     v: Node,
     bend_points: defaultdict[Link[Node], list[Node]],
     state: LayoutState,
@@ -161,7 +161,9 @@ def node_overlaps_edge(
     return segments_intersect(*edge_line, *bottom_line)
 
 
-def route_edges(G: Tree[Node], T: DiGraph[Node | Cluster], state: LayoutState) -> None:
+def route_edges(
+    G: LayoutGraph[Node], T: DiGraph[Node | Cluster], state: LayoutState
+) -> None:
     bend_points: defaultdict[Link[Node], list[Node]] = defaultdict(list)
     for v in chain(*G.columns):
         add_bend_points(G, v, bend_points, state)

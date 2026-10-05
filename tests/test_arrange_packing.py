@@ -10,12 +10,9 @@ from nodebpy.lib.nodearrange.arrange.edits import MoveNode
 from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
-from nodebpy.lib.nodearrange.metrics import measure
 from nodebpy.lib.nodearrange.zones import find_zones
 
-from .arrange_fuzz import node_overlaps, plain_node, random_tree
-
-MARGIN = (50.0, 20.0)
+from .arrange_data import MARGIN, node_overlaps, plain_node
 
 
 def _chain(tree: bNodeTree, names: list[str], parent: bNode | None = None):
@@ -176,21 +173,6 @@ def test_packing_can_be_turned_off():
     result = sugiyama_layout(_two_parts(), Settings(pack_components=False), MARGIN)
     left = {n.name: x for n, (x, _) in result.positions().items()}
     assert left["b2"] in {left[name] for name in ("a1", "a2", "a3", "a4")}
-
-
-@pytest.mark.parametrize("seed", range(40))
-def test_random_trees_have_no_frames_overlapping(seed):
-    """Whatever the parts, none is put on another: no nodes overlap, and no
-    more frames than when the tree is laid out as one graph."""
-    counts = {}
-    for pack in (True, False):
-        tree = random_tree(seed)
-        result = sugiyama_layout(tree, Settings(pack_components=pack), MARGIN)
-        assert node_overlaps(result) == 0
-        result.apply_to(tree)
-        metrics = measure(tree)
-        counts[pack] = metrics.frame_overlaps + metrics.foreign_nodes_in_frames
-    assert counts[True] <= counts[False]
 
 
 # ---------------------------------------------------------------------------

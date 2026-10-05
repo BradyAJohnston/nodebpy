@@ -312,7 +312,7 @@ def test_options_do_not_leak_between_runs():
     reference = _build_chain("LeakReference", "sugiyama")
     _build_chain(
         "LeakCustom",
-        SugiyamaOptions(add_reroutes=True, optimize_sizes=True, iterations=3),
+        SugiyamaOptions(add_reroutes=True, optimize_sizes=True),
     )
     repeat = _build_chain("LeakRepeat", "sugiyama")
 

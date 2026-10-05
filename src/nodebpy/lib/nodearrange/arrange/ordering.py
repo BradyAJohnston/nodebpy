@@ -16,11 +16,19 @@ from functools import cache
 from itertools import chain, pairwise
 from math import inf
 from operator import itemgetter
-from random import Random
 from statistics import fmean
 from typing import cast
 
 from ..config import CrossingWeights, LayoutState
+from .digraph import (
+    DiGraph,
+    LayoutGraph,
+    ancestors,
+    bfs_edges,
+    descendants,
+    edge_dfs,
+    topological_sort,
+)
 from .graph import (
     Cluster,
     Kind,
@@ -31,15 +39,6 @@ from .graph import (
     socket_graph,
 )
 from .pipeline import Layout, register
-from .tree import (
-    DiGraph,
-    Tree,
-    ancestors,
-    bfs_edges,
-    descendants,
-    edge_dfs,
-    topological_sort,
-)
 
 # -------------------------------------------------------------------
 
@@ -71,7 +70,7 @@ def get_col_nesting_trees(
     return trees
 
 
-def expand_multi_inputs(G: Tree[Node], state: LayoutState) -> None:
+def expand_multi_inputs(G: LayoutGraph[Node], state: LayoutState) -> None:
     H = socket_graph(G)
     reroutes = {v for v in H if v.owner.is_reroute}
     for v in dict.fromkeys(s.owner for s in state.multi_input_sort_ids):
@@ -127,13 +126,13 @@ def topologically_sorted_clusters(LT: _MixedGraph) -> list[Cluster]:
 def crossing_reduction_graph(
     h: Cluster,
     LT: _MixedGraph,
-    G: Tree[Node],
-) -> Tree[Node | Cluster]:
+    G: LayoutGraph[Node],
+) -> LayoutGraph[Node | Cluster]:
     """The links from the fixed column into the direct children of *h*,
     with links into a child cluster's members redirected to that cluster.
     Every link runs from its fixed-column socket to its free-column one,
     whichever way *G* is oriented."""
-    G_h: Tree[Node | Cluster] = Tree()
+    G_h: LayoutGraph[Node | Cluster] = LayoutGraph()
     G_h.add_nodes(LT.successors(h))
     TC = reflexive_transitive_closure(LT)
     members = [v for v in TC.successors(h) if isinstance(v, Node)]
@@ -166,11 +165,8 @@ def crossing_reduction_graph(
     return G_h
 
 
-_BALANCING_FAC = 1
-
-
 class _CrossingReductionGraph:
-    graph: Tree[Node | Cluster]
+    graph: LayoutGraph[Node | Cluster]
 
     fixed_LT: _MixedGraph
     free_LT: _MixedGraph
@@ -186,10 +182,6 @@ class _CrossingReductionGraph:
 
     border_pairs: dict[tuple[Node, Node], list[Node]]
     constrained_clusters: list[Cluster]
-
-    N: list[Socket]
-    S: list[Socket]
-    bipartite_edges: list[tuple[Socket, Socket, int]]
 
     __slots__ = tuple(__annotations__)
 
@@ -209,7 +201,7 @@ class _CrossingReductionGraph:
                     Socket(border_v, 0, is_forwards),
                     # border sockets use the cluster as an opaque owner
                     Socket(cast("Node", c), 0, not is_forwards),
-                    weight=(0.5 * _BALANCING_FAC) * fac,
+                    weight=0.5 * fac,
                 )
 
             bordered_nodes = [
@@ -217,32 +209,9 @@ class _CrossingReductionGraph:
             ]
             self.border_pairs[upper_v, lower_v] = bordered_nodes
 
-    def _add_bipartite_edges(self) -> None:
-        # Links between the same two sockets count once, with the weight of
-        # the last one.
-        B: DiGraph[Socket] = DiGraph()
-        for link in self.graph.all_links():
-            B.add_edge(link.fromsock, link.tosock, link.weight)
-
-        if not B:
-            self.N = []
-            self.S = []
-            self.bipartite_edges = []
-            return
-
-        N = dict.fromkeys(u for u, _ in B.edges())
-        S = dict.fromkeys(v for _, v in B.edges())
-        if len(S) > len(N):
-            N, S = S, N
-            B = B.reversed()
-
-        self.N = sorted(N, key=lambda d: d.idx)
-        self.S = sorted(S, key=lambda d: d.idx)
-        self.bipartite_edges = [(u, v, B.weight(u, v)) for u, v in B.edges()]
-
     def __init__(
         self,
-        G: Tree[Node],
+        G: LayoutGraph[Node],
         h: Cluster,
         fixed_LT: _MixedGraph,
         free_LT: _MixedGraph,
@@ -284,12 +253,10 @@ class _CrossingReductionGraph:
             cast(Cluster, v) for v in self.reduced_free_col if v in fixed_LT
         ]
 
-        self._add_bipartite_edges()
-
 
 def crossing_reduction_items(
     trees: Iterable[_MixedGraph],
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     is_forwards: bool,
 ) -> list[list[_CrossingReductionGraph]]:
     items = []
@@ -329,19 +296,10 @@ def calc_socket_ranks(H: _CrossingReductionGraph, is_forwards: bool) -> None:
             v.cr.socket_ranks[socket] = rank
 
 
-def random_perturbation(rng: Random | None) -> float:
-    if rng is None:
-        return 0.0
-    random_amount = rng.uniform(-1, 1)
-    return rng.uniform(0, 1) * random_amount - random_amount / 2
-
-
-def calc_barycenters(H: _CrossingReductionGraph, rng: Random | None) -> None:
+def calc_barycenters(H: _CrossingReductionGraph) -> None:
     for w in H.reduced_free_col:
         if sockets := H.free_sockets[w]:
-            w.cr.barycenter = fmean(
-                [s.owner.cr.socket_ranks[s] for s in sockets]
-            ) + random_perturbation(rng)
+            w.cr.barycenter = fmean([s.owner.cr.socket_ranks[s] for s in sockets])
 
 
 def get_barycenter(v: Node | Cluster) -> float:
@@ -350,22 +308,9 @@ def get_barycenter(v: Node | Cluster) -> float:
     return barycenter
 
 
-def fill_in_unknown_barycenters(
-    col: list[Node | Cluster], is_first_sweep: bool, rng: Random | None
-) -> None:
-    # Without a random generator a node with no neighbour in the fixed
-    # column stays between the nodes it is between now.
-    if is_first_sweep and rng is not None:
-        max_b = (
-            max([b for v in col if (b := v.cr.barycenter) is not None], default=0) + 2
-        )
-        for v in col:
-            if v.cr.barycenter is None:
-                v.cr.barycenter = (
-                    rng.uniform(0, 1) * max_b - 1 + random_perturbation(rng)
-                )
-        return
-
+def fill_in_unknown_barycenters(col: list[Node | Cluster]) -> None:
+    """A node with no neighbour in the fixed column stays between the nodes
+    it is between now."""
     for i, v in enumerate(col):
         if v.cr.barycenter is not None:
             continue
@@ -374,7 +319,7 @@ def fill_in_unknown_barycenters(
         next_b = next(
             (b for w in col[i + 1 :] if (b := w.cr.barycenter) is not None), prev_b + 1
         )
-        v.cr.barycenter = (prev_b + next_b) / 2 + random_perturbation(rng)
+        v.cr.barycenter = (prev_b + next_b) / 2
 
 
 def find_violated_constraint(
@@ -449,54 +394,6 @@ def handle_constraints(H: _CrossingReductionGraph) -> None:
         v.cr.barycenter = i
 
 
-def get_cross_count(H: _CrossingReductionGraph) -> int:
-    edges = H.bipartite_edges
-
-    if not edges:
-        return 0
-
-    reduced_free_col = set(H.reduced_free_col)
-
-    def pos(s: Socket) -> float:
-        v = s.owner
-        if v in reduced_free_col:
-            return v.cr.barycenter  # type: ignore
-        else:
-            return H.expanded_fixed_col.index(v)
-
-    H.N.sort(key=pos)
-    H.S.sort(key=pos)
-
-    south_indicies = {k: i for i, k in enumerate(H.S)}
-    north_indicies = {k: i for i, k in enumerate(H.N)}
-
-    edges.sort(key=lambda e: south_indicies[e[1]])
-    edges.sort(key=lambda e: north_indicies[e[0]])
-
-    first_idx = 1
-    while first_idx < len(H.S):
-        first_idx *= 2
-
-    tree = [0] * (2 * first_idx - 1)
-    first_idx -= 1
-
-    cross_weight = 0
-    for _, v, weight in edges:
-        idx = south_indicies[v] + first_idx
-        tree[idx] += weight
-        weight_sum = 0
-        while idx > 0:
-            if idx % 2 == 1:
-                weight_sum += tree[idx + 1]
-
-            idx = (idx - 1) // 2
-            tree[idx] += weight
-
-        cross_weight += weight * weight_sum
-
-    return cross_weight
-
-
 def get_new_col_order(v: Node | Cluster, LT: _MixedGraph) -> Iterator[Node | Cluster]:
     if v.type == Kind.CLUSTER:
         for w in sorted(LT.successors(v), key=get_barycenter):
@@ -529,117 +426,6 @@ def sort_reduced_free_columns(
 
 # -------------------------------------------------------------------
 
-
-def minimized_cross_count(
-    columns: Sequence[list[Node]],
-    forward_items: list[list[_CrossingReductionGraph]],
-    backward_items: list[list[_CrossingReductionGraph]],
-    T: _MixedGraph,
-    rng: Random,
-) -> float:
-    cross_count = inf
-    is_forwards = rng.choice((True, False))
-    is_first_sweep = True
-    while True:
-        for v in T:
-            v.cr.reset()
-
-        if cross_count == 0:
-            return 0
-
-        is_forwards = not is_forwards
-        old_cross_count = cross_count
-        cross_count = 0
-
-        items = forward_items if is_forwards else backward_items
-        for i, crossing_reduction_graphs in enumerate(items):
-            if i == 0:
-                clusters = {
-                    c: j
-                    for j, v in enumerate(crossing_reduction_graphs[0].fixed_col)
-                    for c in ancestors(T, v)
-                }
-                key = cast(Callable[[Cluster], int], clusters.get)
-            else:
-                key = get_barycenter
-
-            for H in crossing_reduction_graphs:
-                H.constrained_clusters.sort(key=key)
-                sort_expanded_fixed_col(H)
-
-                calc_socket_ranks(H, is_forwards)
-                calc_barycenters(H, rng)
-                fill_in_unknown_barycenters(H.reduced_free_col, is_first_sweep, rng)
-                handle_constraints(H)
-
-                cross_count += get_cross_count(H)
-
-            root = topologically_sorted_clusters(H.free_LT)[0]
-            new_order = tuple(get_new_col_order(root, H.free_LT))
-            H.free_col.sort(key=new_order.index)
-
-        if old_cross_count > cross_count:
-            sort_reduced_free_columns(forward_items + backward_items)
-            best_columns = [c.copy() for c in columns]
-            is_first_sweep = False
-        else:
-            for col, best_col in zip(columns, best_columns):
-                col.sort(key=best_col.index)
-            break
-
-    return old_cross_count
-
-
-def minimize_crossings(G: Tree[Node], T: _MixedGraph, state: LayoutState) -> None:
-    columns = G.columns
-    trees = get_col_nesting_trees(columns, T)
-    G_ = G.copy()
-
-    expand_multi_inputs(G_, state)
-
-    forward_items = crossing_reduction_items(trees, G_, True)
-
-    G__ = G_.reversed()
-    backward_items = crossing_reduction_items(reversed(trees), G__, False)
-
-    # -------------------------------------------------------------------
-
-    # A generator of its own, so the caller's random state is untouched.
-    rng = Random(0)
-    best_cross_count = inf
-    best_columns = [c.copy() for c in columns]
-    for _ in range(state.settings.iterations):
-        cross_count = minimized_cross_count(
-            columns, forward_items, backward_items, T, rng
-        )
-        if cross_count < best_cross_count:
-            best_cross_count = cross_count
-            best_columns = [c.copy() for c in columns]
-            if best_cross_count == 0:
-                break
-        else:
-            for col, best_col in zip(columns, best_columns):
-                col.sort(key=best_col.index)
-            sort_reduced_free_columns(forward_items + backward_items)
-
-    # These are keyed by the graphs of this run; drop them so the graphs
-    # (and the nodes they reference) can be freed.
-    reflexive_transitive_closure.cache_clear()
-    topologically_sorted_clusters.cache_clear()
-    non_cluster_descendant.cache_clear()
-
-
-@register("order", "random_restarts")
-def order_random_restarts(layout: Layout) -> None:
-    """Upstream's ordering: sweep back and forth over the columns, ordering
-    each by the average position of its nodes' neighbours in the column
-    before; restarted ``Settings.iterations`` times with random
-    perturbations, keeping the best."""
-    minimize_crossings(layout.G, layout.T, layout.state)
-
-
-# -------------------------------------------------------------------
-# The same sweep without chance (nodebpy addition)
 
 _MAX_SWEEPS = 24
 _PATIENCE = 2
@@ -710,8 +496,8 @@ def _sweep(
             sort_expanded_fixed_col(H)
 
             calc_socket_ranks(H, is_forwards)
-            calc_barycenters(H, None)
-            fill_in_unknown_barycenters(H.reduced_free_col, False, None)
+            calc_barycenters(H)
+            fill_in_unknown_barycenters(H.reduced_free_col)
             handle_constraints(H)
 
         root = topologically_sorted_clusters(H.free_LT)[0]
@@ -719,7 +505,9 @@ def _sweep(
         H.free_col.sort(key=new_order.index)
 
 
-def _depth_first_order(G: Tree[Node], columns: Sequence[list[Node]], forwards: bool):
+def _depth_first_order(
+    G: LayoutGraph[Node], columns: Sequence[list[Node]], forwards: bool
+):
     """The columns reordered by when a depth-first walk reaches each node,
     starting from the first column (the last, going backwards) and taking
     nodes and links in their current order. Nodes that are linked end up
@@ -766,7 +554,7 @@ the node in its column, index of the socket, whether it carries flow."""
 
 
 def _transpose(
-    G: Tree[Node], columns: Sequence[list[Node]], weights: CrossingWeights
+    G: LayoutGraph[Node], columns: Sequence[list[Node]], weights: CrossingWeights
 ) -> bool:
     """Swap neighbours in a column wherever that lowers the cost of the
     crossings among their links, until no swap helps. Only nodes directly
@@ -838,7 +626,7 @@ def _inversions(links: list[_Ends]) -> int:
 
 
 def count_crossings(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     columns: Sequence[list[Node]],
     weights: CrossingWeights | None = None,
 ) -> float:
@@ -880,7 +668,7 @@ def count_crossings(
 
 
 def minimize_crossings_deterministic(
-    G: Tree[Node], T: _MixedGraph, state: LayoutState
+    G: LayoutGraph[Node], T: _MixedGraph, state: LayoutState
 ) -> None:
     """Order the columns by sweeping from a few fixed starting orders, each
     in both directions, and keep the order with the fewest crossings.

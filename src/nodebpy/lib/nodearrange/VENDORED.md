@@ -16,7 +16,7 @@ Sugiyama-based node layout, vendored from
 - For a port into Blender, whose sources are GPL-2.0-or-later, the file
   headers are what is needed, but the repository-level statements say
   otherwise. Ask the author which is meant before contributing a port.
-- Upstream depends on NetworkX (BSD-3-Clause). `arrange/tree.py` replaces
+- Upstream depends on NetworkX (BSD-3-Clause). `arrange/digraph.py` replaces
   it with its own structs and algorithms under the NetworkX function names.
   If any of those were written from NetworkX's source rather than from the
   textbook algorithm, NetworkX's copyright notice has to be kept with them;
@@ -34,8 +34,8 @@ Keep these in mind when porting upstream commits; a straight file copy will
 break headless operation.
 
 - **No networkx.** Upstream builds its graphs on `networkx`. Here they are
-  the structs in `arrange/tree.py`, shaped after Blender's own so the layout
-  can later be ported to C++: `Tree` (`bNodeTree`) owns the nodes and the
+  the structs in `arrange/digraph.py`, shaped after Blender's own so the layout
+  can later be ported to C++: `LayoutGraph` (`bNodeTree`) owns the nodes and the
   `Link`s (`bNodeLink`: `fromnode` / `fromsock` / `tonode` / `tosock`) between
   them, and `DiGraph` holds auxiliary relations (the frame hierarchy,
   ordering constraints). The same file has the few graph algorithms the
@@ -55,7 +55,7 @@ break headless operation.
   | `G.reverse(copy=False)`                | `G.reversed()`                         |
   | `G.graph["columns"]`                   | `G.columns`                            |
   | `T[c]` (cluster tree)                  | `T.successors(c)`                      |
-  | `nx.descendants`, `nx.topological_sort`, … | the functions of the same name in `tree.py` |
+  | `nx.descendants`, `nx.topological_sort`, … | the functions of the same name in `digraph.py` |
 
 - **The layout is pure.** Upstream reads and edits the Blender tree
   throughout the pipeline. Here that is three stages (see `__init__.py`):
@@ -176,10 +176,9 @@ break headless operation.
     alignment.
   - `balancing` skips columns of at most `balance_min_column` nodes, so a
     few parallel branches are not staggered over two columns.
-  - `sugiyama.constrain_layers()` (`dna.bNode.layer`, `pin_group_output`,
-    `pin_group_input`): a pipeline step, after the balancing, that moves
-    nodes held to the first or last column there: any node whose `layer`
-    says so, and Group Input / Group Output nodes as the settings ask.
+  - `sugiyama.constrain_layers()` (`pin_group_output`, `pin_group_input`):
+    a pipeline step, after the balancing, that moves Group Output nodes to
+    the last column and Group Input nodes to the first.
   - `y_coords.vertical_gap()` (`reroute_margin_y_fac`): consecutive
     reroutes / dummy nodes in a column pack at a fraction of the margin.
   - `sugiyama.precompute_links()` keeps `is_hidden` links (links into a
@@ -196,14 +195,14 @@ break headless operation.
   rather than from a set of bpy sockets.
   Nothing that decides the result iterates a `set` any more: the cluster
   list `ClusterGraph.S` is a list, `descendants` / `ancestors` and the
-  component functions of `tree.py` return their nodes in traversal order,
+  component functions of `digraph.py` return their nodes in traversal order,
   and `subgraph` keeps the graph's order. (Upstream's sets are still there
   where only membership is asked.) A C++ port can therefore reproduce the
   order with plain arrays.
-- **Ordering without chance** (nodebpy-only, the default):
+- **Ordering without chance** (replaces upstream's):
   `ordering.minimize_crossings_deterministic()`, strategy `"layer_sweep"`.
-  Upstream's ordering (kept as `"random_restarts"`) perturbs barycenters
-  randomly and restarts `iterations` times. The default instead sweeps from
+  Upstream's ordering perturbs barycenters randomly and restarts
+  `iterations` times; it is not kept. This one sweeps from
   fixed starting orders (the columns as they come, a depth-first order from
   each end, and for small graphs up to eight shuffles from `ordering._Lcg`,
   the generator of `drand48` and of Blender's `RandomNumberGenerator`,

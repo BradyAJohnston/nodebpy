@@ -24,13 +24,13 @@ from collections.abc import Iterable
 
 from ..config import LayoutState
 from .common import REROUTE_DIM
+from .digraph import LayoutGraph, ancestors
 from .graph import Cluster, Kind, Node, Socket
-from .tree import Tree, ancestors
 
 _MAX_MOVES = 500
 
 
-def _upstream(G: Tree[Node], v: Node) -> set[Node]:
+def _upstream(G: LayoutGraph[Node], v: Node) -> set[Node]:
     """Every node *v* depends on. Moving *v* together with its upstream one
     column to the left is always feasible: the set has no predecessor
     outside itself, and links from it to nodes left behind only get
@@ -39,7 +39,7 @@ def _upstream(G: Tree[Node], v: Node) -> set[Node]:
 
 
 def _column_heights(
-    G: Tree[Node], ranks: dict[Node, int], state: LayoutState
+    G: LayoutGraph[Node], ranks: dict[Node, int], state: LayoutState
 ) -> dict[int, float]:
     """Estimated drawn height per rank: real nodes plus the dummy nodes of
     the long edges passing through, each separated by the vertical margin.
@@ -85,7 +85,7 @@ def _overshoot(heights: dict[int, float], target: float) -> float:
 
 
 def _fit_to_height(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     ranks: dict[Node, int],
     target: float,
     state: LayoutState,
@@ -126,7 +126,7 @@ _TARGET_STEP = 0.9
 
 
 def balance_column_heights(
-    G: Tree[Node],
+    G: LayoutGraph[Node],
     clusters: Iterable[Cluster],
     state: LayoutState,
 ) -> None:

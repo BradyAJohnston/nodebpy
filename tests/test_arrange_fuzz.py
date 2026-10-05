@@ -1,0 +1,57 @@
+"""Random trees through the layout (plain data, no Blender).
+
+One property test: whatever the tree, every step leaves the graph as it
+promises (``verify=True``), every node is placed or replaced, no nodes
+overlap, the result is the same every time, and laying the unconnected
+parts out apart never puts more frames on each other than laying the tree
+out as one graph.
+"""
+
+import pytest
+
+from nodebpy.lib.nodearrange.arrange.edits import MoveNode, RemoveNode
+from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
+from nodebpy.lib.nodearrange.config import Settings
+from nodebpy.lib.nodearrange.metrics import measure
+
+from .arrange_data import MARGIN, node_overlaps, random_tree
+
+
+def _placed(result) -> list[tuple[str, tuple[float, float]]]:
+    return [(e.node.name, e.top_left) for e in result.edits if isinstance(e, MoveNode)]
+
+
+def _frame_defects(tree, result) -> int:
+    result.apply_to(tree)
+    metrics = measure(tree)
+    return metrics.frame_overlaps + metrics.foreign_nodes_in_frames
+
+
+@pytest.mark.parametrize("seed", range(20))
+@pytest.mark.parametrize(
+    ("add_reroutes", "zones"), [(False, 0), (True, 0), (False, 3), (True, 3)]
+)
+def test_random_tree(seed, add_reroutes, zones):
+    """Zones are thrown at the trees at random, overlapping frames and each
+    other in ways Blender's cannot."""
+    settings = Settings(add_reroutes=add_reroutes)
+    tree = random_tree(seed, zones)
+
+    result = sugiyama_layout(tree, settings, MARGIN, verify=True)
+
+    moved = {edit.node for edit in result.edits if isinstance(edit, MoveNode)}
+    removed = {edit.node for edit in result.edits if isinstance(edit, RemoveNode)}
+    for node in tree.nodes:
+        assert node.is_frame() or node in moved or node in removed
+    assert node_overlaps(result) == 0
+
+    again = sugiyama_layout(random_tree(seed, zones), settings, MARGIN)
+    assert _placed(result) == _placed(again)
+
+    if add_reroutes and not zones:
+        as_one = random_tree(seed)
+        unpacked = sugiyama_layout(
+            as_one, Settings(add_reroutes=True, pack_components=False), MARGIN
+        )
+        assert node_overlaps(unpacked) == 0
+        assert _frame_defects(tree, result) <= _frame_defects(as_one, unpacked)

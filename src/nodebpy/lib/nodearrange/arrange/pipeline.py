@@ -38,12 +38,12 @@ import time
 from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass, field, replace
 from enum import StrEnum
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Literal
 
 from ..config import LayoutState, Settings
 from .common import Vec2
+from .digraph import DiGraph, LayoutGraph
 from .graph import Cluster, ClusterGraph, Kind, Node
-from .tree import DiGraph, Tree
 
 if TYPE_CHECKING:
     from .stacking import NodeStack
@@ -65,9 +65,6 @@ strategy."""
 class Fact(StrEnum):
     """Something true of the layout graph between two steps."""
 
-    STACKED = "stacked"
-    """Stacks of collapsed nodes are each one node (``Layout.node_stacks``
-    remembers them)."""
     RANKED = "ranked"
     """Every node has a ``rank`` (its column), and every link runs to a
     higher rank."""
@@ -88,10 +85,6 @@ class Fact(StrEnum):
     """Every node has a ``y``, and no two nodes of a column overlap."""
     X = "x"
     """Every node has an ``x``, and the columns do not overlap."""
-    ROUTED = "routed"
-    """Long links have their bend points."""
-    REALIZED = "realized"
-    """The result has been written out as edits."""
 
 
 @dataclass(slots=True)
@@ -103,12 +96,9 @@ class Layout:
     """Centre of the nodes before the layout; the result is centred there."""
     node_stacks: list[NodeStack] = field(default_factory=list)
     """Stacks of collapsed nodes contracted into one node for the layout."""
-    extra: dict[str, Any] = field(default_factory=dict)
-    """Room for steps that are not part of the standard pipeline to keep
-    what they compute for one another (keyed by a name of their choosing)."""
 
     @property
-    def G(self) -> Tree[Node]:
+    def G(self) -> LayoutGraph[Node]:
         return self.CG.G
 
     @property

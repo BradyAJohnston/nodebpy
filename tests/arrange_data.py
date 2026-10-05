@@ -1,6 +1,6 @@
-"""Random plain-data node trees for testing the layout without Blender.
+"""Plain-data node trees for testing the layout without Blender.
 
-``random_tree(seed)`` builds a ``dna.bNodeTree`` with frames (some nested),
+``plain_node`` adds one node to a ``dna.bNodeTree``. ``random_tree(seed)`` builds a ``dna.bNodeTree`` with frames (some nested),
 reroutes, collapsed Math nodes, multi-input sockets and links that only run
 forwards. ``node_overlaps`` checks a layout for nodes drawn over each other.
 """
@@ -12,6 +12,9 @@ import random
 from nodebpy.lib.nodearrange.arrange.edits import LayoutResult
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree, new_reroute
 from nodebpy.lib.nodearrange.zones import find_zones
+
+MARGIN = (50.0, 20.0)
+"""Room between nodes the pure-layout tests arrange with: ``(x, y)``."""
 
 
 def plain_node(

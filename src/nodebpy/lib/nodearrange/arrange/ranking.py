@@ -10,22 +10,22 @@ from math import sqrt
 from typing import TYPE_CHECKING, Any
 
 from .common import group_by
-from .graph import Cluster, Kind, MultiEdge, Node, opposite
-from .pipeline import Layout, register
-from .tree import (
+from .digraph import (
     DiGraph,
-    Tree,
+    LayoutGraph,
     strongly_connected_components,
     topological_generations,
     weakly_connected_components,
 )
+from .graph import Cluster, Kind, MultiEdge, Node, opposite
+from .pipeline import Layout, register
 
 if TYPE_CHECKING:
     from .sugiyama import ClusterGraph
 
 
 # https://api.semanticscholar.org/CorpusID:14932050
-def get_nesting_graph(CG: ClusterGraph) -> Tree[Node]:
+def get_nesting_graph(CG: ClusterGraph) -> LayoutGraph[Node]:
     H = CG.G.copy()
     for u, v in CG.T.edges():
         if isinstance(u, Cluster):
@@ -53,7 +53,7 @@ def _top_level_unit(v: Node, root: Cluster) -> Node | Cluster:
     return unit
 
 
-def add_frame_sequence_edges(CG: ClusterGraph, H: Tree[Node]) -> None:
+def add_frame_sequence_edges(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
     """Rank frames as stages of the flow (nodebpy divergence).
 
     With plain nesting constraints a frame only has to enclose its own
@@ -106,14 +106,14 @@ def add_frame_sequence_edges(CG: ClusterGraph, H: Tree[Node]) -> None:
 
 
 @cache
-def get_adj_edges_H(H: Tree[Node], v: Node) -> tuple[MultiEdge, ...]:
+def get_adj_edges_H(H: LayoutGraph[Node], v: Node) -> tuple[MultiEdge, ...]:
     return tuple(
         link.ident for links in (H.in_links(v), H.out_links(v)) for link in links
     )
 
 
 @cache
-def get_adj_edges_T(T: Tree[Node], v: Node) -> tuple[MultiEdge, ...]:
+def get_adj_edges_T(T: LayoutGraph[Node], v: Node) -> tuple[MultiEdge, ...]:
     return tuple(
         link.ident for links in (T.in_links(v), T.out_links(v)) for link in links
     )
@@ -125,7 +125,7 @@ def get_slack(e: MultiEdge) -> int:
     return v.rank - u.rank - min_length
 
 
-def tight_tree(H: Tree[Node], T: Tree[Node], root: Node) -> int:
+def tight_tree(H: LayoutGraph[Node], T: LayoutGraph[Node], root: Node) -> int:
     """Grow *T* from *root* over the links without slack, depth first, and
     return its size. (An explicit stack: the tree can be as deep as the
     graph is long.)"""
@@ -155,7 +155,7 @@ def tight_tree(H: Tree[Node], T: Tree[Node], root: Node) -> int:
     return len(T)
 
 
-def set_post_order_numbers(root: Node, T: Tree[Node]) -> None:
+def set_post_order_numbers(root: Node, T: LayoutGraph[Node]) -> None:
     """Number the nodes of the spanning tree *T* in post-order from *root*,
     and give each the lowest number in its subtree."""
     visited: set[MultiEdge] = set()
@@ -183,7 +183,7 @@ def set_post_order_numbers(root: Node, T: Tree[Node]) -> None:
                     parent[2] = w.lowest_po_num
 
 
-def compute_cut_values(H: Tree[Node], T: Tree[Node]) -> None:
+def compute_cut_values(H: LayoutGraph[Node], T: LayoutGraph[Node]) -> None:
     unknown_cut_values = {}
     leaves = []
     for v in H:
@@ -218,7 +218,7 @@ def compute_cut_values(H: Tree[Node], T: Tree[Node]) -> None:
             v = w if u == v else u
 
 
-def longest_path_ranks(H: Tree[Node]) -> None:
+def longest_path_ranks(H: LayoutGraph[Node]) -> None:
     """Rank every node as late as its successors allow: one column before
     the earliest of them, the nodes without successors in the last column."""
     generations = topological_generations(H.reversed())
@@ -227,10 +227,10 @@ def longest_path_ranks(H: Tree[Node]) -> None:
             v.rank = i
 
 
-def feasible_tree(H: Tree[Node]) -> Tree[Node]:
+def feasible_tree(H: LayoutGraph[Node]) -> LayoutGraph[Node]:
     longest_path_ranks(H)
 
-    T: Tree[Node] = Tree()
+    T: LayoutGraph[Node] = LayoutGraph()
     v_root = next(iter(H))
 
     while tight_tree(H, T, v_root) < len(H):
@@ -250,7 +250,7 @@ def feasible_tree(H: Tree[Node]) -> Tree[Node]:
     return T
 
 
-def leave_edge(T: Tree[Node]) -> MultiEdge | None:
+def leave_edge(T: LayoutGraph[Node]) -> MultiEdge | None:
     return next((link.ident for link in T.all_links() if link.cut_value < 0), None)
 
 
@@ -268,7 +268,7 @@ def is_in_head(v: Node, e: MultiEdge) -> bool:
     return u.po_num < w.po_num
 
 
-def enter_edge(H: Tree[Node], e: MultiEdge) -> MultiEdge:
+def enter_edge(H: LayoutGraph[Node], e: MultiEdge) -> MultiEdge:
     edges = [
         link.ident
         for link in H.all_links()
@@ -278,8 +278,8 @@ def enter_edge(H: Tree[Node], e: MultiEdge) -> MultiEdge:
 
 
 def exchange(
-    H: Tree[Node],
-    T: Tree[Node],
+    H: LayoutGraph[Node],
+    T: LayoutGraph[Node],
     leave: MultiEdge,
     enter: MultiEdge,
 ) -> None:
@@ -300,7 +300,7 @@ def exchange(
     compute_cut_values(H, T)
 
 
-def normalize_and_balance(CG: ClusterGraph, H: Tree[Node]) -> None:
+def normalize_and_balance(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
     for cc in weakly_connected_components(CG.G):
         c = cc[0].cluster
         assert c
@@ -344,7 +344,7 @@ def normalize_and_balance(CG: ClusterGraph, H: Tree[Node]) -> None:
 _BASE_ITER_LIMIT = 50
 
 
-def network_simplex_ranks(H: Tree[Node]) -> None:
+def network_simplex_ranks(H: LayoutGraph[Node]) -> None:
     """Rank the nodes so that the total (weighted) length of the links is
     minimal, by network simplex."""
     T = feasible_tree(H)
@@ -361,7 +361,7 @@ def network_simplex_ranks(H: Tree[Node]) -> None:
 
 
 def compute_ranks(
-    CG: ClusterGraph, solve: Callable[[Tree[Node]], None] = network_simplex_ranks
+    CG: ClusterGraph, solve: Callable[[LayoutGraph[Node]], None] = network_simplex_ranks
 ) -> None:
     """Assign every node its column (``rank``).
 

@@ -28,9 +28,6 @@ class CrossingWeights:
 
 @dataclass
 class Settings:
-    spacing: float = 30.0
-    arrange_mode = "NODES"
-    iterations: int = 50
     direction: Literal["LEFT_DOWN", "RIGHT_DOWN", "BALANCED", "LEFT_UP", "RIGHT_UP"] = (
         "LEFT_UP"
     )
@@ -44,8 +41,6 @@ class Settings:
     keep_reroutes_outside_frames: bool = False
     stack_collapsed: bool = True
     optimize_sizes: bool = False
-    recenter_mode = "NODES"
-    origin: Literal["CENTER", "ACTIVE_OUTPUT", "ACTIVE_NODE"] = "CENTER"
     stack_margin_y_fac: float = 0.5
     # nodebpy divergence: rank frames as sequential stages (see
     # ranking.add_frame_sequence_edges).
@@ -77,8 +72,7 @@ class Settings:
     # when balancing heights, so a few parallel branches stay side by side.
     balance_min_column: int = 4
     # nodebpy divergence: put Group Output nodes (outside frames) in the
-    # last column, and Group Input nodes in the first. (Any node can be
-    # held to the first or last column with `dna.bNode.layer`.)
+    # last column, and Group Input nodes in the first.
     pin_group_output: bool = True
     pin_group_input: bool = False
     # nodebpy divergence: draw each zone as a row with the node tops level,

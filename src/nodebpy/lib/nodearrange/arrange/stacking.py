@@ -9,6 +9,14 @@ from math import inf
 from typing import Any, cast
 
 from ..config import LayoutState
+from .digraph import (
+    LayoutGraph,
+    Link,
+    find_cycle,
+    is_acyclic,
+    topological_sort,
+    weakly_connected_components,
+)
 from .graph import (
     Cluster,
     ClusterGraph,
@@ -19,14 +27,6 @@ from .graph import (
     Socket,
     is_real,
     node_name,
-)
-from .tree import (
-    Link,
-    Tree,
-    find_cycle,
-    is_acyclic,
-    topological_sort,
-    weakly_connected_components,
 )
 
 
@@ -109,7 +109,7 @@ def deterministic_hopcroft_karp_matching[T: Hashable](
     return {k: v for k, v in (pair_U | pair_V).items() if v is not None}
 
 
-def max_linear_branching(G: Tree[Node]) -> Tree[Node]:
+def max_linear_branching(G: LayoutGraph[Node]) -> LayoutGraph[Node]:
     """The largest set of links of *G* in which every node has at most one
     predecessor and one successor, i.e. that only forms chains."""
     # To make results deterministic
@@ -129,7 +129,7 @@ def max_linear_branching(G: Tree[Node]) -> Tree[Node]:
         B[u, "out"][v, "in"] = None
 
     matching = deterministic_hopcroft_karp_matching(B, out_nodes, in_nodes)
-    H: Tree[Node] = Tree()
+    H: LayoutGraph[Node] = LayoutGraph()
     H.add_nodes(nodes)
     for u_out in out_nodes:
         if u_out in matching:
@@ -142,7 +142,7 @@ _WEIGHT = "weight"
 
 
 # http://dx.doi.org/10.1016/S0020-0190(02)00491-X
-def minimum_feedback_arc_set(G: Tree[Node]) -> set[MultiEdge]:
+def minimum_feedback_arc_set(G: LayoutGraph[Node]) -> set[MultiEdge]:
     """Links of the weighted *G* (as ``Link.ident``) whose removal leaves it
     acyclic, favouring light links. Lowers the weights of *G* in place."""
     G_ = G.copy()
@@ -168,8 +168,8 @@ def minimum_feedback_arc_set(G: Tree[Node]) -> set[MultiEdge]:
 
 
 def edges_preventing_acyclic_contraction(
-    G: Tree[Node],
-    K: Tree[Node],
+    G: LayoutGraph[Node],
+    K: LayoutGraph[Node],
 ) -> list[Edge]:
     """The links of *K* that cannot be contracted in *G* without creating a
     cycle, as ``(fromnode, tonode)``."""
@@ -318,7 +318,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     return node_stacks
 
 
-def _feeds(G: Tree[Node], source: Socket, target: Socket) -> bool:
+def _feeds(G: LayoutGraph[Node], source: Socket, target: Socket) -> bool:
     """Whether a link from *source* reaches *target*, directly or through
     reroutes."""
     links = [link for link in G.out_links(source.owner) if link.fromsock == source]
@@ -332,7 +332,7 @@ def _feeds(G: Tree[Node], source: Socket, target: Socket) -> bool:
 
 
 def _point_multi_input_orders_at_stack(
-    G: Tree[Node], state: LayoutState, node_stack: NodeStack
+    G: LayoutGraph[Node], state: LayoutState, node_stack: NodeStack
 ) -> None:
     """The saved multi-input orders name the socket each link comes from;
     where that is a socket the stack took over, name the stack's instead.

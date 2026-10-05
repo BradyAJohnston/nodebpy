@@ -8,6 +8,7 @@ from statistics import fmean
 from ..config import LayoutState
 from ..dna import new_reroute
 from .common import Vec2, f32
+from .digraph import LayoutGraph, edge_dfs
 from .edits import AddLink, AddReroute, MoveNode, ResizeFrame, RestoreMultiInputOrder
 from .graph import (
     Cluster,
@@ -20,7 +21,6 @@ from .graph import (
     is_real,
     socket_graph,
 )
-from .tree import Tree, edge_dfs
 
 
 def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
@@ -43,12 +43,14 @@ def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
     )
 
 
-def is_dangling(G: Tree[Node], path: list[Node]) -> bool:
+def is_dangling(G: LayoutGraph[Node], path: list[Node]) -> bool:
     """Whether a chain of reroutes leads nowhere, or comes from nowhere."""
     return not G.successors(path[-1]) or not G.predecessors(path[0])
 
 
-def dissolve_reroute_edges(G: Tree[Node], path: list[Node], state: LayoutState) -> None:
+def dissolve_reroute_edges(
+    G: LayoutGraph[Node], path: list[Node], state: LayoutState
+) -> None:
     first = next(G.in_links(path[0]))
 
     u, o = first.fromnode, first.fromsock
@@ -144,7 +146,7 @@ def add_reroute(v: Node, state: LayoutState) -> None:
     v.type = Kind.NODE
 
 
-def realize_edges(G: Tree[Node], state: LayoutState) -> None:
+def realize_edges(G: LayoutGraph[Node], state: LayoutState) -> None:
     for link in G.all_links():
         if link.fromnode.is_reroute or link.tonode.is_reroute:
             state.edits.append(AddLink(link.fromsock.dna, link.tosock.dna))
@@ -163,7 +165,7 @@ def realize_dummy_nodes(CG: ClusterGraph) -> None:
     realize_edges(CG.G, CG.state)
 
 
-def restore_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
+def restore_multi_input_orders(G: LayoutGraph[Node], state: LayoutState) -> None:
     """Record, for every multi-input socket, which sockets now feed it and
     the order their links must be put back in."""
     H = socket_graph(G)
@@ -187,7 +189,9 @@ def restore_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:
         state.edits.append(RestoreMultiInputOrder(socket.dna, outputs, tuple(order)))
 
 
-def realize_locations(G: Tree[Node], old_center: Vec2, state: LayoutState) -> None:
+def realize_locations(
+    G: LayoutGraph[Node], old_center: Vec2, state: LayoutState
+) -> None:
     # Keep the layout centred where the nodes were (in single precision,
     # like the node locations themselves).
     offset_x = f32(old_center.x - f32(fmean([v.x for v in G])))

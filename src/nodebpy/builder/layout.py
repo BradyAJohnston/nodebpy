@@ -876,9 +876,6 @@ class SugiyamaOptions:
         nodes.
     optimize_sizes : bool
         Fit the widths of collapsed nodes to their display name.
-    iterations : int
-        Number of random restarts of ``ordering="random_restarts"``. The
-        default ordering does not use it.
     sequential_frames : bool
         Rank frames as stages of the flow: every node of a frame comes
         after every node of the frame (or intermediate node) feeding it, so
@@ -907,10 +904,8 @@ class SugiyamaOptions:
         the early ones.
     ordering : str
         How the nodes within a column are ordered to keep links from
-        crossing. ``"layer_sweep"`` is deterministic: the same tree always
-        gets the same layout. ``"random_restarts"`` is the node-arrange
-        addon's method, which tries ``iterations`` random variations; it is
-        slower and usually leaves more crossings.
+        crossing. ``"layer_sweep"``, the one built-in strategy, is
+        deterministic: the same tree always gets the same layout.
     placement, routing : str
         The strategy for placing nodes along a column and for routing long
         links. Each has one built-in strategy; more can be registered with
@@ -970,7 +965,6 @@ class SugiyamaOptions:
     stack_collapsed: bool = True
     stack_margin_y_fac: float = 0.5
     optimize_sizes: bool = False
-    iterations: int = 50
     sequential_frames: bool = True
     balance_heights: bool = True
     balance_aspect: float = 1.6
@@ -1051,7 +1045,6 @@ def _sugiyama_settings(options: SugiyamaOptions):
 
     return Settings(
         crossing_weights=CrossingWeights(flow_value=options.trunk_crossing_weight),
-        iterations=options.iterations,
         direction=options.direction,
         socket_alignment=options.socket_alignment,
         add_reroutes=options.add_reroutes,

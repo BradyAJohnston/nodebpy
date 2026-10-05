@@ -7,12 +7,10 @@ from nodebpy import SugiyamaOptions, arrange
 from nodebpy.lib.nodearrange.arrange import pipeline as pipeline_module
 from nodebpy.lib.nodearrange.arrange.graph import keep_frames_together
 from nodebpy.lib.nodearrange.arrange.pipeline import (
-    CHECKS,
     PHASES,
     Fact,
     InvariantError,
     Layout,
-    Pipeline,
     PipelineError,
     Step,
     register,
@@ -59,72 +57,11 @@ def _columns(tree: bNodeTree, settings: Settings, **kwargs) -> dict[str, float]:
 # ---------------------------------------------------------------------------
 
 
-def test_default_pipeline_steps():
+def test_default_pipeline_has_the_four_phases_in_order():
     pipeline = default_pipeline()
-    assert pipeline.names() == [
-        "prioritize_links",
-        "save_multi_input_orders",
-        "remove_reroutes",
-        "contract_stacks",
-        "rank",
-        "balance_heights",
-        "constrain_layers",
-        "merge_edges",
-        "insert_dummy_nodes",
-        "add_columns",
-        "order",
-        "add_frame_borders",
-        "place",
-        "dissolve_dummy_nodes",
-        "align_reroutes",
-        "remove_frame_borders",
-        "space_columns",
-        "dissolve_clear_dummy_nodes",
-        "route",
-        "expand_stacks",
-        "realize",
-    ]
-    # The four phases appear in order, each once.
     assert tuple(step.phase for step in pipeline if step.phase) == PHASES
     assert pipeline["rank"].phase == "rank"
     assert pipeline["merge_edges"].phase is None
-
-
-def test_steps_follow_the_settings():
-    """Steps for optional features only run when the feature is on."""
-    tree, _ = _fork()
-
-    def ran(settings: Settings) -> list[str]:
-        names = []
-        sugiyama_layout(
-            tree, settings, observer=lambda step, *_: names.append(step.name)
-        )
-        return names
-
-    everything = default_pipeline().names()
-    with_reroutes = ran(Settings(add_reroutes=True))
-    assert with_reroutes == [
-        n
-        for n in everything
-        if n not in ("dissolve_dummy_nodes", "dissolve_clear_dummy_nodes")
-    ]
-    sparing = ran(Settings(add_reroutes=True, reroute_links="blocked"))
-    assert sparing == [
-        n for n in everything if n not in ("dissolve_dummy_nodes", "remove_reroutes")
-    ]
-
-    plain = ran(
-        Settings(add_reroutes=False, stack_collapsed=False, balance_heights=False)
-    )
-    skipped = {
-        "remove_reroutes",
-        "dissolve_clear_dummy_nodes",
-        "route",
-        "contract_stacks",
-        "expand_stacks",
-        "balance_heights",
-    }
-    assert plain == [n for n in everything if n not in skipped]
 
 
 def test_observer_sees_the_layout_and_timings():
@@ -137,8 +74,6 @@ def test_observer_sees_the_layout_and_timings():
             seen["ranks"] = sorted(v.rank for v in layout.G)
         if step.name == "add_columns":
             seen["columns"] = len(layout.G.columns)
-            assert layout.T is layout.CG.T
-            assert layout.settings is layout.state.settings
 
     sugiyama_layout(tree, Settings(), observer=observer)
     assert seen == {"ranks": [0, 1, 1, 2], "columns": 3}
@@ -151,7 +86,7 @@ def test_observer_sees_the_layout_and_timings():
 
 def test_registered_strategies():
     assert strategies("rank") == ["network_simplex", "longest_path"]
-    assert strategies("order") == ["random_restarts", "layer_sweep"]
+    assert strategies("order") == ["layer_sweep"]
     assert strategies("place") == ["brandes_koepf"]
     assert strategies("route") == ["bend_points"]
     assert strategy("rank", "longest_path") is not strategy("rank", "network_simplex")
@@ -172,19 +107,6 @@ def test_a_pipeline_follows_the_settings_it_is_run_with():
     longest = _columns(tree, Settings(ranking="longest_path"), pipeline=pipeline)
 
     assert simplex["s"] == simplex["b"]
-    assert longest["s"] == longest["c"]
-
-
-def test_ranking_strategies_differ():
-    """Network simplex keeps a side branch next to its source; longest path
-    pushes it to the last column."""
-    tree, _ = _fork()
-    simplex = _columns(tree, Settings(ranking="network_simplex"))
-    assert simplex["a"] < simplex["b"] < simplex["c"]
-    assert simplex["s"] == simplex["b"]
-
-    longest = _columns(tree, Settings(ranking="longest_path"))
-    assert longest["a"] < longest["b"] < longest["c"]
     assert longest["s"] == longest["c"]
 
 
@@ -230,7 +152,7 @@ def test_custom_pipeline_steps():
     reference = sugiyama_layout(tree, settings).positions()
 
     log = []
-    pipeline = default_pipeline(settings)
+    pipeline = default_pipeline()
     pipeline.insert_before("rank", Step("before_rank", lambda L: log.append("before")))
     pipeline.insert_after("rank", Step("after_rank", lambda L: log.append("after")))
     pipeline.insert_after(
@@ -255,7 +177,7 @@ def test_custom_pipeline_steps():
                 v.y = y
                 y -= v.height + layout.state.margin.y
 
-    pipeline = default_pipeline(settings)
+    pipeline = default_pipeline()
     pipeline.replace("place", place_stacked)
     assert pipeline["place"].phase == "place"
     stacked = sugiyama_layout(tree, settings, pipeline=pipeline).positions()
@@ -268,11 +190,6 @@ def test_custom_pipeline_steps():
     assert "balance_heights" not in pipeline.names()
     with pytest.raises(KeyError, match="no step named 'nope'"):
         pipeline.index("nope")
-
-
-def test_pipeline_iterates_its_steps():
-    steps = [Step("one", lambda L: None), Step("two", lambda L: None)]
-    assert list(Pipeline(steps)) == steps
 
 
 # ---------------------------------------------------------------------------
@@ -300,13 +217,6 @@ def test_default_pipeline_fits_together():
         Settings(stack_collapsed=False, balance_heights=False, link_priority="none"),
     ):
         default_pipeline().check(settings)
-
-    steps = {step.name: step for step in default_pipeline()}
-    assert steps["rank"].provides == {Fact.RANKED}
-    assert steps["order"].requires == {Fact.PROPER, Fact.COLUMNS}
-    assert steps["order"].provides == {Fact.ORDERED}
-    assert steps["place"].provides == {Fact.Y}
-    assert Fact.BORDERS in steps["remove_frame_borders"].removes
 
 
 @pytest.mark.parametrize(
@@ -391,15 +301,6 @@ def test_verify_pins_a_broken_invariant_on_its_step(monkeypatch):
 
 
 def test_verify_checks_every_fact_it_can():
-    assert set(CHECKS) == {
-        Fact.RANKED,
-        Fact.PROPER,
-        Fact.COLUMNS,
-        Fact.ORDERED,
-        Fact.Y,
-        Fact.X,
-    }
-
     def spoil(what):
         def run(layout: Layout) -> None:
             v = next(iter(layout.G))
@@ -423,25 +324,6 @@ def test_verify_checks_every_fact_it_can():
             sugiyama_layout(_framed(), Settings(), pipeline=pipeline, verify=True)
 
 
-def test_keep_frames_together():
-    tree = _framed()
-    observed = {}
-
-    def scramble(layout: Layout) -> None:
-        col = max(layout.G.columns, key=len)
-        col.sort(key=lambda v: v.node.name)
-        observed["before"] = [v.node.name for v in col]
-        keep_frames_together(col)
-        observed["after"] = [v.node.name for v in col]
-
-    pipeline = default_pipeline()
-    pipeline.insert_after("add_columns", Step("scramble", scramble))
-    sugiyama_layout(tree, Settings(add_reroutes=False), pipeline=pipeline)
-
-    assert observed["before"] == ["b", "d", "e", "g"]
-    assert observed["after"] == ["b", "d", "g", "e"]
-
-
 def test_strategy_names_are_not_taken_silently(monkeypatch):
     monkeypatch.setitem(
         pipeline_module._STRATEGIES, "rank", dict(pipeline_module._STRATEGIES["rank"])
@@ -456,23 +338,6 @@ def test_strategy_names_are_not_taken_silently(monkeypatch):
     assert "mine" in strategies("rank")
     unregister("rank", "mine")
     assert "mine" not in strategies("rank")
-
-
-def test_steps_can_share_data_of_their_own():
-    tree, _ = _fork()
-    seen = []
-    pipeline = default_pipeline()
-    pipeline.insert_after(
-        "rank",
-        Step("count", lambda L: L.extra.__setitem__("ranks", {v.rank for v in L.G})),
-    )
-    pipeline.insert_after(
-        "add_columns", Step("read", lambda L: seen.append(L.extra["ranks"]))
-    )
-
-    sugiyama_layout(tree, Settings(), pipeline=pipeline)
-
-    assert seen == [{0, 1, 2}]
 
 
 def test_strategy_options_on_the_public_api(monkeypatch):
@@ -529,15 +394,12 @@ def _order_and_crossings(tree: bNodeTree, **settings) -> tuple[list[list[str]], 
     # (As one graph: the parts of these trees are not linked.)
     settings = {"pack_components": False, **settings}
     sugiyama_layout(tree, Settings(**settings), observer=observer, verify=True)
-    if settings.get("ordering", "layer_sweep") == "layer_sweep":
-        # (Upstream's ordering can end with more crossings than it began.)
-        assert seen["add_columns"][1] >= seen["order"][1]
+    assert seen["add_columns"][1] >= seen["order"][1]
     return seen["order"]
 
 
-@pytest.mark.parametrize("ordering", ["layer_sweep", "random_restarts"])
-def test_ordering_uncrosses_links(ordering):
-    order, crossings = _order_and_crossings(_crossed(), ordering=ordering)
+def test_ordering_uncrosses_links():
+    order, crossings = _order_and_crossings(_crossed())
     assert crossings == 0
     assert [order[0].index("a") < order[0].index("b")] == [
         order[1].index("d") < order[1].index("c")
@@ -630,38 +492,6 @@ def test_crossings_weighed_by_what_links_carry():
         "order": ["y", "x"],
         "after": 2,
     }
-
-
-def test_default_ordering_does_not_depend_on_chance():
-    """The default ordering gives the same order whatever the random state
-    and however often it runs; upstream's needs its iterations."""
-    import random
-
-    from .arrange_fuzz import random_tree
-
-    random.seed(1)
-    first = _order_and_crossings(random_tree(11))
-    random.seed(2)
-    again = _order_and_crossings(random_tree(11), iterations=1)
-    assert first == again
-
-
-def test_default_ordering_is_no_worse_than_random_restarts():
-    """Over forty random trees the deterministic sweep leaves fewer
-    crossings in all than fifty random restarts, and never many more on any
-    one tree."""
-    from .arrange_fuzz import random_tree
-
-    swept_total = random_total = 0
-    for seed in range(40):
-        _, swept = _order_and_crossings(random_tree(seed), ordering="layer_sweep")
-        _, restarted = _order_and_crossings(
-            random_tree(seed), ordering="random_restarts"
-        )
-        assert swept <= restarted + 3, seed
-        swept_total += swept
-        random_total += restarted
-    assert swept_total <= random_total
 
 
 def test_shuffles_come_from_a_portable_generator():

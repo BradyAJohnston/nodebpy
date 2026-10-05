@@ -1,18 +1,16 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """Layout graph containers.
 
-These replace the ``networkx`` graphs the arranger used to be built on. They
-are shaped after the structs Blender's node editor already has, so that the
+They are shaped after the structs Blender's node editor already has, so that the
 layout can later be ported to C++ against ``bNodeTree`` directly (the
 layout's input, ``nodearrange.dna``, mirrors the same structs as plain data):
 
 ==================  ===================================================
 here                Blender (``DNA_node_types.h`` / ``BKE_node_runtime.hh``)
 ==================  ===================================================
-:class:`Tree`       ``bNodeTree``: owns the nodes and the links, and
-                    answers topology queries (``all_nodes()``,
-                    ``all_links()``, ``toposort_left_to_right()``) the way
-                    the tree's topology cache does.
+:class:`LayoutGraph` ``bNodeTree``: owns the nodes and the links, and
+                    answers topology queries the way the tree's topology
+                    cache does. (Not a tree: a directed multigraph.)
 :class:`Link`       ``bNodeLink``: ``fromnode`` / ``fromsock`` / ``tonode``
                     / ``tosock``.
 ``graph.Node``      a ``bNode`` being laid out (``node`` is the
@@ -21,7 +19,7 @@ here                Blender (``DNA_node_types.h`` / ``BKE_node_runtime.hh``)
 ``graph.Cluster``   a frame ``bNode`` and its ``direct_children_in_frame``.
 ==================  ===================================================
 
-:class:`Tree` is a directed multigraph: two nodes can be joined by several
+:class:`LayoutGraph` is a directed multigraph: two nodes can be joined by several
 links (one per socket pair), told apart by :attr:`Link.key`. :class:`DiGraph`
 is the plain directed graph used for auxiliary relations (the frame
 hierarchy, ordering constraints, socket reachability).
@@ -40,7 +38,7 @@ from typing import Any, cast
 
 
 class Link[N: Hashable]:
-    """A link between two nodes of a :class:`Tree` (``bNodeLink``).
+    """A link between two nodes of a :class:`LayoutGraph` (``bNodeLink``).
 
     ``fromsock`` / ``tosock`` are None for links that only constrain the
     layout (frame borders, ranking constraints). ``key`` tells parallel
@@ -101,7 +99,7 @@ def _contains(mapping: dict, item: object) -> bool:
         return False
 
 
-class Tree[N: Hashable]:
+class LayoutGraph[N: Hashable]:
     """Nodes and the links between them (``bNodeTree``)."""
 
     __slots__ = ("_nodes", "_pred", "_succ", "columns")
@@ -130,9 +128,6 @@ class Tree[N: Hashable]:
 
     def __contains__(self, node: object) -> bool:
         return _contains(self._nodes, node)
-
-    def all_nodes(self) -> KeysView[N]:
-        return self._nodes.keys()
 
     def add_node(self, node: N) -> None:
         if node not in self._nodes:
@@ -288,12 +283,9 @@ class Tree[N: Hashable]:
     def degree(self, node: N) -> int:
         return self.out_degree(node) + self.in_degree(node)
 
-    def toposort_left_to_right(self) -> list[N]:
-        return topological_sort(self)
-
     # -- derived trees ----------------------------------------------
 
-    def copy(self) -> Tree[N]:
+    def copy(self) -> LayoutGraph[N]:
         """A tree with the same nodes and a copy of every link."""
         tree = type(self)()
         if hasattr(self, "columns"):
@@ -311,7 +303,7 @@ class Tree[N: Hashable]:
             copied.cut_value = link.cut_value
         return tree
 
-    def reversed(self) -> Tree[N]:
+    def reversed(self) -> LayoutGraph[N]:
         """A view of this tree with successors and predecessors swapped.
 
         The nodes and links are shared, so a link's ``fromnode`` is still
@@ -325,7 +317,7 @@ class Tree[N: Hashable]:
         tree._pred = self._succ
         return tree
 
-    def subgraph(self, nodes: Iterable[N]) -> Tree[N]:
+    def subgraph(self, nodes: Iterable[N]) -> LayoutGraph[N]:
         """A copy restricted to *nodes* and the links among them."""
         keep = {n for n in nodes if n in self._nodes}
         tree = type(self)()
@@ -382,9 +374,6 @@ class DiGraph[N: Hashable]:
 
     def __contains__(self, node: object) -> bool:
         return _contains(self._nodes, node)
-
-    def all_nodes(self) -> KeysView[N]:
-        return self._nodes.keys()
 
     def add_node(self, node: N) -> None:
         if node not in self._nodes:
@@ -451,10 +440,6 @@ class DiGraph[N: Hashable]:
         for v in self._succ[node]:
             yield (node, v)
 
-    def in_edges(self, node: N) -> Iterator[tuple[N, N]]:
-        for u in self._pred[node]:
-            yield (u, node)
-
     def successors(self, node: N) -> KeysView[N]:
         return self._succ[node].keys()
 
@@ -501,10 +486,10 @@ class DiGraph[N: Hashable]:
         return 1
 
 
-type AnyGraph[N: Hashable] = Tree[N] | DiGraph[N]
+type AnyGraph[N: Hashable] = LayoutGraph[N] | DiGraph[N]
 
 
-def simple_digraph[N: Hashable](tree: Tree[N]) -> DiGraph[N]:
+def simple_digraph[N: Hashable](tree: LayoutGraph[N]) -> DiGraph[N]:
     """*tree* with parallel links merged into single edges."""
     graph: DiGraph[N] = DiGraph()
     graph.add_nodes(tree)
