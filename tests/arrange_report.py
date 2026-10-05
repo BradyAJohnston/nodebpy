@@ -12,7 +12,7 @@ change and compare the numbers (and the pictures).
     uv run python -m tests.arrange_report --essentials --timings      # time per step
 
 Each tree is arranged with ``SugiyamaOptions`` (``--set`` overrides a field)
-and measured with :func:`nodebpy.lib.nodearrange.metrics.measure`. The
+and measured with ``arrange_metrics.measure``. The
 hand-built cases of :mod:`tests.arrange_cases` and nodebpy's asset groups
 are always included; ``--essentials`` adds Blender's bundled node groups.
 """
@@ -35,9 +35,9 @@ from nodebpy import SugiyamaOptions, arrange
 from nodebpy.builder.layout import _sugiyama_settings
 from nodebpy.lib.nodearrange import arrange_node_tree
 from nodebpy.lib.nodearrange.arrange.pipeline import Layout, Step
-from nodebpy.lib.nodearrange.metrics import LayoutMetrics, measure
 
 from . import arrange_cases
+from .arrange_metrics import LayoutMetrics, measure
 
 # Columns of the table: (heading, value).
 _COLUMNS = (

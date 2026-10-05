@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Measure how readable a node tree's layout is.
+"""Measure how readable a node tree's layout is. (Test and tuning tooling:
+not part of the library.)
 
 :func:`measure` looks at a tree as it is currently laid out — node locations,
 node sizes, socket positions, frames — and counts the things that make a
@@ -7,9 +8,9 @@ layout hard or easy to read: link crossings, links running backwards or
 through unrelated nodes, overlapping nodes and frames, how many links are
 straight, how much room the drawing takes.
 
-It measures plain data (a :class:`~.dna.bNodeTree`), so a layout can be
+It measures plain data (a ``dna.bNodeTree``), so a layout can be
 judged without Blender: ``result.apply_to(tree); measure(tree)``. Given a
-Blender tree it reads it with :func:`~.extract.extract` first, which is the
+Blender tree it reads it with ``extract.extract`` first, which is the
 geometry the arranger and :func:`nodebpy.export.to_plot` use (drawn sizes
 when Blender has drawn the tree, estimates otherwise), so the numbers
 describe the picture ``to_plot`` draws.
@@ -28,9 +29,9 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from .arrange.common import frame_padding
-from .arrange.priority import is_flow_socket, zone_spine
-from .dna import bNode, bNodeLink, bNodeSocket, bNodeTree
+from nodebpy.lib.nodearrange.arrange.common import frame_padding
+from nodebpy.lib.nodearrange.arrange.priority import is_flow_socket, zone_spine
+from nodebpy.lib.nodearrange.dna import bNode, bNodeLink, bNodeSocket, bNodeTree
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
@@ -198,6 +199,21 @@ class LayoutMetrics:
             )
             + (f" · {self.backward_links} backward" if self.backward_links else "")
         )
+
+    def headline(self) -> dict[str, int]:
+        """The counts a layout is judged by at a glance, as stored with
+        each layout of the corpus."""
+        return {
+            "crossings": self.crossings,
+            "mixed_crossings": self.mixed_crossings,
+            "links_through_nodes": self.links_through_nodes,
+            "level_links": self.level_links,
+            "level_flow_links": self.level_flow_links,
+            "reroutes": self.reroutes,
+            "frame_defects": self.frame_overlaps + self.foreign_nodes_in_frames,
+            "width": round(self.width),
+            "height": round(self.height),
+        }
 
     @classmethod
     def field_names(cls) -> list[str]:
@@ -382,7 +398,7 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
     """Measure the layout *tree* currently has: plain data, or a Blender
     ``NodeTree`` (which is read into plain data first)."""
     if not isinstance(tree, bNodeTree):
-        from .extract import extract
+        from nodebpy.lib.nodearrange.extract import extract
 
         tree = extract(tree)[0]
 

@@ -12,9 +12,9 @@ import pytest
 from nodebpy.lib.nodearrange.arrange.edits import MoveNode, RemoveNode
 from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.metrics import measure
 
 from .arrange_data import MARGIN, node_overlaps, random_tree
+from .arrange_metrics import measure
 
 
 def _placed(result) -> list[tuple[str, tuple[float, float]]]:

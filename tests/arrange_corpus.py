@@ -3,13 +3,15 @@
 Each file of ``tests/arrange_corpus/`` holds one node tree, serialised with
 `tree_clipper <https://github.com/Algebraic-UG/tree_clipper>`_ (the same
 format nodebpy uses for web rendering and parity checks), and where every
-node ends up when the tree is arranged under a few settings. The trees are
-complete Blender trees, so the same files can be loaded by anything that
-reads Tree Clipper JSON — including a Blender build with a native
-implementation of the layout to be compared against this one.
+node ends up when the tree is arranged under a few settings, with the
+headline counts of each layout (crossings, level links, size, ...). It is a
+regression test for this implementation: the positions depend on the node
+sizes nodebpy estimates without a UI, which the files do not hold, so
+another implementation measuring drawn sizes would not reproduce them.
 
 After a deliberate change to the layout, rewrite the stored layouts (the
-trees are kept as they are) and review the diff:
+trees are kept as they are). What changed in each layout's counts is
+printed, to judge the change by:
 
     uv run python -m tests.arrange_corpus --update
 
@@ -39,6 +41,7 @@ from nodebpy.lib.nodearrange.config import Settings
 
 from . import arrange_cases
 from .arrange_data import MARGIN
+from .arrange_metrics import measure
 
 DIRECTORY = Path(__file__).parent / "arrange_corpus"
 
@@ -154,15 +157,32 @@ def cases() -> Iterator[tuple[str, dict[str, Any]]]:
         yield path.stem, json.loads(path.read_text())
 
 
-def _write(name: str, payload: str) -> None:
+def _write(name: str, payload: str, before: dict[str, Any] | None = None) -> None:
+    """Store *payload* with its layouts. *before* is the file's previous
+    contents, if any: what changed in each layout's headline counts is
+    printed, which is how a deliberate change to the layout is judged."""
     contents = {
         "margin": list(MARGIN),
         "tree": payload,
         "layouts": {
-            layout: {"settings": SETTINGS[layout], **layout_of(tree)}
+            layout: {
+                "settings": SETTINGS[layout],
+                "metrics": measure(tree).headline(),
+                **layout_of(tree),
+            }
             for layout, tree in arranged(payload, LAYOUTS_OF.get(name, SETTINGS))
         },
     }
+    for layout, stored in contents["layouts"].items():
+        old = ((before or {}).get("layouts", {}).get(layout) or {}).get("metrics")
+        if old is None or old == stored["metrics"]:
+            continue
+        changes = ", ".join(
+            f"{key} {old.get(key)} -> {value}"
+            for key, value in stored["metrics"].items()
+            if old.get(key) != value
+        )
+        print(f"{name} [{layout}]: {changes}")
     for group in list(bpy.data.node_groups):
         bpy.data.node_groups.remove(group)
     DIRECTORY.mkdir(exist_ok=True)
@@ -174,7 +194,7 @@ def _write(name: str, payload: str) -> None:
 def update() -> None:
     """Recompute the stored layouts of the trees already in the corpus."""
     for name, case in cases():
-        _write(name, case["tree"])
+        _write(name, case["tree"], case)
 
 
 def rebuild(only_missing: bool = False) -> None:

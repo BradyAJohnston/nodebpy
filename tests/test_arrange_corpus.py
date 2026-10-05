@@ -8,9 +8,9 @@ from nodebpy.lib.nodearrange.arrange.edits import ResizeFrame
 from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.extract import extract
-from nodebpy.lib.nodearrange.metrics import measure
 
 from . import arrange_cases, arrange_corpus
+from .arrange_metrics import measure
 
 pytest.importorskip("tree_clipper")
 

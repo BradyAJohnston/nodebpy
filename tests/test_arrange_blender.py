@@ -11,10 +11,10 @@ from nodebpy.lib.nodearrange.arrange.edits import MoveNode
 from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.extract import extract
-from nodebpy.lib.nodearrange.metrics import measure
 
 from . import arrange_cases
 from .arrange_data import MARGIN
+from .arrange_metrics import measure
 
 
 def _links(tree) -> list[tuple[int, int, int]]:
@@ -237,7 +237,7 @@ def _reroutes(tree) -> list[str]:
 
 
 def _arranged(case, **settings):
-    from nodebpy.lib.nodearrange.metrics import measure
+    from .arrange_metrics import measure
 
     tree = arrange_cases.CASES[case]()
     arrange_cases.reset_locations(tree)
@@ -287,7 +287,8 @@ def test_blocked_mode_keeps_the_trees_own_reroutes():
 
 def test_reroute_links_option_on_the_public_api():
     from nodebpy import SugiyamaOptions, arrange
-    from nodebpy.lib.nodearrange.metrics import measure
+
+    from .arrange_metrics import measure
 
     tree = arrange_cases.long_links()
     arrange_cases.reset_locations(tree)

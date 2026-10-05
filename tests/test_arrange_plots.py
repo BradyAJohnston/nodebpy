@@ -15,13 +15,14 @@ import pytest
 from nodebpy import SugiyamaOptions, TreeBuilder, arrange
 from nodebpy import geometry as g
 from nodebpy.export import to_plot
-from nodebpy.lib.nodearrange.metrics import measure
 from nodebpy.nodes.geometry.groups import (
     ClipFieldToBox,
     GeometryPrincipalComponents,
     PrincipalComponents,
     SliceToIndices,
 )
+
+from .arrange_metrics import measure
 
 PLOT_DIR = Path(__file__).parent / "plots"
 

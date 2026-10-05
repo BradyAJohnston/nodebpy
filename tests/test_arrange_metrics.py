@@ -1,20 +1,17 @@
-"""Layout metrics (``nodebpy.lib.nodearrange.metrics``).
+"""Layout metrics (``tests/arrange_metrics.py``).
 
 First the measurements themselves, on trees placed by hand so every count is
 known. Then what the Sugiyama layout must always deliver on the hand-built
-cases of ``arrange_cases``, and a snapshot of its metrics on them and on the
-asset groups: a change to the layout algorithm shows up there as a diff of
-crossings, straight links, size and so on, to be judged and accepted with
-``pytest --snapshot-update``.
+cases of ``arrange_cases``.
 """
 
 import bpy
 import pytest
 
 from nodebpy import SugiyamaOptions, arrange
-from nodebpy.lib.nodearrange.metrics import CostWeights, LayoutMetrics, measure
 
 from . import arrange_cases
+from .arrange_metrics import CostWeights, LayoutMetrics, measure
 
 _SOCKET_ROW = 22.0  # rough height of one socket row
 
@@ -336,10 +333,3 @@ def test_framed_stages_run_left_to_right():
     """Three frames in sequence end up side by side: far wider than tall."""
     metrics = _arranged("framed_stages")
     assert metrics.aspect > 3
-
-
-@pytest.mark.parametrize("name", [*arrange_cases.CASES, *arrange_cases.asset_groups()])
-def test_layout_metrics_snapshot(name, snapshot):
-    """The metrics of the default layout. A layout change shows up here;
-    review the diff and accept it with ``pytest --snapshot-update``."""
-    assert _arranged(name).as_dict() == snapshot

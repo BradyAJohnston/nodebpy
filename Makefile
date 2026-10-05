@@ -33,7 +33,7 @@ arrange-report:
 	uv run python -m tests.arrange_report --essentials
 
 # Recompute the layouts stored in tests/arrange_corpus/ after a deliberate
-# change to the layout; review the diff before committing it.
+# change to the layout; it prints what changed in each layout's counts.
 arrange-corpus:
 	uv run python -m tests.arrange_corpus --update
 

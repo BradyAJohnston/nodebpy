@@ -9,10 +9,10 @@ from nodebpy.lib.nodearrange.arrange.priority import ZONE, zone_priorities, zone
 from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
-from nodebpy.lib.nodearrange.metrics import measure
 from nodebpy.lib.nodearrange.zones import find_zones
 
 from .arrange_data import MARGIN, node_overlaps, plain_node
+from .arrange_metrics import measure
 
 
 def _chain(tree: bNodeTree, names: str, **kwargs) -> dict[str, bNode]:
