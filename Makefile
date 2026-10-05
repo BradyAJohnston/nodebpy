@@ -36,13 +36,3 @@ arrange-report:
 # change to the layout; it prints what changed in each layout's counts.
 arrange-corpus:
 	uv run python -m tests.arrange_corpus --update
-
-# List upstream node-arrange commits not yet ported into the vendored copy
-# (see src/nodebpy/lib/nodearrange/VENDORED.md).
-vendor-check:
-	@rev=$$(sed -n 's/.*Last sync:\*\* upstream commit `\([0-9a-f]*\)`.*/\1/p' src/nodebpy/lib/nodearrange/VENDORED.md); \
-	tmp=$$(mktemp -d); \
-	git clone --quiet --filter=blob:none https://github.com/Leonardo-Pike-Excell/node-arrange $$tmp; \
-	git -C $$tmp log --oneline $$rev..HEAD -- source/arrange source/config.py source/utils.py \
-		&& echo "(no output above = vendored copy is up to date with upstream)"; \
-	rm -rf $$tmp

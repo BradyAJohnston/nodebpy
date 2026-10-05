@@ -8,12 +8,12 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal
 
-from .arrange.common import Vec2
-from .arrange.edits import Edit
+from .common import Vec2
 from .dna import bNode, bNodeSocket, bNodeTree
+from .edits import Edit
 
 if TYPE_CHECKING:
-    from .arrange.graph import Node, Socket
+    from .graph import Node, Socket
 
 
 @dataclass
@@ -41,20 +41,20 @@ class Settings:
     """Fit the widths of collapsed nodes to their names first."""
     straighten_trunk: bool = True
     """Align the links that carry the tree's main data before any other
-    (see :mod:`.arrange.priority`), and draw each zone as a level row."""
+    (see :mod:`.priority`), and draw each zone as a level row."""
     pin_group_output: bool = True
     """Put Group Output nodes (outside frames) in the last column."""
     pin_group_input: bool = False
     """Put Group Input nodes (outside frames) in the first column."""
     sequential_frames: bool = True
     """Rank frames as stages, each after the one that feeds it (see
-    :func:`.arrange.ranking.add_frame_sequence_edges`)."""
+    :func:`.ranking.add_frame_sequence_edges`)."""
     balance_heights: bool = True
     """Shorten the tallest columns by moving feeder chains left (see
-    :mod:`.arrange.balancing`)."""
+    :mod:`.balancing`)."""
     pack_components: bool = True
     """Lay out the unconnected parts of the tree apart (see
-    :mod:`.arrange.packing`)."""
+    :mod:`.packing`)."""
 
 
 DEFAULT_MARGIN = (200.0, 20.0)
@@ -90,5 +90,5 @@ class LayoutState:
     # when links are not prioritised.
     socket_priority: dict[bNodeSocket, int] = field(default_factory=dict)
     # The changes to make to the tree, in order. The layout only records
-    # them; `nodearrange.apply` carries them out.
+    # them; `apply.apply` carries them out.
     edits: list[Edit] = field(default_factory=list)

@@ -9,12 +9,12 @@ from collections.abc import Callable, Iterable, Sequence
 from itertools import chain, pairwise
 from statistics import fmean
 
-from ..config import LayoutState, Settings
-from ..dna import bNode, bNodeLink, bNodeTree
 from . import packing
 from .balancing import balance_column_heights
 from .common import Vec2, f32, group_by, segments_intersect
+from .config import LayoutState, Settings
 from .digraph import LayoutGraph, bfs_edges
+from .dna import bNode, bNodeLink, bNodeTree
 from .edits import Edit, LayoutResult, MoveNode, RemoveLink
 from .graph import (
     Cluster,
@@ -113,9 +113,9 @@ def cycle_links(tree: bNodeTree) -> set[bNodeLink]:
 
 def precompute_links(state: LayoutState) -> None:
     """Index the links the layout goes by: all of them, less those that
-    close a cycle. (Upstream goes by Blender's ``is_valid``, which is also
-    cleared for links that are merely between sockets that do not fit;
-    those are still drawn, and still say where a node belongs.)"""
+    close a cycle. (Not only those Blender calls valid: it also clears that
+    flag for links between sockets that do not fit, which are still drawn
+    and still say where a node belongs.)"""
     # Links into a collapsed panel's sockets count too (Blender calls them
     # hidden and draws them to the panel header): they still carry data.
     ignored = cycle_links(state.tree)
@@ -153,7 +153,7 @@ def get_tree(state: LayoutState) -> LayoutGraph[Node]:
         ]
     )
     # Links to the nodes that stay where they are (the unselected ones, when
-    # only the selection is arranged) are left out, as in the addon.
+    # only the selection is arranged) are left out.
     by_node = {v.node: v for v in G}
     for u in G:
         assert is_real(u)
@@ -201,7 +201,7 @@ def add_columns(G: LayoutGraph[Node]) -> None:
     for col in columns:
         col.sort(key=node_name)
         col.sort(key=y_loc, reverse=True)
-        # nodebpy divergence: the ordering may leave a column as it finds it
+        # The ordering may leave a column as it finds it
         # (it stops as soon as nothing crosses), so start with every frame's
         # nodes together.
         keep_frames_together(col)

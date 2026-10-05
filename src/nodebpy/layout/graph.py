@@ -15,7 +15,6 @@ from itertools import chain, count, pairwise, product
 from math import inf
 from typing import TYPE_CHECKING, Literal, TypeGuard, cast
 
-from ..dna import bNode, bNodeSocket
 from .common import REROUTE_DIM, frame_padding, group_by
 from .digraph import (
     DiGraph,
@@ -26,11 +25,12 @@ from .digraph import (
     topological_sort,
     weakly_connected_components,
 )
+from .dna import bNode, bNodeSocket
 from .edits import RemoveLink, RemoveNode
 from .priority import is_flow_socket
 
 if TYPE_CHECKING:
-    from ..config import LayoutState
+    from .config import LayoutState
 
 # -------------------------------------------------------------------
 

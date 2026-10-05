@@ -18,6 +18,8 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
+from ..layout.api import _DEFAULT_SPLIT_INPUTS, ArrangeMethod
+from ..layout.api import arrange as _arrange_nodes
 from ..types import (
     SOCKET_COMPATIBILITY,
     Default,
@@ -34,8 +36,6 @@ from ._utils import (
     resolve_socket_key,
     socket_key,
 )
-from .layout import _DEFAULT_SPLIT_INPUTS, ArrangeMethod
-from .layout import arrange as _arrange_nodes
 from .socket import (
     BooleanSocket,
     BundleSocket,

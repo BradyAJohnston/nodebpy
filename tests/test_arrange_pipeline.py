@@ -1,11 +1,13 @@
 """The layout as a pipeline of named steps
-(``nodebpy.lib.nodearrange.arrange.pipeline``), and the ordering phase."""
+(``nodebpy.layout.pipeline``), and the ordering phase."""
 
 import pytest
 
-from nodebpy.lib.nodearrange.arrange.graph import keep_frames_together
-from nodebpy.lib.nodearrange.arrange.ordering import CROSSING_WEIGHTS, CrossingWeights
-from nodebpy.lib.nodearrange.arrange.pipeline import (
+from nodebpy.layout.config import Settings
+from nodebpy.layout.dna import bNode, bNodeTree
+from nodebpy.layout.graph import keep_frames_together
+from nodebpy.layout.ordering import CROSSING_WEIGHTS, CrossingWeights
+from nodebpy.layout.pipeline import (
     PHASES,
     Fact,
     InvariantError,
@@ -13,10 +15,8 @@ from nodebpy.lib.nodearrange.arrange.pipeline import (
     PipelineError,
     Step,
 )
-from nodebpy.lib.nodearrange.arrange.ranking import compute_ranks, longest_path_ranks
-from nodebpy.lib.nodearrange.arrange.sugiyama import default_pipeline, sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
+from nodebpy.layout.ranking import compute_ranks, longest_path_ranks
+from nodebpy.layout.sugiyama import default_pipeline, sugiyama_layout
 
 
 def _node(tree: bNodeTree, name: str) -> bNode:
@@ -287,7 +287,7 @@ def _crossed() -> bNodeTree:
 
 
 def _order_and_crossings(tree: bNodeTree, **settings) -> tuple[list[list[str]], int]:
-    from nodebpy.lib.nodearrange.arrange.ordering import count_crossings
+    from nodebpy.layout.ordering import count_crossings
 
     seen = {}
 
@@ -315,7 +315,7 @@ def test_ordering_uncrosses_links():
 
 
 def test_count_crossings():
-    from nodebpy.lib.nodearrange.arrange.ordering import count_crossings
+    from nodebpy.layout.ordering import count_crossings
 
     counts = {}
 
@@ -365,7 +365,7 @@ def _trade_off() -> bNodeTree:
 def test_crossings_weighed_by_what_links_carry():
     """A value crossing the main data costs more than two values crossing,
     and swapping neighbours goes by the cost."""
-    from nodebpy.lib.nodearrange.arrange.ordering import _transpose, count_crossings
+    from nodebpy.layout.ordering import _transpose, count_crossings
 
     even = CrossingWeights(1.0, 1.0, 1.0)
     seen = {}
@@ -405,7 +405,7 @@ def test_crossings_weighed_by_what_links_carry():
 def test_shuffles_come_from_a_portable_generator():
     """The generator behind the shuffled starting orders is drand48's, so a
     port produces the same numbers: these are its first outputs."""
-    from nodebpy.lib.nodearrange.arrange.ordering import _Lcg
+    from nodebpy.layout.ordering import _Lcg
 
     rng = _Lcg(0)
     state = 0x330E

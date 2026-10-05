@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Lay out the unconnected parts of a tree apart (nodebpy addition).
+"""Lay out the unconnected parts of a tree apart.
 
 A tree is often several drawings: the main graph, a second group of nodes
 linked to nothing in the first, a frame holding only a note. Ranked and
@@ -14,8 +14,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import replace
 
-from ..dna import bNode, bNodeTree
 from .common import Vec2, f32, frame_padding
+from .dna import bNode, bNodeTree
 from .edits import Edit, MoveNode
 
 type Rect = tuple[float, float, float, float]

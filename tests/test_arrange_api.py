@@ -9,7 +9,7 @@ import pytest
 from nodebpy import SimpleOptions, SugiyamaOptions, TreeBuilder, arrange
 from nodebpy import geometry as g
 from nodebpy.builder import BundledLibrary
-from nodebpy.builder.layout import calculate_socket_offset_y
+from nodebpy.layout.rows import calculate_socket_offset_y
 
 
 def _build_chain(name: str, arrange_method=None) -> TreeBuilder:
@@ -35,10 +35,8 @@ def test_arrange_standalone_without_builder_context():
 
 
 def test_arrange_ignores_selection_state():
-    """arrange() lays out the whole tree even when no node is selected —
-    a library-loaded tree has no selection, and the addon-derived layout
-    code used to silently arrange nothing (and drop every link whose
-    consumer was unselected)."""
+    """arrange() lays out the whole tree even when no node is selected: a
+    library-loaded tree has no selection."""
     builder = _build_chain("UnselectedArrange")
     tree = builder.tree
     for node in tree.nodes:
@@ -54,7 +52,7 @@ def test_arrange_ignores_selection_state():
 def test_hidden_sockets_do_not_add_height():
     """Sockets hidden by the editor's Hide Unused Sockets (hide=True and
     unlinked) don't occupy rows; hidden-but-linked sockets still do."""
-    from nodebpy.builder.layout import calculate_node_dimensions
+    from nodebpy.layout.rows import calculate_node_dimensions
 
     builder = _build_chain("HiddenSockets")
     node = builder.tree.nodes["Set Position"]
@@ -361,7 +359,7 @@ def test_layout_graph_hashes_follow_creation_order():
     """Layout-graph nodes and clusters hash by creation order, so the sets the
     arranger iterates come out in the same order on every run. (The trees that
     exercise this end to end, e.g. 'Curve to Tube', are too slow for a test.)"""
-    from nodebpy.lib.nodearrange.arrange.graph import Cluster, Node, reset_serials
+    from nodebpy.layout.graph import Cluster, Node, reset_serials
 
     def hashes():
         reset_serials()
@@ -415,7 +413,7 @@ class TestSocketOffsets:
         assert offsets == sorted(offsets, reverse=True)
 
     def test_offsets_within_estimated_height(self):
-        from nodebpy.builder.layout import calculate_node_dimensions
+        from nodebpy.layout.rows import calculate_node_dimensions
 
         tree = bpy.data.node_groups.new("OffsetsHeight", "GeometryNodeTree")
         node = tree.nodes.new("GeometryNodeSetPosition")
@@ -427,7 +425,7 @@ class TestSocketOffsets:
             assert -height <= calculate_socket_offset_y(socket) < 0
 
     def test_hidden_node_offsets(self):
-        from nodebpy.builder.layout import calculate_node_dimensions
+        from nodebpy.layout.rows import calculate_node_dimensions
 
         with TreeBuilder("HiddenOffsets", arrange=None) as tree:
             a = g.Value()
@@ -446,7 +444,7 @@ class TestSocketOffsets:
 def test_import_error_propagates(monkeypatch):
     """An ImportError inside the Sugiyama layout propagates: there is no
     silent fallback to the simple arrangement."""
-    import nodebpy.builder.layout as arrange_module
+    import nodebpy.layout.api as arrange_module
 
     def boom(tree, options, selected_only=False):
         raise ImportError("something else entirely")
@@ -572,11 +570,11 @@ def test_reroute_gap_is_a_fraction_of_the_margin():
     """Consecutive reroutes / dummy nodes in a column are spaced by the
     reroute fraction of the vertical margin; anything involving a real node
     keeps the full margin."""
-    from nodebpy.lib.nodearrange.arrange.common import REROUTE_MARGIN_Y_FAC, Vec2
-    from nodebpy.lib.nodearrange.arrange.graph import Kind, Node
-    from nodebpy.lib.nodearrange.arrange.y_coords import vertical_gap
-    from nodebpy.lib.nodearrange.config import LayoutState, Settings
-    from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
+    from nodebpy.layout.common import REROUTE_MARGIN_Y_FAC, Vec2
+    from nodebpy.layout.config import LayoutState, Settings
+    from nodebpy.layout.dna import bNode, bNodeTree
+    from nodebpy.layout.graph import Kind, Node
+    from nodebpy.layout.y_coords import vertical_gap
 
     state = LayoutState(
         tree=bNodeTree(),
@@ -639,13 +637,13 @@ def test_sugiyama_options_are_the_arrangers_settings():
     the same fields under the same names, with the same defaults."""
     from dataclasses import fields
 
-    from nodebpy.lib.nodearrange.config import Settings
+    from nodebpy.layout.config import Settings
 
     public = {f.name: f.default for f in fields(SugiyamaOptions)}
     assert public.pop("margin") == (30.0, 30.0)
     assert public == {f.name: f.default for f in fields(Settings)}
 
-    from nodebpy.builder.layout import _sugiyama_settings
+    from nodebpy.layout.api import _sugiyama_settings
 
     tuned = SugiyamaOptions(reroutes="blocked", pin_group_input=True)
     assert _sugiyama_settings(tuned) == Settings(

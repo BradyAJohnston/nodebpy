@@ -9,7 +9,7 @@ from collections.abc import Callable, Hashable, Iterable
 from operator import itemgetter
 from typing import NamedTuple
 
-from ..dna import REROUTE_SIZE
+from .dna import REROUTE_SIZE
 
 
 class Vec2(NamedTuple):

@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
 
-_ARRANGE = "nodebpy.lib.nodearrange"
+_ARRANGE = "nodebpy.layout"
 
 
 @contextmanager

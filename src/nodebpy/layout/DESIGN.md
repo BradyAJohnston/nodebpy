@@ -1,37 +1,47 @@
 # How the node layout works
 
-This package lays out a Blender node tree. It started as the add-on
-[node-arrange](https://github.com/Leonardo-Pike-Excell/node-arrange);
-`VENDORED.md` lists what differs from that and how to take its updates.
-This file explains the design as it is.
+This package lays out a Blender node tree. This file explains its design.
+
+It grew out of the add-on
+[node-arrange](https://github.com/Leonardo-Pike-Excell/node-arrange) by
+Leonardo Pike-Excell, and the modules that descend from it keep its
+`GPL-2.0-or-later` licence header. It is no longer kept in step with that
+add-on.
 
 ## Three stages
 
 ```
-Blender tree --extract.py--> plain data --arrange/--> edits --apply.py--> Blender tree
+Blender tree --extract.py--> plain data --sugiyama.py--> edits --apply.py--> Blender tree
 ```
 
 1. **Extract** (`extract.py`) copies what the layout reads into plain data
    (`dna.py`): nodes with their sizes, sockets with the height links attach
    at, links, frames, zones. The structs are named after Blender's
    (`bNodeTree`, `bNode`, `bNodeSocket`, `bNodeLink`, `bNodeTreeZone`).
-2. **Arrange** (`arrange/`) computes the layout from that data alone and
-   returns a list of edits (`arrange/edits.py`): move a node, add or remove
-   a reroute or a link. It never touches Blender. Nothing under `arrange/`,
-   nor `dna.py`, `config.py` or `zones.py`, may import `bpy` (a test
-   enforces it).
+2. **Lay out** (`sugiyama.sugiyama_layout()` and the modules it uses)
+   computes the layout from that data alone and returns a list of edits
+   (`edits.py`): move a node, add or remove a reroute or a link. It never
+   touches Blender.
 3. **Apply** (`apply.py`) carries the edits out on the Blender tree.
 
-`arrange_node_tree()` in `__init__.py` runs the three. The public entry for
-nodebpy users is `nodebpy.arrange()` with `SugiyamaOptions`, whose fields
-are those of `config.Settings` plus the margin.
+Only seven modules import `bpy`, and a test holds the rest to that:
+
+| Module | What it is |
+| --- | --- |
+| `api.py` | `arrange()`, `SugiyamaOptions`, and `arrange_node_tree()`, which runs the three stages |
+| `extract.py`, `apply.py`, `utils.py` | Stages 1 and 3 |
+| `rows.py` | A node's height and socket positions, estimated from the rows it draws |
+| `simple.py` | The other arrangement: plain columns by dependency |
+| `__init__.py` | The package's exports |
+
+`SugiyamaOptions` has the fields of `config.Settings` plus the margin.
 
 ## The layout is a layered drawing
 
 The method is Sugiyama's: put the nodes in columns so every link runs left
 to right, order each column to keep links from crossing, then decide the
-heights. `arrange/sugiyama.py` holds the list of steps
-(`default_pipeline()`); `arrange/pipeline.py` runs it. Four of the steps are
+heights. `sugiyama.py` holds the list of steps
+(`default_pipeline()`); `pipeline.py` runs it. Four of the steps are
 the *phases* that decide the picture; the rest prepare for one or clean up.
 
 | Step | What it does | Where |
@@ -143,7 +153,7 @@ that broke one. The random-tree test runs with it on.
 
 ## Notes for a port to C++
 
-- **What ports:** `arrange/`. Its input is the real `bNodeTree`; its
+- **What ports:** the modules that do not import `bpy`. Their input is the real `bNodeTree`; its
   output, the edit list, becomes direct calls (`bke::node_add_link` and so
   on).
 - **What does not:** `dna.py`, `extract.py`, `apply.py` and `zones.py`
@@ -165,7 +175,7 @@ that broke one. The random-tree test runs with it on.
   are rounded as Blender stores them, but the placement itself runs in
   doubles.
 - **Node sizes are only known to Blender once a node editor has drawn the
-  tree.** Headless, they are estimated (`nodebpy.builder.layout`).
+  tree.** Headless, they are estimated (`rows.py`).
 - **Not a conformance suite:** `tests/arrange_corpus/` stores positions
   that depend on those estimated sizes, which the files do not hold.
 - **Still linear per step:** each exchange of the network simplex scans

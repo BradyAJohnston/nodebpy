@@ -2,7 +2,7 @@
 """What a layout asks to be done to the node tree.
 
 The layout never touches the tree itself. It returns a :class:`LayoutResult`:
-the edits to make, in the order to make them. ``nodearrange.apply`` carries
+the edits to make, in the order to make them. ``apply.apply`` carries
 them out on a Blender tree; a C++ port would do the same with
 ``bke::node_remove_node``, ``bke::node_add_link`` and friends.
 """
@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from ..dna import bNode, bNodeSocket, bNodeTree
+from .dna import bNode, bNodeSocket, bNodeTree
 
 
 @dataclass(frozen=True, slots=True)
@@ -103,7 +103,7 @@ class LayoutResult:
 
     def apply_to(self, tree: bNodeTree) -> None:
         """Make the edits to *tree* itself — the plain data, in place — so
-        that it describes the tree as laid out: what ``nodearrange.apply``
+        that it describes the tree as laid out: what ``apply.apply``
         does to a Blender tree. Every node keeps the size and the socket
         offsets it came with."""
         for edit in self.edits:

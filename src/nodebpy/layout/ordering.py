@@ -27,7 +27,7 @@ from operator import itemgetter
 from statistics import fmean
 from typing import cast
 
-from ..config import LayoutState
+from .config import LayoutState
 from .digraph import (
     DiGraph,
     LayoutGraph,
@@ -154,9 +154,9 @@ def crossing_reduction_graph(
 
         if G_h.has_link(s, c, link.key):
             merged = G_h.link(s, c, link.key)
-            # NOTE: kept from upstream, which reads the merged link through
-            # the orientation of `G`: on a reversed `G` this compares the
-            # free-column socket, so parallel links only merge going forwards.
+            # The merged link is read through the orientation of `G`: on a
+            # reversed `G` this compares the free-column socket, so parallel
+            # links only merge going forwards.
             known = merged.tosock if is_reversed else merged.fromsock
             if known == output_socket:
                 merged.weight += 1
@@ -658,7 +658,7 @@ def count_crossings(
     share a socket do not cross.
 
     With *weights* each pair counts for what a crossing of its kind costs
-    (see :class:`~..config.CrossingWeights`)."""
+    (see :class:`~.config.CrossingWeights`)."""
     position = {v: i for col in columns for i, v in enumerate(col)}
     total = 0.0
     for col in columns:
@@ -702,9 +702,8 @@ def minimize_crossings(
     any language). From each, sweeps alternate direction, each followed by swaps
     of neighbours (:func:`_transpose`), until ``_PATIENCE`` in a row bring
     no improvement. This is the recipe of Graphviz's dot (Gansner et al.,
-    "A Technique for Drawing Directed Graphs", 1993), on upstream's
-    machinery for sockets and frames. Nothing is random, so the same graph
-    always gets the same order, and a port can reproduce it."""
+    "A Technique for Drawing Directed Graphs", 1993), with sockets and
+    frames taken into account. The same graph always gets the same order."""
     columns = G.columns
     weights = CROSSING_WEIGHTS
     trees = get_col_nesting_trees(columns, T)

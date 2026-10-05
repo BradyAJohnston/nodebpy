@@ -1,15 +1,15 @@
-"""Zones in the layout: which nodes are in a zone (``nodearrange.zones``),
+"""Zones in the layout: which nodes are in a zone (``layout.zones``),
 and the layout drawing a zone as a level row (``priority.zone_spine``)."""
 
 from itertools import pairwise
 
 import pytest
 
-from nodebpy.lib.nodearrange.arrange.priority import ZONE, zone_priorities, zone_spine
-from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
-from nodebpy.lib.nodearrange.zones import find_zones
+from nodebpy.layout.config import Settings
+from nodebpy.layout.dna import bNode, bNodeTree
+from nodebpy.layout.priority import ZONE, zone_priorities, zone_spine
+from nodebpy.layout.sugiyama import sugiyama_layout
+from nodebpy.layout.zones import find_zones
 
 from .arrange_data import MARGIN, node_overlaps, plain_node
 from .arrange_metrics import measure

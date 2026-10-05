@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Height-balanced ranking (nodebpy addition, not in upstream node-arrange).
+"""Height-balanced ranking.
 
 Network-simplex ranking minimises total edge length, so every feeder sits in
 the column right before its consumer. A node with many inputs — a big group
@@ -22,8 +22,8 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from collections.abc import Iterable
 
-from ..config import LayoutState
 from .common import REROUTE_DIM, REROUTE_MARGIN_Y_FAC
+from .config import LayoutState
 from .digraph import LayoutGraph, ancestors
 from .graph import Cluster, Kind, Node, Socket
 

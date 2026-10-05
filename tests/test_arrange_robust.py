@@ -8,10 +8,10 @@ import sys
 
 import pytest
 
-from nodebpy.lib.nodearrange.arrange import ordering
-from nodebpy.lib.nodearrange.arrange.sugiyama import cycle_links, sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.dna import bNodeTree
+from nodebpy.layout import ordering
+from nodebpy.layout.config import Settings
+from nodebpy.layout.dna import bNodeTree
+from nodebpy.layout.sugiyama import cycle_links, sugiyama_layout
 
 from .arrange_data import MARGIN, node_overlaps, plain_node, random_tree
 
@@ -213,7 +213,7 @@ def test_layout_keeps_no_graphs_alive():
 def test_stack_feeding_a_multi_input_through_a_kept_reroute():
     """The same, when the link from the stack passes a reroute the layout
     keeps (it has a label)."""
-    from nodebpy.lib.nodearrange.dna import new_reroute
+    from nodebpy.layout.dna import new_reroute
 
     tree = bNodeTree()
     math = [
@@ -246,7 +246,7 @@ def test_stack_feeding_a_multi_input_through_a_kept_reroute():
 def test_matching_reassigns_an_earlier_pair():
     """The matching behind the stacks finds the larger matching even when
     that means taking back a pair it made first."""
-    from nodebpy.lib.nodearrange.arrange.stacking import (
+    from nodebpy.layout.stacking import (
         deterministic_hopcroft_karp_matching,
     )
 
@@ -261,7 +261,7 @@ def test_matching_reassigns_an_earlier_pair():
 def test_ranking_keeps_its_cut_values_right(seed, monkeypatch):
     """The network simplex only updates the cut values an exchange changes.
     After every exchange they are what computing all of them afresh gives."""
-    from nodebpy.lib.nodearrange.arrange import ranking
+    from nodebpy.layout import ranking
 
     from .arrange_data import random_tree
 

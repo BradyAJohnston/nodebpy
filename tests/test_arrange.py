@@ -5,10 +5,10 @@ import pytest
 
 from nodebpy import TreeBuilder
 from nodebpy import geometry as g
-from nodebpy.builder.layout import (
+from nodebpy.layout.rows import calculate_node_dimensions
+from nodebpy.layout.simple import (
     arrange_tree,
     build_dependency_graph,
-    calculate_node_dimensions,
     organize_into_columns,
     topological_sort,
 )

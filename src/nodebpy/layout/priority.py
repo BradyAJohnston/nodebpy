@@ -24,7 +24,7 @@ of a link of the layout graph.)
 
 from __future__ import annotations
 
-from ..dna import bNodeLink, bNodeSocket, bNodeTree, bNodeTreeZone
+from .dna import bNodeLink, bNodeSocket, bNodeTree, bNodeTreeZone
 
 FLOW_SOCKETS = frozenset(
     {
@@ -139,7 +139,7 @@ def zone_spine(
 
 def zone_priorities(tree: bNodeTree) -> dict[bNodeSocket, int]:
     """Priorities that make each zone's spine the heaviest links there are
-    (nodebpy addition), so the placement draws a zone as a row: its input
+    so the placement draws a zone as a row: its input
     node, the nodes the data passes through, its output node."""
     priorities: dict[bNodeSocket, int] = {}
     taken: set[bNodeLink] = set()

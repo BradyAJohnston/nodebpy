@@ -6,8 +6,9 @@ from __future__ import annotations
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeSocket, NodeTree
 
-from .arrange.common import frame_padding
-from .arrange.edits import (
+from .common import frame_padding
+from .dna import bNodeSocket
+from .edits import (
     AddLink,
     AddReroute,
     LayoutResult,
@@ -17,7 +18,6 @@ from .arrange.edits import (
     ResizeFrame,
     RestoreMultiInputOrder,
 )
-from .dna import bNodeSocket
 from .extract import Binding
 from .utils import abs_loc, dimensions, get_bottom, get_top, move
 

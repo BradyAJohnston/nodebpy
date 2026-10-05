@@ -4,13 +4,13 @@ from itertools import pairwise
 
 import pytest
 
-from nodebpy.lib.nodearrange.arrange import packing
-from nodebpy.lib.nodearrange.arrange.common import Vec2
-from nodebpy.lib.nodearrange.arrange.edits import MoveNode
-from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
-from nodebpy.lib.nodearrange.zones import find_zones
+from nodebpy.layout import packing
+from nodebpy.layout.common import Vec2
+from nodebpy.layout.config import Settings
+from nodebpy.layout.dna import bNode, bNodeTree
+from nodebpy.layout.edits import MoveNode
+from nodebpy.layout.sugiyama import sugiyama_layout
+from nodebpy.layout.zones import find_zones
 
 from .arrange_data import MARGIN, node_overlaps, plain_node
 
@@ -263,7 +263,7 @@ def test_selection_is_left_where_it_is_when_clear_is_too_far():
 
 
 def test_unselected_reroutes_and_frames_are_no_obstacles():
-    from nodebpy.lib.nodearrange.dna import new_reroute
+    from nodebpy.layout.dna import new_reroute
 
     def corners(tree: bNodeTree) -> dict[str, tuple[float, float]]:
         result = sugiyama_layout(tree, Settings(), MARGIN, selected_only=True)

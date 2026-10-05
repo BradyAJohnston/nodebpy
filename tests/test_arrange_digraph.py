@@ -1,4 +1,4 @@
-"""The arranger's graph structs (``nodebpy.lib.nodearrange.arrange.digraph``).
+"""The arranger's graph structs (``nodebpy.layout.digraph``).
 
 ``LayoutGraph`` / ``Link`` stand in for Blender's ``bNodeTree`` / ``bNodeLink``;
 ``DiGraph`` holds plain relations. The layout relies on all of them walking
@@ -7,7 +7,7 @@ nodes and neighbours in insertion order.
 
 import pytest
 
-from nodebpy.lib.nodearrange.arrange.digraph import (
+from nodebpy.layout.digraph import (
     CycleError,
     DiGraph,
     LayoutGraph,

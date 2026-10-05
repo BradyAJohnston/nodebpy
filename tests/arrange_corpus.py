@@ -36,8 +36,8 @@ from typing import Any
 import bpy
 from bpy.types import NodeTree
 
-from nodebpy.lib.nodearrange import arrange_node_tree
-from nodebpy.lib.nodearrange.config import Settings
+from nodebpy.layout import arrange_node_tree
+from nodebpy.layout.config import Settings
 
 from . import arrange_cases
 from .arrange_data import MARGIN

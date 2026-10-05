@@ -1,3 +1,12 @@
+from ..layout import (
+    ArrangeMethod,
+    SimpleOptions,
+    SugiyamaOptions,
+    arrange,
+    arrange_tree,
+    default_split_inputs,
+    default_sugiyama_options,
+)
 from ._utils import SocketError, denormalize_name, normalize_name
 from .accessor import SocketAccessor
 from .asset import (
@@ -11,15 +20,6 @@ from .asset import (
     build_from_source,
 )
 from .items import Item, ItemsMixin, MenuItem
-from .layout import (
-    ArrangeMethod,
-    SimpleOptions,
-    SugiyamaOptions,
-    arrange,
-    arrange_tree,
-    default_split_inputs,
-    default_sugiyama_options,
-)
 from .mixins import LinkingMixin, OperatorMixin
 from .node import (
     BaseNode,

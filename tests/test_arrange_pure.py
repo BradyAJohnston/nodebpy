@@ -15,11 +15,18 @@ import bpy
 import pytest
 from mathutils.geometry import intersect_line_line_2d
 
-from nodebpy.lib import nodearrange
-from nodebpy.lib.nodearrange import arrange_node_tree
-from nodebpy.lib.nodearrange.apply import apply
-from nodebpy.lib.nodearrange.arrange.common import f32, group_by, segments_intersect
-from nodebpy.lib.nodearrange.arrange.edits import (
+from nodebpy import layout
+from nodebpy.layout import arrange_node_tree
+from nodebpy.layout.apply import apply
+from nodebpy.layout.common import f32, group_by, segments_intersect
+from nodebpy.layout.config import Settings
+from nodebpy.layout.dna import (
+    REROUTE_SIZE,
+    bNode,
+    bNodeTree,
+    new_reroute,
+)
+from nodebpy.layout.edits import (
     AddLink,
     AddReroute,
     LayoutResult,
@@ -29,19 +36,14 @@ from nodebpy.lib.nodearrange.arrange.edits import (
     ResizeFrame,
     RestoreMultiInputOrder,
 )
-from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.dna import (
-    REROUTE_SIZE,
-    bNode,
-    bNodeTree,
-    new_reroute,
-)
-from nodebpy.lib.nodearrange.extract import extract
+from nodebpy.layout.extract import extract
+from nodebpy.layout.sugiyama import sugiyama_layout
 
 from . import arrange_cases
 
-_PACKAGE = Path(nodearrange.__file__).parent
+_PACKAGE = Path(layout.__file__).parent
+# The modules that talk to Blender; every other one is pure.
+_BLENDER_SIDE = {"__init__", "api", "apply", "extract", "rows", "simple", "utils"}
 
 
 # ---------------------------------------------------------------------------
@@ -51,30 +53,14 @@ _PACKAGE = Path(nodearrange.__file__).parent
 
 @pytest.mark.parametrize(
     "module",
-    sorted(
-        [
-            *(_PACKAGE / "arrange").glob("*.py"),
-            _PACKAGE / "dna.py",
-            _PACKAGE / "config.py",
-            _PACKAGE / "zones.py",
-        ]
-    ),
+    sorted(p for p in _PACKAGE.glob("*.py") if p.stem not in _BLENDER_SIDE),
     ids=lambda path: path.name,
 )
 def test_layout_modules_do_not_import_blender(module):
     """The layout, its input structs and its settings import neither
     ``bpy`` nor ``mathutils``, nor ``networkx``, nor the modules of this
     package that do."""
-    blender_side = {
-        "bpy",
-        "mathutils",
-        "blf",
-        "networkx",
-        "utils",
-        "extract",
-        "apply",
-        "structs",
-    }
+    blender_side = {"bpy", "mathutils", "blf", "networkx", *_BLENDER_SIDE}
     imported = set()
     for node in ast.walk(ast.parse(module.read_text())):
         if isinstance(node, ast.Import):
@@ -295,7 +281,7 @@ def test_layout_failure_leaves_the_tree_untouched(monkeypatch):
         len(ntree.links),
     )
 
-    from nodebpy.lib.nodearrange.arrange import sugiyama
+    from nodebpy.layout import sugiyama
 
     def boom(*args, **kwargs):
         raise RuntimeError("late failure")

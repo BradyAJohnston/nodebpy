@@ -3,7 +3,7 @@
 
 They are shaped after the structs Blender's node editor already has, so that the
 layout can later be ported to C++ against ``bNodeTree`` directly (the
-layout's input, ``nodearrange.dna``, mirrors the same structs as plain data):
+layout's input, ``dna``, mirrors the same structs as plain data):
 
 ==================  ===================================================
 here                Blender (``DNA_node_types.h`` / ``BKE_node_runtime.hh``)

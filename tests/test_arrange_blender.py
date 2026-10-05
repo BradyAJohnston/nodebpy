@@ -6,11 +6,11 @@ import itertools
 import bpy
 import pytest
 
-from nodebpy.lib.nodearrange import arrange_node_tree
-from nodebpy.lib.nodearrange.arrange.edits import MoveNode
-from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.extract import extract
+from nodebpy.layout import arrange_node_tree
+from nodebpy.layout.config import Settings
+from nodebpy.layout.edits import MoveNode
+from nodebpy.layout.extract import extract
+from nodebpy.layout.sugiyama import sugiyama_layout
 
 from . import arrange_cases
 from .arrange_data import MARGIN
@@ -333,8 +333,8 @@ def test_reroute_links_option_on_the_public_api():
 
 
 def test_link_is_clear():
-    from nodebpy.lib.nodearrange.arrange.graph import Kind, Node, Socket
-    from nodebpy.lib.nodearrange.arrange.sugiyama import link_is_clear
+    from nodebpy.layout.graph import Kind, Node, Socket
+    from nodebpy.layout.sugiyama import link_is_clear
 
     def box(x: float, top: float, width: float = 100.0, height: float = 100.0):
         v = Node(type=Kind.DUMMY)

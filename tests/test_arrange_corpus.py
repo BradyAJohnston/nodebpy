@@ -3,11 +3,11 @@ trees serialised with tree_clipper, with where every node must end up."""
 
 import pytest
 
-from nodebpy.lib.nodearrange import arrange_node_tree
-from nodebpy.lib.nodearrange.arrange.edits import ResizeFrame
-from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.extract import extract
+from nodebpy.layout import arrange_node_tree
+from nodebpy.layout.config import Settings
+from nodebpy.layout.edits import ResizeFrame
+from nodebpy.layout.extract import extract
+from nodebpy.layout.sugiyama import sugiyama_layout
 
 from . import arrange_cases, arrange_corpus
 from .arrange_metrics import measure

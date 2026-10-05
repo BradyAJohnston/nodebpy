@@ -112,8 +112,8 @@ def test_crossings_by_what_links_carry():
 def test_trunk_and_zone_metrics():
     """Counted on plain data placed by hand: a -> b -> c carrying geometry,
     with b forking to d as well, and b .. c a zone."""
-    from nodebpy.lib.nodearrange.dna import bNodeTree
-    from nodebpy.lib.nodearrange.zones import find_zones
+    from nodebpy.layout.dna import bNodeTree
+    from nodebpy.layout.zones import find_zones
 
     from .arrange_data import plain_node
 

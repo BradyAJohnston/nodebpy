@@ -271,7 +271,7 @@ def test_plot_matches_layout_row_model():
     its Geometry output on the Geometry input's row (Blender's aligned
     sockets), a hide_value vector input takes a single row, and undrawn RNA
     bookkeeping adds no property rows — header + 4 input rows in all."""
-    from nodebpy.builder.layout import (
+    from nodebpy.layout.rows import (
         HEADER,
         SOCKET_ROW,
         VECTOR_EXPANDED,
@@ -310,7 +310,7 @@ def test_declared_socket_order_rows():
     a Principled BSDF folds its closed panels into header rows; a zone
     output node pairs each item's input with its output."""
     from nodebpy import shader as s
-    from nodebpy.builder.layout import (
+    from nodebpy.layout.rows import (
         HEADER,
         PROPERTY_ROW,
         SOCKET_ROW,
@@ -379,7 +379,7 @@ def test_group_node_panels_in_row_model(tmp_path):
     row hiding its sockets (linked ones fold onto the header, which is
     where links anchor), an open panel adds a header row above its
     sockets, and to_plot(node=True, open_panels=True) expands them all."""
-    from nodebpy.builder.layout import (
+    from nodebpy.layout.rows import (
         HEADER,
         PROPERTY_ROW,
         SOCKET_ROW,

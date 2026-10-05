@@ -8,10 +8,10 @@ from __future__ import annotations
 from math import isclose
 from statistics import fmean
 
-from ..config import LayoutState
-from ..dna import new_reroute
 from .common import Vec2, f32
+from .config import LayoutState
 from .digraph import LayoutGraph, descendants, edge_dfs
+from .dna import new_reroute
 from .edits import AddLink, AddReroute, MoveNode, ResizeFrame, RestoreMultiInputOrder
 from .graph import (
     Cluster,
@@ -84,8 +84,7 @@ def remove_reroutes(CG: ClusterGraph) -> None:
                 add_dummy_edge(CG.G, u, v)
                 CG.remove_nodes_from(between)
         elif not is_dangling(CG.G, path):
-            # nodebpy divergence: reroutes left dangling are someone's work
-            # in progress; upstream deletes them with their links.
+            # (Reroutes left dangling are someone's work in progress.)
             dissolve_reroute_edges(CG.G, path, CG.state)
             CG.remove_nodes_from(path)
 

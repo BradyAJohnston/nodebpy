@@ -15,7 +15,7 @@ The Sugiyama layout (`arrange(tree)`, the default arrangement of `TreeBuilder`) 
 - **Reroutes only where needed.** `SugiyamaOptions(reroutes="blocked")` adds reroutes only to links that would otherwise be drawn across a node, and keeps the ones already in the tree. `reroutes="all"` routes every long link; the default `"none"` now only ever moves nodes.
 - **Arrange only the selection.** `arrange(tree, selected_only=True)` arranges the selected nodes among themselves, around where they were and clear of the others, which do not move.
 - **Faster on large trees.** Ordering takes about a third of the time it did, and ranking about a third.
-- **Internals.** The layout is now a pure function over plain data, split into named steps that can be replaced and checked one by one. See `src/nodebpy/lib/nodearrange/DESIGN.md`.
+- **Internals.** The layout is now a pure function over plain data, split into named steps that can be replaced and checked one by one. It is its own package, `nodebpy.layout`; see `src/nodebpy/layout/DESIGN.md`.
 
 ### Fixes
 
@@ -32,6 +32,7 @@ The Sugiyama layout (`arrange(tree)`, the default arrangement of `TreeBuilder`) 
 - **`SugiyamaOptions` is cut to twelve fields:** `margin`, `direction`, `socket_alignment`, `reroutes`, `stack_collapsed`, `optimize_sizes`, `straighten_trunk`, `pin_group_output`, `pin_group_input`, `sequential_frames`, `balance_heights`, `pack_components`.
     - `add_reroutes=True` becomes `reroutes="all"`. (`build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.)
     - Removed, now fixed at their previous defaults: `iterations`, `stack_margin_y_fac`, `reroute_margin_y_fac`, `balance_aspect`, `keep_reroutes_outside_frames`. The asset build still accepts their flags and configuration keys, and ignores them.
+- `nodebpy.builder.layout` and `nodebpy.lib.nodearrange` are gone; both are now `nodebpy.layout`. `nodebpy.arrange`, `SugiyamaOptions` and the other names exported from `nodebpy` and `nodebpy.builder` are where they were.
 - Socket positions are always estimated from the rows a node draws. They were read from Blender's memory with `ctypes` when a node editor had drawn the tree.
 - The `networkx` extra (`nodebpy[networkx]`) is now empty and deprecated; it is kept so existing installs keep resolving.
 - `to_python` raises `ValueError` for a tree whose links form a cycle. It previously raised a `networkx` error, or silently left the nodes on the cycle out when `networkx` was not installed.

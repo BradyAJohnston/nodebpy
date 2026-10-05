@@ -23,10 +23,10 @@ from math import ceil, floor, inf
 from statistics import fmean
 from typing import Any, cast
 
-from ..config import LayoutState
-from ..dna import bNodeSocket
 from .common import REROUTE_MARGIN_Y_FAC
+from .config import LayoutState
 from .digraph import DiGraph, LayoutGraph, descendants
+from .dna import bNodeSocket
 from .graph import Cluster, Edge, Kind, Node, Socket, link_priority
 from .priority import SPINE_MIN_PRIORITY, TRUNK_MIN_PRIORITY
 
@@ -211,7 +211,7 @@ def inner_shift(
     for root in dict.fromkeys(v.root for v in G):
         for v, w in pairwise(iter_block(root)):
             # The nodes along the spine of a zone have their tops level
-            # whatever their sizes (nodebpy addition).
+            # whatever their sizes.
             on_spine = (
                 bool(priorities)
                 and not (v.is_reroute or w.is_reroute)
@@ -240,11 +240,8 @@ def inner_shift(
 
 
 def vertical_gap(u: Node, w: Node, state: LayoutState) -> float:
-    """Margin between two vertically adjacent nodes of a column (nodebpy
-    divergence): consecutive reroutes / dummy nodes — the bundles of long
-    links routed past a column — pack much tighter than nodes, as reroute
-    dots do in hand-made trees, so a fan-in of many long links no longer
-    costs a node's height per link."""
+    """Margin between two vertically adjacent nodes of a column. Reroutes
+    and dummy nodes pack tighter than nodes (see ``REROUTE_MARGIN_Y_FAC``)."""
     if u.is_reroute and w.is_reroute:
         return state.margin.y * REROUTE_MARGIN_Y_FAC
     return state.margin.y
@@ -350,8 +347,7 @@ def has_large_gaps_in_frame(
             # Usually two: the frame's upper borders are aligned in one
             # block and its lower ones in another. Where a border could not
             # be aligned with the rest there are more, and the outermost
-            # two give the frame's extent. (nodebpy divergence: upstream
-            # assumes exactly two.)
+            # two give the frame's extent.
             by_height = sorted(vertical_border_roots, key=lambda w: w.y)
             w, z = by_height[0], by_height[-1]
             line = (w.y, z.y + z.height) if is_up else (w.y - w.height, z.y)

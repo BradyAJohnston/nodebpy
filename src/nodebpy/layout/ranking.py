@@ -59,7 +59,7 @@ def _top_level_unit(v: Node, root: Cluster) -> Node | Cluster:
 
 
 def add_frame_sequence_edges(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
-    """Rank frames as stages of the flow (nodebpy divergence).
+    """Rank frames as stages of the flow.
 
     With plain nesting constraints a frame only has to enclose its own
     members, so a downstream frame's first nodes are ranked right next to the
@@ -342,8 +342,7 @@ def exchange(
 
     Only the cut values around the cycle *enter* closes in the tree change,
     by the cut value of *leave*: up for the links that run around the cycle
-    the way *enter* does, down for the others. (Upstream recomputes every
-    cut value after every exchange.)"""
+    the way *enter* does, down for the others."""
     tail, head, key = enter
     cut_value = T.link(*leave).cut_value
     top, cycle = tree_path(head, tail, parents)
@@ -363,7 +362,7 @@ def exchange(
             v.rank += slack
 
     # Both links are below the top of the cycle, so the tree is as it was
-    # everywhere else. (Upstream numbers the whole tree again.)
+    # everywhere else.
     return set_post_order_numbers(top, T, parents)
 
 

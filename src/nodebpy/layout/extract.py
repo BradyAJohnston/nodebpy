@@ -91,7 +91,7 @@ def get_socket_y(socket: NodeSocket) -> float:
     node = socket.node
     assert node is not None
 
-    from ...builder.layout import calculate_socket_offset_y
+    from .rows import calculate_socket_offset_y
 
     return get_top(node) + calculate_socket_offset_y(socket)
 

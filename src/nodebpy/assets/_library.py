@@ -1137,8 +1137,8 @@ def build_library(
     crossing-reduction iterations, direction, socket alignment, ...) is
     scoped over the build via
     :func:`nodebpy.builder.default_sugiyama_options`. ``add_reroutes=True``
-    additionally inserts reroute nodes to route long links around nodes
-    (the node-arrange addon's behaviour); it composes with ``arrange``.
+    additionally inserts reroute nodes to route long links around nodes;
+    it composes with ``arrange``.
     ``split_inputs=True`` gives each consumer node its own Group Input
     instance — named and labelled after the interface sockets it carries,
     with unused sockets hidden — instead of a single Group Input trailing
@@ -1351,8 +1351,8 @@ def plot_library(
     if not blend_path.is_file():
         raise FileNotFoundError(f"Asset library not found: {blend_path.resolve()}")
 
-    from ..builder.layout import arrange as arrange_tree_nodes
     from ..export import to_plot
+    from ..layout import arrange as arrange_tree_nodes
 
     patterns = list(names) if names is not None else None
     before = {
@@ -1423,10 +1423,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--add-reroutes",
         action="store_true",
-        help=(
-            "Arrange with reroute nodes inserted to route long links around "
-            "nodes (the node-arrange addon's behaviour)."
-        ),
+        help=("Arrange with reroute nodes inserted to route long links around nodes."),
     )
     layout.add_argument(
         "--spacing",

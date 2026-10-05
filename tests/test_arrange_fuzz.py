@@ -11,9 +11,9 @@ from dataclasses import replace
 
 import pytest
 
-from nodebpy.lib.nodearrange.arrange.edits import MoveNode, RemoveNode
-from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
-from nodebpy.lib.nodearrange.config import Settings
+from nodebpy.layout.config import Settings
+from nodebpy.layout.edits import MoveNode, RemoveNode
+from nodebpy.layout.sugiyama import sugiyama_layout
 
 from .arrange_data import MARGIN, node_overlaps, random_tree
 from .arrange_metrics import measure
@@ -29,9 +29,8 @@ def _frame_defects(tree, result) -> int:
     return metrics.frame_overlaps + metrics.foreign_nodes_in_frames
 
 
-# Upstream's own defaults, which reach parts of the routing the defaults
-# here do not.
-_UPSTREAM = {"reroutes": "all", "direction": "LEFT_UP", "socket_alignment": "MODERATE"}
+# Settings far from the defaults, to reach more of the routing.
+_OTHER = {"reroutes": "all", "direction": "LEFT_UP", "socket_alignment": "MODERATE"}
 
 
 @pytest.mark.parametrize("seed", range(30))
@@ -41,11 +40,11 @@ _UPSTREAM = {"reroutes": "all", "direction": "LEFT_UP", "socket_alignment": "MOD
         ({}, 0),
         ({"reroutes": "all"}, 0),
         ({"reroutes": "blocked"}, 0),
-        (_UPSTREAM, 0),
+        (_OTHER, 0),
         ({}, 3),
-        (_UPSTREAM, 3),
+        (_OTHER, 3),
     ],
-    ids=["plain", "reroutes", "blocked", "upstream", "zones", "upstream-zones"],
+    ids=["plain", "reroutes", "blocked", "other", "zones", "other-zones"],
 )
 def test_random_tree(seed, settings, zones):
     """Zones are thrown at the trees at random, overlapping frames and each

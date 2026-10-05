@@ -36,7 +36,7 @@ def dimensions(node: Node) -> Vector:
 
     # `node.dimensions` is only computed when a node editor draws the tree;
     # under the headless `bpy` module it stays (0, 0), so estimate instead.
-    from ...builder.layout import calculate_node_dimensions
+    from .rows import calculate_node_dimensions
 
     return Vector(calculate_node_dimensions(node))
 

@@ -32,9 +32,9 @@ import bpy
 from bpy.types import NodeTree
 
 from nodebpy import SugiyamaOptions, arrange
-from nodebpy.builder.layout import _sugiyama_settings
-from nodebpy.lib.nodearrange import arrange_node_tree
-from nodebpy.lib.nodearrange.arrange.pipeline import Layout, Step
+from nodebpy.layout import arrange_node_tree
+from nodebpy.layout.api import _sugiyama_settings
+from nodebpy.layout.pipeline import Layout, Step
 
 from . import arrange_cases
 from .arrange_metrics import LayoutMetrics, measure

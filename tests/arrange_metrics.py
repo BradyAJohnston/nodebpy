@@ -29,9 +29,9 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from nodebpy.lib.nodearrange.arrange.common import frame_padding
-from nodebpy.lib.nodearrange.arrange.priority import is_flow_socket, zone_spine
-from nodebpy.lib.nodearrange.dna import bNode, bNodeLink, bNodeSocket, bNodeTree
+from nodebpy.layout.common import frame_padding
+from nodebpy.layout.dna import bNode, bNodeLink, bNodeSocket, bNodeTree
+from nodebpy.layout.priority import is_flow_socket, zone_spine
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
@@ -398,7 +398,7 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
     """Measure the layout *tree* currently has: plain data, or a Blender
     ``NodeTree`` (which is read into plain data first)."""
     if not isinstance(tree, bNodeTree):
-        from nodebpy.lib.nodearrange.extract import extract
+        from nodebpy.layout.extract import extract
 
         tree = extract(tree)[0]
 

@@ -10,8 +10,8 @@ from collections.abc import Collection, Sequence
 from itertools import chain
 from typing import cast
 
-from ..config import LayoutState
 from .common import frame_padding, group_by, segments_intersect
+from .config import LayoutState
 from .digraph import DiGraph, LayoutGraph, Link, ancestors, dag_longest_path_length
 from .graph import (
     Cluster,
@@ -59,8 +59,8 @@ def assign_x_coords(
     x = 0
     for i, col in enumerate(columns):
         if not col:
-            # nodebpy divergence: a rank whose only occupants were dummy
-            # nodes (dissolved when reroutes are not added) takes no space.
+            # A rank whose only occupants were dummy nodes (dissolved when
+            # reroutes are not added) takes no space.
             continue
         max_width = max([v.width for v in col])
 

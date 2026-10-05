@@ -7,16 +7,16 @@ import bpy
 import pytest
 
 from nodebpy import SugiyamaOptions, arrange
-from nodebpy.lib.nodearrange.arrange.digraph import LayoutGraph
-from nodebpy.lib.nodearrange.arrange.graph import Kind, Node, Socket, link_priority
-from nodebpy.lib.nodearrange.arrange.priority import (
+from nodebpy.layout.config import Settings
+from nodebpy.layout.digraph import LayoutGraph
+from nodebpy.layout.dna import bNode, bNodeTree
+from nodebpy.layout.extract import extract
+from nodebpy.layout.graph import Kind, Node, Socket, link_priority
+from nodebpy.layout.priority import (
     FLOW,
     MAIN,
     socket_priorities,
 )
-from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
-from nodebpy.lib.nodearrange.extract import extract
 
 from . import arrange_cases
 
@@ -253,7 +253,7 @@ def _plain(tree: bNodeTree, name: str, idname="GeometryNodeSetPosition") -> bNod
 
 
 def _columns(tree: bNodeTree, settings=None) -> dict[str, float]:
-    from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
+    from nodebpy.layout.sugiyama import sugiyama_layout
 
     # As one graph: the trees here are several unlinked chains, and a node
     # is held to the first or last column of the part it is in.

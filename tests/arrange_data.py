@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import random
 
-from nodebpy.lib.nodearrange.arrange.edits import LayoutResult
-from nodebpy.lib.nodearrange.dna import bNode, bNodeTree, new_reroute
-from nodebpy.lib.nodearrange.zones import find_zones
+from nodebpy.layout.dna import bNode, bNodeTree, new_reroute
+from nodebpy.layout.edits import LayoutResult
+from nodebpy.layout.zones import find_zones
 
 MARGIN = (50.0, 20.0)
 """Room between nodes the pure-layout tests arrange with: ``(x, y)``."""

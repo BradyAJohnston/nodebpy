@@ -40,8 +40,8 @@ from dataclasses import dataclass, field, replace
 from enum import StrEnum
 from typing import TYPE_CHECKING, Literal
 
-from ..config import LayoutState, Settings
 from .common import Vec2
+from .config import LayoutState, Settings
 from .digraph import DiGraph, LayoutGraph
 from .graph import Cluster, ClusterGraph, Kind, Node
 
