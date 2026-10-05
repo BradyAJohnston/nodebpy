@@ -156,10 +156,46 @@ def test_selection_is_ignored_unless_asked_for():
     arrange_node_tree(tree, Settings(reroutes="none"), MARGIN)
 
     assert _locations(tree) != before
+    # The plain data says what is selected, as Blender does.
     plain, _ = extract(tree)
-    assert all(node.select for node in plain.nodes)
-    chosen, _ = extract(tree, selected_only=True)
-    assert not any(node.select for node in chosen.nodes)
+    assert not any(node.select for node in plain.nodes)
+
+
+def test_selected_only_on_the_public_api():
+    from nodebpy import arrange
+
+    tree, first, second = _two_chains()
+    for node in tree.nodes:
+        node.select = node in second
+    before = _locations(tree)
+
+    arrange(tree, "sugiyama", selected_only=True)
+
+    after = _locations(tree)
+    assert all(after[node.name] == before[node.name] for node in first)
+    assert any(after[node.name] != before[node.name] for node in second)
+
+
+def test_frame_that_does_not_shrink_is_fitted_and_stays_that_way():
+    """A frame with Shrink off is sized around its nodes where the layout
+    put them, and Shrink is left off."""
+    tree = arrange_cases.framed_stages()
+    arrange_cases.reset_locations(tree)
+    frame = next(n for n in tree.nodes if n.bl_idname == "NodeFrame")
+    frame.shrink = False
+    frame.width = frame.height = 10.0
+
+    arrange_node_tree(tree, Settings(), MARGIN)
+
+    assert frame.shrink is False
+    members = [n for n in tree.nodes if n.parent == frame]
+    left = min(n.location_absolute.x for n in members)
+    right = max(n.location_absolute.x + n.width for n in members)
+    top = max(n.location_absolute.y for n in members)
+    assert frame.location_absolute.x < left
+    assert frame.location_absolute.x + frame.width > right
+    assert frame.location_absolute.y > top
+    assert frame.height > 100
 
 
 def test_selected_reroutes_at_the_edge_of_the_selection_are_kept():

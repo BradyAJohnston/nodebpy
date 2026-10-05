@@ -983,21 +983,35 @@ def _sugiyama_settings(options: SugiyamaOptions):
     return Settings(**{f.name: getattr(options, f.name) for f in fields(Settings)})
 
 
-def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:
+def _arrange_sugiyama(
+    tree: bpy.types.NodeTree, options: SugiyamaOptions, selected_only: bool = False
+) -> None:
     from ..lib.nodearrange import arrange_node_tree
 
-    arrange_node_tree(tree, _sugiyama_settings(options), margin=tuple(options.margin))
+    arrange_node_tree(
+        tree,
+        _sugiyama_settings(options),
+        margin=tuple(options.margin),
+        selected_only=selected_only,
+    )
 
 
 def arrange(
     tree: bpy.types.NodeTree,
     method: ArrangeMethod = "sugiyama",
+    *,
+    selected_only: bool = False,
 ) -> None:
     """Arrange the nodes of a tree.
 
     ``method`` selects the algorithm: ``"sugiyama"`` (or a
     :class:`SugiyamaOptions` instance for tuned settings), ``"simple"`` (or a
     :class:`SimpleOptions` instance), or None to leave the tree untouched.
+
+    With ``selected_only`` (Sugiyama only) just the selected nodes are
+    arranged, among themselves and around where they were, and moved clear
+    of the others, which stay put. By default the whole tree is arranged
+    whatever is selected: a tree built from Python has no selection.
     """
     if method is None:
         return
@@ -1012,7 +1026,7 @@ def arrange(
             if isinstance(method, SugiyamaOptions)
             else _DEFAULT_SUGIYAMA.get() or SugiyamaOptions()
         )
-        _arrange_sugiyama(tree, options)
+        _arrange_sugiyama(tree, options, selected_only)
 
     # Quantize to the precision node positions are dumped with, so arranged
     # trees round-trip losslessly (and sub-0.01 UI units carry no meaning).

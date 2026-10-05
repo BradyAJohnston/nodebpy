@@ -29,12 +29,14 @@ def _outermost_frame(node: bNode) -> bNode | None:
     return frame
 
 
-def components(tree: bNodeTree) -> list[list[bNode]]:
-    """The parts of *tree* that are laid out by themselves: the selected
-    nodes (frames aside), grouped so that nodes joined by a link, in the
-    same outermost frame or in the same zone are in one part. Parts and
-    their nodes are in the tree's order."""
-    nodes = [n for n in tree.nodes if n.select and not n.is_frame()]
+def components(
+    tree: bNodeTree, fixed: frozenset[bNode] = frozenset()
+) -> list[list[bNode]]:
+    """The parts of *tree* that are laid out by themselves: its nodes
+    (frames and the *fixed* ones aside), grouped so that nodes joined by a
+    link, in the same outermost frame or in the same zone are in one part.
+    Parts and their nodes are in the tree's order."""
+    nodes = [n for n in tree.nodes if n not in fixed and not n.is_frame()]
     leader = {n: n for n in nodes}
 
     def find(node: bNode) -> bNode:

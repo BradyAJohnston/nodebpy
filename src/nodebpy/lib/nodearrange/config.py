@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Literal
 
 from .arrange.common import Vec2
 from .arrange.edits import Edit
-from .dna import bNodeSocket, bNodeTree
+from .dna import bNode, bNodeSocket, bNodeTree
 
 if TYPE_CHECKING:
     from .arrange.graph import Node, Socket
@@ -71,6 +71,9 @@ class LayoutState:
     tree: bNodeTree
     settings: Settings = field(default_factory=Settings)
     margin: Vec2 = field(default_factory=lambda: Vec2(*DEFAULT_MARGIN))
+    # The nodes the layout leaves where they are: the unselected ones, when
+    # only the selection is arranged.
+    fixed: frozenset[bNode] = frozenset()
     # Which sockets each socket is linked to, both ways. The values are
     # insertion-ordered sets (dict keys).
     linked_sockets: defaultdict[bNodeSocket, dict[bNodeSocket, None]] = field(

@@ -147,12 +147,11 @@ def get_tree(state: LayoutState) -> LayoutGraph[Node]:
         [
             Node(n, parents[n.parent])
             for n in state.tree.nodes
-            if n.select and not n.is_frame()
+            if n not in state.fixed and not n.is_frame()
         ]
     )
-    # As in the addon, the working set is the selected nodes, and links to
-    # other nodes are left out. (Everything is selected unless the caller
-    # asked for the selection to be arranged.)
+    # Links to the nodes that stay where they are (the unselected ones, when
+    # only the selection is arranged) are left out, as in the addon.
     by_node = {v.node: v for v in G}
     for u in G:
         assert is_real(u)
@@ -598,6 +597,7 @@ def sugiyama_layout(
     pipeline: Pipeline | None = None,
     observer: Observer | None = None,
     verify: bool = False,
+    selected_only: bool = False,
 ) -> LayoutResult:
     """Lay out *tree* and return the edits that realise the layout.
 
@@ -607,13 +607,15 @@ def sugiyama_layout(
     :class:`~.pipeline.Pipeline`). With *verify* the graph is checked after
     every step, and a step that breaks an invariant raises
     :class:`~.pipeline.InvariantError` (slower; for tests and for developing
-    steps and strategies).
+    steps). With *selected_only* the selected nodes are arranged among
+    themselves around where they were; the others do not move.
     """
     reset_serials()
+    fixed = frozenset(n for n in tree.nodes if selected_only and not n.select)
     state = LayoutState(tree=tree, settings=settings or Settings())
     if margin is not None:
         state.margin = Vec2(f32(margin[0]), f32(margin[1]))
-    locs = [n.location for n in tree.nodes if n.select and not n.is_frame()]
+    locs = [n.location for n in tree.nodes if n not in fixed and not n.is_frame()]
 
     if not locs:
         return LayoutResult()
@@ -622,7 +624,7 @@ def sugiyama_layout(
     old_center = Vec2(f32(fmean(xs)), f32(fmean(ys)))
 
     def lay_out(part: bNodeTree) -> list[Edit]:
-        part_state = LayoutState(part, state.settings, state.margin)
+        part_state = LayoutState(part, state.settings, state.margin, fixed)
         precompute_links(part_state)
         layout = Layout(ClusterGraph(get_tree(part_state), part_state), old_center)
         (pipeline or default_pipeline()).run(layout, observer, verify=verify)
@@ -635,7 +637,7 @@ def sugiyama_layout(
         obstacles = [
             n.draw_bounds
             for n in tree.nodes
-            if not n.select and not n.is_frame() and not n.is_reroute()
+            if n in fixed and not n.is_frame() and not n.is_reroute()
         ]
         if not obstacles:
             return LayoutResult(edits)
@@ -651,7 +653,7 @@ def sugiyama_layout(
             return LayoutResult(edits)
         return LayoutResult(packing.moved(edits, (f32(dx), f32(dy))))
 
-    parts = packing.components(tree) if state.settings.pack_components else []
+    parts = packing.components(tree, fixed) if state.settings.pack_components else []
     if len(parts) < 2:
         return clear_of_the_rest(lay_out(tree))
 

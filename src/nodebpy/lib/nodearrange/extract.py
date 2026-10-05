@@ -12,12 +12,10 @@ from __future__ import annotations
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 
-import bpy
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeSocket, NodeTree
 
 from .dna import bNode, bNodeSocket, bNodeTree
-from .structs import bNodeSocket as bNodeSocketStruct
 from .utils import abs_loc, dimensions, get_bottom, get_top
 from .zones import find_zones
 
@@ -88,18 +86,10 @@ def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
 
 
 def get_socket_y(socket: NodeSocket) -> float:
-    """The height at which links attach to *socket*."""
+    """The height at which links attach to *socket*: estimated from the
+    rows the node draws, since Python is not told where Blender drew it."""
     node = socket.node
     assert node is not None
-
-    # Socket runtime locations are only written when a node editor draws the
-    # tree; `node.dimensions` being set is the tell. Headless, estimate the
-    # socket's position from the same row model used for node dimensions.
-    if node.dimensions.y > 0:  # pragma: no cover - only drawn in a UI
-        b_socket = bNodeSocketStruct.from_address(socket.as_pointer())
-        preferences = bpy.context.preferences
-        assert preferences is not None
-        return b_socket.runtime.contents.location[1] / preferences.system.ui_scale
 
     from ...builder.layout import calculate_socket_offset_y
 
@@ -148,18 +138,14 @@ def _extract_node(node: BlenderNode) -> bNode:
     return data
 
 
-def extract(
-    ntree: NodeTree, *, selected_only: bool = False
-) -> tuple[bNodeTree, Binding]:
-    """The plain-data copy of *ntree*, and the binding back to it. With
-    *selected_only* the copy says which nodes are selected, and the layout
-    arranges those alone; otherwise every node counts as selected."""
+def extract(ntree: NodeTree) -> tuple[bNodeTree, Binding]:
+    """The plain-data copy of *ntree*, and the binding back to it."""
     tree = bNodeTree()
     binding = Binding()
     data_of: dict[BlenderNode, bNode] = {}
     for node in ntree.nodes:
         data = tree.add_node(_extract_node(node))
-        data.select = node.select or not selected_only
+        data.select = node.select
         data_of[node] = data
         binding.nodes[data] = node
 

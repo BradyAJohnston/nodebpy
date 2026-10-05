@@ -54,8 +54,14 @@ def arrange_node_tree(
     if settings.optimize_sizes:
         optimize_sizes(ntree.nodes)
 
-    tree, binding = extract(ntree, selected_only=selected_only)
+    tree, binding = extract(ntree)
     result = sugiyama.sugiyama_layout(
-        tree, settings, margin, pipeline=pipeline, observer=observer, verify=verify
+        tree,
+        settings,
+        margin,
+        pipeline=pipeline,
+        observer=observer,
+        verify=verify,
+        selected_only=selected_only,
     )
     apply(ntree, binding, result)

@@ -59,9 +59,9 @@ class bNode:
     is_collapsed: bool = False
     """Drawn as a header only (``NODE_COLLAPSED``, Python's ``hide``)."""
     select: bool = True
-    """Whether the layout is to arrange the node (``NODE_SELECT``, when an
-    operator arranges the selection). Nodes that are not selected stay
-    where they are and links to them are left out of account."""
+    """``NODE_SELECT``. Only matters when the layout is asked to arrange
+    the selection: the other nodes then stay where they are, and links to
+    them are left out of account."""
     inputs: list[bNodeSocket] = field(default_factory=list)
     outputs: list[bNodeSocket] = field(default_factory=list)
 

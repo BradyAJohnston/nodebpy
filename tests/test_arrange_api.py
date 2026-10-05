@@ -448,7 +448,7 @@ def test_import_error_propagates(monkeypatch):
     silent fallback to the simple arrangement."""
     import nodebpy.builder.layout as arrange_module
 
-    def boom(tree, options):
+    def boom(tree, options, selected_only=False):
         raise ImportError("something else entirely")
 
     monkeypatch.setattr(arrange_module, "_arrange_sugiyama", boom)

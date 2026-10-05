@@ -64,11 +64,10 @@ def test_a_frame_makes_one_part_of_its_nodes():
     assert _names(packing.components(tree)) == [["x", "y"], ["z", "w"]]
 
 
-def test_only_selected_nodes_are_in_parts():
+def test_fixed_nodes_are_in_no_part():
     tree = bNodeTree()
     a, b, c = _chain(tree, ["a", "b", "c"])
-    b.select = False
-    assert _names(packing.components(tree)) == [["a"], ["c"]]
+    assert _names(packing.components(tree, frozenset({b}))) == [["a"], ["c"]]
 
 
 def test_subtree_has_the_parts_frames_and_links():
@@ -226,7 +225,7 @@ def _unmoved(tree: bNodeTree, obstacle: bNode):
     """The layout of the selection with nothing to keep off."""
     tree.nodes.remove(obstacle)
     try:
-        return sugiyama_layout(tree, Settings(), MARGIN)
+        return sugiyama_layout(tree, Settings(), MARGIN, selected_only=True)
     finally:
         tree.nodes.append(obstacle)
 
@@ -236,7 +235,7 @@ def test_selection_is_moved_off_unselected_nodes():
     on_top = _unmoved(tree, obstacle)
     assert any(_overlap(r, obstacle.draw_bounds) for r in _placed(on_top))
 
-    result = sugiyama_layout(tree, Settings(), MARGIN)
+    result = sugiyama_layout(tree, Settings(), MARGIN, selected_only=True)
     assert obstacle not in result.positions()
     assert not any(
         _overlap(r, obstacle.draw_bounds, MARGIN[1] - 0.01) for r in _placed(result)
@@ -256,7 +255,9 @@ def test_selection_is_left_where_it_is_when_clear_is_too_far():
     tree, _, obstacle = _selection_on_an_obstacle()
     obstacle.draw_bounds = (-5000.0, -5000.0, 5000.0, 5000.0)
     obstacle.width = 10000.0
-    moved_off = sugiyama_layout(tree, Settings(), MARGIN).positions()
+    moved_off = sugiyama_layout(
+        tree, Settings(), MARGIN, selected_only=True
+    ).positions()
     stayed = _unmoved(tree, obstacle).positions()
     assert moved_off == stayed
 
@@ -265,7 +266,7 @@ def test_unselected_reroutes_and_frames_are_no_obstacles():
     from nodebpy.lib.nodearrange.dna import new_reroute
 
     def corners(tree: bNodeTree) -> dict[str, tuple[float, float]]:
-        result = sugiyama_layout(tree, Settings(), MARGIN)
+        result = sugiyama_layout(tree, Settings(), MARGIN, selected_only=True)
         return {node.name: corner for node, corner in result.positions().items()}
 
     alone, _, obstacle = _selection_on_an_obstacle()

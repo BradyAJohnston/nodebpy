@@ -6,6 +6,7 @@ from __future__ import annotations
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeSocket, NodeTree
 
+from .arrange.common import frame_padding
 from .arrange.edits import (
     AddLink,
     AddReroute,
@@ -18,7 +19,7 @@ from .arrange.edits import (
 )
 from .dna import bNodeSocket
 from .extract import Binding
-from .utils import abs_loc, get_top, move
+from .utils import abs_loc, dimensions, get_bottom, get_top, move
 
 
 def _restore_multi_input_order(
@@ -59,6 +60,35 @@ def _restore_multi_input_order(
         )
         assert output is not None
         as_links[output].swap_multi_input_sort_id(other)
+
+
+def _fit_frame(frame: BlenderNode, members: list[BlenderNode]) -> None:
+    """Size and place *frame* around *members* (its children), leaving its
+    Shrink setting as the user had it. Blender only refits a frame itself
+    when Shrink is on and a node editor draws it."""
+    if not members:
+        return
+    boxes = []
+    for node in members:
+        x = abs_loc(node).x
+        boxes.append((x, get_bottom(node), x + dimensions(node).x, get_top(node)))
+    padding = frame_padding()
+    label = getattr(frame, "label_size", 20) * 1.25 if frame.label else 0.0
+    left = min(b[0] for b in boxes) - padding
+    bottom = min(b[1] for b in boxes) - padding
+    right = max(b[2] for b in boxes) + padding
+    top = max(b[3] for b in boxes) + padding + label
+
+    # A frame's children are placed relative to it: take them out while it
+    # moves, so they stay where the layout put them.
+    for node in members:
+        node.parent = None
+    outer = abs_loc(frame) - frame.location
+    frame.location = (left - outer.x, top - outer.y)
+    frame.width = right - left
+    frame.height = top - bottom
+    for node in members:
+        node.parent = frame
 
 
 def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
@@ -121,11 +151,4 @@ def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
             case ResizeFrame(frame=frame_data, children=children):
                 frame = binding.nodes[frame_data]
                 members = [binding.nodes[child] for child in children]
-                for node in members:
-                    node.parent = None
-
-                frame.shrink = False  # ty: ignore[unresolved-attribute]
-                frame.shrink = True  # ty: ignore[unresolved-attribute]
-
-                for node in members:
-                    node.parent = frame
+                _fit_frame(frame, members)

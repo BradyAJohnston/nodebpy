@@ -37,7 +37,7 @@ def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
     # A reroute that also links to a node outside the selection stays: the
     # layout does not know that link, and would lose it with the reroute.
     return all(
-        peer.node.select
+        peer.node not in state.fixed
         for socket in (*v.node.inputs, *v.node.outputs)
         for peer in state.linked_sockets.get(socket, ())
     )
