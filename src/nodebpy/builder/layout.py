@@ -871,7 +871,8 @@ class SugiyamaOptions:
     optimize_sizes : bool
         Fit the widths of collapsed nodes to their display name.
     iterations : int
-        Number of crossing-minimization iterations.
+        Number of random restarts of ``ordering="random_restarts"``. The
+        default ordering does not use it.
     sequential_frames : bool
         Rank frames as stages of the flow: every node of a frame comes
         after every node of the frame (or intermediate node) feeding it, so
@@ -898,9 +899,14 @@ class SugiyamaOptions:
         connects to. ``"longest_path"`` puts every node as far right as it
         can go: faster, but a node with several consumers ends up far from
         the early ones.
-    ordering, placement, routing : str
-        The strategy for each of the layout's other phases: ordering the
-        nodes within a column, placing them along it, and routing long
+    ordering : str
+        How the nodes within a column are ordered to keep links from
+        crossing. ``"layer_sweep"`` is deterministic: the same tree always
+        gets the same layout. ``"random_restarts"`` is the node-arrange
+        addon's method, which tries ``iterations`` random variations; it is
+        slower and usually leaves more crossings.
+    placement, routing : str
+        The strategy for placing nodes along a column and for routing long
         links. Each has one built-in strategy; more can be registered with
         ``nodebpy.lib.nodearrange.arrange.pipeline.register`` and selected
         here by name.

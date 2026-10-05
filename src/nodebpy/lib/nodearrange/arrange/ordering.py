@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+from bisect import bisect_right, insort
 from collections import defaultdict, deque
 from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from dataclasses import replace
@@ -20,7 +21,7 @@ from statistics import fmean
 from typing import cast
 
 from ..config import LayoutState
-from .graph import Cluster, Kind, Node, Socket, socket_graph
+from .graph import Cluster, Kind, Node, Socket, keep_frames_together, socket_graph
 from .pipeline import Layout, register
 from .tree import (
     DiGraph,
@@ -320,12 +321,14 @@ def calc_socket_ranks(H: _CrossingReductionGraph, is_forwards: bool) -> None:
             v.cr.socket_ranks[socket] = rank
 
 
-def random_perturbation(rng: Random) -> float:
+def random_perturbation(rng: Random | None) -> float:
+    if rng is None:
+        return 0.0
     random_amount = rng.uniform(-1, 1)
     return rng.uniform(0, 1) * random_amount - random_amount / 2
 
 
-def calc_barycenters(H: _CrossingReductionGraph, rng: Random) -> None:
+def calc_barycenters(H: _CrossingReductionGraph, rng: Random | None) -> None:
     for w in H.reduced_free_col:
         if sockets := H.free_sockets[w]:
             w.cr.barycenter = fmean(
@@ -340,9 +343,11 @@ def get_barycenter(v: Node | Cluster) -> float:
 
 
 def fill_in_unknown_barycenters(
-    col: list[Node | Cluster], is_first_sweep: bool, rng: Random
+    col: list[Node | Cluster], is_first_sweep: bool, rng: Random | None
 ) -> None:
-    if is_first_sweep:
+    # Without a random generator a node with no neighbour in the fixed
+    # column stays between the nodes it is between now.
+    if is_first_sweep and rng is not None:
         max_b = (
             max([b for v in col if (b := v.cr.barycenter) is not None], default=0) + 2
         )
@@ -400,6 +405,9 @@ def merge_constrained(
 
 
 def handle_constraints(H: _CrossingReductionGraph) -> None:
+    """Turn the barycenters of the free column into an order (each node's
+    ``barycenter`` becomes its position) that keeps the constrained
+    clusters in their order."""
     GC: _MixedGraph = DiGraph(pairwise(H.constrained_clusters))
 
     unconstrained = [v for v in H.reduced_free_col if v not in GC]
@@ -613,8 +621,245 @@ def minimize_crossings(G: Tree[Node], T: _MixedGraph, state: LayoutState) -> Non
     non_cluster_descendant.cache_clear()
 
 
+@register("order", "random_restarts")
+def order_random_restarts(layout: Layout) -> None:
+    """Upstream's ordering: sweep back and forth over the columns, ordering
+    each by the average position of its nodes' neighbours in the column
+    before; restarted ``Settings.iterations`` times with random
+    perturbations, keeping the best."""
+    minimize_crossings(layout.G, layout.T, layout.state)
+
+
+# -------------------------------------------------------------------
+# The same sweep without chance (nodebpy addition)
+
+_MAX_SWEEPS = 24
+_PATIENCE = 2
+_MAX_TRANSPOSE_PASSES = 10
+
+
+def _set_order(
+    columns: Sequence[list[Node]],
+    order: Sequence[Sequence[Node]],
+    items: list[list[_CrossingReductionGraph]],
+) -> None:
+    for col, wanted in zip(columns, order):
+        col.sort(key=wanted.index)
+    sort_reduced_free_columns(items)
+
+
+def _sweep(
+    items: list[list[_CrossingReductionGraph]],
+    T: _MixedGraph,
+    is_forwards: bool,
+) -> None:
+    """One pass over the columns in one direction, reordering each by the
+    barycenters of its nodes."""
+    for v in T:
+        v.cr.reset()
+
+    for i, crossing_reduction_graphs in enumerate(items):
+        if i == 0:
+            clusters = {
+                c: j
+                for j, v in enumerate(crossing_reduction_graphs[0].fixed_col)
+                for c in ancestors(T, v)
+            }
+            key = cast(Callable[[Cluster], int], clusters.get)
+        else:
+            key = get_barycenter
+
+        for H in crossing_reduction_graphs:
+            H.constrained_clusters.sort(key=key)
+            sort_expanded_fixed_col(H)
+
+            calc_socket_ranks(H, is_forwards)
+            calc_barycenters(H, None)
+            fill_in_unknown_barycenters(H.reduced_free_col, False, None)
+            handle_constraints(H)
+
+        root = topologically_sorted_clusters(H.free_LT)[0]
+        new_order = tuple(get_new_col_order(root, H.free_LT))
+        H.free_col.sort(key=new_order.index)
+
+
+def _depth_first_order(G: Tree[Node], columns: Sequence[list[Node]], forwards: bool):
+    """The columns reordered by when a depth-first walk reaches each node,
+    starting from the first column (the last, going backwards) and taking
+    nodes and links in their current order. Nodes that are linked end up
+    near each other, which is a good order to start sweeping from."""
+    reached: dict[Node, int] = {}
+    starts = columns if forwards else list(reversed(columns))
+    for col in starts:
+        for root in col:
+            if root in reached:
+                continue
+            reached[root] = len(reached)
+            stack = [iter(G.out_links(root) if forwards else G.in_links(root))]
+            while stack:
+                for link in stack[-1]:
+                    v = link.tonode if forwards else link.fromnode
+                    if v not in reached:
+                        reached[v] = len(reached)
+                        stack.append(
+                            iter(G.out_links(v) if forwards else G.in_links(v))
+                        )
+                        break
+                else:
+                    stack.pop()
+
+    order = []
+    for col in columns:
+        new = sorted(col, key=reached.__getitem__)
+        keep_frames_together(new)
+        order.append(new)
+    return order
+
+
+def _transpose(G: Tree[Node], columns: Sequence[list[Node]]) -> bool:
+    """Swap neighbours in a column wherever that uncrosses more of their
+    links than it crosses, until no swap helps. Only nodes directly in the
+    same frame are swapped, so frames stay together. Returns whether
+    anything moved.
+
+    The sweeps order a column by where its nodes' neighbours are on average;
+    this looks at the actual links of two nodes, and so finds the swaps an
+    average hides."""
+    position = {v: i for col in columns for i, v in enumerate(col)}
+
+    def ends(v: Node) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
+        # Where the other end of each link of `v` is: (node, socket) order.
+        left = [(position[k.fromnode], k.fromsock.idx) for k in G.in_links(v)]
+        right = [(position[k.tonode], k.tosock.idx) for k in G.out_links(v)]
+        return left, right
+
+    def gain(upper: Node, lower: Node) -> int:
+        """Crossings between the links of two neighbours now, less those
+        there would be with the two swapped."""
+        total = 0
+        for above, below in zip(ends(upper), ends(lower)):
+            for a in above:
+                for b in below:
+                    total += (a > b) - (a < b)
+        return total
+
+    moved = False
+    for _ in range(_MAX_TRANSPOSE_PASSES):
+        improved = False
+        for col in columns:
+            for i in range(len(col) - 1):
+                upper, lower = col[i], col[i + 1]
+                if upper.cluster is not lower.cluster:
+                    continue
+                if gain(upper, lower) > 0:
+                    col[i], col[i + 1] = lower, upper
+                    position[lower], position[upper] = i, i + 1
+                    improved = moved = True
+        if not improved:
+            break
+    return moved
+
+
+def count_crossings(G: Tree[Node], columns: Sequence[list[Node]]) -> int:
+    """Pairs of links between neighbouring columns that cross, going by
+    the order of the nodes and of the sockets on each node. Links that
+    share a socket do not cross."""
+    position = {v: i for col in columns for i, v in enumerate(col)}
+    total = 0
+    for col in columns:
+        links = sorted(
+            (
+                (position[k.fromnode], k.fromsock.idx),
+                (position[k.tonode], k.tosock.idx),
+            )
+            for k in G.in_links(col)
+        )
+        # Inversions among the right-hand ends, taken in left-hand order;
+        # links from one socket are taken together so they do not count
+        # against each other.
+        seen: list[tuple[int, int]] = []
+        i = 0
+        while i < len(links):
+            j = i
+            while j < len(links) and links[j][0] == links[i][0]:
+                j += 1
+            for _, right in links[i:j]:
+                total += len(seen) - bisect_right(seen, right)
+            for _, right in links[i:j]:
+                insort(seen, right)
+            i = j
+    return total
+
+
+def minimize_crossings_deterministic(
+    G: Tree[Node], T: _MixedGraph, state: LayoutState
+) -> None:
+    """Order the columns by sweeping from three fixed starting orders, each
+    in both directions, and keep the order with the fewest crossings.
+
+    The starts are the order the columns come in and two depth-first
+    orders. From each, sweeps alternate direction, each followed by swaps
+    of neighbours (:func:`_transpose`), until ``_PATIENCE`` in a row bring
+    no improvement. This is the recipe of Graphviz's dot (Gansner et al.,
+    "A Technique for Drawing Directed Graphs", 1993), on upstream's
+    machinery for sockets and frames. Nothing is random, so the same graph
+    always gets the same order, and a port can reproduce it."""
+    columns = G.columns
+    trees = get_col_nesting_trees(columns, T)
+    G_ = G.copy()
+
+    expand_multi_inputs(G_, state)
+
+    forward_items = crossing_reduction_items(trees, G_, True)
+    backward_items = crossing_reduction_items(reversed(trees), G_.reversed(), False)
+    items = forward_items + backward_items
+
+    starts = [
+        [col.copy() for col in columns],
+        _depth_first_order(G, columns, True),
+        _depth_first_order(G, columns, False),
+    ]
+
+    best_cross_count = inf
+    best_columns = [col.copy() for col in columns]
+
+    for start in starts:
+        for first_forwards in (True, False):
+            if best_cross_count == 0:
+                break
+            _set_order(columns, start, items)
+            is_forwards = first_forwards
+            fewest = inf
+            stale = 0
+            for _ in range(_MAX_SWEEPS):
+                _sweep(forward_items if is_forwards else backward_items, T, is_forwards)
+                is_forwards = not is_forwards
+                # As in dot: polish each sweep's order by swapping
+                # neighbours, and judge it by its actual crossings.
+                _transpose(G_, columns)
+                sort_reduced_free_columns(items)
+                cross_count = count_crossings(G_, columns)
+                if cross_count < best_cross_count:
+                    best_cross_count = cross_count
+                    best_columns = [col.copy() for col in columns]
+                if cross_count < fewest:
+                    fewest = cross_count
+                    stale = 0
+                else:
+                    stale += 1
+                if stale >= _PATIENCE or fewest == 0:
+                    break
+
+    _set_order(columns, best_columns, items)
+
+    reflexive_transitive_closure.cache_clear()
+    topologically_sorted_clusters.cache_clear()
+    non_cluster_descendant.cache_clear()
+
+
 @register("order", "layer_sweep")
 def order_layer_sweep(layout: Layout) -> None:
-    """Sweep back and forth over the columns, ordering each by the average
-    position of its nodes' neighbours in the column before."""
-    minimize_crossings(layout.G, layout.T, layout.state)
+    """Sweep back and forth over the columns from a few fixed starting
+    orders, swap neighbours where that uncrosses links, and keep the order
+    with the fewest crossings. Nothing is random."""
+    minimize_crossings_deterministic(layout.G, layout.T, layout.state)

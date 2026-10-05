@@ -141,7 +141,7 @@ def test_observer_sees_the_layout_and_timings():
 
 def test_registered_strategies():
     assert strategies("rank") == ["network_simplex", "longest_path"]
-    assert strategies("order") == ["layer_sweep"]
+    assert strategies("order") == ["random_restarts", "layer_sweep"]
     assert strategies("place") == ["brandes_koepf"]
     assert strategies("route") == ["bend_points"]
     assert strategy("rank", "longest_path") is not strategy("rank", "network_simplex")
@@ -486,3 +486,94 @@ def test_strategy_options_on_the_public_api(monkeypatch):
 
     assert len(calls) == 1
     assert measure(ntree).node_overlaps == 0
+
+
+# ---------------------------------------------------------------------------
+# Ordering
+# ---------------------------------------------------------------------------
+
+
+def _crossed() -> bNodeTree:
+    """a and b in one column, c and d in the next, linked crosswise by
+    name: a -> d and b -> c. Sorted by name, the two links cross."""
+    tree = bNodeTree()
+    nodes = {name: _node(tree, name) for name in "abcd"}
+    for u, v in ("ad", "bc"):
+        tree.add_link(nodes[u].outputs[0], nodes[v].inputs[0])
+    return tree
+
+
+def _order_and_crossings(tree: bNodeTree, **settings) -> tuple[list[list[str]], int]:
+    from nodebpy.lib.nodearrange.arrange.ordering import count_crossings
+
+    seen = {}
+
+    def observer(step: Step, layout: Layout, seconds: float) -> None:
+        if step.name in ("add_columns", "order"):
+            columns = layout.G.columns
+            seen[step.name] = (
+                [[v.node.name if v.node else "" for v in col] for col in columns],
+                count_crossings(layout.G, columns),
+            )
+
+    sugiyama_layout(tree, Settings(**settings), observer=observer, verify=True)
+    assert seen["add_columns"][1] >= seen["order"][1]
+    return seen["order"]
+
+
+@pytest.mark.parametrize("ordering", ["layer_sweep", "random_restarts"])
+def test_ordering_uncrosses_links(ordering):
+    order, crossings = _order_and_crossings(_crossed(), ordering=ordering)
+    assert crossings == 0
+    assert [order[0].index("a") < order[0].index("b")] == [
+        order[1].index("d") < order[1].index("c")
+    ]
+
+
+def test_count_crossings():
+    from nodebpy.lib.nodearrange.arrange.ordering import count_crossings
+
+    counts = {}
+
+    def observer(step: Step, layout: Layout, seconds: float) -> None:
+        if step.name == "add_columns":
+            columns = layout.G.columns
+            counts["by name"] = count_crossings(layout.G, columns)
+            columns[1].reverse()
+            counts["uncrossed"] = count_crossings(layout.G, columns)
+            columns[1].reverse()
+
+    sugiyama_layout(_crossed(), Settings(), observer=observer)
+    assert counts == {"by name": 1, "uncrossed": 0}
+
+    # Links fanning out of one socket never cross each other.
+    tree = bNodeTree()
+    nodes = {name: _node(tree, name) for name in "abc"}
+    for target in "bc":
+        tree.add_link(nodes["a"].outputs[0], nodes[target].inputs[0])
+    assert _order_and_crossings(tree)[1] == 0
+
+
+def test_default_ordering_does_not_depend_on_chance():
+    """The default ordering gives the same order whatever the random state
+    and however often it runs; upstream's needs its iterations."""
+    import random
+
+    from .arrange_fuzz import random_tree
+
+    random.seed(1)
+    first = _order_and_crossings(random_tree(11))
+    random.seed(2)
+    again = _order_and_crossings(random_tree(11), iterations=1)
+    assert first == again
+
+
+@pytest.mark.parametrize("seed", range(12))
+def test_default_ordering_is_no_worse_than_random_restarts(seed):
+    """On random trees the deterministic sweep leaves at most as many
+    crossings as fifty random restarts, give or take one."""
+    from .arrange_fuzz import random_tree
+
+    _, swept = _order_and_crossings(random_tree(seed), ordering="layer_sweep")
+    _, random_best = _order_and_crossings(random_tree(seed), ordering="random_restarts")
+    assert swept <= random_best + 1
