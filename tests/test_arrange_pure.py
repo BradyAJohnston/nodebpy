@@ -56,15 +56,14 @@ _PACKAGE = Path(nodearrange.__file__).parent
             *(_PACKAGE / "arrange").glob("*.py"),
             _PACKAGE / "dna.py",
             _PACKAGE / "config.py",
-            _PACKAGE / "serialize.py",
             _PACKAGE / "metrics.py",
         ]
     ),
     ids=lambda path: path.name,
 )
 def test_layout_modules_do_not_import_blender(module):
-    """The layout, its input structs, its settings, the JSON format and the
-    metrics import neither ``bpy`` nor ``mathutils``, nor the modules of
+    """The layout, its input structs, its settings and the metrics import
+    neither ``bpy`` nor ``mathutils``, nor the modules of
     this package that do."""
     blender_side = {"bpy", "mathutils", "blf", "utils", "extract", "apply", "structs"}
     imported = set()

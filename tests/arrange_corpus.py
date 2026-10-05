@@ -1,22 +1,19 @@
-"""A corpus of layout problems and their answers, as JSON files.
+"""A corpus of node trees and the layout each must get, as JSON files.
 
-Each file of ``tests/arrange_corpus/`` holds one node tree as plain data
-and the layout computed for it under a few settings (see
-:mod:`nodebpy.lib.nodearrange.serialize` for the format). Reading them needs
-no Blender, so they serve two purposes:
+Each file of ``tests/arrange_corpus/`` holds one node tree, serialised with
+`tree_clipper <https://github.com/Algebraic-UG/tree_clipper>`_ (the same
+format nodebpy uses for web rendering and parity checks), and where every
+node ends up when the tree is arranged under a few settings. The trees are
+complete Blender trees, so the same files can be loaded by anything that
+reads Tree Clipper JSON — including a Blender build with a native
+implementation of the layout to be compared against this one.
 
-- a regression test: the layout must still give these answers
-  (``tests/test_arrange_corpus.py``);
-- a conformance suite: an implementation in another language can read the
-  same trees and settings and be compared against the stored edits.
-
-After a deliberate change to the layout, rewrite the answers (the trees are
-kept as they are) and review the diff:
+After a deliberate change to the layout, rewrite the stored layouts (the
+trees are kept as they are) and review the diff:
 
     uv run python -m tests.arrange_corpus --update
 
-To rebuild the trees themselves from Blender (new cases, or a new Blender
-version changing node sizes):
+To rebuild the trees themselves (new cases, or a new Blender version):
 
     uv run python -m tests.arrange_corpus --rebuild
 """
@@ -29,67 +26,114 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
-from nodebpy.lib.nodearrange.arrange.edits import LayoutResult
-from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
+import bpy
+from bpy.types import NodeTree
+
+from nodebpy.lib.nodearrange import arrange_node_tree
 from nodebpy.lib.nodearrange.config import Settings
-from nodebpy.lib.nodearrange.dna import bNodeTree
-from nodebpy.lib.nodearrange.serialize import (
-    result_from_json,
-    result_to_json,
-    settings_from_json,
-    settings_to_json,
-    tree_from_json,
-    tree_to_json,
-)
+
+from . import arrange_cases
 
 DIRECTORY = Path(__file__).parent / "arrange_corpus"
 
 MARGIN = (50.0, 20.0)
 
-# The settings each tree is laid out under. `default` is what
-# `SugiyamaOptions()` gives.
-SETTINGS: dict[str, Settings] = {
-    "default": Settings(direction="BALANCED", add_reroutes=False),
-    "reroutes": Settings(direction="BALANCED", add_reroutes=True),
-    "plain": Settings(
-        add_reroutes=False,
-        direction="RIGHT_DOWN",
-        socket_alignment="NONE",
-        stack_collapsed=False,
-        sequential_frames=False,
-        balance_heights=False,
-        link_priority="none",
-        pin_group_output=False,
-    ),
+# The settings each tree is laid out under, as the fields that differ from
+# `Settings()`. `default` is what `SugiyamaOptions()` gives.
+SETTINGS: dict[str, dict[str, Any]] = {
+    "default": {"direction": "BALANCED", "add_reroutes": False},
+    "reroutes": {"direction": "BALANCED", "add_reroutes": True},
+    "plain": {
+        "add_reroutes": False,
+        "direction": "RIGHT_DOWN",
+        "socket_alignment": "NONE",
+        "stack_collapsed": False,
+        "sequential_frames": False,
+        "balance_heights": False,
+        "link_priority": "none",
+        "pin_group_output": False,
+    },
 }
 
 # Blender's bundled node groups that go into the corpus: a spread of sizes,
 # with frames, reroutes and collapsed nodes.
 ESSENTIALS = (
-    "Array",
     "Displace Geometry",
     "Scatter on Surface",
     "Randomize Transforms",
     "Geometry Input",
 )
-FUZZ_SEEDS = (3, 19, 37, 50, 184, 204)
 
 
-def _round(value: Any, ndigits: int = 4) -> Any:
-    """*value* with every float rounded, so the files do not depend on the
-    last bits of a computation."""
-    if isinstance(value, float):
-        return round(value, ndigits)
-    if isinstance(value, list):
-        return [_round(item, ndigits) for item in value]
-    if isinstance(value, dict):
-        return {key: _round(item, ndigits) for key, item in value.items()}
-    return value
+# -------------------------------------------------------------------
+# Trees, through tree_clipper
 
 
-def layout_json(tree: bNodeTree, settings: Settings) -> dict[str, Any]:
-    """The layout of *tree* under *settings*, as it is stored."""
-    return _round(result_to_json(tree, sugiyama_layout(tree, settings, MARGIN)))
+def tree_to_payload(tree: NodeTree) -> str:
+    """*tree* (and the node groups it uses) as a compressed Tree Clipper
+    string."""
+    from nodebpy.builder import TreeBuilder
+    from nodebpy.export.web_render import to_tree_clipper_payload
+
+    return to_tree_clipper_payload(TreeBuilder(tree), compress=True)
+
+
+def tree_from_payload(payload: str) -> NodeTree:
+    """Build the tree of a Tree Clipper string in the current file."""
+    from tree_clipper.import_nodes import ImportIntermediate, ImportParameters
+    from tree_clipper.specific_handlers import BUILT_IN_IMPORTER
+
+    importing = ImportIntermediate(string=payload)
+    # Nothing in the corpus depends on objects, images and the like.
+    importing.set_external((int(key), None) for key in importing.get_external())
+    report = importing.import_all(
+        ImportParameters(specific_handlers=BUILT_IN_IMPORTER, debug_prints=False)  # ty: ignore[invalid-argument-type]
+    )
+    assert report.last_getter is not None
+    tree = report.last_getter()
+    assert isinstance(tree, NodeTree)
+    return tree
+
+
+# -------------------------------------------------------------------
+# Layouts
+
+
+def layout_of(tree: NodeTree) -> dict[str, Any]:
+    """Where everything in *tree* is: each node's location and frame, and
+    every link (the layout adds and removes reroutes, so those too)."""
+    nodes = sorted(
+        [
+            node.name,
+            round(node.location.x, 3),
+            round(node.location.y, 3),
+            node.parent.name if node.parent else None,
+        ]
+        for node in tree.nodes
+    )
+    links = sorted(
+        [
+            link.from_node.name,
+            list(link.from_node.outputs).index(link.from_socket),
+            link.to_node.name,
+            list(link.to_node.inputs).index(link.to_socket),
+            link.multi_input_sort_id,
+        ]
+        for link in tree.links
+        if link.from_node and link.to_node
+    )
+    return {"nodes": nodes, "links": links}
+
+
+def arranged(payload: str) -> Iterator[tuple[str, NodeTree]]:
+    """The tree of *payload* arranged under each of :data:`SETTINGS`, as
+    ``(layout, tree)``. The tree is built once and copied for each layout:
+    building a large one takes seconds."""
+    original = tree_from_payload(payload)
+    for layout, settings in SETTINGS.items():
+        tree = original.copy()
+        arrange_node_tree(tree, Settings(**settings), MARGIN)
+        yield layout, tree
 
 
 def cases() -> Iterator[tuple[str, dict[str, Any]]]:
@@ -98,27 +142,17 @@ def cases() -> Iterator[tuple[str, dict[str, Any]]]:
         yield path.stem, json.loads(path.read_text())
 
 
-def load(case: dict[str, Any], layout: str) -> tuple[bNodeTree, Settings, LayoutResult]:
-    """The tree of *case*, and the settings and stored result of *layout*."""
-    tree = tree_from_json(case["tree"])
-    stored = case["layouts"][layout]
-    return (
-        tree,
-        settings_from_json(stored["settings"]),
-        result_from_json(tree, stored["result"]),
-    )
-
-
-def _write(name: str, tree_json: dict[str, Any]) -> None:
-    layouts = {}
-    for key, settings in SETTINGS.items():
-        # A fresh tree per layout: nothing may carry over.
-        tree = tree_from_json(tree_json)
-        layouts[key] = {
-            "settings": settings_to_json(settings),
-            "result": layout_json(tree, settings),
-        }
-    contents = {"margin": list(MARGIN), "tree": tree_json, "layouts": layouts}
+def _write(name: str, payload: str) -> None:
+    contents = {
+        "margin": list(MARGIN),
+        "tree": payload,
+        "layouts": {
+            layout: {"settings": SETTINGS[layout], **layout_of(tree)}
+            for layout, tree in arranged(payload)
+        },
+    }
+    for group in list(bpy.data.node_groups):
+        bpy.data.node_groups.remove(group)
     DIRECTORY.mkdir(exist_ok=True)
     (DIRECTORY / f"{name}.json").write_text(
         json.dumps(contents, separators=(",", ":")) + "\n"
@@ -132,39 +166,30 @@ def update() -> None:
 
 
 def rebuild() -> None:
-    """Rebuild every tree from Blender, and its layouts."""
-    import bpy
-
-    from nodebpy.lib.nodearrange.extract import extract
-
-    from . import arrange_cases
-    from .arrange_fuzz import random_tree
-
-    for path in DIRECTORY.glob("*.json"):
-        path.unlink()
-
+    """Rebuild every tree, and its layouts."""
+    payloads = {}
     bpy.ops.wm.read_factory_settings(use_empty=True)
     builders = {**arrange_cases.CASES, **arrange_cases.asset_groups()}
     for name, build in builders.items():
-        ntree = build()
-        arrange_cases.reset_locations(ntree)
-        _write(name, _round(tree_to_json(extract(ntree)[0])))
+        tree = build()
+        arrange_cases.reset_locations(tree)
+        payloads[name] = tree_to_payload(tree)
 
-    for ntree in arrange_cases.essentials(list(ESSENTIALS)):
-        name = "essentials_" + ntree.name.lower().replace(" ", "_")
-        _write(name, _round(tree_to_json(extract(ntree)[0])))
+    for tree in arrange_cases.essentials(list(ESSENTIALS)):
+        name = "essentials_" + tree.name.lower().replace(" ", "_")
+        payloads[name] = tree_to_payload(tree)
 
-    for seed in FUZZ_SEEDS:
-        _write(f"random_{seed:03}", tree_to_json(random_tree(seed)))
+    for path in DIRECTORY.glob("*.json"):
+        path.unlink()
+    for name, payload in payloads.items():
+        _write(name, payload)
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--update", action="store_true", help="recompute the layouts")
-    group.add_argument(
-        "--rebuild", action="store_true", help="rebuild the trees too (needs bpy)"
-    )
+    group.add_argument("--rebuild", action="store_true", help="rebuild the trees too")
     args = parser.parse_args(argv)
     if args.rebuild:
         rebuild()
