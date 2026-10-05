@@ -48,7 +48,8 @@ _COLUMNS = (
     ("overlap", lambda m: m.node_overlaps),
     ("back", lambda m: m.backward_links),
     ("frames", lambda m: m.frame_overlaps + m.foreign_nodes_in_frames),
-    ("imbal", lambda m: f"{m.imbalance:.0f}"),
+    ("trunk", lambda m: f"{m.level_flow_links}/{m.flow_links}"),
+    ("forks", lambda m: f"{m.fork_imbalance:.0f}"),
     ("size", lambda m: f"{m.width:.0f}x{m.height:.0f}"),
     ("cost", lambda m: f"{m.cost():.1f}"),
 )
@@ -148,7 +149,10 @@ def run(
 
 
 def _metrics_of(result: dict[str, Any]) -> LayoutMetrics:
-    return LayoutMetrics(**{k: result[k] for k in LayoutMetrics.field_names()})
+    # Metrics saved before a field existed do without it.
+    return LayoutMetrics(
+        **{k: result[k] for k in LayoutMetrics.field_names() if k in result}
+    )
 
 
 def print_table(results: dict[str, dict[str, Any]]) -> None:
@@ -211,7 +215,7 @@ def print_comparison(
         diffs = [
             f"{key} {old[key]:g} -> {result[key]:g}"
             for key in names
-            if old[key] != result[key]
+            if key in old and old[key] != result[key]
         ]
         if diffs:
             changed += 1

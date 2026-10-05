@@ -5,10 +5,14 @@
 node sizes, socket positions, frames — and counts the things that make a
 layout hard or easy to read: link crossings, links running backwards or
 through unrelated nodes, overlapping nodes and frames, how many links are
-straight, how much room the drawing takes. It uses the same geometry the
-arranger and :func:`nodebpy.export.to_plot` use (drawn sizes when Blender has
-drawn the tree, estimates otherwise), so the numbers describe the picture
-``to_plot`` draws.
+straight, how much room the drawing takes.
+
+It measures plain data (a :class:`~.dna.bNodeTree`), so a layout can be
+judged without Blender: ``result.apply_to(tree); measure(tree)``. Given a
+Blender tree it reads it with :func:`~.extract.extract` first, which is the
+geometry the arranger and :func:`nodebpy.export.to_plot` use (drawn sizes
+when Blender has drawn the tree, estimates otherwise), so the numbers
+describe the picture ``to_plot`` draws.
 
 The metrics are the yardstick for changing the layout algorithm: arrange a
 corpus of trees before and after a change and compare. :meth:`LayoutMetrics.cost`
@@ -20,13 +24,13 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, fields
 from itertools import combinations
 from statistics import fmean
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
-from bpy.types import Node, NodeSocket, NodeTree
 
 from .arrange.common import frame_padding
-from .utils import abs_loc, dimensions, get_bottom, get_top
+from .arrange.priority import FLOW_SOCKETS
+from .dna import bNode, bNodeSocket, bNodeTree
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
@@ -56,6 +60,9 @@ class CostWeights:
     frame_overlap: float = 30.0
     foreign_node_in_frame: float = 30.0
     bent_link: float = 1.0
+    bent_flow_link: float = 4.0
+    """On top of ``bent_link``, for a link carrying the tree's main data."""
+    fork_imbalance: float = 0.02
     link_length: float = 0.002
     link_span_y: float = 0.01
     area: float = 1e-6
@@ -98,6 +105,15 @@ class LayoutMetrics:
     imbalance: float
     """How far, on average, a node with several inputs (or several outputs)
     is from the vertical middle of the nodes feeding it (fed by it)."""
+    flow_links: int = 0
+    """Links between two sockets carrying the tree's main data (geometry,
+    shader, …): the trunk and its branches."""
+    level_flow_links: int = 0
+    """Those of them that are level. All of them, when the trunk is a row."""
+    fork_imbalance: float = 0.0
+    """Summed over the nodes where the main data forks (or merges): how far
+    the socket the links fan out of (or into) is from the middle height of
+    their other ends. Zero when every fork is symmetric."""
 
     @property
     def area(self) -> float:
@@ -124,6 +140,8 @@ class LayoutMetrics:
             + w.frame_overlap * self.frame_overlaps
             + w.foreign_node_in_frame * self.foreign_nodes_in_frames
             + w.bent_link * (self.links - self.level_links)
+            + w.bent_flow_link * (self.flow_links - self.level_flow_links)
+            + w.fork_imbalance * self.fork_imbalance
             + w.link_length * self.link_length
             + w.link_span_y * self.link_span_y
             + w.area * self.area
@@ -163,52 +181,38 @@ class LayoutMetrics:
 # Geometry of a tree as laid out
 
 
-def _is_frame(node: Node) -> bool:
-    return node.bl_idname == "NodeFrame"
-
-
-def _is_reroute(node: Node) -> bool:
-    return node.bl_idname == "NodeReroute"
-
-
-def node_rect(node: Node) -> Rect:
+def node_rect(node: bNode) -> Rect:
     """The box a node is drawn in. A reroute is a point."""
-    x, y = abs_loc(node)
-    if _is_reroute(node):
+    if node.is_reroute():
+        x, y = node.location
         return (x, y, x, y)
-    return (x, get_bottom(node), x + dimensions(node).x, get_top(node))
+    return node.draw_bounds
 
 
-def socket_anchor(socket: NodeSocket) -> tuple[float, float]:
+def socket_anchor(socket: bNodeSocket) -> tuple[float, float]:
     """Where a link attaches to *socket*."""
-    from .extract import get_socket_y
-
-    node = socket.node
-    assert node is not None
-    x, y = abs_loc(node)
-    if _is_reroute(node):
-        return (x, y)
-    if socket.is_output:
-        x += dimensions(node).x
-    return (x, get_socket_y(socket))
+    if socket.node.is_reroute():
+        return socket.node.location
+    assert socket.location is not None
+    return socket.location
 
 
-def frame_rects(tree: NodeTree) -> dict[Node, Rect]:
+def frame_rects(tree: bNodeTree) -> dict[bNode, Rect]:
     """The box each frame is drawn in: around its members, padded, with room
     for its label. Empty frames have no box."""
-    children: dict[Node, list[Node]] = {}
+    children: dict[bNode, list[bNode]] = {}
     for node in tree.nodes:
         if node.parent is not None:
             children.setdefault(node.parent, []).append(node)
 
-    rects: dict[Node, Rect] = {}
+    rects: dict[bNode, Rect] = {}
 
-    def rect_of(frame: Node) -> Rect | None:
+    def rect_of(frame: bNode) -> Rect | None:
         if frame in rects:
             return rects[frame]
         boxes = []
         for child in children.get(frame, ()):
-            box = rect_of(child) if _is_frame(child) else node_rect(child)
+            box = rect_of(child) if child.is_frame() else node_rect(child)
             if box is not None:
                 boxes.append(box)
         if not boxes:
@@ -216,7 +220,7 @@ def frame_rects(tree: NodeTree) -> dict[Node, Rect]:
         padding = frame_padding()
         label_room = 0.0
         if frame.label:
-            label_room = float(getattr(frame, "label_size", 20)) + _FRAME_LABEL_PADDING
+            label_room = float(frame.label_size) + _FRAME_LABEL_PADDING
         rects[frame] = (
             min(b[0] for b in boxes) - padding,
             min(b[1] for b in boxes) - padding,
@@ -226,12 +230,12 @@ def frame_rects(tree: NodeTree) -> dict[Node, Rect]:
         return rects[frame]
 
     for node in tree.nodes:
-        if _is_frame(node):
+        if node.is_frame():
             rect_of(node)
     return rects
 
 
-def _frames_around(node: Node) -> set[Node]:
+def _frames_around(node: bNode) -> set[bNode]:
     frames = set()
     parent = node.parent
     while parent is not None:
@@ -284,7 +288,7 @@ def _curves_cross(a: NDArray[np.float64], b: NDArray[np.float64]) -> bool:
 
 
 def _count_crossings(
-    curves: NDArray[np.float64], sockets: list[tuple[NodeSocket, NodeSocket]]
+    curves: NDArray[np.float64], sockets: list[tuple[bNodeSocket, bNodeSocket]]
 ) -> int:
     n = len(curves)
     if n < 2:
@@ -307,7 +311,7 @@ def _count_crossings(
         from_j, to_j = sockets[j]
         # Links fanning out of (or into) one socket meet there, not cross;
         # so do the two links either side of a reroute.
-        if from_i == from_j or to_i == to_j:
+        if from_i is from_j or to_i is to_j:
             continue
         ends_i, ends_j = curves[i][[0, -1]], curves[j][[0, -1]]
         if np.any(np.all(ends_i[:, None, :] == ends_j[None, :, :], axis=2)):
@@ -346,19 +350,25 @@ def _curve_hits_rects(
 # -------------------------------------------------------------------
 
 
-def measure(tree: NodeTree) -> LayoutMetrics:
-    """Measure the layout *tree* currently has."""
-    nodes = [n for n in tree.nodes if not _is_frame(n)]
-    boxes = [n for n in nodes if not _is_reroute(n)]
+def measure(tree: bNodeTree | Any) -> LayoutMetrics:
+    """Measure the layout *tree* currently has: plain data, or a Blender
+    ``NodeTree`` (which is read into plain data first)."""
+    if not isinstance(tree, bNodeTree):
+        from .extract import extract
+
+        tree = extract(tree)[0]
+
+    nodes = [n for n in tree.nodes if not n.is_frame()]
+    boxes = [n for n in nodes if not n.is_reroute()]
     rect_of = {n: node_rect(n) for n in nodes}
     frames = frame_rects(tree)
 
     # (from socket, to socket, from node, to node) of every valid link.
-    links: list[tuple[NodeSocket, NodeSocket, Node, Node]] = []
-    for link in tree.links:
-        ends_of = (link.from_socket, link.to_socket, link.from_node, link.to_node)
-        if link.is_valid and None not in ends_of:
-            links.append(cast("tuple[NodeSocket, NodeSocket, Node, Node]", ends_of))
+    links = [
+        (link.fromsock, link.tosock, link.fromnode, link.tonode)
+        for link in tree.links
+        if link.is_valid
+    ]
     sockets = [(from_socket, to_socket) for from_socket, to_socket, *_ in links]
     starts = np.array([socket_anchor(s) for s, _ in sockets], dtype=np.float64).reshape(
         -1, 2
@@ -420,20 +430,62 @@ def measure(tree: NodeTree) -> LayoutMetrics:
     )
 
     # -- balance ----------------------------------------------------
-    def middle(node: Node) -> float:
+    def middle(node: bNode) -> float:
         rect = rect_of[node]
         return (rect[1] + rect[3]) / 2
 
-    feeders: dict[Node, dict[Node, None]] = {}
-    consumers: dict[Node, dict[Node, None]] = {}
-    for *_, from_node, to_node in links:
-        feeders.setdefault(to_node, {})[from_node] = None
-        consumers.setdefault(from_node, {})[to_node] = None
-    offsets = [
-        abs(middle(node) - fmean(middle(n) for n in neighbours))
-        for neighbourhood in (feeders, consumers)
-        for node, neighbours in neighbourhood.items()
-        if len(neighbours) > 1
+    def offsets_from_neighbours(
+        linked: list[tuple[bNodeSocket, bNodeSocket, bNode, bNode]],
+    ) -> list[float]:
+        feeders: dict[bNode, dict[bNode, None]] = {}
+        consumers: dict[bNode, dict[bNode, None]] = {}
+        for *_, from_node, to_node in linked:
+            feeders.setdefault(to_node, {})[from_node] = None
+            consumers.setdefault(from_node, {})[to_node] = None
+        return [
+            abs(middle(node) - fmean(middle(n) for n in neighbours))
+            for neighbourhood in (feeders, consumers)
+            for node, neighbours in neighbourhood.items()
+            if len(neighbours) > 1
+        ]
+
+    offsets = offsets_from_neighbours(links)
+
+    # -- the main data ------------------------------------------------
+    level = straight | level_tops
+    # A reroute passes on whatever feeds it.
+    feeds = {to_node: from_socket for from_socket, _, _, to_node in links}
+
+    def carries_flow(socket: bNodeSocket) -> bool:
+        seen = set()
+        while socket.node.is_reroute() and socket.node not in seen:
+            seen.add(socket.node)
+            if socket.node not in feeds:
+                return False
+            socket = feeds[socket.node]
+        return socket.idname in FLOW_SOCKETS
+
+    is_flow = np.array(
+        [
+            carries_flow(from_socket)
+            and (to_socket.node.is_reroute() or to_socket.idname in FLOW_SOCKETS)
+            for from_socket, to_socket in sockets
+        ],
+        dtype=bool,
+    )
+    # A fork is symmetric when its links fan out evenly above and below the
+    # socket they share: compare the heights of the two ends of the fan.
+    fans_out: dict[bNode, list[int]] = {}
+    fans_in: dict[bNode, list[int]] = {}
+    for i, (*_, from_node, to_node) in enumerate(links):
+        if is_flow[i]:
+            fans_out.setdefault(from_node, []).append(i)
+            fans_in.setdefault(to_node, []).append(i)
+    flow_offsets = [
+        abs(float(starts[fan, 1].mean() - ends[fan, 1].mean()))
+        for fans, far_end in ((fans_out, 3), (fans_in, 2))
+        for fan in fans.values()
+        if len({links[i][far_end] for i in fan}) > 1
     ]
 
     return LayoutMetrics(
@@ -445,7 +497,7 @@ def measure(tree: NodeTree) -> LayoutMetrics:
         crossings=crossings,
         backward_links=int(np.count_nonzero(delta[:, 0] < 0)),
         straight_links=int(np.count_nonzero(straight)),
-        level_links=int(np.count_nonzero(straight | level_tops)),
+        level_links=int(np.count_nonzero(level)),
         link_length=float(np.hypot(delta[:, 0], delta[:, 1]).sum()),
         link_span_y=float(np.abs(delta[:, 1]).sum()),
         node_overlaps=int(node_overlaps),
@@ -453,4 +505,7 @@ def measure(tree: NodeTree) -> LayoutMetrics:
         frame_overlaps=int(frame_overlaps),
         foreign_nodes_in_frames=int(foreign_nodes_in_frames),
         imbalance=fmean(offsets) if offsets else 0.0,
+        flow_links=int(np.count_nonzero(is_flow)),
+        level_flow_links=int(np.count_nonzero(is_flow & level)),
+        fork_imbalance=float(sum(flow_offsets)),
     )

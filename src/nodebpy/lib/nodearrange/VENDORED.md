@@ -165,6 +165,13 @@ break headless operation.
     orders follow the sockets a stack takes over.
   - `utils.dimensions()` divides drawn sizes by the UI scale, as
     `extract.get_socket_y()` does for socket positions.
+- **A harness without Blender** (nodebpy-only): `serialize.py` reads and
+  writes the plain-data tree, the settings and the resulting edits as JSON
+  (nodes and sockets by index); `LayoutResult.apply_to()` makes the edits to
+  the plain data; `metrics.py` measures plain data. `tests/arrange_corpus/`
+  stores trees with their expected layouts — the suite to hold a C++ port
+  against (compare the kind and targets of the edits exactly, coordinates
+  within 1e-3).
 - `structs.py` (moved up from `arrange/`, since only `extract.py` uses it)
   uses explicit `_fields_` lists (upstream builds them from annotations, formerly via `eval`) and additionally binds `bNode` /
   `bNodeRuntime` / `rctf`, which upstream does not have.

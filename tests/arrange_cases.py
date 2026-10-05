@@ -151,6 +151,129 @@ def long_links() -> NodeTree:
     return tree
 
 
+def shader_material() -> NodeTree:
+    """A shader tree: a texture chain into a BSDF, mixed with a second
+    shader. The shader links are the trunk; the texture chain feeds it."""
+    tree = bpy.data.node_groups.new("shader_material", "ShaderNodeTree")  # ty: ignore[invalid-argument-type]
+    new = tree.nodes.new
+    coords, mapping, noise = (
+        new("ShaderNodeTexCoord"),
+        new("ShaderNodeMapping"),
+        new("ShaderNodeTexNoise"),
+    )
+    ramp, bump = new("ShaderNodeValToRGB"), new("ShaderNodeBump")
+    principled, emission = new("ShaderNodeBsdfPrincipled"), new("ShaderNodeEmission")
+    mix, fresnel = new("ShaderNodeMixShader"), new("ShaderNodeFresnel")
+    tree.links.new(coords.outputs["Object"], mapping.inputs["Vector"])
+    tree.links.new(mapping.outputs[0], noise.inputs["Vector"])
+    tree.links.new(noise.outputs[0], ramp.inputs[0])
+    tree.links.new(noise.outputs[0], bump.inputs["Height"])
+    tree.links.new(ramp.outputs[0], principled.inputs["Base Color"])
+    tree.links.new(bump.outputs[0], principled.inputs["Normal"])
+    tree.links.new(ramp.outputs[0], emission.inputs["Color"])
+    tree.links.new(fresnel.outputs[0], mix.inputs[0])
+    tree.links.new(principled.outputs[0], mix.inputs[1])
+    tree.links.new(emission.outputs[0], mix.inputs[2])
+    return tree
+
+
+def compositor_chain() -> NodeTree:
+    """A compositor tree: no geometry or shader sockets at all, so the main
+    line is the colour chain."""
+    tree = bpy.data.node_groups.new("compositor_chain", "CompositorNodeTree")  # ty: ignore[invalid-argument-type]
+    new = tree.nodes.new
+    blur, glare, over = (
+        new("CompositorNodeBlur"),
+        new("CompositorNodeGlare"),
+        new("CompositorNodeAlphaOver"),
+    )
+    balance, lens = new("CompositorNodeColorBalance"), new("CompositorNodeLensdist")
+    tree.links.new(blur.outputs[0], glare.inputs[0])
+    tree.links.new(glare.outputs[0], over.inputs[1])
+    tree.links.new(balance.outputs[0], over.inputs[2])
+    tree.links.new(over.outputs[0], lens.inputs[0])
+    return tree
+
+
+def zones() -> NodeTree:
+    """A simulation zone and a repeat zone in one chain, each with nodes
+    inside and a value fed in from outside. Ideal: each zone's nodes sit
+    between its input and output node, with nothing else among them."""
+    tree = _tree("zones")
+    new = tree.nodes.new
+    cube = new("GeometryNodeMeshCube")
+    sim_in, sim_out = (
+        new("GeometryNodeSimulationInput"),
+        new("GeometryNodeSimulationOutput"),
+    )
+    sim_in.pair_with_output(sim_out)  # ty: ignore[unresolved-attribute]
+    rep_in, rep_out = new("GeometryNodeRepeatInput"), new("GeometryNodeRepeatOutput")
+    rep_in.pair_with_output(rep_out)  # ty: ignore[unresolved-attribute]
+    move, noise, scale = (
+        new("GeometryNodeSetPosition"),
+        new("ShaderNodeTexNoise"),
+        _math(tree, "MULTIPLY"),
+    )
+    subdivide, smooth = (
+        new("GeometryNodeSubdivideMesh"),
+        new("GeometryNodeSetShadeSmooth"),
+    )
+    outside, join = new("GeometryNodeTransform"), new("GeometryNodeJoinGeometry")
+    rep_out.repeat_items.new("GEOMETRY", "Geometry")  # ty: ignore[unresolved-attribute]
+
+    def geometry(sockets):
+        return next(s for s in sockets if s.type == "GEOMETRY")
+
+    line = [cube, sim_in, move, sim_out, rep_in, subdivide, smooth, rep_out, join]
+    for a, b in pairwise(line):
+        tree.links.new(geometry(a.outputs), geometry(b.inputs))
+    tree.links.new(noise.outputs[0], scale.inputs[0])
+    tree.links.new(scale.outputs[0], move.inputs["Offset"])
+    # A branch that leaves before the zones and joins after them.
+    tree.links.new(cube.outputs[0], outside.inputs[0])
+    tree.links.new(outside.outputs[0], join.inputs[0])
+    return tree
+
+
+def annotated() -> NodeTree:
+    """What a hand-made tree looks like: a labelled frame around part of the
+    chain, reroutes the user placed (one labelled), a frame that only holds
+    a note, and a second, unconnected group of nodes."""
+    tree = _tree("annotated")
+    new = tree.nodes.new
+    cube, move, transform, join = (
+        new("GeometryNodeMeshCube"),
+        new("GeometryNodeSetPosition"),
+        new("GeometryNodeTransform"),
+        new("GeometryNodeJoinGeometry"),
+    )
+    _chain(tree, [cube, move, transform, join])
+    stage = new("NodeFrame")
+    stage.label = "Deform"
+    move.parent = transform.parent = stage
+
+    position, offset = new("GeometryNodeInputPosition"), new("ShaderNodeVectorMath")
+    first, second = new("NodeReroute"), new("NodeReroute")
+    second.label = "offset"
+    tree.links.new(position.outputs[0], offset.inputs[0])
+    tree.links.new(offset.outputs[0], first.inputs[0])
+    tree.links.new(first.outputs[0], second.inputs[0])
+    tree.links.new(second.outputs[0], move.inputs["Offset"])
+    tree.links.new(first.outputs[0], transform.inputs["Translation"])
+    # The original cube also goes straight to the join, past the frame.
+    tree.links.new(cube.outputs[0], join.inputs[0])
+
+    note = new("NodeFrame")
+    note.label = "TODO: expose the offset"
+    value = new("ShaderNodeValue")
+    value.parent = note
+
+    # Unconnected to the rest.
+    grid, wire = new("GeometryNodeMeshGrid"), new("GeometryNodeMeshToCurve")
+    tree.links.new(grid.outputs[0], wire.inputs[0])
+    return tree
+
+
 CASES: dict[str, Callable[[], NodeTree]] = {
     case.__name__: case
     for case in (
@@ -161,6 +284,10 @@ CASES: dict[str, Callable[[], NodeTree]] = {
         framed_stages,
         nested_frames,
         long_links,
+        shader_material,
+        compositor_chain,
+        zones,
+        annotated,
     )
 }
 

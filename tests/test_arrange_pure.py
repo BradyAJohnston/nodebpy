@@ -56,13 +56,16 @@ _PACKAGE = Path(nodearrange.__file__).parent
             *(_PACKAGE / "arrange").glob("*.py"),
             _PACKAGE / "dna.py",
             _PACKAGE / "config.py",
+            _PACKAGE / "serialize.py",
+            _PACKAGE / "metrics.py",
         ]
     ),
     ids=lambda path: path.name,
 )
 def test_layout_modules_do_not_import_blender(module):
-    """The layout, its input structs and its settings import neither ``bpy``
-    nor ``mathutils``, nor the modules of this package that do."""
+    """The layout, its input structs, its settings, the JSON format and the
+    metrics import neither ``bpy`` nor ``mathutils``, nor the modules of
+    this package that do."""
     blender_side = {"bpy", "mathutils", "blf", "utils", "extract", "apply", "structs"}
     imported = set()
     for node in ast.walk(ast.parse(module.read_text())):
@@ -71,6 +74,9 @@ def test_layout_modules_do_not_import_blender(module):
         elif isinstance(node, ast.ImportFrom):
             imported.add((node.module or "").split(".")[0])
             imported.update(alias.name for alias in node.names)
+    if module.name == "metrics.py":
+        # `measure` reads a Blender tree into plain data when given one.
+        imported.discard("extract")
     assert not imported & blender_side
 
 

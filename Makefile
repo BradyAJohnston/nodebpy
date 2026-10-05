@@ -32,6 +32,11 @@ docs:
 arrange-report:
 	uv run python -m tests.arrange_report --essentials
 
+# Recompute the layouts stored in tests/arrange_corpus/ after a deliberate
+# change to the layout; review the diff before committing it.
+arrange-corpus:
+	uv run python -m tests.arrange_corpus --update
+
 # List upstream node-arrange commits not yet ported into the vendored copy
 # (see src/nodebpy/lib/nodearrange/VENDORED.md).
 vendor-check:

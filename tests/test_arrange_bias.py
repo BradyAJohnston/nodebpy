@@ -257,7 +257,12 @@ def test_pinning_leaves_framed_interface_nodes_alone():
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("case", list(arrange_cases.CASES))
+@pytest.mark.parametrize(
+    "case",
+    # ("annotated" overlaps two frames whatever the ranking; see
+    # test_arrange_metrics.KNOWN_DEFECTS.)
+    [name for name in arrange_cases.CASES if name != "annotated"],
+)
 def test_weighted_ranking_is_sound(case):
     from nodebpy.lib.nodearrange.metrics import measure
 

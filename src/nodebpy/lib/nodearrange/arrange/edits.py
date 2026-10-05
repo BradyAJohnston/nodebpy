@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from ..dna import bNode, bNodeSocket
+from ..dna import bNode, bNodeSocket, bNodeTree
 
 
 @dataclass(frozen=True, slots=True)
@@ -100,3 +100,76 @@ class LayoutResult:
     def positions(self) -> dict[bNode, tuple[float, float]]:
         """Where the top-left corner of each node's box ends up."""
         return {e.node: e.top_left for e in self.edits if isinstance(e, MoveNode)}
+
+    def apply_to(self, tree: bNodeTree) -> None:
+        """Make the edits to *tree* itself — the plain data, in place — so
+        that it describes the tree as laid out: what ``nodearrange.apply``
+        does to a Blender tree. Every node keeps the size and the socket
+        offsets it came with."""
+        for edit in self.edits:
+            match edit:
+                case RemoveNode(node=node):
+                    tree.nodes.remove(node)
+                    tree.links[:] = [
+                        link
+                        for link in tree.links
+                        if link.fromnode is not node and link.tonode is not node
+                    ]
+
+                case AddReroute(node=node):
+                    tree.nodes.append(node)
+
+                case AddLink(fromsock=fromsock, tosock=tosock):
+                    assert fromsock is not None and tosock is not None
+                    _link(tree, fromsock, tosock)
+
+                case RemoveLink(fromsock=fromsock, tosock=tosock):
+                    tree.links.remove(
+                        next(
+                            link
+                            for link in tree.links
+                            if link.fromsock is fromsock and link.tosock is tosock
+                        )
+                    )
+
+                case RestoreMultiInputOrder(
+                    socket=socket, outputs=outputs, order=order
+                ):
+                    assert socket is not None
+                    for output in outputs:
+                        assert output is not None
+                        _link(tree, output, socket)
+                    sort_id_of = dict(order)
+                    for link in tree.links:
+                        if link.tosock is socket and link.fromsock in sort_id_of:
+                            link.multi_input_sort_id = sort_id_of[link.fromsock]
+
+                case MoveNode(node=node, top_left=(left, top), parent=parent):
+                    dx = left - node.draw_bounds[0]
+                    dy = top - node.draw_bounds[3]
+                    xmin, ymin, xmax, ymax = node.draw_bounds
+                    node.draw_bounds = (xmin + dx, ymin + dy, xmax + dx, ymax + dy)
+                    node.location = (node.location[0] + dx, node.location[1] + dy)
+                    for socket in (*node.inputs, *node.outputs):
+                        if socket.location is not None:
+                            socket.location = (
+                                socket.location[0] + dx,
+                                socket.location[1] + dy,
+                            )
+                    node.parent = parent
+
+                case ResizeFrame():
+                    pass  # a frame's box is derived from its members
+
+
+def _link(tree: bNodeTree, fromsock: bNodeSocket, tosock: bNodeSocket) -> None:
+    """Link two sockets unless they already are, as ``links.new`` does: an
+    input that takes one link loses the one it had."""
+    into = [link for link in tree.links if link.tosock is tosock]
+    if any(link.fromsock is fromsock for link in into):
+        return
+    if not tosock.is_multi_input:
+        for link in into:
+            tree.links.remove(link)
+        into = []
+    tree.add_link(fromsock, tosock, len(into))
