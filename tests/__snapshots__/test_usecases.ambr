@@ -126,15 +126,15 @@
   ```{mermaid}
   graph LR
       N0("Group Input"):::default-node
-      N1("Math<br/><small>(MULTIPLY)</small>"):::converter-node
+      N1("Curve to Points"):::geometry-node
       N2("Math<br/><small>(MULTIPLY)</small>"):::converter-node
-      N3("Curve to Points"):::geometry-node
+      N3("Math<br/><small>(MULTIPLY)</small>"):::converter-node
       N4("Grid"):::geometry-node
       N5("Random Value"):::converter-node
       N6("Distribute Points on Faces"):::geometry-node
-      N7("Combine XYZ"):::converter-node
+      N7("Geometry Proximity"):::geometry-node
       N8("Combine XYZ"):::converter-node
-      N9("Geometry Proximity"):::geometry-node
+      N9("Combine XYZ"):::converter-node
       N10("Curve Line<br/><small>(0,0,1)</small>"):::geometry-node
       N11("Compare<br/><small>(LESS_THAN)</small>"):::converter-node
       N12("Cube"):::geometry-node
@@ -144,12 +144,12 @@
       N16("Instance on Points"):::geometry-node
       N17("Join Geometry"):::geometry-node
       N18("Group Output"):::default-node
-      N0 -->|"Road Width->Value"| N1
-      N1 -->|"Value->X"| N7
       N0 -->|"Road Width->Value"| N2
       N2 -->|"Value->X"| N8
-      N7 -->|"Vector->Start"| N10
-      N8 -->|"Vector->End"| N10
+      N0 -->|"Road Width->Value"| N3
+      N3 -->|"Value->X"| N9
+      N8 -->|"Vector->Start"| N10
+      N9 -->|"Vector->End"| N10
       N0 -->|"Geometry->Curve"| N14
       N10 -->|"Curve->Profile Curve"| N14
       N0 -->|"Size X->Size X"| N4
@@ -157,9 +157,9 @@
       N4 -->|"Mesh->Mesh"| N6
       N0 -->|"Density->Density"| N6
       N0 -->|"Seed->Seed"| N6
-      N0 -->|"Geometry->Curve"| N3
-      N3 -->|"Points->Geometry"| N9
-      N9 -->|"Distance->A"| N11
+      N0 -->|"Geometry->Curve"| N1
+      N1 -->|"Points->Geometry"| N7
+      N7 -->|"Distance->A"| N11
       N0 -->|"Road Width->B"| N11
       N6 -->|"Points->Geometry"| N15
       N11 -->|"Result->Selection"| N15
@@ -238,8 +238,8 @@
           N6("Switch"):::converter-node
           N7("Set Grid Transform"):::geometry-node
       end
-      N8("Switch"):::converter-node
-      N9("Store Named Grid"):::geometry-node
+      N8("Store Named Grid"):::geometry-node
+      N9("Switch"):::converter-node
       N10("Switch"):::converter-node
       N11("Group Output"):::default-node
       N0 -->|"template_str->Format"| N1
@@ -264,15 +264,15 @@
       N4 -->|"Result->True"| N6
       N6 -->|"Output->Grid"| N7
       N0 -->|"Channel Affine Matrix->Transform"| N7
-      N2 -->|"Volume->Volume"| N9
-      N0 -->|"Grid Name->Name"| N9
-      N7 -->|"Grid->Grid"| N9
+      N2 -->|"Volume->Volume"| N8
+      N0 -->|"Grid Name->Name"| N8
+      N7 -->|"Grid->Grid"| N8
       N0 -->|"Include->Switch"| N10
-      N9 -->|"Volume->True"| N10
+      N8 -->|"Volume->True"| N10
       N10 -->|"Output->Volume"| N11
-      N8 -->|"Output->Grid"| N11
-      N0 -->|"Include->Switch"| N8
-      N7 -->|"Grid->True"| N8
+      N9 -->|"Output->Grid"| N11
+      N0 -->|"Include->Switch"| N9
+      N7 -->|"Grid->True"| N9
   ```
   '''
 # ---
