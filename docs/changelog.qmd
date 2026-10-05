@@ -25,6 +25,7 @@ title: Changelog
 
 ### Fixes
 
+- The Sugiyama layout ranks large trees about three times faster: after each step of the network simplex it updates only the cut values and numbering that step changed, instead of recomputing them all. Ranks, and so layouts, are unchanged.
 - A frame with Shrink turned off is now fitted around its nodes by the layout itself, and Shrink stays off. Previously it was left turned on.
 - Arranging only the selection with `add_reroutes=True` no longer replaces a reroute that an unselected node is linked to as well, which removed that node's link.
 - The Sugiyama layout no longer crashes on a chain of collapsed Math nodes that nothing else links to.

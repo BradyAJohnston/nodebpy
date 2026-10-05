@@ -13,11 +13,12 @@ from .common import group_by
 from .digraph import (
     DiGraph,
     LayoutGraph,
+    Link,
     strongly_connected_components,
     topological_generations,
     weakly_connected_components,
 )
-from .graph import Cluster, Kind, MultiEdge, Node, opposite
+from .graph import Cluster, Kind, MultiEdge, Node
 
 if TYPE_CHECKING:
     from .sugiyama import ClusterGraph
@@ -154,22 +155,44 @@ def tight_tree(H: LayoutGraph[Node], T: LayoutGraph[Node], root: Node) -> int:
     return len(T)
 
 
-def set_post_order_numbers(root: Node, T: LayoutGraph[Node]) -> None:
-    """Number the nodes of the spanning tree *T* in post-order from *root*,
-    and give each the lowest number in its subtree."""
-    visited: set[MultiEdge] = set()
-    num = 0
+type _Parents = dict[Node, tuple[Node, Link[Node]]]
+"""For each node of the spanning tree but its root: the node above it, and
+the tree link between the two."""
+
+
+def set_post_order_numbers(
+    top: Node, T: LayoutGraph[Node], parents: _Parents | None = None
+) -> _Parents:
+    """Number the nodes of the spanning tree *T* in post-order, and give
+    each the lowest number in its subtree. Returns each node's parent.
+
+    Without *parents* the whole tree is numbered, with *top* as its root.
+    With the parents of an earlier numbering only the subtree below *top*
+    is numbered again, within the numbers it had: enough after an exchange
+    of two links that are both in that subtree."""
+    if parents is None:
+        parents = {}
+        num = 0
+        visited: set[Link[Node]] = set()
+    else:
+        num = top.lowest_po_num
+        visited = {parents[top][1]} if top in parents else set()
+
+    def tree_links(v: Node) -> list[Link[Node]]:
+        return [*T.in_links(v), *T.out_links(v)]
+
     # Each entry: a node, its remaining tree links, the lowest number below.
-    stack: list[list[Any]] = [[root, iter(get_adj_edges_T(T, root)), None]]
+    stack: list[list[Any]] = [[top, iter(tree_links(top)), None]]
     while stack:
-        w, edges, lowest = stack[-1]
-        for e in edges:
-            if e in visited:
+        w, links, lowest = stack[-1]
+        for link in links:
+            if link in visited:
                 continue
 
-            visited.add(e)
-            child = opposite(w, e)
-            stack.append([child, iter(get_adj_edges_T(T, child)), None])
+            visited.add(link)
+            child = link.fromnode if link.tonode is w else link.tonode
+            parents[child] = (w, link)
+            stack.append([child, iter(tree_links(child)), None])
             break
         else:
             stack.pop()
@@ -180,6 +203,32 @@ def set_post_order_numbers(root: Node, T: LayoutGraph[Node]) -> None:
                 parent = stack[-1]
                 if parent[2] is None or w.lowest_po_num < parent[2]:
                     parent[2] = w.lowest_po_num
+
+    return parents
+
+
+def _is_above(v: Node, w: Node) -> bool:
+    """Whether *w* is *v* or below it in the numbered spanning tree."""
+    return v.lowest_po_num <= w.po_num <= v.po_num
+
+
+def tree_path(
+    start: Node, end: Node, parents: _Parents
+) -> tuple[Node, list[tuple[Link[Node], bool]]]:
+    """The way through the spanning tree from *start* to *end*: the highest
+    node on it, and its links, each with whether the path runs along it
+    from its ``fromnode`` to its ``tonode``."""
+    path = []
+    v = start
+    while not _is_above(v, end):
+        v, link = parents[v]
+        path.append((link, link.tonode is v))
+    top = v
+    v = end
+    while v is not top:
+        v, link = parents[v]
+        path.append((link, link.fromnode is v))
+    return top, path
 
 
 def compute_cut_values(H: LayoutGraph[Node], T: LayoutGraph[Node]) -> None:
@@ -226,7 +275,7 @@ def longest_path_ranks(H: LayoutGraph[Node]) -> None:
             v.rank = i
 
 
-def feasible_tree(H: LayoutGraph[Node]) -> LayoutGraph[Node]:
+def feasible_tree(H: LayoutGraph[Node]) -> tuple[LayoutGraph[Node], _Parents]:
     longest_path_ranks(H)
 
     T: LayoutGraph[Node] = LayoutGraph()
@@ -243,10 +292,10 @@ def feasible_tree(H: LayoutGraph[Node]) -> LayoutGraph[Node]:
         for v in T:
             v.rank += slack
 
-    set_post_order_numbers(v_root, T)
+    parents = set_post_order_numbers(v_root, T)
     compute_cut_values(H, T)
 
-    return T
+    return T, parents
 
 
 def leave_edge(T: LayoutGraph[Node]) -> MultiEdge | None:
@@ -279,11 +328,26 @@ def enter_edge(H: LayoutGraph[Node], e: MultiEdge) -> MultiEdge:
 def exchange(
     H: LayoutGraph[Node],
     T: LayoutGraph[Node],
+    parents: _Parents,
     leave: MultiEdge,
     enter: MultiEdge,
-) -> None:
+) -> _Parents:
+    """Swap the tree link *leave* for the link *enter*, and bring the ranks,
+    the cut values and the numbering up to date. Returns the parents.
+
+    Only the cut values around the cycle *enter* closes in the tree change,
+    by the cut value of *leave*: up for the links that run around the cycle
+    the way *enter* does, down for the others. (Upstream recomputes every
+    cut value after every exchange.)"""
+    tail, head, key = enter
+    cut_value = T.link(*leave).cut_value
+    top, cycle = tree_path(head, tail, parents)
+    for link, forwards in cycle:
+        link.cut_value += -cut_value if forwards else cut_value
+
     T.remove_link_between(*leave)
-    T.add_link(enter[0], enter[1], key=enter[2])
+    T.add_link(tail, head, key=key)
+    T.link(tail, head, key).cut_value = -cut_value
 
     slack = get_slack(enter)
     if not is_in_head(enter[1], leave):
@@ -293,10 +357,9 @@ def exchange(
         if not is_in_head(v, leave):
             v.rank += slack
 
-    get_adj_edges_T.cache_clear()
-
-    set_post_order_numbers(v, T)
-    compute_cut_values(H, T)
+    # Both links are below the top of the cycle, so the tree is as it was
+    # everywhere else. (Upstream numbers the whole tree again.)
+    return set_post_order_numbers(top, T, parents)
 
 
 def normalize_and_balance(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
@@ -346,11 +409,11 @@ _BASE_ITER_LIMIT = 50
 def network_simplex_ranks(H: LayoutGraph[Node]) -> None:
     """Rank the nodes so that the total (weighted) length of the links is
     minimal, by network simplex."""
-    T = feasible_tree(H)
+    T, parents = feasible_tree(H)
     i = 0
     iter_limit = _BASE_ITER_LIMIT * sqrt(len(H))
     while (e := leave_edge(T)) and i < iter_limit:
-        exchange(H, T, e, enter_edge(H, e))
+        parents = exchange(H, T, parents, e, enter_edge(H, e))
         i += 1
 
     # The adjacency caches are keyed by the graphs of this run; drop them so

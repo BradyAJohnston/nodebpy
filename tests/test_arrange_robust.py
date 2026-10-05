@@ -255,3 +255,29 @@ def test_matching_reassigns_an_earlier_pair():
     matching = deterministic_hopcroft_karp_matching(graph, "abc", "xy")
 
     assert matching == {"a": "y", "b": "x", "x": "b", "y": "a"}
+
+
+@pytest.mark.parametrize("seed", [3, 7, 11, 19])
+def test_ranking_keeps_its_cut_values_right(seed, monkeypatch):
+    """The network simplex only updates the cut values an exchange changes.
+    After every exchange they are what computing all of them afresh gives."""
+    from nodebpy.lib.nodearrange.arrange import ranking
+
+    from .arrange_data import random_tree
+
+    exchange = ranking.exchange
+    exchanges = []
+
+    def checked(H, T, parents, leave, enter):
+        parents = exchange(H, T, parents, leave, enter)
+        kept = {link.ident: link.cut_value for link in T.all_links()}
+        ranking.get_adj_edges_T.cache_clear()
+        ranking.compute_cut_values(H, T)
+        ranking.get_adj_edges_T.cache_clear()
+        assert kept == {link.ident: link.cut_value for link in T.all_links()}
+        exchanges.append(leave)
+        return parents
+
+    monkeypatch.setattr(ranking, "exchange", checked)
+    sugiyama_layout(random_tree(seed), Settings(reroutes="all"), MARGIN, verify=True)
+    assert exchanges
