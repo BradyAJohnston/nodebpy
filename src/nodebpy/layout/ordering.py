@@ -470,6 +470,8 @@ class Lcg:
 
     __slots__ = ("state",)
 
+    state: int
+
     def __init__(self, seed: int) -> None:
         self.state = (seed << 16) | 0x330E
 
@@ -478,7 +480,7 @@ class Lcg:
         self.state = (self.state * 0x5DEECE66D + 0xB) & 0xFFFFFFFFFFFF
         return (self.state >> 17) % n
 
-    def shuffle(self, items: list) -> None:
+    def shuffle[T](self, items: list[T]) -> None:
         for i in range(len(items) - 1, 0, -1):
             j = self.below(i + 1)
             items[i], items[j] = items[j], items[i]
