@@ -7,6 +7,8 @@ parts out apart never puts more frames on each other than laying the tree
 out as one graph.
 """
 
+from dataclasses import replace
+
 import pytest
 
 from nodebpy.lib.nodearrange.arrange.edits import MoveNode, RemoveNode
@@ -27,14 +29,29 @@ def _frame_defects(tree, result) -> int:
     return metrics.frame_overlaps + metrics.foreign_nodes_in_frames
 
 
-@pytest.mark.parametrize("seed", range(20))
+# Upstream's own defaults, which reach parts of the routing the defaults
+# here do not.
+_UPSTREAM = {"reroutes": "all", "direction": "LEFT_UP", "socket_alignment": "MODERATE"}
+
+
+@pytest.mark.parametrize("seed", range(30))
 @pytest.mark.parametrize(
-    ("add_reroutes", "zones"), [(False, 0), (True, 0), (False, 3), (True, 3)]
+    ("settings", "zones"),
+    [
+        ({}, 0),
+        ({"reroutes": "all"}, 0),
+        ({"reroutes": "blocked"}, 0),
+        (_UPSTREAM, 0),
+        ({}, 3),
+        (_UPSTREAM, 3),
+    ],
+    ids=["plain", "reroutes", "blocked", "upstream", "zones", "upstream-zones"],
 )
-def test_random_tree(seed, add_reroutes, zones):
+def test_random_tree(seed, settings, zones):
     """Zones are thrown at the trees at random, overlapping frames and each
     other in ways Blender's cannot."""
-    settings = Settings(reroutes="all" if add_reroutes else "none")
+    add_reroutes = settings.get("reroutes") == "all"
+    settings = Settings(**settings)
     tree = random_tree(seed, zones)
 
     result = sugiyama_layout(tree, settings, MARGIN, verify=True)
@@ -51,7 +68,7 @@ def test_random_tree(seed, add_reroutes, zones):
     if add_reroutes and not zones:
         as_one = random_tree(seed)
         unpacked = sugiyama_layout(
-            as_one, Settings(reroutes="all", pack_components=False), MARGIN
+            as_one, replace(settings, pack_components=False), MARGIN
         )
         assert node_overlaps(unpacked) == 0
         assert _frame_defects(tree, result) <= _frame_defects(as_one, unpacked)

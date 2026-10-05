@@ -308,8 +308,14 @@ def get_foreign_sockets_of(path: Sequence[Node], G: LayoutGraph[Node]) -> list[S
 
 def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
     reroute_paths: dict[tuple[Node, ...], list[Socket]] = {}
+    # (Not the border nodes of frames, which count as reroutes elsewhere:
+    # they have no column of their own to compare, and nothing to align to.)
     for p in get_reroute_paths(
-        CG, preserve_reroute_clusters=False, aligned=True, linear=False
+        CG,
+        lambda v: v.type != Kind.VERTICAL_BORDER,
+        preserve_reroute_clusters=False,
+        aligned=True,
+        linear=False,
     ):
         reroute_paths[tuple(p)] = get_foreign_sockets_of(p, CG.G)
 

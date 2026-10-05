@@ -62,12 +62,10 @@ def _restore_multi_input_order(
         as_links[output].swap_multi_input_sort_id(other)
 
 
-def _fit_frame(frame: BlenderNode, members: list[BlenderNode]) -> None:
-    """Size and place *frame* around *members* (its children), leaving its
+def _fit_frame(ntree: NodeTree, frame: BlenderNode, members: list[BlenderNode]) -> None:
+    """Size and place *frame* around *members* (the nodes in it), leaving its
     Shrink setting as the user had it. Blender only refits a frame itself
     when Shrink is on and a node editor draws it."""
-    if not members:
-        return
     boxes = []
     for node in members:
         x = abs_loc(node).x
@@ -79,15 +77,16 @@ def _fit_frame(frame: BlenderNode, members: list[BlenderNode]) -> None:
     right = max(b[2] for b in boxes) + padding
     top = max(b[3] for b in boxes) + padding + label
 
-    # A frame's children are placed relative to it: take them out while it
-    # moves, so they stay where the layout put them.
-    for node in members:
+    # What is in a frame is placed relative to it: take its children out
+    # while it moves, so they stay where the layout put them.
+    children = [node for node in ntree.nodes if node.parent == frame]
+    for node in children:
         node.parent = None
     outer = abs_loc(frame) - frame.location
     frame.location = (left - outer.x, top - outer.y)
     frame.width = right - left
     frame.height = top - bottom
-    for node in members:
+    for node in children:
         node.parent = frame
 
 
@@ -151,4 +150,4 @@ def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
             case ResizeFrame(frame=frame_data, children=children):
                 frame = binding.nodes[frame_data]
                 members = [binding.nodes[child] for child in children]
-                _fit_frame(frame, members)
+                _fit_frame(ntree, frame, members)
