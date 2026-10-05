@@ -142,3 +142,26 @@ def test_main_data_metrics():
     plain = measure(tree)
     assert plain.fork_imbalance > 100
     assert plain.cost() > metrics.cost()
+
+
+def test_frame_that_does_not_shrink_round_trips():
+    """A frame that does not fit itself to its members gets a
+    ``resize_frame`` edit, which survives the JSON format and is a no-op on
+    plain data (a frame's box is derived from its members there)."""
+    data = CASES["framed_stages"]["tree"]
+    tree = tree_from_json(data)
+    frame = next(node for node in tree.nodes if node.is_frame())
+    frame.shrink = False
+    settings = arrange_corpus.SETTINGS["default"]
+
+    result = sugiyama_layout(tree, settings, arrange_corpus.MARGIN)
+    stored = result_to_json(tree, result)
+
+    assert [edit for edit in stored["edits"] if edit[0] == "resize_frame"]
+    again = result_from_json(tree, stored)
+    assert result_to_json(tree, again) == stored
+    assert tree_from_json(tree_to_json(tree)).nodes[tree.nodes.index(frame)].shrink is (
+        False
+    )
+    again.apply_to(tree)
+    assert measure(tree).node_overlaps == 0
