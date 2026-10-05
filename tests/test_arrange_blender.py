@@ -376,3 +376,25 @@ def test_zones_are_read_from_blender():
     arrange_node_tree(tree, Settings())
     metrics = measure(tree)
     assert (metrics.zones, metrics.level_zones) == (2, 2)
+
+
+def test_frame_around_a_frame_is_fitted_around_its_nodes():
+    """A frame with Shrink off that only holds another frame is fitted
+    around that frame's nodes."""
+    tree = arrange_cases.framed_stages()
+    arrange_cases.reset_locations(tree)
+    inner = next(n for n in tree.nodes if n.bl_idname == "NodeFrame")
+    outer = tree.nodes.new("NodeFrame")
+    outer.shrink = False
+    outer.width = outer.height = 10.0
+    inner.parent = outer
+
+    arrange_node_tree(tree, Settings(), MARGIN)
+
+    assert outer.shrink is False
+    members = [n for n in tree.nodes if n.parent == inner]
+    assert outer.location_absolute.x < min(n.location_absolute.x for n in members)
+    assert outer.location_absolute.x + outer.width > max(
+        n.location_absolute.x + n.width for n in members
+    )
+    assert inner.parent == outer

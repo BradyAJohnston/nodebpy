@@ -23,6 +23,7 @@ The Sugiyama layout (`arrange(tree)`, the default arrangement of `TreeBuilder`) 
 - It no longer reseeds Python's global `random` generator.
 - A frame with Shrink turned off is fitted around its nodes by the layout itself, and Shrink stays off. Previously it was left turned on.
 - A frame's nodes could be left apart in a column, with another node drawn between them.
+- With reroutes on, a tree with a frame whose outline could not be kept straight could fail with a `TypeError`.
 - Links Blender marks invalid but still draws (between sockets that do not fit) now count when placing nodes.
 - With reroutes on, reroutes that lead nowhere or come from nowhere are kept rather than deleted.
 

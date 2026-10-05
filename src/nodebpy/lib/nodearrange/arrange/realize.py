@@ -11,7 +11,7 @@ from statistics import fmean
 from ..config import LayoutState
 from ..dna import new_reroute
 from .common import Vec2, f32
-from .digraph import LayoutGraph, edge_dfs
+from .digraph import LayoutGraph, descendants, edge_dfs
 from .edits import AddLink, AddReroute, MoveNode, ResizeFrame, RestoreMultiInputOrder
 from .graph import (
     Cluster,
@@ -215,7 +215,12 @@ def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
     if not frame or frame.shrink:
         return
 
-    children = tuple(v.node for v in CG.T.successors(cluster) if is_real(v))
+    # Every node in the frame, those of the frames inside it included.
+    children = tuple(
+        v.node
+        for v in descendants(CG.T, cluster)
+        if not isinstance(v, Cluster) and is_real(v)
+    )
     CG.state.edits.append(ResizeFrame(frame, children))
 
 
