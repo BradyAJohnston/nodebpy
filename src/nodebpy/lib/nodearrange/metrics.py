@@ -65,7 +65,7 @@ class CostWeights:
     frame_overlap: float = 30.0
     foreign_node_in_frame: float = 30.0
     bent_zone: float = 10.0
-    """For a zone whose spine is not one straight line."""
+    """For a zone whose spine is not a level row of nodes."""
     bent_link: float = 1.0
     bent_flow_link: float = 4.0
     """On top of ``bent_link``, for a link carrying the tree's main data."""
@@ -130,9 +130,10 @@ class LayoutMetrics:
 
     zones: int = 0
     """Zones whose input node leads to their output node."""
-    straight_zones: int = 0
-    """Those of them drawn as a row: every link of the spine (the line of
-    the main data from the zone's input node to its output node) straight."""
+    level_zones: int = 0
+    """Those of them drawn as a row: the nodes along the spine (the line of
+    the main data from the zone's input node to its output node) with their
+    tops at one height."""
     foreign_nodes_in_zones: int = 0
     """Node / zone pairs where a node that is not in a zone sits in the
     box around the zone's nodes, and so on or inside its outline. (Not part
@@ -164,7 +165,7 @@ class LayoutMetrics:
             + w.link_through_node * self.links_through_nodes
             + w.frame_overlap * self.frame_overlaps
             + w.foreign_node_in_frame * self.foreign_nodes_in_frames
-            + w.bent_zone * (self.zones - self.straight_zones)
+            + w.bent_zone * (self.zones - self.level_zones)
             + w.bent_link * (self.links - self.level_links)
             + w.bent_flow_link * (self.flow_links - self.level_flow_links)
             + w.fork_imbalance * self.fork_imbalance
@@ -472,7 +473,7 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
             n not in members and _rects_overlap(rect_of[n], rect) for n in boxes
         )
 
-    zones = straight_zones = 0
+    zones = level_zones = 0
     index_of_link = {(a, b): i for i, (a, b) in enumerate(sockets)}
     taken: set[bNodeLink] = set()
     for zone in reversed(tree.zones):
@@ -480,8 +481,8 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
         taken.update(spine)
         if spine:
             zones += 1
-            straight_zones += all(
-                straight[index_of_link[link.fromsock, link.tosock]] for link in spine
+            level_zones += all(
+                level_tops[index_of_link[link.fromsock, link.tosock]] for link in spine
             )
 
     # -- balance ----------------------------------------------------
@@ -566,6 +567,6 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
         flow_crossings=sum(bool(is_flow[i] and is_flow[j]) for i, j in crossing_pairs),
         mixed_crossings=sum(bool(is_flow[i] != is_flow[j]) for i, j in crossing_pairs),
         zones=zones,
-        straight_zones=straight_zones,
+        level_zones=level_zones,
         foreign_nodes_in_zones=int(foreign_nodes_in_zones),
     )

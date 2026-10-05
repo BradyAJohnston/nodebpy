@@ -1,5 +1,5 @@
 """Zones in the layout: which nodes are in a zone (``nodearrange.zones``),
-and the layout drawing a zone as a straight row (``priority.zone_spine``)."""
+and the layout drawing a zone as a level row (``priority.zone_spine``)."""
 
 from itertools import pairwise
 
@@ -167,37 +167,34 @@ def _measured(tree: bNodeTree, **settings):
 @pytest.mark.parametrize("add_reroutes", [False, True])
 @pytest.mark.parametrize("socket_alignment", ["NONE", "MODERATE", "FULL"])
 @pytest.mark.parametrize("direction", ["BALANCED", "LEFT_UP", "RIGHT_DOWN"])
-def test_zone_is_a_straight_row(add_reroutes, socket_alignment, direction):
-    """The links from the zone's input node through to its output node are
-    straight, whatever the alignment asked for elsewhere."""
-    tree, (zone_in, middle, zone_out) = _uneven_zone()
+def test_zone_is_a_level_row(add_reroutes, socket_alignment, direction):
+    """The nodes from the zone's input node through to its output node
+    have their tops at one height, whatever the alignment asked for
+    elsewhere."""
+    tree, spine = _uneven_zone()
     metrics = _measured(
         tree,
         add_reroutes=add_reroutes,
         socket_alignment=socket_alignment,
         direction=direction,
     )
-    assert (metrics.zones, metrics.straight_zones) == (1, 1)
-    assert zone_in.outputs[0].location[1] == pytest.approx(
-        middle.inputs[0].location[1], abs=0.01
-    )
-    assert middle.outputs[0].location[1] == pytest.approx(
-        zone_out.inputs[0].location[1], abs=0.01
-    )
+    assert (metrics.zones, metrics.level_zones) == (1, 1)
+    tops = [node.top for node in spine]
+    assert tops == pytest.approx([tops[0]] * 3, abs=0.01)
 
 
 def test_zones_can_be_left_alone():
-    """Without it the nodes are aligned by their tops (which is what the
-    metric is for)."""
+    """Without it the nodes are aligned by their sockets when that is
+    asked for (which is what the metric is for)."""
     tree, _ = _uneven_zone()
-    metrics = _measured(tree, straighten_zones=False, socket_alignment="NONE")
-    assert (metrics.zones, metrics.straight_zones) == (1, 0)
+    metrics = _measured(tree, straighten_zones=False, socket_alignment="FULL")
+    assert (metrics.zones, metrics.level_zones) == (1, 0)
 
 
 def test_zones_are_straightened_without_link_priorities():
     tree, _ = _uneven_zone()
-    metrics = _measured(tree, link_priority="none", socket_alignment="NONE")
-    assert metrics.straight_zones == 1
+    metrics = _measured(tree, link_priority="none", socket_alignment="FULL")
+    assert metrics.level_zones == 1
 
 
 @pytest.mark.parametrize("seed", range(40))

@@ -949,7 +949,7 @@ class SugiyamaOptions:
     straighten_zones : bool
         Draw each zone (simulation, repeat, for-each, closure) as a row:
         its input node, the nodes its data passes through and its output
-        node in one straight line, like the main line of the tree.
+        node in one row with their tops level.
     pack_components : bool
         Lay out the parts of the tree that are not linked to each other
         apart: the largest first, the others (a second group of nodes, a
