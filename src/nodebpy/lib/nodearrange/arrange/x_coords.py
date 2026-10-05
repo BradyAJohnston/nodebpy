@@ -1,4 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""Across the columns: an x for every column (:func:`assign_x_coords`), and
+the route phase, which gives a link a bend point beside a node it would
+otherwise cut across (:func:`route_edges`)."""
 
 from __future__ import annotations
 

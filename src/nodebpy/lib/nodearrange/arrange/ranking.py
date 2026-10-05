@@ -1,4 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""The rank phase: give every node a column (:func:`compute_ranks`).
+
+Network simplex (Gansner et al., below) over the *nesting graph*: the
+layout graph plus two border nodes per frame, linked so that a frame's
+nodes stay between them. See ``DESIGN.md``."""
 
 # http://dx.doi.org/10.1109/32.221135
 
@@ -436,9 +441,7 @@ def compute_ranks(
             if isinstance(c, Cluster):
                 c.nesting_level = i
 
-    # Every link weighs the same. (Weighing links by priority, so the trunk
-    # is kept shorter than side chains, was tried and made no consistent
-    # difference on the corpus.)
+    # Every link weighs the same.
     H = get_nesting_graph(CG)
     for link in H.all_links():
         link.weight = 1

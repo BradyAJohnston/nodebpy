@@ -1,4 +1,14 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""The place phase: give every node its height (:func:`bk_assign_y_coords`).
+
+Brandes and Köpf's method (below): each node is aligned with one neighbour
+in the column before, forming *blocks* that share a height; the blocks are
+then packed as close as the nodes above them allow. Done four times, to
+either side and packing either way. On ``graph.Node``: ``root`` is the
+first node of a node's block, ``aligned`` the next one round it, ``sink``
+and ``shift`` say which group of blocks moves together and by how much, and
+``inner_shift`` is a node's offset within its block (zero when tops are
+aligned, a socket's offset when sockets are). See ``DESIGN.md``."""
 
 # http://dx.doi.org/10.1007/3-540-45848-4_3
 # http://dx.doi.org/10.1007/978-3-319-27261-0_12

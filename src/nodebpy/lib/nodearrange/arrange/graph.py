@@ -1,4 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""What the layout works on: :class:`Node` (a node of the tree, or one the
+layout makes up: a dummy node on a long link, a frame's border),
+:class:`Socket`, :class:`Cluster` (a frame), and :class:`ClusterGraph`, the
+graph of nodes together with the nesting of frames. Also splitting long
+links with dummy nodes. See ``DESIGN.md`` for the terms."""
 
 from __future__ import annotations
 

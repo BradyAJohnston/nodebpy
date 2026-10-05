@@ -1,4 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""The order phase: order the nodes within each column so that few links
+cross (:func:`minimize_crossings`).
+
+Sweeps over the columns, ordering each by where its nodes' neighbours are
+in the column before (the barycenter heuristic, per socket, with a frame's
+nodes kept together), then swaps neighbours where that helps, and counts
+crossings exactly to keep the best order. See ``DESIGN.md``. The papers the
+sweep follows:"""
 
 # https://link.springer.com/chapter/10.1007/3-540-36151-0_26
 # https://doi.org/10.1016/j.jvlc.2013.11.005

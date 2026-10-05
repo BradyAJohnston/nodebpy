@@ -25,13 +25,15 @@ Sugiyama-based node layout, vendored from
 ## What is not vendored
 
 The Blender-addon shell: `__init__.py` (registration), `operators.py`,
-`properties.py`, `ui.py`, `keymaps.py`. Their tunables are mirrored by the
-`Settings` dataclass in `config.py` instead of a `PropertyGroup`.
+`properties.py`, `ui.py`, `keymaps.py`. The options an operator would show
+are `config.Settings`.
 
-## Local divergences from upstream
+How the layout works as it stands here is in `DESIGN.md`. This file is
+about the relation to upstream.
 
-Keep these in mind when porting upstream commits; a straight file copy will
-break headless operation.
+## Divergences that matter when porting an upstream commit
+
+A straight file copy will not work. Upstream patches need translating:
 
 - **No networkx.** Upstream builds its graphs on `networkx`. Here they are
   the structs in `arrange/digraph.py`, shaped after Blender's own so the layout
@@ -84,192 +86,69 @@ break headless operation.
   for collapsed nodes, whose sockets are spread according to how many are
   linked. Layouts are identical to before except in that case (a collapsed
   node next to a reroute the layout replaces).
-- **The layout is a pipeline.** Upstream's `sugiyama_layout` is one fixed
-  function calling each pass in turn. Here `arrange/pipeline.py` makes it a
-  list of named `Step`s (`sugiyama.default_pipeline()`), run by a
-  `Pipeline` that can be edited (replace / insert / remove a step) and
-  observed (a callback after each step). The four deciding passes are
-  *phases* with registered strategies, selected in `Settings`: `rank`
-  (`ranking`), `order` (`ordering`), `place` (`placement`), `route`
-  (`routing`). An upstream change to the order of passes goes into
-  `default_pipeline()`; a new upstream pass becomes a `Step` there.
-  `ranking.compute_ranks()` takes the solver as an argument, and
-  `"longest_path"` is a second ranking strategy (nodebpy-only).
-  Steps state how they depend on each other: each `Step` names the
-  `pipeline.Fact`s it `requires`, `provides` and `removes` (ranked, proper,
-  columns, ordered, borders, y, x, …). `Pipeline.check()` refuses a list of
-  steps that do not fit together before anything runs, and
-  `sugiyama_layout(..., verify=True)` checks every fact against the graph
-  after every step (`pipeline.CHECKS`), so a step or strategy that breaks an
-  invariant is named at once. A phase looks up its strategy when it runs,
-  from the settings of that run. In a C++ port the facts are the pre- and
-  postconditions of the phase functions and the checks are debug asserts.
-  `sugiyama.add_columns()` also starts every column with each frame's nodes
-  together (`graph.keep_frames_together()`): upstream's ordering stops as
-  soon as nothing crosses and could leave a column it never visited with a
-  frame split in two.
+- **The layout is a list of steps.** Upstream's `sugiyama_layout` is one
+  function calling each pass in turn. Here the passes are the `Step`s of
+  `sugiyama.default_pipeline()`. A change to the order of passes goes
+  there; a new pass becomes a `Step` there, with the facts it requires and
+  provides.
 - **No module globals.** Upstream keeps its working state (`selected`,
   `linked_sockets`, `multi_input_sort_ids`, `SETTINGS`, `MARGIN`) as module
-  globals in `config.py`, reset manually per operator invocation. Here that
-  is a per-run `config.LayoutState` dataclass, created by
-  `sugiyama_layout(tree, settings, margin)` and threaded explicitly:
-  `ClusterGraph` carries it as `.state` for the pipeline, and pure-graph
-  helpers take it as a parameter. It also collects the edits.
-- Headless adaptations — under the headless `bpy` module Blender never draws
-  the tree, so UI-derived geometry (`node.dimensions`, socket runtime
-  locations) stays zeroed:
-  - `utils.dimensions()` and `extract.get_socket_y()` use the drawn values
-    when present and otherwise fall back to estimates from
-    `nodebpy.builder.layout` (`calculate_node_dimensions()` /
-    `calculate_socket_offset_y()`).
-  - `extract.optimize_sizes()` skips `bpy.ops.wm.redraw_timer` and falls
-    back to a per-character width estimate when `blf` can't measure text.
-- **Selection is opt-in.** Upstream always arranges the user's selection
-  (`config.selected`, and per-link `node.select` gates). Here
-  `arrange_node_tree` lays out the whole tree unless called with
-  `selected_only=True` — a library-loaded tree has no selection at all,
-  which would silently arrange nothing. The selection is data
-  (`dna.bNode.select`, set by `extract`): `sugiyama.get_tree()` builds the
-  layout graph from the selected nodes and the links between them, as
-  upstream does. Upstream patches touching `.select` translate to that
-  field.
-- **What is the user's is left alone** (nodebpy-only):
-  - With `add_reroutes=False` the result is `MoveNode` edits only. Upstream
-    still removes and re-creates long links into multi-input sockets on the
-    way (and then restores their order); here the tree keeps its links.
-  - `realize.remove_reroutes()` keeps reroutes that lead nowhere or come
-    from nowhere (`realize.is_dangling()`); upstream deletes them with
-    their links.
-  - `reroute_links="blocked"` (with `add_reroutes`): the step
-    `sugiyama.dissolve_clear_dummy_nodes()` takes a long link off its dummy
-    nodes again when the link drawn straight (`sugiyama.link_is_clear()`,
-    sampling the Bézier Blender draws) passes clear of every node, so only
-    links that need routing get reroutes, and `remove_reroutes` does not
-    run, so the tree's own reroutes stay.
-  - `sugiyama.precompute_links()` goes by every link, not only those with
-    `is_valid`: Blender also clears that flag for links between sockets
-    that do not fit, which are still drawn. `sugiyama.cycle_links()` leaves
-    out the links that close a cycle, preferring the ones Blender marked.
-- **Layout readability additions** (nodebpy-only, each behind a `Settings`
-  flag mirrored on `SugiyamaOptions`):
-  - `ranking.add_frame_sequence_edges()` (`sequential_frames`): ranks
-    frames as stages of the flow by constraining every node of a frame to
-    come after every node of the frame (or intermediate node) feeding it, so
-    successive frames line up left to right instead of stacking into a
-    staircase.
-  - `balancing.balance_column_heights()` (`balance_heights`,
-    `balance_aspect`): after ranking, promotes nodes of the tallest columns
-    together with their upstream into emptier columns while the drawing
-    gets closer to a screen-shaped box.
-  - `priority.socket_priorities()` / `graph.link_priority()`
-    (`link_priority`): links carrying the tree's main data get a priority,
-    and `y_coords.horizontal_alignment()` aligns a node with a neighbour
-    across such a link (priority at least `priority.TRUNK_MIN_PRIORITY`)
-    before falling back to upstream's median neighbour — so the trunk is a
-    straight row. When several nodes want the same neighbour across such
-    links the middle one gets it, which makes a fork that merges again
-    symmetric. `"flow"` takes geometry, shader, bundle and closure sockets;
-    `"main"` takes each node's main linked socket by Blender's own rule
-    (`priority.main_socket()`, after `get_main_socket_priority` in
-    `node_relationships.cc`; a C++ port would call `get_main_socket`),
-    which also straightens chains of values; `"none"` gives upstream's
-    alignment.
-  - `balancing` skips columns of at most `balance_min_column` nodes, so a
-    few parallel branches are not staggered over two columns.
-  - `sugiyama.constrain_layers()` (`pin_group_output`, `pin_group_input`):
-    a pipeline step, after the balancing, that moves Group Output nodes to
-    the last column and Group Input nodes to the first.
-  - `y_coords.vertical_gap()` (`reroute_margin_y_fac`): consecutive
-    reroutes / dummy nodes in a column pack at a fraction of the margin.
-  - `sugiyama.precompute_links()` keeps `is_hidden` links (links into a
-    collapsed panel's sockets), which still order the nodes; and
-    `x_coords.assign_x_coords()` skips a column left empty by dissolved
-    dummies.
-- **Deterministic iteration order.** Upstream hashes `graph.Node` and
-  `graph.Cluster` by `id()` and keeps `linked_sockets` values as sets of bpy
-  sockets (which hash by pointer), so set iteration followed memory addresses
-  and the same tree could lay out differently between runs. Here they hash by
-  a creation serial (`graph._serials`, reset per run in `sugiyama_layout`),
-  `linked_sockets` values are insertion-ordered dicts, and
-  `realize.restore_multi_input_orders` creates missing links in graph order
-  rather than from a set of bpy sockets.
-  Nothing that decides the result iterates a `set` any more: the cluster
-  list `ClusterGraph.S` is a list, `descendants` / `ancestors` and the
-  component functions of `digraph.py` return their nodes in traversal order,
-  and `subgraph` keeps the graph's order. (Upstream's sets are still there
-  where only membership is asked.) A C++ port can therefore reproduce the
-  order with plain arrays.
-- **Ordering without chance** (replaces upstream's):
-  `ordering.minimize_crossings_deterministic()`, strategy `"layer_sweep"`.
-  Upstream's ordering perturbs barycenters randomly and restarts
-  `iterations` times; it is not kept. This one sweeps from
-  fixed starting orders (the columns as they come, a depth-first order from
-  each end, and for small graphs up to eight shuffles from `ordering._Lcg`,
-  the generator of `drand48` and of Blender's `RandomNumberGenerator`,
-  always seeded with 0) in both directions, swaps neighbouring nodes of a
-  frame after every sweep where that uncrosses their links
-  (`ordering._transpose()`), and keeps the order with the fewest crossings
-  by an exact count over sockets (`ordering.count_crossings()`). It reuses
-  upstream's sweep for sockets and frames with the random terms left out.
-  This is the recipe of Graphviz's dot; a port reproduces it exactly.
-  The count and the swaps weigh each crossing by what its two links carry
-  (`Settings.crossing_weights`, `graph.link_is_flow()`): a value crossing
-  the main data costs four times a crossing of two values or of two
-  branches of the main data.
-- **Zones** (nodebpy-only, `Settings.straighten_zones`):
-  `priority.zone_spine()` picks the line through each zone of
-  `dna.bNodeTree.zones` from its input node to its output node, and
-  `priority.zone_priorities()` gives the sockets along it a priority above
-  any other, so the placement aligns the spine before any other trunk.
-  `y_coords.inner_shift()` aligns the tops of the nodes along a spine
-  whatever `socket_alignment` says, so the zone is one level row. `zones.py`
-  finds the zones for a tree read from Python; a port reads
-  `bNodeTree::zones()` instead. (Treating a zone as a frame, to keep other
-  nodes out of its outline, was tried and dropped: more crossings and a
-  less clear picture.)
-- **Packing** (nodebpy-only, `Settings.pack_components`):
-  `sugiyama_layout()` splits the tree into its unconnected parts
-  (`packing.components()`), runs the pipeline on each
-  (`packing.subtree()`) and shifts each part's `MoveNode` edits so the
-  boxes sit in rows under the largest (`packing.pack()`). An observer is
-  therefore called once per step per part. Upstream lays the whole
-  selection out as one graph.
-- **Selection clear of the rest** (nodebpy-only,
-  `Settings.avoid_unselected`): after a selection is laid out,
-  `packing.clear_of()` finds the shortest move along one axis that takes
-  its nodes off the unselected ones, and `sugiyama_layout()` applies it to
-  every `MoveNode`.
-- **Robustness** (nodebpy-only):
-  - `sugiyama.cycle_links()`: the layout drops the links that close a cycle
-    itself rather than rely on Blender having marked one invalid, and
-    reports a linked socket without a location as a `ValueError`.
-  - `ranking.tight_tree`, `ranking.set_post_order_numbers`,
-    `y_coords.place_block` and the matching in `stacking.py` use explicit
-    stacks where upstream recurses, so a chain or column of thousands of
-    nodes does not hit the recursion limit.
-  - `ordering.minimize_crossings` draws from its own `random.Random(0)`
-    (upstream reseeds the global generator) and clears the `@cache`s of
-    `ordering.py` when done.
-  - `stacking._point_multi_input_orders_at_stack()`: the saved multi-input
-    orders follow the sockets a stack takes over.
-  - `utils.dimensions()` divides drawn sizes by the UI scale, as
-    `extract.get_socket_y()` does for socket positions.
-- **A harness** (nodebpy-only): `LayoutResult.apply_to()` makes a layout's
-  edits to the plain data, and `metrics.py` measures plain data, so a layout
-  can be judged without Blender. `tests/arrange_corpus/` stores node trees
-  as `tree_clipper` JSON with the location every node must end up at — the
-  suite to hold a C++ port against, since the same files load into any
-  Blender through Tree Clipper.
-- `structs.py` (moved up from `arrange/`, since only `extract.py` uses it)
-  uses explicit `_fields_` lists (upstream builds them from annotations, formerly via `eval`) and additionally binds `bNode` /
-  `bNodeRuntime` / `rctf`, which upstream does not have.
-- Typing/lint fixes throughout to satisfy `ty` and `ruff` under this repo's
-  config.
+  globals in `config.py`. Here that is a per-run `config.LayoutState`,
+  carried by `ClusterGraph` as `.state` and passed to pure-graph helpers.
+  It also collects the edits.
+- **Headless.** Under the `bpy` module Blender never draws the tree, so
+  `node.dimensions` stays zero. `utils.dimensions()` uses the drawn size
+  when there is one and otherwise the estimate of
+  `nodebpy.builder.layout`; socket heights are always estimated
+  (upstream reads them from Blender's memory with `ctypes`; that module,
+  `structs.py`, is not kept). `extract.optimize_sizes()` skips
+  `bpy.ops.wm.redraw_timer` and estimates text widths when `blf` cannot
+  measure them.
+- **Selection is opt-in.** Upstream always arranges the selection. Here
+  the whole tree is arranged unless `selected_only=True`; the unselected
+  nodes are then `LayoutState.fixed`. Upstream code that tests
+  `node.select` translates to `node not in state.fixed`.
+- **Iteration order is by insertion.** Upstream hashes `graph.Node` and
+  `graph.Cluster` by `id()` and iterates sets of them, so a layout could
+  differ between runs. Here they hash by a creation serial, and nothing
+  that decides the result iterates a set.
+- **No recursion per node.** `ranking.tight_tree`,
+  `ranking.set_post_order_numbers`, `y_coords.place_block` and the
+  matching in `stacking.py` use explicit stacks.
+- **Settings.** Upstream's `iterations`, `stack_margin_y_fac`,
+  `keep_reroutes_outside_frames` and the origin and mode options are gone
+  or constants (see `DESIGN.md`); `add_reroutes` is `reroutes`.
+
+## Replaced or added (nodebpy only)
+
+A patch to one of these upstream functions has no direct target here.
+
+- **Ordering:** `ordering.minimize_crossings()` is a deterministic sweep
+  with neighbour swaps and weighted crossings. Upstream's random restarts
+  are not kept; its sweep for sockets and frames is, without the random
+  terms.
+- **Ranking:** `ranking.exchange()` updates cut values and numbering
+  incrementally. `ranking.add_frame_sequence_edges()` and
+  `balancing.py` are additions.
+- **Placement:** `y_coords.horizontal_alignment()` aligns across the
+  heaviest link first (`priority.py`), and `y_coords.inner_shift()` keeps
+  the tops of a zone's spine level.
+- **Reroutes:** `realize.remove_reroutes()` keeps dangling reroutes and
+  those linked to unselected nodes; `sugiyama.dissolve_clear_dummy_nodes()`
+  is the `reroutes="blocked"` mode; with `reroutes="none"` no link is
+  touched at all.
+- **Links:** `sugiyama.precompute_links()` goes by every link and
+  `sugiyama.cycle_links()` breaks cycles itself, where upstream goes by
+  `is_valid`.
+- **Whole modules:** `priority.py`, `packing.py`, `balancing.py`,
+  `pipeline.py`, `digraph.py`, `edits.py`, and outside `arrange/`:
+  `dna.py`, `extract.py`, `apply.py`, `zones.py`.
 
 ## Upstream commits ported since base
 
 - `ec36f75` / `3fc80aa` / `5f9e8a7` — bNodeSocket(Runtime) bindings updated
   for Blender 5.0/5.1/5.2 field changes; class renamed to `bNodeSocketRuntime`.
+  (No longer applies: `structs.py` is not kept.)
 - `0c8586b` — remove `eval` (already covered by the local explicit-fields
   rewrite).
 - `5ac05cb` — `optimize_sizes` option: fit collapsed-node widths to their

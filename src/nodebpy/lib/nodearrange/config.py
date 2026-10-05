@@ -1,4 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""What the layout can be asked to do (:class:`Settings`), and the state of
+one run of it (:class:`LayoutState`)."""
 
 from __future__ import annotations
 
@@ -60,13 +62,10 @@ DEFAULT_MARGIN = (200.0, 20.0)
 
 @dataclass
 class LayoutState:
-    """All state for a single layout run.
-
-    Replaces the upstream addon's module globals (which acted as ambient
-    operator state plus a manual ``reset()``): one instance is created per
-    ``sugiyama_layout()`` call and threaded through the pipeline, so nothing
-    persists between runs.
-    """
+    """All the state of one layout run: what it was asked for, what it
+    indexes on the way, and the edits it produces. One is created per part
+    of the tree laid out and passed through the pipeline, so nothing
+    persists between runs."""
 
     tree: bNodeTree
     settings: Settings = field(default_factory=Settings)

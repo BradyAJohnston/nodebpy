@@ -71,8 +71,7 @@ def segments_intersect(v0: Point, v1: Point, v2: Point, v3: Point) -> bool:
 
     Segments lying along each other over a stretch do not count. Follows
     Blender's ``isect_seg_seg_v2_point`` (single precision included), which
-    the layout previously reached through
-    ``mathutils.geometry.intersect_line_line_2d``.
+    is what ``mathutils.geometry.intersect_line_line_2d`` calls.
     """
     v0, v1, v2, v3 = (
         (f32(v0[0]), f32(v0[1])),

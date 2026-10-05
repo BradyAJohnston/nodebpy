@@ -7,9 +7,11 @@ Three stages:
    (:mod:`.dna`), measuring node sizes and socket positions.
 2. :func:`.arrange.sugiyama.sugiyama_layout` computes the layout from that
    data alone and returns the edits to make (:mod:`.arrange.edits`). It
-   never touches Blender. The layout is a pipeline of named
-   steps with swappable strategies (:mod:`.arrange.pipeline`).
+   never touches Blender. The layout is a list of named steps
+   (:mod:`.arrange.pipeline`).
 3. :func:`~.apply.apply` carries the edits out on the Blender tree.
+
+``DESIGN.md`` beside this file explains the layout end to end.
 """
 
 from __future__ import annotations

@@ -1,4 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""The layout itself: :func:`sugiyama_layout` and the list of steps it runs
+(:func:`default_pipeline`), with the steps that are too small for a module
+of their own. ``DESIGN.md`` beside the package describes every step."""
 
 from __future__ import annotations
 
@@ -113,9 +116,8 @@ def precompute_links(state: LayoutState) -> None:
     close a cycle. (Upstream goes by Blender's ``is_valid``, which is also
     cleared for links that are merely between sockets that do not fit;
     those are still drawn, and still say where a node belongs.)"""
-    # Headless divergence: links into a collapsed panel's sockets report
-    # ``is_hidden`` (Blender draws them to the panel header); they still
-    # carry data, so they still order the nodes.
+    # Links into a collapsed panel's sockets count too (Blender calls them
+    # hidden and draws them to the panel header): they still carry data.
     ignored = cycle_links(state.tree)
     for link in state.tree.links:
         if link in ignored:

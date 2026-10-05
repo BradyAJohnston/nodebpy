@@ -1,4 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""Stacks: chains of collapsed Math nodes, which are drawn as a tight
+vertical pile. A stack is contracted into one node before the layout and
+expanded again after it."""
 
 from __future__ import annotations
 

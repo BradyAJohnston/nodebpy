@@ -1,4 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""Turn the finished layout into edits: reroutes for the dummy nodes that
+remain, links through them, and a position for every node. Also the removal
+of the tree's own reroutes before the layout, when it replaces them."""
 
 from __future__ import annotations
 
