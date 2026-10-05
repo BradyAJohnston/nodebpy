@@ -179,6 +179,34 @@ def test_selected_reroutes_at_the_edge_of_the_selection_are_kept():
     assert _links(tree) == links
 
 
+@pytest.mark.parametrize("unselected", ["source", "consumer"])
+def test_reroute_that_also_links_outside_the_selection_is_kept(unselected):
+    """A reroute between selected nodes that an unselected node is linked
+    to as well is not replaced: that node would lose its link."""
+    tree = bpy.data.node_groups.new("SharedReroute", "GeometryNodeTree")
+    a, b, c = (tree.nodes.new("GeometryNodeSetPosition") for _ in range(3))
+    join = tree.nodes.new("GeometryNodeJoinGeometry")
+    reroute = tree.nodes.new("NodeReroute")
+    if unselected == "consumer":
+        # a -> reroute -> b, and reroute -> c with c unselected.
+        tree.links.new(a.outputs[0], reroute.inputs[0])
+        tree.links.new(reroute.outputs[0], b.inputs[0])
+        tree.links.new(reroute.outputs[0], c.inputs[0])
+        c.select = join.select = False
+    else:
+        # a -> reroute -> b and reroute -> c, with a unselected.
+        tree.links.new(a.outputs[0], reroute.inputs[0])
+        tree.links.new(reroute.outputs[0], b.inputs[0])
+        tree.links.new(reroute.outputs[0], c.inputs[0])
+        a.select = join.select = False
+    links = _links(tree)
+
+    arrange_node_tree(tree, Settings(add_reroutes=True), MARGIN, selected_only=True)
+
+    assert reroute.name in tree.nodes
+    assert _links(tree) == links
+
+
 # ---------------------------------------------------------------------------
 # Links Blender calls invalid
 # ---------------------------------------------------------------------------
