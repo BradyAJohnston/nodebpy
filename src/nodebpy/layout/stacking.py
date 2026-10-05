@@ -35,6 +35,10 @@ from .model import (
 
 @dataclass(slots=True)
 class NodeStack:
+    """A stack. ``path`` lists its nodes top to bottom. ``rep_node`` stands
+    for them in the layout graph. ``stack_sockets_to_originals`` maps each
+    socket of ``rep_node`` to the socket of a stacked node it stands for."""
+
     rep_node: Node
     path: list[Node]
     stack_sockets_to_originals: dict[Socket, Socket] = field(default_factory=dict)
@@ -115,7 +119,7 @@ def deterministic_hopcroft_karp_matching[T: Hashable](
 def max_linear_branching(G: LayoutGraph[Node]) -> LayoutGraph[Node]:
     """The largest set of links of *G* in which every node has at most one
     predecessor and one successor, i.e. that only forms chains."""
-    # To make results deterministic
+    # Sorted by name, so the result does not depend on the order of *G*.
     nodes = sorted(G, key=node_name)
     edges = sorted(
         [(link.fromnode, link.tonode) for link in G.all_links()],
@@ -227,6 +231,15 @@ STACK_MARGIN_Y_FAC = 0.5
 
 
 def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
+    """Find the stacks and replace each in the graph by one node.
+
+    A stack is a chain of two or more collapsed Math or Vector Math nodes
+    in the same frame, each joined to the next by a single link. Where the
+    nodes branch, the chains are chosen to use as many links as possible
+    (:func:`max_linear_branching`). A link is left out of a chain when
+    contracting it would create a cycle. The node that replaces a stack is
+    as tall as the pile and takes over the stack's links to other nodes.
+    Returns the stacks, for :func:`expand_node_stack`."""
     G = CG.G
     T = CG.T
 
@@ -239,8 +252,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     ]
     H = G.subgraph(collapsed_math_nodes)
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+    # Not across frames, and not where two nodes are joined by several links.
     for link in tuple(H.all_links()):
         if link.fromnode.cluster != link.tonode.cluster:
             H.remove_link(link)
@@ -252,8 +264,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
                 for link in parallel:
                     H.remove_link(link)
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+    # Keep only chains, and only links that contract without a cycle.
     for c in weakly_connected_components(H):
         H_c = H.subgraph(c)
         B = max_linear_branching(H_c)
@@ -268,8 +279,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     for u, v in edges_preventing_acyclic_contraction(G, H):
         H.discard_link_between(u, v)
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+    # Replace each chain by one node.
     order = {v: i for i, v in enumerate(topological_sort(H))}
     node_stacks = []
     for c in weakly_connected_components(H):
@@ -293,10 +303,8 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
         rep_node.cluster = cluster
         T.add_edge(cluster, rep_node)
 
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-        # A stack nothing else links to would otherwise
-        # never enter the graph, and so never get a rank or a column.
+        # A stack nothing else links to would otherwise never enter the
+        # graph, and so never get a rank or a column.
         G.add_node(rep_node)
         for link in (*G.in_links(path), *G.out_links(path)):
             u, v = link.fromnode, link.tonode
@@ -309,8 +317,6 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
 
         G.remove_nodes(path)
         T.remove_nodes(path)
-
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         node_stacks.append(node_stack)
 
@@ -338,10 +344,10 @@ def _feeds(G: LayoutGraph[Node], source: Socket, target: Socket) -> bool:
 def _point_multi_input_orders_at_stack(
     G: LayoutGraph[Node], state: LayoutState, node_stack: NodeStack
 ) -> None:
-    """The saved multi-input orders name the socket each link comes from;
-    where that is a socket the stack took over, name the stack's instead.
-    (A socket with several outside links gets a stack socket per link, so
-    pick the one that actually feeds the multi-input.)"""
+    """The saved multi-input orders name the socket each link comes from.
+    Where that is a socket the stack took over, name the stack's socket
+    instead. A socket with several outside links gets a stack socket per
+    link, so the one that feeds the multi-input is picked."""
     stand_ins: dict[Socket, list[Socket]] = {}
     for stack_socket, original in node_stack.stack_sockets_to_originals.items():
         stand_ins.setdefault(original, []).append(stack_socket)
@@ -360,11 +366,17 @@ def _point_multi_input_orders_at_stack(
 def _relabel_multi_input_sources(
     state: LayoutState, renamed: Mapping[Socket, Socket]
 ) -> None:
+    """Rename the source sockets of the saved multi-input orders by
+    *renamed*."""
     for sort_ids in state.multi_input_sort_ids.values():
         sort_ids[:] = [(renamed.get(s, s), i) for s, i in sort_ids]
 
 
 def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
+    """Put the nodes of *node_stack* back in place of the node that stood
+    for them. Its links go back to the sockets they came from. The nodes are
+    piled downwards from its top, centred on it, with
+    ``STACK_MARGIN_Y_FAC`` of the vertical margin between them."""
     G = CG.G
     rep_node = node_stack.rep_node
     path = node_stack.path
@@ -386,8 +398,6 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
             u = link.fromnode
             G.remove_link_between(u, rep_node, link.key)
             G.add_link(u, original_socket.owner, link.fromsock, original_socket)
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     G.add_nodes(path)
 

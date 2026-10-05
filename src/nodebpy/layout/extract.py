@@ -1,10 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """Read a Blender node tree into the plain data the layout works on.
 
-This is the only place node sizes and socket positions are measured. Blender
-computes them when a node editor draws the tree; where it has not (always,
-under the headless ``bpy`` module) they are estimated from the node's
-sockets and properties.
+Node sizes and socket positions enter the layout only here. A node's size
+is what Blender measured if a node editor has drawn it, else an estimate.
+Socket positions are always estimated. See :mod:`.node_size`.
 """
 
 from __future__ import annotations
@@ -24,10 +23,10 @@ from .node_size import (
 )
 from .zones import find_zones
 
-# -------------------------------------------------------------------
-
 
 def get_display_name_of(node: BlenderNode) -> str:
+    """The text a collapsed node's width is fitted to: its label, else the
+    name of its group, operation or image, else the label of its type."""
     if node.label:
         return node.label
 
@@ -76,6 +75,7 @@ def _label_width(text: str) -> float:
 
 
 def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
+    """Set the width of every collapsed node to fit its display name."""
     for node in nodes:
         if not node.hide:
             continue
@@ -85,9 +85,6 @@ def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
             _label_width(display_name) + LABEL_LEFT_OFFSET + LABEL_RIGHT_OFFSET
         )
         node.width = max(optimized_width, node.bl_width_min)
-
-
-# -------------------------------------------------------------------
 
 
 @dataclass(eq=False, slots=True)

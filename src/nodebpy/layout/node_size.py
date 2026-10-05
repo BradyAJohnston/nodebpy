@@ -1,6 +1,8 @@
-"""How tall a node is and where its sockets sit, worked out from the rows it
-draws. Blender only measures nodes when a node editor draws them, which
-never happens under the ``bpy`` module, so the layout estimates instead."""
+"""A node's box and the positions of its sockets.
+
+The box is what Blender measured when a node editor last drew the node, else
+an estimate from the rows the node draws (:func:`dimensions`). Socket
+positions are always estimated (:func:`calculate_socket_offset_y`)."""
 
 from __future__ import annotations
 
@@ -14,13 +16,10 @@ import bpy
 from ..builder._socket_order import SOCKET_ORDER
 from .dna import REROUTE_SIZE
 
-# Estimated row heights (in unscaled UI units) used to model node layout
-# without a UI. Blender only computes real node/socket geometry when a node
-# editor draws the tree, which never happens under the headless ``bpy``
-# module. HEADER and SOCKET_ROW are calibrated against a UI-arranged tree
-# whose reroutes the arranger had socket-aligned: reroute y minus node top
-# measures the real socket offsets, giving header + (i + 0.5) * row fits of
-# 24.5 / 21.75. The remaining rows scale to the same grid.
+# Estimated row heights, in unscaled UI units. HEADER and SOCKET_ROW are
+# fitted to socket offsets measured in the UI: socket i sits at
+# header + (i + 0.5) * row below the node's top, with 24.5 and 21.75. The
+# other rows scale to the same grid.
 HEADER = 24.5
 SOCKET_ROW = 21.75
 COLLAPSED_SOCKET = 10  # NODE_DY / 2
@@ -55,13 +54,12 @@ def node_property_rows(node: bpy.types.Node) -> list[tuple[Any, int]]:
 
     Properties inherited from the node's base classes (location, label, ...)
     are skipped, as are item collections, pointers to internal structs or
-    other nodes (a zone's ``paired_output``) and known bookkeeping flags —
-    none of which draw a widget. Vector-valued properties draw one number
-    field per component; a colour property draws a picker.
-
-    ``bl_rna`` exists on bpy classes via their metaclass, invisible to type
-    checkers looking at plain ``type``.
+    other nodes (a zone's ``paired_output``) and known bookkeeping flags.
+    None of those draw a widget. A vector-valued property draws one number
+    field per component. A colour property draws a picker.
     """
+    # `bl_rna` exists on bpy classes through their metaclass, which type
+    # checkers do not see. Hence the cast.
     inherited_ids = {
         prop.identifier
         for base in type(node).__bases__
@@ -90,8 +88,8 @@ def node_property_rows(node: bpy.types.Node) -> list[tuple[Any, int]]:
 
 def _socket_visible(socket: bpy.types.NodeSocket) -> bool:
     """Whether Blender draws this socket on an expanded node: enabled, and
-    not hidden — a hidden socket reappears while it is linked (the editor's
-    Hide Unused Sockets only hides unlinked ones)."""
+    not hidden. A hidden socket is drawn while it is linked, because the
+    editor's Hide Unused Sockets only hides unlinked ones."""
     return socket.enabled and (not socket.hide or socket.is_linked)
 
 
@@ -111,14 +109,14 @@ def _is_expanded_vector(
 
 @dataclass(frozen=True)
 class NodeRow:
-    """One drawn row of an expanded node, as the headless row model sees it.
+    """One drawn row of an expanded node, as the row model sees it.
 
     ``top`` is the row's offset (<= 0) from the node's top edge and
-    ``height`` its extent; ``anchor`` is where a socket marker sits. Socket
-    rows carry their ``socket`` (plus an aligned output ``partner``);
-    property rows the RNA ``prop``; panel rows the ``panel`` (an interface
-    panel item for group nodes, the declared name for built-in nodes),
-    whether it is ``open``, and — when closed — the linked
+    ``height`` its extent. ``anchor`` is where a socket marker sits. Socket
+    rows carry their ``socket``, plus an aligned output ``partner``.
+    Property rows carry the RNA ``prop``. Panel rows carry the ``panel`` (an
+    interface panel item for group nodes, the declared name for built-in
+    nodes), whether it is ``open``, and when closed the linked
     ``collapsed_sockets`` Blender draws on the header instead.
     """
 
@@ -149,7 +147,7 @@ class NodeRow:
         """Vertical offset (<= 0) of the row's socket marker / centre."""
         if self.kind == "property":
             return self.top - self.height / 2
-        # Socket and panel rows anchor on their first SOCKET_ROW; an expanded
+        # Socket and panel rows anchor on their first SOCKET_ROW. An expanded
         # vector's three value rows hang below its label row.
         return self.top - SOCKET_ROW / 2
 
@@ -187,17 +185,17 @@ def node_rows(
     """The rows Blender draws below an expanded node's header, top to bottom.
 
     Conventionally drawn nodes list outputs first, then the node's drawn
-    properties (:func:`node_property_rows`), then inputs; an unlinked, shown
+    properties (:func:`node_property_rows`), then inputs. An unlinked, shown
     vector input is followed by its expanded three-value widget. Nodes that
     Blender draws from their declaration (``use_custom_socket_order``,
     recorded in :mod:`nodebpy.builder._socket_order`) follow that declared
     order instead: inputs and outputs interleaved, an aligned output sharing
     its input's row as its ``partner``, buttons where the declaration puts
     them, and panels. Group nodes whose interface declares panels draw them
-    in interface order. Either way a panel is a header row with its sockets
-    beneath it while open and — while closed — nothing but linked sockets
-    gathered onto the header. When ``socket_input_connection_count`` is
-    None, link state is read from ``socket.is_linked``.
+    in interface order. Either way an open panel is a header row with its
+    sockets beneath it, and a closed panel is a header row with only its
+    linked sockets gathered onto it. When ``socket_input_connection_count``
+    is None, link state is read from ``socket.is_linked``.
     """
     rows: list[NodeRow] = []
     y = HEADER
@@ -513,10 +511,10 @@ def calculate_node_dimensions(
 ) -> tuple[float, float]:
     """Calculate the visual dimensions of a node.
 
-    A collapsed node has a row per visible socket; otherwise the height is
+    A collapsed node has a row per visible socket. Otherwise the height is
     the header plus every row of :func:`node_rows`. When
-    ``socket_input_connection_count`` is None, link
-    state is read directly from ``socket.is_linked``.
+    ``socket_input_connection_count`` is None, link state is read directly
+    from ``socket.is_linked``.
     """
     if node.hide:
         return node.width, _collapsed_height(node) * interface_scale
@@ -558,7 +556,7 @@ def dimensions(node: bpy.types.Node) -> tuple[float, float]:
 
     drawn = node.dimensions
     if drawn.x > 0 and drawn.y > 0:  # pragma: no cover - only drawn in a UI
-        # Drawn sizes are in view space; locations are not.
+        # Drawn sizes are in view space. Locations are not.
         preferences = bpy.context.preferences
         assert preferences is not None
         scale = preferences.system.ui_scale

@@ -1,4 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""Long links. A link that passes over one or more columns is split by a
+dummy node in each of them (:func:`merge_edges`,
+:func:`insert_dummy_nodes`). Also here: finding chains of reroutes and
+dummy nodes (:func:`get_reroute_paths`)."""
 
 from __future__ import annotations
 
@@ -67,6 +71,9 @@ def add_dummy_nodes_to_edge(
     dummy_nodes: Sequence[Node],
     state: LayoutState,
 ) -> None:
+    """Replace *link* by a chain through *dummy_nodes*, which take the
+    link's priority and whether it is a flow link. Dummy nodes that are
+    already chained, or already fed by the link's source, are reused."""
     if not dummy_nodes:
         return
 
@@ -94,10 +101,9 @@ def add_dummy_nodes_to_edge(
     if not is_real(u) or not is_real(v):
         return
 
-    # The link is replaced by the chain through the dummy nodes. A plain
-    # input drops its old link when the new one is made; a multi-input
-    # would keep both. (Without reroutes the chain is only the layout's:
-    # the tree keeps its link.)
+    # In the tree, a plain input drops its old link when the link from the
+    # last reroute is made. A multi-input would keep both, so its old link
+    # is removed. Without reroutes the tree keeps its link.
     if state.options.reroutes != "none" and link.tosock.dna.is_multi_input:
         edit = RemoveLink(link.fromsock.dna, link.tosock.dna)
         if edit not in state.edits:
@@ -110,6 +116,9 @@ def assign_clusters(
     stop: Cluster,
     is_within_cluster: Callable[[Node, Cluster], bool],
 ) -> None:
+    """Give each of *dummy_nodes* in turn the innermost cluster that
+    *is_within_cluster* accepts it in, going outwards from *start* and never
+    back in. Stops at the first dummy node that only *stop* would hold."""
     c = start
     for w in dummy_nodes:
         while c != stop and not is_within_cluster(w, c):
@@ -122,13 +131,18 @@ def assign_clusters(
 
 
 def improve_cluster_assignment(e: Edge, dummy_nodes: Sequence[Node]) -> None:
+    """Move the dummy nodes of the long link *e* into the frames at its ends
+    where they fit. A dummy node in a column that the frame of the source
+    node, or a frame around it, still spans joins that frame. The same is
+    done from the target's end. The other dummy nodes keep their cluster."""
     u, v = e
     assert u.cluster and v.cluster
     c1 = u.cluster
     c2 = v.cluster
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+    # c1: the outermost frame around u that ends before the other end's
+    # frame begins. c2: likewise around v. None where that end has no such
+    # frame.
     if not (c1.node and c2.node) or c1.right.rank >= c2.left.rank:
         if c2.node and u.rank < c2.left.rank:
             c1 = None
@@ -153,8 +167,6 @@ def improve_cluster_assignment(e: Edge, dummy_nodes: Sequence[Node]) -> None:
                 continue
 
             break
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     if c1:
         assign_clusters(
@@ -181,6 +193,16 @@ def get_reroute_paths(
     aligned: bool = False,
     linear: bool = True,
 ) -> list[list[Node]]:
+    """The chains of reroutes and dummy nodes that *function* accepts, each
+    from its source end to its target end.
+
+    A chain ends at a reroute with more than one link out. With *linear*
+    every link out counts. Without it only links to other reroutes of the
+    selection count, so a reroute that also feeds nodes stays in its chain.
+    With *preserve_reroute_clusters* a chain also breaks between two
+    clusters when one of them is a frame that holds only reroutes. With
+    *aligned* it also breaks between two reroutes at different heights.
+    """
     G = CG.G
     reroutes = {v for v in G if v.is_reroute and (not function or function(v))}
     H = simple_digraph(G.subgraph(reroutes))
@@ -216,6 +238,12 @@ def get_reroute_paths(
 
 
 def merge_edges(CG: ClusterGraph) -> None:
+    """Let the long links that leave one output share dummy nodes.
+
+    For an output with two or more long links, one dummy node is made in the
+    column before each target, and the dummy nodes are chained. Each link
+    then runs along the chain to the dummy node before its target, so the
+    links are drawn as one line that branches."""
     G = CG.G
     T = CG.T
     groups = group_by(G.all_links(), key=lambda link: link.fromsock)
@@ -257,17 +285,19 @@ def merge_edges(CG: ClusterGraph) -> None:
 
 
 def insert_dummy_nodes(CG: ClusterGraph) -> None:
+    """Split every long link with a dummy node in each column it passes, so
+    that every link joins neighbouring columns.
+
+    Also rebinds each cluster's ``left`` and ``right`` to its leftmost and
+    rightmost member nodes, and gives each frame a fill dummy node in every
+    column between its nodes where it has none."""
     G = CG.G
     T = CG.T
-
-    # -------------------------------------------------------------------
 
     for c in CG.S:
         members = [v for v in descendants(T, c) if v.type != Kind.CLUSTER]
         c.left = min(members, key=lambda v: v.rank)
         c.right = max(members, key=lambda v: v.rank)
-
-    # -------------------------------------------------------------------
 
     long_edges = [
         link for link in G.all_links() if link.tonode.rank - link.fromnode.rank > 1
@@ -289,8 +319,7 @@ def insert_dummy_nodes(CG: ClusterGraph) -> None:
         assert w.cluster
         T.add_edge(w.cluster, w)
 
-    # -------------------------------------------------------------------
-
+    # Fill dummy nodes, so that a frame has a node in every column it spans.
     for c in CG.S:
         if not c.node:
             continue

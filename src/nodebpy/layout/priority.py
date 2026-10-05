@@ -1,25 +1,25 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Which links matter most to the reader.
+"""Link priorities.
 
-A node tree usually has a *trunk*: the line the main data flows along (the
-geometry through a chain of geometry nodes, the shader into the output),
-with side chains computing the values the trunk's nodes take. A good layout
-keeps the trunk short and straight and hangs the side chains off it.
+A node tree usually has a *trunk*: the line the main data flows along, such
+as the geometry through a chain of geometry nodes or the shader into the
+output. Side chains compute the values the trunk's nodes take. The
+placement keeps the trunk straight and hangs the side chains off it.
 
 Each socket gets a priority, and a link the sum of its two sockets':
 
 - 2 for a node's *flow* socket: the first linked input (and the first
   linked output) that carries the tree's main data (geometry, shader,
-  bundle, closure);
+  bundle, closure).
 - 1 for the first linked input (output) of a node with no linked flow
-  socket on that side: its main operand;
+  socket on that side: its main operand.
 - 0 for every other socket.
 
 So a geometry-to-geometry link scores 4, a value entering a node's first
 input 1 or 2, and a field wired into a geometry node's lesser input 0 or 1.
-The ranking keeps heavier links short; the placement aligns a node with its
-heaviest neighbour first. (:func:`.graph.link_priority` gives the priority
-of a link of the layout graph.)
+The placement aligns a node across its heaviest link first. Priorities do
+not affect the ranking. :func:`.model.link_priority` gives the priority of
+a link of the layout graph.
 """
 
 from __future__ import annotations
@@ -56,8 +56,8 @@ SPINE_MIN_PRIORITY = 2 * ZONE
 TRUNK_MIN_PRIORITY = 3
 """The placement aligns a node first with neighbours across a link of at
 least this priority (a flow socket at one end and a flow or main socket at
-the other), and only then with a median neighbour. Lower, and long links of
-side chains start cutting through nodes."""
+the other), and only then with a median neighbour. With a lower value, long
+links of side chains start cutting through nodes."""
 
 
 def socket_priorities(tree: bNodeTree) -> dict[bNodeSocket, int]:
@@ -85,11 +85,11 @@ def socket_priorities(tree: bNodeTree) -> dict[bNodeSocket, int]:
 def zone_spine(
     zone: bNodeTreeZone, tree: bNodeTree, taken: set[bNodeLink] | None = None
 ) -> list[bNodeLink]:
-    """The links along which *zone* is drawn as a row, from its
-    input node to its output node: of the ways through the zone, the one
-    that keeps to the spines of the zones inside it (*taken*), then has the
-    most links carrying the main data, then is the longest. Empty when the
-    input node does not lead to the output node."""
+    """The links along which *zone* is drawn as a row, from its input node
+    to its output node. Of the ways through the zone, it is the one that
+    keeps to the spines of the zones inside it (*taken*), then has the most
+    flow links, then is the longest. Empty when the input node does not
+    lead to the output node."""
     inside = set(zone.nodes())
     out_links: dict[object, list[bNodeLink]] = {}
     for link in tree.links:
@@ -138,9 +138,9 @@ def zone_spine(
 
 
 def zone_priorities(tree: bNodeTree) -> dict[bNodeSocket, int]:
-    """Priorities that make each zone's spine the heaviest links there are
-    so the placement draws a zone as a row: its input
-    node, the nodes the data passes through, its output node."""
+    """Priorities that make each zone's spine the heaviest links there are,
+    so the placement draws a zone as a row: its input node, the nodes the
+    data passes through, its output node."""
     priorities: dict[bNodeSocket, int] = {}
     taken: set[bNodeLink] = set()
     # Inner zones first, so the zone around them follows their spine.

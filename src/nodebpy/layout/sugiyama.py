@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """The layout itself: :func:`sugiyama_layout` and the list of steps it runs
 (:func:`default_pipeline`), with the steps that are too small for a module
-of their own. ``DESIGN.md`` beside the package describes every step."""
+of their own. ``DESIGN.md`` in this package describes every step."""
 
 from __future__ import annotations
 
@@ -45,14 +45,6 @@ from .routing import route_edges
 from .spacing import assign_x_coords
 from .stacking import contracted_node_stacks, expand_node_stack
 
-# -------------------------------------------------------------------
-
-
-# -------------------------------------------------------------------
-
-
-# -------------------------------------------------------------------
-
 
 def _contract_stacks(layout: Layout) -> None:
     layout.node_stacks = contracted_node_stacks(layout.CG)
@@ -64,6 +56,8 @@ def _expand_stacks(layout: Layout) -> None:
 
 
 def _add_frame_borders(layout: Layout) -> None:
+    """Add the border nodes of every frame, then drop the fill dummy nodes
+    that held a frame's place in the columns where it has no node."""
     CG = layout.CG
     CG.add_vertical_border_nodes()
     CG.remove_nodes_from([v for v in CG.G if v.is_fill_dummy])
@@ -83,8 +77,9 @@ def _prioritize_links(layout: Layout) -> None:
 
 def constrain_layers(layout: Layout) -> None:
     """Move Group Output nodes to the last column and Group Input nodes to
-    the first, as the options ask. Only nodes outside frames with nothing
-    after (before) them: moving those cannot break a constraint."""
+    the first, where the options ask. Only a Group Output outside frames
+    that feeds nothing and a Group Input outside frames that nothing feeds
+    are moved, because moving those cannot break a constraint."""
     options = layout.options
     G = layout.G
     root = next(c for c in layout.CG.S if not layout.T.predecessors(c))
@@ -168,8 +163,8 @@ def default_pipeline() -> Pipeline:
                 lambda s: s.balance_heights,
                 requires=[F.RANKED],
             ),
-            # After the balancing, which would move a held node along with
-            # whatever it moves left.
+            # After the balancing, which would otherwise move a pinned node
+            # along with the nodes it moves left.
             step("constrain_layers", constrain_layers, requires=[F.RANKED]),
             step("merge_edges", lambda L: merge_edges(L.CG), requires=[F.RANKED]),
             step(
@@ -279,12 +274,16 @@ def sugiyama_layout(
     """Lay out *tree* and return the edits that realise the layout.
 
     *tree* is only read. *pipeline* replaces the steps of
-    :func:`default_pipeline`; *observer* is called after each step (see
-    :class:`~.pipeline.Pipeline`). With *verify* the graph is checked after
-    every step, and a step that breaks an invariant raises
-    :class:`~.pipeline.InvariantError` (slower; for tests and for developing
-    steps). With *selected_only* the selected nodes are arranged among
-    themselves around where they were; the others do not move.
+    :func:`default_pipeline`. *observer* is called after each step with the
+    step, the layout and the seconds taken. With *verify* the graph is
+    checked after every step, and a step that breaks an invariant raises
+    :class:`~.pipeline.InvariantError`. That is slower, and meant for tests
+    and for developing steps. With *selected_only* the selected nodes are
+    arranged among themselves around where they were, and the others do not
+    move.
+
+    With ``pack_components`` each part of the tree is laid out by itself
+    and the results are packed (:mod:`.packing`).
     """
     reset_serials()
     fixed = frozenset(n for n in tree.nodes if selected_only and not n.select)
@@ -310,9 +309,9 @@ def sugiyama_layout(
         return part_state.edits
 
     def clear_of_the_rest(edits: list[Edit]) -> LayoutResult:
-        """Move what was laid out off the nodes that were not (when only
-        the selection is arranged), unless that would take it further than
-        twice its own size (the longer side) from where it was."""
+        """Move the laid-out nodes clear of the fixed ones. They stay where
+        they are when that would take them further than twice the longer
+        side of the box around them."""
         obstacles = [
             n.draw_bounds
             for n in tree.nodes
@@ -324,7 +323,7 @@ def sugiyama_layout(
         if not rects:
             return LayoutResult(edits)
         dx, dy = packing.clear_of(
-            # The vertical margin both ways: it is the smaller of the two.
+            # The vertical margin is used in both directions.
             rects,
             obstacles,
             Vec2(state.margin.y, state.margin.y),
@@ -339,8 +338,8 @@ def sugiyama_layout(
     if len(parts) < 2:
         return clear_of_the_rest(lay_out(tree))
 
-    # The part with the most nodes first; the others, largest first, are
-    # packed beneath it.
+    # The part with the most nodes comes first. The others, largest first,
+    # are packed beneath it.
     parts.sort(key=len, reverse=True)
     laid_out = [lay_out(packing.subtree(tree, part)) for part in parts]
     boxes = [packing.bounds(edits) for edits in laid_out]

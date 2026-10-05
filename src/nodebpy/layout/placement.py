@@ -2,13 +2,15 @@
 """The place phase: give every node its height (:func:`bk_assign_y_coords`).
 
 Brandes and Köpf's method (below): each node is aligned with one neighbour
-in the column before, forming *blocks* that share a height; the blocks are
-then packed as close as the nodes above them allow. Done four times, to
-either side and packing either way. On ``graph.Node``: ``root`` is the
-first node of a node's block, ``aligned`` the next one round it, ``sink``
-and ``shift`` say which group of blocks moves together and by how much, and
-``inner_shift`` is a node's offset within its block (zero when tops are
-aligned, a socket's offset when sockets are). See ``DESIGN.md``."""
+in the column before, forming *blocks* that share a height. The blocks are
+then packed as close as the nodes above them allow. This is done four
+times, aligning to either side and packing either way.
+
+On ``model.Node``: ``root`` is the first node of a node's block and
+``aligned`` the next one round it. ``sink`` and ``shift`` say which group of
+blocks moves together and by how much. ``inner_shift`` is a node's offset
+within its block: zero when tops are aligned, a socket's offset when
+sockets are. See ``DESIGN.md``."""
 
 # http://dx.doi.org/10.1007/3-540-45848-4_3
 # http://dx.doi.org/10.1007/978-3-319-27261-0_12
@@ -36,12 +38,16 @@ def marked_conflicts(
     *,
     should_ensure_alignment: Callable[[Node], Any],
 ) -> set[frozenset[Node]]:
+    """The links that the alignment must not use, each as the set of its
+    two nodes. They are the links that cross the link between a node for
+    which *should_ensure_alignment* holds and its first predecessor, so
+    that this link can be aligned."""
     columns = G.columns
     marked_edges = set()
     for i, col in enumerate(columns[1:], 1):
         k_0 = 0
-        link = 0
-        for link_1, u in enumerate(col):
+        done = 0
+        for upto, u in enumerate(col):
             if should_ensure_alignment(u):
                 upper_nbr = next(iter(G.predecessors(u)))
                 k_1 = upper_nbr.col.index(upper_nbr)
@@ -50,9 +56,9 @@ def marked_conflicts(
             else:
                 continue
 
-            while link <= link_1:
-                v = col[link]
-                link += 1
+            while done <= upto:
+                v = col[done]
+                done += 1
 
                 if should_ensure_alignment(v):
                     continue
@@ -86,6 +92,8 @@ def _align_column(
     priorities: dict[bNodeSocket, int],
     min_level: int,
 ) -> None:
+    """Align each node of *col* with at most one predecessor. See
+    :func:`horizontal_alignment`."""
     # For each node, its predecessors top to bottom.
     candidates: list[list[_Candidate]] = []
     levels: set[int] = set()
@@ -134,10 +142,10 @@ def _align_column(
         options = [
             _medians([c for c in preds if c[2] == level]) for preds in candidates
         ]
-        # Several nodes may want the same predecessor (the branches leaving
-        # a fork, seen from the far side). The middle one gets it, so a fork
-        # sits level with its middle branch rather than its first; whoever
-        # is left over takes what remains.
+        # Several nodes may want the same predecessor, as the branches
+        # leaving a fork do when seen from the far side. The middle one gets
+        # it, so a fork sits level with its middle branch. The others take
+        # what remains.
         claims: defaultdict[int, list[int]] = defaultdict(list)
         for j, v in enumerate(col):
             if v.aligned == v:
@@ -174,6 +182,7 @@ def horizontal_alignment(
 
 
 def iter_block(start: Node) -> Iterator[Node]:
+    """The nodes of the block *start* is in, from *start* round."""
     yield start
     w = start
     while (w := w.aligned) != start:
@@ -183,6 +192,11 @@ def iter_block(start: Node) -> Iterator[Node]:
 def should_use_inner_shift(
     v: Node, w: Node, is_right: bool, state: LayoutState
 ) -> bool:
+    """Whether *v* and *w*, neighbours in a block, line up by the sockets of
+    their link rather than by their tops. Always when one is a reroute.
+    Otherwise by ``socket_alignment``: never for ``"NONE"``, always for
+    ``"FULL"``, and for ``"MODERATE"`` across frames, for stacks, and where
+    the two differ much in height."""
     if v.is_reroute or w.is_reroute:
         return True
 
@@ -207,11 +221,15 @@ def should_use_inner_shift(
 def inner_shift(
     G: LayoutGraph[Node], is_right: bool, is_up: bool, state: LayoutState
 ) -> None:
+    """Set every node's ``inner_shift``, its offset within its block. A node
+    takes the offset of the node before it in the block when the two line
+    up by their tops. Otherwise its offset makes the sockets of the link
+    between them level."""
     priorities = state.socket_priority
     for root in dict.fromkeys(v.root for v in G):
         for v, w in pairwise(iter_block(root)):
             # The nodes along the spine of a zone have their tops level
-            # whatever their sizes.
+            # regardless of size.
             on_spine = (
                 bool(priorities)
                 and not (v.is_reroute or w.is_reroute)
@@ -249,8 +267,8 @@ def vertical_gap(u: Node, w: Node, state: LayoutState) -> float:
 
 def place_block(v: Node, is_up: bool, state: LayoutState) -> None:
     """Place the block rooted at *v*, after the blocks it rests on."""
-    # Each block yields the blocks that must be placed before it goes on;
-    # an explicit stack, since such a chain can be as long as a column.
+    # Each block yields the blocks that must be placed before it. An
+    # explicit stack is used because such a chain can be as long as a column.
     stack = [_place_block(v, is_up, state)]
     while stack:
         below = next(stack[-1], None)
@@ -292,6 +310,10 @@ def _place_block(v: Node, is_up: bool, state: LayoutState) -> Iterator[Node]:
 
 
 def vertical_compaction(G: LayoutGraph[Node], is_up: bool, state: LayoutState) -> None:
+    """Give every node a ``y``. Each block is placed against the blocks it
+    rests on. Then each group of blocks that share a sink is moved as close
+    to the neighbouring group as the gaps allow, and every node's
+    ``inner_shift`` is added."""
     for v in G:
         if v.root == v:
             place_block(v, is_up, state)
@@ -319,6 +341,7 @@ def vertical_compaction(G: LayoutGraph[Node], is_up: bool, state: LayoutState) -
 
 
 def get_merged_lines(lines: Iterable[tuple[float, float]]) -> list[tuple[float, float]]:
+    """The intervals *lines*, sorted, with those that overlap merged."""
     merged = []
     for line in sorted(lines, key=lambda line: line[0]):
         if merged and merged[-1][1] >= line[0]:
@@ -333,6 +356,8 @@ def get_merged_lines(lines: Iterable[tuple[float, float]]) -> list[tuple[float, 
 def has_large_gaps_in_frame(
     cluster: Cluster, T: DiGraph[Cluster | Node], is_up: bool, state: LayoutState
 ) -> bool:
+    """Whether the nodes and frames directly in *cluster* leave a vertical
+    gap wider than the margin between them."""
     lines = []
     for v in T.successors(cluster):
         if v.type == Kind.VERTICAL_BORDER:
@@ -365,6 +390,9 @@ def get_marked_nodes(
     is_up: bool,
     state: LayoutState,
 ) -> set[Node]:
+    """The nodes the next alignment must not align with a node in another
+    cluster. They are nodes directly in a frame whose contents were placed
+    with a gap wider than the margin. Empty when no frame adds any."""
     marked_nodes = set()
     for cluster in T:
         if not isinstance(cluster, Cluster) or cluster.nesting_level != 1:
@@ -411,6 +439,11 @@ def get_marked_nodes(
 
 
 def balance(G: LayoutGraph[Node], layouts: list[list[float]]) -> None:
+    """Shift the four layouts so they can be averaged. The least tall one is
+    moved so that its lowest edge is at 0. Each other one is lined up with
+    it, by the lowest edge for the layouts packed down and by the highest
+    for those packed up."""
+
     def min_y(layout: Sequence[float]) -> float:
         return min([y - v.height for v, y in zip(G, layout)])
 
@@ -437,6 +470,13 @@ _DIRECTION_TO_IDX = {"RIGHT_DOWN": 0, "RIGHT_UP": 1, "LEFT_DOWN": 2, "LEFT_UP": 
 def bk_assign_y_coords(
     G: LayoutGraph[Node], T: DiGraph[Node | Cluster], state: LayoutState
 ) -> None:
+    """Give every node its ``y``, the height of its top edge.
+
+    Aligns and packs four times: with the neighbours to the left or to the
+    right, packing up or down. A run is repeated, at most ``_ITER_LIMIT``
+    times, while :func:`get_marked_nodes` finds frames with gaps. The
+    result is the run ``options.direction`` names, or for ``"BALANCED"`` the
+    mean of the two middle values of the four for each node."""
     columns = G.columns
     for col in columns:
         col.reverse()

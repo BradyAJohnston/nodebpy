@@ -28,6 +28,12 @@ def _restore_multi_input_order(
     outputs: list[NodeSocket | None],
     order: list[tuple[NodeSocket | None, int]],
 ) -> None:
+    """Link every one of *outputs* to *multi_input* and give each link the
+    sort id *order* pairs its output with.
+
+    Removing and re-adding a link leaves duplicate sort ids. When there are
+    duplicates, all the links into the socket are rebuilt so that the ids
+    are distinct before they are swapped into place."""
     links = ntree.links
     as_links = {
         link.from_socket: link
@@ -76,7 +82,7 @@ def _fit_frame(frame: BlenderNode, members: list[BlenderNode]) -> None:
     right = max(b[2] for b in boxes) + FRAME_PADDING
     top = max(b[3] for b in boxes) + FRAME_PADDING + label
 
-    # (Moving a frame by its absolute location leaves its nodes in place.)
+    # Moving a frame by its absolute location leaves its nodes in place.
     frame.location_absolute = (left, top)
     frame.width = right - left
     frame.height = top - bottom

@@ -6,34 +6,37 @@ title: Changelog
 
 ### Enhancements
 
-The Sugiyama layout (`arrange(tree)`, the default arrangement of `TreeBuilder`) was reworked. **Arranged trees will look different.**
+The layout behind `arrange(tree)`, the default arrangement of `TreeBuilder`, was reworked. **Arranged trees will look different.**
 
-- **No `networkx` needed.** The layout runs on its own graph code, so `arrange()` always gives the Sugiyama layout instead of falling back to the simple one where `networkx` was missing (as it usually is inside a Blender extension).
-- **The trunk is straight.** The links that carry a tree's main data (geometry, shader, bundle, closure) are aligned first, so a chain of geometry nodes is one flat row with the chains of values that feed it hung below, a fork that merges again is symmetric, and each zone (simulation, repeat, for-each, closure) is a row with its node tops level. Group Output nodes go in the last column. `SugiyamaOptions(straighten_trunk=False, pin_group_output=False)` turns these off.
-- **Fewer crossings, and the same result every time.** The order of nodes within columns no longer depends on chance. Where links have to cross, a value cutting across the trunk counts four times as much as any other crossing, so it is avoided first.
-- **Unconnected parts are laid out apart.** A second group of nodes, or a frame holding only a note, is placed beneath the main graph instead of among its columns (`pack_components`).
-- **Reroutes only where needed.** `SugiyamaOptions(reroutes="blocked")` adds reroutes only to links that would otherwise be drawn across a node, and keeps the ones already in the tree. `reroutes="all"` routes every long link; the default `"none"` now only ever moves nodes.
-- **Arrange only the selection.** `arrange(tree, selected_only=True)` arranges the selected nodes among themselves, around where they were and clear of the others, which do not move.
-- **Faster on large trees.** Ordering takes about a third of the time it did, and ranking about a third.
-- **Internals.** The layout is now a pure function over plain data, split into named steps that can be replaced and checked one by one. It is its own package, `nodebpy.layout`; see `src/nodebpy/layout/DESIGN.md`.
+- **A straight trunk.** The links that carry a tree's main data (geometry, shader, bundle, closure) are aligned first, so a chain of geometry nodes is one flat row. Each zone is a row with its node tops level. Group Output nodes go in the last column. `SugiyamaOptions(straighten_trunk=False, pin_group_output=False)` turns these off.
+- **Unconnected parts are laid out apart.** A second group of nodes, or a frame holding only a note, goes beneath the main graph instead of among its columns (`pack_components`).
+- **Deterministic.** The same tree and options always give the same layout. `seed` picks a different one.
+- **Reroutes only where needed.** `reroutes="blocked"` adds reroutes only to links that would be drawn across a node, and keeps the reroutes already in the tree. `"all"` routes every long link. The default `"none"` only moves nodes.
+- **Arrange the selection.** `arrange(tree, selected_only=True)` arranges the selected nodes among themselves. The others do not move.
+- **No `networkx` needed.** `arrange()` always gives the layered layout.
+- Faster on large trees.
+
+The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Fixes
 
-- The Sugiyama layout no longer crashes on a chain of collapsed Math nodes that nothing else links to, nor hits the recursion limit on a chain or column of a thousand or more nodes.
-- It no longer reseeds Python's global `random` generator.
-- A frame with Shrink turned off is fitted around its nodes by the layout itself, and Shrink stays off. Previously it was left turned on.
-- A frame's nodes could be left apart in a column, with another node drawn between them.
-- With reroutes on, a tree with a frame whose outline could not be kept straight could fail with a `TypeError`.
-- Links Blender marks invalid but still draws (between sockets that do not fit) now count when placing nodes.
-- With reroutes on, reroutes that lead nowhere or come from nowhere are kept rather than deleted.
+- A chain of collapsed Math nodes that nothing else links to crashed the layout.
+- A chain or column of a thousand or more nodes hit the recursion limit.
+- The layout reseeded Python's global `random` generator.
+- A frame with Shrink off was left with Shrink on.
+- A frame's nodes could be left apart in a column, with another node between them.
+- Links that Blender marks invalid but still draws were ignored.
+- With reroutes on, reroutes that lead nowhere or come from nowhere were deleted.
 
 ### Breaking Changes
 
-- **`SugiyamaOptions` is cut to twelve fields:** `margin`, `direction`, `socket_alignment`, `reroutes`, `stack_collapsed`, `optimize_sizes`, `straighten_trunk`, `pin_group_output`, `pin_group_input`, `sequential_frames`, `balance_heights`, `pack_components`.
-    - `add_reroutes=True` becomes `reroutes="all"`. (`build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.)
-    - Removed, now fixed at their previous defaults: `iterations`, `stack_margin_y_fac`, `reroute_margin_y_fac`, `balance_aspect`, `keep_reroutes_outside_frames`. The asset build still accepts their flags and configuration keys, and ignores them.
-- `nodebpy.builder.layout` and `nodebpy.lib.nodearrange` are gone; both are now `nodebpy.layout`. `nodebpy.arrange`, `SugiyamaOptions` and the other names exported from `nodebpy` and `nodebpy.builder` are where they were.
-- Socket positions are always estimated from the rows a node draws. They were read from Blender's memory with `ctypes` when a node editor had drawn the tree.
+- `SugiyamaOptions` fields are now `margin`, `direction`, `socket_alignment`, `reroutes`, `stack_collapsed`, `optimize_sizes`, `straighten_trunk`, `pin_group_output`, `pin_group_input`, `sequential_frames`, `balance_heights`, `pack_components`, `seed`.
+    - `add_reroutes=True` becomes `reroutes="all"`. `build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.
+    - Removed: `iterations`, `stack_margin_y_fac`, `reroute_margin_y_fac`, `balance_aspect`, `keep_reroutes_outside_frames`. The asset build still accepts their flags and ignores them.
+- `SimpleOptions` and `arrange_tree` are removed. `arrange(tree, "simple")` now uses the layered layout with the `SIMPLE_OPTIONS` preset.
+- `nodebpy.builder.layout` and `nodebpy.lib.nodearrange` are now `nodebpy.layout`.
+- Collapsed nodes are sized as Blender draws them.
+- Socket positions are always estimated. `ctypes` is not used.
 - The `networkx` extra (`nodebpy[networkx]`) is now empty and deprecated; it is kept so existing installs keep resolving.
 - `to_python` raises `ValueError` for a tree whose links form a cycle. It previously raised a `networkx` error, or silently left the nodes on the cycle out when `networkx` was not installed.
 

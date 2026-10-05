@@ -1,20 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Height-balanced ranking.
+"""Shorten the tallest columns after ranking.
 
-Network-simplex ranking minimises total edge length, so every feeder sits in
-the column right before its consumer. A node with many inputs — a big group
-node taking a dozen values, switches and math results — therefore gets all
-of its feeders stacked in one column, which grows far taller than any other
-column while the columns further left stay nearly empty: the tree becomes a
-tall sliver with dead space everywhere else.
-
-:func:`balance_column_heights` post-processes the ranks: while the tallest
-column can be made shorter without making the drawing larger overall, it
-moves a node of that column one column to the left together with
-everything upstream of it, which is always feasible (the moved set has no
-predecessor outside itself). Links from the moved set to the nodes left
-behind become one column longer and are routed through dummy nodes /
-reroutes, which the height estimate charges for.
+The ranking puts the nodes that feed a node in the column right before it,
+so a node with many inputs gets one very tall column. While the tallest
+column can be made shorter without making the drawing larger overall,
+:func:`balance_column_heights` moves a node of that column one column to the
+left, together with every node it depends on. That move is always feasible,
+because nothing outside the moved set feeds it.
 """
 
 from __future__ import annotations
@@ -31,19 +23,16 @@ _MAX_MOVES = 500
 
 
 def _upstream(G: LayoutGraph[Node], v: Node) -> set[Node]:
-    """Every node *v* depends on. Moving *v* together with its upstream one
-    column to the left is always feasible: the set has no predecessor
-    outside itself, and links from it to nodes left behind only get
-    longer."""
+    """Every node *v* depends on."""
     return set(ancestors(G, v))
 
 
 def _column_heights(
     G: LayoutGraph[Node], ranks: dict[Node, int], state: LayoutState
 ) -> dict[int, float]:
-    """Estimated drawn height per rank: real nodes plus the dummy nodes of
-    the long edges passing through, each separated by the vertical margin.
-    Long edges leaving the same socket merge into one dummy chain."""
+    """Estimated height of each column: its nodes with the vertical margin
+    between them, plus a dummy node for every long link passing through.
+    Long links leaving the same socket count once."""
     margin = state.margin.y
     heights: defaultdict[int, float] = defaultdict(float)
     counts: defaultdict[int, int] = defaultdict(int)
@@ -56,7 +45,7 @@ def _column_heights(
             crossings[r].add(link.fromsock)
     dummy_gap = margin * REROUTE_MARGIN_Y_FAC
     for r, sources in crossings.items():
-        # Dummy chains pack at the reduced reroute gap (see y_coords).
+        # Dummy nodes are spaced by the reroute gap (placement.vertical_gap).
         heights[r] += len(sources) * (REROUTE_DIM.y + dummy_gap)
     return {r: heights[r] + margin * max(counts[r] - 1, 0) for r in heights}
 
@@ -72,8 +61,8 @@ def _frame_sequence_ok(
     ranks: dict[Node, int],
     sequence: Iterable[tuple[frozenset[Node], frozenset[Node]]],
 ) -> bool:
-    """Whether every recorded frame-sequence constraint (all of unit *a*
-    before all of unit *b*) still holds under *ranks*."""
+    """Whether every constraint of *sequence* holds under *ranks*: every
+    node of the first set is before every node of the second."""
     for before, after in sequence:
         if max(ranks[v] for v in before) >= min(ranks[v] for v in after):
             return False
@@ -91,8 +80,10 @@ def _fit_to_height(
     state: LayoutState,
     upstream_of: dict[Node, set[Node]],
 ) -> dict[Node, int] | None:
-    """Greedily move nodes (with their upstream) left until no column is
-    taller than *target*; None when the greedy gets stuck first."""
+    """Move nodes one column left, each with every node it depends on,
+    until no column is taller than *target*. Each move is the one that
+    leaves the least height above the target. Returns the new ranks, or
+    None when no move helps or ``_MAX_MOVES`` is reached."""
     ranks = dict(ranks)
     sequence = state.frame_sequence
     for _ in range(_MAX_MOVES):
@@ -148,16 +139,13 @@ def balance_column_heights(
     clusters: Iterable[Cluster],
     state: LayoutState,
 ) -> None:
-    """Shorten the tallest columns by promoting feeder chains left.
+    """Shorten the tallest columns by moving the chains that feed them left.
 
-    Lowers a target height step by step from the current tallest column and
-    for each target greedily moves nodes of over-tall columns — together
-    with their upstream — one column to the left until every column
-    fits (or gives up). Of the layouts found, the one needing the smallest
-    screen-shaped box (``balance_aspect`` wide for every unit of height) is
-    kept, so height is traded for width only while the drawing gets closer
-    to that shape; the descent stops once fitting fails or the box starts
-    growing again. Frame-sequence constraints are kept throughout.
+    Lowers a target height step by step from the tallest column. For each
+    target, :func:`_fit_to_height` moves nodes out of the columns taller
+    than it. Of the rankings found, the one that fits the smallest box of
+    aspect ``BALANCE_ASPECT`` is kept. The search stops when a target cannot
+    be met or the box grows. Frame-sequence constraints are kept throughout.
     """
     nodes = [v for v in G if v.type != Kind.HORIZONTAL_BORDER]
     if not nodes:
@@ -169,9 +157,9 @@ def balance_column_heights(
     aspect = BALANCE_ASPECT
 
     def area(r: dict[Node, int]) -> float:
-        """Size of the drawing as the side of the screen-shaped box (of the
-        target aspect ratio) it needs: the taller of its height and its
-        width scaled down by the aspect ratio."""
+        """Height of the smallest box of the target aspect ratio that the
+        drawing fits in: the larger of its height and its width divided by
+        the aspect ratio."""
         heights = _column_heights(G, r, state)
         widths = _column_widths(r)
         width = sum(widths.values()) + margin_x * max(len(widths) - 1, 0)
@@ -194,8 +182,8 @@ def balance_column_heights(
     offset = min(best_ranks.values())
     for v in nodes:
         v.rank = best_ranks[v] - offset
-    # Frame borders follow their members (recomputed by insert_dummy_nodes);
-    # keep them consistent for anything reading them before that.
+    # Keep each frame's border nodes just outside its nodes until
+    # insert_dummy_nodes rebinds them.
     for c in clusters:
         members = [v for v in nodes if _is_in(v, c)]
         if members:

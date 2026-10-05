@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Across the columns: an x for every column (:func:`assign_x_coords`), and
-the route phase, which gives a link a bend point beside a node it would
+"""The route phase: give a link a bend point beside a node it would
 otherwise cut across (:func:`route_edges`)."""
 
 from __future__ import annotations
@@ -21,6 +20,12 @@ _MIN_Y_DIFF = 8
 def is_unnecessary_bend_point(
     socket: Socket, other_socket: Socket, state: LayoutState
 ) -> bool:
+    """Whether the link from *socket* to *other_socket*, drawn straight,
+    does not cross the near edge of the node next to *socket*'s node in its
+    column, on the side the link heads to. That edge is padded by half the
+    margin, and by the frame padding when the neighbour is in another
+    frame. True when there is no such neighbour or it is a reroute. False
+    for a reroute's own socket."""
     v = socket.owner
 
     if v.is_reroute:
@@ -59,6 +64,12 @@ def add_bend_points(
     bend_points: defaultdict[Link[Node], list[Node]],
     state: LayoutState,
 ) -> None:
+    """Add to *bend_points* a bend point for each link of *v* that needs
+    one. It goes at the height of the link's socket on *v*, at the edge of
+    the widest node of the column. A link needs none when its socket is
+    within ``_MIN_X_DIFF`` of that edge, when its other end is within
+    ``_MIN_Y_DIFF`` of the same height, or when
+    :func:`is_unnecessary_bend_point` holds."""
     largest = max(v.col, key=lambda w: w.width)
     for link in (*G.out_links(v), *G.in_links(v)):
         socket: Socket = link.fromsock if v == link.fromnode else link.tosock
@@ -84,6 +95,8 @@ def node_overlaps_edge(
     v: Node,
     edge_line: tuple[tuple[float, float], tuple[float, float]],
 ) -> bool:
+    """Whether the segment *edge_line* crosses the top or bottom edge of
+    *v*. Never for a reroute."""
     if v.is_reroute:
         return False
 
@@ -101,12 +114,14 @@ def node_overlaps_edge(
 def route_edges(
     G: LayoutGraph[Node], T: DiGraph[Node | Cluster], state: LayoutState
 ) -> None:
+    """Give every link that would cut across a node next to one of its ends
+    a bend point beside that node. The bend points become dummy nodes on
+    the link, in the innermost cluster that holds both its ends."""
     bend_points: defaultdict[Link[Node], list[Node]] = defaultdict(list)
     for v in chain(*G.columns):
         add_bend_points(G, v, bend_points, state)
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+    # Links from one output with a bend point at the same place share it.
     edge_of = {b: e for e, d in bend_points.items() for b in d}
 
     def key(b):
@@ -125,8 +140,8 @@ def route_edges(
             if target not in bend_points[e] and e.tosock.y == target.y:
                 bend_points[e].append(target)
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+    # Another link from the same output follows these bend points too, when
+    # it can go straight on from the last one without crossing a node.
     for e, dummy_nodes in tuple(bend_points.items()):
         dummy_nodes.sort(key=lambda b: b.x)
         from_socket = e.fromsock
@@ -143,8 +158,6 @@ def route_edges(
                 continue
 
             bend_points[e_] = dummy_nodes
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     lca = lowest_common_cluster(T, bend_points)
     for link, dummy_nodes in bend_points.items():

@@ -1,4 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""Build the layout graph from the tree: index the links, leave out those
+that close a cycle, make a :class:`~.model.Node` for every node, and list
+the columns once the nodes are ranked."""
 
 from __future__ import annotations
 
@@ -21,11 +24,11 @@ from .model import (
 def cycle_links(tree: bNodeTree) -> set[bNodeLink]:
     """The links of *tree* to leave out so that the rest has no cycle.
 
-    Among the links Blender calls valid, those found leading back to a node
-    still being visited in a depth-first walk over the nodes and links in
-    the tree's order (none, in a tree that comes from Blender, which marks
-    a link of every cycle invalid). Then each invalid link is taken in
-    unless it would close a cycle with what has been taken in so far."""
+    First, among the links Blender calls valid: those that lead back to a
+    node still being visited in a depth-first walk over the nodes and links
+    in the tree's order. A tree from Blender has none, because Blender marks
+    a link of every cycle invalid. Then each invalid link is kept unless it
+    would close a cycle with the links kept so far."""
     out_links: dict[bNode, list[bNodeLink]] = {n: [] for n in tree.nodes}
     for link in tree.links:
         if link.is_valid and link.fromnode in out_links:
@@ -82,12 +85,12 @@ def cycle_links(tree: bNodeTree) -> set[bNodeLink]:
 
 
 def precompute_links(state: LayoutState) -> None:
-    """Index the links the layout goes by: all of them, less those that
-    close a cycle. (Not only those Blender calls valid: it also clears that
-    flag for links between sockets that do not fit, which are still drawn
-    and still say where a node belongs.)"""
-    # Links into a collapsed panel's sockets count too (Blender calls them
-    # hidden and draws them to the panel header): they still carry data.
+    """Index the links the layout uses: all of them except those that
+    close a cycle. That includes the links Blender calls invalid because
+    their sockets do not fit, which are still drawn. Raises ValueError for
+    a linked socket without a location."""
+    # Links into a collapsed panel's sockets are included. Blender calls
+    # them hidden and draws them to the panel header, but they carry data.
     ignored = cycle_links(state.tree)
     for link in state.tree.links:
         if link in ignored:
@@ -106,6 +109,10 @@ def precompute_links(state: LayoutState) -> None:
 
 
 def get_tree(state: LayoutState) -> LayoutGraph[Node]:
+    """The layout graph of the tree in *state*: a :class:`~.model.Node` for
+    every node that is neither a frame nor fixed, a
+    :class:`~.model.Cluster` for every frame and one for the tree itself,
+    and a link for every indexed link between two of those nodes."""
     parents = {
         n.parent: Cluster(n.parent, None)  # type: ignore
         for n in state.tree.nodes
@@ -122,8 +129,7 @@ def get_tree(state: LayoutState) -> LayoutGraph[Node]:
             if n not in state.fixed and not n.is_frame()
         ]
     )
-    # Links to the nodes that stay where they are (the unselected ones, when
-    # only the selection is arranged) are left out.
+    # Links to fixed nodes are left out.
     by_node = {v.node: v for v in G}
     for u in G:
         assert is_real(u)
@@ -139,6 +145,9 @@ def get_tree(state: LayoutState) -> LayoutGraph[Node]:
 
 
 def save_multi_input_orders(G: LayoutGraph[Node], state: LayoutState) -> None:
+    """Record in *state*, for every link into a multi-input socket, the
+    output socket it comes from and its sort id. A link that arrives
+    through reroutes is recorded under the output its chain starts at."""
     links = {(link.fromsock, link.tosock): link for link in state.tree.links}
     for edge in G.all_links():
         v, w = edge.fromnode, edge.tonode
@@ -162,6 +171,9 @@ def save_multi_input_orders(G: LayoutGraph[Node], state: LayoutState) -> None:
 
 
 def add_columns(G: LayoutGraph[Node]) -> None:
+    """Set ``G.columns``, the nodes of each rank, and every node's ``col``.
+    Each column starts sorted by name, with unlinked nodes moved by their y
+    in the tree, and with each frame's nodes together."""
     columns = [list(c) for c in group_by(G, key=lambda v: v.rank, sort=True)]
     G.columns = columns
 
@@ -171,9 +183,8 @@ def add_columns(G: LayoutGraph[Node]) -> None:
     for col in columns:
         col.sort(key=node_name)
         col.sort(key=y_loc, reverse=True)
-        # The ordering may leave a column as it finds it
-        # (it stops as soon as nothing crosses), so start with every frame's
-        # nodes together.
+        # The ordering may leave a column unchanged, because it stops as
+        # soon as nothing crosses. So every frame's nodes start together.
         keep_frames_together(col)
         for v in col:
             v.col = col

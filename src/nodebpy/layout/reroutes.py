@@ -1,4 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""Dummy nodes after the placement: dropping the ones that are not wanted
+(:func:`dissolve_dummy_nodes`, :func:`dissolve_clear_dummy_nodes`) and
+lining the rest up with the sockets they join
+(:func:`align_reroutes_with_sockets`)."""
 
 from __future__ import annotations
 
@@ -19,6 +23,8 @@ from .model import (
 
 
 def dissolve_dummy_nodes(CG: ClusterGraph) -> None:
+    """Remove every dummy node, linking the source of each chain straight
+    to what the chain feeds."""
     paths = get_reroute_paths(
         CG,
         lambda v: v.is_reroute and not is_real(v),
@@ -96,14 +102,14 @@ def dissolve_clear_dummy_nodes(CG: ClusterGraph) -> None:
         preserve_reroute_clusters=False,
     )
     for path in paths:
-        # (A chain of dummy nodes always has the link it came from behind it.)
+        # A chain of dummy nodes always has a link into it.
         output = next(G.in_links(path[0])).fromsock
         inputs = [link.tosock for link in G.out_links(path[-1])]
         if not all(link_is_clear(output, i, obstacles) for i in inputs):
             continue
         for i in inputs:
             G.add_link(output.owner, i.owner, output, i)
-            # The tree's own link stands after all.
+            # The tree keeps its own link, so drop the edit that removes it.
             edit = RemoveLink(output.dna, i.dna)
             if edit in CG.state.edits:
                 CG.state.edits.remove(edit)
@@ -111,15 +117,22 @@ def dissolve_clear_dummy_nodes(CG: ClusterGraph) -> None:
 
 
 def get_foreign_sockets_of(path: Sequence[Node], G: LayoutGraph[Node]) -> list[Socket]:
+    """The sockets outside the chain *path* that it is linked to: the
+    outputs that feed its first node, then the inputs its last node feeds."""
     inputs = [link.fromsock for link in G.in_links(path[0])]
     outputs = [link.tosock for link in G.out_links(path[-1])]
     return inputs + outputs
 
 
 def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
+    """Move each level chain of reroutes and dummy nodes up or down to the
+    height of a socket it joins, where the nodes above and below it leave
+    room. The sockets are tried in turn: those of other reroutes first,
+    then the nearest. A chain moved level with another chain's socket is
+    joined to that chain, and the two then move as one."""
     reroute_paths: dict[tuple[Node, ...], list[Socket]] = {}
-    # (Not the border nodes of frames, which count as reroutes elsewhere:
-    # they have no column of their own to compare, and nothing to align to.)
+    # Border nodes of frames have ``is_reroute`` set, but have nothing to
+    # align to.
     for p in get_reroute_paths(
         CG,
         lambda v: v.type != Kind.VERTICAL_BORDER,

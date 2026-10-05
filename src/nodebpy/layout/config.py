@@ -35,33 +35,27 @@ class SugiyamaOptions:
         height (``"MODERATE"``).
     reroutes : str
         Which links get reroute nodes. ``"none"``: the layout only moves
-        nodes (the default: reroutes are real nodes, which would change
-        the authored structure of generated trees). ``"blocked"``: links
-        that would otherwise be drawn across a node, and the reroutes
-        already in the tree are kept. ``"all"``: every link that passes
-        over a column, and the tree's own reroutes are replaced.
+        nodes. ``"blocked"``: links that would otherwise be drawn across a
+        node get reroutes, and the reroutes already in the tree are kept.
+        ``"all"``: every link that passes over a column gets reroutes, and
+        the tree's own reroutes are replaced.
     stack_collapsed : bool
         Stack chains of collapsed Math nodes vertically.
     optimize_sizes : bool
         Fit the widths of collapsed nodes to their display name.
     straighten_trunk : bool
-        Keep the trunk straight. The trunk is the line the tree's main
-        data runs along: the links between flow sockets (geometry, shader,
-        bundle, closure). They are aligned before any other, so a chain of
-        geometry nodes is one flat row with the side chains feeding it
-        hung below, a fork that merges again is symmetric around its
-        middle branch, and each zone (simulation, repeat, for-each,
-        closure) is a row with its node tops level. Off, every link is
-        treated alike and a node aligns with its median neighbour.
+        Align the trunk first, so that the flow links (geometry, shader,
+        bundle, closure) form a straight row and each zone is a row with
+        its node tops level. Off, a node aligns with its median neighbour.
     pin_group_output : bool
         Put Group Output nodes (outside frames) in the last column.
     pin_group_input : bool
-        Put Group Input nodes (outside frames) in the first column, rather
-        than next to the nodes they feed.
+        Put Group Input nodes (outside frames) in the first column. Off,
+        they sit next to the nodes they feed.
     sequential_frames : bool
-        Rank frames as stages: every node of a frame comes after every
-        node of the frame (or intermediate node) feeding it, so frames
-        line up left to right instead of stacking.
+        Put every node of a frame in a later column than every node of
+        the frame, or node outside frames, that feeds it. Frames then line
+        up left to right.
     balance_heights : bool
         Shorten the tallest columns by moving the chains that feed them one
         column left, while that brings the drawing closer to a screen's
@@ -71,9 +65,8 @@ class SugiyamaOptions:
         fixed ones. The same seed always gives the same layout.
     pack_components : bool
         Lay out the parts of the tree that are not linked to each other
-        apart: the largest first, the others (a second group of nodes, a
-        frame holding a note) in rows beneath it. Off, the whole tree is
-        laid out as one graph and unrelated parts share its columns.
+        separately: the largest first, the others in rows beneath it. Off,
+        the whole tree is laid out as one graph.
     """
 
     margin: tuple[float, float] = (30.0, 30.0)
@@ -123,6 +116,8 @@ class LayoutState:
     linked_sockets: defaultdict[bNodeSocket, dict[bNodeSocket, None]] = field(
         default_factory=lambda: defaultdict(dict)
     )
+    # For each multi-input socket, the (source socket, sort id) of every
+    # link into it before the layout.
     multi_input_sort_ids: defaultdict[Socket, list[tuple[Socket, int]]] = field(
         default_factory=lambda: defaultdict(list)
     )
@@ -131,11 +126,11 @@ class LayoutState:
     frame_sequence: list[tuple[frozenset[Node], frozenset[Node]]] = field(
         default_factory=list
     )
-    # Priority of the sockets that have one (see :mod:`.priority`); empty
+    # Priority of the sockets that have one (see :mod:`.priority`). Empty
     # when links are not prioritised.
     socket_priority: dict[bNodeSocket, int] = field(default_factory=dict)
     # The changes to make to the tree, in order. The layout only records
-    # them; `apply.apply` carries them out.
+    # them. `apply.apply` carries them out.
     edits: list[Edit] = field(default_factory=list)
 
     @property

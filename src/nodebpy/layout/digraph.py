@@ -1,31 +1,32 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """Layout graph containers.
 
-They are shaped after the structs Blender's node editor already has, so that the
-layout can later be ported to C++ against ``bNodeTree`` directly (the
-layout's input, ``dna``, mirrors the same structs as plain data):
+They are shaped after the structs of Blender's node editor
+(``DNA_node_types.h``, ``BKE_node_runtime.hh``):
 
-==================  ===================================================
-here                Blender (``DNA_node_types.h`` / ``BKE_node_runtime.hh``)
-==================  ===================================================
-:class:`LayoutGraph` ``bNodeTree``: owns the nodes and the links, and
-                    answers topology queries the way the tree's topology
-                    cache does. (Not a tree: a directed multigraph.)
-:class:`Link`       ``bNodeLink``: ``fromnode`` / ``fromsock`` / ``tonode``
-                    / ``tosock``.
-``graph.Node``      a ``bNode`` being laid out (``node`` is the
-                    ``dna.bNode``), or a node the layout made up.
-``graph.Socket``    a ``bNodeSocket`` (``dna``), or a made-up one.
-``graph.Cluster``   a frame ``bNode`` and its ``direct_children_in_frame``.
-==================  ===================================================
+====================  ==================================================
+here                  Blender
+====================  ==================================================
+:class:`LayoutGraph`  ``bNodeTree``: owns the nodes and the links, and
+                      answers topology queries the way the tree's
+                      topology cache does.
+:class:`Link`         ``bNodeLink``: ``fromnode`` / ``fromsock`` /
+                      ``tonode`` / ``tosock``.
+``model.Node``        a ``bNode`` being laid out (``node`` is the
+                      ``dna.bNode``), or a node the layout made up.
+``model.Socket``      a ``bNodeSocket`` (``dna``), or a made-up one.
+``model.Cluster``     a frame ``bNode`` and its
+                      ``direct_children_in_frame``.
+====================  ==================================================
 
-:class:`LayoutGraph` is a directed multigraph: two nodes can be joined by several
-links (one per socket pair), told apart by :attr:`Link.key`. :class:`DiGraph`
-is the plain directed graph used for auxiliary relations (the frame
-hierarchy, ordering constraints, socket reachability).
+:class:`LayoutGraph` is a directed multigraph: two nodes can be joined by
+several links, one per socket pair, told apart by :attr:`Link.key`.
+:class:`DiGraph` is the plain directed graph used for other relations: the
+frame hierarchy, ordering constraints, socket reachability. Its connections
+are called edges.
 
-Everything iterates in insertion order — nodes in the order they were added,
-a node's neighbours in the order they were first linked — so a layout never
+Everything iterates in insertion order: nodes in the order they were added,
+a node's neighbours in the order they were first linked. A layout never
 depends on hash values or memory addresses.
 """
 
@@ -34,18 +35,16 @@ from __future__ import annotations
 from collections.abc import Hashable, Iterable, Iterator, KeysView
 from typing import Any, cast
 
-# -------------------------------------------------------------------
-
 
 class Link[N: Hashable]:
     """A link between two nodes of a :class:`LayoutGraph` (``bNodeLink``).
 
     ``fromsock`` / ``tosock`` are None for links that only constrain the
     layout (frame borders, ranking constraints). ``key`` tells parallel
-    links between the same two nodes apart, and is kept when a tree is
-    copied, so ``(fromnode, tonode, key)`` names the same link in a tree and
-    in its copies. ``weight`` and ``cut_value`` are scratch values for the
-    ranking and feedback-arc-set passes.
+    links between the same two nodes apart, and is kept when a graph is
+    copied, so ``(fromnode, tonode, key)`` names the same link in a graph
+    and in its copies. ``weight`` and ``cut_value`` are scratch values for
+    the ranking and for the feedback arc set of the stacking.
     """
 
     __slots__ = (
@@ -85,7 +84,7 @@ class Link[N: Hashable]:
 
     @property
     def ident(self) -> tuple[N, N, int]:
-        """``(fromnode, tonode, key)``: names this link across tree copies."""
+        """``(fromnode, tonode, key)``: names this link across graph copies."""
         return (self.fromnode, self.tonode, self.key)
 
     def __repr__(self) -> str:
@@ -105,12 +104,12 @@ class LayoutGraph[N: Hashable]:
     __slots__ = ("_nodes", "_pred", "_succ", "columns")
 
     _nodes: dict[N, None]
-    # node -> neighbour -> key -> link; the innermost dict is shared between
+    # node -> neighbour -> key -> link. The innermost dict is shared between
     # `_succ[u][v]` and `_pred[v][u]`.
     _succ: dict[N, dict[N, dict[int, Link[N]]]]
     _pred: dict[N, dict[N, dict[int, Link[N]]]]
-    # The nodes grouped by rank, each column ordered top to bottom. Shared
-    # with copies and reversed views.
+    # The nodes of each column, top to bottom. Shared with copies and
+    # reversed views.
     columns: list[list[N]]
 
     def __init__(self) -> None:
@@ -118,7 +117,7 @@ class LayoutGraph[N: Hashable]:
         self._succ = {}
         self._pred = {}
 
-    # -- nodes ------------------------------------------------------
+    # Nodes
 
     def __iter__(self) -> Iterator[N]:
         return iter(self._nodes)
@@ -151,12 +150,12 @@ class LayoutGraph[N: Hashable]:
         del self._pred[node]
 
     def remove_nodes(self, nodes: Iterable[N]) -> None:
-        """Remove *nodes*, skipping any that are not in the tree."""
+        """Remove *nodes*, skipping any that are not in the graph."""
         for node in nodes:
             if node in self._nodes:
                 self.remove_node(node)
 
-    # -- links ------------------------------------------------------
+    # Links
 
     def add_link(
         self,
@@ -259,14 +258,14 @@ class LayoutGraph[N: Hashable]:
 
     def entering(self, nodes: N | Iterable[N]) -> Iterator[tuple[N, N, Link[N]]]:
         """``(source, target, link)`` for the links entering *nodes*, as this
-        tree sees them: on a :meth:`reversed` view the source is the link's
+        graph sees them: on a :meth:`reversed` view the source is the link's
         ``tonode``."""
         for n in self._bunch(nodes):
             for nbr, keydict in self._pred[n].items():
                 for link in keydict.values():
                     yield (nbr, n, link)
 
-    # -- topology ---------------------------------------------------
+    # Topology
 
     def successors(self, node: N) -> KeysView[N]:
         return self._succ[node].keys()
@@ -283,10 +282,10 @@ class LayoutGraph[N: Hashable]:
     def degree(self, node: N) -> int:
         return self.out_degree(node) + self.in_degree(node)
 
-    # -- derived trees ----------------------------------------------
+    # Derived graphs
 
     def copy(self) -> LayoutGraph[N]:
-        """A tree with the same nodes and a copy of every link."""
+        """A graph with the same nodes and a copy of every link."""
         tree = type(self)()
         if hasattr(self, "columns"):
             tree.columns = self.columns
@@ -304,10 +303,10 @@ class LayoutGraph[N: Hashable]:
         return tree
 
     def reversed(self) -> LayoutGraph[N]:
-        """A view of this tree with successors and predecessors swapped.
+        """A view of this graph with successors and predecessors swapped.
 
         The nodes and links are shared, so a link's ``fromnode`` is still
-        the node it leaves in the original tree.
+        the node it leaves in the original graph.
         """
         tree = type(self)()
         if hasattr(self, "columns"):
@@ -343,9 +342,6 @@ class LayoutGraph[N: Hashable]:
 def _filtered[K](mapping: dict[K, Any], keep: set[K]) -> list[K]:
     # Always in the graph's own order, never the set's.
     return [n for n in mapping if n in keep]
-
-
-# -------------------------------------------------------------------
 
 
 class DiGraph[N: Hashable]:
@@ -490,7 +486,7 @@ type AnyGraph[N: Hashable] = LayoutGraph[N] | DiGraph[N]
 
 
 def simple_digraph[N: Hashable](tree: LayoutGraph[N]) -> DiGraph[N]:
-    """*tree* with parallel links merged into single edges."""
+    """The graph *tree* with parallel links merged into single edges."""
     graph: DiGraph[N] = DiGraph()
     graph.add_nodes(tree)
     for u, nbrs in tree._succ.items():
@@ -499,7 +495,6 @@ def simple_digraph[N: Hashable](tree: LayoutGraph[N]) -> DiGraph[N]:
     return graph
 
 
-# -------------------------------------------------------------------
 # Traversals and orderings. Each walks neighbours in insertion order.
 
 
@@ -544,8 +539,9 @@ def ancestors[N: Hashable](G: AnyGraph[N], source: N) -> KeysView[N]:
 
 
 def topological_generations[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
-    """Layers of a topological order: each node comes in the first layer
-    after all of its predecessors. Raises :class:`CycleError` on a cycle."""
+    """Generations of a topological order: each node is in the first
+    generation after all of its predecessors. Raises :class:`CycleError` on
+    a cycle."""
     indegree = {}
     zero_indegree = []
     for v in G:
@@ -714,8 +710,8 @@ def edge_dfs[N: Hashable](G: DiGraph[N], source: N) -> Iterator[tuple[N, N]]:
 
 
 def dag_longest_path_length[N: Hashable](G: DiGraph[N]) -> Any:
-    """The largest total edge weight along any path of the acyclic *G*
-    (an edge without a weight counts 1)."""
+    """The largest total edge weight along any path of the acyclic *G*.
+    An edge without a weight counts 1."""
     if not G:
         return 0
 

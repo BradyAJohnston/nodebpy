@@ -3,8 +3,7 @@
 
 The layout never touches the tree itself. It returns a :class:`LayoutResult`:
 the edits to make, in the order to make them. ``apply.apply`` carries
-them out on a Blender tree; a C++ port would do the same with
-``bke::node_remove_node``, ``bke::node_add_link`` and friends.
+them out on a Blender tree.
 """
 
 from __future__ import annotations
@@ -31,13 +30,15 @@ class AddReroute:
 
 @dataclass(frozen=True, slots=True)
 class AddLink:
+    """Link two sockets."""
+
     fromsock: bNodeSocket | None
     tosock: bNodeSocket | None
 
 
 @dataclass(frozen=True, slots=True)
 class RemoveLink:
-    """Delete the link between two sockets (it is being rerouted)."""
+    """Delete the link between two sockets, because it is being rerouted."""
 
     fromsock: bNodeSocket | None
     tosock: bNodeSocket | None
@@ -47,9 +48,9 @@ class RemoveLink:
 class RestoreMultiInputOrder:
     """Put the links into a multi-input socket back in their original order.
 
-    ``outputs`` are the sockets now linked to ``socket`` (a link is created
-    for any that is missing). ``order`` pairs each of them with the sort id
-    its link had before the layout rerouted it.
+    ``outputs`` are the sockets to be linked to ``socket``. A link is
+    created for any that is missing. ``order`` pairs each of them with the
+    sort id its link had before the layout rerouted it.
     """
 
     socket: bNodeSocket | None
@@ -64,8 +65,8 @@ class MoveNode:
 
     This is not always the node's ``location``: a collapsed node is drawn
     around its location, by an amount that depends on its links, which the
-    layout may just have changed. Whoever applies the edit works that out
-    from the node as it then is.
+    layout may just have changed. ``apply`` computes the location from the
+    node as it then is.
     """
 
     node: bNode
@@ -94,6 +95,8 @@ type Edit = (
 
 @dataclass(slots=True)
 class LayoutResult:
+    """What a layout returns."""
+
     edits: list[Edit] = field(default_factory=list)
     """In the order they must be applied."""
 
@@ -102,10 +105,10 @@ class LayoutResult:
         return {e.node: e.top_left for e in self.edits if isinstance(e, MoveNode)}
 
     def apply_to(self, tree: bNodeTree) -> None:
-        """Make the edits to *tree* itself — the plain data, in place — so
-        that it describes the tree as laid out: what ``apply.apply``
-        does to a Blender tree. Every node keeps the size and the socket
-        offsets it came with."""
+        """Make the edits to the plain-data *tree* in place, so that it
+        describes the tree as laid out. This is what ``apply.apply`` does
+        to a Blender tree. Every node keeps the size and the socket offsets
+        it came with."""
         for edit in self.edits:
             match edit:
                 case RemoveNode(node=node):

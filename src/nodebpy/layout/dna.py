@@ -6,8 +6,7 @@ named after the structs they come from (``DNA_node_types.h``,
 ``BKE_node_runtime.hh``): :class:`bNodeTree`, :class:`bNode`,
 :class:`bNodeSocket`, :class:`bNodeLink`. Nothing here needs ``bpy``: the
 layout takes a :class:`bNodeTree` and returns edits to make to it, so it can
-be driven from Python data in tests, and later reimplemented in C++ reading
-the real structs.
+be driven from Python data in tests.
 
 All coordinates are in the tree's own space (Blender's unscaled UI units),
 x to the right and y up, and absolute: a node's location is not relative to
@@ -53,7 +52,7 @@ class bNode:
     draw_bounds: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)
     """The box the node is drawn in, ``(xmin, ymin, xmax, ymax)``
     (``runtime->draw_bounds``). Blender only knows it once a node editor
-    has drawn the tree; otherwise it has to be estimated."""
+    has drawn the tree. Otherwise it is estimated."""
     parent: bNode | None = None
     """The frame the node is in."""
     is_collapsed: bool = False
@@ -61,7 +60,7 @@ class bNode:
     select: bool = True
     """``NODE_SELECT``. Only matters when the layout is asked to arrange
     the selection: the other nodes then stay where they are, and links to
-    them are left out of account."""
+    them are ignored."""
     inputs: list[bNodeSocket] = field(default_factory=list)
     outputs: list[bNodeSocket] = field(default_factory=list)
 
@@ -121,8 +120,8 @@ class bNodeLink:
     """Position among the links into a multi-input socket."""
     is_valid: bool = True
     """``NODE_LINK_VALID``. Blender clears it for a link that closes a
-    cycle, but also for one between sockets that do not fit, which is still
-    drawn; so the layout goes by every link and breaks cycles itself."""
+    cycle, and also for one between sockets that do not fit, which is still
+    drawn. So the layout uses every link and breaks cycles itself."""
 
 
 @dataclass(eq=False, slots=True)
@@ -158,9 +157,9 @@ class bNodeTree:
     nodes: list[bNode] = field(default_factory=list)
     links: list[bNodeLink] = field(default_factory=list)
     zones: list[bNodeTreeZone] = field(default_factory=list)
-    """``zones()``, outer zones before the zones within them. (From Python
-    Blender does not tell which nodes are in a zone; :mod:`.zones` works it
-    out.)"""
+    """``zones()``, outer zones before the zones within them. Blender does
+    not tell Python which nodes are in a zone, so :mod:`.zones` works it
+    out."""
 
     def add_node(self, node: bNode) -> bNode:
         self.nodes.append(node)

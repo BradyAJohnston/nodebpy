@@ -47,8 +47,6 @@ from .model import (
     socket_graph,
 )
 
-# -------------------------------------------------------------------
-
 type _MixedGraph = DiGraph[Node | Cluster]
 
 
@@ -78,6 +76,9 @@ def get_col_nesting_trees(
 
 
 def expand_multi_inputs(G: LayoutGraph[Node], state: LayoutState) -> None:
+    """Give every link into a multi-input socket an input index of its own,
+    highest sort id first, and renumber the node's later inputs to follow.
+    The ordering then sees those links as entering separate sockets."""
     H = socket_graph(G)
     reroutes = {v for v in H if v.owner.is_reroute}
     for v in dict.fromkeys(s.owner for s in state.multi_input_sort_ids):
@@ -172,6 +173,16 @@ def crossing_reduction_graph(
 
 
 class _CrossingReductionGraph:
+    """What a sweep needs to order the children of one cluster in a free
+    column by the fixed column before it.
+
+    ``graph`` is :func:`crossing_reduction_graph` for the cluster.
+    ``reduced_free_col`` lists the cluster's direct children in the free
+    column, nodes and clusters. ``expanded_fixed_col`` is the fixed column
+    plus an upper and a lower border node for each of those clusters that
+    also has nodes in the fixed column. ``constrained_clusters`` are those
+    same clusters, whose order the free column must keep."""
+
     graph: LayoutGraph[Node | Cluster]
 
     fixed_LT: _MixedGraph
@@ -263,6 +274,9 @@ def crossing_reduction_items(
     G: LayoutGraph[Node],
     is_forwards: bool,
 ) -> list[list[_CrossingReductionGraph]]:
+    """For each pair of neighbouring columns, a
+    :class:`_CrossingReductionGraph` per cluster of the free column, outer
+    clusters first."""
     items = []
     for fixed_LT, free_LT in pairwise(trees):
         crossing_reduction_graphs = [
@@ -274,10 +288,10 @@ def crossing_reduction_items(
     return items
 
 
-# -------------------------------------------------------------------
-
-
 def sort_expanded_fixed_col(H: _CrossingReductionGraph) -> None:
+    """Sort the expanded fixed column by the fixed column's current order,
+    with each pair of border nodes just above and below the nodes they
+    stand for."""
     pos: dict[Node, float] = {v: i for i, v in enumerate(H.fixed_col)}
 
     for (upper_v, lower_v), bordered_nodes in H.border_pairs.items():
@@ -289,6 +303,9 @@ def sort_expanded_fixed_col(H: _CrossingReductionGraph) -> None:
 
 
 def calc_socket_ranks(H: _CrossingReductionGraph, is_forwards: bool) -> None:
+    """Give every linked socket of the fixed column a position: its node's
+    place in the column plus a fraction for its place among the node's
+    sockets."""
     for v, sockets in H.fixed_sockets.items():
         incr = 1 / (len(sockets) + 1)
         rank = H.expanded_fixed_col.index(v) + 1
@@ -301,6 +318,9 @@ def calc_socket_ranks(H: _CrossingReductionGraph, is_forwards: bool) -> None:
 
 
 def calc_barycenters(H: _CrossingReductionGraph) -> None:
+    """Set the barycenter of each item of the free column to the mean
+    position of the fixed-column sockets it is linked to. An item without
+    such links keeps None."""
     for w in H.reduced_free_col:
         if sockets := H.free_sockets[w]:
             w.cr.barycenter = fmean([s.owner.cr.socket_ranks[s] for s in sockets])
@@ -329,6 +349,8 @@ def fill_in_unknown_barycenters(col: list[Node | Cluster]) -> None:
 def find_violated_constraint(
     GC: _MixedGraph,
 ) -> tuple[Node | Cluster, Node | Cluster] | None:
+    """A constraint ``(s, t)`` of *GC* that the barycenters break, with *s*
+    not before *t*, or None when all hold."""
     active = [v for v in GC if GC.successors(v) and not GC.predecessors(v)]
     incoming_constraints = defaultdict(list)
     while active:
@@ -399,6 +421,8 @@ def handle_constraints(H: _CrossingReductionGraph) -> None:
 
 
 def get_new_col_order(v: Node | Cluster, LT: _MixedGraph) -> Iterator[Node | Cluster]:
+    """The nodes below *v* in the column's nesting tree, each cluster's
+    children by barycenter."""
     if v.type == Kind.CLUSTER:
         for w in sorted(LT.successors(v), key=get_barycenter):
             yield from get_new_col_order(w, LT)
@@ -414,6 +438,8 @@ def non_cluster_descendant(T: _MixedGraph, c: Cluster) -> Node:
 def sort_reduced_free_columns(
     items: Iterable[Sequence[_CrossingReductionGraph]],
 ) -> None:
+    """Bring every ``reduced_free_col`` back in line with the current order
+    of its column. A cluster is placed by one of its nodes."""
     for crossing_reduction_graphs in items:
         for H in crossing_reduction_graphs:
 
@@ -426,9 +452,6 @@ def sort_reduced_free_columns(
                 return H.free_col.index(w)
 
             H.reduced_free_col.sort(key=pos)
-
-
-# -------------------------------------------------------------------
 
 
 _MAX_SWEEPS = 24
@@ -469,6 +492,7 @@ def _set_order(
     order: Sequence[Sequence[Node]],
     items: list[list[_CrossingReductionGraph]],
 ) -> None:
+    """Put *columns* in the given *order*, in place."""
     for col, wanted in zip(columns, order):
         col.sort(key=wanted.index)
     sort_reduced_free_columns(items)
@@ -549,7 +573,7 @@ class CrossingWeights:
     """What a crossing of two links costs the ordering, by what the links
     carry: the tree's main data ("flow": geometry, shader, bundle, closure)
     or anything else ("value"). Branches of the trunk passing each other
-    read easily; a value cutting across the trunk does not."""
+    read easily. A value cutting across the trunk does not."""
 
     flow_flow: float = 1.0
     value_value: float = 1.0
@@ -557,7 +581,7 @@ class CrossingWeights:
 
 
 CROSSING_WEIGHTS = CrossingWeights()
-"""The weights the ordering goes by."""
+"""The weights the ordering uses."""
 
 
 def _pair_cost(weights: CrossingWeights) -> tuple[tuple[float, float], ...]:
@@ -581,9 +605,9 @@ def _transpose(
     in the same frame are swapped, so frames stay together. Returns whether
     anything moved.
 
-    The sweeps order a column by where its nodes' neighbours are on average;
-    this looks at the actual links of two nodes, and so finds the swaps an
-    average hides."""
+    The sweeps order a column by where its nodes' neighbours are on
+    average. This looks at the actual links of two nodes, and so finds the
+    swaps an average hides."""
     position = {v: i for col in columns for i, v in enumerate(col)}
     cost = _pair_cost(weights)
 
@@ -650,12 +674,12 @@ def count_crossings(
     columns: Sequence[list[Node]],
     weights: CrossingWeights | None = None,
 ) -> float:
-    """Pairs of links between neighbouring columns that cross, going by
-    the order of the nodes and of the sockets on each node. Links that
-    share a socket do not cross.
+    """Pairs of links between neighbouring columns that cross, by the
+    order of the nodes and of the sockets on each node. Links that share a
+    socket do not cross.
 
     With *weights* each pair counts for what a crossing of its kind costs
-    (see :class:`~.config.CrossingWeights`)."""
+    (see :class:`CrossingWeights`)."""
     position = {v: i for col in columns for i, v in enumerate(col)}
     total = 0.0
     for col in columns:
@@ -690,17 +714,18 @@ def count_crossings(
 def minimize_crossings(
     G: LayoutGraph[Node], T: _MixedGraph, state: LayoutState
 ) -> None:
-    """Order the columns by sweeping from a few fixed starting orders, each
-    in both directions, and keep the order with the fewest crossings.
+    """Order the columns so that the crossings of links cost as little as
+    the search finds.
 
-    The starts are the order the columns come in and two depth-first
-    orders, plus, for small graphs where it costs little, a few shuffled
-    ones (from a fixed seed of a generator simple enough to be the same in
-    any language). From each, sweeps alternate direction, each followed by swaps
-    of neighbours (:func:`_transpose`), until ``_PATIENCE`` in a row bring
-    no improvement. This is the recipe of Graphviz's dot (Gansner et al.,
-    "A Technique for Drawing Directed Graphs", 1993), with sockets and
-    frames taken into account. The same graph always gets the same order."""
+    Sweeps from several starting orders, each in both directions, and keeps
+    the cheapest order. The starts are the order the columns come in and
+    two depth-first orders. On small graphs a few shuffled orders from
+    ``Lcg(options.seed)`` are added. From each start, sweeps alternate
+    direction, each followed by swaps of neighbours (:func:`_transpose`),
+    until ``_PATIENCE`` sweeps in a row bring no improvement. This is the
+    recipe of Graphviz's dot (Gansner et al., "A Technique for Drawing
+    Directed Graphs", 1993), with sockets and frames taken into account.
+    The result is deterministic for a given seed."""
     columns = G.columns
     weights = CROSSING_WEIGHTS
     trees = get_col_nesting_trees(columns, T)

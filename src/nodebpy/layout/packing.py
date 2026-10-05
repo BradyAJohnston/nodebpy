@@ -2,11 +2,10 @@
 """Lay out the unconnected parts of a tree apart.
 
 A tree is often several drawings: the main graph, a second group of nodes
-linked to nothing in the first, a frame holding only a note. Ranked and
-ordered as one graph they share columns, and a part with nothing to do
-with the rest ends up in the middle of it. Here each part is laid out by
-itself and the boxes are put together: the largest first, the others in
-rows beneath it.
+linked to nothing in the first, a frame holding only a note. Laid out as
+one graph they share columns. Here the tree is split into its parts
+(:func:`components`), and the boxes of the laid-out parts are put together
+(:func:`pack`): the largest first, the others in rows beneath it.
 """
 
 from __future__ import annotations
@@ -118,9 +117,9 @@ def bounds(edits: Sequence[Edit]) -> Rect | None:
 
 def pack(boxes: Sequence[Rect], gap: Vec2) -> list[tuple[float, float]]:
     """Where to move each of *boxes* so that none overlap: the offset to
-    add to everything in it. The first box stays where it is; the others
-    go in rows beneath it, left to right in the order given, a row being
-    as wide as the first box (or the widest box, if that is wider)."""
+    add to everything in it. The first box stays where it is. The others
+    go in rows beneath it, left to right in the order given. A row is as
+    wide as the widest box."""
     if not boxes:
         return []
     first = boxes[0]

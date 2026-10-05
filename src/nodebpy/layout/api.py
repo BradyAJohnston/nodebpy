@@ -17,7 +17,7 @@ from .sugiyama import sugiyama_layout
 
 type ArrangeMethod = Literal["sugiyama", "simple"] | SugiyamaOptions | None
 
-# What "sugiyama" stands for; see `default_sugiyama_options`.
+# The options "sugiyama" uses, when `default_sugiyama_options` has set them.
 _DEFAULT_SUGIYAMA: ContextVar[SugiyamaOptions | None] = ContextVar(
     "nodebpy_default_sugiyama", default=None
 )
@@ -82,8 +82,8 @@ def arrange(
     )
     apply(tree, binding, result)
 
-    # Positions are dumped to two decimals; keep to that so an arranged tree
-    # survives a round trip unchanged.
+    # Positions are dumped to two decimals. Rounding here keeps an arranged
+    # tree unchanged through a round trip.
     for node in tree.nodes:
         location = node.location
         node.location = (round(location.x, 2), round(location.y, 2))

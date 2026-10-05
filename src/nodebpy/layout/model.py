@@ -2,8 +2,8 @@
 """What the layout works on: :class:`Node` (a node of the tree, or one the
 layout makes up: a dummy node on a long link, a frame's border),
 :class:`Socket`, :class:`Cluster` (a frame), and :class:`ClusterGraph`, the
-graph of nodes together with the nesting of frames. Also splitting long
-links with dummy nodes. See ``DESIGN.md`` for the terms."""
+graph of nodes together with the nesting of frames. See ``DESIGN.md`` for
+the terms."""
 
 from __future__ import annotations
 
@@ -29,11 +29,9 @@ from .priority import is_flow_socket
 if TYPE_CHECKING:
     from .config import LayoutState
 
-# -------------------------------------------------------------------
-
 # Nodes and clusters hash by creation order rather than id(), so iterating a
-# set of them doesn't depend on memory addresses and
-# a layout is reproducible between runs. Reset per run by sugiyama_layout().
+# set of them does not depend on memory addresses and a layout is the same
+# on every run. sugiyama_layout() resets the counter.
 _serials = count()
 
 
@@ -43,6 +41,12 @@ def reset_serials() -> None:
 
 
 class Kind(Enum):
+    """What a :class:`Node` is: a node of the tree, a stack of them, a dummy
+    node, or a border node of a frame. ``HORIZONTAL_BORDER`` nodes stand
+    left and right of a frame during ranking. ``VERTICAL_BORDER`` nodes
+    stand above and below it in a column. ``CLUSTER`` is the kind of every
+    :class:`Cluster`."""
+
     NODE = auto()
     STACK = auto()
     DUMMY = auto()
@@ -62,6 +66,9 @@ _NonCluster = Literal[
 
 @dataclass(slots=True)
 class CrossingReduction:
+    """Scratch values of the ordering: the positions of a node's sockets and
+    the barycenter of a node or cluster."""
+
     socket_ranks: dict[Socket, float] = field(default_factory=dict)
     barycenter: float | None = None
 
@@ -71,6 +78,11 @@ class CrossingReduction:
 
 
 class Node:
+    """A node of the layout graph: a node of the tree (``node`` is set), or
+    one the layout made up. ``rank`` is the index of its column, ``x`` its
+    left edge and ``y`` its top edge. See ``placement.py`` for ``root``,
+    ``aligned``, ``sink``, ``shift`` and ``inner_shift``."""
+
     node: bNode | None
     cluster: Cluster | None
     type: _NonCluster
@@ -179,6 +191,13 @@ MultiEdge = tuple[Node, Node, int]
 
 @dataclass(slots=True)
 class Cluster:
+    """A frame, or the whole tree for the outermost cluster.
+
+    ``node`` is the frame, None for the outermost cluster. ``cluster`` is
+    the cluster this one is in. ``left`` and ``right`` are the cluster's
+    border nodes during ranking. :func:`~.long_links.insert_dummy_nodes`
+    rebinds them to the cluster's leftmost and rightmost member nodes."""
+
     node: bNode | None
     cluster: Cluster
     nesting_level: int | None = None
@@ -204,12 +223,10 @@ class Cluster:
         return frame_label_room(frame.label, frame.label_size) if frame else 0.0
 
 
-# -------------------------------------------------------------------
-
-
 def get_nesting_relations(
     v: Node | Cluster,
 ) -> Iterator[tuple[Cluster, Node | Cluster]]:
+    """``(cluster, member)`` for *v* and for every cluster around it."""
     if c := v.cluster:
         yield (c, v)
         yield from get_nesting_relations(c)
@@ -241,11 +258,18 @@ def link_is_flow(link: Link[Node]) -> bool:
 
 
 def add_dummy_edge(G: LayoutGraph[Node], u: Node, v: Node) -> None:
+    """Link *u* to *v* through made-up sockets."""
     G.add_link(u, v, Socket(u, 0, True), Socket(v, 0, False))
 
 
 # https://api.semanticscholar.org/CorpusID:14932050
 class ClusterGraph:
+    """The layout graph with the nesting of its frames.
+
+    ``G`` is the layout graph. ``T`` is the nesting: an edge from each
+    cluster to every node and cluster directly in it. ``S`` lists the
+    clusters of ``T``, the outermost included."""
+
     G: LayoutGraph[Node]
     T: DiGraph[Node | Cluster]
     S: list[Cluster]
@@ -259,6 +283,9 @@ class ClusterGraph:
         self.S = [v for v in self.T if isinstance(v, Cluster)]
 
     def remove_nodes_from(self, nodes: Iterable[Node]) -> None:
+        """Remove *nodes* from the graph, the nesting and their columns. For
+        a node of the tree, also forget its links and record a
+        ``RemoveNode`` edit."""
         state = self.state
         for v in nodes:
             self.G.remove_node(v)
@@ -281,6 +308,10 @@ class ClusterGraph:
             state.edits.append(RemoveNode(v.node))
 
     def add_vertical_border_nodes(self) -> None:
+        """Add a border node above and below each frame's nodes in every
+        column the frame has nodes in. The upper one is as tall as the
+        frame's label. A frame's upper border nodes are chained across the
+        columns, and so are its lower ones."""
         T = self.T
         G = self.G
         columns = G.columns
@@ -315,11 +346,12 @@ class ClusterGraph:
                 add_dummy_edge(G, *p)
 
 
-# -------------------------------------------------------------------
-
-
 @dataclass(frozen=True)
 class Socket:
+    """A socket of a :class:`Node`, by index. ``prescribed_offset_y``, when
+    set, is its offset from the node's top. Otherwise the offset comes from
+    the tree's socket, and is zero for reroutes and made-up nodes."""
+
     owner: Node
     idx: int
     is_output: bool
@@ -367,9 +399,9 @@ def keep_frames_together(col: list[Node]) -> None:
     each frame are next to each other: every frame's nodes gather where the
     first of them is, in the order they were in.
 
-    An ordering of a column has to end with this true of it (the border
-    nodes, the placement and the frame outlines all rely on it); a strategy
-    that sorts a column by some key of its own can call this afterwards."""
+    Every ordering of a column must end with this true, because the border
+    nodes, the placement and the frame outlines rely on it. A step that
+    sorts a column by a key of its own can call this afterwards."""
     first: dict[Cluster, int] = {}
     chains: dict[Node, list[Cluster]] = {}
     for i, v in enumerate(col):
@@ -397,6 +429,3 @@ def socket_graph(G: LayoutGraph[Node]) -> DiGraph[Socket]:
         H.add_edges(product(inputs, outputs))
 
     return H
-
-
-# -------------------------------------------------------------------

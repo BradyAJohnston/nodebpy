@@ -31,6 +31,9 @@ if TYPE_CHECKING:
 
 # https://api.semanticscholar.org/CorpusID:14932050
 def get_nesting_graph(CG: ClusterGraph) -> LayoutGraph[Node]:
+    """A copy of the layout graph with each cluster's left and right border
+    nodes, linked so that everything in a cluster is ranked between them.
+    With ``sequential_frames`` the frame-sequence links are added too."""
     H = CG.G.copy()
     for u, v in CG.T.edges():
         if isinstance(u, Cluster):
@@ -59,21 +62,19 @@ def _top_level_unit(v: Node, root: Cluster) -> Node | Cluster:
 
 
 def add_frame_sequence_edges(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
-    """Rank frames as stages of the flow.
+    """Add links to *H* that put every node of a frame in a later column
+    than every node of the frame that feeds it.
 
-    With plain nesting constraints a frame only has to enclose its own
-    members, so a downstream frame's first nodes are ranked right next to the
-    upstream frame's last ones and the two frames share columns — which
-    forces them to be stacked vertically, producing a staircase of frames
-    instead of a left-to-right flow. This adds, for every link between two
-    top-level units (a frame, or a node outside every frame), a constraint
-    from the source unit's right border to the target unit's left border:
-    every node of a frame comes after every node of the frame (or the
-    intermediate node) feeding it. Nodes without predecessors (inputs and
-    values serving one consumer) and without successors are exempt so they
-    stay next to their consumer / producer; units on a cycle of the quotient
-    graph are left to the plain nesting constraints.
-    """
+    A unit is an outermost frame or a node outside every frame. For each
+    link between two units, a link is added from the source unit's right
+    border (or the node itself) to the target unit's left border (or the
+    node itself), and the constraint is recorded in
+    ``state.frame_sequence``.
+
+    Exempt: links between two nodes outside every frame, a source node
+    outside every frame that has no predecessors, a target node outside
+    every frame that has no successors, and units that feed each other in a
+    cycle."""
     G = CG.G
     root = next(c for c in CG.S if not CG.T.predecessors(c))
     unit_of = {v: _top_level_unit(v, root) for v in G}
@@ -112,12 +113,15 @@ def add_frame_sequence_edges(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
 
 @cache
 def get_adj_edges_H(H: LayoutGraph[Node], v: Node) -> tuple[MultiEdge, ...]:
+    """The links of *H* at *v*, incoming then outgoing, as ``Link.ident``.
+    Cached. :func:`network_simplex_ranks` clears the cache."""
     return tuple(
         link.ident for links in (H.in_links(v), H.out_links(v)) for link in links
     )
 
 
 def get_slack(e: MultiEdge) -> int:
+    """How many columns longer the link *e* is than the minimum of one."""
     u, v, _ = e
     min_length = 1
     return v.rank - u.rank - min_length
@@ -125,8 +129,8 @@ def get_slack(e: MultiEdge) -> int:
 
 def tight_tree(H: LayoutGraph[Node], T: LayoutGraph[Node], root: Node) -> int:
     """Grow *T* from *root* over the links without slack, depth first, and
-    return its size. (An explicit stack: the tree can be as deep as the
-    graph is long.)"""
+    return its size. An explicit stack is used because the tree can be as
+    deep as the graph is long."""
     visited: set[MultiEdge] = set()
     T.add_node(root)
     stack = [(root, iter(get_adj_edges_H(H, root)))]
@@ -230,6 +234,13 @@ def tree_path(
 
 
 def compute_cut_values(H: LayoutGraph[Node], T: LayoutGraph[Node]) -> None:
+    """Set the cut value of every link of the spanning tree *T*.
+
+    Removing a tree link splits the tree in two. Its cut value is the
+    weight of the links of *H* that run between the two halves the way it
+    does, less the weight of those that run the other way. The values are
+    worked out from the leaves inwards, each from the ones already known
+    around one of its ends."""
     unknown_cut_values = {}
     leaves = []
     for v in H:
@@ -274,6 +285,11 @@ def longest_path_ranks(H: LayoutGraph[Node]) -> None:
 
 
 def feasible_tree(H: LayoutGraph[Node]) -> tuple[LayoutGraph[Node], _Parents]:
+    """A first ranking and a spanning tree of links without slack to go
+    with it. Starts from :func:`longest_path_ranks` and grows the tree. While
+    the tree does not span *H*, its nodes are shifted to close the shortest
+    gap to a node outside it. Returns the tree, numbered and with its cut
+    values, and each node's parent."""
     longest_path_ranks(H)
 
     T: LayoutGraph[Node] = LayoutGraph()
@@ -297,10 +313,15 @@ def feasible_tree(H: LayoutGraph[Node]) -> tuple[LayoutGraph[Node], _Parents]:
 
 
 def leave_edge(T: LayoutGraph[Node]) -> MultiEdge | None:
+    """A tree link with a negative cut value, which an exchange can improve
+    on. None when there is none."""
     return next((link.ident for link in T.all_links() if link.cut_value < 0), None)
 
 
 def is_in_head(v: Node, e: MultiEdge) -> bool:
+    """Whether *v* is in the half of the spanning tree that the tree link
+    *e* points into, the two halves being what is left when *e* is removed.
+    Read off the post-order numbers."""
     u, w, _ = e
 
     if (
@@ -315,6 +336,9 @@ def is_in_head(v: Node, e: MultiEdge) -> bool:
 
 
 def enter_edge(H: LayoutGraph[Node], e: MultiEdge) -> MultiEdge:
+    """The link to put in the spanning tree in place of the tree link *e*:
+    of the links of *H* that run from the half *e* points into to the other
+    half, the one with the least slack."""
     edges = [
         link.ident
         for link in H.all_links()
@@ -360,6 +384,15 @@ def exchange(
 
 
 def normalize_and_balance(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
+    """Tidy the ranks after solving.
+
+    A connected piece of the layout graph that lies wholly in one cluster
+    is moved as a block, without gaps between its columns. In a frame it
+    starts at the first column of the frame's own nodes. Outside frames it
+    ends no later than the outermost cluster's left border. Then the ranks
+    of *H* are renumbered from 0 without gaps. Last, a node with as many
+    links in as out moves to the column with the fewest nodes among those
+    its links allow."""
     for cc in weakly_connected_components(CG.G):
         c = cc[0].cluster
         assert c
@@ -404,8 +437,12 @@ _BASE_ITER_LIMIT = 50
 
 
 def network_simplex_ranks(H: LayoutGraph[Node]) -> None:
-    """Rank the nodes so that the total (weighted) length of the links is
-    minimal, by network simplex."""
+    """Rank the nodes so that the total weighted length of the links is as
+    small as possible, by network simplex.
+
+    Stops after ``_BASE_ITER_LIMIT * sqrt(n)`` exchanges for *n* nodes, to
+    bound the time taken. The ranking it then has is valid but may not be
+    the shortest."""
     T, parents = feasible_tree(H)
     i = 0
     iter_limit = _BASE_ITER_LIMIT * sqrt(len(H))
@@ -413,8 +450,8 @@ def network_simplex_ranks(H: LayoutGraph[Node]) -> None:
         parents = exchange(H, T, parents, e, enter_edge(H, e))
         i += 1
 
-    # The adjacency caches are keyed by the graphs of this run; drop them so
-    # the graphs (and the nodes they reference) can be freed.
+    # The adjacency cache is keyed by this run's graph. Clear it so the
+    # graph and its nodes can be freed.
     get_adj_edges_H.cache_clear()
 
 
@@ -423,9 +460,11 @@ def compute_ranks(
 ) -> None:
     """Assign every node its column (``rank``).
 
-    *solve* ranks the nodes of the nesting graph — the layout graph plus
-    border nodes and links that keep each frame's members between the
-    frame's borders — so that every link spans at least one column.
+    *solve* ranks the nodes of the nesting graph so that every link spans
+    at least one column. The nesting graph is the layout graph plus border
+    nodes and links that keep each frame's nodes between the frame's
+    borders. Afterwards the ranks are tidied
+    (:func:`normalize_and_balance`).
     """
     for i, layer in enumerate(topological_generations(CG.T)):
         for c in layer:

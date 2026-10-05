@@ -22,9 +22,9 @@ REROUTE_DIM = Vec2(REROUTE_SIZE, REROUTE_SIZE)
 type Point = tuple[float, float]
 
 REROUTE_MARGIN_Y_FAC = 0.35
-"""Fraction of the vertical margin kept between consecutive reroutes (or
-dummy nodes) in a column: bundles of long links routed past a column pack
-much tighter than nodes, as reroute dots do in hand-made trees."""
+"""Fraction of the vertical margin kept between two reroutes or dummy
+nodes next to each other in a column. Long links routed past a column pack
+tighter than nodes."""
 
 
 FRAME_PADDING = 30.0
@@ -54,7 +54,7 @@ _FLOAT = struct.Struct("f")
 
 def f32(value: float) -> float:
     """*value* rounded to single precision, which is what Blender stores
-    locations in (and what the layout will compute in once ported)."""
+    locations in."""
     return _FLOAT.unpack(_FLOAT.pack(value))[0]
 
 
@@ -95,7 +95,7 @@ def segments_intersect(v0: Point, v1: Point, v2: Point, v3: Point) -> bool:
             return False
 
         # When `d` approaches zero, precision lets non-overlapping collinear
-        # segments pass; recompute `v` from the intersection point.
+        # segments pass. Recompute `v` from the intersection point.
         point = (f32(v0[0] + f32(s10[0] * u)), f32(v0[1] + f32(s10[1] * u)))
         v = f32(_dot(s32, _sub(point, v2)) / _dot(s32, s32))
         return 0.0 <= v <= 1.0

@@ -16,19 +16,19 @@ the *phases* that decide the layout:
 The rest are smaller *steps* that prepare the graph for a phase or clean up
 after one: replacing reroutes, stacking collapsed nodes, splitting long
 links with dummy nodes, bordering frames, and finally writing the result
-out as edits. (The split into phases and intermediate processors follows
-the Eclipse Layout Kernel's layered algorithm.)
+out as edits. The split into phases and steps between them follows the
+Eclipse Layout Kernel's layered algorithm.
 
 :func:`~.sugiyama.default_pipeline` builds the standard list. To
 experiment, take it and :meth:`~Pipeline.replace` a step (a phase, to try
 another algorithm for it), or :meth:`~Pipeline.insert_after` one.
 
-Steps depend on each other through the state of the graph, and say so: each
-:class:`Step` names the facts (:class:`Fact`) it ``requires`` to hold, those it
-``provides`` and those it ``removes``. A pipeline whose steps do not fit
-together is refused before it runs (:meth:`Pipeline.check`), and with
+Steps depend on each other through the state of the graph. Each
+:class:`Step` names the facts (:class:`Fact`) it ``requires`` to hold, those
+it ``provides`` and those it ``removes``. A pipeline whose steps do not fit
+together is refused before it runs (:meth:`Pipeline.check`). With
 ``verify=True`` every fact is checked against the graph after every step
-(:data:`CHECKS`), which pins a broken invariant on the step that broke it.
+(:data:`CHECKS`), and a broken one is reported with the step that broke it.
 """
 
 from __future__ import annotations
@@ -57,21 +57,22 @@ class Fact(StrEnum):
     """Something true of the layout graph between two steps."""
 
     RANKED = "ranked"
-    """Every node has a ``rank`` (its column), and every link runs to a
-    higher rank."""
+    """Every node has a ``rank``, the index of its column, and every link
+    runs to a later column."""
     PROPER = "proper"
-    """Every link runs to the next rank: long links are chains of dummy
+    """Every link runs to the next column: long links are chains of dummy
     nodes."""
     COLUMNS = "columns"
-    """``G.columns`` lists the nodes of each rank, and every node's ``col``
-    is its column. (A step that reorders a column must do so in place.)"""
+    """``G.columns`` lists the nodes of each column, and every node's
+    ``col`` is its column. A step that reorders a column must do so in
+    place."""
     ORDERED = "ordered"
     """The order within each column is decided, and the nodes of each frame
     are next to each other in every column."""
     BORDERS = "borders"
     """Each frame has a border node above and below its nodes in every
-    column, which keep room for its outline. (They are thin nodes without a
-    rank; a placement must treat them like any other node of a column.)"""
+    column, which keep room for its outline. They are thin nodes without a
+    rank. A placement must treat them like any other node of a column."""
     Y = "y"
     """Every node has a ``y``, and no two nodes of a column overlap."""
     X = "x"
@@ -127,7 +128,7 @@ class Step:
     provides: frozenset[Fact] = frozenset()
     """What holds once it is done."""
     removes: frozenset[Fact] = frozenset()
-    """What no longer holds once it is done."""
+    """What stops holding once it is done."""
 
 
 class PipelineError(ValueError):
@@ -236,8 +237,7 @@ def _no_check(layout: Layout) -> None:
     pass
 
 
-# -------------------------------------------------------------------
-# What each fact means, as a check of the graph
+# What each fact means, as a check of the graph.
 
 
 def _is_border(v: Node) -> bool:

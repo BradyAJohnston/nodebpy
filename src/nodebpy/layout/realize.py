@@ -27,6 +27,9 @@ from .model import (
 
 
 def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
+    """Whether the layout may remove *v*: a made-up node, or a reroute that
+    has no label, is not the source a saved multi-input order names, and is
+    not linked to a fixed node."""
     if not is_real(v):
         return True
 
@@ -54,13 +57,16 @@ def is_dangling(G: LayoutGraph[Node], path: list[Node]) -> bool:
 def dissolve_reroute_edges(
     G: LayoutGraph[Node], path: list[Node], state: LayoutState
 ) -> None:
+    """Link the source of the reroute chain *path* straight to every input
+    the chain feeds, and record the links as edits. When the source already
+    feeds one of those inputs directly, *path* is emptied instead, which
+    keeps the chain."""
     first = next(G.in_links(path[0]))
 
     u, o = first.fromnode, first.fromsock
     succ_inputs = [link.tosock for link in G.out_links(path[-1])]
 
-    # Check if a reroute has been used to link the same output to the same multi-input multiple
-    # times
+    # A reroute can link an output to a multi-input it already feeds.
     for link in G.out_links(u):
         if link.fromsock == o and link.tosock in succ_inputs:
             path.clear()
@@ -72,6 +78,10 @@ def dissolve_reroute_edges(
 
 
 def remove_reroutes(CG: ClusterGraph) -> None:
+    """Take the tree's own reroutes out where :func:`is_safe_to_remove`
+    allows, linking each chain's source straight to what it feeds. In a
+    frame that holds only reroutes, a chain keeps its two ends. Chains that
+    lead nowhere or come from nowhere stay."""
     reroute_clusters = {
         c
         for c in CG.S
@@ -84,7 +94,7 @@ def remove_reroutes(CG: ClusterGraph) -> None:
                 add_dummy_edge(CG.G, u, v)
                 CG.remove_nodes_from(between)
         elif not is_dangling(CG.G, path):
-            # (Reroutes left dangling are someone's work in progress.)
+            # Reroutes left dangling are someone's work in progress.
             dissolve_reroute_edges(CG.G, path, CG.state)
             CG.remove_nodes_from(path)
 
@@ -93,6 +103,11 @@ _Y_TOL = 5
 
 
 def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
+    """Remove the nodes of the level chain *path* that a straight link
+    replaces, from the graph and from *path*: all but its two ends, and an
+    end too when it is level, within ``_Y_TOL``, with the socket it joins.
+    A chain of one dummy node goes when the sockets either side of it are
+    level."""
     G = CG.G
 
     def pred_output(w: Node) -> Socket:
@@ -141,6 +156,8 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
 
 
 def add_reroute(v: Node, state: LayoutState) -> None:
+    """Make the dummy node *v* stand for a new reroute, and record the
+    ``AddReroute`` edit."""
     assert v.cluster
     reroute = new_reroute(parent=v.cluster.node)
     state.edits.append(AddReroute(reroute))
@@ -149,12 +166,16 @@ def add_reroute(v: Node, state: LayoutState) -> None:
 
 
 def realize_edges(G: LayoutGraph[Node], state: LayoutState) -> None:
+    """Record an ``AddLink`` edit for every link that starts or ends at a
+    reroute."""
     for link in G.all_links():
         if link.fromnode.is_reroute or link.tonode.is_reroute:
             state.edits.append(AddLink(link.fromsock.dna, link.tosock.dna))
 
 
 def realize_dummy_nodes(CG: ClusterGraph) -> None:
+    """Simplify each chain of reroutes and dummy nodes, turn the dummy nodes
+    that remain into reroutes, and record the links through them."""
     for path in get_reroute_paths(
         CG, lambda v: is_safe_to_remove(v, CG.state), aligned=True
     ):
@@ -194,8 +215,9 @@ def restore_multi_input_orders(G: LayoutGraph[Node], state: LayoutState) -> None
 def realize_locations(
     G: LayoutGraph[Node], old_center: Vec2, state: LayoutState
 ) -> None:
-    # Keep the layout centred where the nodes were (in single precision,
-    # like the node locations themselves).
+    """Record a ``MoveNode`` edit for every node, with the layout centred
+    on *old_center*."""
+    # Centre in single precision, like the node locations themselves.
     offset_x = f32(old_center.x - f32(fmean([v.x for v in G])))
     offset_y = f32(old_center.y - f32(fmean([v.y for v in G])))
 
@@ -209,6 +231,7 @@ def realize_locations(
 
 
 def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
+    """Record a ``ResizeFrame`` edit for a frame with Shrink off."""
     frame = cluster.node
 
     if not frame or frame.shrink:
@@ -224,6 +247,9 @@ def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
 
 
 def realize_layout(CG: ClusterGraph, old_center: Vec2) -> None:
+    """Record the edits for the finished layout: with reroutes on, the
+    reroutes, their links and the multi-input orders, then every node's
+    position and the frames to refit."""
     if CG.state.options.reroutes != "none":
         realize_dummy_nodes(CG)
 

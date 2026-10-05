@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+"""An x for every column (:func:`assign_x_coords`)."""
 
 from __future__ import annotations
 
@@ -17,6 +18,9 @@ def frame_padding_of_col(
     i: int,
     T: DiGraph[Node | Cluster],
 ) -> float:
+    """Extra room between column *i* and the next for the outlines of the
+    frames that end or begin between them: ``FRAME_PADDING`` for each level
+    of nesting that ends, and for each that begins."""
     col = columns[i]
 
     if col == columns[-1]:
@@ -44,12 +48,17 @@ def frame_padding_of_col(
 def assign_x_coords(
     G: LayoutGraph[Node], T: DiGraph[Node | Cluster], state: LayoutState
 ) -> None:
+    """Give every node its ``x``, column by column from the left. A node is
+    centred in its column, and a reroute sits at the column's left edge.
+    The gap to the next column is the horizontal margin, widened up to
+    three times when many links leaving the column are steep, plus the
+    room frame outlines need."""
     columns: list[list[Node]] = G.columns
     x = 0
     for i, col in enumerate(columns):
         if not col:
-            # A rank whose only occupants were dummy nodes (dissolved when
-            # reroutes are not added) takes no space.
+            # A column that held only dummy nodes, since dissolved, takes
+            # no space.
             continue
         max_width = max([v.width for v in col])
 
