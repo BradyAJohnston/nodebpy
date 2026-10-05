@@ -80,6 +80,19 @@ break headless operation.
   `default_pipeline()`; a new upstream pass becomes a `Step` there.
   `ranking.compute_ranks()` takes the solver as an argument, and
   `"longest_path"` is a second ranking strategy (nodebpy-only).
+  Steps state how they depend on each other: each `Step` names the
+  `pipeline.Fact`s it `requires`, `provides` and `removes` (ranked, proper,
+  columns, ordered, borders, y, x, …). `Pipeline.check()` refuses a list of
+  steps that do not fit together before anything runs, and
+  `sugiyama_layout(..., verify=True)` checks every fact against the graph
+  after every step (`pipeline.CHECKS`), so a step or strategy that breaks an
+  invariant is named at once. A phase looks up its strategy when it runs,
+  from the settings of that run. In a C++ port the facts are the pre- and
+  postconditions of the phase functions and the checks are debug asserts.
+  `sugiyama.add_columns()` also starts every column with each frame's nodes
+  together (`graph.keep_frames_together()`): upstream's ordering stops as
+  soon as nothing crosses and could leave a column it never visited with a
+  frame split in two.
 - **No module globals.** Upstream keeps its working state (`selected`,
   `linked_sockets`, `multi_input_sort_ids`, `SETTINGS`, `MARGIN`) as module
   globals in `config.py`, reset manually per operator invocation. Here that

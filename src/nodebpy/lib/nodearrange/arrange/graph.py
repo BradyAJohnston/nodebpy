@@ -139,6 +139,10 @@ class Node:
     def __hash__(self) -> int:
         return self._serial
 
+    def __repr__(self) -> str:
+        name = repr(self.node.name) if self.node is not None else f"#{self._serial}"
+        return f"Node({name}, {self.type.name})"
+
     def bk_reset(self) -> None:
         self.root = self
         self.aligned = self
@@ -575,6 +579,30 @@ class Socket:
     @property
     def y(self) -> float:
         return self.owner.y + self._offset_y
+
+
+def keep_frames_together(col: list[Node]) -> None:
+    """Reorder *col* in place, as little as possible, so that the nodes of
+    each frame are next to each other: every frame's nodes gather where the
+    first of them is, in the order they were in.
+
+    An ordering of a column has to end with this true of it (the border
+    nodes, the placement and the frame outlines all rely on it); a strategy
+    that sorts a column by some key of its own can call this afterwards."""
+    first: dict[Cluster, int] = {}
+    chains: dict[Node, list[Cluster]] = {}
+    for i, v in enumerate(col):
+        chain = []
+        c = v.cluster
+        while c is not None:
+            chain.append(c)
+            first.setdefault(c, i)
+            c = c.cluster
+        chain.reverse()
+        chains[v] = chain
+
+    position = {v: i for i, v in enumerate(col)}
+    col.sort(key=lambda v: (*[first[c] for c in chains[v]], position[v]))
 
 
 def socket_graph(G: Tree[Node]) -> DiGraph[Socket]:

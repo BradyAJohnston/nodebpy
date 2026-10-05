@@ -35,6 +35,7 @@ def arrange_node_tree(
     *,
     pipeline: Pipeline | None = None,
     observer: Observer | None = None,
+    verify: bool = False,
 ) -> None:
     """Arrange the nodes of *ntree*.
 
@@ -42,7 +43,7 @@ def arrange_node_tree(
     arranges the user's selection; a library-loaded tree has no selection at
     all, which would silently arrange nothing.
 
-    *pipeline* and *observer* are passed on to the layout (see
+    *pipeline*, *observer* and *verify* are passed on to the layout (see
     :func:`.arrange.sugiyama.sugiyama_layout`).
     """
     settings = settings or Settings()
@@ -51,6 +52,6 @@ def arrange_node_tree(
 
     tree, binding = extract(ntree)
     result = sugiyama.sugiyama_layout(
-        tree, settings, margin, pipeline=pipeline, observer=observer
+        tree, settings, margin, pipeline=pipeline, observer=observer, verify=verify
     )
     apply(ntree, binding, result)

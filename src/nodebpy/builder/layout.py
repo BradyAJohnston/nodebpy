@@ -898,6 +898,12 @@ class SugiyamaOptions:
         connects to. ``"longest_path"`` puts every node as far right as it
         can go: faster, but a node with several consumers ends up far from
         the early ones.
+    ordering, placement, routing : str
+        The strategy for each of the layout's other phases: ordering the
+        nodes within a column, placing them along it, and routing long
+        links. Each has one built-in strategy; more can be registered with
+        ``nodebpy.lib.nodearrange.arrange.pipeline.register`` and selected
+        here by name.
     straighten_trunk : bool
         Keep the tree's main line straight. Links carrying the main data
         (geometry, shader, bundle or closure sockets, from a node's first
@@ -937,7 +943,10 @@ class SugiyamaOptions:
     balance_heights: bool = True
     balance_aspect: float = 1.6
     reroute_margin_y_fac: float = 0.35
-    ranking: Literal["network_simplex", "longest_path"] = "network_simplex"
+    ranking: str = "network_simplex"
+    ordering: str = "layer_sweep"
+    placement: str = "brandes_koepf"
+    routing: str = "bend_points"
     straighten_trunk: bool = True
     weighted_ranking: bool = False
     balance_min_column: int = 4
@@ -1019,6 +1028,9 @@ def _sugiyama_settings(options: SugiyamaOptions):
         balance_aspect=options.balance_aspect,
         reroute_margin_y_fac=options.reroute_margin_y_fac,
         ranking=options.ranking,
+        ordering=options.ordering,
+        placement=options.placement,
+        routing=options.routing,
         link_priority="flow" if options.straighten_trunk else "none",
         weighted_ranking=options.weighted_ranking,
         balance_min_column=options.balance_min_column,

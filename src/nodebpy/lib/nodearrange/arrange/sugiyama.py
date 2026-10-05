@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Iterable, Sequence
 from itertools import chain
 from statistics import fmean
 
@@ -19,10 +19,20 @@ from .graph import (
     Socket,
     get_reroute_paths,
     is_real,
+    keep_frames_together,
     node_name,
     reset_serials,
 )
-from .pipeline import Layout, Observer, Pipeline, Step, strategy
+from .pipeline import (
+    Fact,
+    Layout,
+    Observer,
+    Phase,
+    Pipeline,
+    Step,
+    StepFunction,
+    run_strategy,
+)
 from .priority import socket_priorities
 from .realize import realize_layout, remove_reroutes
 from .stacking import contracted_node_stacks, expand_node_stack
@@ -156,6 +166,10 @@ def add_columns(G: Tree[Node]) -> None:
     for col in columns:
         col.sort(key=node_name)
         col.sort(key=y_loc, reverse=True)
+        # nodebpy divergence: the ordering may leave a column as it finds it
+        # (it stops as soon as nothing crosses), so start with every frame's
+        # nodes together.
+        keep_frames_together(col)
         for v in col:
             v.col = col
 
@@ -301,9 +315,33 @@ def pin_interface_nodes(layout: Layout) -> None:
 
 
 def default_pipeline(settings: Settings | None = None) -> Pipeline:
-    """The standard layout: the steps in order, with the strategy *settings*
-    selects for each phase."""
-    settings = settings or Settings()
+    """The standard layout: the steps in order. Each phase runs the
+    strategy the settings of the layout select when it gets there.
+    (*settings* is not needed any more and is ignored.)"""
+    F = Fact
+
+    def step(
+        name: str,
+        run: StepFunction | None,
+        enabled: Callable[[Settings], bool] | None = None,
+        *,
+        phase: Phase | None = None,
+        requires: Iterable[Fact] = (),
+        provides: Iterable[Fact] = (),
+        removes: Iterable[Fact] = (),
+    ) -> Step:
+        if run is None:
+            assert phase is not None
+            run = run_strategy(phase)
+        return Step(
+            name,
+            run,
+            enabled or (lambda settings: True),
+            phase,
+            frozenset(requires),
+            frozenset(provides),
+            frozenset(removes),
+        )
 
     def reroutes(s: Settings) -> bool:
         return s.add_reroutes
@@ -317,50 +355,118 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
     return Pipeline(
         [
             # Prepare the graph.
-            Step(
+            step(
                 "prioritize_links",
                 _prioritize_links,
                 lambda s: s.link_priority != "none",
             ),
-            Step(
+            step(
                 "save_multi_input_orders",
                 lambda L: save_multi_input_orders(L.G, L.state),
             ),
-            Step("remove_reroutes", lambda L: remove_reroutes(L.CG), reroutes),
-            Step("contract_stacks", _contract_stacks, stacks),
+            step("remove_reroutes", lambda L: remove_reroutes(L.CG), reroutes),
+            step("contract_stacks", _contract_stacks, stacks, provides=[F.STACKED]),
             # Columns.
-            Step("rank", strategy("rank", settings.ranking), phase="rank"),
-            Step(
+            step("rank", None, phase="rank", provides=[F.RANKED]),
+            step(
                 "pin_interface_nodes",
                 pin_interface_nodes,
                 lambda s: s.pin_group_output or s.pin_group_input,
+                requires=[F.RANKED],
             ),
-            Step(
+            step(
                 "balance_heights",
                 lambda L: balance_column_heights(L.G, L.CG.S, L.state),
                 lambda s: s.balance_heights,
+                requires=[F.RANKED],
             ),
-            Step("merge_edges", lambda L: L.CG.merge_edges()),
-            Step("insert_dummy_nodes", lambda L: L.CG.insert_dummy_nodes()),
-            Step("add_columns", lambda L: add_columns(L.G)),
+            step("merge_edges", lambda L: L.CG.merge_edges(), requires=[F.RANKED]),
+            step(
+                "insert_dummy_nodes",
+                lambda L: L.CG.insert_dummy_nodes(),
+                requires=[F.RANKED],
+                provides=[F.PROPER],
+            ),
+            step(
+                "add_columns",
+                lambda L: add_columns(L.G),
+                requires=[F.RANKED],
+                provides=[F.COLUMNS],
+            ),
             # Order within the columns.
-            Step("order", strategy("order", settings.ordering), phase="order"),
+            step(
+                "order",
+                None,
+                phase="order",
+                requires=[F.PROPER, F.COLUMNS],
+                provides=[F.ORDERED],
+            ),
             # Positions along the columns.
-            Step("add_frame_borders", _add_frame_borders),
-            Step("place", strategy("place", settings.placement), phase="place"),
-            Step(
+            step(
+                "add_frame_borders",
+                _add_frame_borders,
+                requires=[F.ORDERED],
+                provides=[F.BORDERS],
+            ),
+            step(
+                "place",
+                None,
+                phase="place",
+                requires=[F.ORDERED, F.BORDERS],
+                provides=[F.Y],
+            ),
+            step(
                 "dissolve_dummy_nodes",
                 lambda L: dissolve_dummy_nodes(L.CG),
                 no_reroutes,
+                requires=[F.Y],
+                removes=[F.PROPER],
             ),
-            Step("align_reroutes", lambda L: align_reroutes_with_sockets(L.CG)),
-            Step("remove_frame_borders", _remove_frame_borders),
+            step(
+                "align_reroutes",
+                lambda L: align_reroutes_with_sockets(L.CG),
+                requires=[F.Y],
+            ),
+            step(
+                "remove_frame_borders",
+                _remove_frame_borders,
+                requires=[F.BORDERS],
+                removes=[F.BORDERS],
+            ),
             # Positions across the columns, and the links between them.
-            Step("space_columns", lambda L: assign_x_coords(L.G, L.T, L.state)),
-            Step("route", strategy("route", settings.routing), reroutes, phase="route"),
+            step(
+                "space_columns",
+                lambda L: assign_x_coords(L.G, L.T, L.state),
+                requires=[F.COLUMNS, F.Y],
+                provides=[F.X],
+            ),
+            step(
+                "route",
+                None,
+                reroutes,
+                phase="route",
+                requires=[F.PROPER, F.X],
+                provides=[F.ROUTED],
+                # Bend points are new nodes, outside the ranks and columns.
+                removes=[F.RANKED, F.PROPER, F.COLUMNS],
+            ),
             # Write the result out.
-            Step("expand_stacks", _expand_stacks, stacks),
-            Step("realize", lambda L: realize_layout(L.CG, L.old_center)),
+            step(
+                "expand_stacks",
+                _expand_stacks,
+                stacks,
+                requires=[F.STACKED, F.X],
+                # The nodes of a stack come back without a rank or column.
+                removes=[F.STACKED, F.RANKED, F.PROPER, F.COLUMNS],
+            ),
+            step(
+                "realize",
+                lambda L: realize_layout(L.CG, L.old_center),
+                requires=[F.X],
+                provides=[F.REALIZED],
+                # Chains of dummy nodes become reroutes, fewer than columns.
+                removes=[F.PROPER],
+            ),
         ]
     )
 
@@ -372,13 +478,17 @@ def sugiyama_layout(
     *,
     pipeline: Pipeline | None = None,
     observer: Observer | None = None,
+    verify: bool = False,
 ) -> LayoutResult:
     """Lay out *tree* and return the edits that realise the layout.
 
     *tree* is only read. *margin* is the horizontal and vertical room to
     leave between nodes. *pipeline* replaces the steps of
     :func:`default_pipeline`; *observer* is called after each step (see
-    :class:`~.pipeline.Pipeline`).
+    :class:`~.pipeline.Pipeline`). With *verify* the graph is checked after
+    every step, and a step that breaks an invariant raises
+    :class:`~.pipeline.InvariantError` (slower; for tests and for developing
+    steps and strategies).
     """
     reset_serials()
     state = LayoutState(tree=tree, settings=settings or Settings())
@@ -394,5 +504,5 @@ def sugiyama_layout(
 
     precompute_links(state)
     layout = Layout(ClusterGraph(get_tree(state), state), old_center)
-    (pipeline or default_pipeline(state.settings)).run(layout, observer)
+    (pipeline or default_pipeline()).run(layout, observer, verify=verify)
     return LayoutResult(state.edits)

@@ -207,12 +207,13 @@ def test_layout_keeps_no_graphs_alive():
 @pytest.mark.parametrize("seed", range(40))
 @pytest.mark.parametrize("add_reroutes", [False, True])
 def test_random_tree(seed, add_reroutes):
-    """Every node is placed (or, for a reroute, replaced), none overlap, and
-    the same tree gives the same layout again."""
+    """Every step leaves the graph as it promises, every node is placed (or,
+    for a reroute, replaced), none overlap, and the same tree gives the same
+    layout again."""
     settings = Settings(add_reroutes=add_reroutes, iterations=5)
     tree = random_tree(seed)
 
-    result = sugiyama_layout(tree, settings, MARGIN)
+    result = sugiyama_layout(tree, settings, MARGIN, verify=True)
 
     moved = {edit.node for edit in result.edits if isinstance(edit, MoveNode)}
     removed = {edit.node for edit in result.edits if isinstance(edit, RemoveNode)}
