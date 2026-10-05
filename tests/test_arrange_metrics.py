@@ -260,7 +260,6 @@ def _arranged(name: str, options: SugiyamaOptions | None = None) -> LayoutMetric
 # until it is taken off this list.
 KNOWN_DEFECTS = {
     "shader_material": "one avoidable crossing",
-    "annotated": "the note frame is put on top of another frame",
 }
 
 

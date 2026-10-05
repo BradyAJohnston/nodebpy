@@ -950,6 +950,11 @@ class SugiyamaOptions:
         Draw each zone (simulation, repeat, for-each, closure) as a row:
         its input node, the nodes its data passes through and its output
         node in one straight line, like the main line of the tree.
+    pack_components : bool
+        Lay out the parts of the tree that are not linked to each other
+        apart: the largest first, the others (a second group of nodes, a
+        frame holding a note) in rows beneath it. Off, the whole tree is
+        laid out as one graph and unrelated parts share its columns.
     """
 
     # Defaults calibrated against hand-approved node-arrange addon output
@@ -981,6 +986,7 @@ class SugiyamaOptions:
     pin_group_output: bool = True
     pin_group_input: bool = False
     straighten_zones: bool = True
+    pack_components: bool = True
 
 
 type ArrangeMethod = (
@@ -1067,6 +1073,7 @@ def _sugiyama_settings(options: SugiyamaOptions):
         pin_group_output=options.pin_group_output,
         pin_group_input=options.pin_group_input,
         straighten_zones=options.straighten_zones,
+        pack_components=options.pack_components,
     )
 
 

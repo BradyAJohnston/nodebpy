@@ -526,6 +526,8 @@ def _order_and_crossings(tree: bNodeTree, **settings) -> tuple[list[list[str]], 
                 count_crossings(layout.G, columns, layout.settings.crossing_weights),
             )
 
+    # (As one graph: the parts of these trees are not linked.)
+    settings = {"pack_components": False, **settings}
     sugiyama_layout(tree, Settings(**settings), observer=observer, verify=True)
     if settings.get("ordering", "layer_sweep") == "layer_sweep":
         # (Upstream's ordering can end with more crossings than it began.)
@@ -555,7 +557,7 @@ def test_count_crossings():
             counts["uncrossed"] = count_crossings(layout.G, columns)
             columns[1].reverse()
 
-    sugiyama_layout(_crossed(), Settings(), observer=observer)
+    sugiyama_layout(_crossed(), Settings(pack_components=False), observer=observer)
     assert counts == {"by name": 1, "uncrossed": 0}
 
     # Links fanning out of one socket never cross each other.
@@ -612,7 +614,12 @@ def test_crossings_weighed_by_what_links_carry():
         seen["order"] = [v.node.name for v in columns[1]]
         seen["after"] = count_crossings(G, columns, CrossingWeights())
 
-    sugiyama_layout(_trade_off(), Settings(), observer=observer, verify=True)
+    sugiyama_layout(
+        _trade_off(),
+        Settings(pack_components=False),
+        observer=observer,
+        verify=True,
+    )
     assert seen == {
         "count": 2,
         "even": 2,

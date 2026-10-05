@@ -85,6 +85,10 @@ class Settings:
     # through the nodes its data passes to its output node (see
     # priority.zone_priorities).
     straighten_zones: bool = True
+    # nodebpy divergence: lay out the parts of the tree that are not linked
+    # to each other apart, the largest first and the others in rows beneath
+    # it (see arrange.packing), instead of as one graph sharing columns.
+    pack_components: bool = True
 
 
 DEFAULT_MARGIN = (200.0, 20.0)

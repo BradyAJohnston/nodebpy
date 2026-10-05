@@ -8,9 +8,10 @@ from statistics import fmean
 
 from ..config import LayoutState, Settings
 from ..dna import bNode, bNodeLink, bNodeTree
+from . import packing
 from .balancing import balance_column_heights
 from .common import Vec2, f32, group_by, segments_intersect
-from .edits import LayoutResult, RemoveLink
+from .edits import Edit, LayoutResult, MoveNode, RemoveLink
 from .graph import (
     Cluster,
     ClusterGraph,
@@ -632,7 +633,34 @@ def sugiyama_layout(
     xs, ys = zip(*locs)
     old_center = Vec2(f32(fmean(xs)), f32(fmean(ys)))
 
-    precompute_links(state)
-    layout = Layout(ClusterGraph(get_tree(state), state), old_center)
-    (pipeline or default_pipeline()).run(layout, observer, verify=verify)
-    return LayoutResult(state.edits)
+    def lay_out(part: bNodeTree) -> list[Edit]:
+        part_state = LayoutState(part, state.settings, state.margin)
+        precompute_links(part_state)
+        layout = Layout(ClusterGraph(get_tree(part_state), part_state), old_center)
+        (pipeline or default_pipeline()).run(layout, observer, verify=verify)
+        return part_state.edits
+
+    parts = packing.components(tree) if state.settings.pack_components else []
+    if len(parts) < 2:
+        return LayoutResult(lay_out(tree))
+
+    # The part with the most nodes first; the others, largest first, are
+    # packed beneath it.
+    parts.sort(key=len, reverse=True)
+    laid_out = [lay_out(packing.subtree(tree, part)) for part in parts]
+    boxes = [packing.bounds(edits) for edits in laid_out]
+    placed = [(edits, box) for edits, box in zip(laid_out, boxes) if box is not None]
+    gap = Vec2(state.margin.x, f32(3 * state.margin.y))
+    offsets = packing.pack([box for _, box in placed], gap)
+    offset_of = {id(edits): offset for (edits, _), offset in zip(placed, offsets)}
+    edits: list[Edit] = []
+    for part_edits in laid_out:
+        edits += packing.moved(part_edits, offset_of.get(id(part_edits), (0.0, 0.0)))
+
+    # Keep the whole centred where the nodes were, as a single part is.
+    corners = [e.top_left for e in edits if isinstance(e, MoveNode)]
+    shift = (
+        f32(old_center.x - f32(fmean(x for x, _ in corners))),
+        f32(old_center.y - f32(fmean(y for _, y in corners))),
+    )
+    return LayoutResult(packing.moved(edits, shift))

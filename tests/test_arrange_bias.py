@@ -14,6 +14,7 @@ from nodebpy.lib.nodearrange.arrange.priority import (
     socket_priorities,
 )
 from nodebpy.lib.nodearrange.arrange.tree import Tree
+from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
 from nodebpy.lib.nodearrange.extract import extract
 
@@ -269,6 +270,10 @@ def _plain(tree: bNodeTree, name: str, idname="GeometryNodeSetPosition") -> bNod
 def _columns(tree: bNodeTree, settings=None) -> dict[str, float]:
     from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 
+    # As one graph: the trees here are several unlinked chains, and a node
+    # is held to the first or last column of the part it is in.
+    settings = settings or Settings()
+    settings.pack_components = False
     result = sugiyama_layout(tree, settings, (50.0, 20.0), verify=True)
     return {node.name: x for node, (x, _) in result.positions().items()}
 

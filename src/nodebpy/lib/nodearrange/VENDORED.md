@@ -213,6 +213,13 @@ break headless operation.
   `bNodeTree::zones()` instead. (Treating a zone as a frame, to keep other
   nodes out of its outline, was tried and dropped: more crossings and a
   less clear picture.)
+- **Packing** (nodebpy-only, `Settings.pack_components`):
+  `sugiyama_layout()` splits the tree into its unconnected parts
+  (`packing.components()`), runs the pipeline on each
+  (`packing.subtree()`) and shifts each part's `MoveNode` edits so the
+  boxes sit in rows under the largest (`packing.pack()`). An observer is
+  therefore called once per step per part. Upstream lays the whole
+  selection out as one graph.
 - **Robustness** (nodebpy-only):
   - `sugiyama.cycle_links()`: the layout drops the links that close a cycle
     itself rather than rely on Blender having marked one invalid, and
