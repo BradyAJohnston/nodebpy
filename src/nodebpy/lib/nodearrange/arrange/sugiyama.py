@@ -284,10 +284,8 @@ def dissolve_clear_dummy_nodes(CG: ClusterGraph) -> None:
         preserve_reroute_clusters=False,
     )
     for path in paths:
-        first = next(G.in_links(path[0]), None)
-        if first is None:
-            continue
-        output = first.fromsock
+        # (A chain of dummy nodes always has the link it came from behind it.)
+        output = next(G.in_links(path[0])).fromsock
         inputs = [link.tosock for link in G.out_links(path[-1])]
         if not all(link_is_clear(output, i, obstacles) for i in inputs):
             continue

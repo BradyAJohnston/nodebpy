@@ -267,3 +267,29 @@ def test_reroute_links_option_on_the_public_api():
     arrange_cases.reset_locations(tree)
     arrange(tree, SugiyamaOptions(add_reroutes=True, reroute_links="blocked"))
     assert measure(tree).links_through_nodes == 0
+
+
+def test_link_is_clear():
+    from nodebpy.lib.nodearrange.arrange.graph import Kind, Node, Socket
+    from nodebpy.lib.nodearrange.arrange.sugiyama import link_is_clear
+
+    def box(x: float, top: float, width: float = 100.0, height: float = 100.0):
+        v = Node(type=Kind.DUMMY)
+        v.x, v.y, v.width, v.height = x, top, width, height
+        return v
+
+    source, target = box(0.0, 0.0), box(600.0, 0.0)
+    start, end = Socket(source, 0, True), Socket(target, 0, False)
+
+    assert link_is_clear(start, end, [source, target])
+    # A node on the way, one well off it, and one beyond the far end.
+    assert not link_is_clear(start, end, [box(300.0, 50.0)])
+    assert link_is_clear(start, end, [box(300.0, 300.0), box(300.0, -200.0)])
+    assert link_is_clear(start, end, [box(900.0, 50.0)])
+    # A link that only dips where the curve bends still hits what is there.
+    low = box(600.0, -400.0)
+    dipping = Socket(low, 0, False)
+    assert not link_is_clear(start, dipping, [box(250.0, -150.0)])
+    assert link_is_clear(start, dipping, [box(250.0, 300.0)])
+    # Too close to count as clear: within the clearance of the socket.
+    assert not link_is_clear(start, end, [box(102.0, 50.0, width=20.0)])
