@@ -33,6 +33,7 @@ together is refused before it runs (:meth:`Pipeline.check`), and with
 
 from __future__ import annotations
 
+import itertools
 import time
 from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass, field, replace
@@ -332,7 +333,7 @@ def _check_y(layout: Layout) -> None:
         assert v.y is not None, f"{v!r} has no y"  # type: ignore[redundant-expr]
     for col in getattr(G, "columns", ()):
         placed = [v for v in col if v in G]
-        for above, below in zip(placed, placed[1:]):
+        for above, below in itertools.pairwise(placed):
             assert above.y - above.height >= below.y - 0.01, (
                 f"{above!r} (y {above.y:g}, height {above.height:g}) overlaps "
                 f"{below!r} (y {below.y:g}) below it in its column"
