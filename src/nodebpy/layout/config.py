@@ -41,7 +41,7 @@ class SugiyamaOptions:
         the tree's own reroutes are replaced.
     stack_collapsed : bool
         Stack chains of collapsed Math nodes vertically.
-    optimize_sizes : bool
+    fit_collapsed_widths : bool
         Fit the widths of collapsed nodes to their display name.
     straighten_trunk : bool
         Align the trunk first, so that the flow links (geometry, shader,
@@ -52,7 +52,7 @@ class SugiyamaOptions:
     pin_group_input : bool
         Put Group Input nodes (outside frames) in the first column. Off,
         they sit next to the nodes they feed.
-    sequential_frames : bool
+    frames_as_stages : bool
         Put every node of a frame in a later column than every node of
         the frame, or node outside frames, that feeds it. Frames then line
         up left to right.
@@ -76,11 +76,11 @@ class SugiyamaOptions:
     socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "NONE"
     reroutes: Literal["none", "blocked", "all"] = "none"
     stack_collapsed: bool = True
-    optimize_sizes: bool = False
+    fit_collapsed_widths: bool = False
     straighten_trunk: bool = True
     pin_group_output: bool = True
     pin_group_input: bool = False
-    sequential_frames: bool = True
+    frames_as_stages: bool = True
     balance_heights: bool = True
     pack_components: bool = True
     seed: int = 0
@@ -91,7 +91,7 @@ SIMPLE_OPTIONS = SugiyamaOptions(
     stack_collapsed=False,
     straighten_trunk=False,
     pin_group_output=False,
-    sequential_frames=False,
+    frames_as_stages=False,
     balance_heights=False,
     pack_components=False,
 )

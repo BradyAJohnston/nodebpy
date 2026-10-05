@@ -118,11 +118,11 @@ def test_plot_collapsed_and_framed_tree():
     before = to_plot(
         tree.tree, PLOT_DIR / "PlotShowcase_0_before.png", title="PlotShowcase — before"
     )
-    arrange(tree.tree, SugiyamaOptions(optimize_sizes=True))
+    arrange(tree.tree, SugiyamaOptions(fit_collapsed_widths=True))
     after = to_plot(
         tree.tree,
         PLOT_DIR / "PlotShowcase_1_sugiyama.png",
-        title="PlotShowcase — sugiyama (optimize_sizes)",
+        title="PlotShowcase — sugiyama (fit_collapsed_widths)",
     )
 
     for path in (before, after):

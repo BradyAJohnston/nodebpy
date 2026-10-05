@@ -184,7 +184,9 @@ def test_default_sugiyama_options_apply_within_their_scope_only():
 
 def test_options_of_one_run_do_not_reach_the_next():
     reference = _build_chain("LeakReference", "sugiyama")
-    _build_chain("LeakCustom", SugiyamaOptions(reroutes="all", optimize_sizes=True))
+    _build_chain(
+        "LeakCustom", SugiyamaOptions(reroutes="all", fit_collapsed_widths=True)
+    )
     repeat = _build_chain("LeakRepeat", "sugiyama")
 
     assert _locations(repeat.tree) == _locations(reference.tree)
@@ -224,15 +226,15 @@ def test_isolated_chain_of_collapsed_math_nodes_is_stacked():
 
 
 # ---------------------------------------------------------------------------
-# optimize_sizes
+# fit_collapsed_widths
 # ---------------------------------------------------------------------------
 
 
-def test_optimize_sizes_fits_collapsed_nodes_to_their_names():
+def test_fit_collapsed_widths_fits_collapsed_nodes_to_their_names():
     """Add and Multiply have display names of different lengths, so the
     collapsed Math nodes get different widths, none the default 140."""
     with TreeBuilder(
-        "OptimizeSizes", arrange=SugiyamaOptions(optimize_sizes=True)
+        "OptimizeSizes", arrange=SugiyamaOptions(fit_collapsed_widths=True)
     ) as tree:
         geo = tree.inputs.geometry()
         out = tree.outputs.geometry()
@@ -247,7 +249,7 @@ def test_optimize_sizes_fits_collapsed_nodes_to_their_names():
     assert len(widths) == 2 and 140.0 not in widths
 
 
-def test_optimize_sizes_widens_a_node_with_a_long_label():
+def test_fit_collapsed_widths_widens_a_node_with_a_long_label():
     """The display name is the label, or else the Math operation, the node
     group's name or the image's name."""
     image = bpy.data.images.new("SizeTex", 2, 2)
@@ -266,7 +268,7 @@ def test_optimize_sizes_widens_a_node_with_a_long_label():
         for node in nodes.values():
             node.node.hide = True
 
-    arrange(tree.tree, SugiyamaOptions(optimize_sizes=True))
+    arrange(tree.tree, SugiyamaOptions(fit_collapsed_widths=True))
 
     widths = {key: node.node.width for key, node in nodes.items()}
     assert widths["label"] > 140.0
@@ -274,7 +276,7 @@ def test_optimize_sizes_widens_a_node_with_a_long_label():
     bpy.data.images.remove(image)
 
 
-def test_optimize_sizes_fits_a_shader_image_node_to_its_image_name():
+def test_fit_collapsed_widths_fits_a_shader_image_node_to_its_image_name():
     """The two collapsed Math nodes after it are joined by two links, which
     both survive."""
     image = bpy.data.images.new("A Long Name For A Shader Image", 2, 2)
@@ -288,7 +290,7 @@ def test_optimize_sizes_fits_a_shader_image_node_to_its_image_name():
             node.hide = True
     width, links = tex.node.width, len(tree.tree.links)
 
-    arrange(tree.tree, SugiyamaOptions(optimize_sizes=True, stack_collapsed=True))
+    arrange(tree.tree, SugiyamaOptions(fit_collapsed_widths=True, stack_collapsed=True))
 
     assert tex.node.width != width
     assert tex.node.location.x < first.node.location.x < second.node.location.x

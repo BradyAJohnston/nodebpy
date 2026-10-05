@@ -11,7 +11,7 @@ from bpy.types import NodeTree
 
 from .apply import apply
 from .config import SIMPLE_OPTIONS, SugiyamaOptions
-from .extract import extract, optimize_sizes
+from .extract import extract, fit_collapsed_widths
 from .pipeline import Observer, Pipeline
 from .sugiyama import sugiyama_layout
 
@@ -68,8 +68,8 @@ def arrange(
     else:
         options = _DEFAULT_SUGIYAMA.get() or SugiyamaOptions()
 
-    if options.optimize_sizes:
-        optimize_sizes(tree.nodes)
+    if options.fit_collapsed_widths:
+        fit_collapsed_widths(tree.nodes)
 
     data, binding = extract(tree)
     result = sugiyama_layout(

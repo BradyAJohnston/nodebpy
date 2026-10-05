@@ -74,7 +74,7 @@ def _label_width(text: str) -> float:
     )
 
 
-def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
+def fit_collapsed_widths(nodes: Iterable[BlenderNode]) -> None:
     """Set the width of every collapsed node to fit its display name."""
     for node in nodes:
         if not node.hide:

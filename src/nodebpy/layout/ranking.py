@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 def get_nesting_graph(CG: ClusterGraph) -> LayoutGraph[Node]:
     """A copy of the layout graph with each cluster's left and right border
     nodes, linked so that everything in a cluster is ranked between them.
-    With ``sequential_frames`` the frame-sequence links are added too."""
+    With ``frames_as_stages`` the frame-sequence links are added too."""
     H = CG.G.copy()
     for u, v in CG.T.edges():
         if isinstance(u, Cluster):
@@ -44,7 +44,7 @@ def get_nesting_graph(CG: ClusterGraph) -> LayoutGraph[Node]:
                 H.add_link(u.left, v.left)
                 H.add_link(v.right, u.right)
 
-    if CG.state.options.sequential_frames:
+    if CG.state.options.frames_as_stages:
         add_frame_sequence_edges(CG, H)
 
     return H

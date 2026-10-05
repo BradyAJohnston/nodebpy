@@ -54,7 +54,7 @@ SETTINGS: dict[str, dict[str, Any]] = {
     "plain": {
         "direction": "RIGHT_DOWN",
         "stack_collapsed": False,
-        "sequential_frames": False,
+        "frames_as_stages": False,
         "balance_heights": False,
         "straighten_trunk": False,
         "pin_group_output": False,

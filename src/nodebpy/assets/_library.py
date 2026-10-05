@@ -1522,9 +1522,9 @@ def _arrange_options_from_args(args) -> SugiyamaOptions | None:
     if not args.stack_collapsed:
         overrides["stack_collapsed"] = False
     if args.optimize_sizes:
-        overrides["optimize_sizes"] = True
+        overrides["fit_collapsed_widths"] = True
     if not args.sequential_frames:
-        overrides["sequential_frames"] = False
+        overrides["frames_as_stages"] = False
     if not args.balance_heights:
         overrides["balance_heights"] = False
     return SugiyamaOptions(**overrides) if overrides else None

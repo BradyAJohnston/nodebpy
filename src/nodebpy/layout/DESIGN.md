@@ -139,7 +139,7 @@ off the nodes that stay put.
 - **Rank** (`ranking.py`). Network simplex: columns chosen so the links are
   as short as possible in total. Every link has weight 1. Frames add
   constraints: a frame's nodes stay between its two border nodes, and with
-  `sequential_frames` a frame comes wholly after the frame that feeds it.
+  `frames_as_stages` a frame comes wholly after the frame that feeds it.
 - **Order** (`ordering.py`). Graphviz dot's recipe, deterministic for a
   given `seed`. From a few fixed starting orders, and on small graphs a few
   shuffled ones, sweep back and forth over the columns, putting each node

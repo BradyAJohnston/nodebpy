@@ -478,8 +478,8 @@ def test_cli_arrange_options_mapping():
         direction="BALANCED",
         socket_alignment="FULL",
         stack_collapsed=False,
-        optimize_sizes=True,
-        sequential_frames=False,
+        fit_collapsed_widths=True,
+        frames_as_stages=False,
         balance_heights=False,
     )
 

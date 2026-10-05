@@ -30,7 +30,8 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 ### Breaking Changes
 
-- `SugiyamaOptions` fields are now `margin`, `direction`, `socket_alignment`, `reroutes`, `stack_collapsed`, `optimize_sizes`, `straighten_trunk`, `pin_group_output`, `pin_group_input`, `sequential_frames`, `balance_heights`, `pack_components`, `seed`.
+- `SugiyamaOptions` fields are now `margin`, `direction`, `socket_alignment`, `reroutes`, `stack_collapsed`, `fit_collapsed_widths`, `straighten_trunk`, `pin_group_output`, `pin_group_input`, `frames_as_stages`, `balance_heights`, `pack_components`, `seed`.
+- `optimize_sizes` is renamed `fit_collapsed_widths` and `sequential_frames` is renamed `frames_as_stages`. The asset build's `--optimize-sizes` and `--no-sequential-frames` flags keep their names.
     - `add_reroutes=True` becomes `reroutes="all"`. `build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.
     - Removed: `iterations`, `stack_margin_y_fac`, `reroute_margin_y_fac`, `balance_aspect`, `keep_reroutes_outside_frames`. The asset build still accepts their flags and ignores them.
 - `SimpleOptions` and `arrange_tree` are removed. `arrange(tree, "simple")` now uses the layered layout with the `SIMPLE_OPTIONS` preset.

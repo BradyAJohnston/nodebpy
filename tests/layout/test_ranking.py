@@ -85,15 +85,15 @@ def _frame_fed_early() -> bNodeTree:
     return tree
 
 
-def test_sequential_frames_put_a_frame_after_the_frame_feeding_it():
-    at = positions(_frame_fed_early(), sequential_frames=True)
+def test_frames_as_stages_put_a_frame_after_the_frame_feeding_it():
+    at = positions(_frame_fed_early(), frames_as_stages=True)
     assert at["a3"][0] < at["b1"][0]
 
-    at = positions(_frame_fed_early(), sequential_frames=False)
+    at = positions(_frame_fed_early(), frames_as_stages=False)
     assert at["b1"][0] == at["a2"][0]
 
 
-def test_sequential_frames_leave_unlinked_frames_sharing_columns():
+def test_frames_as_stages_leave_unlinked_frames_sharing_columns():
     """Two frames fed by one node and feeding another are branches, not
     stages: their nodes share a column."""
     tree = bNodeTree()
@@ -104,7 +104,7 @@ def test_sequential_frames_leave_unlinked_frames_sharing_columns():
         tree.add_link(source.outputs[0], node.inputs[0])
         tree.add_link(node.outputs[0], join.inputs[0], i)
 
-    at = positions(tree, sequential_frames=True)
+    at = positions(tree, frames_as_stages=True)
 
     assert at["source"][0] < at["x"][0] == at["y"][0] < at["join"][0]
 
