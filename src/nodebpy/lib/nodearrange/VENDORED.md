@@ -207,8 +207,8 @@ break headless operation.
   `dna.bNodeTree.zones` from its input node to its output node, and
   `priority.zone_priorities()` gives the sockets along it a priority above
   any other, so the placement aligns the spine before any other trunk.
-  `y_coords.inner_shift()` aligns the sockets of a spine link whatever
-  `socket_alignment` says, so the spine is one straight line. `zones.py`
+  `y_coords.inner_shift()` aligns the tops of the nodes along a spine
+  whatever `socket_alignment` says, so the zone is one level row. `zones.py`
   finds the zones for a tree read from Python; a port reads
   `bNodeTree::zones()` instead. (Treating a zone as a frame, to keep other
   nodes out of its outline, was tried and dropped: more crossings and a

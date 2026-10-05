@@ -198,13 +198,17 @@ def inner_shift(G: Tree[Node], is_right: bool, is_up: bool, state: LayoutState) 
     priorities = state.socket_priority
     for root in dict.fromkeys(v.root for v in G):
         for v, w in pairwise(iter_block(root)):
-            # The spine of a zone is one straight line whatever the nodes'
-            # sizes (nodebpy addition).
-            on_spine = bool(priorities) and any(
-                link_priority(link, priorities) >= SPINE_MIN_PRIORITY
-                for link in G.links_between(v, w)
+            # The nodes along the spine of a zone have their tops level
+            # whatever their sizes (nodebpy addition).
+            on_spine = (
+                bool(priorities)
+                and not (v.is_reroute or w.is_reroute)
+                and any(
+                    link_priority(link, priorities) >= SPINE_MIN_PRIORITY
+                    for link in G.links_between(v, w)
+                )
             )
-            if not on_spine and not should_use_inner_shift(v, w, is_right, state):
+            if on_spine or not should_use_inner_shift(v, w, is_right, state):
                 w.inner_shift = v.inner_shift
                 continue
 

@@ -81,8 +81,9 @@ class Settings:
     # held to the first or last column with `dna.bNode.layer`.)
     pin_group_output: bool = True
     pin_group_input: bool = False
-    # nodebpy divergence: draw each zone as a row, from its input node
-    # through the nodes its data passes to its output node (see
+    # nodebpy divergence: draw each zone as a row with the node tops level,
+    # from its input node through the nodes its data passes to its output
+    # node (see
     # priority.zone_priorities).
     straighten_zones: bool = True
 

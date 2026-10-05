@@ -120,7 +120,7 @@ def socket_priorities(tree: bNodeTree, mode: str = "flow") -> dict[bNodeSocket, 
 def zone_spine(
     zone: bNodeTreeZone, tree: bNodeTree, taken: set[bNodeLink] | None = None
 ) -> list[bNodeLink]:
-    """The links to draw as the straight line through *zone*, from its
+    """The links along which *zone* is drawn as a row, from its
     input node to its output node: of the ways through the zone, the one
     that keeps to the spines of the zones inside it (*taken*), then has the
     most links carrying the main data, then is the longest. Empty when the
