@@ -147,13 +147,18 @@ def _extract_node(node: BlenderNode) -> bNode:
     return data
 
 
-def extract(ntree: NodeTree) -> tuple[bNodeTree, Binding]:
-    """The plain-data copy of *ntree*, and the binding back to it."""
+def extract(
+    ntree: NodeTree, *, selected_only: bool = False
+) -> tuple[bNodeTree, Binding]:
+    """The plain-data copy of *ntree*, and the binding back to it. With
+    *selected_only* the copy says which nodes are selected, and the layout
+    arranges those alone; otherwise every node counts as selected."""
     tree = bNodeTree()
     binding = Binding()
     data_of: dict[BlenderNode, bNode] = {}
     for node in ntree.nodes:
         data = tree.add_node(_extract_node(node))
+        data.select = node.select or not selected_only
         data_of[node] = data
         binding.nodes[data] = node
 
@@ -178,8 +183,6 @@ def extract(ntree: NodeTree) -> tuple[bNodeTree, Binding]:
         tosock = socket_of[link.to_socket]
         data_link = tree.add_link(fromsock, tosock, link.multi_input_sort_id)
         data_link.is_valid = link.is_valid
-        if not link.is_valid:
-            continue
 
         # Only sockets with a link need a position.
         for socket, bpy_socket in (

@@ -66,10 +66,16 @@ def test_only_the_closing_links_of_cycles_are_ignored():
     assert cycle_links(tree) == back
     assert not cycle_links(tree) & set(forward)
 
-    # Invalid links never count, so they cannot close a cycle either.
+    # Marked invalid, as Blender marks the link closing a cycle, they are
+    # still the ones left out.
     for link in back:
         link.is_valid = False
-    assert cycle_links(tree) == set()
+    assert cycle_links(tree) == back
+
+    # An invalid link that closes no cycle is kept: Blender also calls a
+    # link between sockets that do not fit invalid, and still draws it.
+    forward[2].is_valid = False
+    assert cycle_links(tree) == back
 
 
 def test_linked_socket_without_a_location_is_reported():

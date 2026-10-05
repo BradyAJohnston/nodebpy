@@ -59,6 +59,10 @@ class bNode:
     """The frame the node is in."""
     is_collapsed: bool = False
     """Drawn as a header only (``NODE_COLLAPSED``, Python's ``hide``)."""
+    select: bool = True
+    """Whether the layout is to arrange the node (``NODE_SELECT``, when an
+    operator arranges the selection). Nodes that are not selected stay
+    where they are and links to them are left out of account."""
     layer: Literal["first", "last"] | None = None
     """Hold the node to the first or the last column. Not something Blender
     stores: a request to the layout, which follows it where nothing comes
@@ -121,7 +125,9 @@ class bNodeLink:
     multi_input_sort_id: int = 0
     """Position among the links into a multi-input socket."""
     is_valid: bool = True
-    """``NODE_LINK_VALID``; the layout ignores invalid links."""
+    """``NODE_LINK_VALID``. Blender clears it for a link that closes a
+    cycle, but also for one between sockets that do not fit, which is still
+    drawn; so the layout goes by every link and breaks cycles itself."""
 
 
 @dataclass(eq=False, slots=True)

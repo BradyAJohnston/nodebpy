@@ -46,9 +46,13 @@ from . import ordering, ranking, y_coords  # noqa: F401  isort: skip
 
 
 def cycle_links(tree: bNodeTree) -> set[bNodeLink]:
-    """The valid links of *tree* that close a cycle: those found leading
-    back to a node still being visited, in a depth-first walk over the nodes
-    and links in the tree's order. Without them the rest is acyclic."""
+    """The links of *tree* to leave out so that the rest has no cycle.
+
+    Among the links Blender calls valid, those found leading back to a node
+    still being visited in a depth-first walk over the nodes and links in
+    the tree's order (none, in a tree that comes from Blender, which marks
+    a link of every cycle invalid). Then each invalid link is taken in
+    unless it would close a cycle with what has been taken in so far."""
     out_links: dict[bNode, list[bNodeLink]] = {n: [] for n in tree.nodes}
     for link in tree.links:
         if link.is_valid and link.fromnode in out_links:
@@ -77,19 +81,44 @@ def cycle_links(tree: bNodeTree) -> set[bNodeLink]:
                 active.discard(node)
                 done.add(node)
 
+    for links in out_links.values():
+        links[:] = [link for link in links if link not in back]
+
+    def reaches(start: bNode, goal: bNode) -> bool:
+        seen = {start}
+        pending = [start]
+        while pending:
+            node = pending.pop()
+            if node is goal:
+                return True
+            for link in out_links.get(node, ()):
+                if link.tonode not in seen:
+                    seen.add(link.tonode)
+                    pending.append(link.tonode)
+        return False
+
+    for link in tree.links:
+        if link.is_valid or link.fromnode not in out_links:
+            continue
+        if reaches(link.tonode, link.fromnode):
+            back.add(link)
+        else:
+            out_links[link.fromnode].append(link)
+
     return back
 
 
 def precompute_links(state: LayoutState) -> None:
-    """Index the links the layout goes by: the valid ones, less those that
-    close a cycle (Blender marks one link of a cycle invalid itself; this
-    covers trees that come from elsewhere)."""
+    """Index the links the layout goes by: all of them, less those that
+    close a cycle. (Upstream goes by Blender's ``is_valid``, which is also
+    cleared for links that are merely between sockets that do not fit;
+    those are still drawn, and still say where a node belongs.)"""
     # Headless divergence: links into a collapsed panel's sockets report
     # ``is_hidden`` (Blender draws them to the panel header); they still
     # carry data, so they still order the nodes.
     ignored = cycle_links(state.tree)
     for link in state.tree.links:
-        if not link.is_valid or link in ignored:
+        if link in ignored:
             continue
 
         for socket in (link.fromsock, link.tosock):
@@ -115,10 +144,15 @@ def get_tree(state: LayoutState) -> Tree[Node]:
 
     G: Tree[Node] = Tree()
     G.add_nodes(
-        [Node(n, parents[n.parent]) for n in state.tree.nodes if not n.is_frame()]
+        [
+            Node(n, parents[n.parent])
+            for n in state.tree.nodes
+            if n.select and not n.is_frame()
+        ]
     )
-    # Headless divergence: the addon arranges the user's selection and skips
-    # links to unselected nodes; here the working set is the whole tree.
+    # As in the addon, the working set is the selected nodes, and links to
+    # other nodes are left out. (Everything is selected unless the caller
+    # asked for the selection to be arranged.)
     by_node = {v.node: v for v in G}
     for u in G:
         assert is_real(u)
@@ -499,7 +533,7 @@ def sugiyama_layout(
     state = LayoutState(tree=tree, settings=settings or Settings())
     if margin is not None:
         state.margin = Vec2(f32(margin[0]), f32(margin[1]))
-    locs = [n.location for n in tree.nodes if not n.is_frame()]
+    locs = [n.location for n in tree.nodes if n.select and not n.is_frame()]
 
     if not locs:
         return LayoutResult()

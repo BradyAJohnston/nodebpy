@@ -109,14 +109,26 @@ break headless operation.
     `calculate_socket_offset_y()`).
   - `extract.optimize_sizes()` skips `bpy.ops.wm.redraw_timer` and falls
     back to a per-character width estimate when `blf` can't measure text.
-- **Selection is ignored.** Upstream arranges the user's selection
-  (`config.selected`, and per-link `node.select` gates in
-  `get_multidigraph()`, here `get_tree()`, and `realize.is_safe_to_remove()`). Here
-  `arrange_node_tree` always lays out the whole tree — a library-loaded tree
-  has no selection at all, which would silently arrange nothing — so the
-  working set is every node of the tree and the select gates are membership /
-  always-true checks. Upstream patches touching `.select` need the same
-  translation.
+- **Selection is opt-in.** Upstream always arranges the user's selection
+  (`config.selected`, and per-link `node.select` gates). Here
+  `arrange_node_tree` lays out the whole tree unless called with
+  `selected_only=True` — a library-loaded tree has no selection at all,
+  which would silently arrange nothing. The selection is data
+  (`dna.bNode.select`, set by `extract`): `sugiyama.get_tree()` builds the
+  layout graph from the selected nodes and the links between them, as
+  upstream does. Upstream patches touching `.select` translate to that
+  field.
+- **What is the user's is left alone** (nodebpy-only):
+  - With `add_reroutes=False` the result is `MoveNode` edits only. Upstream
+    still removes and re-creates long links into multi-input sockets on the
+    way (and then restores their order); here the tree keeps its links.
+  - `realize.remove_reroutes()` keeps reroutes that lead nowhere or come
+    from nowhere (`realize.is_dangling()`); upstream deletes them with
+    their links.
+  - `sugiyama.precompute_links()` goes by every link, not only those with
+    `is_valid`: Blender also clears that flag for links between sockets
+    that do not fit, which are still drawn. `sugiyama.cycle_links()` leaves
+    out the links that close a cycle, preferring the ones Blender marked.
 - **Layout readability additions** (nodebpy-only, each behind a `Settings`
   flag mirrored on `SugiyamaOptions`):
   - `ranking.add_frame_sequence_edges()` (`sequential_frames`): ranks

@@ -87,9 +87,8 @@ def socket_priorities(tree: bNodeTree, mode: str = "flow") -> dict[bNodeSocket, 
     trunk as well."""
     linked: dict[bNodeSocket, None] = {}
     for link in tree.links:
-        if link.is_valid:
-            linked[link.fromsock] = None
-            linked[link.tosock] = None
+        linked[link.fromsock] = None
+        linked[link.tosock] = None
 
     priorities: dict[bNodeSocket, int] = {}
     for node in tree.nodes:

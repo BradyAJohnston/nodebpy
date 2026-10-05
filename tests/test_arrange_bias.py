@@ -87,11 +87,9 @@ def test_socket_priorities():
         y.outputs[0]: MAIN,
     }
 
-    # Invalid links do not count.
+    # A link Blender calls invalid is still a link, here as in the layout.
     tree.links[0].is_valid = False
-    priorities = socket_priorities(tree)
-    assert a.outputs[0] not in priorities
-    assert priorities[b.inputs[1]] == MAIN  # now b's first linked input
+    assert socket_priorities(tree) == priorities
 
 
 def test_link_priority():

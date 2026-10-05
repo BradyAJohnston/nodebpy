@@ -295,8 +295,9 @@ def add_dummy_nodes_to_edge(
 
     # The link is replaced by the chain through the dummy nodes. A plain
     # input drops its old link when the new one is made; a multi-input
-    # would keep both.
-    if link.tosock.dna.is_multi_input:
+    # would keep both. (Without reroutes the chain is only the layout's:
+    # the tree keeps its link.)
+    if state.settings.add_reroutes and link.tosock.dna.is_multi_input:
         state.edits.append(RemoveLink(link.fromsock.dna, link.tosock.dna))
 
 

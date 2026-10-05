@@ -36,12 +36,16 @@ def arrange_node_tree(
     pipeline: Pipeline | None = None,
     observer: Observer | None = None,
     verify: bool = False,
+    selected_only: bool = False,
 ) -> None:
     """Arrange the nodes of *ntree*.
 
-    The whole tree is laid out — unlike the node-arrange addon, which
-    arranges the user's selection; a library-loaded tree has no selection at
-    all, which would silently arrange nothing.
+    The whole tree is laid out unless *selected_only* is set. (The
+    node-arrange addon always arranges the user's selection; but a
+    library-loaded tree has no selection at all, which would silently
+    arrange nothing.) With *selected_only* the selected nodes are arranged
+    among themselves around where they were; other nodes do not move, and
+    links to them are left out of account.
 
     *pipeline*, *observer* and *verify* are passed on to the layout (see
     :func:`.arrange.sugiyama.sugiyama_layout`).
@@ -50,7 +54,7 @@ def arrange_node_tree(
     if settings.optimize_sizes:
         optimize_sizes(ntree.nodes)
 
-    tree, binding = extract(ntree)
+    tree, binding = extract(ntree, selected_only=selected_only)
     result = sugiyama.sugiyama_layout(
         tree, settings, margin, pipeline=pipeline, observer=observer, verify=verify
     )

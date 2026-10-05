@@ -39,13 +39,13 @@ def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
     return True
 
 
-def dissolve_reroute_edges(G: Tree[Node], path: list[Node], state: LayoutState) -> None:
-    if not G.successors(path[-1]):
-        return
+def is_dangling(G: Tree[Node], path: list[Node]) -> bool:
+    """Whether a chain of reroutes leads nowhere, or comes from nowhere."""
+    return not G.successors(path[-1]) or not G.predecessors(path[0])
 
-    first = next(G.in_links(path[0]), None)
-    if first is None:
-        return
+
+def dissolve_reroute_edges(G: Tree[Node], path: list[Node], state: LayoutState) -> None:
+    first = next(G.in_links(path[0]))
 
     u, o = first.fromnode, first.fromsock
     succ_inputs = [link.tosock for link in G.out_links(path[-1])]
@@ -74,7 +74,9 @@ def remove_reroutes(CG: ClusterGraph) -> None:
                 u, *between, v = path
                 add_dummy_edge(CG.G, u, v)
                 CG.remove_nodes_from(between)
-        else:
+        elif not is_dangling(CG.G, path):
+            # nodebpy divergence: reroutes left dangling are someone's work
+            # in progress; upstream deletes them with their links.
             dissolve_reroute_edges(CG.G, path, CG.state)
             CG.remove_nodes_from(path)
 
@@ -210,7 +212,8 @@ def realize_layout(CG: ClusterGraph, old_center: Vec2) -> None:
     if CG.state.settings.add_reroutes:
         realize_dummy_nodes(CG)
 
-    restore_multi_input_orders(CG.G, CG.state)
+        # Only rerouting touches links, and so their order.
+        restore_multi_input_orders(CG.G, CG.state)
     realize_locations(CG.G, old_center, CG.state)
     for c in CG.S:
         resize_unshrunken_frame(CG, c)
