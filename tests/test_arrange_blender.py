@@ -11,6 +11,7 @@ from nodebpy.lib.nodearrange.arrange.edits import MoveNode
 from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.extract import extract
+from nodebpy.lib.nodearrange.metrics import measure
 
 from . import arrange_cases
 
@@ -293,3 +294,22 @@ def test_link_is_clear():
     assert link_is_clear(start, dipping, [box(250.0, 300.0)])
     # Too close to count as clear: within the clearance of the socket.
     assert not link_is_clear(start, end, [box(102.0, 50.0, width=20.0)])
+
+
+def test_zones_are_read_from_blender():
+    """Python only sees which output node a zone's input node is paired
+    with; the nodes inside are worked out when the tree is read."""
+    tree = arrange_cases.zones()
+    data, _ = extract(tree)
+    zones = {zone.input_node.idname: zone for zone in data.zones}
+    assert sorted(zones) == ["GeometryNodeRepeatInput", "GeometryNodeSimulationInput"]
+    simulation = zones["GeometryNodeSimulationInput"]
+    assert simulation.output_node.idname == "GeometryNodeSimulationOutput"
+    assert [n.idname for n in simulation.child_nodes] == ["GeometryNodeSetPosition"]
+    assert [n.idname for n in zones["GeometryNodeRepeatInput"].child_nodes] == [
+        "GeometryNodeSubdivideMesh",
+        "GeometryNodeSetShadeSmooth",
+    ]
+
+    arrange_node_tree(tree, Settings())
+    assert measure(tree).foreign_nodes_in_zones == 0

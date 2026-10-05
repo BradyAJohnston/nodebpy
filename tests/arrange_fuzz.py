@@ -11,6 +11,7 @@ import random
 
 from nodebpy.lib.nodearrange.arrange.edits import LayoutResult
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree, new_reroute
+from nodebpy.lib.nodearrange.zones import find_zones
 
 
 def plain_node(
@@ -49,7 +50,33 @@ def plain_node(
     return node
 
 
-def random_tree(seed: int) -> bNodeTree:
+def random_tree(seed: int, zones: int = 0) -> bNodeTree:
+    """A random tree. With *zones*, up to that many pairs of its nodes are
+    made the input and output node of a zone; such zones may overlap each
+    other and the frames in ways Blender's cannot."""
+    tree = _random_tree(seed)
+    if zones:
+        rng = random.Random(seed + 1000)
+        nodes = [n for n in tree.nodes if not n.is_frame() and not n.is_reroute()]
+        pairs = []
+        for _ in range(zones):
+            link = rng.choice(tree.links) if tree.links else None
+            if link is None:
+                break
+            start, end = link.fromnode, link.tonode
+            for _ in range(rng.randint(0, 3)):
+                onward = [k for k in tree.links if k.fromnode is end]
+                if not onward:
+                    break
+                end = rng.choice(onward).tonode
+            taken = {n for pair in pairs for n in pair}
+            if start in nodes and end in nodes and not {start, end} & taken:
+                pairs.append((start, end))
+        tree.zones = find_zones(tree, pairs)
+    return tree
+
+
+def _random_tree(seed: int) -> bNodeTree:
     rng = random.Random(seed)
     tree = bNodeTree()
     count = rng.randint(2, 28)

@@ -134,7 +134,7 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
 
 def add_reroute(v: Node, state: LayoutState) -> None:
     assert v.cluster
-    reroute = new_reroute(parent=v.cluster.node)
+    reroute = new_reroute(parent=v.cluster.frame)
     state.edits.append(AddReroute(reroute))
     v.node = reroute
     v.type = Kind.NODE
@@ -195,7 +195,7 @@ def realize_locations(G: Tree[Node], old_center: Vec2, state: LayoutState) -> No
 
         v.x += offset_x
         v.y += offset_y
-        state.edits.append(MoveNode(v.node, (v.x, v.y), v.cluster.node))
+        state.edits.append(MoveNode(v.node, (v.x, v.y), v.cluster.frame))
 
 
 def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
@@ -204,8 +204,17 @@ def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
     if not frame or frame.shrink:
         return
 
-    children = tuple(v.node for v in CG.T.successors(cluster) if is_real(v))
-    CG.state.edits.append(ResizeFrame(frame, children))
+    # (A zone in the frame is not a frame: its nodes are the frame's own.)
+    children = []
+    pending = [cluster]
+    while pending:
+        for v in CG.T.successors(pending.pop()):
+            if isinstance(v, Cluster):
+                if v.node is None:
+                    pending.append(v)
+            elif is_real(v):
+                children.append(v.node)
+    CG.state.edits.append(ResizeFrame(frame, tuple(children)))
 
 
 def realize_layout(CG: ClusterGraph, old_center: Vec2) -> None:

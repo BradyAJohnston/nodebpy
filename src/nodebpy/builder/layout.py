@@ -946,6 +946,10 @@ class SugiyamaOptions:
     pin_group_input : bool
         Put Group Input nodes (outside frames) in the first column, rather
         than next to the nodes they feed.
+    group_zones : bool
+        Keep the nodes of each zone (simulation, repeat, for-each, closure)
+        together, with no other node among them, so nothing that is not in
+        a zone is drawn inside its outline.
     """
 
     # Defaults calibrated against hand-approved node-arrange addon output
@@ -976,6 +980,7 @@ class SugiyamaOptions:
     balance_min_column: int = 4
     pin_group_output: bool = True
     pin_group_input: bool = False
+    group_zones: bool = True
 
 
 type ArrangeMethod = (
@@ -1061,6 +1066,7 @@ def _sugiyama_settings(options: SugiyamaOptions):
         balance_min_column=options.balance_min_column,
         pin_group_output=options.pin_group_output,
         pin_group_input=options.pin_group_input,
+        group_zones=options.group_zones,
     )
 
 

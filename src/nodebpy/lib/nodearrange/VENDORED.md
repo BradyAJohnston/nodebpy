@@ -202,6 +202,14 @@ break headless operation.
   (`Settings.crossing_weights`, `graph.link_is_flow()`): a value crossing
   the main data costs four times a crossing of two values or of two
   branches of the main data.
+- **Zones** (nodebpy-only, `Settings.group_zones`): `sugiyama.cluster_zones()`
+  gives each zone of `dna.bNodeTree.zones` a `graph.Cluster` (with `zone`
+  set and no frame `node`), nested among the frames' clusters, so the frame
+  machinery keeps the zone's nodes together. Code that asked `cluster.node`
+  whether a cluster is a frame's now asks `cluster.is_root`, and
+  `cluster.frame` gives the frame a node of the cluster belongs in. Zones
+  are not stages for `sequential_frames`. `zones.py` finds the zones for a
+  tree read from Python; a port reads `bNodeTree::zones()` instead.
 - **Robustness** (nodebpy-only):
   - `sugiyama.cycle_links()`: the layout drops the links that close a cycle
     itself rather than rely on Blender having marked one invalid, and

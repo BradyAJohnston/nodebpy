@@ -19,6 +19,7 @@ from bpy.types import NodeSocket, NodeTree
 from .dna import bNode, bNodeSocket, bNodeTree
 from .structs import bNodeSocket as bNodeSocketStruct
 from .utils import abs_loc, dimensions, get_bottom, get_top
+from .zones import find_zones
 
 # -------------------------------------------------------------------
 
@@ -193,5 +194,12 @@ def extract(
             if socket.location is None and not node.is_reroute():
                 x = node.draw_bounds[2] if socket.is_output else node.draw_bounds[0]
                 socket.location = (x, get_socket_y(bpy_socket))
+
+    pairs = []
+    for node, data in data_of.items():
+        output = getattr(node, "paired_output", None)
+        if output is not None:
+            pairs.append((data, data_of[output]))
+    tree.zones = find_zones(tree, pairs)
 
     return tree, binding

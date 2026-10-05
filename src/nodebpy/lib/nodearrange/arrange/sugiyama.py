@@ -7,7 +7,7 @@ from itertools import chain, pairwise
 from statistics import fmean
 
 from ..config import LayoutState, Settings
-from ..dna import bNode, bNodeLink, bNodeTree
+from ..dna import bNode, bNodeLink, bNodeTree, bNodeTreeZone
 from .balancing import balance_column_heights
 from .common import Vec2, f32, group_by, segments_intersect
 from .edits import LayoutResult, RemoveLink
@@ -164,7 +164,71 @@ def get_tree(state: LayoutState) -> Tree[Node]:
 
                 G.add_link(u, v, Socket(u, i, True), Socket(v, to_input.index, False))
 
+    if state.settings.group_zones:
+        cluster_zones(G, state.tree.zones)
+
     return G
+
+
+def _clusters_around(v: Node) -> list[Cluster]:
+    """The clusters *v* is in, outermost first."""
+    clusters = []
+    c = v.cluster
+    while c is not None:
+        clusters.append(c)
+        c = c.cluster
+    clusters.reverse()
+    return clusters
+
+
+def cluster_zones(G: Tree[Node], zones: Iterable[bNodeTreeZone]) -> None:
+    """Give each zone a cluster of its own, so the layout keeps its nodes
+    together and other nodes out from among them, as it does for a frame
+    (nodebpy addition).
+
+    The cluster goes into the innermost cluster that holds all the zone's
+    nodes, and takes over the frames and zones in there that are wholly
+    inside the zone. A zone that only overlaps a frame (or, in a broken
+    tree, another zone) cannot be nested with it and gets no cluster.
+    *zones* must have outer zones before the zones within them."""
+    by_node = {v.node: v for v in G}
+    around = {v: _clusters_around(v) for v in G}
+    for zone in zones:
+        members = list(dict.fromkeys(by_node[n] for n in zone.nodes() if n in by_node))
+        if len(members) < 2:
+            continue
+
+        # The innermost cluster around all of them.
+        depth = 0
+        first = around[members[0]]
+        while all(
+            len(around[v]) > depth and around[v][depth] is first[depth] for v in members
+        ):
+            depth += 1
+        parent = first[depth - 1]
+
+        inside = set(members)
+        pieces: dict[Cluster, None] = {}
+        for v in members:
+            if len(around[v]) > depth:
+                pieces[around[v][depth]] = None
+        under_parent = [
+            v for v in G if len(around[v]) >= depth and around[v][depth - 1] is parent
+        ]
+        overlaps = any(
+            v not in inside and len(around[v]) > depth and around[v][depth] in pieces
+            for v in under_parent
+        )
+        if overlaps or len(under_parent) == len(members):
+            continue
+
+        cluster = Cluster(None, parent, zone=zone)
+        for piece in pieces:
+            piece.cluster = cluster
+        for v in members:
+            if len(around[v]) == depth:
+                v.cluster = cluster
+            around[v].insert(depth, cluster)
 
 
 def save_multi_input_orders(G: Tree[Node], state: LayoutState) -> None:

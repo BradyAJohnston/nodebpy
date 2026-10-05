@@ -46,6 +46,8 @@ _OVERLAP_TOL = 1.0
 _CURVE_SEGMENTS = 12
 # Room a frame's label takes above its contents (see `to_plot`).
 _FRAME_LABEL_PADDING = 10.0
+# Room Blender leaves between a zone's nodes and its outline.
+_ZONE_PADDING = 10.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -62,6 +64,7 @@ class CostWeights:
     link_through_node: float = 15.0
     frame_overlap: float = 30.0
     foreign_node_in_frame: float = 30.0
+    foreign_node_in_zone: float = 30.0
     bent_link: float = 1.0
     bent_flow_link: float = 4.0
     """On top of ``bent_link``, for a link carrying the tree's main data."""
@@ -124,6 +127,10 @@ class LayoutMetrics:
     """Crossings between a link carrying the main data and one that does
     not: a value cutting across the trunk. The hardest kind to read."""
 
+    foreign_nodes_in_zones: int = 0
+    """Node / zone pairs where a node that is not in a zone sits in the
+    box around the zone's nodes, and so on or inside its outline."""
+
     @property
     def area(self) -> float:
         return self.width * self.height
@@ -149,6 +156,7 @@ class LayoutMetrics:
             + w.link_through_node * self.links_through_nodes
             + w.frame_overlap * self.frame_overlaps
             + w.foreign_node_in_frame * self.foreign_nodes_in_frames
+            + w.foreign_node_in_zone * self.foreign_nodes_in_zones
             + w.bent_link * (self.links - self.level_links)
             + w.bent_flow_link * (self.flow_links - self.level_flow_links)
             + w.fork_imbalance * self.fork_imbalance
@@ -440,6 +448,22 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
         for n in boxes
     )
 
+    foreign_nodes_in_zones = 0
+    for zone in tree.zones:
+        members = set(zone.nodes())
+        inside = [rect_of[n] for n in members if n in rect_of]
+        if not inside:
+            continue
+        rect = (
+            min(r[0] for r in inside) - _ZONE_PADDING,
+            min(r[1] for r in inside) - _ZONE_PADDING,
+            max(r[2] for r in inside) + _ZONE_PADDING,
+            max(r[3] for r in inside) + _ZONE_PADDING,
+        )
+        foreign_nodes_in_zones += sum(
+            n not in members and _rects_overlap(rect_of[n], rect) for n in boxes
+        )
+
     # -- balance ----------------------------------------------------
     def middle(node: bNode) -> float:
         rect = rect_of[node]
@@ -521,4 +545,5 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
         fork_imbalance=float(sum(flow_offsets)),
         flow_crossings=sum(bool(is_flow[i] and is_flow[j]) for i, j in crossing_pairs),
         mixed_crossings=sum(bool(is_flow[i] != is_flow[j]) for i, j in crossing_pairs),
+        foreign_nodes_in_zones=int(foreign_nodes_in_zones),
     )

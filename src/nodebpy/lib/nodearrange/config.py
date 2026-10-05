@@ -81,6 +81,9 @@ class Settings:
     # held to the first or last column with `dna.bNode.layer`.)
     pin_group_output: bool = True
     pin_group_input: bool = False
+    # nodebpy divergence: keep the nodes of each zone together, with no
+    # other node among them, as for a frame (see sugiyama.cluster_zones).
+    group_zones: bool = True
 
 
 DEFAULT_MARGIN = (200.0, 20.0)

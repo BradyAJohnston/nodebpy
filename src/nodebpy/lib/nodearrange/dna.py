@@ -131,11 +131,41 @@ class bNodeLink:
 
 
 @dataclass(eq=False, slots=True)
+class bNodeTreeZone:
+    """A zone (``bNodeTreeZone``): a simulation, a repeat, a for-each
+    element, a closure."""
+
+    input_node: bNode
+    output_node: bNode
+    parent_zone: bNodeTreeZone | None = None
+    """The zone this one is directly in."""
+    child_zones: list[bNodeTreeZone] = field(default_factory=list)
+    """The zones directly in this one."""
+    child_nodes: list[bNode] = field(default_factory=list)
+    """The nodes directly in the zone: not its own input and output node,
+    nor the nodes inside a zone within it, but that zone's input and output
+    node."""
+
+    def nodes(self) -> list[bNode]:
+        """Every node the zone is drawn around: its input and output node
+        and all that is inside, zones within it included."""
+        nodes = [self.input_node, *self.child_nodes]
+        for zone in self.child_zones:
+            nodes += zone.nodes()
+        nodes.append(self.output_node)
+        return list(dict.fromkeys(nodes))
+
+
+@dataclass(eq=False, slots=True)
 class bNodeTree:
     """Nodes and links (``bNodeTree``)."""
 
     nodes: list[bNode] = field(default_factory=list)
     links: list[bNodeLink] = field(default_factory=list)
+    zones: list[bNodeTreeZone] = field(default_factory=list)
+    """``zones()``, outer zones before the zones within them. (From Python
+    Blender does not tell which nodes are in a zone; :mod:`.zones` works it
+    out.)"""
 
     def add_node(self, node: bNode) -> bNode:
         self.nodes.append(node)
