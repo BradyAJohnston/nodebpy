@@ -568,7 +568,7 @@ def test_default_ordering_does_not_depend_on_chance():
     assert first == again
 
 
-@pytest.mark.parametrize("seed", range(12))
+@pytest.mark.parametrize("seed", range(40))
 def test_default_ordering_is_no_worse_than_random_restarts(seed):
     """On random trees the deterministic sweep leaves at most as many
     crossings as fifty random restarts, give or take one."""
@@ -577,3 +577,26 @@ def test_default_ordering_is_no_worse_than_random_restarts(seed):
     _, swept = _order_and_crossings(random_tree(seed), ordering="layer_sweep")
     _, random_best = _order_and_crossings(random_tree(seed), ordering="random_restarts")
     assert swept <= random_best + 1
+
+
+def test_shuffles_come_from_a_portable_generator():
+    """The generator behind the shuffled starting orders is drand48's, so a
+    port produces the same numbers: these are its first outputs."""
+    from nodebpy.lib.nodearrange.arrange.ordering import _Lcg
+
+    rng = _Lcg(0)
+    state = 0x330E
+    expected = []
+    for _ in range(5):
+        state = (state * 0x5DEECE66D + 0xB) % 2**48
+        expected.append((state >> 17) % 1000)
+    assert [rng.below(1000) for _ in range(5)] == expected
+    # drand48 from seed 0: the first state is 0x2BBB62DC5101.
+    assert expected[0] == (0x2BBB62DC5101 >> 17) % 1000
+
+    items = list(range(10))
+    _Lcg(0).shuffle(items)
+    again = list(range(10))
+    _Lcg(0).shuffle(again)
+    assert items == again != list(range(10))
+    assert sorted(items) == list(range(10))

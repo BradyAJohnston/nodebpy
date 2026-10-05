@@ -171,13 +171,15 @@ break headless operation.
   `ordering.minimize_crossings_deterministic()`, strategy `"layer_sweep"`.
   Upstream's ordering (kept as `"random_restarts"`) perturbs barycenters
   randomly and restarts `iterations` times. The default instead sweeps from
-  three fixed starting orders (the columns as they come, and a depth-first
-  order from each end) in both directions, swaps neighbouring nodes of a
+  fixed starting orders (the columns as they come, a depth-first order from
+  each end, and for small graphs up to eight shuffles from `ordering._Lcg`,
+  the generator of `drand48` and of Blender's `RandomNumberGenerator`,
+  always seeded with 0) in both directions, swaps neighbouring nodes of a
   frame after every sweep where that uncrosses their links
   (`ordering._transpose()`), and keeps the order with the fewest crossings
   by an exact count over sockets (`ordering.count_crossings()`). It reuses
   upstream's sweep for sockets and frames with the random terms left out.
-  This is the recipe of Graphviz's dot; a port needs no random generator.
+  This is the recipe of Graphviz's dot; a port reproduces it exactly.
 - **Robustness** (nodebpy-only):
   - `sugiyama.cycle_links()`: the layout drops the links that close a cycle
     itself rather than rely on Blender having marked one invalid, and

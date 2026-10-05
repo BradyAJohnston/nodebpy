@@ -635,6 +635,34 @@ def order_random_restarts(layout: Layout) -> None:
 
 _MAX_SWEEPS = 24
 _PATIENCE = 2
+# Besides the three fixed starting orders, shuffled ones are tried while
+# the graph is small enough for them to be cheap: about this many nodes'
+# worth of extra starts in all, and never more than `_MAX_SHUFFLES`.
+_SHUFFLE_BUDGET = 500
+_MAX_SHUFFLES = 8
+
+
+class _Lcg:
+    """A minimal random generator, the same in any language: the 48-bit
+    linear congruential generator of ``drand48`` (and of Blender's
+    ``RandomNumberGenerator``)."""
+
+    __slots__ = ("state",)
+
+    def __init__(self, seed: int) -> None:
+        self.state = (seed << 16) | 0x330E
+
+    def below(self, n: int) -> int:
+        """An integer in ``range(n)``."""
+        self.state = (self.state * 0x5DEECE66D + 0xB) & 0xFFFFFFFFFFFF
+        return (self.state >> 17) % n
+
+    def shuffle(self, items: list) -> None:
+        for i in range(len(items) - 1, 0, -1):
+            j = self.below(i + 1)
+            items[i], items[j] = items[j], items[i]
+
+
 _MAX_TRANSPOSE_PASSES = 10
 
 
@@ -794,11 +822,13 @@ def count_crossings(G: Tree[Node], columns: Sequence[list[Node]]) -> int:
 def minimize_crossings_deterministic(
     G: Tree[Node], T: _MixedGraph, state: LayoutState
 ) -> None:
-    """Order the columns by sweeping from three fixed starting orders, each
+    """Order the columns by sweeping from a few fixed starting orders, each
     in both directions, and keep the order with the fewest crossings.
 
     The starts are the order the columns come in and two depth-first
-    orders. From each, sweeps alternate direction, each followed by swaps
+    orders, plus, for small graphs where it costs little, a few shuffled
+    ones (from a fixed seed of a generator simple enough to be the same in
+    any language). From each, sweeps alternate direction, each followed by swaps
     of neighbours (:func:`_transpose`), until ``_PATIENCE`` in a row bring
     no improvement. This is the recipe of Graphviz's dot (Gansner et al.,
     "A Technique for Drawing Directed Graphs", 1993), on upstream's
@@ -819,6 +849,15 @@ def minimize_crossings_deterministic(
         _depth_first_order(G, columns, True),
         _depth_first_order(G, columns, False),
     ]
+
+    shuffles = min(_MAX_SHUFFLES, _SHUFFLE_BUDGET // max(len(G), 1))
+    rng = _Lcg(0)
+    for _ in range(shuffles):
+        shuffled = [col.copy() for col in columns]
+        for col in shuffled:
+            rng.shuffle(col)
+            keep_frames_together(col)
+        starts.append(shuffled)
 
     best_cross_count = inf
     best_columns = [col.copy() for col in columns]
