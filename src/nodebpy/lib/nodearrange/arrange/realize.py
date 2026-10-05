@@ -34,9 +34,13 @@ def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
         if any(v == i[0].owner for i in val):
             return False
 
-    # Headless divergence: the addon requires the reroute's peers to be in
-    # the selection; here the working set is the whole tree.
-    return True
+    # A reroute that also links to a node outside the selection stays: the
+    # layout does not know that link, and would lose it with the reroute.
+    return all(
+        peer.node.select
+        for socket in (*v.node.inputs, *v.node.outputs)
+        for peer in state.linked_sockets.get(socket, ())
+    )
 
 
 def is_dangling(G: Tree[Node], path: list[Node]) -> bool:
