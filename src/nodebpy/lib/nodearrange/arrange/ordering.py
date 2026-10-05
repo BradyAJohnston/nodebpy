@@ -868,7 +868,11 @@ def minimize_crossings_deterministic(
                 break
             _set_order(columns, start, items)
             is_forwards = first_forwards
-            fewest = inf
+            # The start itself may be as good as it gets.
+            fewest = count_crossings(G_, columns)
+            if fewest < best_cross_count:
+                best_cross_count = fewest
+                best_columns = [col.copy() for col in columns]
             stale = 0
             for _ in range(_MAX_SWEEPS):
                 _sweep(forward_items if is_forwards else backward_items, T, is_forwards)

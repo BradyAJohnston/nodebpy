@@ -324,7 +324,13 @@ def has_large_gaps_in_frame(
             vertical_border_roots = {
                 w.root for w in T.successors(v) if w.type == Kind.VERTICAL_BORDER
             }
-            w, z = sorted(vertical_border_roots, key=lambda w: w.y)
+            # Usually two: the frame's upper borders are aligned in one
+            # block and its lower ones in another. Where a border could not
+            # be aligned with the rest there are more, and the outermost
+            # two give the frame's extent. (nodebpy divergence: upstream
+            # assumes exactly two.)
+            by_height = sorted(vertical_border_roots, key=lambda w: w.y)
+            w, z = by_height[0], by_height[-1]
             line = (w.y, z.y + z.height) if is_up else (w.y - w.height, z.y)
 
         lines.append(line)

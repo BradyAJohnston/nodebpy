@@ -34,7 +34,7 @@
     'imbalance': 109.0,
     'level_flow_links': 1,
     'level_links': 2,
-    'link_length': 3559.0,
+    'link_length': 3582.0,
     'link_span_y': 2302.0,
     'links': 21,
     'links_through_nodes': 2,
@@ -42,7 +42,7 @@
     'nodes': 10,
     'reroutes': 0,
     'straight_links': 0,
-    'width': 902.0,
+    'width': 910.0,
   })
 # ---
 # name: test_layout_metrics_snapshot[PrincipalComponents]
