@@ -42,6 +42,7 @@ from .reroutes import (
     dissolve_dummy_nodes,
 )
 from .routing import route_edges
+from .snapping import snap_to_grid
 from .spacing import assign_x_coords
 from .stacking import contracted_node_stacks, expand_node_stack
 
@@ -308,7 +309,7 @@ def sugiyama_layout(
         (pipeline or default_pipeline()).run(layout, observer, verify=verify)
         return part_state.edits
 
-    def clear_of_the_rest(edits: list[Edit]) -> LayoutResult:
+    def clear_of_the_rest(edits: list[Edit]) -> list[Edit]:
         """Move the laid-out nodes clear of the fixed ones. They stay where
         they are when that would take them further than twice the longer
         side of the box around them."""
@@ -318,10 +319,10 @@ def sugiyama_layout(
             if n in fixed and not n.is_frame() and not n.is_reroute()
         ]
         if not obstacles:
-            return LayoutResult(edits)
+            return edits
         rects = packing.node_rects(edits)
         if not rects:
-            return LayoutResult(edits)
+            return edits
         dx, dy = packing.clear_of(
             # The vertical margin is used in both directions.
             rects,
@@ -331,12 +332,18 @@ def sugiyama_layout(
         width = max(r[2] for r in rects) - min(r[0] for r in rects)
         height = max(r[3] for r in rects) - min(r[1] for r in rects)
         if max(abs(dx), abs(dy)) > 2 * max(width, height):
-            return LayoutResult(edits)
-        return LayoutResult(packing.moved(edits, (f32(dx), f32(dy))))
+            return edits
+        return packing.moved(edits, (f32(dx), f32(dy)))
+
+    def finish(edits: list[Edit]) -> LayoutResult:
+        edits = clear_of_the_rest(edits)
+        if state.options.snap_to_grid:
+            edits = snap_to_grid(edits)
+        return LayoutResult(edits)
 
     parts = packing.components(tree, fixed) if state.options.pack_components else []
     if len(parts) < 2:
-        return clear_of_the_rest(lay_out(tree))
+        return finish(lay_out(tree))
 
     # The part with the most nodes comes first. The others, largest first,
     # are packed beneath it.
@@ -357,4 +364,4 @@ def sugiyama_layout(
         f32(old_center.x - f32(fmean(x for x, _ in corners))),
         f32(old_center.y - f32(fmean(y for _, y in corners))),
     )
-    return clear_of_the_rest(packing.moved(edits, shift))
+    return finish(packing.moved(edits, shift))

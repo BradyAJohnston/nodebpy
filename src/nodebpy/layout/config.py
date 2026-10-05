@@ -63,6 +63,11 @@ class SugiyamaOptions:
     seed : int
         Seed of the shuffled starting orders the ordering tries besides its
         fixed ones. The same seed always gives the same layout.
+    snap_to_grid : bool
+        Put every node on the node editor's grid, as Blender's Snap does
+        when nodes are moved by hand. Nodes keep at least the gap they had,
+        rounded down to the grid. Reroutes are not snapped, so the links
+        through them stay straight.
     pack_components : bool
         Lay out the parts of the tree that are not linked to each other
         separately: the largest first, the others in rows beneath it. Off,
@@ -84,6 +89,7 @@ class SugiyamaOptions:
     balance_heights: bool = True
     pack_components: bool = True
     seed: int = 0
+    snap_to_grid: bool = False
 
 
 SIMPLE_OPTIONS = SugiyamaOptions(

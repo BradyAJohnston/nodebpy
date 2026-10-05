@@ -87,6 +87,7 @@ data.
 | Module | What it holds |
 | --- | --- |
 | `packing.py` | Splitting the tree into parts and packing the laid-out parts |
+| `snapping.py` | Moving the finished layout onto the node editor's grid |
 | `common.py` | `Vec2`, `f32`, segment intersection, shared constants |
 
 ## Sizes
@@ -132,7 +133,10 @@ picture. The rest prepare for one or clean up.
 Around the pipeline, `sugiyama_layout()` splits the tree into its parts
 (with `pack_components`), runs the pipeline on each, and packs the results
 (`packing.py`). When only the selection is arranged it also moves the result
-off the nodes that stay put.
+off the nodes that stay put. Last, with `snap_to_grid`, every node is moved
+to the nearest point of the node editor's grid (`snapping.py`); nodes keep
+the gap they had, rounded down to the grid, and reroutes are left alone so
+their links stay straight.
 
 ### The four phases
 
@@ -237,9 +241,7 @@ that broke one.
   stored trees out again and prints what changed in each layout's counts
   (crossings, level links, size). `make layout-report`
   (`python -m tests.layout.report`) prints the full metrics and can draw
-  the trees. Six snapshot files outside `tests/layout` also embed node
-  positions, so after a deliberate layout change run
-  `pytest --snapshot-update` as well.
+  the trees.
 - **Accepting a corpus change:** a change must add no overlaps and no
   backward links. Judge crossings and level links from the printed counts.
 
@@ -258,6 +260,9 @@ that broke one.
 - **Multi-input order:** the sort ids can be written directly, without the
   swapping `apply.py` does.
 - **After the edits** the tree needs an update and an undo push.
+- **Snapping:** an operator would set `snap_to_grid` from the node
+  editor's Snap setting (`tool_settings.use_snap_node`), and use
+  `NODE_GRID_STEP_SIZE` for `snapping.GRID_SIZE`.
 - **Order is by insertion everywhere.** No result depends on iterating a
   hash set, so plain arrays reproduce it. `model.Node` hashes by a creation
   serial for the same reason. A port would use indices.
