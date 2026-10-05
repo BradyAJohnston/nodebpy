@@ -12,8 +12,8 @@
       end
       subgraph F1["Outline"]
           N1("Filter"):::default-node
-          N2("Math<br/><small>(DIVIDE)</small>"):::converter-node
-          N3("Filter"):::default-node
+          N2("Filter"):::default-node
+          N3("Math<br/><small>(DIVIDE)</small>"):::converter-node
           N4("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
           N5("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
           N7("Math<br/><small>(ADD)</small>"):::converter-node
@@ -36,11 +36,11 @@
       N11 -->|"Image->Factor"| N14
       N0 -->|"Image->A"| N14
       N0 -->|"Depth->Image"| N1
-      N0 -->|"Socket Depth->Value"| N2
+      N0 -->|"Socket Depth->Value"| N3
       N1 -->|"Image->Value"| N4
-      N2 -->|"Value->Value"| N4
-      N0 -->|"Normal->Image"| N3
-      N3 -->|"Image->Value"| N5
+      N3 -->|"Value->Value"| N4
+      N0 -->|"Normal->Image"| N2
+      N2 -->|"Image->Value"| N5
       N4 -->|"Value->Value"| N7
       N5 -->|"Value->Value"| N7
       N7 -->|"Value->Image"| N8
