@@ -144,6 +144,27 @@ break headless operation.
   `linked_sockets` values are insertion-ordered dicts, and
   `realize.restore_multi_input_orders` creates missing links in graph order
   rather than from a set of bpy sockets.
+  Nothing that decides the result iterates a `set` any more: the cluster
+  list `ClusterGraph.S` is a list, `descendants` / `ancestors` and the
+  component functions of `tree.py` return their nodes in traversal order,
+  and `subgraph` keeps the graph's order. (Upstream's sets are still there
+  where only membership is asked.) A C++ port can therefore reproduce the
+  order with plain arrays.
+- **Robustness** (nodebpy-only):
+  - `sugiyama.cycle_links()`: the layout drops the links that close a cycle
+    itself rather than rely on Blender having marked one invalid, and
+    reports a linked socket without a location as a `ValueError`.
+  - `ranking.tight_tree`, `ranking.set_post_order_numbers`,
+    `y_coords.place_block` and the matching in `stacking.py` use explicit
+    stacks where upstream recurses, so a chain or column of thousands of
+    nodes does not hit the recursion limit.
+  - `ordering.minimize_crossings` draws from its own `random.Random(0)`
+    (upstream reseeds the global generator) and clears the `@cache`s of
+    `ordering.py` when done.
+  - `stacking._point_multi_input_orders_at_stack()`: the saved multi-input
+    orders follow the sockets a stack takes over.
+  - `utils.dimensions()` divides drawn sizes by the UI scale, as
+    `extract.get_socket_y()` does for socket positions.
 - `structs.py` (moved up from `arrange/`, since only `extract.py` uses it)
   uses explicit `_fields_` lists (upstream builds them from annotations, formerly via `eval`) and additionally binds `bNode` /
   `bNodeRuntime` / `rctf`, which upstream does not have.

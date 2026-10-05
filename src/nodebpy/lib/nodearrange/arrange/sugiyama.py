@@ -7,7 +7,7 @@ from itertools import chain
 from statistics import fmean
 
 from ..config import LayoutState, Settings
-from ..dna import bNodeTree
+from ..dna import bNode, bNodeLink, bNodeTree
 from .balancing import balance_column_heights
 from .common import Vec2, f32, group_by
 from .edits import LayoutResult
@@ -35,16 +35,63 @@ from . import ordering, ranking, y_coords  # noqa: F401  isort: skip
 # -------------------------------------------------------------------
 
 
-def precompute_links(state: LayoutState) -> None:
-    # Precompute links to ignore invalid links, and avoid `O(len(tree.links))` time
+def cycle_links(tree: bNodeTree) -> set[bNodeLink]:
+    """The valid links of *tree* that close a cycle: those found leading
+    back to a node still being visited, in a depth-first walk over the nodes
+    and links in the tree's order. Without them the rest is acyclic."""
+    out_links: dict[bNode, list[bNodeLink]] = {n: [] for n in tree.nodes}
+    for link in tree.links:
+        if link.is_valid and link.fromnode in out_links:
+            out_links[link.fromnode].append(link)
 
+    back = set()
+    done: set[bNode] = set()
+    for root in tree.nodes:
+        if root in done:
+            continue
+
+        active = {root}
+        stack = [(root, iter(out_links[root]))]
+        while stack:
+            node, links = stack[-1]
+            for link in links:
+                target = link.tonode
+                if target in active:
+                    back.add(link)
+                elif target not in done and target in out_links:
+                    active.add(target)
+                    stack.append((target, iter(out_links[target])))
+                    break
+            else:
+                stack.pop()
+                active.discard(node)
+                done.add(node)
+
+    return back
+
+
+def precompute_links(state: LayoutState) -> None:
+    """Index the links the layout goes by: the valid ones, less those that
+    close a cycle (Blender marks one link of a cycle invalid itself; this
+    covers trees that come from elsewhere)."""
     # Headless divergence: links into a collapsed panel's sockets report
     # ``is_hidden`` (Blender draws them to the panel header); they still
     # carry data, so they still order the nodes.
+    ignored = cycle_links(state.tree)
     for link in state.tree.links:
-        if link.is_valid:
-            state.linked_sockets[link.tosock][link.fromsock] = None
-            state.linked_sockets[link.fromsock][link.tosock] = None
+        if not link.is_valid or link in ignored:
+            continue
+
+        for socket in (link.fromsock, link.tosock):
+            if socket.location is None and not socket.node.is_reroute():
+                raise ValueError(
+                    f"{socket.node!r}: linked "
+                    f"{'output' if socket.is_output else 'input'} {socket.index} "
+                    "has no location"
+                )
+
+        state.linked_sockets[link.tosock][link.fromsock] = None
+        state.linked_sockets[link.fromsock][link.tosock] = None
 
 
 def get_tree(state: LayoutState) -> Tree[Node]:

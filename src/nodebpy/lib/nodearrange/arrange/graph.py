@@ -374,7 +374,7 @@ def improve_cluster_assignment(
 class ClusterGraph:
     G: Tree[Node]
     T: DiGraph[Node | Cluster]
-    S: set[Cluster]
+    S: list[Cluster]
     state: LayoutState
     __slots__ = tuple(__annotations__)
 
@@ -382,7 +382,7 @@ class ClusterGraph:
         self.G = G
         self.state = state
         self.T = DiGraph(chain(*map(get_nesting_relations, G)))
-        self.S = {v for v in self.T if isinstance(v, Cluster)}
+        self.S = [v for v in self.T if isinstance(v, Cluster)]
 
     def remove_nodes_from(self, nodes: Iterable[Node]) -> None:
         state = self.state
@@ -475,7 +475,7 @@ class ClusterGraph:
             improve_cluster_assignment((u, v), dummy_nodes, self.state)
             add_dummy_nodes_to_edge(G, link, dummy_nodes, self.state)
 
-        for w in {w for w in G if w not in T}:
+        for w in [w for w in G if w not in T]:
             assert w.cluster
             T.add_edge(w.cluster, w)
 
@@ -583,8 +583,9 @@ def socket_graph(G: Tree[Node]) -> DiGraph[Socket]:
     H: DiGraph[Socket] = DiGraph()
     H.add_edges([(link.fromsock, link.tosock) for link in G.all_links()])
     for sockets in group_by(H, key=lambda s: s.owner):
-        outputs = {s for s in sockets if s.is_output}
-        H.add_edges(product(set(sockets) - outputs, outputs))
+        outputs = [s for s in sockets if s.is_output]
+        inputs = [s for s in sockets if not s.is_output]
+        H.add_edges(product(inputs, outputs))
 
     return H
 

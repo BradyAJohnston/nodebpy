@@ -194,7 +194,7 @@ def should_use_inner_shift(
 
 
 def inner_shift(G: Tree[Node], is_right: bool, is_up: bool, state: LayoutState) -> None:
-    for root in {v.root for v in G}:
+    for root in dict.fromkeys(v.root for v in G):
         for v, w in pairwise(iter_block(root)):
             if not should_use_inner_shift(v, w, is_right, state):
                 w.inner_shift = v.inner_shift
@@ -227,6 +227,19 @@ def vertical_gap(u: Node, w: Node, state: LayoutState) -> float:
 
 
 def place_block(v: Node, is_up: bool, state: LayoutState) -> None:
+    """Place the block rooted at *v*, after the blocks it rests on."""
+    # Each block yields the blocks that must be placed before it goes on;
+    # an explicit stack, since such a chain can be as long as a column.
+    stack = [_place_block(v, is_up, state)]
+    while stack:
+        below = next(stack[-1], None)
+        if below is None:
+            stack.pop()
+        else:
+            stack.append(_place_block(below, is_up, state))
+
+
+def _place_block(v: Node, is_up: bool, state: LayoutState) -> Iterator[Node]:
     if cast(float | None, v.y) is not None:
         return
 
@@ -240,7 +253,7 @@ def place_block(v: Node, is_up: bool, state: LayoutState) -> None:
 
         n = w.col[i - 1]
         u = n.root
-        place_block(u, is_up, state)
+        yield u
 
         if v.sink == v:
             v.sink = u.sink
@@ -331,10 +344,10 @@ def get_marked_nodes(
         if not isinstance(cluster, Cluster) or cluster.nesting_level != 1:
             continue
 
-        descendant_clusters = cast(
-            set[Cluster],
-            (descendants(T, cluster) & {v for v in T if v not in G}) | {cluster},
-        )
+        below = descendants(T, cluster)
+        descendant_clusters = [
+            c for c in T if isinstance(c, Cluster) and (c is cluster or c in below)
+        ]
         for nested_cluster in sorted(
             descendant_clusters,
             key=lambda c: cast(int, c.nesting_level),
@@ -354,7 +367,9 @@ def get_marked_nodes(
                 marked_nodes.update(children)
                 continue
 
-            for root in {v.root for v in children}:
+            for root in dict.fromkeys(
+                v.root for v in T.successors(nested_cluster) if v.type != Kind.CLUSTER
+            ):
                 b = tuple(iter_block(root))
                 for u, v in pairwise(b):
                     if (

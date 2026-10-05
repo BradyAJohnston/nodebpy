@@ -349,9 +349,7 @@ class Tree[N: Hashable]:
 
 
 def _filtered[K](mapping: dict[K, Any], keep: set[K]) -> list[K]:
-    # Walk whichever of the two is clearly smaller.
-    if 2 * len(keep) < len(mapping):
-        return [n for n in keep if n in mapping]
+    # Always in the graph's own order, never the set's.
     return [n for n in mapping if n in keep]
 
 
@@ -546,14 +544,18 @@ def bfs_edges[N: Hashable](
                 return
 
 
-def descendants[N: Hashable](G: AnyGraph[N], source: N) -> set[N]:
-    """Every node reachable from *source*, excluding *source*."""
-    return {child for _, child in bfs_edges(G, source)}
+def descendants[N: Hashable](G: AnyGraph[N], source: N) -> KeysView[N]:
+    """Every node reachable from *source*, excluding *source*, in
+    breadth-first order. The result works as a set."""
+    return dict.fromkeys(child for _, child in bfs_edges(G, source)).keys()
 
 
-def ancestors[N: Hashable](G: AnyGraph[N], source: N) -> set[N]:
-    """Every node *source* is reachable from, excluding *source*."""
-    return {child for _, child in bfs_edges(G, source, reverse=True)}
+def ancestors[N: Hashable](G: AnyGraph[N], source: N) -> KeysView[N]:
+    """Every node *source* is reachable from, excluding *source*, in
+    breadth-first order. The result works as a set."""
+    return dict.fromkeys(
+        child for _, child in bfs_edges(G, source, reverse=True)
+    ).keys()
 
 
 def topological_generations[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
@@ -596,39 +598,31 @@ def is_acyclic[N: Hashable](G: AnyGraph[N]) -> bool:
     return True
 
 
-def weakly_connected_components[N: Hashable](G: AnyGraph[N]) -> Iterator[set[N]]:
-    """The node sets of the graph's connected pieces, ignoring direction."""
+def weakly_connected_components[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
+    """The nodes of each of the graph's connected pieces, ignoring
+    direction, each in breadth-first order from its first node."""
     seen: set[N] = set()
-    n = len(G)
     for v in G:
         if v not in seen:
-            component = _undirected_reach(G, n - len(seen), v)
+            component = _undirected_reach(G, v)
             seen.update(component)
             yield component
 
 
-def _undirected_reach[N: Hashable](G: AnyGraph[N], n: int, source: N) -> set[N]:
+def _undirected_reach[N: Hashable](G: AnyGraph[N], source: N) -> list[N]:
     seen = {source}
-    next_level = [source]
-    while next_level:
-        this_level = next_level
-        next_level = []
-        for v in this_level:
-            for w in G._succ[v]:
+    order = [source]
+    for v in order:
+        for nbrs in (G._succ[v], G._pred[v]):
+            for w in nbrs:
                 if w not in seen:
                     seen.add(w)
-                    next_level.append(w)
-            for w in G._pred[v]:
-                if w not in seen:
-                    seen.add(w)
-                    next_level.append(w)
-            if len(seen) == n:
-                return seen
-    return seen
+                    order.append(w)
+    return order
 
 
-def strongly_connected_components[N: Hashable](G: AnyGraph[N]) -> Iterator[set[N]]:
-    """The node sets within which every node reaches every other (Tarjan's
+def strongly_connected_components[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
+    """The groups of nodes within which every node reaches every other (Tarjan's
     algorithm with Nuutila's modifications, non-recursive)."""
     preorder: dict[N, int] = {}
     lowlink: dict[N, int] = {}
@@ -662,9 +656,9 @@ def strongly_connected_components[N: Hashable](G: AnyGraph[N]) -> Iterator[set[N
                         lowlink[v] = min(lowlink[v], preorder[w])
             stack.pop()
             if lowlink[v] == preorder[v]:
-                component = {v}
+                component = [v]
                 while pending and preorder[pending[-1]] > preorder[v]:
-                    component.add(pending.pop())
+                    component.append(pending.pop())
                 found.update(component)
                 yield component
             else:
@@ -686,10 +680,10 @@ def find_cycle[N: Hashable](G: AnyGraph[N]) -> list[N] | None:
 
     component = components.pop()
     sub = simple.subgraph(component)
-    start = next(iter(component))
+    start = component[0]
 
     # First cycle of Johnson's search from `start` within its component.
-    neighbors = {v: set(sub._succ[v]) for v in sub}
+    neighbors = {v: list(sub._succ[v]) for v in sub}
     path = [start]
     blocked = {start}
     stack = [iter(neighbors[start])]

@@ -15,6 +15,11 @@ title: Changelog
 ### Fixes
 
 - The Sugiyama layout no longer crashes on a chain of collapsed Math nodes that nothing else links to.
+- The Sugiyama layout no longer reseeds Python's global `random` generator, and no longer keeps the graphs of earlier layouts alive in caches.
+- The Sugiyama layout no longer hits the recursion limit on a chain or column of a thousand or more nodes.
+- The Sugiyama layout handles a plain-data tree whose links form a cycle (it ignores the link closing each cycle) instead of hanging or raising, and a stack of collapsed Math nodes feeding a multi-input socket.
+- Node sizes read from a drawn node editor are divided by the UI scale, matching socket positions.
+- No step of the layout depends on the iteration order of a `set` any more, so the result can be reproduced by an implementation in another language. Two of the 93 trees in the test corpus changed, in the order of otherwise tied nodes.
 
 ### Breaking Changes
 

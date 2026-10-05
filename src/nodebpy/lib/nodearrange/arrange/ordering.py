@@ -8,7 +8,6 @@
 
 from __future__ import annotations
 
-import random
 from collections import defaultdict, deque
 from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from dataclasses import replace
@@ -16,6 +15,7 @@ from functools import cache
 from itertools import chain, pairwise
 from math import inf
 from operator import itemgetter
+from random import Random
 from statistics import fmean
 from typing import cast
 
@@ -65,7 +65,7 @@ def get_col_nesting_trees(
 def expand_multi_inputs(G: Tree[Node], state: LayoutState) -> None:
     H = socket_graph(G)
     reroutes = {v for v in H if v.owner.is_reroute}
-    for v in {s.owner for s in state.multi_input_sort_ids}:
+    for v in dict.fromkeys(s.owner for s in state.multi_input_sort_ids):
         if v not in G:
             continue
         inputs = sorted({link.tosock for link in G.in_links(v)}, key=lambda s: s.idx)
@@ -103,7 +103,7 @@ def expand_multi_inputs(G: Tree[Node], state: LayoutState) -> None:
 def reflexive_transitive_closure(LT: _MixedGraph) -> _MixedGraph:
     TC = LT.copy()
     for v in LT:
-        for u in descendants(LT, v) | {v}:
+        for u in (*descendants(LT, v), v):
             if u not in TC.successors(v):
                 TC.add_edge(v, u)
 
@@ -186,8 +186,8 @@ class _CrossingReductionGraph:
 
     def _insert_border_edges(self, is_forwards: bool) -> None:
         self.border_pairs = {}
-        free_clusters = {v for v in self.reduced_free_col if v.type == Kind.CLUSTER}
-        for c in {c for c in free_clusters if c in self.fixed_LT}:
+        free_clusters = [v for v in self.reduced_free_col if v.type == Kind.CLUSTER]
+        for c in [c for c in free_clusters if c in self.fixed_LT]:
             upper_v = Node(type=Kind.VERTICAL_BORDER)
             lower_v = Node(type=Kind.VERTICAL_BORDER)
             self.expanded_fixed_col.extend((upper_v, lower_v))
@@ -221,7 +221,8 @@ class _CrossingReductionGraph:
             self.bipartite_edges = []
             return
 
-        N, S = map(set, zip(*B.edges()))
+        N = dict.fromkeys(u for u, _ in B.edges())
+        S = dict.fromkeys(v for _, v in B.edges())
         if len(S) > len(N):
             N, S = S, N
             B = B.reversed()
@@ -319,18 +320,17 @@ def calc_socket_ranks(H: _CrossingReductionGraph, is_forwards: bool) -> None:
             v.cr.socket_ranks[socket] = rank
 
 
-def random_perturbation() -> float:
-    random_amount = random.uniform(-1, 1)
-    return random.uniform(0, 1) * random_amount - random_amount / 2
+def random_perturbation(rng: Random) -> float:
+    random_amount = rng.uniform(-1, 1)
+    return rng.uniform(0, 1) * random_amount - random_amount / 2
 
 
-def calc_barycenters(H: _CrossingReductionGraph) -> None:
+def calc_barycenters(H: _CrossingReductionGraph, rng: Random) -> None:
     for w in H.reduced_free_col:
         if sockets := H.free_sockets[w]:
-            w.cr.barycenter = (
-                fmean([s.owner.cr.socket_ranks[s] for s in sockets])
-                + random_perturbation()
-            )
+            w.cr.barycenter = fmean(
+                [s.owner.cr.socket_ranks[s] for s in sockets]
+            ) + random_perturbation(rng)
 
 
 def get_barycenter(v: Node | Cluster) -> float:
@@ -340,7 +340,7 @@ def get_barycenter(v: Node | Cluster) -> float:
 
 
 def fill_in_unknown_barycenters(
-    col: list[Node | Cluster], is_first_sweep: bool
+    col: list[Node | Cluster], is_first_sweep: bool, rng: Random
 ) -> None:
     if is_first_sweep:
         max_b = (
@@ -349,7 +349,7 @@ def fill_in_unknown_barycenters(
         for v in col:
             if v.cr.barycenter is None:
                 v.cr.barycenter = (
-                    random.uniform(0, 1) * max_b - 1 + random_perturbation()
+                    rng.uniform(0, 1) * max_b - 1 + random_perturbation(rng)
                 )
         return
 
@@ -361,7 +361,7 @@ def fill_in_unknown_barycenters(
         next_b = next(
             (b for w in col[i + 1 :] if (b := w.cr.barycenter) is not None), prev_b + 1
         )
-        v.cr.barycenter = (prev_b + next_b) / 2 + random_perturbation()
+        v.cr.barycenter = (prev_b + next_b) / 2 + random_perturbation(rng)
 
 
 def find_violated_constraint(
@@ -402,7 +402,7 @@ def merge_constrained(
 def handle_constraints(H: _CrossingReductionGraph) -> None:
     GC: _MixedGraph = DiGraph(pairwise(H.constrained_clusters))
 
-    unconstrained = {v for v in set(H.reduced_free_col) if v not in GC}
+    unconstrained = [v for v in H.reduced_free_col if v not in GC]
     L = {v: [v] for v in H.reduced_free_col}
 
     deg = {v: H.graph.degree(v) for v in GC}
@@ -426,9 +426,9 @@ def handle_constraints(H: _CrossingReductionGraph) -> None:
             GC.remove_edge(v_c, v_c)
 
         if v_c not in GC:
-            unconstrained.add(v_c)
+            unconstrained.append(v_c)
 
-    groups = sorted(set(chain(GC, unconstrained)), key=get_barycenter)
+    groups = sorted(dict.fromkeys(chain(GC, unconstrained)), key=get_barycenter)
     for i, v in enumerate(chain(*[L[v] for v in groups])):
         v.cr.barycenter = i
 
@@ -519,9 +519,10 @@ def minimized_cross_count(
     forward_items: list[list[_CrossingReductionGraph]],
     backward_items: list[list[_CrossingReductionGraph]],
     T: _MixedGraph,
+    rng: Random,
 ) -> float:
     cross_count = inf
-    is_forwards = random.choice((True, False))
+    is_forwards = rng.choice((True, False))
     is_first_sweep = True
     while True:
         for v in T:
@@ -551,8 +552,8 @@ def minimized_cross_count(
                 sort_expanded_fixed_col(H)
 
                 calc_socket_ranks(H, is_forwards)
-                calc_barycenters(H)
-                fill_in_unknown_barycenters(H.reduced_free_col, is_first_sweep)
+                calc_barycenters(H, rng)
+                fill_in_unknown_barycenters(H.reduced_free_col, is_first_sweep, rng)
                 handle_constraints(H)
 
                 cross_count += get_cross_count(H)
@@ -587,11 +588,14 @@ def minimize_crossings(G: Tree[Node], T: _MixedGraph, state: LayoutState) -> Non
 
     # -------------------------------------------------------------------
 
-    random.seed(0)
+    # A generator of its own, so the caller's random state is untouched.
+    rng = Random(0)
     best_cross_count = inf
     best_columns = [c.copy() for c in columns]
     for _ in range(state.settings.iterations):
-        cross_count = minimized_cross_count(columns, forward_items, backward_items, T)
+        cross_count = minimized_cross_count(
+            columns, forward_items, backward_items, T, rng
+        )
         if cross_count < best_cross_count:
             best_cross_count = cross_count
             best_columns = [c.copy() for c in columns]
@@ -601,6 +605,12 @@ def minimize_crossings(G: Tree[Node], T: _MixedGraph, state: LayoutState) -> Non
             for col, best_col in zip(columns, best_columns):
                 col.sort(key=best_col.index)
             sort_reduced_free_columns(forward_items + backward_items)
+
+    # These are keyed by the graphs of this run; drop them so the graphs
+    # (and the nodes they reference) can be freed.
+    reflexive_transitive_closure.cache_clear()
+    topologically_sorted_clusters.cache_clear()
+    non_cluster_descendant.cache_clear()
 
 
 @register("order", "layer_sweep")

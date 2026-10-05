@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from functools import cache
 from math import sqrt
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from .common import group_by
 from .graph import Cluster, Kind, MultiEdge, Node, link_priority, opposite
@@ -74,7 +74,7 @@ def add_frame_sequence_edges(CG: ClusterGraph, H: Tree[Node]) -> None:
     unit_of = {v: _top_level_unit(v, root) for v in G}
 
     Q: DiGraph[Node | Cluster] = DiGraph()
-    Q.add_nodes(set(unit_of.values()))
+    Q.add_nodes(dict.fromkeys(unit_of.values()))
     for link in G.all_links():
         a, b = unit_of[link.fromnode], unit_of[link.tonode]
         if a is not b:
@@ -125,54 +125,62 @@ def get_slack(e: MultiEdge) -> int:
     return v.rank - u.rank - min_length
 
 
-def tight_tree(
-    H: Tree[Node],
-    T: Tree[Node],
-    v: Node,
-    visited: set[MultiEdge] | None = None,
-) -> int:
-    if visited is None:
-        visited = set()
-
-    T.add_node(v)
-
-    for e in get_adj_edges_H(H, v):
-        if e in visited:
-            continue
-
-        visited.add(e)
-
-        u, w, k = e
-        other = u if v != u else w
-        if T.has_link(u, w, k):
-            tight_tree(H, T, other, visited)
-        elif other not in T and get_slack(e) == 0:
-            T.add_link(u, w, key=k)
-            tight_tree(H, T, other, visited)
-
-    return len(T)
-
-
-def set_post_order_numbers(v: Node, T: Tree[Node]) -> None:
-    visited = set()
-    num = 0
-
-    def recurse(w: Node) -> int:
-        nums = []
-        for e in get_adj_edges_T(T, w):
+def tight_tree(H: Tree[Node], T: Tree[Node], root: Node) -> int:
+    """Grow *T* from *root* over the links without slack, depth first, and
+    return its size. (An explicit stack: the tree can be as deep as the
+    graph is long.)"""
+    visited: set[MultiEdge] = set()
+    T.add_node(root)
+    stack = [(root, iter(get_adj_edges_H(H, root)))]
+    while stack:
+        v, edges = stack[-1]
+        for e in edges:
             if e in visited:
                 continue
 
             visited.add(e)
-            nums.append(recurse(opposite(w, e)))
 
-        nonlocal num
-        w.po_num = num
-        w.lowest_po_num = min(nums + [num])
-        num += 1
-        return w.lowest_po_num
+            u, w, k = e
+            other = u if v != u else w
+            if not T.has_link(u, w, k):
+                if other in T or get_slack(e) != 0:
+                    continue
+                T.add_link(u, w, key=k)
 
-    recurse(v)
+            stack.append((other, iter(get_adj_edges_H(H, other))))
+            break
+        else:
+            stack.pop()
+
+    return len(T)
+
+
+def set_post_order_numbers(root: Node, T: Tree[Node]) -> None:
+    """Number the nodes of the spanning tree *T* in post-order from *root*,
+    and give each the lowest number in its subtree."""
+    visited: set[MultiEdge] = set()
+    num = 0
+    # Each entry: a node, its remaining tree links, the lowest number below.
+    stack: list[list[Any]] = [[root, iter(get_adj_edges_T(T, root)), None]]
+    while stack:
+        w, edges, lowest = stack[-1]
+        for e in edges:
+            if e in visited:
+                continue
+
+            visited.add(e)
+            child = opposite(w, e)
+            stack.append([child, iter(get_adj_edges_T(T, child)), None])
+            break
+        else:
+            stack.pop()
+            w.po_num = num
+            w.lowest_po_num = num if lowest is None else min(lowest, num)
+            num += 1
+            if stack:
+                parent = stack[-1]
+                if parent[2] is None or w.lowest_po_num < parent[2]:
+                    parent[2] = w.lowest_po_num
 
 
 def compute_cut_values(H: Tree[Node], T: Tree[Node]) -> None:
@@ -294,7 +302,7 @@ def exchange(
 
 def normalize_and_balance(CG: ClusterGraph, H: Tree[Node]) -> None:
     for cc in weakly_connected_components(CG.G):
-        c = next(iter(cc)).cluster
+        c = cc[0].cluster
         assert c
 
         if any(v.cluster != c for v in cc):
@@ -362,8 +370,9 @@ def compute_ranks(
     frame's borders — so that every link spans at least one column.
     """
     for i, layer in enumerate(topological_generations(CG.T)):
-        for c in CG.S.intersection(layer):
-            c.nesting_level = i
+        for c in layer:
+            if isinstance(c, Cluster):
+                c.nesting_level = i
 
     # Heavier links are kept shorter: a link weighs one more than its
     # priority, so the trunk stays compact and a node feeding both the trunk

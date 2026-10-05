@@ -35,7 +35,7 @@ def _upstream(G: Tree[Node], v: Node) -> set[Node]:
     column to the left is always feasible: the set has no predecessor
     outside itself, and links from it to nodes left behind only get
     longer."""
-    return ancestors(G, v)
+    return set(ancestors(G, v))
 
 
 def _column_heights(

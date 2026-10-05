@@ -29,7 +29,10 @@ def dimensions(node: Node) -> Vector:
 
     dim = node.dimensions
     if dim.x > 0 and dim.y > 0:  # pragma: no cover - only drawn in a UI
-        return dim
+        # Drawn sizes are in view space; locations are not.
+        preferences = bpy.context.preferences
+        assert preferences is not None
+        return dim / preferences.system.ui_scale
 
     # `node.dimensions` is only computed when a node editor draws the tree;
     # under the headless `bpy` module it stays (0, 0), so estimate instead.

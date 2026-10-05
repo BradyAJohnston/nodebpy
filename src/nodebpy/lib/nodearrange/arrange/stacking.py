@@ -6,8 +6,9 @@ from collections import deque
 from collections.abc import Hashable, Iterable, Mapping
 from dataclasses import dataclass, field
 from math import inf
-from typing import cast
+from typing import Any, cast
 
+from ..config import LayoutState
 from .graph import (
     Cluster,
     ClusterGraph,
@@ -63,18 +64,37 @@ def deterministic_hopcroft_karp_matching[T: Hashable](
 
         return dist[None] != inf
 
-    def dfs(u: T | None) -> bool:
-        if u is None:
-            return True
+    def dfs(root: T) -> bool:
+        # Search for an augmenting path from `root` along the layers `bfs`
+        # found, and flip it. Each stack entry is a node, its remaining
+        # neighbours, and the neighbour the search went down through.
+        stack: list[list[Any]] = [[root, iter(G[root]), None]]
+        found = False
+        while stack:
+            entry = stack[-1]
+            u, neighbours, via = entry
+            if found:
+                pair_V[via] = u
+                pair_U[u] = via
+                stack.pop()
+                continue
 
-        for v in G[u]:
-            if dist[pair_V[v]] == dist[u] + 1 and dfs(pair_V[v]):
-                pair_V[v] = u
-                pair_U[u] = v
-                return True
+            for v in neighbours:
+                paired = pair_V[v]
+                if dist[paired] != dist[u] + 1:
+                    continue
 
-        dist[u] = inf
-        return False
+                entry[2] = v
+                if paired is None:
+                    found = True
+                else:
+                    stack.append([paired, iter(G[paired]), None])
+                break
+            else:
+                dist[u] = inf
+                stack.pop()
+
+        return found
 
     pair_U: dict[T, T | None] = {v: None for v in top_nodes}
     pair_V: dict[T, T | None] = {v: None for v in bottom_nodes}
@@ -292,7 +312,52 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
 
     assert is_acyclic(G)
 
+    for node_stack in node_stacks:
+        _point_multi_input_orders_at_stack(G, CG.state, node_stack)
+
     return node_stacks
+
+
+def _feeds(G: Tree[Node], source: Socket, target: Socket) -> bool:
+    """Whether a link from *source* reaches *target*, directly or through
+    reroutes."""
+    links = [link for link in G.out_links(source.owner) if link.fromsock == source]
+    while links:
+        link = links.pop()
+        if link.tosock == target:
+            return True
+        if link.tonode.is_reroute:
+            links.extend(G.out_links(link.tonode))
+    return False
+
+
+def _point_multi_input_orders_at_stack(
+    G: Tree[Node], state: LayoutState, node_stack: NodeStack
+) -> None:
+    """The saved multi-input orders name the socket each link comes from;
+    where that is a socket the stack took over, name the stack's instead.
+    (A socket with several outside links gets a stack socket per link, so
+    pick the one that actually feeds the multi-input.)"""
+    stand_ins: dict[Socket, list[Socket]] = {}
+    for stack_socket, original in node_stack.stack_sockets_to_originals.items():
+        stand_ins.setdefault(original, []).append(stack_socket)
+
+    for target, sort_ids in state.multi_input_sort_ids.items():
+        for k, (source, sort_id) in enumerate(sort_ids):
+            candidates = stand_ins.get(source)
+            if not candidates:
+                continue
+            stand_in = next(
+                (s for s in candidates if _feeds(G, s, target)), candidates[0]
+            )
+            sort_ids[k] = (stand_in, sort_id)
+
+
+def _relabel_multi_input_sources(
+    state: LayoutState, renamed: Mapping[Socket, Socket]
+) -> None:
+    for sort_ids in state.multi_input_sort_ids.values():
+        sort_ids[:] = [(renamed.get(s, s), i) for s, i in sort_ids]
 
 
 def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
@@ -332,4 +397,5 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
         v.y = y
         y -= v.height + CG.state.margin.y * CG.state.settings.stack_margin_y_fac
 
+    _relabel_multi_input_sources(CG.state, node_stack.stack_sockets_to_originals)
     CG.remove_nodes_from([rep_node])

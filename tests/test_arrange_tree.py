@@ -274,6 +274,7 @@ def test_reachability():
     # Stops as soon as everything has been reached.
     chain: DiGraph[str] = DiGraph([("a", "b"), ("b", "c")])
     assert descendants(chain, "a") == {"b", "c"}
+    assert list(descendants(chain, "a")) == ["b", "c"]
 
 
 def test_topological_order():
@@ -292,9 +293,9 @@ def test_components():
     graph: DiGraph[str] = DiGraph([("a", "b"), ("c", "b"), ("x", "y"), ("y", "x")])
     graph.add_node("lone")
     assert list(weakly_connected_components(graph)) == [
-        {"a", "b", "c"},
-        {"x", "y"},
-        {"lone"},
+        ["a", "b", "c"],
+        ["x", "y"],
+        ["lone"],
     ]
     strong = {frozenset(c) for c in strongly_connected_components(graph)}
     assert strong == {
