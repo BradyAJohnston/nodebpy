@@ -24,6 +24,11 @@ class Settings:
     )
     socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "MODERATE"
     add_reroutes: bool = True
+    # nodebpy divergence: which links get reroutes when `add_reroutes` is
+    # on. "long": every link that passes a column, and the reroutes already
+    # in the tree are replaced (upstream). "blocked": only links that would
+    # otherwise be drawn across a node, and the tree's own reroutes stay.
+    reroute_links: Literal["long", "blocked"] = "long"
     keep_reroutes_outside_frames: bool = False
     stack_collapsed: bool = True
     optimize_sizes: bool = False

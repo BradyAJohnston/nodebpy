@@ -48,6 +48,11 @@ MARGIN = (50.0, 20.0)
 SETTINGS: dict[str, dict[str, Any]] = {
     "default": {"direction": "BALANCED", "add_reroutes": False},
     "reroutes": {"direction": "BALANCED", "add_reroutes": True},
+    "blocked": {
+        "direction": "BALANCED",
+        "add_reroutes": True,
+        "reroute_links": "blocked",
+    },
     "plain": {
         "add_reroutes": False,
         "direction": "RIGHT_DOWN",

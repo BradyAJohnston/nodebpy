@@ -125,6 +125,12 @@ break headless operation.
   - `realize.remove_reroutes()` keeps reroutes that lead nowhere or come
     from nowhere (`realize.is_dangling()`); upstream deletes them with
     their links.
+  - `reroute_links="blocked"` (with `add_reroutes`): the step
+    `sugiyama.dissolve_clear_dummy_nodes()` takes a long link off its dummy
+    nodes again when the link drawn straight (`sugiyama.link_is_clear()`,
+    sampling the Bézier Blender draws) passes clear of every node, so only
+    links that need routing get reroutes, and `remove_reroutes` does not
+    run, so the tree's own reroutes stay.
   - `sugiyama.precompute_links()` goes by every link, not only those with
     `is_valid`: Blender also clears that flag for links between sockets
     that do not fit, which are still drawn. `sugiyama.cycle_links()` leaves

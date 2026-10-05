@@ -197,3 +197,73 @@ def test_invalid_link_still_orders_its_nodes():
     arrange_node_tree(tree, Settings(add_reroutes=False), MARGIN)
 
     assert source.location_absolute.x < target.location_absolute.x
+
+
+# ---------------------------------------------------------------------------
+# Reroutes only where a link is blocked
+# ---------------------------------------------------------------------------
+
+
+def _reroutes(tree) -> list[str]:
+    return sorted(n.name for n in tree.nodes if n.bl_idname == "NodeReroute")
+
+
+def _arranged(case, **settings):
+    from nodebpy.lib.nodearrange.metrics import measure
+
+    tree = arrange_cases.CASES[case]()
+    arrange_cases.reset_locations(tree)
+    arrange_node_tree(
+        tree, Settings(direction="BALANCED", **settings), MARGIN, verify=True
+    )
+    return tree, measure(tree)
+
+
+@pytest.mark.parametrize("case", ["long_links", "fan_in", "framed_stages"])
+def test_blocked_links_are_routed_around_nodes(case):
+    """``reroute_links="blocked"`` leaves no link drawn across a node, as
+    routing every long link does, without adding more reroutes than that."""
+    _, unrouted = _arranged(case, add_reroutes=False)
+    _, blocked = _arranged(case, add_reroutes=True, reroute_links="blocked")
+    _, long = _arranged(case, add_reroutes=True, reroute_links="long")
+
+    assert blocked.links_through_nodes == 0
+    assert blocked.node_overlaps == 0
+    assert blocked.reroutes <= long.reroutes
+    if unrouted.links_through_nodes:
+        assert blocked.reroutes > unrouted.reroutes
+
+
+def test_clear_long_links_get_no_reroutes():
+    """In this tree the long links pass clear of every node, so nothing is
+    added, where routing every long link adds reroutes."""
+    tree, blocked = _arranged(
+        "trunk_with_feeders", add_reroutes=True, reroute_links="blocked"
+    )
+    _, unrouted = _arranged("trunk_with_feeders", add_reroutes=False)
+
+    assert blocked.links_through_nodes == unrouted.links_through_nodes == 0
+    assert _reroutes(tree) == []
+
+
+def test_blocked_mode_keeps_the_trees_own_reroutes():
+    before = _reroutes(arrange_cases.annotated())
+    assert len(before) == 2
+
+    tree, _ = _arranged("annotated", add_reroutes=True, reroute_links="blocked")
+    assert set(before) <= set(_reroutes(tree))
+    # Still wired as they were: the first feeds the labelled second.
+    first, second = (tree.nodes[name] for name in before)
+    if second.label != "offset":
+        first, second = second, first
+    assert second.inputs[0].links[0].from_node == first
+
+
+def test_reroute_links_option_on_the_public_api():
+    from nodebpy import SugiyamaOptions, arrange
+    from nodebpy.lib.nodearrange.metrics import measure
+
+    tree = arrange_cases.long_links()
+    arrange_cases.reset_locations(tree)
+    arrange(tree, SugiyamaOptions(add_reroutes=True, reroute_links="blocked"))
+    assert measure(tree).links_through_nodes == 0

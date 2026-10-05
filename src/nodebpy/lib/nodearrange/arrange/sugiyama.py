@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Sequence
-from itertools import chain
+from itertools import chain, pairwise
 from statistics import fmean
 
 from ..config import LayoutState, Settings
 from ..dna import bNode, bNodeLink, bNodeTree
 from .balancing import balance_column_heights
-from .common import Vec2, f32, group_by
-from .edits import LayoutResult
+from .common import Vec2, f32, group_by, segments_intersect
+from .edits import LayoutResult, RemoveLink
 from .graph import (
     Cluster,
     ClusterGraph,
@@ -226,6 +226,80 @@ def dissolve_dummy_nodes(CG: ClusterGraph) -> None:
         CG.remove_nodes_from(path)
 
 
+_CURVE_PIECES = 12
+_CLEARANCE = 4.0
+
+
+def _link_curve(
+    start: tuple[float, float], end: tuple[float, float]
+) -> list[tuple[float, float]]:
+    """Points along a link as Blender draws it: a Bézier leaving and
+    entering its sockets horizontally."""
+    (x0, y0), (x3, y3) = start, end
+    handle = max(0.4 * abs(x3 - x0), 12.0)
+    x1, x2 = x0 + handle, x3 - handle
+    points = []
+    for k in range(_CURVE_PIECES + 1):
+        t = k / _CURVE_PIECES
+        s = 1.0 - t
+        a, b, c, d = s**3, 3 * s**2 * t, 3 * s * t**2, t**3
+        points.append((a * x0 + b * x1 + c * x2 + d * x3, (a + b) * y0 + (c + d) * y3))
+    return points
+
+
+def link_is_clear(start: Socket, end: Socket, obstacles: Sequence[Node]) -> bool:
+    """Whether a link drawn straight from *start* to *end* passes clear of
+    every node in *obstacles* (other than the two it joins)."""
+    curve = _link_curve((start.x, start.y), (end.x, end.y))
+    left = min(x for x, _ in curve)
+    right = max(x for x, _ in curve)
+    low = min(y for _, y in curve)
+    high = max(y for _, y in curve)
+    for v in obstacles:
+        if v is start.owner or v is end.owner:
+            continue
+        xmin, xmax = v.x - _CLEARANCE, v.x + v.width + _CLEARANCE
+        ymin, ymax = v.y - v.height - _CLEARANCE, v.y + _CLEARANCE
+        if xmax < left or xmin > right or ymax < low or ymin > high:
+            continue
+        corners = ((xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax))
+        for p, q in pairwise(curve):
+            if xmin < p[0] < xmax and ymin < p[1] < ymax:
+                return False
+            for i in range(4):
+                if segments_intersect(p, q, corners[i], corners[i - 3]):
+                    return False
+    return True
+
+
+def dissolve_clear_dummy_nodes(CG: ClusterGraph) -> None:
+    """Take long links off their dummy nodes again wherever the link drawn
+    straight would pass clear of every node, so that only the links that
+    need routing around something end up with reroutes."""
+    G = CG.G
+    obstacles = [v for v in G if not v.is_reroute]
+    paths = get_reroute_paths(
+        CG,
+        lambda v: v.is_reroute and not is_real(v),
+        preserve_reroute_clusters=False,
+    )
+    for path in paths:
+        first = next(G.in_links(path[0]), None)
+        if first is None:
+            continue
+        output = first.fromsock
+        inputs = [link.tosock for link in G.out_links(path[-1])]
+        if not all(link_is_clear(output, i, obstacles) for i in inputs):
+            continue
+        for i in inputs:
+            G.add_link(output.owner, i.owner, output, i)
+            # The tree's own link stands after all.
+            edit = RemoveLink(output.dna, i.dna)
+            if edit in CG.state.edits:
+                CG.state.edits.remove(edit)
+        CG.remove_nodes_from(path)
+
+
 # -------------------------------------------------------------------
 
 
@@ -388,6 +462,12 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
     def reroutes(s: Settings) -> bool:
         return s.add_reroutes
 
+    def replacing_reroutes(s: Settings) -> bool:
+        return s.add_reroutes and s.reroute_links == "long"
+
+    def sparing_reroutes(s: Settings) -> bool:
+        return s.add_reroutes and s.reroute_links == "blocked"
+
     def no_reroutes(s: Settings) -> bool:
         return not s.add_reroutes
 
@@ -406,7 +486,9 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
                 "save_multi_input_orders",
                 lambda L: save_multi_input_orders(L.G, L.state),
             ),
-            step("remove_reroutes", lambda L: remove_reroutes(L.CG), reroutes),
+            step(
+                "remove_reroutes", lambda L: remove_reroutes(L.CG), replacing_reroutes
+            ),
             step("contract_stacks", _contract_stacks, stacks, provides=[F.STACKED]),
             # Columns.
             step("rank", None, phase="rank", provides=[F.RANKED]),
@@ -480,11 +562,18 @@ def default_pipeline(settings: Settings | None = None) -> Pipeline:
                 provides=[F.X],
             ),
             step(
+                "dissolve_clear_dummy_nodes",
+                lambda L: dissolve_clear_dummy_nodes(L.CG),
+                sparing_reroutes,
+                requires=[F.PROPER, F.X],
+                removes=[F.PROPER],
+            ),
+            step(
                 "route",
                 None,
                 reroutes,
                 phase="route",
-                requires=[F.PROPER, F.X],
+                requires=[F.X],
                 provides=[F.ROUTED],
                 # Bend points are new nodes, outside the ranks and columns.
                 removes=[F.RANKED, F.PROPER, F.COLUMNS],

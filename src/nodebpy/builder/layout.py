@@ -861,6 +861,12 @@ class SugiyamaOptions:
         default: added reroutes are real nodes, which would change the
         authored structure of generated trees (node counts, round-trips,
         diagrams).
+    reroute_links : str
+        Which links get reroutes when ``add_reroutes`` is on. ``"long"``:
+        every link that passes over a column, and reroutes already in the
+        tree are replaced by the layout's own. ``"blocked"``: only links
+        that would otherwise be drawn across a node, and the tree's own
+        reroutes are kept; far fewer reroutes are added.
     keep_reroutes_outside_frames : bool
         Do not place added reroutes inside frames.
     stack_collapsed : bool
@@ -945,6 +951,7 @@ class SugiyamaOptions:
     )
     socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "NONE"
     add_reroutes: bool = False
+    reroute_links: Literal["long", "blocked"] = "long"
     keep_reroutes_outside_frames: bool = False
     stack_collapsed: bool = True
     stack_margin_y_fac: float = 0.5
@@ -1030,6 +1037,7 @@ def _sugiyama_settings(options: SugiyamaOptions):
         direction=options.direction,
         socket_alignment=options.socket_alignment,
         add_reroutes=options.add_reroutes,
+        reroute_links=options.reroute_links,
         keep_reroutes_outside_frames=options.keep_reroutes_outside_frames,
         stack_collapsed=options.stack_collapsed,
         optimize_sizes=options.optimize_sizes,

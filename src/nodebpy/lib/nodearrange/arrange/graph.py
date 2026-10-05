@@ -298,7 +298,9 @@ def add_dummy_nodes_to_edge(
     # would keep both. (Without reroutes the chain is only the layout's:
     # the tree keeps its link.)
     if state.settings.add_reroutes and link.tosock.dna.is_multi_input:
-        state.edits.append(RemoveLink(link.fromsock.dna, link.tosock.dna))
+        edit = RemoveLink(link.fromsock.dna, link.tosock.dna)
+        if edit not in state.edits:
+            state.edits.append(edit)
 
 
 def assign_clusters(

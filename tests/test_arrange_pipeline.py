@@ -79,6 +79,7 @@ def test_default_pipeline_steps():
         "align_reroutes",
         "remove_frame_borders",
         "space_columns",
+        "dissolve_clear_dummy_nodes",
         "route",
         "expand_stacks",
         "realize",
@@ -102,13 +103,22 @@ def test_steps_follow_the_settings():
 
     everything = default_pipeline().names()
     with_reroutes = ran(Settings(add_reroutes=True))
-    assert with_reroutes == [n for n in everything if n != "dissolve_dummy_nodes"]
+    assert with_reroutes == [
+        n
+        for n in everything
+        if n not in ("dissolve_dummy_nodes", "dissolve_clear_dummy_nodes")
+    ]
+    sparing = ran(Settings(add_reroutes=True, reroute_links="blocked"))
+    assert sparing == [
+        n for n in everything if n not in ("dissolve_dummy_nodes", "remove_reroutes")
+    ]
 
     plain = ran(
         Settings(add_reroutes=False, stack_collapsed=False, balance_heights=False)
     )
     skipped = {
         "remove_reroutes",
+        "dissolve_clear_dummy_nodes",
         "route",
         "contract_stacks",
         "expand_stacks",
