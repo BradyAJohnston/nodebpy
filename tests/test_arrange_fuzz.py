@@ -34,7 +34,7 @@ def _frame_defects(tree, result) -> int:
 def test_random_tree(seed, add_reroutes, zones):
     """Zones are thrown at the trees at random, overlapping frames and each
     other in ways Blender's cannot."""
-    settings = Settings(add_reroutes=add_reroutes)
+    settings = Settings(reroutes="all" if add_reroutes else "none")
     tree = random_tree(seed, zones)
 
     result = sugiyama_layout(tree, settings, MARGIN, verify=True)
@@ -51,7 +51,7 @@ def test_random_tree(seed, add_reroutes, zones):
     if add_reroutes and not zones:
         as_one = random_tree(seed)
         unpacked = sugiyama_layout(
-            as_one, Settings(add_reroutes=True, pack_components=False), MARGIN
+            as_one, Settings(reroutes="all", pack_components=False), MARGIN
         )
         assert node_overlaps(unpacked) == 0
         assert _frame_defects(tree, result) <= _frame_defects(as_one, unpacked)

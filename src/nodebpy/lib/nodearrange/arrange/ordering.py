@@ -11,7 +11,7 @@ from __future__ import annotations
 from bisect import bisect_right, insort
 from collections import defaultdict, deque
 from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from functools import cache
 from itertools import chain, pairwise
 from math import inf
@@ -19,7 +19,7 @@ from operator import itemgetter
 from statistics import fmean
 from typing import cast
 
-from ..config import CrossingWeights, LayoutState
+from ..config import LayoutState
 from .digraph import (
     DiGraph,
     LayoutGraph,
@@ -38,7 +38,6 @@ from .graph import (
     link_is_flow,
     socket_graph,
 )
-from .pipeline import Layout, register
 
 # -------------------------------------------------------------------
 
@@ -540,6 +539,22 @@ def _depth_first_order(
     return order
 
 
+@dataclass(frozen=True, slots=True)
+class CrossingWeights:
+    """What a crossing of two links costs the ordering, by what the links
+    carry: the tree's main data ("flow": geometry, shader, bundle, closure)
+    or anything else ("value"). Branches of the trunk passing each other
+    read easily; a value cutting across the trunk does not."""
+
+    flow_flow: float = 1.0
+    value_value: float = 1.0
+    flow_value: float = 4.0
+
+
+CROSSING_WEIGHTS = CrossingWeights()
+"""The weights the ordering goes by."""
+
+
 def _pair_cost(weights: CrossingWeights) -> tuple[tuple[float, float], ...]:
     """Cost of a crossing, indexed by whether each link carries flow."""
     return (
@@ -667,7 +682,7 @@ def count_crossings(
     return total
 
 
-def minimize_crossings_deterministic(
+def minimize_crossings(
     G: LayoutGraph[Node], T: _MixedGraph, state: LayoutState
 ) -> None:
     """Order the columns by sweeping from a few fixed starting orders, each
@@ -683,7 +698,7 @@ def minimize_crossings_deterministic(
     machinery for sockets and frames. Nothing is random, so the same graph
     always gets the same order, and a port can reproduce it."""
     columns = G.columns
-    weights = state.settings.crossing_weights
+    weights = CROSSING_WEIGHTS
     trees = get_col_nesting_trees(columns, T)
     G_ = G.copy()
 
@@ -747,11 +762,3 @@ def minimize_crossings_deterministic(
     reflexive_transitive_closure.cache_clear()
     topologically_sorted_clusters.cache_clear()
     non_cluster_descendant.cache_clear()
-
-
-@register("order", "layer_sweep")
-def order_layer_sweep(layout: Layout) -> None:
-    """Sweep back and forth over the columns from a few fixed starting
-    orders, swap neighbours where that uncrosses links, and keep the order
-    with the fewest crossings. Nothing is random."""
-    minimize_crossings_deterministic(layout.G, layout.T, layout.state)

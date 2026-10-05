@@ -1,11 +1,10 @@
-"""The layout as a pipeline of named steps with swappable strategies
-(``nodebpy.lib.nodearrange.arrange.pipeline``)."""
+"""The layout as a pipeline of named steps
+(``nodebpy.lib.nodearrange.arrange.pipeline``), and the ordering phase."""
 
 import pytest
 
-from nodebpy import SugiyamaOptions, arrange
-from nodebpy.lib.nodearrange.arrange import pipeline as pipeline_module
 from nodebpy.lib.nodearrange.arrange.graph import keep_frames_together
+from nodebpy.lib.nodearrange.arrange.ordering import CROSSING_WEIGHTS, CrossingWeights
 from nodebpy.lib.nodearrange.arrange.pipeline import (
     PHASES,
     Fact,
@@ -13,18 +12,11 @@ from nodebpy.lib.nodearrange.arrange.pipeline import (
     Layout,
     PipelineError,
     Step,
-    register,
-    strategies,
-    strategy,
-    unregister,
 )
 from nodebpy.lib.nodearrange.arrange.ranking import compute_ranks, longest_path_ranks
 from nodebpy.lib.nodearrange.arrange.sugiyama import default_pipeline, sugiyama_layout
-from nodebpy.lib.nodearrange.config import CrossingWeights, Settings
+from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
-from nodebpy.lib.nodearrange.metrics import measure
-
-from . import arrange_cases
 
 
 def _node(tree: bNodeTree, name: str) -> bNode:
@@ -82,61 +74,6 @@ def test_observer_sees_the_layout_and_timings():
 # ---------------------------------------------------------------------------
 # Strategies
 # ---------------------------------------------------------------------------
-
-
-def test_registered_strategies():
-    assert strategies("rank") == ["network_simplex", "longest_path"]
-    assert strategies("order") == ["layer_sweep"]
-    assert strategies("place") == ["brandes_koepf"]
-    assert strategies("route") == ["bend_points"]
-    assert strategy("rank", "longest_path") is not strategy("rank", "network_simplex")
-    tree, _ = _fork()
-    with pytest.raises(
-        ValueError, match="unknown rank strategy 'nope'.*network_simplex"
-    ):
-        sugiyama_layout(tree, Settings(ranking="nope"))
-
-
-def test_a_pipeline_follows_the_settings_it_is_run_with():
-    """A pipeline is not tied to the settings it was built under: each phase
-    looks its strategy up when it runs."""
-    tree, _ = _fork()
-    pipeline = default_pipeline()
-
-    simplex = _columns(tree, Settings(ranking="network_simplex"), pipeline=pipeline)
-    longest = _columns(tree, Settings(ranking="longest_path"), pipeline=pipeline)
-
-    assert simplex["s"] == simplex["b"]
-    assert longest["s"] == longest["c"]
-
-
-def test_ranking_option_on_the_public_api():
-    ntree = arrange_cases.framed_stages()
-    arrange_cases.reset_locations(ntree)
-    arrange(ntree, SugiyamaOptions(ranking="longest_path"))
-    metrics = measure(ntree)
-    assert metrics.node_overlaps == 0
-    assert metrics.backward_links == 0
-    assert metrics.frame_overlaps == 0
-
-
-def test_register_a_strategy(monkeypatch):
-    """A new strategy is a decorated function, selected by name."""
-    monkeypatch.setitem(
-        pipeline_module._STRATEGIES, "rank", dict(pipeline_module._STRATEGIES["rank"])
-    )
-    calls = []
-
-    @register("rank", "test_longest")
-    def rank_test(layout: Layout) -> None:
-        calls.append(len(layout.G))
-        compute_ranks(layout.CG, longest_path_ranks)
-
-    assert "test_longest" in strategies("rank")
-    tree, _ = _fork()
-    columns = _columns(tree, Settings(ranking="test_longest"))
-    assert calls == [4]
-    assert columns["s"] == columns["c"]
 
 
 # ---------------------------------------------------------------------------
@@ -213,8 +150,8 @@ def _framed() -> bNodeTree:
 def test_default_pipeline_fits_together():
     for settings in (
         Settings(),
-        Settings(add_reroutes=False),
-        Settings(stack_collapsed=False, balance_heights=False, link_priority="none"),
+        Settings(reroutes="none"),
+        Settings(stack_collapsed=False, balance_heights=False, straighten_trunk=False),
     ):
         default_pipeline().check(settings)
 
@@ -237,7 +174,7 @@ def test_pipeline_missing_a_step_is_refused(removed, broken, fact):
     tree, _ = _fork()
 
     with pytest.raises(PipelineError, match=rf"step '{broken}' requires .*{fact}"):
-        sugiyama_layout(tree, Settings(add_reroutes=False), pipeline=pipeline)
+        sugiyama_layout(tree, Settings(reroutes="none"), pipeline=pipeline)
 
 
 def test_step_with_requirements_must_come_late_enough():
@@ -262,41 +199,51 @@ def test_step_with_requirements_must_come_late_enough():
     # After the routing the columns are gone again.
     too_late = default_pipeline()
     too_late.insert_after("route", needs_columns)
-    too_late.check(Settings(add_reroutes=False))
+    too_late.check(Settings(reroutes="none"))
     with pytest.raises(PipelineError, match="one took away"):
-        too_late.check(Settings(add_reroutes=True))
+        too_late.check(Settings(reroutes="all"))
 
 
-def test_verify_pins_a_broken_invariant_on_its_step(monkeypatch):
+def test_replacing_a_phase():
+    """Another algorithm for a phase goes in with ``replace``: ranking every
+    node as far right as it can go puts the side branch of a fork beside
+    the end of the chain instead of beside its middle."""
+    tree, _ = _fork()
+    simplex = _columns(tree, Settings())
+
+    pipeline = default_pipeline()
+    pipeline.replace("rank", lambda L: compute_ranks(L.CG, longest_path_ranks))
+    longest = _columns(tree, Settings(), pipeline=pipeline)
+
+    assert simplex["s"] == simplex["b"]
+    assert longest["s"] == longest["c"]
+
+
+def test_verify_pins_a_broken_invariant_on_its_step():
     """An ordering that ignores frames is caught right after it runs, not
     as a crash or a bad drawing several steps later."""
-    monkeypatch.setitem(
-        pipeline_module._STRATEGIES,
-        "order",
-        dict(pipeline_module._STRATEGIES["order"]),
-    )
 
-    @register("order", "by_name")
     def order_by_name(layout: Layout) -> None:
         for col in layout.G.columns:
             col.sort(key=lambda v: v.node.name if v.node else "")
 
-    settings = Settings(ordering="by_name", add_reroutes=False)
+    pipeline = default_pipeline()
+    pipeline.replace("order", order_by_name)
     with pytest.raises(
         InvariantError,
         match=r"after step 'order' the graph is not ordered: Node\('e', NODE\) "
         r"sits between nodes of the frame bNode\('frame', NodeFrame\)",
     ):
-        sugiyama_layout(_framed(), settings, verify=True)
+        sugiyama_layout(_framed(), Settings(), pipeline=pipeline, verify=True)
 
-    # The same strategy, mended with the helper for exactly this.
-    @register("order", "by_name", replace=True)
+    # The same ordering, mended with the helper for exactly this.
     def order_by_name_in_frames(layout: Layout) -> None:
+        order_by_name(layout)
         for col in layout.G.columns:
-            col.sort(key=lambda v: v.node.name if v.node else "")
             keep_frames_together(col)
 
-    result = sugiyama_layout(_framed(), settings, verify=True)
+    pipeline.replace("order", order_by_name_in_frames)
+    result = sugiyama_layout(_framed(), Settings(), pipeline=pipeline, verify=True)
     assert len(result.positions()) == 7
 
 
@@ -324,45 +271,6 @@ def test_verify_checks_every_fact_it_can():
             sugiyama_layout(_framed(), Settings(), pipeline=pipeline, verify=True)
 
 
-def test_strategy_names_are_not_taken_silently(monkeypatch):
-    monkeypatch.setitem(
-        pipeline_module._STRATEGIES, "rank", dict(pipeline_module._STRATEGIES["rank"])
-    )
-    builtin = strategy("rank", "longest_path")
-
-    with pytest.raises(ValueError, match="already is a rank strategy"):
-        register("rank", "longest_path")(lambda layout: None)
-    assert strategy("rank", "longest_path") is builtin
-
-    register("rank", "mine")(builtin)
-    assert "mine" in strategies("rank")
-    unregister("rank", "mine")
-    assert "mine" not in strategies("rank")
-
-
-def test_strategy_options_on_the_public_api(monkeypatch):
-    """Every phase's strategy can be chosen through ``SugiyamaOptions``,
-    including one registered from outside."""
-    monkeypatch.setitem(
-        pipeline_module._STRATEGIES,
-        "place",
-        dict(pipeline_module._STRATEGIES["place"]),
-    )
-    calls = []
-
-    @register("place", "logged")
-    def place_logged(layout: Layout) -> None:
-        calls.append(len(layout.G))
-        strategy("place", "brandes_koepf")(layout)
-
-    ntree = arrange_cases.diamond()
-    arrange_cases.reset_locations(ntree)
-    arrange(ntree, SugiyamaOptions(placement="logged"))
-
-    assert len(calls) == 1
-    assert measure(ntree).node_overlaps == 0
-
-
 # ---------------------------------------------------------------------------
 # Ordering
 # ---------------------------------------------------------------------------
@@ -388,7 +296,7 @@ def _order_and_crossings(tree: bNodeTree, **settings) -> tuple[list[list[str]], 
             columns = layout.G.columns
             seen[step.name] = (
                 [[v.node.name if v.node else "" for v in col] for col in columns],
-                count_crossings(layout.G, columns, layout.settings.crossing_weights),
+                count_crossings(layout.G, columns, CROSSING_WEIGHTS),
             )
 
     # (As one graph: the parts of these trees are not linked.)

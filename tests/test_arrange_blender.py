@@ -53,7 +53,7 @@ def _long_links_into_a_join():
 
 @pytest.mark.parametrize("case", ["long_join", "annotated", "long_links", "fan_in"])
 def test_without_reroutes_only_nodes_move(case):
-    """With ``add_reroutes=False`` the layout is positions only: every edit
+    """With ``reroutes="none"`` the layout is positions only: every edit
     is a move, and the tree keeps its links (the same sockets, in the same
     order) and its reroutes."""
     ntree = (
@@ -66,11 +66,11 @@ def test_without_reroutes_only_nodes_move(case):
     links = _links(ntree)
 
     result = sugiyama_layout(
-        extract(ntree)[0], Settings(add_reroutes=False), MARGIN, verify=True
+        extract(ntree)[0], Settings(reroutes="none"), MARGIN, verify=True
     )
     assert {type(edit) for edit in result.edits} == {MoveNode}
 
-    arrange_node_tree(ntree, Settings(add_reroutes=False), MARGIN)
+    arrange_node_tree(ntree, Settings(reroutes="none"), MARGIN)
     assert sorted(node.name for node in ntree.nodes) == names
     assert _links(ntree) == links
     assert len(set(_locations(ntree).values())) > 1
@@ -88,7 +88,7 @@ def test_dangling_reroutes_are_kept():
     tree.links.new(a.outputs[0], loose_end.inputs[0])
     tree.links.new(no_source.outputs[0], b.inputs["Offset"])
 
-    arrange_node_tree(tree, Settings(add_reroutes=True), MARGIN)
+    arrange_node_tree(tree, Settings(reroutes="all"), MARGIN)
 
     names = {node.name for node in tree.nodes}
     assert "between" not in names
@@ -123,7 +123,7 @@ def test_selected_only_moves_the_selection():
         node.select = node in second
     before = _locations(tree)
 
-    arrange_node_tree(tree, Settings(add_reroutes=False), MARGIN, selected_only=True)
+    arrange_node_tree(tree, Settings(reroutes="none"), MARGIN, selected_only=True)
 
     after = _locations(tree)
     for node in first:
@@ -153,7 +153,7 @@ def test_selection_is_ignored_unless_asked_for():
         node.select = False
     before = _locations(tree)
 
-    arrange_node_tree(tree, Settings(add_reroutes=False), MARGIN)
+    arrange_node_tree(tree, Settings(reroutes="none"), MARGIN)
 
     assert _locations(tree) != before
     plain, _ = extract(tree)
@@ -173,7 +173,7 @@ def test_selected_reroutes_at_the_edge_of_the_selection_are_kept():
     a.select = False
     links = _links(tree)
 
-    arrange_node_tree(tree, Settings(add_reroutes=True), MARGIN, selected_only=True)
+    arrange_node_tree(tree, Settings(reroutes="all"), MARGIN, selected_only=True)
 
     assert reroute.name in tree.nodes
     assert _links(tree) == links
@@ -201,7 +201,7 @@ def test_reroute_that_also_links_outside_the_selection_is_kept(unselected):
         a.select = join.select = False
     links = _links(tree)
 
-    arrange_node_tree(tree, Settings(add_reroutes=True), MARGIN, selected_only=True)
+    arrange_node_tree(tree, Settings(reroutes="all"), MARGIN, selected_only=True)
 
     assert reroute.name in tree.nodes
     assert _links(tree) == links
@@ -222,7 +222,7 @@ def test_invalid_link_still_orders_its_nodes():
     assert len(invalid) == 1
     source, target = invalid[0].from_node, invalid[0].to_node
 
-    arrange_node_tree(tree, Settings(add_reroutes=False), MARGIN)
+    arrange_node_tree(tree, Settings(reroutes="none"), MARGIN)
 
     assert source.location_absolute.x < target.location_absolute.x
 
@@ -251,9 +251,9 @@ def _arranged(case, **settings):
 def test_blocked_links_are_routed_around_nodes(case):
     """``reroute_links="blocked"`` leaves no link drawn across a node, as
     routing every long link does, without adding more reroutes than that."""
-    _, unrouted = _arranged(case, add_reroutes=False)
-    _, blocked = _arranged(case, add_reroutes=True, reroute_links="blocked")
-    _, long = _arranged(case, add_reroutes=True, reroute_links="long")
+    _, unrouted = _arranged(case, reroutes="none")
+    _, blocked = _arranged(case, reroutes="blocked")
+    _, long = _arranged(case, reroutes="all")
 
     assert blocked.links_through_nodes == 0
     assert blocked.node_overlaps == 0
@@ -265,10 +265,8 @@ def test_blocked_links_are_routed_around_nodes(case):
 def test_clear_long_links_get_no_reroutes():
     """In this tree the long links pass clear of every node, so nothing is
     added, where routing every long link adds reroutes."""
-    tree, blocked = _arranged(
-        "trunk_with_feeders", add_reroutes=True, reroute_links="blocked"
-    )
-    _, unrouted = _arranged("trunk_with_feeders", add_reroutes=False)
+    tree, blocked = _arranged("trunk_with_feeders", reroutes="blocked")
+    _, unrouted = _arranged("trunk_with_feeders", reroutes="none")
 
     assert blocked.links_through_nodes == unrouted.links_through_nodes == 0
     assert _reroutes(tree) == []
@@ -278,7 +276,7 @@ def test_blocked_mode_keeps_the_trees_own_reroutes():
     before = _reroutes(arrange_cases.annotated())
     assert len(before) == 2
 
-    tree, _ = _arranged("annotated", add_reroutes=True, reroute_links="blocked")
+    tree, _ = _arranged("annotated", reroutes="blocked")
     assert set(before) <= set(_reroutes(tree))
     # Still wired as they were: the first feeds the labelled second.
     first, second = (tree.nodes[name] for name in before)
@@ -293,7 +291,7 @@ def test_reroute_links_option_on_the_public_api():
 
     tree = arrange_cases.long_links()
     arrange_cases.reset_locations(tree)
-    arrange(tree, SugiyamaOptions(add_reroutes=True, reroute_links="blocked"))
+    arrange(tree, SugiyamaOptions(reroutes="blocked"))
     assert measure(tree).links_through_nodes == 0
 
 

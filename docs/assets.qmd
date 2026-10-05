@@ -211,7 +211,7 @@ the dumped classes. On the build side the automatic layout is tunable:
 reroute nodes routing long links around nodes (the node-arrange addon's
 behaviour), and `--spacing`,
 `--direction`, `--socket-alignment`, `--no-sequential-frames`,
-`--no-balance-heights`, `--balance-aspect` and the other `SugiyamaOptions` fields
+`--no-balance-heights` and the other `SugiyamaOptions` fields
 (`arrange=SugiyamaOptions(...)` in Python) override the defaults;
 `--split-inputs` / `split_inputs=True` gives each consumer node its own
 Group Input instance — named and labelled after the interface sockets it

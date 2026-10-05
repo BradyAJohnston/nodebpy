@@ -18,7 +18,6 @@ from .graph import (
     add_dummy_nodes_to_edge,
     lowest_common_cluster,
 )
-from .pipeline import Layout, register
 
 
 def frame_padding_of_col(
@@ -219,10 +218,3 @@ def route_edges(
         for w in dummy_nodes:
             w.cluster = c
             T.add_edge(c, w)
-
-
-@register("route", "bend_points")
-def route_bend_points(layout: Layout) -> None:
-    """Add a bend point beside a node wherever a link would otherwise cut
-    across the node's neighbour in its column."""
-    route_edges(layout.G, layout.T, layout.state)

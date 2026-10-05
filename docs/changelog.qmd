@@ -38,6 +38,13 @@ title: Changelog
 ### Breaking Changes
 
 - `SugiyamaOptions.weighted_ranking` is removed (it made no consistent difference to layouts).
+- **`SugiyamaOptions` is cut to twelve fields**, the same ones under the same names as the arranger's own `Settings`:
+    - `add_reroutes` and `reroute_links` are one option, `reroutes`: `"none"` (default), `"blocked"` or `"all"`. `add_reroutes=True` becomes `reroutes="all"`. (`build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.)
+    - `straighten_trunk` now also covers zones; `straighten_zones` is gone.
+    - Removed, now fixed at their previous defaults: `stack_margin_y_fac`, `reroute_margin_y_fac`, `balance_aspect`, `balance_min_column`, `trunk_crossing_weight`, `keep_reroutes_outside_frames` (off).
+    - Removed: `trunk_sockets` (only the `"flow"` behaviour remains), and `ranking`, `ordering`, `placement`, `routing` with the strategy registry behind them (`pipeline.register`). Another algorithm for a phase goes in with `Pipeline.replace("rank", function)`.
+    - The asset build still accepts `--keep-reroutes-outside-frames`, `--stack-margin-y-fac`, `--balance-aspect` and `--reroute-margin-y-fac`; they do nothing.
+    - `Settings()` now has the defaults of `SugiyamaOptions()` (balanced direction, no socket alignment, no reroutes) rather than the node-arrange addon's.
 - `SugiyamaOptions.iterations` is removed along with the random-restarts ordering it belonged to. `python -m nodebpy.assets build --iterations` and the `iterations` configuration key are still accepted and do nothing.
 - The `networkx` extra (`nodebpy[networkx]`) is now empty and deprecated; it is kept so existing installs keep resolving.
 - `to_python` raises `ValueError` for a tree whose links form a cycle. It previously raised a `networkx` error, or silently left the nodes on the cycle out when `networkx` was not installed.

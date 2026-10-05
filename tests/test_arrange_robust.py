@@ -42,7 +42,7 @@ def test_cycle_is_laid_out_as_a_chain(size, add_reroutes):
     tree = _ring(size)
 
     assert [link.fromnode.name for link in cycle_links(tree)] == [f"n{size - 1}"]
-    positions = _positions(tree, add_reroutes=add_reroutes)
+    positions = _positions(tree, reroutes="all" if add_reroutes else "none")
 
     xs = [positions[f"n{i}"][0] for i in range(size)]
     assert xs == sorted(xs) and len(set(xs)) == size
@@ -178,7 +178,7 @@ def test_stack_feeding_a_multi_input(add_reroutes):
     tree.add_link(math[0].outputs[0], join.inputs[0], 0)
     tree.add_link(math[1].outputs[0], join.inputs[0], 1)
 
-    positions = _positions(tree, add_reroutes=add_reroutes)
+    positions = _positions(tree, reroutes="all" if add_reroutes else "none")
 
     assert positions["m0"][0] == positions["m1"][0] < positions["join"][0]
 

@@ -25,6 +25,7 @@ from .graph import (
     node_name,
     reset_serials,
 )
+from .ordering import minimize_crossings
 from .pipeline import (
     Fact,
     Layout,
@@ -33,15 +34,13 @@ from .pipeline import (
     Pipeline,
     Step,
     StepFunction,
-    run_strategy,
 )
 from .priority import socket_priorities, zone_priorities
+from .ranking import compute_ranks
 from .realize import realize_layout, remove_reroutes
 from .stacking import contracted_node_stacks, expand_node_stack
-from .x_coords import assign_x_coords
-
-# Importing these registers their strategies.
-from . import ordering, ranking, y_coords  # noqa: F401  isort: skip
+from .x_coords import assign_x_coords, route_edges
+from .y_coords import bk_assign_y_coords
 
 # -------------------------------------------------------------------
 
@@ -399,12 +398,9 @@ def _remove_frame_borders(layout: Layout) -> None:
 
 
 def _prioritize_links(layout: Layout) -> None:
-    tree, settings = layout.state.tree, layout.settings
-    priorities = {}
-    if settings.link_priority != "none":
-        priorities = socket_priorities(tree, settings.link_priority)
-    if settings.straighten_zones:
-        priorities.update(zone_priorities(tree))
+    tree = layout.state.tree
+    priorities = socket_priorities(tree)
+    priorities.update(zone_priorities(tree))
     layout.state.socket_priority = priorities
 
 
@@ -428,13 +424,12 @@ def constrain_layers(layout: Layout) -> None:
 
 
 def default_pipeline() -> Pipeline:
-    """The standard layout: the steps in order. Each phase runs the
-    strategy the settings of the layout select when it gets there."""
+    """The standard layout: the steps in order."""
     F = Fact
 
     def step(
         name: str,
-        run: StepFunction | None,
+        run: StepFunction,
         enabled: Callable[[Settings], bool] | None = None,
         *,
         phase: Phase | None = None,
@@ -442,9 +437,6 @@ def default_pipeline() -> Pipeline:
         provides: Iterable[Fact] = (),
         removes: Iterable[Fact] = (),
     ) -> Step:
-        if run is None:
-            assert phase is not None
-            run = run_strategy(phase)
         return Step(
             name,
             run,
@@ -456,16 +448,16 @@ def default_pipeline() -> Pipeline:
         )
 
     def reroutes(s: Settings) -> bool:
-        return s.add_reroutes
+        return s.reroutes != "none"
 
     def replacing_reroutes(s: Settings) -> bool:
-        return s.add_reroutes and s.reroute_links == "long"
+        return s.reroutes == "all"
 
     def sparing_reroutes(s: Settings) -> bool:
-        return s.add_reroutes and s.reroute_links == "blocked"
+        return s.reroutes == "blocked"
 
     def no_reroutes(s: Settings) -> bool:
-        return not s.add_reroutes
+        return s.reroutes == "none"
 
     def stacks(s: Settings) -> bool:
         return s.stack_collapsed
@@ -476,7 +468,7 @@ def default_pipeline() -> Pipeline:
             step(
                 "prioritize_links",
                 _prioritize_links,
-                lambda s: s.link_priority != "none" or s.straighten_zones,
+                lambda s: s.straighten_trunk,
             ),
             step(
                 "save_multi_input_orders",
@@ -487,7 +479,12 @@ def default_pipeline() -> Pipeline:
             ),
             step("contract_stacks", _contract_stacks, stacks),
             # Columns.
-            step("rank", None, phase="rank", provides=[F.RANKED]),
+            step(
+                "rank",
+                lambda L: compute_ranks(L.CG),
+                phase="rank",
+                provides=[F.RANKED],
+            ),
             step(
                 "balance_heights",
                 lambda L: balance_column_heights(L.G, L.CG.S, L.state),
@@ -513,7 +510,7 @@ def default_pipeline() -> Pipeline:
             # Order within the columns.
             step(
                 "order",
-                None,
+                lambda L: minimize_crossings(L.G, L.T, L.state),
                 phase="order",
                 requires=[F.PROPER, F.COLUMNS],
                 provides=[F.ORDERED],
@@ -527,7 +524,7 @@ def default_pipeline() -> Pipeline:
             ),
             step(
                 "place",
-                None,
+                lambda L: bk_assign_y_coords(L.G, L.T, L.state),
                 phase="place",
                 requires=[F.ORDERED, F.BORDERS],
                 provides=[F.Y],
@@ -566,7 +563,7 @@ def default_pipeline() -> Pipeline:
             ),
             step(
                 "route",
-                None,
+                lambda L: route_edges(L.G, L.T, L.state),
                 reroutes,
                 phase="route",
                 requires=[F.X],
@@ -640,7 +637,7 @@ def sugiyama_layout(
             for n in tree.nodes
             if not n.select and not n.is_frame() and not n.is_reroute()
         ]
-        if not obstacles or not state.settings.avoid_unselected:
+        if not obstacles:
             return LayoutResult(edits)
         rects = packing.node_rects(edits)
         if not rects:

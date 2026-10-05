@@ -15,9 +15,9 @@ from typing import Any, cast
 
 from ..config import LayoutState
 from ..dna import bNodeSocket
+from .common import REROUTE_MARGIN_Y_FAC
 from .digraph import DiGraph, LayoutGraph, descendants
 from .graph import Cluster, Edge, Kind, Node, Socket, link_priority
-from .pipeline import Layout, register
 from .priority import SPINE_MIN_PRIORITY, TRUNK_MIN_PRIORITY
 
 
@@ -236,7 +236,7 @@ def vertical_gap(u: Node, w: Node, state: LayoutState) -> float:
     dots do in hand-made trees, so a fan-in of many long links no longer
     costs a node's height per link."""
     if u.is_reroute and w.is_reroute:
-        return state.margin.y * state.settings.reroute_margin_y_fac
+        return state.margin.y * REROUTE_MARGIN_Y_FAC
     return state.margin.y
 
 
@@ -498,10 +498,3 @@ def bk_assign_y_coords(
         i = _DIRECTION_TO_IDX[state.settings.direction]
         for v, y in zip(G, layouts[i]):
             v.y = y
-
-
-@register("place", "brandes_koepf")
-def place_brandes_koepf(layout: Layout) -> None:
-    """Align each node with a median neighbour into straight blocks, then
-    pack the blocks (Brandes & Köpf)."""
-    bk_assign_y_coords(layout.G, layout.T, layout.state)

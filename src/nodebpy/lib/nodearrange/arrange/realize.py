@@ -217,7 +217,7 @@ def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
 
 
 def realize_layout(CG: ClusterGraph, old_center: Vec2) -> None:
-    if CG.state.settings.add_reroutes:
+    if CG.state.settings.reroutes != "none":
         realize_dummy_nodes(CG)
 
         # Only rerouting touches links, and so their order.

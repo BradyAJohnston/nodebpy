@@ -44,23 +44,17 @@ DIRECTORY = Path(__file__).parent / "arrange_corpus"
 
 
 # The settings each tree is laid out under, as the fields that differ from
-# `Settings()`. `default` is what `SugiyamaOptions()` gives.
+# `Settings()`.
 SETTINGS: dict[str, dict[str, Any]] = {
-    "default": {"direction": "BALANCED", "add_reroutes": False},
-    "reroutes": {"direction": "BALANCED", "add_reroutes": True},
-    "blocked": {
-        "direction": "BALANCED",
-        "add_reroutes": True,
-        "reroute_links": "blocked",
-    },
+    "default": {},
+    "reroutes": {"reroutes": "all"},
+    "blocked": {"reroutes": "blocked"},
     "plain": {
-        "add_reroutes": False,
         "direction": "RIGHT_DOWN",
-        "socket_alignment": "NONE",
         "stack_collapsed": False,
         "sequential_frames": False,
         "balance_heights": False,
-        "link_priority": "none",
+        "straighten_trunk": False,
         "pin_group_output": False,
     },
 }

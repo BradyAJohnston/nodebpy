@@ -141,7 +141,7 @@ def _boxes(tree: bNodeTree, **settings) -> dict[str, tuple[float, ...]]:
 
 @pytest.mark.parametrize("add_reroutes", [False, True])
 def test_parts_are_laid_out_apart(add_reroutes):
-    boxes = _boxes(_two_parts(), add_reroutes=add_reroutes)
+    boxes = _boxes(_two_parts(), reroutes="all" if add_reroutes else "none")
     main, second, note = boxes["a1"], boxes["b1"], boxes["c1"]
     # The largest on top, the others in a row beneath it.
     assert second[3] < main[1] and note[3] < main[1]
@@ -222,9 +222,18 @@ def _placed(result) -> list[tuple[float, float, float, float]]:
     return packing.node_rects(result.edits)
 
 
+def _unmoved(tree: bNodeTree, obstacle: bNode):
+    """The layout of the selection with nothing to keep off."""
+    tree.nodes.remove(obstacle)
+    try:
+        return sugiyama_layout(tree, Settings(), MARGIN)
+    finally:
+        tree.nodes.append(obstacle)
+
+
 def test_selection_is_moved_off_unselected_nodes():
     tree, chain, obstacle = _selection_on_an_obstacle()
-    on_top = sugiyama_layout(tree, Settings(avoid_unselected=False), MARGIN)
+    on_top = _unmoved(tree, obstacle)
     assert any(_overlap(r, obstacle.draw_bounds) for r in _placed(on_top))
 
     result = sugiyama_layout(tree, Settings(), MARGIN)
@@ -248,12 +257,19 @@ def test_selection_is_left_where_it_is_when_clear_is_too_far():
     obstacle.draw_bounds = (-5000.0, -5000.0, 5000.0, 5000.0)
     obstacle.width = 10000.0
     moved_off = sugiyama_layout(tree, Settings(), MARGIN).positions()
-    stayed = sugiyama_layout(tree, Settings(avoid_unselected=False), MARGIN).positions()
+    stayed = _unmoved(tree, obstacle).positions()
     assert moved_off == stayed
 
 
 def test_unselected_reroutes_and_frames_are_no_obstacles():
     from nodebpy.lib.nodearrange.dna import new_reroute
+
+    def corners(tree: bNodeTree) -> dict[str, tuple[float, float]]:
+        result = sugiyama_layout(tree, Settings(), MARGIN)
+        return {node.name: corner for node, corner in result.positions().items()}
+
+    alone, _, obstacle = _selection_on_an_obstacle()
+    alone.nodes.remove(obstacle)
 
     tree, _, obstacle = _selection_on_an_obstacle()
     tree.nodes.remove(obstacle)
@@ -261,6 +277,5 @@ def test_unselected_reroutes_and_frames_are_no_obstacles():
     reroute.select = False
     frame = tree.add_node(bNode("frame", "NodeFrame"))
     frame.select = False
-    moved_off = sugiyama_layout(tree, Settings(), MARGIN).positions()
-    stayed = sugiyama_layout(tree, Settings(avoid_unselected=False), MARGIN).positions()
-    assert moved_off == stayed
+
+    assert corners(tree) == corners(alone)

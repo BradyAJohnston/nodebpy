@@ -29,7 +29,7 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 
 from .arrange.common import frame_padding
-from .arrange.priority import FLOW_SOCKETS, zone_spine
+from .arrange.priority import is_flow_socket, zone_spine
 from .dna import bNode, bNodeLink, bNodeSocket, bNodeTree
 
 if TYPE_CHECKING:
@@ -519,14 +519,10 @@ def measure(tree: bNodeTree | Any) -> LayoutMetrics:
             if socket.node not in feeds:
                 return False
             socket = feeds[socket.node]
-        return socket.idname in FLOW_SOCKETS
+        return is_flow_socket(socket)
 
     is_flow = np.array(
-        [
-            carries_flow(from_socket)
-            and (to_socket.node.is_reroute() or to_socket.idname in FLOW_SOCKETS)
-            for from_socket, to_socket in sockets
-        ],
+        [carries_flow(from_socket) for from_socket, _ in sockets],
         dtype=bool,
     )
     # A fork is symmetric when its links fan out evenly above and below the

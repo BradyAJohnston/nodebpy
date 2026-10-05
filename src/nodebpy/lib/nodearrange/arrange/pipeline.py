@@ -2,7 +2,7 @@
 """The layout as a list of named steps.
 
 A layered layout is a sequence of passes over one graph. Four of them are
-the *phases* that decide the layout, each with interchangeable strategies:
+the *phases* that decide the layout:
 
 ``rank``
     Assign every node a column.
@@ -19,9 +19,9 @@ links with dummy nodes, bordering frames, and finally writing the result
 out as edits. (The split into phases and intermediate processors follows
 the Eclipse Layout Kernel's layered algorithm.)
 
-:func:`default_pipeline` builds the standard list. To experiment, take it
-and :meth:`~Pipeline.replace` a step, :meth:`~Pipeline.insert_after` one, or
-:func:`register` a new strategy for a phase and select it in the settings.
+:func:`~.sugiyama.default_pipeline` builds the standard list. To
+experiment, take it and :meth:`~Pipeline.replace` a step (a phase, to try
+another algorithm for it), or :meth:`~Pipeline.insert_after` one.
 
 Steps depend on each other through the state of the graph, and say so: each
 :class:`Step` names the facts (:class:`Fact`) it ``requires`` to hold, those it
@@ -51,15 +51,6 @@ if TYPE_CHECKING:
 type Phase = Literal["rank", "order", "place", "route"]
 
 PHASES: tuple[Phase, ...] = ("rank", "order", "place", "route")
-
-SETTING_OF: dict[Phase, str] = {
-    "rank": "ranking",
-    "order": "ordering",
-    "place": "placement",
-    "route": "routing",
-}
-"""The field of :class:`~..config.Settings` that selects each phase's
-strategy."""
 
 
 class Fact(StrEnum):
@@ -130,7 +121,7 @@ class Step:
     enabled: Callable[[Settings], bool] = _always
     """Whether the step runs under the given settings."""
     phase: Phase | None = None
-    """The phase this step is the strategy of, if any."""
+    """The phase this step is, if it is one of the four."""
     requires: frozenset[Fact] = frozenset()
     """What must hold when the step starts."""
     provides: frozenset[Fact] = frozenset()
@@ -358,61 +349,3 @@ CHECKS: dict[Fact, Callable[[Layout], None]] = {
 """How to check each fact against a layout: a function that raises
 ``AssertionError`` when it does not hold. Facts without an entry are taken
 on trust."""
-
-
-# -------------------------------------------------------------------
-# Strategies
-
-_STRATEGIES: dict[Phase, dict[str, StepFunction]] = {phase: {} for phase in PHASES}
-
-
-def register(
-    phase: Phase, name: str, *, replace: bool = False
-) -> Callable[[StepFunction], StepFunction]:
-    """Decorator: make a function available as the strategy *name* of
-    *phase*. It is selected with the setting named after the phase's role
-    (``Settings.ranking`` and so on; see :data:`SETTING_OF`). A name that is
-    taken is refused unless *replace* is set.
-
-    A strategy must leave the graph as its phase's step promises (the
-    ``provides`` of that step in :func:`~.sugiyama.default_pipeline`)."""
-
-    def decorator(run: StepFunction) -> StepFunction:
-        if name in _STRATEGIES[phase] and not replace:
-            raise ValueError(
-                f"there already is a {phase} strategy called {name!r}; "
-                "pass replace=True to take its place"
-            )
-        _STRATEGIES[phase][name] = run
-        return run
-
-    return decorator
-
-
-def unregister(phase: Phase, name: str) -> None:
-    """Forget the strategy *name* of *phase*."""
-    del _STRATEGIES[phase][name]
-
-
-def strategies(phase: Phase) -> list[str]:
-    """Names of the strategies registered for *phase*."""
-    return list(_STRATEGIES[phase])
-
-
-def strategy(phase: Phase, name: str) -> StepFunction:
-    try:
-        return _STRATEGIES[phase][name]
-    except KeyError:
-        raise ValueError(
-            f"unknown {phase} strategy {name!r}; choose from {strategies(phase)}"
-        ) from None
-
-
-def run_strategy(phase: Phase) -> StepFunction:
-    """A step function that runs whichever strategy of *phase* the settings
-    of the layout it is given select."""
-
-    def run(layout: Layout) -> None:
-        strategy(phase, getattr(layout.settings, SETTING_OF[phase]))(layout)
-
-    return run

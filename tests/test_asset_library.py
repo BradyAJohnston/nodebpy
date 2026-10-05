@@ -477,14 +477,10 @@ def test_cli_arrange_options_mapping():
         margin=(50.0, 40.0),
         direction="BALANCED",
         socket_alignment="FULL",
-        keep_reroutes_outside_frames=True,
         stack_collapsed=False,
-        stack_margin_y_fac=0.25,
         optimize_sizes=True,
         sequential_frames=False,
         balance_heights=False,
-        balance_aspect=2.0,
-        reroute_margin_y_fac=0.5,
     )
 
 

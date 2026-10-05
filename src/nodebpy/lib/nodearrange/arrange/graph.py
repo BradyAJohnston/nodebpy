@@ -22,7 +22,7 @@ from .digraph import (
     weakly_connected_components,
 )
 from .edits import RemoveLink, RemoveNode
-from .priority import FLOW_SOCKETS
+from .priority import is_flow_socket
 
 if TYPE_CHECKING:
     from ..config import LayoutState
@@ -269,7 +269,7 @@ def link_is_flow(link: Link[Node]) -> bool:
     if u.type == Kind.DUMMY:
         return u.is_flow
     socket = link.fromsock.dna if link.fromsock is not None else None
-    return socket is not None and socket.idname in FLOW_SOCKETS
+    return socket is not None and is_flow_socket(socket)
 
 
 def add_dummy_edge(G: LayoutGraph[Node], u: Node, v: Node) -> None:
@@ -313,7 +313,7 @@ def add_dummy_nodes_to_edge(
     # input drops its old link when the new one is made; a multi-input
     # would keep both. (Without reroutes the chain is only the layout's:
     # the tree keeps its link.)
-    if state.settings.add_reroutes and link.tosock.dna.is_multi_input:
+    if state.settings.reroutes != "none" and link.tosock.dna.is_multi_input:
         edit = RemoveLink(link.fromsock.dna, link.tosock.dna)
         if edit not in state.edits:
             state.edits.append(edit)
@@ -336,12 +336,7 @@ def assign_clusters(
         w.cluster = c
 
 
-def improve_cluster_assignment(
-    e: Edge, dummy_nodes: Sequence[Node], state: LayoutState
-) -> None:
-    if state.settings.keep_reroutes_outside_frames:
-        return
-
+def improve_cluster_assignment(e: Edge, dummy_nodes: Sequence[Node]) -> None:
     u, v = e
     assert u.cluster and v.cluster
     c1 = u.cluster
@@ -464,7 +459,7 @@ class ClusterGraph:
             w = dummy_nodes[0]
             G.add_link(u, w, from_socket, Socket(w, 0, False))
 
-            improve_cluster_assignment((u, v), dummy_nodes, self.state)
+            improve_cluster_assignment((u, v), dummy_nodes)
             for w in dummy_nodes:
                 assert w.cluster is not None
                 T.add_edge(w.cluster, w)
@@ -495,7 +490,7 @@ class ClusterGraph:
                 w = Node(None, c, Kind.DUMMY, i)
                 dummy_nodes.append(w)
 
-            improve_cluster_assignment((u, v), dummy_nodes, self.state)
+            improve_cluster_assignment((u, v), dummy_nodes)
             add_dummy_nodes_to_edge(G, link, dummy_nodes, self.state)
 
         for w in [w for w in G if w not in T]:

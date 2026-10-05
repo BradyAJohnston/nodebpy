@@ -39,6 +39,13 @@ FLOW_SOCKETS = frozenset(
 FLOW = 2
 MAIN = 1
 
+
+def is_flow_socket(socket: bNodeSocket) -> bool:
+    """Whether *socket* is of a type that carries a tree's main data. A
+    link is a flow link when the output it comes from is."""
+    return socket.idname in FLOW_SOCKETS
+
+
 ZONE = 4
 """Priority of the sockets along a zone's spine (see :func:`zone_spine`):
 enough that a link of the spine outweighs any other."""
@@ -53,45 +60,8 @@ the other), and only then with a median neighbour. Lower, and long links of
 side chains start cutting through nodes."""
 
 
-def _type_priority(idname: str) -> int:
-    """How likely a socket of this type is a node's main one: Blender's
-    ``get_main_socket_priority`` (``node_relationships.cc``), by idname."""
-    kind = idname.removeprefix("NodeSocket")
-    if kind.startswith(("Virtual", "Menu")) or not idname.startswith("NodeSocket"):
-        return 1 if kind.startswith("Menu") else 0
-    if kind.startswith("Bool"):
-        return 2
-    if kind.startswith("Int") and not kind.startswith("IntVector"):
-        return 3
-    if kind.startswith("Float"):
-        return 4
-    if kind.startswith("Vector"):
-        return 5
-    if kind.startswith("Color"):
-        return 6
-    return 7
-
-
-def main_socket(sockets: list[bNodeSocket]) -> bNodeSocket | None:
-    """The main socket among a node's inputs (or outputs), as Blender picks
-    it for inserting a node on a link: the first one of the type that ranks
-    highest."""
-    best = None
-    best_priority = -1
-    for socket in sockets:
-        priority = _type_priority(socket.idname)
-        if priority > best_priority:
-            best, best_priority = socket, priority
-    return best
-
-
-def socket_priorities(tree: bNodeTree, mode: str = "flow") -> dict[bNodeSocket, int]:
-    """The priority of every socket that has one.
-
-    *mode* ``"flow"`` is the scheme of the module notes. ``"main"`` instead
-    gives priority 2 to each node's main linked input and main linked output
-    (:func:`main_socket`), whatever its type, so chains of values get a
-    trunk as well."""
+def socket_priorities(tree: bNodeTree) -> dict[bNodeSocket, int]:
+    """The priority of every socket that has one."""
     linked: dict[bNodeSocket, None] = {}
     for link in tree.links:
         linked[link.fromsock] = None
@@ -103,12 +73,7 @@ def socket_priorities(tree: bNodeTree, mode: str = "flow") -> dict[bNodeSocket, 
             used = [socket for socket in side if socket in linked]
             if not used:
                 continue
-            if mode == "main":
-                main = main_socket(used)
-                assert main is not None
-                priorities[main] = FLOW
-                continue
-            flow = next((s for s in used if s.idname in FLOW_SOCKETS), None)
+            flow = next((s for s in used if is_flow_socket(s)), None)
             if flow is not None:
                 priorities[flow] = FLOW
             else:
@@ -132,9 +97,7 @@ def zone_spine(
             out_links.setdefault(link.fromnode, []).append(link)
 
     def score(link: bNodeLink) -> int:
-        is_flow = (
-            link.fromsock.idname in FLOW_SOCKETS and link.tosock.idname in FLOW_SOCKETS
-        )
+        is_flow = is_flow_socket(link.fromsock)
         on_spine = taken is not None and link in taken
         return 1 + 1_000 * is_flow + 1_000_000 * on_spine
 

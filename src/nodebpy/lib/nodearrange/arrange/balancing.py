@@ -23,7 +23,7 @@ from collections import Counter, defaultdict
 from collections.abc import Iterable
 
 from ..config import LayoutState
-from .common import REROUTE_DIM
+from .common import REROUTE_DIM, REROUTE_MARGIN_Y_FAC
 from .digraph import LayoutGraph, ancestors
 from .graph import Cluster, Kind, Node, Socket
 
@@ -54,7 +54,7 @@ def _column_heights(
     for link in G.all_links():
         for r in range(ranks[link.fromnode] + 1, ranks[link.tonode]):
             crossings[r].add(link.fromsock)
-    dummy_gap = margin * state.settings.reroute_margin_y_fac
+    dummy_gap = margin * REROUTE_MARGIN_Y_FAC
     for r, sources in crossings.items():
         # Dummy chains pack at the reduced reroute gap (see y_coords).
         heights[r] += len(sources) * (REROUTE_DIM.y + dummy_gap)
@@ -106,7 +106,7 @@ def _fit_to_height(
             if not upstream or heights.get(ranks[v], 0.0) <= target:
                 continue
             # A few parallel branches read best side by side.
-            if sizes[ranks[v]] <= state.settings.balance_min_column:
+            if sizes[ranks[v]] <= BALANCE_MIN_COLUMN:
                 continue
             trial = dict(ranks)
             for w in upstream | {v}:
@@ -123,6 +123,13 @@ def _fit_to_height(
 
 
 _TARGET_STEP = 0.9
+
+BALANCE_ASPECT = 1.6
+"""The shape balancing aims for: this wide for every unit of height."""
+
+BALANCE_MIN_COLUMN = 4
+"""A column of at most this many nodes is never split, so a few parallel
+branches stay side by side."""
 
 
 def balance_column_heights(
@@ -148,7 +155,7 @@ def balance_column_heights(
     margin_x = state.margin.x
     upstream_of = {v: _upstream(G, v) for v in nodes}
 
-    aspect = state.settings.balance_aspect
+    aspect = BALANCE_ASPECT
 
     def area(r: dict[Node, int]) -> float:
         """Size of the drawing as the side of the screen-shaped box (of the

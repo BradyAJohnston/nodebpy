@@ -14,79 +14,45 @@ if TYPE_CHECKING:
     from .arrange.graph import Node, Socket
 
 
-@dataclass(frozen=True, slots=True)
-class CrossingWeights:
-    """What a crossing of two links costs the ordering, by what the links
-    carry: the tree's main data ("flow": geometry, shader, bundle, closure)
-    or anything else ("value"). Branches of the trunk passing each other
-    read easily; a value cutting across the trunk does not."""
-
-    flow_flow: float = 1.0
-    value_value: float = 1.0
-    flow_value: float = 4.0
-
-
 @dataclass
 class Settings:
+    """What the layout can be asked to do differently. (The numbers it is
+    tuned with are constants next to the code that uses them.)"""
+
     direction: Literal["LEFT_DOWN", "RIGHT_DOWN", "BALANCED", "LEFT_UP", "RIGHT_UP"] = (
-        "LEFT_UP"
+        "BALANCED"
     )
-    socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "MODERATE"
-    add_reroutes: bool = True
-    # nodebpy divergence: which links get reroutes when `add_reroutes` is
-    # on. "long": every link that passes a column, and the reroutes already
-    # in the tree are replaced (upstream). "blocked": only links that would
-    # otherwise be drawn across a node, and the tree's own reroutes stay.
-    reroute_links: Literal["long", "blocked"] = "long"
-    keep_reroutes_outside_frames: bool = False
+    """Which way nodes lean when they could sit in several places along a
+    column; ``BALANCED`` takes the middle of the four."""
+    socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "NONE"
+    """Whether aligned nodes line up by their tops (``NONE``), by the
+    sockets of the link between them (``FULL``), or by sockets only where
+    the nodes differ much in height (``MODERATE``)."""
+    reroutes: Literal["none", "blocked", "all"] = "none"
+    """Which links get reroutes. ``none``: the layout only moves nodes.
+    ``blocked``: links that would otherwise be drawn across a node, and the
+    tree's own reroutes stay. ``all``: every link that passes a column, and
+    the tree's own reroutes are replaced."""
     stack_collapsed: bool = True
+    """Stack chains of collapsed Math nodes vertically."""
     optimize_sizes: bool = False
-    stack_margin_y_fac: float = 0.5
-    # nodebpy divergence: rank frames as sequential stages (see
-    # ranking.add_frame_sequence_edges).
-    sequential_frames: bool = True
-    # nodebpy divergence: promote private feeder chains out of the tallest
-    # column (see arrange.balancing).
-    balance_heights: bool = True
-    balance_aspect: float = 1.6
-    # nodebpy divergence: fraction of the vertical margin kept between
-    # consecutive reroutes / dummy nodes in a column (see
-    # y_coords.vertical_gap).
-    reroute_margin_y_fac: float = 0.35
-    # nodebpy divergence: which strategy runs each phase of the layout (see
-    # arrange.pipeline; `pipeline.strategies(phase)` lists the choices).
-    ranking: str = "network_simplex"
-    ordering: str = "layer_sweep"
-    placement: str = "brandes_koepf"
-    routing: str = "bend_points"
-    # nodebpy divergence: favour the links that carry the tree's main data
-    # (see arrange.priority): "flow" keeps them short and straight, "none"
-    # treats every link alike.
-    # "main" takes each node's main socket as Blender picks it, of whatever
-    # type, so chains of values get a trunk too.
-    link_priority: Literal["flow", "main", "none"] = "flow"
-    # nodebpy divergence: what a crossing costs the "layer_sweep" ordering,
-    # by what the two links carry. All equal: every crossing counts alike.
-    crossing_weights: CrossingWeights = field(default_factory=CrossingWeights)
-    # nodebpy divergence: never split a column of at most this many nodes
-    # when balancing heights, so a few parallel branches stay side by side.
-    balance_min_column: int = 4
-    # nodebpy divergence: put Group Output nodes (outside frames) in the
-    # last column, and Group Input nodes in the first.
+    """Fit the widths of collapsed nodes to their names first."""
+    straighten_trunk: bool = True
+    """Align the links that carry the tree's main data before any other
+    (see :mod:`.arrange.priority`), and draw each zone as a level row."""
     pin_group_output: bool = True
+    """Put Group Output nodes (outside frames) in the last column."""
     pin_group_input: bool = False
-    # nodebpy divergence: draw each zone as a row with the node tops level,
-    # from its input node through the nodes its data passes to its output
-    # node (see
-    # priority.zone_priorities).
-    straighten_zones: bool = True
-    # nodebpy divergence: lay out the parts of the tree that are not linked
-    # to each other apart, the largest first and the others in rows beneath
-    # it (see arrange.packing), instead of as one graph sharing columns.
+    """Put Group Input nodes (outside frames) in the first column."""
+    sequential_frames: bool = True
+    """Rank frames as stages, each after the one that feeds it (see
+    :func:`.arrange.ranking.add_frame_sequence_edges`)."""
+    balance_heights: bool = True
+    """Shorten the tallest columns by moving feeder chains left (see
+    :mod:`.arrange.balancing`)."""
     pack_components: bool = True
-    # nodebpy divergence: when only the selection is arranged, move the
-    # result the shortest way off the nodes that stay where they are.
-    avoid_unselected: bool = True
+    """Lay out the unconnected parts of the tree apart (see
+    :mod:`.arrange.packing`)."""
 
 
 DEFAULT_MARGIN = (200.0, 20.0)

@@ -852,99 +852,47 @@ class SugiyamaOptions:
     margin : tuple[float, float]
         Horizontal and vertical space between nodes.
     direction : str
-        Which directions nodes may be moved in during layout.
+        Which way nodes lean where they could sit in several places along
+        a column: ``"LEFT_UP"``, ``"LEFT_DOWN"``, ``"RIGHT_UP"``,
+        ``"RIGHT_DOWN"``, or ``"BALANCED"`` for the middle of the four.
     socket_alignment : str
-        How aggressively links are straightened by aligning the sockets
-        they connect.
-    add_reroutes : bool
-        Insert reroute nodes to route long edges around nodes. Off by
-        default: added reroutes are real nodes, which would change the
-        authored structure of generated trees (node counts, round-trips,
-        diagrams).
-    reroute_links : str
-        Which links get reroutes when ``add_reroutes`` is on. ``"long"``:
-        every link that passes over a column, and reroutes already in the
-        tree are replaced by the layout's own. ``"blocked"``: only links
-        that would otherwise be drawn across a node, and the tree's own
-        reroutes are kept; far fewer reroutes are added.
-    keep_reroutes_outside_frames : bool
-        Do not place added reroutes inside frames.
+        Whether aligned nodes line up by their tops (``"NONE"``), by the
+        sockets of the link between them so the link is straight
+        (``"FULL"``), or by sockets only where the nodes differ much in
+        height (``"MODERATE"``).
+    reroutes : str
+        Which links get reroute nodes. ``"none"``: the layout only moves
+        nodes (the default: reroutes are real nodes, which would change
+        the authored structure of generated trees). ``"blocked"``: links
+        that would otherwise be drawn across a node, and the reroutes
+        already in the tree are kept. ``"all"``: every link that passes
+        over a column, and the tree's own reroutes are replaced.
     stack_collapsed : bool
-        Stack consecutive collapsed nodes tightly.
-    stack_margin_y_fac : float
-        Fraction of the vertical margin used between stacked collapsed
-        nodes.
+        Stack chains of collapsed Math nodes vertically.
     optimize_sizes : bool
         Fit the widths of collapsed nodes to their display name.
-    sequential_frames : bool
-        Rank frames as stages of the flow: every node of a frame comes
-        after every node of the frame (or intermediate node) feeding it, so
-        successive frames line up left to right instead of stacking into a
-        staircase. Frames with no links between them (parallel branches)
-        still share columns and stack vertically.
-    balance_heights : bool
-        Shorten the tallest column by moving nodes whose feeders serve only
-        them (a private upstream chain) one column left, while that makes
-        the drawing smaller overall. Counters the tall sliver a node with
-        many inputs otherwise produces, at the price of slightly longer
-        links routed through reroutes / dummy nodes.
-    balance_aspect : float
-        Width-to-height ratio the balancing aims for: it keeps promoting
-        feeders left while the drawing's bounding box (height, or width
-        divided by this ratio, whichever is larger) shrinks.
-    reroute_margin_y_fac : float
-        Fraction of the vertical margin kept between consecutive reroutes
-        (and the dummy nodes long links are routed through) in a column;
-        bundles of long links pack tighter than nodes.
-    ranking : str
-        How nodes are assigned to columns. ``"network_simplex"`` keeps
-        links as short as possible overall, so a node sits next to what it
-        connects to. ``"longest_path"`` puts every node as far right as it
-        can go: faster, but a node with several consumers ends up far from
-        the early ones.
-    ordering : str
-        How the nodes within a column are ordered to keep links from
-        crossing. ``"layer_sweep"``, the one built-in strategy, is
-        deterministic: the same tree always gets the same layout.
-    placement, routing : str
-        The strategy for placing nodes along a column and for routing long
-        links. Each has one built-in strategy; more can be registered with
-        ``nodebpy.lib.nodearrange.arrange.pipeline.register`` and selected
-        here by name.
     straighten_trunk : bool
-        Keep the tree's main line straight. Links carrying the main data
-        (geometry, shader, bundle or closure sockets, from a node's first
-        such output to another's first such input) are aligned before any
-        other, so a chain of geometry nodes is one flat row with the side
-        chains feeding it hung below, and a fork that merges again is laid
-        out symmetrically around its middle branch. Off, every link is
+        Keep the trunk straight. The trunk is the line the tree's main
+        data runs along: the links between flow sockets (geometry, shader,
+        bundle, closure). They are aligned before any other, so a chain of
+        geometry nodes is one flat row with the side chains feeding it
+        hung below, a fork that merges again is symmetric around its
+        middle branch, and each zone (simulation, repeat, for-each,
+        closure) is a row with its node tops level. Off, every link is
         treated alike and a node aligns with its median neighbour.
-    trunk_sockets : str
-        Which links ``straighten_trunk`` takes for the main line.
-        ``"flow"``: links between geometry, shader, bundle and closure
-        sockets. ``"main"``: links between each node's main sockets as
-        Blender picks them (the ones a node dropped on a link is connected
-        by), whatever their type, so a chain of maths or colour nodes is
-        straightened too; in trees of many values this aligns more links
-        but lets long links cross more nodes when reroutes are off.
-    trunk_crossing_weight : float
-        How much worse the ordering counts a link of values crossing a
-        link of the main data (geometry, shader, bundle or closure) than
-        any other crossing. 1 counts every crossing alike; higher trades a
-        few more crossings overall for fewer across the main line.
-    balance_min_column : int
-        ``balance_heights`` never splits a column of at most this many
-        nodes, so a few parallel branches stay side by side instead of
-        being staggered over two columns.
     pin_group_output : bool
         Put Group Output nodes (outside frames) in the last column.
     pin_group_input : bool
         Put Group Input nodes (outside frames) in the first column, rather
         than next to the nodes they feed.
-    straighten_zones : bool
-        Draw each zone (simulation, repeat, for-each, closure) as a row:
-        its input node, the nodes its data passes through and its output
-        node in one row with their tops level.
+    sequential_frames : bool
+        Rank frames as stages: every node of a frame comes after every
+        node of the frame (or intermediate node) feeding it, so frames
+        line up left to right instead of stacking.
+    balance_heights : bool
+        Shorten the tallest columns by moving the chains that feed them one
+        column left, while that brings the drawing closer to a screen's
+        shape.
     pack_components : bool
         Lay out the parts of the tree that are not linked to each other
         apart: the largest first, the others (a second group of nodes, a
@@ -952,34 +900,21 @@ class SugiyamaOptions:
         laid out as one graph and unrelated parts share its columns.
     """
 
-    # Defaults calibrated against hand-approved node-arrange addon output
-    # ("30" x/y spacing, no socket alignment, top-right node alignment).
+    # (The fields below `margin` are those of the arranger's own
+    # `lib.nodearrange.config.Settings`, with the same defaults.)
     margin: tuple[float, float] = (30.0, 30.0)
     direction: Literal["LEFT_DOWN", "RIGHT_DOWN", "BALANCED", "LEFT_UP", "RIGHT_UP"] = (
         "BALANCED"
     )
     socket_alignment: Literal["NONE", "MODERATE", "FULL"] = "NONE"
-    add_reroutes: bool = False
-    reroute_links: Literal["long", "blocked"] = "long"
-    keep_reroutes_outside_frames: bool = False
+    reroutes: Literal["none", "blocked", "all"] = "none"
     stack_collapsed: bool = True
-    stack_margin_y_fac: float = 0.5
     optimize_sizes: bool = False
-    sequential_frames: bool = True
-    balance_heights: bool = True
-    balance_aspect: float = 1.6
-    reroute_margin_y_fac: float = 0.35
-    ranking: str = "network_simplex"
-    ordering: str = "layer_sweep"
-    placement: str = "brandes_koepf"
-    routing: str = "bend_points"
     straighten_trunk: bool = True
-    trunk_sockets: Literal["flow", "main"] = "flow"
-    trunk_crossing_weight: float = 4.0
-    balance_min_column: int = 4
     pin_group_output: bool = True
     pin_group_input: bool = False
-    straighten_zones: bool = True
+    sequential_frames: bool = True
+    balance_heights: bool = True
     pack_components: bool = True
 
 
@@ -1040,34 +975,12 @@ def default_split_inputs(split: bool = True) -> Iterator[None]:
 
 
 def _sugiyama_settings(options: SugiyamaOptions):
-    """The arranger's settings for *options*."""
-    from ..lib.nodearrange.config import CrossingWeights, Settings
+    """The arranger's settings for *options*: every field but the margin."""
+    from dataclasses import fields
 
-    return Settings(
-        crossing_weights=CrossingWeights(flow_value=options.trunk_crossing_weight),
-        direction=options.direction,
-        socket_alignment=options.socket_alignment,
-        add_reroutes=options.add_reroutes,
-        reroute_links=options.reroute_links,
-        keep_reroutes_outside_frames=options.keep_reroutes_outside_frames,
-        stack_collapsed=options.stack_collapsed,
-        optimize_sizes=options.optimize_sizes,
-        stack_margin_y_fac=options.stack_margin_y_fac,
-        sequential_frames=options.sequential_frames,
-        balance_heights=options.balance_heights,
-        balance_aspect=options.balance_aspect,
-        reroute_margin_y_fac=options.reroute_margin_y_fac,
-        ranking=options.ranking,
-        ordering=options.ordering,
-        placement=options.placement,
-        routing=options.routing,
-        link_priority=options.trunk_sockets if options.straighten_trunk else "none",
-        balance_min_column=options.balance_min_column,
-        pin_group_output=options.pin_group_output,
-        pin_group_input=options.pin_group_input,
-        straighten_zones=options.straighten_zones,
-        pack_components=options.pack_components,
-    )
+    from ..lib.nodearrange.config import Settings
+
+    return Settings(**{f.name: getattr(options, f.name) for f in fields(Settings)})
 
 
 def _arrange_sugiyama(tree: bpy.types.NodeTree, options: SugiyamaOptions) -> None:

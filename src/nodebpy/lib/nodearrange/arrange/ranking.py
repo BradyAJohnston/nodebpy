@@ -18,7 +18,6 @@ from .digraph import (
     weakly_connected_components,
 )
 from .graph import Cluster, Kind, MultiEdge, Node, opposite
-from .pipeline import Layout, register
 
 if TYPE_CHECKING:
     from .sugiyama import ClusterGraph
@@ -386,17 +385,3 @@ def compute_ranks(
     root = next(c for c in CG.S if not CG.T.predecessors(c))
     H.remove_nodes((root.left, root.right))
     normalize_and_balance(CG, H)
-
-
-@register("rank", "network_simplex")
-def rank_network_simplex(layout: Layout) -> None:
-    """Shortest links overall: nodes sit as close to what they connect to
-    as the frames allow."""
-    compute_ranks(layout.CG, network_simplex_ranks)
-
-
-@register("rank", "longest_path")
-def rank_longest_path(layout: Layout) -> None:
-    """Every node as far right as it can go. Fast and simple, but nodes
-    feeding several consumers end up far from the early ones."""
-    compute_ranks(layout.CG, longest_path_ranks)

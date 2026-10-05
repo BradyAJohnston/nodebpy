@@ -222,6 +222,10 @@ def relabel_sockets(
         setattr(link, attr, socket)
 
 
+STACK_MARGIN_Y_FAC = 0.5
+"""Fraction of the vertical margin kept between the nodes of a stack."""
+
+
 def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     G = CG.G
     T = CG.T
@@ -280,7 +284,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
         for v in path:
             relabel_sockets(G.in_links(v), v, node_stack, y)
             relabel_sockets(G.out_links(v), v, node_stack, y)
-            y += v.height + CG.state.margin.y * CG.state.settings.stack_margin_y_fac
+            y += v.height + CG.state.margin.y * STACK_MARGIN_Y_FAC
 
         rep_node.height = y
         rep_node.width = max([v.width for v in path])
@@ -395,7 +399,7 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
         CG.T.add_edge(cast(Cluster, rep_node.cluster), v)
         v.x = rep_node.x - (v.width - rep_node.width) / 2
         v.y = y
-        y -= v.height + CG.state.margin.y * CG.state.settings.stack_margin_y_fac
+        y -= v.height + CG.state.margin.y * STACK_MARGIN_Y_FAC
 
     _relabel_multi_input_sources(CG.state, node_stack.stack_sockets_to_originals)
     CG.remove_nodes_from([rep_node])

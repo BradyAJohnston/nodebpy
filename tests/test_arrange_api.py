@@ -131,10 +131,8 @@ def test_sugiyama_default_adds_no_reroutes():
 
 
 def test_sugiyama_add_reroutes_option():
-    """add_reroutes=True is available for users who want routed edges."""
-    with TreeBuilder(
-        "WithReroutes", arrange=SugiyamaOptions(add_reroutes=True)
-    ) as tree:
+    """reroutes="all" is available for users who want routed edges."""
+    with TreeBuilder("WithReroutes", arrange=SugiyamaOptions(reroutes="all")) as tree:
         cube = g.Cube()
         sim = g.SimulationZone({"cube": cube})
         pos = sim.item("Position", g.Position())
@@ -165,7 +163,7 @@ def test_default_sugiyama_options_scope():
     leaking past its scope or affecting explicit options."""
     from nodebpy import default_sugiyama_options
 
-    with default_sugiyama_options(SugiyamaOptions(add_reroutes=True)):
+    with default_sugiyama_options(SugiyamaOptions(reroutes="all")):
         routed = _build_reroutable("ScopedReroutes")
         # An explicit method is not overridden.
         explicit = _build_chain("ScopedExplicit", SugiyamaOptions())
@@ -188,7 +186,7 @@ def test_labelled_reroute_survives_add_reroutes():
         tree.tree.links.new(sp.node.outputs[0], reroute.inputs[0])
         tree.tree.links.new(reroute.outputs[0], out.socket)
 
-    arrange(tree.tree, SugiyamaOptions(add_reroutes=True))
+    arrange(tree.tree, SugiyamaOptions(reroutes="all"))
     assert any(
         n.bl_idname == "NodeReroute" and n.label == "keep me" for n in tree.tree.nodes
     )
@@ -207,17 +205,16 @@ _ESSENTIALS = Path(BundledLibrary("geometry_nodes_essentials.blend").path())
         (
             "Random Rotation",
             SugiyamaOptions(
-                add_reroutes=True, direction="BALANCED", socket_alignment="FULL"
+                reroutes="all", direction="BALANCED", socket_alignment="FULL"
             ),
         ),
         # Frames + edge routing kept outside frames + moderate alignment.
         (
             "Project with Depth",
             SugiyamaOptions(
-                add_reroutes=True,
+                reroutes="all",
                 direction="RIGHT_DOWN",
                 socket_alignment="MODERATE",
-                keep_reroutes_outside_frames=True,
             ),
         ),
         # Frames + reroutes without routing (dummy nodes dissolve).
@@ -227,9 +224,9 @@ _ESSENTIALS = Path(BundledLibrary("geometry_nodes_essentials.blend").path())
         ),
         # Heavy duplicate-type twins with authored reroutes: edge routing
         # around nodes (bend points).
-        ("Randomize Transforms", SugiyamaOptions(add_reroutes=True)),
+        ("Randomize Transforms", SugiyamaOptions(reroutes="all")),
         # Frames + reroutes + split group inputs.
-        ("Is UV Split", SugiyamaOptions(add_reroutes=True)),
+        ("Is UV Split", SugiyamaOptions(reroutes="all")),
     ],
     ids=[
         "balanced_full",
@@ -283,7 +280,7 @@ def test_reroute_only_frame_and_repeated_multi_input():
         tree.tree.links.new(chain[-1].outputs[0], join.node.inputs[0])
         join >> out
 
-    arrange(tree.tree, SugiyamaOptions(add_reroutes=True))
+    arrange(tree.tree, SugiyamaOptions(reroutes="all"))
     multi_links = [link for link in tree.tree.links if link.to_node == join.node]
     assert len(multi_links) >= 2, "duplicate multi-input links must survive"
 
@@ -312,7 +309,7 @@ def test_options_do_not_leak_between_runs():
     reference = _build_chain("LeakReference", "sugiyama")
     _build_chain(
         "LeakCustom",
-        SugiyamaOptions(add_reroutes=True, optimize_sizes=True),
+        SugiyamaOptions(reroutes="all", optimize_sizes=True),
     )
     repeat = _build_chain("LeakRepeat", "sugiyama")
 
@@ -342,7 +339,7 @@ def test_arrangement_is_deterministic(tree_name):
         assert tree is not None
         # Shift the heap so the layout's objects get different addresses.
         ballast.append([object() for _ in range(997 * (run + 1))])
-        arrange(tree, SugiyamaOptions(add_reroutes=True))
+        arrange(tree, SugiyamaOptions(reroutes="all"))
         locations = sorted((n.name, tuple(n.location)) for n in tree.nodes)
         links = sorted(
             (
@@ -550,7 +547,7 @@ def test_balance_heights_spreads_fan_in():
     is not shorter either while the links of the moved nodes each keep a
     row of their own in the columns they pass: see the ``fan_in`` case.)"""
     plain = _fan_in("FanInPlain", 12)
-    arrange(plain, SugiyamaOptions(balance_heights=False, add_reroutes=True))
+    arrange(plain, SugiyamaOptions(balance_heights=False, reroutes="all"))
     math_x = {
         round(n.location.x) for n in plain.nodes if n.bl_idname == "ShaderNodeMath"
     }
@@ -558,7 +555,7 @@ def test_balance_heights_spreads_fan_in():
     _, plain_height = _span([n for n in plain.nodes if n.bl_idname != "NodeReroute"])
 
     balanced = _fan_in("FanInBalanced", 12)
-    arrange(balanced, SugiyamaOptions(balance_heights=True, add_reroutes=True))
+    arrange(balanced, SugiyamaOptions(balance_heights=True, reroutes="all"))
     math_x = {
         round(n.location.x) for n in balanced.nodes if n.bl_idname == "ShaderNodeMath"
     }
@@ -575,7 +572,7 @@ def test_reroute_gap_is_a_fraction_of_the_margin():
     """Consecutive reroutes / dummy nodes in a column are spaced by the
     reroute fraction of the vertical margin; anything involving a real node
     keeps the full margin."""
-    from nodebpy.lib.nodearrange.arrange.common import Vec2
+    from nodebpy.lib.nodearrange.arrange.common import REROUTE_MARGIN_Y_FAC, Vec2
     from nodebpy.lib.nodearrange.arrange.graph import Kind, Node
     from nodebpy.lib.nodearrange.arrange.y_coords import vertical_gap
     from nodebpy.lib.nodearrange.config import LayoutState, Settings
@@ -583,12 +580,14 @@ def test_reroute_gap_is_a_fraction_of_the_margin():
 
     state = LayoutState(
         tree=bNodeTree(),
-        settings=Settings(reroute_margin_y_fac=0.25),
+        settings=Settings(),
         margin=Vec2(30.0, 40.0),
     )
     dummy_a, dummy_b = Node(type=Kind.DUMMY), Node(type=Kind.DUMMY)
     real = Node(bNode("Index", "GeometryNodeInputIndex"))
-    assert vertical_gap(dummy_a, dummy_b, state) == pytest.approx(10.0)
+    assert vertical_gap(dummy_a, dummy_b, state) == pytest.approx(
+        40.0 * REROUTE_MARGIN_Y_FAC
+    )
     assert vertical_gap(real, dummy_a, state) == pytest.approx(40.0)
     assert vertical_gap(dummy_b, real, state) == pytest.approx(40.0)
 
@@ -633,3 +632,22 @@ def test_isolated_stack_of_collapsed_math_nodes():
     assert first.location.x == second.location.x
     assert first.location.y != second.location.y
     assert other.location.x == first.location.x
+
+
+def test_sugiyama_options_are_the_arrangers_settings():
+    """``SugiyamaOptions`` is the arranger's ``Settings`` plus the margin:
+    the same fields under the same names, with the same defaults."""
+    from dataclasses import fields
+
+    from nodebpy.lib.nodearrange.config import Settings
+
+    public = {f.name: f.default for f in fields(SugiyamaOptions)}
+    assert public.pop("margin") == (30.0, 30.0)
+    assert public == {f.name: f.default for f in fields(Settings)}
+
+    from nodebpy.builder.layout import _sugiyama_settings
+
+    tuned = SugiyamaOptions(reroutes="blocked", pin_group_input=True)
+    assert _sugiyama_settings(tuned) == Settings(
+        reroutes="blocked", pin_group_input=True
+    )

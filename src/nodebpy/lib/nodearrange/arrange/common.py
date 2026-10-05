@@ -21,6 +21,11 @@ REROUTE_DIM = Vec2(REROUTE_SIZE, REROUTE_SIZE)
 
 type Point = tuple[float, float]
 
+REROUTE_MARGIN_Y_FAC = 0.35
+"""Fraction of the vertical margin kept between consecutive reroutes (or
+dummy nodes) in a column: bundles of long links routed past a column pack
+much tighter than nodes, as reroute dots do in hand-made trees."""
+
 
 def frame_padding() -> float:
     """Room between a frame's border and its members."""

@@ -7,9 +7,8 @@ change and compare the numbers (and the pictures).
     uv run python -m tests.arrange_report --plots tests/plots  # also draw each tree
     uv run python -m tests.arrange_report --json before.json   # save the metrics
     uv run python -m tests.arrange_report --compare before.json  # what changed
-    uv run python -m tests.arrange_report --set direction=BALANCED --set add_reroutes=true
+    uv run python -m tests.arrange_report --set direction=LEFT_UP --set reroutes=all
     uv run python -m tests.arrange_report --only 'chain,diamond,Is*' --essentials
-    uv run python -m tests.arrange_report --set ranking=longest_path  # another strategy
     uv run python -m tests.arrange_report --essentials --timings      # time per step
 
 Each tree is arranged with ``SugiyamaOptions`` (``--set`` overrides a field)

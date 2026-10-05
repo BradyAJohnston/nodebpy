@@ -23,9 +23,7 @@ from . import arrange_cases
 GEOMETRY = "NodeSocketGeometry"
 FLOAT = "NodeSocketFloat"
 
-OFF = SugiyamaOptions(
-    straighten_trunk=False, balance_min_column=0, pin_group_output=False
-)
+OFF = SugiyamaOptions(straighten_trunk=False, pin_group_output=False)
 
 
 def _arranged(case, options: SugiyamaOptions | None = None):
@@ -153,7 +151,7 @@ def test_trunk_stays_straight_through_frames():
 
 def test_trunk_with_reroutes():
     """The trunk stays level when long links are routed through reroutes."""
-    tree = _arranged(arrange_cases.long_links, SugiyamaOptions(add_reroutes=True))
+    tree = _arranged(arrange_cases.long_links, SugiyamaOptions(reroutes="all"))
     assert len(set(_tops(_by_type(tree, "GeometryNodeSetPosition")))) == 1
 
 
@@ -180,19 +178,6 @@ def test_fork_and_merge_is_symmetric():
     assert upper.location.y - middle.location.y == pytest.approx(
         middle.location.y - lower.location.y
     )
-
-
-def test_balance_min_column():
-    """Height balancing leaves a column of a few parallel branches whole,
-    unless told it may split it."""
-    whole = _arranged(arrange_cases.diamond, SugiyamaOptions(straighten_trunk=False))
-    assert len({n.location.x for n in _by_type(whole, "GeometryNodeSetPosition")}) == 1
-
-    split = _arranged(
-        arrange_cases.diamond,
-        SugiyamaOptions(straighten_trunk=False, balance_min_column=0),
-    )
-    assert len({n.location.x for n in _by_type(split, "GeometryNodeSetPosition")}) == 2
 
 
 # ---------------------------------------------------------------------------
@@ -305,31 +290,3 @@ def test_pinned_output_survives_height_balancing():
 # ---------------------------------------------------------------------------
 # Which links make the trunk
 # ---------------------------------------------------------------------------
-
-
-def test_main_sockets_give_a_chain_of_values_a_trunk():
-    """With flow sockets only geometry-like links are straightened, so a
-    chain of Math nodes is a staircase; with main sockets it is a row."""
-    tree = _arranged(arrange_cases.value_chain)
-    assert len(set(_tops(_by_type(tree, "ShaderNodeMath")))) > 1
-
-    tree = _arranged(arrange_cases.value_chain, SugiyamaOptions(trunk_sockets="main"))
-    assert len(set(_tops(_by_type(tree, "ShaderNodeMath")))) == 1
-
-
-def test_main_socket_is_the_one_blender_picks():
-    from nodebpy.lib.nodearrange.arrange.priority import main_socket
-
-    node = bNode("n", "GeometryNodeSetPosition")
-    kinds = ("Menu", "Bool", "Int", "FloatFactor", "Vector", "Color", "Geometry")
-    sockets = [node.add_socket(False, idname=f"NodeSocket{kind}") for kind in kinds]
-    for count in range(1, len(sockets) + 1):
-        # Each type outranks all the ones before it.
-        assert main_socket(sockets[:count]) is sockets[count - 1]
-    # Among equals the first wins; odd sockets rank last.
-    twice = [node.add_socket(False, idname="NodeSocketFloat") for _ in range(2)]
-    assert main_socket(twice) is twice[0]
-    virtual = node.add_socket(False, idname="NodeSocketVirtual")
-    custom = node.add_socket(False, idname="MyCustomSocket")
-    assert main_socket([virtual, custom, sockets[0]]) is sockets[0]
-    assert main_socket([]) is None

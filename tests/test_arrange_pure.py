@@ -157,10 +157,10 @@ def test_long_link_gets_reroutes():
         tree.add_link(u.outputs[0], v.inputs[0])
     tree.add_link(nodes[0].outputs[0], nodes[3].inputs[1])
 
-    plain = sugiyama_layout(tree, Settings(add_reroutes=False))
+    plain = sugiyama_layout(tree, Settings(reroutes="none"))
     assert {type(e) for e in plain.edits} == {MoveNode}
 
-    result = sugiyama_layout(tree, Settings(add_reroutes=True))
+    result = sugiyama_layout(tree, Settings(reroutes="all"))
     reroutes = [e.node for e in result.edits if isinstance(e, AddReroute)]
     assert reroutes
     assert all(node.is_reroute() and node.parent is None for node in reroutes)
@@ -187,7 +187,7 @@ def test_existing_reroute_is_replaced():
     tree.add_link(a.outputs[0], reroute.inputs[0])
     tree.add_link(reroute.outputs[0], b.inputs[0])
 
-    result = sugiyama_layout(tree, Settings(add_reroutes=True))
+    result = sugiyama_layout(tree, Settings(reroutes="all"))
     assert RemoveNode(reroute) in result.edits
     assert AddLink(a.outputs[0], b.inputs[0]) in result.edits
     assert reroute not in result.positions()
@@ -198,7 +198,7 @@ def test_existing_reroute_is_replaced():
     kept.label = "keep me"
     labelled.add_link(a.outputs[0], kept.inputs[0])
     labelled.add_link(kept.outputs[0], b.inputs[0])
-    result = sugiyama_layout(labelled, Settings(add_reroutes=True))
+    result = sugiyama_layout(labelled, Settings(reroutes="all"))
     assert not any(isinstance(e, RemoveNode) for e in result.edits)
     assert kept in result.positions()
 
@@ -296,7 +296,7 @@ def test_layout_failure_leaves_the_tree_untouched(monkeypatch):
 
     monkeypatch.setattr(sugiyama, "realize_layout", boom)
     with pytest.raises(RuntimeError, match="late failure"):
-        arrange_node_tree(ntree, Settings(add_reroutes=True))
+        arrange_node_tree(ntree, Settings(reroutes="all"))
 
     after = (
         [(n.name, tuple(n.location)) for n in ntree.nodes],

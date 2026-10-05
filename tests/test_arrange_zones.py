@@ -179,7 +179,7 @@ def test_zone_is_a_level_row(add_reroutes, socket_alignment, direction):
     tree, spine = _uneven_zone()
     metrics = _measured(
         tree,
-        add_reroutes=add_reroutes,
+        reroutes="all" if add_reroutes else "none",
         socket_alignment=socket_alignment,
         direction=direction,
     )
@@ -189,14 +189,8 @@ def test_zone_is_a_level_row(add_reroutes, socket_alignment, direction):
 
 
 def test_zones_can_be_left_alone():
-    """Without it the nodes are aligned by their sockets when that is
-    asked for (which is what the metric is for)."""
+    """With the trunk not straightened the nodes of a zone are aligned by
+    their sockets when that is asked for, like any others."""
     tree, _ = _uneven_zone()
-    metrics = _measured(tree, straighten_zones=False, socket_alignment="FULL")
+    metrics = _measured(tree, straighten_trunk=False, socket_alignment="FULL")
     assert (metrics.zones, metrics.level_zones) == (1, 0)
-
-
-def test_zones_are_straightened_without_link_priorities():
-    tree, _ = _uneven_zone()
-    metrics = _measured(tree, link_priority="none", socket_alignment="FULL")
-    assert metrics.level_zones == 1
