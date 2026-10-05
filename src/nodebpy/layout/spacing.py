@@ -69,7 +69,8 @@ def assign_x_coords(
         delta_i = sum(
             [
                 1
-                for link in G.out_links(col)
+                for v in col
+                for link in G.out_links(v)
                 if abs(link.tosock.y - link.fromsock.y) >= state.margin.x * 3
             ]
         )

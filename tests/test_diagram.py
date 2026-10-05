@@ -167,3 +167,16 @@ def test_diagram_bit_decoder(snapshot):
             reduce(and_, terms) >> tree.outputs.boolean(f"Out {i}")
 
     assert snapshot == to_mermaid(tree)
+
+
+def test_diagram_does_not_depend_on_node_positions():
+    with TreeBuilder("DiagramPositions") as tree:
+        geo_in = tree.inputs.geometry()
+        geo_out = tree.outputs.geometry()
+        branch = geo_in >> g.SubdivisionSurface()
+        g.JoinGeometry([geo_in >> g.SetPosition(), branch]) >> geo_out
+
+    arranged = to_mermaid(tree)
+    for index, node in enumerate(tree.tree.nodes):
+        node.location = (-100.0 * index, 37.0 * index)
+    assert to_mermaid(tree) == arranged

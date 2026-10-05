@@ -33,7 +33,7 @@ depends on hash values or memory addresses.
 from __future__ import annotations
 
 from collections.abc import Hashable, Iterable, Iterator, KeysView
-from typing import Any, cast
+from typing import Any
 
 
 class Link[N: Hashable]:
@@ -237,33 +237,23 @@ class LayoutGraph[N: Hashable]:
             for keydict in nbrs.values():
                 yield from keydict.values()
 
-    def _bunch(self, nodes: N | Iterable[N]) -> list[N]:
-        if _contains(self._nodes, nodes):
-            return [cast(N, nodes)]
-        return list(
-            dict.fromkeys(n for n in cast(Iterable[N], nodes) if n in self._nodes)
-        )
+    def out_links(self, node: N) -> Iterator[Link[N]]:
+        """Links leaving *node*."""
+        for keydict in self._succ[node].values():
+            yield from keydict.values()
 
-    def out_links(self, nodes: N | Iterable[N]) -> Iterator[Link[N]]:
-        """Links leaving *nodes* (one node or several)."""
-        for n in self._bunch(nodes):
-            for keydict in self._succ[n].values():
-                yield from keydict.values()
+    def in_links(self, node: N) -> Iterator[Link[N]]:
+        """Links entering *node*."""
+        for keydict in self._pred[node].values():
+            yield from keydict.values()
 
-    def in_links(self, nodes: N | Iterable[N]) -> Iterator[Link[N]]:
-        """Links entering *nodes* (one node or several)."""
-        for n in self._bunch(nodes):
-            for keydict in self._pred[n].values():
-                yield from keydict.values()
-
-    def entering(self, nodes: N | Iterable[N]) -> Iterator[tuple[N, N, Link[N]]]:
-        """``(source, target, link)`` for the links entering *nodes*, as this
-        graph sees them: on a :meth:`reversed` view the source is the link's
+    def entering(self, node: N) -> Iterator[tuple[N, Link[N]]]:
+        """``(source, link)`` for the links entering *node*, as this graph
+        sees them: on a :meth:`reversed` view the source is the link's
         ``tonode``."""
-        for n in self._bunch(nodes):
-            for nbr, keydict in self._pred[n].items():
-                for link in keydict.values():
-                    yield (nbr, n, link)
+        for nbr, keydict in self._pred[node].items():
+            for link in keydict.values():
+                yield (nbr, link)
 
     # Topology
 
@@ -334,9 +324,6 @@ class LayoutGraph[N: Hashable]:
                         weight=link.weight,
                     )
         return tree
-
-    def _multiplicity(self, u: N, v: N) -> int:
-        return len(self._succ[u][v])
 
 
 def _filtered[K](mapping: dict[K, Any], keep: set[K]) -> list[K]:
@@ -478,9 +465,6 @@ class DiGraph[N: Hashable]:
                     graph.add_edge(u, v, weight)
         return graph
 
-    def _multiplicity(self, u: N, v: N) -> int:
-        return 1
-
 
 type AnyGraph[N: Hashable] = LayoutGraph[N] | DiGraph[N]
 
@@ -545,7 +529,7 @@ def topological_generations[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
     indegree = {}
     zero_indegree = []
     for v in G:
-        d = G.in_degree(v)
+        d = len(G._pred[v])
         if d > 0:
             indegree[v] = d
         else:
@@ -556,7 +540,7 @@ def topological_generations[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
         zero_indegree = []
         for node in this_generation:
             for child in G._succ[node]:
-                indegree[child] -= G._multiplicity(node, child)
+                indegree[child] -= 1
                 if indegree[child] == 0:
                     zero_indegree.append(child)
                     del indegree[child]
@@ -648,41 +632,28 @@ def strongly_connected_components[N: Hashable](G: AnyGraph[N]) -> Iterator[list[
 
 def find_cycle[N: Hashable](G: AnyGraph[N]) -> list[N] | None:
     """The nodes of one cycle of *G* in order, or None if it is acyclic."""
-    for v, nbrs in G._succ.items():
-        if v in nbrs:
-            return [v]
-
-    simple: DiGraph[N] = DiGraph(
-        (u, v) for u, nbrs in G._succ.items() for v in nbrs if v != u
-    )
-    components = [c for c in strongly_connected_components(simple) if len(c) >= 2]
-    if not components:
-        return None
-
-    component = components.pop()
-    sub = simple.subgraph(component)
-    start = component[0]
-
-    # First cycle of Johnson's search from `start` within its component.
-    neighbors = {v: list(sub._succ[v]) for v in sub}
-    path = [start]
-    blocked = {start}
-    stack = [iter(neighbors[start])]
-    while stack:
-        for w in stack[-1]:
-            if w == start:
-                return path
-            if w not in blocked:
-                path.append(w)
-                stack.append(iter(neighbors[w]))
-                blocked.add(w)
-                break
-        else:
-            stack.pop()
-            path.pop()
-
-    # A component of two or more nodes always has a cycle through `start`.
-    raise AssertionError("unreachable")  # pragma: no cover
+    done: set[N] = set()
+    for root in G:
+        if root in done:
+            continue
+        path = [root]
+        on_path = {root}
+        stack = [iter(G._succ[root])]
+        while stack:
+            for w in stack[-1]:
+                if w in on_path:
+                    return path[path.index(w) :]
+                if w not in done:
+                    path.append(w)
+                    on_path.add(w)
+                    stack.append(iter(G._succ[w]))
+                    break
+            else:
+                stack.pop()
+                v = path.pop()
+                on_path.discard(v)
+                done.add(v)
+    return None
 
 
 def edge_dfs[N: Hashable](G: DiGraph[N], source: N) -> Iterator[tuple[N, N]]:

@@ -129,14 +129,8 @@ def test_link_iteration_order():
         ("b", "x", 1),
         ("a", "x", 0),
     ]
-    # Several nodes at once: each once, unknown ones skipped.
-    assert [link.tonode for link in tree.out_links(["a", "a", "nope"])] == ["x", "y"]
-    assert [(u, v) for u, v, _ in tree.entering(["y", "x"])] == [
-        ("a", "y"),
-        ("b", "x"),
-        ("b", "x"),
-        ("a", "x"),
-    ]
+    assert [link.tonode for link in tree.out_links("a")] == ["x", "y"]
+    assert [u for u, _ in tree.entering("x")] == ["b", "b", "a"]
 
 
 def test_copy_is_independent_and_keeps_keys():
@@ -165,7 +159,7 @@ def test_reversed_is_a_view():
     assert list(view.predecessors("a")) == ["b"]
     # Links keep their real direction.
     assert [link.ident for link in view.out_links("c")] == [("b", "c", 0)]
-    assert [(u, v) for u, v, _ in view.entering("a")] == [("b", "a")]
+    assert [u for u, _ in view.entering("a")] == ["b"]
     assert list(view.reversed().successors("a")) == ["b"]
     # Shared with the tree it views.
     tree.add_link("c", "d")
@@ -326,12 +320,12 @@ def test_find_cycle():
     for u, v in zip(cycle, cycle[1:] + cycle[:1]):
         assert tree.has_link(u, v)
 
-    # A dead end (2, which only leads back to 1) is backed out of before
-    # the cycle is found.
+    # The first cycle a depth-first walk closes: 1 -> 2 -> 1, not the longer
+    # one through 0.
     numbers: LayoutGraph[int] = LayoutGraph()
     for u, v in ((0, 1), (1, 2), (2, 1), (1, 3), (3, 0)):
         numbers.add_link(u, v)
-    assert find_cycle(numbers) == [0, 1, 3]
+    assert find_cycle(numbers) == [1, 2]
 
 
 def test_edge_dfs():

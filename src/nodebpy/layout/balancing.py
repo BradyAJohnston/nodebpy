@@ -17,7 +17,7 @@ from collections.abc import Iterable
 from .common import REROUTE_DIM, REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
 from .digraph import LayoutGraph, ancestors
-from .model import Cluster, Kind, Node, Socket
+from .model import Cluster, Node, Socket
 
 _MAX_MOVES = 500
 
@@ -147,7 +147,7 @@ def balance_column_heights(
     aspect ``BALANCE_ASPECT`` is kept. The search stops when a target cannot
     be met or the box grows. Frame-sequence constraints are kept throughout.
     """
-    nodes = [v for v in G if v.type != Kind.HORIZONTAL_BORDER]
+    nodes = list(G)
     if not nodes:
         return
     ranks = {v: v.rank for v in nodes}

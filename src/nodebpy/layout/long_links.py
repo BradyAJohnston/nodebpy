@@ -258,9 +258,12 @@ def merge_edges(CG: ClusterGraph) -> None:
 
         long_edges.sort(key=lambda link: link.tonode.rank)
         lca = lowest_common_cluster(T, long_edges)
+        # All from one output, so one source node; the farthest target last.
+        u = long_edges[0].fromnode
+        farthest = long_edges[-1].tonode
         dummy_nodes = []
         for link in long_edges:
-            u, v = link.fromnode, link.tonode
+            v = link.tonode
             if dummy_nodes and dummy_nodes[-1].rank == v.rank - 1:
                 w = dummy_nodes[-1]
             else:
@@ -278,7 +281,7 @@ def merge_edges(CG: ClusterGraph) -> None:
         w = dummy_nodes[0]
         G.add_link(u, w, from_socket, Socket(w, 0, False))
 
-        improve_cluster_assignment((u, v), dummy_nodes)
+        improve_cluster_assignment((u, farthest), dummy_nodes)
         for w in dummy_nodes:
             assert w.cluster is not None
             T.add_edge(w.cluster, w)

@@ -306,7 +306,9 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
         # A stack nothing else links to would otherwise never enter the
         # graph, and so never get a rank or a column.
         G.add_node(rep_node)
-        for link in (*G.in_links(path), *G.out_links(path)):
+        entering = [k for v in path for k in G.in_links(v)]
+        leaving = [k for v in path for k in G.out_links(v)]
+        for link in (*entering, *leaving):
             u, v = link.fromnode, link.tonode
             if u in path and v in path:
                 continue
@@ -392,9 +394,10 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
                     original_socket.owner, link.tonode, original_socket, link.tosock
                 )
         else:
-            for link in G.in_links(rep_node):
-                if link.tosock == stack_socket:
-                    break
+            # The link into this socket of the stack; the last link into
+            # the stack if none is.
+            entering = list(G.in_links(rep_node))
+            link = next((k for k in entering if k.tosock == stack_socket), entering[-1])
             u = link.fromnode
             G.remove_link_between(u, rep_node, link.key)
             G.add_link(u, original_socket.owner, link.fromsock, original_socket)

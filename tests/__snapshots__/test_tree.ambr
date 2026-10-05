@@ -67,14 +67,14 @@
           N17("Combine XYZ"):::converter-node
           N18("Combine XYZ"):::converter-node
           N19("Combine XYZ"):::converter-node
-          N20("Axes to Rotation"):::converter-node
-          N21("Math<br/><small>(SIGN)</small>"):::converter-node
+          N20("Math<br/><small>(SIGN)</small>"):::converter-node
+          N21("Axes to Rotation"):::converter-node
           N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
       end
       N23("Group Output"):::default-node
       N1 -->|"Mean->Group Center"| N23
       N14 -->|"S->Principal Components"| N23
-      N20 -->|"Rotation->Rotation"| N23
+      N21 -->|"Rotation->Rotation"| N23
       N17 -->|"Vector->Longest Axis"| N23
       N22 -->|"Vector->Intermediate Axis"| N23
       N19 -->|"Vector->Shortest Axis"| N23
@@ -118,12 +118,12 @@
       N15 -->|"Column 3 Row 1->X"| N19
       N15 -->|"Column 3 Row 2->Y"| N19
       N15 -->|"Column 3 Row 3->Z"| N19
-      N17 -->|"Vector->Primary Axis"| N20
-      N19 -->|"Vector->Secondary Axis"| N20
+      N17 -->|"Vector->Primary Axis"| N21
+      N19 -->|"Vector->Secondary Axis"| N21
       N14 -->|"U->Matrix"| N16
-      N16 -->|"Determinant->Value"| N21
+      N16 -->|"Determinant->Value"| N20
       N18 -->|"Vector->Vector"| N22
-      N21 -->|"Value->Scale"| N22
+      N20 -->|"Value->Scale"| N22
   ```
   '''
 # ---
@@ -155,14 +155,14 @@
           N17("Combine XYZ"):::converter-node
           N18("Combine XYZ"):::converter-node
           N19("Combine XYZ"):::converter-node
-          N20("Axes to Rotation"):::converter-node
-          N21("Math<br/><small>(SIGN)</small>"):::converter-node
+          N20("Math<br/><small>(SIGN)</small>"):::converter-node
+          N21("Axes to Rotation"):::converter-node
           N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
       end
       N23("Group Output"):::default-node
       N1 -->|"Mean->Group Center"| N23
       N14 -->|"S->Principal Components"| N23
-      N20 -->|"Rotation->Rotation"| N23
+      N21 -->|"Rotation->Rotation"| N23
       N17 -->|"Vector->Longest Axis"| N23
       N22 -->|"Vector->Intermediate Axis"| N23
       N19 -->|"Vector->Shortest Axis"| N23
@@ -206,11 +206,11 @@
       N15 -->|"Column 3 Row 1->X"| N19
       N15 -->|"Column 3 Row 2->Y"| N19
       N15 -->|"Column 3 Row 3->Z"| N19
-      N17 -->|"Vector->Primary Axis"| N20
-      N19 -->|"Vector->Secondary Axis"| N20
+      N17 -->|"Vector->Primary Axis"| N21
+      N19 -->|"Vector->Secondary Axis"| N21
       N14 -->|"U->Matrix"| N16
-      N16 -->|"Determinant->Value"| N21
+      N16 -->|"Determinant->Value"| N20
       N18 -->|"Vector->Vector"| N22
-      N21 -->|"Value->Scale"| N22
+      N20 -->|"Value->Scale"| N22
   '''
 # ---

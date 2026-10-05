@@ -144,7 +144,8 @@ def crossing_reduction_graph(
     G_h.add_nodes(LT.successors(h))
     TC = reflexive_transitive_closure(LT)
     members = [v for v in TC.successors(h) if isinstance(v, Node)]
-    for s, t, link in G.entering(members):
+    entering = [(s, t, link) for t in members if t in G for s, link in G.entering(t)]
+    for s, t, link in entering:
         c = next(c for c in TC.predecessors(t) if c in LT.successors(h))
 
         input_socket: Socket = link.tosock
@@ -688,7 +689,7 @@ def count_crossings(
         links: list[_Ends] = []
         flow: list[_Ends] = []
         values: list[_Ends] = []
-        for k in G.in_links(col):
+        for k in (k for v in col for k in G.in_links(v)):
             ends = (
                 (position[k.fromnode], k.fromsock.idx),
                 (position[k.tonode], k.tosock.idx),
