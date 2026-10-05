@@ -303,8 +303,10 @@ def test_layout_has_no_overlaps_backward_links_or_crossings(name):
 
 
 def test_chain_is_straight_with_full_socket_alignment():
-    tree = cases.arranged("chain", SugiyamaOptions(socket_alignment="FULL"))
-    assert measure(tree).straightness == 1
+    """Off the grid: a node cannot be on a grid row and have its sockets
+    level with its neighbour's at once."""
+    options = SugiyamaOptions(socket_alignment="FULL", snap_to_grid=False)
+    assert measure(cases.arranged("chain", options)).straightness == 1
 
 
 def test_framed_stages_are_side_by_side_in_order():

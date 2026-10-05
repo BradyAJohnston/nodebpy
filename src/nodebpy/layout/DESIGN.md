@@ -121,6 +121,7 @@ picture. The rest prepare for one or clean up.
 | **`order`** | Order each column to reduce crossings | always | `ordering.py` |
 | `add_frame_borders` | Border nodes above and below each frame, per column | always | `sugiyama.py`, `model.py` |
 | **`place`** | Give every node its height | always | `placement.py` |
+| `snap_rows` | Move each node to its nearest grid row | `snap_to_grid` | `snapping.py` |
 | `dissolve_dummy_nodes` | Drop the dummy nodes | `reroutes="none"` | `reroutes.py` |
 | `align_reroutes` | Line reroutes and dummy nodes up with the sockets they join | always | `reroutes.py` |
 | `remove_frame_borders` | Drop the border nodes | always | `sugiyama.py` |
@@ -133,10 +134,21 @@ picture. The rest prepare for one or clean up.
 Around the pipeline, `sugiyama_layout()` splits the tree into its parts
 (with `pack_components`), runs the pipeline on each, and packs the results
 (`packing.py`). When only the selection is arranged it also moves the result
-off the nodes that stay put. Last, with `snap_to_grid`, every node is moved
-to the nearest point of the node editor's grid (`snapping.py`); nodes keep
-the gap they had, rounded down to the grid, and reroutes are left alone so
-their links stay straight.
+off the nodes that stay put. With `snap_to_grid` (the default)
+the nodes also end up on the node editor's grid (`snapping.py`):
+
+- the placement spaces the nodes of a column in whole grid steps
+  (`placement.separation`), so snapping moves a column as one;
+- the step `snap_rows`, right after `place`, moves each node to its nearest
+  grid row, with each frame's border nodes following the frame's nodes, so
+  the reroutes aligned afterwards line up with the snapped nodes;
+- a last pass over the edits (`snap_to_grid`) puts what is still off the
+  grid on it: the columns, and the nodes of stacks.
+
+It is a node's location that lands on the grid, which for a collapsed node
+is not the corner of its box. Reroutes are not snapped. A node cannot be on
+a grid row and have a socket level with its neighbour's at once, so links
+between nodes aligned by their sockets bend by up to half a grid step.
 
 ### The four phases
 
@@ -262,7 +274,7 @@ that broke one.
 - **After the edits** the tree needs an update and an undo push.
 - **Snapping:** an operator would set `snap_to_grid` from the node
   editor's Snap setting (`tool_settings.use_snap_node`), and use
-  `NODE_GRID_STEP_SIZE` for `snapping.GRID_SIZE`.
+  `NODE_GRID_STEP_SIZE` for `common.GRID_SIZE`.
 - **Order is by insertion everywhere.** No result depends on iterating a
   hash set, so plain arrays reproduce it. `model.Node` hashes by a creation
   serial for the same reason. A port would use indices.

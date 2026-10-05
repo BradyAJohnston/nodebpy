@@ -42,7 +42,7 @@ from .reroutes import (
     dissolve_dummy_nodes,
 )
 from .routing import route_edges
-from .snapping import snap_to_grid
+from .snapping import snap_rows, snap_to_grid
 from .spacing import assign_x_coords
 from .stacking import contracted_node_stacks, expand_node_stack
 
@@ -201,6 +201,12 @@ def default_pipeline() -> Pipeline:
                 phase="place",
                 requires=[F.ORDERED, F.BORDERS],
                 provides=[F.Y],
+            ),
+            step(
+                "snap_rows",
+                snap_rows,
+                lambda s: s.snap_to_grid,
+                requires=[F.Y],
             ),
             step(
                 "dissolve_dummy_nodes",

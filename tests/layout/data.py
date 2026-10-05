@@ -27,8 +27,10 @@ MARGIN = (50.0, 20.0)
 
 
 def options(**fields) -> SugiyamaOptions:
-    """The default options at the tests' margin, with *fields* changed."""
-    return SugiyamaOptions(margin=MARGIN, **fields)
+    """Options for the plain-data tests: the test margin, and no snapping to
+    the grid, so positions can be asserted exactly. ``test_snapping.py``
+    turns it on."""
+    return SugiyamaOptions(**{"margin": MARGIN, "snap_to_grid": False, **fields})
 
 
 def plain_node(

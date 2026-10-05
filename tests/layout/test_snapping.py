@@ -5,9 +5,10 @@ import pytest
 
 from nodebpy import SugiyamaOptions, arrange
 from nodebpy.layout import sugiyama_layout
+from nodebpy.layout.common import GRID_SIZE
 from nodebpy.layout.dna import bNodeTree
 from nodebpy.layout.edits import MoveNode
-from nodebpy.layout.snapping import GRID_SIZE, snap_to_grid
+from nodebpy.layout.snapping import snap_to_grid
 
 from . import cases
 from .data import collapsed_math, node_overlaps, options, plain_chain, random_tree
@@ -27,7 +28,11 @@ def _off_grid(edits) -> list[str]:
     return names
 
 
-def test_layout_is_off_the_grid_unless_asked():
+def test_snapping_is_on_by_default():
+    assert SugiyamaOptions().snap_to_grid is True
+
+
+def test_layout_is_on_the_grid_only_when_snapped():
     tree = bNodeTree()
     plain_chain(tree, "abc")
     assert _off_grid(sugiyama_layout(tree, options()).edits)
@@ -44,27 +49,43 @@ def test_a_row_stays_a_row():
     assert len(set(lefts)) == 4
 
 
-def test_nodes_keep_their_gap_rounded_down_to_the_grid():
-    """Two nodes 100 tall, one above the other with a gap of 30: snapped, the
-    gap is 20 or 40, never less."""
+def test_node_left_too_close_to_the_one_above_moves_down_a_step():
+    """Two nodes 100 tall, one 19 under the other. Each going to its nearest
+    grid row would leave them touching, so the lower one goes a row down."""
     tree = bNodeTree()
     nodes = plain_chain(tree, "ab")
     moves = [
-        MoveNode(nodes["a"], (3.0, 9.0), None),
-        MoveNode(nodes["b"], (3.0, 9.0 - 100.0 - 30.0), None),
-    ]
-    a, b = (edit.top_left for edit in snap_to_grid(moves))
-    assert a == (0.0, 0.0)
-    assert (a[1] - 100.0) - b[1] in (20.0, 40.0)
-
-    # Rounding alone would leave these two 10 apart: the lower one steps down.
-    moves = [
-        MoveNode(nodes["a"], (0.0, -9.0), None),
-        MoveNode(nodes["b"], (0.0, -9.0 - 100.0 - 21.0), None),
+        MoveNode(nodes["a"], (0.0, 9.0), None),
+        MoveNode(nodes["b"], (0.0, 9.0 - 100.0 - 19.0), None),
     ]
     a, b = (edit.top_left for edit in snap_to_grid(moves))
     assert a == (0.0, 0.0)
     assert b == (0.0, -120.0)
+
+
+def test_nodes_a_whole_number_of_steps_apart_stay_so():
+    """Halves always go the same way, so even spacing survives."""
+    tree = bNodeTree()
+    nodes = plain_chain(tree, "abc")
+    moves = [
+        MoveNode(nodes[name], (0.0, 10.0 - 200.0 * i), None)
+        for i, name in enumerate("abc")
+    ]
+    tops = [edit.top_left[1] for edit in snap_to_grid(moves)]
+    assert tops[0] - tops[1] == tops[1] - tops[2] == 200.0
+
+
+def test_stacked_nodes_are_whole_grid_steps_apart():
+    """With snapping on, the placement spaces a column in whole grid steps,
+    so a fork's branches stay the same distance either side of the middle."""
+    tree = cases.arranged("diamond")
+    branches = sorted(
+        (n.location.y for n in tree.nodes if n.bl_idname == "GeometryNodeSetPosition"),
+        reverse=True,
+    )
+    upper, middle, lower = branches
+    assert upper - middle == middle - lower
+    assert (upper - middle) % GRID_SIZE == 0
 
 
 def test_collapsed_node_is_snapped_by_its_location():

@@ -25,7 +25,7 @@ from math import ceil, floor, inf
 from statistics import fmean
 from typing import Any, cast
 
-from .common import REROUTE_MARGIN_Y_FAC
+from .common import GRID_SIZE, REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
 from .digraph import DiGraph, LayoutGraph, descendants
 from .dna import bNodeSocket
@@ -265,6 +265,23 @@ def vertical_gap(u: Node, w: Node, state: LayoutState) -> float:
     return state.margin.y
 
 
+def separation(tall: Node, u: Node, w: Node, state: LayoutState) -> float:
+    """How far apart two vertical neighbours *u* and *w* are placed: the
+    height of *tall* (the one of them the packing direction counts) plus
+    the margin. With ``snap_to_grid`` this is rounded up to the grid, so
+    that nodes stacked in a column are whole grid steps apart and snapping
+    moves them all the same way. Two dummy nodes or reroutes are left to
+    pack tightly."""
+    distance = tall.height + vertical_gap(u, w, state)
+    if state.options.snap_to_grid and not (_is_dot(u) and _is_dot(w)):
+        distance = ceil(distance / GRID_SIZE - 1e-6) * GRID_SIZE
+    return distance
+
+
+def _is_dot(v: Node) -> bool:
+    return v.is_reroute and v.type != Kind.VERTICAL_BORDER
+
+
 def place_block(v: Node, is_up: bool, state: LayoutState) -> None:
     """Place the block rooted at *v*, after the blocks it rests on."""
     # Each block yields the blocks that must be placed before it. An
@@ -298,8 +315,7 @@ def _place_block(v: Node, is_up: bool, state: LayoutState) -> Iterator[Node]:
             v.sink = u.sink
 
         if v.sink == u.sink:
-            gap = vertical_gap(n, w, state)
-            delta_l = n.height + gap if is_up else w.height + gap
+            delta_l = separation(n if is_up else w, n, w, state)
             s_b = u.y + n.inner_shift - w.inner_shift + delta_l
             v.y = s_b if initial else max(v.y, s_b)
             initial = False
@@ -331,8 +347,7 @@ def vertical_compaction(G: LayoutGraph[Node], is_up: bool, state: LayoutState) -
             col[0].sink.shift = 0
 
         for u, v in neighborings[tuple(col)]:
-            gap = vertical_gap(u, v, state)
-            delta_l = u.height + gap if is_up else v.height + gap
+            delta_l = separation(u if is_up else v, u, v, state)
             s_c = v.y + v.inner_shift - u.y - u.inner_shift - delta_l
             u.sink.shift = min(u.sink.shift, v.sink.shift + s_c)
 

@@ -149,8 +149,9 @@ def test_there_is_one_frozen_options_class():
 
 
 def test_margin_is_the_gap_between_columns():
-    narrow = _build_chain("Narrow", SugiyamaOptions(margin=(50, 20))).tree
-    wide = _build_chain("Wide", SugiyamaOptions(margin=(400, 20))).tree
+    exact = {"snap_to_grid": False}
+    narrow = _build_chain("Narrow", SugiyamaOptions(margin=(50, 20), **exact)).tree
+    wide = _build_chain("Wide", SugiyamaOptions(margin=(400, 20), **exact)).tree
 
     def gap(tree) -> float:
         first, second = tree.nodes["Group Input"], tree.nodes["Set Position"]

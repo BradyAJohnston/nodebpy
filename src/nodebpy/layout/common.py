@@ -27,6 +27,9 @@ nodes next to each other in a column. Long links routed past a column pack
 tighter than nodes."""
 
 
+GRID_SIZE = 20.0
+"""The grid nodes snap to in the node editor (``NODE_GRID_STEP_SIZE``)."""
+
 FRAME_PADDING = 30.0
 """Room between a frame's border and the nodes in it (``NODE_FRAME_MARGIN``)."""
 

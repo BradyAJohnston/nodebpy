@@ -65,13 +65,10 @@ class SugiyamaOptions:
         fixed ones. The same seed always gives the same layout.
     snap_to_grid : bool
         Put every node on the node editor's grid, as Blender's Snap does
-        when nodes are moved by hand. Nodes keep at least the gap they had,
-        rounded down to the grid. Reroutes are not snapped, so the links
-        through them stay straight.
-    pack_components : bool
-        Lay out the parts of the tree that are not linked to each other
-        separately: the largest first, the others in rows beneath it. Off,
-        the whole tree is laid out as one graph.
+        when nodes are moved by hand, and space the nodes of a column in
+        whole grid steps. Reroutes are not snapped; they follow the sockets
+        they join. With this on, ``socket_alignment`` can only line sockets
+        up to within half a grid step.
     """
 
     margin: tuple[float, float] = (30.0, 30.0)
@@ -89,7 +86,7 @@ class SugiyamaOptions:
     balance_heights: bool = True
     pack_components: bool = True
     seed: int = 0
-    snap_to_grid: bool = False
+    snap_to_grid: bool = True
 
 
 SIMPLE_OPTIONS = SugiyamaOptions(
