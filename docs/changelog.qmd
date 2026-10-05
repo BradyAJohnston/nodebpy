@@ -21,6 +21,7 @@ title: Changelog
 
 ### Fixes
 
+- Arranging only the selection with `add_reroutes=True` no longer replaces a reroute that an unselected node is linked to as well, which removed that node's link.
 - The Sugiyama layout no longer crashes on a chain of collapsed Math nodes that nothing else links to.
 - The Sugiyama layout no longer reseeds Python's global `random` generator, and no longer keeps the graphs of earlier layouts alive in caches.
 - The Sugiyama layout no longer hits the recursion limit on a chain or column of a thousand or more nodes.
