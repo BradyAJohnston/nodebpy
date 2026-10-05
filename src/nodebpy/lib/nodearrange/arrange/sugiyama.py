@@ -640,9 +640,32 @@ def sugiyama_layout(
         (pipeline or default_pipeline()).run(layout, observer, verify=verify)
         return part_state.edits
 
+    def clear_of_the_rest(edits: list[Edit]) -> LayoutResult:
+        """Move what was laid out off the nodes that were not (when only
+        the selection is arranged), unless that would take it further than
+        twice its own size (the longer side) from where it was."""
+        obstacles = [
+            n.draw_bounds
+            for n in tree.nodes
+            if not n.select and not n.is_frame() and not n.is_reroute()
+        ]
+        if not obstacles or not state.settings.avoid_unselected:
+            return LayoutResult(edits)
+        rects = packing.node_rects(edits)
+        if not rects:
+            return LayoutResult(edits)
+        dx, dy = packing.clear_of(
+            rects, obstacles, Vec2(state.margin.y, state.margin.y)
+        )
+        width = max(r[2] for r in rects) - min(r[0] for r in rects)
+        height = max(r[3] for r in rects) - min(r[1] for r in rects)
+        if max(abs(dx), abs(dy)) > 2 * max(width, height):
+            return LayoutResult(edits)
+        return LayoutResult(packing.moved(edits, (f32(dx), f32(dy))))
+
     parts = packing.components(tree) if state.settings.pack_components else []
     if len(parts) < 2:
-        return LayoutResult(lay_out(tree))
+        return clear_of_the_rest(lay_out(tree))
 
     # The part with the most nodes first; the others, largest first, are
     # packed beneath it.
@@ -663,4 +686,4 @@ def sugiyama_layout(
         f32(old_center.x - f32(fmean(x for x, _ in corners))),
         f32(old_center.y - f32(fmean(y for _, y in corners))),
     )
-    return LayoutResult(packing.moved(edits, shift))
+    return clear_of_the_rest(packing.moved(edits, shift))

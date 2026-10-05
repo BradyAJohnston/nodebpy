@@ -151,3 +151,58 @@ def moved(edits: Sequence[Edit], offset: tuple[float, float]) -> list[Edit]:
         else e
         for e in edits
     ]
+
+
+def node_rects(edits: Sequence[Edit]) -> list[Rect]:
+    """The box of each node (reroutes aside) *edits* place."""
+    rects = []
+    for edit in edits:
+        if isinstance(edit, MoveNode) and not edit.node.is_reroute():
+            node = edit.node
+            left, top = edit.top_left
+            rects.append((left, top - (node.top - node.bottom), left + node.width, top))
+    return rects
+
+
+def _first_clear(blocked: list[tuple[float, float]]) -> float:
+    """The smallest distance, zero or more, in none of the open intervals
+    *blocked*."""
+    distance = 0.0
+    for start, end in sorted(blocked):
+        if start >= distance:
+            break
+        distance = max(distance, end)
+    return distance
+
+
+def clear_of(
+    rects: Sequence[Rect], obstacles: Sequence[Rect], gap: Vec2
+) -> tuple[float, float]:
+    """The shortest move left, right, up or down that takes *rects*, moved
+    together, clear of every one of *obstacles* by *gap*. ``(0, 0)`` when
+    they are clear already."""
+    best = (0.0, 0.0)
+    shortest = None
+    # (axis, direction): slide along x or y, forwards or backwards.
+    for axis, sign in ((1, -1), (1, 1), (0, 1), (0, -1)):
+        other = 1 - axis
+        margin, side = gap[axis], gap[other]
+        blocked = []
+        for a in rects:
+            for b in obstacles:
+                # Only a pair that overlaps across the slide can collide.
+                if a[other] >= b[other + 2] + side or b[other] >= a[other + 2] + side:
+                    continue
+                if sign > 0:
+                    blocked.append(
+                        (b[axis] - a[axis + 2] - margin, b[axis + 2] - a[axis] + margin)
+                    )
+                else:
+                    blocked.append(
+                        (a[axis] - b[axis + 2] - margin, a[axis + 2] - b[axis] + margin)
+                    )
+        distance = _first_clear(blocked)
+        if shortest is None or distance < shortest:
+            shortest = distance
+            best = (sign * distance, 0.0) if axis == 0 else (0.0, sign * distance)
+    return best

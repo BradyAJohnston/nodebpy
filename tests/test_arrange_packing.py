@@ -191,3 +191,94 @@ def test_random_trees_have_no_frames_overlapping(seed):
         metrics = measure(tree)
         counts[pack] = metrics.frame_overlaps + metrics.foreign_nodes_in_frames
     assert counts[True] <= counts[False]
+
+
+# ---------------------------------------------------------------------------
+# Keeping a laid-out selection off the nodes that stay put
+# ---------------------------------------------------------------------------
+
+
+def _overlap(a, b, gap=0.0) -> bool:
+    return (
+        a[0] < b[2] + gap
+        and b[0] < a[2] + gap
+        and a[1] < b[3] + gap
+        and b[1] < a[3] + gap
+    )
+
+
+def test_clear_of_takes_the_shortest_way_off():
+    gap = Vec2(10, 10)
+    box = [(0, 0, 100, 100)]
+    assert packing.clear_of(box, [], gap) == (0, 0)
+    assert packing.clear_of(box, [(500, 0, 600, 100)], gap) == (0, 0)
+    # Overlapping at the bottom edge: up is nearest.
+    assert packing.clear_of(box, [(0, -50, 100, 20)], gap) == (0, 30)
+    # At the right edge: left.
+    assert packing.clear_of(box, [(90, 0, 300, 100)], gap) == (-20, 0)
+    # Past the first obstacle there is a second: the move clears both.
+    dx, dy = packing.clear_of(box, [(0, -50, 100, 20), (0, 110, 100, 200)], gap)
+    moved = [(0 + dx, 0 + dy, 100 + dx, 100 + dy)]
+    assert not any(
+        _overlap(moved[0], b, 9.99) for b in [(0, -50, 100, 20), (0, 110, 100, 200)]
+    )
+
+
+def _selection_on_an_obstacle(width: float = 140.0):
+    """A chain of three selected nodes, and an unselected node right where
+    the laid-out chain is centred."""
+    tree = bNodeTree()
+    chain = _chain(tree, ["a", "b", "c"])
+    obstacle = plain_node(tree, "obstacle")
+    obstacle.select = False
+    obstacle.width = width
+    obstacle.draw_bounds = (0.0, -100.0, width, 0.0)
+    return tree, chain, obstacle
+
+
+def _placed(result) -> list[tuple[float, float, float, float]]:
+    return packing.node_rects(result.edits)
+
+
+def test_selection_is_moved_off_unselected_nodes():
+    tree, chain, obstacle = _selection_on_an_obstacle()
+    on_top = sugiyama_layout(tree, Settings(avoid_unselected=False), MARGIN)
+    assert any(_overlap(r, obstacle.draw_bounds) for r in _placed(on_top))
+
+    result = sugiyama_layout(tree, Settings(), MARGIN)
+    assert obstacle not in result.positions()
+    assert not any(
+        _overlap(r, obstacle.draw_bounds, MARGIN[1] - 0.01) for r in _placed(result)
+    )
+    # Moved as one: the chain is still the row it was.
+    before, after = on_top.positions(), result.positions()
+    shifts = {
+        (round(after[n][0] - before[n][0], 2), round(after[n][1] - before[n][1], 2))
+        for n in chain
+    }
+    assert len(shifts) == 1 and shifts != {(0.0, 0.0)}
+
+
+def test_selection_is_left_where_it_is_when_clear_is_too_far():
+    """An unselected node far larger than the selection: getting off it
+    would take the selection further than its own size."""
+    tree, _, obstacle = _selection_on_an_obstacle()
+    obstacle.draw_bounds = (-5000.0, -5000.0, 5000.0, 5000.0)
+    obstacle.width = 10000.0
+    moved_off = sugiyama_layout(tree, Settings(), MARGIN).positions()
+    stayed = sugiyama_layout(tree, Settings(avoid_unselected=False), MARGIN).positions()
+    assert moved_off == stayed
+
+
+def test_unselected_reroutes_and_frames_are_no_obstacles():
+    from nodebpy.lib.nodearrange.dna import new_reroute
+
+    tree, _, obstacle = _selection_on_an_obstacle()
+    tree.nodes.remove(obstacle)
+    reroute = tree.add_node(new_reroute())
+    reroute.select = False
+    frame = tree.add_node(bNode("frame", "NodeFrame"))
+    frame.select = False
+    moved_off = sugiyama_layout(tree, Settings(), MARGIN).positions()
+    stayed = sugiyama_layout(tree, Settings(avoid_unselected=False), MARGIN).positions()
+    assert moved_off == stayed

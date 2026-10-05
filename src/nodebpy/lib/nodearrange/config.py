@@ -89,6 +89,9 @@ class Settings:
     # to each other apart, the largest first and the others in rows beneath
     # it (see arrange.packing), instead of as one graph sharing columns.
     pack_components: bool = True
+    # nodebpy divergence: when only the selection is arranged, move the
+    # result the shortest way off the nodes that stay where they are.
+    avoid_unselected: bool = True
 
 
 DEFAULT_MARGIN = (200.0, 20.0)

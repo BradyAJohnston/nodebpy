@@ -220,6 +220,11 @@ break headless operation.
   boxes sit in rows under the largest (`packing.pack()`). An observer is
   therefore called once per step per part. Upstream lays the whole
   selection out as one graph.
+- **Selection clear of the rest** (nodebpy-only,
+  `Settings.avoid_unselected`): after a selection is laid out,
+  `packing.clear_of()` finds the shortest move along one axis that takes
+  its nodes off the unselected ones, and `sugiyama_layout()` applies it to
+  every `MoveNode`.
 - **Robustness** (nodebpy-only):
   - `sugiyama.cycle_links()`: the layout drops the links that close a cycle
     itself rather than rely on Blender having marked one invalid, and
