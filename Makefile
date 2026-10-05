@@ -28,11 +28,11 @@ docs:
 	cd docs && uv run quarto render
 
 # Arrange a corpus of trees and print layout-quality metrics; see
-# tests/arrange_report.py for comparing runs and drawing the trees.
-arrange-report:
-	uv run python -m tests.arrange_report --essentials
+# tests/layout/report.py for comparing runs and drawing the trees.
+layout-report:
+	uv run python -m tests.layout.report --essentials
 
-# Recompute the layouts stored in tests/arrange_corpus/ after a deliberate
+# Recompute the layouts stored in tests/layout/corpus/ after a deliberate
 # change to the layout; it prints what changed in each layout's counts.
-arrange-corpus:
-	uv run python -m tests.arrange_corpus --update
+layout-corpus:
+	uv run python -m tests.layout.corpus --update

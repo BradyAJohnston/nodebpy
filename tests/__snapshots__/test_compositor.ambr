@@ -6,7 +6,7 @@
       N0("Group Input"):::default-node
       subgraph F0["Ambient Occlusion"]
           N6("Math<br/><small>(SUBTRACT)</small>"):::converter-node
-          N9("Math<br/><small>(POWER)</small>"):::converter-node
+          N10("Math<br/><small>(POWER)</small>"):::converter-node
           N11("Kuwahara"):::default-node
           N14("Mix<br/><small>(0.5,0.5,0.5)</small>"):::default-node
       end
@@ -17,8 +17,8 @@
           N4("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
           N5("Math<br/><small>(GREATER_THAN)</small>"):::converter-node
           N7("Math<br/><small>(ADD)</small>"):::converter-node
-          N8("Anti-Aliasing"):::default-node
-          N10("Math<br/><small>(SUBTRACT)</small>"):::converter-node
+          N8("Math<br/><small>(SUBTRACT)</small>"):::converter-node
+          N9("Anti-Aliasing"):::default-node
           N12("Dilate/Erode"):::default-node
           N13("Anti-Aliasing"):::default-node
       end
@@ -31,8 +31,8 @@
       N19("Group Output"):::default-node
       N18 -->|"Output->Image"| N19
       N0 -->|"AO->Value"| N6
-      N6 -->|"Value->Value"| N9
-      N9 -->|"Value->Image"| N11
+      N6 -->|"Value->Value"| N10
+      N10 -->|"Value->Image"| N11
       N11 -->|"Image->Factor"| N14
       N0 -->|"Image->A"| N14
       N0 -->|"Depth->Image"| N1
@@ -43,10 +43,10 @@
       N2 -->|"Image->Value"| N5
       N4 -->|"Value->Value"| N7
       N5 -->|"Value->Value"| N7
-      N7 -->|"Value->Image"| N8
-      N0 -->|"Outline Size->Value"| N10
-      N8 -->|"Image->Mask"| N12
-      N10 -->|"Value->Size"| N12
+      N7 -->|"Value->Image"| N9
+      N0 -->|"Outline Size->Value"| N8
+      N9 -->|"Image->Mask"| N12
+      N8 -->|"Value->Size"| N12
       N12 -->|"Mask->Image"| N13
       N13 -->|"Image->Background"| N15
       N0 -->|"Outline Color->Foreground"| N15

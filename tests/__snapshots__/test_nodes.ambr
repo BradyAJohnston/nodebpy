@@ -4,35 +4,35 @@
   ```{mermaid}
   graph LR
       N0("Cube Grid Topology<br/><small>(-1,-1,-1)</small>"):::geometry-node
-      N1("Value"):::input-node
-      N2("Boolean"):::input-node
-      N3("Vector"):::input-node
-      N4("Integer"):::input-node
-      N5("Noise Texture<br/><small>×5</small>"):::texture-node
+      N1("Noise Texture<br/><small>×5</small>"):::texture-node
+      N2("Value"):::input-node
+      N3("Boolean"):::input-node
+      N4("Vector"):::input-node
+      N5("Integer"):::input-node
       N6("Field to Grid"):::geometry-node
       N7("Grid Dilate & Erode"):::geometry-node
-      N8("Grid Laplacian"):::geometry-node
-      N9("Grid Dilate & Erode"):::geometry-node
-      N10("Grid Gradient"):::geometry-node
-      N11("Voxelize Grid"):::geometry-node
-      N12("Grid Divergence"):::geometry-node
-      N13("Grid Info"):::input-node
+      N8("Grid Dilate & Erode"):::geometry-node
+      N9("Voxelize Grid"):::geometry-node
+      N10("Grid Laplacian"):::geometry-node
+      N11("Grid Info"):::input-node
+      N12("Grid Gradient"):::geometry-node
+      N13("Grid Divergence"):::geometry-node
       N14("Group Output"):::default-node
       N0 -->|"Topology->Topology"| N6
-      N1 -->|"Value->Float"| N6
-      N2 -->|"Boolean->Boolean"| N6
-      N3 -->|"Vector->Vector"| N6
-      N4 -->|"Integer->idx"| N6
-      N5 -->|"Factor->Float.001"| N6
-      N6 -->|"idx->Grid"| N9
+      N2 -->|"Value->Float"| N6
+      N3 -->|"Boolean->Boolean"| N6
+      N4 -->|"Vector->Vector"| N6
+      N5 -->|"Integer->idx"| N6
+      N1 -->|"Factor->Float.001"| N6
+      N6 -->|"idx->Grid"| N7
+      N7 -->|"Grid->Grid"| N9
       N9 -->|"Grid->Grid"| N11
-      N11 -->|"Grid->Grid"| N13
-      N6 -->|"Float.001->Grid"| N7
-      N7 -->|"Grid->Grid"| N8
-      N8 -->|"Laplacian->Grid"| N10
-      N10 -->|"Gradient->Grid"| N12
-      N12 -->|"Divergence->Grid"| N14
-      N13 -->|"Background Value->Background"| N14
+      N6 -->|"Float.001->Grid"| N8
+      N8 -->|"Grid->Grid"| N10
+      N10 -->|"Laplacian->Grid"| N12
+      N12 -->|"Gradient->Grid"| N13
+      N13 -->|"Divergence->Grid"| N14
+      N11 -->|"Background Value->Background"| N14
   ```
   '''
 # ---
@@ -115,22 +115,22 @@
       N2("Vector"):::input-node
       N3("Simulation Input"):::default-node
       N4("Vector Math<br/><small>(SCALE)</small>"):::vector-node
-      N5("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
-      N6("Set Position"):::geometry-node
-      N7("Vector Math<br/><small>(ADD)</small><br/><small>(0.1,0.1,0.1)</small>"):::vector-node
+      N5("Vector Math<br/><small>(ADD)</small><br/><small>(0.1,0.1,0.1)</small>"):::vector-node
+      N6("Vector Math<br/><small>(MULTIPLY)</small>"):::vector-node
+      N7("Set Position"):::geometry-node
       N8("Simulation Output"):::default-node
       N9("Set Position"):::geometry-node
       N0 -->|"Mesh->cube"| N3
       N1 -->|"Position->Position"| N3
-      N6 -->|"Geometry->cube"| N8
-      N7 -->|"Vector->Position"| N8
-      N3 -->|"Position->Vector"| N7
+      N7 -->|"Geometry->cube"| N8
+      N5 -->|"Vector->Position"| N8
+      N3 -->|"Position->Vector"| N5
       N2 -->|"Vector->Vector"| N4
       N3 -->|"Delta Time->Scale"| N4
-      N4 -->|"Vector->Vector"| N5
-      N3 -->|"Position->Vector"| N5
-      N3 -->|"cube->Geometry"| N6
-      N5 -->|"Vector->Offset"| N6
+      N4 -->|"Vector->Vector"| N6
+      N3 -->|"Position->Vector"| N6
+      N3 -->|"cube->Geometry"| N7
+      N6 -->|"Vector->Offset"| N7
       N8 -->|"cube->Geometry"| N9
       N8 -->|"Position->Position"| N9
   ```

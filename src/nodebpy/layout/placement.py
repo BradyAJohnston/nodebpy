@@ -429,7 +429,8 @@ def get_marked_nodes(
                     if (
                         u.is_reroute
                         and v.is_reroute
-                        and (u in children != v in children)
+                        and u in children
+                        and v in children
                     ):
                         break
                 else:

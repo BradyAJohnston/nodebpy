@@ -63,10 +63,10 @@
       subgraph F2["SVD"]
           N14("Matrix SVD"):::converter-node
           N15("Separate Matrix"):::converter-node
-          N16("Combine XYZ"):::converter-node
+          N16("Matrix Determinant"):::converter-node
           N17("Combine XYZ"):::converter-node
           N18("Combine XYZ"):::converter-node
-          N19("Matrix Determinant"):::converter-node
+          N19("Combine XYZ"):::converter-node
           N20("Axes to Rotation"):::converter-node
           N21("Math<br/><small>(SIGN)</small>"):::converter-node
           N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
@@ -75,9 +75,9 @@
       N1 -->|"Mean->Group Center"| N23
       N14 -->|"S->Principal Components"| N23
       N20 -->|"Rotation->Rotation"| N23
-      N16 -->|"Vector->Longest Axis"| N23
+      N17 -->|"Vector->Longest Axis"| N23
       N22 -->|"Vector->Intermediate Axis"| N23
-      N18 -->|"Vector->Shortest Axis"| N23
+      N19 -->|"Vector->Shortest Axis"| N23
       N0 -->|"Position->Value"| N1
       N0 -->|"Group ID->Group ID"| N1
       N0 -->|"Position->Vector"| N2
@@ -109,20 +109,20 @@
       N9 -->|"Mean->Vector"| N12
       N13 -->|"Matrix->Matrix"| N14
       N14 -->|"U->Matrix"| N15
-      N15 -->|"Column 1 Row 1->X"| N16
-      N15 -->|"Column 1 Row 2->Y"| N16
-      N15 -->|"Column 1 Row 3->Z"| N16
-      N15 -->|"Column 2 Row 1->X"| N17
-      N15 -->|"Column 2 Row 2->Y"| N17
-      N15 -->|"Column 2 Row 3->Z"| N17
-      N15 -->|"Column 3 Row 1->X"| N18
-      N15 -->|"Column 3 Row 2->Y"| N18
-      N15 -->|"Column 3 Row 3->Z"| N18
-      N16 -->|"Vector->Primary Axis"| N20
-      N18 -->|"Vector->Secondary Axis"| N20
-      N14 -->|"U->Matrix"| N19
-      N19 -->|"Determinant->Value"| N21
-      N17 -->|"Vector->Vector"| N22
+      N15 -->|"Column 1 Row 1->X"| N17
+      N15 -->|"Column 1 Row 2->Y"| N17
+      N15 -->|"Column 1 Row 3->Z"| N17
+      N15 -->|"Column 2 Row 1->X"| N18
+      N15 -->|"Column 2 Row 2->Y"| N18
+      N15 -->|"Column 2 Row 3->Z"| N18
+      N15 -->|"Column 3 Row 1->X"| N19
+      N15 -->|"Column 3 Row 2->Y"| N19
+      N15 -->|"Column 3 Row 3->Z"| N19
+      N17 -->|"Vector->Primary Axis"| N20
+      N19 -->|"Vector->Secondary Axis"| N20
+      N14 -->|"U->Matrix"| N16
+      N16 -->|"Determinant->Value"| N21
+      N18 -->|"Vector->Vector"| N22
       N21 -->|"Value->Scale"| N22
   ```
   '''
@@ -151,10 +151,10 @@
       subgraph F2["SVD"]
           N14("Matrix SVD"):::converter-node
           N15("Separate Matrix"):::converter-node
-          N16("Combine XYZ"):::converter-node
+          N16("Matrix Determinant"):::converter-node
           N17("Combine XYZ"):::converter-node
           N18("Combine XYZ"):::converter-node
-          N19("Matrix Determinant"):::converter-node
+          N19("Combine XYZ"):::converter-node
           N20("Axes to Rotation"):::converter-node
           N21("Math<br/><small>(SIGN)</small>"):::converter-node
           N22("Vector Math<br/><small>(SCALE)</small>"):::vector-node
@@ -163,9 +163,9 @@
       N1 -->|"Mean->Group Center"| N23
       N14 -->|"S->Principal Components"| N23
       N20 -->|"Rotation->Rotation"| N23
-      N16 -->|"Vector->Longest Axis"| N23
+      N17 -->|"Vector->Longest Axis"| N23
       N22 -->|"Vector->Intermediate Axis"| N23
-      N18 -->|"Vector->Shortest Axis"| N23
+      N19 -->|"Vector->Shortest Axis"| N23
       N0 -->|"Position->Value"| N1
       N0 -->|"Group ID->Group ID"| N1
       N0 -->|"Position->Vector"| N2
@@ -197,20 +197,20 @@
       N9 -->|"Mean->Vector"| N12
       N13 -->|"Matrix->Matrix"| N14
       N14 -->|"U->Matrix"| N15
-      N15 -->|"Column 1 Row 1->X"| N16
-      N15 -->|"Column 1 Row 2->Y"| N16
-      N15 -->|"Column 1 Row 3->Z"| N16
-      N15 -->|"Column 2 Row 1->X"| N17
-      N15 -->|"Column 2 Row 2->Y"| N17
-      N15 -->|"Column 2 Row 3->Z"| N17
-      N15 -->|"Column 3 Row 1->X"| N18
-      N15 -->|"Column 3 Row 2->Y"| N18
-      N15 -->|"Column 3 Row 3->Z"| N18
-      N16 -->|"Vector->Primary Axis"| N20
-      N18 -->|"Vector->Secondary Axis"| N20
-      N14 -->|"U->Matrix"| N19
-      N19 -->|"Determinant->Value"| N21
-      N17 -->|"Vector->Vector"| N22
+      N15 -->|"Column 1 Row 1->X"| N17
+      N15 -->|"Column 1 Row 2->Y"| N17
+      N15 -->|"Column 1 Row 3->Z"| N17
+      N15 -->|"Column 2 Row 1->X"| N18
+      N15 -->|"Column 2 Row 2->Y"| N18
+      N15 -->|"Column 2 Row 3->Z"| N18
+      N15 -->|"Column 3 Row 1->X"| N19
+      N15 -->|"Column 3 Row 2->Y"| N19
+      N15 -->|"Column 3 Row 3->Z"| N19
+      N17 -->|"Vector->Primary Axis"| N20
+      N19 -->|"Vector->Secondary Axis"| N20
+      N14 -->|"U->Matrix"| N16
+      N16 -->|"Determinant->Value"| N21
+      N18 -->|"Vector->Vector"| N22
       N21 -->|"Value->Scale"| N22
   '''
 # ---
