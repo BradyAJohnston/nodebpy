@@ -224,3 +224,50 @@ def test_random_tree(seed, add_reroutes):
     assert [
         (e.node.name, e.top_left) for e in result.edits if isinstance(e, MoveNode)
     ] == [(e.node.name, e.top_left) for e in again.edits if isinstance(e, MoveNode)]
+
+
+def test_stack_feeding_a_multi_input_through_a_kept_reroute():
+    """The same, when the link from the stack passes a reroute the layout
+    keeps (it has a label)."""
+    from nodebpy.lib.nodearrange.dna import new_reroute
+
+    tree = bNodeTree()
+    math = [
+        plain_node(
+            tree,
+            name,
+            idname="ShaderNodeMath",
+            socket="NodeSocketFloat",
+            collapsed=True,
+            height=30.0,
+            inputs=2,
+        )
+        for name in ("m0", "m1")
+    ]
+    join = plain_node(tree, "join", multi_input=True)
+    other = plain_node(tree, "other")
+    reroute = tree.add_node(new_reroute())
+    reroute.name, reroute.label = "kept", "kept"
+    tree.add_link(math[0].outputs[0], math[1].inputs[0])
+    tree.add_link(math[0].outputs[0], other.inputs[0])
+    tree.add_link(math[0].outputs[0], reroute.inputs[0])
+    tree.add_link(reroute.outputs[0], join.inputs[0], 0)
+    tree.add_link(math[1].outputs[0], join.inputs[0], 1)
+
+    positions = _positions(tree)
+
+    assert positions["m0"][0] < positions["kept"][0] < positions["join"][0]
+
+
+def test_matching_reassigns_an_earlier_pair():
+    """The matching behind the stacks finds the larger matching even when
+    that means taking back a pair it made first."""
+    from nodebpy.lib.nodearrange.arrange.stacking import (
+        deterministic_hopcroft_karp_matching,
+    )
+
+    graph = {"a": ["x", "y"], "b": ["x"], "c": ["x"]}
+
+    matching = deterministic_hopcroft_karp_matching(graph, "abc", "xy")
+
+    assert matching == {"a": "y", "b": "x", "x": "b", "y": "a"}
