@@ -10,7 +10,7 @@ from itertools import chain, count, pairwise, product
 from math import inf
 from typing import TYPE_CHECKING, Literal, TypeGuard, cast
 
-from ..dna import bNode, bNodeSocket, bNodeTreeZone
+from ..dna import bNode, bNodeSocket
 from .common import REROUTE_DIM, frame_padding, group_by
 from .edits import RemoveLink, RemoveNode
 from .priority import FLOW_SOCKETS
@@ -185,9 +185,6 @@ class Cluster:
     cluster: Cluster
     nesting_level: int | None = None
     cr: CrossingReduction = field(default_factory=CrossingReduction)
-    zone: bNodeTreeZone | None = None
-    """The zone the cluster stands for, when it is not a frame's. (nodebpy
-    addition: a zone's nodes are kept together like a frame's.)"""
     left: Node = field(init=False)
     right: Node = field(init=False)
     _serial: int = field(init=False, repr=False, compare=False)
@@ -203,20 +200,6 @@ class Cluster:
     @property
     def type(self) -> Literal[Kind.CLUSTER]:
         return Kind.CLUSTER
-
-    @property
-    def is_root(self) -> bool:
-        """Whether this is the cluster of the whole tree, rather than a
-        frame's or a zone's."""
-        return self.node is None and self.zone is None
-
-    @property
-    def frame(self) -> bNode | None:
-        """The innermost frame around the cluster's nodes."""
-        c: Cluster | None = self
-        while c is not None and c.node is None:
-            c = c.cluster
-        return c.node if c is not None else None
 
     def label_height(self) -> float:
         frame = self.node
@@ -366,26 +349,26 @@ def improve_cluster_assignment(
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    if c1.is_root or c2.is_root or c1.right.rank >= c2.left.rank:
-        if not c2.is_root and u.rank < c2.left.rank:
+    if not (c1.node and c2.node) or c1.right.rank >= c2.left.rank:
+        if c2.node and u.rank < c2.left.rank:
             c1 = None
-            while not c2.cluster.is_root and u.rank < c2.cluster.left.rank:
+            while c2.cluster.node and u.rank < c2.cluster.left.rank:
                 c2 = c2.cluster
-        elif not c1.is_root and v.rank > c1.right.rank:
+        elif c1.node and v.rank > c1.right.rank:
             c2 = None
-            while not c1.cluster.is_root and v.rank > c1.cluster.right.rank:
+            while c1.cluster.node and v.rank > c1.cluster.right.rank:
                 c1 = c1.cluster
         else:
             return
     else:
         while True:
             parent1 = c1.cluster
-            if not parent1.is_root and parent1.right.rank < c2.left.rank:
+            if parent1.node and parent1.right.rank < c2.left.rank:
                 c1 = parent1
                 continue
 
             parent2 = c2.cluster
-            if not parent2.is_root and c1.right.rank < parent2.left.rank:
+            if parent2.node and c1.right.rank < parent2.left.rank:
                 c2 = parent2
                 continue
 
@@ -522,7 +505,7 @@ class ClusterGraph:
         # -------------------------------------------------------------------
 
         for c in self.S:
-            if c.is_root:
+            if not c.node:
                 continue
 
             ranks = sorted(
@@ -540,7 +523,7 @@ class ClusterGraph:
         G = self.G
         columns = G.columns
         for c in self.S:
-            if c.is_root:
+            if not c.node:
                 continue
 
             members = [v for v in descendants(T, c) if v.type != Kind.CLUSTER]

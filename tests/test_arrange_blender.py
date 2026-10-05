@@ -312,4 +312,5 @@ def test_zones_are_read_from_blender():
     ]
 
     arrange_node_tree(tree, Settings())
-    assert measure(tree).foreign_nodes_in_zones == 0
+    metrics = measure(tree)
+    assert (metrics.zones, metrics.straight_zones) == (2, 2)

@@ -43,13 +43,12 @@ def get_nesting_graph(CG: ClusterGraph) -> Tree[Node]:
 
 
 def _top_level_unit(v: Node, root: Cluster) -> Node | Cluster:
-    """The outermost frame containing *v*, or *v* itself when it is in no
-    frame. (Zones are not stages: only frames count.)"""
+    """The outermost frame (a child of *root*) containing *v*, or *v* itself
+    when it sits directly in the root."""
     unit: Node | Cluster = v
     c = v.cluster
     while c is not None and c is not root:
-        if c.node is not None:
-            unit = c
+        unit = c
         c = c.cluster
     return unit
 
@@ -311,7 +310,7 @@ def normalize_and_balance(CG: ClusterGraph, H: Tree[Node]) -> None:
 
         ranked = group_by(cc, key=lambda v: v.rank, sort=True)
 
-        if not c.is_root:
+        if c.node:
             start = min(v.rank for v in CG.T.successors(c) if v.type != Kind.CLUSTER)
         else:
             start = c.left.rank - (max(ranked.values()) - min(ranked.values()))

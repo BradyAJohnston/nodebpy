@@ -202,14 +202,17 @@ break headless operation.
   (`Settings.crossing_weights`, `graph.link_is_flow()`): a value crossing
   the main data costs four times a crossing of two values or of two
   branches of the main data.
-- **Zones** (nodebpy-only, `Settings.group_zones`): `sugiyama.cluster_zones()`
-  gives each zone of `dna.bNodeTree.zones` a `graph.Cluster` (with `zone`
-  set and no frame `node`), nested among the frames' clusters, so the frame
-  machinery keeps the zone's nodes together. Code that asked `cluster.node`
-  whether a cluster is a frame's now asks `cluster.is_root`, and
-  `cluster.frame` gives the frame a node of the cluster belongs in. Zones
-  are not stages for `sequential_frames`. `zones.py` finds the zones for a
-  tree read from Python; a port reads `bNodeTree::zones()` instead.
+- **Zones** (nodebpy-only, `Settings.straighten_zones`):
+  `priority.zone_spine()` picks the line through each zone of
+  `dna.bNodeTree.zones` from its input node to its output node, and
+  `priority.zone_priorities()` gives the sockets along it a priority above
+  any other, so the placement aligns the spine before any other trunk.
+  `y_coords.inner_shift()` aligns the sockets of a spine link whatever
+  `socket_alignment` says, so the spine is one straight line. `zones.py`
+  finds the zones for a tree read from Python; a port reads
+  `bNodeTree::zones()` instead. (Treating a zone as a frame, to keep other
+  nodes out of its outline, was tried and dropped: more crossings and a
+  less clear picture.)
 - **Robustness** (nodebpy-only):
   - `sugiyama.cycle_links()`: the layout drops the links that close a cycle
     itself rather than rely on Blender having marked one invalid, and

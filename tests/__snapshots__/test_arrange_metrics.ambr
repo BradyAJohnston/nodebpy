@@ -22,7 +22,9 @@
     'nodes': 10,
     'reroutes': 0,
     'straight_links': 2,
+    'straight_zones': 0,
     'width': 1515.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[GeometryPrincipalComponents]
@@ -48,7 +50,9 @@
     'nodes': 10,
     'reroutes': 0,
     'straight_links': 0,
+    'straight_zones': 0,
     'width': 910.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[PrincipalComponents]
@@ -74,7 +78,9 @@
     'nodes': 24,
     'reroutes': 0,
     'straight_links': 2,
+    'straight_zones': 0,
     'width': 2428.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[SliceToIndices]
@@ -100,7 +106,9 @@
     'nodes': 9,
     'reroutes': 0,
     'straight_links': 0,
+    'straight_zones': 0,
     'width': 1012.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[annotated]
@@ -126,7 +134,9 @@
     'nodes': 11,
     'reroutes': 2,
     'straight_links': 4,
+    'straight_zones': 0,
     'width': 1531.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[chain]
@@ -152,7 +162,9 @@
     'nodes': 5,
     'reroutes': 0,
     'straight_links': 2,
+    'straight_zones': 0,
     'width': 840.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[compositor_chain]
@@ -178,7 +190,9 @@
     'nodes': 5,
     'reroutes': 0,
     'straight_links': 2,
+    'straight_zones': 0,
     'width': 665.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[diamond]
@@ -204,7 +218,9 @@
     'nodes': 6,
     'reroutes': 0,
     'straight_links': 2,
+    'straight_zones': 0,
     'width': 680.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[fan_in]
@@ -230,7 +246,9 @@
     'nodes': 17,
     'reroutes': 0,
     'straight_links': 8,
+    'straight_zones': 0,
     'width': 540.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[framed_stages]
@@ -256,7 +274,9 @@
     'nodes': 11,
     'reroutes': 0,
     'straight_links': 9,
+    'straight_zones': 0,
     'width': 1805.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[long_links]
@@ -282,7 +302,9 @@
     'nodes': 6,
     'reroutes': 0,
     'straight_links': 4,
+    'straight_zones': 0,
     'width': 990.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[nested_frames]
@@ -308,7 +330,9 @@
     'nodes': 6,
     'reroutes': 0,
     'straight_links': 4,
+    'straight_zones': 0,
     'width': 955.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[shader_material]
@@ -334,7 +358,9 @@
     'nodes': 9,
     'reroutes': 0,
     'straight_links': 0,
+    'straight_zones': 0,
     'width': 1262.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[trunk_with_feeders]
@@ -360,7 +386,9 @@
     'nodes': 11,
     'reroutes': 0,
     'straight_links': 4,
+    'straight_zones': 0,
     'width': 1012.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[value_chain]
@@ -386,7 +414,9 @@
     'nodes': 9,
     'reroutes': 0,
     'straight_links': 0,
+    'straight_zones': 0,
     'width': 850.0,
+    'zones': 0,
   })
 # ---
 # name: test_layout_metrics_snapshot[zones]
@@ -396,22 +426,24 @@
     'flow_crossings': 0,
     'flow_links': 10,
     'foreign_nodes_in_frames': 0,
-    'foreign_nodes_in_zones': 0,
+    'foreign_nodes_in_zones': 1,
     'fork_imbalance': 11.0,
     'frame_overlaps': 0,
-    'height': 827.0,
-    'imbalance': 65.0,
+    'height': 728.0,
+    'imbalance': 53.0,
     'level_flow_links': 6,
     'level_links': 7,
-    'link_length': 2342.0,
-    'link_span_y': 1085.0,
+    'link_length': 1982.0,
+    'link_span_y': 799.0,
     'links': 12,
     'links_through_nodes': 0,
     'mixed_crossings': 0,
     'node_overlaps': 0,
     'nodes': 12,
     'reroutes': 0,
-    'straight_links': 0,
-    'width': 1698.0,
+    'straight_links': 5,
+    'straight_zones': 2,
+    'width': 1578.0,
+    'zones': 2,
   })
 # ---

@@ -104,7 +104,7 @@ def is_unnecessary_bend_point(
     nbr_y = nbr.y - nbr.height - nbr_y_offset if is_above else nbr.y + nbr_y_offset
 
     assert nbr.cluster
-    if not nbr.cluster.is_root and nbr.cluster != v.cluster:
+    if nbr.cluster.node and nbr.cluster != v.cluster:
         nbr_x_offset += frame_padding()
         if is_above:
             nbr_y -= frame_padding()

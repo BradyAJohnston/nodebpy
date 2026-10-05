@@ -17,7 +17,7 @@ from ..config import LayoutState
 from ..dna import bNodeSocket
 from .graph import Cluster, Edge, Kind, Node, Socket, link_priority
 from .pipeline import Layout, register
-from .priority import TRUNK_MIN_PRIORITY
+from .priority import SPINE_MIN_PRIORITY, TRUNK_MIN_PRIORITY
 from .tree import DiGraph, Tree, descendants
 
 
@@ -195,9 +195,16 @@ def should_use_inner_shift(
 
 
 def inner_shift(G: Tree[Node], is_right: bool, is_up: bool, state: LayoutState) -> None:
+    priorities = state.socket_priority
     for root in dict.fromkeys(v.root for v in G):
         for v, w in pairwise(iter_block(root)):
-            if not should_use_inner_shift(v, w, is_right, state):
+            # The spine of a zone is one straight line whatever the nodes'
+            # sizes (nodebpy addition).
+            on_spine = bool(priorities) and any(
+                link_priority(link, priorities) >= SPINE_MIN_PRIORITY
+                for link in G.links_between(v, w)
+            )
+            if not on_spine and not should_use_inner_shift(v, w, is_right, state):
                 w.inner_shift = v.inner_shift
                 continue
 

@@ -1,12 +1,12 @@
 """Zones in the layout: which nodes are in a zone (``nodearrange.zones``),
-and the layout keeping a zone's nodes together with no other among them
-(``sugiyama.cluster_zones``)."""
+and the layout drawing a zone as a straight row (``priority.zone_spine``)."""
 
 from itertools import pairwise
 
 import pytest
 
 from nodebpy.lib.nodearrange.arrange.edits import MoveNode, RemoveNode
+from nodebpy.lib.nodearrange.arrange.priority import ZONE, zone_priorities, zone_spine
 from nodebpy.lib.nodearrange.arrange.sugiyama import sugiyama_layout
 from nodebpy.lib.nodearrange.config import Settings
 from nodebpy.lib.nodearrange.dna import bNode, bNodeTree
@@ -75,121 +75,129 @@ def test_links_marked_invalid_do_not_put_a_node_in_a_zone():
 
 
 # ---------------------------------------------------------------------------
+# The spine
+# ---------------------------------------------------------------------------
+
+
+def _spine(zone, tree, taken=None) -> list[str]:
+    return [f"{k.fromnode.name}{k.tonode.name}" for k in zone_spine(zone, tree, taken)]
+
+
+def test_spine_follows_the_main_data():
+    """Two ways through the zone: i -> v -> w -> o carrying values, and
+    i -> g -> o carrying geometry. The geometry is the spine, though the
+    other way is longer."""
+    tree = bNodeTree()
+    nodes = {name: plain_node(tree, name, inputs=2, outputs=2) for name in "igo"}
+    for name in "vw":
+        nodes[name] = plain_node(tree, name, socket="NodeSocketFloat")
+    for name in "io":
+        nodes[name].outputs[1].idname = nodes[name].inputs[1].idname = "NodeSocketFloat"
+    for a, b, out, into in (("i", "g", 0, 0), ("g", "o", 0, 0)):
+        tree.add_link(nodes[a].outputs[out], nodes[b].inputs[into])
+    tree.add_link(nodes["i"].outputs[1], nodes["v"].inputs[0])
+    tree.add_link(nodes["v"].outputs[0], nodes["w"].inputs[0])
+    tree.add_link(nodes["w"].outputs[0], nodes["o"].inputs[1])
+    (zone,) = find_zones(tree, [(nodes["i"], nodes["o"])])
+    assert _spine(zone, tree) == ["ig", "go"]
+
+    # With nothing but values the longer way is taken.
+    for node in nodes.values():
+        for socket in (*node.inputs, *node.outputs):
+            socket.idname = "NodeSocketFloat"
+    assert _spine(zone, tree) == ["iv", "vw", "wo"]
+
+
+def test_spine_of_an_outer_zone_follows_the_inner_one():
+    tree = bNodeTree()
+    nodes = _chain(tree, "ixjypzo")
+    # A second, longer way through the inner zone.
+    for name in "st":
+        nodes[name] = plain_node(tree, name)
+    for a, b, into in (("j", "s", 0), ("s", "t", 0), ("t", "p", 1)):
+        tree.add_link(nodes[a].outputs[0], nodes[b].inputs[into])
+    outer, inner = find_zones(
+        tree, [(nodes["j"], nodes["p"]), (nodes["i"], nodes["o"])]
+    )
+    inner_spine = zone_spine(inner, tree)
+    assert _spine(inner, tree) == ["js", "st", "tp"]
+    assert _spine(outer, tree, set(inner_spine)) == [
+        "ix", "xj", "js", "st", "tp", "pz", "zo",
+    ]  # fmt: skip
+    tree.zones = [outer, inner]
+    priorities = zone_priorities(tree)
+    assert priorities[nodes["s"].inputs[0]] == ZONE
+    assert nodes["y"].inputs[0] not in priorities
+
+
+def test_zone_whose_input_does_not_reach_its_output_has_no_spine():
+    tree = bNodeTree()
+    a, b = plain_node(tree, "a"), plain_node(tree, "b")
+    (zone,) = find_zones(tree, [(a, b)])
+    assert zone_spine(zone, tree) == []
+    assert zone_priorities(tree) == {}
+
+
+# ---------------------------------------------------------------------------
 # The layout
 # ---------------------------------------------------------------------------
 
 
-def _zone_with_feeder() -> bNodeTree:
-    """[i -> tall -> o], and a feeder of ``tall`` from outside the zone,
-    which has a feeder of its own and so sits in the column of ``i``: under
-    ``i``, beside ``tall``, in the box around the zone."""
+def _uneven_zone() -> tuple[bNodeTree, list[bNode]]:
+    """a -> [i -> t -> o] -> b through nodes of very different sizes whose
+    geometry sockets sit at different heights, and with a feeder of ``t``."""
     tree = bNodeTree()
-    nodes = _chain(tree, "ito")
-    tall = nodes["t"]
-    tall.draw_bounds = (0.0, -400.0, 140.0, 0.0)
-    source = plain_node(tree, "source", socket="NodeSocketFloat")
+    nodes = _chain(tree, "aitob")
+    nodes["t"].draw_bounds = (0.0, -400.0, 140.0, 0.0)
+    nodes["t"].inputs[0].location = (0.0, -300.0)
+    nodes["i"].outputs[0].location = (140.0, -80.0)
     feeder = plain_node(tree, "feeder", socket="NodeSocketFloat")
-    tree.add_link(source.outputs[0], feeder.inputs[0])
-    tree.add_link(feeder.outputs[0], tall.inputs[1])
+    tree.add_link(feeder.outputs[0], nodes["t"].inputs[1])
     tree.zones = find_zones(tree, [(nodes["i"], nodes["o"])])
-    return tree
+    return tree, [nodes[name] for name in "ito"]
 
 
-def _foreign_nodes(tree: bNodeTree, **settings) -> int:
+def _measured(tree: bNodeTree, **settings):
     result = sugiyama_layout(tree, Settings(**settings), MARGIN, verify=True)
     assert node_overlaps(result) == 0
     result.apply_to(tree)
-    return measure(tree).foreign_nodes_in_zones
+    return measure(tree)
 
 
 @pytest.mark.parametrize("add_reroutes", [False, True])
-def test_other_nodes_are_kept_out_of_a_zone(add_reroutes):
-    assert _foreign_nodes(_zone_with_feeder(), add_reroutes=add_reroutes) == 0
+@pytest.mark.parametrize("socket_alignment", ["NONE", "MODERATE", "FULL"])
+@pytest.mark.parametrize("direction", ["BALANCED", "LEFT_UP", "RIGHT_DOWN"])
+def test_zone_is_a_straight_row(add_reroutes, socket_alignment, direction):
+    """The links from the zone's input node through to its output node are
+    straight, whatever the alignment asked for elsewhere."""
+    tree, (zone_in, middle, zone_out) = _uneven_zone()
+    metrics = _measured(
+        tree,
+        add_reroutes=add_reroutes,
+        socket_alignment=socket_alignment,
+        direction=direction,
+    )
+    assert (metrics.zones, metrics.straight_zones) == (1, 1)
+    assert zone_in.outputs[0].location[1] == pytest.approx(
+        middle.inputs[0].location[1], abs=0.01
+    )
+    assert middle.outputs[0].location[1] == pytest.approx(
+        zone_out.inputs[0].location[1], abs=0.01
+    )
 
 
 def test_zones_can_be_left_alone():
-    """Without the grouping the feeder sits in the zone's box (which is
-    what the metric is for)."""
-    assert _foreign_nodes(_zone_with_feeder(), group_zones=False) == 1
+    """Without it the nodes are aligned by their tops (which is what the
+    metric is for)."""
+    tree, _ = _uneven_zone()
+    metrics = _measured(tree, straighten_zones=False, socket_alignment="NONE")
+    assert (metrics.zones, metrics.straight_zones) == (1, 0)
 
 
-def _clusters(tree: bNodeTree) -> dict[str, list[str]]:
-    """For each node, what its clusters stand for, innermost first."""
-    seen = {}
-
-    def observer(step, layout, seconds):
-        if step.name != "rank":
-            return
-        for v in layout.G:
-            if v.node is None:
-                continue
-            around = []
-            c = v.cluster
-            while c is not None and not c.is_root:
-                around.append(c.node.name if c.node is not None else "zone")
-                c = c.cluster
-            seen[v.node.name] = around
-
-    result = sugiyama_layout(tree, Settings(), MARGIN, observer=observer, verify=True)
-    assert node_overlaps(result) == 0
-    return seen
-
-
-def test_zone_inside_a_frame_and_frame_inside_a_zone():
-    tree = bNodeTree()
-    outer = tree.add_node(bNode("outer", "NodeFrame"))
-    inner = tree.add_node(bNode("inner", "NodeFrame"))
-    nodes = _chain(tree, "aixyob")
-    for name in "aixyo":
-        nodes[name].parent = outer
-    for name in "xy":
-        nodes[name].parent = inner
-    inner.parent = outer
-    tree.zones = find_zones(tree, [(nodes["i"], nodes["o"])])
-
-    assert _clusters(tree) == {
-        "a": ["outer"],
-        "i": ["zone", "outer"],
-        "x": ["inner", "zone", "outer"],
-        "y": ["inner", "zone", "outer"],
-        "o": ["zone", "outer"],
-        "b": [],
-    }
-    # The nodes go back into their frames, not into anything of the zone's.
-    result = sugiyama_layout(tree, Settings(), MARGIN)
-    parents = {e.node.name: e.parent for e in result.edits if isinstance(e, MoveNode)}
-    assert parents["i"] is outer and parents["x"] is inner and parents["b"] is None
-
-
-def test_zone_that_only_overlaps_a_frame_is_not_grouped():
-    """A frame around the zone's input node and a node before the zone can
-    be nested neither in the zone nor around it."""
-    tree = bNodeTree()
-    frame = tree.add_node(bNode("frame", "NodeFrame"))
-    nodes = _chain(tree, "aixob")
-    nodes["a"].parent = nodes["i"].parent = frame
-    tree.zones = find_zones(tree, [(nodes["i"], nodes["o"])])
-    assert all("zone" not in around for around in _clusters(tree).values())
-
-
-def test_zone_that_is_all_of_its_frame_adds_nothing():
-    tree = bNodeTree()
-    frame = tree.add_node(bNode("frame", "NodeFrame"))
-    nodes = _chain(tree, "aixob")
-    for name in "ixo":
-        nodes[name].parent = frame
-    tree.zones = find_zones(tree, [(nodes["i"], nodes["o"])])
-    assert _clusters(tree)["x"] == ["frame"]
-
-
-def test_nested_zones_are_nested_clusters():
-    tree = bNodeTree()
-    nodes = _chain(tree, "aixjypzob")
-    tree.zones = find_zones(tree, [(nodes["j"], nodes["p"]), (nodes["i"], nodes["o"])])
-    clusters = _clusters(tree)
-    assert clusters["y"] == ["zone", "zone"]
-    assert clusters["x"] == ["zone"]
-    assert clusters["a"] == []
+def test_zones_are_straightened_without_link_priorities():
+    tree, _ = _uneven_zone()
+    metrics = _measured(tree, link_priority="none", socket_alignment="NONE")
+    assert metrics.straight_zones == 1
 
 
 @pytest.mark.parametrize("seed", range(40))
