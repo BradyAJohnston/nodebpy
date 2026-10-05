@@ -27,7 +27,7 @@ from .common import REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
 from .digraph import DiGraph, LayoutGraph, descendants
 from .dna import bNodeSocket
-from .graph import Cluster, Edge, Kind, Node, Socket, link_priority
+from .model import Cluster, Edge, Kind, Node, Socket, link_priority
 from .priority import SPINE_MIN_PRIORITY, TRUNK_MIN_PRIORITY
 
 
@@ -186,10 +186,10 @@ def should_use_inner_shift(
     if v.is_reroute or w.is_reroute:
         return True
 
-    if state.settings.socket_alignment == "NONE":
+    if state.options.socket_alignment == "NONE":
         return False
 
-    if state.settings.socket_alignment == "FULL":
+    if state.options.socket_alignment == "FULL":
         return True
 
     if v.cluster != w.cluster or Kind.STACK in {v.type, w.type}:
@@ -494,13 +494,13 @@ def bk_assign_y_coords(
     for col in columns:
         col.reverse()
 
-    if state.settings.direction == "BALANCED":
+    if state.options.direction == "BALANCED":
         balance(G, layouts)
         for i, v in enumerate(G):
             values = [layout[i] for layout in layouts]
             values.sort()
             v.y = fmean(values[1:3])
     else:
-        i = _DIRECTION_TO_IDX[state.settings.direction]
+        i = _DIRECTION_TO_IDX[state.options.direction]
         for v, y in zip(G, layouts[i]):
             v.y = y

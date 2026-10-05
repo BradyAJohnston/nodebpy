@@ -25,7 +25,7 @@ from collections.abc import Iterable
 from .common import REROUTE_DIM, REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
 from .digraph import LayoutGraph, ancestors
-from .graph import Cluster, Kind, Node, Socket
+from .model import Cluster, Kind, Node, Socket
 
 _MAX_MOVES = 500
 
@@ -124,6 +124,17 @@ def _fit_to_height(
 
 _TARGET_STEP = 0.9
 
+
+def _is_in(v: Node, cluster: Cluster) -> bool:
+    """Whether *v* is in *cluster* or in a cluster within it."""
+    c = v.cluster
+    while c is not None:
+        if c is cluster:
+            return True
+        c = c.cluster
+    return False
+
+
 BALANCE_ASPECT = 1.6
 """The shape balancing aims for: this wide for every unit of height."""
 
@@ -186,7 +197,7 @@ def balance_column_heights(
     # Frame borders follow their members (recomputed by insert_dummy_nodes);
     # keep them consistent for anything reading them before that.
     for c in clusters:
-        members = [v for v in nodes if v.cluster is c]
+        members = [v for v in nodes if _is_in(v, c)]
         if members:
             c.left.rank = min(v.rank for v in members) - 1
             c.right.rank = max(v.rank for v in members) + 1

@@ -12,6 +12,7 @@ from typing import Any, Literal, cast
 import bpy
 
 from ..builder._socket_order import SOCKET_ORDER
+from .dna import REROUTE_SIZE
 
 # Estimated row heights (in unscaled UI units) used to model node layout
 # without a UI. Blender only computes real node/socket geometry when a node
@@ -22,14 +23,14 @@ from ..builder._socket_order import SOCKET_ORDER
 # 24.5 / 21.75. The remaining rows scale to the same grid.
 HEADER = 24.5
 SOCKET_ROW = 21.75
-HIDDEN_SOCKET = 14
-HIDDEN_HEADER = 30
+COLLAPSED_SOCKET = 10  # NODE_DY / 2
+COLLAPSED_ENDS = 8  # 2 * BASIS_RAD
 PROPERTY_ROW = 24
 VECTOR_EXPANDED = 65.25  # three extra value rows
 
 
 # Node-specific RNA properties Blender never draws in the node body: UI
-# bookkeeping for item lists and zones rather than settings.
+# bookkeeping for item lists and zones rather than options.
 _UNDRAWN_PROPERTIES = frozenset(
     {"is_active_output", "vector_dimensions", "inspection_index"}
 )
@@ -85,11 +86,6 @@ def node_property_rows(node: bpy.types.Node) -> list[tuple[Any, int]]:
                 count = int(getattr(node, "vector_dimensions", array_length))
         rows.append((prop, count))
     return rows
-
-
-def _node_property_count(node: bpy.types.Node) -> int:
-    """Number of :data:`PROPERTY_ROW` rows the node's drawn properties take."""
-    return sum(count for _, count in node_property_rows(node))
 
 
 def _socket_visible(socket: bpy.types.NodeSocket) -> bool:
@@ -502,6 +498,14 @@ def _rows_from_order(
     return rows
 
 
+def _collapsed_height(node: bpy.types.Node) -> float:
+    """Height of a collapsed node: a row per visible socket on its fuller
+    side, at least two (``node_update_collapsed`` in ``node_draw.cc``)."""
+    inputs = sum(_socket_visible(s) for s in node.inputs)
+    outputs = sum(_socket_visible(s) for s in node.outputs)
+    return COLLAPSED_SOCKET * max(inputs, outputs, 2) + COLLAPSED_ENDS
+
+
 def calculate_node_dimensions(
     node: bpy.types.Node,
     socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None = None,
@@ -509,18 +513,13 @@ def calculate_node_dimensions(
 ) -> tuple[float, float]:
     """Calculate the visual dimensions of a node.
 
-    When a node is collapsed (``node.hide is True``) only linked sockets
-    contribute to the height, and header / property / vector-expansion rows
-    are omitted. Otherwise the height is the header plus every row of
-    :func:`node_rows`. When ``socket_input_connection_count`` is None, link
+    A collapsed node has a row per visible socket; otherwise the height is
+    the header plus every row of :func:`node_rows`. When
+    ``socket_input_connection_count`` is None, link
     state is read directly from ``socket.is_linked``.
     """
     if node.hide:
-        linked_inputs = sum(1 for s in node.inputs if s.enabled and s.is_linked)
-        linked_outputs = sum(1 for s in node.outputs if s.enabled and s.is_linked)
-        visible = max(linked_inputs, linked_outputs, 1)
-        height = (HIDDEN_HEADER + visible * HIDDEN_SOCKET) * interface_scale
-        return node.width, height
+        return node.width, _collapsed_height(node) * interface_scale
 
     rows = node_rows(node, socket_input_connection_count)
     height = (HEADER + sum(row.height for row in rows)) * interface_scale
@@ -539,13 +538,46 @@ def calculate_socket_offset_y(socket: bpy.types.NodeSocket) -> float:
 
     if node.hide:
         side = node.outputs if socket.is_output else node.inputs
-        visible = [s for s in side if s.enabled and s.is_linked]
+        visible = [s for s in side if _socket_visible(s)]
         index = next((k for k, s in enumerate(visible) if s == socket), 0)
-        height = calculate_node_dimensions(node)[1]
-        return -height * (index + 0.5) / max(len(visible), 1)
+        middle = -_collapsed_height(node) / 2
+        return middle + COLLAPSED_SOCKET * ((len(visible) - 1) / 2 - index)
 
     for row in node_rows(node):
         if socket in row.sockets:
             return row.anchor
     # Not drawn (hidden and unlinked, or in a closed panel): the header.
     return -HEADER / 2
+
+
+def dimensions(node: bpy.types.Node) -> tuple[float, float]:
+    """Width and height of the box *node* is drawn in: what Blender measured
+    when a node editor last drew it, else the estimate."""
+    if node.bl_idname == "NodeReroute":
+        return (REROUTE_SIZE, REROUTE_SIZE)
+
+    drawn = node.dimensions
+    if drawn.x > 0 and drawn.y > 0:  # pragma: no cover - only drawn in a UI
+        # Drawn sizes are in view space; locations are not.
+        preferences = bpy.context.preferences
+        assert preferences is not None
+        scale = preferences.system.ui_scale
+        return (drawn.x / scale, drawn.y / scale)
+    return calculate_node_dimensions(node)
+
+
+# A collapsed node is drawn around a point this far below its location.
+_COLLAPSED_OFFSET = 10
+
+
+def get_top(node: bpy.types.Node) -> float:
+    """The y of the top edge of the box *node* is drawn in."""
+    y = node.location_absolute.y
+    if node.hide:
+        return y - _COLLAPSED_OFFSET + dimensions(node)[1] / 2
+    return y
+
+
+def get_bottom(node: bpy.types.Node) -> float:
+    """The y of the bottom edge of the box *node* is drawn in."""
+    return get_top(node) - dimensions(node)[1]

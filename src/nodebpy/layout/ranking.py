@@ -23,10 +23,10 @@ from .digraph import (
     topological_generations,
     weakly_connected_components,
 )
-from .graph import Cluster, Kind, MultiEdge, Node
+from .model import Cluster, Kind, MultiEdge, Node
 
 if TYPE_CHECKING:
-    from .sugiyama import ClusterGraph
+    from .model import ClusterGraph
 
 
 # https://api.semanticscholar.org/CorpusID:14932050
@@ -41,7 +41,7 @@ def get_nesting_graph(CG: ClusterGraph) -> LayoutGraph[Node]:
                 H.add_link(u.left, v.left)
                 H.add_link(v.right, u.right)
 
-    if CG.state.settings.sequential_frames:
+    if CG.state.options.sequential_frames:
         add_frame_sequence_edges(CG, H)
 
     return H
@@ -114,13 +114,6 @@ def add_frame_sequence_edges(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
 def get_adj_edges_H(H: LayoutGraph[Node], v: Node) -> tuple[MultiEdge, ...]:
     return tuple(
         link.ident for links in (H.in_links(v), H.out_links(v)) for link in links
-    )
-
-
-@cache
-def get_adj_edges_T(T: LayoutGraph[Node], v: Node) -> tuple[MultiEdge, ...]:
-    return tuple(
-        link.ident for links in (T.in_links(v), T.out_links(v)) for link in links
     )
 
 
@@ -240,8 +233,8 @@ def compute_cut_values(H: LayoutGraph[Node], T: LayoutGraph[Node]) -> None:
     unknown_cut_values = {}
     leaves = []
     for v in H:
-        adj_edges = get_adj_edges_T(T, v)
-        unknown_cut_values[v] = list(adj_edges)
+        adj_edges = [k.ident for k in (*T.in_links(v), *T.out_links(v))]
+        unknown_cut_values[v] = adj_edges
         if len(adj_edges) == 1:
             leaves.append(v)
 
@@ -399,7 +392,7 @@ def normalize_and_balance(CG: ClusterGraph, H: LayoutGraph[Node]) -> None:
             v.rank - min([v.rank - u.rank for u in H.predecessors(v)], default=-1) + 1
         )
         stop = v.rank + min([w.rank - v.rank for w in H.successors(v)], default=-1)
-        new_rank = max(range(start, stop), key=lambda i: col_sizes[i], default=v.rank)
+        new_rank = min(range(start, stop), key=lambda i: col_sizes[i], default=v.rank)
 
         if col_sizes[new_rank] < col_sizes[v.rank]:
             col_sizes[v.rank] -= 1
@@ -423,7 +416,6 @@ def network_simplex_ranks(H: LayoutGraph[Node]) -> None:
     # The adjacency caches are keyed by the graphs of this run; drop them so
     # the graphs (and the nodes they reference) can be freed.
     get_adj_edges_H.cache_clear()
-    get_adj_edges_T.cache_clear()
 
 
 def compute_ranks(

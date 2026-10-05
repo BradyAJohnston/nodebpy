@@ -14,7 +14,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import replace
 
-from .common import Vec2, f32, frame_padding
+from .common import FRAME_PADDING, Vec2, f32, frame_label_room
 from .dna import bNode, bNodeTree
 from .edits import Edit, MoveNode
 
@@ -102,9 +102,8 @@ def bounds(edits: Sequence[Edit]) -> Rect | None:
         pad = label_room = 0.0
         frame = edit.parent
         while frame is not None:
-            pad += frame_padding()
-            if frame.label:
-                label_room += frame.label_size * 1.25
+            pad += FRAME_PADDING
+            label_room += frame_label_room(frame.label, frame.label_size)
             frame = frame.parent
         rects.append((left - pad, bottom - pad, right + pad, top + pad + label_room))
     if not rects:

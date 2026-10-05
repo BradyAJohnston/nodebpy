@@ -1,10 +1,8 @@
 from ..layout import (
+    SIMPLE_OPTIONS,
     ArrangeMethod,
-    SimpleOptions,
     SugiyamaOptions,
     arrange,
-    arrange_tree,
-    default_split_inputs,
     default_sugiyama_options,
 )
 from ._utils import SocketError, denormalize_name, normalize_name
@@ -82,9 +80,11 @@ from .tree import (
     PanelContext,
     SocketContext,
     TreeBuilder,
+    default_split_inputs,
 )
 
 __all__ = [
+    "SIMPLE_OPTIONS",
     "ArrangeMethod",
     "AssetCompositorGroup",
     "AssetGeometryGroup",
@@ -143,7 +143,6 @@ __all__ = [
     "RotationSocketList",
     "ShaderSocket",
     "ShaderSocketList",
-    "SimpleOptions",
     "Socket",
     "SocketAccessor",
     "SocketContext",
@@ -158,7 +157,6 @@ __all__ = [
     "VectorSocketGrid",
     "VectorSocketList",
     "arrange",
-    "arrange_tree",
     "asset_group_base",
     "build_from_source",
     "default_split_inputs",

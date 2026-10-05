@@ -37,7 +37,7 @@ from .digraph import (
     edge_dfs,
     topological_sort,
 )
-from .graph import (
+from .model import (
     Cluster,
     Kind,
     Node,
@@ -159,7 +159,6 @@ def crossing_reduction_graph(
             # links only merge going forwards.
             known = merged.tosock if is_reversed else merged.fromsock
             if known == output_socket:
-                merged.weight += 1
                 continue
 
         to_socket = (
@@ -167,7 +166,7 @@ def crossing_reduction_graph(
             if c.type != Kind.CLUSTER
             else replace(input_socket, owner=c, idx=0)
         )
-        G_h.add_link(s, c, output_socket, to_socket, weight=1)
+        G_h.add_link(s, c, output_socket, to_socket)
 
     return G_h
 
@@ -200,7 +199,6 @@ class _CrossingReductionGraph:
             lower_v = Node(type=Kind.VERTICAL_BORDER)
             self.expanded_fixed_col.extend((upper_v, lower_v))
 
-            fac = 1 + sum(v in self.fixed_LT for v in descendants(self.free_LT, c))
             for border_v in upper_v, lower_v:
                 self.graph.add_link(
                     border_v,
@@ -208,7 +206,6 @@ class _CrossingReductionGraph:
                     Socket(border_v, 0, is_forwards),
                     # border sockets use the cluster as an opaque owner
                     Socket(cast("Node", c), 0, not is_forwards),
-                    weight=0.5 * fac,
                 )
 
             bordered_nodes = [
@@ -379,7 +376,7 @@ def handle_constraints(H: _CrossingReductionGraph) -> None:
         s, t = c
 
         deg[v_c] = deg[s] + deg[t]
-        assert s.cr.barycenter and t.cr.barycenter
+        assert s.cr.barycenter is not None and t.cr.barycenter is not None
         if deg[v_c] > 0:
             v_c.cr.barycenter = (
                 s.cr.barycenter * deg[s] + t.cr.barycenter * deg[t]
@@ -443,7 +440,7 @@ _SHUFFLE_BUDGET = 500
 _MAX_SHUFFLES = 8
 
 
-class _Lcg:
+class Lcg:
     """A minimal random generator, the same in any language: the 48-bit
     linear congruential generator of ``drand48`` (and of Blender's
     ``RandomNumberGenerator``)."""
@@ -722,7 +719,7 @@ def minimize_crossings(
     ]
 
     shuffles = min(_MAX_SHUFFLES, _SHUFFLE_BUDGET // max(len(G), 1))
-    rng = _Lcg(0)
+    rng = Lcg(state.options.seed)
     for _ in range(shuffles):
         shuffled = [col.copy() for col in columns]
         for col in shuffled:

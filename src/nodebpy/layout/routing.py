@@ -6,78 +6,13 @@ otherwise cut across (:func:`route_edges`)."""
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Collection, Sequence
 from itertools import chain
-from typing import cast
 
-from .common import frame_padding, group_by, segments_intersect
+from .common import FRAME_PADDING, group_by, segments_intersect
 from .config import LayoutState
-from .digraph import DiGraph, LayoutGraph, Link, ancestors, dag_longest_path_length
-from .graph import (
-    Cluster,
-    Kind,
-    Node,
-    Socket,
-    add_dummy_nodes_to_edge,
-    lowest_common_cluster,
-)
-
-
-def frame_padding_of_col(
-    columns: Sequence[Collection[Node]],
-    i: int,
-    T: DiGraph[Node | Cluster],
-) -> float:
-    col = columns[i]
-
-    if col == columns[-1]:
-        return 0
-
-    clusters1 = {cast(Cluster, v.cluster) for v in col}
-    clusters2 = {cast(Cluster, v.cluster) for v in columns[i + 1]}
-
-    if not clusters1 ^ clusters2:
-        return 0
-
-    ST1 = T.subgraph(chain(clusters1, *[ancestors(T, c) for c in clusters1]))
-    ST2 = T.subgraph(chain(clusters2, *[ancestors(T, c) for c in clusters2]))
-
-    for u, v in tuple(ST1.edges()):
-        ST1.set_weight(u, v, int(not ST2.has_edge(u, v)))
-
-    for u, v in tuple(ST2.edges()):
-        ST2.set_weight(u, v, int(not ST1.has_edge(u, v)))
-
-    dist = dag_longest_path_length(ST1) + dag_longest_path_length(ST2)
-    return frame_padding() * dist
-
-
-def assign_x_coords(
-    G: LayoutGraph[Node], T: DiGraph[Node | Cluster], state: LayoutState
-) -> None:
-    columns: list[list[Node]] = G.columns
-    x = 0
-    for i, col in enumerate(columns):
-        if not col:
-            # A rank whose only occupants were dummy nodes (dissolved when
-            # reroutes are not added) takes no space.
-            continue
-        max_width = max([v.width for v in col])
-
-        for v in col:
-            v.x = x if v.is_reroute else x - (v.width - max_width) / 2
-
-        # https://doi.org/10.7155/jgaa.00220 (p. 139)
-        delta_i = sum(
-            [
-                1
-                for link in G.out_links(col)
-                if abs(link.tosock.y - link.fromsock.y) >= state.margin.x * 3
-            ]
-        )
-        spacing = (1 + min(delta_i / 4, 2)) * state.margin.x
-        x += max_width + spacing + frame_padding_of_col(columns, i, T)
-
+from .digraph import DiGraph, LayoutGraph, Link
+from .long_links import add_dummy_nodes_to_edge, lowest_common_cluster
+from .model import Cluster, Kind, Node, Socket
 
 _MIN_X_DIFF = 30
 _MIN_Y_DIFF = 8
@@ -94,10 +29,10 @@ def is_unnecessary_bend_point(
     i = v.col.index(v)
     is_above = other_socket.y > socket.y
 
-    try:
-        nbr = v.col[i - 1] if is_above else v.col[i + 1]
-    except IndexError:
+    j = i - 1 if is_above else i + 1
+    if not 0 <= j < len(v.col):
         return True
+    nbr = v.col[j]
 
     if nbr.is_reroute:
         return True
@@ -107,11 +42,11 @@ def is_unnecessary_bend_point(
 
     assert nbr.cluster
     if nbr.cluster.node and nbr.cluster != v.cluster:
-        nbr_x_offset += frame_padding()
+        nbr_x_offset += FRAME_PADDING
         if is_above:
-            nbr_y -= frame_padding()
+            nbr_y -= FRAME_PADDING
         else:
-            nbr_y += frame_padding() + nbr.cluster.label_height()
+            nbr_y += FRAME_PADDING + nbr.cluster.label_height()
 
     line_a = ((nbr.x - nbr_x_offset, nbr_y), (nbr.x + nbr.width + nbr_x_offset, nbr_y))
     line_b = ((socket.x, socket.y), (other_socket.x, other_socket.y))

@@ -41,9 +41,9 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, Literal
 
 from .common import Vec2
-from .config import LayoutState, Settings
+from .config import LayoutState, SugiyamaOptions
 from .digraph import DiGraph, LayoutGraph
-from .graph import Cluster, ClusterGraph, Kind, Node
+from .model import Cluster, ClusterGraph, Kind, Node
 
 if TYPE_CHECKING:
     from .stacking import NodeStack
@@ -101,14 +101,14 @@ class Layout:
         return self.CG.state
 
     @property
-    def settings(self) -> Settings:
-        return self.CG.state.settings
+    def options(self) -> SugiyamaOptions:
+        return self.CG.state.options
 
 
 type StepFunction = Callable[[Layout], None]
 
 
-def _always(settings: Settings) -> bool:
+def _always(options: SugiyamaOptions) -> bool:
     return True
 
 
@@ -118,8 +118,8 @@ class Step:
 
     name: str
     run: StepFunction
-    enabled: Callable[[Settings], bool] = _always
-    """Whether the step runs under the given settings."""
+    enabled: Callable[[SugiyamaOptions], bool] = _always
+    """Whether the step runs under the given options."""
     phase: Phase | None = None
     """The phase this step is, if it is one of the four."""
     requires: frozenset[Fact] = frozenset()
@@ -178,13 +178,13 @@ class Pipeline:
     def remove(self, name: str) -> None:
         del self.steps[self.index(name)]
 
-    def check(self, settings: Settings | None = None) -> None:
+    def check(self, options: SugiyamaOptions | None = None) -> None:
         """Raise :class:`PipelineError` unless every step that runs under
-        *settings* finds what it requires provided by the steps before."""
-        settings = settings or Settings()
+        *options* finds what it requires provided by the steps before."""
+        options = options or SugiyamaOptions()
         facts: set[Fact] = set()
         for step in self.steps:
-            if not step.enabled(settings):
+            if not step.enabled(options):
                 continue
             missing = step.requires - facts
             if missing:
@@ -205,11 +205,11 @@ class Pipeline:
     ) -> None:
         """Run the steps on *layout*. With *verify*, check after every step
         that the graph is what the steps so far say it is."""
-        settings = layout.settings
-        self.check(settings)
+        options = layout.options
+        self.check(options)
         facts: set[Fact] = set()
         for step in self.steps:
-            if not step.enabled(settings):
+            if not step.enabled(options):
                 continue
             start = time.perf_counter()
             step.run(layout)

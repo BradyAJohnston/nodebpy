@@ -27,9 +27,13 @@ dummy nodes) in a column: bundles of long links routed past a column pack
 much tighter than nodes, as reroute dots do in hand-made trees."""
 
 
-def frame_padding() -> float:
-    """Room between a frame's border and its members."""
-    return 1.5 * 20.0
+FRAME_PADDING = 30.0
+"""Room between a frame's border and the nodes in it (``NODE_FRAME_MARGIN``)."""
+
+
+def frame_label_room(label: str, label_size: float) -> float:
+    """Extra room a frame's label takes above the nodes in it."""
+    return label_size * 1.25 - FRAME_PADDING / 2 if label else 0.0
 
 
 def group_by[T1: Hashable, T2: Hashable](

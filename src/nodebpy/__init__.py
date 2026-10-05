@@ -1,7 +1,7 @@
 from . import builder, export, live, nodes, types
 from .builder import (
+    SIMPLE_OPTIONS,
     ArrangeMethod,
-    SimpleOptions,
     SugiyamaOptions,
     TreeBuilder,
     arrange,
@@ -12,9 +12,9 @@ from .nodes import compositor, geometry, shader
 from .types import Default
 
 __all__ = [
+    "SIMPLE_OPTIONS",
     "ArrangeMethod",
     "Default",
-    "SimpleOptions",
     "SugiyamaOptions",
     "TreeBuilder",
     "arrange",

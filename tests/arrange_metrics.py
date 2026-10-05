@@ -29,7 +29,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from nodebpy.layout.common import frame_padding
+from nodebpy.layout.common import FRAME_PADDING
 from nodebpy.layout.dna import bNode, bNodeLink, bNodeSocket, bNodeTree
 from nodebpy.layout.priority import is_flow_socket, zone_spine
 
@@ -260,7 +260,7 @@ def frame_rects(tree: bNodeTree) -> dict[bNode, Rect]:
                 boxes.append(box)
         if not boxes:
             return None
-        padding = frame_padding()
+        padding = FRAME_PADDING
         label_room = 0.0
         if frame.label:
             label_room = float(frame.label_size) + _FRAME_LABEL_PADDING

@@ -6,7 +6,7 @@ from __future__ import annotations
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeSocket, NodeTree
 
-from .common import frame_padding
+from .common import FRAME_PADDING, frame_label_room
 from .dna import bNodeSocket
 from .edits import (
     AddLink,
@@ -19,7 +19,7 @@ from .edits import (
     RestoreMultiInputOrder,
 )
 from .extract import Binding
-from .utils import abs_loc, dimensions, get_bottom, get_top, move
+from .node_size import dimensions, get_bottom, get_top
 
 
 def _restore_multi_input_order(
@@ -62,38 +62,29 @@ def _restore_multi_input_order(
         as_links[output].swap_multi_input_sort_id(other)
 
 
-def _fit_frame(ntree: NodeTree, frame: BlenderNode, members: list[BlenderNode]) -> None:
+def _fit_frame(frame: BlenderNode, members: list[BlenderNode]) -> None:
     """Size and place *frame* around *members* (the nodes in it), leaving its
     Shrink setting as the user had it. Blender only refits a frame itself
     when Shrink is on and a node editor draws it."""
     boxes = []
     for node in members:
-        x = abs_loc(node).x
-        boxes.append((x, get_bottom(node), x + dimensions(node).x, get_top(node)))
-    padding = frame_padding()
-    label = getattr(frame, "label_size", 20) * 1.25 if frame.label else 0.0
-    left = min(b[0] for b in boxes) - padding
-    bottom = min(b[1] for b in boxes) - padding
-    right = max(b[2] for b in boxes) + padding
-    top = max(b[3] for b in boxes) + padding + label
+        x = node.location_absolute.x
+        boxes.append((x, get_bottom(node), x + dimensions(node)[0], get_top(node)))
+    label = frame_label_room(frame.label, getattr(frame, "label_size", 20))
+    left = min(b[0] for b in boxes) - FRAME_PADDING
+    bottom = min(b[1] for b in boxes) - FRAME_PADDING
+    right = max(b[2] for b in boxes) + FRAME_PADDING
+    top = max(b[3] for b in boxes) + FRAME_PADDING + label
 
-    # What is in a frame is placed relative to it: take its children out
-    # while it moves, so they stay where the layout put them.
-    children = [node for node in ntree.nodes if node.parent == frame]
-    for node in children:
-        node.parent = None
-    outer = abs_loc(frame) - frame.location
-    frame.location = (left - outer.x, top - outer.y)
+    # (Moving a frame by its absolute location leaves its nodes in place.)
+    frame.location_absolute = (left, top)
     frame.width = right - left
     frame.height = top - bottom
-    for node in children:
-        node.parent = frame
 
 
 def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
     """Make the edits of *result* to *ntree*, in order. *binding* comes from
     the :func:`~.extract.extract` call that produced the layout's input."""
-    nodes: list[BlenderNode] = list(ntree.nodes)
 
     def bpy_socket(socket: bNodeSocket | None) -> NodeSocket | None:
         return None if socket is None else binding.socket(socket)
@@ -102,7 +93,6 @@ def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
         match edit:
             case RemoveNode(node=data):
                 node = binding.nodes.pop(data)
-                nodes.remove(node)
                 ntree.nodes.remove(node)
 
             case AddReroute(node=data):
@@ -110,7 +100,6 @@ def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
                 assert reroute is not None
                 if data.parent is not None:
                     reroute.parent = binding.nodes[data.parent]
-                nodes.append(reroute)
                 binding.nodes[data] = reroute
 
             case AddLink(fromsock=fromsock, tosock=tosock):
@@ -138,16 +127,12 @@ def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
 
             case MoveNode(node=data, top_left=(left, top), parent=parent):
                 node = binding.nodes[data]
-                # Optimization: avoid using bpy.ops for as many nodes as
-                # possible (see `utils.move()`)
-                node.parent = None
-                x, y = node.location
                 # A collapsed node's box is not anchored at its location.
-                target_y = top + (abs_loc(node).y - get_top(node))
-                move(node, nodes, x=left - x, y=target_y - y)
+                offset = node.location_absolute.y - get_top(node)
                 node.parent = None if parent is None else binding.nodes[parent]
+                node.location_absolute = (left, top + offset)
 
             case ResizeFrame(frame=frame_data, children=children):
                 frame = binding.nodes[frame_data]
                 members = [binding.nodes[child] for child in children]
-                _fit_frame(ntree, frame, members)
+                _fit_frame(frame, members)

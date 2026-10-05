@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from collections import Counter
-from contextlib import AbstractContextManager
+from collections.abc import Iterator
+from contextlib import AbstractContextManager, contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, ClassVar, Literal, Self, TypeVar, cast
@@ -18,8 +20,8 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
-from ..layout.api import _DEFAULT_SPLIT_INPUTS, ArrangeMethod
-from ..layout.api import arrange as _arrange_nodes
+from ..layout import ArrangeMethod
+from ..layout import arrange as _arrange_nodes
 from ..types import (
     SOCKET_COMPATIBILITY,
     Default,
@@ -60,6 +62,28 @@ from .socket import (
 )
 
 _SocketT = TypeVar("_SocketT", bound=Socket)
+
+# What TreeBuilder's split_inputs=None resolves to; see `default_split_inputs`.
+_DEFAULT_SPLIT_INPUTS: ContextVar[bool] = ContextVar(
+    "nodebpy_default_split_inputs", default=False
+)
+
+
+@contextmanager
+def default_split_inputs(split: bool = True) -> Iterator[None]:
+    """Scope in which every ``TreeBuilder`` left at its default
+    ``split_inputs`` splits the Group Input node into one instance per
+    consumer node (with unused sockets hidden) on context exit.
+
+    An explicit ``split_inputs=True/False`` is unaffected, and so are trees
+    that disable auto-arrangement (as ``snapshot_positions`` dumps do).
+    """
+    token = _DEFAULT_SPLIT_INPUTS.set(split)
+    try:
+        yield
+    finally:
+        _DEFAULT_SPLIT_INPUTS.reset(token)
+
 
 # The interface ``default_input`` values Blender actually accepts at runtime,
 # per socket type (the RNA enum lists every option on every type, but

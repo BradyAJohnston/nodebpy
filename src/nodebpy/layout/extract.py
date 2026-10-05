@@ -16,7 +16,12 @@ from bpy.types import Node as BlenderNode
 from bpy.types import NodeSocket, NodeTree
 
 from .dna import bNode, bNodeSocket, bNodeTree
-from .utils import abs_loc, dimensions, get_bottom, get_top
+from .node_size import (
+    calculate_socket_offset_y,
+    dimensions,
+    get_bottom,
+    get_top,
+)
 from .zones import find_zones
 
 # -------------------------------------------------------------------
@@ -85,17 +90,6 @@ def optimize_sizes(nodes: Iterable[BlenderNode]) -> None:
 # -------------------------------------------------------------------
 
 
-def get_socket_y(socket: NodeSocket) -> float:
-    """The height at which links attach to *socket*: estimated from the
-    rows the node draws, since Python is not told where Blender drew it."""
-    node = socket.node
-    assert node is not None
-
-    from .rows import calculate_socket_offset_y
-
-    return get_top(node) + calculate_socket_offset_y(socket)
-
-
 @dataclass(eq=False, slots=True)
 class Binding:
     """Which Blender node each node of an extracted tree stands for, so the
@@ -113,7 +107,7 @@ class Binding:
 
 
 def _extract_node(node: BlenderNode) -> bNode:
-    x, y = abs_loc(node)
+    x, y = node.location_absolute
     data = bNode(
         name=node.name,
         idname=node.bl_idname,
@@ -125,7 +119,7 @@ def _extract_node(node: BlenderNode) -> bNode:
         data.label_size = getattr(node, "label_size", data.label_size)
         data.shrink = getattr(node, "shrink", data.shrink)
     else:
-        width = dimensions(node).x
+        width = dimensions(node)[0]
         data.width = width
         data.draw_bounds = (x, get_bottom(node), x + width, get_top(node))
 
@@ -179,7 +173,10 @@ def extract(ntree: NodeTree) -> tuple[bNodeTree, Binding]:
             node = socket.node
             if socket.location is None and not node.is_reroute():
                 x = node.draw_bounds[2] if socket.is_output else node.draw_bounds[0]
-                socket.location = (x, get_socket_y(bpy_socket))
+                socket.location = (
+                    x,
+                    node.draw_bounds[3] + calculate_socket_offset_y(bpy_socket),
+                )
 
     pairs = []
     for node, data in data_of.items():

@@ -13,14 +13,14 @@ from .config import LayoutState
 from .digraph import LayoutGraph, descendants, edge_dfs
 from .dna import new_reroute
 from .edits import AddLink, AddReroute, MoveNode, ResizeFrame, RestoreMultiInputOrder
-from .graph import (
+from .long_links import get_reroute_paths
+from .model import (
     Cluster,
     ClusterGraph,
     Kind,
     Node,
     Socket,
     add_dummy_edge,
-    get_reroute_paths,
     is_real,
     socket_graph,
 )
@@ -224,7 +224,7 @@ def resize_unshrunken_frame(CG: ClusterGraph, cluster: Cluster) -> None:
 
 
 def realize_layout(CG: ClusterGraph, old_center: Vec2) -> None:
-    if CG.state.settings.reroutes != "none":
+    if CG.state.options.reroutes != "none":
         realize_dummy_nodes(CG)
 
         # Only rerouting touches links, and so their order.

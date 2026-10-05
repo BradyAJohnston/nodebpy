@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """Layout of Blender node trees.
 
-:func:`arrange` is the entry: the layered (Sugiyama) layout by default, or
-the simple column arrangement. The layered layout is three stages:
+:func:`arrange` is the entry. It works in three stages:
 
 1. :func:`~.extract.extract` reads the Blender tree into plain data
    (:mod:`.dna`), with node sizes and socket positions.
@@ -14,28 +13,15 @@ the simple column arrangement. The layered layout is three stages:
 ``DESIGN.md`` beside this file explains the layout end to end.
 """
 
-from .api import (
-    ArrangeMethod,
-    SimpleOptions,
-    SugiyamaOptions,
-    arrange,
-    arrange_node_tree,
-    default_split_inputs,
-    default_sugiyama_options,
-)
-from .config import Settings
-from .simple import arrange_tree
+from .api import ArrangeMethod, arrange, default_sugiyama_options
+from .config import SIMPLE_OPTIONS, SugiyamaOptions
 from .sugiyama import sugiyama_layout
 
 __all__ = [
+    "SIMPLE_OPTIONS",
     "ArrangeMethod",
-    "Settings",
-    "SimpleOptions",
     "SugiyamaOptions",
     "arrange",
-    "arrange_node_tree",
-    "arrange_tree",
-    "default_split_inputs",
     "default_sugiyama_options",
     "sugiyama_layout",
 ]

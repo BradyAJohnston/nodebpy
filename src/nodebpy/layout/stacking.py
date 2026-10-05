@@ -20,7 +20,7 @@ from .digraph import (
     topological_sort,
     weakly_connected_components,
 )
-from .graph import (
+from .model import (
     Cluster,
     ClusterGraph,
     Edge,
@@ -139,9 +139,6 @@ def max_linear_branching(G: LayoutGraph[Node]) -> LayoutGraph[Node]:
             H.add_link(u_out[0], matching[u_out][0])
 
     return H
-
-
-_WEIGHT = "weight"
 
 
 # http://dx.doi.org/10.1016/S0020-0190(02)00491-X
