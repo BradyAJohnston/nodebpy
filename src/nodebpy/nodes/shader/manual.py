@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Final, Literal
 
-from bpy.types import ShaderNodeAttribute, ShaderNodeTree
+from bpy.types import ShaderNodeAttribute
 
 from ...builder import (
     ArrangeMethod,
@@ -45,18 +45,7 @@ __all__ = [
     "tree",
 ]
 
-
-def tree(
-    name: str = "Shader Nodes",
-    *,
-    collapse: bool = False,
-    arrange: ArrangeMethod = "sugiyama",
-    fake_user: bool = False,
-    clear: bool = False,
-) -> TreeBuilder[ShaderNodeTree]:
-    return TreeBuilder.shader(
-        name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
-    )
+tree: Final = TreeBuilder.shader
 
 
 def material(
@@ -65,9 +54,10 @@ def material(
     collapse: bool = False,
     arrange: ArrangeMethod = "sugiyama",
     fake_user: bool = False,
+    clear: bool = False,
 ) -> MaterialBuilder:
     return MaterialBuilder(
-        name, collapse=collapse, arrange=arrange, fake_user=fake_user
+        name, collapse=collapse, arrange=arrange, fake_user=fake_user, clear=clear
     )
 
 
@@ -200,7 +190,7 @@ class Attribute(BaseNode):
     def attribute_type(
         self,
         value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"],
-    ):
+    ) -> None:
         self.node.attribute_type = value
 
     @property
@@ -208,5 +198,5 @@ class Attribute(BaseNode):
         return self.node.attribute_name
 
     @attribute_name.setter
-    def attribute_name(self, value: str):
+    def attribute_name(self, value: str) -> None:
         self.node.attribute_name = value

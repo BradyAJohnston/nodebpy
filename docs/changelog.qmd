@@ -2,13 +2,115 @@
 title: Changelog
 ---
 
-## 530.0.0 - 2026-09-20
+## Unreleased
 
 ### Enhancements
 
 - **Blender 5.3 (alpha)** — `bpy` tracks the 5.3 daily builds from the [dailybpy](https://bradyajohnston.github.io/dailybpy) index and the node classes and bundled-essentials asset APIs were regenerated against it. New nodes: `Comment` (every tree), `CombineList`, `GetVectorComponent`, `GridSolvePoisson`, `GridTopologyBoolean`, `DeactivateVoxels`, `ImportSpz`, `RasterizePoints`, `SetPointCloudType`, `GeometryMaterials`, `NurbsOrder`, `NurbsWeight`, the Grease Pencil attribute inputs (`GreasePencilColor`, `GreasePencilOpacity`, `GreasePencilDrawTime`, `GreasePencilFillID`, `GreasePencilStrokeSoftness`, `GreasePencilStrokeVisibility`) and the EEVEE light shader nodes (`LightEvaluation`, `LightInfo`, `LightAccumulation`, `ShadowRaycast`). Shader trees gained `Switch` / `IndexSwitch`, compositor trees `Compare` / `GetBundleItem` / `StoreBundleItem`, and the shader `Attribute` node its new `light()` attribute type.
 - Merge Layers, Set Grease Pencil Color and Set Grease Pencil Depth take their mode as a Menu socket in 5.3; the generator now skips the deprecated enum properties Blender keeps alongside, which previously collided with the socket parameter.
 - `allow_usage_in_scene_compositor_effect` joined the round-tripped tree-level properties.
+- **`nodebpy` command** — the asset CLI is now a `nodebpy` console script (also `python -m nodebpy`): `nodebpy dump`, `build`, `ensure`, `check` and `plot`. `nodebpy dump --api-only` writes the typed asset classes alone, one module per asset with no recipe (formerly the flag-based `python -m nodebpy.assets [-b … -o …]`); `--no-docstrings` keeps them terse. Under a full Blender, run `blender -b -P .../nodebpy/__main__.py -- <subcommand>`.
+- **`nodebpy textconv`** — prints a `.blend`'s assets as their dumped Python source, so git can diff asset libraries: set `*.blend diff=blend` in `.gitattributes` and `git config diff.blend.textconv "nodebpy textconv"`. Git LFS pointers are smudged automatically.
+
+The layout behind `arrange(tree)`, the default arrangement of `TreeBuilder`, was reworked. **Arranged trees will look different.**
+
+- **A straight trunk.** The links that carry a tree's main data (geometry, shader, bundle, closure) are aligned first, so a chain of geometry nodes is one flat row. Each zone is a row with its node tops level. Group Output nodes go in the last column. `SugiyamaOptions(straighten_trunk=False, pin_group_output=False)` turns these off.
+- **Feeders sit by what they feed.** A node whose links all go to one node is placed level with that node, or as close as its column allows, instead of being left part of the way across a frame.
+- **Unconnected parts are laid out apart.** A second group of nodes, or a frame holding only a note, goes beneath the main graph instead of among its columns (`pack_components`).
+- **Deterministic.** The same tree and options always give the same layout. `seed` picks a different one.
+- **On the grid.** Arranged nodes land on the node editor's grid, as Blender's Snap puts them when moved by hand, and the nodes of a column are whole grid steps apart. `SugiyamaOptions(snap_to_grid=False)` turns it off, which `socket_alignment` needs to make links exactly straight.
+- **Reroutes only where needed.** `reroutes="blocked"` adds reroutes only to links that would be drawn across a node, and keeps the reroutes already in the tree. `"all"` routes every long link. The default `"none"` only moves nodes.
+- **Arrange the selection.** `arrange(tree, selected_only=True)` arranges the selected nodes among themselves. The others do not move.
+- **No `networkx` needed.** `arrange()` always gives the layered layout.
+- **Faster dumps.** `nodebpy dump` and `textconv` take about half the time on a large library: modules are formatted side by side, and the probes of fresh trees, float formatting and name normalisation are cached for the dump.
+- **Faster.** Node locations are written in one call instead of one at a time, and the slow steps of the layout were reworked. A 600-node tree arranges in under a second instead of two and a half.
+
+The design is described in `src/nodebpy/layout/DESIGN.md`.
+
+### Deprecations
+
+- The `python -m nodebpy.assets` entry point is deprecated and will be removed in nodebpy 530. It forwards to `nodebpy` with a `FutureWarning`: subcommands unchanged (`nodebpy dump …`), the flag-based form to `nodebpy dump --api-only …`. Regenerating nodebpy's own essentials classes moved to `python -m gen`. The `nodebpy.assets` module itself is unaffected.
+- Dumped sources now name `nodebpy build` in their header comment. Re-dump checked-in sources after upgrading, or `nodebpy check` reports them as differing.
+
+### Fixes
+
+- A chain of collapsed Math nodes that nothing else links to crashed the layout.
+- A chain or column of a thousand or more nodes hit the recursion limit.
+- The layout reseeded Python's global `random` generator.
+- A frame with Shrink off was left with Shrink on.
+- A frame's nodes could be left apart in a column, with another node between them.
+- Links that Blender marks invalid but still draws were ignored.
+- With reroutes on, reroutes that lead nowhere or come from nowhere were deleted.
+
+### Breaking Changes
+
+- `SugiyamaOptions` fields are now `margin`, `direction`, `socket_alignment`, `reroutes`, `stack_collapsed`, `fit_collapsed_widths`, `straighten_trunk`, `pin_group_output`, `pin_group_input`, `frames_as_stages`, `balance_heights`, `pack_components`, `seed`, `snap_to_grid`.
+- `optimize_sizes` is renamed `fit_collapsed_widths` and `sequential_frames` is renamed `frames_as_stages`. The asset build's `--optimize-sizes` and `--no-sequential-frames` flags keep their names.
+- `add_reroutes=True` becomes `reroutes="all"`. `build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.
+- Removed: `iterations`, `stack_margin_y_fac`, `reroute_margin_y_fac`, `balance_aspect`, `keep_reroutes_outside_frames`. The asset build still accepts their flags and ignores them.
+- `SimpleOptions` and `arrange_tree` are removed. `arrange(tree, "simple")` now uses the layered layout with the `SIMPLE_OPTIONS` preset.
+- `nodebpy.builder.layout` and `nodebpy.lib.nodearrange` are now `nodebpy.layout`.
+- Collapsed nodes are sized as Blender draws them.
+- Socket positions are always estimated. `ctypes` is not used.
+- The `networkx` extra (`nodebpy[networkx]`) is now empty and deprecated; it is kept so existing installs keep resolving.
+- `to_python` raises `ValueError` for a tree whose links form a cycle. It previously raised a `networkx` error, or silently left the nodes on the cycle out when `networkx` was not installed.
+
+## 520.31.0 - 2026-09-29
+
+### Enhancements
+
+- **Generic custom groups** — a `CustomGeometryGroup` (or shader/compositor group) can now build a different inner tree per instance, e.g. one per data type. Override `_group_name()` to name each variant's tree from state set before `super().__init__()`; each variant is built once and reused. Combined with a generic class (`class MyGroup[T](CustomGeometryGroup)`) and typed factories returning `MyGroup[FloatSocket]`, `node.i.value` narrows like the built-in `GetBundleItem.float()`.
+
+### Breaking Changes
+
+- Building a group node now goes through the instance method `_create_group()` instead of the `create_group()` classmethod. Calling `create_group()` works as before, but subclasses that overrode it to customise how the tree is made should override `_create_group()` instead.
+
+### Fixes
+
+- `>>` into a group node whose matching input is inactive at its current values (a group input only used behind an internal switch, such as a fade at `0`) now links to it, like the UI allows, instead of raising `SocketError`. Active inputs are still preferred, so `>>` into a Switch keeps linking to the branch in use.
+
+## 520.30.2 - 2026-09-29
+
+### Fixes
+
+- When several factory methods fit a node, `to_python` now prefers one setting the data type (`data_type`, `socket_type`, `input_type`), so `g.GetBundleItem.float(..., structure_type="SINGLE")` is no longer emitted as `g.GetBundleItem.single(...)`.
+
+## 520.30.1 - 2026-09-29
+
+### Fixes
+
+- Codegen for `g.DeleteGeometry.edge(selection=g.EdgeLength() > 0.5)` was emitting as `g.DeleteGeometry.all(selection=g.EdgeLength() > 0.5, domain="EDGE")`. Tweaked that when there is a tie between property classmethod usage, the option which includes less arguments wins. Potential in the future to have only classmethods for single properties on each node though, but that's a broader design questions.
+
+## 520.30.0 - 2026-09-28
+
+### Enhancements
+
+- **`Default` spells an input's fallback** — Blender lets an input read an implicit field or a context value when nothing is connected (a group interface's *Default Input*, or a built-in such as Set Position's *Position*), hiding the stored value. `nodebpy.Default` mirrors the default-input identifiers (`Default.POSITION`, `Default.ID_OR_INDEX`, `Default.SELF_OBJECT`, …). Generated asset classes use them as parameter defaults (`id: InputInteger = Default.ID_OR_INDEX`) and say in the docstring what the input reads when unconnected; inputs with a *Default Attribute* keep their stored value and the docstring notes the attribute a modifier input reads. Passing a member to any node constructor leaves the socket untouched, like `None`, and `to_python` treats such a default as "nothing to export". The `tree.inputs.*` factories accept the members for `default_input=` alongside the identifier strings. Built-in node inputs whose value Blender hides (`hide_value`: Set Position's *Position*, every *Selection*, …) now default to `None` instead of advertising a value Blender never shows.
+- **Factory methods take node properties** — generated factory methods accept the node's other properties as keyword-only arguments (`g.NoiseTexture.fbm(normalize=True, noise_dimensions="4D")`, `g.Math.add(a, b, use_clamp=True)`). Properties Blender only shows for some variants are only offered on those variants, and `to_python` passes non-default properties through the factory (`g.Math.multiply(use_clamp=True)`).
+- **Rebuild materials in place** — `s.material(name, clear=True)` rebuilds an existing material and keeps the datablock. `TreeBuilder(..., clear=True)` now also keeps Geometry Nodes modifier input values, matched by socket name.
+- **Typed package** — nodebpy ships `py.typed`, and the wheel is checked with mypy (strict), pyright, basedpyright, pyrefly and ty.
+- A float or integer socket combined with a 3-tuple now uses Vector Math (Scale for multiply) instead of raising.
+- `g.tree` / `s.tree` / `c.tree` are now `TreeBuilder.geometry` / `.shader` / `.compositor` themselves, so they take every option those do (`split_inputs`, `fake_user`, …).
+- `ColorRamp` accepts flat `(position, r, g, b, a)` items, so an `(N, 5)` numpy array works like `FloatCurve`'s `(N, 2)`.
+
+### Breaking Changes
+
+- Shader `Mix` variants take `(factor, a, b)`, so positional `s.Mix.color(f, x)` now sets A instead of B. The geometry `Mix` is now generated.
+- Factory and parameter renames: `input_4x4_matrix` factories are now `matrix`, `GaborTexture.type_2d` / `type_3d`, and variant parameters drop type suffixes and `_001` counters (`MapRange.vector(from_min, …)`, `TrimCurve.length(start, end)`). The leaked `face_corner` / `input_4x4_matrix` factories on field nodes are removed.
+- `ColorRamp`'s `color_interpolation` defaults to `LINEAR` to match Blender, and `items` defaults to Blender's black-to-white stops; empty `items` raises `ValueError`.
+- `FloatCurve`'s `items` defaults to Blender's `((0.0, 0.0), (1.0, 1.0))`; fewer than two items raises `ValueError`.
+- `g.tree()`'s default name is now `"Geometry Nodes"` (was `"Geometry Node Group"`), matching Blender.
+- New materials start empty instead of with a Principled BSDF and Material Output.
+- The broken `nodebpy` console script is removed.
+
+### Fixes
+
+- **Deterministic arrangement** — the Sugiyama arranger iterated sets ordered by memory address (layout nodes hashed by `id()`, bpy sockets by pointer), so the same tree could get different node locations, link order and multi-input sort ids from one run to the next. Arrangement is now reproducible, and an asset library built twice from the same sources differs only in the fields Blender itself randomises per session.
+- **Color Ramp stops** — `ColorRamp(items=...)` with more than two stops left them out of position order, and `to_python` dropped a ramp's stops and interpolation settings. Both now round-trip.
+- **Float Curve points** — `FloatCurve(items=...)` left unsorted points out of x order and kept added points selected, so a later mapping update clamped only those to the clip range. Points are now sorted and deselected, and `to_python` exports them as `items=` like `ColorRamp`, with the mapping's other settings and any point selection written after the constructor.
+- Generated variants keep sockets Blender marks inactive only because of current values (Mix's A at Factor 1.0).
+- The `.default_value` error on an output socket now says an input socket is needed.
+
 ## 520.29.0 - 2026-09-20
 
 ### Fixes

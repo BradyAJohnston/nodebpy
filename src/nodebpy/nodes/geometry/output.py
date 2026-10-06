@@ -42,51 +42,51 @@ class Viewer(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def auto(cls) -> "Viewer":
+    def auto(cls, *, ui_shortcut: int = 0) -> "Viewer":
         """Create Viewer with operation 'Auto'."""
-        return cls(domain="AUTO")
+        return cls(domain="AUTO", ui_shortcut=ui_shortcut)
 
     @classmethod
-    def point(cls) -> "Viewer":
-        """Create Viewer with operation 'Point'. Vertex or point"""
-        return cls(domain="POINT")
+    def point(cls, *, ui_shortcut: int = 0) -> "Viewer":
+        """Create Viewer with operation 'Point'. Attribute on point"""
+        return cls(domain="POINT", ui_shortcut=ui_shortcut)
 
     @classmethod
-    def edge(cls) -> "Viewer":
-        """Create Viewer with operation 'Edge'. Mesh edge"""
-        return cls(domain="EDGE")
+    def edge(cls, *, ui_shortcut: int = 0) -> "Viewer":
+        """Create Viewer with operation 'Edge'. Attribute on mesh edge"""
+        return cls(domain="EDGE", ui_shortcut=ui_shortcut)
 
     @classmethod
-    def face(cls) -> "Viewer":
-        """Create Viewer with operation 'Face'. Mesh face"""
-        return cls(domain="FACE")
+    def face(cls, *, ui_shortcut: int = 0) -> "Viewer":
+        """Create Viewer with operation 'Face'. Attribute on mesh faces"""
+        return cls(domain="FACE", ui_shortcut=ui_shortcut)
 
     @classmethod
-    def face_corner(cls) -> "Viewer":
-        """Create Viewer with operation 'Face Corner'. Mesh face corner"""
-        return cls(domain="CORNER")
+    def face_corner(cls, *, ui_shortcut: int = 0) -> "Viewer":
+        """Create Viewer with operation 'Face Corner'. Attribute on mesh face corner"""
+        return cls(domain="CORNER", ui_shortcut=ui_shortcut)
 
     @classmethod
-    def spline(cls) -> "Viewer":
-        """Create Viewer with operation 'Spline'."""
-        return cls(domain="CURVE")
+    def spline(cls, *, ui_shortcut: int = 0) -> "Viewer":
+        """Create Viewer with operation 'Spline'. Attribute on spline"""
+        return cls(domain="CURVE", ui_shortcut=ui_shortcut)
 
     @classmethod
-    def instance(cls) -> "Viewer":
-        """Create Viewer with operation 'Instance'."""
-        return cls(domain="INSTANCE")
+    def instance(cls, *, ui_shortcut: int = 0) -> "Viewer":
+        """Create Viewer with operation 'Instance'. Attribute on instance"""
+        return cls(domain="INSTANCE", ui_shortcut=ui_shortcut)
 
     @classmethod
-    def layer(cls) -> "Viewer":
-        """Create Viewer with operation 'Layer'. Grease Pencil layer"""
-        return cls(domain="LAYER")
+    def layer(cls, *, ui_shortcut: int = 0) -> "Viewer":
+        """Create Viewer with operation 'Layer'. Attribute on Grease Pencil layer"""
+        return cls(domain="LAYER", ui_shortcut=ui_shortcut)
 
     @property
     def ui_shortcut(self) -> int:
         return self.node.ui_shortcut
 
     @ui_shortcut.setter
-    def ui_shortcut(self, value: int):
+    def ui_shortcut(self, value: int) -> None:
         self.node.ui_shortcut = value
 
     @property
@@ -103,5 +103,5 @@ class Viewer(BaseNode):
         value: Literal[
             "AUTO", "POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"
         ],
-    ):
+    ) -> None:
         self.node.domain = value

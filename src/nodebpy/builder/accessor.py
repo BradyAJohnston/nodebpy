@@ -180,6 +180,21 @@ class SocketAccessor:
             s for s in self._collection if self._ignore_visibility or s.is_icon_visible
         ]
 
+    @property
+    def _inactive_fallback(self) -> list[NodeSocket]:
+        """Inactive inputs that may still be linked, for when no active input
+        fits. Only nodes on the ``_allow_innactive_sockets`` allowlist qualify:
+        a group input used behind an internal switch (``FadeGeometry(fade=0)``)
+        polls inactive but is still shown and linkable in the UI.
+        """
+        if self._direction != "input" or not _allow_innactive_sockets(self._node):
+            return []
+        return [
+            s
+            for s in self._collection
+            if s.is_inactive and s.is_icon_visible and (not s.links or s.is_multi_input)
+        ]
+
     def _best_match(self, socket_type: str) -> NodeSocket:
         """Find the best compatible socket for the given type."""
         from ..types import SOCKET_COMPATIBILITY

@@ -124,7 +124,7 @@ class CombineColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 
@@ -535,7 +535,7 @@ class IndexSwitch[T](BaseNode):
             "BUNDLE",
             "CLOSURE",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -703,30 +703,143 @@ class Mix(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def float(cls, factor: InputFloat = 1.0, b: InputFloat = 0.0) -> "Mix":
+    def float(
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        *,
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
+    ) -> "Mix":
         """Create Mix with operation 'Float'."""
-        return cls(data_type="FLOAT", factor_float=factor, b_float=b)
+        return cls(
+            data_type="FLOAT",
+            factor_float=factor,
+            a_float=a,
+            b_float=b,
+            factor_mode=factor_mode,
+            blend_type=blend_type,
+            clamp_factor=clamp_factor,
+            clamp_result=clamp_result,
+        )
 
     @classmethod
     def vector(
-        cls, factor: InputFloat = 1.0, b: InputVector = (0.0, 0.0, 0.0)
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputVector = (0.0, 0.0, 0.0),
+        b: InputVector = (0.0, 0.0, 0.0),
+        *,
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Vector'."""
-        return cls(data_type="VECTOR", factor_float=factor, b_vector=b)
+        return cls(
+            data_type="VECTOR",
+            factor_float=factor,
+            a_vector=a,
+            b_vector=b,
+            factor_mode=factor_mode,
+            blend_type=blend_type,
+            clamp_factor=clamp_factor,
+            clamp_result=clamp_result,
+        )
 
     @classmethod
     def color(
-        cls, factor: InputFloat = 1.0, b_color: InputColor = (0.5, 0.5, 0.5, 1.0)
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputColor = (0.5, 0.5, 0.5, 1.0),
+        b: InputColor = (0.5, 0.5, 0.5, 1.0),
+        *,
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
     ) -> "Mix":
         """Create Mix with operation 'Color'."""
-        return cls(data_type="RGBA", factor_float=factor, b_color=b_color)
+        return cls(
+            data_type="RGBA",
+            factor_float=factor,
+            a_color=a,
+            b_color=b,
+            factor_mode=factor_mode,
+            blend_type=blend_type,
+            clamp_factor=clamp_factor,
+            clamp_result=clamp_result,
+        )
 
     @property
     def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA"]:
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA"]):
+    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA"]) -> None:
         self.node.data_type = value
 
     @property
@@ -734,7 +847,7 @@ class Mix(BaseNode):
         return self.node.factor_mode
 
     @factor_mode.setter
-    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]):
+    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]) -> None:
         self.node.factor_mode = value
 
     @property
@@ -787,7 +900,7 @@ class Mix(BaseNode):
             "COLOR",
             "VALUE",
         ],
-    ):
+    ) -> None:
         self.node.blend_type = value
 
     @property
@@ -795,7 +908,7 @@ class Mix(BaseNode):
         return self.node.clamp_factor
 
     @clamp_factor.setter
-    def clamp_factor(self, value: bool):
+    def clamp_factor(self, value: bool) -> None:
         self.node.clamp_factor = value
 
     @property
@@ -803,7 +916,7 @@ class Mix(BaseNode):
         return self.node.clamp_result
 
     @clamp_result.setter
-    def clamp_result(self, value: bool):
+    def clamp_result(self, value: bool) -> None:
         self.node.clamp_result = value
 
 
@@ -929,7 +1042,7 @@ class SeparateColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 

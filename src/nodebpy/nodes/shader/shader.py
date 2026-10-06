@@ -9,7 +9,6 @@ from ...builder.socket import (
     BooleanSocket,
     ColorSocket,
     FloatSocket,
-    IntegerSocket,
     ShaderSocket,
     VectorSocket,
 )
@@ -17,7 +16,6 @@ from ...types import (
     InputBoolean,
     InputColor,
     InputFloat,
-    InputInteger,
     InputShader,
     InputVector,
 )
@@ -201,7 +199,7 @@ class DiffuseBSDF(BaseNode):
         self,
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
         roughness: InputFloat = 0.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         weight: InputFloat = 0.0,
     ):
         super().__init__()
@@ -287,16 +285,10 @@ class GlassBSDF(BaseNode):
         Color
     roughness : InputFloat
         Roughness
-    anisotropy : InputFloat
-        Anisotropy
-    rotation : InputFloat
-        Rotation
     ior : InputFloat
         IOR
     normal : InputVector
         Normal
-    tangent : InputVector
-        Tangent
     weight : InputFloat
         Weight
     thin_film_thickness : InputFloat
@@ -310,16 +302,10 @@ class GlassBSDF(BaseNode):
         Color
     i.roughness : FloatSocket
         Roughness
-    i.anisotropy : FloatSocket
-        Anisotropy
-    i.rotation : FloatSocket
-        Rotation
     i.ior : FloatSocket
         IOR
     i.normal : VectorSocket
         Normal
-    i.tangent : VectorSocket
-        Tangent
     i.weight : FloatSocket
         Weight
     i.thin_film_thickness : FloatSocket
@@ -341,16 +327,10 @@ class GlassBSDF(BaseNode):
         """Color"""
         roughness: FloatSocket
         """Roughness"""
-        anisotropy: FloatSocket
-        """Anisotropy"""
-        rotation: FloatSocket
-        """Rotation"""
         ior: FloatSocket
         """IOR"""
         normal: VectorSocket
         """Normal"""
-        tangent: VectorSocket
-        """Tangent"""
         weight: FloatSocket
         """Weight"""
         thin_film_thickness: FloatSocket
@@ -373,11 +353,8 @@ class GlassBSDF(BaseNode):
         self,
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         roughness: InputFloat = 0.0,
-        anisotropy: InputFloat = 0.0,
-        rotation: InputFloat = 0.0,
         ior: InputFloat = 1.5,
-        normal: InputVector = (0.0, 0.0, 0.0),
-        tangent: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         weight: InputFloat = 0.0,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
@@ -388,11 +365,8 @@ class GlassBSDF(BaseNode):
         key_args = {
             "Color": color,
             "Roughness": roughness,
-            "Anisotropy": anisotropy,
-            "Rotation": rotation,
             "IOR": ior,
             "Normal": normal,
-            "Tangent": tangent,
             "Weight": weight,
             "Thin Film Thickness": thin_film_thickness,
             "Thin Film IOR": thin_film_ior,
@@ -405,7 +379,7 @@ class GlassBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]):
+    def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]) -> None:
         self.node.distribution = value
 
 
@@ -489,8 +463,8 @@ class GlossyBSDF(BaseNode):
         roughness: InputFloat = 0.5,
         anisotropy: InputFloat = 0.0,
         rotation: InputFloat = 0.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
-        tangent: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
+        tangent: InputVector = None,
         weight: InputFloat = 0.0,
         *,
         distribution: Literal[
@@ -519,7 +493,7 @@ class GlossyBSDF(BaseNode):
     @distribution.setter
     def distribution(
         self, value: Literal["BECKMANN", "GGX", "ASHIKHMIN_SHIRLEY", "MULTI_GGX"]
-    ):
+    ) -> None:
         self.node.distribution = value
 
 
@@ -597,7 +571,7 @@ class HairBSDF(BaseNode):
         offset: InputFloat = 0.0,
         roughnessu: InputFloat = 0.1,
         roughnessv: InputFloat = 1.0,
-        tangent: InputVector = (0.0, 0.0, 0.0),
+        tangent: InputVector = None,
         weight: InputFloat = 0.0,
         *,
         component: Literal["Reflection", "Transmission"] = "Reflection",
@@ -619,7 +593,7 @@ class HairBSDF(BaseNode):
         return self.node.component
 
     @component.setter
-    def component(self, value: Literal["Reflection", "Transmission"]):
+    def component(self, value: Literal["Reflection", "Transmission"]) -> None:
         self.node.component = value
 
 
@@ -665,113 +639,6 @@ class Holdout(BaseNode):
     def __init__(self, weight: InputFloat = 0.0):
         super().__init__()
         key_args = {"Weight": weight}
-
-        self._establish_links(**key_args)
-
-
-class LightAccumulation(BaseNode):
-    """
-        Adds the result of all the evaluated lights and stores each input into its respective Compositing Pass.
-    The combined result is computed as (Diffuse Light * Diffuse Color) + (Glossy Light * Glossy Color)
-
-        Parameters
-        ----------
-        lightindex : InputInteger
-            LightIndex
-        diffuse_light : InputColor
-            Diffuse Light
-        diffuse_color : InputColor
-            Diffuse Color
-        glossy_light : InputColor
-            Glossy Light
-        glossy_color : InputColor
-            Glossy Color
-        transmission_light : InputColor
-            Transmission Light
-        transmission_color : InputColor
-            Transmission Color
-        weight : InputFloat
-            Weight
-
-        Inputs
-        ------
-        i.lightindex : IntegerSocket
-            LightIndex
-        i.diffuse_light : ColorSocket
-            Diffuse Light
-        i.diffuse_color : ColorSocket
-            Diffuse Color
-        i.glossy_light : ColorSocket
-            Glossy Light
-        i.glossy_color : ColorSocket
-            Glossy Color
-        i.transmission_light : ColorSocket
-            Transmission Light
-        i.transmission_color : ColorSocket
-            Transmission Color
-        i.weight : FloatSocket
-            Weight
-
-        Outputs
-        -------
-        o.shader : ShaderSocket
-            Shader
-    """
-
-    _bl_idname = "ShaderNodeLightAccumulation"
-    node: bpy.types.ShaderNodeLightAccumulation
-
-    class _Inputs(SocketAccessor):
-        lightindex: IntegerSocket
-        """LightIndex"""
-        diffuse_light: ColorSocket
-        """Diffuse Light"""
-        diffuse_color: ColorSocket
-        """Diffuse Color"""
-        glossy_light: ColorSocket
-        """Glossy Light"""
-        glossy_color: ColorSocket
-        """Glossy Color"""
-        transmission_light: ColorSocket
-        """Transmission Light"""
-        transmission_color: ColorSocket
-        """Transmission Color"""
-        weight: FloatSocket
-        """Weight"""
-
-    class _Outputs(SocketAccessor):
-        shader: ShaderSocket
-        """Shader"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        lightindex: InputInteger = 0,
-        diffuse_light: InputColor = (0.0, 0.0, 0.0, 1.0),
-        diffuse_color: InputColor = (1.0, 1.0, 1.0, 1.0),
-        glossy_light: InputColor = (0.0, 0.0, 0.0, 1.0),
-        glossy_color: InputColor = (1.0, 1.0, 1.0, 1.0),
-        transmission_light: InputColor = (0.0, 0.0, 0.0, 1.0),
-        transmission_color: InputColor = (1.0, 1.0, 1.0, 1.0),
-        weight: InputFloat = 0.0,
-    ):
-        super().__init__()
-        key_args = {
-            "LightIndex": lightindex,
-            "Diffuse Light": diffuse_light,
-            "Diffuse Color": diffuse_color,
-            "Glossy Light": glossy_light,
-            "Glossy Color": glossy_color,
-            "Transmission Light": transmission_light,
-            "Transmission Color": transmission_color,
-            "Weight": weight,
-        }
 
         self._establish_links(**key_args)
 
@@ -889,8 +756,8 @@ class MetallicBSDF(BaseNode):
         roughness: InputFloat = 0.5,
         anisotropy: InputFloat = 0.0,
         rotation: InputFloat = 0.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
-        tangent: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
+        tangent: InputVector = None,
         weight: InputFloat = 0.0,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
@@ -925,10 +792,12 @@ class MetallicBSDF(BaseNode):
         roughness: InputFloat = 0.5,
         anisotropy: InputFloat = 0.0,
         rotation: InputFloat = 0.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
-        tangent: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
+        tangent: InputVector = None,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
+        *,
+        distribution: Literal["BECKMANN", "GGX", "MULTI_GGX"] = "MULTI_GGX",
     ) -> "MetallicBSDF":
         """Create Metallic BSDF with operation 'Physical Conductor'. Fresnel conductor based on the complex refractive index per color channel"""
         return cls(
@@ -942,6 +811,7 @@ class MetallicBSDF(BaseNode):
             tangent=tangent,
             thin_film_thickness=thin_film_thickness,
             thin_film_ior=thin_film_ior,
+            distribution=distribution,
         )
 
     @classmethod
@@ -952,10 +822,12 @@ class MetallicBSDF(BaseNode):
         roughness: InputFloat = 0.5,
         anisotropy: InputFloat = 0.0,
         rotation: InputFloat = 0.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
-        tangent: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
+        tangent: InputVector = None,
         thin_film_thickness: InputFloat = 0.0,
         thin_film_ior: InputFloat = 1.33,
+        *,
+        distribution: Literal["BECKMANN", "GGX", "MULTI_GGX"] = "MULTI_GGX",
     ) -> "MetallicBSDF":
         """Create Metallic BSDF with operation 'F82 Tint'. An approximation of the Fresnel conductor curve based on the colors at perpendicular and near-grazing (roughly 82°) angles"""
         return cls(
@@ -969,6 +841,7 @@ class MetallicBSDF(BaseNode):
             tangent=tangent,
             thin_film_thickness=thin_film_thickness,
             thin_film_ior=thin_film_ior,
+            distribution=distribution,
         )
 
     @property
@@ -976,7 +849,7 @@ class MetallicBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]):
+    def distribution(self, value: Literal["BECKMANN", "GGX", "MULTI_GGX"]) -> None:
         self.node.distribution = value
 
     @property
@@ -984,7 +857,7 @@ class MetallicBSDF(BaseNode):
         return self.node.fresnel_type
 
     @fresnel_type.setter
-    def fresnel_type(self, value: Literal["PHYSICAL_CONDUCTOR", "F82"]):
+    def fresnel_type(self, value: Literal["PHYSICAL_CONDUCTOR", "F82"]) -> None:
         self.node.fresnel_type = value
 
 
@@ -1096,10 +969,6 @@ class PrincipledBSDF(BaseNode):
         Tangent
     transmission_weight : InputFloat
         Transmission Weight
-    transmission_dispersion_scale : InputFloat
-        Transmission Dispersion Scale
-    transmission_dispersion_abbe_number : InputFloat
-        Transmission Dispersion Abbe Number
     coat_weight : InputFloat
         Coat Weight
     coat_roughness : InputFloat
@@ -1167,10 +1036,6 @@ class PrincipledBSDF(BaseNode):
         Tangent
     i.transmission_weight : FloatSocket
         Transmission Weight
-    i.transmission_dispersion_scale : FloatSocket
-        Transmission Dispersion Scale
-    i.transmission_dispersion_abbe_number : FloatSocket
-        Transmission Dispersion Abbe Number
     i.coat_weight : FloatSocket
         Coat Weight
     i.coat_roughness : FloatSocket
@@ -1246,10 +1111,6 @@ class PrincipledBSDF(BaseNode):
         """Tangent"""
         transmission_weight: FloatSocket
         """Transmission Weight"""
-        transmission_dispersion_scale: FloatSocket
-        """Transmission Dispersion Scale"""
-        transmission_dispersion_abbe_number: FloatSocket
-        """Transmission Dispersion Abbe Number"""
         coat_weight: FloatSocket
         """Coat Weight"""
         coat_roughness: FloatSocket
@@ -1294,7 +1155,7 @@ class PrincipledBSDF(BaseNode):
         ior: InputFloat = 1.5,
         alpha: InputFloat = 1.0,
         thin_wall: InputBoolean = False,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         weight: InputFloat = 0.0,
         diffuse_roughness: InputFloat = 0.0,
         subsurface_weight: InputFloat = 0.0,
@@ -1306,15 +1167,13 @@ class PrincipledBSDF(BaseNode):
         specular_tint: InputColor = (1.0, 1.0, 1.0, 1.0),
         anisotropic: InputFloat = 0.0,
         anisotropic_rotation: InputFloat = 0.0,
-        tangent: InputVector = (0.0, 0.0, 0.0),
+        tangent: InputVector = None,
         transmission_weight: InputFloat = 0.0,
-        transmission_dispersion_scale: InputFloat = 0.0,
-        transmission_dispersion_abbe_number: InputFloat = 20.0,
         coat_weight: InputFloat = 0.0,
         coat_roughness: InputFloat = 0.03,
         coat_ior: InputFloat = 1.5,
         coat_tint: InputColor = (1.0, 1.0, 1.0, 1.0),
-        coat_normal: InputVector = (0.0, 0.0, 0.0),
+        coat_normal: InputVector = None,
         sheen_weight: InputFloat = 0.0,
         sheen_roughness: InputFloat = 0.5,
         sheen_tint: InputColor = (1.0, 1.0, 1.0, 1.0),
@@ -1350,8 +1209,6 @@ class PrincipledBSDF(BaseNode):
             "Anisotropic Rotation": anisotropic_rotation,
             "Tangent": tangent,
             "Transmission Weight": transmission_weight,
-            "Transmission Dispersion Scale": transmission_dispersion_scale,
-            "Transmission Dispersion Abbe Number": transmission_dispersion_abbe_number,
             "Coat Weight": coat_weight,
             "Coat Roughness": coat_roughness,
             "Coat IOR": coat_ior,
@@ -1374,7 +1231,7 @@ class PrincipledBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["GGX", "MULTI_GGX"]):
+    def distribution(self, value: Literal["GGX", "MULTI_GGX"]) -> None:
         self.node.distribution = value
 
     @property
@@ -1389,7 +1246,7 @@ class PrincipledBSDF(BaseNode):
         value: Literal[
             "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
         ],
-    ):
+    ) -> None:
         self.node.subsurface_method = value
 
 
@@ -1548,7 +1405,7 @@ class PrincipledHairBSDF(BaseNode):
         offset: InputFloat = 0.034906585,
         random_color: InputFloat = 0.0,
         random_roughness: InputFloat = 0.0,
-        random: InputFloat = 0.0,
+        random: InputFloat = None,
         weight: InputFloat = 0.0,
         r_lobe: InputFloat = 1.0,
         tt_lobe: InputFloat = 1.0,
@@ -1587,7 +1444,7 @@ class PrincipledHairBSDF(BaseNode):
         return self.node.model
 
     @model.setter
-    def model(self, value: Literal["CHIANG", "HUANG"]):
+    def model(self, value: Literal["CHIANG", "HUANG"]) -> None:
         self.node.model = value
 
     @property
@@ -1595,7 +1452,7 @@ class PrincipledHairBSDF(BaseNode):
         return self.node.parametrization
 
     @parametrization.setter
-    def parametrization(self, value: Literal["ABSORPTION", "MELANIN", "COLOR"]):
+    def parametrization(self, value: Literal["ABSORPTION", "MELANIN", "COLOR"]) -> None:
         self.node.parametrization = value
 
 
@@ -1658,8 +1515,8 @@ class RayPortalBSDF(BaseNode):
     def __init__(
         self,
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
-        position: InputVector = (0.0, 0.0, 0.0),
-        direction: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
+        direction: InputVector = None,
         weight: InputFloat = 0.0,
     ):
         super().__init__()
@@ -1740,7 +1597,7 @@ class RefractionBSDF(BaseNode):
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         roughness: InputFloat = 0.0,
         ior: InputFloat = 1.45,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         weight: InputFloat = 0.0,
         *,
         distribution: Literal["BECKMANN", "GGX"] = "BECKMANN",
@@ -1761,7 +1618,7 @@ class RefractionBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["BECKMANN", "GGX"]):
+    def distribution(self, value: Literal["BECKMANN", "GGX"]) -> None:
         self.node.distribution = value
 
 
@@ -1826,7 +1683,7 @@ class SheenBSDF(BaseNode):
         self,
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
         roughness: InputFloat = 0.5,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         weight: InputFloat = 0.0,
         *,
         distribution: Literal["ASHIKHMIN", "MICROFIBER"] = "MICROFIBER",
@@ -1846,7 +1703,7 @@ class SheenBSDF(BaseNode):
         return self.node.distribution
 
     @distribution.setter
-    def distribution(self, value: Literal["ASHIKHMIN", "MICROFIBER"]):
+    def distribution(self, value: Literal["ASHIKHMIN", "MICROFIBER"]) -> None:
         self.node.distribution = value
 
 
@@ -1949,10 +1806,10 @@ class SpecularBSDF(BaseNode):
         roughness: InputFloat = 0.2,
         emissive_color: InputColor = (0.0, 0.0, 0.0, 1.0),
         transparency: InputFloat = 0.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         clear_coat: InputFloat = 0.0,
         clear_coat_roughness: InputFloat = 0.0,
-        clear_coat_normal: InputVector = (0.0, 0.0, 0.0),
+        clear_coat_normal: InputVector = None,
         weight: InputFloat = 0.0,
     ):
         super().__init__()
@@ -2061,7 +1918,7 @@ class SubsurfaceScattering(BaseNode):
         ior: InputFloat = 1.4,
         roughness: InputFloat = 1.0,
         anisotropy: InputFloat = 0.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         weight: InputFloat = 0.0,
         *,
         falloff: Literal[
@@ -2094,7 +1951,7 @@ class SubsurfaceScattering(BaseNode):
         value: Literal[
             "BURLEY", "RANDOM_WALK", "RANDOM_WALK_SKIN", "RANDOM_WALK_LEGACY"
         ],
-    ):
+    ) -> None:
         self.node.falloff = value
 
 
@@ -2165,7 +2022,7 @@ class ToonBSDF(BaseNode):
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
         size: InputFloat = 0.5,
         smooth: InputFloat = 0.0,
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         weight: InputFloat = 0.0,
         *,
         component: Literal["DIFFUSE", "GLOSSY"] = "DIFFUSE",
@@ -2186,7 +2043,7 @@ class ToonBSDF(BaseNode):
         return self.node.component
 
     @component.setter
-    def component(self, value: Literal["DIFFUSE", "GLOSSY"]):
+    def component(self, value: Literal["DIFFUSE", "GLOSSY"]) -> None:
         self.node.component = value
 
 
@@ -2243,7 +2100,7 @@ class TranslucentBSDF(BaseNode):
     def __init__(
         self,
         color: InputColor = (0.8, 0.8, 0.8, 1.0),
-        normal: InputVector = (0.0, 0.0, 0.0),
+        normal: InputVector = None,
         weight: InputFloat = 0.0,
     ):
         super().__init__()

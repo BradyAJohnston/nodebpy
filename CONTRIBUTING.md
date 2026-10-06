@@ -27,9 +27,8 @@ make generate
 
 which runs, in order:
 
-1. `uv run python -m nodebpy.assets` — regenerates the typed classes for Blender's bundled essentials asset libraries
-2. `uv run python -m gen` — regenerates the node classes for every tree type
-3. `make format` — `ruff format`, `ruff check --fix`, and `ty check --fix src`
+1. `uv run python -m gen` — regenerates the typed classes for Blender's bundled essentials asset libraries, then the node classes for every tree type
+2. `make format` — `ruff format`, `ruff check --fix`, and `ty check --fix src`
 
 For faster iteration you can regenerate a single tree type:
 

@@ -73,6 +73,25 @@ def test_color_shader():
             _ = s.Mix.color(0.5, mix_shader)
 
 
+@pytest.mark.parametrize(
+    "variant, a, b, a_id, b_id",
+    [
+        ("float", "a", "b", "A_Float", "B_Float"),
+        ("vector", "a", "b", "A_Vector", "B_Vector"),
+        ("color", "a", "b", "A_Color", "B_Color"),
+    ],
+)
+def test_mix_variants_take_a_and_b(variant, a, b, a_id, b_id):
+    # A is usage-inactive at the default Factor of 1.0; the variant must still
+    # expose it (it was dropped by the generator, #175)
+    with s.tree():
+        first, second = s.Value(), s.Value()
+        mix = getattr(s.Mix, variant)(0.5, **{a: first, b: second})
+        inputs = {socket.identifier: socket for socket in mix.node.inputs}
+        assert inputs[a_id].links[0].from_node == first.node
+        assert inputs[b_id].links[0].from_node == second.node
+
+
 def test_material_node_cartoon():
     with s.material("Cartoon", fake_user=True) as mat:
         mat.nodes.clear()
@@ -142,3 +161,37 @@ def test_specific_shader_nodes():
         assert sub.falloff == "RANDOM_WALK"
         sub.falloff = "BURLEY"
         assert sub.falloff == "BURLEY"
+
+
+def test_material_starts_without_default_nodes():
+    with s.material("Starts Empty") as mat:
+        s.Emission() >> s.MaterialOutput()
+    assert sorted(n.bl_idname for n in mat.material.node_tree.nodes) == [
+        "ShaderNodeEmission",
+        "ShaderNodeOutputMaterial",
+    ]
+
+
+def test_material_clear_rebuilds_in_place():
+    with s.material("Rebuilt Material") as first:
+        s.PrincipledBSDF() >> s.MaterialOutput()
+    bpy.data.objects["Cube"].data.materials.append(first.material)
+
+    with s.material("Rebuilt Material", clear=True) as second:
+        s.Emission() >> s.MaterialOutput()
+
+    assert second.material == first.material
+    assert bpy.data.materials.get("Rebuilt Material.001") is None
+    assert bpy.data.objects["Cube"].data.materials[-1] == second.material
+    assert "ShaderNodeBsdfPrincipled" not in {
+        n.bl_idname for n in second.material.node_tree.nodes
+    }
+
+
+def test_material_without_clear_creates_a_new_material():
+    with s.material("Not Cleared Material") as first:
+        pass
+    with s.material("Not Cleared Material") as second:
+        pass
+    assert second.material != first.material
+    assert second.material.name == "Not Cleared Material.001"

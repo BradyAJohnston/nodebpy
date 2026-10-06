@@ -148,7 +148,7 @@ class DialGizmo(BaseNode):
 
     def __init__(
         self,
-        value: InputFloat = 0.0,
+        value: InputFloat = None,
         position: InputVector = (0.0, 0.0, 0.0),
         up: InputVector = (0.0, 0.0, 1.0),
         screen_space: InputBoolean = True,
@@ -172,7 +172,7 @@ class DialGizmo(BaseNode):
         return self.node.color_id
 
     @color_id.setter
-    def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]):
+    def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]) -> None:
         self.node.color_id = value
 
 
@@ -223,7 +223,7 @@ class EnableOutput[T](BaseNode):
     def __init__(
         self,
         enable: InputBoolean = False,
-        value: InputAny = 0.0,
+        value: InputAny = None,
         *,
         data_type: Literal[
             "FLOAT",
@@ -253,42 +253,42 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def float(
-        cls, enable: InputBoolean = False, value: InputFloat = 0.0
+        cls, enable: InputBoolean = False, value: InputFloat = None
     ) -> "EnableOutput[FloatSocket]":
         """Create Enable Output with operation 'Float'."""
         return EnableOutput(data_type="FLOAT", enable=enable, value=value)
 
     @classmethod
     def integer(
-        cls, enable: InputBoolean = False, value: InputInteger = 0
+        cls, enable: InputBoolean = False, value: InputInteger = None
     ) -> "EnableOutput[IntegerSocket]":
         """Create Enable Output with operation 'Integer'."""
         return EnableOutput(data_type="INT", enable=enable, value=value)
 
     @classmethod
     def boolean(
-        cls, enable: InputBoolean = False, value: InputBoolean = False
+        cls, enable: InputBoolean = False, value: InputBoolean = None
     ) -> "EnableOutput[BooleanSocket]":
         """Create Enable Output with operation 'Boolean'."""
         return EnableOutput(data_type="BOOLEAN", enable=enable, value=value)
 
     @classmethod
     def vector(
-        cls, enable: InputBoolean = False, value: InputVector = (0.0, 0.0, 0.0)
+        cls, enable: InputBoolean = False, value: InputVector = None
     ) -> "EnableOutput[VectorSocket]":
         """Create Enable Output with operation 'Vector'."""
         return EnableOutput(data_type="VECTOR", enable=enable, value=value)
 
     @classmethod
     def color(
-        cls, enable: InputBoolean = False, value: InputColor = (0.8, 0.8, 0.8, 1.0)
+        cls, enable: InputBoolean = False, value: InputColor = None
     ) -> "EnableOutput[ColorSocket]":
         """Create Enable Output with operation 'Color'."""
         return EnableOutput(data_type="RGBA", enable=enable, value=value)
 
     @classmethod
     def rotation(
-        cls, enable: InputBoolean = False, value: InputRotation = (0.0, 0.0, 0.0)
+        cls, enable: InputBoolean = False, value: InputRotation = None
     ) -> "EnableOutput[RotationSocket]":
         """Create Enable Output with operation 'Rotation'."""
         return EnableOutput(data_type="ROTATION", enable=enable, value=value)
@@ -302,7 +302,7 @@ class EnableOutput[T](BaseNode):
 
     @classmethod
     def string(
-        cls, enable: InputBoolean = False, value: InputString = ""
+        cls, enable: InputBoolean = False, value: InputString = None
     ) -> "EnableOutput[StringSocket]":
         """Create Enable Output with operation 'String'."""
         return EnableOutput(data_type="STRING", enable=enable, value=value)
@@ -425,7 +425,7 @@ class EnableOutput[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -450,7 +450,7 @@ class GroupInput(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -489,7 +489,7 @@ class GroupOutput(BaseNode):
         return self.node.is_active_output
 
     @is_active_output.setter
-    def is_active_output(self, value: bool):
+    def is_active_output(self, value: bool) -> None:
         self.node.is_active_output = value
 
 
@@ -545,7 +545,7 @@ class LinearGizmo(BaseNode):
 
     def __init__(
         self,
-        value: InputFloat = 0.0,
+        value: InputFloat = None,
         position: InputVector = (0.0, 0.0, 0.0),
         direction: InputVector = (0.0, 0.0, 1.0),
         *,
@@ -563,7 +563,7 @@ class LinearGizmo(BaseNode):
         return self.node.color_id
 
     @color_id.setter
-    def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]):
+    def color_id(self, value: Literal["PRIMARY", "SECONDARY", "X", "Y", "Z"]) -> None:
         self.node.color_id = value
 
     @property
@@ -571,7 +571,7 @@ class LinearGizmo(BaseNode):
         return self.node.draw_style
 
     @draw_style.setter
-    def draw_style(self, value: Literal["ARROW", "CROSS", "BOX"]):
+    def draw_style(self, value: Literal["ARROW", "CROSS", "BOX"]) -> None:
         self.node.draw_style = value
 
 
@@ -659,7 +659,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_translation_x
 
     @use_translation_x.setter
-    def use_translation_x(self, value: bool):
+    def use_translation_x(self, value: bool) -> None:
         self.node.use_translation_x = value
 
     @property
@@ -667,7 +667,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_translation_y
 
     @use_translation_y.setter
-    def use_translation_y(self, value: bool):
+    def use_translation_y(self, value: bool) -> None:
         self.node.use_translation_y = value
 
     @property
@@ -675,7 +675,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_translation_z
 
     @use_translation_z.setter
-    def use_translation_z(self, value: bool):
+    def use_translation_z(self, value: bool) -> None:
         self.node.use_translation_z = value
 
     @property
@@ -683,7 +683,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_rotation_x
 
     @use_rotation_x.setter
-    def use_rotation_x(self, value: bool):
+    def use_rotation_x(self, value: bool) -> None:
         self.node.use_rotation_x = value
 
     @property
@@ -691,7 +691,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_rotation_y
 
     @use_rotation_y.setter
-    def use_rotation_y(self, value: bool):
+    def use_rotation_y(self, value: bool) -> None:
         self.node.use_rotation_y = value
 
     @property
@@ -699,7 +699,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_rotation_z
 
     @use_rotation_z.setter
-    def use_rotation_z(self, value: bool):
+    def use_rotation_z(self, value: bool) -> None:
         self.node.use_rotation_z = value
 
     @property
@@ -707,7 +707,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_scale_x
 
     @use_scale_x.setter
-    def use_scale_x(self, value: bool):
+    def use_scale_x(self, value: bool) -> None:
         self.node.use_scale_x = value
 
     @property
@@ -715,7 +715,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_scale_y
 
     @use_scale_y.setter
-    def use_scale_y(self, value: bool):
+    def use_scale_y(self, value: bool) -> None:
         self.node.use_scale_y = value
 
     @property
@@ -723,7 +723,7 @@ class TransformGizmo(BaseNode):
         return self.node.use_scale_z
 
     @use_scale_z.setter
-    def use_scale_z(self, value: bool):
+    def use_scale_z(self, value: bool) -> None:
         self.node.use_scale_z = value
 
 
@@ -773,7 +773,7 @@ class Warning(BaseNode):
 
     def __init__(
         self,
-        show: InputBoolean = True,
+        show: InputBoolean = None,
         message: InputString = "",
         *,
         warning_type: Literal["ERROR", "WARNING", "INFO"] = "ERROR",
@@ -784,17 +784,17 @@ class Warning(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def error(cls, show: InputBoolean = True, message: InputString = "") -> "Warning":
+    def error(cls, show: InputBoolean = None, message: InputString = "") -> "Warning":
         """Create Warning with operation 'Error'."""
         return cls(warning_type="ERROR", show=show, message=message)
 
     @classmethod
-    def warning(cls, show: InputBoolean = True, message: InputString = "") -> "Warning":
+    def warning(cls, show: InputBoolean = None, message: InputString = "") -> "Warning":
         """Create Warning with operation 'Warning'."""
         return cls(warning_type="WARNING", show=show, message=message)
 
     @classmethod
-    def info(cls, show: InputBoolean = True, message: InputString = "") -> "Warning":
+    def info(cls, show: InputBoolean = None, message: InputString = "") -> "Warning":
         """Create Warning with operation 'Info'."""
         return cls(warning_type="INFO", show=show, message=message)
 
@@ -803,5 +803,5 @@ class Warning(BaseNode):
         return self.node.warning_type
 
     @warning_type.setter
-    def warning_type(self, value: Literal["ERROR", "WARNING", "INFO"]):
+    def warning_type(self, value: Literal["ERROR", "WARNING", "INFO"]) -> None:
         self.node.warning_type = value

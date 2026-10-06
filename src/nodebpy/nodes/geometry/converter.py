@@ -148,7 +148,7 @@ class AccumulateField[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 1.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"] = "FLOAT",
         domain: Literal[
@@ -161,19 +161,14 @@ class AccumulateField[T](BaseNode):
         self.domain = domain
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls, value: InputFloat = 1.0, group_index: InputInteger = 0
-    ) -> "AccumulateField[FloatSocket]":
-        """Create Accumulate Field with operation 'Face Corner'. Mesh face corner"""
-        return AccumulateField(domain="CORNER", value=value, group_index=group_index)
-
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]):
+    def data_type(
+        self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR", "TRANSFORM"]
+    ) -> None:
         self.node.data_type = value
 
     @property
@@ -186,7 +181,7 @@ class AccumulateField[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _AccumulateFieldDomainFactory:
@@ -225,13 +220,13 @@ class AccumulateField[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="TRANSFORM"
             )
 
-    point = _AccumulateFieldDomainFactory("POINT")
-    edge = _AccumulateFieldDomainFactory("EDGE")
-    face = _AccumulateFieldDomainFactory("FACE")
-    corner = _AccumulateFieldDomainFactory("CORNER")
-    spline = _AccumulateFieldDomainFactory("CURVE")
-    instance = _AccumulateFieldDomainFactory("INSTANCE")
-    layer = _AccumulateFieldDomainFactory("LAYER")
+    point: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("POINT")
+    edge: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("EDGE")
+    face: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("FACE")
+    corner: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("CORNER")
+    spline: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("CURVE")
+    instance: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("INSTANCE")
+    layer: _AccumulateFieldDomainFactory = _AccumulateFieldDomainFactory("LAYER")
 
 
 class AlignRotationToVector(BaseNode):
@@ -286,7 +281,7 @@ class AlignRotationToVector(BaseNode):
 
     def __init__(
         self,
-        rotation: InputRotation = (0.0, 0.0, 0.0),
+        rotation: InputRotation = None,
         factor: InputFloat = 1.0,
         vector: InputVector = (0.0, 0.0, 1.0),
         *,
@@ -304,7 +299,7 @@ class AlignRotationToVector(BaseNode):
         return self.node.axis
 
     @axis.setter
-    def axis(self, value: Literal["X", "Y", "Z"]):
+    def axis(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.axis = value
 
     @property
@@ -312,7 +307,7 @@ class AlignRotationToVector(BaseNode):
         return self.node.pivot_axis
 
     @pivot_axis.setter
-    def pivot_axis(self, value: Literal["AUTO", "X", "Y", "Z"]):
+    def pivot_axis(self, value: Literal["AUTO", "X", "Y", "Z"]) -> None:
         self.node.pivot_axis = value
 
 
@@ -379,7 +374,7 @@ class AxesToRotation(BaseNode):
         return self.node.primary_axis
 
     @primary.setter
-    def primary(self, value: Literal["X", "Y", "Z"]):
+    def primary(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.primary_axis = value
 
     @property
@@ -387,7 +382,7 @@ class AxesToRotation(BaseNode):
         return self.node.secondary_axis
 
     @secondary.setter
-    def secondary(self, value: Literal["X", "Y", "Z"]):
+    def secondary(self, value: Literal["X", "Y", "Z"]) -> None:
         self.node.secondary_axis = value
 
 
@@ -544,7 +539,9 @@ class BitMath(BaseNode):
         return self.node.operation
 
     @operation.setter
-    def operation(self, value: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"]):
+    def operation(
+        self, value: Literal["AND", "OR", "XOR", "NOT", "SHIFT", "ROTATE"]
+    ) -> None:
         self.node.operation = value
 
 
@@ -724,7 +721,7 @@ class BooleanMath(BaseNode):
         value: Literal[
             "AND", "OR", "NOT", "NAND", "NOR", "XNOR", "XOR", "IMPLY", "NIMPLY"
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
 
@@ -810,7 +807,7 @@ class Clamp(BaseNode):
         return self.node.clamp_type
 
     @clamp_type.setter
-    def clamp_type(self, value: Literal["MINMAX", "RANGE"]):
+    def clamp_type(self, value: Literal["MINMAX", "RANGE"]) -> None:
         self.node.clamp_type = value
 
 
@@ -905,8 +902,8 @@ class ClusterByConnected(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        position: InputVector = None,
         distance: InputFloat = 0.001,
     ):
         super().__init__()
@@ -973,9 +970,9 @@ class ClusterByDistance(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        position: InputVector = (0.0, 0.0, 0.0),
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        position: InputVector = None,
         distance: InputFloat = 0.001,
     ):
         super().__init__()
@@ -1021,7 +1018,7 @@ class CombineBundle(_CombineBundleMixin, BaseNode):
         return self.node.define_signature
 
     @define_signature.setter
-    def define_signature(self, value: bool):
+    def define_signature(self, value: bool) -> None:
         self.node.define_signature = value
 
 
@@ -1133,254 +1130,8 @@ class CombineColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
-
-
-class CombineList[T, TList](BaseNode):
-    """
-    Combine an arbitrary number of values into a list
-
-    Parameters
-    ----------
-    item_0 : InputFloat
-        0
-
-    Inputs
-    ------
-    i.item_0 : FloatSocket
-        0
-
-    Outputs
-    -------
-    o.list : FloatSocketList
-        List
-    """
-
-    _bl_idname = "GeometryNodeCombineList"
-    node: bpy.types.GeometryNodeCombineList
-
-    class _Inputs[S, SList](SocketAccessor):
-        item_0: S
-        """0"""
-
-    class _Outputs[S, SList](SocketAccessor):
-        list: SList
-        """List"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs[T, TList]: ...
-        @property
-        def o(self) -> _Outputs[T, TList]: ...
-
-    def __init__(
-        self,
-        item_0: InputAny = 0.0,
-        *,
-        data_type: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-            "FONT",
-            "SOUND",
-        ] = "FLOAT",
-    ):
-        super().__init__()
-        key_args = {"Item_0": item_0}
-        self.data_type = data_type
-        self._establish_links(**key_args)
-
-    @classmethod
-    def float(
-        cls, item_0: InputFloat = 0.0
-    ) -> "CombineList[FloatSocket, FloatSocketList]":
-        """Create Combine List with operation 'Float'."""
-        return CombineList(data_type="FLOAT", item_0=item_0)
-
-    @classmethod
-    def integer(
-        cls, item_0: InputInteger = 0
-    ) -> "CombineList[IntegerSocket, IntegerSocketList]":
-        """Create Combine List with operation 'Integer'."""
-        return CombineList(data_type="INT", item_0=item_0)
-
-    @classmethod
-    def boolean(
-        cls, item_0: InputBoolean = False
-    ) -> "CombineList[BooleanSocket, BooleanSocketList]":
-        """Create Combine List with operation 'Boolean'."""
-        return CombineList(data_type="BOOLEAN", item_0=item_0)
-
-    @classmethod
-    def vector(
-        cls, item_0: InputVector = (0.0, 0.0, 0.0)
-    ) -> "CombineList[VectorSocket, VectorSocketList]":
-        """Create Combine List with operation 'Vector'."""
-        return CombineList(data_type="VECTOR", item_0=item_0)
-
-    @classmethod
-    def color(
-        cls, item_0: InputColor = (0.8, 0.8, 0.8, 1.0)
-    ) -> "CombineList[ColorSocket, ColorSocketList]":
-        """Create Combine List with operation 'Color'."""
-        return CombineList(data_type="RGBA", item_0=item_0)
-
-    @classmethod
-    def rotation(
-        cls, item_0: InputRotation = (0.0, 0.0, 0.0)
-    ) -> "CombineList[RotationSocket, RotationSocketList]":
-        """Create Combine List with operation 'Rotation'."""
-        return CombineList(data_type="ROTATION", item_0=item_0)
-
-    @classmethod
-    def matrix(
-        cls, item_0: InputMatrix = None
-    ) -> "CombineList[MatrixSocket, MatrixSocketList]":
-        """Create Combine List with operation 'Matrix'."""
-        return CombineList(data_type="MATRIX", item_0=item_0)
-
-    @classmethod
-    def string(
-        cls, item_0: InputString = ""
-    ) -> "CombineList[StringSocket, StringSocketList]":
-        """Create Combine List with operation 'String'."""
-        return CombineList(data_type="STRING", item_0=item_0)
-
-    @classmethod
-    def menu(
-        cls, item_0: InputMenu = None
-    ) -> "CombineList[MenuSocket, MenuSocketList]":
-        """Create Combine List with operation 'Menu'."""
-        return CombineList(data_type="MENU", item_0=item_0)
-
-    @classmethod
-    def object(
-        cls, item_0: InputObject = None
-    ) -> "CombineList[ObjectSocket, ObjectSocketList]":
-        """Create Combine List with operation 'Object'."""
-        return CombineList(data_type="OBJECT", item_0=item_0)
-
-    @classmethod
-    def image(
-        cls, item_0: InputImage = None
-    ) -> "CombineList[ImageSocket, ImageSocketList]":
-        """Create Combine List with operation 'Image'."""
-        return CombineList(data_type="IMAGE", item_0=item_0)
-
-    @classmethod
-    def geometry(
-        cls, item_0: InputGeometry = None
-    ) -> "CombineList[GeometrySocket, GeometrySocketList]":
-        """Create Combine List with operation 'Geometry'."""
-        return CombineList(data_type="GEOMETRY", item_0=item_0)
-
-    @classmethod
-    def collection(
-        cls, item_0: InputCollection = None
-    ) -> "CombineList[CollectionSocket, CollectionSocketList]":
-        """Create Combine List with operation 'Collection'."""
-        return CombineList(data_type="COLLECTION", item_0=item_0)
-
-    @classmethod
-    def material(
-        cls, item_0: InputMaterial = None
-    ) -> "CombineList[MaterialSocket, MaterialSocketList]":
-        """Create Combine List with operation 'Material'."""
-        return CombineList(data_type="MATERIAL", item_0=item_0)
-
-    @classmethod
-    def bundle(
-        cls, item_0: InputBundle = None
-    ) -> "CombineList[BundleSocket, BundleSocketList]":
-        """Create Combine List with operation 'Bundle'."""
-        return CombineList(data_type="BUNDLE", item_0=item_0)
-
-    @classmethod
-    def closure(
-        cls, item_0: InputClosure = None
-    ) -> "CombineList[ClosureSocket, ClosureSocketList]":
-        """Create Combine List with operation 'Closure'."""
-        return CombineList(data_type="CLOSURE", item_0=item_0)
-
-    @classmethod
-    def font(
-        cls, item_0: InputFont = None
-    ) -> "CombineList[FontSocket, FontSocketList]":
-        """Create Combine List with operation 'Font'."""
-        return CombineList(data_type="FONT", item_0=item_0)
-
-    @classmethod
-    def sound(
-        cls, item_0: InputSound = None
-    ) -> "CombineList[SoundSocket, SoundSocketList]":
-        """Create Combine List with operation 'Sound'."""
-        return CombineList(data_type="SOUND", item_0=item_0)
-
-    @property
-    def data_type(
-        self,
-    ) -> Literal[
-        "FLOAT",
-        "INT",
-        "BOOLEAN",
-        "VECTOR",
-        "RGBA",
-        "ROTATION",
-        "MATRIX",
-        "STRING",
-        "MENU",
-        "OBJECT",
-        "IMAGE",
-        "GEOMETRY",
-        "COLLECTION",
-        "MATERIAL",
-        "BUNDLE",
-        "CLOSURE",
-        "FONT",
-        "SOUND",
-    ]:
-        return self.node.data_type  # ty: ignore[invalid-return-type]
-
-    @data_type.setter
-    def data_type(
-        self,
-        value: Literal[
-            "FLOAT",
-            "INT",
-            "BOOLEAN",
-            "VECTOR",
-            "RGBA",
-            "ROTATION",
-            "MATRIX",
-            "STRING",
-            "MENU",
-            "OBJECT",
-            "IMAGE",
-            "GEOMETRY",
-            "COLLECTION",
-            "MATERIAL",
-            "BUNDLE",
-            "CLOSURE",
-            "FONT",
-            "SOUND",
-        ],
-    ):
-        self.node.data_type = value
 
 
 class CombineMatrix(BaseNode):
@@ -1768,7 +1519,7 @@ class EvaluateAtIndex[T](BaseNode):
 
     def __init__(
         self,
-        value: InputAny = 0.0,
+        value: InputAny = None,
         index: InputInteger = 0,
         *,
         domain: Literal[
@@ -1790,20 +1541,6 @@ class EvaluateAtIndex[T](BaseNode):
         self.data_type = data_type
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls, value: InputFloat = 0.0, index: InputInteger = 0
-    ) -> "EvaluateAtIndex[FloatSocket]":
-        """Create Evaluate at Index with operation 'Face Corner'. Mesh face corner"""
-        return EvaluateAtIndex(domain="CORNER", value=value, index=index)
-
-    @classmethod
-    def input_4x4_matrix(
-        cls, value: InputMatrix = None, index: InputInteger = 0
-    ) -> "EvaluateAtIndex[MatrixSocket]":
-        """Create Evaluate at Index with operation '4x4 Matrix'. Floating point matrix"""
-        return EvaluateAtIndex(data_type="FLOAT4X4", value=value, index=index)
-
     @property
     def domain(
         self,
@@ -1814,7 +1551,7 @@ class EvaluateAtIndex[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     @property
@@ -1843,7 +1580,7 @@ class EvaluateAtIndex[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
     class _EvaluateAtIndexDomainFactory:
@@ -1902,13 +1639,13 @@ class EvaluateAtIndex[T](BaseNode):
                 value, index, domain=self._domain, data_type="FLOAT4X4"
             )
 
-    point = _EvaluateAtIndexDomainFactory("POINT")
-    edge = _EvaluateAtIndexDomainFactory("EDGE")
-    face = _EvaluateAtIndexDomainFactory("FACE")
-    corner = _EvaluateAtIndexDomainFactory("CORNER")
-    spline = _EvaluateAtIndexDomainFactory("CURVE")
-    instance = _EvaluateAtIndexDomainFactory("INSTANCE")
-    layer = _EvaluateAtIndexDomainFactory("LAYER")
+    point: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("POINT")
+    edge: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("EDGE")
+    face: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("FACE")
+    corner: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("CORNER")
+    spline: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("CURVE")
+    instance: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("INSTANCE")
+    layer: _EvaluateAtIndexDomainFactory = _EvaluateAtIndexDomainFactory("LAYER")
 
 
 class EvaluateOnDomain[T](BaseNode):
@@ -1972,18 +1709,6 @@ class EvaluateOnDomain[T](BaseNode):
         self.data_type = data_type
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(cls, value: InputFloat = 0.0) -> "EvaluateOnDomain[FloatSocket]":
-        """Create Evaluate on Domain with operation 'Face Corner'. Mesh face corner"""
-        return EvaluateOnDomain(domain="CORNER", value=value)
-
-    @classmethod
-    def input_4x4_matrix(
-        cls, value: InputMatrix = None
-    ) -> "EvaluateOnDomain[MatrixSocket]":
-        """Create Evaluate on Domain with operation '4x4 Matrix'. Floating point matrix"""
-        return EvaluateOnDomain(data_type="FLOAT4X4", value=value)
-
     @property
     def domain(
         self,
@@ -1994,7 +1719,7 @@ class EvaluateOnDomain[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     @property
@@ -2023,7 +1748,7 @@ class EvaluateOnDomain[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
     class _EvaluateOnDomainDomainFactory:
@@ -2066,13 +1791,15 @@ class EvaluateOnDomain[T](BaseNode):
             """Create 'EvaluateOnDomain' on this domain with 'FLOAT4X4' data type."""
             return EvaluateOnDomain(value, domain=self._domain, data_type="FLOAT4X4")
 
-    point = _EvaluateOnDomainDomainFactory("POINT")
-    edge = _EvaluateOnDomainDomainFactory("EDGE")
-    face = _EvaluateOnDomainDomainFactory("FACE")
-    corner = _EvaluateOnDomainDomainFactory("CORNER")
-    spline = _EvaluateOnDomainDomainFactory("CURVE")
-    instance = _EvaluateOnDomainDomainFactory("INSTANCE")
-    layer = _EvaluateOnDomainDomainFactory("LAYER")
+    point: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("POINT")
+    edge: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("EDGE")
+    face: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("FACE")
+    corner: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("CORNER")
+    spline: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("CURVE")
+    instance: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory(
+        "INSTANCE"
+    )
+    layer: _EvaluateOnDomainDomainFactory = _EvaluateOnDomainDomainFactory("LAYER")
 
 
 class FieldAverage[T](BaseNode):
@@ -2126,7 +1853,7 @@ class FieldAverage[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -2139,19 +1866,12 @@ class FieldAverage[T](BaseNode):
         self.domain = domain
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
-    ) -> "FieldAverage[FloatSocket]":
-        """Create Field Average with operation 'Face Corner'. Mesh face corner"""
-        return FieldAverage(domain="CORNER", value=value, group_index=group_index)
-
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -2164,7 +1884,7 @@ class FieldAverage[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldAverageDomainFactory:
@@ -2187,13 +1907,13 @@ class FieldAverage[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldAverageDomainFactory("POINT")
-    edge = _FieldAverageDomainFactory("EDGE")
-    face = _FieldAverageDomainFactory("FACE")
-    corner = _FieldAverageDomainFactory("CORNER")
-    spline = _FieldAverageDomainFactory("CURVE")
-    instance = _FieldAverageDomainFactory("INSTANCE")
-    layer = _FieldAverageDomainFactory("LAYER")
+    point: _FieldAverageDomainFactory = _FieldAverageDomainFactory("POINT")
+    edge: _FieldAverageDomainFactory = _FieldAverageDomainFactory("EDGE")
+    face: _FieldAverageDomainFactory = _FieldAverageDomainFactory("FACE")
+    corner: _FieldAverageDomainFactory = _FieldAverageDomainFactory("CORNER")
+    spline: _FieldAverageDomainFactory = _FieldAverageDomainFactory("CURVE")
+    instance: _FieldAverageDomainFactory = _FieldAverageDomainFactory("INSTANCE")
+    layer: _FieldAverageDomainFactory = _FieldAverageDomainFactory("LAYER")
 
 
 class FieldMinAndMax[T](BaseNode):
@@ -2247,7 +1967,7 @@ class FieldMinAndMax[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "INT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -2260,19 +1980,12 @@ class FieldMinAndMax[T](BaseNode):
         self.domain = domain
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
-    ) -> "FieldMinAndMax[FloatSocket]":
-        """Create Field Min & Max with operation 'Face Corner'. Mesh face corner"""
-        return FieldMinAndMax(domain="CORNER", value=value, group_index=group_index)
-
     @property
     def data_type(self) -> Literal["FLOAT", "INT", "FLOAT_VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -2285,7 +1998,7 @@ class FieldMinAndMax[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldMinAndMaxDomainFactory:
@@ -2316,13 +2029,13 @@ class FieldMinAndMax[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldMinAndMaxDomainFactory("POINT")
-    edge = _FieldMinAndMaxDomainFactory("EDGE")
-    face = _FieldMinAndMaxDomainFactory("FACE")
-    corner = _FieldMinAndMaxDomainFactory("CORNER")
-    spline = _FieldMinAndMaxDomainFactory("CURVE")
-    instance = _FieldMinAndMaxDomainFactory("INSTANCE")
-    layer = _FieldMinAndMaxDomainFactory("LAYER")
+    point: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("POINT")
+    edge: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("EDGE")
+    face: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("FACE")
+    corner: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("CORNER")
+    spline: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("CURVE")
+    instance: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("INSTANCE")
+    layer: _FieldMinAndMaxDomainFactory = _FieldMinAndMaxDomainFactory("LAYER")
 
 
 class FieldVariance[T](BaseNode):
@@ -2376,7 +2089,7 @@ class FieldVariance[T](BaseNode):
     def __init__(
         self,
         value: InputAny = 0.0,
-        group_index: InputInteger = 0,
+        group_index: InputInteger = None,
         *,
         data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
         domain: Literal[
@@ -2389,19 +2102,12 @@ class FieldVariance[T](BaseNode):
         self.domain = domain
         self._establish_links(**key_args)
 
-    @classmethod
-    def face_corner(
-        cls, value: InputFloat = 0.0, group_index: InputInteger = 0
-    ) -> "FieldVariance[FloatSocket]":
-        """Create Field Variance with operation 'Face Corner'. Mesh face corner"""
-        return FieldVariance(domain="CORNER", value=value, group_index=group_index)
-
     @property
     def data_type(self) -> Literal["FLOAT", "FLOAT_VECTOR"]:
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
     @property
@@ -2414,7 +2120,7 @@ class FieldVariance[T](BaseNode):
     def domain(
         self,
         value: Literal["POINT", "EDGE", "FACE", "CORNER", "CURVE", "INSTANCE", "LAYER"],
-    ):
+    ) -> None:
         self.node.domain = value
 
     class _FieldVarianceDomainFactory:
@@ -2437,13 +2143,13 @@ class FieldVariance[T](BaseNode):
                 value, group_index, domain=self._domain, data_type="FLOAT_VECTOR"
             )
 
-    point = _FieldVarianceDomainFactory("POINT")
-    edge = _FieldVarianceDomainFactory("EDGE")
-    face = _FieldVarianceDomainFactory("FACE")
-    corner = _FieldVarianceDomainFactory("CORNER")
-    spline = _FieldVarianceDomainFactory("CURVE")
-    instance = _FieldVarianceDomainFactory("INSTANCE")
-    layer = _FieldVarianceDomainFactory("LAYER")
+    point: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("POINT")
+    edge: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("EDGE")
+    face: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("FACE")
+    corner: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("CORNER")
+    spline: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("CURVE")
+    instance: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("INSTANCE")
+    layer: _FieldVarianceDomainFactory = _FieldVarianceDomainFactory("LAYER")
 
 
 class FieldToList(_FieldToListMixin, BaseNode):
@@ -2530,7 +2236,7 @@ class FilterList[T](BaseNode):
     def __init__(
         self,
         list: InputAny = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         *,
         socket_type: Literal[
             "FLOAT",
@@ -2560,126 +2266,126 @@ class FilterList[T](BaseNode):
 
     @classmethod
     def float(
-        cls, list: InputFloatList = None, selection: InputBoolean = True
+        cls, list: InputFloatList = None, selection: InputBoolean = None
     ) -> "FilterList[FloatSocketList]":
         """Create Filter List with operation 'Float'."""
         return FilterList(socket_type="FLOAT", list=list, selection=selection)
 
     @classmethod
     def integer(
-        cls, list: InputIntegerList = None, selection: InputBoolean = True
+        cls, list: InputIntegerList = None, selection: InputBoolean = None
     ) -> "FilterList[IntegerSocketList]":
         """Create Filter List with operation 'Integer'."""
         return FilterList(socket_type="INT", list=list, selection=selection)
 
     @classmethod
     def boolean(
-        cls, list: InputBooleanList = None, selection: InputBoolean = True
+        cls, list: InputBooleanList = None, selection: InputBoolean = None
     ) -> "FilterList[BooleanSocketList]":
         """Create Filter List with operation 'Boolean'."""
         return FilterList(socket_type="BOOLEAN", list=list, selection=selection)
 
     @classmethod
     def vector(
-        cls, list: InputVectorList = None, selection: InputBoolean = True
+        cls, list: InputVectorList = None, selection: InputBoolean = None
     ) -> "FilterList[VectorSocketList]":
         """Create Filter List with operation 'Vector'."""
         return FilterList(socket_type="VECTOR", list=list, selection=selection)
 
     @classmethod
     def color(
-        cls, list: InputColorList = None, selection: InputBoolean = True
+        cls, list: InputColorList = None, selection: InputBoolean = None
     ) -> "FilterList[ColorSocketList]":
         """Create Filter List with operation 'Color'."""
         return FilterList(socket_type="RGBA", list=list, selection=selection)
 
     @classmethod
     def rotation(
-        cls, list: InputRotationList = None, selection: InputBoolean = True
+        cls, list: InputRotationList = None, selection: InputBoolean = None
     ) -> "FilterList[RotationSocketList]":
         """Create Filter List with operation 'Rotation'."""
         return FilterList(socket_type="ROTATION", list=list, selection=selection)
 
     @classmethod
     def matrix(
-        cls, list: InputMatrixList = None, selection: InputBoolean = True
+        cls, list: InputMatrixList = None, selection: InputBoolean = None
     ) -> "FilterList[MatrixSocketList]":
         """Create Filter List with operation 'Matrix'."""
         return FilterList(socket_type="MATRIX", list=list, selection=selection)
 
     @classmethod
     def string(
-        cls, list: InputStringList = None, selection: InputBoolean = True
+        cls, list: InputStringList = None, selection: InputBoolean = None
     ) -> "FilterList[StringSocketList]":
         """Create Filter List with operation 'String'."""
         return FilterList(socket_type="STRING", list=list, selection=selection)
 
     @classmethod
     def menu(
-        cls, list: InputMenuList = None, selection: InputBoolean = True
+        cls, list: InputMenuList = None, selection: InputBoolean = None
     ) -> "FilterList[MenuSocketList]":
         """Create Filter List with operation 'Menu'."""
         return FilterList(socket_type="MENU", list=list, selection=selection)
 
     @classmethod
     def object(
-        cls, list: InputObjectList = None, selection: InputBoolean = True
+        cls, list: InputObjectList = None, selection: InputBoolean = None
     ) -> "FilterList[ObjectSocketList]":
         """Create Filter List with operation 'Object'."""
         return FilterList(socket_type="OBJECT", list=list, selection=selection)
 
     @classmethod
     def image(
-        cls, list: InputImageList = None, selection: InputBoolean = True
+        cls, list: InputImageList = None, selection: InputBoolean = None
     ) -> "FilterList[ImageSocketList]":
         """Create Filter List with operation 'Image'."""
         return FilterList(socket_type="IMAGE", list=list, selection=selection)
 
     @classmethod
     def geometry(
-        cls, list: InputGeometryList = None, selection: InputBoolean = True
+        cls, list: InputGeometryList = None, selection: InputBoolean = None
     ) -> "FilterList[GeometrySocketList]":
         """Create Filter List with operation 'Geometry'."""
         return FilterList(socket_type="GEOMETRY", list=list, selection=selection)
 
     @classmethod
     def collection(
-        cls, list: InputCollectionList = None, selection: InputBoolean = True
+        cls, list: InputCollectionList = None, selection: InputBoolean = None
     ) -> "FilterList[CollectionSocketList]":
         """Create Filter List with operation 'Collection'."""
         return FilterList(socket_type="COLLECTION", list=list, selection=selection)
 
     @classmethod
     def material(
-        cls, list: InputMaterialList = None, selection: InputBoolean = True
+        cls, list: InputMaterialList = None, selection: InputBoolean = None
     ) -> "FilterList[MaterialSocketList]":
         """Create Filter List with operation 'Material'."""
         return FilterList(socket_type="MATERIAL", list=list, selection=selection)
 
     @classmethod
     def bundle(
-        cls, list: InputBundleList = None, selection: InputBoolean = True
+        cls, list: InputBundleList = None, selection: InputBoolean = None
     ) -> "FilterList[BundleSocketList]":
         """Create Filter List with operation 'Bundle'."""
         return FilterList(socket_type="BUNDLE", list=list, selection=selection)
 
     @classmethod
     def closure(
-        cls, list: InputClosureList = None, selection: InputBoolean = True
+        cls, list: InputClosureList = None, selection: InputBoolean = None
     ) -> "FilterList[ClosureSocketList]":
         """Create Filter List with operation 'Closure'."""
         return FilterList(socket_type="CLOSURE", list=list, selection=selection)
 
     @classmethod
     def font(
-        cls, list: InputFontList = None, selection: InputBoolean = True
+        cls, list: InputFontList = None, selection: InputBoolean = None
     ) -> "FilterList[FontSocketList]":
         """Create Filter List with operation 'Font'."""
         return FilterList(socket_type="FONT", list=list, selection=selection)
 
     @classmethod
     def sound(
-        cls, list: InputSoundList = None, selection: InputBoolean = True
+        cls, list: InputSoundList = None, selection: InputBoolean = None
     ) -> "FilterList[SoundSocketList]":
         """Create Filter List with operation 'Sound'."""
         return FilterList(socket_type="SOUND", list=list, selection=selection)
@@ -2732,7 +2438,7 @@ class FilterList[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
 
@@ -2856,7 +2562,9 @@ class FloatToInteger(BaseNode):
         return self.node.rounding_mode
 
     @rounding_mode.setter
-    def rounding_mode(self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]):
+    def rounding_mode(
+        self, value: Literal["ROUND", "FLOOR", "CEILING", "TRUNCATE"]
+    ) -> None:
         self.node.rounding_mode = value
 
 
@@ -2999,10 +2707,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Float'."""
         return GetBundleItem(
-            socket_type="FLOAT", bundle=bundle, path=path, remove=remove
+            socket_type="FLOAT",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3011,9 +2727,19 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[IntegerSocket]":
         """Create Get Bundle Item with operation 'Integer'."""
-        return GetBundleItem(socket_type="INT", bundle=bundle, path=path, remove=remove)
+        return GetBundleItem(
+            socket_type="INT",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def boolean(
@@ -3021,10 +2747,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[BooleanSocket]":
         """Create Get Bundle Item with operation 'Boolean'."""
         return GetBundleItem(
-            socket_type="BOOLEAN", bundle=bundle, path=path, remove=remove
+            socket_type="BOOLEAN",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3033,10 +2767,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[VectorSocket]":
         """Create Get Bundle Item with operation 'Vector'."""
         return GetBundleItem(
-            socket_type="VECTOR", bundle=bundle, path=path, remove=remove
+            socket_type="VECTOR",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3045,10 +2787,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[ColorSocket]":
         """Create Get Bundle Item with operation 'Color'."""
         return GetBundleItem(
-            socket_type="RGBA", bundle=bundle, path=path, remove=remove
+            socket_type="RGBA",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3057,10 +2807,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[RotationSocket]":
         """Create Get Bundle Item with operation 'Rotation'."""
         return GetBundleItem(
-            socket_type="ROTATION", bundle=bundle, path=path, remove=remove
+            socket_type="ROTATION",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3069,10 +2827,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[MatrixSocket]":
         """Create Get Bundle Item with operation 'Matrix'."""
         return GetBundleItem(
-            socket_type="MATRIX", bundle=bundle, path=path, remove=remove
+            socket_type="MATRIX",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3081,10 +2847,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[StringSocket]":
         """Create Get Bundle Item with operation 'String'."""
         return GetBundleItem(
-            socket_type="STRING", bundle=bundle, path=path, remove=remove
+            socket_type="STRING",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3093,10 +2867,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[MenuSocket]":
         """Create Get Bundle Item with operation 'Menu'."""
         return GetBundleItem(
-            socket_type="MENU", bundle=bundle, path=path, remove=remove
+            socket_type="MENU",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3105,10 +2887,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[ObjectSocket]":
         """Create Get Bundle Item with operation 'Object'."""
         return GetBundleItem(
-            socket_type="OBJECT", bundle=bundle, path=path, remove=remove
+            socket_type="OBJECT",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3117,10 +2907,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[ImageSocket]":
         """Create Get Bundle Item with operation 'Image'."""
         return GetBundleItem(
-            socket_type="IMAGE", bundle=bundle, path=path, remove=remove
+            socket_type="IMAGE",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3129,10 +2927,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[GeometrySocket]":
         """Create Get Bundle Item with operation 'Geometry'."""
         return GetBundleItem(
-            socket_type="GEOMETRY", bundle=bundle, path=path, remove=remove
+            socket_type="GEOMETRY",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3141,10 +2947,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[CollectionSocket]":
         """Create Get Bundle Item with operation 'Collection'."""
         return GetBundleItem(
-            socket_type="COLLECTION", bundle=bundle, path=path, remove=remove
+            socket_type="COLLECTION",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3153,10 +2967,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[MaterialSocket]":
         """Create Get Bundle Item with operation 'Material'."""
         return GetBundleItem(
-            socket_type="MATERIAL", bundle=bundle, path=path, remove=remove
+            socket_type="MATERIAL",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3165,10 +2987,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[BundleSocket]":
         """Create Get Bundle Item with operation 'Bundle'."""
         return GetBundleItem(
-            socket_type="BUNDLE", bundle=bundle, path=path, remove=remove
+            socket_type="BUNDLE",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3177,10 +3007,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[ClosureSocket]":
         """Create Get Bundle Item with operation 'Closure'."""
         return GetBundleItem(
-            socket_type="CLOSURE", bundle=bundle, path=path, remove=remove
+            socket_type="CLOSURE",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3189,10 +3027,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[FontSocket]":
         """Create Get Bundle Item with operation 'Font'."""
         return GetBundleItem(
-            socket_type="FONT", bundle=bundle, path=path, remove=remove
+            socket_type="FONT",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3201,10 +3047,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[SoundSocket]":
         """Create Get Bundle Item with operation 'Sound'."""
         return GetBundleItem(
-            socket_type="SOUND", bundle=bundle, path=path, remove=remove
+            socket_type="SOUND",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -3213,10 +3067,35 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
         return GetBundleItem(
-            structure_type="AUTO", bundle=bundle, path=path, remove=remove
+            structure_type="AUTO",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -3225,10 +3104,35 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
         return GetBundleItem(
-            structure_type="DYNAMIC", bundle=bundle, path=path, remove=remove
+            structure_type="DYNAMIC",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -3237,10 +3141,35 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Field'. Socket expects a field"""
         return GetBundleItem(
-            structure_type="FIELD", bundle=bundle, path=path, remove=remove
+            structure_type="FIELD",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -3249,10 +3178,35 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Grid'. Socket expects a grid"""
         return GetBundleItem(
-            structure_type="GRID", bundle=bundle, path=path, remove=remove
+            structure_type="GRID",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -3261,10 +3215,35 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'List'. Socket expects a list"""
         return GetBundleItem(
-            structure_type="LIST", bundle=bundle, path=path, remove=remove
+            structure_type="LIST",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -3273,10 +3252,35 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Single'. Socket expects a single value"""
         return GetBundleItem(
-            structure_type="SINGLE", bundle=bundle, path=path, remove=remove
+            structure_type="SINGLE",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @property
@@ -3327,7 +3331,7 @@ class GetBundleItem[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -3339,7 +3343,7 @@ class GetBundleItem[T](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -3424,171 +3428,477 @@ class GetListItem[T, TList](BaseNode):
 
     @classmethod
     def float(
-        cls, list: InputFloatList = None, index: InputInteger = 0
+        cls,
+        list: InputFloatList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Float'."""
-        return GetListItem(socket_type="FLOAT", list=list, index=index)
+        return GetListItem(
+            socket_type="FLOAT", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def integer(
-        cls, list: InputIntegerList = None, index: InputInteger = 0
+        cls,
+        list: InputIntegerList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[IntegerSocket, IntegerSocketList]":
         """Create Get List Item with operation 'Integer'."""
-        return GetListItem(socket_type="INT", list=list, index=index)
+        return GetListItem(
+            socket_type="INT", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def boolean(
-        cls, list: InputBooleanList = None, index: InputInteger = 0
+        cls,
+        list: InputBooleanList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[BooleanSocket, BooleanSocketList]":
         """Create Get List Item with operation 'Boolean'."""
-        return GetListItem(socket_type="BOOLEAN", list=list, index=index)
+        return GetListItem(
+            socket_type="BOOLEAN", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def vector(
-        cls, list: InputVectorList = None, index: InputInteger = 0
+        cls,
+        list: InputVectorList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[VectorSocket, VectorSocketList]":
         """Create Get List Item with operation 'Vector'."""
-        return GetListItem(socket_type="VECTOR", list=list, index=index)
+        return GetListItem(
+            socket_type="VECTOR", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def color(
-        cls, list: InputColorList = None, index: InputInteger = 0
+        cls,
+        list: InputColorList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[ColorSocket, ColorSocketList]":
         """Create Get List Item with operation 'Color'."""
-        return GetListItem(socket_type="RGBA", list=list, index=index)
+        return GetListItem(
+            socket_type="RGBA", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def rotation(
-        cls, list: InputRotationList = None, index: InputInteger = 0
+        cls,
+        list: InputRotationList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[RotationSocket, RotationSocketList]":
         """Create Get List Item with operation 'Rotation'."""
-        return GetListItem(socket_type="ROTATION", list=list, index=index)
+        return GetListItem(
+            socket_type="ROTATION",
+            list=list,
+            index=index,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def matrix(
-        cls, list: InputMatrixList = None, index: InputInteger = 0
+        cls,
+        list: InputMatrixList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[MatrixSocket, MatrixSocketList]":
         """Create Get List Item with operation 'Matrix'."""
-        return GetListItem(socket_type="MATRIX", list=list, index=index)
+        return GetListItem(
+            socket_type="MATRIX", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def string(
-        cls, list: InputStringList = None, index: InputInteger = 0
+        cls,
+        list: InputStringList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[StringSocket, StringSocketList]":
         """Create Get List Item with operation 'String'."""
-        return GetListItem(socket_type="STRING", list=list, index=index)
+        return GetListItem(
+            socket_type="STRING", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def menu(
-        cls, list: InputMenuList = None, index: InputInteger = 0
+        cls,
+        list: InputMenuList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[MenuSocket, MenuSocketList]":
         """Create Get List Item with operation 'Menu'."""
-        return GetListItem(socket_type="MENU", list=list, index=index)
+        return GetListItem(
+            socket_type="MENU", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def object(
-        cls, list: InputObjectList = None, index: InputInteger = 0
+        cls,
+        list: InputObjectList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[ObjectSocket, ObjectSocketList]":
         """Create Get List Item with operation 'Object'."""
-        return GetListItem(socket_type="OBJECT", list=list, index=index)
+        return GetListItem(
+            socket_type="OBJECT", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def image(
-        cls, list: InputImageList = None, index: InputInteger = 0
+        cls,
+        list: InputImageList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[ImageSocket, ImageSocketList]":
         """Create Get List Item with operation 'Image'."""
-        return GetListItem(socket_type="IMAGE", list=list, index=index)
+        return GetListItem(
+            socket_type="IMAGE", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def geometry(
-        cls, list: InputGeometryList = None, index: InputInteger = 0
+        cls,
+        list: InputGeometryList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[GeometrySocket, GeometrySocketList]":
         """Create Get List Item with operation 'Geometry'."""
-        return GetListItem(socket_type="GEOMETRY", list=list, index=index)
+        return GetListItem(
+            socket_type="GEOMETRY",
+            list=list,
+            index=index,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def collection(
-        cls, list: InputCollectionList = None, index: InputInteger = 0
+        cls,
+        list: InputCollectionList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[CollectionSocket, CollectionSocketList]":
         """Create Get List Item with operation 'Collection'."""
-        return GetListItem(socket_type="COLLECTION", list=list, index=index)
+        return GetListItem(
+            socket_type="COLLECTION",
+            list=list,
+            index=index,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def material(
-        cls, list: InputMaterialList = None, index: InputInteger = 0
+        cls,
+        list: InputMaterialList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[MaterialSocket, MaterialSocketList]":
         """Create Get List Item with operation 'Material'."""
-        return GetListItem(socket_type="MATERIAL", list=list, index=index)
+        return GetListItem(
+            socket_type="MATERIAL",
+            list=list,
+            index=index,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def bundle(
-        cls, list: InputBundleList = None, index: InputInteger = 0
+        cls,
+        list: InputBundleList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[BundleSocket, BundleSocketList]":
         """Create Get List Item with operation 'Bundle'."""
-        return GetListItem(socket_type="BUNDLE", list=list, index=index)
+        return GetListItem(
+            socket_type="BUNDLE", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def closure(
-        cls, list: InputClosureList = None, index: InputInteger = 0
+        cls,
+        list: InputClosureList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[ClosureSocket, ClosureSocketList]":
         """Create Get List Item with operation 'Closure'."""
-        return GetListItem(socket_type="CLOSURE", list=list, index=index)
+        return GetListItem(
+            socket_type="CLOSURE", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def font(
-        cls, list: InputFontList = None, index: InputInteger = 0
+        cls,
+        list: InputFontList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[FontSocket, FontSocketList]":
         """Create Get List Item with operation 'Font'."""
-        return GetListItem(socket_type="FONT", list=list, index=index)
+        return GetListItem(
+            socket_type="FONT", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def sound(
-        cls, list: InputSoundList = None, index: InputInteger = 0
+        cls,
+        list: InputSoundList = None,
+        index: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetListItem[SoundSocket, SoundSocketList]":
         """Create Get List Item with operation 'Sound'."""
-        return GetListItem(socket_type="SOUND", list=list, index=index)
+        return GetListItem(
+            socket_type="SOUND", list=list, index=index, structure_type=structure_type
+        )
 
     @classmethod
     def auto(
-        cls, list: InputFloatList = None, index: InputInteger = 0
+        cls,
+        list: InputFloatList = None,
+        index: InputInteger = 0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
-        return GetListItem(structure_type="AUTO", list=list, index=index)
+        return GetListItem(
+            structure_type="AUTO", list=list, index=index, socket_type=socket_type
+        )
 
     @classmethod
     def dynamic(
-        cls, list: InputFloatList = None, index: InputInteger = 0
+        cls,
+        list: InputFloatList = None,
+        index: InputInteger = 0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
-        return GetListItem(structure_type="DYNAMIC", list=list, index=index)
+        return GetListItem(
+            structure_type="DYNAMIC", list=list, index=index, socket_type=socket_type
+        )
 
     @classmethod
     def field(
-        cls, list: InputFloatList = None, index: InputInteger = 0
+        cls,
+        list: InputFloatList = None,
+        index: InputInteger = 0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Field'. Socket expects a field"""
-        return GetListItem(structure_type="FIELD", list=list, index=index)
+        return GetListItem(
+            structure_type="FIELD", list=list, index=index, socket_type=socket_type
+        )
 
     @classmethod
     def grid(
-        cls, list: InputFloatList = None, index: InputInteger = 0
+        cls,
+        list: InputFloatList = None,
+        index: InputInteger = 0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Grid'. Socket expects a grid"""
-        return GetListItem(structure_type="GRID", list=list, index=index)
+        return GetListItem(
+            structure_type="GRID", list=list, index=index, socket_type=socket_type
+        )
 
     @classmethod
     def list(
-        cls, list: InputFloatList = None, index: InputInteger = 0
+        cls,
+        list: InputFloatList = None,
+        index: InputInteger = 0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'List'. Socket expects a list"""
-        return GetListItem(structure_type="LIST", list=list, index=index)
+        return GetListItem(
+            structure_type="LIST", list=list, index=index, socket_type=socket_type
+        )
 
     @classmethod
     def single(
-        cls, list: InputFloatList = None, index: InputInteger = 0
+        cls,
+        list: InputFloatList = None,
+        index: InputInteger = 0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "GetListItem[FloatSocket, FloatSocketList]":
         """Create Get List Item with operation 'Single'. Socket expects a single value"""
-        return GetListItem(structure_type="SINGLE", list=list, index=index)
+        return GetListItem(
+            structure_type="SINGLE", list=list, index=index, socket_type=socket_type
+        )
 
     @property
     def socket_type(
@@ -3638,7 +3948,7 @@ class GetListItem[T, TList](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -3650,7 +3960,7 @@ class GetListItem[T, TList](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -3752,61 +4062,6 @@ class GetNestedBundlePaths(BaseNode):
             "Bundle Type": bundle_type,
             "Data Type": data_type,
         }
-
-        self._establish_links(**key_args)
-
-
-class GetVectorComponent(BaseNode):
-    """
-    Get the X, Y or Z component of a vector by index
-
-    Parameters
-    ----------
-    vector : InputVector
-        Vector
-    index : InputInteger
-        Index
-
-    Inputs
-    ------
-    i.vector : VectorSocket
-        Vector
-    i.index : IntegerSocket
-        Index
-
-    Outputs
-    -------
-    o.value : FloatSocket
-        Value
-    """
-
-    _bl_idname = "FunctionNodeGetVectorComponent"
-    node: bpy.types.FunctionNodeGetVectorComponent
-
-    class _Inputs(SocketAccessor):
-        vector: VectorSocket
-        """Vector"""
-        index: IntegerSocket
-        """Index"""
-
-    class _Outputs(SocketAccessor):
-        value: FloatSocket
-        """Value"""
-
-    if TYPE_CHECKING:
-
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__(
-        self,
-        vector: InputVector = (0.0, 0.0, 0.0),
-        index: InputInteger = 0,
-    ):
-        super().__init__()
-        key_args = {"Vector": vector, "Index": index}
 
         self._establish_links(**key_args)
 
@@ -3930,7 +4185,7 @@ class HashValue[T](BaseNode):
         value: Literal[
             "FLOAT", "INT", "VECTOR", "RGBA", "ROTATION", "MATRIX", "STRING"
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -4154,7 +4409,7 @@ class ImplicitConversion[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -4208,8 +4463,8 @@ class IndexOfNearest(BaseNode):
 
     def __init__(
         self,
-        position: InputVector = (0.0, 0.0, 0.0),
-        group_id: InputInteger = 0,
+        position: InputVector = None,
+        group_id: InputInteger = None,
     ):
         super().__init__()
         key_args = {"Position": position, "Group ID": group_id}
@@ -4473,7 +4728,7 @@ class IntegerMath(BaseNode):
             "GCD",
             "LCM",
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
 
@@ -4830,7 +5085,7 @@ class ListLength[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -4950,7 +5205,7 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         steps: InputFloat = 4.0,
-        vector: InputVector = (0.0, 0.0, 0.0),
+        vector: InputVector = None,
         from_min_float3: InputVector = (0.0, 0.0, 0.0),
         from_max_float3: InputVector = (1.0, 1.0, 1.0),
         to_min_float3: InputVector = (0.0, 0.0, 0.0),
@@ -4991,6 +5246,9 @@ class MapRange(BaseNode):
         from_max: InputFloat = 1.0,
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
+        *,
+        clamp: bool = False,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
     ) -> "MapRange":
         """Create Map Range with operation 'Linear'. Linear interpolation between From Min and From Max values"""
         return cls(
@@ -5000,6 +5258,8 @@ class MapRange(BaseNode):
             from_max=from_max,
             to_min=to_min,
             to_max=to_max,
+            clamp=clamp,
+            data_type=data_type,
         )
 
     @classmethod
@@ -5011,6 +5271,9 @@ class MapRange(BaseNode):
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
         steps: InputFloat = 4.0,
+        *,
+        clamp: bool = False,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
     ) -> "MapRange":
         """Create Map Range with operation 'Stepped Linear'. Stepped linear interpolation between From Min and From Max values"""
         return cls(
@@ -5021,6 +5284,8 @@ class MapRange(BaseNode):
             to_min=to_min,
             to_max=to_max,
             steps=steps,
+            clamp=clamp,
+            data_type=data_type,
         )
 
     @classmethod
@@ -5031,6 +5296,9 @@ class MapRange(BaseNode):
         from_max: InputFloat = 1.0,
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
+        *,
+        clamp: bool = False,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
     ) -> "MapRange":
         """Create Map Range with operation 'Smooth Step'. Smooth Hermite edge interpolation between From Min and From Max values"""
         return cls(
@@ -5040,6 +5308,8 @@ class MapRange(BaseNode):
             from_max=from_max,
             to_min=to_min,
             to_max=to_max,
+            clamp=clamp,
+            data_type=data_type,
         )
 
     @classmethod
@@ -5050,6 +5320,9 @@ class MapRange(BaseNode):
         from_max: InputFloat = 1.0,
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
+        *,
+        clamp: bool = False,
+        data_type: Literal["FLOAT", "FLOAT_VECTOR"] = "FLOAT",
     ) -> "MapRange":
         """Create Map Range with operation 'Smoother Step'. Smoother Hermite edge interpolation between From Min and From Max values"""
         return cls(
@@ -5059,6 +5332,8 @@ class MapRange(BaseNode):
             from_max=from_max,
             to_min=to_min,
             to_max=to_max,
+            clamp=clamp,
+            data_type=data_type,
         )
 
     @classmethod
@@ -5069,6 +5344,11 @@ class MapRange(BaseNode):
         from_max: InputFloat = 1.0,
         to_min: InputFloat = 0.0,
         to_max: InputFloat = 1.0,
+        *,
+        clamp: bool = False,
+        interpolation_type: Literal[
+            "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
+        ] = "LINEAR",
     ) -> "MapRange":
         """Create Map Range with operation 'Float'. Floating-point value"""
         return cls(
@@ -5078,25 +5358,34 @@ class MapRange(BaseNode):
             from_max=from_max,
             to_min=to_min,
             to_max=to_max,
+            clamp=clamp,
+            interpolation_type=interpolation_type,
         )
 
     @classmethod
     def vector(
         cls,
-        vector: InputVector = (0.0, 0.0, 0.0),
-        from_min3: InputVector = (0.0, 0.0, 0.0),
-        from_max3: InputVector = (1.0, 1.0, 1.0),
-        to_min3: InputVector = (0.0, 0.0, 0.0),
-        to_max3: InputVector = (1.0, 1.0, 1.0),
+        vector: InputVector = None,
+        from_min: InputVector = (0.0, 0.0, 0.0),
+        from_max: InputVector = (1.0, 1.0, 1.0),
+        to_min: InputVector = (0.0, 0.0, 0.0),
+        to_max: InputVector = (1.0, 1.0, 1.0),
+        *,
+        clamp: bool = False,
+        interpolation_type: Literal[
+            "LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"
+        ] = "LINEAR",
     ) -> "MapRange":
         """Create Map Range with operation 'Vector'. 3D vector with floating-point values"""
         return cls(
             data_type="FLOAT_VECTOR",
             vector=vector,
-            from_min_float3=from_min3,
-            from_max_float3=from_max3,
-            to_min_float3=to_min3,
-            to_max_float3=to_max3,
+            from_min_float3=from_min,
+            from_max_float3=from_max,
+            to_min_float3=to_min,
+            to_max_float3=to_max,
+            clamp=clamp,
+            interpolation_type=interpolation_type,
         )
 
     @property
@@ -5104,7 +5393,7 @@ class MapRange(BaseNode):
         return self.node.clamp
 
     @clamp.setter
-    def clamp(self, value: bool):
+    def clamp(self, value: bool) -> None:
         self.node.clamp = value
 
     @property
@@ -5116,7 +5405,7 @@ class MapRange(BaseNode):
     @interpolation_type.setter
     def interpolation_type(
         self, value: Literal["LINEAR", "STEPPED", "SMOOTHSTEP", "SMOOTHERSTEP"]
-    ):
+    ) -> None:
         self.node.interpolation_type = value
 
     @property
@@ -5124,7 +5413,7 @@ class MapRange(BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "FLOAT_VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -5299,24 +5588,56 @@ class Math(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def add(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def add(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Add'. A + B"""
-        return cls(operation="ADD", value=value, value_001=value_001)
+        return cls(
+            operation="ADD", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def subtract(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def subtract(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Subtract'. A - B"""
-        return cls(operation="SUBTRACT", value=value, value_001=value_001)
+        return cls(
+            operation="SUBTRACT", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def multiply(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def multiply(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Multiply'. A * B"""
-        return cls(operation="MULTIPLY", value=value, value_001=value_001)
+        return cls(
+            operation="MULTIPLY", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def divide(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def divide(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Divide'. A / B"""
-        return cls(operation="DIVIDE", value=value, value_001=value_001)
+        return cls(
+            operation="DIVIDE", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
     def multiply_add(
@@ -5324,6 +5645,8 @@ class Math(BaseNode):
         value: InputFloat = 0.5,
         value_001: InputFloat = 0.5,
         value_002: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
     ) -> "Math":
         """Create Math with operation 'Multiply Add'. A * B + C"""
         return cls(
@@ -5331,64 +5654,116 @@ class Math(BaseNode):
             value=value,
             value_001=value_001,
             value_002=value_002,
+            use_clamp=use_clamp,
         )
 
     @classmethod
-    def power(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def power(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Power'. A power B"""
-        return cls(operation="POWER", value=value, value_001=value_001)
+        return cls(
+            operation="POWER", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def logarithm(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def logarithm(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Logarithm'. Logarithm A base B"""
-        return cls(operation="LOGARITHM", value=value, value_001=value_001)
+        return cls(
+            operation="LOGARITHM", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def square_root(cls, value: InputFloat = 0.5) -> "Math":
+    def square_root(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Square Root'. Square root of A"""
-        return cls(operation="SQRT", value=value)
+        return cls(operation="SQRT", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def inverse_square_root(cls, value: InputFloat = 0.5) -> "Math":
+    def inverse_square_root(
+        cls, value: InputFloat = 0.5, *, use_clamp: bool = False
+    ) -> "Math":
         """Create Math with operation 'Inverse Square Root'. 1 / Square root of A"""
-        return cls(operation="INVERSE_SQRT", value=value)
+        return cls(operation="INVERSE_SQRT", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def absolute(cls, value: InputFloat = 0.5) -> "Math":
+    def absolute(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Absolute'. Magnitude of A"""
-        return cls(operation="ABSOLUTE", value=value)
+        return cls(operation="ABSOLUTE", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def exponent(cls, value: InputFloat = 0.5) -> "Math":
+    def exponent(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Exponent'. exp(A)"""
-        return cls(operation="EXPONENT", value=value)
+        return cls(operation="EXPONENT", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def minimum(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def minimum(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Minimum'. The minimum from A and B"""
-        return cls(operation="MINIMUM", value=value, value_001=value_001)
+        return cls(
+            operation="MINIMUM", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def maximum(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def maximum(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Maximum'. The maximum from A and B"""
-        return cls(operation="MAXIMUM", value=value, value_001=value_001)
+        return cls(
+            operation="MAXIMUM", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def less_than(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def less_than(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Less Than'. 1 if A < B else 0"""
-        return cls(operation="LESS_THAN", value=value, value_001=value_001)
+        return cls(
+            operation="LESS_THAN", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
     def greater_than(
-        cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
     ) -> "Math":
         """Create Math with operation 'Greater Than'. 1 if A > B else 0"""
-        return cls(operation="GREATER_THAN", value=value, value_001=value_001)
+        return cls(
+            operation="GREATER_THAN",
+            value=value,
+            value_001=value_001,
+            use_clamp=use_clamp,
+        )
 
     @classmethod
-    def sign(cls, value: InputFloat = 0.5) -> "Math":
+    def sign(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Sign'. Returns the sign of A"""
-        return cls(operation="SIGN", value=value)
+        return cls(operation="SIGN", value=value, use_clamp=use_clamp)
 
     @classmethod
     def compare(
@@ -5396,10 +5771,16 @@ class Math(BaseNode):
         value: InputFloat = 0.5,
         value_001: InputFloat = 0.5,
         value_002: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
     ) -> "Math":
         """Create Math with operation 'Compare'. 1 if (A == B) within tolerance C else 0"""
         return cls(
-            operation="COMPARE", value=value, value_001=value_001, value_002=value_002
+            operation="COMPARE",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+            use_clamp=use_clamp,
         )
 
     @classmethod
@@ -5408,6 +5789,8 @@ class Math(BaseNode):
         value: InputFloat = 0.5,
         value_001: InputFloat = 0.5,
         value_002: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
     ) -> "Math":
         """Create Math with operation 'Smooth Minimum'. The minimum from A and B with smoothing C"""
         return cls(
@@ -5415,6 +5798,7 @@ class Math(BaseNode):
             value=value,
             value_001=value_001,
             value_002=value_002,
+            use_clamp=use_clamp,
         )
 
     @classmethod
@@ -5423,6 +5807,8 @@ class Math(BaseNode):
         value: InputFloat = 0.5,
         value_001: InputFloat = 0.5,
         value_002: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
     ) -> "Math":
         """Create Math with operation 'Smooth Maximum'. The maximum from A and B with smoothing C"""
         return cls(
@@ -5430,46 +5816,62 @@ class Math(BaseNode):
             value=value,
             value_001=value_001,
             value_002=value_002,
+            use_clamp=use_clamp,
         )
 
     @classmethod
-    def round(cls, value: InputFloat = 0.5) -> "Math":
+    def round(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Round'. Round A to the nearest integer. Round upward if the fraction part is 0.5"""
-        return cls(operation="ROUND", value=value)
+        return cls(operation="ROUND", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def floor(cls, value: InputFloat = 0.5) -> "Math":
+    def floor(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Floor'. The largest integer smaller than or equal A"""
-        return cls(operation="FLOOR", value=value)
+        return cls(operation="FLOOR", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def ceil(cls, value: InputFloat = 0.5) -> "Math":
+    def ceil(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Ceil'. The smallest integer greater than or equal A"""
-        return cls(operation="CEIL", value=value)
+        return cls(operation="CEIL", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def truncate(cls, value: InputFloat = 0.5) -> "Math":
+    def truncate(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Truncate'. The integer part of A, removing fractional digits"""
-        return cls(operation="TRUNC", value=value)
+        return cls(operation="TRUNC", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def fraction(cls, value: InputFloat = 0.5) -> "Math":
+    def fraction(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Fraction'. The fraction part of A"""
-        return cls(operation="FRACT", value=value)
+        return cls(operation="FRACT", value=value, use_clamp=use_clamp)
 
     @classmethod
     def truncated_modulo(
-        cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
     ) -> "Math":
         """Create Math with operation 'Truncated Modulo'. The remainder of truncated division using fmod(A,B)"""
-        return cls(operation="MODULO", value=value, value_001=value_001)
+        return cls(
+            operation="MODULO", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
     def floored_modulo(
-        cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
     ) -> "Math":
         """Create Math with operation 'Floored Modulo'. The remainder of floored division"""
-        return cls(operation="FLOORED_MODULO", value=value, value_001=value_001)
+        return cls(
+            operation="FLOORED_MODULO",
+            value=value,
+            value_001=value_001,
+            use_clamp=use_clamp,
+        )
 
     @classmethod
     def wrap(
@@ -5477,81 +5879,117 @@ class Math(BaseNode):
         value: InputFloat = 0.5,
         value_001: InputFloat = 0.5,
         value_002: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
     ) -> "Math":
         """Create Math with operation 'Wrap'. Wrap value to range, wrap(A,B)"""
         return cls(
-            operation="WRAP", value=value, value_001=value_001, value_002=value_002
+            operation="WRAP",
+            value=value,
+            value_001=value_001,
+            value_002=value_002,
+            use_clamp=use_clamp,
         )
 
     @classmethod
-    def snap(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def snap(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Snap'. Snap to increment, snap(A,B)"""
-        return cls(operation="SNAP", value=value, value_001=value_001)
+        return cls(
+            operation="SNAP", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def ping_pong(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def ping_pong(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Ping-Pong'. Wraps a value and reverses every other cycle (A,B)"""
-        return cls(operation="PINGPONG", value=value, value_001=value_001)
+        return cls(
+            operation="PINGPONG", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def sine(cls, value: InputFloat = 0.5) -> "Math":
+    def sine(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Sine'. sin(A)"""
-        return cls(operation="SINE", value=value)
+        return cls(operation="SINE", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def cosine(cls, value: InputFloat = 0.5) -> "Math":
+    def cosine(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Cosine'. cos(A)"""
-        return cls(operation="COSINE", value=value)
+        return cls(operation="COSINE", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def tangent(cls, value: InputFloat = 0.5) -> "Math":
+    def tangent(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Tangent'. tan(A)"""
-        return cls(operation="TANGENT", value=value)
+        return cls(operation="TANGENT", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def arcsine(cls, value: InputFloat = 0.5) -> "Math":
+    def arcsine(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Arcsine'. arcsin(A)"""
-        return cls(operation="ARCSINE", value=value)
+        return cls(operation="ARCSINE", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def arccosine(cls, value: InputFloat = 0.5) -> "Math":
+    def arccosine(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Arccosine'. arccos(A)"""
-        return cls(operation="ARCCOSINE", value=value)
+        return cls(operation="ARCCOSINE", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def arctangent(cls, value: InputFloat = 0.5) -> "Math":
+    def arctangent(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'Arctangent'. arctan(A)"""
-        return cls(operation="ARCTANGENT", value=value)
+        return cls(operation="ARCTANGENT", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def arctan2(cls, value: InputFloat = 0.5, value_001: InputFloat = 0.5) -> "Math":
+    def arctan2(
+        cls,
+        value: InputFloat = 0.5,
+        value_001: InputFloat = 0.5,
+        *,
+        use_clamp: bool = False,
+    ) -> "Math":
         """Create Math with operation 'Arctan2'. The signed angle arctan(A / B)"""
-        return cls(operation="ARCTAN2", value=value, value_001=value_001)
+        return cls(
+            operation="ARCTAN2", value=value, value_001=value_001, use_clamp=use_clamp
+        )
 
     @classmethod
-    def hyperbolic_sine(cls, value: InputFloat = 0.5) -> "Math":
+    def hyperbolic_sine(
+        cls, value: InputFloat = 0.5, *, use_clamp: bool = False
+    ) -> "Math":
         """Create Math with operation 'Hyperbolic Sine'. sinh(A)"""
-        return cls(operation="SINH", value=value)
+        return cls(operation="SINH", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def hyperbolic_cosine(cls, value: InputFloat = 0.5) -> "Math":
+    def hyperbolic_cosine(
+        cls, value: InputFloat = 0.5, *, use_clamp: bool = False
+    ) -> "Math":
         """Create Math with operation 'Hyperbolic Cosine'. cosh(A)"""
-        return cls(operation="COSH", value=value)
+        return cls(operation="COSH", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def hyperbolic_tangent(cls, value: InputFloat = 0.5) -> "Math":
+    def hyperbolic_tangent(
+        cls, value: InputFloat = 0.5, *, use_clamp: bool = False
+    ) -> "Math":
         """Create Math with operation 'Hyperbolic Tangent'. tanh(A)"""
-        return cls(operation="TANH", value=value)
+        return cls(operation="TANH", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def to_radians(cls, value: InputFloat = 0.5) -> "Math":
+    def to_radians(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'To Radians'. Convert from degrees to radians"""
-        return cls(operation="RADIANS", value=value)
+        return cls(operation="RADIANS", value=value, use_clamp=use_clamp)
 
     @classmethod
-    def to_degrees(cls, value: InputFloat = 0.5) -> "Math":
+    def to_degrees(cls, value: InputFloat = 0.5, *, use_clamp: bool = False) -> "Math":
         """Create Math with operation 'To Degrees'. Convert from radians to degrees"""
-        return cls(operation="DEGREES", value=value)
+        return cls(operation="DEGREES", value=value, use_clamp=use_clamp)
 
     @property
     def operation(
@@ -5647,7 +6085,7 @@ class Math(BaseNode):
             "RADIANS",
             "DEGREES",
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
     @property
@@ -5655,7 +6093,7 @@ class Math(BaseNode):
         return self.node.use_clamp
 
     @use_clamp.setter
-    def use_clamp(self, value: bool):
+    def use_clamp(self, value: bool) -> None:
         self.node.use_clamp = value
 
 
@@ -5755,6 +6193,431 @@ class MatrixSVD(BaseNode):
         key_args = {"Matrix": matrix}
 
         self._establish_links(**key_args)
+
+
+class Mix(BaseNode):
+    """
+    Mix values by a factor
+
+    Parameters
+    ----------
+    factor_float : InputFloat
+        Factor
+    factor_vector : InputVector
+        Factor
+    a_float : InputFloat
+        A
+    b_float : InputFloat
+        B
+    a_vector : InputVector
+        A
+    b_vector : InputVector
+        B
+    a_color : InputColor
+        A
+    b_color : InputColor
+        B
+    a_rotation : InputRotation
+        A
+    b_rotation : InputRotation
+        B
+
+    Inputs
+    ------
+    i.factor_float : FloatSocket
+        Factor
+    i.factor_vector : VectorSocket
+        Factor
+    i.a_float : FloatSocket
+        A
+    i.b_float : FloatSocket
+        B
+    i.a_vector : VectorSocket
+        A
+    i.b_vector : VectorSocket
+        B
+    i.a_color : ColorSocket
+        A
+    i.b_color : ColorSocket
+        B
+    i.a_rotation : RotationSocket
+        A
+    i.b_rotation : RotationSocket
+        B
+
+    Outputs
+    -------
+    o.result_float : FloatSocket
+        Result
+    o.result_vector : VectorSocket
+        Result
+    o.result_color : ColorSocket
+        Result
+    o.result_rotation : RotationSocket
+        Result
+    """
+
+    _bl_idname = "ShaderNodeMix"
+    node: bpy.types.ShaderNodeMix
+
+    class _Inputs(SocketAccessor):
+        factor_float: FloatSocket
+        """Factor"""
+        factor_vector: VectorSocket
+        """Factor"""
+        a_float: FloatSocket
+        """A"""
+        b_float: FloatSocket
+        """B"""
+        a_vector: VectorSocket
+        """A"""
+        b_vector: VectorSocket
+        """B"""
+        a_color: ColorSocket
+        """A"""
+        b_color: ColorSocket
+        """B"""
+        a_rotation: RotationSocket
+        """A"""
+        b_rotation: RotationSocket
+        """B"""
+
+    class _Outputs(SocketAccessor):
+        result_float: FloatSocket
+        """Result"""
+        result_vector: VectorSocket
+        """Result"""
+        result_color: ColorSocket
+        """Result"""
+        result_rotation: RotationSocket
+        """Result"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        factor_float: InputFloat = 1.0,
+        factor_vector: InputVector = (0.5, 0.5, 0.5),
+        a_float: InputFloat = 0.0,
+        b_float: InputFloat = 0.0,
+        a_vector: InputVector = (0.0, 0.0, 0.0),
+        b_vector: InputVector = (0.0, 0.0, 0.0),
+        a_color: InputColor = (0.5, 0.5, 0.5, 1.0),
+        b_color: InputColor = (0.5, 0.5, 0.5, 1.0),
+        a_rotation: InputRotation = (0.0, 0.0, 0.0),
+        b_rotation: InputRotation = (0.0, 0.0, 0.0),
+        *,
+        data_type: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"] = "FLOAT",
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
+    ):
+        super().__init__()
+        key_args = {
+            "Factor_Float": factor_float,
+            "Factor_Vector": factor_vector,
+            "A_Float": a_float,
+            "B_Float": b_float,
+            "A_Vector": a_vector,
+            "B_Vector": b_vector,
+            "A_Color": a_color,
+            "B_Color": b_color,
+            "A_Rotation": a_rotation,
+            "B_Rotation": b_rotation,
+        }
+        self.data_type = data_type
+        self.factor_mode = factor_mode
+        self.blend_type = blend_type
+        self.clamp_factor = clamp_factor
+        self.clamp_result = clamp_result
+        self._establish_links(**key_args)
+
+    @classmethod
+    def float(
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        *,
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
+    ) -> "Mix":
+        """Create Mix with operation 'Float'."""
+        return cls(
+            data_type="FLOAT",
+            factor_float=factor,
+            a_float=a,
+            b_float=b,
+            factor_mode=factor_mode,
+            blend_type=blend_type,
+            clamp_factor=clamp_factor,
+            clamp_result=clamp_result,
+        )
+
+    @classmethod
+    def vector(
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputVector = (0.0, 0.0, 0.0),
+        b: InputVector = (0.0, 0.0, 0.0),
+        *,
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
+    ) -> "Mix":
+        """Create Mix with operation 'Vector'."""
+        return cls(
+            data_type="VECTOR",
+            factor_float=factor,
+            a_vector=a,
+            b_vector=b,
+            factor_mode=factor_mode,
+            blend_type=blend_type,
+            clamp_factor=clamp_factor,
+            clamp_result=clamp_result,
+        )
+
+    @classmethod
+    def color(
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputColor = (0.5, 0.5, 0.5, 1.0),
+        b: InputColor = (0.5, 0.5, 0.5, 1.0),
+        *,
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
+    ) -> "Mix":
+        """Create Mix with operation 'Color'."""
+        return cls(
+            data_type="RGBA",
+            factor_float=factor,
+            a_color=a,
+            b_color=b,
+            factor_mode=factor_mode,
+            blend_type=blend_type,
+            clamp_factor=clamp_factor,
+            clamp_result=clamp_result,
+        )
+
+    @classmethod
+    def rotation(
+        cls,
+        factor: InputFloat = 1.0,
+        a: InputRotation = (0.0, 0.0, 0.0),
+        b: InputRotation = (0.0, 0.0, 0.0),
+        *,
+        factor_mode: Literal["UNIFORM", "NON_UNIFORM"] = "UNIFORM",
+        blend_type: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ] = "MIX",
+        clamp_factor: bool = False,
+        clamp_result: bool = False,
+    ) -> "Mix":
+        """Create Mix with operation 'Rotation'."""
+        return cls(
+            data_type="ROTATION",
+            factor_float=factor,
+            a_rotation=a,
+            b_rotation=b,
+            factor_mode=factor_mode,
+            blend_type=blend_type,
+            clamp_factor=clamp_factor,
+            clamp_result=clamp_result,
+        )
+
+    @property
+    def data_type(self) -> Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]:
+        return self.node.data_type
+
+    @data_type.setter
+    def data_type(self, value: Literal["FLOAT", "VECTOR", "RGBA", "ROTATION"]) -> None:
+        self.node.data_type = value
+
+    @property
+    def factor_mode(self) -> Literal["UNIFORM", "NON_UNIFORM"]:
+        return self.node.factor_mode
+
+    @factor_mode.setter
+    def factor_mode(self, value: Literal["UNIFORM", "NON_UNIFORM"]) -> None:
+        self.node.factor_mode = value
+
+    @property
+    def blend_type(
+        self,
+    ) -> Literal[
+        "MIX",
+        "DARKEN",
+        "MULTIPLY",
+        "BURN",
+        "LIGHTEN",
+        "SCREEN",
+        "DODGE",
+        "ADD",
+        "OVERLAY",
+        "SOFT_LIGHT",
+        "LINEAR_LIGHT",
+        "DIFFERENCE",
+        "EXCLUSION",
+        "SUBTRACT",
+        "DIVIDE",
+        "HUE",
+        "SATURATION",
+        "COLOR",
+        "VALUE",
+    ]:
+        return self.node.blend_type
+
+    @blend_type.setter
+    def blend_type(
+        self,
+        value: Literal[
+            "MIX",
+            "DARKEN",
+            "MULTIPLY",
+            "BURN",
+            "LIGHTEN",
+            "SCREEN",
+            "DODGE",
+            "ADD",
+            "OVERLAY",
+            "SOFT_LIGHT",
+            "LINEAR_LIGHT",
+            "DIFFERENCE",
+            "EXCLUSION",
+            "SUBTRACT",
+            "DIVIDE",
+            "HUE",
+            "SATURATION",
+            "COLOR",
+            "VALUE",
+        ],
+    ) -> None:
+        self.node.blend_type = value
+
+    @property
+    def clamp_factor(self) -> bool:
+        return self.node.clamp_factor
+
+    @clamp_factor.setter
+    def clamp_factor(self, value: bool) -> None:
+        self.node.clamp_factor = value
+
+    @property
+    def clamp_result(self) -> bool:
+        return self.node.clamp_result
+
+    @clamp_result.setter
+    def clamp_result(self, value: bool) -> None:
+        self.node.clamp_result = value
 
 
 class MultiplyMatrices(BaseNode):
@@ -5888,8 +6751,8 @@ class PackUVIslands(BaseNode):
 
     def __init__(
         self,
-        uv: InputVector = (0.0, 0.0, 0.0),
-        selection: InputBoolean = True,
+        uv: InputVector = None,
+        selection: InputBoolean = None,
         margin: InputFloat = 0.001,
         rotate: InputBoolean = True,
         method: InputMenu
@@ -6101,7 +6964,7 @@ class RandomValue[T](BaseNode):
         self,
         min: InputAny = 0.0,
         max: InputAny = 1.0,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
         probability: InputFloat = None,
         *,
@@ -6126,7 +6989,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputFloat = 0.0,
         max: InputFloat = 1.0,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[FloatSocket]":
         """Create Random Value with operation 'Float'. Floating-point value"""
@@ -6137,7 +7000,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputInteger = 0,
         max: InputInteger = 100,
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[IntegerSocket]":
         """Create Random Value with operation 'Integer'. 32-bit integer"""
@@ -6145,7 +7008,10 @@ class RandomValue[T](BaseNode):
 
     @classmethod
     def boolean(
-        cls, probability: InputFloat = 0.5, id: InputInteger = 0, seed: InputInteger = 0
+        cls,
+        probability: InputFloat = 0.5,
+        id: InputInteger = None,
+        seed: InputInteger = 0,
     ) -> "RandomValue[BooleanSocket]":
         """Create Random Value with operation 'Boolean'. True or false"""
         return RandomValue(
@@ -6157,7 +7023,7 @@ class RandomValue[T](BaseNode):
         cls,
         min: InputVector = (0.0, 0.0, 0.0),
         max: InputVector = (1.0, 1.0, 1.0),
-        id: InputInteger = 0,
+        id: InputInteger = None,
         seed: InputInteger = 0,
     ) -> "RandomValue[VectorSocket]":
         """Create Random Value with operation 'Vector'. 3D vector with floating-point values"""
@@ -6168,7 +7034,9 @@ class RandomValue[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]):
+    def data_type(
+        self, value: Literal["FLOAT", "INT", "BOOLEAN", "FLOAT_VECTOR"]
+    ) -> None:
         self.node.data_type = value
 
 
@@ -6337,7 +7205,7 @@ class RotateEuler(BaseNode):
 
     def __init__(
         self,
-        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = None,
         rotate_by: InputVector = (0.0, 0.0, 0.0),
         axis: InputVector = None,
         angle: InputFloat = None,
@@ -6362,30 +7230,40 @@ class RotateEuler(BaseNode):
     @classmethod
     def axis_angle(
         cls,
-        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = None,
         axis: InputVector = (0.0, 0.0, 1.0),
         angle: InputFloat = 0.0,
+        *,
+        space: Literal["OBJECT", "LOCAL"] = "OBJECT",
     ) -> "RotateEuler":
         """Create Rotate Euler with operation 'Axis Angle'. Rotate around an axis by an angle"""
         return cls(
-            rotation_type="AXIS_ANGLE", rotation=rotation, axis=axis, angle=angle
+            rotation_type="AXIS_ANGLE",
+            rotation=rotation,
+            axis=axis,
+            angle=angle,
+            space=space,
         )
 
     @classmethod
     def euler(
         cls,
-        rotation: InputVector = (0.0, 0.0, 0.0),
+        rotation: InputVector = None,
         rotate_by: InputVector = (0.0, 0.0, 0.0),
+        *,
+        space: Literal["OBJECT", "LOCAL"] = "OBJECT",
     ) -> "RotateEuler":
         """Create Rotate Euler with operation 'Euler'. Rotate around the X, Y, and Z axes"""
-        return cls(rotation_type="EULER", rotation=rotation, rotate_by=rotate_by)
+        return cls(
+            rotation_type="EULER", rotation=rotation, rotate_by=rotate_by, space=space
+        )
 
     @property
     def rotation_type(self) -> Literal["AXIS_ANGLE", "EULER"]:
         return self.node.rotation_type
 
     @rotation_type.setter
-    def rotation_type(self, value: Literal["AXIS_ANGLE", "EULER"]):
+    def rotation_type(self, value: Literal["AXIS_ANGLE", "EULER"]) -> None:
         self.node.rotation_type = value
 
     @property
@@ -6393,7 +7271,7 @@ class RotateEuler(BaseNode):
         return self.node.space
 
     @space.setter
-    def space(self, value: Literal["OBJECT", "LOCAL"]):
+    def space(self, value: Literal["OBJECT", "LOCAL"]) -> None:
         self.node.space = value
 
 
@@ -6458,7 +7336,7 @@ class RotateRotation(BaseNode):
         return self.node.rotation_space
 
     @rotation_space.setter
-    def rotation_space(self, value: Literal["GLOBAL", "LOCAL"]):
+    def rotation_space(self, value: Literal["GLOBAL", "LOCAL"]) -> None:
         self.node.rotation_space = value
 
 
@@ -6815,7 +7693,7 @@ class SeparateBundle(_SeparateBundleMixin, BaseNode):
         return self.node.define_signature
 
     @define_signature.setter
-    def define_signature(self, value: bool):
+    def define_signature(self, value: bool) -> None:
         self.node.define_signature = value
 
 
@@ -6900,7 +7778,7 @@ class SeparateColor(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["RGB", "HSV", "HSL"]):
+    def mode(self, value: Literal["RGB", "HSV", "HSL"]) -> None:
         self.node.mode = value
 
 
@@ -7291,9 +8169,9 @@ class SortList[T](BaseNode):
     def __init__(
         self,
         list: InputAny = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
         *,
         socket_type: Literal[
             "FLOAT",
@@ -7330,9 +8208,9 @@ class SortList[T](BaseNode):
     def float(
         cls,
         list: InputFloatList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[FloatSocketList]":
         """Create Sort List with operation 'Float'."""
         return SortList(
@@ -7347,9 +8225,9 @@ class SortList[T](BaseNode):
     def integer(
         cls,
         list: InputIntegerList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[IntegerSocketList]":
         """Create Sort List with operation 'Integer'."""
         return SortList(
@@ -7364,9 +8242,9 @@ class SortList[T](BaseNode):
     def boolean(
         cls,
         list: InputBooleanList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[BooleanSocketList]":
         """Create Sort List with operation 'Boolean'."""
         return SortList(
@@ -7381,9 +8259,9 @@ class SortList[T](BaseNode):
     def vector(
         cls,
         list: InputVectorList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[VectorSocketList]":
         """Create Sort List with operation 'Vector'."""
         return SortList(
@@ -7398,9 +8276,9 @@ class SortList[T](BaseNode):
     def color(
         cls,
         list: InputColorList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ColorSocketList]":
         """Create Sort List with operation 'Color'."""
         return SortList(
@@ -7415,9 +8293,9 @@ class SortList[T](BaseNode):
     def rotation(
         cls,
         list: InputRotationList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[RotationSocketList]":
         """Create Sort List with operation 'Rotation'."""
         return SortList(
@@ -7432,9 +8310,9 @@ class SortList[T](BaseNode):
     def matrix(
         cls,
         list: InputMatrixList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MatrixSocketList]":
         """Create Sort List with operation 'Matrix'."""
         return SortList(
@@ -7449,9 +8327,9 @@ class SortList[T](BaseNode):
     def string(
         cls,
         list: InputStringList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[StringSocketList]":
         """Create Sort List with operation 'String'."""
         return SortList(
@@ -7466,9 +8344,9 @@ class SortList[T](BaseNode):
     def menu(
         cls,
         list: InputMenuList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MenuSocketList]":
         """Create Sort List with operation 'Menu'."""
         return SortList(
@@ -7483,9 +8361,9 @@ class SortList[T](BaseNode):
     def object(
         cls,
         list: InputObjectList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ObjectSocketList]":
         """Create Sort List with operation 'Object'."""
         return SortList(
@@ -7500,9 +8378,9 @@ class SortList[T](BaseNode):
     def image(
         cls,
         list: InputImageList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ImageSocketList]":
         """Create Sort List with operation 'Image'."""
         return SortList(
@@ -7517,9 +8395,9 @@ class SortList[T](BaseNode):
     def geometry(
         cls,
         list: InputGeometryList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[GeometrySocketList]":
         """Create Sort List with operation 'Geometry'."""
         return SortList(
@@ -7534,9 +8412,9 @@ class SortList[T](BaseNode):
     def collection(
         cls,
         list: InputCollectionList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[CollectionSocketList]":
         """Create Sort List with operation 'Collection'."""
         return SortList(
@@ -7551,9 +8429,9 @@ class SortList[T](BaseNode):
     def material(
         cls,
         list: InputMaterialList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[MaterialSocketList]":
         """Create Sort List with operation 'Material'."""
         return SortList(
@@ -7568,9 +8446,9 @@ class SortList[T](BaseNode):
     def bundle(
         cls,
         list: InputBundleList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[BundleSocketList]":
         """Create Sort List with operation 'Bundle'."""
         return SortList(
@@ -7585,9 +8463,9 @@ class SortList[T](BaseNode):
     def closure(
         cls,
         list: InputClosureList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[ClosureSocketList]":
         """Create Sort List with operation 'Closure'."""
         return SortList(
@@ -7602,9 +8480,9 @@ class SortList[T](BaseNode):
     def font(
         cls,
         list: InputFontList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[FontSocketList]":
         """Create Sort List with operation 'Font'."""
         return SortList(
@@ -7619,9 +8497,9 @@ class SortList[T](BaseNode):
     def sound(
         cls,
         list: InputSoundList = None,
-        selection: InputBoolean = True,
-        group_id: InputInteger = 0,
-        sort_weight: InputFloat = 0.0,
+        selection: InputBoolean = None,
+        group_id: InputInteger = None,
+        sort_weight: InputFloat = None,
     ) -> "SortList[SoundSocketList]":
         """Create Sort List with operation 'Sound'."""
         return SortList(
@@ -7680,7 +8558,7 @@ class SortList[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
 
@@ -7827,17 +8705,43 @@ class StoreBundleItem[T](BaseNode):
 
     @classmethod
     def float(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Float'."""
-        return StoreBundleItem(socket_type="FLOAT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="FLOAT",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def integer(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputInteger = 0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[IntegerSocket]":
         """Create Store Bundle Item with operation 'Integer'."""
-        return StoreBundleItem(socket_type="INT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="INT",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def boolean(
@@ -7845,10 +8749,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[BooleanSocket]":
         """Create Store Bundle Item with operation 'Boolean'."""
         return StoreBundleItem(
-            socket_type="BOOLEAN", bundle=bundle, path=path, item=item
+            socket_type="BOOLEAN",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -7857,10 +8769,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputVector = (0.0, 0.0, 0.0),
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[VectorSocket]":
         """Create Store Bundle Item with operation 'Vector'."""
         return StoreBundleItem(
-            socket_type="VECTOR", bundle=bundle, path=path, item=item
+            socket_type="VECTOR",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -7869,9 +8789,19 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputColor = (0.8, 0.8, 0.8, 1.0),
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[ColorSocket]":
         """Create Store Bundle Item with operation 'Color'."""
-        return StoreBundleItem(socket_type="RGBA", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="RGBA",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def rotation(
@@ -7879,10 +8809,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputRotation = (0.0, 0.0, 0.0),
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[RotationSocket]":
         """Create Store Bundle Item with operation 'Rotation'."""
         return StoreBundleItem(
-            socket_type="ROTATION", bundle=bundle, path=path, item=item
+            socket_type="ROTATION",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -7891,27 +8829,59 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputMatrix = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[MatrixSocket]":
         """Create Store Bundle Item with operation 'Matrix'."""
         return StoreBundleItem(
-            socket_type="MATRIX", bundle=bundle, path=path, item=item
+            socket_type="MATRIX",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
     def string(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputString = ""
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputString = "",
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[StringSocket]":
         """Create Store Bundle Item with operation 'String'."""
         return StoreBundleItem(
-            socket_type="STRING", bundle=bundle, path=path, item=item
+            socket_type="STRING",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
     def menu(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputMenu = None
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputMenu = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[MenuSocket]":
         """Create Store Bundle Item with operation 'Menu'."""
-        return StoreBundleItem(socket_type="MENU", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="MENU",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def object(
@@ -7919,18 +8889,39 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputObject = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[ObjectSocket]":
         """Create Store Bundle Item with operation 'Object'."""
         return StoreBundleItem(
-            socket_type="OBJECT", bundle=bundle, path=path, item=item
+            socket_type="OBJECT",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
     def image(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputImage = None
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputImage = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[ImageSocket]":
         """Create Store Bundle Item with operation 'Image'."""
-        return StoreBundleItem(socket_type="IMAGE", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="IMAGE",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def geometry(
@@ -7938,10 +8929,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputGeometry = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[GeometrySocket]":
         """Create Store Bundle Item with operation 'Geometry'."""
         return StoreBundleItem(
-            socket_type="GEOMETRY", bundle=bundle, path=path, item=item
+            socket_type="GEOMETRY",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -7950,10 +8949,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputCollection = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[CollectionSocket]":
         """Create Store Bundle Item with operation 'Collection'."""
         return StoreBundleItem(
-            socket_type="COLLECTION", bundle=bundle, path=path, item=item
+            socket_type="COLLECTION",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -7962,10 +8969,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputMaterial = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[MaterialSocket]":
         """Create Store Bundle Item with operation 'Material'."""
         return StoreBundleItem(
-            socket_type="MATERIAL", bundle=bundle, path=path, item=item
+            socket_type="MATERIAL",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -7974,10 +8989,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputBundle = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[BundleSocket]":
         """Create Store Bundle Item with operation 'Bundle'."""
         return StoreBundleItem(
-            socket_type="BUNDLE", bundle=bundle, path=path, item=item
+            socket_type="BUNDLE",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -7986,51 +9009,169 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputClosure = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[ClosureSocket]":
         """Create Store Bundle Item with operation 'Closure'."""
         return StoreBundleItem(
-            socket_type="CLOSURE", bundle=bundle, path=path, item=item
+            socket_type="CLOSURE",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
     def font(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFont = None
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFont = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[FontSocket]":
         """Create Store Bundle Item with operation 'Font'."""
-        return StoreBundleItem(socket_type="FONT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="FONT",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def sound(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputSound = None
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputSound = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[SoundSocket]":
         """Create Store Bundle Item with operation 'Sound'."""
-        return StoreBundleItem(socket_type="SOUND", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="SOUND",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def auto(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
         return StoreBundleItem(
-            structure_type="AUTO", bundle=bundle, path=path, item=item
+            structure_type="AUTO",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
     def dynamic(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
         return StoreBundleItem(
-            structure_type="DYNAMIC", bundle=bundle, path=path, item=item
+            structure_type="DYNAMIC",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
     def field(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Field'. Socket expects a field"""
         return StoreBundleItem(
-            structure_type="FIELD", bundle=bundle, path=path, item=item
+            structure_type="FIELD",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -8039,10 +9180,35 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputFloatGrid = None,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Grid'. Socket expects a grid"""
         return StoreBundleItem(
-            structure_type="GRID", bundle=bundle, path=path, item=item
+            structure_type="GRID",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -8051,19 +9217,72 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputFloatList = None,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'List'. Socket expects a list"""
         return StoreBundleItem(
-            structure_type="LIST", bundle=bundle, path=path, item=item
+            structure_type="LIST",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
     def single(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "IMAGE",
+            "GEOMETRY",
+            "COLLECTION",
+            "MATERIAL",
+            "BUNDLE",
+            "CLOSURE",
+            "FONT",
+            "SOUND",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Single'. Socket expects a single value"""
         return StoreBundleItem(
-            structure_type="SINGLE", bundle=bundle, path=path, item=item
+            structure_type="SINGLE",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @property
@@ -8114,7 +9333,7 @@ class StoreBundleItem[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -8126,7 +9345,7 @@ class StoreBundleItem[T](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -8252,7 +9471,7 @@ class StringToValue[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT"]):
+    def data_type(self, value: Literal["FLOAT", "INT"]) -> None:
         self.node.data_type = value
 
 
@@ -8566,7 +9785,7 @@ class Switch[T](BaseNode):
             "FONT",
             "SOUND",
         ],
-    ):
+    ) -> None:
         self.node.input_type = value
 
 
@@ -8938,8 +10157,8 @@ class UVUnwrap(BaseNode):
 
     def __init__(
         self,
-        selection: InputBoolean = True,
-        seam: InputBoolean = False,
+        selection: InputBoolean = None,
+        seam: InputBoolean = None,
         margin: InputFloat = 0.001,
         fill_holes: InputBoolean = True,
         method: InputMenu
@@ -9055,5 +10274,5 @@ class ValueToString[T](BaseNode):
         return self.node.data_type
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT"]):
+    def data_type(self, value: Literal["FLOAT", "INT"]) -> None:
         self.node.data_type = value

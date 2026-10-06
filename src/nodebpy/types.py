@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import enum
 import typing
 from types import EllipsisType
 from typing import Literal
@@ -90,8 +91,68 @@ def _is_default_value(value: InputAny):
     return isinstance(value, (int, float, str, bool, tuple, list, Euler))
 
 
+class Default(enum.Enum):
+    """What an unconnected input reads instead of a stored value.
+
+    Blender lets a group input (and a few built-in inputs, such as Set
+    Position's *Position*) fall back to an implicit field or context value when
+    nothing is linked to it: the socket shows no value in the UI and its stored
+    ``default_value`` is ignored. The members mirror the ``default_input``
+    identifiers of ``bpy.types.NodeTreeInterfaceSocket``.
+
+    A generated asset class spells such a parameter as, for example,
+    ``position: InputVector = Default.POSITION``, so the fallback shows in the
+    signature and the docs. Passing a member to a node constructor leaves the
+    socket untouched — it does not add a link — exactly like ``None``. The
+    same members are accepted by the ``default_input=`` argument of the
+    ``tree.inputs.*`` socket factories.
+    """
+
+    INDEX = "INDEX"
+    ID_OR_INDEX = "ID_OR_INDEX"
+    NORMAL = "NORMAL"
+    POSITION = "POSITION"
+    INSTANCE_TRANSFORM = "INSTANCE_TRANSFORM"
+    HANDLE_LEFT = "HANDLE_LEFT"
+    HANDLE_RIGHT = "HANDLE_RIGHT"
+    SCENE_FRAME = "SCENE_FRAME"
+    UNIFORM_IMAGE_COORDINATES = "UNIFORM_IMAGE_COORDINATES"
+    SELF_OBJECT = "SELF_OBJECT"
+
+    @property
+    def description(self) -> str:
+        """A phrase for docstrings: what the input reads when unconnected."""
+        return _DEFAULT_DESCRIPTIONS[self]
+
+    def __repr__(self) -> str:
+        return f"Default.{self.name}"
+
+    __str__ = __repr__
+
+
+_DEFAULT_DESCRIPTIONS: dict[Default, str] = {
+    Default.INDEX: "The index from the context.",
+    Default.ID_OR_INDEX: 'The "id" attribute if available, otherwise the index.',
+    Default.NORMAL: "The geometry's normal direction.",
+    Default.POSITION: "The position from the context.",
+    Default.INSTANCE_TRANSFORM: "Transformation of each instance from the geometry context.",
+    Default.HANDLE_LEFT: "The left Bezier control point handle from the context.",
+    Default.HANDLE_RIGHT: "The right Bezier control point handle from the context.",
+    Default.SCENE_FRAME: "The current frame in the scene.",
+    Default.UNIFORM_IMAGE_COORDINATES: "The uniform image coordinates of the compositing scene.",
+    Default.SELF_OBJECT: "The object the modifier is on.",
+}
+
+
 # Type aliases for node inputs using typing.Union for runtime compatibility
-InputLinkable = typing.Union["BaseNode", "SocketLinker", NodeSocket, None, EllipsisType]
+InputLinkable = typing.Union[
+    "BaseNode",
+    "SocketLinker",
+    NodeSocket,
+    None,
+    EllipsisType,
+    Default,
+]
 
 InputFloat = typing.Union[
     float,

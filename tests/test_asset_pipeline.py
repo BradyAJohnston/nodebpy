@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for the asset pipeline CLI additions: ``[tool.nodebpy.assets]``
 pyproject configuration, fingerprint stamping with ``ensure``, and the
 ``check`` roundtrip fixed-point verification."""
@@ -280,7 +279,7 @@ def test_check_fails_and_names_the_edited_module(library_blend, tmp_path, capsys
     out = capsys.readouterr().out
     assert "do not survive" in out
     assert "geometry/scale_up.py" in out
-    assert "build && python -m nodebpy.assets dump" in out
+    assert "build && nodebpy dump" in out
 
 
 # ---------------------------------------------------------------------------
@@ -294,7 +293,7 @@ def test_blender_style_argv_separator(monkeypatch, library_blend, tmp_path, caps
     Blender's own argv and is stripped."""
     import sys as _sys
 
-    from nodebpy.assets.__main__ import main
+    from nodebpy.__main__ import main
 
     src = tmp_path / "src"
     monkeypatch.setattr(

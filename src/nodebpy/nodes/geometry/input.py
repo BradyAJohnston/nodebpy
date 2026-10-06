@@ -69,7 +69,7 @@ class Cursor3D(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -103,7 +103,7 @@ class ActiveCamera(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -172,7 +172,7 @@ class ActiveElement(BaseNode):
         return self.node.domain
 
     @domain.setter
-    def domain(self, value: Literal["POINT", "EDGE", "FACE", "LAYER"]):
+    def domain(self, value: Literal["POINT", "EDGE", "FACE", "LAYER"]) -> None:
         self.node.domain = value
 
 
@@ -257,7 +257,7 @@ class BoneInfo(BaseNode):
         return self.node.transform_space
 
     @transform_space.setter
-    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]):
+    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]) -> None:
         self.node.transform_space = value
 
 
@@ -299,7 +299,7 @@ class Boolean(BaseNode):
         return self.node.boolean
 
     @boolean.setter
-    def boolean(self, value: bool):
+    def boolean(self, value: bool) -> None:
         self.node.boolean = value
 
 
@@ -511,7 +511,7 @@ class CollectionInfo(BaseNode):
         return self.node.transform_space
 
     @transform_space.setter
-    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]):
+    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]) -> None:
         self.node.transform_space = value
 
 
@@ -555,7 +555,7 @@ class Color(BaseNode):
         return self.node.value
 
     @value.setter
-    def value(self, value: tuple[float, float, float, float]):
+    def value(self, value: tuple[float, float, float, float]) -> None:
         self.node.value = value
 
 
@@ -615,8 +615,8 @@ class CornersOfEdge(BaseNode):
 
     def __init__(
         self,
-        edge_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        edge_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -685,8 +685,8 @@ class CornersOfFace(BaseNode):
 
     def __init__(
         self,
-        face_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        face_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -755,8 +755,8 @@ class CornersOfVertex(BaseNode):
 
     def __init__(
         self,
-        vertex_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        vertex_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -845,7 +845,7 @@ class CurveTangent(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -879,7 +879,7 @@ class CurveTilt(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -928,7 +928,7 @@ class CurveOfPoint(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, point_index: InputInteger = 0):
+    def __init__(self, point_index: InputInteger = None):
         super().__init__()
         key_args = {"Point Index": point_index}
 
@@ -966,7 +966,7 @@ class EdgeAngle(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1000,7 +1000,7 @@ class EdgeNeighbors(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1053,8 +1053,8 @@ class EdgePathsToSelection(BaseNode):
 
     def __init__(
         self,
-        start_vertices: InputBoolean = True,
-        next_vertex_index: InputInteger = -1,
+        start_vertices: InputBoolean = None,
+        next_vertex_index: InputInteger = None,
     ):
         super().__init__()
         key_args = {
@@ -1104,7 +1104,7 @@ class EdgeVertices(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1153,7 +1153,7 @@ class EdgesOfCorner(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, corner_index: InputInteger = 0):
+    def __init__(self, corner_index: InputInteger = None):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 
@@ -1216,8 +1216,8 @@ class EdgesOfVertex(BaseNode):
 
     def __init__(
         self,
-        vertex_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        vertex_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -1268,7 +1268,7 @@ class EdgesToFaceGroups(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, boundary_edges: InputBoolean = True):
+    def __init__(self, boundary_edges: InputBoolean = None):
         super().__init__()
         key_args = {"Boundary Edges": boundary_edges}
 
@@ -1357,7 +1357,7 @@ class FaceArea(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1402,7 +1402,7 @@ class FaceGroupBoundaries(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, face_set: InputInteger = 0):
+    def __init__(self, face_set: InputInteger = None):
         super().__init__()
         key_args = {"Face Set": face_set}
 
@@ -1440,7 +1440,7 @@ class FaceNeighbors(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1478,7 +1478,7 @@ class FaceSet(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1527,7 +1527,7 @@ class FaceOfCorner(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, corner_index: InputInteger = 0):
+    def __init__(self, corner_index: InputInteger = None):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 
@@ -1561,7 +1561,7 @@ class Font(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1836,7 +1836,7 @@ class HandleTypeSelection(_HandleModeMixin, BaseNode):
         return self.node.handle_type
 
     @handle_type.setter
-    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]):
+    def handle_type(self, value: Literal["FREE", "AUTO", "VECTOR", "ALIGN"]) -> None:
         self.node.handle_type = value
 
     def __init__(
@@ -1878,7 +1878,7 @@ class ID(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1912,7 +1912,7 @@ class Image(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2342,7 +2342,7 @@ class Index(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2425,7 +2425,7 @@ class InstanceReference(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2459,7 +2459,7 @@ class InstanceRotation(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2493,7 +2493,7 @@ class InstanceScale(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2527,7 +2527,7 @@ class InstanceTransform(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2572,7 +2572,7 @@ class Integer(BaseNode):
         return self.node.integer
 
     @integer.setter
-    def integer(self, value: int):
+    def integer(self, value: int) -> None:
         self.node.integer = value
 
 
@@ -2603,7 +2603,7 @@ class IsEdgeSmooth(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2682,7 +2682,7 @@ class IsFaceSmooth(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2716,7 +2716,7 @@ class IsSplineCyclic(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2750,7 +2750,7 @@ class IsViewport(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2784,7 +2784,7 @@ class MaterialIndex(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2822,7 +2822,7 @@ class MeshIsland(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2868,7 +2868,7 @@ class MousePosition(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3035,7 +3035,7 @@ class NamedAttribute[T](BaseNode):
         return NamedAttribute(data_type="QUATERNION", name=name)
 
     @classmethod
-    def input_4x4_matrix(cls, name: InputString = "") -> "NamedAttribute[MatrixSocket]":
+    def matrix(cls, name: InputString = "") -> "NamedAttribute[MatrixSocket]":
         """Create Named Attribute with operation '4x4 Matrix'. Floating point matrix"""
         return NamedAttribute(data_type="FLOAT4X4", name=name)
 
@@ -3065,7 +3065,7 @@ class NamedAttribute[T](BaseNode):
             "QUATERNION",
             "FLOAT4X4",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -3156,7 +3156,7 @@ class Normal(BaseNode):
         return self.node.legacy_corner_normals
 
     @legacy_corner_normals.setter
-    def legacy_corner_normals(self, value: bool):
+    def legacy_corner_normals(self, value: bool) -> None:
         self.node.legacy_corner_normals = value
 
 
@@ -3237,7 +3237,7 @@ class ObjectInfo(BaseNode):
         return self.node.transform_space
 
     @transform_space.setter
-    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]):
+    def transform_space(self, value: Literal["ORIGINAL", "RELATIVE"]) -> None:
         self.node.transform_space = value
 
 
@@ -3287,7 +3287,7 @@ class OffsetCornerInFace(BaseNode):
 
     def __init__(
         self,
-        corner_index: InputInteger = 0,
+        corner_index: InputInteger = None,
         offset: InputInteger = 0,
     ):
         super().__init__()
@@ -3346,7 +3346,7 @@ class OffsetPointInCurve(BaseNode):
 
     def __init__(
         self,
-        point_index: InputInteger = 0,
+        point_index: InputInteger = None,
         offset: InputInteger = 0,
     ):
         super().__init__()
@@ -3411,8 +3411,8 @@ class PointsOfCurve(BaseNode):
 
     def __init__(
         self,
-        curve_index: InputInteger = 0,
-        weights: InputFloat = 0.0,
+        curve_index: InputInteger = None,
+        weights: InputFloat = None,
         sort_index: InputInteger = 0,
     ):
         super().__init__()
@@ -3452,7 +3452,7 @@ class Position(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3486,7 +3486,7 @@ class Radius(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3531,7 +3531,7 @@ class Rotation(BaseNode):
         return self.node.rotation_euler
 
     @rotation_euler.setter
-    def rotation_euler(self, value: Euler | tuple[float, float, float]):
+    def rotation_euler(self, value: Euler | tuple[float, float, float]) -> None:
         self.node.rotation_euler = value
 
 
@@ -3566,7 +3566,7 @@ class SceneTime(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3604,7 +3604,7 @@ class Selection(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3638,7 +3638,7 @@ class SelfObject(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3695,8 +3695,8 @@ class ShortestEdgePaths(BaseNode):
 
     def __init__(
         self,
-        end_vertex: InputBoolean = False,
-        edge_cost: InputFloat = 1.0,
+        end_vertex: InputBoolean = None,
+        edge_cost: InputFloat = None,
     ):
         super().__init__()
         key_args = {"End Vertex": end_vertex, "Edge Cost": edge_cost}
@@ -3735,7 +3735,7 @@ class SpecialCharacters(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3773,7 +3773,7 @@ class SplineLength(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3815,7 +3815,7 @@ class SplineParameter(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3849,7 +3849,7 @@ class SplineResolution(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -3894,7 +3894,7 @@ class String(BaseNode):
         return self.node.string
 
     @string.setter
-    def string(self, value: str):
+    def string(self, value: str) -> None:
         self.node.string = value
 
 
@@ -3996,7 +3996,7 @@ class Vector(BaseNode):
         return self.node.vector
 
     @vector.setter
-    def vector(self, value: Vector | tuple[float, float, float]):
+    def vector(self, value: Vector | tuple[float, float, float]) -> None:
         self.node.vector = value
 
     @property
@@ -4004,7 +4004,7 @@ class Vector(BaseNode):
         return self.node.vector_dimensions
 
     @vector_dimensions.setter
-    def vector_dimensions(self, value: int):
+    def vector_dimensions(self, value: int) -> None:
         self.node.vector_dimensions = value
 
 
@@ -4039,7 +4039,7 @@ class VertexNeighbors(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -4084,7 +4084,7 @@ class VertexOfCorner(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self, corner_index: InputInteger = 0):
+    def __init__(self, corner_index: InputInteger = None):
         super().__init__()
         key_args = {"Corner Index": corner_index}
 
@@ -4126,7 +4126,7 @@ class ViewportTransform(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -4184,7 +4184,7 @@ class VoxelIndex(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 

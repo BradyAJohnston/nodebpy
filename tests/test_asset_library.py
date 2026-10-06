@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for nodebpy.assets.dump_library / build_library — round-tripping a
 .blend asset library through per-asset Python source files."""
 
@@ -475,17 +474,12 @@ def test_cli_arrange_options_mapping():
     )
     assert _arrange_options_from_args(tuned) == SugiyamaOptions(
         margin=(50.0, 40.0),
-        iterations=10,
         direction="BALANCED",
         socket_alignment="FULL",
-        keep_reroutes_outside_frames=True,
         stack_collapsed=False,
-        stack_margin_y_fac=0.25,
-        optimize_sizes=True,
-        sequential_frames=False,
+        fit_collapsed_widths=True,
+        frames_as_stages=False,
         balance_heights=False,
-        balance_aspect=2.0,
-        reroute_margin_y_fac=0.5,
     )
 
 
@@ -1086,10 +1080,10 @@ def test_colliding_names_get_suffixes(tmp_path):
 
 
 def test_cli_dump_and_build_dispatch(monkeypatch, library_blend, tmp_path, capsys):
-    """``python -m nodebpy.assets dump/build`` dispatches to the library CLI."""
+    """``nodebpy dump/build`` dispatches to the library CLI."""
     import sys as _sys
 
-    from nodebpy.assets.__main__ import main
+    from nodebpy.__main__ import main
 
     src = tmp_path / "src"
     monkeypatch.setattr(_sys, "argv", ["prog", "dump", str(library_blend), str(src)])
@@ -1313,7 +1307,7 @@ def test_cli_dump_typed_api(monkeypatch, library_blend, tmp_path, capsys):
     """--typed-api reaches dump_library through the CLI."""
     import sys as _sys
 
-    from nodebpy.assets.__main__ import main
+    from nodebpy.__main__ import main
 
     src = tmp_path / "src"
     monkeypatch.setattr(

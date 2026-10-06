@@ -53,7 +53,7 @@ the output in both directions, so catalog assignments survive the trip.
 Both directions assume a session without unrelated node groups: appending
 renames on a name clash (which would corrupt the dumped ``_name``), and
 rebuilding reuses same-named trees (which would bake a stale group into the
-``.blend``). The CLI (``python -m nodebpy.assets dump/build``) runs in a fresh
+``.blend``). The CLI (``nodebpy dump/build``) runs in a fresh
 ``bpy`` session, which satisfies this by construction.
 
 The CLI also offers ``ensure`` (rebuild only when the ``.blend`` or its
@@ -62,7 +62,7 @@ The CLI also offers ``ensure`` (rebuild only when the ``.blend`` or its
 subcommand can read its positionals and flags from a ``[tool.nodebpy.assets]``
 table in the nearest ``pyproject.toml`` — see :mod:`._pipeline`. Under a full
 Blender (no ``bpy`` module) any subcommand runs as ``blender -b
---factory-startup -P <.../nodebpy/assets/__main__.py> -- <subcommand ...>``.
+--factory-startup -P <.../nodebpy/__main__.py> -- <subcommand ...>``.
 """
 
 from __future__ import annotations
@@ -77,6 +77,7 @@ import shutil
 import sys
 import uuid
 from collections.abc import Iterable
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import nullcontext
 from dataclasses import replace
 from pathlib import Path
@@ -98,6 +99,7 @@ from ..export.codegen import (
     _class_name,
     _fmt,
     _format_with_ruff,
+    probe_trees,
     to_python,
 )
 from ._codegen import _TREE_MODULES
@@ -374,10 +376,7 @@ def _render_group_module(
     }[kind]
     header = [
         f"# {label}, dumped by nodebpy.assets.dump_library.",
-        (
-            "# Rebuild the library with nodebpy.assets.build_library"
-            " (python -m nodebpy.assets build)."
-        ),
+        ("# Rebuild the library with nodebpy.assets.build_library (nodebpy build)."),
     ]
     if kind == "shared":
         header.append(
@@ -474,6 +473,8 @@ def dump_library(
     materials: bool = True,
     format: bool = True,
     typed_api: bool = False,
+    api_only: bool = False,
+    docstrings: bool = True,
     library_anchor: tuple[str | Path, str | Path] | None = None,
 ) -> dict[str, Path]:
     """Dump every node-group and material asset in ``blend_path`` to Python
@@ -501,7 +502,7 @@ def dump_library(
     appended groups are removed again afterwards. Run this in a session that
     doesn't already hold node groups with the same names — appending renames on
     a clash, which would corrupt the dumped ``_name`` attributes; a clash
-    raises instead. The CLI (``python -m nodebpy.assets dump``) runs in a fresh
+    raises instead. The CLI (``nodebpy dump``) runs in a fresh
     session by construction.
 
     Parameters
@@ -557,6 +558,16 @@ def dump_library(
         group calls in generated bodies use the typed parameter names, and
         each tree directory's ``__init__.py`` re-exports its asset classes.
         Everything outside ``_build_group`` is regenerated on the next dump.
+    api_only:
+        Write only the typed API: one module per node-group asset holding
+        an ``Asset*Group`` class that appends the asset from the ``.blend``,
+        with no ``_build_group``. The sources then document and type the
+        library but cannot rebuild it, and materials are left out. The
+        tree directories get the same ``__init__.py`` re-exports as the
+        typed-API dump.
+    docstrings:
+        Give the typed classes numpy-style docstrings from the assets' own
+        socket tooltips (the default); ``False`` keeps one line each.
     library_anchor:
         ``(output_dir, blend_path)`` stand-ins for the typed-API
         ``PackageLibrary`` relative-path computation: the dumped modules come
@@ -619,7 +630,7 @@ def dump_library(
             raise RuntimeError(
                 f"Node groups already exist in this session: {clashes}. "
                 "Appending would rename them and corrupt the dumped sources — "
-                "dump from a fresh session (e.g. python -m nodebpy.assets dump)."
+                "dump from a fresh session (e.g. nodebpy dump)."
             )
         dst.node_groups = list(available)
         # A same-named material already in the session renames the appended
@@ -646,25 +657,28 @@ def dump_library(
                 "same-named datablocks already exist in this session — dump "
                 "from a fresh session."
             )
-        written = _dump_appended(
-            list(dst.node_groups),
-            added["node_groups"],
-            output_dir,
-            asset_materials=[m.name for m in dst.materials],
-            nodebpy_pkg=nodebpy_pkg,
-            snapshot_positions=snapshot_positions,
-            keep_reroutes=keep_reroutes,
-            materials=materials,
-            format=format,
-            library_blend=anchor_blend.resolve() if typed_api else None,
-            anchor_dir=anchor_dir.resolve(),
-            roots=selected,
-            # A full dump owns the managed subdirectories: clear stale modules
-            # from assets since renamed or deleted, so the next build_library
-            # doesn't silently resurrect them. A filtered dump (names=...)
-            # leaves the other assets' files alone.
-            clean_stale=selected is None,
-        )
+        with probe_trees():
+            written = _dump_appended(
+                list(dst.node_groups),
+                added["node_groups"],
+                output_dir,
+                asset_materials=[m.name for m in dst.materials],
+                nodebpy_pkg=nodebpy_pkg,
+                snapshot_positions=snapshot_positions,
+                keep_reroutes=keep_reroutes,
+                materials=materials,
+                format=format,
+                library_blend=anchor_blend.resolve() if typed_api or api_only else None,
+                anchor_dir=anchor_dir.resolve(),
+                api_only=api_only,
+                docstrings=docstrings,
+                roots=selected,
+                # A full dump owns the managed subdirectories: clear stale modules
+                # from assets since renamed or deleted, so the next build_library
+                # doesn't silently resurrect them. A filtered dump (names=...)
+                # leaves the other assets' files alone.
+                clean_stale=selected is None,
+            )
     finally:
         for coll in _CLEANUP_COLLECTIONS:
             data = getattr(bpy.data, coll)
@@ -717,6 +731,8 @@ def _dump_appended(
     format: bool,
     library_blend: Path | None = None,
     anchor_dir: Path | None = None,
+    api_only: bool = False,
+    docstrings: bool = True,
     roots: set[str] | None = None,
     clean_stale: bool = False,
 ) -> dict[str, Path]:
@@ -746,6 +762,19 @@ def _dump_appended(
     for tree in unsupported:
         print(f"  skipping {tree.name!r}: unsupported tree type {tree.bl_idname}")
     asset_trees = [t for t in asset_trees if t.bl_idname in _TREE_DIRS]
+    if api_only:
+        assert library_blend is not None
+        return _dump_api_only(
+            asset_trees,
+            output_dir,
+            nodebpy_pkg=nodebpy_pkg,
+            format=format,
+            docstrings=docstrings,
+            library_blend=library_blend,
+            anchor_dir=anchor_dir or output_dir,
+            roots=roots,
+            clean_stale=clean_stale,
+        )
     asset_names = {t.name for t in asset_trees}
     trees = {g.name: g for g in appended}
 
@@ -812,13 +841,9 @@ def _dump_appended(
     external = asset_names | shared
 
     # Module paths from the output root for every non-embedded tree.
-    modules: dict[str, str] = {}
+    modules = _asset_module_paths(asset_trees)
     for tree_idname, dirname in _TREE_DIRS.items():
-        dir_assets = [t.name for t in asset_trees if t.bl_idname == tree_idname]
         dir_shared = [n for n in shared if trees[n].bl_idname == tree_idname]
-        modules.update(
-            {n: f"{dirname}/{stem}" for n, stem in _assign_stems(dir_assets).items()}
-        )
         modules.update(
             {
                 n: f"{dirname}/_shared/{stem}"
@@ -900,22 +925,14 @@ def _dump_appended(
             nodebpy_pkg=nodebpy_pkg,
             snapshot_positions=snapshot_positions,
             keep_reroutes=keep_reroutes,
-            format=format,
+            format=False,
             typed_groups=typed_groups,
             root_interface=root_interface,
         )
-        path = output_dir / (module + ".py")
-        path.parent.mkdir(parents=True, exist_ok=True)
-        # LF regardless of platform: dumps are committed to git, and a
-        # Windows dump must not diff against the same dump made elsewhere.
-        path.write_text(source, encoding="utf-8", newline="\n")
-        _ensure_init(output_dir)
-        parent = path.parent
-        while parent != output_dir:
-            _ensure_init(parent)
-            parent = parent.parent
-        return path
+        sources[module] = source
+        return output_dir / (module + ".py")
 
+    sources: dict[str, str] = {}
     written: dict[str, Path] = {}
     for tree in write_assets:
         written[tree.name] = write_module(tree.name, modules[tree.name], kind="asset")
@@ -930,23 +947,122 @@ def _dump_appended(
         # the returned mapping; referenced-only materials are dependencies.
         if (mat_name := material_trees[key]) in asset_material_names:
             written[mat_name] = path
+    _write_modules(output_dir, sources, format)
     if clean_stale:
         _remove_stale_modules(output_dir, all_written)
 
     if library_blend is not None:
-        # Typed API: each tree directory re-exports its asset classes, so
-        # ``from <pkg>.<tree_dir> import <Class>`` (or an aliased module
-        # import) works like the old single-file API. A filtered dump only
-        # exports modules that exist on disk (a full dump wrote them all).
-        for dirname in set(_TREE_DIRS.values()):
-            exports = sorted(
-                (modules[t.name].split("/")[1], class_names[t.name])
-                for t in asset_trees
-                if modules[t.name].startswith(f"{dirname}/")
-                and (output_dir / f"{modules[t.name]}.py").is_file()
-            )
-            if exports:
-                _write_dir_exports(output_dir / dirname, exports)
+        _write_tree_exports(output_dir, asset_trees, modules, class_names)
+    return written
+
+
+def _asset_module_paths(asset_trees: list) -> dict[str, str]:
+    """The module of each asset, as a ``/``-separated path from the output
+    root: ``<tree directory>/<stem>``."""
+    modules: dict[str, str] = {}
+    for tree_idname, dirname in _TREE_DIRS.items():
+        dir_assets = [t.name for t in asset_trees if t.bl_idname == tree_idname]
+        modules.update(
+            {n: f"{dirname}/{stem}" for n, stem in _assign_stems(dir_assets).items()}
+        )
+    return modules
+
+
+def _write_modules(output_dir: Path, sources: dict[str, str], format: bool) -> None:
+    """Write every module in *sources* (module path from the output root to
+    its source). With *format*, each is formatted first; ruff runs as a
+    subprocess per module, so the modules are formatted side by side."""
+
+    def write(item: tuple[str, str]) -> None:
+        module, source = item
+        text = _format_with_ruff(source) if format else source
+        _write_module(output_dir, module, text)
+
+    with ThreadPoolExecutor() as pool:
+        list(pool.map(write, sources.items()))
+
+
+def _write_module(output_dir: Path, module: str, source: str) -> Path:
+    """Write *source* as the module at *module* (a path from the output
+    root), with package markers down to it."""
+    path = output_dir / (module + ".py")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # LF regardless of platform: dumps are committed to git, and a Windows
+    # dump must not diff against the same dump made elsewhere.
+    path.write_text(source, encoding="utf-8", newline="\n")
+    _ensure_init(output_dir)
+    parent = path.parent
+    while parent != output_dir:
+        _ensure_init(parent)
+        parent = parent.parent
+    return path
+
+
+def _write_tree_exports(
+    output_dir: Path,
+    asset_trees: list,
+    modules: dict[str, str],
+    class_names: dict[str, str],
+) -> None:
+    """Make each tree directory re-export its asset classes, so
+    ``from <pkg>.<tree directory> import <Class>`` works like a single-module
+    API. Only modules on disk are exported: a filtered dump writes a few."""
+    for dirname in set(_TREE_DIRS.values()):
+        exports = sorted(
+            (modules[t.name].split("/")[1], class_names[t.name])
+            for t in asset_trees
+            if modules[t.name].startswith(f"{dirname}/")
+            and (output_dir / f"{modules[t.name]}.py").is_file()
+        )
+        if exports:
+            _write_dir_exports(output_dir / dirname, exports)
+
+
+def _dump_api_only(
+    asset_trees: list,
+    output_dir: Path,
+    *,
+    nodebpy_pkg: str,
+    format: bool,
+    docstrings: bool,
+    library_blend: Path,
+    anchor_dir: Path,
+    roots: set[str] | None,
+    clean_stale: bool,
+) -> dict[str, Path]:
+    """Write one module per asset holding its typed class alone: the class
+    appends the asset from *library_blend*, and there is no recipe, so no
+    code is generated from the trees."""
+    from ._codegen import _introspect_group, merge_imports, render_asset_class
+
+    class_names = _assign_class_names({t.name: t.name for t in asset_trees})
+    modules = _asset_module_paths(asset_trees)
+    sources: dict[str, str] = {}
+    written: dict[str, Path] = {}
+    for tree in asset_trees:
+        if roots is not None and tree.name not in roots:
+            continue
+        module = modules[tree.name]
+        module_dir = (anchor_dir / module).parent
+        relpath = Path(os.path.relpath(library_blend, module_dir)).as_posix()
+        cls = _introspect_group(
+            tree, tree.name, f"PackageLibrary(__file__, {_fmt(relpath)})"
+        )
+        cls.class_name = class_names[tree.name]
+        code, imports = render_asset_class(
+            cls, docstrings=docstrings, nodebpy_pkg=nodebpy_pkg
+        )
+        header = [
+            f'# Node-group asset "{tree.name}" ({tree.bl_idname}), dumped by nodebpy.assets.dump_library.',
+            "# Typed API only: the class appends the asset from its library and holds no recipe to rebuild it.",
+            *merge_imports(imports),
+        ]
+        sources[module] = "\n".join(header) + "\n\n\n" + code
+        written[tree.name] = output_dir / (module + ".py")
+    _write_modules(output_dir, sources, format)
+    if clean_stale:
+        _remove_stale_modules(output_dir, set(written.values()))
+    _write_tree_exports(output_dir, asset_trees, modules, class_names)
     return written
 
 
@@ -1137,8 +1253,8 @@ def build_library(
     crossing-reduction iterations, direction, socket alignment, ...) is
     scoped over the build via
     :func:`nodebpy.builder.default_sugiyama_options`. ``add_reroutes=True``
-    additionally inserts reroute nodes to route long links around nodes
-    (the node-arrange addon's behaviour); it composes with ``arrange``.
+    additionally inserts reroute nodes to route long links around nodes;
+    it composes with ``arrange``.
     ``split_inputs=True`` gives each consumer node its own Group Input
     instance — named and labelled after the interface sockets it carries,
     with unused sockets hidden — instead of a single Group Input trailing
@@ -1153,7 +1269,7 @@ def build_library(
     deduplicates groups shared between asset files), the session must not
     already hold node groups when the build starts — a stale same-named group
     would silently end up in the ``.blend``. This raises if any exist, unless
-    ``allow_existing`` is passed. The CLI (``python -m nodebpy.assets build``)
+    ``allow_existing`` is passed. The CLI (``nodebpy build``)
     runs in a fresh session by construction.
 
     Returns
@@ -1173,7 +1289,7 @@ def build_library(
         raise RuntimeError(
             f"The session already holds node groups {existing}; a same-named "
             "stale group would be reused and written into the library. Build "
-            "from a fresh session (e.g. python -m nodebpy.assets build), or "
+            "from a fresh session (e.g. nodebpy build), or "
             "pass allow_existing=True to override."
         )
 
@@ -1239,7 +1355,7 @@ def build_library(
     # disable arrangement and are unaffected).
     options = arrange
     if add_reroutes:
-        options = replace(options or SugiyamaOptions(), add_reroutes=True)
+        options = replace(options or SugiyamaOptions(), reroutes="all")
     arrange_override = (
         default_sugiyama_options(options) if options is not None else nullcontext()
     )
@@ -1324,8 +1440,7 @@ def plot_library(
 ) -> dict[str, Path]:
     """Render node groups from ``blend_path`` to PNG images under
     ``output_dir`` — a headless, Blender-styled look at node graphs, e.g.
-    for reviewing new nodes in pull requests (``python -m nodebpy.assets
-    plot``).
+    for reviewing new nodes in pull requests (``nodebpy plot``).
 
     ``names`` selects the groups to plot: exact names or :mod:`fnmatch`
     wildcard patterns (``"Style *"``), matched against *every* node group in
@@ -1351,8 +1466,8 @@ def plot_library(
     if not blend_path.is_file():
         raise FileNotFoundError(f"Asset library not found: {blend_path.resolve()}")
 
-    from ..builder.layout import arrange as arrange_tree_nodes
     from ..export import to_plot
+    from ..layout import arrange as arrange_tree_nodes
 
     patterns = list(names) if names is not None else None
     before = {
@@ -1380,7 +1495,7 @@ def plot_library(
             raise RuntimeError(
                 f"Node groups already exist in this session: {clashes}. "
                 "Appending would rename them — plot from a fresh session "
-                "(e.g. python -m nodebpy.assets plot)."
+                "(e.g. nodebpy plot)."
             )
         dst.node_groups = list(wanted)
     added = {
@@ -1423,10 +1538,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--add-reroutes",
         action="store_true",
-        help=(
-            "Arrange with reroute nodes inserted to route long links around "
-            "nodes (the node-arrange addon's behaviour)."
-        ),
+        help=("Arrange with reroute nodes inserted to route long links around nodes."),
     )
     layout.add_argument(
         "--spacing",
@@ -1438,10 +1550,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--iterations",
         type=int,
-        help=(
-            "Number of iterations spent reducing crossings between links "
-            "(higher gives fewer crossings, but is slower; default: 50)."
-        ),
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
     layout.add_argument(
         "--direction",
@@ -1464,7 +1573,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--keep-reroutes-outside-frames",
         action="store_true",
-        help="Do not place added reroutes inside frames.",
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
     layout.add_argument(
         "--no-stack-collapsed",
@@ -1475,10 +1584,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--stack-margin-y-fac",
         type=float,
-        help=(
-            "Fraction of the vertical spacing used between stacked collapsed "
-            "nodes (default: 0.5)."
-        ),
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
     layout.add_argument(
         "--optimize-sizes",
@@ -1507,15 +1613,12 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--balance-aspect",
         type=float,
-        help=("Width-to-height ratio the height balancing aims for (default: 1.6)."),
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
     layout.add_argument(
         "--reroute-margin-y-fac",
         type=float,
-        help=(
-            "Fraction of the vertical spacing kept between consecutive "
-            "reroutes in a column (default: 0.35)."
-        ),
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
 
 
@@ -1527,28 +1630,18 @@ def _arrange_options_from_args(args) -> SugiyamaOptions | None:
     overrides: dict = {}
     if args.spacing is not None:
         overrides["margin"] = tuple(args.spacing)
-    if args.iterations is not None:
-        overrides["iterations"] = args.iterations
     if args.direction is not None:
         overrides["direction"] = args.direction
     if args.socket_alignment is not None:
         overrides["socket_alignment"] = args.socket_alignment
-    if args.keep_reroutes_outside_frames:
-        overrides["keep_reroutes_outside_frames"] = True
     if not args.stack_collapsed:
         overrides["stack_collapsed"] = False
-    if args.stack_margin_y_fac is not None:
-        overrides["stack_margin_y_fac"] = args.stack_margin_y_fac
     if args.optimize_sizes:
-        overrides["optimize_sizes"] = True
+        overrides["fit_collapsed_widths"] = True
     if not args.sequential_frames:
-        overrides["sequential_frames"] = False
+        overrides["frames_as_stages"] = False
     if not args.balance_heights:
         overrides["balance_heights"] = False
-    if args.balance_aspect is not None:
-        overrides["balance_aspect"] = args.balance_aspect
-    if args.reroute_margin_y_fac is not None:
-        overrides["reroute_margin_y_fac"] = args.reroute_margin_y_fac
     return SugiyamaOptions(**overrides) if overrides else None
 
 
@@ -1666,7 +1759,7 @@ def _parse_args(argv: list[str] | None = None):
     import argparse
 
     parser = argparse.ArgumentParser(
-        prog="python -m nodebpy.assets",
+        prog="nodebpy",
         description="Round-trip a .blend asset library through Python source.",
         epilog=(
             "Positional arguments and flags can come from a "
@@ -1676,7 +1769,7 @@ def _parse_args(argv: list[str] | None = None):
             "relative to the pyproject's directory; explicit arguments "
             "always win. Inside a full Blender (no bpy module), run any "
             "subcommand as: blender -b --factory-startup "
-            "-P <.../nodebpy/assets/__main__.py> -- <subcommand ...>"
+            "-P <.../nodebpy/__main__.py> -- <subcommand ...>"
         ),
     )
     sub = parser.add_subparsers(dest="command", required=True)
@@ -1728,6 +1821,25 @@ def _parse_args(argv: list[str] | None = None):
         ),
     )
     _add_dump_flags(dump)
+    dump.add_argument(
+        "--api-only",
+        action="store_true",
+        help=(
+            "Write only the typed API: one module per node-group asset, "
+            "whose class appends the asset from the .blend and holds no "
+            "recipe to rebuild it. Materials are left out, and the sources "
+            "cannot be built from."
+        ),
+    )
+    dump.add_argument(
+        "--no-docstrings",
+        dest="docstrings",
+        action="store_false",
+        help=(
+            "Skip the numpy-style class docstrings (description, Parameters, "
+            "Inputs, Outputs) of the typed classes."
+        ),
+    )
     dump.add_argument(
         "--anchor",
         nargs=2,
@@ -1891,8 +2003,24 @@ def _parse_args(argv: list[str] | None = None):
         "these implies --arrange.",
     )
 
+    textconv = sub.add_parser(
+        "textconv",
+        help="Print a .blend's assets as Python source, for git diff.",
+        description=(
+            "Dump every asset in a .blend and print the modules to stdout, "
+            "each headed by '### <path>', so git can diff .blend files as "
+            "Python source. A Git LFS pointer is smudged to the real .blend "
+            "first. Use as a git diff driver: set 'diff=blend' on *.blend "
+            "in .gitattributes, then 'git config diff.blend.textconv "
+            '"nodebpy textconv"\' (and diff.blend.cachetextconv true).'
+        ),
+    )
+    textconv.add_argument(
+        "blend", type=Path, help="The .blend (or Git LFS pointer to one)."
+    )
+
     args = parser.parse_args(argv)
-    if args.command != "plot":
+    if args.command not in ("plot", "textconv"):
         # Fill positionals and flags from the nearest pyproject's
         # [tool.nodebpy.assets] table; explicit arguments always win.
         apply_config(args)
@@ -1913,12 +2041,15 @@ def _dump_command(args) -> None:
         keep_reroutes=args.keep_reroutes,
         materials=args.materials,
         typed_api=args.typed_api,
+        api_only=args.api_only,
+        docstrings=args.docstrings,
         library_anchor=tuple(args.anchor) if args.anchor else None,
     )
     for name, path in written.items():
         print(f"  {name}: {path}")
     print(f"Dumped {len(written)} assets to {args.output}")
-    if args.names is None:
+    # An API-only dump cannot rebuild the library, so it is not in sync with it.
+    if args.names is None and not args.api_only:
         write_stamp(args.blend, args.output, args.resources, stamp_options(args))
 
 
@@ -1941,8 +2072,8 @@ def _build_command(args) -> None:
 
 
 def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapper
-    """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``
-    and ``plot`` subcommands."""
+    """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``,
+    ``plot`` and ``textconv`` subcommands."""
     args = _parse_args(argv)
     if args.command == "dump":
         _dump_command(args)
@@ -1953,13 +2084,17 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             print(f"{args.blend} is up to date")
     elif args.command == "check":
         check_roundtrip(args)
+    elif args.command == "textconv":
+        from nodebpy.assets._textconv import textconv
+
+        textconv(args.blend)
     elif args.command == "plot":
         options = _arrange_options_from_args(args)
         method: SugiyamaOptions | None = None
         if args.arrange or args.add_reroutes or options is not None:
             method = options or SugiyamaOptions()
             if args.add_reroutes:
-                method = replace(method, add_reroutes=True)
+                method = replace(method, reroutes="all")
         written = plot_library(
             args.blend,
             args.output,

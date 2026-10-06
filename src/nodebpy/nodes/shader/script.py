@@ -47,21 +47,34 @@ class Script(BaseNode):
         self._establish_links(**key_args)
 
     @classmethod
-    def internal(cls) -> "Script":
+    def internal(cls, *, bytecode: str = "", bytecode_hash: str = "") -> "Script":
         """Create Script with operation 'Internal'. Use internal text data-block"""
-        return cls(mode="INTERNAL")
+        return cls(mode="INTERNAL", bytecode=bytecode, bytecode_hash=bytecode_hash)
 
     @classmethod
-    def external(cls) -> "Script":
+    def external(
+        cls,
+        *,
+        filepath: str = "",
+        use_auto_update: bool = False,
+        bytecode: str = "",
+        bytecode_hash: str = "",
+    ) -> "Script":
         """Create Script with operation 'External'. Use external .osl or .oso file"""
-        return cls(mode="EXTERNAL")
+        return cls(
+            mode="EXTERNAL",
+            filepath=filepath,
+            use_auto_update=use_auto_update,
+            bytecode=bytecode,
+            bytecode_hash=bytecode_hash,
+        )
 
     @property
     def filepath(self) -> str:
         return self.node.filepath
 
     @filepath.setter
-    def filepath(self, value: str):
+    def filepath(self, value: str) -> None:
         self.node.filepath = value
 
     @property
@@ -69,7 +82,7 @@ class Script(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["INTERNAL", "EXTERNAL"]):
+    def mode(self, value: Literal["INTERNAL", "EXTERNAL"]) -> None:
         self.node.mode = value
 
     @property
@@ -77,7 +90,7 @@ class Script(BaseNode):
         return self.node.use_auto_update
 
     @use_auto_update.setter
-    def use_auto_update(self, value: bool):
+    def use_auto_update(self, value: bool) -> None:
         self.node.use_auto_update = value
 
     @property
@@ -85,7 +98,7 @@ class Script(BaseNode):
         return self.node.bytecode
 
     @bytecode.setter
-    def bytecode(self, value: str):
+    def bytecode(self, value: str) -> None:
         self.node.bytecode = value
 
     @property
@@ -93,5 +106,5 @@ class Script(BaseNode):
         return self.node.bytecode_hash
 
     @bytecode_hash.setter
-    def bytecode_hash(self, value: str):
+    def bytecode_hash(self, value: str) -> None:
         self.node.bytecode_hash = value

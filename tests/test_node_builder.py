@@ -1067,3 +1067,22 @@ class TestRShiftFallback:
 
         assert result.node.bl_idname == "GeometryNodeJoinGeometry"
         assert len(result.node.inputs[0].links) == 1
+
+
+@pytest.mark.parametrize(
+    "variant, a_id, b_id",
+    [
+        ("float", "A_Float", "B_Float"),
+        ("vector", "A_Vector", "B_Vector"),
+        ("color", "A_Color", "B_Color"),
+        ("rotation", "A_Rotation", "B_Rotation"),
+    ],
+)
+def test_geometry_mix_variants_take_a_and_b(variant, a_id, b_id):
+    with g.tree():
+        source = g.Rotation if variant == "rotation" else g.Value
+        first, second = source(), source()
+        mix = getattr(g.Mix, variant)(0.5, a=first, b=second)
+        inputs = {socket.identifier: socket for socket in mix.node.inputs}
+        assert inputs[a_id].links[0].from_node == first.node
+        assert inputs[b_id].links[0].from_node == second.node

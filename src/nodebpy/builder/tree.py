@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from collections import Counter
+from collections.abc import Iterator
+from contextlib import AbstractContextManager, contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, ClassVar, Literal, Self, TypeVar, cast
@@ -17,8 +20,11 @@ from bpy.types import (
     ShaderNodeTree,
 )
 
+from ..layout import ArrangeMethod
+from ..layout import arrange as _arrange_nodes
 from ..types import (
     SOCKET_COMPATIBILITY,
+    Default,
     FloatInterfaceSubtypes,
     IntegerInterfaceSubtypes,
     StringInterfaceSubtypes,
@@ -32,8 +38,6 @@ from ._utils import (
     resolve_socket_key,
     socket_key,
 )
-from .layout import _DEFAULT_SPLIT_INPUTS, ArrangeMethod
-from .layout import arrange as _arrange_nodes
 from .socket import (
     BooleanSocket,
     BundleSocket,
@@ -58,6 +62,28 @@ from .socket import (
 )
 
 _SocketT = TypeVar("_SocketT", bound=Socket)
+
+# What TreeBuilder's split_inputs=None resolves to; see `default_split_inputs`.
+_DEFAULT_SPLIT_INPUTS: ContextVar[bool] = ContextVar(
+    "nodebpy_default_split_inputs", default=False
+)
+
+
+@contextmanager
+def default_split_inputs(split: bool = True) -> Iterator[None]:
+    """Scope in which every ``TreeBuilder`` left at its default
+    ``split_inputs`` splits the Group Input node into one instance per
+    consumer node (with unused sockets hidden) on context exit.
+
+    An explicit ``split_inputs=True/False`` is unaffected, and so are trees
+    that disable auto-arrangement (as ``snapshot_positions`` dumps do).
+    """
+    token = _DEFAULT_SPLIT_INPUTS.set(split)
+    try:
+        yield
+    finally:
+        _DEFAULT_SPLIT_INPUTS.reset(token)
+
 
 # The interface ``default_input`` values Blender actually accepts at runtime,
 # per socket type (the RNA enum lists every option on every type, but
@@ -95,7 +121,7 @@ class PanelContext:
         self._default_closed = default_closed
         self._panel: bpy.types.NodeTreeInterfacePanel | None = None
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         interface = self._socket_context.interface
         self._panel = interface.new_panel(
             self._name,
@@ -112,7 +138,7 @@ class PanelContext:
         self._socket_context._active_panel = self._panel
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         self._socket_context._active_panel = self._previous
 
 
@@ -126,7 +152,7 @@ class TreePanelContext:
 
     def __init__(
         self,
-        builder: TreeBuilder,
+        builder: TreeBuilder[Any],
         name: str | bpy.types.NodeTreeInterfacePanel,
         *,
         description: str = "",
@@ -140,7 +166,7 @@ class TreePanelContext:
         self._reuse = reuse
         self.panel: bpy.types.NodeTreeInterfacePanel | None = None
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         interface = self._builder.tree.interface
         assert interface is not None
         # Entered inside another panel context → nest under it. A mixed panel
@@ -198,7 +224,7 @@ class TreePanelContext:
         self._builder.outputs._active_panel = self.panel
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         self._builder.inputs._active_panel = self._previous_inputs
         self._builder.outputs._active_panel = self._previous_outputs
 
@@ -206,7 +232,7 @@ class TreePanelContext:
 class SocketContext:
     _direction: Literal["INPUT", "OUTPUT"] | None
 
-    def __init__(self, tree_builder: TreeBuilder):
+    def __init__(self, tree_builder: TreeBuilder[Any]):
         self.builder = tree_builder
         self._active_panel: bpy.types.NodeTreeInterfacePanel | None = None
 
@@ -272,6 +298,8 @@ class SocketContext:
             elif key == "default_attribute":
                 # the bpy property is named default_attribute_name
                 interface_socket.default_attribute_name = value
+            elif key == "default_input" and isinstance(value, Default):
+                interface_socket.default_input = value.value
             else:
                 setattr(interface_socket, key, value)
 
@@ -309,7 +337,7 @@ class SocketContext:
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
-        default_input: _FloatDefaultInputs = "VALUE",
+        default_input: _FloatDefaultInputs | Default = "VALUE",
     ) -> FloatSocket:
         iface = self._add_socket("NodeSocketFloat", name, description)
         self._set_props(
@@ -341,7 +369,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: _IntegerDefaultInputs = "VALUE",
+        default_input: _IntegerDefaultInputs | Default = "VALUE",
         subtype: IntegerInterfaceSubtypes = "NONE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
@@ -415,7 +443,7 @@ class SocketContext:
         structure_type: _SocketShapeStructureType = "AUTO",
         subtype: VectorInterfaceSubtypes = "NONE",
         default_attribute: str | None = None,
-        default_input: _VectorDefaultInputs = "VALUE",
+        default_input: _VectorDefaultInputs | Default = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         force_non_field: bool = False,
     ) -> VectorSocket:
@@ -511,7 +539,7 @@ class SocketContext:
         hide_value: bool = False,
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
-        default_input: _MatrixDefaultInputs = "VALUE",
+        default_input: _MatrixDefaultInputs | Default = "VALUE",
         attribute_domain: _AttributeDomains = "POINT",
         default_attribute: str | None = None,
         force_non_field: bool = False,
@@ -593,7 +621,7 @@ class SocketContext:
         hide_in_modifier: bool = False,
         structure_type: _SocketShapeStructureType = "AUTO",
         force_non_field: bool = False,
-        default_input: _ObjectDefaultInputs = "VALUE",
+        default_input: _ObjectDefaultInputs | Default = "VALUE",
     ) -> ObjectSocket:
         iface = self._add_socket("NodeSocketObject", name, description)
         self._set_props(
@@ -1117,7 +1145,10 @@ class TreeBuilder[TreeT: NodeTree]:
         # instead of creating a ``Name.001`` duplicate; a group of another
         # tree type is left alone and a new one is created as usual.
         # Tree-level properties (description, color_tag, is_tool, fake user,
-        # ...) are kept: only the contents are rebuilt.
+        # ...) are kept: only the contents are rebuilt. Rebuilding the
+        # interface gives its sockets new identifiers, which is what
+        # Geometry Nodes modifiers key their input values by, so those values
+        # are snapshotted by socket name here and reapplied on exit.
         if isinstance(tree, str):
             existing = bpy.data.node_groups.get(tree) if clear else None
             if existing is not None and existing.bl_idname == tree_type:
@@ -1126,15 +1157,20 @@ class TreeBuilder[TreeT: NodeTree]:
                 self.tree = bpy.data.node_groups.new(tree, tree_type)  # ty: ignore[invalid-assignment]
         else:
             self.tree = tree  # type: ignore
+        self._preserved_inputs: AbstractContextManager[None] | None = None
         if clear:
+            from ..live import preserve_modifier_inputs
+
             assert self.tree.interface is not None
+            self._preserved_inputs = preserve_modifier_inputs([self.tree])
+            self._preserved_inputs.__enter__()
             self.tree.nodes.clear()
             self.tree.interface.clear()
 
         self._menu_defaults: list[_MenuDefault] = []
         self._exited = False
-        self.inputs = InputInterfaceContext(self)
-        self.outputs = OutputInterfaceContext(self)
+        self.inputs: InputInterfaceContext = InputInterfaceContext(self)
+        self.outputs: OutputInterfaceContext = OutputInterfaceContext(self)
         self._arrange = arrange
         self.collapse = collapse
         self.fake_user = fake_user
@@ -1322,7 +1358,7 @@ class TreeBuilder[TreeT: NodeTree]:
         self._exited = False
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         # Split before auto-layout, so the created instances get arranged
         # next to their consumers.
         split = self._split_inputs
@@ -1337,6 +1373,9 @@ class TreeBuilder[TreeT: NodeTree]:
         if self._arrange is not None:
             self.arrange()
         self._apply_input_defaults()
+        if self._preserved_inputs is not None:
+            self._preserved_inputs.__exit__(None, None, None)
+            self._preserved_inputs = None
         # Interface-menu defaults assigned from here on can't wait for a
         # context exit that already happened — apply them immediately
         # (see MenuSocket.default_value).
@@ -1487,14 +1526,14 @@ class TreeBuilder[TreeT: NodeTree]:
             node.name = old_name  # re-suffixed by Blender on collision
 
     @property
-    def group_input_splits(self) -> list[dict]:
+    def group_input_splits(self) -> list[dict[str, Any]]:
         """The extra Group Input instances beyond the primary one, each as
         ``{"name": ..., "label": ..., "links": [(interface input name,
         consumer node name, consumer socket key), ...], "location": ...,
         "parent": ...}`` — the editor convention of several input nodes near
         their consumers instead of one node trailing long noodles. See the
         setter."""
-        splits: list[dict] = []
+        splits: list[dict[str, Any]] = []
         for node in self.tree.nodes:
             if node.bl_idname != "NodeGroupInput" or node.name == "Group Input":
                 continue
@@ -1516,7 +1555,7 @@ class TreeBuilder[TreeT: NodeTree]:
         return splits
 
     @group_input_splits.setter
-    def group_input_splits(self, splits: list[dict]) -> None:
+    def group_input_splits(self, splits: list[dict[str, Any]]) -> None:
         """Split the Group Input node into several instances: each entry
         creates one instance carrying the listed links (moved off whichever
         input node holds them — exactly one per entry, so parallel links from
@@ -1654,7 +1693,7 @@ class TreeBuilder[TreeT: NodeTree]:
                 if not socket.identifier.startswith("__extend__"):
                     socket.hide = not socket.is_linked
 
-    def arrange(self):
+    def arrange(self) -> None:
         _arrange_nodes(self.tree, self._arrange)
 
     def _repr_markdown_(self) -> str | None:
@@ -1774,7 +1813,7 @@ class TreeBuilder[TreeT: NodeTree]:
         return node
 
 
-class MaterialBuilder(TreeBuilder):
+class MaterialBuilder(TreeBuilder[ShaderNodeTree]):
     def __init__(
         self,
         name: str = "New Material",
@@ -1783,8 +1822,15 @@ class MaterialBuilder(TreeBuilder):
         arrange: ArrangeMethod = "sugiyama",
         fake_user: bool = False,
         ignore_visibility: bool = False,
+        clear: bool = False,
     ):
-        material = bpy.data.materials.new(name)
+        # With ``clear`` an existing material of that name is rebuilt in place
+        # (objects keep it assigned) instead of creating ``Name.001``. A new
+        # material starts with Blender's default Principled BSDF and Material
+        # Output nodes, which are removed so the body builds from empty.
+        material = bpy.data.materials.get(name) if clear else None
+        if material is None:
+            material = bpy.data.materials.new(name)
         assert material is not None
         self.material = material
         self.material.use_fake_user = fake_user
@@ -1795,4 +1841,5 @@ class MaterialBuilder(TreeBuilder):
             arrange=arrange,
             fake_user=fake_user,
             ignore_visibility=ignore_visibility,
+            clear=True,
         )

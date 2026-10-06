@@ -75,7 +75,7 @@ class AovOutput(BaseNode):
         return self.node.aov_name
 
     @aov_name.setter
-    def aov_name(self, value: str):
+    def aov_name(self, value: str) -> None:
         self.node.aov_name = value
 
 
@@ -129,7 +129,7 @@ class LightOutput(BaseNode):
         return self.node.is_active_output
 
     @is_active_output.setter
-    def is_active_output(self, value: bool):
+    def is_active_output(self, value: bool) -> None:
         self.node.is_active_output = value
 
     @property
@@ -137,7 +137,7 @@ class LightOutput(BaseNode):
         return self.node.target
 
     @target.setter
-    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]):
+    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
         self.node.target = value
 
 
@@ -243,7 +243,7 @@ class LineStyleOutput(BaseNode):
         return self.node.is_active_output
 
     @is_active_output.setter
-    def is_active_output(self, value: bool):
+    def is_active_output(self, value: bool) -> None:
         self.node.is_active_output = value
 
     @property
@@ -251,7 +251,7 @@ class LineStyleOutput(BaseNode):
         return self.node.target
 
     @target.setter
-    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]):
+    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
         self.node.target = value
 
     @property
@@ -304,7 +304,7 @@ class LineStyleOutput(BaseNode):
             "COLOR",
             "VALUE",
         ],
-    ):
+    ) -> None:
         self.node.blend_type = value
 
     @property
@@ -312,7 +312,7 @@ class LineStyleOutput(BaseNode):
         return self.node.use_alpha
 
     @use_alpha.setter
-    def use_alpha(self, value: bool):
+    def use_alpha(self, value: bool) -> None:
         self.node.use_alpha = value
 
     @property
@@ -320,7 +320,7 @@ class LineStyleOutput(BaseNode):
         return self.node.use_clamp
 
     @use_clamp.setter
-    def use_clamp(self, value: bool):
+    def use_clamp(self, value: bool) -> None:
         self.node.use_clamp = value
 
 
@@ -378,8 +378,8 @@ class MaterialOutput(BaseNode):
         self,
         surface: InputShader = None,
         volume: InputShader = None,
-        displacement: InputVector = (0.0, 0.0, 0.0),
-        thickness: InputFloat = 0.0,
+        displacement: InputVector = None,
+        thickness: InputFloat = None,
         *,
         is_active_output: bool = False,
         target: Literal["ALL", "EEVEE", "CYCLES"] = "ALL",
@@ -400,7 +400,7 @@ class MaterialOutput(BaseNode):
         return self.node.is_active_output
 
     @is_active_output.setter
-    def is_active_output(self, value: bool):
+    def is_active_output(self, value: bool) -> None:
         self.node.is_active_output = value
 
     @property
@@ -408,7 +408,7 @@ class MaterialOutput(BaseNode):
         return self.node.target
 
     @target.setter
-    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]):
+    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
         self.node.target = value
 
 
@@ -469,7 +469,7 @@ class WorldOutput(BaseNode):
         return self.node.is_active_output
 
     @is_active_output.setter
-    def is_active_output(self, value: bool):
+    def is_active_output(self, value: bool) -> None:
         self.node.is_active_output = value
 
     @property
@@ -477,5 +477,5 @@ class WorldOutput(BaseNode):
         return self.node.target
 
     @target.setter
-    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]):
+    def target(self, value: Literal["ALL", "EEVEE", "CYCLES"]) -> None:
         self.node.target = value

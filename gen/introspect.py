@@ -48,16 +48,26 @@ def collect_socket_info(
     sockets: bpy.types.bpy_prop_collection[bpy.types.NodeSocket],
     hidden=False,
     is_output=False,
+    inactive: set[str] | None = None,
 ) -> list[SocketInfo]:
-    """Extract socket infos for a current node state"""
+    """Extract socket infos for a current node state
+
+    *inactive* overrides ``socket.is_inactive`` with a precomputed set of
+    identifiers (see :func:`mode_inactive_inputs`).
+    """
     inputs = []
     for socket in sockets:
         assert socket.node is not None
+        is_inactive = (
+            socket.identifier in inactive
+            if inactive is not None
+            else socket.is_inactive
+        )
         # Switch-type nodes have sockets that are inactive one or the other
         # so we have to be explicit to capture all of them
         if "Switch" not in socket.node.bl_idname and (
             (
-                (socket.is_inactive and socket.node.bl_idname != "NodeEnableOutput")
+                (is_inactive and socket.node.bl_idname != "NodeEnableOutput")
                 and not hidden
             )
             or "__extend__" in socket.identifier
@@ -74,6 +84,7 @@ def collect_socket_info(
             is_output=is_output,
             is_multi_input=getattr(socket, "is_multi_input", False),
             structure_type=_socket_structure_type(socket),
+            hide_value=bool(getattr(socket, "hide_value", False)),
             menu_items=_collect_socket_menu_items(socket)
             if socket.type == "MENU" and cast(Any, socket).default_value != ""
             else [],
@@ -94,6 +105,64 @@ def collect_socket_info(
 
         inputs.append(socket_info)
     return inputs
+
+
+# Blender's socket-usage inference marks an input inactive both when the
+# node's mode hides it (Dilate/Erode "Steps" has no falloff) and when the
+# current *values* make it irrelevant (Mix with Factor 1.0 never reads A).
+# Only the first should drop a socket from a variant, so value inputs are
+# temporarily fed from a Group Input: their values become unknown to the
+# inference, and whatever stays inactive is inactive because of the mode.
+# The links are removed again because they also change other socket state
+# (e.g. the inferred structure type).
+_UNKNOWN_VALUE_SOCKET_TYPES = {
+    "VALUE": "NodeSocketFloat",
+    "INT": "NodeSocketInt",
+    "BOOLEAN": "NodeSocketBool",
+    "VECTOR": "NodeSocketVector",
+    "RGBA": "NodeSocketColor",
+    "ROTATION": "NodeSocketRotation",
+    "MATRIX": "NodeSocketMatrix",
+    "STRING": "NodeSocketString",
+}
+
+
+def mode_inactive_inputs(node: Any) -> set[str]:
+    """Identifiers of *node*'s inputs that are inactive whatever their values."""
+    tree = node.id_data
+    group_input = tree.nodes.new("NodeGroupInput")
+    interface_items = []
+    links = []
+    sources: dict[str, Any] = {}
+    try:
+        for socket in node.inputs:
+            socket_type = _UNKNOWN_VALUE_SOCKET_TYPES.get(socket.type)
+            if (
+                socket_type is None
+                or socket.is_linked
+                or "__extend__" in socket.identifier
+            ):
+                continue
+            if socket.type not in sources:
+                try:
+                    item = tree.interface.new_socket(
+                        socket.type, in_out="INPUT", socket_type=socket_type
+                    )
+                except TypeError:
+                    # not an interface type in this tree (Rotation in shaders)
+                    sources[socket.type] = None
+                    continue
+                interface_items.append(item)
+                sources[socket.type] = group_input.outputs[socket.type]
+            if sources[socket.type] is not None:
+                links.append(tree.links.new(sources[socket.type], socket))
+        return {socket.identifier for socket in node.inputs if socket.is_inactive}
+    finally:
+        for link in links:
+            tree.links.remove(link)
+        tree.nodes.remove(group_input)
+        for item in interface_items:
+            tree.interface.remove(item)
 
 
 def collect_property_info(node, node_type):
@@ -135,7 +204,9 @@ def collect_property_info(node, node_type):
                             identifier=item.identifier,
                             name=item.name,
                             description=item.description,
-                            sockets=collect_socket_info(node.inputs),
+                            sockets=collect_socket_info(
+                                node.inputs, inactive=mode_inactive_inputs(node)
+                            ),
                             output_sockets=collect_socket_info(
                                 node.outputs, is_output=True
                             ),
@@ -248,7 +319,9 @@ def _introspect_node_uncached(node_type: type, tree_type: str) -> NodeInfo | Non
                             identifier=item_value,
                             name=item_value,
                             description=rna_descriptions.get(item_value, ""),
-                            sockets=collect_socket_info(node.inputs),
+                            sockets=collect_socket_info(
+                                node.inputs, inactive=mode_inactive_inputs(node)
+                            ),
                         )
                     )
                 except Exception:  # noqa: BLE001, S110

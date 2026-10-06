@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Render node trees as interactive graphs via geonodes-web-render.
 
 The live Blender node tree built by a :class:`~nodebpy.builder.tree.TreeBuilder`
@@ -16,7 +15,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ..builder.tree import TreeBuilder
@@ -30,7 +29,7 @@ DEFAULT_VERSION = "0.3"
 DEFAULT_CDN = "https://esm.sh"
 
 
-def to_tree_clipper_payload(builder: TreeBuilder, *, compress: bool = True) -> str:
+def to_tree_clipper_payload(builder: TreeBuilder[Any], *, compress: bool = True) -> str:
     """Export *builder*'s node tree to a Tree Clipper payload.
 
     With ``compress=True`` (the default) the result is the ``TreeClipper::`` +
@@ -73,7 +72,7 @@ def to_tree_clipper_payload(builder: TreeBuilder, *, compress: bool = True) -> s
 
 
 def to_web_render_html(
-    builder: TreeBuilder,
+    builder: TreeBuilder[Any],
     *,
     height: str = "480px",
     version: str = DEFAULT_VERSION,
