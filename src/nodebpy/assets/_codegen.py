@@ -13,6 +13,7 @@ their assets.
 
 from __future__ import annotations
 
+import os
 from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -21,7 +22,7 @@ from typing import cast
 
 import bpy
 
-from ..builder import AssetLibrary, BundledLibrary, asset_group_base
+from ..builder import AssetLibrary, BundledLibrary, PackageLibrary, asset_group_base
 from ..builder._utils import normalize_name, typed_param_names
 from ..export.codegen import GroupInterface, _fmt
 from ..types import Default
@@ -700,3 +701,83 @@ def generate_asset_modules(
         )
         written[module] = [c.class_name for c in tree_classes]
     return written
+
+
+# Bundled libraries shipped with Blender, grouped by output module. Each library
+# holds node groups of a single tree type.
+_ESSENTIALS: dict[str, tuple[str, ...]] = {
+    "geometry": (
+        "geometry_nodes_essentials.blend",
+        "geometry_nodes_dynamics_assets.blend",
+        "procedural_hair_node_assets.blend",
+        "principal_components.blend",
+    ),
+    "shader": ("shading_nodes_essentials.blend",),
+    "compositor": ("compositing_nodes_essentials.blend",),
+}
+
+
+def generate_essentials(
+    nodes_dir: Path, nodebpy_pkg: str = "..", docstrings: bool = True
+) -> dict[str, list[str]]:
+    """Generate the bundled-essentials asset modules into
+    ``<nodes_dir>/<tree>/assets.py``; returns the class names written per tree
+    (libraries not present in this Blender install are skipped)."""
+    written: dict[str, list[str]] = {}
+    for tree, filenames in _ESSENTIALS.items():
+        libraries = [
+            BundledLibrary(f)
+            for f in filenames
+            if os.path.exists(BundledLibrary(f).path())
+        ]
+        if not libraries:  # pragma: no cover - depends on the Blender install
+            print(f"  {tree}: no bundled libraries present, skipping")
+            continue
+        names = generate_asset_api(
+            libraries,
+            Path(nodes_dir) / tree / "assets.py",
+            nodebpy_pkg=nodebpy_pkg,
+            docstrings=docstrings,
+        )
+        written[tree] = names
+        print(f"  nodes/{tree}/assets.py: {len(names)} asset classes")
+    return written
+
+
+def generate_command(
+    blend_file: Path | None,
+    output: Path | None,
+    nodebpy_pkg: str = "nodebpy",
+    docstrings: bool = True,
+) -> None:
+    """The ``nodebpy generate`` subcommand: generate an API module (or, for a
+    directory ``output``, one module per tree type) for the asset library
+    ``blend_file`` — or, without one, regenerate nodebpy's own
+    bundled-essentials asset APIs."""
+    nodes_dir = Path(__file__).parent.parent / "nodes"
+    if blend_file is None:  # pragma: no cover - rewrites nodebpy's own sources
+        generate_essentials(nodes_dir, docstrings=docstrings)
+        return
+    output = output or nodes_dir / "custom" / "assets.py"
+
+    # PackageLibrary resolves ``relative`` against the generated module's
+    # directory (``__file__``), so express the .blend relative to the output
+    # module — not the CWD the command happened to run from.
+    blend = blend_file.resolve()
+    if output.suffix != ".py":
+        # Directory output: one module per tree type.
+        out_dir = output.resolve()
+        relative = Path(os.path.relpath(blend, out_dir)).as_posix()
+        generate_asset_modules(
+            [PackageLibrary(str(out_dir / "_anchor.py"), relative)],
+            output,
+            nodebpy_pkg=nodebpy_pkg,
+        )
+        return
+    relative = Path(os.path.relpath(blend, output.resolve().parent)).as_posix()
+    generate_asset_api(
+        [PackageLibrary(str(output), relative)],
+        output,
+        nodebpy_pkg=nodebpy_pkg,
+        docstrings=docstrings,
+    )

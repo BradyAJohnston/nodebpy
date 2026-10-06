@@ -73,7 +73,6 @@ def test_color_shader():
             _ = s.Mix.color(0.5, mix_shader)
 
 
-
 @pytest.mark.parametrize(
     "variant, a, b, a_id, b_id",
     [
@@ -91,6 +90,7 @@ def test_mix_variants_take_a_and_b(variant, a, b, a_id, b_id):
         inputs = {socket.identifier: socket for socket in mix.node.inputs}
         assert inputs[a_id].links[0].from_node == first.node
         assert inputs[b_id].links[0].from_node == second.node
+
 
 def test_material_node_cartoon():
     with s.material("Cartoon", fake_user=True) as mat:

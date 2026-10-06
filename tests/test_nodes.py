@@ -2,8 +2,8 @@ import itertools
 from typing import cast
 
 import bpy
-import pytest
 import numpy as np
+import pytest
 from numpy import random
 
 from nodebpy import TreeBuilder

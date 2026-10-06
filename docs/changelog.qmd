@@ -6,6 +6,9 @@ title: Changelog
 
 ### Enhancements
 
+- **`nodebpy` command** — the asset CLI is now a `nodebpy` console script (also `python -m nodebpy`): `nodebpy dump`, `build`, `ensure`, `check` and `plot`, plus `nodebpy generate` for the typed asset API codegen (formerly the flag-based `python -m nodebpy.assets [-b … -o …]`). Under a full Blender, run `blender -b -P .../nodebpy/__main__.py -- <subcommand>`.
+- **`nodebpy textconv`** — prints a `.blend`'s assets as their dumped Python source, so git can diff asset libraries: set `*.blend diff=blend` in `.gitattributes` and `git config diff.blend.textconv "nodebpy textconv"`. Git LFS pointers are smudged automatically.
+
 The layout behind `arrange(tree)`, the default arrangement of `TreeBuilder`, was reworked. **Arranged trees will look different.**
 
 - **A straight trunk.** The links that carry a tree's main data (geometry, shader, bundle, closure) are aligned first, so a chain of geometry nodes is one flat row. Each zone is a row with its node tops level. Group Output nodes go in the last column. `SugiyamaOptions(straighten_trunk=False, pin_group_output=False)` turns these off.
@@ -19,6 +22,11 @@ The layout behind `arrange(tree)`, the default arrangement of `TreeBuilder`, was
 - **Faster.** Node locations are written in one call instead of one at a time, and the slow steps of the layout were reworked. A 600-node tree arranges in under a second instead of two and a half.
 
 The design is described in `src/nodebpy/layout/DESIGN.md`.
+
+### Deprecations
+
+- The `python -m nodebpy.assets` entry point is deprecated and will be removed in nodebpy 530. It forwards to `nodebpy` with a `FutureWarning`: subcommands unchanged (`nodebpy dump …`), flag-only invocations to `nodebpy generate …`. The `nodebpy.assets` module itself is unaffected.
+- Dumped sources now name `nodebpy build` in their header comment. Re-dump checked-in sources after upgrading, or `nodebpy check` reports them as differing.
 
 ### Fixes
 

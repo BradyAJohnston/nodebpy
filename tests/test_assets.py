@@ -14,7 +14,7 @@ from nodebpy.assets import (
     generate_asset_api,
     generate_asset_modules,
 )
-from nodebpy.assets.__main__ import generate_essentials
+from nodebpy.assets._codegen import generate_essentials
 from nodebpy.builder import BaseNode, asset_group_base
 from nodebpy.nodes import compositor as nc
 from nodebpy.nodes import geometry as ng

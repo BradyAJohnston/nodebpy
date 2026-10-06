@@ -53,7 +53,7 @@ the output in both directions, so catalog assignments survive the trip.
 Both directions assume a session without unrelated node groups: appending
 renames on a name clash (which would corrupt the dumped ``_name``), and
 rebuilding reuses same-named trees (which would bake a stale group into the
-``.blend``). The CLI (``python -m nodebpy.assets dump/build``) runs in a fresh
+``.blend``). The CLI (``nodebpy dump/build``) runs in a fresh
 ``bpy`` session, which satisfies this by construction.
 
 The CLI also offers ``ensure`` (rebuild only when the ``.blend`` or its
@@ -62,7 +62,7 @@ The CLI also offers ``ensure`` (rebuild only when the ``.blend`` or its
 subcommand can read its positionals and flags from a ``[tool.nodebpy.assets]``
 table in the nearest ``pyproject.toml`` — see :mod:`._pipeline`. Under a full
 Blender (no ``bpy`` module) any subcommand runs as ``blender -b
---factory-startup -P <.../nodebpy/assets/__main__.py> -- <subcommand ...>``.
+--factory-startup -P <.../nodebpy/__main__.py> -- <subcommand ...>``.
 """
 
 from __future__ import annotations
@@ -374,10 +374,7 @@ def _render_group_module(
     }[kind]
     header = [
         f"# {label}, dumped by nodebpy.assets.dump_library.",
-        (
-            "# Rebuild the library with nodebpy.assets.build_library"
-            " (python -m nodebpy.assets build)."
-        ),
+        ("# Rebuild the library with nodebpy.assets.build_library (nodebpy build)."),
     ]
     if kind == "shared":
         header.append(
@@ -501,7 +498,7 @@ def dump_library(
     appended groups are removed again afterwards. Run this in a session that
     doesn't already hold node groups with the same names — appending renames on
     a clash, which would corrupt the dumped ``_name`` attributes; a clash
-    raises instead. The CLI (``python -m nodebpy.assets dump``) runs in a fresh
+    raises instead. The CLI (``nodebpy dump``) runs in a fresh
     session by construction.
 
     Parameters
@@ -619,7 +616,7 @@ def dump_library(
             raise RuntimeError(
                 f"Node groups already exist in this session: {clashes}. "
                 "Appending would rename them and corrupt the dumped sources — "
-                "dump from a fresh session (e.g. python -m nodebpy.assets dump)."
+                "dump from a fresh session (e.g. nodebpy dump)."
             )
         dst.node_groups = list(available)
         # A same-named material already in the session renames the appended
@@ -1153,7 +1150,7 @@ def build_library(
     deduplicates groups shared between asset files), the session must not
     already hold node groups when the build starts — a stale same-named group
     would silently end up in the ``.blend``. This raises if any exist, unless
-    ``allow_existing`` is passed. The CLI (``python -m nodebpy.assets build``)
+    ``allow_existing`` is passed. The CLI (``nodebpy build``)
     runs in a fresh session by construction.
 
     Returns
@@ -1173,7 +1170,7 @@ def build_library(
         raise RuntimeError(
             f"The session already holds node groups {existing}; a same-named "
             "stale group would be reused and written into the library. Build "
-            "from a fresh session (e.g. python -m nodebpy.assets build), or "
+            "from a fresh session (e.g. nodebpy build), or "
             "pass allow_existing=True to override."
         )
 
@@ -1324,8 +1321,7 @@ def plot_library(
 ) -> dict[str, Path]:
     """Render node groups from ``blend_path`` to PNG images under
     ``output_dir`` — a headless, Blender-styled look at node graphs, e.g.
-    for reviewing new nodes in pull requests (``python -m nodebpy.assets
-    plot``).
+    for reviewing new nodes in pull requests (``nodebpy plot``).
 
     ``names`` selects the groups to plot: exact names or :mod:`fnmatch`
     wildcard patterns (``"Style *"``), matched against *every* node group in
@@ -1380,7 +1376,7 @@ def plot_library(
             raise RuntimeError(
                 f"Node groups already exist in this session: {clashes}. "
                 "Appending would rename them — plot from a fresh session "
-                "(e.g. python -m nodebpy.assets plot)."
+                "(e.g. nodebpy plot)."
             )
         dst.node_groups = list(wanted)
     added = {
@@ -1644,7 +1640,7 @@ def _parse_args(argv: list[str] | None = None):
     import argparse
 
     parser = argparse.ArgumentParser(
-        prog="python -m nodebpy.assets",
+        prog="nodebpy",
         description="Round-trip a .blend asset library through Python source.",
         epilog=(
             "Positional arguments and flags can come from a "
@@ -1654,7 +1650,7 @@ def _parse_args(argv: list[str] | None = None):
             "relative to the pyproject's directory; explicit arguments "
             "always win. Inside a full Blender (no bpy module), run any "
             "subcommand as: blender -b --factory-startup "
-            "-P <.../nodebpy/assets/__main__.py> -- <subcommand ...>"
+            "-P <.../nodebpy/__main__.py> -- <subcommand ...>"
         ),
     )
     sub = parser.add_subparsers(dest="command", required=True)
@@ -1869,8 +1865,71 @@ def _parse_args(argv: list[str] | None = None):
         "these implies --arrange.",
     )
 
+    generate = sub.add_parser(
+        "generate",
+        help="Generate typed API classes for node-group assets.",
+        description=(
+            "Generate typed nodebpy API classes for the node-group assets in "
+            "--blend-file. Without --blend-file, regenerate nodebpy's own "
+            "bundled-essentials asset APIs."
+        ),
+    )
+    generate.add_argument(
+        "--blend-file",
+        "-b",
+        type=Path,
+        help="Optional custom .blend asset library to generate from.",
+    )
+    generate.add_argument(
+        "--output",
+        "--output-dir",
+        "-o",
+        dest="output",
+        type=Path,
+        help=(
+            "Where to write the generated module(s). A .py path writes a single "
+            "module; a directory writes one module per tree type "
+            "(geometry.py / shader.py / compositor.py)."
+        ),
+    )
+    generate.add_argument(
+        "--nodebpy-pkg",
+        default="nodebpy",
+        help=(
+            "Import anchor for nodebpy in the generated module. Defaults to the "
+            "absolute 'nodebpy'. When nodebpy is vendored inside another package, "
+            "pass the path that reaches it relative to the generated module's "
+            "package — e.g. '..lib.nodebpy'."
+        ),
+    )
+    generate.add_argument(
+        "--no-docstrings",
+        dest="docstrings",
+        action="store_false",
+        help=(
+            "Skip the numpy-style class docstrings (description, Parameters, "
+            "Inputs, Outputs) and emit a terser module."
+        ),
+    )
+
+    textconv = sub.add_parser(
+        "textconv",
+        help="Print a .blend's assets as Python source, for git diff.",
+        description=(
+            "Dump every asset in a .blend and print the modules to stdout, "
+            "each headed by '### <path>', so git can diff .blend files as "
+            "Python source. A Git LFS pointer is smudged to the real .blend "
+            "first. Use as a git diff driver: set 'diff=blend' on *.blend "
+            "in .gitattributes, then 'git config diff.blend.textconv "
+            '"nodebpy textconv"\' (and diff.blend.cachetextconv true).'
+        ),
+    )
+    textconv.add_argument(
+        "blend", type=Path, help="The .blend (or Git LFS pointer to one)."
+    )
+
     args = parser.parse_args(argv)
-    if args.command != "plot":
+    if args.command not in ("plot", "generate", "textconv"):
         # Fill positionals and flags from the nearest pyproject's
         # [tool.nodebpy.assets] table; explicit arguments always win.
         apply_config(args)
@@ -1919,8 +1978,8 @@ def _build_command(args) -> None:
 
 
 def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapper
-    """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``
-    and ``plot`` subcommands."""
+    """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``,
+    ``plot``, ``generate`` and ``textconv`` subcommands."""
     args = _parse_args(argv)
     if args.command == "dump":
         _dump_command(args)
@@ -1931,6 +1990,16 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             print(f"{args.blend} is up to date")
     elif args.command == "check":
         check_roundtrip(args)
+    elif args.command == "generate":
+        from nodebpy.assets._codegen import generate_command
+
+        generate_command(
+            args.blend_file, args.output, args.nodebpy_pkg, args.docstrings
+        )
+    elif args.command == "textconv":
+        from nodebpy.assets._textconv import textconv
+
+        textconv(args.blend)
     elif args.command == "plot":
         options = _arrange_options_from_args(args)
         method: SugiyamaOptions | None = None

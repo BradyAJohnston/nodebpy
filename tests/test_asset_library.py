@@ -1080,10 +1080,10 @@ def test_colliding_names_get_suffixes(tmp_path):
 
 
 def test_cli_dump_and_build_dispatch(monkeypatch, library_blend, tmp_path, capsys):
-    """``python -m nodebpy.assets dump/build`` dispatches to the library CLI."""
+    """``nodebpy dump/build`` dispatches to the library CLI."""
     import sys as _sys
 
-    from nodebpy.assets.__main__ import main
+    from nodebpy.__main__ import main
 
     src = tmp_path / "src"
     monkeypatch.setattr(_sys, "argv", ["prog", "dump", str(library_blend), str(src)])
@@ -1307,7 +1307,7 @@ def test_cli_dump_typed_api(monkeypatch, library_blend, tmp_path, capsys):
     """--typed-api reaches dump_library through the CLI."""
     import sys as _sys
 
-    from nodebpy.assets.__main__ import main
+    from nodebpy.__main__ import main
 
     src = tmp_path / "src"
     monkeypatch.setattr(

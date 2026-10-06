@@ -9,6 +9,9 @@ authors = [
 requires-python = ">=3.13"
 license = { text = "GPL-3.0-or-later" }
 
+[project.scripts]
+nodebpy = "nodebpy.__main__:main"
+
 [project.optional-dependencies]
 # Deprecated: the Sugiyama layout no longer needs networkx. Kept (empty) so
 # existing `nodebpy[networkx]` installs keep resolving.
