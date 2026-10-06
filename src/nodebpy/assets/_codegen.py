@@ -13,9 +13,8 @@ their assets.
 
 from __future__ import annotations
 
-import os
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
@@ -23,7 +22,7 @@ from typing import cast
 import bpy
 
 from ..builder import AssetLibrary, BundledLibrary, PackageLibrary, asset_group_base
-from ..builder._utils import normalize_name, typed_param_names
+from ..builder._utils import typed_param_names
 from ..export.codegen import GroupInterface, _fmt
 from ..types import Default
 
@@ -218,18 +217,14 @@ def _collect(
     # current node options (e.g. a menu selection) leave unused, but a caller
     # may set those options differently, so the API must expose every input.
     raw = [s for s in sockets if s.identifier != "__extend__"]
-    # The accessor resolves attribute names by identifier first, then name, so a
-    # group socket's readable name works as the attr/param when it's unambiguous;
-    # fall back to the opaque-but-unique identifier only on a name collision.
-    name_counts = Counter(normalize_name(s.name) for s in raw)
+    # Accessor and parameter names follow the one mapping the generated call
+    # sites use too.
+    attrs = typed_param_names(raw)
     out: list[_Socket] = []
     for s in raw:
         socket_class, input_type = _socket_types(type(s).__name__)
         menu_items = _menu_items(s) if menus else ()
-        norm_name = normalize_name(s.name)
-        attr = (
-            norm_name if name_counts[norm_name] == 1 else normalize_name(s.identifier)
-        )
+        attr = attrs[s.identifier]
         fallback = fallbacks.get(s.identifier)
         out.append(
             _Socket(
@@ -362,7 +357,6 @@ def _library_source(library: AssetLibrary) -> str:
     """Source expression that reconstructs ``library`` in the generated module."""
     if isinstance(library, BundledLibrary):
         return f"BundledLibrary({_fmt(library.filename)})"
-    from ..builder import PackageLibrary
 
     if isinstance(library, PackageLibrary):
         # Emit a plain forward-slash string literal (never ``PosixPath(...)``),
@@ -407,13 +401,30 @@ def _class_docstring(cls: _AssetClass) -> str:
     return f'"""\n{body}\n    """'
 
 
-def _render_class(cls: _AssetClass, docstrings: bool = False) -> str:
-    base = asset_group_base(cls.tree_idname).__name__
+def _render_interface(
+    cls: _AssetClass,
+    *,
+    docstrings: bool = True,
+    nodebpy_pkg: str = "nodebpy",
+    key_by_name: bool = False,
+) -> tuple[GroupInterface, list[str]]:
+    """The typed-interface parts of the class for *cls*, and the import lines
+    they need.
+
+    The parts are the docstring, the ``_asset_name`` and ``_library``
+    attributes, the ``_Inputs`` and ``_Outputs`` accessors and the typed
+    ``__init__``. With a ``library_source`` the class is an appending
+    ``Asset*Group``; without one (a shared helper group, which is not an
+    asset) only the typed API is added and the ``Custom*Group`` base stays.
+
+    The ``__init__`` keys its super call by socket identifier. With
+    *key_by_name* it keys by socket name instead, with a ``_named_links``
+    fallback for duplicate names: a tree rebuilt from ``_build_group`` gets
+    new identifiers from Blender, while names round-trip.
+    """
     docstring = (
         _class_docstring(cls) if docstrings else f'"""{_clean_doc(cls.description)}"""'
     )
-    inputs_cls = _accessor(cls.inputs, "_Inputs", docstrings)
-    outputs_cls = _accessor(cls.outputs, "_Outputs", docstrings)
 
     params = [f"{s.attr}: {s.param_type} = {s.default}" for s in cls.inputs]
     signature = (
@@ -421,79 +432,21 @@ def _render_class(cls: _AssetClass, docstrings: bool = False) -> str:
         if params
         else "(self)"
     )
-    key_args = ", ".join(f'"{s.identifier}": {s.attr}' for s in cls.inputs)
-
-    return f"""class {cls.class_name}({base}):
-    {docstring}
-
-    _name = {_fmt(cls.asset_name)}
-    _asset_name = {_fmt(cls.asset_name)}
-    _library = {cls.library_source}
-
-{inputs_cls}
-
-{outputs_cls}
-
-    if TYPE_CHECKING:
-        @property
-        def i(self) -> _Inputs: ...
-        @property
-        def o(self) -> _Outputs: ...
-
-    def __init__{signature}{" -> None" if signature == "(self)" else ""}:
-        super().__init__(**{{{key_args}}})
-"""
-
-
-def interface_parts(
-    group,
-    *,
-    library_source: str | None,
-    nodebpy_pkg: str = "nodebpy",
-) -> tuple[GroupInterface, list[str]]:
-    """The typed-interface parts of a merged dump class for ``group`` (a live
-    ``bpy.types.NodeTree``), plus the import lines they require.
-
-    The parts — numpydoc docstring, ``_asset_name``/``_library`` attributes,
-    ``_Inputs``/``_Outputs`` accessors and the typed ``__init__`` — are spliced
-    by :func:`nodebpy.export.to_python` into the class it emits around
-    ``_build_group``, so one class both documents the group and carries the
-    recipe that regenerates it.
-
-    With ``library_source`` (a ``PackageLibrary(...)`` expression), the class
-    becomes an appending ``Asset*Group``; without it (shared helper groups,
-    which are not assets), only the typed API is added and the ``Custom*Group``
-    base stays.
-
-    The ``__init__`` keys its super call by socket *name* (with a
-    ``_named_links`` fallback for duplicate names) rather than by identifier:
-    identifiers are authoring-history artifacts that a tree rebuilt from
-    ``_build_group`` reassigns, while names round-trip. Parameter names come
-    from :func:`~nodebpy.builder._utils.typed_param_names` — the same mapping
-    codegen uses for call sites, so generated calls match the signature.
-    """
-    cls = _introspect_group(group, group.name, library_source or "")
-    # Align accessor/parameter names with the shared call-site mapping.
-    for side in (cls.inputs, cls.outputs):
-        params = typed_param_names(side)
-        for s in side:
-            s.attr = params[s.identifier]
-
-    docstring = f"    {_class_docstring(cls)}"
-
-    params = [f"{s.attr}: {s.param_type} = {s.default}" for s in cls.inputs]
-    signature = (
-        "(\n        self,\n        " + ",\n        ".join(params) + ",\n    )"
-        if params
-        else "(self)"
-    )
-    name_counts = Counter(s.name for s in cls.inputs)
-    keyed = [
-        f"{_quote(s.name)}: {s.attr}" for s in cls.inputs if name_counts[s.name] == 1
-    ]
-    pairs = [
-        f"({_quote(s.name)}, {s.attr})" for s in cls.inputs if name_counts[s.name] > 1
-    ]
+    if key_by_name:
+        name_counts = Counter(s.name for s in cls.inputs)
+        keyed = [
+            f"{_quote(s.name)}: {s.attr}"
+            for s in cls.inputs
+            if name_counts[s.name] == 1
+        ]
+        pairs = [
+            f"({_quote(s.name)}, {s.attr})"
+            for s in cls.inputs
+            if name_counts[s.name] > 1
+        ]
+    else:
+        keyed = [f"{_quote(s.identifier)}: {s.attr}" for s in cls.inputs]
+        pairs = []
     args = []
     if keyed:
         args.append("**{" + ", ".join(keyed) + "}")
@@ -511,8 +464,8 @@ def interface_parts(
     )
     body = "\n\n".join(
         [
-            _accessor(cls.inputs, "_Inputs", docstrings=True),
-            _accessor(cls.outputs, "_Outputs", docstrings=True),
+            _accessor(cls.inputs, "_Inputs", docstrings),
+            _accessor(cls.outputs, "_Outputs", docstrings),
             type_checking,
             init,
         ]
@@ -520,27 +473,29 @@ def interface_parts(
 
     base: str | None = None
     attr_lines: list[str] = []
-    if library_source:
+    if cls.library_source:
         base = asset_group_base(cls.tree_idname).__name__
         attr_lines = [
             f"_asset_name = {_fmt(cls.asset_name)}",
-            f"_library = {library_source}",
+            f"_library = {cls.library_source}",
         ]
 
-    socket_classes = sorted({s.socket_class for s in cls.inputs + cls.outputs})
-    input_types = sorted({s.input_type for s in cls.inputs})
     typing_names = ["TYPE_CHECKING"]
     if any(s.menu_items for s in cls.inputs):
         typing_names.append("Literal")
-    builder_names = {"SocketAccessor", *socket_classes}
-    if library_source:
-        builder_names.add(library_source.partition("(")[0])
+    builder_names = {
+        "SocketAccessor",
+        *(s.socket_class for s in cls.inputs + cls.outputs),
+    }
+    if cls.library_source:
+        builder_names.add(cls.library_source.partition("(")[0])
     import_lines = [
         f"from typing import {', '.join(typing_names)}",
         f"from {nodebpy_pkg}.builder import {', '.join(sorted(builder_names))}",
     ]
     if any("math." in s.default for s in cls.inputs):
         import_lines.insert(0, "import math")
+    input_types = sorted({s.input_type for s in cls.inputs})
     if any(s.default.startswith("Default.") for s in cls.inputs):
         input_types.insert(0, "Default")  # sorts before the Input* names
     if input_types:
@@ -548,61 +503,89 @@ def interface_parts(
 
     return (
         GroupInterface(
-            docstring=docstring, body=body, base=base, attr_lines=attr_lines
+            docstring=f"    {docstring}", body=body, base=base, attr_lines=attr_lines
         ),
         import_lines,
     )
 
 
-def _render_module(
-    classes: list[_AssetClass],
+def interface_parts(
+    group,
+    *,
+    library_source: str | None,
     nodebpy_pkg: str = "nodebpy",
-    docstrings: bool = False,
-) -> str:
-    socket_classes = sorted(
-        {s.socket_class for c in classes for s in c.inputs + c.outputs}
-    )
-    input_types = sorted({s.input_type for c in classes for s in c.inputs})
-    if any(s.default.startswith("Default.") for c in classes for s in c.inputs):
-        input_types.insert(0, "Default")
-    bases = sorted({asset_group_base(c.tree_idname).__name__ for c in classes})
-    libraries = sorted(
-        {
-            "BundledLibrary"
-            if c.library_source.startswith("BundledLibrary")
-            else "PackageLibrary"
-            for c in classes
-        }
-    )
+) -> tuple[GroupInterface, list[str]]:
+    """The typed-interface parts (:func:`_render_interface`) of the merged
+    dump class for ``group``, a live ``bpy.types.NodeTree``. They are spliced
+    by :func:`nodebpy.export.to_python` into the class it emits around
+    ``_build_group``, so one class both documents the group and carries the
+    recipe that regenerates it."""
+    cls = _introspect_group(group, group.name, library_source or "")
+    return _render_interface(cls, nodebpy_pkg=nodebpy_pkg, key_by_name=True)
 
-    builder_imports = sorted(
-        set(bases) | set(libraries) | {"SocketAccessor"} | set(socket_classes)
+
+def render_asset_class(
+    cls: _AssetClass, *, docstrings: bool = True, nodebpy_pkg: str = "nodebpy"
+) -> tuple[str, list[str]]:
+    """The source of a class that only appends its asset: the typed
+    interface around the attributes the appending base needs, with no
+    recipe. Its library is never rebuilt, so the ``__init__`` keys by
+    socket identifier. Returns the class and the import lines it needs."""
+    parts, import_lines = _render_interface(
+        cls, docstrings=docstrings, nodebpy_pkg=nodebpy_pkg
     )
+    import_lines.append(f"from {nodebpy_pkg}.builder import {parts.base}")
+    attrs = "\n".join(
+        f"    {line}" for line in (f"_name = {_fmt(cls.asset_name)}", *parts.attr_lines)
+    )
+    source = (
+        f"class {cls.class_name}({parts.base}):\n"
+        f"{parts.docstring}\n\n{attrs}\n\n{parts.body}\n"
+    )
+    return source, import_lines
 
-    typing_imports = ["TYPE_CHECKING"]
-    if any(s.menu_items for c in classes for s in c.inputs):
-        typing_imports.append("Literal")
 
-    lines = [
-        "# Auto-generated by nodebpy.assets.generate_asset_api — do not edit manually.",
-        "import math"
-        if any("math." in s.default for c in classes for s in c.inputs)
-        else "",
-        f"from typing import {', '.join(typing_imports)}",
-        "",
-        f"from {nodebpy_pkg}.builder import (\n    {',\n    '.join(builder_imports)},\n)",
-        f"from {nodebpy_pkg}.types import (\n    {',\n    '.join(input_types)},\n)"
-        if input_types
-        else "",
+def merge_imports(lines: Iterable[str]) -> list[str]:
+    """One import line per module, with every name the given lines import
+    from it."""
+    plain: list[str] = []
+    names: dict[str, set[str]] = {}
+    for line in lines:
+        if line.startswith("from "):
+            module, _, imported = line[5:].partition(" import ")
+            names.setdefault(module, set()).update(
+                n.strip() for n in imported.split(",")
+            )
+        elif line not in plain:
+            plain.append(line)
+    # Constants before classes, as ruff's import sorting wants them.
+    return plain + [
+        f"from {module} import {', '.join(sorted(ns, key=lambda n: (not n.isupper(), n)))}"
+        for module, ns in names.items()
     ]
-    header = "\n".join(line for line in lines if line) + "\n\n\n"
-    ordered = sorted(classes, key=lambda c: c.class_name)
-    body = "\n\n".join(_render_class(c, docstrings) for c in ordered)
-    all_names = ",\n    ".join(f'"{c.class_name}"' for c in ordered)
-    footer = (
-        f"\n\n__all__ = (\n    {all_names},\n)\n" if ordered else "\n__all__ = ()\n"
+
+
+def _render_module(
+    classes: list[_AssetClass], nodebpy_pkg: str = "nodebpy", docstrings: bool = True
+) -> str:
+    """A module of appending asset classes, sorted by name."""
+    rendered = [
+        render_asset_class(c, docstrings=docstrings, nodebpy_pkg=nodebpy_pkg)
+        for c in sorted(classes, key=lambda c: c.class_name)
+    ]
+    imports = merge_imports(line for _, lines in rendered for line in lines)
+    header = [
+        "# Generated by nodebpy.assets.generate_asset_api; do not edit.",
+        *imports,
+    ]
+    body = "\n\n".join(source for source, _ in rendered)
+    all_names = ",\n    ".join(
+        f'"{c.class_name}"' for c in sorted(classes, key=lambda c: c.class_name)
     )
-    return header + body + footer
+    footer = (
+        f"\n\n__all__ = (\n    {all_names},\n)\n" if classes else "\n__all__ = ()\n"
+    )
+    return "\n".join(header) + "\n\n\n" + body + footer
 
 
 def generate_asset_api(
@@ -613,7 +596,7 @@ def generate_asset_api(
     nodebpy_pkg: str = "nodebpy",
     docstrings: bool = True,
 ) -> list[str]:
-    """Generate typed asset classes for ``libraries`` into ``output_path``.
+    """Generate typed asset classes for ``libraries`` into one module.
 
     Parameters
     ----------
@@ -630,26 +613,19 @@ def generate_asset_api(
         Import anchor for nodebpy in the generated module. Defaults to the
         absolute ``"nodebpy"``. When nodebpy is vendored inside another package,
         pass the path that reaches it *relative to the generated module's
-        package* — e.g. ``"..vendor.nodebpy"`` — so the emitted imports stay
-        relative to the install/vendor location.
+        package*, such as ``"..vendor.nodebpy"``.
     docstrings:
         Emit numpy-style class docstrings (description, ``Parameters``,
-        ``Inputs``, ``Outputs``) using the asset's own socket tooltips, so
-        editors show documentation alongside the type hints. Defaults to
-        ``True``; pass ``False`` for a terser module.
+        ``Inputs``, ``Outputs``) from the asset's own socket tooltips, so
+        editors show documentation alongside the type hints. Pass ``False``
+        for a terser module.
 
     Returns
     -------
     list[str]
-        The list of generated class names.
+        The generated class names.
     """
-    if isinstance(libraries, AssetLibrary):
-        libraries = [libraries]
-
-    classes: list[_AssetClass] = []
-    for library in libraries:
-        classes.extend(_introspect(library, names))
-
+    classes = _introspect_all(libraries, names)
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
@@ -665,30 +641,16 @@ def generate_asset_modules(
     *,
     names: set[str] | None = None,
     nodebpy_pkg: str = "nodebpy",
+    docstrings: bool = True,
 ) -> dict[str, list[str]]:
-    """Generate typed asset classes for ``libraries``, split into one module per
-    tree type inside ``output_dir``.
-
-    Writes ``geometry.py``, ``shader.py`` and/or ``compositor.py`` — one module
-    for each tree type that has assets in the libraries (no file for the
-    others). Asset names repeat across editors (a geometry *and* a compositor
-    "Combine Spherical" both exist), so splitting keeps the generated class
-    names collision-free where a single :func:`generate_asset_api` module would
-    silently shadow one with the other.
-
-    Parameters are as for :func:`generate_asset_api`, except ``output_dir`` is
-    the directory to write the modules into (created if needed).
-
-    Returns a mapping of module name (``"geometry"`` / ``"shader"`` /
-    ``"compositor"``) to the class names written to it.
-    """
-    if isinstance(libraries, AssetLibrary):
-        libraries = [libraries]
-
-    classes: list[_AssetClass] = []
-    for library in libraries:
-        classes.extend(_introspect(library, names))
-
+    """Generate typed asset classes for ``libraries``, one module per tree
+    type inside ``output_dir``: ``geometry.py``, ``shader.py`` and/or
+    ``compositor.py``, for the tree types that have assets. Asset names
+    repeat across editors (a geometry and a compositor "Combine Spherical"
+    both exist), so splitting keeps the class names from shadowing each
+    other. Parameters are as for :func:`generate_asset_api`. Returns the
+    class names written per module."""
+    classes = _introspect_all(libraries, names)
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     written: dict[str, list[str]] = {}
@@ -697,87 +659,18 @@ def generate_asset_modules(
         if not tree_classes:
             continue
         (output_dir / f"{module}.py").write_text(
-            _render_module(tree_classes, nodebpy_pkg=nodebpy_pkg), encoding="utf-8"
+            _render_module(
+                tree_classes, nodebpy_pkg=nodebpy_pkg, docstrings=docstrings
+            ),
+            encoding="utf-8",
         )
         written[module] = [c.class_name for c in tree_classes]
     return written
 
 
-# Bundled libraries shipped with Blender, grouped by output module. Each library
-# holds node groups of a single tree type.
-_ESSENTIALS: dict[str, tuple[str, ...]] = {
-    "geometry": (
-        "geometry_nodes_essentials.blend",
-        "geometry_nodes_dynamics_assets.blend",
-        "procedural_hair_node_assets.blend",
-        "principal_components.blend",
-    ),
-    "shader": ("shading_nodes_essentials.blend",),
-    "compositor": ("compositing_nodes_essentials.blend",),
-}
-
-
-def generate_essentials(
-    nodes_dir: Path, nodebpy_pkg: str = "..", docstrings: bool = True
-) -> dict[str, list[str]]:
-    """Generate the bundled-essentials asset modules into
-    ``<nodes_dir>/<tree>/assets.py``; returns the class names written per tree
-    (libraries not present in this Blender install are skipped)."""
-    written: dict[str, list[str]] = {}
-    for tree, filenames in _ESSENTIALS.items():
-        libraries = [
-            BundledLibrary(f)
-            for f in filenames
-            if os.path.exists(BundledLibrary(f).path())
-        ]
-        if not libraries:  # pragma: no cover - depends on the Blender install
-            print(f"  {tree}: no bundled libraries present, skipping")
-            continue
-        names = generate_asset_api(
-            libraries,
-            Path(nodes_dir) / tree / "assets.py",
-            nodebpy_pkg=nodebpy_pkg,
-            docstrings=docstrings,
-        )
-        written[tree] = names
-        print(f"  nodes/{tree}/assets.py: {len(names)} asset classes")
-    return written
-
-
-def generate_command(
-    blend_file: Path | None,
-    output: Path | None,
-    nodebpy_pkg: str = "nodebpy",
-    docstrings: bool = True,
-) -> None:
-    """The ``nodebpy generate`` subcommand: generate an API module (or, for a
-    directory ``output``, one module per tree type) for the asset library
-    ``blend_file`` — or, without one, regenerate nodebpy's own
-    bundled-essentials asset APIs."""
-    nodes_dir = Path(__file__).parent.parent / "nodes"
-    if blend_file is None:  # pragma: no cover - rewrites nodebpy's own sources
-        generate_essentials(nodes_dir, docstrings=docstrings)
-        return
-    output = output or nodes_dir / "custom" / "assets.py"
-
-    # PackageLibrary resolves ``relative`` against the generated module's
-    # directory (``__file__``), so express the .blend relative to the output
-    # module — not the CWD the command happened to run from.
-    blend = blend_file.resolve()
-    if output.suffix != ".py":
-        # Directory output: one module per tree type.
-        out_dir = output.resolve()
-        relative = Path(os.path.relpath(blend, out_dir)).as_posix()
-        generate_asset_modules(
-            [PackageLibrary(str(out_dir / "_anchor.py"), relative)],
-            output,
-            nodebpy_pkg=nodebpy_pkg,
-        )
-        return
-    relative = Path(os.path.relpath(blend, output.resolve().parent)).as_posix()
-    generate_asset_api(
-        [PackageLibrary(str(output), relative)],
-        output,
-        nodebpy_pkg=nodebpy_pkg,
-        docstrings=docstrings,
-    )
+def _introspect_all(
+    libraries: AssetLibrary | Sequence[AssetLibrary], names: set[str] | None
+) -> list[_AssetClass]:
+    if isinstance(libraries, AssetLibrary):
+        libraries = [libraries]
+    return [cls for library in libraries for cls in _introspect(library, names)]

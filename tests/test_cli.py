@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Tests for the ``nodebpy`` command's ``generate`` subcommand and the
-deprecated ``python -m nodebpy.assets`` entry point forwarding to it."""
+"""Tests for the ``nodebpy`` command's ``dump --api-only`` and the deprecated
+``python -m nodebpy.assets`` entry point forwarding to it."""
 
 import sys
 
@@ -18,21 +18,27 @@ def library_blend(tmp_path):
     return path
 
 
-def test_generate_single_module(library_blend, tmp_path):
-    """A .py output gets one module, its PackageLibrary path relative to it."""
-    out = tmp_path / "pkg" / "assets.py"
-    main(["generate", "-b", str(library_blend), "-o", str(out)])
-    code = out.read_text(encoding="utf-8")
-    assert "class ScaleUp(" in code
-    assert '"../library.blend"' in code
-
-
-def test_generate_tree_modules(library_blend, tmp_path):
-    """A directory output gets one module per tree type."""
+def test_api_only_dump_writes_a_module_per_asset(library_blend, tmp_path):
+    """Each asset gets a module holding an appending class and no recipe,
+    its library path relative to the module; the tree directories re-export
+    the classes."""
     out = tmp_path / "pkg"
-    main(["generate", "-b", str(library_blend), "-o", str(out)])
-    assert "class ScaleUp(" in (out / "geometry.py").read_text(encoding="utf-8")
-    assert "class FlatRed(" in (out / "shader.py").read_text(encoding="utf-8")
+    main(["dump", "--api-only", str(library_blend), str(out)])
+    code = (out / "geometry" / "scale_up.py").read_text(encoding="utf-8")
+    assert "class ScaleUp(AssetGeometryGroup)" in code
+    assert '"../../library.blend"' in code
+    assert "_build_group" not in code
+    assert "Parameters\n    ----------" in code
+    assert "class FlatRed(" in (out / "shader" / "flat_red.py").read_text()
+    assert "ScaleUp" in (out / "geometry" / "__init__.py").read_text()
+    assert not (out / "materials").exists()
+
+
+def test_api_only_dump_without_docstrings(library_blend, tmp_path):
+    out = tmp_path / "pkg"
+    main(["dump", "--api-only", "--no-docstrings", str(library_blend), str(out)])
+    code = (out / "geometry" / "scale_up.py").read_text(encoding="utf-8")
+    assert "Parameters" not in code
 
 
 def test_legacy_entry_forwards_subcommands(monkeypatch, library_blend, tmp_path):
@@ -41,14 +47,14 @@ def test_legacy_entry_forwards_subcommands(monkeypatch, library_blend, tmp_path)
 
     src = tmp_path / "src"
     monkeypatch.setattr(sys, "argv", ["prog", "dump", str(library_blend), str(src)])
-    with pytest.warns(FutureWarning, match=r"removed in nodebpy 530.*'nodebpy dump'"):
+    with pytest.warns(FutureWarning, match=r"removed in nodebpy 530.*'nodebpy dump"):
         legacy_main()
     assert (src / "geometry" / "scale_up.py").is_file()
 
 
 def test_legacy_entry_forwards_codegen_flags(monkeypatch, library_blend, tmp_path):
-    """The flag-based ``python -m nodebpy.assets -b …`` warns and runs
-    ``nodebpy generate -b …`` — also under Blender, after its ``--``."""
+    """The flag-based ``python -m nodebpy.assets -b … -o DIR`` warns and runs
+    ``nodebpy dump --api-only``, also under Blender, after its ``--``."""
     from nodebpy.assets.__main__ import main as legacy_main
 
     out = tmp_path / "pkg"
@@ -64,6 +70,46 @@ def test_legacy_entry_forwards_codegen_flags(monkeypatch, library_blend, tmp_pat
         str(out),
     ]
     monkeypatch.setattr(sys, "argv", argv)
-    with pytest.warns(FutureWarning, match="'nodebpy generate'"):
+    with pytest.warns(FutureWarning, match="'nodebpy dump --api-only'"):
         legacy_main()
-    assert (out / "geometry.py").is_file()
+    assert (out / "geometry" / "scale_up.py").is_file()
+
+
+def test_legacy_entry_refuses_a_single_module_output(
+    monkeypatch, library_blend, tmp_path
+):
+    from nodebpy.assets.__main__ import main as legacy_main
+
+    argv = ["prog", "-b", str(library_blend), "-o", str(tmp_path / "assets.py")]
+    monkeypatch.setattr(sys, "argv", argv)
+    with pytest.raises(SystemExit, match="generate_asset_api"):
+        legacy_main()
+
+
+def test_api_only_dump_can_be_filtered_by_name(library_blend, tmp_path):
+    out = tmp_path / "pkg"
+    main(["dump", "--api-only", str(library_blend), str(out), "--names", "Scale Up"])
+    assert (out / "geometry" / "scale_up.py").is_file()
+    assert not (out / "shader").exists()
+
+
+def test_legacy_entry_forwards_codegen_options(monkeypatch, library_blend, tmp_path):
+    from nodebpy.assets.__main__ import main as legacy_main
+
+    out = tmp_path / "pkg"
+    argv = ["prog", "-b", str(library_blend), "-o", str(out)]
+    argv += ["--nodebpy-pkg", "..vendor.nodebpy", "--no-docstrings"]
+    monkeypatch.setattr(sys, "argv", argv)
+    with pytest.warns(FutureWarning):
+        legacy_main()
+    code = (out / "geometry" / "scale_up.py").read_text(encoding="utf-8")
+    assert "from ..vendor.nodebpy.builder import" in code
+    assert "Parameters" not in code
+
+
+def test_legacy_entry_without_a_library_points_at_gen(monkeypatch):
+    from nodebpy.assets.__main__ import main as legacy_main
+
+    monkeypatch.setattr(sys, "argv", ["prog"])
+    with pytest.raises(SystemExit, match="python -m gen"):
+        legacy_main()
