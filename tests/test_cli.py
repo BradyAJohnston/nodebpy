@@ -84,3 +84,32 @@ def test_legacy_entry_refuses_a_single_module_output(
     monkeypatch.setattr(sys, "argv", argv)
     with pytest.raises(SystemExit, match="generate_asset_api"):
         legacy_main()
+
+
+def test_api_only_dump_can_be_filtered_by_name(library_blend, tmp_path):
+    out = tmp_path / "pkg"
+    main(["dump", "--api-only", str(library_blend), str(out), "--names", "Scale Up"])
+    assert (out / "geometry" / "scale_up.py").is_file()
+    assert not (out / "shader").exists()
+
+
+def test_legacy_entry_forwards_codegen_options(monkeypatch, library_blend, tmp_path):
+    from nodebpy.assets.__main__ import main as legacy_main
+
+    out = tmp_path / "pkg"
+    argv = ["prog", "-b", str(library_blend), "-o", str(out)]
+    argv += ["--nodebpy-pkg", "..vendor.nodebpy", "--no-docstrings"]
+    monkeypatch.setattr(sys, "argv", argv)
+    with pytest.warns(FutureWarning):
+        legacy_main()
+    code = (out / "geometry" / "scale_up.py").read_text(encoding="utf-8")
+    assert "from ..vendor.nodebpy.builder import" in code
+    assert "Parameters" not in code
+
+
+def test_legacy_entry_without_a_library_points_at_gen(monkeypatch):
+    from nodebpy.assets.__main__ import main as legacy_main
+
+    monkeypatch.setattr(sys, "argv", ["prog"])
+    with pytest.raises(SystemExit, match="python -m gen"):
+        legacy_main()
