@@ -1,5 +1,4 @@
 generate:
-	uv run nodebpy generate
 	uv run python -m gen
 	make format
 
