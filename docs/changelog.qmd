@@ -9,6 +9,7 @@ title: Changelog
 The layout behind `arrange(tree)`, the default arrangement of `TreeBuilder`, was reworked. **Arranged trees will look different.**
 
 - **A straight trunk.** The links that carry a tree's main data (geometry, shader, bundle, closure) are aligned first, so a chain of geometry nodes is one flat row. Each zone is a row with its node tops level. Group Output nodes go in the last column. `SugiyamaOptions(straighten_trunk=False, pin_group_output=False)` turns these off.
+- **Feeders sit by what they feed.** A node whose links all go to one node is placed level with that node, or as close as its column allows, instead of being left part of the way across a frame.
 - **Unconnected parts are laid out apart.** A second group of nodes, or a frame holding only a note, goes beneath the main graph instead of among its columns (`pack_components`).
 - **Deterministic.** The same tree and options always give the same layout. `seed` picks a different one.
 - **On the grid.** Arranged nodes land on the node editor's grid, as Blender's Snap puts them when moved by hand, and the nodes of a column are whole grid steps apart. `SugiyamaOptions(snap_to_grid=False)` turns it off, which `socket_alignment` needs to make links exactly straight.

@@ -32,7 +32,7 @@ from .pipeline import (
     Step,
     StepFunction,
 )
-from .placement import bk_assign_y_coords
+from .placement import bk_assign_y_coords, pull_feeders
 from .priority import socket_priorities, zone_priorities
 from .ranking import compute_ranks
 from .realize import realize_layout, remove_reroutes
@@ -201,6 +201,11 @@ def default_pipeline() -> Pipeline:
                 phase="place",
                 requires=[F.ORDERED, F.BORDERS],
                 provides=[F.Y],
+            ),
+            step(
+                "pull_feeders",
+                lambda L: pull_feeders(L.G, L.state),
+                requires=[F.Y],
             ),
             step(
                 "snap_rows",

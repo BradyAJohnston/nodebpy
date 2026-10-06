@@ -28,9 +28,9 @@ from typing import Any, cast
 
 from .common import GRID_SIZE, REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
-from .digraph import DiGraph, LayoutGraph, descendants
+from .digraph import DiGraph, LayoutGraph, Link, descendants
 from .dna import bNodeSocket
-from .model import Cluster, Edge, Kind, Node, Socket, link_priority
+from .model import Cluster, Edge, Kind, Node, Socket, is_real, link_priority
 from .priority import SPINE_MIN_PRIORITY, TRUNK_MIN_PRIORITY
 
 
@@ -227,6 +227,25 @@ def should_use_inner_shift(
     return abs(v.height - w.height) > fmean((v.height, w.height)) / 2
 
 
+def aligns_by_tops(
+    G: LayoutGraph[Node], v: Node, w: Node, is_right: bool, state: LayoutState
+) -> bool:
+    """Whether *v* and *w*, linked from *v* to *w* in *G*, line up by their
+    tops rather than by the sockets of their link. The nodes along the
+    spine of a zone do regardless of size. Otherwise
+    :func:`should_use_inner_shift` decides."""
+    priorities = state.socket_priority
+    on_spine = (
+        bool(priorities)
+        and not (v.is_reroute or w.is_reroute)
+        and any(
+            link_priority(link, priorities) >= SPINE_MIN_PRIORITY
+            for link in G.links_between(v, w)
+        )
+    )
+    return on_spine or not should_use_inner_shift(v, w, is_right, state)
+
+
 def inner_shift(
     G: LayoutGraph[Node], is_right: bool, is_up: bool, state: LayoutState
 ) -> None:
@@ -234,20 +253,9 @@ def inner_shift(
     takes the offset of the node before it in the block when the two line
     up by their tops. Otherwise its offset makes the sockets of the link
     between them level."""
-    priorities = state.socket_priority
     for root in dict.fromkeys(v.root for v in G):
         for v, w in pairwise(iter_block(root)):
-            # The nodes along the spine of a zone have their tops level
-            # regardless of size.
-            on_spine = (
-                bool(priorities)
-                and not (v.is_reroute or w.is_reroute)
-                and any(
-                    link_priority(link, priorities) >= SPINE_MIN_PRIORITY
-                    for link in G.links_between(v, w)
-                )
-            )
-            if on_spine or not should_use_inner_shift(v, w, is_right, state):
+            if aligns_by_tops(G, v, w, is_right, state):
                 w.inner_shift = v.inner_shift
                 continue
 
@@ -589,3 +597,63 @@ def bk_assign_y_coords(
     else:
         for v, y in zip(G, layouts[0]):
             v.y = y
+
+
+_PULL_ROUNDS = 10
+
+
+def pull_feeders(G: LayoutGraph[Node], state: LayoutState) -> None:
+    """Move each feeder level with the node it feeds, as far as its column
+    allows.
+
+    A feeder is a node of the tree whose links all go to one other node.
+    The placement aligns nothing with it, so each of the four runs packs
+    it to one edge of its column and the balanced height leaves it part of
+    the way to that node. Here it is moved towards the height that makes
+    its link straight, or its top level with the other node's where the
+    two line up by tops, but not past the nodes above and below it in its
+    column. Rounds are repeated while anything moves, as one feeder moving
+    can make room for another."""
+    columns = G.columns
+    feeders: list[tuple[Node, Node, list[Link[Node]], list[Node], int]] = []
+    for col in columns:
+        for i, v in enumerate(col):
+            if not is_real(v) or v.is_reroute:
+                continue
+            links = [*G.in_links(v), *G.out_links(v)]
+            others = {k.fromnode if k.tonode is v else k.tonode for k in links}
+            if len(others) != 1:
+                continue
+            feeders.append((v, others.pop(), links, col, i))
+
+    def wanted(v: Node, other: Node, links: list[Link[Node]]) -> float:
+        left, right = (v, other) if v.rank < other.rank else (other, v)
+        if aligns_by_tops(G, left, right, False, state):
+            return other.y
+        heights = []
+        for k in links:
+            p, q = (k.fromsock, k.tosock) if k.fromnode is v else (k.tosock, k.fromsock)
+            heights.append(other.y + q._offset_y - p._offset_y)
+        return fmean(heights)
+
+    for _ in range(_PULL_ROUNDS):
+        moved = False
+        for v, other, links, col, i in feeders:
+            # Never closer to a neighbour than the placement puts them, and
+            # never further from the target than now.
+            highest = (
+                max(v.y, col[i - 1].y - separation(col[i - 1], col[i - 1], v, state))
+                if i > 0
+                else inf
+            )
+            lowest = (
+                min(v.y, col[i + 1].y + separation(v, v, col[i + 1], state))
+                if i + 1 < len(col)
+                else -inf
+            )
+            y = min(max(wanted(v, other, links), lowest), highest)
+            if abs(y - v.y) > 1e-6:
+                v.y = y
+                moved = True
+        if not moved:
+            break

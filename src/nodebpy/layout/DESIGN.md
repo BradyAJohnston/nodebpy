@@ -121,6 +121,7 @@ picture. The rest prepare for one or clean up.
 | **`order`** | Order each column to reduce crossings | always | `ordering.py` |
 | `add_frame_borders` | Border nodes above and below each frame, per column | always | `sugiyama.py`, `model.py` |
 | **`place`** | Give every node its height | always | `placement.py` |
+| `pull_feeders` | Move each node whose links all go to one node level with that node, as far as its column allows | always | `placement.py` |
 | `snap_rows` | Move each node to its nearest grid row | `snap_to_grid` | `snapping.py` |
 | `dissolve_dummy_nodes` | Drop the dummy nodes | `reroutes="none"` | `reroutes.py` |
 | `align_reroutes` | Line reroutes and dummy nodes up with the sockets they join | always | `reroutes.py` |
