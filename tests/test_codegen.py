@@ -3517,3 +3517,25 @@ def test_round_trip_fixpoint_with_split_inputs():
         current = ns["tree"]
     bpy.data.node_groups.remove(current.tree)
     assert codes[0] == codes[1] == codes[2]
+
+
+def test_probe_trees_keeps_one_emptied_tree_per_type_then_removes_it():
+    """Inside probe_trees() the probes share one tree per tree type, emptied
+    between them; a nested block changes nothing; leaving removes the trees."""
+    from nodebpy.export import codegen
+
+    before = set(bpy.data.node_groups.keys())
+
+    def add_cube(tree):
+        tree.nodes.new("GeometryNodeMeshCube")
+        return tree.as_pointer()
+
+    with codegen.probe_trees():
+        with codegen.probe_trees():
+            first = codegen._with_probe_tree("GeometryNodeTree", add_cube, None)
+        second = codegen._with_probe_tree(
+            "GeometryNodeTree", lambda t: (t.as_pointer(), len(t.nodes)), None
+        )
+        assert second == (first, 0)
+        assert "__nodebpy_codegen_probe__" in bpy.data.node_groups
+    assert set(bpy.data.node_groups.keys()) == before
