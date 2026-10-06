@@ -81,3 +81,25 @@ def test_dynamic_inputs_base_declared_item_type():
     plain = Plain()
     assert plain._declared_item_type("FLOAT") is None
     assert plain._add_unlinked_input("x", "FLOAT") is False
+
+
+def test_combine_list_takes_one_input_per_item():
+    with g.tree():
+        combined = g.CombineList.float(items=[1.0, g.Value(), None])
+        assert combined.data_type == "FLOAT"
+        assert len(combined._items) == 3
+        sockets = [combined._item_socket(item) for item in combined._items]
+        assert sockets[0].default_value == 1.0
+        assert len(sockets[1].links) == 1
+        assert len(sockets[2].links) == 0
+        assert combined.o.list.socket.bl_idname == "NodeSocketFloat"
+
+        vectors = g.CombineList(items=[(1, 2, 3)], data_type="VECTOR")
+        assert vectors.o.list.socket.bl_idname == "NodeSocketVector"
+        assert len(vectors.node.inputs) == 2  # the item and the virtual socket
+
+        empty = g.CombineList.integer()
+        assert len(empty._items) == 0
+        item = empty.add_item("", g.Index())
+        assert len(empty._items) == 1
+        assert len(item.input.socket.links) == 1
