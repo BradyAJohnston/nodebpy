@@ -25,8 +25,7 @@ frame hierarchy, ordering constraints, socket reachability. Its connections
 are called edges.
 
 Everything iterates in insertion order: nodes in the order they were added,
-a node's neighbours in the order they were first linked. A layout never
-depends on hash values or memory addresses.
+a node's neighbours in the order they were first linked.
 """
 
 from __future__ import annotations
@@ -107,14 +106,15 @@ class LayoutGraph[N: Hashable]:
     # `_succ[u][v]` and `_pred[v][u]`.
     _succ: dict[N, dict[N, dict[int, Link[N]]]]
     _pred: dict[N, dict[N, dict[int, Link[N]]]]
-    # The nodes of each column, top to bottom. Shared with copies and
-    # reversed views.
+    # The nodes of each column, top to bottom, once the columns are built.
+    # Shared with copies and reversed views.
     columns: list[list[N]]
 
     def __init__(self) -> None:
         self._nodes = {}
         self._succ = {}
         self._pred = {}
+        self.columns = []
 
     # Nodes
 
@@ -276,8 +276,7 @@ class LayoutGraph[N: Hashable]:
     def copy(self) -> LayoutGraph[N]:
         """A graph with the same nodes and a copy of every link."""
         tree = type(self)()
-        if hasattr(self, "columns"):
-            tree.columns = self.columns
+        tree.columns = self.columns
         tree.add_nodes(self._nodes)
         for link in self.all_links():
             copied = tree.add_link(
@@ -298,8 +297,7 @@ class LayoutGraph[N: Hashable]:
         the node it leaves in the original graph.
         """
         tree = type(self)()
-        if hasattr(self, "columns"):
-            tree.columns = self.columns
+        tree.columns = self.columns
         tree._nodes = self._nodes
         tree._succ = self._pred
         tree._pred = self._succ

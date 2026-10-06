@@ -4,7 +4,6 @@ of their own. ``DESIGN.md`` in this package describes every step."""
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable
 from statistics import fmean
 
 from . import packing
@@ -14,7 +13,7 @@ from .common import Vec2, f32
 from .config import LayoutState, SugiyamaOptions
 from .dna import bNodeTree
 from .edits import Edit, LayoutResult, MoveNode
-from .long_links import insert_dummy_nodes, merge_edges
+from .long_links import insert_dummy_nodes, merge_links
 from .model import (
     ClusterGraph,
     Kind,
@@ -26,10 +25,8 @@ from .pipeline import (
     Fact,
     Layout,
     Observer,
-    Phase,
     Pipeline,
     Step,
-    StepFunction,
 )
 from .placement import bk_assign_y_coords, pull_feeders
 from .priority import socket_priorities, zone_priorities
@@ -40,7 +37,7 @@ from .reroutes import (
     dissolve_clear_dummy_nodes,
     dissolve_dummy_nodes,
 )
-from .routing import route_edges
+from .routing import route_links
 from .snapping import snap_rows, snap_to_grid
 from .spacing import assign_x_coords
 from .stacking import contracted_node_stacks, expand_node_stack
@@ -60,12 +57,12 @@ def _add_frame_borders(layout: Layout) -> None:
     that held a frame's place in the columns where it has no node."""
     CG = layout.CG
     CG.add_vertical_border_nodes()
-    CG.remove_nodes_from([v for v in CG.G if v.is_fill_dummy])
+    CG.remove_nodes([v for v in CG.G if v.is_fill_dummy])
 
 
 def _remove_frame_borders(layout: Layout) -> None:
     CG = layout.CG
-    CG.remove_nodes_from([v for v in CG.G if v.type == Kind.VERTICAL_BORDER])
+    CG.remove_nodes([v for v in CG.G if v.type == Kind.VERTICAL_BORDER])
 
 
 def _prioritize_links(layout: Layout) -> None:
@@ -75,7 +72,7 @@ def _prioritize_links(layout: Layout) -> None:
     layout.state.socket_priority = priorities
 
 
-def constrain_layers(layout: Layout) -> None:
+def pin_group_nodes(layout: Layout) -> None:
     """Move Group Output nodes to the last column and Group Input nodes to
     the first, where the options ask. Only a Group Output outside frames
     that feeds nothing and a Group Input outside frames that nothing feeds
@@ -99,26 +96,6 @@ def default_pipeline() -> Pipeline:
     """The standard layout: the steps in order."""
     F = Fact
 
-    def step(
-        name: str,
-        run: StepFunction,
-        enabled: Callable[[SugiyamaOptions], bool] | None = None,
-        *,
-        phase: Phase | None = None,
-        requires: Iterable[Fact] = (),
-        provides: Iterable[Fact] = (),
-        removes: Iterable[Fact] = (),
-    ) -> Step:
-        return Step(
-            name,
-            run,
-            enabled or (lambda options: True),
-            phase,
-            frozenset(requires),
-            frozenset(provides),
-            frozenset(removes),
-        )
-
     def reroutes(s: SugiyamaOptions) -> bool:
         return s.reroutes != "none"
 
@@ -137,137 +114,137 @@ def default_pipeline() -> Pipeline:
     return Pipeline(
         [
             # Prepare the graph.
-            step(
+            Step(
                 "prioritize_links",
                 _prioritize_links,
                 lambda s: s.straighten_trunk,
             ),
-            step(
+            Step(
                 "save_multi_input_orders",
                 lambda L: save_multi_input_orders(L.G, L.state),
             ),
-            step(
+            Step(
                 "remove_reroutes", lambda L: remove_reroutes(L.CG), replacing_reroutes
             ),
-            step("contract_stacks", _contract_stacks, stacks),
+            Step("contract_stacks", _contract_stacks, stacks),
             # Columns.
-            step(
+            Step(
                 "rank",
                 lambda L: compute_ranks(L.CG),
                 phase="rank",
-                provides=[F.RANKED],
+                provides={F.RANKED},
             ),
-            step(
+            Step(
                 "balance_heights",
                 lambda L: balance_column_heights(L.G, L.CG.S, L.state),
                 lambda s: s.balance_heights,
-                requires=[F.RANKED],
+                requires={F.RANKED},
             ),
             # After the balancing, which would otherwise move a pinned node
             # along with the nodes it moves left.
-            step("constrain_layers", constrain_layers, requires=[F.RANKED]),
-            step("merge_edges", lambda L: merge_edges(L.CG), requires=[F.RANKED]),
-            step(
+            Step("pin_group_nodes", pin_group_nodes, requires={F.RANKED}),
+            Step("merge_edges", lambda L: merge_links(L.CG), requires={F.RANKED}),
+            Step(
                 "insert_dummy_nodes",
                 lambda L: insert_dummy_nodes(L.CG),
-                requires=[F.RANKED],
-                provides=[F.PROPER],
+                requires={F.RANKED},
+                provides={F.PROPER},
             ),
-            step(
+            Step(
                 "add_columns",
                 lambda L: add_columns(L.G),
-                requires=[F.RANKED],
-                provides=[F.COLUMNS],
+                requires={F.RANKED},
+                provides={F.COLUMNS},
             ),
             # Order within the columns.
-            step(
+            Step(
                 "order",
                 lambda L: minimize_crossings(L.G, L.T, L.state),
                 phase="order",
-                requires=[F.PROPER, F.COLUMNS],
-                provides=[F.ORDERED],
+                requires={F.PROPER, F.COLUMNS},
+                provides={F.ORDERED},
             ),
             # Positions along the columns.
-            step(
+            Step(
                 "add_frame_borders",
                 _add_frame_borders,
-                requires=[F.ORDERED],
-                provides=[F.BORDERS],
+                requires={F.ORDERED},
+                provides={F.BORDERS},
             ),
-            step(
+            Step(
                 "place",
                 lambda L: bk_assign_y_coords(L.G, L.T, L.state),
                 phase="place",
-                requires=[F.ORDERED, F.BORDERS],
-                provides=[F.Y],
+                requires={F.ORDERED, F.BORDERS},
+                provides={F.Y},
             ),
-            step(
+            Step(
                 "pull_feeders",
                 lambda L: pull_feeders(L.G, L.state),
-                requires=[F.Y],
+                requires={F.Y},
             ),
-            step(
+            Step(
                 "snap_rows",
                 snap_rows,
                 lambda s: s.snap_to_grid,
-                requires=[F.Y],
+                requires={F.Y},
             ),
-            step(
+            Step(
                 "dissolve_dummy_nodes",
                 lambda L: dissolve_dummy_nodes(L.CG),
                 no_reroutes,
-                requires=[F.Y],
-                removes=[F.PROPER],
+                requires={F.Y},
+                removes={F.PROPER},
             ),
-            step(
+            Step(
                 "align_reroutes",
                 lambda L: align_reroutes_with_sockets(L.CG),
-                requires=[F.Y],
+                requires={F.Y},
             ),
-            step(
+            Step(
                 "remove_frame_borders",
                 _remove_frame_borders,
-                requires=[F.BORDERS],
-                removes=[F.BORDERS],
+                requires={F.BORDERS},
+                removes={F.BORDERS},
             ),
             # Positions across the columns, and the links between them.
-            step(
+            Step(
                 "space_columns",
                 lambda L: assign_x_coords(L.G, L.T, L.state),
-                requires=[F.COLUMNS, F.Y],
-                provides=[F.X],
+                requires={F.COLUMNS, F.Y},
+                provides={F.X},
             ),
-            step(
+            Step(
                 "dissolve_clear_dummy_nodes",
                 lambda L: dissolve_clear_dummy_nodes(L.CG),
                 sparing_reroutes,
-                requires=[F.PROPER, F.X],
-                removes=[F.PROPER],
+                requires={F.PROPER, F.X},
+                removes={F.PROPER},
             ),
-            step(
+            Step(
                 "route",
-                lambda L: route_edges(L.G, L.T, L.state),
+                lambda L: route_links(L.G, L.T, L.state),
                 reroutes,
                 phase="route",
-                requires=[F.X],
+                requires={F.X},
                 # Bend points are new nodes, outside the ranks and columns.
-                removes=[F.RANKED, F.PROPER, F.COLUMNS],
+                removes={F.RANKED, F.PROPER, F.COLUMNS},
             ),
             # Write the result out.
-            step(
+            Step(
                 "expand_stacks",
                 _expand_stacks,
                 stacks,
-                requires=[F.X],
+                requires={F.X},
                 # The nodes of a stack come back without a rank or column.
-                removes=[F.RANKED, F.PROPER, F.COLUMNS],
+                removes={F.RANKED, F.PROPER, F.COLUMNS},
             ),
-            step(
+            Step(
                 "realize",
                 lambda L: realize_layout(L.CG, L.old_center),
-                requires=[F.X],
+                requires={F.X},
                 # Chains of dummy nodes become reroutes, fewer than columns.
-                removes=[F.PROPER],
+                removes={F.PROPER},
             ),
         ]
     )
@@ -333,11 +310,9 @@ def sugiyama_layout(
         rects = packing.node_rects(edits)
         if not rects:
             return edits
+        # The vertical margin is used in both directions.
         dx, dy = packing.clear_of(
-            # The vertical margin is used in both directions.
-            rects,
-            obstacles,
-            Vec2(state.margin.y, state.margin.y),
+            rects, obstacles, Vec2(state.margin.y, state.margin.y)
         )
         width = max(r[2] for r in rects) - min(r[0] for r in rects)
         height = max(r[3] for r in rects) - min(r[1] for r in rects)
@@ -360,13 +335,12 @@ def sugiyama_layout(
     parts.sort(key=len, reverse=True)
     laid_out = [lay_out(packing.subtree(tree, part)) for part in parts]
     boxes = [packing.bounds(edits) for edits in laid_out]
-    placed = [(edits, box) for edits, box in zip(laid_out, boxes) if box is not None]
     gap = Vec2(state.margin.x, f32(3 * state.margin.y))
-    offsets = packing.pack([box for _, box in placed], gap)
-    offset_of = {id(edits): offset for (edits, _), offset in zip(placed, offsets)}
+    offsets = iter(packing.pack([box for box in boxes if box is not None], gap))
     edits: list[Edit] = []
-    for part_edits in laid_out:
-        edits += packing.moved(part_edits, offset_of.get(id(part_edits), (0.0, 0.0)))
+    for part_edits, box in zip(laid_out, boxes):
+        offset = next(offsets) if box is not None else (0.0, 0.0)
+        edits += packing.moved(part_edits, offset)
 
     # Keep the whole centred where the nodes were, as a single part is.
     corners = [e.top_left for e in edits if isinstance(e, MoveNode)]

@@ -13,36 +13,30 @@ the *phases* that decide the layout:
     Give links bend points around the nodes in their way.
 
 The rest are smaller *steps* that prepare the graph for a phase or clean up
-after one: replacing reroutes, stacking collapsed nodes, splitting long
-links with dummy nodes, bordering frames, and finally writing the result
-out as edits. The split into phases and steps between them follows the
-Eclipse Layout Kernel's layered algorithm.
+after one. :func:`~.sugiyama.default_pipeline` builds the standard list;
+``DESIGN.md`` describes every step.
 
-:func:`~.sugiyama.default_pipeline` builds the standard list. To
-experiment, take it and :meth:`~Pipeline.replace` a step (a phase, to try
-another algorithm for it), or :meth:`~Pipeline.insert_after` one.
-
-Steps depend on each other through the state of the graph. Each
-:class:`Step` names the facts (:class:`Fact`) it ``requires`` to hold, those
-it ``provides`` and those it ``removes``. A pipeline whose steps do not fit
-together is refused before it runs (:meth:`Pipeline.check`). With
+Each :class:`Step` names the facts (:class:`Fact`) it ``requires`` to hold,
+those it ``provides`` and those it ``removes``. A pipeline whose steps do
+not fit together is refused before it runs (:meth:`Pipeline.check`). With
 ``verify=True`` every fact is checked against the graph after every step
 (:data:`CHECKS`), and a broken one is reported with the step that broke it.
 """
 
 from __future__ import annotations
 
-import itertools
 import time
 from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Set as AbstractSet
 from dataclasses import dataclass, field, replace
 from enum import StrEnum
+from itertools import pairwise
 from typing import TYPE_CHECKING, Literal
 
 from .common import Vec2
 from .config import LayoutState, SugiyamaOptions
 from .digraph import DiGraph, LayoutGraph
-from .model import Cluster, ClusterGraph, Kind, Node
+from .model import Cluster, ClusterGraph, Kind, Node, clusters_around
 
 if TYPE_CHECKING:
     from .stacking import NodeStack
@@ -122,12 +116,16 @@ class Step:
     """Whether the step runs under the given options."""
     phase: Phase | None = None
     """The phase this step is, if it is one of the four."""
-    requires: frozenset[Fact] = frozenset()
+    requires: AbstractSet[Fact] = frozenset()
     """What must hold when the step starts."""
-    provides: frozenset[Fact] = frozenset()
+    provides: AbstractSet[Fact] = frozenset()
     """What holds once it is done."""
-    removes: frozenset[Fact] = frozenset()
+    removes: AbstractSet[Fact] = frozenset()
     """What stops holding once it is done."""
+
+    def __post_init__(self) -> None:
+        for name in ("requires", "provides", "removes"):
+            object.__setattr__(self, name, frozenset(getattr(self, name)))
 
 
 class PipelineError(ValueError):
@@ -220,7 +218,8 @@ class Pipeline:
             if verify:
                 for fact in sorted(facts):
                     try:
-                        CHECKS.get(fact, _no_check)(layout)
+                        if check := CHECKS.get(fact):
+                            check(layout)
                     except AssertionError as error:
                         raise InvariantError(
                             f"after step {step.name!r} the graph is not "
@@ -230,10 +229,6 @@ class Pipeline:
 
 def _listed(facts: Iterable[Fact]) -> str:
     return " and ".join(sorted(fact.value for fact in facts))
-
-
-def _no_check(layout: Layout) -> None:
-    pass
 
 
 # What each fact means, as a check of the graph.
@@ -265,10 +260,9 @@ def _check_proper(layout: Layout) -> None:
 
 def _check_columns(layout: Layout) -> None:
     G = layout.G
-    columns = getattr(G, "columns", None)
-    assert columns is not None, "the graph has no columns"
+    assert G.columns, "the graph has no columns"
     seen: set[Node] = set()
-    for col in columns:
+    for col in G.columns:
         for v in col:
             assert v in G, f"{v!r} is in a column but not in the graph"
             assert v not in seen, f"{v!r} is in two columns"
@@ -278,27 +272,18 @@ def _check_columns(layout: Layout) -> None:
     assert not missing, f"{missing[0]!r} is in no column"
 
 
-def _frames_of(v: Node) -> list[Cluster]:
-    frames = []
-    c = v.cluster
-    while c is not None:
-        frames.append(c)
-        c = c.cluster
-    return frames
-
-
 def _check_ordered(layout: Layout) -> None:
     for col in layout.G.columns:
         last_seen: dict[Cluster, int] = {}
         for i, v in enumerate(col):
             if _is_border(v):
                 continue
-            for c in _frames_of(v):
+            for c in clusters_around(v):
                 if c in last_seen:
                     between = [
                         w
                         for w in col[last_seen[c] + 1 : i]
-                        if not _is_border(w) and c not in _frames_of(w)
+                        if not _is_border(w) and c not in clusters_around(w)
                     ]
                     assert not between, (
                         f"{between[0]!r} sits between nodes of the frame "
@@ -311,9 +296,9 @@ def _check_y(layout: Layout) -> None:
     G = layout.G
     for v in G:
         assert v.y is not None, f"{v!r} has no y"  # type: ignore[redundant-expr]
-    for col in getattr(G, "columns", ()):
+    for col in G.columns:
         placed = [v for v in col if v in G]
-        for above, below in itertools.pairwise(placed):
+        for above, below in pairwise(placed):
             assert above.y - above.height >= below.y - 0.01, (
                 f"{above!r} (y {above.y:g}, height {above.height:g}) overlaps "
                 f"{below!r} (y {below.y:g}) below it in its column"
@@ -325,7 +310,7 @@ def _check_x(layout: Layout) -> None:
     for v in G:
         assert v.x is not None, f"{v!r} has no x"  # type: ignore[redundant-expr]
     right = None
-    for col in getattr(G, "columns", ()):
+    for col in G.columns:
         placed = [v for v in col if v in G]
         if not placed:
             continue

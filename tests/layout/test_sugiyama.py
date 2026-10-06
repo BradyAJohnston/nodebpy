@@ -24,7 +24,7 @@ from nodebpy.layout.edits import (
     ResizeFrame,
 )
 from nodebpy.layout.model import Kind, Node, Socket
-from nodebpy.layout.placement import vertical_gap
+from nodebpy.layout.placement import separation
 from nodebpy.layout.reroutes import link_is_clear
 from nodebpy.layout.sugiyama import sugiyama_layout
 
@@ -108,16 +108,19 @@ def test_linked_socket_without_a_location_is_reported():
         sugiyama_layout(tree, options())
 
 
-def test_vertical_gap_between_dummy_nodes_is_a_fraction_of_the_margin():
-    state = LayoutState(bNodeTree(), SugiyamaOptions(margin=(30.0, 40.0)))
+def test_gap_between_dummy_nodes_is_a_fraction_of_the_margin():
+    state = LayoutState(
+        bNodeTree(), SugiyamaOptions(margin=(30.0, 40.0), snap_to_grid=False)
+    )
     dummy_a, dummy_b = Node(type=Kind.DUMMY), Node(type=Kind.DUMMY)
     real = Node(bNode("Index", "GeometryNodeInputIndex"))
 
-    assert vertical_gap(dummy_a, dummy_b, state) == pytest.approx(
-        40.0 * REROUTE_MARGIN_Y_FAC
-    )
-    assert vertical_gap(real, dummy_a, state) == pytest.approx(40.0)
-    assert vertical_gap(dummy_b, real, state) == pytest.approx(40.0)
+    def gap(u, w):
+        return separation(u, u, w, state) - u.height
+
+    assert gap(dummy_a, dummy_b) == pytest.approx(40.0 * REROUTE_MARGIN_Y_FAC)
+    assert gap(real, dummy_a) == pytest.approx(40.0)
+    assert gap(dummy_b, real) == pytest.approx(40.0)
 
 
 # ---------------------------------------------------------------------------

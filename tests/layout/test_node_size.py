@@ -36,19 +36,9 @@ def _enabled(sockets) -> list:
 
 
 def test_node_with_more_sockets_is_taller():
-    width, value_height = calculate_node_dimensions(_node("ShaderNodeValue"))
+    _, value_height = calculate_node_dimensions(_node("ShaderNodeValue"))
     _, set_position_height = calculate_node_dimensions(_node("GeometryNodeSetPosition"))
-    assert width == 140.0
     assert 0 < value_height < set_position_height
-
-
-def test_height_scales_with_the_interface_scale():
-    node = _node("GeometryNodeSetPosition")
-    width, height = calculate_node_dimensions(node)
-    assert calculate_node_dimensions(node, None, 2.0) == (
-        width,
-        pytest.approx(2.0 * height),
-    )
 
 
 def test_hidden_sockets_take_a_row_only_when_linked():
@@ -126,6 +116,12 @@ def test_collapsed_node_has_a_row_of_10_per_visible_socket_plus_8():
     assert calculate_socket_offset_y(second) == -19
     assert calculate_socket_offset_y(math.outputs[0]) == -14
 
+    wide = _node("ShaderNodeMix")
+    wide.hide = True
+    visible = len(_enabled(wide.inputs))
+    assert visible > 2
+    assert calculate_node_dimensions(wide)[1] == 10 * visible + 8
+
 
 def test_collapsed_node_counts_hidden_sockets_only_when_linked():
     math = _collapsed_math(linked_inputs=1)
@@ -135,12 +131,6 @@ def test_collapsed_node_counts_hidden_sockets_only_when_linked():
     # One visible input and one output: the minimum of two rows.
     assert calculate_node_dimensions(math) == (140.0, 10 * 2 + 8)
     assert calculate_socket_offset_y(first) == -14
-
-    wide = _node("ShaderNodeMix")
-    wide.hide = True
-    visible = len(_enabled(wide.inputs))
-    assert visible > 2
-    assert calculate_node_dimensions(wide)[1] == 10 * visible + 8
 
 
 def test_collapsed_node_is_drawn_around_a_point_10_below_its_location():

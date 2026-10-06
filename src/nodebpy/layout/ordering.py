@@ -33,7 +33,6 @@ from .digraph import (
     ancestors,
     bfs_edges,
     descendants,
-    edge_dfs,
     topological_sort,
 )
 from .model import (
@@ -44,9 +43,13 @@ from .model import (
     keep_frames_together,
     link_is_flow,
     socket_graph,
+    trace_multi_input_sources,
 )
 
 type _MixedGraph = DiGraph[Node | Cluster]
+# The graphs of one column, in the names the papers use: LT is the part of
+# the nesting tree above the column's nodes, TC its reflexive transitive
+# closure, GC the order constraints between the column's clusters.
 
 
 def get_col_nesting_trees(
@@ -79,7 +82,6 @@ def expand_multi_inputs(G: LayoutGraph[Node], state: LayoutState) -> None:
     highest sort id first, and renumber the node's later inputs to follow.
     The ordering then sees those links as entering separate sockets."""
     H = socket_graph(G)
-    reroutes = {v for v in H if v.owner.is_reroute}
     for v in dict.fromkeys(s.owner for s in state.multi_input_sort_ids):
         if v not in G:
             continue
@@ -93,29 +95,23 @@ def expand_multi_inputs(G: LayoutGraph[Node], state: LayoutState) -> None:
                 i += 1
                 continue
 
-            sort_ids = state.multi_input_sort_ids[socket]
-            SH = H.subgraph({i[0] for i in sort_ids} | {socket} | reroutes)
-            seen = set()
-            for base_from_socket, _ in sorted(
-                sort_ids, key=itemgetter(1), reverse=True
-            ):
-                from_socket = next(
-                    s
-                    for s, t in edge_dfs(SH, base_from_socket)
-                    if t == socket and s not in seen
-                )
+            sort_ids = sorted(
+                state.multi_input_sort_ids[socket], key=itemgetter(1), reverse=True
+            )
+            for from_socket, _ in trace_multi_input_sources(H, socket, sort_ids):
                 link = next(
                     link
                     for link in G.links_between(from_socket.owner, v)
                     if link.tosock == socket and link.fromsock == from_socket
                 )
                 link.tosock = replace(socket, idx=i)
-                seen.add(from_socket)
                 i += 1
 
 
 @cache
 def reflexive_transitive_closure(LT: _MixedGraph) -> _MixedGraph:
+    """*LT* with an edge from every node to each of its descendants and to
+    itself."""
     TC = LT.copy()
     for v in LT:
         for u in (*descendants(LT, v), v):
@@ -127,6 +123,7 @@ def reflexive_transitive_closure(LT: _MixedGraph) -> _MixedGraph:
 
 @cache
 def topologically_sorted_clusters(LT: _MixedGraph) -> list[Cluster]:
+    """The clusters of *LT*, outer ones first."""
     return [h for h in topological_sort(LT) if isinstance(h, Cluster)]
 
 
@@ -143,31 +140,33 @@ def crossing_reduction_graph(
     G_h.add_nodes(LT.successors(h))
     TC = reflexive_transitive_closure(LT)
     members = [v for v in TC.successors(h) if isinstance(v, Node)]
-    entering = [(s, t, link) for t in members if t in G for s, link in G.entering(t)]
-    for s, t, link in entering:
-        c = next(c for c in TC.predecessors(t) if c in LT.successors(h))
+    for t in members:
+        if t not in G:
+            continue
+        for s, link in G.entering(t):
+            c = next(c for c in TC.predecessors(t) if c in LT.successors(h))
 
-        input_socket: Socket = link.tosock
-        output_socket: Socket = link.fromsock
-        is_reversed = output_socket.owner != s
-        if is_reversed:
-            input_socket, output_socket = output_socket, input_socket
+            input_socket: Socket = link.tosock
+            output_socket: Socket = link.fromsock
+            is_reversed = output_socket.owner != s
+            if is_reversed:
+                input_socket, output_socket = output_socket, input_socket
 
-        if G_h.has_link(s, c, link.key):
-            merged = G_h.link(s, c, link.key)
-            # The merged link is read through the orientation of `G`: on a
-            # reversed `G` this compares the free-column socket, so parallel
-            # links only merge going forwards.
-            known = merged.tosock if is_reversed else merged.fromsock
-            if known == output_socket:
-                continue
+            if G_h.has_link(s, c, link.key):
+                merged = G_h.link(s, c, link.key)
+                # The merged link is read through the orientation of `G`: on a
+                # reversed `G` this compares the free-column socket, so parallel
+                # links only merge going forwards.
+                known = merged.tosock if is_reversed else merged.fromsock
+                if known == output_socket:
+                    continue
 
-        to_socket = (
-            input_socket
-            if c.type != Kind.CLUSTER
-            else replace(input_socket, owner=c, idx=0)
-        )
-        G_h.add_link(s, c, output_socket, to_socket)
+            to_socket = (
+                input_socket
+                if not isinstance(c, Cluster)
+                else replace(input_socket, owner=c, idx=0)
+            )
+            G_h.add_link(s, c, output_socket, to_socket)
 
     return G_h
 
@@ -202,28 +201,6 @@ class _CrossingReductionGraph:
 
     __slots__ = tuple(__annotations__)
 
-    def _insert_border_edges(self, is_forwards: bool) -> None:
-        self.border_pairs = {}
-        free_clusters = [v for v in self.reduced_free_col if v.type == Kind.CLUSTER]
-        for c in [c for c in free_clusters if c in self.fixed_LT]:
-            upper_v = Node(type=Kind.VERTICAL_BORDER)
-            lower_v = Node(type=Kind.VERTICAL_BORDER)
-            self.expanded_fixed_col.extend((upper_v, lower_v))
-
-            for border_v in upper_v, lower_v:
-                self.graph.add_link(
-                    border_v,
-                    c,
-                    Socket(border_v, 0, is_forwards),
-                    # border sockets use the cluster as an opaque owner
-                    Socket(cast("Node", c), 0, not is_forwards),
-                )
-
-            bordered_nodes = [
-                v for v in descendants(self.fixed_LT, c) if v.type != Kind.CLUSTER
-            ]
-            self.border_pairs[upper_v, lower_v] = bordered_nodes
-
     def __init__(
         self,
         G: LayoutGraph[Node],
@@ -238,20 +215,20 @@ class _CrossingReductionGraph:
         self.fixed_LT = fixed_LT
         self.free_LT = free_LT
 
-        fixed_col = next(v.col for v in fixed_LT if v.type != Kind.CLUSTER)
+        fixed_col = next(v.col for v in fixed_LT if not isinstance(v, Cluster))
         self.fixed_col = fixed_col
-        self.free_col = next(v.col for v in free_LT if v.type != Kind.CLUSTER)
+        self.free_col = next(v.col for v in free_LT if not isinstance(v, Cluster))
 
         G_h.add_nodes(fixed_col)
 
         self.expanded_fixed_col = fixed_col.copy()
 
         def pos(v):
-            return v.col.index(v) if v.type != Kind.CLUSTER else inf
+            return inf if isinstance(v, Cluster) else v.col.index(v)
 
         self.reduced_free_col = sorted(free_LT.successors(h), key=pos)
 
-        self._insert_border_edges(is_forwards)
+        self._insert_border_links(is_forwards)
 
         self.fixed_sockets = {}
         for u in self.expanded_fixed_col:
@@ -267,6 +244,28 @@ class _CrossingReductionGraph:
         self.constrained_clusters = [
             cast(Cluster, v) for v in self.reduced_free_col if v in fixed_LT
         ]
+
+    def _insert_border_links(self, is_forwards: bool) -> None:
+        self.border_pairs = {}
+        free_clusters = [v for v in self.reduced_free_col if isinstance(v, Cluster)]
+        for c in [c for c in free_clusters if c in self.fixed_LT]:
+            upper_v = Node(type=Kind.VERTICAL_BORDER)
+            lower_v = Node(type=Kind.VERTICAL_BORDER)
+            self.expanded_fixed_col.extend((upper_v, lower_v))
+
+            for border_v in upper_v, lower_v:
+                self.graph.add_link(
+                    border_v,
+                    c,
+                    Socket(border_v, 0, is_forwards),
+                    # border sockets use the cluster as an opaque owner
+                    Socket(cast("Node", c), 0, not is_forwards),
+                )
+
+            bordered_nodes = [
+                v for v in descendants(self.fixed_LT, c) if not isinstance(v, Cluster)
+            ]
+            self.border_pairs[upper_v, lower_v] = bordered_nodes
 
 
 def crossing_reduction_items(
@@ -299,7 +298,7 @@ def sort_expanded_fixed_col(H: _CrossingReductionGraph) -> None:
         pos[upper_v] = min(positions) - 0.1
         pos[lower_v] = max(positions) + 0.1
 
-    H.expanded_fixed_col.sort(key=pos.get)  # type: ignore
+    H.expanded_fixed_col.sort(key=pos.__getitem__)
 
 
 def calc_socket_ranks(H: _CrossingReductionGraph, is_forwards: bool) -> None:
@@ -390,6 +389,7 @@ def handle_constraints(H: _CrossingReductionGraph) -> None:
     GC: _MixedGraph = DiGraph(pairwise(H.constrained_clusters))
 
     unconstrained = [v for v in H.reduced_free_col if v not in GC]
+    # The free-column items each merged node stands for.
     L = {v: [v] for v in H.reduced_free_col}
 
     deg = {v: H.graph.degree(v) for v in GC}
@@ -423,7 +423,7 @@ def handle_constraints(H: _CrossingReductionGraph) -> None:
 def get_new_col_order(v: Node | Cluster, LT: _MixedGraph) -> Iterator[Node | Cluster]:
     """The nodes below *v* in the column's nesting tree, each cluster's
     children by barycenter."""
-    if v.type == Kind.CLUSTER:
+    if isinstance(v, Cluster):
         for w in sorted(LT.successors(v), key=get_barycenter):
             yield from get_new_col_order(w, LT)
     else:
@@ -432,7 +432,8 @@ def get_new_col_order(v: Node | Cluster, LT: _MixedGraph) -> Iterator[Node | Clu
 
 @cache
 def non_cluster_descendant(T: _MixedGraph, c: Cluster) -> Node:
-    return next(v for _, v in bfs_edges(T, c) if v.type != Kind.CLUSTER)
+    """The first node found below the cluster *c*."""
+    return next(v for _, v in bfs_edges(T, c) if not isinstance(v, Cluster))
 
 
 def sort_reduced_free_columns(
@@ -446,7 +447,7 @@ def sort_reduced_free_columns(
             def pos(v: Node | Cluster, H=H) -> int:
                 w = (
                     non_cluster_descendant(H.free_LT, v)
-                    if v.type == Kind.CLUSTER
+                    if isinstance(v, Cluster)
                     else v
                 )
                 return H.free_col.index(w)
@@ -461,6 +462,7 @@ _PATIENCE = 2
 # worth of extra starts in all, and never more than `_MAX_SHUFFLES`.
 _SHUFFLE_BUDGET = 500
 _MAX_SHUFFLES = 8
+_MAX_TRANSPOSE_PASSES = 10
 
 
 class Lcg:
@@ -486,9 +488,6 @@ class Lcg:
             items[i], items[j] = items[j], items[i]
 
 
-_MAX_TRANSPOSE_PASSES = 10
-
-
 def _set_order(
     columns: Sequence[list[Node]],
     order: Sequence[Sequence[Node]],
@@ -512,6 +511,8 @@ def _sweep(
 
     for i, crossing_reduction_graphs in enumerate(items):
         if i == 0:
+            # The first fixed column has no barycenters yet: its clusters
+            # keep the column's own order.
             clusters = {
                 c: j
                 for j, v in enumerate(crossing_reduction_graphs[0].fixed_col)
@@ -530,14 +531,16 @@ def _sweep(
             fill_in_unknown_barycenters(H.reduced_free_col)
             handle_constraints(H)
 
-        root = topologically_sorted_clusters(H.free_LT)[0]
-        new_order = tuple(get_new_col_order(root, H.free_LT))
-        H.free_col.sort(key=new_order.index)
+        # The graphs of a column share its nesting tree and its column.
+        free_LT = crossing_reduction_graphs[0].free_LT
+        free_col = crossing_reduction_graphs[0].free_col
+        root = topologically_sorted_clusters(free_LT)[0]
+        free_col.sort(key=tuple(get_new_col_order(root, free_LT)).index)
 
 
 def _depth_first_order(
     G: LayoutGraph[Node], columns: Sequence[list[Node]], forwards: bool
-):
+) -> list[list[Node]]:
     """The columns reordered by when a depth-first walk reaches each node,
     starting from the first column (the last, going backwards) and taking
     nodes and links in their current order. Nodes that are linked end up
@@ -573,9 +576,9 @@ def _depth_first_order(
 @dataclass(frozen=True, slots=True)
 class CrossingWeights:
     """What a crossing of two links costs the ordering, by what the links
-    carry: the tree's main data ("flow": geometry, shader, bundle, closure)
-    or anything else ("value"). Branches of the trunk passing each other
-    read easily. A value cutting across the trunk does not."""
+    carry: the tree's main data ("flow", see ``priority.FLOW_SOCKETS``) or
+    anything else ("value"). Branches of the trunk passing each other read
+    easily. A value cutting across the trunk does not."""
 
     flow_flow: float = 1.0
     value_value: float = 1.0
@@ -586,17 +589,9 @@ CROSSING_WEIGHTS = CrossingWeights()
 """The weights the ordering uses."""
 
 
-def _pair_cost(weights: CrossingWeights) -> tuple[tuple[float, float], ...]:
-    """Cost of a crossing, indexed by whether each link carries flow."""
-    return (
-        (weights.value_value, weights.flow_value),
-        (weights.flow_value, weights.flow_flow),
-    )
-
-
-type _End = tuple[tuple[int, int], bool]
-"""Where a link ends in the neighbouring column: (node position, socket
-index), and whether the link carries flow."""
+type _Endpoint = tuple[int, int]
+"""Where a link ends in a column: the position of the node, and of the
+socket on it."""
 
 
 def _transpose(
@@ -611,10 +606,14 @@ def _transpose(
     average. This looks at the actual links of two nodes, and so finds the
     swaps an average hides."""
     position = {v: i for col in columns for i, v in enumerate(col)}
-    cost = _pair_cost(weights)
+    # cost[a_flow][b_flow]: what a crossing of two links costs.
+    cost = (
+        (weights.value_value, weights.flow_value),
+        (weights.flow_value, weights.flow_flow),
+    )
     flow = {k: link_is_flow(k) for k in G.all_links()}
 
-    def ends(v: Node) -> tuple[list[_End], list[_End]]:
+    def ends(v: Node) -> tuple[list[tuple[_Endpoint, bool]], ...]:
         left = [
             ((position[k.fromnode], k.fromsock.idx), flow[k]) for k in G.in_links(v)
         ]
@@ -622,7 +621,8 @@ def _transpose(
         return left, right
 
     def gain(
-        upper: tuple[list[_End], list[_End]], lower: tuple[list[_End], list[_End]]
+        upper: tuple[list[tuple[_Endpoint, bool]], ...],
+        lower: tuple[list[tuple[_Endpoint, bool]], ...],
     ) -> float:
         """Cost of the crossings between the links of two neighbours now,
         less what it would be with the two swapped."""
@@ -668,10 +668,7 @@ def _transpose(
     return moved
 
 
-type _Ends = tuple[tuple[int, int], tuple[int, int]]
-
-
-def _inversions(links: list[_Ends]) -> int:
+def _inversions(links: list[tuple[_Endpoint, _Endpoint]]) -> int:
     """Pairs of *links* (sorted) that cross. Links from one socket are
     taken together so they do not count against each other."""
     total = 0
@@ -703,9 +700,9 @@ def count_crossings(
     position = {v: i for col in columns for i, v in enumerate(col)}
     total = 0.0
     for col in columns:
-        links: list[_Ends] = []
-        flow: list[_Ends] = []
-        values: list[_Ends] = []
+        links: list[tuple[_Endpoint, _Endpoint]] = []
+        flow: list[tuple[_Endpoint, _Endpoint]] = []
+        values: list[tuple[_Endpoint, _Endpoint]] = []
         for k in (k for v in col for k in G.in_links(v)):
             ends = (
                 (position[k.fromnode], k.fromsock.idx),
@@ -742,10 +739,8 @@ def minimize_crossings(
     two depth-first orders. On small graphs a few shuffled orders from
     ``Lcg(options.seed)`` are added. From each start, sweeps alternate
     direction, each followed by swaps of neighbours (:func:`_transpose`),
-    until ``_PATIENCE`` sweeps in a row bring no improvement. This is the
-    recipe of Graphviz's dot (Gansner et al., "A Technique for Drawing
-    Directed Graphs", 1993), with sockets and frames taken into account.
-    The result is deterministic for a given seed."""
+    until ``_PATIENCE`` sweeps in a row bring no improvement. The result is
+    deterministic for a given seed."""
     columns = G.columns
     weights = CROSSING_WEIGHTS
     trees = get_col_nesting_trees(columns, T)
@@ -790,8 +785,6 @@ def minimize_crossings(
             for _ in range(_MAX_SWEEPS):
                 _sweep(forward_items if is_forwards else backward_items, T, is_forwards)
                 is_forwards = not is_forwards
-                # As in dot: polish each sweep's order by swapping
-                # neighbours, and judge it by its actual crossings.
                 _transpose(G_, columns, weights)
                 sort_reduced_free_columns(items)
                 cross_count = count_crossings(G_, columns, weights)

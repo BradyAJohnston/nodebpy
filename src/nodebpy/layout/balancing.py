@@ -16,10 +16,18 @@ from collections.abc import Iterable
 from .common import REROUTE_DIM, REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
 from .digraph import LayoutGraph, Link, topological_sort
-from .model import Cluster, Node, Socket
+from .model import Cluster, Node, Socket, clusters_around
 
 _MAX_MOVES = 500
 _EPSILON = 1e-9
+_TARGET_STEP = 0.9
+
+BALANCE_ASPECT = 1.6
+"""The shape balancing aims for: this wide for every unit of height."""
+
+BALANCE_MIN_COLUMN = 4
+"""A column of at most this many nodes is never split, so a few parallel
+branches stay side by side."""
 
 
 def _upstream_sets(G: LayoutGraph[Node]) -> dict[Node, set[Node]]:
@@ -34,27 +42,32 @@ def _upstream_sets(G: LayoutGraph[Node]) -> dict[Node, set[Node]]:
     return {v: upstream_of[v] for v in G}
 
 
+def _column_height(nodes: float, count: int, sources: int, margin: float) -> float:
+    """Estimated height of a column from the height of its *nodes* together,
+    how many there are, and the number of *sources* of long links passing
+    through, each of which adds a dummy node spaced as reroutes are."""
+    dummy = REROUTE_DIM.y + margin * REROUTE_MARGIN_Y_FAC
+    return nodes + sources * dummy + margin * max(count - 1, 0)
+
+
 def _column_heights(
     G: LayoutGraph[Node], ranks: dict[Node, int], state: LayoutState
 ) -> dict[int, float]:
-    """Estimated height of each column: its nodes with the vertical margin
-    between them, plus a dummy node for every long link passing through.
-    Long links leaving the same socket count once."""
-    margin = state.margin.y
+    """Estimated height of each column (:func:`_column_height`). Long links
+    leaving the same socket count once."""
     heights: defaultdict[int, float] = defaultdict(float)
     counts: defaultdict[int, int] = defaultdict(int)
     for v, r in ranks.items():
         heights[r] += v.height
         counts[r] += 1
-    crossings: defaultdict[int, set[Socket]] = defaultdict(set)
+    sources: defaultdict[int, set[Socket]] = defaultdict(set)
     for link in G.all_links():
         for r in range(ranks[link.fromnode] + 1, ranks[link.tonode]):
-            crossings[r].add(link.fromsock)
-    dummy_gap = margin * REROUTE_MARGIN_Y_FAC
-    for r, sources in crossings.items():
-        # Dummy nodes are spaced by the reroute gap (placement.vertical_gap).
-        heights[r] += len(sources) * (REROUTE_DIM.y + dummy_gap)
-    return {r: heights[r] + margin * max(counts[r] - 1, 0) for r in heights}
+            sources[r].add(link.fromsock)
+    return {
+        r: _column_height(heights[r], counts[r], len(sources[r]), state.margin.y)
+        for r in heights.keys() | sources.keys()
+    }
 
 
 def _column_widths(ranks: dict[Node, int]) -> dict[int, float]:
@@ -97,7 +110,6 @@ def _fit_to_height(
     ranks = dict(ranks)
     sequence = state.frame_sequence
     margin = state.margin.y
-    dummy = REROUTE_DIM.y + margin * REROUTE_MARGIN_Y_FAC
     links = list(G.all_links())
     links_of: defaultdict[Node, list[Link[Node]]] = defaultdict(list)
     for k in links:
@@ -111,17 +123,14 @@ def _fit_to_height(
             node_height[r] += v.height
             counts[r] += 1
         # Per column, the sockets of the long links passing through, with
-        # how many links each socket sends through. See _column_heights.
+        # how many links each socket sends through.
         passing: defaultdict[int, Counter[Socket]] = defaultdict(Counter)
         for k in links:
             for r in range(ranks[k.fromnode] + 1, ranks[k.tonode]):
                 passing[r][k.fromsock] += 1
 
-        def height(nodes: float, count: int, sources: int) -> float:
-            return nodes + sources * dummy + margin * max(count - 1, 0)
-
         heights = {
-            r: height(node_height[r], counts[r], len(passing[r]))
+            r: _column_height(node_height[r], counts[r], len(passing[r]), margin)
             for r in node_height.keys() | passing.keys()
         }
         current = _overshoot(heights, target)
@@ -166,8 +175,11 @@ def _fit_to_height(
                 for socket, d in d_passing[r].items():
                     before = passing[r][socket]
                     sources += (before + d > 0) - (before > 0)
-                new = height(
-                    node_height[r] + d_height[r], counts[r] + d_count[r], sources
+                new = _column_height(
+                    node_height[r] + d_height[r],
+                    counts[r] + d_count[r],
+                    sources,
+                    margin,
                 )
                 old = heights.get(r, 0.0)
                 shoot += max(0.0, new - target) - max(0.0, old - target)
@@ -182,27 +194,6 @@ def _fit_to_height(
         for w in best[1]:
             ranks[w] -= 1
     return None
-
-
-_TARGET_STEP = 0.9
-
-
-def _is_in(v: Node, cluster: Cluster) -> bool:
-    """Whether *v* is in *cluster* or in a cluster within it."""
-    c = v.cluster
-    while c is not None:
-        if c is cluster:
-            return True
-        c = c.cluster
-    return False
-
-
-BALANCE_ASPECT = 1.6
-"""The shape balancing aims for: this wide for every unit of height."""
-
-BALANCE_MIN_COLUMN = 4
-"""A column of at most this many nodes is never split, so a few parallel
-branches stay side by side."""
 
 
 def balance_column_heights(
@@ -225,26 +216,24 @@ def balance_column_heights(
     margin_x = state.margin.x
     upstream_of = _upstream_sets(G)
 
-    aspect = BALANCE_ASPECT
-
-    def area(r: dict[Node, int]) -> float:
-        """Height of the smallest box of the target aspect ratio that the
+    def box_height(r: dict[Node, int]) -> float:
+        """Height of the smallest box of aspect ``BALANCE_ASPECT`` that the
         drawing fits in: the larger of its height and its width divided by
         the aspect ratio."""
         heights = _column_heights(G, r, state)
         widths = _column_widths(r)
         width = sum(widths.values()) + margin_x * max(len(widths) - 1, 0)
-        return max(max(heights.values()), width / aspect)
+        return max(max(heights.values()), width / BALANCE_ASPECT)
 
     best_ranks = ranks
-    best_area = area(ranks)
+    best_area = box_height(ranks)
     target = max(_column_heights(G, ranks, state).values()) * _TARGET_STEP
     floor = max(v.height for v in nodes)
     while target >= floor:
         fitted = _fit_to_height(G, best_ranks, target, state, upstream_of)
         if fitted is None:
             break
-        fitted_area = area(fitted)
+        fitted_area = box_height(fitted)
         if fitted_area > best_area:
             break
         best_ranks, best_area = fitted, fitted_area
@@ -256,7 +245,7 @@ def balance_column_heights(
     # Keep each frame's border nodes just outside its nodes until
     # insert_dummy_nodes rebinds them.
     for c in clusters:
-        members = [v for v in nodes if _is_in(v, c)]
+        members = [v for v in nodes if c in clusters_around(v)]
         if members:
             c.left.rank = min(v.rank for v in members) - 1
             c.right.rank = max(v.rank for v in members) + 1

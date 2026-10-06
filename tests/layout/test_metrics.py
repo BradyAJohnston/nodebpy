@@ -16,8 +16,6 @@ from .data import plain_node
 from .metrics import LayoutMetrics, frame_rects, measure
 from .report import CostWeights, cost
 
-_SOCKET_ROW = 22.0  # rough height of one socket row
-
 
 def _tree(name: str):
     return bpy.data.node_groups.new(name, "GeometryNodeTree")
@@ -53,8 +51,8 @@ def test_straight_link():
 
     bent = measure(tree)
     assert bent.links == 1
-    assert bent.straight_links == 0  # the output row is above the input row
-    assert bent.link_span_y > _SOCKET_ROW
+    assert bent.straight_links == 0
+    assert bent.link_span_y > 20  # an input row sits below the output row
 
     # Lower the consumer until its input is level with the output.
     b.location.y += bent.link_span_y

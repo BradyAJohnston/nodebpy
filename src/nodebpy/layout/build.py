@@ -147,25 +147,26 @@ def save_multi_input_orders(G: LayoutGraph[Node], state: LayoutState) -> None:
     """Record in *state*, for every link into a multi-input socket, the
     output socket it comes from and its sort id. A link that arrives
     through reroutes is recorded under the output its chain starts at."""
-    links = {(link.fromsock, link.tosock): link for link in state.tree.links}
-    for edge in G.all_links():
-        v, w = edge.fromnode, edge.tonode
-        to_socket = edge.tosock
+    tree_links = {(link.fromsock, link.tosock): link for link in state.tree.links}
+    for link in G.all_links():
+        v, w = link.fromnode, link.tonode
+        to_socket = link.tosock
 
         if not to_socket.dna.is_multi_input:
             continue
 
         if v.is_reroute:
-            for z, u in chain([(w, v)], bfs_edges(G, v, reverse=True)):
-                if not u.is_reroute:
+            # Walk back through the reroutes to the output the chain starts at.
+            for child, parent in chain([(w, v)], bfs_edges(G, v, reverse=True)):
+                if not parent.is_reroute:
                     break
-            base_from_socket = G.link(u, z, 0).fromsock
+            base_from_socket = G.link(parent, child, 0).fromsock
         else:
-            base_from_socket = edge.fromsock
+            base_from_socket = link.fromsock
 
-        link = links[(edge.fromsock.dna, to_socket.dna)]
+        tree_link = tree_links[(link.fromsock.dna, to_socket.dna)]
         state.multi_input_sort_ids[to_socket].append(
-            (base_from_socket, link.multi_input_sort_id)
+            (base_from_socket, tree_link.multi_input_sort_id)
         )
 
 

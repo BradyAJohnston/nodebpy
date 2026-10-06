@@ -23,7 +23,7 @@ a link of the layout graph.
 
 from __future__ import annotations
 
-from .dna import bNodeLink, bNodeSocket, bNodeTree, bNodeTreeZone
+from .dna import bNode, bNodeLink, bNodeSocket, bNodeTree, bNodeTreeZone
 
 FLOW_SOCKETS = frozenset(
     {
@@ -90,7 +90,7 @@ def zone_spine(
     flow links, then is the longest. Empty when the input node does not
     lead to the output node."""
     inside = set(zone.nodes())
-    out_links: dict[object, list[bNodeLink]] = {}
+    out_links: dict[bNode, list[bNodeLink]] = {}
     for link in tree.links:
         if link.is_valid and link.fromnode in inside and link.tonode in inside:
             out_links.setdefault(link.fromnode, []).append(link)
@@ -102,7 +102,7 @@ def zone_spine(
 
     # The best way on from each node: (score, first link), or None when
     # the node does not lead to the output node. Depth first, on a stack.
-    best: dict[object, tuple[int, bNodeLink | None] | None] = {
+    best: dict[bNode, tuple[int, bNodeLink | None] | None] = {
         zone.output_node: (0, None)
     }
     active = {zone.input_node}

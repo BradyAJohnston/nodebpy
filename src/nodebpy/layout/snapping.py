@@ -20,18 +20,17 @@ from .edits import Edit, MoveNode
 from .model import Cluster, Kind, Node, is_real
 from .pipeline import Layout
 
-# Two neighbours in a column may come this close (in grid steps) before the
-# lower one is moved down. Rounding moves each by at most half a step, so
-# with a margin of a step and a half or more nothing is ever moved down,
-# and nodes that were level stay level.
+# Two neighbours in a column may come this close, in grid steps, before
+# the lower one is moved down a row. Rounding moves each by at most half a
+# step, so with a margin of a step and a half or more nothing is ever moved
+# down, and nodes that were level stay level.
 _MIN_GAP = 0.5
 _LEVELLING_ROUNDS = 3
 
 
 def _location_offset(node: bNode) -> tuple[float, float]:
-    """From the top-left corner of the box *node* is drawn in to its
-    location, which is what lands on the grid. They differ for a collapsed
-    node."""
+    """From the top-left corner of *node*'s box to its location, which is
+    what lands on the grid (see ``bNode.location``)."""
     return (
         node.location[0] - node.draw_bounds[0],
         node.location[1] - node.draw_bounds[3],
@@ -46,24 +45,20 @@ def _nearest(value: float, grid: float) -> float:
     return floor(round(value, 3) / grid + 0.5) * grid
 
 
-def _is_snapped(v: Node) -> bool:
-    return v.type == Kind.NODE and is_real(v) and not v.is_reroute
-
-
 def snap_rows(layout: Layout, grid: float = GRID_SIZE) -> None:
     """Move every node of the tree to the nearest grid row.
 
     A frame's border nodes move with the frame's nodes, so the frame keeps
     its room, and its lower border is kept level across its columns. A
-    node left less than half a grid step under the one above it in its
-    column moves down a row; with a margin of a step and a half or more
-    that never happens, and nodes that were level stay level."""
+    node left too close under the one above it in its column moves down a
+    row (``_MIN_GAP``)."""
     columns = layout.G.columns
     before = {v: v.y for col in columns for v in col}
+    # Reroutes and made-up nodes are not snapped.
     offsets = {
         v: _location_offset(v.node)[1]
         for v in before
-        if _is_snapped(v) and v.node is not None
+        if is_real(v) and v.type == Kind.NODE and not v.is_reroute
     }
     for v, offset in offsets.items():
         v.y = _nearest(v.y + offset, grid) - offset
@@ -141,8 +136,8 @@ def snap_rows(layout: Layout, grid: float = GRID_SIZE) -> None:
 def snap_to_grid(edits: Sequence[Edit], grid: float = GRID_SIZE) -> list[Edit]:
     """*edits* with every node moved so that its location is on the grid.
 
-    Each node goes to the nearest grid point. A node left less than half a
-    grid step under one above it moves down a step. A reroute moves as the
+    Each node goes to the nearest grid point. A node left too close under
+    one above it moves down a step (``_MIN_GAP``). A reroute moves as the
     node nearest to it does, which keeps it level with the socket it was
     aligned to."""
     moves = [(i, e) for i, e in enumerate(edits) if isinstance(e, MoveNode)]

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from itertools import pairwise
+from math import inf
 
 from .common import segments_intersect
 from .digraph import LayoutGraph
@@ -20,6 +21,18 @@ from .model import (
     is_real,
 )
 
+_CURVE_PIECES = 12  # straight pieces a link's curve is approximated by
+_CLEARANCE = 4.0  # how far a link must keep from a node to pass it clear
+
+
+def chain_ends(
+    G: LayoutGraph[Node], path: Sequence[Node]
+) -> tuple[Socket, list[Socket]]:
+    """The output that feeds the chain *path* of reroutes or dummy nodes,
+    and the inputs its last node feeds."""
+    output = next(G.in_links(path[0])).fromsock
+    return output, [link.tosock for link in G.out_links(path[-1])]
+
 
 def dissolve_dummy_nodes(CG: ClusterGraph) -> None:
     """Remove every dummy node, linking the source of each chain straight
@@ -32,19 +45,11 @@ def dissolve_dummy_nodes(CG: ClusterGraph) -> None:
     G = CG.G
     for path in paths:
         if G.predecessors(path[0]):
-            first = next(G.in_links(path[0]))
-            u, o = first.fromnode, first.fromsock
-            succ_inputs = [link.tosock for link in G.out_links(path[-1])]
-            for i in succ_inputs:
-                G.add_link(u, i.owner, o, i)
+            output, inputs = chain_ends(G, path)
+            for i in inputs:
+                G.add_link(output.owner, i.owner, output, i)
 
-        CG.remove_nodes_from(path)
-
-
-_CURVE_PIECES = 12
-
-
-_CLEARANCE = 4.0
+        CG.remove_nodes(path)
 
 
 def _link_curve(
@@ -65,8 +70,9 @@ def _link_curve(
 
 
 def link_is_clear(start: Socket, end: Socket, obstacles: Sequence[Node]) -> bool:
-    """Whether a link drawn straight from *start* to *end* passes clear of
-    every node in *obstacles* (other than the two it joins)."""
+    """Whether a link from *start* to *end*, drawn as Blender draws it,
+    passes clear of every node in *obstacles* (other than the two it
+    joins)."""
     curve = _link_curve((start.x, start.y), (end.x, end.y))
     left = min(x for x, _ in curve)
     right = max(x for x, _ in curve)
@@ -90,9 +96,9 @@ def link_is_clear(start: Socket, end: Socket, obstacles: Sequence[Node]) -> bool
 
 
 def dissolve_clear_dummy_nodes(CG: ClusterGraph) -> None:
-    """Take long links off their dummy nodes again wherever the link drawn
-    straight would pass clear of every node, so that only the links that
-    need routing around something end up with reroutes."""
+    """Take long links off their dummy nodes again wherever the link, drawn
+    as Blender draws it, would pass clear of every node, so that only the
+    links that need routing around something end up with reroutes."""
     G = CG.G
     obstacles = [v for v in G if not v.is_reroute]
     paths = get_reroute_paths(
@@ -101,9 +107,7 @@ def dissolve_clear_dummy_nodes(CG: ClusterGraph) -> None:
         preserve_reroute_clusters=False,
     )
     for path in paths:
-        # A chain of dummy nodes always has a link into it.
-        output = next(G.in_links(path[0])).fromsock
-        inputs = [link.tosock for link in G.out_links(path[-1])]
+        output, inputs = chain_ends(G, path)
         if not all(link_is_clear(output, i, obstacles) for i in inputs):
             continue
         for i in inputs:
@@ -112,15 +116,15 @@ def dissolve_clear_dummy_nodes(CG: ClusterGraph) -> None:
             edit = RemoveLink(output.dna, i.dna)
             if edit in CG.state.edits:
                 CG.state.edits.remove(edit)
-        CG.remove_nodes_from(path)
+        CG.remove_nodes(path)
 
 
-def get_foreign_sockets_of(path: Sequence[Node], G: LayoutGraph[Node]) -> list[Socket]:
+def _foreign_sockets(G: LayoutGraph[Node], path: Sequence[Node]) -> list[Socket]:
     """The sockets outside the chain *path* that it is linked to: the
     outputs that feed its first node, then the inputs its last node feeds."""
-    inputs = [link.fromsock for link in G.in_links(path[0])]
-    outputs = [link.tosock for link in G.out_links(path[-1])]
-    return inputs + outputs
+    outputs = [link.fromsock for link in G.in_links(path[0])]
+    inputs = [link.tosock for link in G.out_links(path[-1])]
+    return outputs + inputs
 
 
 def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
@@ -129,8 +133,10 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
     room. The sockets are tried in turn: those of other reroutes first,
     then the nearest. A chain moved level with another chain's socket is
     joined to that chain, and the two then move as one."""
+    G = CG.G
+    margin = CG.state.margin.y
     reroute_paths: dict[tuple[Node, ...], list[Socket]] = {}
-    # Border nodes of frames have ``is_reroute`` set, but have nothing to
+    # Border nodes are reroutes to the placement, but have nothing to
     # align to.
     for p in get_reroute_paths(
         CG,
@@ -139,9 +145,27 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
         aligned=True,
         linear=False,
     ):
-        reroute_paths[tuple(p)] = get_foreign_sockets_of(p, CG.G)
+        reroute_paths[tuple(p)] = _foreign_sockets(G, p)
 
     reroute_path_of = {v: p for p in reroute_paths for v in p}
+
+    def room_above(path: Sequence[Node]) -> float:
+        """The lowest height the chain's top can rise to."""
+        bottoms = []
+        for v in path:
+            i = v.col.index(v)
+            if i > 0:
+                bottoms.append(v.col[i - 1].y - v.col[i - 1].height)
+        return min(bottoms, default=inf) - margin
+
+    def room_below(path: Sequence[Node]) -> float:
+        """The highest height the chain's top can sink to."""
+        tops = []
+        for v in path:
+            i = v.col.index(v)
+            if i + 1 < len(v.col):
+                tops.append(v.col[i + 1].y)
+        return max(tops, default=-inf) + margin + path[0].height
 
     while True:
         changed = False
@@ -150,42 +174,30 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
                 continue
 
             y = p1[0].y
-            foreign_sockets.sort(key=lambda s: abs(y - s.y))
-            foreign_sockets.sort(key=lambda s: y == s.owner.y, reverse=True)
-            foreign_sockets.sort(key=lambda s: s.owner.is_reroute, reverse=True)
+            # Other reroutes' sockets first, then those level already,
+            # then the nearest.
+            foreign_sockets.sort(
+                key=lambda s: (not s.owner.is_reroute, y != s.owner.y, abs(y - s.y))
+            )
 
             if not foreign_sockets or y == foreign_sockets[0].y:
                 del reroute_paths[p1]
                 continue
 
-            movement = y - foreign_sockets[0].y
-            y -= movement
-            if movement < 0:
-                above_y_vals = [
-                    (n := v.col[v.col.index(v) - 1]).y - n.height
-                    for v in p1
-                    if v != v.col[0]
-                ]
-                if above_y_vals and y > min(above_y_vals) - CG.state.margin.y:
-                    continue
-            else:
-                below_y_vals = [
-                    v.col[v.col.index(v) + 1].y for v in p1 if v != v.col[-1]
-                ]
-                if (
-                    below_y_vals
-                    and max(below_y_vals) + CG.state.margin.y > y - p1[0].height
-                ):
-                    continue
+            target = foreign_sockets[0].y
+            if target > y and target > room_above(p1):
+                continue
+            if target < y and target < room_below(p1):
+                continue
 
             for v in p1:
-                v.y -= movement
+                v.y += target - y
 
             w = foreign_sockets[0].owner
             if w.is_reroute:
                 p2 = reroute_path_of[w]
                 p3 = p1 + p2 if w.rank > p1[-1].rank else p2 + p1
-                reroute_paths[p3] = get_foreign_sockets_of(p3, CG.G)
+                reroute_paths[p3] = _foreign_sockets(G, p3)
                 del reroute_paths[p1]
                 reroute_paths.pop(p2, None)
                 for v in p3:
@@ -194,8 +206,9 @@ def align_reroutes_with_sockets(CG: ClusterGraph) -> None:
             changed = True
 
         if not changed:
-            if reroute_paths:
-                for foreign_sockets in reroute_paths.values():
-                    del foreign_sockets[0]
-            else:
+            if not reroute_paths:
                 break
+            # Nothing could move: give every chain its next-best socket
+            # and try again.
+            for foreign_sockets in reroute_paths.values():
+                del foreign_sockets[0]

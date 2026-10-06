@@ -1,5 +1,5 @@
 """Long links. A link that passes over one or more columns is split by a
-dummy node in each of them (:func:`merge_edges`,
+dummy node in each of them (:func:`merge_links`,
 :func:`insert_dummy_nodes`). Also here: finding chains of reroutes and
 dummy nodes (:func:`get_reroute_paths`)."""
 
@@ -23,11 +23,11 @@ from .edits import RemoveLink
 from .model import (
     Cluster,
     ClusterGraph,
-    Edge,
     Kind,
     Node,
+    NodePair,
     Socket,
-    add_dummy_edge,
+    add_dummy_link,
     is_real,
     link_is_flow,
     link_priority,
@@ -40,10 +40,10 @@ if TYPE_CHECKING:
 def lowest_common_cluster(
     T: DiGraph[Node | Cluster],
     links: Iterable[Link[Node]],
-) -> dict[Edge, Cluster]:
+) -> dict[NodePair, Cluster]:
     """The innermost cluster containing both ends of each link whose ends
     are in different clusters, keyed by ``(fromnode, tonode)``."""
-    lca: dict[Edge, Cluster] = {}
+    lca: dict[NodePair, Cluster] = {}
     for link in links:
         u, v = link.fromnode, link.tonode
         if u.cluster == v.cluster or (u, v) in lca:
@@ -64,7 +64,7 @@ def lowest_common_cluster(
     return lca
 
 
-def add_dummy_nodes_to_edge(
+def add_dummy_nodes_to_link(
     G: LayoutGraph[Node],
     link: Link[Node],
     dummy_nodes: Sequence[Node],
@@ -84,7 +84,7 @@ def add_dummy_nodes_to_edge(
 
     for a, b in pairwise(dummy_nodes):
         if not G.has_link(a, b, 0):
-            add_dummy_edge(G, a, b)
+            add_dummy_link(G, a, b)
 
     u, v = link.fromnode, link.tonode
 
@@ -129,7 +129,7 @@ def assign_clusters(
         w.cluster = c
 
 
-def improve_cluster_assignment(e: Edge, dummy_nodes: Sequence[Node]) -> None:
+def improve_cluster_assignment(e: NodePair, dummy_nodes: Sequence[Node]) -> None:
     """Move the dummy nodes of the long link *e* into the frames at its ends
     where they fit. A dummy node in a column that the frame of the source
     node, or a frame around it, still spans joins that frame. The same is
@@ -186,14 +186,14 @@ def improve_cluster_assignment(e: Edge, dummy_nodes: Sequence[Node]) -> None:
 
 def get_reroute_paths(
     CG: ClusterGraph,
-    function: Callable | None = None,
+    accept: Callable[[Node], bool] | None = None,
     *,
     preserve_reroute_clusters: bool = True,
     aligned: bool = False,
     linear: bool = True,
 ) -> list[list[Node]]:
-    """The chains of reroutes and dummy nodes that *function* accepts, each
-    from its source end to its target end.
+    """The chains of reroutes and dummy nodes that *accept* allows (all of
+    them by default), each from its source end to its target end.
 
     A chain ends at a reroute with more than one link out. With *linear*
     every link out counts. Without it only links to other reroutes of the
@@ -203,40 +203,41 @@ def get_reroute_paths(
     *aligned* it also breaks between two reroutes at different heights.
     """
     G = CG.G
-    reroutes = {v for v in G if v.is_reroute and (not function or function(v))}
+    reroutes = {v for v in G if v.is_reroute and (accept is None or accept(v))}
     H = simple_digraph(G.subgraph(reroutes))
 
-    K = G if linear else H
+    degree_graph = G if linear else H
     for v in H:
-        if K.out_degree(v) > 1:
+        if degree_graph.out_degree(v) > 1:
             H.remove_edges(tuple(H.out_edges(v)))
 
     if preserve_reroute_clusters:
         reroute_clusters = {
             c
             for c in CG.S
-            if all(v.is_reroute for v in CG.T.successors(c) if v.type != Kind.CLUSTER)
+            if all(
+                v.is_reroute for v in CG.T.successors(c) if not isinstance(v, Cluster)
+            )
         }
         H.remove_edges(
             [
                 (u, v)
                 for u, v in H.edges()
-                if u.cluster != v.cluster and {u.cluster, v.cluster} & reroute_clusters
+                if u.cluster != v.cluster
+                and (u.cluster in reroute_clusters or v.cluster in reroute_clusters)
             ]
         )
 
     if aligned:
         H.remove_edges([(u, v) for u, v in H.edges() if u.y != v.y])
 
-    indicies = {v: i for i, v in enumerate(topological_sort(G)) if v in reroutes}
-    paths = [
-        sorted(c, key=lambda v: indicies[v]) for c in weakly_connected_components(H)
-    ]
-    paths.sort(key=lambda p: sum([indicies[v] for v in p]))
+    index = {v: i for i, v in enumerate(topological_sort(G)) if v in reroutes}
+    paths = [sorted(c, key=index.__getitem__) for c in weakly_connected_components(H)]
+    paths.sort(key=lambda p: sum(index[v] for v in p))
     return paths
 
 
-def merge_edges(CG: ClusterGraph) -> None:
+def merge_links(CG: ClusterGraph) -> None:
     """Let the long links that leave one output share dummy nodes.
 
     For an output with two or more long links, one dummy node is made in the
@@ -248,20 +249,20 @@ def merge_edges(CG: ClusterGraph) -> None:
     groups = group_by(G.all_links(), key=lambda link: link.fromsock)
     links: tuple[Link[Node], ...]
     for links, from_socket in groups.items():
-        long_edges = [
+        long_links = [
             link for link in links if link.tonode.rank - link.fromnode.rank > 1
         ]
 
-        if len(long_edges) < 2:
+        if len(long_links) < 2:
             continue
 
-        long_edges.sort(key=lambda link: link.tonode.rank)
-        lca = lowest_common_cluster(T, long_edges)
+        long_links.sort(key=lambda link: link.tonode.rank)
+        lca = lowest_common_cluster(T, long_links)
         # All from one output, so one source node; the farthest target last.
-        u = long_edges[0].fromnode
-        farthest = long_edges[-1].tonode
+        u = long_links[0].fromnode
+        farthest = long_links[-1].tonode
         dummy_nodes = []
-        for link in long_edges:
+        for link in long_links:
             v = link.tonode
             if dummy_nodes and dummy_nodes[-1].rank == v.rank - 1:
                 w = dummy_nodes[-1]
@@ -271,11 +272,11 @@ def merge_edges(CG: ClusterGraph) -> None:
                 w = Node(None, c, Kind.DUMMY, v.rank - 1)
                 dummy_nodes.append(w)
 
-            add_dummy_nodes_to_edge(G, link, [w], CG.state)
+            add_dummy_nodes_to_link(G, link, [w], CG.state)
             G.remove_link_between(u, w)
 
         for pair in pairwise(dummy_nodes):
-            add_dummy_edge(G, *pair)
+            add_dummy_link(G, *pair)
 
         w = dummy_nodes[0]
         G.add_link(u, w, from_socket, Socket(w, 0, False))
@@ -297,15 +298,15 @@ def insert_dummy_nodes(CG: ClusterGraph) -> None:
     T = CG.T
 
     for c in CG.S:
-        members = [v for v in descendants(T, c) if v.type != Kind.CLUSTER]
+        members = [v for v in descendants(T, c) if not isinstance(v, Cluster)]
         c.left = min(members, key=lambda v: v.rank)
         c.right = max(members, key=lambda v: v.rank)
 
-    long_edges = [
+    long_links = [
         link for link in G.all_links() if link.tonode.rank - link.fromnode.rank > 1
     ]
-    lca = lowest_common_cluster(T, long_edges)
-    for link in long_edges:
+    lca = lowest_common_cluster(T, long_links)
+    for link in long_links:
         u, v = link.fromnode, link.tonode
         assert u.cluster
         c = lca.get((u, v), u.cluster)
@@ -315,7 +316,7 @@ def insert_dummy_nodes(CG: ClusterGraph) -> None:
             dummy_nodes.append(w)
 
         improve_cluster_assignment((u, v), dummy_nodes)
-        add_dummy_nodes_to_edge(G, link, dummy_nodes, CG.state)
+        add_dummy_nodes_to_link(G, link, dummy_nodes, CG.state)
 
     for w in [w for w in G if w not in T]:
         assert w.cluster
@@ -326,7 +327,9 @@ def insert_dummy_nodes(CG: ClusterGraph) -> None:
         if not c.node:
             continue
 
-        ranks = sorted({v.rank for v in descendants(T, c) if v.type != Kind.CLUSTER})
+        ranks = sorted(
+            {v.rank for v in descendants(T, c) if not isinstance(v, Cluster)}
+        )
         for i, j in pairwise(ranks):
             for k in range(i + 1, j):
                 v = Node(None, c, Kind.DUMMY, k)

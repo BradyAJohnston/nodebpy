@@ -23,12 +23,12 @@ ESSENTIALS = Path(BundledLibrary("geometry_nodes_essentials.blend").path())
 
 
 def _tree(name: str) -> NodeTree:
-    return bpy.data.node_groups.new(name, "GeometryNodeTree")  # ty: ignore[invalid-argument-type]
+    return bpy.data.node_groups.new(name, "GeometryNodeTree")
 
 
 def _math(tree: NodeTree, operation: str = "ADD") -> Node:
     node = tree.nodes.new("ShaderNodeMath")
-    node.operation = operation  # ty: ignore[unresolved-attribute]
+    node.operation = operation
     return node
 
 
@@ -155,7 +155,7 @@ def long_links() -> NodeTree:
 def shader_material() -> NodeTree:
     """A shader tree: a texture chain into a BSDF, mixed with a second
     shader. The shader links are the trunk; the texture chain feeds it."""
-    tree = bpy.data.node_groups.new("shader_material", "ShaderNodeTree")  # ty: ignore[invalid-argument-type]
+    tree = bpy.data.node_groups.new("shader_material", "ShaderNodeTree")
     new = tree.nodes.new
     coords, mapping, noise = (
         new("ShaderNodeTexCoord"),
@@ -181,7 +181,7 @@ def shader_material() -> NodeTree:
 def compositor_chain() -> NodeTree:
     """A compositor tree: no flow sockets, so the trunk is the colour
     chain."""
-    tree = bpy.data.node_groups.new("compositor_chain", "CompositorNodeTree")  # ty: ignore[invalid-argument-type]
+    tree = bpy.data.node_groups.new("compositor_chain", "CompositorNodeTree")
     new = tree.nodes.new
     blur, glare, over = (
         new("CompositorNodeBlur"),
@@ -207,9 +207,9 @@ def zones() -> NodeTree:
         new("GeometryNodeSimulationInput"),
         new("GeometryNodeSimulationOutput"),
     )
-    sim_in.pair_with_output(sim_out)  # ty: ignore[unresolved-attribute]
+    sim_in.pair_with_output(sim_out)
     rep_in, rep_out = new("GeometryNodeRepeatInput"), new("GeometryNodeRepeatOutput")
-    rep_in.pair_with_output(rep_out)  # ty: ignore[unresolved-attribute]
+    rep_in.pair_with_output(rep_out)
     move, noise, scale = (
         new("GeometryNodeSetPosition"),
         new("ShaderNodeTexNoise"),
@@ -220,7 +220,7 @@ def zones() -> NodeTree:
         new("GeometryNodeSetShadeSmooth"),
     )
     outside, join = new("GeometryNodeTransform"), new("GeometryNodeJoinGeometry")
-    rep_out.repeat_items.new("GEOMETRY", "Geometry")  # ty: ignore[unresolved-attribute]
+    rep_out.repeat_items.new("GEOMETRY", "Geometry")
 
     def geometry(sockets):
         return next(s for s in sockets if s.type == "GEOMETRY")

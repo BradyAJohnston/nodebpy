@@ -12,7 +12,7 @@ from enum import Enum, auto
 from functools import cached_property
 from itertools import chain, count, pairwise, product
 from math import inf
-from typing import TYPE_CHECKING, Literal, TypeGuard
+from typing import TYPE_CHECKING, TypeGuard
 
 from .common import REROUTE_DIM, frame_label_room, group_by
 from .digraph import (
@@ -20,6 +20,8 @@ from .digraph import (
     LayoutGraph,
     Link,
     descendants,
+    edge_dfs,
+    topological_generations,
 )
 from .dna import bNode, bNodeSocket
 from .edits import RemoveNode
@@ -28,9 +30,8 @@ from .priority import is_flow_socket
 if TYPE_CHECKING:
     from .config import LayoutState
 
-# Nodes and clusters hash by creation order rather than id(), so iterating a
-# set of them does not depend on memory addresses and a layout is the same
-# on every run. sugiyama_layout() resets the counter.
+# Nodes and clusters hash by creation order, not id(), so a layout is the
+# same on every run (DESIGN.md). sugiyama_layout() resets the counter.
 _serials = count()
 
 
@@ -43,24 +44,13 @@ class Kind(Enum):
     """What a :class:`Node` is: a node of the tree, a stack of them, a dummy
     node, or a border node of a frame. ``HORIZONTAL_BORDER`` nodes stand
     left and right of a frame during ranking. ``VERTICAL_BORDER`` nodes
-    stand above and below it in a column. ``CLUSTER`` is the kind of every
-    :class:`Cluster`."""
+    stand above and below it in a column."""
 
     NODE = auto()
     STACK = auto()
     DUMMY = auto()
-    CLUSTER = auto()
     HORIZONTAL_BORDER = auto()
     VERTICAL_BORDER = auto()
-
-
-_NonCluster = Literal[
-    Kind.NODE,
-    Kind.STACK,
-    Kind.DUMMY,
-    Kind.HORIZONTAL_BORDER,
-    Kind.VERTICAL_BORDER,
-]
 
 
 @dataclass(slots=True)
@@ -85,7 +75,7 @@ class Node:
 
     node: bNode | None
     cluster: Cluster | None
-    type: _NonCluster
+    type: Kind
 
     is_reroute: bool
     width: float
@@ -119,7 +109,7 @@ class Node:
         self,
         node: bNode | None = None,
         cluster: Cluster | None = None,
-        type: _NonCluster = Kind.NODE,
+        type: Kind = Kind.NODE,
         rank: int | None = None,
     ) -> None:
 
@@ -137,6 +127,7 @@ class Node:
             self.width = node.width
             self.height = node.top - node.bottom
         else:
+            # Border nodes pack as tightly as reroutes.
             self.is_reroute = type == Kind.VERTICAL_BORDER
             self.width = 0
             self.height = 0
@@ -187,8 +178,9 @@ def node_name(v: Node) -> str:
     return getattr(v.node, "name", "")
 
 
-Edge = tuple[Node, Node]
-MultiEdge = tuple[Node, Node, int]
+NodePair = tuple[Node, Node]
+LinkIdent = tuple[Node, Node, int]
+"""``Link.ident``: names a link across graph copies."""
 
 
 @dataclass(slots=True)
@@ -202,7 +194,8 @@ class Cluster:
 
     node: bNode | None
     cluster: Cluster
-    nesting_level: int | None = None
+    nesting_level: int = 0
+    """How many clusters this one is in: 0 for the outermost."""
     cr: CrossingReduction = field(default_factory=CrossingReduction)
     left: Node = field(init=False)
     right: Node = field(init=False)
@@ -216,22 +209,46 @@ class Cluster:
     def __hash__(self) -> int:
         return self._serial
 
-    @property
-    def type(self) -> Literal[Kind.CLUSTER]:
-        return Kind.CLUSTER
-
     def label_height(self) -> float:
         frame = self.node
         return frame_label_room(frame.label, frame.label_size) if frame else 0.0
 
 
-def get_nesting_relations(
-    v: Node | Cluster,
-) -> Iterator[tuple[Cluster, Node | Cluster]]:
+def clusters_around(v: Node | Cluster) -> Iterator[Cluster]:
+    """The cluster *v* is in, then the one around that, outwards."""
+    c = v.cluster
+    while c is not None:
+        yield c
+        c = c.cluster
+
+
+def nesting_relations(v: Node | Cluster) -> Iterator[tuple[Cluster, Node | Cluster]]:
     """``(cluster, member)`` for *v* and for every cluster around it."""
-    if c := v.cluster:
+    for c in clusters_around(v):
         yield (c, v)
-        yield from get_nesting_relations(c)
+        v = c
+
+
+def trace_multi_input_sources(
+    H: DiGraph[Socket], socket: Socket, sort_ids: Iterable[tuple[Socket, int]]
+) -> list[tuple[Socket, int]]:
+    """For each ``(output, sort id)`` saved for the multi-input *socket*,
+    the socket that now feeds it, reached from the output through the
+    reroutes of the socket graph *H*."""
+    SH = H.subgraph(
+        {output for output, _ in sort_ids}
+        | {socket}
+        | {s for s in H if s.owner.is_reroute}
+    )
+    seen: set[Socket] = set()
+    traced = []
+    for output, sort_id in sort_ids:
+        from_socket = next(
+            s for s, t in edge_dfs(SH, output) if t == socket and s not in seen
+        )
+        traced.append((from_socket, sort_id))
+        seen.add(from_socket)
+    return traced
 
 
 def link_priority(link: Link[Node], priorities: dict[bNodeSocket, int]) -> int:
@@ -259,14 +276,14 @@ def link_is_flow(link: Link[Node]) -> bool:
     return socket is not None and is_flow_socket(socket)
 
 
-def add_dummy_edge(G: LayoutGraph[Node], u: Node, v: Node) -> None:
+def add_dummy_link(G: LayoutGraph[Node], u: Node, v: Node) -> None:
     """Link *u* to *v* through made-up sockets."""
     G.add_link(u, v, Socket(u, 0, True), Socket(v, 0, False))
 
 
-# https://api.semanticscholar.org/CorpusID:14932050
 class ClusterGraph:
-    """The layout graph with the nesting of its frames.
+    """The layout graph with the nesting of its frames (Sander, "Layout of
+    compound directed graphs").
 
     ``G`` is the layout graph. ``T`` is the nesting: an edge from each
     cluster to every node and cluster directly in it. ``S`` lists the
@@ -281,10 +298,14 @@ class ClusterGraph:
     def __init__(self, G: LayoutGraph[Node], state: LayoutState) -> None:
         self.G = G
         self.state = state
-        self.T = DiGraph(chain(*map(get_nesting_relations, G)))
+        self.T = DiGraph(chain(*map(nesting_relations, G)))
         self.S = [v for v in self.T if isinstance(v, Cluster)]
+        for i, layer in enumerate(topological_generations(self.T)):
+            for c in layer:
+                if isinstance(c, Cluster):
+                    c.nesting_level = i
 
-    def remove_nodes_from(self, nodes: Iterable[Node]) -> None:
+    def remove_nodes(self, nodes: Iterable[Node]) -> None:
         """Remove *nodes* from the graph, the nesting and their columns. For
         a node of the tree, also forget its links and record a
         ``RemoveNode`` edit."""
@@ -321,7 +342,7 @@ class ClusterGraph:
             if not c.node:
                 continue
 
-            members = [v for v in descendants(T, c) if v.type != Kind.CLUSTER]
+            members = [v for v in descendants(T, c) if not isinstance(v, Cluster)]
             lower_border_nodes = []
             upper_border_nodes = []
             for subcol in group_by(
@@ -345,7 +366,7 @@ class ClusterGraph:
 
             G.add_nodes(lower_border_nodes + upper_border_nodes)
             for p in *pairwise(lower_border_nodes), *pairwise(upper_border_nodes):
-                add_dummy_edge(G, *p)
+                add_dummy_link(G, *p)
 
 
 @dataclass(frozen=True)
@@ -407,14 +428,9 @@ def keep_frames_together(col: list[Node]) -> None:
     first: dict[Cluster, int] = {}
     chains: dict[Node, list[Cluster]] = {}
     for i, v in enumerate(col):
-        chain = []
-        c = v.cluster
-        while c is not None:
-            chain.append(c)
+        chains[v] = list(clusters_around(v))[::-1]
+        for c in chains[v]:
             first.setdefault(c, i)
-            c = c.cluster
-        chain.reverse()
-        chains[v] = chain
 
     position = {v: i for i, v in enumerate(col)}
     col.sort(key=lambda v: (*[first[c] for c in chains[v]], position[v]))

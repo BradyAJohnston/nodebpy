@@ -3,10 +3,10 @@
 :func:`arrange` is the entry. It works in three stages:
 
 1. :func:`~.extract.extract` reads the Blender tree into plain data
-   (:mod:`.dna`), with node sizes and socket positions.
+   (:mod:`.dna`).
 2. :func:`~.sugiyama.sugiyama_layout` computes the layout from that data
-   alone and returns the edits to make (:mod:`.edits`). It never touches
-   Blender. It runs a list of named steps (:mod:`.pipeline`).
+   alone, never touching Blender, and returns the edits to make
+   (:mod:`.edits`).
 3. :func:`~.apply.apply` carries the edits out on the Blender tree.
 
 ``DESIGN.md`` beside this file explains the layout end to end.

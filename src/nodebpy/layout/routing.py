@@ -1,5 +1,5 @@
 """The route phase: give a link a bend point beside a node it would
-otherwise cut across (:func:`route_edges`)."""
+otherwise cut across (:func:`route_links`)."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from itertools import chain
 from .common import FRAME_PADDING, group_by, segments_intersect
 from .config import LayoutState
 from .digraph import DiGraph, LayoutGraph, Link
-from .long_links import add_dummy_nodes_to_edge, lowest_common_cluster
+from .long_links import add_dummy_nodes_to_link, lowest_common_cluster
 from .model import Cluster, Kind, Node, Socket
 
 _MIN_X_DIFF = 30
@@ -72,45 +72,43 @@ def add_bend_points(
     largest = max(v.col, key=lambda w: w.width)
     for link in (*G.out_links(v), *G.in_links(v)):
         socket: Socket = link.fromsock if v == link.fromnode else link.tosock
-        bend_point = Node(type=Kind.DUMMY)
-        bend_point.x = largest.x + largest.width if socket.is_output else largest.x
-
-        if abs(socket.x - bend_point.x) <= _MIN_X_DIFF:
+        x = largest.x + largest.width if socket.is_output else largest.x
+        if abs(socket.x - x) <= _MIN_X_DIFF:
             continue
 
-        bend_point.y = socket.y
         other_socket = next(s for s in (link.fromsock, link.tosock) if s != socket)
-
-        if abs(other_socket.y - bend_point.y) <= _MIN_Y_DIFF:
+        if abs(other_socket.y - socket.y) <= _MIN_Y_DIFF:
             continue
 
         if is_unnecessary_bend_point(socket, other_socket, state):
             continue
 
+        bend_point = Node(type=Kind.DUMMY)
+        bend_point.x, bend_point.y = x, socket.y
         bend_points[link].append(bend_point)
 
 
-def node_overlaps_edge(
+def node_overlaps_link(
     v: Node,
-    edge_line: tuple[tuple[float, float], tuple[float, float]],
+    link_line: tuple[tuple[float, float], tuple[float, float]],
 ) -> bool:
-    """Whether the segment *edge_line* crosses the top or bottom edge of
+    """Whether the segment *link_line* crosses the top or bottom edge of
     *v*. Never for a reroute."""
     if v.is_reroute:
         return False
 
     top_line = ((v.x, v.y), (v.x + v.width, v.y))
-    if segments_intersect(*edge_line, *top_line):
+    if segments_intersect(*link_line, *top_line):
         return True
 
     bottom_line = (
         (v.x, v.y - v.height),
         (v.x + v.width, v.y - v.height),
     )
-    return segments_intersect(*edge_line, *bottom_line)
+    return segments_intersect(*link_line, *bottom_line)
 
 
-def route_edges(
+def route_links(
     G: LayoutGraph[Node], T: DiGraph[Node | Cluster], state: LayoutState
 ) -> None:
     """Give every link that would cut across a node next to one of its ends
@@ -121,16 +119,19 @@ def route_edges(
         add_bend_points(G, v, bend_points, state)
 
     # Links from one output with a bend point at the same place share it.
-    edge_of = {b: e for e, d in bend_points.items() for b in d}
+    link_of = {b: e for e, d in bend_points.items() for b in d}
 
-    def key(b):
-        return (edge_of[b].fromsock, b.x, b.y)
+    def key(b: Node) -> tuple[Socket, float, float]:
+        return (link_of[b].fromsock, b.x, b.y)
 
-    for (target, *redundant), (from_socket, *_) in group_by(edge_of, key=key).items():
+    # Each group: the bend points of one output at one place.
+    for (target, *redundant), (from_socket, *_) in group_by(link_of, key=key).items():
         for b in redundant:
-            dummy_nodes = bend_points[edge_of[b]]
+            dummy_nodes = bend_points[link_of[b]]
             dummy_nodes[dummy_nodes.index(b)] = target
 
+        # A reroute's output fans out, so a bend one of its links needs is
+        # shared by every level link from it.
         u = from_socket.owner
         if not u.is_reroute or G.out_degree(u) < 2:
             continue
@@ -153,14 +154,14 @@ def route_edges(
 
             b = dummy_nodes[-1]
             line = ((b.x, b.y), (e_.tosock.x, e_.tosock.y))
-            if any(node_overlaps_edge(v, line) for v in e.tonode.col):
+            if any(node_overlaps_link(v, line) for v in e.tonode.col):
                 continue
 
             bend_points[e_] = dummy_nodes
 
     lca = lowest_common_cluster(T, bend_points)
     for link, dummy_nodes in bend_points.items():
-        add_dummy_nodes_to_edge(G, link, dummy_nodes, state)
+        add_dummy_nodes_to_link(G, link, dummy_nodes, state)
 
         u, v = link.fromnode, link.tonode
         c = lca.get((u, v), u.cluster)

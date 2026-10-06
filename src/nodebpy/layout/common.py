@@ -43,6 +43,8 @@ def group_by[T1: Hashable, T2: Hashable](
     key: Callable[[T1], T2],
     sort: bool = False,
 ) -> dict[tuple[T1, ...], T2]:
+    """Group *iterable* by *key*. Returns ``{group: key}``: iterating gives
+    the groups as tuples, in first-seen order (or by key with *sort*)."""
     groups = defaultdict(list)
     for item in iterable:
         groups[key(item)].append(item)

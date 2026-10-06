@@ -1,8 +1,7 @@
 """Read a Blender node tree into the plain data the layout works on.
 
-Node sizes and socket positions enter the layout only here. A node's size
-is what Blender measured if a node editor has drawn it, else an estimate.
-Socket positions are always estimated. See :mod:`.node_size`.
+Node sizes and socket positions enter the layout only here;
+:mod:`.node_size` says where they come from.
 """
 
 from __future__ import annotations
@@ -23,8 +22,10 @@ from .node_size import (
 )
 from .zones import find_zones
 
+_IMAGE_NODES = {"ShaderNodeTexImage", "ShaderNodeTexEnvironment", "CompositorNodeImage"}
 
-def get_display_name_of(node: BlenderNode) -> str:
+
+def _display_name(node: BlenderNode) -> str:
     """The text a collapsed node's width is fitted to: its label, else the
     name of its group, operation or image, else the label of its type."""
     if node.label:
@@ -38,25 +39,16 @@ def get_display_name_of(node: BlenderNode) -> str:
     if node.bl_idname.endswith("Math") or node.bl_idname == "FunctionNodeCompare":
         return getattr(node, "operation", node.bl_label)
 
-    relevant_node_types = {
-        "ShaderNodeTexImage",
-        "ShaderNodeTexEnvironment",
-        "CompositorNodeImage",
-    }
-    if node.bl_idname in relevant_node_types and (
-        image := getattr(node, "image", None)
-    ):
+    if node.bl_idname in _IMAGE_NODES and (image := getattr(node, "image", None)):
         return image.name
 
     return node.bl_label
 
 
-NODE_LABEL_SIZE = 11
-LABEL_LEFT_OFFSET = 23
-LABEL_RIGHT_OFFSET = LABEL_LEFT_OFFSET
-
-# Rough advance width per character, as a fraction of the font size. Used when
-# `blf` can't measure text (e.g. the headless `bpy` module without a UI font).
+_NODE_LABEL_SIZE = 11  # font size of a collapsed node's label
+_LABEL_PADDING = 23  # either side of the label
+# Rough advance width per character, as a fraction of the font size, for
+# when blf cannot measure text (the headless bpy module has no UI font).
 _FALLBACK_CHAR_WIDTH_FAC = 0.6
 
 
@@ -64,14 +56,12 @@ def _label_width(text: str) -> float:
     try:
         import blf
 
-        blf.size(0, NODE_LABEL_SIZE)
+        blf.size(0, _NODE_LABEL_SIZE)
         width: float = blf.dimensions(0, text)[0]
     except (ImportError, RuntimeError):
-        return len(text) * NODE_LABEL_SIZE * _FALLBACK_CHAR_WIDTH_FAC
-    # Headless builds can report a zero width instead of raising.
-    return (
-        width if width > 0 else len(text) * NODE_LABEL_SIZE * _FALLBACK_CHAR_WIDTH_FAC
-    )
+        width = 0.0
+    # Headless builds raise, or report no width.
+    return width or len(text) * _NODE_LABEL_SIZE * _FALLBACK_CHAR_WIDTH_FAC
 
 
 def fit_collapsed_widths(nodes: Iterable[BlenderNode]) -> None:
@@ -80,11 +70,8 @@ def fit_collapsed_widths(nodes: Iterable[BlenderNode]) -> None:
         if not node.hide:
             continue
 
-        display_name = get_display_name_of(node)
-        optimized_width = (
-            _label_width(display_name) + LABEL_LEFT_OFFSET + LABEL_RIGHT_OFFSET
-        )
-        node.width = max(optimized_width, node.bl_width_min)
+        width = _label_width(_display_name(node)) + 2 * _LABEL_PADDING
+        node.width = max(width, node.bl_width_min)
 
 
 @dataclass(eq=False, slots=True)
@@ -95,9 +82,10 @@ class Binding:
     nodes: dict[bNode, BlenderNode] = field(default_factory=dict)
 
     def socket(self, socket: bNodeSocket) -> NodeSocket:
-        """The Blender socket *socket* stands for. Looked up afresh each
-        time: Blender replaces a reroute's sockets when it is linked, so a
-        socket reference does not stay valid."""
+        """The Blender socket *socket* stands for, looked up afresh each
+        time: Blender may rebuild a node's sockets when its links change (a
+        reroute takes the type of what it is linked to), so a socket
+        reference is not kept."""
         node = self.nodes[socket.node]
         sockets = node.outputs if socket.is_output else node.inputs
         return sockets[socket.index]
@@ -129,13 +117,9 @@ def _extract_node(node: BlenderNode) -> bNode:
     return data
 
 
+@size_cache()
 def extract(ntree: NodeTree) -> tuple[bNodeTree, Binding]:
     """The plain-data copy of *ntree*, and the binding back to it."""
-    with size_cache():
-        return _extract(ntree)
-
-
-def _extract(ntree: NodeTree) -> tuple[bNodeTree, Binding]:
     tree = bNodeTree()
     binding = Binding()
     data_of: dict[BlenderNode, bNode] = {}

@@ -152,8 +152,8 @@ def test_zones_are_read_from_blender():
 
 
 def test_link_into_a_closed_panel_puts_its_source_before_its_target():
-    """Blender reports a socket in a closed panel as hidden; a link into it
-    is extracted all the same."""
+    """A socket in a closed panel is not drawn; a link into it is extracted
+    all the same."""
     with TreeBuilder("PanelInner", arrange=None) as inner:
         geo = inner.inputs.geometry()
         with inner.inputs.panel("Tuning", default_closed=True):

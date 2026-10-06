@@ -28,11 +28,15 @@ def _off_grid(edits) -> list[str]:
     return names
 
 
-def test_snapping_is_on_by_default():
-    assert SugiyamaOptions().snap_to_grid is True
+def _on_grid(node) -> bool:
+    x, y = node.location_absolute
+    return x % GRID_SIZE == pytest.approx(
+        0, abs=0.01
+    ) and y % GRID_SIZE == pytest.approx(0, abs=0.01)
 
 
 def test_layout_is_on_the_grid_only_when_snapped():
+    assert SugiyamaOptions().snap_to_grid is True
     tree = bNodeTree()
     plain_chain(tree, "abc")
     assert _off_grid(sugiyama_layout(tree, options()).edits)
@@ -107,9 +111,7 @@ def test_nodes_are_snapped_beside_reroutes():
     others = [n for n in tree.nodes if n.bl_idname not in ("NodeReroute", "NodeFrame")]
     assert reroutes
     for node in others:
-        x, y = node.location_absolute
-        assert x % GRID_SIZE == pytest.approx(0, abs=0.01)
-        assert y % GRID_SIZE == pytest.approx(0, abs=0.01)
+        assert _on_grid(node)
 
 
 @pytest.mark.parametrize("seed", range(20))
@@ -133,6 +135,4 @@ def test_snapping_in_blender_puts_locations_on_the_grid():
     arrange(tree, SugiyamaOptions(snap_to_grid=True))
 
     for node in (a, b, c):
-        x, y = node.location_absolute
-        assert x % GRID_SIZE == pytest.approx(0, abs=0.01)
-        assert y % GRID_SIZE == pytest.approx(0, abs=0.01)
+        assert _on_grid(node)

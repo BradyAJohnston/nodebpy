@@ -156,9 +156,8 @@ class bNodeTree:
     nodes: list[bNode] = field(default_factory=list)
     links: list[bNodeLink] = field(default_factory=list)
     zones: list[bNodeTreeZone] = field(default_factory=list)
-    """``zones()``, outer zones before the zones within them. Blender does
-    not tell Python which nodes are in a zone, so :mod:`.zones` works it
-    out."""
+    """``zones()``, outer zones before the zones within them. Worked out by
+    :mod:`.zones`."""
 
     def add_node(self, node: bNode) -> bNode:
         self.nodes.append(node)

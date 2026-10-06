@@ -7,8 +7,8 @@ from array import array
 from bpy.types import Node as BlenderNode
 from bpy.types import NodeSocket, NodeTree
 
-from .common import FRAME_PADDING, f32, frame_label_room
-from .dna import bNodeSocket
+from .common import FRAME_PADDING, frame_label_room
+from .dna import bNode, bNodeSocket
 from .edits import (
     AddLink,
     AddReroute,
@@ -26,8 +26,8 @@ from .node_size import dimensions, size_cache, top_offset
 def _restore_multi_input_order(
     ntree: NodeTree,
     multi_input: NodeSocket,
-    outputs: list[NodeSocket | None],
-    order: list[tuple[NodeSocket | None, int]],
+    outputs: list[NodeSocket],
+    order: list[tuple[NodeSocket, int]],
 ) -> None:
     """Link every one of *outputs* to *multi_input* and give each link the
     sort id *order* pairs its output with.
@@ -46,7 +46,6 @@ def _restore_multi_input_order(
     for output in outputs:
         if output in as_links:
             continue
-        assert output
         new_link = links.new(output, multi_input)
         assert new_link is not None
         as_links[output] = new_link
@@ -65,16 +64,15 @@ def _restore_multi_input_order(
             as_links.values(),
             key=lambda link: abs(link.multi_input_sort_id - sort_id),
         )
-        assert output is not None
         as_links[output].swap_multi_input_sort_id(other)
 
 
 def _frame_box(
-    frame: BlenderNode, boxes: list[tuple[float, float, float, float]]
+    frame: bNode, boxes: list[tuple[float, float, float, float]]
 ) -> tuple[float, float, float, float]:
     """Left, top, width and height of *frame* fitted around *boxes*, the
     boxes of the nodes in it."""
-    label = frame_label_room(frame.label, getattr(frame, "label_size", 20))
+    label = frame_label_room(frame.label, frame.label_size)
     left = min(b[0] for b in boxes) - FRAME_PADDING
     bottom = min(b[1] for b in boxes) - FRAME_PADDING
     right = max(b[2] for b in boxes) + FRAME_PADDING
@@ -96,12 +94,12 @@ def _write_locations(
     leaving that setting as the user had it: Blender only refits a frame
     itself when Shrink is on and a node editor draws it."""
     nodes = list(ntree.nodes)
-    index = {node.as_pointer(): i for i, node in enumerate(nodes)}
+    index = {node: i for i, node in enumerate(nodes)}
     located = array("f", bytes(8 * len(nodes)))
     ntree.nodes.foreach_get("location_absolute", located)
 
     def box(node: BlenderNode) -> tuple[float, float, float, float]:
-        i = index[node.as_pointer()]
+        i = index[node]
         x, top = located[2 * i], located[2 * i + 1] - top_offset(node)
         width, height = dimensions(node)
         return (x, top - height, x + width, top)
@@ -109,30 +107,30 @@ def _write_locations(
     for move in moves:
         node = binding.nodes[move.node]
         node.parent = None if move.parent is None else binding.nodes[move.parent]
-        i = index[node.as_pointer()]
+        i = index[node]
         left, top = move.top_left
-        # A collapsed node's box is not anchored at its location.
+        # A collapsed node's location is inside its box (bNode.location).
         located[2 * i], located[2 * i + 1] = left, top + top_offset(node)
 
     for edit in frames:
         frame = binding.nodes[edit.frame]
         left, top, width, height = _frame_box(
-            frame, [box(binding.nodes[child]) for child in edit.children]
+            edit.frame, [box(binding.nodes[child]) for child in edit.children]
         )
-        i = index[frame.as_pointer()]
+        i = index[frame]
         located[2 * i], located[2 * i + 1] = left, top
         frame.width = width
         frame.height = height
 
-    # Positions are dumped to two decimals. Rounding them keeps an arranged
-    # tree unchanged through a round trip.
+    # to_python writes locations to two decimals. Rounding them here means
+    # an arranged tree reads back unchanged.
     relative = array("f", located)
     for i, node in enumerate(nodes):
         parent = node.parent
         if parent is not None:
-            j = index[parent.as_pointer()]
-            relative[2 * i] = f32(located[2 * i] - located[2 * j])
-            relative[2 * i + 1] = f32(located[2 * i + 1] - located[2 * j + 1])
+            j = index[parent]
+            relative[2 * i] = located[2 * i] - located[2 * j]
+            relative[2 * i + 1] = located[2 * i + 1] - located[2 * j + 1]
     ntree.nodes.foreach_set("location", [round(v, 2) for v in relative])
 
 
@@ -143,8 +141,9 @@ def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
     The link and reroute edits are made in order. The moves and frame
     refits are gathered and written together at the end."""
 
-    def bpy_socket(socket: bNodeSocket | None) -> NodeSocket | None:
-        return None if socket is None else binding.socket(socket)
+    def bpy_socket(socket: bNodeSocket | None) -> NodeSocket:
+        assert socket is not None
+        return binding.socket(socket)
 
     moves: list[MoveNode] = []
     frames: list[ResizeFrame] = []
@@ -162,7 +161,7 @@ def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
                 binding.nodes[data] = reroute
 
             case AddLink(fromsock=fromsock, tosock=tosock):
-                ntree.links.new(bpy_socket(fromsock), bpy_socket(tosock))  # ty: ignore[invalid-argument-type]
+                ntree.links.new(bpy_socket(fromsock), bpy_socket(tosock))
 
             case RemoveLink(fromsock=fromsock, tosock=tosock):
                 target = (bpy_socket(fromsock), bpy_socket(tosock))
@@ -175,11 +174,9 @@ def apply(ntree: NodeTree, binding: Binding, result: LayoutResult) -> None:
                 )
 
             case RestoreMultiInputOrder(socket=socket, outputs=outputs, order=order):
-                multi_input = bpy_socket(socket)
-                assert multi_input
                 _restore_multi_input_order(
                     ntree,
-                    multi_input,
+                    bpy_socket(socket),
                     [bpy_socket(s) for s in outputs],
                     [(bpy_socket(s), sort_id) for s, sort_id in order],
                 )

@@ -6,7 +6,6 @@ positions are always estimated (:func:`calculate_socket_offset_y`)."""
 
 from __future__ import annotations
 
-from collections import Counter
 from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -18,14 +17,16 @@ import bpy
 from ..builder._socket_order import SOCKET_ORDER
 from .dna import REROUTE_SIZE
 
-# Estimated row heights, in unscaled UI units. HEADER and SOCKET_ROW are
-# fitted to socket offsets measured in the UI: socket i sits at
-# header + (i + 0.5) * row below the node's top, with 24.5 and 21.75. The
-# other rows scale to the same grid.
+# Row heights in unscaled UI units. HEADER and SOCKET_ROW were fitted to
+# socket offsets measured in the UI: socket i sits HEADER + (i + 0.5) *
+# SOCKET_ROW below the node's top.
 HEADER = 24.5
 SOCKET_ROW = 21.75
 COLLAPSED_SOCKET = 10  # NODE_DY / 2
 COLLAPSED_ENDS = 8  # 2 * BASIS_RAD
+_COLLAPSED_OFFSET = (
+    10  # a collapsed node is drawn around a point this far below its location
+)
 PROPERTY_ROW = 24
 VECTOR_EXPANDED = 65.25  # three extra value rows
 
@@ -97,8 +98,7 @@ def node_property_rows(node: bpy.types.Node) -> list[tuple[Any, int]]:
     if cache is not None and key in cache.property_rows:
         return cache.property_rows[key]
 
-    # `bl_rna` exists on bpy classes through their metaclass, which type
-    # checkers do not see. Hence the cast.
+    # Type checkers do not see bl_rna, which the bpy metaclass adds.
     inherited_ids = {
         prop.identifier
         for base in type(node).__bases__
@@ -129,23 +129,17 @@ def node_property_rows(node: bpy.types.Node) -> list[tuple[Any, int]]:
 
 def _socket_visible(socket: bpy.types.NodeSocket) -> bool:
     """Whether Blender draws this socket on an expanded node: enabled, and
-    not hidden. A hidden socket is drawn while it is linked, because the
-    editor's Hide Unused Sockets only hides unlinked ones."""
+    not hidden, or hidden but linked."""
     return socket.enabled and (not socket.hide or socket.is_linked)
 
 
-def _is_expanded_vector(
-    socket: bpy.types.NodeSocket,
-    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None,
-) -> bool:
-    """Whether an input draws the expanded 3-component vector widget: an
-    unlinked vector whose value is shown (``hide_value`` sockets, such as
-    Set Position's *Position*, draw just their label)."""
-    if socket.type != "VECTOR" or socket.hide_value:
-        return False
-    if socket_input_connection_count is None:
-        return not socket.is_linked
-    return socket_input_connection_count[socket] == 0
+def _input_height(socket: bpy.types.NodeSocket) -> float:
+    """Height of an input's row. An unlinked vector whose value is shown
+    draws the expanded three-value widget beneath its label (``hide_value``
+    sockets, such as Set Position's *Position*, draw just the label)."""
+    if socket.type == "VECTOR" and not socket.hide_value and not socket.is_linked:
+        return SOCKET_ROW + VECTOR_EXPANDED
+    return SOCKET_ROW
 
 
 @dataclass(frozen=True)
@@ -219,10 +213,7 @@ def _interface_panels(node: bpy.types.Node) -> tuple[list[Any], dict[int, bool]]
     return items, collapsed
 
 
-def node_rows(
-    node: bpy.types.Node,
-    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None = None,
-) -> list[NodeRow]:
+def node_rows(node: bpy.types.Node) -> list[NodeRow]:
     """The rows Blender draws below an expanded node's header, top to bottom.
 
     Conventionally drawn nodes list outputs first, then the node's drawn
@@ -235,22 +226,22 @@ def node_rows(
     them, and panels. Group nodes whose interface declares panels draw them
     in interface order. Either way an open panel is a header row with its
     sockets beneath it, and a closed panel is a header row with only its
-    linked sockets gathered onto it. When ``socket_input_connection_count``
-    is None, link state is read from ``socket.is_linked``.
+    linked sockets gathered onto it.
     """
     cache = _cache
-    if cache is None or socket_input_connection_count is not None:
-        return _node_rows(node, socket_input_connection_count)
+    if cache is None:
+        return _node_rows(node)
     key = node.as_pointer()
     if key not in cache.rows:
-        cache.rows[key] = _node_rows(node, None)
+        cache.rows[key] = _node_rows(node)
     return cache.rows[key]
 
 
-def _node_rows(
-    node: bpy.types.Node,
-    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None,
-) -> list[NodeRow]:
+def _node_rows(node: bpy.types.Node) -> list[NodeRow]:
+    order = SOCKET_ORDER.get(node.bl_idname)
+    if order is not None:
+        return _rows_from_order(node, order)
+
     rows: list[NodeRow] = []
     y = HEADER
 
@@ -259,15 +250,8 @@ def _node_rows(
         rows.append(NodeRow(kind, -y, height, **extra))
         y += height
 
-    def add_input(socket: bpy.types.NodeSocket) -> None:
-        height = SOCKET_ROW
-        if _is_expanded_vector(socket, socket_input_connection_count):
-            height += VECTOR_EXPANDED
-        add("input", height, socket=socket)
-
-    order = SOCKET_ORDER.get(node.bl_idname)
-    if order is not None:
-        return _rows_from_order(node, order, socket_input_connection_count)
+    def add_input(socket: bpy.types.NodeSocket, depth: int = 0) -> None:
+        add("input", _input_height(socket), socket=socket, depth=depth)
 
     panels = _interface_panels(node)
     if panels is None:
@@ -299,11 +283,11 @@ def _node_rows(
     for prop, count in node_property_rows(node):
         add("property", count * PROPERTY_ROW, prop=prop)
 
-    # Walk the remaining items in interface order. ``closed`` tracks the
-    # innermost closed panel enclosing the current item, whose header row
-    # collects the linked sockets Blender folds onto it.
+    # Walk the remaining items in interface order. closed_row maps a closed
+    # panel, and every panel inside it, to the header row that collects
+    # its linked sockets.
     depth_of: dict[int, int] = {}
-    closed_row: dict[int, int] = {}  # panel uid -> index of its header row
+    closed_row: dict[int, int] = {}
     for item in items:
         parent = item.parent
         parent_uid = None if _is_root_panel(parent) else parent.persistent_uid
@@ -334,18 +318,11 @@ def _node_rows(
         if socket.is_output:
             add("output", SOCKET_ROW, socket=socket, depth=depth_of.get(parent_uid, 0))
         else:
-            height = SOCKET_ROW
-            if _is_expanded_vector(socket, socket_input_connection_count):
-                height += VECTOR_EXPANDED
-            add("input", height, socket=socket, depth=depth_of.get(parent_uid, 0))
+            add_input(socket, depth_of.get(parent_uid, 0))
     return rows
 
 
-def _rows_from_order(
-    node: bpy.types.Node,
-    order: tuple[tuple, ...],
-    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None,
-) -> list[NodeRow]:
+def _rows_from_order(node: bpy.types.Node, order: tuple[tuple, ...]) -> list[NodeRow]:
     """Rows of a node drawn from its declaration (see ``_socket_order``)."""
     rows: list[NodeRow] = []
     y = HEADER
@@ -359,8 +336,8 @@ def _rows_from_order(
     layout_drawn = False
     panel_states = list(getattr(node, "panel_states", ()))
     panel_index = 0
-    # Stack of (depth, header row index or None when open) for enclosing panels.
-    stack: list[tuple[int, int | None]] = []
+    # Header row of each enclosing closed panel, None for an open one.
+    stack: list[int | None] = []
     prev_socket_row: int | None = None  # index of the row an aligned entry may join
     last_panel_row: int | None = None  # header row of the most recently opened panel
 
@@ -370,13 +347,8 @@ def _rows_from_order(
         y += height
         return len(rows) - 1
 
-    def input_height(socket: bpy.types.NodeSocket) -> float:
-        if _is_expanded_vector(socket, socket_input_connection_count):
-            return SOCKET_ROW + VECTOR_EXPANDED
-        return SOCKET_ROW
-
     def closed_header() -> int | None:
-        return stack[-1][1] if stack else None
+        return stack[-1] if stack else None
 
     def fold(socket: bpy.types.NodeSocket, header: int) -> None:
         if socket.is_linked:
@@ -409,18 +381,18 @@ def _rows_from_order(
                         kind="input",
                         socket=socket,
                         partner=row.socket,
-                        height=input_height(socket),
+                        height=_input_height(socket),
                     )
-                    _reflow(rows, prev_socket_row)
+                    reflow(prev_socket_row)
                     return
         if socket.is_output:
             prev_socket_row = add("output", SOCKET_ROW, socket=socket, depth=depth)
         else:
             prev_socket_row = add(
-                "input", input_height(socket), socket=socket, depth=depth
+                "input", _input_height(socket), socket=socket, depth=depth
             )
 
-    def _reflow(rows: list[NodeRow], start: int) -> None:
+    def reflow(start: int) -> None:
         """Recompute row tops from *start* on, after a row was inserted or
         changed height."""
         nonlocal y
@@ -511,7 +483,7 @@ def _rows_from_order(
             header = closed_header()
             if header is not None:
                 # Inside a closed panel: no header of its own.
-                stack.append((len(stack), header))
+                stack.append(header)
                 last_panel_row = None
             else:
                 row = add(
@@ -521,7 +493,7 @@ def _rows_from_order(
                     depth=len(stack),
                     open=not collapsed,
                 )
-                stack.append((len(stack), row if collapsed else None))
+                stack.append(row if collapsed else None)
                 last_panel_row = row
             prev_socket_row = None
         elif kind == "end":
@@ -540,7 +512,7 @@ def _rows_from_order(
                 insert_at, NodeRow("property", 0.0, count * PROPERTY_ROW, prop=prop)
             )
             insert_at += 1
-        _reflow(rows, 0)
+        reflow(0)
 
     # Sockets the table does not know (a newer Blender): draw them last.
     for socket in (*outputs, *inputs):
@@ -558,24 +530,13 @@ def _collapsed_height(node: bpy.types.Node) -> float:
     return COLLAPSED_SOCKET * max(inputs, outputs, 2) + COLLAPSED_ENDS
 
 
-def calculate_node_dimensions(
-    node: bpy.types.Node,
-    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None = None,
-    interface_scale: float = 1.0,
-) -> tuple[float, float]:
-    """Calculate the visual dimensions of a node.
-
-    A collapsed node has a row per visible socket. Otherwise the height is
-    the header plus every row of :func:`node_rows`. When
-    ``socket_input_connection_count`` is None, link state is read directly
-    from ``socket.is_linked``.
-    """
+def calculate_node_dimensions(node: bpy.types.Node) -> tuple[float, float]:
+    """The estimated width and height of a node. A collapsed node has a row
+    per visible socket. Otherwise the height is the header plus every row
+    of :func:`node_rows`."""
     if node.hide:
-        return node.width, _collapsed_height(node) * interface_scale
-
-    rows = node_rows(node, socket_input_connection_count)
-    height = (HEADER + sum(row.height for row in rows)) * interface_scale
-    return node.width, height
+        return node.width, _collapsed_height(node)
+    return node.width, HEADER + sum(row.height for row in node_rows(node))
 
 
 def calculate_socket_offset_y(socket: bpy.types.NodeSocket) -> float:
@@ -628,13 +589,10 @@ def _dimensions(node: bpy.types.Node) -> tuple[float, float]:
     return calculate_node_dimensions(node)
 
 
-# A collapsed node is drawn around a point this far below its location.
-_COLLAPSED_OFFSET = 10
-
-
 def top_offset(node: bpy.types.Node) -> float:
     """How far the y of *node*'s location is above the top edge of the box
-    it is drawn in: zero for an expanded node."""
+    it is drawn in: zero for an expanded node, negative for a collapsed
+    one, whose location lies inside its box."""
     if node.hide:
         return _COLLAPSED_OFFSET - dimensions(node)[1] / 2
     return 0.0

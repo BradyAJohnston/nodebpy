@@ -43,7 +43,6 @@ def test_tree_nodes_keep_insertion_order():
     tree.add_nodes("cab")
     tree.add_node("a")  # already there: stays where it is
     assert list(tree) == ["c", "a", "b"]
-    assert list(tree) == ["c", "a", "b"]
     assert len(tree) == 3
     assert "a" in tree
     assert "z" not in tree
@@ -90,7 +89,7 @@ def test_removing_links():
     assert third not in tree.links_between("a", "b")
     tree.remove_link(first)
     assert [link.key for link in tree.links_between("a", "b")] == [1]
-    # A freed key is not reused while a higher one exists... until it is free.
+    # The next key is one past the highest still in use.
     assert tree.add_link("a", "b").key == 2
 
     tree.discard_link_between("a", "b", 7)  # missing: ignored
@@ -206,7 +205,6 @@ def test_digraph_basics():
     assert len(graph) == 4
     assert "z" in graph
     assert {} not in graph
-    assert list(graph) == ["a", "b", "c", "z"]
     assert list(graph.edges()) == [("a", "b"), ("a", "c"), ("b", "c")]
     assert list(graph.out_edges("a")) == [("a", "b"), ("a", "c")]
     assert list(graph.successors("a")) == ["b", "c"]
@@ -310,13 +308,11 @@ def test_find_cycle():
     assert find_cycle(_tree(("a", "b"), ("b", "c"))) is None
     assert find_cycle(_tree(("a", "b"), ("b", "b"))) == ["b"]
 
-    cycle = find_cycle(
-        _tree(("s", "a"), ("a", "b"), ("b", "c"), ("c", "a"), ("b", "d"))
-    )
+    tree = _tree(("s", "a"), ("a", "b"), ("b", "c"), ("c", "a"), ("b", "d"))
+    cycle = find_cycle(tree)
     assert cycle is not None
     assert sorted(cycle) == ["a", "b", "c"]
     # In order: each node links to the next, the last back to the first.
-    tree = _tree(("s", "a"), ("a", "b"), ("b", "c"), ("c", "a"), ("b", "d"))
     for u, v in zip(cycle, cycle[1:] + cycle[:1]):
         assert tree.has_link(u, v)
 

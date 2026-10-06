@@ -60,13 +60,8 @@ class RestoreMultiInputOrder:
 @dataclass(frozen=True, slots=True)
 class MoveNode:
     """Place a node inside the frame ``parent`` so that the top-left corner
-    of the box it is drawn in is at ``top_left`` (absolute).
-
-    This is not always the node's ``location``: a collapsed node is drawn
-    around its location, by an amount that depends on its links, which the
-    layout may just have changed. ``apply`` computes the location from the
-    node as it then is.
-    """
+    of the box it is drawn in is at ``top_left`` (absolute). ``apply``
+    works out the location from that (see ``bNode.location``)."""
 
     node: bNode
     top_left: tuple[float, float]

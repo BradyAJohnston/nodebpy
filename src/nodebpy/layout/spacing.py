@@ -22,7 +22,7 @@ def frame_padding_of_col(
     of nesting that ends, and for each that begins."""
     col = columns[i]
 
-    if col == columns[-1]:
+    if i == len(columns) - 1:
         return 0
 
     clusters1 = {cast(Cluster, v.cluster) for v in col}
@@ -66,12 +66,10 @@ def assign_x_coords(
 
         # https://doi.org/10.7155/jgaa.00220 (p. 139)
         delta_i = sum(
-            [
-                1
-                for v in col
-                for link in G.out_links(v)
-                if abs(link.tosock.y - link.fromsock.y) >= state.margin.x * 3
-            ]
+            1
+            for v in col
+            for link in G.out_links(v)
+            if abs(link.tosock.y - link.fromsock.y) >= state.margin.x * 3
         )
         spacing = (1 + min(delta_i / 4, 2)) * state.margin.x
         x += max_width + spacing + frame_padding_of_col(columns, i, T)

@@ -1,5 +1,5 @@
 """The rank phase and the steps after it that move nodes between columns
-(``ranking``, ``balancing``, ``sugiyama.constrain_layers``)."""
+(``ranking``, ``balancing``, ``sugiyama.pin_group_nodes``)."""
 
 import pytest
 
@@ -15,17 +15,23 @@ from .data import options, plain_chain, plain_node, positions, random_tree
 def test_ranking_keeps_its_cut_values_right(seed, monkeypatch):
     """The network simplex only updates the cut values an exchange changes.
     After every exchange they are what computing all of them afresh gives."""
-    exchange = ranking.exchange
+    enter_link, exchange = ranking.enter_link, ranking.exchange
+    graphs = []
     exchanges = []
 
-    def checked(H, T, parents, leave, enter):
-        parents = exchange(H, T, parents, leave, enter)
+    def remembering(H, e, index):
+        graphs.append(H)
+        return enter_link(H, e, index)
+
+    def checked(T, index, leave, enter):
+        index = exchange(T, index, leave, enter)
         kept = {link.ident: link.cut_value for link in T.all_links()}
-        ranking.compute_cut_values(H, T)
+        ranking.compute_cut_values(graphs[-1], T)
         assert kept == {link.ident: link.cut_value for link in T.all_links()}
         exchanges.append(leave)
-        return parents
+        return index
 
+    monkeypatch.setattr(ranking, "enter_link", remembering)
     monkeypatch.setattr(ranking, "exchange", checked)
     sugiyama_layout(random_tree(seed), options(reroutes="all"), verify=True)
     assert exchanges

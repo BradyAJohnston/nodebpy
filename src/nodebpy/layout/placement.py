@@ -23,13 +23,13 @@ from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from itertools import pairwise
 from math import ceil, floor, inf
 from statistics import fmean
-from typing import Any, cast
+from typing import cast
 
 from .common import GRID_SIZE, REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
 from .digraph import DiGraph, LayoutGraph, Link, descendants
 from .dna import bNodeSocket
-from .model import Cluster, Edge, Kind, Node, Socket, is_real, link_priority
+from .model import Cluster, Kind, Node, NodePair, Socket, is_real, link_priority
 from .priority import SPINE_MIN_PRIORITY, TRUNK_MIN_PRIORITY
 
 
@@ -44,14 +44,14 @@ def index_columns(columns: Iterable[Sequence[Node]]) -> None:
 def marked_conflicts(
     G: LayoutGraph[Node],
     *,
-    should_ensure_alignment: Callable[[Node], Any],
+    should_ensure_alignment: Callable[[Node], bool],
 ) -> set[frozenset[Node]]:
     """The links that the alignment must not use, each as the set of its
     two nodes. They are the links that cross the link between a node for
     which *should_ensure_alignment* holds and its first predecessor, so
     that this link can be aligned."""
     columns = G.columns
-    marked_edges = set()
+    marked_links = set()
     for i, col in enumerate(columns[1:], 1):
         k_0 = 0
         done = 0
@@ -74,11 +74,11 @@ def marked_conflicts(
                 for pred in G.predecessors(v):
                     k = pred.col_index
                     if k < k_0 or k > k_1:
-                        marked_edges.add(frozenset((pred, v)))
+                        marked_links.add(frozenset((pred, v)))
 
             k_0 = k_1
 
-    return marked_edges
+    return marked_links
 
 
 def _medians[T](items: Sequence[T]) -> Sequence[T]:
@@ -95,8 +95,8 @@ predecessor, and the priority of the link from it."""
 def _align_column(
     G: LayoutGraph[Node],
     col: Sequence[Node],
-    marked_edges: Collection[frozenset[Node]],
-    marked_nodes: Collection[Node],
+    marked_links: Collection[frozenset[Node]],
+    marked_nodes: set[Node],
     priorities: dict[bNodeSocket, int],
     min_level: int,
 ) -> None:
@@ -127,7 +127,7 @@ def _align_column(
         winners: dict[int, Sequence[int]] | None = None,
     ) -> None:
         for i, u, _ in options:
-            if v.aligned != v or {u, v} in marked_edges:
+            if v.aligned != v or {u, v} in marked_links:
                 continue
 
             if winners is not None and j not in winners[i]:
@@ -137,7 +137,7 @@ def _align_column(
             if any((i - i_) * (j - j_) <= 0 for i_, j_ in aligned):
                 continue
 
-            if u.cluster != v.cluster and {u, v} & marked_nodes:  # type: ignore
+            if u.cluster != v.cluster and {u, v} & marked_nodes:
                 continue
 
             u.aligned = v
@@ -172,8 +172,8 @@ def _align_column(
 
 def horizontal_alignment(
     G: LayoutGraph[Node],
-    marked_edges: Collection[frozenset[Node]],
-    marked_nodes: Collection[Node],
+    marked_links: Collection[frozenset[Node]],
+    marked_nodes: set[Node],
     priorities: dict[bNodeSocket, int],
     min_level: int = 1,
 ) -> None:
@@ -186,7 +186,7 @@ def horizontal_alignment(
     where a side chain would otherwise claim the alignment.
     """
     for col in G.columns:
-        _align_column(G, col, marked_edges, marked_nodes, priorities, min_level)
+        _align_column(G, col, marked_links, marked_nodes, priorities, min_level)
 
 
 def iter_block(start: Node) -> Iterator[Node]:
@@ -197,52 +197,41 @@ def iter_block(start: Node) -> Iterator[Node]:
         yield w
 
 
-def should_use_inner_shift(
-    v: Node, w: Node, is_right: bool, state: LayoutState
-) -> bool:
-    """Whether *v* and *w*, neighbours in a block, line up by the sockets of
-    their link rather than by their tops. Always when one is a reroute.
-    Otherwise by ``socket_alignment``: never for ``"NONE"``, always for
-    ``"FULL"``, and for ``"MODERATE"`` across frames, for stacks, and where
-    the two differ much in height."""
-    if v.is_reroute or w.is_reroute:
-        return True
-
-    if state.options.socket_alignment == "NONE":
-        return False
-
-    if state.options.socket_alignment == "FULL":
-        return True
-
-    if v.cluster != w.cluster or Kind.STACK in {v.type, w.type}:
-        return True
-
-    if not is_right:
-        v, w = w, v
-
-    if v.height > w.height and not (w.node is not None and w.node.is_collapsed):
-        return False
-
-    return abs(v.height - w.height) > fmean((v.height, w.height)) / 2
-
-
 def aligns_by_tops(
     G: LayoutGraph[Node], v: Node, w: Node, is_right: bool, state: LayoutState
 ) -> bool:
     """Whether *v* and *w*, linked from *v* to *w* in *G*, line up by their
-    tops rather than by the sockets of their link. The nodes along the
-    spine of a zone do regardless of size. Otherwise
-    :func:`should_use_inner_shift` decides."""
+    tops rather than by the sockets of their link.
+
+    Never when one is a reroute. Along the spine of a zone always,
+    regardless of size. Otherwise by ``socket_alignment``: always for
+    ``"NONE"``, never for ``"FULL"``, and for ``"MODERATE"`` within one
+    frame, between two plain nodes, where the right-hand node is the taller
+    or the two are much the same height."""
+    if v.is_reroute or w.is_reroute:
+        return False
+
     priorities = state.socket_priority
-    on_spine = (
-        bool(priorities)
-        and not (v.is_reroute or w.is_reroute)
-        and any(
-            link_priority(link, priorities) >= SPINE_MIN_PRIORITY
-            for link in G.links_between(v, w)
-        )
-    )
-    return on_spine or not should_use_inner_shift(v, w, is_right, state)
+    if priorities and any(
+        link_priority(link, priorities) >= SPINE_MIN_PRIORITY
+        for link in G.links_between(v, w)
+    ):
+        return True
+
+    alignment = state.options.socket_alignment
+    if alignment == "NONE":
+        return True
+    if alignment == "FULL":
+        return False
+    if v.cluster != w.cluster or Kind.STACK in {v.type, w.type}:
+        return False
+
+    right, left = (v, w) if is_right else (w, v)
+    if right.height > left.height and not (
+        left.node is not None and left.node.is_collapsed
+    ):
+        return True
+    return abs(v.height - w.height) <= fmean((v.height, w.height)) / 2
 
 
 def inner_shift(
@@ -273,29 +262,20 @@ def inner_shift(
             w.inner_shift = fmean(inner_shifts)
 
 
-def vertical_gap(u: Node, w: Node, state: LayoutState) -> float:
-    """Margin between two vertically adjacent nodes of a column. Reroutes
-    and dummy nodes pack tighter than nodes (see ``REROUTE_MARGIN_Y_FAC``)."""
-    if u.is_reroute and w.is_reroute:
-        return state.margin.y * REROUTE_MARGIN_Y_FAC
-    return state.margin.y
-
-
 def separation(tall: Node, u: Node, w: Node, state: LayoutState) -> float:
-    """How far apart two vertical neighbours *u* and *w* are placed: the
-    height of *tall* (the one of them the packing direction counts) plus
-    the margin. With ``snap_to_grid`` this is rounded up to the grid, so
-    that nodes stacked in a column are whole grid steps apart and snapping
-    moves them all the same way. Two dummy nodes or reroutes are left to
-    pack tightly."""
-    distance = tall.height + vertical_gap(u, w, state)
-    if state.options.snap_to_grid and not (_is_dot(u) and _is_dot(w)):
+    """How far apart the vertical neighbours *u* and *w* sit in a column:
+    *tall*'s height (the one of them the packing direction counts) plus
+    the margin, a fraction of it between two reroutes or dummy nodes
+    (``REROUTE_MARGIN_Y_FAC``). With ``snap_to_grid`` it is rounded up to
+    whole grid steps, except between two reroutes or dummy nodes, so that
+    snapping moves a column as one."""
+    tight = u.is_reroute and w.is_reroute
+    distance = tall.height + state.margin.y * (REROUTE_MARGIN_Y_FAC if tight else 1)
+    if state.options.snap_to_grid and not (
+        tight and Kind.VERTICAL_BORDER not in (u.type, w.type)
+    ):
         distance = ceil(distance / GRID_SIZE - 1e-6) * GRID_SIZE
     return distance
-
-
-def _is_dot(v: Node) -> bool:
-    return v.is_reroute and v.type != Kind.VERTICAL_BORDER
 
 
 def place_block(v: Node, is_up: bool, state: LayoutState) -> None:
@@ -351,18 +331,21 @@ def vertical_compaction(G: LayoutGraph[Node], is_up: bool, state: LayoutState) -
             place_block(v, is_up, state)
 
     columns = G.columns
-    neighborings: defaultdict[tuple[Node, ...], set[Edge]] = defaultdict(set)
+    # Per column (by index), the neighbouring pairs across two sink groups
+    # that the lower node's sink belongs to.
+    col_index = {id(col): i for i, col in enumerate(columns)}
+    pairs_by_column: defaultdict[int, set[NodePair]] = defaultdict(set)
 
     for col in columns:
         for v, u in pairwise(reversed(col)):
             if u.sink != v.sink:
-                neighborings[tuple(v.sink.col)].add((u, v))
+                pairs_by_column[col_index[id(v.sink.col)]].add((u, v))
 
-    for col in columns:
+    for i, col in enumerate(columns):
         if col[0].sink.shift == inf:
             col[0].sink.shift = 0
 
-        for u, v in neighborings[tuple(col)]:
+        for u, v in pairs_by_column[i]:
             delta_l = separation(u if is_up else v, u, v, state)
             s_c = v.y + v.inner_shift - u.y - u.inner_shift - delta_l
             u.sink.shift = min(u.sink.shift, v.sink.shift + s_c)
@@ -391,14 +374,15 @@ def has_large_gaps_in_frame(
     gap wider than the margin between them."""
     lines = []
     for v in T.successors(cluster):
-        if v.type == Kind.VERTICAL_BORDER:
-            continue
-
-        if v.type != Kind.CLUSTER:
+        if isinstance(v, Node):
+            if v.type == Kind.VERTICAL_BORDER:
+                continue
             line = (v.y, v.y + v.height) if is_up else (v.y - v.height, v.y)
         else:
             vertical_border_roots = {
-                w.root for w in T.successors(v) if w.type == Kind.VERTICAL_BORDER
+                w.root
+                for w in T.successors(v)
+                if isinstance(w, Node) and w.type == Kind.VERTICAL_BORDER
             }
             # Usually two: the frame's upper borders are aligned in one
             # block and its lower ones in another. Where a border could not
@@ -415,7 +399,6 @@ def has_large_gaps_in_frame(
 
 
 def get_marked_nodes(
-    G: LayoutGraph[Node],
     T: DiGraph[Node | Cluster],
     old_marked_nodes: set[Node],
     is_up: bool,
@@ -434,12 +417,10 @@ def get_marked_nodes(
             c for c in T if isinstance(c, Cluster) and (c is cluster or c in below)
         ]
         for nested_cluster in sorted(
-            descendant_clusters,
-            key=lambda c: cast(int, c.nesting_level),
-            reverse=True,
+            descendant_clusters, key=lambda c: c.nesting_level, reverse=True
         ):
             children = {
-                v for v in T.successors(nested_cluster) if v.type != Kind.CLUSTER
+                v for v in T.successors(nested_cluster) if not isinstance(v, Cluster)
             }
 
             if children <= old_marked_nodes:
@@ -453,7 +434,9 @@ def get_marked_nodes(
                 continue
 
             for root in dict.fromkeys(
-                v.root for v in T.successors(nested_cluster) if v.type != Kind.CLUSTER
+                v.root
+                for v in T.successors(nested_cluster)
+                if not isinstance(v, Cluster)
             ):
                 b = tuple(iter_block(root))
                 for u, v in pairwise(b):
@@ -470,7 +453,7 @@ def get_marked_nodes(
     return marked_nodes
 
 
-def balance(G: LayoutGraph[Node], layouts: list[list[float]]) -> None:
+def line_up_runs(G: LayoutGraph[Node], layouts: list[list[float]]) -> None:
     """Shift the four layouts so they can be averaged. The least tall one is
     moved so that its lowest edge is at 0. Each other one is lined up with
     it, by the lowest edge for the layouts packed down and by the highest
@@ -486,10 +469,11 @@ def balance(G: LayoutGraph[Node], layouts: list[list[float]]) -> None:
         smallest_layout[i] -= movement
 
     for i, layout in enumerate(layouts):
-        if layout == smallest_layout:
+        if layout is smallest_layout:
             continue
 
-        func = min_y if i % 2 != 1 else max
+        is_up = i % 2 == 1
+        func = max if is_up else min_y
         movement = func(smallest_layout) - func(layout)
         for j in range(len(layout)):
             layout[j] += movement
@@ -508,7 +492,7 @@ _DIRECTIONS = {
 def _align_and_pack(
     G: LayoutGraph[Node],
     T: DiGraph[Node | Cluster],
-    marked_edges: set[frozenset[Node]],
+    marked_links: set[frozenset[Node]],
     is_right: bool,
     is_up: bool,
     state: LayoutState,
@@ -520,12 +504,12 @@ def _align_and_pack(
     marked_nodes: set[Node] = set()
     for _ in range(_ITER_LIMIT):
         horizontal_alignment(
-            G, marked_edges, marked_nodes, priorities, TRUNK_MIN_PRIORITY
+            G, marked_links, marked_nodes, priorities, TRUNK_MIN_PRIORITY
         )
         inner_shift(G, is_right, is_up, state)
         vertical_compaction(G, is_up, state)
 
-        if new_marked_nodes := get_marked_nodes(G, T, marked_nodes, is_up, state):
+        if new_marked_nodes := get_marked_nodes(T, marked_nodes, is_up, state):
             marked_nodes.update(new_marked_nodes)
             for v in G:
                 v.bk_reset()
@@ -552,16 +536,16 @@ def bk_assign_y_coords(
         col.reverse()
     index_columns(columns)
 
-    def is_incident_to_inner_segment(v):
+    def is_incident_to_inner_segment(v: Node) -> bool:
         return v.is_reroute and any(u.is_reroute for u in G.predecessors(v))
 
-    def is_incident_to_vertical_border(v):
-        return v.type == Kind.VERTICAL_BORDER and G.predecessors(v)
+    def is_incident_to_vertical_border(v: Node) -> bool:
+        return v.type == Kind.VERTICAL_BORDER and bool(G.predecessors(v))
 
-    marked_edges = marked_conflicts(
+    marked_links = marked_conflicts(
         G, should_ensure_alignment=is_incident_to_inner_segment
     )
-    marked_edges |= marked_conflicts(
+    marked_links |= marked_conflicts(
         G, should_ensure_alignment=is_incident_to_vertical_border
     )
 
@@ -578,7 +562,7 @@ def bk_assign_y_coords(
         for is_up in (False, True):
             if (is_right, is_up) in wanted:
                 layouts.append(
-                    _align_and_pack(G, T, marked_edges, is_right, is_up, state)
+                    _align_and_pack(G, T, marked_links, is_right, is_up, state)
                 )
             for col in columns:
                 col.reverse()
@@ -589,7 +573,7 @@ def bk_assign_y_coords(
     index_columns(columns)
 
     if direction == "BALANCED":
-        balance(G, layouts)
+        line_up_runs(G, layouts)
         for i, v in enumerate(G):
             values = sorted(layout[i] for layout in layouts)
             v.y = fmean(values[1:3])
@@ -613,17 +597,15 @@ def pull_feeders(G: LayoutGraph[Node], state: LayoutState) -> None:
     two line up by tops, but not past the nodes above and below it in its
     column. Rounds are repeated while anything moves, as one feeder moving
     can make room for another."""
-    columns = G.columns
-    feeders: list[tuple[Node, Node, list[Link[Node]], list[Node], int]] = []
-    for col in columns:
-        for i, v in enumerate(col):
-            if not is_real(v) or v.is_reroute:
-                continue
-            links = [*G.in_links(v), *G.out_links(v)]
-            others = {k.fromnode if k.tonode is v else k.tonode for k in links}
-            if len(others) != 1:
-                continue
-            feeders.append((v, others.pop(), links, col, i))
+    index_columns(G.columns)
+    feeders: list[tuple[Node, Node, list[Link[Node]]]] = []
+    for v in G:
+        if not is_real(v) or v.is_reroute:
+            continue
+        links = [*G.in_links(v), *G.out_links(v)]
+        others = {k.fromnode if k.tonode is v else k.tonode for k in links}
+        if len(others) == 1:
+            feeders.append((v, others.pop(), links))
 
     def wanted(v: Node, other: Node, links: list[Link[Node]]) -> float:
         left, right = (v, other) if v.rank < other.rank else (other, v)
@@ -637,7 +619,8 @@ def pull_feeders(G: LayoutGraph[Node], state: LayoutState) -> None:
 
     for _ in range(_PULL_ROUNDS):
         moved = False
-        for v, other, links, col, i in feeders:
+        for v, other, links in feeders:
+            col, i = v.col, v.col_index
             # Never closer to a neighbour than the placement puts them, and
             # never further from the target than now.
             highest = (

@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from nodebpy.layout.common import FRAME_PADDING
+from nodebpy.layout.common import FRAME_PADDING, frame_label_room
 from nodebpy.layout.dna import bNode, bNodeLink, bNodeSocket, bNodeTree
 from nodebpy.layout.priority import is_flow_socket, zone_spine
 
@@ -40,8 +40,6 @@ _STRAIGHT_TOL = 1.0
 _OVERLAP_TOL = 1.0
 # Straight pieces a link's curve is approximated by.
 _CURVE_SEGMENTS = 12
-# Room a frame's label takes above its contents (see `to_plot`).
-_FRAME_LABEL_PADDING = 10.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -197,9 +195,7 @@ def frame_rects(tree: bNodeTree) -> dict[bNode, Rect]:
         if not boxes:
             return None
         padding = FRAME_PADDING
-        label_room = 0.0
-        if frame.label:
-            label_room = float(frame.label_size) + _FRAME_LABEL_PADDING
+        label_room = frame_label_room(frame.label, frame.label_size)
         rects[frame] = (
             min(b[0] for b in boxes) - padding,
             min(b[1] for b in boxes) - padding,

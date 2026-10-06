@@ -22,10 +22,10 @@ from .digraph import (
 from .model import (
     Cluster,
     ClusterGraph,
-    Edge,
     Kind,
-    MultiEdge,
+    LinkIdent,
     Node,
+    NodePair,
     Socket,
     is_real,
     node_name,
@@ -35,12 +35,12 @@ from .model import (
 @dataclass(slots=True)
 class NodeStack:
     """A stack. ``path`` lists its nodes top to bottom. ``rep_node`` stands
-    for them in the layout graph. ``stack_sockets_to_originals`` maps each
+    for them in the layout graph. ``original_of`` maps each
     socket of ``rep_node`` to the socket of a stacked node it stands for."""
 
     rep_node: Node
     path: list[Node]
-    stack_sockets_to_originals: dict[Socket, Socket] = field(default_factory=dict)
+    original_of: dict[Socket, Socket] = field(default_factory=dict)
 
 
 # Adapted from NetworkX, to make it deterministic:
@@ -128,13 +128,13 @@ def max_linear_branching(G: LayoutGraph[Node]) -> LayoutGraph[Node]:
     out_nodes = [(v, "out") for v in nodes]
     in_nodes = [(v, "in") for v in nodes]
 
-    B: dict[tuple[Node, str], dict[tuple[Node, str], None]] = {
+    bipartite: dict[tuple[Node, str], dict[tuple[Node, str], None]] = {
         u_out: {} for u_out in out_nodes
     }
     for u, v in edges:
-        B[u, "out"][v, "in"] = None
+        bipartite[u, "out"][v, "in"] = None
 
-    matching = deterministic_hopcroft_karp_matching(B, out_nodes, in_nodes)
+    matching = deterministic_hopcroft_karp_matching(bipartite, out_nodes, in_nodes)
     H: LayoutGraph[Node] = LayoutGraph()
     H.add_nodes(nodes)
     for u_out in out_nodes:
@@ -145,7 +145,7 @@ def max_linear_branching(G: LayoutGraph[Node]) -> LayoutGraph[Node]:
 
 
 # http://dx.doi.org/10.1016/S0020-0190(02)00491-X
-def minimum_feedback_arc_set(G: LayoutGraph[Node]) -> set[MultiEdge]:
+def minimum_feedback_arc_set(G: LayoutGraph[Node]) -> set[LinkIdent]:
     """Links of the weighted *G* (as ``Link.ident``) whose removal leaves it
     acyclic, favouring light links. Lowers the weights of *G* in place."""
     G_ = G.copy()
@@ -170,10 +170,10 @@ def minimum_feedback_arc_set(G: LayoutGraph[Node]) -> set[MultiEdge]:
     return {link.ident for link in G.all_links() if not G_.has_link(*link.ident)}
 
 
-def edges_preventing_acyclic_contraction(
+def links_preventing_acyclic_contraction(
     G: LayoutGraph[Node],
     K: LayoutGraph[Node],
-) -> list[Edge]:
+) -> list[NodePair]:
     """The links of *K* that cannot be contracted in *G* without creating a
     cycle, as ``(fromnode, tonode)``."""
     G_ = G.copy()
@@ -198,31 +198,36 @@ def relabel_sockets(
     """Move the sockets of *v* that *links* attach to (all of them entering
     *v*, or all leaving it) onto the stack's representative node."""
     assert is_real(v)
-    external_links = [
-        link
-        for link in links
-        if (link.fromnode if v != link.fromnode else link.tonode) not in node_stack.path
-    ]
+    external_links = []
+    for link in links:
+        other = link.tonode if link.fromnode is v else link.fromnode
+        if other not in node_stack.path:
+            external_links.append(link)
 
     if not external_links:
         return
 
-    is_output = external_links[0].fromnode == v
-    attr = "fromsock" if is_output else "tosock"
-    external_links.sort(key=lambda link: getattr(link, attr).idx)
+    original_of = node_stack.original_of
 
-    for link in external_links:
-        original = getattr(link, attr)
-        sockets = node_stack.stack_sockets_to_originals
-        i = max([s.idx for s in sockets], default=-1) + 1
+    def stand_in(original: Socket, is_output: bool) -> Socket:
+        """A socket of the representative node in place of *original*."""
         socket = Socket(
             node_stack.rep_node,
-            i,
+            max([s.idx for s in original_of], default=-1) + 1,
             is_output,
-            original.dna.location[1] - v.node.top - y,
+            original._offset_y - y,
         )
-        sockets[socket] = original
-        setattr(link, attr, socket)
+        original_of[socket] = original
+        return socket
+
+    if external_links[0].fromnode is v:
+        external_links.sort(key=lambda link: link.fromsock.idx)
+        for link in external_links:
+            link.fromsock = stand_in(link.fromsock, True)
+    else:
+        external_links.sort(key=lambda link: link.tosock.idx)
+        for link in external_links:
+            link.tosock = stand_in(link.tosock, False)
 
 
 STACK_MARGIN_Y_FAC = 0.5
@@ -266,16 +271,16 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
     # Keep only chains, and only links that contract without a cycle.
     for c in weakly_connected_components(H):
         H_c = H.subgraph(c)
-        B = max_linear_branching(H_c)
+        branching = max_linear_branching(H_c)
         for link in H_c.all_links():
-            if not B.has_link(*link.ident):
+            if not branching.has_link(*link.ident):
                 H.discard_link_between(*link.ident)
 
     for c in weakly_connected_components(H):
-        for u, v in edges_preventing_acyclic_contraction(G, H.subgraph(c)):
+        for u, v in links_preventing_acyclic_contraction(G, H.subgraph(c)):
             H.discard_link_between(u, v)
 
-    for u, v in edges_preventing_acyclic_contraction(G, H):
+    for u, v in links_preventing_acyclic_contraction(G, H):
         H.discard_link_between(u, v)
 
     # Replace each chain by one node.
@@ -286,7 +291,7 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
             continue
 
         rep_node = Node(type=Kind.STACK)
-        path: list[Node] = sorted(c, key=order.get)  # type: ignore
+        path: list[Node] = sorted(c, key=order.__getitem__)
         node_stack = NodeStack(rep_node, path)
 
         y = 0
@@ -313,8 +318,8 @@ def contracted_node_stacks(CG: ClusterGraph) -> list[NodeStack]:
                 continue
 
             G.remove_link(link)
-            e_ = (rep_node, v) if u in path else (u, rep_node)
-            G.add_link(*e_, link.fromsock, link.tosock, weight=link.weight)
+            tail, head = (rep_node, v) if u in path else (u, rep_node)
+            G.add_link(tail, head, link.fromsock, link.tosock, weight=link.weight)
 
         G.remove_nodes(path)
         T.remove_nodes(path)
@@ -350,7 +355,7 @@ def _point_multi_input_orders_at_stack(
     instead. A socket with several outside links gets a stack socket per
     link, so the one that feeds the multi-input is picked."""
     stand_ins: dict[Socket, list[Socket]] = {}
-    for stack_socket, original in node_stack.stack_sockets_to_originals.items():
+    for stack_socket, original in node_stack.original_of.items():
         stand_ins.setdefault(original, []).append(stack_socket)
 
     for target, sort_ids in state.multi_input_sort_ids.items():
@@ -364,15 +369,6 @@ def _point_multi_input_orders_at_stack(
             sort_ids[k] = (stand_in, sort_id)
 
 
-def _relabel_multi_input_sources(
-    state: LayoutState, renamed: Mapping[Socket, Socket]
-) -> None:
-    """Rename the source sockets of the saved multi-input orders by
-    *renamed*."""
-    for sort_ids in state.multi_input_sort_ids.values():
-        sort_ids[:] = [(renamed.get(s, s), i) for s, i in sort_ids]
-
-
 def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
     """Put the nodes of *node_stack* back in place of the node that stood
     for them. Its links go back to the sockets they came from. The nodes are
@@ -382,7 +378,7 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
     rep_node = node_stack.rep_node
     path = node_stack.path
 
-    for stack_socket, original_socket in node_stack.stack_sockets_to_originals.items():
+    for stack_socket, original_socket in node_stack.original_of.items():
         if stack_socket.is_output:
             for link in tuple(G.out_links(rep_node)):
                 if link.fromsock != stack_socket:
@@ -413,5 +409,7 @@ def expand_node_stack(CG: ClusterGraph, node_stack: NodeStack) -> None:
         v.y = y
         y -= v.height + CG.state.margin.y * STACK_MARGIN_Y_FAC
 
-    _relabel_multi_input_sources(CG.state, node_stack.stack_sockets_to_originals)
-    CG.remove_nodes_from([rep_node])
+    # The saved multi-input orders name the stack's sockets: back to the originals.
+    for sort_ids in CG.state.multi_input_sort_ids.values():
+        sort_ids[:] = [(node_stack.original_of.get(s, s), i) for s, i in sort_ids]
+    CG.remove_nodes([rep_node])

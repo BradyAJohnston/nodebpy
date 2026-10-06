@@ -110,30 +110,30 @@ class LayoutState:
 
     tree: bNodeTree
     options: SugiyamaOptions = field(default_factory=SugiyamaOptions)
-    # The nodes the layout leaves where they are: the unselected ones, when
-    # only the selection is arranged.
     fixed: frozenset[bNode] = frozenset()
-    # Which sockets each socket is linked to, both ways. The values are
-    # insertion-ordered sets (dict keys).
+    """The nodes the layout leaves where they are: the unselected ones, when
+    only the selection is arranged."""
     linked_sockets: defaultdict[bNodeSocket, dict[bNodeSocket, None]] = field(
         default_factory=lambda: defaultdict(dict)
     )
-    # For each multi-input socket, the (source socket, sort id) of every
-    # link into it before the layout.
+    """Which sockets each socket is linked to, both ways. The values are
+    insertion-ordered sets (dict keys)."""
     multi_input_sort_ids: defaultdict[Socket, list[tuple[Socket, int]]] = field(
         default_factory=lambda: defaultdict(list)
     )
-    # Frame-sequence constraints applied by ranking.add_frame_sequence_edges:
-    # every node of the first set is ranked before every node of the second.
+    """For each multi-input socket, the (source socket, sort id) of every
+    link into it before the layout."""
     frame_sequence: list[tuple[frozenset[Node], frozenset[Node]]] = field(
         default_factory=list
     )
-    # Priority of the sockets that have one (see :mod:`.priority`). Empty
-    # when links are not prioritised.
+    """Constraints of ``ranking.add_frame_sequence_links``: every node of
+    the first set is ranked before every node of the second."""
     socket_priority: dict[bNodeSocket, int] = field(default_factory=dict)
-    # The changes to make to the tree, in order. The layout only records
-    # them. `apply.apply` carries them out.
+    """Priority of the sockets that have one (:mod:`.priority`). Empty when
+    links are not prioritised."""
     edits: list[Edit] = field(default_factory=list)
+    """The changes to make to the tree, in order. The layout only records
+    them; ``apply.apply`` carries them out."""
 
     @property
     def margin(self) -> Vec2:

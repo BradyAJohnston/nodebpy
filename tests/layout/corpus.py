@@ -99,7 +99,7 @@ def tree_from_payload(payload: str) -> NodeTree:
     # Nothing in the corpus depends on objects, images and the like.
     importing.set_external((int(key), None) for key in importing.get_external())
     report = importing.import_all(
-        ImportParameters(specific_handlers=BUILT_IN_IMPORTER, debug_prints=False)  # ty: ignore[invalid-argument-type]
+        ImportParameters(specific_handlers=BUILT_IN_IMPORTER, debug_prints=False)
     )
     assert report.last_getter is not None
     tree = report.last_getter()

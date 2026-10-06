@@ -5,7 +5,7 @@ This package lays out a Blender node tree. This file explains its design.
 It grew out of the add-on
 [node-arrange](https://github.com/Leonardo-Pike-Excell/node-arrange) by
 Leonardo Pike-Excell, and the modules that descend from it keep its
-`GPL-2.0-or-later` licence header. It is no longer kept in step with that
+`GPL-2.0-or-later` licence header. It is not kept in step with that
 add-on.
 
 ## Three stages
@@ -114,7 +114,7 @@ picture. The rest prepare for one or clean up.
 | `contract_stacks` | Make each stack of collapsed nodes one node | `stack_collapsed` | `stacking.py` |
 | **`rank`** | Give every node a column | always | `ranking.py` |
 | `balance_heights` | Move feeder chains left out of the tallest columns | `balance_heights` | `balancing.py` |
-| `constrain_layers` | Group Output to the last column (`pin_group_output`), Group Input to the first (`pin_group_input`) | always | `sugiyama.py` |
+| `pin_group_nodes` | Group Output to the last column (`pin_group_output`), Group Input to the first (`pin_group_input`) | always | `sugiyama.py` |
 | `merge_edges` | Let the long links from one output share dummy nodes | always | `long_links.py` |
 | `insert_dummy_nodes` | Split long links with a dummy node per column | always | `long_links.py` |
 | `add_columns` | List the nodes of each column | always | `build.py` |
@@ -268,7 +268,7 @@ that broke one.
   the observer and the test tooling.
 - **Coordinates:** `runtime->draw_bounds` and the socket locations are in
   view space, multiplied by the UI scale. `location` is not.
-  `bNode.location` is absolute in current Blender, so `MoveNode` maps
+  In Blender 5.2's DNA `bNode.location` is absolute, so `MoveNode` maps
   directly.
 - **Multi-input order:** the sort ids can be written directly, without the
   swapping `apply.py` does.

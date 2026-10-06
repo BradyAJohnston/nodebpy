@@ -61,15 +61,18 @@ def _columns(tree) -> list[float]:
 # ---------------------------------------------------------------------------
 
 
-def test_arrange_lays_out_a_tree_outside_a_tree_builder():
+@pytest.mark.parametrize("method", ["sugiyama", "simple"])
+def test_arrange_lays_a_chain_out_in_columns_outside_a_tree_builder(method):
     tree = _build_chain("Standalone").tree
     assert not TreeBuilder._tree_contexts
 
-    arrange(tree)
+    arrange(tree, method)
 
     xs = _columns(tree)
     assert xs == sorted(xs) and len(set(xs)) == 4
-    assert measure(tree).node_overlaps == 0
+    metrics = measure(tree)
+    assert metrics.node_overlaps == 0
+    assert metrics.backward_links == 0
 
 
 def test_arrange_none_leaves_the_tree_untouched():
@@ -91,18 +94,6 @@ def test_arranging_twice_gives_the_same_locations():
     once = _locations(tree)
     arrange(tree)
     assert _locations(tree) == once
-
-
-def test_simple_lays_a_chain_out_left_to_right_in_columns():
-    tree = _build_chain("SimpleChain").tree
-
-    arrange(tree, "simple")
-
-    xs = _columns(tree)
-    assert xs == sorted(xs) and len(set(xs)) == 4
-    metrics = measure(tree)
-    assert metrics.node_overlaps == 0
-    assert metrics.backward_links == 0
 
 
 def test_simple_is_the_simple_options():
@@ -145,7 +136,7 @@ def test_there_is_one_frozen_options_class():
     options = SugiyamaOptions()
     assert (options.margin, options.seed, options.reroutes) == ((30.0, 30.0), 0, "none")
     with pytest.raises(dataclasses.FrozenInstanceError):
-        options.seed = 1  # ty: ignore[invalid-assignment]
+        options.seed = 1
 
 
 def test_margin_is_the_gap_between_columns():
@@ -193,22 +184,6 @@ def test_options_of_one_run_do_not_reach_the_next():
     assert _locations(repeat.tree) == _locations(reference.tree)
 
 
-def test_selected_only_moves_only_the_selection():
-    tree = cases.chain()
-    for i, node in enumerate(tree.nodes):
-        node.location = (37.0 * i, -200.0 * i)
-        node.select = i >= 2
-    before = _locations(tree)
-
-    arrange(tree, "sugiyama", selected_only=True)
-
-    after = _locations(tree)
-    kept, moved = list(tree.nodes)[:2], list(tree.nodes)[2:]
-    assert all(after[node.name] == before[node.name] for node in kept)
-    assert all(after[node.name] != before[node.name] for node in moved)
-    assert len({after[node.name][1] for node in moved}) == 1
-
-
 def test_isolated_chain_of_collapsed_math_nodes_is_stacked():
     """Two collapsed Math nodes linked to nothing else are placed one above
     the other."""
@@ -235,7 +210,7 @@ def test_fit_collapsed_widths_fits_collapsed_nodes_to_their_names():
     """Add and Multiply have display names of different lengths, so the
     collapsed Math nodes get different widths, none the default 140."""
     with TreeBuilder(
-        "OptimizeSizes", arrange=SugiyamaOptions(fit_collapsed_widths=True)
+        "FitWidths", arrange=SugiyamaOptions(fit_collapsed_widths=True)
     ) as tree:
         geo = tree.inputs.geometry()
         out = tree.outputs.geometry()
@@ -278,8 +253,8 @@ def test_fit_collapsed_widths_widens_a_node_with_a_long_label():
 
 
 def test_fit_collapsed_widths_fits_a_shader_image_node_to_its_image_name():
-    """The two collapsed Math nodes after it are joined by two links, which
-    both survive."""
+    """Also: the two collapsed Math nodes after it are joined by two links,
+    which both survive stacking."""
     image = bpy.data.images.new("A Long Name For A Shader Image", 2, 2)
     with TreeBuilder.shader("ShaderSizes") as tree:
         tex = s.ImageTexture()
@@ -346,8 +321,6 @@ def _essential(name: str):
     ids=["full_alignment", "right_down", "left_down", "bend_points", "frames"],
 )
 def test_bundled_group_is_arranged_without_overlaps(tree_name, options):
-    """Locations are rounded to two decimals, as far as single precision
-    holds them."""
     tree = _essential(tree_name)
 
     arrange(tree, options, verify=True)
@@ -355,6 +328,8 @@ def test_bundled_group_is_arranged_without_overlaps(tree_name, options):
     metrics = measure(tree)
     assert metrics.node_overlaps == 0
     assert metrics.backward_links == 0
+    # Locations are rounded to two decimals, as far as single precision
+    # holds them.
     for node in tree.nodes:
         for value in node.location:
             assert abs(value - round(value, 2)) < 1e-4

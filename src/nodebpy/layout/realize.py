@@ -9,7 +9,7 @@ from statistics import fmean
 
 from .common import Vec2, f32
 from .config import LayoutState
-from .digraph import LayoutGraph, descendants, edge_dfs
+from .digraph import LayoutGraph, descendants
 from .dna import new_reroute
 from .edits import AddLink, AddReroute, MoveNode, ResizeFrame, RestoreMultiInputOrder
 from .long_links import get_reroute_paths
@@ -19,10 +19,12 @@ from .model import (
     Kind,
     Node,
     Socket,
-    add_dummy_edge,
+    add_dummy_link,
     is_real,
     socket_graph,
+    trace_multi_input_sources,
 )
+from .reroutes import chain_ends
 
 
 def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
@@ -48,32 +50,24 @@ def is_safe_to_remove(v: Node, state: LayoutState) -> bool:
     )
 
 
-def is_dangling(G: LayoutGraph[Node], path: list[Node]) -> bool:
-    """Whether a chain of reroutes leads nowhere, or comes from nowhere."""
-    return not G.successors(path[-1]) or not G.predecessors(path[0])
-
-
-def dissolve_reroute_edges(
+def dissolve_reroute_links(
     G: LayoutGraph[Node], path: list[Node], state: LayoutState
 ) -> None:
     """Link the source of the reroute chain *path* straight to every input
     the chain feeds, and record the links as edits. When the source already
     feeds one of those inputs directly, *path* is emptied instead, which
     keeps the chain."""
-    first = next(G.in_links(path[0]))
-
-    u, o = first.fromnode, first.fromsock
-    succ_inputs = [link.tosock for link in G.out_links(path[-1])]
+    output, inputs = chain_ends(G, path)
 
     # A reroute can link an output to a multi-input it already feeds.
-    for link in G.out_links(u):
-        if link.fromsock == o and link.tosock in succ_inputs:
+    for link in G.out_links(output.owner):
+        if link.fromsock == output and link.tosock in inputs:
             path.clear()
             return
 
-    for i in succ_inputs:
-        G.add_link(u, i.owner, o, i)
-        state.edits.append(AddLink(o.dna, i.dna))
+    for i in inputs:
+        G.add_link(output.owner, i.owner, output, i)
+        state.edits.append(AddLink(output.dna, i.dna))
 
 
 def remove_reroutes(CG: ClusterGraph) -> None:
@@ -84,18 +78,19 @@ def remove_reroutes(CG: ClusterGraph) -> None:
     reroute_clusters = {
         c
         for c in CG.S
-        if all(v.type != Kind.CLUSTER and v.is_reroute for v in CG.T.successors(c))
+        if all(not isinstance(v, Cluster) and v.is_reroute for v in CG.T.successors(c))
     }
     for path in get_reroute_paths(CG, lambda v: is_safe_to_remove(v, CG.state)):
         if path[0].cluster in reroute_clusters:
             if len(path) > 2:
                 u, *between, v = path
-                add_dummy_edge(CG.G, u, v)
-                CG.remove_nodes_from(between)
-        elif not is_dangling(CG.G, path):
-            # Reroutes left dangling are someone's work in progress.
-            dissolve_reroute_edges(CG.G, path, CG.state)
-            CG.remove_nodes_from(path)
+                add_dummy_link(CG.G, u, v)
+                CG.remove_nodes(between)
+        elif CG.G.predecessors(path[0]) and CG.G.successors(path[-1]):
+            # A chain that comes from nowhere or leads nowhere is someone's
+            # work in progress, and stays.
+            dissolve_reroute_links(CG.G, path, CG.state)
+            CG.remove_nodes(path)
 
 
 _Y_TOL = 5
@@ -123,25 +118,24 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
 
         p = pred_output(v)
         q = succ_input(v)
-        if isclose(p.y, q.y, rel_tol=0, abs_tol=_Y_TOL):
+        if isclose(p.y, q.y, abs_tol=_Y_TOL):
             G.add_link(p.owner, q.owner, p, q)
-            CG.remove_nodes_from(path)
+            CG.remove_nodes(path)
             path.clear()
 
         return
 
     u, *between, v = path
 
-    if G.predecessors(u) and isclose(
-        (p := pred_output(u)).y, u.y, rel_tol=0, abs_tol=_Y_TOL
-    ):
+    # Each end goes too when it is level with the socket beyond it.
+    p = pred_output(u) if G.predecessors(u) else None
+    if p is not None and isclose(p.y, u.y, abs_tol=_Y_TOL):
         between.append(u)
     else:
         p = Socket(u, 0, True)
 
-    if G.out_degree(v) == 1 and isclose(
-        v.y, (q := succ_input(v)).y, rel_tol=0, abs_tol=_Y_TOL
-    ):
+    q = succ_input(v) if G.out_degree(v) == 1 else None
+    if q is not None and isclose(v.y, q.y, abs_tol=_Y_TOL):
         between.append(v)
     else:
         q = Socket(v, 0, False)
@@ -149,7 +143,7 @@ def simplify_path(CG: ClusterGraph, path: list[Node]) -> None:
     if p.owner != u or q.owner != v or between:
         G.add_link(p.owner, q.owner, p, q)
 
-    CG.remove_nodes_from(between)
+    CG.remove_nodes(between)
     for v in between:
         path.remove(v)
 
@@ -164,7 +158,7 @@ def add_reroute(v: Node, state: LayoutState) -> None:
     v.type = Kind.NODE
 
 
-def realize_edges(G: LayoutGraph[Node], state: LayoutState) -> None:
+def realize_links(G: LayoutGraph[Node], state: LayoutState) -> None:
     """Record an ``AddLink`` edit for every link that starts or ends at a
     reroute."""
     for link in G.all_links():
@@ -184,7 +178,7 @@ def realize_dummy_nodes(CG: ClusterGraph) -> None:
             if not is_real(v):
                 add_reroute(v, CG.state)
 
-    realize_edges(CG.G, CG.state)
+    realize_links(CG.G, CG.state)
 
 
 def restore_multi_input_orders(G: LayoutGraph[Node], state: LayoutState) -> None:
@@ -193,22 +187,11 @@ def restore_multi_input_orders(G: LayoutGraph[Node], state: LayoutState) -> None
     H = socket_graph(G)
     for socket, sort_ids in state.multi_input_sort_ids.items():
         outputs = tuple(dict.fromkeys(s.dna for s in H.predecessors(socket)))
-
-        SH = H.subgraph(
-            {i[0] for i in sort_ids} | {socket} | {v for v in H if v.owner.is_reroute}
+        order = tuple(
+            (from_socket.dna, sort_id)
+            for from_socket, sort_id in trace_multi_input_sources(H, socket, sort_ids)
         )
-        seen = set()
-        order = []
-        for base_from_socket, sort_id in sort_ids:
-            from_socket = next(
-                s
-                for s, t in edge_dfs(SH, base_from_socket)
-                if t == socket and s not in seen
-            )
-            order.append((from_socket.dna, sort_id))
-            seen.add(from_socket)
-
-        state.edits.append(RestoreMultiInputOrder(socket.dna, outputs, tuple(order)))
+        state.edits.append(RestoreMultiInputOrder(socket.dna, outputs, order))
 
 
 def realize_locations(

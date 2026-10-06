@@ -12,8 +12,6 @@ from nodebpy.layout.priority import FLOW, MAIN, socket_priorities
 from . import cases
 from .data import plain_node
 
-FLOAT = "NodeSocketFloat"
-
 
 def _tops(nodes) -> list[float]:
     return [round(n.location_absolute.y, 1) for n in nodes]
@@ -39,7 +37,9 @@ def _set_position(tree: bNodeTree, name: str) -> bNode:
 
 
 def _math(tree: bNodeTree, name: str) -> bNode:
-    return plain_node(tree, name, idname="ShaderNodeMath", socket=FLOAT, inputs=2)
+    return plain_node(
+        tree, name, idname="ShaderNodeMath", socket="NodeSocketFloat", inputs=2
+    )
 
 
 def test_first_linked_flow_socket_has_the_highest_priority():

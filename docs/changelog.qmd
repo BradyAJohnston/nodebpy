@@ -16,7 +16,7 @@ The layout behind `arrange(tree)`, the default arrangement of `TreeBuilder`, was
 - **Reroutes only where needed.** `reroutes="blocked"` adds reroutes only to links that would be drawn across a node, and keeps the reroutes already in the tree. `"all"` routes every long link. The default `"none"` only moves nodes.
 - **Arrange the selection.** `arrange(tree, selected_only=True)` arranges the selected nodes among themselves. The others do not move.
 - **No `networkx` needed.** `arrange()` always gives the layered layout.
-- **Faster.** Node locations are written in one call instead of one at a time, and the slow steps of the layout were reworked. A 600-node tree arranges in under a second instead of two and a half; a thousand-node tree in a quarter of a second instead of three.
+- **Faster.** Node locations are written in one call instead of one at a time, and the slow steps of the layout were reworked. A 600-node tree arranges in under a second instead of two and a half.
 
 The design is described in `src/nodebpy/layout/DESIGN.md`.
 
@@ -34,8 +34,8 @@ The design is described in `src/nodebpy/layout/DESIGN.md`.
 
 - `SugiyamaOptions` fields are now `margin`, `direction`, `socket_alignment`, `reroutes`, `stack_collapsed`, `fit_collapsed_widths`, `straighten_trunk`, `pin_group_output`, `pin_group_input`, `frames_as_stages`, `balance_heights`, `pack_components`, `seed`, `snap_to_grid`.
 - `optimize_sizes` is renamed `fit_collapsed_widths` and `sequential_frames` is renamed `frames_as_stages`. The asset build's `--optimize-sizes` and `--no-sequential-frames` flags keep their names.
-    - `add_reroutes=True` becomes `reroutes="all"`. `build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.
-    - Removed: `iterations`, `stack_margin_y_fac`, `reroute_margin_y_fac`, `balance_aspect`, `keep_reroutes_outside_frames`. The asset build still accepts their flags and ignores them.
+- `add_reroutes=True` becomes `reroutes="all"`. `build_library(add_reroutes=True)` and `--add-reroutes` are unchanged.
+- Removed: `iterations`, `stack_margin_y_fac`, `reroute_margin_y_fac`, `balance_aspect`, `keep_reroutes_outside_frames`. The asset build still accepts their flags and ignores them.
 - `SimpleOptions` and `arrange_tree` are removed. `arrange(tree, "simple")` now uses the layered layout with the `SIMPLE_OPTIONS` preset.
 - `nodebpy.builder.layout` and `nodebpy.lib.nodearrange` are now `nodebpy.layout`.
 - Collapsed nodes are sized as Blender draws them.
