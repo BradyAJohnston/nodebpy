@@ -146,4 +146,3 @@ def shader_and_compositor() -> None:
 
     with c.tree("Compositor"):
         assert_type(c.Blur(), c.Blur)
-

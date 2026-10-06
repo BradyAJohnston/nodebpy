@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for nodebpy.assets.dump_library / build_library — round-tripping a
 .blend asset library through per-asset Python source files."""
 
@@ -475,17 +474,12 @@ def test_cli_arrange_options_mapping():
     )
     assert _arrange_options_from_args(tuned) == SugiyamaOptions(
         margin=(50.0, 40.0),
-        iterations=10,
         direction="BALANCED",
         socket_alignment="FULL",
-        keep_reroutes_outside_frames=True,
         stack_collapsed=False,
-        stack_margin_y_fac=0.25,
-        optimize_sizes=True,
-        sequential_frames=False,
+        fit_collapsed_widths=True,
+        frames_as_stages=False,
         balance_heights=False,
-        balance_aspect=2.0,
-        reroute_margin_y_fac=0.5,
     )
 
 

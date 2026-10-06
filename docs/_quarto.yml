@@ -98,7 +98,7 @@ quartodoc:
       contents:
         - arrange
         - SugiyamaOptions
-        - SimpleOptions
+        - SIMPLE_OPTIONS
         - default_split_inputs
         - default_sugiyama_options
     - title: Assets

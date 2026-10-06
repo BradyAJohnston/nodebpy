@@ -1,0 +1,694 @@
+"""Layout graph containers.
+
+They are shaped after the structs of Blender's node editor
+(``DNA_node_types.h``, ``BKE_node_runtime.hh``):
+
+====================  ==================================================
+here                  Blender
+====================  ==================================================
+:class:`LayoutGraph`  ``bNodeTree``: owns the nodes and the links, and
+                      answers topology queries the way the tree's
+                      topology cache does.
+:class:`Link`         ``bNodeLink``: ``fromnode`` / ``fromsock`` /
+                      ``tonode`` / ``tosock``.
+``model.Node``        a ``bNode`` being laid out (``node`` is the
+                      ``dna.bNode``), or a node the layout made up.
+``model.Socket``      a ``bNodeSocket`` (``dna``), or a made-up one.
+``model.Cluster``     a frame ``bNode`` and its
+                      ``direct_children_in_frame``.
+====================  ==================================================
+
+:class:`LayoutGraph` is a directed multigraph: two nodes can be joined by
+several links, one per socket pair, told apart by :attr:`Link.key`.
+:class:`DiGraph` is the plain directed graph used for other relations: the
+frame hierarchy, ordering constraints, socket reachability. Its connections
+are called edges.
+
+Everything iterates in insertion order: nodes in the order they were added,
+a node's neighbours in the order they were first linked.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Hashable, Iterable, Iterator, KeysView
+from typing import Any
+
+
+class Link[N: Hashable]:
+    """A link between two nodes of a :class:`LayoutGraph` (``bNodeLink``).
+
+    ``fromsock`` / ``tosock`` are None for links that only constrain the
+    layout (frame borders, ranking constraints). ``key`` tells parallel
+    links between the same two nodes apart, and is kept when a graph is
+    copied, so ``(fromnode, tonode, key)`` names the same link in a graph
+    and in its copies. ``weight`` and ``cut_value`` are scratch values for
+    the ranking and for the feedback arc set of the stacking.
+    """
+
+    __slots__ = (
+        "cut_value",
+        "fromnode",
+        "fromsock",
+        "key",
+        "tonode",
+        "tosock",
+        "weight",
+    )
+
+    fromnode: N
+    tonode: N
+    fromsock: Any
+    tosock: Any
+    key: int
+    weight: Any
+    cut_value: Any
+
+    def __init__(
+        self,
+        fromnode: N,
+        tonode: N,
+        fromsock: Any = None,
+        tosock: Any = None,
+        key: int = 0,
+        weight: Any = None,
+    ) -> None:
+        self.fromnode = fromnode
+        self.tonode = tonode
+        self.fromsock = fromsock
+        self.tosock = tosock
+        self.key = key
+        self.weight = weight
+        self.cut_value = None
+
+    @property
+    def ident(self) -> tuple[N, N, int]:
+        """``(fromnode, tonode, key)``: names this link across graph copies."""
+        return (self.fromnode, self.tonode, self.key)
+
+    def __repr__(self) -> str:
+        return f"Link({self.fromnode!r} -> {self.tonode!r}, key={self.key})"
+
+
+def _contains(mapping: dict, item: object) -> bool:
+    try:
+        return item in mapping
+    except TypeError:
+        return False
+
+
+class LayoutGraph[N: Hashable]:
+    """Nodes and the links between them (``bNodeTree``)."""
+
+    __slots__ = ("_nodes", "_pred", "_succ", "columns")
+
+    _nodes: dict[N, None]
+    # node -> neighbour -> key -> link. The innermost dict is shared between
+    # `_succ[u][v]` and `_pred[v][u]`.
+    _succ: dict[N, dict[N, dict[int, Link[N]]]]
+    _pred: dict[N, dict[N, dict[int, Link[N]]]]
+    # The nodes of each column, top to bottom, once the columns are built.
+    # Shared with copies and reversed views.
+    columns: list[list[N]]
+
+    def __init__(self) -> None:
+        self._nodes = {}
+        self._succ = {}
+        self._pred = {}
+        self.columns = []
+
+    # Nodes
+
+    def __iter__(self) -> Iterator[N]:
+        return iter(self._nodes)
+
+    def __len__(self) -> int:
+        return len(self._nodes)
+
+    def __contains__(self, node: object) -> bool:
+        return _contains(self._nodes, node)
+
+    def add_node(self, node: N) -> None:
+        if node not in self._nodes:
+            self._nodes[node] = None
+            self._succ[node] = {}
+            self._pred[node] = {}
+
+    def add_nodes(self, nodes: Iterable[N]) -> None:
+        for node in nodes:
+            self.add_node(node)
+
+    def remove_node(self, node: N) -> None:
+        """Remove *node* and every link attached to it."""
+        succs = self._succ[node]
+        del self._nodes[node]
+        for v in succs:
+            del self._pred[v][node]
+        del self._succ[node]
+        for u in self._pred[node]:
+            del self._succ[u][node]
+        del self._pred[node]
+
+    def remove_nodes(self, nodes: Iterable[N]) -> None:
+        """Remove *nodes*, skipping any that are not in the graph."""
+        for node in nodes:
+            if node in self._nodes:
+                self.remove_node(node)
+
+    # Links
+
+    def add_link(
+        self,
+        fromnode: N,
+        tonode: N,
+        fromsock: Any = None,
+        tosock: Any = None,
+        *,
+        key: int | None = None,
+        weight: Any = None,
+    ) -> Link[N]:
+        """Link *fromnode* to *tonode*, adding either node if needed.
+
+        Without *key* the link is a new parallel link. With the *key* of an
+        existing link between the two nodes, that link is updated instead.
+        """
+        self.add_node(fromnode)
+        self.add_node(tonode)
+        keydict = self._succ[fromnode].get(tonode)
+        if keydict is None:
+            keydict = {}
+            self._succ[fromnode][tonode] = keydict
+            self._pred[tonode][fromnode] = keydict
+        if key is None:
+            key = len(keydict)
+            while key in keydict:
+                key += 1
+        link = keydict.get(key)
+        if link is None:
+            link = Link(fromnode, tonode, fromsock, tosock, key, weight)
+            keydict[key] = link
+        else:
+            if fromsock is not None:
+                link.fromsock = fromsock
+            if tosock is not None:
+                link.tosock = tosock
+            if weight is not None:
+                link.weight = weight
+        return link
+
+    def remove_link(self, link: Link[N]) -> None:
+        self.remove_link_between(link.fromnode, link.tonode, link.key)
+
+    def remove_link_between(self, u: N, v: N, key: int | None = None) -> None:
+        """Remove the link from *u* to *v* with *key*, or the most recently
+        added one when *key* is None. Raises KeyError if there is none."""
+        keydict = self._succ[u][v]
+        if key is None:
+            keydict.popitem()
+        else:
+            del keydict[key]
+        if not keydict:
+            del self._succ[u][v]
+            del self._pred[v][u]
+
+    def discard_link_between(self, u: N, v: N, key: int | None = None) -> None:
+        """Like :meth:`remove_link_between`, ignoring a missing link."""
+        try:
+            self.remove_link_between(u, v, key)
+        except KeyError:
+            pass
+
+    def link(self, u: N, v: N, key: int) -> Link[N]:
+        return self._succ[u][v][key]
+
+    def has_link(self, u: N, v: N, key: int | None = None) -> bool:
+        keydict = self._succ.get(u, {}).get(v)
+        if keydict is None:
+            return False
+        return True if key is None else key in keydict
+
+    def links_between(self, u: N, v: N) -> list[Link[N]]:
+        """The parallel links from *u* to *v*. Raises KeyError if *v* is not
+        a successor of *u*."""
+        return list(self._succ[u][v].values())
+
+    def all_links(self) -> Iterator[Link[N]]:
+        for nbrs in self._succ.values():
+            for keydict in nbrs.values():
+                yield from keydict.values()
+
+    def out_links(self, node: N) -> Iterator[Link[N]]:
+        """Links leaving *node*."""
+        for keydict in self._succ[node].values():
+            yield from keydict.values()
+
+    def in_links(self, node: N) -> Iterator[Link[N]]:
+        """Links entering *node*."""
+        for keydict in self._pred[node].values():
+            yield from keydict.values()
+
+    def entering(self, node: N) -> Iterator[tuple[N, Link[N]]]:
+        """``(source, link)`` for the links entering *node*, as this graph
+        sees them: on a :meth:`reversed` view the source is the link's
+        ``tonode``."""
+        for nbr, keydict in self._pred[node].items():
+            for link in keydict.values():
+                yield (nbr, link)
+
+    # Topology
+
+    def successors(self, node: N) -> KeysView[N]:
+        return self._succ[node].keys()
+
+    def predecessors(self, node: N) -> KeysView[N]:
+        return self._pred[node].keys()
+
+    def out_degree(self, node: N) -> int:
+        return sum(len(keydict) for keydict in self._succ[node].values())
+
+    def in_degree(self, node: N) -> int:
+        return sum(len(keydict) for keydict in self._pred[node].values())
+
+    def degree(self, node: N) -> int:
+        return self.out_degree(node) + self.in_degree(node)
+
+    # Derived graphs
+
+    def copy(self) -> LayoutGraph[N]:
+        """A graph with the same nodes and a copy of every link."""
+        tree = type(self)()
+        tree.columns = self.columns
+        tree.add_nodes(self._nodes)
+        for link in self.all_links():
+            copied = tree.add_link(
+                link.fromnode,
+                link.tonode,
+                link.fromsock,
+                link.tosock,
+                key=link.key,
+                weight=link.weight,
+            )
+            copied.cut_value = link.cut_value
+        return tree
+
+    def reversed(self) -> LayoutGraph[N]:
+        """A view of this graph with successors and predecessors swapped.
+
+        The nodes and links are shared, so a link's ``fromnode`` is still
+        the node it leaves in the original graph.
+        """
+        tree = type(self)()
+        tree.columns = self.columns
+        tree._nodes = self._nodes
+        tree._succ = self._pred
+        tree._pred = self._succ
+        return tree
+
+    def subgraph(self, nodes: Iterable[N]) -> LayoutGraph[N]:
+        """A copy restricted to *nodes* and the links among them."""
+        keep = {n for n in nodes if n in self._nodes}
+        tree = type(self)()
+        tree.add_nodes(_filtered(self._nodes, keep))
+        for u in _filtered(self._succ, keep):
+            nbrs = self._succ[u]
+            for v in _filtered(nbrs, keep):
+                for link in nbrs[v].values():
+                    tree.add_link(
+                        u,
+                        v,
+                        link.fromsock,
+                        link.tosock,
+                        key=link.key,
+                        weight=link.weight,
+                    )
+        return tree
+
+
+def _filtered[K](mapping: dict[K, Any], keep: set[K]) -> list[K]:
+    # Always in the graph's own order, never the set's.
+    return [n for n in mapping if n in keep]
+
+
+class DiGraph[N: Hashable]:
+    """A directed graph without parallel edges, each with an optional
+    weight. Used for relations between layout items: the frame hierarchy,
+    ordering constraints, socket reachability."""
+
+    __slots__ = ("_nodes", "_pred", "_succ")
+
+    _nodes: dict[N, None]
+    # node -> neighbour -> weight, mirrored in both directions.
+    _succ: dict[N, dict[N, Any]]
+    _pred: dict[N, dict[N, Any]]
+
+    def __init__(self, edges: Iterable[tuple[N, N]] = ()) -> None:
+        self._nodes = {}
+        self._succ = {}
+        self._pred = {}
+        self.add_edges(edges)
+
+    def __iter__(self) -> Iterator[N]:
+        return iter(self._nodes)
+
+    def __len__(self) -> int:
+        return len(self._nodes)
+
+    def __contains__(self, node: object) -> bool:
+        return _contains(self._nodes, node)
+
+    def add_node(self, node: N) -> None:
+        if node not in self._nodes:
+            self._nodes[node] = None
+            self._succ[node] = {}
+            self._pred[node] = {}
+
+    def add_nodes(self, nodes: Iterable[N]) -> None:
+        for node in nodes:
+            self.add_node(node)
+
+    def remove_node(self, node: N) -> None:
+        succs = self._succ[node]
+        del self._nodes[node]
+        for v in succs:
+            del self._pred[v][node]
+        del self._succ[node]
+        for u in self._pred[node]:
+            del self._succ[u][node]
+        del self._pred[node]
+
+    def remove_nodes(self, nodes: Iterable[N]) -> None:
+        for node in nodes:
+            if node in self._nodes:
+                self.remove_node(node)
+
+    def add_edge(self, u: N, v: N, weight: Any = None) -> None:
+        self.add_node(u)
+        self.add_node(v)
+        if weight is not None or v not in self._succ[u]:
+            self._succ[u][v] = weight
+            self._pred[v][u] = weight
+
+    def add_edges(self, edges: Iterable[tuple[N, N]]) -> None:
+        for u, v in edges:
+            self.add_edge(u, v)
+
+    def remove_edge(self, u: N, v: N) -> None:
+        del self._succ[u][v]
+        del self._pred[v][u]
+
+    def remove_edges(self, edges: Iterable[tuple[N, N]]) -> None:
+        """Remove *edges*, skipping any that are not in the graph."""
+        for u, v in edges:
+            if u in self._succ and v in self._succ[u]:
+                self.remove_edge(u, v)
+
+    def has_edge(self, u: N, v: N) -> bool:
+        return u in self._succ and v in self._succ[u]
+
+    def weight(self, u: N, v: N) -> Any:
+        return self._succ[u][v]
+
+    def set_weight(self, u: N, v: N, weight: Any) -> None:
+        self._succ[u][v] = weight
+        self._pred[v][u] = weight
+
+    def edges(self) -> Iterator[tuple[N, N]]:
+        for u, nbrs in self._succ.items():
+            for v in nbrs:
+                yield (u, v)
+
+    def out_edges(self, node: N) -> Iterator[tuple[N, N]]:
+        for v in self._succ[node]:
+            yield (node, v)
+
+    def successors(self, node: N) -> KeysView[N]:
+        return self._succ[node].keys()
+
+    def predecessors(self, node: N) -> KeysView[N]:
+        return self._pred[node].keys()
+
+    def out_degree(self, node: N) -> int:
+        return len(self._succ[node])
+
+    def in_degree(self, node: N) -> int:
+        return len(self._pred[node])
+
+    def degree(self, node: N) -> int:
+        return len(self._succ[node]) + len(self._pred[node])
+
+    def copy(self) -> DiGraph[N]:
+        graph = type(self)()
+        graph.add_nodes(self._nodes)
+        for u, nbrs in self._succ.items():
+            for v, weight in nbrs.items():
+                graph.add_edge(u, v, weight)
+        return graph
+
+    def reversed(self) -> DiGraph[N]:
+        """A view of this graph with every edge reversed."""
+        graph = type(self)()
+        graph._nodes = self._nodes
+        graph._succ = self._pred
+        graph._pred = self._succ
+        return graph
+
+    def subgraph(self, nodes: Iterable[N]) -> DiGraph[N]:
+        """A copy restricted to *nodes* and the edges among them."""
+        keep = {n for n in nodes if n in self._nodes}
+        graph = type(self)()
+        graph.add_nodes(_filtered(self._nodes, keep))
+        for u in _filtered(self._succ, keep):
+            for v, weight in self._succ[u].items():
+                if v in keep:
+                    graph.add_edge(u, v, weight)
+        return graph
+
+
+type AnyGraph[N: Hashable] = LayoutGraph[N] | DiGraph[N]
+
+
+def simple_digraph[N: Hashable](tree: LayoutGraph[N]) -> DiGraph[N]:
+    """The graph *tree* with parallel links merged into single edges."""
+    graph: DiGraph[N] = DiGraph()
+    graph.add_nodes(tree)
+    for u, nbrs in tree._succ.items():
+        for v in nbrs:
+            graph.add_edge(u, v)
+    return graph
+
+
+# Traversals and orderings. Each walks neighbours in insertion order.
+
+
+class CycleError(ValueError):
+    """The graph has a cycle where an acyclic one is required."""
+
+
+def bfs_edges[N: Hashable](
+    G: AnyGraph[N], source: N, *, reverse: bool = False
+) -> Iterator[tuple[N, N]]:
+    """Tree edges ``(parent, child)`` of a breadth-first search from
+    *source*, following predecessors instead when *reverse* is set."""
+    adjacency = G._pred if reverse else G._succ
+    seen = {source}
+    n = len(G)
+    next_level = [(source, iter(adjacency[source]))]
+    while next_level:
+        this_level = next_level
+        next_level = []
+        for parent, children in this_level:
+            for child in children:
+                if child not in seen:
+                    seen.add(child)
+                    next_level.append((child, iter(adjacency[child])))
+                    yield (parent, child)
+            if len(seen) == n:
+                return
+
+
+def descendants[N: Hashable](G: AnyGraph[N], source: N) -> KeysView[N]:
+    """Every node reachable from *source*, excluding *source*, in
+    breadth-first order. The result works as a set."""
+    return dict.fromkeys(child for _, child in bfs_edges(G, source)).keys()
+
+
+def ancestors[N: Hashable](G: AnyGraph[N], source: N) -> KeysView[N]:
+    """Every node *source* is reachable from, excluding *source*, in
+    breadth-first order. The result works as a set."""
+    return dict.fromkeys(
+        child for _, child in bfs_edges(G, source, reverse=True)
+    ).keys()
+
+
+def topological_generations[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
+    """Generations of a topological order: each node is in the first
+    generation after all of its predecessors. Raises :class:`CycleError` on
+    a cycle."""
+    indegree = {}
+    zero_indegree = []
+    for v in G:
+        d = len(G._pred[v])
+        if d > 0:
+            indegree[v] = d
+        else:
+            zero_indegree.append(v)
+
+    while zero_indegree:
+        this_generation = zero_indegree
+        zero_indegree = []
+        for node in this_generation:
+            for child in G._succ[node]:
+                indegree[child] -= 1
+                if indegree[child] == 0:
+                    zero_indegree.append(child)
+                    del indegree[child]
+        yield this_generation
+
+    if indegree:
+        raise CycleError("graph contains a cycle")
+
+
+def topological_sort[N: Hashable](G: AnyGraph[N]) -> list[N]:
+    return [v for generation in topological_generations(G) for v in generation]
+
+
+def is_acyclic[N: Hashable](G: AnyGraph[N]) -> bool:
+    try:
+        for _ in topological_generations(G):
+            pass
+    except CycleError:
+        return False
+    return True
+
+
+def weakly_connected_components[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
+    """The nodes of each of the graph's connected pieces, ignoring
+    direction, each in breadth-first order from its first node."""
+    seen: set[N] = set()
+    for v in G:
+        if v not in seen:
+            component = _undirected_reach(G, v)
+            seen.update(component)
+            yield component
+
+
+def _undirected_reach[N: Hashable](G: AnyGraph[N], source: N) -> list[N]:
+    seen = {source}
+    order = [source]
+    for v in order:
+        for nbrs in (G._succ[v], G._pred[v]):
+            for w in nbrs:
+                if w not in seen:
+                    seen.add(w)
+                    order.append(w)
+    return order
+
+
+def strongly_connected_components[N: Hashable](G: AnyGraph[N]) -> Iterator[list[N]]:
+    """The groups of nodes within which every node reaches every other (Tarjan's
+    algorithm with Nuutila's modifications, non-recursive)."""
+    preorder: dict[N, int] = {}
+    lowlink: dict[N, int] = {}
+    found: set[N] = set()
+    pending: list[N] = []
+    i = 0
+    neighbors = {v: iter(G._succ[v]) for v in G}
+    for source in G:
+        if source in found:
+            continue
+        stack = [source]
+        while stack:
+            v = stack[-1]
+            if v not in preorder:
+                i += 1
+                preorder[v] = i
+            done = True
+            for w in neighbors[v]:
+                if w not in preorder:
+                    stack.append(w)
+                    done = False
+                    break
+            if not done:
+                continue
+            lowlink[v] = preorder[v]
+            for w in G._succ[v]:
+                if w not in found:
+                    if preorder[w] > preorder[v]:
+                        lowlink[v] = min(lowlink[v], lowlink[w])
+                    else:
+                        lowlink[v] = min(lowlink[v], preorder[w])
+            stack.pop()
+            if lowlink[v] == preorder[v]:
+                component = [v]
+                while pending and preorder[pending[-1]] > preorder[v]:
+                    component.append(pending.pop())
+                found.update(component)
+                yield component
+            else:
+                pending.append(v)
+
+
+def find_cycle[N: Hashable](G: AnyGraph[N]) -> list[N] | None:
+    """The nodes of one cycle of *G* in order, or None if it is acyclic."""
+    done: set[N] = set()
+    for root in G:
+        if root in done:
+            continue
+        path = [root]
+        on_path = {root}
+        stack = [iter(G._succ[root])]
+        while stack:
+            for w in stack[-1]:
+                if w in on_path:
+                    return path[path.index(w) :]
+                if w not in done:
+                    path.append(w)
+                    on_path.add(w)
+                    stack.append(iter(G._succ[w]))
+                    break
+            else:
+                stack.pop()
+                v = path.pop()
+                on_path.discard(v)
+                done.add(v)
+    return None
+
+
+def edge_dfs[N: Hashable](G: DiGraph[N], source: N) -> Iterator[tuple[N, N]]:
+    """Every edge reachable from *source*, in depth-first order."""
+    if source not in G:
+        return
+
+    visited_edges: set[tuple[N, N]] = set()
+    visited_nodes: set[N] = set()
+    edges: dict[N, Iterator[tuple[N, N]]] = {}
+    stack = [source]
+    while stack:
+        current = stack[-1]
+        if current not in visited_nodes:
+            edges[current] = G.out_edges(current)
+            visited_nodes.add(current)
+
+        edge = next(edges[current], None)
+        if edge is None:
+            stack.pop()
+        elif edge not in visited_edges:
+            visited_edges.add(edge)
+            stack.append(edge[1])
+            yield edge
+
+
+def dag_longest_path_length[N: Hashable](G: DiGraph[N]) -> Any:
+    """The largest total edge weight along any path of the acyclic *G*.
+    An edge without a weight counts 1."""
+    if not G:
+        return 0
+
+    dist: dict[N, Any] = {}
+    for v in topological_sort(G):
+        best = 0
+        for u in G._pred[v]:
+            weight = G._succ[u][v]
+            best = max(best, dist[u] + (1 if weight is None else weight))
+        dist[v] = best
+
+    return max(dist.values())

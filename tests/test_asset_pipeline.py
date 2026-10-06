@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for the asset pipeline CLI additions: ``[tool.nodebpy.assets]``
 pyproject configuration, fingerprint stamping with ``ensure``, and the
 ``check`` roundtrip fixed-point verification."""
