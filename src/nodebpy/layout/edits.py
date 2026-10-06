@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """What a layout asks to be done to the node tree.
 
 The layout never touches the tree itself. It returns a :class:`LayoutResult`:

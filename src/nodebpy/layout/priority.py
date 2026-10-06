@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Link priorities.
 
 A node tree usually has a *trunk*: the line the main data flows along, such

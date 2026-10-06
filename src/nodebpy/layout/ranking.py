@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """The rank phase: give every node a column (:func:`compute_ranks`).
 
 Network simplex (Gansner et al., below) over the *nesting graph*: the

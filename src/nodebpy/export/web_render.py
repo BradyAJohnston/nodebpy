@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Render node trees as interactive graphs via geonodes-web-render.
 
 The live Blender node tree built by a :class:`~nodebpy.builder.tree.TreeBuilder`

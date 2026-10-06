@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Snap a layout to the node editor's grid.
 
 Two passes. :func:`snap_rows` runs inside the pipeline, once nodes have

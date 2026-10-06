@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Read a Blender node tree into the plain data the layout works on.
 
 Node sizes and socket positions enter the layout only here. A node's size

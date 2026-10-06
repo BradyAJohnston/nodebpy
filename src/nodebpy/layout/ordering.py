@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """The order phase: order the nodes within each column so that few links
 cross (:func:`minimize_crossings`).
 

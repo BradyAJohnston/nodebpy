@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Long links. A link that passes over one or more columns is split by a
 dummy node in each of them (:func:`merge_edges`,
 :func:`insert_dummy_nodes`). Also here: finding chains of reroutes and

@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Build the layout graph from the tree: index the links, leave out those
 that close a cycle, make a :class:`~.model.Node` for every node, and list
 the columns once the nodes are ranked."""

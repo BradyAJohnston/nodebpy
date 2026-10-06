@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Generate Python code from a Blender node tree using nodebpy.
 
 The generator walks the tree in topological order and builds a small

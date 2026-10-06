@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """The layout as a list of named steps.
 
 A layered layout is a sequence of passes over one graph. Four of them are

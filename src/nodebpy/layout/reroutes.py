@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Dummy nodes after the placement: dropping the ones that are not wanted
 (:func:`dissolve_dummy_nodes`, :func:`dissolve_clear_dummy_nodes`) and
 lining the rest up with the sockets they join

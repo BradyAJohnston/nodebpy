@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Lay out the unconnected parts of a tree apart.
 
 A tree is often several drawings: the main graph, a second group of nodes

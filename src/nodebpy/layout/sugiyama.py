@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """The layout itself: :func:`sugiyama_layout` and the list of steps it runs
 (:func:`default_pipeline`), with the steps that are too small for a module
 of their own. ``DESIGN.md`` in this package describes every step."""

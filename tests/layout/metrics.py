@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Measure how readable a node tree's layout is.
 
 :func:`measure` looks at a tree as it is laid out (node locations, node

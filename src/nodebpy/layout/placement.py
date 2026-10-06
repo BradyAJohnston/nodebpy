@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """The place phase: give every node its height (:func:`bk_assign_y_coords`).
 
 Brandes and Köpf's method (below): each node is aligned with one neighbour

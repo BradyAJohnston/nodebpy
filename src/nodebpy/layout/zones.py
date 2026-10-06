@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Which nodes are in which zone.
 
 Blender works this out itself (``node_tree_zones.cc``) and keeps it on the

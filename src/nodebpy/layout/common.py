@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Small helpers shared by the layout passes. Nothing here needs ``bpy``."""
 
 from __future__ import annotations

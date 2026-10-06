@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """The node tree as the layout sees it.
 
 A plain-data copy of the parts of a Blender node tree the layout reads,

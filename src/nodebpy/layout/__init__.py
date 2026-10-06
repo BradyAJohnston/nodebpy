@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Layout of Blender node trees.
 
 :func:`arrange` is the entry. It works in three stages:

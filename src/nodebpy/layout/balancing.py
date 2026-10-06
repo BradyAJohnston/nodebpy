@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Shorten the tallest columns after ranking.
 
 The ranking puts the nodes that feed a node in the column right before it,

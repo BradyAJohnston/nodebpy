@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Snapshot tests for Mermaid diagram generation."""
 
 from functools import reduce

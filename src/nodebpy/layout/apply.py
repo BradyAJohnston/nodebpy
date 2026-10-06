@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Carry out a layout's edits on a Blender node tree."""
 
 from __future__ import annotations

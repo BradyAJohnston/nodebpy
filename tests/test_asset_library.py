@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for nodebpy.assets.dump_library / build_library — round-tripping a
 .blend asset library through per-asset Python source files."""
 

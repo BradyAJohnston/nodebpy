@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Mermaid diagram generation for node trees."""
 
 from __future__ import annotations

@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """Layout graph containers.
 
 They are shaped after the structs of Blender's node editor

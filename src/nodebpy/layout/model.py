@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """What the layout works on: :class:`Node` (a node of the tree, or one the
 layout makes up: a dummy node on a long link, a frame's border),
 :class:`Socket`, :class:`Cluster` (a frame), and :class:`ClusterGraph`, the

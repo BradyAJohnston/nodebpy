@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """What the layout can be asked to do (:class:`SugiyamaOptions`), and the
 state of one run of it (:class:`LayoutState`)."""
 

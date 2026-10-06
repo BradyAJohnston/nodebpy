@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
 """The route phase: give a link a bend point beside a node it would
 otherwise cut across (:func:`route_edges`)."""
 
