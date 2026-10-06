@@ -595,9 +595,9 @@ def _pair_cost(weights: CrossingWeights) -> tuple[tuple[float, float], ...]:
     )
 
 
-type _End = tuple[int, int, bool]
-"""Where the far end of a link is, and what the link carries: position of
-the node in its column, index of the socket, whether it carries flow."""
+type _End = tuple[tuple[int, int], bool]
+"""Where a link ends in the neighbouring column: (node position, socket
+index), and whether the link carries flow."""
 
 
 def _transpose(
@@ -613,41 +613,59 @@ def _transpose(
     swaps an average hides."""
     position = {v: i for col in columns for i, v in enumerate(col)}
     cost = _pair_cost(weights)
+    flow = {k: link_is_flow(k) for k in G.all_links()}
 
     def ends(v: Node) -> tuple[list[_End], list[_End]]:
         left = [
-            (position[k.fromnode], k.fromsock.idx, link_is_flow(k))
-            for k in G.in_links(v)
+            ((position[k.fromnode], k.fromsock.idx), flow[k]) for k in G.in_links(v)
         ]
-        right = [
-            (position[k.tonode], k.tosock.idx, link_is_flow(k)) for k in G.out_links(v)
-        ]
+        right = [((position[k.tonode], k.tosock.idx), flow[k]) for k in G.out_links(v)]
         return left, right
 
-    def gain(upper: Node, lower: Node) -> float:
+    def gain(
+        upper: tuple[list[_End], list[_End]], lower: tuple[list[_End], list[_End]]
+    ) -> float:
         """Cost of the crossings between the links of two neighbours now,
         less what it would be with the two swapped."""
         total = 0.0
-        for above, below in zip(ends(upper), ends(lower)):
-            for a in above:
-                for b in below:
-                    total += cost[a[2]][b[2]] * ((a[:2] > b[:2]) - (a[:2] < b[:2]))
+        for above, below in zip(upper, lower):
+            for a, a_flow in above:
+                costs = cost[a_flow]
+                for b, b_flow in below:
+                    if a > b:
+                        total += costs[b_flow]
+                    elif a < b:
+                        total -= costs[b_flow]
         return total
 
     moved = False
+    last = len(columns) - 1
+    # A column is looked at again only while its own order, or a
+    # neighbour's, has changed since it was last looked at.
+    changed_before = [True] * len(columns)
     for _ in range(_MAX_TRANSPOSE_PASSES):
         improved = False
-        for col in columns:
+        changed = [False] * len(columns)
+        for c, col in enumerate(columns):
+            if not (
+                changed_before[c]
+                or (c > 0 and changed[c - 1])
+                or (c < last and changed_before[c + 1])
+            ):
+                continue
+            # The neighbouring columns stay put while this one is swept.
+            ends_of = {v: ends(v) for v in col}
             for i in range(len(col) - 1):
                 upper, lower = col[i], col[i + 1]
                 if upper.cluster is not lower.cluster:
                     continue
-                if gain(upper, lower) > 0:
+                if gain(ends_of[upper], ends_of[lower]) > 0:
                     col[i], col[i + 1] = lower, upper
                     position[lower], position[upper] = i, i + 1
-                    improved = moved = True
+                    improved = moved = changed[c] = True
         if not improved:
             break
+        changed_before = changed
     return moved
 
 

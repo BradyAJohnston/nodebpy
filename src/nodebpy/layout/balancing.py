@@ -16,15 +16,23 @@ from collections.abc import Iterable
 
 from .common import REROUTE_DIM, REROUTE_MARGIN_Y_FAC
 from .config import LayoutState
-from .digraph import LayoutGraph, ancestors
+from .digraph import LayoutGraph, Link, topological_sort
 from .model import Cluster, Node, Socket
 
 _MAX_MOVES = 500
+_EPSILON = 1e-9
 
 
-def _upstream(G: LayoutGraph[Node], v: Node) -> set[Node]:
-    """Every node *v* depends on."""
-    return set(ancestors(G, v))
+def _upstream_sets(G: LayoutGraph[Node]) -> dict[Node, set[Node]]:
+    """For every node, every node it depends on."""
+    upstream_of: dict[Node, set[Node]] = {}
+    for v in topological_sort(G):
+        upstream = set()
+        for u in G.predecessors(v):
+            upstream.add(u)
+            upstream |= upstream_of[u]
+        upstream_of[v] = upstream
+    return {v: upstream_of[v] for v in G}
 
 
 def _column_heights(
@@ -83,33 +91,97 @@ def _fit_to_height(
     """Move nodes one column left, each with every node it depends on,
     until no column is taller than *target*. Each move is the one that
     leaves the least height above the target. Returns the new ranks, or
-    None when no move helps or ``_MAX_MOVES`` is reached."""
+    None when no move helps or ``_MAX_MOVES`` is reached.
+
+    A move is scored by the change it makes to the columns it touches,
+    rather than by measuring every column again."""
     ranks = dict(ranks)
     sequence = state.frame_sequence
+    margin = state.margin.y
+    dummy = REROUTE_DIM.y + margin * REROUTE_MARGIN_Y_FAC
+    links = list(G.all_links())
+    links_of: defaultdict[Node, list[Link[Node]]] = defaultdict(list)
+    for k in links:
+        links_of[k.fromnode].append(k)
+        links_of[k.tonode].append(k)
+
     for _ in range(_MAX_MOVES):
-        heights = _column_heights(G, ranks, state)
+        node_height: defaultdict[int, float] = defaultdict(float)
+        counts: defaultdict[int, int] = defaultdict(int)
+        for v, r in ranks.items():
+            node_height[r] += v.height
+            counts[r] += 1
+        # Per column, the sockets of the long links passing through, with
+        # how many links each socket sends through. See _column_heights.
+        passing: defaultdict[int, Counter[Socket]] = defaultdict(Counter)
+        for k in links:
+            for r in range(ranks[k.fromnode] + 1, ranks[k.tonode]):
+                passing[r][k.fromsock] += 1
+
+        def height(nodes: float, count: int, sources: int) -> float:
+            return nodes + sources * dummy + margin * max(count - 1, 0)
+
+        heights = {
+            r: height(node_height[r], counts[r], len(passing[r]))
+            for r in node_height.keys() | passing.keys()
+        }
         current = _overshoot(heights, target)
         if current <= 0:
             return ranks
-        best: tuple[float, dict[Node, int]] | None = None
-        sizes = Counter(ranks.values())
+
+        best: tuple[float, set[Node]] | None = None
         for v, upstream in upstream_of.items():
             if not upstream or heights.get(ranks[v], 0.0) <= target:
                 continue
             # A few parallel branches read best side by side.
-            if sizes[ranks[v]] <= BALANCE_MIN_COLUMN:
+            if counts[ranks[v]] <= BALANCE_MIN_COLUMN:
                 continue
-            trial = dict(ranks)
-            for w in upstream | {v}:
-                trial[w] -= 1
-            if not _frame_sequence_ok(trial, sequence):
-                continue
-            shoot = _overshoot(_column_heights(G, trial, state), target)
-            if shoot < current and (best is None or shoot < best[0]):
-                best = (shoot, trial)
+            moved = upstream | {v}
+            if sequence:
+                trial = {w: ranks[w] - (w in moved) for w in ranks}
+                if not _frame_sequence_ok(trial, sequence):
+                    continue
+
+            # What the move changes, per column.
+            d_height: defaultdict[int, float] = defaultdict(float)
+            d_count: defaultdict[int, int] = defaultdict(int)
+            d_passing: defaultdict[int, Counter[Socket]] = defaultdict(Counter)
+            for w in moved:
+                r = ranks[w]
+                d_height[r] -= w.height
+                d_height[r - 1] += w.height
+                d_count[r] -= 1
+                d_count[r - 1] += 1
+            for k in {k for w in moved for k in links_of[w]}:
+                a, b = ranks[k.fromnode], ranks[k.tonode]
+                for r in range(a + 1, b):
+                    d_passing[r][k.fromsock] -= 1
+                a -= k.fromnode in moved
+                b -= k.tonode in moved
+                for r in range(a + 1, b):
+                    d_passing[r][k.fromsock] += 1
+
+            shoot = current
+            for r in d_height.keys() | d_passing.keys():
+                sources = len(passing[r])
+                for socket, d in d_passing[r].items():
+                    before = passing[r][socket]
+                    sources += (before + d > 0) - (before > 0)
+                new = height(
+                    node_height[r] + d_height[r], counts[r] + d_count[r], sources
+                )
+                old = heights.get(r, 0.0)
+                shoot += max(0.0, new - target) - max(0.0, old - target)
+            # Summing changes leaves rounding noise that must not decide.
+            if shoot < current - _EPSILON and (
+                best is None or shoot < best[0] - _EPSILON
+            ):
+                best = (shoot, moved)
+
         if best is None:
             return None
-        ranks = best[1]
+        for w in best[1]:
+            ranks[w] -= 1
     return None
 
 
@@ -152,7 +224,7 @@ def balance_column_heights(
         return
     ranks = {v: v.rank for v in nodes}
     margin_x = state.margin.x
-    upstream_of = {v: _upstream(G, v) for v in nodes}
+    upstream_of = _upstream_sets(G)
 
     aspect = BALANCE_ASPECT
 

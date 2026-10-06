@@ -80,8 +80,9 @@ class CrossingReduction:
 class Node:
     """A node of the layout graph: a node of the tree (``node`` is set), or
     one the layout made up. ``rank`` is the index of its column, ``x`` its
-    left edge and ``y`` its top edge. See ``placement.py`` for ``root``,
-    ``aligned``, ``sink``, ``shift`` and ``inner_shift``."""
+    left edge and ``y`` its top edge. See ``placement.py`` for
+    ``col_index``, ``root``, ``aligned``, ``sink``, ``shift`` and
+    ``inner_shift``."""
 
     node: bNode | None
     cluster: Cluster | None
@@ -99,6 +100,7 @@ class Node:
     is_flow: bool
 
     col: list[Node]
+    col_index: int
     cr: CrossingReduction
 
     x: float
@@ -147,6 +149,7 @@ class Node:
         self.is_flow = False
 
         self.col = None  # type: ignore
+        self.col_index = None  # type: ignore
         self.cr = CrossingReduction()
 
         self.x = None  # type: ignore

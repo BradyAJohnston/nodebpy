@@ -7,7 +7,9 @@ positions are always estimated (:func:`calculate_socket_offset_y`)."""
 from __future__ import annotations
 
 from collections import Counter
-from dataclasses import dataclass
+from collections.abc import Iterator
+from contextlib import contextmanager
+from dataclasses import dataclass, field
 from dataclasses import replace as dataclass_replace
 from typing import Any, Literal, cast
 
@@ -38,6 +40,38 @@ _UNDRAWN_PROPERTIES = frozenset(
 _COLOR_PICKER_ROWS = 6
 
 
+@dataclass
+class _SizeCache:
+    """What :func:`size_cache` remembers: the drawn properties per node
+    type, and the rows and box per node (by pointer)."""
+
+    property_rows: dict[tuple[str, Any], list[tuple[Any, int]]] = field(
+        default_factory=dict
+    )
+    rows: dict[int, list[NodeRow]] = field(default_factory=dict)
+    dimensions: dict[int, tuple[float, float]] = field(default_factory=dict)
+
+
+_cache: _SizeCache | None = None
+
+
+@contextmanager
+def size_cache() -> Iterator[None]:
+    """Within the block, each node's rows and box are worked out once, and
+    the properties a node type draws once per type. For reading a whole
+    tree that does not change meanwhile: the row model walks a node's RNA
+    properties and sockets, which is slow from Python."""
+    global _cache
+    if _cache is not None:
+        yield
+        return
+    _cache = _SizeCache()
+    try:
+        yield
+    finally:
+        _cache = None
+
+
 def _is_id_pointer(prop: Any) -> bool:
     """Whether a POINTER property references an ID datablock (drawn as a
     datablock selector) rather than an internal struct or another node."""
@@ -58,6 +92,11 @@ def node_property_rows(node: bpy.types.Node) -> list[tuple[Any, int]]:
     None of those draw a widget. A vector-valued property draws one number
     field per component. A colour property draws a picker.
     """
+    cache = _cache
+    key = (node.bl_idname, getattr(node, "vector_dimensions", None))
+    if cache is not None and key in cache.property_rows:
+        return cache.property_rows[key]
+
     # `bl_rna` exists on bpy classes through their metaclass, which type
     # checkers do not see. Hence the cast.
     inherited_ids = {
@@ -83,6 +122,8 @@ def node_property_rows(node: bpy.types.Node) -> list[tuple[Any, int]]:
             else:
                 count = int(getattr(node, "vector_dimensions", array_length))
         rows.append((prop, count))
+    if cache is not None:
+        cache.property_rows[key] = rows
     return rows
 
 
@@ -197,6 +238,19 @@ def node_rows(
     linked sockets gathered onto it. When ``socket_input_connection_count``
     is None, link state is read from ``socket.is_linked``.
     """
+    cache = _cache
+    if cache is None or socket_input_connection_count is not None:
+        return _node_rows(node, socket_input_connection_count)
+    key = node.as_pointer()
+    if key not in cache.rows:
+        cache.rows[key] = _node_rows(node, None)
+    return cache.rows[key]
+
+
+def _node_rows(
+    node: bpy.types.Node,
+    socket_input_connection_count: Counter[bpy.types.NodeSocket | None] | None,
+) -> list[NodeRow]:
     rows: list[NodeRow] = []
     y = HEADER
 
@@ -554,6 +608,16 @@ def dimensions(node: bpy.types.Node) -> tuple[float, float]:
     if node.bl_idname == "NodeReroute":
         return (REROUTE_SIZE, REROUTE_SIZE)
 
+    cache = _cache
+    if cache is None:
+        return _dimensions(node)
+    key = node.as_pointer()
+    if key not in cache.dimensions:
+        cache.dimensions[key] = _dimensions(node)
+    return cache.dimensions[key]
+
+
+def _dimensions(node: bpy.types.Node) -> tuple[float, float]:
     drawn = node.dimensions
     if drawn.x > 0 and drawn.y > 0:  # pragma: no cover - only drawn in a UI
         # Drawn sizes are in view space. Locations are not.
@@ -568,12 +632,17 @@ def dimensions(node: bpy.types.Node) -> tuple[float, float]:
 _COLLAPSED_OFFSET = 10
 
 
+def top_offset(node: bpy.types.Node) -> float:
+    """How far the y of *node*'s location is above the top edge of the box
+    it is drawn in: zero for an expanded node."""
+    if node.hide:
+        return _COLLAPSED_OFFSET - dimensions(node)[1] / 2
+    return 0.0
+
+
 def get_top(node: bpy.types.Node) -> float:
     """The y of the top edge of the box *node* is drawn in."""
-    y = node.location_absolute.y
-    if node.hide:
-        return y - _COLLAPSED_OFFSET + dimensions(node)[1] / 2
-    return y
+    return node.location_absolute.y - top_offset(node)
 
 
 def get_bottom(node: bpy.types.Node) -> float:

@@ -81,9 +81,3 @@ def arrange(
         selected_only=selected_only,
     )
     apply(tree, binding, result)
-
-    # Positions are dumped to two decimals. Rounding here keeps an arranged
-    # tree unchanged through a round trip.
-    for node in tree.nodes:
-        location = node.location
-        node.location = (round(location.x, 2), round(location.y, 2))

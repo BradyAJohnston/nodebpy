@@ -20,6 +20,7 @@ from .node_size import (
     dimensions,
     get_bottom,
     get_top,
+    size_cache,
 )
 from .zones import find_zones
 
@@ -131,6 +132,11 @@ def _extract_node(node: BlenderNode) -> bNode:
 
 def extract(ntree: NodeTree) -> tuple[bNodeTree, Binding]:
     """The plain-data copy of *ntree*, and the binding back to it."""
+    with size_cache():
+        return _extract(ntree)
+
+
+def _extract(ntree: NodeTree) -> tuple[bNodeTree, Binding]:
     tree = bNodeTree()
     binding = Binding()
     data_of: dict[BlenderNode, bNode] = {}

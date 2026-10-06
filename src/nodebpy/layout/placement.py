@@ -6,7 +6,8 @@ in the column before, forming *blocks* that share a height. The blocks are
 then packed as close as the nodes above them allow. This is done four
 times, aligning to either side and packing either way.
 
-On ``model.Node``: ``root`` is the first node of a node's block and
+On ``model.Node``: ``col_index`` is a node's index in its column, kept by
+:func:`index_columns`. ``root`` is the first node of a node's block and
 ``aligned`` the next one round it. ``sink`` and ``shift`` say which group of
 blocks moves together and by how much. ``inner_shift`` is a node's offset
 within its block: zero when tops are aligned, a socket's offset when
@@ -33,6 +34,14 @@ from .model import Cluster, Edge, Kind, Node, Socket, link_priority
 from .priority import SPINE_MIN_PRIORITY, TRUNK_MIN_PRIORITY
 
 
+def index_columns(columns: Iterable[Sequence[Node]]) -> None:
+    """Give every node its ``col_index``. To be called again whenever the
+    order within a column changes."""
+    for col in columns:
+        for i, v in enumerate(col):
+            v.col_index = i
+
+
 def marked_conflicts(
     G: LayoutGraph[Node],
     *,
@@ -50,7 +59,7 @@ def marked_conflicts(
         for upto, u in enumerate(col):
             if should_ensure_alignment(u):
                 upper_nbr = next(iter(G.predecessors(u)))
-                k_1 = upper_nbr.col.index(upper_nbr)
+                k_1 = upper_nbr.col_index
             elif u == col[-1]:
                 k_1 = len(columns[i - 1]) - 1
             else:
@@ -64,7 +73,7 @@ def marked_conflicts(
                     continue
 
                 for pred in G.predecessors(v):
-                    k = pred.col.index(pred)
+                    k = pred.col_index
                     if k < k_0 or k > k_1:
                         marked_edges.add(frozenset((pred, v)))
 
@@ -99,14 +108,14 @@ def _align_column(
     levels: set[int] = set()
     for v in col:
         preds = []
-        for u in sorted(G.predecessors(v), key=lambda u: u.col.index(u)):
+        for u in sorted(G.predecessors(v), key=lambda u: u.col_index):
             priority = 0
             if priorities:
                 priority = max(
                     link_priority(link, priorities) for link in G.links_between(u, v)
                 )
                 levels.add(priority)
-            preds.append((u.col.index(u), u, priority))
+            preds.append((u.col_index, u, priority))
         candidates.append(preds)
 
     # (index of predecessor, index of node) of the alignments made.
@@ -302,7 +311,7 @@ def _place_block(v: Node, is_up: bool, state: LayoutState) -> Iterator[Node]:
     v.y = 0
     initial = True
     for w in iter_block(v):
-        i = w.col.index(w)
+        i = w.col_index
 
         if i == 0:
             continue
@@ -480,7 +489,45 @@ def balance(G: LayoutGraph[Node], layouts: list[list[float]]) -> None:
 
 
 _ITER_LIMIT = 20
-_DIRECTION_TO_IDX = {"RIGHT_DOWN": 0, "RIGHT_UP": 1, "LEFT_DOWN": 2, "LEFT_UP": 3}
+_DIRECTIONS = {
+    "RIGHT_DOWN": (False, False),
+    "RIGHT_UP": (False, True),
+    "LEFT_DOWN": (True, False),
+    "LEFT_UP": (True, True),
+}
+"""Each direction as (aligned to the right, packed up)."""
+
+
+def _align_and_pack(
+    G: LayoutGraph[Node],
+    T: DiGraph[Node | Cluster],
+    marked_edges: set[frozenset[Node]],
+    is_right: bool,
+    is_up: bool,
+    state: LayoutState,
+) -> list[float]:
+    """One of the four runs: align, shift and pack, repeated, at most
+    ``_ITER_LIMIT`` times, while :func:`get_marked_nodes` finds frames with
+    gaps. Returns the ``y`` of every node of *G*, as if packed down."""
+    priorities = state.socket_priority
+    marked_nodes: set[Node] = set()
+    for _ in range(_ITER_LIMIT):
+        horizontal_alignment(
+            G, marked_edges, marked_nodes, priorities, TRUNK_MIN_PRIORITY
+        )
+        inner_shift(G, is_right, is_up, state)
+        vertical_compaction(G, is_up, state)
+
+        if new_marked_nodes := get_marked_nodes(G, T, marked_nodes, is_up, state):
+            marked_nodes.update(new_marked_nodes)
+            for v in G:
+                v.bk_reset()
+        else:
+            break
+    layout = [-v.y if is_up else v.y for v in G]
+    for v in G:
+        v.bk_reset()
+    return layout
 
 
 def bk_assign_y_coords(
@@ -488,14 +535,15 @@ def bk_assign_y_coords(
 ) -> None:
     """Give every node its ``y``, the height of its top edge.
 
-    Aligns and packs four times: with the neighbours to the left or to the
-    right, packing up or down. A run is repeated, at most ``_ITER_LIMIT``
-    times, while :func:`get_marked_nodes` finds frames with gaps. The
-    result is the run ``options.direction`` names, or for ``"BALANCED"`` the
-    mean of the two middle values of the four for each node."""
+    Aligns and packs with the neighbours to the left or to the right,
+    packing up or down (:func:`_align_and_pack`). The result is the run
+    ``options.direction`` names, then the only one made, or for
+    ``"BALANCED"`` the mean of the two middle values of the four runs for
+    each node."""
     columns = G.columns
     for col in columns:
         col.reverse()
+    index_columns(columns)
 
     def is_incident_to_inner_segment(v):
         return v.is_reroute and any(u.is_reroute for u in G.predecessors(v))
@@ -510,53 +558,34 @@ def bk_assign_y_coords(
         G, should_ensure_alignment=is_incident_to_vertical_border
     )
 
-    priorities = state.socket_priority
+    direction = state.options.direction
+    wanted = (
+        set(_DIRECTIONS.values())
+        if direction == "BALANCED"
+        else {_DIRECTIONS[direction]}
+    )
     layouts = []
-    for dir_x in (-1, 1):
+    for is_right in (False, True):
         G = G.reversed()
         columns.reverse()
-        for dir_y in (-1, 1):
-            i = 0
-            marked_nodes = set()
-            is_up = dir_y == 1
-            while i < _ITER_LIMIT:
-                i += 1
-                horizontal_alignment(
-                    G,
-                    marked_edges,
-                    marked_nodes,
-                    priorities,
-                    TRUNK_MIN_PRIORITY,
+        for is_up in (False, True):
+            if (is_right, is_up) in wanted:
+                layouts.append(
+                    _align_and_pack(G, T, marked_edges, is_right, is_up, state)
                 )
-                inner_shift(G, dir_x == 1, is_up, state)
-                vertical_compaction(G, is_up, state)
-
-                if new_marked_nodes := get_marked_nodes(
-                    G, T, marked_nodes, is_up, state
-                ):
-                    marked_nodes.update(new_marked_nodes)
-                    for v in G:
-                        v.bk_reset()
-                else:
-                    break
-            layouts.append([v.y * -dir_y for v in G])
-
-            for v in G:
-                v.bk_reset()
-
             for col in columns:
                 col.reverse()
+            index_columns(columns)
 
     for col in columns:
         col.reverse()
+    index_columns(columns)
 
-    if state.options.direction == "BALANCED":
+    if direction == "BALANCED":
         balance(G, layouts)
         for i, v in enumerate(G):
-            values = [layout[i] for layout in layouts]
-            values.sort()
+            values = sorted(layout[i] for layout in layouts)
             v.y = fmean(values[1:3])
     else:
-        i = _DIRECTION_TO_IDX[state.options.direction]
-        for v, y in zip(G, layouts[i]):
+        for v, y in zip(G, layouts[0]):
             v.y = y
