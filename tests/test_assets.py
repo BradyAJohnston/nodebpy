@@ -14,7 +14,6 @@ from nodebpy.assets import (
     generate_asset_api,
     generate_asset_modules,
 )
-from nodebpy.assets._codegen import generate_essentials
 from nodebpy.builder import BaseNode, asset_group_base
 from nodebpy.nodes import compositor as nc
 from nodebpy.nodes import geometry as ng
@@ -330,6 +329,8 @@ def test_socket_types_fallback():
 
 @_needs_essentials
 def test_generate_essentials_writes_modules(tmp_path):
+    from gen.essentials import generate_essentials
+
     written = generate_essentials(tmp_path)
     assert written.get("geometry")
     assert (tmp_path / "geometry" / "assets.py").exists()
