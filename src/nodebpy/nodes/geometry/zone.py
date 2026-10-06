@@ -187,9 +187,10 @@ class _StateZone(_ZonePair):
     input: BaseZoneInput
     output: BaseZoneOutput
 
-    @property
-    def items(self) -> "_StateZoneItems":
-        return _StateZoneItems(self)
+    if TYPE_CHECKING:
+
+        @property
+        def items(self) -> "_StateZoneItems": ...
 
     def _init_items(
         self, items: Mapping[str, InputAny] | Iterable[InputAny] | None

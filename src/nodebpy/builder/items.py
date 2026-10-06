@@ -143,14 +143,9 @@ def _is_linkable(value: Any) -> bool:
     )
 
 
-def _apply_item_value(owner, socket: NodeSocket, value: Any) -> None:
-    """Link ``value`` into ``socket`` (linkables) or set it as the socket
-    default (plain values and datablocks); ``None`` leaves it untouched."""
-    if value is None:
-        return
-    if _is_linkable(value):
-        owner.tree.link(owner._source_socket(value), socket)
-    elif isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(value, str):
+def _set_item_default(owner, socket: NodeSocket, value: Any) -> None:
+    """Set a plain value or datablock as the socket default."""
+    if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(value, str):
         # a menu socket's enum only exists once the tree is built, so the
         # default is applied at context exit
         from .tree import _MenuDefault
@@ -422,7 +417,7 @@ class ItemCollection(Generic[_HandleT]):
         if source is not None:
             owner.tree.link(source, self._entry_socket(handle))
         elif value is not None:
-            _apply_item_value(owner, self._entry_socket(handle), value)
+            _set_item_default(owner, self._entry_socket(handle), value)
         return handle
 
     def _typed(self, value: Any, name: str | None, type: str, **props: Any) -> Any:

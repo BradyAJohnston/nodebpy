@@ -30,6 +30,7 @@ from ..builder import (
 )
 from ..builder.items import (
     _ALL_ITEM_TYPES,
+    _DEFAULT_NAMES,
     Item,
     _deprecated,
     _FieldItems,
@@ -376,7 +377,7 @@ class _FieldToListMixin(ItemsMixin):
 
     def _list_item(self, type: str, value: Any, name: str | None) -> Any:
         _deprecated(
-            f"FieldToList.{type.lower()}(value, name)",
+            f"FieldToList.{_DEFAULT_NAMES[type].lower()}(value, name)",
             "items.<type>(value, name).output",
         )
         return self.items._declare(value, name, type).output

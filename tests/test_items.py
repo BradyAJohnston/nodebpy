@@ -127,6 +127,39 @@ def test_menu_and_index_switch_items():
         assert len(sw.items[2].input.socket.links) == 0
 
 
+def test_rshift_into_items_node_adds_an_item():
+    with g.tree():
+        bake = g.Cube() >> g.Bake()
+        assert [i.name for i in bake.items] == ["Mesh"]
+        ev = g.Cube() >> g.EvaluateClosure()
+        assert [i.name for i in ev.inputs] == ["Mesh"]
+        zone = g.RepeatZone(2, items={"Geometry": g.Cube()})
+        assert len(zone.output.items) == 1  # the node's own plain collection
+
+
+def test_datablock_values_become_defaults():
+    import bpy
+
+    with g.tree():
+        material = bpy.data.materials.new("ItemsTestMaterial")
+        item = g.RepeatZone(2).items.new(material, "Mat")
+        assert item.socket_type == "MATERIAL"
+        assert item.initial.socket.default_value == material
+        assert len(item.initial.socket.links) == 0
+
+
+def test_format_string_and_menu_switch_iterables():
+    with g.tree():
+        fs = g.FormatString("{x} {y} {z}", items=[1, 2.5, "s"])
+        assert [i.socket_type for i in fs.items] == ["INT", "FLOAT", "STRING"]
+        fs.items.float(1.0, "x")
+        fs.items.integer(2, "y")
+        fs.items.string("hi", "z")
+        assert fs.items["z"].input.socket.default_value == "hi"
+        ms = g.MenuSwitch.float(items=[1.0, 2.0])
+        assert [i.name for i in ms.items] == ["Item", "Item.001"]
+
+
 def test_deprecated_entry_points_still_work():
     with g.tree():
         cap = g.CaptureAttribute(g.Cube())
@@ -142,16 +175,28 @@ def test_deprecated_entry_points_still_work():
             assert legacy.input.socket.default_value == pytest.approx(0.25)
             assert cap.items.vector("Old").name == "Old"
             assert cap.add_item("x", 1.0).name == "x"
-            assert cap.add_items({"y": "FLOAT"})["y"].socket_type == "FLOAT"
+            handles = cap.add_items({"y": "FLOAT", "z": g.Index()})
+            assert [h.socket_type for h in handles.values()] == ["FLOAT", "INT"]
             assert cap.capture(g.Position()).socket.is_output
             assert zone.item("q", 1.0).name == "q"
+            assert zone.item("r", "VECTOR").socket_type == "VECTOR"
             assert ms.item("C", 2.0).name == "C"
             assert ftl.float(1.0).socket.is_output
             assert cz.input_item("I").socket.is_output
+            assert not cz.output_item("O").socket.is_output
+            ftg = g.FieldToGrid.float()
+            for method in ("float", "boolean", "vector", "integer"):
+                assert getattr(ftg, f"capture_{method}")().socket.is_output
+            for method in ("integer", "boolean", "vector", "color", "rotation"):
+                assert getattr(ftl, method)().socket.is_output
+            for method in ("matrix", "string", "menu"):
+                assert getattr(ftl, method)().socket.is_output
             assert fe.inputs is not None and fe.main is not None
             assert fe.generated is not None
             assert fe.item("a", g.Index()).name == "a"
             assert fe.main_item("b", type="FLOAT").name == "b"
             assert fe.generated_item("c", type="FLOAT").name == "c"
+            assert fe.output.add_generated_item("d", 1.0).name == "d"
+            assert fe.output.capture_generated(g.Index(), name="e").socket.is_output
         assert all(w.category is DeprecationWarning for w in caught)
-        assert len(caught) == 15
+        assert len(caught) == 31
