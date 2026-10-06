@@ -13,6 +13,7 @@ broken generated tree can never block regenerating it.
 from __future__ import annotations
 
 import math
+from functools import lru_cache
 
 import numpy as np
 
@@ -76,6 +77,7 @@ def group_digits(text: str) -> str:
     return sign + f"{int(int_part):_}" + dot + frac
 
 
+@lru_cache(maxsize=4096)
 def fmt_float(value: float, *, snap: bool = True) -> str:
     """Shortest readable literal for a float32-backed value.
 

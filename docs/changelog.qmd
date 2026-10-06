@@ -19,6 +19,7 @@ The layout behind `arrange(tree)`, the default arrangement of `TreeBuilder`, was
 - **Reroutes only where needed.** `reroutes="blocked"` adds reroutes only to links that would be drawn across a node, and keeps the reroutes already in the tree. `"all"` routes every long link. The default `"none"` only moves nodes.
 - **Arrange the selection.** `arrange(tree, selected_only=True)` arranges the selected nodes among themselves. The others do not move.
 - **No `networkx` needed.** `arrange()` always gives the layered layout.
+- **Faster dumps.** `nodebpy dump` and `textconv` take about half the time on a large library: modules are formatted side by side, and the probes of fresh trees, float formatting and name normalisation are cached for the dump.
 - **Faster.** Node locations are written in one call instead of one at a time, and the slow steps of the layout were reworked. A 600-node tree arranges in under a second instead of two and a half.
 
 The design is described in `src/nodebpy/layout/DESIGN.md`.
