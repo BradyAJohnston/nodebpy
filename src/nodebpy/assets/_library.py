@@ -77,6 +77,7 @@ import shutil
 import sys
 import uuid
 from collections.abc import Iterable
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import nullcontext
 from dataclasses import replace
 from pathlib import Path
@@ -98,6 +99,7 @@ from ..export.codegen import (
     _class_name,
     _fmt,
     _format_with_ruff,
+    probe_trees,
     to_python,
 )
 from ._codegen import _TREE_MODULES
@@ -655,27 +657,28 @@ def dump_library(
                 "same-named datablocks already exist in this session — dump "
                 "from a fresh session."
             )
-        written = _dump_appended(
-            list(dst.node_groups),
-            added["node_groups"],
-            output_dir,
-            asset_materials=[m.name for m in dst.materials],
-            nodebpy_pkg=nodebpy_pkg,
-            snapshot_positions=snapshot_positions,
-            keep_reroutes=keep_reroutes,
-            materials=materials,
-            format=format,
-            library_blend=anchor_blend.resolve() if typed_api or api_only else None,
-            anchor_dir=anchor_dir.resolve(),
-            api_only=api_only,
-            docstrings=docstrings,
-            roots=selected,
-            # A full dump owns the managed subdirectories: clear stale modules
-            # from assets since renamed or deleted, so the next build_library
-            # doesn't silently resurrect them. A filtered dump (names=...)
-            # leaves the other assets' files alone.
-            clean_stale=selected is None,
-        )
+        with probe_trees():
+            written = _dump_appended(
+                list(dst.node_groups),
+                added["node_groups"],
+                output_dir,
+                asset_materials=[m.name for m in dst.materials],
+                nodebpy_pkg=nodebpy_pkg,
+                snapshot_positions=snapshot_positions,
+                keep_reroutes=keep_reroutes,
+                materials=materials,
+                format=format,
+                library_blend=anchor_blend.resolve() if typed_api or api_only else None,
+                anchor_dir=anchor_dir.resolve(),
+                api_only=api_only,
+                docstrings=docstrings,
+                roots=selected,
+                # A full dump owns the managed subdirectories: clear stale modules
+                # from assets since renamed or deleted, so the next build_library
+                # doesn't silently resurrect them. A filtered dump (names=...)
+                # leaves the other assets' files alone.
+                clean_stale=selected is None,
+            )
     finally:
         for coll in _CLEANUP_COLLECTIONS:
             data = getattr(bpy.data, coll)
@@ -922,12 +925,14 @@ def _dump_appended(
             nodebpy_pkg=nodebpy_pkg,
             snapshot_positions=snapshot_positions,
             keep_reroutes=keep_reroutes,
-            format=format,
+            format=False,
             typed_groups=typed_groups,
             root_interface=root_interface,
         )
-        return _write_module(output_dir, module, source)
+        sources[module] = source
+        return output_dir / (module + ".py")
 
+    sources: dict[str, str] = {}
     written: dict[str, Path] = {}
     for tree in write_assets:
         written[tree.name] = write_module(tree.name, modules[tree.name], kind="asset")
@@ -942,6 +947,7 @@ def _dump_appended(
         # the returned mapping; referenced-only materials are dependencies.
         if (mat_name := material_trees[key]) in asset_material_names:
             written[mat_name] = path
+    _write_modules(output_dir, sources, format)
     if clean_stale:
         _remove_stale_modules(output_dir, all_written)
 
@@ -960,6 +966,20 @@ def _asset_module_paths(asset_trees: list) -> dict[str, str]:
             {n: f"{dirname}/{stem}" for n, stem in _assign_stems(dir_assets).items()}
         )
     return modules
+
+
+def _write_modules(output_dir: Path, sources: dict[str, str], format: bool) -> None:
+    """Write every module in *sources* (module path from the output root to
+    its source). With *format*, each is formatted first; ruff runs as a
+    subprocess per module, so the modules are formatted side by side."""
+
+    def write(item: tuple[str, str]) -> None:
+        module, source = item
+        text = _format_with_ruff(source) if format else source
+        _write_module(output_dir, module, text)
+
+    with ThreadPoolExecutor() as pool:
+        list(pool.map(write, sources.items()))
 
 
 def _write_module(output_dir: Path, module: str, source: str) -> Path:
@@ -1017,6 +1037,7 @@ def _dump_api_only(
 
     class_names = _assign_class_names({t.name: t.name for t in asset_trees})
     modules = _asset_module_paths(asset_trees)
+    sources: dict[str, str] = {}
     written: dict[str, Path] = {}
     for tree in asset_trees:
         if roots is not None and tree.name not in roots:
@@ -1036,10 +1057,9 @@ def _dump_api_only(
             "# Typed API only: the class appends the asset from its library and holds no recipe to rebuild it.",
             *merge_imports(imports),
         ]
-        source = "\n".join(header) + "\n\n\n" + code
-        written[tree.name] = _write_module(
-            output_dir, module, _format_with_ruff(source) if format else source
-        )
+        sources[module] = "\n".join(header) + "\n\n\n" + code
+        written[tree.name] = output_dir / (module + ".py")
+    _write_modules(output_dir, sources, format)
     if clean_stale:
         _remove_stale_modules(output_dir, set(written.values()))
     _write_tree_exports(output_dir, asset_trees, modules, class_names)

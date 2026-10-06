@@ -26,8 +26,10 @@ import keyword
 import re
 import textwrap
 from collections import Counter
-from collections.abc import Callable, Collection, Mapping
+from collections.abc import Callable, Collection, Iterator, Mapping
+from contextlib import contextmanager
 from dataclasses import dataclass, field
+from functools import cache
 from typing import TYPE_CHECKING, Any, Literal, NamedTuple
 
 import numpy as np
@@ -574,19 +576,61 @@ def _find_cls(bl_idname: str) -> tuple[str, type] | None:
 # ---------------------------------------------------------------------------
 
 
+# Signatures are read for every constructor call emitted; they do not change.
+_signature = cache(inspect.signature)
+
+# Probe trees kept open inside probe_trees(), by tree type.
+_PROBE_TREES: dict[str, Any] = {}
+_KEEP_PROBE_TREES = False
+
+
+@contextmanager
+def probe_trees() -> Iterator[None]:
+    """Within the block, :func:`_with_probe_tree` keeps one throwaway tree
+    per tree type, emptied between probes, instead of making and removing
+    one per probe. The trees are removed on leaving the block."""
+    global _KEEP_PROBE_TREES
+    if _KEEP_PROBE_TREES:  # nested: the outer block owns the trees
+        yield
+        return
+    _KEEP_PROBE_TREES = True
+    try:
+        yield
+    finally:
+        _KEEP_PROBE_TREES = False
+        import bpy
+
+        for tree in _PROBE_TREES.values():
+            bpy.data.node_groups.remove(tree)
+        _PROBE_TREES.clear()
+
+
 def _with_probe_tree[T](tree_idname: str, fn: Callable[[Any], T], default: T) -> T:
     """Run ``fn`` against a throwaway node tree of ``tree_idname`` and return its
-    result, removing the tree afterward. Returns ``default`` if Blender is
-    unavailable or anything goes wrong. The probe tree is never the user's."""
+    result. Returns ``default`` if Blender is unavailable or anything goes
+    wrong. The probe tree is never the user's: it is removed afterward, or
+    emptied and kept for the next probe inside :func:`probe_trees`."""
     try:
         import bpy
 
-        probe_tree = bpy.data.node_groups.new("__nodebpy_codegen_probe__", tree_idname)  # ty: ignore[invalid-argument-type]
-        assert probe_tree is not None
+        probe_tree = _PROBE_TREES.get(tree_idname)
+        if probe_tree is None:
+            probe_tree = bpy.data.node_groups.new(
+                "__nodebpy_codegen_probe__",
+                tree_idname,  # ty: ignore[invalid-argument-type]
+            )
+            assert probe_tree is not None
+            if _KEEP_PROBE_TREES:
+                _PROBE_TREES[tree_idname] = probe_tree
         try:
             return fn(probe_tree)
         finally:
-            bpy.data.node_groups.remove(probe_tree)
+            if _KEEP_PROBE_TREES:
+                probe_tree.nodes.clear()
+                if probe_tree.interface is not None:
+                    probe_tree.interface.clear()
+            else:
+                bpy.data.node_groups.remove(probe_tree)
     except Exception:  # noqa: BLE001
         return default
 
@@ -1209,7 +1253,7 @@ class EmitContext:
     ) -> dict[str, Expr]:
         """Literal kwargs for unlinked sockets whose value differs from the default."""
         try:
-            sig = inspect.signature(cls.__init__)
+            sig = _signature(cls.__init__)
         except (TypeError, ValueError):
             sig = None
         positional = (
@@ -1479,7 +1523,7 @@ def _non_default_props(node, cls: type) -> dict[str, Any]:
     ``bl_rna.properties`` or shadow a base-Node property like ``color``.
     """
     try:
-        sig = inspect.signature(cls.__init__)
+        sig = _signature(cls.__init__)
     except (TypeError, ValueError):
         return {}
     rna_props = getattr(getattr(node, "bl_rna", None), "properties", None)
@@ -1619,7 +1663,7 @@ def _parse_factory_func(
         try:
             init_params = [
                 param
-                for param in inspect.signature(cls.__init__).parameters.values()
+                for param in _signature(cls.__init__).parameters.values()
                 if param.name != "self"
                 and param.kind
                 in (
@@ -1661,7 +1705,7 @@ def _parse_factory_func(
 
 def _factory_param_defaults(func) -> dict[str, Any] | None:
     try:
-        sig = inspect.signature(func)
+        sig = _signature(func)
     except (TypeError, ValueError):
         return None
     defaults: dict[str, Any] = {}
@@ -1695,7 +1739,7 @@ def _class_factories(cls: type) -> list[_Factory]:
         # take ``*, normalize=..., noise_dimensions=...``), not sockets.
         keyword_only = {
             name
-            for name, param in inspect.signature(func).parameters.items()
+            for name, param in _signature(func).parameters.items()
             if param.kind is inspect.Parameter.KEYWORD_ONLY
         }
         prop_params = {
@@ -3374,7 +3418,7 @@ def _interface_kwargs(item, method: str) -> dict[str, Any]:
     if fn is None:
         return {}
     try:
-        sig = inspect.signature(fn)
+        sig = _signature(fn)
     except (TypeError, ValueError):
         return {}
     defaults = _get_interface_defaults(item.id_data.bl_idname, item.socket_type)
@@ -3455,7 +3499,7 @@ def _emit_interface(
             from ..builder.tree import SocketContext
 
             fresh = _get_interface_defaults(item.id_data.bl_idname, item.socket_type)
-            param = inspect.signature(getattr(SocketContext, method)).parameters.get(
+            param = _signature(getattr(SocketContext, method)).parameters.get(
                 "default_value"
             )
             factory_default = None if param is None else param.default
@@ -4170,21 +4214,29 @@ _TREE_PROP_CANDIDATES = (
 )
 
 
+# Fresh-tree defaults of the candidate properties, probed once per tree type.
+_TREE_PROP_DEFAULTS: dict[str, dict[str, Any]] = {}
+
+
 def _tree_prop_overrides(node_tree) -> dict[str, Any]:
     """Tree-level properties of ``node_tree`` differing from a fresh tree's
-    defaults, probed against a throwaway tree of the same type."""
+    defaults, probed once per tree type against a throwaway tree."""
+    tree_idname = node_tree.bl_idname
+    if tree_idname not in _TREE_PROP_DEFAULTS:
 
-    def collect(probe) -> dict[str, Any]:
-        out: dict[str, Any] = {}
-        for name in _TREE_PROP_CANDIDATES:
-            if not hasattr(probe, name):
-                continue
-            value = getattr(node_tree, name)
-            if value != getattr(probe, name):
-                out[name] = value
-        return out
+        def collect(probe) -> dict[str, Any]:
+            return {
+                name: getattr(probe, name)
+                for name in _TREE_PROP_CANDIDATES
+                if hasattr(probe, name)
+            }
 
-    return _with_probe_tree(node_tree.bl_idname, collect, {})
+        _TREE_PROP_DEFAULTS[tree_idname] = _with_probe_tree(tree_idname, collect, {})
+    return {
+        name: value
+        for name, default in _TREE_PROP_DEFAULTS[tree_idname].items()
+        if (value := getattr(node_tree, name)) != default
+    }
 
 
 def _node_prop_lines(node) -> list[str]:
@@ -5201,7 +5253,7 @@ def _emit_color_ramp(node, ctx: EmitContext) -> Expr | _Val | None:
     ramp = node.color_ramp
     found = _find_cls(node.bl_idname)
     assert found is not None
-    params = inspect.signature(found[1].__init__).parameters
+    params = _signature(found[1].__init__).parameters
     stops = tuple((element.position, tuple(element.color)) for element in ramp.elements)
     if _norm_floats(stops) != _norm_floats(params["items"].default):
         call.kwargs["items"] = Lit(stops)
@@ -5221,7 +5273,7 @@ def _emit_float_curve(node, ctx: EmitContext) -> Expr | _Val | None:
     call = ctx.constructor(node)
     found = _find_cls(node.bl_idname)
     assert found is not None
-    default = inspect.signature(found[1].__init__).parameters["items"].default
+    default = _signature(found[1].__init__).parameters["items"].default
     points = tuple(
         tuple(point.location)
         if point.handle_type == "AUTO"

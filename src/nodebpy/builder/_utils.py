@@ -3,6 +3,7 @@ from __future__ import annotations
 import keyword
 import re
 import unicodedata
+from functools import cache
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 import bpy
@@ -40,6 +41,7 @@ GEO_NODE_NAMES = (
 _NON_IDENTIFIER = re.compile(r"[^0-9a-z]+")
 
 
+@cache
 def normalize_name(name: str) -> str:
     """Convert 'Geometry' or 'My Socket' to a valid lower-case Python identifier
     ('geometry', 'my_socket'). Spaces, punctuation and other non-identifier
