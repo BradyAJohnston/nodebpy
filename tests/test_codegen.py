@@ -3157,7 +3157,7 @@ def test_codegen_input_detection():
     ``__init__``, including inputs that Blender's socket-usage inference marks
     inactive for the current node options (here: a Menu Switch pinned to
     "Option 1" deactivates the "Option 2" group input on any instance)."""
-    from nodebpy.assets._codegen import _introspect_group, render_asset_class
+    from nodebpy.assets._codegen import _introspect_group, _render_class
 
     with g.tree("MenuInputDetection") as tree:
         (
@@ -3176,11 +3176,11 @@ def test_codegen_input_detection():
     )
     assert [s.name for s in cls.inputs] == ["Option 1", "Option 2"]
 
-    code, _ = render_asset_class(cls)
+    code = _render_class(cls)
     assert "option_1: InputGeometry = None" in code
     assert "option_2: InputGeometry = None" in code
-    for socket in cls.inputs:  # __init__ forwards every input by name
-        assert f'"{socket.name}": {socket.attr}' in code
+    for socket in cls.inputs:  # __init__ forwards every input by identifier
+        assert f'"{socket.identifier}": {socket.attr}' in code
 
 
 def test_group_input_splits_move_one_link_per_entry():
