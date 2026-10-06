@@ -402,7 +402,11 @@ def _class_docstring(cls: _AssetClass) -> str:
 
 
 def _render_interface(
-    cls: _AssetClass, *, docstrings: bool = True, nodebpy_pkg: str = "nodebpy"
+    cls: _AssetClass,
+    *,
+    docstrings: bool = True,
+    nodebpy_pkg: str = "nodebpy",
+    key_by_name: bool = False,
 ) -> tuple[GroupInterface, list[str]]:
     """The typed-interface parts of the class for *cls*, and the import lines
     they need.
@@ -413,10 +417,10 @@ def _render_interface(
     ``Asset*Group``; without one (a shared helper group, which is not an
     asset) only the typed API is added and the ``Custom*Group`` base stays.
 
-    The ``__init__`` keys its super call by socket *name*, with a
-    ``_named_links`` fallback for duplicate names, rather than by identifier:
-    identifiers are authoring-history artifacts that a tree rebuilt from
-    ``_build_group`` reassigns, while names round-trip.
+    The ``__init__`` keys its super call by socket identifier. With
+    *key_by_name* it keys by socket name instead, with a ``_named_links``
+    fallback for duplicate names: a tree rebuilt from ``_build_group`` gets
+    new identifiers from Blender, while names round-trip.
     """
     docstring = (
         _class_docstring(cls) if docstrings else f'"""{_clean_doc(cls.description)}"""'
@@ -428,13 +432,21 @@ def _render_interface(
         if params
         else "(self)"
     )
-    name_counts = Counter(s.name for s in cls.inputs)
-    keyed = [
-        f"{_quote(s.name)}: {s.attr}" for s in cls.inputs if name_counts[s.name] == 1
-    ]
-    pairs = [
-        f"({_quote(s.name)}, {s.attr})" for s in cls.inputs if name_counts[s.name] > 1
-    ]
+    if key_by_name:
+        name_counts = Counter(s.name for s in cls.inputs)
+        keyed = [
+            f"{_quote(s.name)}: {s.attr}"
+            for s in cls.inputs
+            if name_counts[s.name] == 1
+        ]
+        pairs = [
+            f"({_quote(s.name)}, {s.attr})"
+            for s in cls.inputs
+            if name_counts[s.name] > 1
+        ]
+    else:
+        keyed = [f"{_quote(s.identifier)}: {s.attr}" for s in cls.inputs]
+        pairs = []
     args = []
     if keyed:
         args.append("**{" + ", ".join(keyed) + "}")
@@ -509,7 +521,7 @@ def interface_parts(
     ``_build_group``, so one class both documents the group and carries the
     recipe that regenerates it."""
     cls = _introspect_group(group, group.name, library_source or "")
-    return _render_interface(cls, nodebpy_pkg=nodebpy_pkg)
+    return _render_interface(cls, nodebpy_pkg=nodebpy_pkg, key_by_name=True)
 
 
 def render_asset_class(
@@ -517,7 +529,8 @@ def render_asset_class(
 ) -> tuple[str, list[str]]:
     """The source of a class that only appends its asset: the typed
     interface around the attributes the appending base needs, with no
-    recipe. Returns the class and the import lines it needs."""
+    recipe. Its library is never rebuilt, so the ``__init__`` keys by
+    socket identifier. Returns the class and the import lines it needs."""
     parts, import_lines = _render_interface(
         cls, docstrings=docstrings, nodebpy_pkg=nodebpy_pkg
     )

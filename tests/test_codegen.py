@@ -3179,8 +3179,8 @@ def test_codegen_input_detection():
     code, _ = render_asset_class(cls)
     assert "option_1: InputGeometry = None" in code
     assert "option_2: InputGeometry = None" in code
-    for socket in cls.inputs:  # __init__ forwards every input by name
-        assert f'"{socket.name}": {socket.attr}' in code
+    for socket in cls.inputs:  # __init__ forwards every input by identifier
+        assert f'"{socket.identifier}": {socket.attr}' in code
 
 
 def test_group_input_splits_move_one_link_per_entry():

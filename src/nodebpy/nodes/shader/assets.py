@@ -68,7 +68,7 @@ class CombineCylindrical(AssetShaderGroup):
         phi: InputFloat = 0.0,
         z: InputFloat = 0.0,
     ):
-        super().__init__(R=r, Phi=phi, Z=z)
+        super().__init__(Socket_1=r, Socket_2=phi, Socket_3=z)
 
 
 class CombineSpherical(AssetShaderGroup):
@@ -128,7 +128,7 @@ class CombineSpherical(AssetShaderGroup):
         phi: InputFloat = 0.0,
         theta: InputFloat = 0.0,
     ):
-        super().__init__(R=r, Phi=phi, Theta=theta)
+        super().__init__(Socket_1=r, Socket_2=phi, Socket_3=theta)
 
 
 class SeparateCylindrical(AssetShaderGroup):
@@ -182,7 +182,7 @@ class SeparateCylindrical(AssetShaderGroup):
         self,
         vector: InputVector = None,
     ):
-        super().__init__(Vector=vector)
+        super().__init__(Socket_0=vector)
 
 
 class SeparateSpherical(AssetShaderGroup):
@@ -236,7 +236,7 @@ class SeparateSpherical(AssetShaderGroup):
         self,
         vector: InputVector = None,
     ):
-        super().__init__(Vector=vector)
+        super().__init__(Socket_0=vector)
 
 
 __all__ = (
