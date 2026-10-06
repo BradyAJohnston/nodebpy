@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Tests for nodebpy.export.codegen.to_python() — node tree → Python code generation."""
 
 import re

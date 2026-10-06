@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Mermaid diagram generation for node trees."""
 
 from __future__ import annotations
@@ -78,9 +77,24 @@ def _sorted_nodes(node_tree: NodeTree, reroute_names: set) -> list[Node]:
         for n in node_tree.nodes
         if n not in input_nodes + output_nodes and n.name not in reroute_names
     ]
-    sorted_regular = sorted(
-        regular_nodes, key=lambda n: (n.location[0], -n.location[1])
-    )
+    # By how far along the links a node is, then by creation order: the same
+    # however the tree is arranged.
+    depth = dict.fromkeys(node_tree.nodes, 0)
+    links = [
+        (link.from_node, link.to_node)
+        for link in node_tree.links
+        if link.is_valid and link.from_node and link.to_node
+    ]
+    for _ in node_tree.nodes:
+        changed = False
+        for source, target in links:
+            if depth[target] <= depth[source]:
+                depth[target] = depth[source] + 1
+                changed = True
+        if not changed:
+            break
+    order = {node: index for index, node in enumerate(node_tree.nodes)}
+    sorted_regular = sorted(regular_nodes, key=lambda n: (depth[n], order[n]))
     return input_nodes + sorted_regular + output_nodes
 
 

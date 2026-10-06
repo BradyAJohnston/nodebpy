@@ -27,12 +27,12 @@ docs:
 	cd docs && uv run quartodoc interlinks
 	cd docs && uv run quarto render
 
-# List upstream node-arrange commits not yet ported into the vendored copy
-# (see src/nodebpy/lib/nodearrange/VENDORED.md).
-vendor-check:
-	@rev=$$(sed -n 's/.*Last sync:\*\* upstream commit `\([0-9a-f]*\)`.*/\1/p' src/nodebpy/lib/nodearrange/VENDORED.md); \
-	tmp=$$(mktemp -d); \
-	git clone --quiet --filter=blob:none https://github.com/Leonardo-Pike-Excell/node-arrange $$tmp; \
-	git -C $$tmp log --oneline $$rev..HEAD -- source/arrange source/config.py source/utils.py \
-		&& echo "(no output above = vendored copy is up to date with upstream)"; \
-	rm -rf $$tmp
+# Arrange a corpus of trees and print layout-quality metrics; see
+# tests/layout/report.py for comparing runs and drawing the trees.
+layout-report:
+	uv run python -m tests.layout.report --essentials
+
+# Recompute the layouts stored in tests/layout/corpus/ after a deliberate
+# change to the layout; it prints what changed in each layout's counts.
+layout-corpus:
+	uv run python -m tests.layout.corpus --update

@@ -1137,8 +1137,8 @@ def build_library(
     crossing-reduction iterations, direction, socket alignment, ...) is
     scoped over the build via
     :func:`nodebpy.builder.default_sugiyama_options`. ``add_reroutes=True``
-    additionally inserts reroute nodes to route long links around nodes
-    (the node-arrange addon's behaviour); it composes with ``arrange``.
+    additionally inserts reroute nodes to route long links around nodes;
+    it composes with ``arrange``.
     ``split_inputs=True`` gives each consumer node its own Group Input
     instance — named and labelled after the interface sockets it carries,
     with unused sockets hidden — instead of a single Group Input trailing
@@ -1239,7 +1239,7 @@ def build_library(
     # disable arrangement and are unaffected).
     options = arrange
     if add_reroutes:
-        options = replace(options or SugiyamaOptions(), add_reroutes=True)
+        options = replace(options or SugiyamaOptions(), reroutes="all")
     arrange_override = (
         default_sugiyama_options(options) if options is not None else nullcontext()
     )
@@ -1351,8 +1351,8 @@ def plot_library(
     if not blend_path.is_file():
         raise FileNotFoundError(f"Asset library not found: {blend_path.resolve()}")
 
-    from ..builder.layout import arrange as arrange_tree_nodes
     from ..export import to_plot
+    from ..layout import arrange as arrange_tree_nodes
 
     patterns = list(names) if names is not None else None
     before = {
@@ -1423,10 +1423,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--add-reroutes",
         action="store_true",
-        help=(
-            "Arrange with reroute nodes inserted to route long links around "
-            "nodes (the node-arrange addon's behaviour)."
-        ),
+        help=("Arrange with reroute nodes inserted to route long links around nodes."),
     )
     layout.add_argument(
         "--spacing",
@@ -1438,10 +1435,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--iterations",
         type=int,
-        help=(
-            "Number of iterations spent reducing crossings between links "
-            "(higher gives fewer crossings, but is slower; default: 50)."
-        ),
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
     layout.add_argument(
         "--direction",
@@ -1464,7 +1458,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--keep-reroutes-outside-frames",
         action="store_true",
-        help="Do not place added reroutes inside frames.",
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
     layout.add_argument(
         "--no-stack-collapsed",
@@ -1475,10 +1469,7 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--stack-margin-y-fac",
         type=float,
-        help=(
-            "Fraction of the vertical spacing used between stacked collapsed "
-            "nodes (default: 0.5)."
-        ),
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
     layout.add_argument(
         "--optimize-sizes",
@@ -1507,15 +1498,12 @@ def _add_arrangement_flags(parser, description: str) -> None:  # pragma: no cove
     layout.add_argument(
         "--balance-aspect",
         type=float,
-        help=("Width-to-height ratio the height balancing aims for (default: 1.6)."),
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
     layout.add_argument(
         "--reroute-margin-y-fac",
         type=float,
-        help=(
-            "Fraction of the vertical spacing kept between consecutive "
-            "reroutes in a column (default: 0.35)."
-        ),
+        help="No longer has an effect; accepted so existing commands and configurations keep working.",
     )
 
 
@@ -1527,28 +1515,18 @@ def _arrange_options_from_args(args) -> SugiyamaOptions | None:
     overrides: dict = {}
     if args.spacing is not None:
         overrides["margin"] = tuple(args.spacing)
-    if args.iterations is not None:
-        overrides["iterations"] = args.iterations
     if args.direction is not None:
         overrides["direction"] = args.direction
     if args.socket_alignment is not None:
         overrides["socket_alignment"] = args.socket_alignment
-    if args.keep_reroutes_outside_frames:
-        overrides["keep_reroutes_outside_frames"] = True
     if not args.stack_collapsed:
         overrides["stack_collapsed"] = False
-    if args.stack_margin_y_fac is not None:
-        overrides["stack_margin_y_fac"] = args.stack_margin_y_fac
     if args.optimize_sizes:
-        overrides["optimize_sizes"] = True
+        overrides["fit_collapsed_widths"] = True
     if not args.sequential_frames:
-        overrides["sequential_frames"] = False
+        overrides["frames_as_stages"] = False
     if not args.balance_heights:
         overrides["balance_heights"] = False
-    if args.balance_aspect is not None:
-        overrides["balance_aspect"] = args.balance_aspect
-    if args.reroute_margin_y_fac is not None:
-        overrides["reroute_margin_y_fac"] = args.reroute_margin_y_fac
     return SugiyamaOptions(**overrides) if overrides else None
 
 
@@ -1959,7 +1937,7 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
         if args.arrange or args.add_reroutes or options is not None:
             method = options or SugiyamaOptions()
             if args.add_reroutes:
-                method = replace(method, add_reroutes=True)
+                method = replace(method, reroutes="all")
         written = plot_library(
             args.blend,
             args.output,

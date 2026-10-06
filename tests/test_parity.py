@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Deep round-trip parity: dump → build must preserve everything on the
 selected surfaces, verified via tree_clipper's full JSON serialization."""
 
