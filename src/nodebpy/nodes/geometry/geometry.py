@@ -15,6 +15,7 @@ from ...builder.socket import (
     GeometrySocket,
     IntegerSocket,
     MaterialSocket,
+    MaterialSocketList,
     MatrixSocket,
     MenuSocket,
     RotationSocket,
@@ -233,6 +234,16 @@ class Arc(BaseNode):
 class Bake(_BakeMixin, BaseNode):
     """
     Cache the incoming data so that it can be used without recomputation
+
+    Parameters
+    ----------
+    *args : InputLinkable | str
+        Values to bake, each as an item named after the socket it comes
+        from; a socket-type string declares an unlinked item.
+    items : dict[str, InputLinkable | str] | None
+        Items by name: a value to bake, or a socket-type string.
+    **kwargs : InputLinkable | str
+        More items by name.
     """
 
     _bl_idname = "GeometryNodeBake"
@@ -1025,6 +1036,10 @@ class CurveToMesh(BaseNode):
         Scale
     fill_caps : InputBoolean
         Fill Caps
+    miter_scale : InputBoolean
+        Miter Scale
+    miter_scale_limit : InputFloat
+        Miter Scale Limit
 
     Inputs
     ------
@@ -1036,6 +1051,10 @@ class CurveToMesh(BaseNode):
         Scale
     i.fill_caps : BooleanSocket
         Fill Caps
+    i.miter_scale : BooleanSocket
+        Miter Scale
+    i.miter_scale_limit : FloatSocket
+        Miter Scale Limit
 
     Outputs
     -------
@@ -1055,6 +1074,10 @@ class CurveToMesh(BaseNode):
         """Scale"""
         fill_caps: BooleanSocket
         """Fill Caps"""
+        miter_scale: BooleanSocket
+        """Miter Scale"""
+        miter_scale_limit: FloatSocket
+        """Miter Scale Limit"""
 
     class _Outputs(SocketAccessor):
         mesh: GeometrySocket
@@ -1073,6 +1096,8 @@ class CurveToMesh(BaseNode):
         profile_curve: InputGeometry = None,
         scale: InputFloat = 1.0,
         fill_caps: InputBoolean = False,
+        miter_scale: InputBoolean = False,
+        miter_scale_limit: InputFloat = 3 * math.pi / 4,
     ):
         super().__init__()
         key_args = {
@@ -1080,6 +1105,8 @@ class CurveToMesh(BaseNode):
             "Profile Curve": profile_curve,
             "Scale": scale,
             "Fill Caps": fill_caps,
+            "Miter Scale": miter_scale,
+            "Miter Scale Limit": miter_scale_limit,
         }
 
         self._establish_links(**key_args)
@@ -1573,7 +1600,7 @@ class DeleteGeometry(BaseNode):
         *,
         mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Point'. Attribute on point"""
+        """Create Delete Geometry with operation 'Point'. Vertex or point"""
         return cls(domain="POINT", geometry=geometry, selection=selection, mode=mode)
 
     @classmethod
@@ -1584,7 +1611,7 @@ class DeleteGeometry(BaseNode):
         *,
         mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Edge'. Attribute on mesh edge"""
+        """Create Delete Geometry with operation 'Edge'. Mesh edge"""
         return cls(domain="EDGE", geometry=geometry, selection=selection, mode=mode)
 
     @classmethod
@@ -1595,28 +1622,28 @@ class DeleteGeometry(BaseNode):
         *,
         mode: Literal["ALL", "EDGE_FACE", "ONLY_FACE"] = "ALL",
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Face'. Attribute on mesh faces"""
+        """Create Delete Geometry with operation 'Face'. Mesh face"""
         return cls(domain="FACE", geometry=geometry, selection=selection, mode=mode)
 
     @classmethod
     def spline(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Spline'. Attribute on spline"""
+        """Create Delete Geometry with operation 'Spline'."""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def instance(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Instance'. Attribute on instance"""
+        """Create Delete Geometry with operation 'Instance'."""
         return cls(domain="INSTANCE", geometry=geometry, selection=selection)
 
     @classmethod
     def layer(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "DeleteGeometry":
-        """Create Delete Geometry with operation 'Layer'. Attribute on Grease Pencil layer"""
+        """Create Delete Geometry with operation 'Layer'. Grease Pencil layer"""
         return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
@@ -2393,6 +2420,62 @@ class FlipFaces(BaseNode):
     ):
         super().__init__()
         key_args = {"Mesh": mesh, "Selection": selection}
+
+        self._establish_links(**key_args)
+
+
+class GeometryMaterials(BaseNode):
+    """
+    Get a list of the materials used by a geometry component
+
+    Parameters
+    ----------
+    geometry : InputGeometry
+        Geometry
+    component_type : InputMenu | Literal['Mesh', 'Point Cloud', 'Curve', 'Grease Pencil']
+        Component Type
+
+    Inputs
+    ------
+    i.geometry : GeometrySocket
+        Geometry
+    i.component_type : MenuSocket
+        Component Type
+
+    Outputs
+    -------
+    o.materials : MaterialSocketList
+        Materials
+    """
+
+    _bl_idname = "GeometryNodeGeometryMaterials"
+    node: bpy.types.GeometryNodeGeometryMaterials
+
+    class _Inputs(SocketAccessor):
+        geometry: GeometrySocket
+        """Geometry"""
+        component_type: MenuSocket
+        """Component Type"""
+
+    class _Outputs(SocketAccessor):
+        materials: MaterialSocketList
+        """Materials"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        geometry: InputGeometry = None,
+        component_type: InputMenu
+        | Literal["Mesh", "Point Cloud", "Curve", "Grease Pencil"] = "Mesh",
+    ):
+        super().__init__()
+        key_args = {"Geometry": geometry, "Component Type": component_type}
 
         self._establish_links(**key_args)
 
@@ -3200,6 +3283,8 @@ class MergeLayers(BaseNode):
         Grease Pencil
     selection : InputBoolean
         Selection
+    mode : InputMenu | Literal['By Name', 'By Group ID']
+        Mode
     group_id : InputInteger
         Group ID
 
@@ -3209,6 +3294,8 @@ class MergeLayers(BaseNode):
         Grease Pencil
     i.selection : BooleanSocket
         Selection
+    i.mode : MenuSocket
+        Mode
     i.group_id : IntegerSocket
         Group ID
 
@@ -3226,6 +3313,8 @@ class MergeLayers(BaseNode):
         """Grease Pencil"""
         selection: BooleanSocket
         """Selection"""
+        mode: MenuSocket
+        """Mode"""
         group_id: IntegerSocket
         """Group ID"""
 
@@ -3244,50 +3333,18 @@ class MergeLayers(BaseNode):
         self,
         grease_pencil: InputGeometry = None,
         selection: InputBoolean = None,
+        mode: InputMenu | Literal["By Name", "By Group ID"] = "By Name",
         group_id: InputInteger = None,
-        *,
-        mode: Literal["MERGE_BY_NAME", "MERGE_BY_ID"] = "MERGE_BY_NAME",
     ):
         super().__init__()
         key_args = {
             "Grease Pencil": grease_pencil,
             "Selection": selection,
+            "Mode": mode,
             "Group ID": group_id,
         }
-        self.mode = mode
+
         self._establish_links(**key_args)
-
-    @classmethod
-    def by_name(
-        cls, grease_pencil: InputGeometry = None, selection: InputBoolean = None
-    ) -> "MergeLayers":
-        """Create Merge Layers with operation 'By Name'. Combine all layers which have the same name"""
-        return cls(
-            mode="MERGE_BY_NAME", grease_pencil=grease_pencil, selection=selection
-        )
-
-    @classmethod
-    def by_group_id(
-        cls,
-        grease_pencil: InputGeometry = None,
-        selection: InputBoolean = None,
-        group_id: InputInteger = None,
-    ) -> "MergeLayers":
-        """Create Merge Layers with operation 'By Group ID'. Provide a custom group ID for each layer and all layers with the same ID will be merged into one"""
-        return cls(
-            mode="MERGE_BY_ID",
-            grease_pencil=grease_pencil,
-            selection=selection,
-            group_id=group_id,
-        )
-
-    @property
-    def mode(self) -> Literal["MERGE_BY_NAME", "MERGE_BY_ID"]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: Literal["MERGE_BY_NAME", "MERGE_BY_ID"]) -> None:
-        self.node.mode = value
 
 
 class MergePoints(BaseNode):
@@ -4493,6 +4550,93 @@ class Quadrilateral(BaseNode):
         self.node.mode = value
 
 
+class RasterizePoints(BaseNode):
+    """
+    Create volume grids from points with a weighted sum
+
+    Parameters
+    ----------
+    points : InputGeometry
+        Points
+    grid_transform_mode : InputMenu | Literal['Voxel Size', 'Matrix']
+        Grid Transform Mode
+    voxel_size : InputFloat
+        Voxel Size
+    matrix : InputMatrix
+        Matrix
+    kernel_type : InputMenu | Literal['Constant', 'Linear', 'Quadratic B-Spline', 'Cubic B-Spline']
+        Kernel Type
+    position : InputVector
+        Position
+
+    Inputs
+    ------
+    i.points : GeometrySocket
+        Points
+    i.grid_transform_mode : MenuSocket
+        Grid Transform Mode
+    i.voxel_size : FloatSocket
+        Voxel Size
+    i.matrix : MatrixSocket
+        Matrix
+    i.kernel_type : MenuSocket
+        Kernel Type
+    i.position : VectorSocket
+        Position
+    """
+
+    _bl_idname = "GeometryNodeRasterizePoints"
+    node: bpy.types.GeometryNodeRasterizePoints
+
+    class _Inputs(SocketAccessor):
+        points: GeometrySocket
+        """Points"""
+        grid_transform_mode: MenuSocket
+        """Grid Transform Mode"""
+        voxel_size: FloatSocket
+        """Voxel Size"""
+        matrix: MatrixSocket
+        """Matrix"""
+        kernel_type: MenuSocket
+        """Kernel Type"""
+        position: VectorSocket
+        """Position"""
+
+    class _Outputs(SocketAccessor):
+        pass
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        points: InputGeometry = None,
+        grid_transform_mode: InputMenu | Literal["Voxel Size", "Matrix"] = "Voxel Size",
+        voxel_size: InputFloat = 0.3,
+        matrix: InputMatrix = None,
+        kernel_type: InputMenu
+        | Literal[
+            "Constant", "Linear", "Quadratic B-Spline", "Cubic B-Spline"
+        ] = "Linear",
+        position: InputVector = None,
+    ):
+        super().__init__()
+        key_args = {
+            "Points": points,
+            "Grid Transform Mode": grid_transform_mode,
+            "Voxel Size": voxel_size,
+            "Matrix": matrix,
+            "Kernel Type": kernel_type,
+            "Position": position,
+        }
+
+        self._establish_links(**key_args)
+
+
 class Raycast[T](BaseNode):
     """
     Cast rays from the context geometry onto a target geometry, and retrieve information from each hit point
@@ -4799,6 +4943,8 @@ class RealizeInstances(BaseNode):
         Realize All
     depth : InputInteger
         Depth
+    preserve_normals : InputBoolean
+        Preserve Normals
 
     Inputs
     ------
@@ -4810,6 +4956,8 @@ class RealizeInstances(BaseNode):
         Realize All
     i.depth : IntegerSocket
         Depth
+    i.preserve_normals : BooleanSocket
+        Preserve Normals
 
     Outputs
     -------
@@ -4829,6 +4977,8 @@ class RealizeInstances(BaseNode):
         """Realize All"""
         depth: IntegerSocket
         """Depth"""
+        preserve_normals: BooleanSocket
+        """Preserve Normals"""
 
     class _Outputs(SocketAccessor):
         geometry: GeometrySocket
@@ -4847,6 +4997,7 @@ class RealizeInstances(BaseNode):
         selection: InputBoolean = None,
         realize_all: InputBoolean = True,
         depth: InputInteger = 0,
+        preserve_normals: InputBoolean = False,
         *,
         realize_to_point_domain: bool = False,
     ):
@@ -4856,6 +5007,7 @@ class RealizeInstances(BaseNode):
             "Selection": selection,
             "Realize All": realize_all,
             "Depth": depth,
+            "Preserve Normals": preserve_normals,
         }
         self.realize_to_point_domain = realize_to_point_domain
         self._establish_links(**key_args)
@@ -5302,28 +5454,28 @@ class SampleNearest(BaseNode):
     def point(
         cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Point'. Attribute on point"""
+        """Create Sample Nearest with operation 'Point'. Vertex or point"""
         return cls(domain="POINT", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def edge(
         cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Edge'. Attribute on mesh edge"""
+        """Create Sample Nearest with operation 'Edge'. Mesh edge"""
         return cls(domain="EDGE", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def face(
         cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Face'. Attribute on mesh faces"""
+        """Create Sample Nearest with operation 'Face'. Mesh face"""
         return cls(domain="FACE", geometry=geometry, sample_position=sample_position)
 
     @classmethod
     def face_corner(
         cls, geometry: InputGeometry = None, sample_position: InputVector = None
     ) -> "SampleNearest":
-        """Create Sample Nearest with operation 'Face Corner'. Attribute on mesh face corner"""
+        """Create Sample Nearest with operation 'Face Corner'. Mesh face corner"""
         return cls(domain="CORNER", geometry=geometry, sample_position=sample_position)
 
     @property
@@ -6180,42 +6332,42 @@ class SeparateGeometry(BaseNode):
     def point(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Point'. Attribute on point"""
+        """Create Separate Geometry with operation 'Point'. Vertex or point"""
         return cls(domain="POINT", geometry=geometry, selection=selection)
 
     @classmethod
     def edge(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Edge'. Attribute on mesh edge"""
+        """Create Separate Geometry with operation 'Edge'. Mesh edge"""
         return cls(domain="EDGE", geometry=geometry, selection=selection)
 
     @classmethod
     def face(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Face'. Attribute on mesh faces"""
+        """Create Separate Geometry with operation 'Face'. Mesh face"""
         return cls(domain="FACE", geometry=geometry, selection=selection)
 
     @classmethod
     def spline(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Spline'. Attribute on spline"""
+        """Create Separate Geometry with operation 'Spline'."""
         return cls(domain="CURVE", geometry=geometry, selection=selection)
 
     @classmethod
     def instance(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Instance'. Attribute on instance"""
+        """Create Separate Geometry with operation 'Instance'."""
         return cls(domain="INSTANCE", geometry=geometry, selection=selection)
 
     @classmethod
     def layer(
         cls, geometry: InputGeometry = None, selection: InputBoolean = None
     ) -> "SeparateGeometry":
-        """Create Separate Geometry with operation 'Layer'. Attribute on Grease Pencil layer"""
+        """Create Separate Geometry with operation 'Layer'. Grease Pencil layer"""
         return cls(domain="LAYER", geometry=geometry, selection=selection)
 
     @property
@@ -6609,6 +6761,8 @@ class SetGreasePencilColor(BaseNode):
         Grease Pencil
     selection : InputBoolean
         Selection
+    mode : InputMenu | Literal['Stroke', 'Fill', 'Both']
+        Mode
     color : InputColor
         Color
     opacity : InputFloat
@@ -6620,6 +6774,8 @@ class SetGreasePencilColor(BaseNode):
         Grease Pencil
     i.selection : BooleanSocket
         Selection
+    i.mode : MenuSocket
+        Mode
     i.color : ColorSocket
         Color
     i.opacity : FloatSocket
@@ -6639,6 +6795,8 @@ class SetGreasePencilColor(BaseNode):
         """Grease Pencil"""
         selection: BooleanSocket
         """Selection"""
+        mode: MenuSocket
+        """Mode"""
         color: ColorSocket
         """Color"""
         opacity: FloatSocket
@@ -6659,62 +6817,20 @@ class SetGreasePencilColor(BaseNode):
         self,
         grease_pencil: InputGeometry = None,
         selection: InputBoolean = None,
+        mode: InputMenu | Literal["Stroke", "Fill", "Both"] = "Stroke",
         color: InputColor = (1.0, 1.0, 1.0, 1.0),
         opacity: InputFloat = 1.0,
-        *,
-        mode: Literal["STROKE", "FILL"] = "STROKE",
     ):
         super().__init__()
         key_args = {
             "Grease Pencil": grease_pencil,
             "Selection": selection,
+            "Mode": mode,
             "Color": color,
             "Opacity": opacity,
         }
-        self.mode = mode
+
         self._establish_links(**key_args)
-
-    @classmethod
-    def stroke(
-        cls,
-        grease_pencil: InputGeometry = None,
-        selection: InputBoolean = None,
-        color: InputColor = (1.0, 1.0, 1.0, 1.0),
-        opacity: InputFloat = 1.0,
-    ) -> "SetGreasePencilColor":
-        """Create Set Grease Pencil Color with operation 'Stroke'. Set the color and opacity for the points of the stroke"""
-        return cls(
-            mode="STROKE",
-            grease_pencil=grease_pencil,
-            selection=selection,
-            color=color,
-            opacity=opacity,
-        )
-
-    @classmethod
-    def fill(
-        cls,
-        grease_pencil: InputGeometry = None,
-        selection: InputBoolean = None,
-        color: InputColor = (1.0, 1.0, 1.0, 1.0),
-        opacity: InputFloat = 1.0,
-    ) -> "SetGreasePencilColor":
-        """Create Set Grease Pencil Color with operation 'Fill'. Set the color and opacity for the stroke fills"""
-        return cls(
-            mode="FILL",
-            grease_pencil=grease_pencil,
-            selection=selection,
-            color=color,
-            opacity=opacity,
-        )
-
-    @property
-    def mode(self) -> Literal["STROKE", "FILL"]:
-        return self.node.mode
-
-    @mode.setter
-    def mode(self, value: Literal["STROKE", "FILL"]) -> None:
-        self.node.mode = value
 
 
 class SetGreasePencilDepth(BaseNode):
@@ -6725,11 +6841,15 @@ class SetGreasePencilDepth(BaseNode):
     ----------
     grease_pencil : InputGeometry
         Grease Pencil
+    depth_order : InputMenu | Literal['2D Layers', '3D Location']
+        Depth Order
 
     Inputs
     ------
     i.grease_pencil : GeometrySocket
         Grease Pencil
+    i.depth_order : MenuSocket
+        Depth Order
 
     Outputs
     -------
@@ -6743,6 +6863,8 @@ class SetGreasePencilDepth(BaseNode):
     class _Inputs(SocketAccessor):
         grease_pencil: GeometrySocket
         """Grease Pencil"""
+        depth_order: MenuSocket
+        """Depth Order"""
 
     class _Outputs(SocketAccessor):
         grease_pencil: GeometrySocket
@@ -6758,21 +6880,12 @@ class SetGreasePencilDepth(BaseNode):
     def __init__(
         self,
         grease_pencil: InputGeometry = None,
-        *,
-        depth_order: Literal["2D", "3D"] = "2D",
+        depth_order: InputMenu | Literal["2D Layers", "3D Location"] = "2D Layers",
     ):
         super().__init__()
-        key_args = {"Grease Pencil": grease_pencil}
-        self.depth_order = depth_order
+        key_args = {"Grease Pencil": grease_pencil, "Depth Order": depth_order}
+
         self._establish_links(**key_args)
-
-    @property
-    def depth_order(self) -> Literal["2D", "3D"]:
-        return self.node.depth_order
-
-    @depth_order.setter
-    def depth_order(self, value: Literal["2D", "3D"]) -> None:
-        self.node.depth_order = value
 
 
 class SetGreasePencilSoftness(BaseNode):
@@ -7444,7 +7557,7 @@ class SetMeshNormal(BaseNode):
         *,
         mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
     ) -> "SetMeshNormal":
-        """Create Set Mesh Normal with operation 'Point'. Attribute on point"""
+        """Create Set Mesh Normal with operation 'Point'. Vertex or point"""
         return cls(
             domain="POINT",
             mesh=mesh,
@@ -7464,7 +7577,7 @@ class SetMeshNormal(BaseNode):
         *,
         mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
     ) -> "SetMeshNormal":
-        """Create Set Mesh Normal with operation 'Face'. Attribute on mesh faces"""
+        """Create Set Mesh Normal with operation 'Face'. Mesh face"""
         return cls(
             domain="FACE",
             mesh=mesh,
@@ -7484,7 +7597,7 @@ class SetMeshNormal(BaseNode):
         *,
         mode: Literal["SHARPNESS", "FREE", "TANGENT_SPACE"] = "SHARPNESS",
     ) -> "SetMeshNormal":
-        """Create Set Mesh Normal with operation 'Face Corner'. Attribute on mesh face corner"""
+        """Create Set Mesh Normal with operation 'Face Corner'. Mesh face corner"""
         return cls(
             domain="CORNER",
             mesh=mesh,
@@ -7633,6 +7746,73 @@ class SetNurbsWeight(BaseNode):
         key_args = {"Curves": curves, "Selection": selection, "Weight": weight}
 
         self._establish_links(**key_args)
+
+
+class SetPointCloudType(BaseNode):
+    """
+    Change the type of point cloud
+
+    Parameters
+    ----------
+    points : InputGeometry
+        Points
+    type : InputMenu | Literal['Points', '3D Gaussian Splat']
+        Type
+
+    Inputs
+    ------
+    i.points : GeometrySocket
+        Points
+    i.type : MenuSocket
+        Type
+
+    Outputs
+    -------
+    o.points : GeometrySocket
+        Points
+    """
+
+    _bl_idname = "GeometryNodePointsSetType"
+    node: bpy.types.GeometryNodePointsSetType
+
+    class _Inputs(SocketAccessor):
+        points: GeometrySocket
+        """Points"""
+        type: MenuSocket
+        """Type"""
+
+    class _Outputs(SocketAccessor):
+        points: GeometrySocket
+        """Points"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        points: InputGeometry = None,
+        type: InputMenu | Literal["Points", "3D Gaussian Splat"] = "Points",
+    ):
+        super().__init__()
+        key_args = {"Points": points, "Type": type}
+
+        self._establish_links(**key_args)
+
+    @classmethod
+    def points(cls, points: InputGeometry = None) -> "SetPointCloudType":
+        """Create Set Point Cloud Type node with type 'Points'."""
+        return cls(points=points, type="Points")
+
+    @classmethod
+    def type_3d_gaussian_splat(
+        cls, points: InputGeometry = None
+    ) -> "SetPointCloudType":
+        """Create Set Point Cloud Type node with type '3D Gaussian Splat'."""
+        return cls(points=points, type="3D Gaussian Splat")
 
 
 class SetPointRadius(BaseNode):
@@ -7837,7 +8017,7 @@ class SetSelection[T](BaseNode):
         *,
         selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ) -> "SetSelection[BooleanSocket]":
-        """Create Set Selection with operation 'Point'. Attribute on point"""
+        """Create Set Selection with operation 'Point'. Vertex or point"""
         return SetSelection(
             domain="POINT",
             geometry=geometry,
@@ -7853,7 +8033,7 @@ class SetSelection[T](BaseNode):
         *,
         selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ) -> "SetSelection[BooleanSocket]":
-        """Create Set Selection with operation 'Edge'. Attribute on mesh edge"""
+        """Create Set Selection with operation 'Edge'. Mesh edge"""
         return SetSelection(
             domain="EDGE",
             geometry=geometry,
@@ -7869,7 +8049,7 @@ class SetSelection[T](BaseNode):
         *,
         selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ) -> "SetSelection[BooleanSocket]":
-        """Create Set Selection with operation 'Face'. Attribute on mesh faces"""
+        """Create Set Selection with operation 'Face'. Mesh face"""
         return SetSelection(
             domain="FACE",
             geometry=geometry,
@@ -7885,7 +8065,7 @@ class SetSelection[T](BaseNode):
         *,
         selection_type: Literal["BOOLEAN", "FLOAT"] = "BOOLEAN",
     ) -> "SetSelection[BooleanSocket]":
-        """Create Set Selection with operation 'Spline'. Attribute on spline"""
+        """Create Set Selection with operation 'Spline'."""
         return SetSelection(
             domain="CURVE",
             geometry=geometry,
@@ -8016,7 +8196,7 @@ class SetShadeSmooth(BaseNode):
         selection: InputBoolean = None,
         shade_smooth: InputBoolean = True,
     ) -> "SetShadeSmooth":
-        """Create Set Shade Smooth with operation 'Edge'. Attribute on mesh edge"""
+        """Create Set Shade Smooth with operation 'Edge'. Mesh edge"""
         return cls(
             domain="EDGE",
             geometry=geometry,
@@ -8031,7 +8211,7 @@ class SetShadeSmooth(BaseNode):
         selection: InputBoolean = None,
         shade_smooth: InputBoolean = True,
     ) -> "SetShadeSmooth":
-        """Create Set Shade Smooth with operation 'Face'. Attribute on mesh faces"""
+        """Create Set Shade Smooth with operation 'Face'. Mesh face"""
         return cls(
             domain="FACE",
             geometry=geometry,
@@ -8354,7 +8534,7 @@ class SortElements(BaseNode):
         group_id: InputInteger = None,
         sort_weight: InputFloat = None,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Point'. Attribute on point"""
+        """Create Sort Elements with operation 'Point'. Vertex or point"""
         return cls(
             domain="POINT",
             geometry=geometry,
@@ -8371,7 +8551,7 @@ class SortElements(BaseNode):
         group_id: InputInteger = None,
         sort_weight: InputFloat = None,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Edge'. Attribute on mesh edge"""
+        """Create Sort Elements with operation 'Edge'. Mesh edge"""
         return cls(
             domain="EDGE",
             geometry=geometry,
@@ -8388,7 +8568,7 @@ class SortElements(BaseNode):
         group_id: InputInteger = None,
         sort_weight: InputFloat = None,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Face'. Attribute on mesh faces"""
+        """Create Sort Elements with operation 'Face'. Mesh face"""
         return cls(
             domain="FACE",
             geometry=geometry,
@@ -8405,7 +8585,7 @@ class SortElements(BaseNode):
         group_id: InputInteger = None,
         sort_weight: InputFloat = None,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Spline'. Attribute on spline"""
+        """Create Sort Elements with operation 'Spline'."""
         return cls(
             domain="CURVE",
             geometry=geometry,
@@ -8422,7 +8602,7 @@ class SortElements(BaseNode):
         group_id: InputInteger = None,
         sort_weight: InputFloat = None,
     ) -> "SortElements":
-        """Create Sort Elements with operation 'Instance'. Attribute on instance"""
+        """Create Sort Elements with operation 'Instance'."""
         return cls(
             domain="INSTANCE",
             geometry=geometry,
@@ -8663,7 +8843,7 @@ class SplitToInstances(BaseNode):
         selection: InputBoolean = None,
         group_id: InputInteger = None,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Point'. Attribute on point"""
+        """Create Split to Instances with operation 'Point'. Vertex or point"""
         return cls(
             domain="POINT", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -8675,7 +8855,7 @@ class SplitToInstances(BaseNode):
         selection: InputBoolean = None,
         group_id: InputInteger = None,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Edge'. Attribute on mesh edge"""
+        """Create Split to Instances with operation 'Edge'. Mesh edge"""
         return cls(
             domain="EDGE", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -8687,7 +8867,7 @@ class SplitToInstances(BaseNode):
         selection: InputBoolean = None,
         group_id: InputInteger = None,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Face'. Attribute on mesh faces"""
+        """Create Split to Instances with operation 'Face'. Mesh face"""
         return cls(
             domain="FACE", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -8699,7 +8879,7 @@ class SplitToInstances(BaseNode):
         selection: InputBoolean = None,
         group_id: InputInteger = None,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Spline'. Attribute on spline"""
+        """Create Split to Instances with operation 'Spline'."""
         return cls(
             domain="CURVE", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -8711,7 +8891,7 @@ class SplitToInstances(BaseNode):
         selection: InputBoolean = None,
         group_id: InputInteger = None,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Instance'. Attribute on instance"""
+        """Create Split to Instances with operation 'Instance'."""
         return cls(
             domain="INSTANCE", geometry=geometry, selection=selection, group_id=group_id
         )
@@ -8723,7 +8903,7 @@ class SplitToInstances(BaseNode):
         selection: InputBoolean = None,
         group_id: InputInteger = None,
     ) -> "SplitToInstances":
-        """Create Split to Instances with operation 'Layer'. Attribute on Grease Pencil layer"""
+        """Create Split to Instances with operation 'Layer'. Grease Pencil layer"""
         return cls(
             domain="LAYER", geometry=geometry, selection=selection, group_id=group_id
         )

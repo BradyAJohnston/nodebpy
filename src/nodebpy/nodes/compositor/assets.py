@@ -26,6 +26,239 @@ from ...types import (
 )
 
 
+class Bloom(AssetCompositorGroup):
+    """
+    Bloom
+
+    Parameters
+    ----------
+    image : InputColor
+        Image
+    type : InputMenu | Literal["Bloom", "Ghosts", "Streaks", "Fog Glow", "Simple Star", "Sun Beams", "Kernel"]
+        Type
+    quality : InputMenu | Literal["High", "Medium", "Low"]
+        Quality
+    threshold : InputFloat
+        The brightness level at which pixels are considered part of the highlights that produce a glare
+    smoothness : InputFloat
+        The smoothness of the extracted highlights
+    clamp : InputBoolean
+        Clamp bright highlights
+    maximum : InputFloat
+        Clamp bright highlights such that their brightness are not larger than this value
+    strength : InputFloat
+        Adjusts the brightness of the glare
+    saturation : InputFloat
+        Adjusts the saturation of the glare
+    tint : InputColor
+        Tints the glare. Consider desaturating the glare to more accurate tinting
+    size : InputFloat
+        The size of the glare relative to the image. 1 means the glare covers the entire image, 0.5 means the glare covers half the image, and so on
+    streaks : InputInteger
+        The number of streaks
+    streaks_angle : InputFloat
+        The angle that the first streak makes with the horizontal axis
+    iterations : InputInteger
+        The number of ghosts for Ghost glare or the quality and spread of Glare for Streaks and Simple Star
+    fade : InputFloat
+        Streak fade-out factor
+    color_modulation : InputFloat
+        Modulates colors of streaks and ghosts for a spectral dispersion effect
+    diagonal : InputBoolean
+        Align the star diagonally
+    sun_position : InputVector
+        The position of the source of the rays in normalized coordinates. 0 means lower left corner and 1 means upper right corner
+    jitter : InputFloat
+        The amount of jitter to introduce while computing rays, higher jitter can be faster but can produce grainy or noisy results
+    kernel_data_type : InputMenu | Literal["Float", "Color"]
+        Kernel Data Type
+    socket_27 : InputFloat
+        Kernel
+    socket_28 : InputColor
+        Kernel
+
+    Inputs
+    ------
+    i.image : ColorSocket
+        Image
+    i.type : MenuSocket
+        Type
+    i.quality : MenuSocket
+        Quality
+    i.threshold : FloatSocket
+        The brightness level at which pixels are considered part of the highlights that produce a glare
+    i.smoothness : FloatSocket
+        The smoothness of the extracted highlights
+    i.clamp : BooleanSocket
+        Clamp bright highlights
+    i.maximum : FloatSocket
+        Clamp bright highlights such that their brightness are not larger than this value
+    i.strength : FloatSocket
+        Adjusts the brightness of the glare
+    i.saturation : FloatSocket
+        Adjusts the saturation of the glare
+    i.tint : ColorSocket
+        Tints the glare. Consider desaturating the glare to more accurate tinting
+    i.size : FloatSocket
+        The size of the glare relative to the image. 1 means the glare covers the entire image, 0.5 means the glare covers half the image, and so on
+    i.streaks : IntegerSocket
+        The number of streaks
+    i.streaks_angle : FloatSocket
+        The angle that the first streak makes with the horizontal axis
+    i.iterations : IntegerSocket
+        The number of ghosts for Ghost glare or the quality and spread of Glare for Streaks and Simple Star
+    i.fade : FloatSocket
+        Streak fade-out factor
+    i.color_modulation : FloatSocket
+        Modulates colors of streaks and ghosts for a spectral dispersion effect
+    i.diagonal : BooleanSocket
+        Align the star diagonally
+    i.sun_position : VectorSocket
+        The position of the source of the rays in normalized coordinates. 0 means lower left corner and 1 means upper right corner
+    i.jitter : FloatSocket
+        The amount of jitter to introduce while computing rays, higher jitter can be faster but can produce grainy or noisy results
+    i.kernel_data_type : MenuSocket
+        Kernel Data Type
+    i.socket_27 : FloatSocket
+        Kernel
+    i.socket_28 : ColorSocket
+        Kernel
+
+    Outputs
+    -------
+    o.image : ColorSocket
+        The image with the generated glare added
+    o.glare : ColorSocket
+        The generated glare
+    o.highlights : ColorSocket
+        The extracted highlights from which the glare was generated
+    """
+
+    _name = "Bloom"
+    _asset_name = "Bloom"
+    _library = BundledLibrary("compositing_nodes_essentials.blend")
+
+    class _Inputs(SocketAccessor):
+        image: ColorSocket
+        """Image"""
+        type: MenuSocket
+        """Type"""
+        quality: MenuSocket
+        """Quality"""
+        threshold: FloatSocket
+        """The brightness level at which pixels are considered part of the highlights that produce a glare"""
+        smoothness: FloatSocket
+        """The smoothness of the extracted highlights"""
+        clamp: BooleanSocket
+        """Clamp bright highlights"""
+        maximum: FloatSocket
+        """Clamp bright highlights such that their brightness are not larger than this value"""
+        strength: FloatSocket
+        """Adjusts the brightness of the glare"""
+        saturation: FloatSocket
+        """Adjusts the saturation of the glare"""
+        tint: ColorSocket
+        """Tints the glare. Consider desaturating the glare to more accurate tinting"""
+        size: FloatSocket
+        """The size of the glare relative to the image. 1 means the glare covers the entire image, 0.5 means the glare covers half the image, and so on"""
+        streaks: IntegerSocket
+        """The number of streaks"""
+        streaks_angle: FloatSocket
+        """The angle that the first streak makes with the horizontal axis"""
+        iterations: IntegerSocket
+        """The number of ghosts for Ghost glare or the quality and spread of Glare for Streaks and Simple Star"""
+        fade: FloatSocket
+        """Streak fade-out factor"""
+        color_modulation: FloatSocket
+        """Modulates colors of streaks and ghosts for a spectral dispersion effect"""
+        diagonal: BooleanSocket
+        """Align the star diagonally"""
+        sun_position: VectorSocket
+        """The position of the source of the rays in normalized coordinates. 0 means lower left corner and 1 means upper right corner"""
+        jitter: FloatSocket
+        """The amount of jitter to introduce while computing rays, higher jitter can be faster but can produce grainy or noisy results"""
+        kernel_data_type: MenuSocket
+        """Kernel Data Type"""
+        socket_27: FloatSocket
+        """Kernel"""
+        socket_28: ColorSocket
+        """Kernel"""
+
+    class _Outputs(SocketAccessor):
+        image: ColorSocket
+        """The image with the generated glare added"""
+        glare: ColorSocket
+        """The generated glare"""
+        highlights: ColorSocket
+        """The extracted highlights from which the glare was generated"""
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> _Inputs: ...
+        @property
+        def o(self) -> _Outputs: ...
+
+    def __init__(
+        self,
+        image: InputColor = None,
+        type: InputMenu
+        | Literal[
+            "Bloom",
+            "Ghosts",
+            "Streaks",
+            "Fog Glow",
+            "Simple Star",
+            "Sun Beams",
+            "Kernel",
+        ] = "Bloom",
+        quality: InputMenu | Literal["High", "Medium", "Low"] = "Medium",
+        threshold: InputFloat = 1.0,
+        smoothness: InputFloat = 0.1,
+        clamp: InputBoolean = False,
+        maximum: InputFloat = 10.0,
+        strength: InputFloat = 1.0,
+        saturation: InputFloat = 1.0,
+        tint: InputColor = None,
+        size: InputFloat = 0.5,
+        streaks: InputInteger = 4,
+        streaks_angle: InputFloat = 0.0,
+        iterations: InputInteger = 3,
+        fade: InputFloat = 0.9,
+        color_modulation: InputFloat = 0.25,
+        diagonal: InputBoolean = True,
+        sun_position: InputVector = None,
+        jitter: InputFloat = 0.0,
+        kernel_data_type: InputMenu | Literal["Float", "Color"] = "Float",
+        socket_27: InputFloat = 0.0,
+        socket_28: InputColor = None,
+    ):
+        super().__init__(
+            Socket_0=image,
+            Socket_4=type,
+            Socket_5=quality,
+            Socket_7=threshold,
+            Socket_8=smoothness,
+            Socket_10=clamp,
+            Socket_11=maximum,
+            Socket_13=strength,
+            Socket_14=saturation,
+            Socket_15=tint,
+            Socket_17=size,
+            Socket_18=streaks,
+            Socket_19=streaks_angle,
+            Socket_20=iterations,
+            Socket_21=fade,
+            Socket_22=color_modulation,
+            Socket_23=diagonal,
+            Socket_24=sun_position,
+            Socket_25=jitter,
+            Socket_26=kernel_data_type,
+            Socket_27=socket_27,
+            Socket_28=socket_28,
+        )
+
+
 class ChromaticAberration(AssetCompositorGroup):
     """
     Chromatic Aberration
@@ -1382,6 +1615,7 @@ class _3DToScreenSpace(AssetCompositorGroup):
 
 
 __all__ = (
+    "Bloom",
     "ChromaticAberration",
     "CombineCylindrical",
     "CombineSpherical",

@@ -130,7 +130,7 @@ class Attribute(BaseNode):
     def __init__(
         self,
         attribute_type: Literal[
-            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"
+            "GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"
         ] = "GEOMETRY",
         attribute_name: str = "",
     ):
@@ -160,6 +160,11 @@ class Attribute(BaseNode):
         """Create Attribute with operation 'View Layer'."""
         return cls(attribute_type="VIEW_LAYER", attribute_name=attribute_name)
 
+    @classmethod
+    def light(cls, attribute_name: str = "") -> "Attribute":
+        """Create Attribute with operation 'Light'."""
+        return cls(attribute_type="LIGHT", attribute_name=attribute_name)
+
     class _Outputs(SocketAccessor):
         color: ColorSocket
         """The attribute value as a color."""
@@ -178,12 +183,13 @@ class Attribute(BaseNode):
     @property
     def attribute_type(
         self,
-    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]:
+    ) -> Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"]:
         return self.node.attribute_type
 
     @attribute_type.setter
     def attribute_type(
-        self, value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER"]
+        self,
+        value: Literal["GEOMETRY", "OBJECT", "INSTANCER", "VIEW_LAYER", "LIGHT"],
     ) -> None:
         self.node.attribute_type = value
 

@@ -164,6 +164,63 @@ register_customization(
     )
 )
 
+# Combine List's items are unnamed inputs, all of the node's data_type; the
+# mixin supplies the items constructor, and the per-type factories below
+# take the items so the generated ones, which take only the first, are
+# suppressed.
+_LIST_ITEM_TYPES: list[tuple[str, str, str, str]] = [
+    ("FLOAT", "float", "FloatSocket", "InputFloat"),
+    ("INT", "integer", "IntegerSocket", "InputInteger"),
+    ("BOOLEAN", "boolean", "BooleanSocket", "InputBoolean"),
+    ("VECTOR", "vector", "VectorSocket", "InputVector"),
+    ("RGBA", "color", "ColorSocket", "InputColor"),
+    ("ROTATION", "rotation", "RotationSocket", "InputRotation"),
+    ("MATRIX", "matrix", "MatrixSocket", "InputMatrix"),
+    ("STRING", "string", "StringSocket", "InputString"),
+    ("MENU", "menu", "MenuSocket", "InputMenu"),
+    ("OBJECT", "object", "ObjectSocket", "InputObject"),
+    ("IMAGE", "image", "ImageSocket", "InputImage"),
+    ("GEOMETRY", "geometry", "GeometrySocket", "InputGeometry"),
+    ("COLLECTION", "collection", "CollectionSocket", "InputCollection"),
+    ("MATERIAL", "material", "MaterialSocket", "InputMaterial"),
+    ("BUNDLE", "bundle", "BundleSocket", "InputBundle"),
+    ("CLOSURE", "closure", "ClosureSocket", "InputClosure"),
+    ("FONT", "font", "FontSocket", "InputFont"),
+    ("SOUND", "sound", "SoundSocket", "InputSound"),
+]
+
+
+def _combine_list_factories() -> str:
+    """Per-type ``CombineList.<type>(items)`` factories as class-body source,
+    each returning the node parameterised by its item and list sockets."""
+    lines = []
+    for value, method, socket, input_type in _LIST_ITEM_TYPES:
+        lines += [
+            "    @classmethod",
+            f"    def {method}(",
+            f"        cls, items: Iterable[{input_type}] = ()",
+            f'    ) -> "CombineList[{socket}, {socket}List]":',
+            f'        """Create Combine List with data type \'{value}\' from *items*."""',
+            f'        return CombineList(items, data_type="{value}")',
+            "",
+        ]
+    return "\n".join(lines).rstrip("\n")
+
+
+register_customization(
+    NodeCustomization(
+        bl_idname="GeometryNodeCombineList",
+        bases=("_CombineListMixin",),
+        imports=(
+            "from collections.abc import Iterable",
+            "from .._mixins import _CombineListMixin",
+        ),
+        suppress=frozenset({"__init__"}),
+        suppress_factories_for=frozenset({"data_type"}),
+        extra_body=_combine_list_factories(),
+    )
+)
+
 register_customization(
     NodeCustomization(
         bl_idname="FunctionNodeFormatString",

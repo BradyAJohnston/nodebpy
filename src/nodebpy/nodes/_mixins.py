@@ -10,7 +10,7 @@ bespoke behaviour lives here.
 from __future__ import annotations
 
 import warnings
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from typing import TYPE_CHECKING, Any, ClassVar, Literal, cast
 
 import bpy
@@ -41,6 +41,7 @@ from ..builder.items import (
     _SocketItemFactory,
     _SocketValueItemFactory,
 )
+from ..builder.tree import _MenuDefault
 from ..types import (
     InputAny,
     InputBoolean,
@@ -56,6 +57,7 @@ from ..types import (
     InputString,
     InputVector,
     _BakedDataTypeValues,
+    _is_default_value,
     _SocketShapeStructureType,
 )
 
@@ -100,6 +102,17 @@ class _BakeMixin(ItemsMixin):
         items: dict[str, InputLinkable | str] | None = None,
         **kwargs: InputLinkable | str,
     ):
+        """
+        Parameters
+        ----------
+        *args : InputLinkable | str
+            Values to bake, each as an item named after the socket it comes
+            from; a socket-type string declares an unlinked item.
+        items : dict[str, InputLinkable | str] | None
+            Items by name: a value to bake, or a socket-type string.
+        **kwargs : InputLinkable | str
+            More items by name.
+        """
         super().__init__()
         key_args = dict(items or {})
         key_args.update(kwargs)
@@ -151,6 +164,14 @@ class _CombineBundleMixin:
         *,
         define_signature: bool = False,
     ):
+        """
+        Parameters
+        ----------
+        items : dict[str, InputAny] | None
+            Bundle items by name: a value or a link, with the type inferred.
+        define_signature : bool
+            Whether the node defines the bundle's signature.
+        """
         super().__init__()
         for name, value in (items or {}).items():
             self._add_bundle_item(name, value)
@@ -221,6 +242,17 @@ class _SeparateBundleMixin:
         *,
         define_signature: bool = False,
     ):
+        """
+        Parameters
+        ----------
+        bundle : InputBundle
+            The bundle to separate.
+        items : dict[str, str] | None
+            The items to pull out, by name, each with its socket type
+            (``"FLOAT"``, ``"GEOMETRY"``, ...).
+        define_signature : bool
+            Whether the node defines the bundle's signature.
+        """
         super().__init__()
         self.node.define_signature = define_signature
         # Items are output sockets pulled from the bundle; each is declared by
@@ -274,6 +306,17 @@ class _ClosureToListMixin:
         closure: InputClosure = None,
         items: dict[str, str] | None = None,
     ):
+        """
+        Parameters
+        ----------
+        count : InputInteger
+            How many times the closure is evaluated.
+        closure : InputClosure
+            The closure to evaluate.
+        items : dict[str, str] | None
+            The output lists by name, each with the socket type of its
+            elements (``"FLOAT"``, ``"GEOMETRY"``, ...).
+        """
         super().__init__()
         # Items are output lists computed from the closure; each is declared
         # by name and socket-type string (as for SeparateBundle).
@@ -305,6 +348,14 @@ class _FormatStringMixin(ItemsMixin):
         format: InputString = "",
         items: Mapping[str, InputString | InputInteger | InputFloat] | None = None,
     ):
+        """
+        Parameters
+        ----------
+        format : InputString
+            The template, with ``{name}`` fields.
+        items : Mapping[str, InputString | InputInteger | InputFloat] | None
+            The values inserted into the template, by field name.
+        """
         super().__init__()
         key_args = {"Format": format}
         key_args.update(self._add_inputs(**(items or {})))
@@ -314,6 +365,115 @@ class _FormatStringMixin(ItemsMixin):
     def items(self) -> dict[str, SocketLinker]:
         """Input sockets:"""
         return {socket.name: self.i._get(socket.name) for socket in self.node.inputs}
+
+
+class _UnnamedItemsMixin(ItemsMixin):
+    """Items machinery for nodes whose items are unnamed and untyped, with
+    the node's ``data_type`` fixing the type of every item and each item's
+    input socket identified as ``Item_<identifier>``: Index Switch and
+    Combine List. ``_items_collection`` and ``data_type`` come from the
+    node class."""
+
+    if TYPE_CHECKING:
+        node: Any
+        tree: TreeBuilder[Any]
+
+        @property
+        def data_type(self) -> str: ...
+
+        def _source_socket(self, node) -> bpy.types.NodeSocket: ...
+
+    @property
+    def _socket_data_types(self) -> tuple[str, ...]:
+        # "FLOAT" is the data_type spelling of socket.type "VALUE".
+        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
+
+    def _new_item(self, name: str, type: str) -> Any:
+        return self._items.new()
+
+    def _item_socket(self, item: Any, *, output: bool = False) -> bpy.types.NodeSocket:
+        if output:
+            raise ValueError("the items have no output sockets")
+        identifier = f"Item_{item.identifier}"
+        for socket in self.node.inputs:
+            if socket.identifier == identifier:
+                return socket
+        raise KeyError(f"No input socket for item {item.identifier}")
+
+    def _link_args(self, *args: InputAny) -> None:
+        """Add one item per argument: a default value, something to link
+        from, or None for an item left unlinked."""
+        for arg in args:
+            socket = self._add_socket(name="", type=self.data_type)
+            if arg is None:
+                continue
+            if _is_default_value(arg):
+                if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(
+                    arg, str
+                ):
+                    # A menu's default can only be set once the tree is
+                    # built and its items are known.
+                    self.tree._menu_defaults.append(_MenuDefault(socket, arg))
+                else:
+                    socket.default_value = arg  # ty: ignore[unresolved-attribute]
+            else:
+                self.tree.link(self._source_socket(arg), socket)
+
+
+_CombineListDataType = Literal[
+    "FLOAT",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "MENU",
+    "OBJECT",
+    "IMAGE",
+    "GEOMETRY",
+    "COLLECTION",
+    "MATERIAL",
+    "BUNDLE",
+    "CLOSURE",
+    "FONT",
+    "SOUND",
+]
+
+
+class _CombineListMixin(_UnnamedItemsMixin):
+    """Items constructor for the Combine List node: one input per item,
+    all of the node's ``data_type``, combined into a list."""
+
+    _items_collection = "combine_list_items"
+
+    if TYPE_CHECKING:
+
+        @property
+        def i(self) -> SocketAccessor: ...
+        @property
+        def o(self) -> SocketAccessor: ...
+
+    def __init__(
+        self,
+        items: Iterable[InputAny] = (),
+        *,
+        data_type: _CombineListDataType = "FLOAT",
+    ):
+        """
+        Parameters
+        ----------
+        items : Iterable[InputAny]
+            One input per item: a default value, something to link from, or
+            None for an input left open.
+        data_type : str
+            The type of every item and of the list.
+        """
+        super().__init__()
+        self.node.data_type = data_type
+        self._items.clear()
+        self._link_args(*items)
 
 
 class _FieldToListMixin(ItemsMixin):
@@ -349,6 +509,17 @@ class _FieldToListMixin(ItemsMixin):
         *,
         fields: dict[str, InputLinkable | str] | None = None,
     ):
+        """
+        Parameters
+        ----------
+        count : InputInteger
+            The length of the lists.
+        items : dict[str, InputLinkable | str] | None
+            The fields to gather, by name: a value or a link, or a
+            socket-type string for an input left open.
+        fields : dict[str, InputLinkable | str] | None
+            Deprecated name of ``items``.
+        """
         super().__init__()
         if fields is not None:
             warnings.warn(

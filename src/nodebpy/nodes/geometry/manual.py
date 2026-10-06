@@ -96,6 +96,7 @@ from ...types import (
     _is_default_value,
     _SocketShapeStructureType,
 )
+from .._mixins import _UnnamedItemsMixin
 from .zone import (
     ClosureInput,
     ClosureOutput,
@@ -1367,7 +1368,7 @@ class JoinGeometry(BaseNode):
             self._link(*self._find_best_socket_pair(source, self))
 
 
-class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
+class IndexSwitch[T: BaseSocket](_UnnamedItemsMixin, BaseNode):
     """Node builder for the Index Switch node"""
 
     _bl_idname = "GeometryNodeIndexSwitch"
@@ -1507,47 +1508,6 @@ class IndexSwitch[T: BaseSocket](ItemsMixin, BaseNode):
         self.node.index_switch_items.clear()
         self._link_args(*items)
         self._establish_links(**key_args)
-
-    @property
-    def _socket_data_types(self) -> tuple[str, ...]:
-        # items are untyped; the node-level data_type fixes the type for all
-        # of them ("FLOAT" is the data_type spelling of socket.type "VALUE")
-        return ("VALUE" if self.data_type == "FLOAT" else self.data_type,)
-
-    def _new_item(self, name: str, type: str) -> bpy.types.IndexSwitchItem:
-        # index switch items are unnamed and untyped
-        return self._items.new()
-
-    def _item_socket(
-        self, item: bpy.types.IndexSwitchItem, *, output: bool = False
-    ) -> NodeSocket:
-        if output:
-            raise ValueError("Index switch items do not have output sockets")
-        identifier = f"Item_{item.identifier}"
-        assert self.node.inputs is not None
-        for socket in self.node.inputs:
-            if socket.identifier == identifier:
-                return socket
-        raise KeyError(f"No input socket for index switch item {item.identifier}")
-
-    def _link_args(self, *args: InputAny):
-        for arg in args:
-            socket = self._add_socket(name="", type=self.data_type)
-            if arg is None:
-                continue  # item declared but left unlinked
-            if _is_default_value(arg):
-                if isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(
-                    arg, str
-                ):
-                    # the socket is a NodeSocketMenu, but the default_value is not settable
-                    # until the full tree is built and menu items are known. We need to defer
-                    # the setting of the default values until after tree construction.
-                    self.tree._menu_defaults.append(_MenuDefault(socket, arg))
-                else:
-                    socket.default_value = arg  # ty: ignore[unresolved-attribute]
-            else:
-                source = self._source_socket(arg)  # type: ignore
-                self.tree.link(source, socket)
 
     @property
     def data_type(self) -> SOCKET_TYPES:
