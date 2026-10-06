@@ -114,7 +114,7 @@ with g.tree() as tree:
     (
         g.Cube()
         >> geo.initial
-        >> g.JoinGeometry([..., g.Points(10, random_pos)])
+        >> g.JoinGeometry([g.Points(10, random_pos)])
         >> geo.next
         >> tree.outputs.geometry()
     )
