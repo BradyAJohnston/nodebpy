@@ -1,15 +1,27 @@
+"""Items-driven nodes: typed item handles and the collections that declare them.
+
+A node whose sockets come from a bpy item collection (``capture_items``,
+``bake_items``, ``repeat_items`` ...) exposes that collection as a typed
+:class:`ItemCollection`. The collection is the one way to add items: the
+per-type methods (``items.float(value, name)``) carry static socket types and
+``items.new(value, name, type=...)`` is the runtime-typed form. Every
+declaration returns an :class:`Item` handle naming the item's socket roles.
+"""
+
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
+import warnings
+from collections.abc import Iterable, Iterator, Mapping
+from typing import TYPE_CHECKING, Any, ClassVar, Generic, TypeVar, cast
 
+import bpy
 from bpy.types import ID, Node, NodeSocket
 from mathutils import Euler
 
 from ..types import _is_default_value
 from ._registry import _wrap_socket
 from ._utils import _SocketLike
-from .node import DynamicInputsMixin
+from .node import DynamicInputsMixin, _match_compatible_data
 from .socket import BaseSocket, Socket
 
 if TYPE_CHECKING:
@@ -59,6 +71,60 @@ if TYPE_CHECKING:
     from .tree import TreeBuilder
 
 
+# Every socket type an item may carry, spelled as ``NodeSocket.type``.
+_ALL_ITEM_TYPES = (
+    "VALUE",
+    "INT",
+    "BOOLEAN",
+    "VECTOR",
+    "RGBA",
+    "ROTATION",
+    "MATRIX",
+    "STRING",
+    "MENU",
+    "GEOMETRY",
+    "OBJECT",
+    "IMAGE",
+    "COLLECTION",
+    "MATERIAL",
+    "FONT",
+    "SOUND",
+    "BUNDLE",
+    "CLOSURE",
+)
+
+# Item name when a declaration gives neither a name nor a source socket.
+_DEFAULT_NAMES = {
+    "FLOAT": "Value",
+    "INT": "Integer",
+    "BOOLEAN": "Boolean",
+    "VECTOR": "Vector",
+    "RGBA": "Color",
+    "ROTATION": "Rotation",
+    "MATRIX": "Matrix",
+    "STRING": "String",
+    "MENU": "Menu",
+    "GEOMETRY": "Geometry",
+    "OBJECT": "Object",
+    "IMAGE": "Image",
+    "COLLECTION": "Collection",
+    "MATERIAL": "Material",
+    "FONT": "Font",
+    "SOUND": "Sound",
+    "BUNDLE": "Bundle",
+    "CLOSURE": "Closure",
+}
+
+_ID_TYPES = {
+    bpy.types.Object: "OBJECT",
+    bpy.types.Image: "IMAGE",
+    bpy.types.Collection: "COLLECTION",
+    bpy.types.Material: "MATERIAL",
+    bpy.types.VectorFont: "FONT",
+    bpy.types.Sound: "SOUND",
+}
+
+
 def _socket_for_item(
     node: Node, items, prefix: str, item, *, output: bool = False
 ) -> NodeSocket:
@@ -70,15 +136,28 @@ def _socket_for_item(
     return [s for s in sockets if s.identifier.startswith(prefix)][index]
 
 
+def _is_linkable(value: Any) -> bool:
+    """Whether ``value`` is a link source rather than a socket default."""
+    return (
+        value is not None and not _is_default_value(value) and not isinstance(value, ID)
+    )
+
+
 def _apply_item_value(owner, socket: NodeSocket, value: Any) -> None:
     """Link ``value`` into ``socket`` (linkables) or set it as the socket
     default (plain values and datablocks); ``None`` leaves it untouched."""
     if value is None:
         return
-    if _is_default_value(value) or isinstance(value, ID):
-        socket.default_value = value  # ty: ignore[unresolved-attribute]
-    else:
+    if _is_linkable(value):
         owner.tree.link(owner._source_socket(value), socket)
+    elif isinstance(socket, bpy.types.NodeSocketMenu) and isinstance(value, str):
+        # a menu socket's enum only exists once the tree is built, so the
+        # default is applied at context exit
+        from .tree import _MenuDefault
+
+        owner.tree._menu_defaults.append(_MenuDefault(socket, value))
+    else:
+        socket.default_value = value  # ty: ignore[unresolved-attribute]
 
 
 def _infer_value_type(value: Any) -> str | None:
@@ -96,39 +175,63 @@ def _infer_value_type(value: Any) -> str | None:
             return "VECTOR"
         case Euler():
             return "ROTATION"
+        case ID():
+            return next(
+                (t for cls, t in _ID_TYPES.items() if isinstance(value, cls)), None
+            )
         case _:
             return None
 
 
-_SocketT = TypeVar("_SocketT", bound=BaseSocket, default=Socket)
+def _resolve_source(
+    value: InputLinkable, *, name: str | None, types: tuple[str, ...]
+) -> tuple[NodeSocket, str, str]:
+    """The source socket, its socket type and the item name for a linkable.
+
+    The name is the source socket's unless one is given."""
+    accessor = getattr(value, "o", None)
+    if accessor is None and not isinstance(value, (NodeSocket, _SocketLike)):
+        raise TypeError(f"{value!r} is not a socket, node or default value")
+    sources = [cast("NodeSocket", value)] if accessor is None else accessor._available
+    source, type = _match_compatible_data(sources, types)
+    if name is None:
+        default_socket = getattr(value, "_default_output_socket", None)
+        name = source.name if default_socket is None else default_socket.name
+    if isinstance(source, _SocketLike):
+        source = source.socket
+    return source, type, name
 
 
-class Item(Generic[_SocketT]):
+_InT = TypeVar("_InT", bound=BaseSocket, default=Socket)
+_OutT = TypeVar("_OutT", bound=BaseSocket, default=_InT)
+
+
+class Item(Generic[_InT, _OutT]):
     """Handle for one item of an items-driven node.
 
     Names the item's socket *roles* rather than socket plumbing: ``input``
-    is the node's input socket for the item, ``output`` the matching
-    output socket. The type parameter is the socket class both roles
-    return; the untyped default is plain :class:`Socket`.
+    is the socket the item is fed through, ``output`` the socket it is read
+    from. The type parameters are the socket classes of the two roles; one
+    parameter means both roles share it, none means plain :class:`Socket`.
 
-    Holds the item's collection index rather than the bpy item itself —
+    Linking into ``input`` with ``>>`` continues the chain from ``output``::
+
+        g.Position() >> capture.items.vector().input >> g.SetPosition()
+
+    Holds the item's collection index rather than the bpy item itself:
     bpy collection item references are invalidated when the collection
     grows.
     """
 
-    def __init__(self, owner: ItemsMixin, item: Any):
-        self._owner = owner
+    def __init__(self, items: ItemCollection[Any], item: Any):
+        self._items = items
         self._index = next(
-            i for i, candidate in enumerate(self._collection) if candidate == item
+            i for i, candidate in enumerate(items._bpy) if candidate == item
         )
 
     @property
-    def _collection(self):
-        return self._owner._items
-
-    @property
     def _item(self):
-        return self._collection[self._index]
+        return self._items._bpy[self._index]
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}({self.name!r}, {self.socket_type!r})"
@@ -144,30 +247,47 @@ class Item(Generic[_SocketT]):
         return getattr(item, "socket_type", None) or item.data_type
 
     @property
-    def input(self) -> _SocketT:
-        """The node's input socket for this item."""
-        return cast("_SocketT", _wrap_socket(self._owner._item_socket(self._item)))
+    def input(self) -> _InT:
+        """The socket the item is fed through."""
+        if not self._items._has_input:
+            raise AttributeError(f"{self!r} has no input socket")
+        socket = self._items._item_socket(self._item)
+        return cast(
+            "_InT", _chained(socket, self._items._has_output, lambda: self.output)
+        )
 
     @property
-    def output(self) -> _SocketT:
-        """The node's output socket for this item."""
+    def output(self) -> _OutT:
+        """The socket the item is read from."""
+        if not self._items._has_output:
+            raise AttributeError(f"{self!r} has no output socket")
         return cast(
-            "_SocketT", _wrap_socket(self._owner._item_socket(self._item, output=True))
+            "_OutT", _wrap_socket(self._items._item_socket(self._item, output=True))
         )
 
 
-class MenuItem(Item[_SocketT]):
+def _chained(socket: NodeSocket, continues: bool, follow) -> Socket:
+    """Wrap a link-target socket so ``>>`` into it carries on from the
+    socket ``follow`` returns (the item's other side)."""
+    wrapped = _wrap_socket(socket)
+    if continues:
+        wrapped._chain_to = follow  # ty: ignore[unresolved-attribute]
+    return wrapped
+
+
+class MenuItem(Item[_InT, "BooleanSocket"]):
     """Handle for one Menu Switch enum item.
 
-    ``input`` is the item's input socket (typed to the switch's data
-    type), ``is_selected`` the item's boolean output socket, and
-    ``description`` the tooltip Blender shows for the item in the menu.
+    ``input`` is the item's value socket (typed to the switch's data
+    type), ``output`` (also ``is_selected``) the boolean socket that is
+    True when the item is selected, and ``description`` the tooltip
+    Blender shows for the item in the menu.
     """
 
     @property
     def is_selected(self) -> BooleanSocket:
         """Boolean output socket — True when this item is selected."""
-        return cast("BooleanSocket", self.output)
+        return self.output
 
     @property
     def description(self) -> str:
@@ -177,6 +297,175 @@ class MenuItem(Item[_SocketT]):
     @description.setter
     def description(self, value: str) -> None:
         self._item.description = value
+
+
+_HandleT = TypeVar("_HandleT", bound=Item[Any, Any], default=Item)
+
+
+class ItemCollection(Generic[_HandleT]):
+    """The items of an items-driven node: add, iterate and index them.
+
+    ``len(items)``, ``for item in items`` and ``items[i]`` / ``items["Name"]``
+    work on the handles; subclasses add the per-type declaration methods.
+
+    Class attributes locate the bpy collection and its sockets:
+
+    - ``_collection``: attribute of the bpy collection on the owner's items
+      node, or None for the owner's ``_items_collection``
+    - ``_prefix``: socket identifier prefix the item sockets share, or None
+      to ask the owner (``_item_socket``)
+    - ``_value_types``: socket types considered when inferring an item's
+      type from a source socket, or None for the owner's
+    - ``_has_input`` / ``_has_output``: which roles the items carry
+    """
+
+    _handle_type: ClassVar[type[Item]] = Item
+    _collection: ClassVar[str | None] = None
+    _prefix: ClassVar[str | None] = None
+    _value_types: ClassVar[tuple[str, ...] | None] = None
+    _has_input: ClassVar[bool] = True
+    _has_output: ClassVar[bool] = True
+
+    def __init__(self, owner: Any):
+        self._owner = owner
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}({list(self)!r})"
+
+    def __len__(self) -> int:
+        return len(self._bpy)
+
+    def __iter__(self) -> Iterator[_HandleT]:
+        return (self._handle(item) for item in list(self._bpy))
+
+    def __getitem__(self, key: int | str) -> _HandleT:
+        """The item at a position, or the first item with a name."""
+        items = list(self._bpy)
+        if isinstance(key, int):
+            return self._handle(items[key])
+        for item in items:
+            if item.name == key:
+                return self._handle(item)
+        raise KeyError(key)
+
+    # -- plumbing, overridden per node family --
+
+    @property
+    def _node(self) -> Node:
+        """The node carrying the item sockets."""
+        return self._owner.node
+
+    @property
+    def _bpy(self):
+        """The bpy item collection."""
+        if self._collection is None:
+            return self._owner._items
+        return getattr(self._owner._items_node, self._collection)
+
+    def _item_socket(self, item, *, output: bool = False) -> NodeSocket:
+        if self._prefix is None:
+            return self._owner._item_socket(item, output=output)
+        return _socket_for_item(
+            self._node, self._bpy, self._prefix, item, output=output
+        )
+
+    def _new_item(self, name: str, type: str):
+        if self._collection is None:
+            return self._owner._new_item(name, type)
+        return self._bpy.new(type, name)
+
+    def _configure(self, item, **props: Any) -> None:
+        """Apply extra item properties (``domain``, ``description`` ...)."""
+        for key, value in props.items():
+            setattr(item, key, value)
+
+    def _handle(self, item) -> _HandleT:
+        return cast("_HandleT", self._handle_type(self, item))
+
+    def _entry_socket(self, handle: Item) -> NodeSocket:
+        """The socket a declaration's value goes into."""
+        return self._item_socket(handle._item)
+
+    def _default_name(self, type: str) -> str:
+        return _DEFAULT_NAMES.get(type, type.capitalize())
+
+    # -- declaration --
+
+    def _declare(
+        self, value: Any, name: str | None, type: str | None, **props: Any
+    ) -> Any:
+        """Add one item, feed it ``value`` and return its handle.
+
+        A linkable ``value`` is linked into the item (its socket names the
+        item unless ``name`` is given) and infers ``type``; a plain value
+        becomes the socket default and infers the type from its Python
+        type. Returns ``Any`` so the typed methods narrow the handle.
+        """
+        owner = self._owner
+        source = None
+        if _is_linkable(value):
+            types = self._value_types or owner._socket_data_types
+            source, inferred, name = _resolve_source(value, name=name, types=types)
+            type = type or inferred
+        elif type is None:
+            type = _infer_value_type(value)
+            if type is None:
+                raise TypeError(
+                    f"item {name!r} needs a value to infer its type from, or type="
+                )
+        type = getattr(owner, "_type_map", {}).get(type, type)
+        if name is None:
+            name = self._default_name(type)
+        item = self._new_item(name, type)
+        self._configure(item, **props)
+        handle = self._handle(item)
+        if source is not None:
+            owner.tree.link(source, self._entry_socket(handle))
+        elif value is not None:
+            _apply_item_value(owner, self._entry_socket(handle), value)
+        return handle
+
+    def _typed(self, value: Any, name: str | None, type: str, **props: Any) -> Any:
+        """A typed-method declaration, tolerating the old name-first order
+        for one release."""
+        value, name = _legacy_order(value, name, type)
+        return self._declare(value, name, type, **props)
+
+    def _add_all(self, items: Mapping[str, Any] | Iterable[Any] | None) -> None:
+        """Declare the constructor's ``items``: a name → value mapping (a
+        socket-type string declares an unlinked item) or an iterable of
+        values named after their sources."""
+        if items is None:
+            return
+        if isinstance(items, Mapping):
+            for name, value in items.items():
+                declared = self._owner._declared_item_type(value)
+                if declared is not None:
+                    self._declare(None, name, declared)
+                else:
+                    self._declare(value, name, None)
+        else:
+            for value in items:
+                self._declare(value, None, None)
+
+
+def _legacy_order(value: Any, name: Any, type: str) -> tuple[Any, Any]:
+    """Detect the pre-530 ``(name, value)`` argument order and swap it with a
+    warning. A string first argument can only be a name for item types
+    whose values are never strings."""
+    if (
+        isinstance(value, str)
+        and type not in ("STRING", "MENU")
+        and not isinstance(name, str)
+    ):
+        warnings.warn(
+            "item factories now take the value first: use "
+            f"items.<type>(value, {value!r}) instead of items.<type>({value!r}, value)",
+            DeprecationWarning,
+            stacklevel=4,
+        )
+        return name, value
+    return value, name
 
 
 class ItemsMixin(DynamicInputsMixin):
@@ -190,6 +479,8 @@ class ItemsMixin(DynamicInputsMixin):
       item's type from a source socket
     - ``_type_map``: socket type -> item ``socket_type`` renames
       (e.g. ``VALUE`` -> ``FLOAT``)
+
+    and expose their :class:`ItemCollection` as ``items``.
 
     Must come *before* ``BaseNode`` in the bases so that
     ``_find_best_socket_pair`` (the ``>>``-implicit-add behaviour) takes
@@ -243,28 +534,6 @@ class ItemsMixin(DynamicInputsMixin):
     def _add_socket(self, name: str, type: str) -> NodeSocket:
         return self._item_socket(self._new_item(name, type))
 
-    def _resolve_capture(
-        self,
-        value: InputLinkable,
-        *,
-        name: str | None,
-        types: tuple[str, ...] | None = None,
-    ) -> tuple[NodeSocket, str, str]:
-        """Resolve the source socket, item type and item name for a capture."""
-        accessor = getattr(value, "o", None)
-        sources = (
-            [cast("NodeSocket", value)] if accessor is None else accessor._available
-        )
-        socket_source, type = self._match_compatible_data(sources, types)
-        if type in self._type_map:
-            type = self._type_map[type]
-        if name is None:
-            default_socket = getattr(value, "_default_output_socket", None)
-            name = socket_source.name if default_socket is None else default_socket.name
-        if isinstance(socket_source, _SocketLike):
-            socket_source = socket_source.socket
-        return socket_source, type, name
-
     def _declared_item_type(self, value: Any) -> str | None:
         """The item ``socket_type`` if ``value`` is a socket-type string
         (e.g. ``"FLOAT"``) valid for this node, else ``None``."""
@@ -276,495 +545,433 @@ class ItemsMixin(DynamicInputsMixin):
             return value
         return None
 
-    def _add_unlinked_input(self, name: str, value: Any) -> bool:
-        """Items may also be declared with a plain default value
-        (``items={"label": "hello"}``) — the item type is inferred from
-        the Python type and the value becomes the socket default."""
-        if super()._add_unlinked_input(name, value):
-            return True
-        type = _infer_value_type(value)
-        if type is None:
-            return False
-        socket = self._add_socket(
-            name=name, type=self._declared_item_type(type) or type
-        )
-        socket.default_value = value  # ty: ignore[unresolved-attribute]
-        return True
+    @property
+    def items(self) -> ItemCollection[Any]:
+        """The node's items; subclasses return their typed collection."""
+        return ItemCollection(self)
+
+    # -- deprecated entry points, removed in 530 --
 
     def capture(self, value: InputLinkable, *, name: str | None = None) -> Socket:
-        """Add an item linked from ``value`` and return its output socket.
-
-        The item is auto-named after the source socket unless ``name`` is
-        given.
-        """
-        source, type, name = self._resolve_capture(value, name=name)
-        item = self._new_item(name, type)
-        self.tree.link(source, self._item_socket(item))
-        return _wrap_socket(self._item_socket(item, output=True))
+        """Deprecated: use ``items.new(value, name).output``."""
+        _deprecated("capture(value, name=)", "items.new(value, name).output")
+        return self.items._declare(value, name, None).output
 
     def add_item(
         self, name: str, value: Any = None, *, type: str | None = None
     ) -> Item:
-        """Add a single item and return its handle.
-
-        ``value`` may be a linkable (linked to the item's input) or a plain
-        default value; otherwise ``type`` (a socket-type string such as
-        ``"FLOAT"``) declares the item unlinked.
-        """
-        if value is not None and not _is_default_value(value):
-            source, inferred, _ = self._resolve_capture(value, name=name)
-            item = self._new_item(name, type or inferred)
-            self.tree.link(source, self._item_socket(item))
-            return Item(self, item)
-        if type is None:
-            type = _infer_value_type(value)
-        if type is None:
-            raise TypeError(f"item {name!r} requires a value or an explicit type=")
-        item = self._new_item(name, self._declared_item_type(type) or type)
-        if value is not None:
-            self._item_socket(item).default_value = value  # ty: ignore[unresolved-attribute]
-        return Item(self, item)
+        """Deprecated: use ``items.new(value, name, type=)``."""
+        _deprecated("add_item(name, value)", "items.new(value, name)")
+        return self.items._declare(value, name, type)
 
     def add_items(self, items: Mapping[str, InputLinkable | str]) -> dict[str, Item]:
-        """Add an item per mapping entry and return their handles by name.
-
-        Values may be linkables (linked to the new item's input) or
-        socket-type strings such as ``"FLOAT"`` (declare an unlinked item).
-        """
+        """Deprecated: use ``items.new(value, name)`` per item."""
+        _deprecated("add_items(mapping)", "items.new(value, name) per item")
         handles = {}
-        for key, value in items.items():
-            type = self._declared_item_type(value)
-            if type is not None:
-                handles[key] = self.add_item(key, type=type)
+        for name, value in items.items():
+            declared = self._declared_item_type(value)
+            if declared is not None:
+                handles[name] = self.items._declare(None, name, declared)
             else:
-                handles[key] = self.add_item(key, cast("InputLinkable", value))
+                handles[name] = self.items._declare(value, name, None)
         return handles
 
 
-_FieldT = TypeVar("_FieldT", bound=Socket, default=Socket)
-_GridT = TypeVar("_GridT", bound=Socket, default=Socket)
+def _deprecated(old: str, new: str) -> None:
+    warnings.warn(
+        f"{old} is deprecated and will be removed in nodebpy 530; use {new}",
+        DeprecationWarning,
+        stacklevel=3,
+    )
 
 
-class GridItem(Item[Socket], Generic[_FieldT, _GridT]):
-    """Handle for a field→grid item whose two roles carry different socket
-    classes: ``field`` is the node's field input socket, ``grid`` the
-    matching grid output socket."""
+class _ValueItems(ItemCollection[_HandleT]):
+    """Items whose declaration takes a value: a linkable to link in, or a
+    plain default for the item socket."""
 
-    @property
-    def field(self) -> _FieldT:
-        """The node's field input socket for this item."""
-        return cast("_FieldT", self.input)
-
-    @property
-    def grid(self) -> _GridT:
-        """The node's grid output socket for this item."""
-        return cast("_GridT", self.output)
-
-
-class _TypedItemFactory:
-    """Base for per-datatype typed item factories.
-
-    Holds the owning builder object; subclasses implement ``_declare`` and
-    expose one factory method per socket type so declarations carry static
-    socket types.
-    """
-
-    def __init__(self, owner: Any):
-        self._owner = owner
+    def new(
+        self,
+        value: InputAny = None,
+        name: str | None = None,
+        *,
+        type: str | None = None,
+    ) -> _HandleT:
+        """Add an item of a runtime-chosen ``type`` (a socket-type string
+        such as ``"FLOAT"``), inferred from ``value`` when omitted."""
+        return self._declare(value, name, type)
 
 
-class _FieldItemFactory(_TypedItemFactory):
-    """Typed factories for the seven field data types, returning two-role
-    :class:`Item` handles. The default ``_declare`` targets an
-    :class:`ItemsMixin` owner's :meth:`~ItemsMixin.add_item`."""
+class _DeclaredItems(ItemCollection[_HandleT]):
+    """Items declared by name and type only (they carry no value)."""
 
-    _owner: ItemsMixin
+    def new(self, name: str | None = None, *, type: str) -> _HandleT:
+        """Add an item of a runtime-chosen ``type`` (a socket-type string
+        such as ``"FLOAT"``)."""
+        return self._declare(None, name, type)
 
-    def _declare(self, name: str, value: InputAny, type: str) -> Item:
-        return self._owner.add_item(name, value, type=type)
 
-    def float(self, name: str = "Value", value: InputFloat = None) -> Item[FloatSocket]:
-        return cast("Item[FloatSocket]", self._declare(name, value, "FLOAT"))
+class _FieldItems(_ValueItems[Item]):
+    """The seven field data types, as two-role :class:`Item` handles."""
+
+    def float(
+        self, value: InputFloat = None, name: str | None = None
+    ) -> Item[FloatSocket]:
+        return self._typed(value, name, "FLOAT")
 
     def integer(
-        self, name: str = "Integer", value: InputInteger = None
+        self, value: InputInteger = None, name: str | None = None
     ) -> Item[IntegerSocket]:
-        return cast("Item[IntegerSocket]", self._declare(name, value, "INT"))
+        return self._typed(value, name, "INT")
 
     def boolean(
-        self, name: str = "Boolean", value: InputBoolean = None
+        self, value: InputBoolean = None, name: str | None = None
     ) -> Item[BooleanSocket]:
-        return cast("Item[BooleanSocket]", self._declare(name, value, "BOOLEAN"))
+        return self._typed(value, name, "BOOLEAN")
 
     def vector(
-        self, name: str = "Vector", value: InputVector = None
+        self, value: InputVector = None, name: str | None = None
     ) -> Item[VectorSocket]:
-        return cast("Item[VectorSocket]", self._declare(name, value, "VECTOR"))
+        return self._typed(value, name, "VECTOR")
 
-    def color(self, name: str = "Color", value: InputColor = None) -> Item[ColorSocket]:
-        return cast("Item[ColorSocket]", self._declare(name, value, "RGBA"))
+    def color(
+        self, value: InputColor = None, name: str | None = None
+    ) -> Item[ColorSocket]:
+        return self._typed(value, name, "RGBA")
 
     def rotation(
-        self, name: str = "Rotation", value: InputRotation = None
+        self, value: InputRotation = None, name: str | None = None
     ) -> Item[RotationSocket]:
-        return cast("Item[RotationSocket]", self._declare(name, value, "ROTATION"))
+        return self._typed(value, name, "ROTATION")
 
     def matrix(
-        self, name: str = "Matrix", value: InputMatrix = None
+        self, value: InputMatrix = None, name: str | None = None
     ) -> Item[MatrixSocket]:
-        return cast("Item[MatrixSocket]", self._declare(name, value, "MATRIX"))
+        return self._typed(value, name, "MATRIX")
 
 
-class _SocketItemFactory(_TypedItemFactory):
-    """Typed factories that declare one item per call and return the single
-    node socket the item drives; subclasses implement ``_declare``."""
+class _StructuredItems(ItemCollection[_HandleT]):
+    """Items with a Blender ``structure_type`` (bundle and closure items)."""
 
-    def _declare(
-        self, name: str, type: str, structure_type: _SocketShapeStructureType
-    ) -> Socket:
-        raise NotImplementedError
-
-    def float(
-        self,
-        name: str = "Value",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> FloatSocket:
-        return cast("FloatSocket", self._declare(name, "FLOAT", structure_type))
-
-    def integer(
-        self,
-        name: str = "Integer",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> IntegerSocket:
-        return cast("IntegerSocket", self._declare(name, "INT", structure_type))
-
-    def boolean(
-        self,
-        name: str = "Boolean",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> BooleanSocket:
-        return cast("BooleanSocket", self._declare(name, "BOOLEAN", structure_type))
-
-    def vector(
-        self,
-        name: str = "Vector",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> VectorSocket:
-        return cast("VectorSocket", self._declare(name, "VECTOR", structure_type))
-
-    def color(
-        self,
-        name: str = "Color",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ColorSocket:
-        return cast("ColorSocket", self._declare(name, "RGBA", structure_type))
-
-    def rotation(
-        self,
-        name: str = "Rotation",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> RotationSocket:
-        return cast("RotationSocket", self._declare(name, "ROTATION", structure_type))
-
-    def matrix(
-        self,
-        name: str = "Matrix",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MatrixSocket:
-        return cast("MatrixSocket", self._declare(name, "MATRIX", structure_type))
-
-    def string(
-        self,
-        name: str = "String",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> StringSocket:
-        return cast("StringSocket", self._declare(name, "STRING", structure_type))
-
-    def menu(
-        self,
-        name: str = "Menu",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MenuSocket:
-        return cast("MenuSocket", self._declare(name, "MENU", structure_type))
-
-    def geometry(
-        self,
-        name: str = "Geometry",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> GeometrySocket:
-        return cast("GeometrySocket", self._declare(name, "GEOMETRY", structure_type))
-
-    def object(
-        self,
-        name: str = "Object",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ObjectSocket:
-        return cast("ObjectSocket", self._declare(name, "OBJECT", structure_type))
-
-    def image(
-        self,
-        name: str = "Image",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ImageSocket:
-        return cast("ImageSocket", self._declare(name, "IMAGE", structure_type))
-
-    def collection(
-        self,
-        name: str = "Collection",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> CollectionSocket:
-        return cast(
-            "CollectionSocket", self._declare(name, "COLLECTION", structure_type)
-        )
-
-    def material(
-        self,
-        name: str = "Material",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MaterialSocket:
-        return cast("MaterialSocket", self._declare(name, "MATERIAL", structure_type))
-
-    def font(
-        self,
-        name: str = "Font",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> FontSocket:
-        return cast("FontSocket", self._declare(name, "FONT", structure_type))
-
-    def sound(
-        self,
-        name: str = "Sound",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> SoundSocket:
-        return cast("SoundSocket", self._declare(name, "SOUND", structure_type))
-
-    def bundle(
-        self,
-        name: str = "Bundle",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> BundleSocket:
-        return cast("BundleSocket", self._declare(name, "BUNDLE", structure_type))
-
-    def closure(
-        self,
-        name: str = "Closure",
-        *,
-        structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ClosureSocket:
-        return cast("ClosureSocket", self._declare(name, "CLOSURE", structure_type))
+    def _configure(self, item, **props: Any) -> None:
+        if props.get("structure_type") == "AUTO":
+            del props["structure_type"]  # Blender's default; leave it untouched
+        super()._configure(item, **props)
 
 
-class _SocketValueItemFactory(_TypedItemFactory):
-    """Like :class:`_SocketItemFactory` but each declaration may take a
-    ``value`` — a linkable linked into the new socket, or a plain default;
-    subclasses implement ``_declare``."""
-
-    def _declare(
-        self,
-        name: str,
-        value: InputAny,
-        type: str,
-        structure_type: _SocketShapeStructureType,
-    ) -> Socket:
-        raise NotImplementedError
+class _SocketValueItems(_StructuredItems[Item], _ValueItems[Item]):
+    """All eighteen socket types, each declaration taking a value and an
+    optional ``structure_type``."""
 
     def float(
         self,
-        name: str = "Value",
         value: InputFloat = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> FloatSocket:
-        return cast("FloatSocket", self._declare(name, value, "FLOAT", structure_type))
+    ) -> Item[FloatSocket]:
+        return self._typed(value, name, "FLOAT", structure_type=structure_type)
 
     def integer(
         self,
-        name: str = "Integer",
         value: InputInteger = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> IntegerSocket:
-        return cast("IntegerSocket", self._declare(name, value, "INT", structure_type))
+    ) -> Item[IntegerSocket]:
+        return self._typed(value, name, "INT", structure_type=structure_type)
 
     def boolean(
         self,
-        name: str = "Boolean",
         value: InputBoolean = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> BooleanSocket:
-        return cast(
-            "BooleanSocket", self._declare(name, value, "BOOLEAN", structure_type)
-        )
+    ) -> Item[BooleanSocket]:
+        return self._typed(value, name, "BOOLEAN", structure_type=structure_type)
 
     def vector(
         self,
-        name: str = "Vector",
         value: InputVector = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> VectorSocket:
-        return cast(
-            "VectorSocket", self._declare(name, value, "VECTOR", structure_type)
-        )
+    ) -> Item[VectorSocket]:
+        return self._typed(value, name, "VECTOR", structure_type=structure_type)
 
     def color(
         self,
-        name: str = "Color",
         value: InputColor = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ColorSocket:
-        return cast("ColorSocket", self._declare(name, value, "RGBA", structure_type))
+    ) -> Item[ColorSocket]:
+        return self._typed(value, name, "RGBA", structure_type=structure_type)
 
     def rotation(
         self,
-        name: str = "Rotation",
         value: InputRotation = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> RotationSocket:
-        return cast(
-            "RotationSocket", self._declare(name, value, "ROTATION", structure_type)
-        )
+    ) -> Item[RotationSocket]:
+        return self._typed(value, name, "ROTATION", structure_type=structure_type)
 
     def matrix(
         self,
-        name: str = "Matrix",
         value: InputMatrix = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MatrixSocket:
-        return cast(
-            "MatrixSocket", self._declare(name, value, "MATRIX", structure_type)
-        )
+    ) -> Item[MatrixSocket]:
+        return self._typed(value, name, "MATRIX", structure_type=structure_type)
 
     def string(
         self,
-        name: str = "String",
         value: InputString = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> StringSocket:
-        return cast(
-            "StringSocket", self._declare(name, value, "STRING", structure_type)
-        )
+    ) -> Item[StringSocket]:
+        return self._typed(value, name, "STRING", structure_type=structure_type)
 
     def menu(
         self,
-        name: str = "Menu",
         value: InputMenu = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MenuSocket:
-        return cast("MenuSocket", self._declare(name, value, "MENU", structure_type))
+    ) -> Item[MenuSocket]:
+        return self._typed(value, name, "MENU", structure_type=structure_type)
 
     def geometry(
         self,
-        name: str = "Geometry",
         value: InputGeometry = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> GeometrySocket:
-        return cast(
-            "GeometrySocket", self._declare(name, value, "GEOMETRY", structure_type)
-        )
+    ) -> Item[GeometrySocket]:
+        return self._typed(value, name, "GEOMETRY", structure_type=structure_type)
 
     def object(
         self,
-        name: str = "Object",
         value: InputObject = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ObjectSocket:
-        return cast(
-            "ObjectSocket", self._declare(name, value, "OBJECT", structure_type)
-        )
+    ) -> Item[ObjectSocket]:
+        return self._typed(value, name, "OBJECT", structure_type=structure_type)
 
     def image(
         self,
-        name: str = "Image",
         value: InputImage = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ImageSocket:
-        return cast("ImageSocket", self._declare(name, value, "IMAGE", structure_type))
+    ) -> Item[ImageSocket]:
+        return self._typed(value, name, "IMAGE", structure_type=structure_type)
 
     def collection(
         self,
-        name: str = "Collection",
         value: InputCollection = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> CollectionSocket:
-        return cast(
-            "CollectionSocket", self._declare(name, value, "COLLECTION", structure_type)
-        )
+    ) -> Item[CollectionSocket]:
+        return self._typed(value, name, "COLLECTION", structure_type=structure_type)
 
     def material(
         self,
-        name: str = "Material",
         value: InputMaterial = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> MaterialSocket:
-        return cast(
-            "MaterialSocket", self._declare(name, value, "MATERIAL", structure_type)
-        )
+    ) -> Item[MaterialSocket]:
+        return self._typed(value, name, "MATERIAL", structure_type=structure_type)
 
     def font(
         self,
-        name: str = "Font",
         value: InputFont = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> FontSocket:
-        return cast("FontSocket", self._declare(name, value, "FONT", structure_type))
+    ) -> Item[FontSocket]:
+        return self._typed(value, name, "FONT", structure_type=structure_type)
 
     def sound(
         self,
-        name: str = "Sound",
         value: InputSound = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> SoundSocket:
-        return cast("SoundSocket", self._declare(name, value, "SOUND", structure_type))
+    ) -> Item[SoundSocket]:
+        return self._typed(value, name, "SOUND", structure_type=structure_type)
 
     def bundle(
         self,
-        name: str = "Bundle",
         value: InputBundle = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> BundleSocket:
-        return cast(
-            "BundleSocket", self._declare(name, value, "BUNDLE", structure_type)
-        )
+    ) -> Item[BundleSocket]:
+        return self._typed(value, name, "BUNDLE", structure_type=structure_type)
 
     def closure(
         self,
-        name: str = "Closure",
         value: InputClosure = None,
+        name: str | None = None,
         *,
         structure_type: _SocketShapeStructureType = "AUTO",
-    ) -> ClosureSocket:
-        return cast(
-            "ClosureSocket", self._declare(name, value, "CLOSURE", structure_type)
-        )
+    ) -> Item[ClosureSocket]:
+        return self._typed(value, name, "CLOSURE", structure_type=structure_type)
+
+
+class _SocketItems(_StructuredItems[Item], _DeclaredItems[Item]):
+    """All eighteen socket types, declared by name with an optional
+    ``structure_type`` and no value."""
+
+    def _declared(self, name: str | None, type: str, structure_type: str) -> Any:
+        return self._declare(None, name, type, structure_type=structure_type)
+
+    def float(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[FloatSocket]:
+        return self._declared(name, "FLOAT", structure_type)
+
+    def integer(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[IntegerSocket]:
+        return self._declared(name, "INT", structure_type)
+
+    def boolean(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[BooleanSocket]:
+        return self._declared(name, "BOOLEAN", structure_type)
+
+    def vector(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[VectorSocket]:
+        return self._declared(name, "VECTOR", structure_type)
+
+    def color(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[ColorSocket]:
+        return self._declared(name, "RGBA", structure_type)
+
+    def rotation(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[RotationSocket]:
+        return self._declared(name, "ROTATION", structure_type)
+
+    def matrix(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[MatrixSocket]:
+        return self._declared(name, "MATRIX", structure_type)
+
+    def string(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[StringSocket]:
+        return self._declared(name, "STRING", structure_type)
+
+    def menu(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[MenuSocket]:
+        return self._declared(name, "MENU", structure_type)
+
+    def geometry(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[GeometrySocket]:
+        return self._declared(name, "GEOMETRY", structure_type)
+
+    def object(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[ObjectSocket]:
+        return self._declared(name, "OBJECT", structure_type)
+
+    def image(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[ImageSocket]:
+        return self._declared(name, "IMAGE", structure_type)
+
+    def collection(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[CollectionSocket]:
+        return self._declared(name, "COLLECTION", structure_type)
+
+    def material(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[MaterialSocket]:
+        return self._declared(name, "MATERIAL", structure_type)
+
+    def font(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[FontSocket]:
+        return self._declared(name, "FONT", structure_type)
+
+    def sound(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[SoundSocket]:
+        return self._declared(name, "SOUND", structure_type)
+
+    def bundle(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[BundleSocket]:
+        return self._declared(name, "BUNDLE", structure_type)
+
+    def closure(
+        self,
+        name: str | None = None,
+        *,
+        structure_type: _SocketShapeStructureType = "AUTO",
+    ) -> Item[ClosureSocket]:
+        return self._declared(name, "CLOSURE", structure_type)

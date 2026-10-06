@@ -320,6 +320,24 @@ class BaseNode(_NodeLike, OperatorMixin, LinkingMixin):
         return SocketAccessor(self.node.inputs, "input", builder=self)
 
 
+def _match_compatible_data(
+    sockets: Iterable[NodeSocket], types: tuple[str, ...]
+) -> tuple[NodeSocket, str]:
+    """The socket among ``sockets`` that best fits one of ``types``, with
+    that type: the closest match in Blender's implicit-conversion order."""
+    possible = []
+    for socket in sockets:
+        compatible = SOCKET_COMPATIBILITY.get(socket.type, ())
+        for type in types:
+            if type in compatible:
+                possible.append((socket, type, compatible.index(type)))
+    if not possible:
+        raise SocketError("No compatible socket found")
+    possible.sort(key=lambda x: x[2])
+    socket, type, _ = possible[0]
+    return socket, type
+
+
 class DynamicInputsMixin(ABC):
     _socket_data_types: tuple[str, ...]
     _type_map: ClassVar[dict[str, str]] = {}
@@ -327,21 +345,9 @@ class DynamicInputsMixin(ABC):
     def _match_compatible_data(
         self, sockets: Iterable[NodeSocket], types: tuple[str, ...] | None = None
     ) -> tuple[NodeSocket, str]:
-        if types is None:
-            types = self._socket_data_types
-        possible = []
-        for socket in sockets:
-            compatible = SOCKET_COMPATIBILITY.get(socket.type, ())
-            for type in types:
-                if type in compatible:
-                    possible.append((socket, type, compatible.index(type)))
-
-        if len(possible) > 0:
-            possible.sort(key=lambda x: x[2])
-            best_value = possible[0]
-            return best_value[:2]
-
-        raise SocketError("No compatible socket found")
+        return _match_compatible_data(
+            sockets, self._socket_data_types if types is None else types
+        )
 
     def _find_best_socket_pair(
         self,

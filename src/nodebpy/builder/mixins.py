@@ -378,7 +378,8 @@ class LinkingMixin:
         If the target node has an ellipsis placeholder (...), links to that specific input.
         Otherwise, finds the best compatible socket pair based on type compatibility.
 
-        Returns the right-hand node to enable continued chaining. A ``None``
+        Returns the right-hand node to enable continued chaining, or the
+        other side of an item whose role socket was the target. A ``None``
         target is a no-op passthrough — nothing is linked and ``self`` is
         returned so an optional node can be conditionally skipped::
 
@@ -410,4 +411,7 @@ class LinkingMixin:
                 )
 
         self.tree.link(source, target)
-        return other
+        # an item's role socket continues the chain from the item's other
+        # side (``>> item.input`` carries on from ``item.output``)
+        follow = getattr(other, "_chain_to", None)
+        return other if follow is None else follow()

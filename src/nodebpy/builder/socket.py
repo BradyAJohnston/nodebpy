@@ -2199,7 +2199,7 @@ class _ToListMixin[T](BaseSocket):
         """Create a list of elements, evaluating this field `count` times based on the `Index` node."""
         from ..nodes.geometry import FieldToList
 
-        return FieldToList(count, {self.name: self}).o[0]  # ty: ignore[invalid-return-type, invalid-argument-type]
+        return FieldToList(count, {self.name: self}).o[0]  # ty: ignore[invalid-return-type]
 
 
 class _FloatConvertDatatypeMixin[
