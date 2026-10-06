@@ -80,7 +80,7 @@ class Comment(BaseNode):
         return self.node.text
 
     @text.setter
-    def text(self, value: str):
+    def text(self, value: str) -> None:
         self.node.text = value
 
 

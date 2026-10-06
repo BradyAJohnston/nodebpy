@@ -1599,7 +1599,7 @@ class GreasePencilColor(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1637,7 +1637,7 @@ class GreasePencilDrawTime(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1671,7 +1671,7 @@ class GreasePencilFillID(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1709,7 +1709,7 @@ class GreasePencilOpacity(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1743,7 +1743,7 @@ class GreasePencilStrokeSoftness(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -1777,7 +1777,7 @@ class GreasePencilStrokeVisibility(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2902,7 +2902,7 @@ class NurbsOrder(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 
@@ -2936,7 +2936,7 @@ class NurbsWeight(BaseNode):
         @property
         def o(self) -> _Outputs: ...
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         key_args = {}
 

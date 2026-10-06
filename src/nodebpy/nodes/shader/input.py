@@ -611,8 +611,8 @@ class LightEvaluation(BaseNode):
     def __init__(
         self,
         lightindex: InputInteger = 0,
-        position: InputVector = (0.0, 0.0, 0.0),
-        normal: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
+        normal: InputVector = None,
         roughness: InputFloat = 0.5,
         *,
         mode: Literal["DIFFUSE", "GLOSSY"] = "DIFFUSE",
@@ -629,9 +629,7 @@ class LightEvaluation(BaseNode):
 
     @classmethod
     def diffuse(
-        cls,
-        position: InputVector = (0.0, 0.0, 0.0),
-        normal: InputVector = (0.0, 0.0, 0.0),
+        cls, position: InputVector = None, normal: InputVector = None
     ) -> "LightEvaluation":
         """Create Light Evaluation with operation 'Diffuse'."""
         return cls(mode="DIFFUSE", position=position, normal=normal)
@@ -639,8 +637,8 @@ class LightEvaluation(BaseNode):
     @classmethod
     def glossy(
         cls,
-        position: InputVector = (0.0, 0.0, 0.0),
-        normal: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
+        normal: InputVector = None,
         roughness: InputFloat = 0.5,
     ) -> "LightEvaluation":
         """Create Light Evaluation with operation 'Glossy'."""
@@ -651,7 +649,7 @@ class LightEvaluation(BaseNode):
         return self.node.mode
 
     @mode.setter
-    def mode(self, value: Literal["DIFFUSE", "GLOSSY"]):
+    def mode(self, value: Literal["DIFFUSE", "GLOSSY"]) -> None:
         self.node.mode = value
 
 
@@ -1098,7 +1096,7 @@ class ShadowRaycast(BaseNode):
     def __init__(
         self,
         lightindex: InputInteger = 0,
-        position: InputVector = (0.0, 0.0, 0.0),
+        position: InputVector = None,
         softness: InputFloat = 1.0,
     ):
         super().__init__()

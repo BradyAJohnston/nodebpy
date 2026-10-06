@@ -17,7 +17,6 @@ from .config import (
     Disposition,
     TreeTypeConfig,
 )
-from .essentials import generate_essentials
 from .introspect import get_node_names, introspect_node, probe_node_tree_compatibility
 from .model import NodeInfo
 from .writers import ModulesHandler
@@ -117,9 +116,17 @@ def main() -> None:
         help="Only write this tree type (repeatable). Defaults to all.",
     )
     args = parser.parse_args()
-    # The asset classes first: each tree's __init__ re-exports them.
+    # The asset classes first: each tree's __init__ re-exports them. They
+    # need the package to import, which generated modules from an older
+    # Blender may not; the node classes then go first, and a second run
+    # does the assets.
     print("Generating the bundled-essentials asset classes")
-    generate_essentials(_REPO_ROOT / "src" / "nodebpy" / "nodes")
+    try:
+        from .essentials import generate_essentials
+    except ImportError as error:
+        print(f"  skipped, nodebpy does not import ({error}); run again afterwards")
+    else:
+        generate_essentials(_REPO_ROOT / "src" / "nodebpy" / "nodes")
     generate_all(only=set(args.only) if args.only else None)
 
 

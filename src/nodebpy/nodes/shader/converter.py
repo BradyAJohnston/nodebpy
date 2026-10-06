@@ -276,7 +276,7 @@ class ImplicitConversion[T](BaseNode):
             "BUNDLE",
             "CLOSURE",
         ],
-    ):
+    ) -> None:
         self.node.data_type = value
 
 
@@ -1302,7 +1302,7 @@ class Switch[T](BaseNode):
             "BUNDLE",
             "CLOSURE",
         ],
-    ):
+    ) -> None:
         self.node.input_type = value
 
 

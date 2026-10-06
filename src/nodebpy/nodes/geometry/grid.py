@@ -570,7 +570,7 @@ class DeactivateVoxels[T](BaseNode):
     def __init__(
         self,
         grid: InputAny = None,
-        selection: InputBoolean = True,
+        selection: InputBoolean = None,
         *,
         data_type: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"] = "FLOAT",
     ):
@@ -581,28 +581,28 @@ class DeactivateVoxels[T](BaseNode):
 
     @classmethod
     def float(
-        cls, grid: InputFloatGrid = None, selection: InputBoolean = True
+        cls, grid: InputFloatGrid = None, selection: InputBoolean = None
     ) -> "DeactivateVoxels[FloatSocketGrid]":
         """Create Deactivate Voxels with operation 'Float'."""
         return DeactivateVoxels(data_type="FLOAT", grid=grid, selection=selection)
 
     @classmethod
     def integer(
-        cls, grid: InputIntegerGrid = None, selection: InputBoolean = True
+        cls, grid: InputIntegerGrid = None, selection: InputBoolean = None
     ) -> "DeactivateVoxels[IntegerSocketGrid]":
         """Create Deactivate Voxels with operation 'Integer'."""
         return DeactivateVoxels(data_type="INT", grid=grid, selection=selection)
 
     @classmethod
     def boolean(
-        cls, grid: InputBooleanGrid = None, selection: InputBoolean = True
+        cls, grid: InputBooleanGrid = None, selection: InputBoolean = None
     ) -> "DeactivateVoxels[BooleanSocketGrid]":
         """Create Deactivate Voxels with operation 'Boolean'."""
         return DeactivateVoxels(data_type="BOOLEAN", grid=grid, selection=selection)
 
     @classmethod
     def vector(
-        cls, grid: InputVectorGrid = None, selection: InputBoolean = True
+        cls, grid: InputVectorGrid = None, selection: InputBoolean = None
     ) -> "DeactivateVoxels[VectorSocketGrid]":
         """Create Deactivate Voxels with operation 'Vector'."""
         return DeactivateVoxels(data_type="VECTOR", grid=grid, selection=selection)
@@ -612,7 +612,7 @@ class DeactivateVoxels[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 
@@ -1687,8 +1687,8 @@ class GridSolvePoisson(BaseNode):
         error_threshold: InputFloat = 0.001,
         threshold_mode: InputMenu | Literal["Relative", "Absolute"] = "Relative",
         boundary: InputMenu | Literal["Fixed", "Gradient", "Mixed"] = "Fixed",
-        boundary_value: InputFloat = 0.0,
-        boundary_gradient: InputVector = (0.0, 0.0, 0.0),
+        boundary_value: InputFloat = None,
+        boundary_gradient: InputVector = None,
         boundary_factor: InputFloat = 0.0,
     ):
         super().__init__()
@@ -1827,7 +1827,7 @@ class GridTopologyBoolean[T](BaseNode):
         return self.node.data_type  # ty: ignore[invalid-return-type]
 
     @data_type.setter
-    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]):
+    def data_type(self, value: Literal["FLOAT", "INT", "BOOLEAN", "VECTOR"]) -> None:
         self.node.data_type = value
 
 

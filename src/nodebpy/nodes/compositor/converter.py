@@ -354,64 +354,177 @@ class Compare[T](BaseNode):
 
     @classmethod
     def less_than(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        *,
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Less Than'. True when the first input is smaller than second input"""
-        return Compare(operation="LESS_THAN", a=a, b=b)
+        return Compare(operation="LESS_THAN", a=a, b=b, data_type=data_type, mode=mode)
 
     @classmethod
     def less_than_or_equal(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        *,
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Less Than or Equal'. True when the first input is smaller than the second input or equal"""
-        return Compare(operation="LESS_EQUAL", a=a, b=b)
+        return Compare(operation="LESS_EQUAL", a=a, b=b, data_type=data_type, mode=mode)
 
     @classmethod
     def greater_than(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        *,
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Greater Than'. True when the first input is greater than the second input"""
-        return Compare(operation="GREATER_THAN", a=a, b=b)
+        return Compare(
+            operation="GREATER_THAN", a=a, b=b, data_type=data_type, mode=mode
+        )
 
     @classmethod
     def greater_than_or_equal(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        *,
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Greater Than or Equal'. True when the first input is greater than the second input or equal"""
-        return Compare(operation="GREATER_EQUAL", a=a, b=b)
+        return Compare(
+            operation="GREATER_EQUAL", a=a, b=b, data_type=data_type, mode=mode
+        )
 
     @classmethod
     def equal(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.001
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        epsilon: InputFloat = 0.001,
+        *,
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Equal'. True when both inputs are approximately equal"""
-        return Compare(operation="EQUAL", a=a, b=b, epsilon=epsilon)
+        return Compare(
+            operation="EQUAL", a=a, b=b, epsilon=epsilon, data_type=data_type, mode=mode
+        )
 
     @classmethod
     def not_equal(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.001
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        epsilon: InputFloat = 0.001,
+        *,
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Not Equal'. True when both inputs are not approximately equal"""
-        return Compare(operation="NOT_EQUAL", a=a, b=b, epsilon=epsilon)
+        return Compare(
+            operation="NOT_EQUAL",
+            a=a,
+            b=b,
+            epsilon=epsilon,
+            data_type=data_type,
+            mode=mode,
+        )
 
     @classmethod
-    def float(cls, a: InputFloat = 0.0, b: InputFloat = 0.0) -> "Compare[FloatSocket]":
+    def float(
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
+    ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Float'."""
-        return Compare(data_type="FLOAT", a=a, b=b)
+        return Compare(data_type="FLOAT", a=a, b=b, operation=operation, mode=mode)
 
     @classmethod
     def integer(
-        cls, a: InputInteger = 0, b: InputInteger = 0
+        cls,
+        a: InputInteger = 0,
+        b: InputInteger = 0,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[IntegerSocket]":
         """Create Compare with operation 'Integer'."""
-        return Compare(data_type="INT", a=a, b=b)
+        return Compare(data_type="INT", a=a, b=b, operation=operation, mode=mode)
 
     @classmethod
     def vector(
-        cls, a: InputVector = (0.0, 0.0, 0.0), b: InputVector = (0.0, 0.0, 0.0)
+        cls,
+        a: InputVector = (0.0, 0.0, 0.0),
+        b: InputVector = (0.0, 0.0, 0.0),
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[VectorSocket]":
         """Create Compare with operation 'Vector'."""
-        return Compare(data_type="VECTOR", a=a, b=b)
+        return Compare(data_type="VECTOR", a=a, b=b, operation=operation, mode=mode)
 
     @classmethod
     def color(
@@ -419,63 +532,231 @@ class Compare[T](BaseNode):
         a: InputColor = (0.8, 0.8, 0.8, 1.0),
         b: InputColor = (0.8, 0.8, 0.8, 1.0),
         epsilon: InputFloat = 0.001,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[ColorSocket]":
         """Create Compare with operation 'Color'."""
-        return Compare(data_type="RGBA", a=a, b=b, epsilon=epsilon)
+        return Compare(
+            data_type="RGBA", a=a, b=b, epsilon=epsilon, operation=operation, mode=mode
+        )
 
     @classmethod
     def string(
-        cls, a: InputString = "", b: InputString = ""
+        cls,
+        a: InputString = "",
+        b: InputString = "",
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[StringSocket]":
         """Create Compare with operation 'String'."""
-        return Compare(data_type="STRING", a=a, b=b)
+        return Compare(data_type="STRING", a=a, b=b, operation=operation, mode=mode)
 
     @classmethod
     def object(
-        cls, a: InputObject = None, b: InputObject = None
+        cls,
+        a: InputObject = None,
+        b: InputObject = None,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
     ) -> "Compare[ObjectSocket]":
         """Create Compare with operation 'Object'."""
-        return Compare(data_type="OBJECT", a=a, b=b)
+        return Compare(data_type="OBJECT", a=a, b=b, operation=operation, mode=mode)
 
     @classmethod
-    def font(cls, a: InputFont = None, b: InputFont = None) -> "Compare[FontSocket]":
+    def font(
+        cls,
+        a: InputFont = None,
+        b: InputFont = None,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        mode: Literal[
+            "ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"
+        ] = "ELEMENT",
+    ) -> "Compare[FontSocket]":
         """Create Compare with operation 'Font'."""
-        return Compare(data_type="FONT", a=a, b=b)
+        return Compare(data_type="FONT", a=a, b=b, operation=operation, mode=mode)
 
     @classmethod
     def element_wise(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.001
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        epsilon: InputFloat = 0.001,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Element-Wise'. Compare each element of the input vectors"""
-        return Compare(mode="ELEMENT", a=a, b=b, epsilon=epsilon)
+        return Compare(
+            mode="ELEMENT",
+            a=a,
+            b=b,
+            epsilon=epsilon,
+            operation=operation,
+            data_type=data_type,
+        )
 
     @classmethod
     def length(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.001
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        epsilon: InputFloat = 0.001,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Length'. Compare the length of the input vectors"""
-        return Compare(mode="LENGTH", a=a, b=b, epsilon=epsilon)
+        return Compare(
+            mode="LENGTH",
+            a=a,
+            b=b,
+            epsilon=epsilon,
+            operation=operation,
+            data_type=data_type,
+        )
 
     @classmethod
     def average(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.001
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        epsilon: InputFloat = 0.001,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Average'. Compare the average of the input vectors elements"""
-        return Compare(mode="AVERAGE", a=a, b=b, epsilon=epsilon)
+        return Compare(
+            mode="AVERAGE",
+            a=a,
+            b=b,
+            epsilon=epsilon,
+            operation=operation,
+            data_type=data_type,
+        )
 
     @classmethod
     def dot_product(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.001
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        epsilon: InputFloat = 0.001,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Dot Product'. Compare the dot products of the input vectors"""
-        return Compare(mode="DOT_PRODUCT", a=a, b=b, epsilon=epsilon)
+        return Compare(
+            mode="DOT_PRODUCT",
+            a=a,
+            b=b,
+            epsilon=epsilon,
+            operation=operation,
+            data_type=data_type,
+        )
 
     @classmethod
     def direction(
-        cls, a: InputFloat = 0.0, b: InputFloat = 0.0, epsilon: InputFloat = 0.001
+        cls,
+        a: InputFloat = 0.0,
+        b: InputFloat = 0.0,
+        epsilon: InputFloat = 0.001,
+        *,
+        operation: Literal[
+            "LESS_THAN",
+            "LESS_EQUAL",
+            "GREATER_THAN",
+            "GREATER_EQUAL",
+            "EQUAL",
+            "NOT_EQUAL",
+        ] = "GREATER_THAN",
+        data_type: Literal[
+            "FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"
+        ] = "FLOAT",
     ) -> "Compare[FloatSocket]":
         """Create Compare with operation 'Direction'. Compare the direction of the input vectors"""
-        return Compare(mode="DIRECTION", a=a, b=b, epsilon=epsilon)
+        return Compare(
+            mode="DIRECTION",
+            a=a,
+            b=b,
+            epsilon=epsilon,
+            operation=operation,
+            data_type=data_type,
+        )
 
     @property
     def operation(
@@ -496,7 +777,7 @@ class Compare[T](BaseNode):
             "EQUAL",
             "NOT_EQUAL",
         ],
-    ):
+    ) -> None:
         self.node.operation = value
 
     @property
@@ -509,7 +790,7 @@ class Compare[T](BaseNode):
     def data_type(
         self,
         value: Literal["FLOAT", "INT", "VECTOR", "RGBA", "STRING", "OBJECT", "FONT"],
-    ):
+    ) -> None:
         self.node.data_type = value
 
     @property
@@ -521,7 +802,7 @@ class Compare[T](BaseNode):
     @mode.setter
     def mode(
         self, value: Literal["ELEMENT", "LENGTH", "AVERAGE", "DOT_PRODUCT", "DIRECTION"]
-    ):
+    ) -> None:
         self.node.mode = value
 
 
@@ -675,10 +956,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Float'."""
         return GetBundleItem(
-            socket_type="FLOAT", bundle=bundle, path=path, remove=remove
+            socket_type="FLOAT",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -687,9 +976,19 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[IntegerSocket]":
         """Create Get Bundle Item with operation 'Integer'."""
-        return GetBundleItem(socket_type="INT", bundle=bundle, path=path, remove=remove)
+        return GetBundleItem(
+            socket_type="INT",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def boolean(
@@ -697,10 +996,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[BooleanSocket]":
         """Create Get Bundle Item with operation 'Boolean'."""
         return GetBundleItem(
-            socket_type="BOOLEAN", bundle=bundle, path=path, remove=remove
+            socket_type="BOOLEAN",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -709,10 +1016,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[VectorSocket]":
         """Create Get Bundle Item with operation 'Vector'."""
         return GetBundleItem(
-            socket_type="VECTOR", bundle=bundle, path=path, remove=remove
+            socket_type="VECTOR",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -721,10 +1036,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[ColorSocket]":
         """Create Get Bundle Item with operation 'Color'."""
         return GetBundleItem(
-            socket_type="RGBA", bundle=bundle, path=path, remove=remove
+            socket_type="RGBA",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -733,10 +1056,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[RotationSocket]":
         """Create Get Bundle Item with operation 'Rotation'."""
         return GetBundleItem(
-            socket_type="ROTATION", bundle=bundle, path=path, remove=remove
+            socket_type="ROTATION",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -745,10 +1076,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[MatrixSocket]":
         """Create Get Bundle Item with operation 'Matrix'."""
         return GetBundleItem(
-            socket_type="MATRIX", bundle=bundle, path=path, remove=remove
+            socket_type="MATRIX",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -757,10 +1096,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[StringSocket]":
         """Create Get Bundle Item with operation 'String'."""
         return GetBundleItem(
-            socket_type="STRING", bundle=bundle, path=path, remove=remove
+            socket_type="STRING",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -769,10 +1116,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[MenuSocket]":
         """Create Get Bundle Item with operation 'Menu'."""
         return GetBundleItem(
-            socket_type="MENU", bundle=bundle, path=path, remove=remove
+            socket_type="MENU",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -781,10 +1136,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[ObjectSocket]":
         """Create Get Bundle Item with operation 'Object'."""
         return GetBundleItem(
-            socket_type="OBJECT", bundle=bundle, path=path, remove=remove
+            socket_type="OBJECT",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -793,10 +1156,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[BundleSocket]":
         """Create Get Bundle Item with operation 'Bundle'."""
         return GetBundleItem(
-            socket_type="BUNDLE", bundle=bundle, path=path, remove=remove
+            socket_type="BUNDLE",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -805,10 +1176,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[FontSocket]":
         """Create Get Bundle Item with operation 'Font'."""
         return GetBundleItem(
-            socket_type="FONT", bundle=bundle, path=path, remove=remove
+            socket_type="FONT",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -817,10 +1196,18 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "GetBundleItem[IntegerSocket]":
         """Create Get Bundle Item with operation 'Integer Vector'."""
         return GetBundleItem(
-            socket_type="INT_VECTOR", bundle=bundle, path=path, remove=remove
+            socket_type="INT_VECTOR",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -829,10 +1216,30 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
         return GetBundleItem(
-            structure_type="AUTO", bundle=bundle, path=path, remove=remove
+            structure_type="AUTO",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -841,10 +1248,30 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
         return GetBundleItem(
-            structure_type="DYNAMIC", bundle=bundle, path=path, remove=remove
+            structure_type="DYNAMIC",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -853,10 +1280,30 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Field'. Socket expects a field"""
         return GetBundleItem(
-            structure_type="FIELD", bundle=bundle, path=path, remove=remove
+            structure_type="FIELD",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -865,10 +1312,30 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Grid'. Socket expects a grid"""
         return GetBundleItem(
-            structure_type="GRID", bundle=bundle, path=path, remove=remove
+            structure_type="GRID",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -877,10 +1344,30 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'List'. Socket expects a list"""
         return GetBundleItem(
-            structure_type="LIST", bundle=bundle, path=path, remove=remove
+            structure_type="LIST",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -889,10 +1376,30 @@ class GetBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         remove: InputBoolean = False,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "GetBundleItem[FloatSocket]":
         """Create Get Bundle Item with operation 'Single'. Socket expects a single value"""
         return GetBundleItem(
-            structure_type="SINGLE", bundle=bundle, path=path, remove=remove
+            structure_type="SINGLE",
+            bundle=bundle,
+            path=path,
+            remove=remove,
+            socket_type=socket_type,
         )
 
     @property
@@ -933,7 +1440,7 @@ class GetBundleItem[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -945,7 +1452,7 @@ class GetBundleItem[T](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
@@ -2111,17 +2618,43 @@ class StoreBundleItem[T](BaseNode):
 
     @classmethod
     def float(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Float'."""
-        return StoreBundleItem(socket_type="FLOAT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="FLOAT",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def integer(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputInteger = 0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputInteger = 0,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[IntegerSocket]":
         """Create Store Bundle Item with operation 'Integer'."""
-        return StoreBundleItem(socket_type="INT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="INT",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def boolean(
@@ -2129,10 +2662,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputBoolean = False,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[BooleanSocket]":
         """Create Store Bundle Item with operation 'Boolean'."""
         return StoreBundleItem(
-            socket_type="BOOLEAN", bundle=bundle, path=path, item=item
+            socket_type="BOOLEAN",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -2141,10 +2682,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputVector = (0.0, 0.0, 0.0),
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[VectorSocket]":
         """Create Store Bundle Item with operation 'Vector'."""
         return StoreBundleItem(
-            socket_type="VECTOR", bundle=bundle, path=path, item=item
+            socket_type="VECTOR",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -2153,9 +2702,19 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputColor = (0.8, 0.8, 0.8, 1.0),
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[ColorSocket]":
         """Create Store Bundle Item with operation 'Color'."""
-        return StoreBundleItem(socket_type="RGBA", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="RGBA",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def rotation(
@@ -2163,10 +2722,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputRotation = (0.0, 0.0, 0.0),
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[RotationSocket]":
         """Create Store Bundle Item with operation 'Rotation'."""
         return StoreBundleItem(
-            socket_type="ROTATION", bundle=bundle, path=path, item=item
+            socket_type="ROTATION",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -2175,27 +2742,59 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputMatrix = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[MatrixSocket]":
         """Create Store Bundle Item with operation 'Matrix'."""
         return StoreBundleItem(
-            socket_type="MATRIX", bundle=bundle, path=path, item=item
+            socket_type="MATRIX",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
     def string(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputString = ""
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputString = "",
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[StringSocket]":
         """Create Store Bundle Item with operation 'String'."""
         return StoreBundleItem(
-            socket_type="STRING", bundle=bundle, path=path, item=item
+            socket_type="STRING",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
     def menu(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputMenu = None
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputMenu = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[MenuSocket]":
         """Create Store Bundle Item with operation 'Menu'."""
-        return StoreBundleItem(socket_type="MENU", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="MENU",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def object(
@@ -2203,10 +2802,18 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputObject = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[ObjectSocket]":
         """Create Store Bundle Item with operation 'Object'."""
         return StoreBundleItem(
-            socket_type="OBJECT", bundle=bundle, path=path, item=item
+            socket_type="OBJECT",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
@@ -2215,18 +2822,39 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputBundle = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[BundleSocket]":
         """Create Store Bundle Item with operation 'Bundle'."""
         return StoreBundleItem(
-            socket_type="BUNDLE", bundle=bundle, path=path, item=item
+            socket_type="BUNDLE",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
     def font(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFont = None
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFont = None,
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[FontSocket]":
         """Create Store Bundle Item with operation 'Font'."""
-        return StoreBundleItem(socket_type="FONT", bundle=bundle, path=path, item=item)
+        return StoreBundleItem(
+            socket_type="FONT",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
+        )
 
     @classmethod
     def integer_vector(
@@ -2234,37 +2862,114 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputIntegerVector = (0, 0, 0),
+        *,
+        structure_type: Literal[
+            "AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"
+        ] = "AUTO",
     ) -> "StoreBundleItem[IntegerSocket]":
         """Create Store Bundle Item with operation 'Integer Vector'."""
         return StoreBundleItem(
-            socket_type="INT_VECTOR", bundle=bundle, path=path, item=item
+            socket_type="INT_VECTOR",
+            bundle=bundle,
+            path=path,
+            item=item,
+            structure_type=structure_type,
         )
 
     @classmethod
     def auto(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Auto'. Automatically detect a good structure type based on how the socket is used"""
         return StoreBundleItem(
-            structure_type="AUTO", bundle=bundle, path=path, item=item
+            structure_type="AUTO",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
     def dynamic(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Dynamic'. Socket can work with different kinds of structures"""
         return StoreBundleItem(
-            structure_type="DYNAMIC", bundle=bundle, path=path, item=item
+            structure_type="DYNAMIC",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
     def field(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Field'. Socket expects a field"""
         return StoreBundleItem(
-            structure_type="FIELD", bundle=bundle, path=path, item=item
+            structure_type="FIELD",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -2273,10 +2978,30 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputFloatGrid = None,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Grid'. Socket expects a grid"""
         return StoreBundleItem(
-            structure_type="GRID", bundle=bundle, path=path, item=item
+            structure_type="GRID",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
@@ -2285,19 +3010,62 @@ class StoreBundleItem[T](BaseNode):
         bundle: InputBundle = None,
         path: InputString = "",
         item: InputFloatList = None,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'List'. Socket expects a list"""
         return StoreBundleItem(
-            structure_type="LIST", bundle=bundle, path=path, item=item
+            structure_type="LIST",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @classmethod
     def single(
-        cls, bundle: InputBundle = None, path: InputString = "", item: InputFloat = 0.0
+        cls,
+        bundle: InputBundle = None,
+        path: InputString = "",
+        item: InputFloat = 0.0,
+        *,
+        socket_type: Literal[
+            "FLOAT",
+            "INT",
+            "BOOLEAN",
+            "VECTOR",
+            "RGBA",
+            "ROTATION",
+            "MATRIX",
+            "STRING",
+            "MENU",
+            "OBJECT",
+            "BUNDLE",
+            "FONT",
+            "INT_VECTOR",
+        ] = "FLOAT",
     ) -> "StoreBundleItem[FloatSocket]":
         """Create Store Bundle Item with operation 'Single'. Socket expects a single value"""
         return StoreBundleItem(
-            structure_type="SINGLE", bundle=bundle, path=path, item=item
+            structure_type="SINGLE",
+            bundle=bundle,
+            path=path,
+            item=item,
+            socket_type=socket_type,
         )
 
     @property
@@ -2338,7 +3106,7 @@ class StoreBundleItem[T](BaseNode):
             "FONT",
             "INT_VECTOR",
         ],
-    ):
+    ) -> None:
         self.node.socket_type = value
 
     @property
@@ -2350,7 +3118,7 @@ class StoreBundleItem[T](BaseNode):
     @structure_type.setter
     def structure_type(
         self, value: Literal["AUTO", "DYNAMIC", "FIELD", "GRID", "LIST", "SINGLE"]
-    ):
+    ) -> None:
         self.node.structure_type = value
 
 
