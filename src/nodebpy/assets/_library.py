@@ -471,8 +471,6 @@ def dump_library(
     materials: bool = True,
     format: bool = True,
     typed_api: bool = False,
-    api_only: bool = False,
-    docstrings: bool = True,
     library_anchor: tuple[str | Path, str | Path] | None = None,
 ) -> dict[str, Path]:
     """Dump every node-group and material asset in ``blend_path`` to Python
@@ -556,16 +554,6 @@ def dump_library(
         group calls in generated bodies use the typed parameter names, and
         each tree directory's ``__init__.py`` re-exports its asset classes.
         Everything outside ``_build_group`` is regenerated on the next dump.
-    api_only:
-        Write only the typed API: one module per node-group asset holding
-        an ``Asset*Group`` class that appends the asset from the ``.blend``,
-        with no ``_build_group``. The sources then document and type the
-        library but cannot rebuild it, and materials are left out. The
-        tree directories get the same ``__init__.py`` re-exports as the
-        typed-API dump.
-    docstrings:
-        Give the typed classes numpy-style docstrings from the assets' own
-        socket tooltips (the default); ``False`` keeps one line each.
     library_anchor:
         ``(output_dir, blend_path)`` stand-ins for the typed-API
         ``PackageLibrary`` relative-path computation: the dumped modules come
@@ -665,10 +653,8 @@ def dump_library(
             keep_reroutes=keep_reroutes,
             materials=materials,
             format=format,
-            library_blend=anchor_blend.resolve() if typed_api or api_only else None,
+            library_blend=anchor_blend.resolve() if typed_api else None,
             anchor_dir=anchor_dir.resolve(),
-            api_only=api_only,
-            docstrings=docstrings,
             roots=selected,
             # A full dump owns the managed subdirectories: clear stale modules
             # from assets since renamed or deleted, so the next build_library
@@ -728,8 +714,6 @@ def _dump_appended(
     format: bool,
     library_blend: Path | None = None,
     anchor_dir: Path | None = None,
-    api_only: bool = False,
-    docstrings: bool = True,
     roots: set[str] | None = None,
     clean_stale: bool = False,
 ) -> dict[str, Path]:
@@ -759,19 +743,6 @@ def _dump_appended(
     for tree in unsupported:
         print(f"  skipping {tree.name!r}: unsupported tree type {tree.bl_idname}")
     asset_trees = [t for t in asset_trees if t.bl_idname in _TREE_DIRS]
-    if api_only:
-        assert library_blend is not None
-        return _dump_api_only(
-            asset_trees,
-            output_dir,
-            nodebpy_pkg=nodebpy_pkg,
-            format=format,
-            docstrings=docstrings,
-            library_blend=library_blend,
-            anchor_dir=anchor_dir or output_dir,
-            roots=roots,
-            clean_stale=clean_stale,
-        )
     asset_names = {t.name for t in asset_trees}
     trees = {g.name: g for g in appended}
 
@@ -838,9 +809,13 @@ def _dump_appended(
     external = asset_names | shared
 
     # Module paths from the output root for every non-embedded tree.
-    modules = _asset_module_paths(asset_trees)
+    modules: dict[str, str] = {}
     for tree_idname, dirname in _TREE_DIRS.items():
+        dir_assets = [t.name for t in asset_trees if t.bl_idname == tree_idname]
         dir_shared = [n for n in shared if trees[n].bl_idname == tree_idname]
+        modules.update(
+            {n: f"{dirname}/{stem}" for n, stem in _assign_stems(dir_assets).items()}
+        )
         modules.update(
             {
                 n: f"{dirname}/_shared/{stem}"
@@ -926,7 +901,17 @@ def _dump_appended(
             typed_groups=typed_groups,
             root_interface=root_interface,
         )
-        return _write_module(output_dir, module, source)
+        path = output_dir / (module + ".py")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        # LF regardless of platform: dumps are committed to git, and a
+        # Windows dump must not diff against the same dump made elsewhere.
+        path.write_text(source, encoding="utf-8", newline="\n")
+        _ensure_init(output_dir)
+        parent = path.parent
+        while parent != output_dir:
+            _ensure_init(parent)
+            parent = parent.parent
+        return path
 
     written: dict[str, Path] = {}
     for tree in write_assets:
@@ -946,103 +931,19 @@ def _dump_appended(
         _remove_stale_modules(output_dir, all_written)
 
     if library_blend is not None:
-        _write_tree_exports(output_dir, asset_trees, modules, class_names)
-    return written
-
-
-def _asset_module_paths(asset_trees: list) -> dict[str, str]:
-    """The module of each asset, as a ``/``-separated path from the output
-    root: ``<tree directory>/<stem>``."""
-    modules: dict[str, str] = {}
-    for tree_idname, dirname in _TREE_DIRS.items():
-        dir_assets = [t.name for t in asset_trees if t.bl_idname == tree_idname]
-        modules.update(
-            {n: f"{dirname}/{stem}" for n, stem in _assign_stems(dir_assets).items()}
-        )
-    return modules
-
-
-def _write_module(output_dir: Path, module: str, source: str) -> Path:
-    """Write *source* as the module at *module* (a path from the output
-    root), with package markers down to it."""
-    path = output_dir / (module + ".py")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    # LF regardless of platform: dumps are committed to git, and a Windows
-    # dump must not diff against the same dump made elsewhere.
-    path.write_text(source, encoding="utf-8", newline="\n")
-    _ensure_init(output_dir)
-    parent = path.parent
-    while parent != output_dir:
-        _ensure_init(parent)
-        parent = parent.parent
-    return path
-
-
-def _write_tree_exports(
-    output_dir: Path,
-    asset_trees: list,
-    modules: dict[str, str],
-    class_names: dict[str, str],
-) -> None:
-    """Make each tree directory re-export its asset classes, so
-    ``from <pkg>.<tree directory> import <Class>`` works like a single-module
-    API. Only modules on disk are exported: a filtered dump writes a few."""
-    for dirname in set(_TREE_DIRS.values()):
-        exports = sorted(
-            (modules[t.name].split("/")[1], class_names[t.name])
-            for t in asset_trees
-            if modules[t.name].startswith(f"{dirname}/")
-            and (output_dir / f"{modules[t.name]}.py").is_file()
-        )
-        if exports:
-            _write_dir_exports(output_dir / dirname, exports)
-
-
-def _dump_api_only(
-    asset_trees: list,
-    output_dir: Path,
-    *,
-    nodebpy_pkg: str,
-    format: bool,
-    docstrings: bool,
-    library_blend: Path,
-    anchor_dir: Path,
-    roots: set[str] | None,
-    clean_stale: bool,
-) -> dict[str, Path]:
-    """Write one module per asset holding its typed class alone: the class
-    appends the asset from *library_blend*, and there is no recipe, so no
-    code is generated from the trees."""
-    from ._codegen import _introspect_group, merge_imports, render_asset_class
-
-    class_names = _assign_class_names({t.name: t.name for t in asset_trees})
-    modules = _asset_module_paths(asset_trees)
-    written: dict[str, Path] = {}
-    for tree in asset_trees:
-        if roots is not None and tree.name not in roots:
-            continue
-        module = modules[tree.name]
-        module_dir = (anchor_dir / module).parent
-        relpath = Path(os.path.relpath(library_blend, module_dir)).as_posix()
-        cls = _introspect_group(
-            tree, tree.name, f"PackageLibrary(__file__, {_fmt(relpath)})"
-        )
-        cls.class_name = class_names[tree.name]
-        code, imports = render_asset_class(
-            cls, docstrings=docstrings, nodebpy_pkg=nodebpy_pkg
-        )
-        header = [
-            f'# Node-group asset "{tree.name}" ({tree.bl_idname}), dumped by nodebpy.assets.dump_library.',
-            "# Typed API only: the class appends the asset from its library and holds no recipe to rebuild it.",
-            *merge_imports(imports),
-        ]
-        source = "\n".join(header) + "\n\n\n" + code
-        written[tree.name] = _write_module(
-            output_dir, module, _format_with_ruff(source) if format else source
-        )
-    if clean_stale:
-        _remove_stale_modules(output_dir, set(written.values()))
-    _write_tree_exports(output_dir, asset_trees, modules, class_names)
+        # Typed API: each tree directory re-exports its asset classes, so
+        # ``from <pkg>.<tree_dir> import <Class>`` (or an aliased module
+        # import) works like the old single-file API. A filtered dump only
+        # exports modules that exist on disk (a full dump wrote them all).
+        for dirname in set(_TREE_DIRS.values()):
+            exports = sorted(
+                (modules[t.name].split("/")[1], class_names[t.name])
+                for t in asset_trees
+                if modules[t.name].startswith(f"{dirname}/")
+                and (output_dir / f"{modules[t.name]}.py").is_file()
+            )
+            if exports:
+                _write_dir_exports(output_dir / dirname, exports)
     return written
 
 
@@ -1802,25 +1703,6 @@ def _parse_args(argv: list[str] | None = None):
     )
     _add_dump_flags(dump)
     dump.add_argument(
-        "--api-only",
-        action="store_true",
-        help=(
-            "Write only the typed API: one module per node-group asset, "
-            "whose class appends the asset from the .blend and holds no "
-            "recipe to rebuild it. Materials are left out, and the sources "
-            "cannot be built from."
-        ),
-    )
-    dump.add_argument(
-        "--no-docstrings",
-        dest="docstrings",
-        action="store_false",
-        help=(
-            "Skip the numpy-style class docstrings (description, Parameters, "
-            "Inputs, Outputs) of the typed classes."
-        ),
-    )
-    dump.add_argument(
         "--anchor",
         nargs=2,
         type=Path,
@@ -1983,6 +1865,53 @@ def _parse_args(argv: list[str] | None = None):
         "these implies --arrange.",
     )
 
+    generate = sub.add_parser(
+        "generate",
+        help="Generate typed API classes for node-group assets.",
+        description=(
+            "Generate typed nodebpy API classes for the node-group assets in "
+            "--blend-file. Without --blend-file, regenerate nodebpy's own "
+            "bundled-essentials asset APIs."
+        ),
+    )
+    generate.add_argument(
+        "--blend-file",
+        "-b",
+        type=Path,
+        help="Optional custom .blend asset library to generate from.",
+    )
+    generate.add_argument(
+        "--output",
+        "--output-dir",
+        "-o",
+        dest="output",
+        type=Path,
+        help=(
+            "Where to write the generated module(s). A .py path writes a single "
+            "module; a directory writes one module per tree type "
+            "(geometry.py / shader.py / compositor.py)."
+        ),
+    )
+    generate.add_argument(
+        "--nodebpy-pkg",
+        default="nodebpy",
+        help=(
+            "Import anchor for nodebpy in the generated module. Defaults to the "
+            "absolute 'nodebpy'. When nodebpy is vendored inside another package, "
+            "pass the path that reaches it relative to the generated module's "
+            "package — e.g. '..lib.nodebpy'."
+        ),
+    )
+    generate.add_argument(
+        "--no-docstrings",
+        dest="docstrings",
+        action="store_false",
+        help=(
+            "Skip the numpy-style class docstrings (description, Parameters, "
+            "Inputs, Outputs) and emit a terser module."
+        ),
+    )
+
     textconv = sub.add_parser(
         "textconv",
         help="Print a .blend's assets as Python source, for git diff.",
@@ -2000,7 +1929,7 @@ def _parse_args(argv: list[str] | None = None):
     )
 
     args = parser.parse_args(argv)
-    if args.command not in ("plot", "textconv"):
+    if args.command not in ("plot", "generate", "textconv"):
         # Fill positionals and flags from the nearest pyproject's
         # [tool.nodebpy.assets] table; explicit arguments always win.
         apply_config(args)
@@ -2021,15 +1950,12 @@ def _dump_command(args) -> None:
         keep_reroutes=args.keep_reroutes,
         materials=args.materials,
         typed_api=args.typed_api,
-        api_only=args.api_only,
-        docstrings=args.docstrings,
         library_anchor=tuple(args.anchor) if args.anchor else None,
     )
     for name, path in written.items():
         print(f"  {name}: {path}")
     print(f"Dumped {len(written)} assets to {args.output}")
-    # An API-only dump cannot rebuild the library, so it is not in sync with it.
-    if args.names is None and not args.api_only:
+    if args.names is None:
         write_stamp(args.blend, args.output, args.resources, stamp_options(args))
 
 
@@ -2053,7 +1979,7 @@ def _build_command(args) -> None:
 
 def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapper
     """CLI entry point for the ``dump``, ``build``, ``ensure``, ``check``,
-    ``plot`` and ``textconv`` subcommands."""
+    ``plot``, ``generate`` and ``textconv`` subcommands."""
     args = _parse_args(argv)
     if args.command == "dump":
         _dump_command(args)
@@ -2064,6 +1990,12 @@ def main(argv: list[str] | None = None) -> None:  # pragma: no cover - CLI wrapp
             print(f"{args.blend} is up to date")
     elif args.command == "check":
         check_roundtrip(args)
+    elif args.command == "generate":
+        from nodebpy.assets._codegen import generate_command
+
+        generate_command(
+            args.blend_file, args.output, args.nodebpy_pkg, args.docstrings
+        )
     elif args.command == "textconv":
         from nodebpy.assets._textconv import textconv
 

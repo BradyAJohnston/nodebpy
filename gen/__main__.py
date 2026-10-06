@@ -1,5 +1,4 @@
-"""Entry point: ``python -m gen`` regenerates the node classes and the
-bundled-essentials asset classes.
+"""Entry point: ``python -m gen`` regenerates the node classes.
 
 ``python -m gen`` regenerates every tree type; ``python -m gen --only geometry``
 regenerates a single tree for faster iteration (geometry is always processed
@@ -10,14 +9,7 @@ from __future__ import annotations
 
 import argparse
 
-from .config import (
-    _REPO_ROOT,
-    ALL_CONFIGS,
-    GEOMETRY_CONFIG,
-    Disposition,
-    TreeTypeConfig,
-)
-from .essentials import generate_essentials
+from .config import ALL_CONFIGS, GEOMETRY_CONFIG, Disposition, TreeTypeConfig
 from .introspect import get_node_names, introspect_node, probe_node_tree_compatibility
 from .model import NodeInfo
 from .writers import ModulesHandler
@@ -117,9 +109,6 @@ def main() -> None:
         help="Only write this tree type (repeatable). Defaults to all.",
     )
     args = parser.parse_args()
-    # The asset classes first: each tree's __init__ re-exports them.
-    print("Generating the bundled-essentials asset classes")
-    generate_essentials(_REPO_ROOT / "src" / "nodebpy" / "nodes")
     generate_all(only=set(args.only) if args.only else None)
 
 
