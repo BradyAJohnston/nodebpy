@@ -102,6 +102,17 @@ class _BakeMixin(ItemsMixin):
         items: dict[str, InputLinkable | str] | None = None,
         **kwargs: InputLinkable | str,
     ):
+        """
+        Parameters
+        ----------
+        *args : InputLinkable | str
+            Values to bake, each as an item named after the socket it comes
+            from; a socket-type string declares an unlinked item.
+        items : dict[str, InputLinkable | str] | None
+            Items by name: a value to bake, or a socket-type string.
+        **kwargs : InputLinkable | str
+            More items by name.
+        """
         super().__init__()
         key_args = dict(items or {})
         key_args.update(kwargs)
@@ -153,6 +164,14 @@ class _CombineBundleMixin:
         *,
         define_signature: bool = False,
     ):
+        """
+        Parameters
+        ----------
+        items : dict[str, InputAny] | None
+            Bundle items by name: a value or a link, with the type inferred.
+        define_signature : bool
+            Whether the node defines the bundle's signature.
+        """
         super().__init__()
         for name, value in (items or {}).items():
             self._add_bundle_item(name, value)
@@ -223,6 +242,17 @@ class _SeparateBundleMixin:
         *,
         define_signature: bool = False,
     ):
+        """
+        Parameters
+        ----------
+        bundle : InputBundle
+            The bundle to separate.
+        items : dict[str, str] | None
+            The items to pull out, by name, each with its socket type
+            (``"FLOAT"``, ``"GEOMETRY"``, ...).
+        define_signature : bool
+            Whether the node defines the bundle's signature.
+        """
         super().__init__()
         self.node.define_signature = define_signature
         # Items are output sockets pulled from the bundle; each is declared by
@@ -276,6 +306,17 @@ class _ClosureToListMixin:
         closure: InputClosure = None,
         items: dict[str, str] | None = None,
     ):
+        """
+        Parameters
+        ----------
+        count : InputInteger
+            How many times the closure is evaluated.
+        closure : InputClosure
+            The closure to evaluate.
+        items : dict[str, str] | None
+            The output lists by name, each with the socket type of its
+            elements (``"FLOAT"``, ``"GEOMETRY"``, ...).
+        """
         super().__init__()
         # Items are output lists computed from the closure; each is declared
         # by name and socket-type string (as for SeparateBundle).
@@ -307,6 +348,14 @@ class _FormatStringMixin(ItemsMixin):
         format: InputString = "",
         items: Mapping[str, InputString | InputInteger | InputFloat] | None = None,
     ):
+        """
+        Parameters
+        ----------
+        format : InputString
+            The template, with ``{name}`` fields.
+        items : Mapping[str, InputString | InputInteger | InputFloat] | None
+            The values inserted into the template, by field name.
+        """
         super().__init__()
         key_args = {"Format": format}
         key_args.update(self._add_inputs(**(items or {})))
@@ -412,6 +461,15 @@ class _CombineListMixin(_UnnamedItemsMixin):
         *,
         data_type: _CombineListDataType = "FLOAT",
     ):
+        """
+        Parameters
+        ----------
+        items : Iterable[InputAny]
+            One input per item: a default value, something to link from, or
+            None for an input left open.
+        data_type : str
+            The type of every item and of the list.
+        """
         super().__init__()
         self.node.data_type = data_type
         self._items.clear()
@@ -451,6 +509,17 @@ class _FieldToListMixin(ItemsMixin):
         *,
         fields: dict[str, InputLinkable | str] | None = None,
     ):
+        """
+        Parameters
+        ----------
+        count : InputInteger
+            The length of the lists.
+        items : dict[str, InputLinkable | str] | None
+            The fields to gather, by name: a value or a link, or a
+            socket-type string for an input left open.
+        fields : dict[str, InputLinkable | str] | None
+            Deprecated name of ``items``.
+        """
         super().__init__()
         if fields is not None:
             warnings.warn(

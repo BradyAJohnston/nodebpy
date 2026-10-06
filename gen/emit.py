@@ -10,9 +10,43 @@ from .config import (
     TreeTypeConfig,
     nodebpy_types,
 )
-from .customizations import _CUSTOMIZATIONS
+from .customizations import _CUSTOMIZATIONS, NodeCustomization
 from .model import NodeInfo, PropertyInfo, SocketInfo
 from .util import get_socket_param_name, normalize_name
+
+
+def _mixin_parameter_lines(custom: NodeCustomization) -> list[str] | None:
+    """The ``Parameters`` section of the constructor a customization's mixin
+    supplies: the one its ``__init__`` docstring carries, else a line per
+    parameter of its signature. None when no mixin defines the constructor
+    (an ``extra_body`` does, taking the generated parameters)."""
+    import inspect
+
+    from nodebpy.nodes import _mixins
+
+    for name in custom.bases:
+        mixin = getattr(_mixins, name, None)
+        if mixin is None or "__init__" not in vars(mixin):
+            continue
+        doc = inspect.cleandoc(mixin.__init__.__doc__ or "")
+        if "Parameters\n----------" in doc:
+            section = doc[doc.index("Parameters\n----------") :]
+            lines = []
+            for line in section.split("\n"):
+                # The section ends at the next header's underline.
+                if lines and set(line) == {"-"} and lines[-1] not in ("Parameters",):
+                    lines.pop()
+                    break
+                lines.append(line)
+            return [line for line in lines if line.strip()]
+        lines = ["Parameters", "----------"]
+        for param in list(inspect.signature(mixin.__init__).parameters.values())[1:]:
+            annotation = (
+                param.annotation if isinstance(param.annotation, str) else "Any"
+            )
+            lines += [f"{param.name} : {annotation}", f"    {param.name}"]
+        return lines
+    return None
 
 
 def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
@@ -183,10 +217,17 @@ def generate_node_class(node_info: NodeInfo, config: TreeTypeConfig) -> str:
     # Add node type annotation — always use specific type so property access is typed
     node_type_annotation = f"bpy.types.{node_info.bl_idname}"
 
-    # Build numpy-style class docstring
+    # Build numpy-style class docstring. When a mixin replaces the
+    # constructor, its parameters are documented instead of the generated
+    # constructor's.
     doc_lines = [node_info.description, ""]
     all_init_sockets = [s for s in node_info.inputs] + _extra_sockets
-    if all_init_sockets:
+    mixin_parameters = (
+        _mixin_parameter_lines(custom) if custom and "__init__" in suppress else None
+    )
+    if mixin_parameters is not None:
+        doc_lines += [*mixin_parameters, ""]
+    elif all_init_sockets:
         doc_lines += ["Parameters", "----------"]
         for socket in all_init_sockets:
             param_name = get_socket_param_name(socket, sockets_use_same_name)

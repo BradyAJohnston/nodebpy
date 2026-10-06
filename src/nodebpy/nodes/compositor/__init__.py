@@ -105,6 +105,7 @@ from ..geometry.vector import (
     VectorRotate,
 )
 from .assets import (
+    Bloom,
     ChromaticAberration,
     CombineCylindrical,
     CombineSpherical,
@@ -255,6 +256,7 @@ __all__ = (
     "BitMath",
     "Blackbody",
     "BlankImage",
+    "Bloom",
     "Blur",
     "BokehBlur",
     "BokehImage",

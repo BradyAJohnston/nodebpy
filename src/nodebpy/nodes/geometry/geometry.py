@@ -234,6 +234,16 @@ class Arc(BaseNode):
 class Bake(_BakeMixin, BaseNode):
     """
     Cache the incoming data so that it can be used without recomputation
+
+    Parameters
+    ----------
+    *args : InputLinkable | str
+        Values to bake, each as an item named after the socket it comes
+        from; a socket-type string declares an unlinked item.
+    items : dict[str, InputLinkable | str] | None
+        Items by name: a value to bake, or a socket-type string.
+    **kwargs : InputLinkable | str
+        More items by name.
     """
 
     _bl_idname = "GeometryNodeBake"

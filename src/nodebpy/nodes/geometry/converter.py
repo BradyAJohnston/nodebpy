@@ -820,9 +820,12 @@ class ClosureToList(_ClosureToListMixin, BaseNode):
     Parameters
     ----------
     count : InputInteger
-        Count
+        How many times the closure is evaluated.
     closure : InputClosure
-        Closure
+        The closure to evaluate.
+    items : dict[str, str] | None
+        The output lists by name, each with the socket type of its
+        elements (``"FLOAT"``, ``"GEOMETRY"``, ...).
 
     Inputs
     ------
@@ -992,6 +995,13 @@ class CombineBundle(_CombineBundleMixin, BaseNode):
     """
     Combine multiple socket values into one.
 
+    Parameters
+    ----------
+    items : dict[str, InputAny] | None
+        Bundle items by name: a value or a link, with the type inferred.
+    define_signature : bool
+        Whether the node defines the bundle's signature.
+
     Outputs
     -------
     o.bundle : BundleSocket
@@ -1142,8 +1152,11 @@ class CombineList[T, TList](_CombineListMixin, BaseNode):
 
     Parameters
     ----------
-    item_0 : InputFloat
-        0
+    items : Iterable[InputAny]
+        One input per item: a default value, something to link from, or
+        None for an input left open.
+    data_type : str
+        The type of every item and of the list.
 
     Inputs
     ------
@@ -2377,7 +2390,12 @@ class FieldToList(_FieldToListMixin, BaseNode):
     Parameters
     ----------
     count : InputInteger
-        Count
+        The length of the lists.
+    items : dict[str, InputLinkable | str] | None
+        The fields to gather, by name: a value or a link, or a
+        socket-type string for an input left open.
+    fields : dict[str, InputLinkable | str] | None
+        Deprecated name of ``items``.
 
     Inputs
     ------
@@ -2793,7 +2811,9 @@ class FormatString(_FormatStringMixin, BaseNode):
     Parameters
     ----------
     format : InputString
-        Format
+        The template, with ``{name}`` fields.
+    items : Mapping[str, InputString | InputInteger | InputFloat] | None
+        The values inserted into the template, by field name.
 
     Inputs
     ------
@@ -7936,7 +7956,12 @@ class SeparateBundle(_SeparateBundleMixin, BaseNode):
     Parameters
     ----------
     bundle : InputBundle
-        Bundle
+        The bundle to separate.
+    items : dict[str, str] | None
+        The items to pull out, by name, each with its socket type
+        (``"FLOAT"``, ``"GEOMETRY"``, ...).
+    define_signature : bool
+        Whether the node defines the bundle's signature.
 
     Inputs
     ------
