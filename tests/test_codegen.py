@@ -1635,14 +1635,14 @@ def test_repeat_zone_emits_handle_form():
     with TreeBuilder("RepeatHandles") as tree:
         out = tree.outputs.geometry("Geometry")
         zone = g.RepeatZone(10)
-        value = zone.item("value", initial=1.0)
+        value = zone.items.float(1.0, "value")
         (value.current + 1.0) >> value.next
-        cube = zone.item("cube", g.Cube())
+        cube = zone.items.geometry(g.Cube(), "cube")
         cube.current >> g.SetPosition(offset=(0, 0, 0.1)) >> cube.next
         cube.result >> out
     code = to_python(tree)
     assert "g.RepeatZone(10)" in code
-    assert 'value = repeat_zone.items.float("value", 1.0)' in code
+    assert 'value = repeat_zone.items.float(1.0, "value")' in code
     assert ">> value.next" in code
     assert "cube.result >> geometry" in code
 
@@ -1652,8 +1652,8 @@ def test_roundtrip_structural_repeat_zone():
         iterations = tree.inputs.integer("Iterations", 5)
         out = tree.outputs.geometry("Geometry")
         zone = g.RepeatZone(iterations)
-        cube = zone.item("cube", g.Cube())
-        fac = zone.item("fac", initial=0.5)
+        cube = zone.items.geometry(g.Cube(), "cube")
+        fac = zone.items.float(0.5, "fac")
         (fac.current * 2.0) >> fac.next
         cube.current >> g.SetPosition(offset=(0, 0, 0.1)) >> cube.next
         cube.result >> g.SetShadeSmooth(shade_smooth=fac.result > 1.0) >> out
@@ -1665,7 +1665,7 @@ def test_roundtrip_structural_simulation_zone():
         out = tree.outputs.geometry("Geometry")
         zone = g.SimulationZone({"cube": g.Cube()})
         input, output = zone
-        pos = input.capture(g.Position())
+        pos = zone.items.vector(g.Position()).current
         pos >> output
         g.Boolean(False) >> output.i.skip
         input >> g.SetPosition(offset=zone.delta_time * g.Vector((0, 0, 0.1))) >> output
@@ -1681,11 +1681,11 @@ def test_roundtrip_structural_foreach_zone():
         out = tree.outputs.geometry("Geometry")
         cube = g.Cube()
         zone = g.ForEachGeometryElementZone(cube, domain="FACE")
-        pos = zone.item("Pos", g.Position())
+        pos = zone.items.vector(g.Position(), "Pos")
         transformed = g.Cone() >> g.TransformGeometry(translation=pos.output)
-        main = zone.main_item("Out", type="VECTOR")
+        main = zone.main_items.vector(name="Out")
         pos.output >> main.input
-        zone.generated_item("Gen", transformed, domain="FACE")
+        zone.generated_items.geometry(transformed, "Gen", domain="FACE")
         transformed >> zone.output
         g.JoinGeometry([zone.generation.output, cube]) >> out
     code = _assert_roundtrip(tree)
@@ -1697,9 +1697,9 @@ def test_roundtrip_structural_foreach_zone():
 def test_zone_unreferenced_item_declared_without_variable():
     with TreeBuilder("RepeatUnused") as tree:
         zone = g.RepeatZone(3)
-        zone.item("spare", type="VECTOR")
+        zone.items.vector(name="spare")
     code = _assert_roundtrip(tree)
-    assert 'repeat_zone.items.vector("spare")' in code
+    assert 'repeat_zone.items.vector(name="spare")' in code
     assert "= repeat_zone.items." not in code
 
 
@@ -1886,7 +1886,7 @@ def test_capture_attribute_emits_items_dict():
         ) >> tree.outputs.geometry("Stored")
     code = _assert_roundtrip(tree)
     assert "g.CaptureAttribute.point(geometry=geo)" in code
-    assert 'pos = capture.items.vector("Pos", g.Position())' in code
+    assert 'pos = capture.items.vector(g.Position(), "Pos")' in code
     assert "pos.output" in code
 
 
@@ -1898,12 +1898,12 @@ def test_multi_word_output_accessor_round_trips():
         cap = g.CaptureAttribute.point(geo, items={"Flip and Cyclic": g.Position()})
         cap.o["Flip and Cyclic"] >> tree.outputs.vector("V")
     code = _assert_roundtrip(tree)
-    assert 'capture.items.vector("Flip and Cyclic", g.Position())' in code
+    assert 'capture.items.vector(g.Position(), "Flip and Cyclic")' in code
 
 
 def test_field_to_grid_emits_items_dict():
     """FieldToGrid round-trips as the data-type factory plus typed item
-    declarations; consumed items are read through ``.grid``."""
+    declarations; consumed items are read through ``.output``."""
     with TreeBuilder("FieldGridRT") as tree:
         grid = tree.inputs.float("Grid", structure_type="GRID")
         mask = g.FieldToGrid.boolean(
@@ -1912,8 +1912,9 @@ def test_field_to_grid_emits_items_dict():
         mask.o["Mask"] >> tree.outputs.boolean("Out", structure_type="GRID")
     code = _assert_roundtrip(tree)
     assert "g.FieldToGrid.boolean(topology=grid)" in code
-    assert 'mask = field_to_grid.items.boolean("Mask", ' in code
-    assert "mask.grid" in code
+    assert "mask = field_to_grid.items.boolean(" in code
+    assert ', "Mask")' in code
+    assert "mask.output" in code
     assert "field_0" not in code
 
 
@@ -1929,8 +1930,8 @@ def test_bake_emits_items_dict():
         ) >> tree.outputs.geometry("Stored")
     code = _assert_roundtrip(tree)
     assert "g.Bake()" in code
-    assert 'geometry = bake.items.geometry("Geometry", geo)' in code
-    assert 'factor = bake.items.float("Factor", 1.5)' in code
+    assert 'geometry = bake.items.geometry(geo, "Geometry")' in code
+    assert 'factor = bake.items.float(1.5, "Factor")' in code
     assert "item_0" not in code  # not the raw Item_N socket kwargs
 
 
@@ -1960,8 +1961,8 @@ def test_combine_and_separate_bundle_round_trip():
         parts.o["Factor"] >> tree.outputs.float("F")
     code = _assert_roundtrip(tree)
     assert "g.CombineBundle()" in code
-    assert 'combine_bundle.items.geometry("Geometry", geo)' in code
-    assert 'combine_bundle.items.float("Factor", val)' in code
+    assert 'combine_bundle.items.geometry(geo, "Geometry")' in code
+    assert 'combine_bundle.items.float(val, "Factor")' in code
     assert "g.SeparateBundle(combine_bundle.o.bundle)" in code
     assert 'geometry = separate_bundle.items.geometry("Geometry")' in code
     assert "item_0" not in code  # not the raw Item_N socket kwargs
@@ -1983,8 +1984,8 @@ def test_evaluate_closure_round_trip():
         ev.o["Geometry"] >> tree.outputs.geometry("Out")
     code = _assert_roundtrip(tree)
     assert "g.EvaluateClosure(fn)" in code
-    assert 'evaluate_closure.inputs.geometry("Geometry", geo)' in code
-    assert 'evaluate_closure.inputs.float("Strength", strength)' in code
+    assert 'evaluate_closure.inputs.geometry(geo, "Geometry")' in code
+    assert 'evaluate_closure.inputs.float(strength, "Strength")' in code
     assert 'geometry = evaluate_closure.outputs.geometry("Geometry")' in code
     assert "item_0" not in code
 
@@ -1994,13 +1995,13 @@ def test_bundle_structure_type_and_defaults_round_trip():
     item defaults and non-AUTO structure types."""
     with TreeBuilder("BundleStructRT") as tree:
         cb = g.CombineBundle()
-        cb.items.float("a", 0.5)
-        cb.items.vector("Field", structure_type="FIELD")
+        cb.items.float(0.5, "a")
+        cb.items.vector(name="Field", structure_type="FIELD")
         sb = g.SeparateBundle(cb.o.bundle)
-        sb.items.float("a") >> tree.outputs.float("Out")
+        sb.items.float("a").output >> tree.outputs.float("Out")
     code = _assert_roundtrip(tree)
-    assert 'combine_bundle.items.float("a", 0.5)' in code
-    assert 'combine_bundle.items.vector("Field", structure_type="FIELD")' in code
+    assert 'combine_bundle.items.float(0.5, "a")' in code
+    assert 'combine_bundle.items.vector(name="Field", structure_type="FIELD")' in code
 
 
 def test_capture_color_item_round_trips():
@@ -2008,10 +2009,10 @@ def test_capture_color_item_round_trips():
     typed factory pins the type where dict inference would drift to VECTOR."""
     with TreeBuilder("CaptureColorRT") as tree:
         cap = g.CaptureAttribute(g.Cube())
-        cap.items.color("Col")
+        cap.items.color(name="Col")
         cap.o.geometry >> tree.outputs.geometry("Out")
     code = _assert_roundtrip(tree)
-    assert 'capture.items.color("Col"' in code
+    assert 'capture.items.color((0.8, 0.8, 0.8, 1.0), "Col")' in code
 
 
 def test_bundle_define_signature_round_trip():
@@ -2019,9 +2020,9 @@ def test_bundle_define_signature_round_trip():
     and an item whose output is never read declares without a variable."""
     with TreeBuilder("BundleSigRT") as tree:
         cb = g.CombineBundle(define_signature=True)
-        cb.items.float("a", 0.5)
+        cb.items.float(0.5, "a")
         sb = g.SeparateBundle(cb.o.bundle, define_signature=True)
-        sb.items.float("a") >> tree.outputs.float("Out")
+        sb.items.float("a").output >> tree.outputs.float("Out")
         sb.items.integer("unused")
     code = _assert_roundtrip(tree)
     assert code.count("define_signature=True") == 2
@@ -2037,7 +2038,10 @@ def test_bundle_and_closure_dict_fallback(monkeypatch):
     with TreeBuilder("FallbackRT") as tree:
         val = tree.inputs.float("Val")
         cz = g.ClosureZone()
-        cz.input_item("F", "FLOAT") >> cz.output_item("G", "FLOAT")
+        (
+            cz.inputs.new("F", type="FLOAT").output
+            >> cz.outputs.new("G", type="FLOAT").input
+        )
         cb = g.CombineBundle({"a": val}, define_signature=True)
         sb = g.SeparateBundle(cb.o.bundle, {"a": "FLOAT"}, define_signature=True)
         ev = g.EvaluateClosure(
@@ -2054,8 +2058,8 @@ def test_bundle_and_closure_dict_fallback(monkeypatch):
     assert '"a": "FLOAT"' in code
     assert 'input_items={"X": val}' in code
     assert 'output_items={"Y": "FLOAT"}' in code
-    assert '.input_item("F", "FLOAT")' in code
-    assert '.output_item("G", "FLOAT")' in code
+    assert '.inputs.new("F", type="FLOAT")' in code
+    assert '.outputs.new("G", type="FLOAT")' in code
     assert code.count("define_signature=True") == 3
 
 
@@ -2066,7 +2070,7 @@ def test_typed_items_node_falls_through_without_factory(monkeypatch):
 
     with TreeBuilder("BakeFallback") as tree:
         bake = g.Bake()
-        bake.items.float("Val", 1.5)
+        bake.items.float(1.5, "Val")
     monkeypatch.delitem(cg._SWITCH_METHOD, "FLOAT")
     code = to_python(tree, format=False)
     assert "g.Bake" in code
@@ -2085,13 +2089,13 @@ def test_items_emitters_skip_foreign_nodes():
 
 
 def test_closure_zone_round_trip():
-    """A ClosureZone defines a closure body: input_item reads feed the body,
-    output_item targets collect results, and .closure produces the closure."""
+    """A ClosureZone defines a closure body: input item reads feed the body,
+    output item targets collect results, and .closure produces the closure."""
     with TreeBuilder("ClosureZoneRT") as tree:
         cz = g.ClosureZone()
-        geo = cz.input_item("Geometry", "GEOMETRY")
-        g.SetPosition(geometry=geo).o.geometry >> cz.output_item("Geometry", "GEOMETRY")
-        g.CombineXYZ(x=1.0).o.vector >> cz.output_item("Force", "VECTOR")
+        geo = cz.inputs.geometry("Geometry").output
+        g.SetPosition(geometry=geo).o.geometry >> cz.outputs.geometry("Geometry").input
+        g.CombineXYZ(x=1.0).o.vector >> cz.outputs.vector("Force").input
         ev = g.EvaluateClosure(
             cz.closure,
             input_items={"Geometry": tree.inputs.geometry("Geo")},
@@ -2118,34 +2122,34 @@ def test_font_sound_items_round_trip():
         menu = g.MenuSwitch.sound(items={"A": sound, "B": sound})
 
         bundle = g.CombineBundle()
-        bundle.items.font("f", idx.o.output)
-        bundle.items.sound("s", menu.o.output)
+        bundle.items.font(idx.o.output, "f")
+        bundle.items.sound(menu.o.output, "s")
         parts = g.SeparateBundle(bundle.o.bundle)
-        parts.items.font("f") >> tree.outputs.font("Font Out")
-        parts.items.sound("s") >> tree.outputs.sound("Sound Out")
+        parts.items.font("f").output >> tree.outputs.font("Font Out")
+        parts.items.sound("s").output >> tree.outputs.sound("Sound Out")
 
         cz = g.ClosureZone()
         cz_font = cz.inputs.font("Font")
-        cz_font >> cz.outputs.font("Font")
+        cz_font.output >> cz.outputs.font("Font").input
         ev = g.EvaluateClosure(cz.closure)
-        ev.inputs.font("Font", font)
-        ev.outputs.font("Font") >> tree.outputs.font("Closure Out")
+        ev.inputs.font(font, "Font")
+        ev.outputs.font("Font").output >> tree.outputs.font("Closure Out")
 
         zone = g.RepeatZone(3)
-        item = zone.items.sound("S", sound)
+        item = zone.items.sound(sound, "S")
         item.current >> item.next
         item.result >> tree.outputs.sound("Repeat Out")
     code = _assert_roundtrip(tree)
     assert "g.IndexSwitch.font(" in code
     assert "g.MenuSwitch.sound(" in code
-    assert 'combine_bundle.items.font("f"' in code
-    assert 'combine_bundle.items.sound("s"' in code
+    assert "combine_bundle.items.font(" in code
+    assert "combine_bundle.items.sound(" in code
     assert 'separate_bundle.items.font("f")' in code
     assert 'separate_bundle.items.sound("s")' in code
     assert '.inputs.font("Font")' in code
-    assert 'evaluate_closure.inputs.font("Font", font)' in code
-    assert '.items.sound("S", sound)' in code
-    assert "input_item(" not in code and "item_0" not in code
+    assert 'evaluate_closure.inputs.font(font, "Font")' in code
+    assert '.items.sound(sound, "S")' in code
+    assert ".new(" not in code and "item_0" not in code
 
 
 # ---------------------------------------------------------------------------
@@ -2858,10 +2862,10 @@ def test_closure_to_list_roundtrip():
         zone = g.ClosureZone()
         index = zone.inputs.integer("Index")
         item = zone.outputs.integer("Item")
-        g.Math.multiply(index, 2.0) >> item
+        g.Math.multiply(index.output, 2.0) >> item.input
         ctl = g.ClosureToList(count=count, closure=zone.closure)
         values = ctl.items.integer("Item")
-        values >> tree.outputs.integer("Values")
+        values.output >> tree.outputs.integer("Values")
 
     node = ctl.node
     assert [(i.name, i.socket_type) for i in node.list_items] == [("Item", "INT")]
@@ -3144,7 +3148,7 @@ def test_roundtrip_mn_assets(name):
 
 def test_codegen_list_methods(snapshot):
     with g.tree() as tree:
-        lst = g.FieldToList(10).vector()
+        lst = g.FieldToList(10).items.vector().output
         lst.filter(g.RandomValue.boolean()) >> tree.outputs.vector("Filtered")
 
     string = tree.to_python()

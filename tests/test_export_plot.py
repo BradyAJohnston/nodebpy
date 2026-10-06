@@ -184,7 +184,7 @@ def test_plot_zones_reroutes_and_widgets():
     with TreeBuilder("PlotZones", arrange=None) as tree:
         cube = g.Cube()
         sim = g.SimulationZone({"cube": cube})
-        pos = sim.item("Position", g.Position())
+        pos = sim.items.vector(g.Position())
         (pos.current + 0.1) >> pos.next
         vec = g.Vector((0.0, 0.0, 0.1))
         offset = sim.delta_time * vec * pos.current

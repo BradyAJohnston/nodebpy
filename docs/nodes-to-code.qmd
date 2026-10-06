@@ -244,8 +244,8 @@ Simulation, repeat and for-each zones are reconstructed using the typed zone ite
 with TreeBuilder("Stack") as tree:
     out = tree.outputs.geometry("Geometry")
     zone = g.RepeatZone(5)
-    geo = zone.items.geometry("Geometry", g.Cube())
-    (geo.current >> g.TransformGeometry(translation=(0, 0, 1.1))) >> geo.next
+    geo = zone.items.geometry(g.Cube(), "Geometry")
+    geo.current >> g.TransformGeometry(translation=(0, 0, 1.1)) >> geo.next
     geo.result >> out
 
 code = tree.to_python()
