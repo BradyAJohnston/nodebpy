@@ -12,6 +12,9 @@ import nodebpy
 from nodebpy import TreeBuilder
 from nodebpy import compositor as c
 from nodebpy import geometry as g
+from nodebpy.builder.socket import IntegerSocket
+
+from .evaluate import evaluate
 
 
 class TestPowerOperator:
@@ -72,7 +75,16 @@ class TestModuloOperator:
             result = g.Integer(10) % 3
 
         assert result.node.bl_idname == "FunctionNodeIntegerMath"
-        assert result.node.operation == "MODULO"
+        assert result.node.operation == "FLOORED_MODULO"
+
+    def test_integer_modulo_matches_python(self):
+        with g.tree("TestIntModuloValues") as tree:
+            values = {
+                f"v{i}": g.Integer(a).o.integer % b
+                for i, (a, b) in enumerate([(-7, 3), (7, -3), (7, 3)])
+            }
+            result = evaluate(tree, **values)
+        assert [result[f"v{i}"] for i in range(3)] == [-7 % 3, 7 % -3, 7 % 3]
 
     def test_vector_modulo(self):
         with g.tree("TestVectorModulo"):
@@ -995,6 +1007,25 @@ class TestColorSocketOperatorMath:
         assert result9.node.data_type == "FLOAT"
         assert result10.node.operation == "EQUAL"
         assert result10.node.data_type == "FLOAT"
+
+
+class TestIntegerBitwiseOperators:
+    def test_bitwise_operators_use_bit_math(self):
+        with g.tree("IntBitwise") as tree:
+            a = g.Integer(12).o.integer
+            b = g.Integer(10).o.integer
+            values = {"and_": a & b, "or_": a | 3, "xor": 6 ^ b, "not_": ~a}
+            for socket in values.values():
+                assert isinstance(socket, IntegerSocket)
+                assert socket.node.bl_idname == g.BitMath._bl_idname
+            result = evaluate(tree, **values)
+        assert result == {"and_": 12 & 10, "or_": 12 | 3, "xor": 6 ^ 10, "not_": ~12}
+
+    def test_boolean_operators_unchanged(self):
+        with g.tree("BoolStillBoolean"):
+            a = g.Boolean(True).o.boolean
+            assert (a & a).node.bl_idname == g.BooleanMath._bl_idname
+            assert (~a).node.bl_idname == g.BooleanMath._bl_idname
 
 
 class TestIntegerSocketOperators:

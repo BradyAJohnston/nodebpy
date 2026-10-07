@@ -12,6 +12,14 @@ from ._utils import SocketError, _resolve_promotion, _SocketLike
 _RShiftT = TypeVar("_RShiftT")
 _OutT = TypeVar("_OutT", bound="BaseSocket")
 
+_MIRRORED_COMPARISONS = {
+    "less_than": "greater_than",
+    "greater_than": "less_than",
+    "less_equal": "greater_equal",
+    "greater_equal": "less_equal",
+}
+_BIT_MATH_OPERATIONS = {"l_and": "l_and", "l_or": "l_or", "not_equal": "exclusive_or"}
+
 if TYPE_CHECKING:
     from ..nodes.geometry import CombineTransform
     from ..nodes.geometry.converter import BooleanMath
@@ -147,11 +155,14 @@ class OperatorMixin:
     def _apply_compare_operation(
         self, other: Any, operation: str
     ) -> FloatSocket | BooleanSocket:
-        socket, other, _ = _resolve_promotion(
+        socket, other, reverse = _resolve_promotion(
             self._default_output_socket,
             other,
             False,
         )
+        # promotion swapped the operands, so mirror the comparison
+        if reverse:
+            operation = _MIRRORED_COMPARISONS.get(operation, operation)
         return _wrap_socket(socket)._dispatch_compare(other, operation)
 
     def __lt__(self, other: Any) -> FloatSocket | BooleanSocket:
@@ -172,36 +183,44 @@ class OperatorMixin:
     def __ne__(self, other: object) -> FloatSocket | BooleanSocket:  # type: ignore
         return self._apply_compare_operation(other, "not_equal")
 
-    def _apply_boolean_operation(self, other: Any, operation: str) -> BooleanMath:
+    def _apply_boolean_operation(
+        self, other: Any, operation: str, reverse: bool = False
+    ) -> BooleanMath | Socket:
+        # Integers take the bitwise path, as Python's ``&``/``|``/``^`` do;
+        # Boolean Math would cast them to booleans.
+        if self._default_output_socket.type == "INT":
+            from ..nodes.geometry.converter import BitMath
+
+            values = (other, self) if reverse else (self, other)
+            return getattr(BitMath, _BIT_MATH_OPERATIONS[operation])(*values).o.value
         from ..nodes.geometry.converter import BooleanMath
 
-        return getattr(BooleanMath, operation)(self, other)
+        values = (other, self) if reverse else (self, other)
+        return getattr(BooleanMath, operation)(*values)
 
     def __and__(self, other: Any) -> BooleanMath | Socket:
         return self._apply_boolean_operation(other, "l_and")
 
     def __rand__(self, other: Any) -> BooleanMath | Socket:
-        from ..nodes.geometry.converter import BooleanMath
-
-        return BooleanMath.l_and(other, cast(Any, self))
+        return self._apply_boolean_operation(other, "l_and", reverse=True)
 
     def __or__(self, other: Any) -> BooleanMath | Socket:
         return self._apply_boolean_operation(other, "l_or")
 
     def __ror__(self, other: Any) -> BooleanMath | Socket:
-        from ..nodes.geometry.converter import BooleanMath
-
-        return BooleanMath.l_or(other, cast(Any, self))
+        return self._apply_boolean_operation(other, "l_or", reverse=True)
 
     def __xor__(self, other: Any) -> BooleanMath | Socket:
         return self._apply_boolean_operation(other, "not_equal")
 
     def __rxor__(self, other: Any) -> BooleanMath | Socket:
-        from ..nodes.geometry.converter import BooleanMath
-
-        return BooleanMath.not_equal(other, cast(Any, self))
+        return self._apply_boolean_operation(other, "not_equal", reverse=True)
 
     def __invert__(self) -> BooleanMath | Socket:
+        if self._default_output_socket.type == "INT":
+            from ..nodes.geometry.converter import BitMath
+
+            return BitMath.l_not(cast(Any, self)).o.value
         from ..nodes.geometry.converter import BooleanMath
 
         return BooleanMath.l_not(cast(Any, self))

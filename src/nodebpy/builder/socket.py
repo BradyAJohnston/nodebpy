@@ -1427,7 +1427,12 @@ class _RotationMixin[
         rotation: InputRotation,
         rotation_space: Literal["GLOBAL", "LOCAL"] = "GLOBAL",
     ) -> Self:
-        "Rotate this rotation by the given rotation in the specified rotation space."
+        """Rotate this rotation by the given rotation in the specified rotation space.
+
+        ``"GLOBAL"`` applies *rotation* after this one; ``"LOCAL"`` applies it
+        first, matching matrix order: ``r1.rotate(r2, rotation_space="LOCAL")``
+        is ``r1 @ r2``.
+        """
         self._assert_output("rotate")
         from ..nodes.geometry import RotateRotation
 
@@ -1748,9 +1753,9 @@ class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)
         return self._imath.maximum(self.socket, value).o.value  # ty: ignore[invalid-return-type]
 
     def modulo(self, divisor: InputInteger) -> Self:
-        """Remainder after dividing by *divisor* (always non-negative)."""
+        """Floored modulo — remainder after dividing by *divisor*, with the sign of *divisor*."""
         self._assert_output("modulo")
-        return self._imath.modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
+        return self._imath.floored_modulo(self.socket, divisor).o.value  # ty: ignore[invalid-return-type]
 
     def abs(self) -> Self:
         """Return the absolute value of the IntegerSocket."""
@@ -1790,10 +1795,18 @@ class _IntegerMixin[FloatResult: (FloatSocket, FloatSocketGrid, FloatSocketList)
     def _dispatch_math(
         self, other: Any, operation: str, reverse: bool = False
     ) -> Self | FloatResult:
-        if self._is_geometry_tree and self._other_is_integer(other):
+        # ``/`` is true division, as in Python; ``//`` is the integer one
+        if (
+            self._is_geometry_tree
+            and self._other_is_integer(other)
+            and operation != "divide"
+        ):
             from ..nodes.geometry.converter import IntegerMath
 
             values = (self.socket, other) if not reverse else (other, self.socket)
+            # floored, like Python's % and the float path
+            if operation == "modulo":
+                operation = "floored_modulo"
             return getattr(IntegerMath, operation)(*values).o.value
         return Socket._dispatch_math(cast("Socket", self), other, operation, reverse)  # ty: ignore[invalid-return-type]
 

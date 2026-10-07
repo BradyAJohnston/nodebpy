@@ -657,6 +657,18 @@ wheels = [
 ]
 
 [[package]]
+name = "databpy"
+version = "0.10.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7b/e5/c0119b5fa3e066363589b0021ef64ab632512cb3998f103248ad44bc4be3/databpy-0.10.0.tar.gz", hash = "sha256:21935f6e6a47ee3c8e2d5b9aba9738256e069a28940e7d01982c6f74274271fb", size = 35203, upload-time = "2026-09-27T16:49:54.275Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/11/a7/75405d8632f7d0c3cb4e7e9342adf267637991af72ed3306b1ae6e6e3b89/databpy-0.10.0-py3-none-any.whl", hash = "sha256:f89d82ba437ffcd2e08cf3b69facfd2ab568f6f7d67a759079d94011ee38a796", size = 42034, upload-time = "2026-09-27T16:49:52.869Z" },
+]
+
+[[package]]
 name = "debugpy"
 version = "1.8.21"
 source = { registry = "https://pypi.org/simple" }
@@ -1595,6 +1607,7 @@ plot = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "databpy" },
     { name = "fake-bpy-module" },
     { name = "griffe" },
     { name = "ipykernel" },
@@ -1622,6 +1635,7 @@ provides-extras = ["networkx", "plot", "bpy", "format"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "databpy", specifier = ">=0.9.0" },
     { name = "fake-bpy-module", specifier = ">=20260501" },
     { name = "griffe", specifier = "<2.0.0" },
     { name = "ipykernel", specifier = ">=6.0.0" },

@@ -1085,6 +1085,29 @@ def test_integer_math_lifts_to_operators():
     assert "IntegerMath" not in code
 
 
+def test_integer_operators_round_trip():
+    """Bitwise ops lift to Bit Math operators, % to floored modulo, / to a
+    float Math divide; a truncated MODULO and Boolean Math fed by integers
+    stay calls, since the operators would build other nodes."""
+    with TreeBuilder("IntOperators") as tree:
+        i = tree.inputs.integer("I")
+        j = tree.inputs.integer("J")
+        ((i & j) | ~i) >> tree.outputs.integer("Bits")
+        (i % j) >> tree.outputs.integer("Mod")
+        (i / j) >> tree.outputs.float("Div")
+        g.IntegerMath.modulo(i, j) >> tree.outputs.integer("Truncated")
+        g.BooleanMath.l_and(i, j) >> tree.outputs.boolean("Logic")
+    code = _assert_roundtrip(tree)
+    for expected in (
+        "i & j | ~i",
+        "i % j",
+        "i / j",
+        "IntegerMath.modulo(",
+        "g.BooleanMath(",
+    ):
+        assert expected in code, expected
+
+
 def test_compare_emits_factory_path():
     """A Compare whose state no operator produces (custom epsilon) falls
     back to the nested factory spelling and round-trips its props."""
